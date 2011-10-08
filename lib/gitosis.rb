@@ -1,6 +1,4 @@
-require 'lockfile'
 require 'inifile'
-require 'net/ssh'
 
 class Gitosis
 
@@ -11,14 +9,13 @@ class Gitosis
     Dir.mkdir @local_dir
 
     # clone repo
-    `git clone #{GITOSIS['admin_uri']} #{@local_dir}/gitosis`
+    @repo = Git.clone(GITOSIS['admin_uri'], "#{@local_dir}/gitosis")
   end
 
   def push
-    # add, commit, push, and remove local tmp dir
-    `cd #{File.join(@local_dir,'gitosis')} ; git add keydir/* gitosis.conf`
-    `cd #{File.join(@local_dir,'gitosis')} ; git commit -a -m 'updated by Gitlab Gitosis'`
-    `cd #{File.join(@local_dir,'gitosis')} ; git push`
+    @repo.add('.')
+    @repo.commit_all "Gitlab"
+    @repo.push
 
     # remove local copy
     `rm -Rf #{@local_dir}`
