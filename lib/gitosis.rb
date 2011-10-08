@@ -8,7 +8,6 @@ class Gitosis
 
     Dir.mkdir @local_dir
 
-    # clone repo
     @repo = Git.clone(GITOSIS['admin_uri'], "#{@local_dir}/gitosis")
   end
 
@@ -17,7 +16,6 @@ class Gitosis
     @repo.commit_all "Gitlab"
     @repo.push
 
-    # remove local copy
     `rm -Rf #{@local_dir}`
   end
 
