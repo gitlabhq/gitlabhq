@@ -1,3 +1,11 @@
+v 0.9.4
+  - security improved
+  - authorization improved
+  - html escaping
+  - bug fix
+  - increassed test coverage
+  - design improvements
+
 v 0.9.1
   - increassed test coverage
   - design improvements
