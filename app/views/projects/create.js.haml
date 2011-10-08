@@ -1,0 +1,6 @@
+- if @project.valid?
+  :plain
+    location.href = "#{project_path(@project, :notice => 'Project was successfully created.')}";
+- else
+  :plain
+    $("#new_project").replaceWith("#{escape_javascript(render('form'))}");

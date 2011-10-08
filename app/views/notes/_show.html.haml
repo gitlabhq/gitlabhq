@@ -1,0 +1,19 @@
+%li{:id => dom_id(note)}
+  %div.note_author
+    = image_tag gravatar_icon(note.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
+  %div.note_content
+    = simple_format(html_escape(note.note))
+    - if note.attachment.url
+      Attachment:
+      = link_to note.attachment_identifier, note.attachment.url
+      %br
+    %span
+      %span
+        [ #{note.author.name} ]
+      &nbsp;
+      = time_ago_in_words(note.updated_at)
+      ago
+      %br
+  - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
+    = link_to 'Remove', [@project, note], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "lbutton delete-note right negative"
+  .clear

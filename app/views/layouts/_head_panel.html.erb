@@ -1,0 +1,34 @@
+<div id="header-panel">
+  <div class="container">
+    <div class="span-24">
+      <div class="span-10">
+        <%#= image_tag "git.png", :height => 40, :class => "left" %>
+        <%#= link_to "gitlab", root_path, :id => "logo" %>
+        <span class="search-holder">
+          <%= text_field_tag "search", nil, :placeholder => "Search"  %>
+        </span>
+      </div>
+      <div class="right">
+        <%= link_to truncate(@project.name, :length => 20), project_path(@project), :class => "current button" if @project && !@project.new_record? %>
+        <%= link_to 'Home', root_path, :class => current_page?(root_url) ? "current button" : "button" %>
+        <%= link_to 'Projects', projects_path, :class => current_page?(projects_path) ? "current button" : "button" %>
+        <%= link_to 'Profile', profile_path, :class => (controller.controller_name == "keys") ? "current button" : "button" %>
+        <%= link_to('Admin', admin_root_path, :class => admin_namespace? ? "current button" : "button" ) if current_user.is_admin? %>
+        <%#= link_to 'Profile', edit_user_registration_path, :class => "button" %>
+        <%= link_to 'Logout', destroy_user_session_path, :class => "button", :method => :delete %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% if current_user %>
+  <%= javascript_tag do %>
+    $(function() {
+      $("#search" ).autocomplete({
+        source: <%= raw search_autocomplete_source %>,
+        select: function(event, ui) { location.href = ui.item.url }
+        });
+    });
+  <% end %>
+<% end %>

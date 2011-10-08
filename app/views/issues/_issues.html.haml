@@ -1,0 +1,10 @@
+%table.round-borders#issues-table
+  %tr
+    %th Assignee
+    %th ID
+    %th Title
+    %th Closed?
+    %th
+
+  - @issues.each do |issue|
+    = render(:partial => 'show', :locals => {:issue => issue})

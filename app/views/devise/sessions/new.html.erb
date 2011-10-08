@@ -1,0 +1,20 @@
+<h2>Sign in</h2>
+
+<div class="span-12 colborder">
+  <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+    <div><%= f.label :email %><br />
+      <%= f.text_field :email %></div>
+
+    <div><%= f.label :password %><br />
+      <%= f.password_field :password %></div>
+
+    <% if devise_mapping.rememberable? -%>
+      <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+    <% end -%>
+    <br/>
+    <div><%= f.submit "Sign in", :class => "lbutton vm" %></div>
+  <% end %>
+</div>
+<div>
+  <%= render :partial => "devise/shared/links" %>
+</div>

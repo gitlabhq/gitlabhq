@@ -1,0 +1,6 @@
+%div.top_project_menu
+  %span= link_to "Users", admin_users_path, :style => "width:50px;", :class => controller.controller_name == "users" ? "current" : nil
+  %span= link_to "Projects", admin_projects_path, :style => "width:50px;", :class => controller.controller_name == "projects" ? "current" : nil
+  %span= link_to "Teams", admin_team_members_path, :style => "width:50px;", :class => controller.controller_name == "team_members" ? "current" : nil
+  %span= link_to "Emails", admin_emails_path, :style => "width:50px;", :class => controller.controller_name == "mailer" ? "current" : nil
+

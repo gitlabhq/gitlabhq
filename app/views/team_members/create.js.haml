@@ -1,0 +1,9 @@
+- if @team_member.valid?
+  :plain
+    $("#new_tm_dialog").dialog("close");
+    $("#team-table").append("#{escape_javascript(render(:partial => 'show', :locals => {:member => @team_member} ))}");
+- else
+  :plain
+    $("#new_tm_dialog").empty();
+    $("#new_tm_dialog").append("#{escape_javascript(render('form'))}");
+    $('select#team_member_user_id').selectmenu({width:300});
