@@ -1,0 +1,16 @@
+%div
+  = form_for @key, :remote => true do |f|
+    -if @key.errors.any?
+      %ul
+        - @key.errors.full_messages.each do |msg|
+          %li= msg
+
+    .span-6
+      = f.label :title
+      = f.text_field :title, :style => "width:300px"
+    .span-6
+      = f.label :key
+      = f.text_area :key, :style => "width:300px; height:130px"
+    .span-6
+      = f.submit 'Save', :class => "lbutton vm"
+

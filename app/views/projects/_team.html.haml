@@ -1,0 +1,18 @@
+- if can? current_user, :admin_team_member, @project
+  %div#new-member-holder
+    = link_to "Add new", new_project_team_member_path(@project), :remote => true, :class => "lbutton vm"
+%table.round-borders#team-table
+  %tr
+    %th Name
+    %th Email
+    %th Web
+    %th Git
+    %th Admin
+    - if can? current_user, :admin_team_member, @project
+      %th Actions
+  - @project.users_projects.each do |up|
+    = render(:partial => 'team_members/show', :locals => {:member => up})
+
+:javascript
+  $('.delete-team-member').live('ajax:success', function() {  
+    $(this).closest('tr').fadeOut(); });  

@@ -1,0 +1,110 @@
+/* --------------------------------------------------------------
+
+   rtl.css
+   * Mirrors Blueprint for left-to-right languages
+
+   By Ran Yaniv Hartstein [ranh.co.il]
+
+-------------------------------------------------------------- */
+
+body .container { direction: rtl; }
+body .column, body .span-1, body .span-2, body .span-3, body .span-4, body .span-5, body .span-6, body .span-7, body .span-8, body .span-9, body .span-10, body .span-11, body .span-12, body .span-13, body .span-14, body .span-15, body .span-16, body .span-17, body .span-18, body .span-19, body .span-20, body .span-21, body .span-22, body .span-23, body .span-24 {
+  float: right;
+  margin-right: 0;
+  margin-left: 10px;
+  text-align:right;
+}
+
+body div.last { margin-left: 0; }
+body table .last { padding-left: 0; }
+
+body .append-1   { padding-right: 0; padding-left: 40px; }
+body .append-2   { padding-right: 0; padding-left: 80px; }
+body .append-3   { padding-right: 0; padding-left: 120px; }
+body .append-4   { padding-right: 0; padding-left: 160px; }
+body .append-5   { padding-right: 0; padding-left: 200px; }
+body .append-6   { padding-right: 0; padding-left: 240px; }
+body .append-7   { padding-right: 0; padding-left: 280px; }
+body .append-8   { padding-right: 0; padding-left: 320px; }
+body .append-9   { padding-right: 0; padding-left: 360px; }
+body .append-10  { padding-right: 0; padding-left: 400px; }
+body .append-11  { padding-right: 0; padding-left: 440px; }
+body .append-12  { padding-right: 0; padding-left: 480px; }
+body .append-13  { padding-right: 0; padding-left: 520px; }
+body .append-14  { padding-right: 0; padding-left: 560px; }
+body .append-15  { padding-right: 0; padding-left: 600px; }
+body .append-16  { padding-right: 0; padding-left: 640px; }
+body .append-17  { padding-right: 0; padding-left: 680px; }
+body .append-18  { padding-right: 0; padding-left: 720px; }
+body .append-19  { padding-right: 0; padding-left: 760px; }
+body .append-20  { padding-right: 0; padding-left: 800px; }
+body .append-21  { padding-right: 0; padding-left: 840px; }
+body .append-22  { padding-right: 0; padding-left: 880px; }
+body .append-23  { padding-right: 0; padding-left: 920px; }
+
+body .prepend-1   { padding-left: 0; padding-right: 40px; }
+body .prepend-2   { padding-left: 0; padding-right: 80px; }
+body .prepend-3   { padding-left: 0; padding-right: 120px; }
+body .prepend-4   { padding-left: 0; padding-right: 160px; }
+body .prepend-5   { padding-left: 0; padding-right: 200px; }
+body .prepend-6   { padding-left: 0; padding-right: 240px; }
+body .prepend-7   { padding-left: 0; padding-right: 280px; }
+body .prepend-8   { padding-left: 0; padding-right: 320px; }
+body .prepend-9   { padding-left: 0; padding-right: 360px; }
+body .prepend-10  { padding-left: 0; padding-right: 400px; }
+body .prepend-11  { padding-left: 0; padding-right: 440px; }
+body .prepend-12  { padding-left: 0; padding-right: 480px; }
+body .prepend-13  { padding-left: 0; padding-right: 520px; }
+body .prepend-14  { padding-left: 0; padding-right: 560px; }
+body .prepend-15  { padding-left: 0; padding-right: 600px; }
+body .prepend-16  { padding-left: 0; padding-right: 640px; }
+body .prepend-17  { padding-left: 0; padding-right: 680px; }
+body .prepend-18  { padding-left: 0; padding-right: 720px; }
+body .prepend-19  { padding-left: 0; padding-right: 760px; }
+body .prepend-20  { padding-left: 0; padding-right: 800px; }
+body .prepend-21  { padding-left: 0; padding-right: 840px; }
+body .prepend-22  { padding-left: 0; padding-right: 880px; }
+body .prepend-23  { padding-left: 0; padding-right: 920px; }
+
+body .border {
+  padding-right: 0;
+  padding-left: 4px;
+  margin-right: 0;
+  margin-left: 5px;
+  border-right: none;
+  border-left: 1px solid #eee;
+}
+
+body .colborder {
+  padding-right: 0;
+  padding-left: 24px;
+  margin-right: 0;
+  margin-left: 25px;
+  border-right: none;
+  border-left: 1px solid #eee;
+}
+
+body .pull-1  { margin-left: 0; margin-right: -40px; }
+body .pull-2  { margin-left: 0; margin-right: -80px; }
+body .pull-3  { margin-left: 0; margin-right: -120px; }
+body .pull-4  { margin-left: 0; margin-right: -160px; }
+
+body .push-0  { margin: 0 18px 0 0; }
+body .push-1  { margin: 0 18px 0 -40px; }
+body .push-2  { margin: 0 18px 0 -80px; }
+body .push-3  { margin: 0 18px 0 -120px; }
+body .push-4  { margin: 0 18px 0 -160px; }
+body .push-0, body .push-1, body .push-2,
+body .push-3, body .push-4 { float: left; }
+
+
+/* Typography with RTL support */
+body h1,body h2,body h3,
+body h4,body h5,body h6 { font-family: Arial, sans-serif; }
+html body { font-family: Arial, sans-serif;  }
+body pre,body code,body tt { font-family: monospace; }
+
+/* Mirror floats and margins on typographic elements */
+body p img { float: right; margin: 1.5em 0 1.5em 1.5em; }
+body dd, body ul, body ol { margin-left: 0; margin-right: 1.5em;}
+body td, body th { text-align:right; }

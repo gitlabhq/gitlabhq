@@ -1,0 +1,49 @@
+<div class="">
+  <div class="git-empty">
+    <h2>Git global setup:</h2>
+<% setup_str = <<eos
+git config --global user.name "#{current_user.name}"
+git config --global user.email  "#{current_user.email}"
+eos
+%>
+    <%= raw Albino.colorize(setup_str, :bash) %>
+    <br />
+    <br />
+    <h2>Next steps:</h2>
+<% repo_setup_str = <<eos
+mkdir #{@project.path}
+cd #{@project.path}
+git init
+touch README
+git add README
+git commit -m 'first commit'
+git remote add origin #{@project.url_to_repo}
+git push -u origin master
+eos
+%>
+    <%= raw Albino.colorize(repo_setup_str, :bash) %>
+
+    <br /><br />
+    <h2>Existing Git Repo?</h2>
+<% exist_repo_setup_str = <<eos
+cd existing_git_repo
+git remote add origin   #{@project.url_to_repo}
+git push -u origin master
+eos
+%>
+    <%= raw Albino.colorize(exist_repo_setup_str, :bash) %>
+
+    <br /><br />
+    <h2>Remove this project?</h2>
+    <div class="error">
+      <p>
+      Be careful! <br/>
+      Project cant be recovered after destroy.</p>
+      <%= link_to 'Destroy', @project, 
+      :confirm => 'Are you sure?', :method => :delete,
+      :class => "left button negative span-6", :style => "text-align:center" %>
+      <div class="clear"></div>
+    </div>
+    <br/>
+  </div>
+</div>

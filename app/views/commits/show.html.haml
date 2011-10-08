@@ -1,0 +1,39 @@
+%h3
+  = "[ #{@commit.committer} ]  #{truncate @commit.message, :length => 80}"
+-#= link_to 'Back', project_commits_path(@project), :class => "button"
+%table.round-borders
+  %tr
+    %td ID
+    %td= @commit.id
+  %tr
+    %td Author
+    %td= @commit.author
+  %tr
+    %td Commiter
+    %td= @commit.committer
+  %tr
+    %td Commited Date
+    %td= @commit.committed_date
+  %tr
+    %td Message
+    %td= @commit.message
+  %tr
+    %td Tree
+    %td= link_to 'Browse Code', tree_project_path(@project, :commit_id => @commit.id)
+.clear
+
+#tabs
+  %ul
+    %li
+      %a{ :href => "#tabs-1" } Diff
+    %li
+      %a{ :href => "#tabs-2" } Comments
+      %span{ :class => "notes_count" }= @notes.count
+  %hr
+  #tabs-1
+    = render "commits/diff"
+  #tabs-2
+    = render "notes/notes"
+
+:javascript
+  $(function() { $( "#tabs" ).tabs(); });

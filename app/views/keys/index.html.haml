@@ -1,0 +1,15 @@
+%div#new-key-holder
+  = link_to "Add new", new_key_path, :remote => true, :class => "lbutton vm"
+
+%table.round-borders#keys-table
+  %tr
+    %th title
+    %th key
+    %th Actions
+  - @keys.each do |key|
+    = render(:partial => 'show', :locals => {:key => key})
+
+:javascript
+  $('.delete-key').live('ajax:success', function() {  
+    $(this).closest('tr').fadeOut(); });  
+

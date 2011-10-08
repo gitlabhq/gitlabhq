@@ -1,0 +1,14 @@
+%ul#notes-list
+  - @notes.each do |note|
+    = render :partial => "notes/show", :locals => {:note => note}
+
+%br
+%br
+- if can? current_user, :write_note, @project
+  = render "notes/form"
+
+:javascript
+  $('.delete-note').live('ajax:success', function() {  
+    $(this).closest('li').fadeOut(); });  
+
+

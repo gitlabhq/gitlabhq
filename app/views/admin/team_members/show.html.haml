@@ -1,0 +1,32 @@
+%p#notice= notice
+
+.span-10
+  %p
+    %b Name:
+    = @admin_team_member.user_name
+  %p
+    %b Project:
+    = @admin_team_member.project.name
+  %p
+    %b Since:
+    = @admin_team_member.updated_at
+
+
+.span-10
+  .span-6
+    %b Access:
+  .span-8
+    = check_box_tag "read",   1, @admin_team_member.read, :disabled => :disabled
+    Web Access (Browse Repo)
+  .span-8
+    = check_box_tag "commit", 1, @admin_team_member.write, :disabled => :disabled
+    Git Access (User will be added to commiters list)
+  .span-6.append-bottom
+    = check_box_tag "admin",  1, @admin_team_member.admin, :disabled => :disabled
+    Admin (Can manage project)
+
+%hr
+
+= link_to 'Edit', edit_admin_team_member_path(@admin_project)
+\|
+= link_to 'Back', admin_team_members_path

@@ -1,0 +1,45 @@
+%p#notice= notice
+
+.span-8.colborder
+  %h2= @admin_project.name 
+
+  %p
+    %b Name:
+    = @admin_project.name
+  %p
+    %b Code:
+    = @admin_project.code
+  %p
+    %b Path:
+    = @admin_project.path
+  %p
+    %b Description:
+    = @admin_project.description
+
+  = link_to 'Edit', edit_admin_project_path(@admin_project)
+  \|
+  = link_to 'Back', admin_projects_path
+
+.span-14
+
+  %h2 Team 
+
+  %table.round-borders
+    %tr
+      %th Name
+      %th Added 
+      %th Web
+      %th Git
+      %th Admin
+      %th 
+
+    - @admin_project.users_projects.each do |tm|
+      %tr
+        %td= link_to tm.user_name, admin_team_member_path(tm)
+        %td= time_ago_in_words(tm.updated_at) + " ago"
+        %td= check_box_tag "read",   1, @admin_project.readers.include?(tm.user), :disabled => :disabled
+        %td= check_box_tag "commit", 1, @admin_project.writers.include?(tm.user), :disabled => :disabled
+        %td.span-2= check_box_tag "admin",  1, @admin_project.admins.include?(tm.user), :disabled => :disabled
+        %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
+
+  = link_to 'New Team Member', new_admin_team_member_path(:team_member => {:project_id => @admin_project.id})

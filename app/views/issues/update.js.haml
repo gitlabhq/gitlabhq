@@ -1,0 +1,14 @@
+- if params[:status_only]
+  - if @issue.valid?
+    :plain
+      $("##{dom_id(@issue)}").fadeOut();
+- else 
+  - if @issue.valid?
+    :plain
+      $("#edit_issue_dialog").dialog("close");
+      $.ajax({type: "GET", url: location.href, dataType: "script"});
+  - else
+    :plain
+      $("#edit_issue_dialog").empty();
+      $("#edit_issue_dialog").append("#{escape_javascript(render('form'))}");
+      $('select#issue_assignee_id').selectmenu({width:300});

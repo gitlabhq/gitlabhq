@@ -1,0 +1,38 @@
+.user_new
+  = form_for [:admin, @admin_user] do |f|
+    -if @admin_user.errors.any?
+      #error_explanation
+        %h2= "#{pluralize(@admin_user.errors.count, "error")} prohibited this admin_user from being saved:"
+        %ul
+          - @admin_user.errors.full_messages.each do |msg|
+            %li= msg
+
+    .span-24
+      .span-11.colborder
+        .field
+          = f.label :name
+          %br
+          = f.text_field :name
+        .field
+          = f.label :email
+          %br
+          = f.text_field :email
+        .field
+          = f.label :password
+          %br
+          = f.password_field :password
+        .field
+          = f.label :password_confirmation
+          %br
+          = f.password_field :password_confirmation
+      .span-11
+        .field.prepend-top.append-bottom
+          = f.check_box :admin
+          = f.label :admin
+        .field.prepend-top
+          = f.check_box :allowed_create_repo, :disabled => true
+          = f.label :allowed_create_repo
+    .clear
+    %br
+    .actions
+      = f.submit 'Save', :class => "lbutton"

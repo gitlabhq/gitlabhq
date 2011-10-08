@@ -1,0 +1,24 @@
+%div
+  = form_for [@project, @issue], :remote => "true" do |f|
+    -if @issue.errors.any?
+      %ul
+        - @issue.errors.full_messages.each do |msg|
+          %li= msg
+
+    .span-6
+      = f.label :title
+      = f.text_field :title, :style => "width:450px"
+    .span-6
+      = f.label :content
+      = f.text_area :content, :style => "width:450px; height:130px"
+    .span-6.append-bottom
+      = f.label :assignee_id
+      = f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+    - unless @issue.new_record?
+      .span-3.right
+        = f.label :closed
+        %br
+        = f.check_box :closed
+    %hr
+    .span-6
+      = f.submit 'Save', :class => "lbutton vm"

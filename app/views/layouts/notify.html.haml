@@ -1,0 +1,36 @@
+%html{:lang => "en"}
+  %head
+    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
+      %title
+        gitlabhq
+      :css
+        .header h1 {color: #BBBBBB !important; font: bold 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;}
+        .header p {color: #c6c6c6; font: normal 12px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 18px;}
+        .content h2 {color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif;  }
+        .content p {color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif;}
+        .content a {color: #0eb6ce; text-decoration: none;}
+        .footer p {font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;}
+        .footer a {color: #0eb6ce; text-decoration: none;}
+  %body{:bgcolor => "#EAEAEA", :style => "margin: 0; padding: 0; background: #EAEAEA"}
+    %table{:align => "center", :border => "0", :cellpadding => "0", :cellspacing => "0", :style => "padding: 35px 0; background: #EAEAEA;", :width => "100%"}
+      %tr
+        %td{:align => "center", :style => "margin: 0; padding: 0; background: #EAEAEA;"}
+          %table.header{:align => "center", :border => "0", :cellpadding => "0", :cellspacing => "0", :style => "font-family: Helvetica, Arial, sans-serif; background:#333", :width => "600"}
+            %tr
+              %td{:style => "font-size: 0px;", :width => "20"}
+                \ 
+              %td{:align => "left", :style => "padding: 18px 0 10px;", :width => "580"}
+                %h1{:style => "color: #BBBBBB; font: normal 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;"}
+                  gitlab
+                  - if @project
+                    | #{@project.name}
+          %table{:align => "center", :bgcolor => "#fff", :border => "0", :cellpadding => "0", :cellspacing => "0", :style => "font-family: Helvetica, Arial, sans-serif; background: #fff;", :width => "600"}
+            %tr= yield
+            %tr
+              %td{:align => "left", :colspan => "2", :height => "3", :style => "padding: font-size: 0; line-height: 0; height: 3px;", :width => "600"}
+          %table.footer{:align => "center", :border => "0", :cellpadding => "0", :cellspacing => "0", :style => "font-family: Helvetica, Arial, sans-serif; line-height: 10px;", :width => "600"}
+            %tr
+              %td{:align => "center", :style => "padding: 5px 0 10px; font-size: 11px; color:#7d7a7a; margin: 0; line-height: 1.2;font-family: Helvetica, Arial, sans-serif;", :valign => "top"}
+                %br
+                  %p{:style => "font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;"}
+                    You're receiving this newsletter because you are in project team.

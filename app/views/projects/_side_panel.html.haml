@@ -1,0 +1,14 @@
+%h3.notice{:style => "width:235px;"}
+  = @project.name
+%p
+  %b Path:
+  = @project.path
+%p
+  %b Description:
+  = truncate @project.description
+.left.append-bottom
+  = link_to "Tree", tree_project_path(@project), :class => "button"
+  = link_to "Commits", project_commits_path(@project), :class => "button"
+  = link_to 'Team', team_project_path(@project), :class => "button"
+  - if can? current_user, :admin_project, @project
+    = link_to 'Edit', edit_project_path(@project), :class => "button positive"

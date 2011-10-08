@@ -1,0 +1,5 @@
+%div.top_project_menu
+  %span= link_to "Profile", profile_path, :class => current_page?(:controller => "profile", :action => :show) ? "current" : nil
+  %span= link_to "Password", profile_password_path, :style => "width:70px;", :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
+  %span= link_to "Keys", keys_path,  :class => controller.controller_name == "keys" ? "current" : nil
+

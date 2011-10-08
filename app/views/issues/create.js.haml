@@ -1,0 +1,9 @@
+- if @issue.valid?
+  :plain
+    $("#new_issue_dialog").dialog("close");
+    $.ajax({type: "GET", url: location.href, dataType: "script"});
+- else
+  :plain
+    $("#new_issue_dialog").empty();
+    $("#new_issue_dialog").append("#{escape_javascript(render('form'))}");
+    $('select#issue_assignee_id').selectmenu({width:300});

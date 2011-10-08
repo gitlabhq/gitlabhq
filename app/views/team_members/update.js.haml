@@ -1,0 +1,6 @@
+- if @team_member.valid?
+  :plain
+    $("##{dom_id(@team_member)}").effect("highlight", {color: "#529214"}, 1000);;
+- else
+  :plain
+    $("##{dom_id(@team_member)}").effect("highlight", {color: "#D12F19"}, 1000);;
