@@ -97,6 +97,7 @@ GEM
     faker (0.9.5)
       i18n (~> 0.4)
     ffi (1.0.9)
+    git (1.2.5)
     grit (2.4.1)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
@@ -121,14 +122,12 @@ GEM
     libv8 (3.3.10.2)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
-    lockfile (1.4.3)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
     multi_json (1.0.3)
-    net-ssh (2.2.1)
     nokogiri (1.5.0)
     orm_adapter (0.0.5)
     polyglot (0.3.2)
@@ -247,14 +246,13 @@ DEPENDENCIES
   database_cleaner
   devise (= 1.4.7)
   faker
+  git
   grit
   haml-rails
   inifile
   jquery-rails
   kaminari
   launchy
-  lockfile
-  net-ssh
   rails (= 3.1.0)
   rails-footnotes (>= 3.7.5.rc4)
   rspec-rails

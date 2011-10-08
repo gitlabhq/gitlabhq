@@ -14,12 +14,11 @@ gem 'six'
 gem 'therubyracer'
 gem 'faker'
 gem 'seed-fu', :branch => 'rails-3-1', :git => 'git://github.com/mbleigh/seed-fu.git'
-gem "lockfile"
 gem "inifile"
-gem "net-ssh"
 gem "albino", :git => "git://github.com/randx/albino.git"
 gem "kaminari"
 gem "thin"
+gem "git"
 
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"
