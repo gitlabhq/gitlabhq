@@ -1,0 +1,9 @@
+.bundle
+.rbx/
+db/*.sqlite3
+log/*.log
+tmp/
+.sass-cache/
+coverage/*
+*.swp
+public/uploads/
