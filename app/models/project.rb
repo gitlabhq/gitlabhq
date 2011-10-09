@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   has_many :issues, :dependent => :destroy
   has_many :users_projects, :dependent => :destroy
   has_many :users, :through => :users_projects
+  belongs_to :owner, :class_name => "User"
   has_many :notes, :dependent => :destroy
 
   validates :name,
@@ -28,7 +29,7 @@ class Project < ActiveRecord::Base
   after_destroy :destroy_gitosis_project
   after_save :update_gitosis_project
 
-  attr_protected :private_flag
+  attr_protected :private_flag, :owner_id
 
   scope :public_only, where(:private_flag => false)
 
@@ -43,7 +44,6 @@ class Project < ActiveRecord::Base
   def format_code
     read_attribute(:code).downcase.strip.gsub(' ', '')
   end
-
 
   def update_gitosis_project
     Gitosis.new.configure do |c|
@@ -145,5 +145,6 @@ end
 #  updated_at   :datetime
 #  private_flag :boolean         default(TRUE), not null
 #  code         :string(255)
+#  owner_id     :integer
 #
 

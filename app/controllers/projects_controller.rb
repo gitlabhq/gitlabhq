@@ -87,6 +87,7 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new(params[:project])
+    @project.owner = current_user
 
     Project.transaction do 
       @project.save!
