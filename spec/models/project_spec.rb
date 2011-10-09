@@ -38,7 +38,7 @@ describe Project do
 
   it "should return path to repo" do 
     project = Project.new(:path => "somewhere")
-    project.path_to_repo.should == "/tmp/somewhere"
+    project.path_to_repo.should == File.join(Rails.root, "tmp", "tests", "somewhere")
   end
 
   describe :valid_repo? do 

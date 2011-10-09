@@ -1,8 +1,11 @@
-# Clone  repo
-`cp spec/seed_project.tar.gz /tmp/`
-Dir.chdir("/tmp")
+# Create dir for test repo
+repo_dir = File.join(Rails.root, "tmp", "tests")
+Dir.mkdir(repo_dir) unless File.exists?(repo_dir)
+
+`cp spec/seed_project.tar.gz tmp/tests/`
+Dir.chdir(repo_dir)
 `tar -xf seed_project.tar.gz`
 3.times do |i|
-`cp -r /tmp/legit/ /tmp/legit_#{i}/`
-puts "Unpacked seed repo - /tmp/legit_#{i}"
+`cp -r legit/ legit_#{i}/`
+puts "Unpacked seed repo - tmp/tests/legit_#{i}"
 end
