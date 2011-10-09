@@ -1,10 +1,11 @@
 require "grit"
 
 class Project < ActiveRecord::Base
+  belongs_to :owner, :class_name => "User"
+
   has_many :issues, :dependent => :destroy
   has_many :users_projects, :dependent => :destroy
   has_many :users, :through => :users_projects
-  belongs_to :owner, :class_name => "User"
   has_many :notes, :dependent => :destroy
 
   validates :name,
@@ -24,6 +25,9 @@ class Project < ActiveRecord::Base
             :presence => true,
             :uniqueness => true,
             :length   => { :within => 3..12 }
+
+  validates :owner,
+            :presence => true
 
   validate :check_limit
   
@@ -130,8 +134,10 @@ class Project < ActiveRecord::Base
 
   def check_limit
     unless owner.can_create_project?
-      errors[:base] << ("You can to have #{owner.projects_limit} your own projects")
+      errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
     end
+  rescue 
+    errors[:base] << ("Cant check your ability to create project")
   end
 
   def valid_repo?

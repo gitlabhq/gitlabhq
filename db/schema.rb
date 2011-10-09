@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(:version => 20111009111204) do
     t.datetime "updated_at"
     t.string   "name"
     t.boolean  "admin",                                 :default => false, :null => false
-    t.integer  "projects_limit"
+    t.integer  "projects_limit",                        :default => 10
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

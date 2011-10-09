@@ -3,6 +3,7 @@ require File.join(Rails.root, 'spec', 'factory')
 Factory.add(:project, Project) do |obj|
   obj.name = Faker::Internet.user_name
   obj.path = 'legit'
+  obj.owner = Factory(:user)
   obj.code = 'LGT'
 end
 
@@ -10,6 +11,7 @@ Factory.add(:public_project, Project) do |obj|
   obj.name = Faker::Internet.user_name
   obj.path = 'legit'
   obj.private_flag = false
+  obj.owner = Factory(:user)
   obj.code = 'LGT'
 end
 
