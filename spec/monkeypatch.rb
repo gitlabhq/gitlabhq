@@ -10,7 +10,7 @@ class Project
   end
 
   def path_to_repo 
-      "/tmp/" + path
+    File.join(Rails.root, "tmp", "tests", path)
   end
 end
 
