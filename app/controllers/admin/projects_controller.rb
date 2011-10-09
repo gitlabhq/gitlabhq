@@ -35,6 +35,7 @@ class Admin::ProjectsController < ApplicationController
 
   def create
     @admin_project = Project.new(params[:project])
+    @admin_project.owner = current_user
 
     respond_to do |format|
       if @admin_project.save
