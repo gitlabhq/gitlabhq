@@ -38,5 +38,6 @@ end
 #  updated_at             :datetime
 #  name                   :string(255)
 #  admin                  :boolean         default(FALSE), not null
+#  allowed_create_repo    :boolean         default(TRUE), not null
 #
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111005193700) do
+ActiveRecord::Schema.define(:version => 20111009101738) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20111005193700) do
     t.datetime "updated_at"
     t.boolean  "private_flag", :default => true, :null => false
     t.string   "code"
+    t.integer  "owner_id"
   end
 
   create_table "users", :force => true do |t|

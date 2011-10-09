@@ -122,5 +122,6 @@ end
 #  updated_at   :datetime
 #  private_flag :boolean         default(TRUE), not null
 #  code         :string(255)
+#  owner_id     :integer
 #
 

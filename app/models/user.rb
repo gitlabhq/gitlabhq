@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
 
   has_many :users_projects, :dependent => :destroy
   has_many :projects, :through => :users_projects
+  has_many :my_own_projects, :class_name => "Project", :foreign_key => :owner_id
   has_many :keys, :dependent => :destroy
   has_many :issues,
     :foreign_key => :author_id,
@@ -48,5 +49,6 @@ end
 #  updated_at             :datetime
 #  name                   :string(255)
 #  admin                  :boolean         default(FALSE), not null
+#  allowed_create_repo    :boolean         default(TRUE), not null
 #
 
