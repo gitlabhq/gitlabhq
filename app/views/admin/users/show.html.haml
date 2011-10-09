@@ -10,6 +10,9 @@
   %p
     %b Admin:
     = @admin_user.admin
+  %p
+    %b Projects limit:
+    = @admin_user.projects_limit
 
   .clear
   = link_to 'Edit', edit_admin_user_path(@admin_user)
