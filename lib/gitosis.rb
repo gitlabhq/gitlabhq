@@ -1,6 +1,7 @@
 require 'inifile'
-
+require 'timeout'
 class Gitosis
+  class AccessDenied < StandardError; end
 
   def pull
     # create tmp dir
@@ -20,15 +21,19 @@ class Gitosis
   end
 
   def configure
-    File.open(File.join(Dir.tmpdir,"gitme-gitosis.lock"), "w+") do |f|
+    status = Timeout::timeout(5) {
+      File.open(File.join(Dir.tmpdir,"gitme-gitosis.lock"), "w+") do |f|
       f.flock(File::LOCK_EX)
-      
+
       pull
       yield(self)
       push
-      
+
       f.flock(File::LOCK_UN)
-    end
+      end
+    }
+  rescue Exception => ex
+    raise Gitosis::AccessDenied.new("gitosis timeout")
   end
 
   def destroy_project(project)
@@ -51,7 +56,7 @@ class Gitosis
     `cd #{File.join(@local_dir,'gitosis')} ; git rm keydir/#{user}.pub`
   end
 
-   #update or create
+  #update or create
   def update_project(repo_name, name_writers)
     # write config file
     conf = IniFile.new(File.join(@local_dir,'gitosis','gitosis.conf'))
@@ -61,5 +66,4 @@ class Gitosis
 
     conf.write
   end
-
 end

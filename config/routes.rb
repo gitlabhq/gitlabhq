@@ -10,6 +10,7 @@ Gitlab::Application.routes.draw do
     root :to => "users#index"
   end
 
+  get "errors/gitosis" 
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
   get "profile", :to => "profile#show"
