@@ -105,6 +105,8 @@ class ProjectsController < ApplicationController
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
+  rescue Gitosis::AccessDenied
+    render :js => "location.href = '#{errors_gitosis_path}'" and return
   rescue StandardError => ex
     @project.errors.add(:base, "Cant save project. Please try again later")
     respond_to do |format|

@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?
 
+  rescue_from Gitosis::AccessDenied do |exception|
+    render :file => File.join(Rails.root, "public", "gitosis_error"), :layout => false
+  end
+
   protected 
 
   def abilities
