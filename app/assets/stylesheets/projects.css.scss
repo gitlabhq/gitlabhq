@@ -445,7 +445,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
   border:1px solid #D3D3D3;
   background:white;
-  font-size:12px;
+  font-size:12px !important;
   line-height:130%;
   text-decoration:none;
   font-weight:bold;
