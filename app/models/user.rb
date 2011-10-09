@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :name
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :name, :projects_limit
 
   has_many :users_projects, :dependent => :destroy
   has_many :projects, :through => :users_projects
@@ -29,6 +29,10 @@ class User < ActiveRecord::Base
   def is_admin?
     admin
   end
+
+  def can_create_project?
+    projects_limit >= my_own_projects.count
+  end
 end
 # == Schema Information
 #
@@ -49,6 +53,6 @@ end
 #  updated_at             :datetime
 #  name                   :string(255)
 #  admin                  :boolean         default(FALSE), not null
-#  allowed_create_repo    :boolean         default(TRUE), not null
+#  projects_limit         :integer
 #
 

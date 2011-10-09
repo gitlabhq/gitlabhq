@@ -25,6 +25,8 @@ class Project < ActiveRecord::Base
             :uniqueness => true,
             :length   => { :within => 3..12 }
 
+  validate :check_limit
+  
   before_save :format_code
   after_destroy :destroy_gitosis_project
   after_save :update_gitosis_project
@@ -124,6 +126,12 @@ class Project < ActiveRecord::Base
     fcommit = commit if fcommit == :head
     tree = fcommit.tree
     path ? (tree / path) : tree
+  end
+
+  def check_limit
+    unless owner.can_create_project?
+      errors[:base] << ("You can to have #{owner.projects_limit} your own projects")
+    end
   end
 
   def valid_repo?

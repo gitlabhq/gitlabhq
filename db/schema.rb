@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111009101738) do
+ActiveRecord::Schema.define(:version => 20111009111204) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(:version => 20111009101738) do
     t.datetime "updated_at"
     t.string   "name"
     t.boolean  "admin",                                 :default => false, :null => false
-    t.boolean  "allowed_create_repo",                   :default => true,  :null => false
+    t.integer  "projects_limit"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

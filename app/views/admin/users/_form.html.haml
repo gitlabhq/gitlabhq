@@ -30,8 +30,8 @@
           = f.check_box :admin
           = f.label :admin
         .field.prepend-top
-          = f.check_box :allowed_create_repo, :disabled => true
-          = f.label :allowed_create_repo
+          = f.text_field :projects_limit, :class => "small_input"
+          = f.label :projects_limit
     .clear
     %br
     .actions

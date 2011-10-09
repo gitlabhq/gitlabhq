@@ -21,7 +21,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def new
-    @admin_user = User.new
+    @admin_user = User.new(:projects_limit => 10)
 
     respond_to do |format|
       format.html # new.html.erb

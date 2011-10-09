@@ -1,4 +1,5 @@
-= link_to 'New Project', new_project_path, :class => "lbutton vm"
+- if current_user.can_create_project?
+  = link_to 'New Project', new_project_path, :class => "lbutton vm"
 
 %table.round-borders#projects-list
   %tr
