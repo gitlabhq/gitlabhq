@@ -8,7 +8,7 @@ gem 'stamp'
 gem 'will_paginate', '~> 3.0'
 gem 'haml-rails'
 gem 'jquery-rails'
-gem 'grit'
+gem 'grit', :git => 'git://github.com/mojombo/grit.git'
 gem "carrierwave"
 gem 'six'
 gem 'therubyracer'

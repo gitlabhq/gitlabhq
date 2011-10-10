@@ -1,11 +1,13 @@
 require 'inifile'
 require 'timeout'
+require 'fileutils'
+
 class Gitosis
   class AccessDenied < StandardError; end
 
   def pull
     # create tmp dir
-    @local_dir = File.join(Dir.tmpdir,"gitme-gitosis-#{Time.now.to_i}")
+    @local_dir = File.join(Dir.tmpdir,"gitlabhq-gitosis-#{Time.now.to_i}")
 
     Dir.mkdir @local_dir
 
@@ -17,27 +19,27 @@ class Gitosis
     @repo.commit_all "Gitlab"
     @repo.push
 
-    `rm -Rf #{@local_dir}`
+    #FileUtils.rm_rf(@local_dir)
   end
 
   def configure
-    status = Timeout::timeout(5) {
-      File.open(File.join(Dir.tmpdir,"gitme-gitosis.lock"), "w+") do |f|
-      f.flock(File::LOCK_EX)
+    status = Timeout::timeout(5) do
+      File.open(File.join(Dir.tmpdir,"gitlabhq-gitosis.lock"), "w+") do |f|
+        f.flock(File::LOCK_EX)
 
-      pull
-      yield(self)
-      push
+        pull
+        yield(self)
+        push
 
-      f.flock(File::LOCK_UN)
+        f.flock(File::LOCK_UN)
       end
-    }
+    end
   rescue Exception => ex
     raise Gitosis::AccessDenied.new("gitosis timeout")
   end
 
   def destroy_project(project)
-    `rm -Rf #{project.path_to_repo}`
+    #FileUtils.rm_rf(project.path_to_repo)
     
     conf = IniFile.new(File.join(@local_dir,'gitosis','gitosis.conf'))
 
