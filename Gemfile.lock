@@ -5,16 +5,14 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: git://github.com/mbleigh/seed-fu.git
-  revision: 29fe8c61ca6cc4408115ea7475fe2647081bd348
-  branch: rails-3-1
+  remote: git://github.com/gitlabhq/albino.git
+  revision: 118380924969f3a856659f86ea1f40c1ba7bfcb1
   specs:
-    seed-fu (2.0.1.rails31)
-      activerecord (~> 3.1.0.rc4)
-      activesupport (~> 3.1.0.rc4)
+    albino (1.3.3)
+      posix-spawn (>= 0.3.6)
 
 GIT
-  remote: git://github.com/mojombo/grit.git
+  remote: git://github.com/gitlabhq/grit.git
   revision: ff015074ef35bd94cba943f9c0f98e161ab5851c
   specs:
     grit (2.4.1)
@@ -23,11 +21,13 @@ GIT
       posix-spawn (~> 0.3.6)
 
 GIT
-  remote: git://github.com/randx/albino.git
-  revision: 118380924969f3a856659f86ea1f40c1ba7bfcb1
+  remote: git://github.com/mbleigh/seed-fu.git
+  revision: 29fe8c61ca6cc4408115ea7475fe2647081bd348
+  branch: rails-3-1
   specs:
-    albino (1.3.3)
-      posix-spawn (>= 0.3.6)
+    seed-fu (2.0.1.rails31)
+      activerecord (~> 3.1.0.rc4)
+      activesupport (~> 3.1.0.rc4)
 
 GEM
   remote: http://rubygems.org/
