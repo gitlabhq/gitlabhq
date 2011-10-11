@@ -21,6 +21,7 @@
       = render :partial => "layouts/head_panel"
       .top_bar.container
         = render :partial => "projects/top_menu" if @project && !@project.new_record?
+        = render :partial => "projects/projects_top_menu" if (controller.controller_name == "projects" && ["index", "new", "create"].include?(controller.action_name)) && !admin_namespace?
         = render :partial => "profile/top_menu" if ["keys", "profile"].include?(controller.controller_name)
         = render :partial => "admin/top_menu" if admin_namespace?
     #content-container.container

@@ -525,3 +525,17 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 #user_projects_limit{
   width: 60px;  
 }
+
+.project_thumb { 
+  margin:20px 0;
+  width: 250px;
+  float:left;
+  padding:20px;
+  text-align:center;
+  p, h4 { 
+    text-align:left;
+  }
+  .lbutton { 
+    float:left;
+  }
+}
