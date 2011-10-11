@@ -1,3 +1,6 @@
+v 0.9.6
+  - css fix
+  - new repo empty tree until restart server - fixed
 v 0.9.4
   - security improved
   - authorization improved
