@@ -1,5 +1,5 @@
 - file = params[:path] ? File.join(params[:path], content.name) : content.name
-- content_commit = @repo.log(@branch, file, :max_count => 1).last
+- content_commit = @project.repo.log(@branch, file, :max_count => 1).last
 - return unless content_commit
 %tr{ :class => "tree-item", :url => tree_file_project_path(@project, @commit.id, file) }
   %td.tree-item-file-name
