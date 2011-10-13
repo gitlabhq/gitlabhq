@@ -1,3 +1,6 @@
+v 1.0.0
+  - bug fix
+  - projects preview mode
 v 0.9.6
   - css fix
   - new repo empty tree until restart server - fixed
