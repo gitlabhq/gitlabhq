@@ -11,19 +11,21 @@ class Gitosis
 
     Dir.mkdir @local_dir
 
-    @repo = Git.clone(GITOSIS['admin_uri'], "#{@local_dir}/gitosis")
+    `git clone #{GITOSIS['admin_uri']} #{@local_dir}/gitosis`
   end
 
   def push
-    @repo.add('.')
-    @repo.commit_all "Gitlab"
-    @repo.push
+    Dir.chdir(File.join(@local_dir, "gitosis"))
+    `git add -A`
+    `git commit -am "Gitlab"`
+    `git push`
+    Dir.chdir(Rails.root)
 
-    #FileUtils.rm_rf(@local_dir)
+    FileUtils.rm_rf(@local_dir)
   end
 
   def configure
-    status = Timeout::timeout(5) do
+    status = Timeout::timeout(20) do
       File.open(File.join(Dir.tmpdir,"gitlabhq-gitosis.lock"), "w+") do |f|
         f.flock(File::LOCK_EX)
 
@@ -39,7 +41,7 @@ class Gitosis
   end
 
   def destroy_project(project)
-    #FileUtils.rm_rf(project.path_to_repo)
+    FileUtils.rm_rf(project.path_to_repo)
     
     conf = IniFile.new(File.join(@local_dir,'gitosis','gitosis.conf'))
 
