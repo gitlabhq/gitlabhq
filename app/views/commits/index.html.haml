@@ -1,0 +1,13 @@
+%div
+  %h3
+    .left
+      = form_tag project_commits_path(@project), :method => :get do
+        = select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Branches"
+    &nbsp;
+    .left.prepend-1
+      = form_tag project_commits_path(@project), :method => :get do
+        = select_tag "tag", options_for_select(@project.tags, @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
+    = text_field_tag "ssh", @project.url_to_repo, :class => ["ssh_project_url", "one_click_select"]
+    .clear
+  %div{:id => dom_id(@project)}
+    = render "commits"

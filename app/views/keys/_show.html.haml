@@ -1,0 +1,4 @@
+%tr
+  %td= truncate key.title, :lenght => 12
+  %td= truncate key.key, :lenght => 1114
+  %td= link_to 'Cancel', key, :confirm => 'Are you sure?', :method => :delete, :class => "lbutton negative delete-key", :id => "destroy_key_#{key.id}", :remote => true

@@ -1,0 +1,28 @@
+%div
+  = form_for [@project, @note], :remote => "true", :multipart => true do |f|
+    -if @note.errors.any?
+      .errors.error
+        - @note.errors.full_messages.each do |msg|
+          %div= msg
+
+    = f.hidden_field :noteable_id
+    = f.hidden_field :noteable_type
+
+    %div
+      = f.label :note
+      %cite (255 symbols only)
+      %br
+      = f.text_area :note, :style => "width:97%;height:100px", :size => 255
+
+    %div
+      = f.label :attachment
+      %cite (less than 10 MB)
+      %br
+      = f.file_field :attachment
+
+      = check_box_tag :notify, 1, true
+      = label_tag :notify, "Notify project team about your note"
+      
+    .clear
+    %br
+    = f.submit 'Add note', :class => "lbutton vm"

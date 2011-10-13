@@ -1,0 +1,8 @@
+.span-2
+  = image_tag gravatar_icon(@user.email), :class => "left", :width => 60, :style => "padding-right:5px;"
+%p
+  %b Name:
+  = @user.name
+%p
+  %b Email:
+  = @user.email

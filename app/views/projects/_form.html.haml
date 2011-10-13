@@ -1,0 +1,50 @@
+= form_for(@project, :remote => true) do |f|
+  %div.form_content
+    - if @project.new_record?
+      %h1 New Project
+    - else
+      %h1 Edit Project
+    - if @project.errors.any?
+      #error_explanation
+        %h2
+          = pluralize(@project.errors.count, "error")
+          prohibited this project from being saved:
+        %ul
+          - @project.errors.full_messages.each do |msg|
+            %li= msg
+    %table.round-borders
+      %tr
+        %td= f.label :name
+        %td= f.text_field :name, :placeholder => "Example Project"
+      %tr
+        %td
+          .left= f.label :path
+          %cite.right git@yourserver:
+        %td
+          = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+      %tr
+        %td 
+          .left= f.label :code
+          %cite.right http://yourserver/
+        %td= f.text_field :code, :placeholder => "example (3..12 symbols only)"
+    .field
+      = f.label :description
+      %br/
+      = f.text_area :description, :style => "height:140px;width:932px;"
+    .clear
+      %hr.prepend-top
+    .actions
+      = f.submit :class => "lbutton vm"
+
+  %div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
+    %center
+      = image_tag "ajax-loader.gif", :class => "append-bottom"
+      - if @project.new_record?
+        %h3.prepend-top Creating project &amp; repository. Please wait for few minutes
+      - else 
+        %h3.prepend-top Updating project &amp; repository. Please wait for few minutes
+:javascript
+  $('.new_project, .edit_project').bind('ajax:before', function() {  
+    $(this).find(".form_content").hide();  
+    $('.ajax_loader').show();
+  });  

@@ -1,0 +1,2 @@
+$("#more-commits-link").remove();
+$('#<%= dom_id(@project)%>').append('<%= escape_javascript(render("commits")) %>');

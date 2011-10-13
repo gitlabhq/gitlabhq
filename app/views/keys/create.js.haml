@@ -1,0 +1,8 @@
+- if @key.valid?
+  :plain
+    $("#new_key_dialog").dialog("close");
+    $("#keys-table").append("#{escape_javascript(render(:partial => 'show', :locals => {:key => @key} ))}");
+- else
+  :plain
+    $("#new_key_dialog").empty();
+    $("#new_key_dialog").append("#{escape_javascript(render('form'))}");

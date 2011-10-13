@@ -1,0 +1,25 @@
+%div
+  = form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member), :remote => "true" do |f|
+    -if @team_member.errors.any?
+      %ul
+        - @team_member.errors.full_messages.each do |msg|
+          %li= msg
+
+    .span-6.append-bottom
+      %b Name
+      %br
+      = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+    .span-6
+      %b Access:
+    .span-6
+      = f.check_box :read
+      Web Access
+    .span-6
+      = f.check_box :write
+      Git Access
+    .span-6.append-bottom
+      = f.check_box :admin
+      Admin
+    %hr
+    .span-6
+      = f.submit 'Save', :class => "lbutton vm"

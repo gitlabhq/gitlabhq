@@ -1,0 +1,3 @@
+%div
+  %div#tree-holder
+    = render :partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @commit.tree}
