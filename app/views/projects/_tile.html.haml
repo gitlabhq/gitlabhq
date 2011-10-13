@@ -1,0 +1,16 @@
+- @projects.in_groups_of(3, false) do |projects|
+  - projects.each_with_index do |project, i|
+    %div{ :class => "project_thumb round-borders", :style => i == 2 ? "" : "margin-right:30px;" }
+      %div{ :class => "project", :url => project_path(project) }
+        %h2
+          = image_tag gravatar_icon(project.name), :class => "left", :width => 40, :style => "padding-right:5px;"
+          = "/" + project.code
+        %p= project.name
+        %p= project.url_to_repo
+        -#%p
+          Commit &ndash;
+          = last_commit(project)
+        %hr
+        = link_to "Browse Code", tree_project_path(project), :class => "lbutton"
+        = link_to "Commits", project_commits_path(project), :class => "lbutton", :style => "float:right;width:80px;"
+        .clear

@@ -1,0 +1,277 @@
+GIT
+  remote: git://github.com/ctran/annotate_models.git
+  revision: cfeec96c9ca0fa5035b10be3d73e798cc4fc52f7
+  specs:
+    annotate (2.4.1.beta1)
+
+GIT
+  remote: git://github.com/gitlabhq/albino.git
+  revision: 118380924969f3a856659f86ea1f40c1ba7bfcb1
+  specs:
+    albino (1.3.3)
+      posix-spawn (>= 0.3.6)
+
+GIT
+  remote: git://github.com/gitlabhq/grit.git
+  revision: ff015074ef35bd94cba943f9c0f98e161ab5851c
+  specs:
+    grit (2.4.1)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
+
+GIT
+  remote: git://github.com/mbleigh/seed-fu.git
+  revision: 29fe8c61ca6cc4408115ea7475fe2647081bd348
+  branch: rails-3-1
+  specs:
+    seed-fu (2.0.1.rails31)
+      activerecord (~> 3.1.0.rc4)
+      activesupport (~> 3.1.0.rc4)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    ZenTest (4.5.0)
+    actionmailer (3.1.0)
+      actionpack (= 3.1.0)
+      mail (~> 2.3.0)
+    actionpack (3.1.0)
+      activemodel (= 3.1.0)
+      activesupport (= 3.1.0)
+      builder (~> 3.0.0)
+      erubis (~> 2.7.0)
+      i18n (~> 0.6)
+      rack (~> 1.3.2)
+      rack-cache (~> 1.0.3)
+      rack-mount (~> 0.8.2)
+      rack-test (~> 0.6.1)
+      sprockets (~> 2.0.0)
+    activemodel (3.1.0)
+      activesupport (= 3.1.0)
+      bcrypt-ruby (~> 3.0.0)
+      builder (~> 3.0.0)
+      i18n (~> 0.6)
+    activerecord (3.1.0)
+      activemodel (= 3.1.0)
+      activesupport (= 3.1.0)
+      arel (~> 2.2.1)
+      tzinfo (~> 0.3.29)
+    activeresource (3.1.0)
+      activemodel (= 3.1.0)
+      activesupport (= 3.1.0)
+    activesupport (3.1.0)
+      multi_json (~> 1.0)
+    addressable (2.2.6)
+    ansi (1.3.0)
+    archive-tar-minitar (0.5.2)
+    arel (2.2.1)
+    autotest (4.4.6)
+      ZenTest (>= 4.4.1)
+    autotest-rails (4.1.1)
+      ZenTest (= 4.5)
+    awesome_print (0.4.0)
+    bcrypt-ruby (3.0.1)
+    builder (3.0.0)
+    capybara (1.0.1)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (~> 2.0)
+      xpath (~> 0.1.4)
+    carrierwave (0.5.7)
+      activesupport (~> 3.0)
+    childprocess (0.2.2)
+      ffi (~> 1.0.6)
+    coffee-rails (3.1.1)
+      coffee-script (>= 2.2.0)
+      railties (~> 3.1.0)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.1.2)
+    columnize (0.3.4)
+    daemons (1.1.4)
+    database_cleaner (0.6.7)
+    devise (1.4.7)
+      bcrypt-ruby (~> 3.0)
+      orm_adapter (~> 0.0.3)
+      warden (~> 1.0.3)
+    diff-lcs (1.1.3)
+    erubis (2.7.0)
+    eventmachine (0.12.10)
+    execjs (1.2.6)
+      multi_json (~> 1.0)
+    faker (0.9.5)
+      i18n (~> 0.4)
+    ffi (1.0.9)
+    git (1.2.5)
+    haml (3.1.3)
+    haml-rails (0.3.4)
+      actionpack (~> 3.0)
+      activesupport (~> 3.0)
+      haml (~> 3.0)
+      railties (~> 3.0)
+    hike (1.2.1)
+    i18n (0.6.0)
+    inifile (0.4.1)
+    jquery-rails (1.0.14)
+      railties (~> 3.0)
+      thor (~> 0.14)
+    json_pure (1.5.4)
+      spruz (~> 0.2.8)
+    kaminari (0.12.4)
+      rails (>= 3.0.0)
+    launchy (2.0.5)
+      addressable (~> 2.2.6)
+    libv8 (3.3.10.2)
+    linecache19 (0.5.12)
+      ruby_core_source (>= 0.1.4)
+    mail (2.3.0)
+      i18n (>= 0.4.0)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
+    mime-types (1.16)
+    multi_json (1.0.3)
+    nokogiri (1.5.0)
+    orm_adapter (0.0.5)
+    polyglot (0.3.2)
+    posix-spawn (0.3.6)
+    rack (1.3.2)
+    rack-cache (1.0.3)
+      rack (>= 0.4)
+    rack-mount (0.8.3)
+      rack (>= 1.0.0)
+    rack-ssl (1.3.2)
+      rack
+    rack-test (0.6.1)
+      rack (>= 1.0)
+    rails (3.1.0)
+      actionmailer (= 3.1.0)
+      actionpack (= 3.1.0)
+      activerecord (= 3.1.0)
+      activeresource (= 3.1.0)
+      activesupport (= 3.1.0)
+      bundler (~> 1.0)
+      railties (= 3.1.0)
+    rails-footnotes (3.7.5.rc4)
+      rails (>= 3.0.0)
+    railties (3.1.0)
+      actionpack (= 3.1.0)
+      activesupport (= 3.1.0)
+      rack-ssl (~> 1.3.2)
+      rake (>= 0.8.7)
+      rdoc (~> 3.4)
+      thor (~> 0.14.6)
+    rake (0.9.2)
+    rdoc (3.9.4)
+    rspec (2.6.0)
+      rspec-core (~> 2.6.0)
+      rspec-expectations (~> 2.6.0)
+      rspec-mocks (~> 2.6.0)
+    rspec-core (2.6.4)
+    rspec-expectations (2.6.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.6.0)
+    rspec-rails (2.6.1)
+      actionpack (~> 3.0)
+      activesupport (~> 3.0)
+      railties (~> 3.0)
+      rspec (~> 2.6.0)
+    ruby-debug-base19 (0.11.25)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
+    ruby_core_source (0.1.5)
+      archive-tar-minitar (>= 0.5.2)
+    rubyzip (0.9.4)
+    sass (3.1.7)
+    sass-rails (3.1.1)
+      actionpack (~> 3.1.0)
+      railties (~> 3.1.0)
+      sass (>= 3.1.4)
+      tilt (~> 1.3.2)
+    selenium-webdriver (2.5.0)
+      childprocess (>= 0.2.1)
+      ffi (>= 1.0.7)
+      json_pure
+      rubyzip
+    shoulda (2.11.3)
+    simplecov (0.5.3)
+      multi_json (~> 1.0.3)
+      simplecov-html (~> 0.5.3)
+    simplecov-html (0.5.3)
+    six (0.2.0)
+    sprockets (2.0.0)
+      hike (~> 1.2)
+      rack (~> 1.0)
+      tilt (~> 1.1, != 1.3.0)
+    spruz (0.2.13)
+    sqlite3 (1.3.4)
+    stamp (0.1.6)
+    therubyracer (0.9.4)
+      libv8 (~> 3.3.10)
+    thin (1.2.11)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
+    thor (0.14.6)
+    tilt (1.3.3)
+    treetop (1.4.10)
+      polyglot
+      polyglot (>= 0.3.1)
+    turn (0.8.2)
+      ansi (>= 1.2.2)
+    tzinfo (0.3.29)
+    uglifier (1.0.3)
+      execjs (>= 0.3.0)
+      multi_json (>= 1.0.2)
+    warden (1.0.5)
+      rack (>= 1.0)
+    will_paginate (3.0.0)
+    xpath (0.1.4)
+      nokogiri (~> 1.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  albino!
+  annotate!
+  autotest
+  autotest-rails
+  awesome_print
+  capybara
+  carrierwave
+  coffee-rails (~> 3.1.0)
+  database_cleaner
+  devise (= 1.4.7)
+  faker
+  git
+  grit!
+  haml-rails
+  inifile
+  jquery-rails
+  kaminari
+  launchy
+  rails (= 3.1.0)
+  rails-footnotes (>= 3.7.5.rc4)
+  rspec-rails
+  ruby-debug19
+  sass-rails (~> 3.1.0)
+  seed-fu!
+  shoulda
+  simplecov
+  six
+  sqlite3
+  stamp
+  therubyracer
+  thin
+  turn
+  uglifier
+  will_paginate (~> 3.0)

@@ -1,0 +1,30 @@
+= form_for [:admin, @admin_project] do |f|
+  -if @admin_project.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@admin_project.errors.count, "error")} prohibited this admin_project from being saved:"
+      %ul
+        - @admin_project.errors.full_messages.each do |msg|
+          %li= msg
+
+  .span-24
+    .span-12
+      .field
+        = f.label :name
+        %br
+        = f.text_field :name
+      .field
+        = f.label :code
+        %br
+        = f.text_field :code
+      .field
+        = f.label :path
+        %br
+        = f.text_field :path
+    .span-10
+      .field
+        = f.label :description
+        %br
+        = f.text_area :description
+  .clear
+  .actions
+    = f.submit 'Save', :class => "lbutton"

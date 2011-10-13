@@ -1,0 +1,541 @@
+// Place all the styles related to the Projects controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@mixin round-borders-bottom($radius) { 
+  border-top: 1px solid #eaeaea;
+
+  -moz-border-radius-bottomright: $radius;
+  -moz-border-radius-bottomleft: $radius;
+
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+
+  -webkit-border-bottom-left-radius: $radius;
+  -webkit-border-bottom-right-radius: $radius;
+}
+
+@mixin round-borders-top($radius) { 
+  border-top: 1px solid #eaeaea;
+
+  -moz-border-radius-topright: $radius;
+  -moz-border-radius-topleft: $radius;
+
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+
+  -webkit-border-top-left-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+}
+
+@mixin round-borders-all($radius) { 
+  border: 1px solid #eaeaea;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin hover-color { 
+  background: #fff !important;
+  background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#FFF6BF)) !important;
+  background: -moz-linear-gradient(top,#fff,#FFF6BF) !important;
+  background: transparent 9 !important;
+}
+
+.diff_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
+  .diff_file_header { 
+    padding:5px 5px;
+    border-bottom:1px solid #CCC;
+    background: #eee;
+  }
+  .diff_file_content { 
+    overflow-x: scroll;
+    background:#fff;
+    color:#333;
+    font-size: 12px;
+    font-family: 'Courier New', 'andale mono','lucida console',monospace;
+  }
+  .diff_file_content_image { 
+    background:#eee;
+    text-align:center;
+    img { 
+      padding:100px;
+      max-width:300px;
+    }
+  }
+}
+
+#logo { 
+ &:hover { 
+   background:none;
+ }
+}
+
+.file_stats { 
+  margin-bottom:10px;
+  @include round-borders-all(4px);
+
+  span { 
+    border-top: 1px solid #eaeaea;
+    padding:5px 5px;
+    display:block;
+    &:first-child { 
+      border-top:none;
+    }
+
+    img { 
+      width:18px;
+      float:left;
+      margin-right: 6px;
+    }
+  }
+}
+
+.round-borders { 
+  @include round-borders-all(4px);
+  padding: 4px 0px;
+}
+table.round-borders { 
+  float:left;
+}
+
+.day-commits-table { 
+  @include round-borders-all(4px);
+  padding: 4px 0px;
+  margin-bottom:10px;
+  display:block;
+  width:100%;
+  background: #E6F1F6;
+
+  .day-header { 
+    padding:10px;
+    h3 {
+      margin:0px;
+    }
+  }
+
+  ul { 
+    display:block;
+    list-style:none;
+    margin:0px;
+    padding:0px;
+
+    li.commit { 
+      display:list-item;
+      padding:8px;
+      margin:0px;
+      background: #F7FBFC;
+      border-top: 1px solid #E2EAEE;
+
+      &:first-child { 
+        border-top: 1px solid #E2EAEE;
+      }
+      &:nth-child(2n+1) {
+        background: white;
+      }
+
+      a.button { 
+        width:85px;
+        padding:10px;
+        margin:0px;
+        float:right;
+      }
+      p { 
+        margin-bottom: 3px;
+        font-size: 13px;
+      }
+    }
+  }
+}
+@mixin panel-color { 
+  background: #111 !important;
+  background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111)) !important;
+  background: -moz-linear-gradient(top,#333,#111) !important;
+  background: transparent 9 !important;
+}
+
+
+#header-panel { 
+  @include panel-color;
+  height:40px;
+  position:fixed;
+  z-index:999;
+  top:0px;
+  width:100%;
+  margin-bottom:10px;
+  overflow:hidden;
+  .button{
+    color:#bbb;
+    border:none;
+    margin:0px;
+    height:25px;
+    background:transparent;
+    padding:10px 20px 5px 20px;
+    &:hover{
+      color:white;
+    }
+
+    &.current { 
+      border-bottom: 3px solid #EAEAEA !important;
+      padding: 10px 20px 0;
+      color: #eaeaea;
+    }
+  }
+  .search-holder { 
+    float:left;
+    width:290px; 
+    input {
+      @include round-borders-all(4px);
+      width:290px; 
+      border-color:#888;
+      padding:5px;
+      background:#666;
+      color:#222;
+      &:focus { 
+        background:#fff;
+        color:#000;
+      }
+    }
+  }
+}
+
+#content-container{
+  min-height:250px;
+  background: #fff;
+  @include round-borders-bottom(8px);
+  borders:2px solid #eaeaea;
+  border-top: none;
+  padding:20px;
+}
+
+body { 
+  background: #eaeaea;
+}
+
+a {
+  color: #111;
+}
+
+.diff_file_content{
+  .old_line, .new_line { 
+    background:#ECECEC;
+    color:#777;
+    width:15px;
+    float:left;
+    padding: 0px 10px;
+    border-right: 1px solid #ccc;
+  }
+}
+
+
+.view_file_content{
+  .old_line, .new_line { 
+    background:#ECECEC;
+    color:#777;
+    width:15px;
+    float:left;
+    padding: 0px 10px;
+    border-right: 1px solid #ccc;
+  }
+  .old_line{
+    display:none;
+  }
+}
+
+.view_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
+  .view_file_header { 
+    padding:5px 5px;
+    border-bottom:1px solid #CCC;
+    background: #eee;
+  }
+  .view_file_content { 
+    background:#fff;
+    color:#514721;
+    font-size: 11px;
+  }
+  .view_file_content_image { 
+    background:#eee;
+    text-align:center;
+    img { 
+      padding:100px;
+      max-width:300px;
+    }
+  }
+}
+
+.back_small.button{
+
+}
+
+input.ssh_project_url { 
+  padding:5px;
+  margin:0px;
+  float:right;
+  width:400px;
+  text-align:center;
+}
+
+
+
+.day-commits-table li.commit { 
+  cursor:pointer;
+
+  &:hover { 
+    @include hover-color;
+  }
+}
+
+/*
+#FFF6BF
+#FFD324
+*/
+#tree-slider tr.tree-item { 
+  cursor:pointer;
+
+  &:hover { 
+    @include hover-color;
+    td { 
+      @include hover-color;
+    }
+  }
+}
+#projects-list .project { 
+  height:50px;
+}
+
+#projects-list .project,
+#issues-table .issue{ 
+  cursor:pointer;
+
+  &:hover { 
+      @include hover-color;
+    td { 
+      @include hover-color;
+    }
+  }
+}
+
+.clear { 
+  clear: both;
+}
+
+.top_project_menu { 
+  a { 
+    border-right: 1px solid #FFFFFF;
+    box-shadow: -1px 0 #DDDDDD inset;
+    color: #666;
+    display: block;
+    font-size: 16px;
+    text-decoration: none;
+    line-height: 20px;
+    padding: 11px 26px 12px 24px;
+    text-shadow: 0 1px 0 #FFFFFF;
+    float:left;
+
+    &.current { 
+      background-color: #FFFFFF;
+      color: #222222;
+    }
+  }
+}
+
+.top_bar {
+  margin-top:50px;
+  background-color: #F4F4F4;
+  @include round-borders-top(8px);
+  box-shadow: 0 1px #FFFFFF inset, 0 -1px #DDDDDD inset;
+  height: 43px;
+  overflow: hidden;
+  width:990px;
+}
+
+/** FORM INPUTS **/
+
+.user_new,
+.edit_user,
+.new_project,
+.edit_project { 
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  textarea { 
+    width:400px;
+    padding:8px;
+    font-size:14px;
+    @include round-borders-all(4px);
+  }
+}
+
+.input_button { 
+  //@include round-borders-all(4px);
+  padding:8px;
+  font-size:14px;
+  cursor:pointer;
+  background-color: #F5F5F5;
+  border-color: #EEEEEE #DEDEDE #DEDEDE #EEEEEE;
+  border-right: 1px solid #DEDEDE;
+  border-style: solid;
+  border-width: 1px;
+}
+
+tbody tr:nth-child(2n) td, tbody tr.even td {
+  background: none repeat scroll 0 0 #F7FBFC;
+  border-top: 1px solid #E2EAEE;
+  border-bottom: 1px solid #E2EAEE;
+}
+
+.top_menu_count { 
+  background: none repeat scroll 0 0 #FFF6BF;
+  border-color: #FFD324;
+  color: #514721;
+  border: 1px solid #DDDDDD;
+  padding: 2px;
+  font-size:12px;
+  position:relative;
+  top:-14px;
+  left:10px;
+  border-top:none;
+}
+
+#logo {
+  color: #EAEAEA;
+  font-family: monospace;
+  font-size: 26px;
+  padding: 4px;
+  text-decoration: none;
+  text-shadow: #555 1px 1px;
+}
+
+/** FALSH **/
+
+#flash_container { 
+  height:40px;
+  position:fixed;
+  z-index:1009;
+  top:0px;
+  width:100%;
+  margin-bottom:10px;
+  overflow:hidden;
+  background:white;
+  cursor:pointer;
+  border-bottom:1px solid #777;
+
+  h4 { 
+    color:#444;
+    font-size:22px;
+    padding-top:5px;
+  }
+}
+
+/** Buttons **/
+
+.lbutton,
+.lite_button {
+  display:block;
+  float:left;
+  margin: 0px 5px;
+  padding:5px 10px;
+
+  font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+  border:1px solid #D3D3D3;
+  background:white;
+  font-size:12px !important;
+  line-height:130%;
+  text-decoration:none;
+  font-weight:bold;
+  color:#565656;
+  cursor:pointer;
+
+  &:hover {
+    border:1px solid #C2E1EF;
+    color: #0099FF;
+  }
+
+  &.hm { 
+    margin: 0px 0px;
+  }
+
+  &.vm { 
+    margin: 5px 0px;
+  }
+}
+
+/** Notes **/
+
+#notes-list { 
+  display:block;
+  list-style:none;
+  margin:0px;
+  padding:0px;
+
+  li { 
+    display:list-item;
+    padding:8px;
+    margin:0px;
+    background: #F7FBFC;
+    border-top: 1px solid #E2EAEE;
+
+    &:first-child { 
+      border-top: none;
+    }
+    &:nth-child(2n+1) {
+      background: white;
+    }
+    p { 
+      margin-bottom: 3px;
+      font-size: 12px;
+    }
+  }
+}
+
+.notes_count { 
+  background: none repeat scroll 0 0 #FFF6BF;
+  border-color: #FFD324;
+  color: #514721;
+  border: 2px solid #DDDDDD;
+  margin-bottom: 1em;
+  margin-top: 3px;
+  padding: 2px 5px;
+  position: relative;
+  right: 6px;
+  top: 6px;
+}
+.note_author { 
+  float:left;
+  width:60px;
+}
+.note_content { 
+  float:left;
+  width:750px;
+}
+
+.issue_notes { 
+  .note_content { 
+    float:left;
+    width:400px;
+  }
+}
+
+#user_projects_limit{
+  width: 60px;  
+}
+
+.project_thumb { 
+  margin:20px 0;
+  width: 250px;
+  float:left;
+  padding:20px;
+  text-align:center;
+  p, h4 { 
+    text-align:left;
+  }
+  .lbutton { 
+    float:left;
+  }
+}

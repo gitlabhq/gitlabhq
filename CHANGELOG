@@ -1,0 +1,28 @@
+v 1.0.0
+  - bug fix
+  - projects preview mode
+v 0.9.6
+  - css fix
+  - new repo empty tree until restart server - fixed
+v 0.9.4
+  - security improved
+  - authorization improved
+  - html escaping
+  - bug fix
+  - increassed test coverage
+  - design improvements
+
+v 0.9.1
+  - increassed test coverage
+  - design improvements
+  - new issue email notification
+  - updated app name
+  - issue redesigned
+  - issue can be edit
+v 0.8.0
+  - sytax highlight for main file types
+  - redesign
+  - stability
+  - security fixes
+  - increased test coverage
+  - email notification

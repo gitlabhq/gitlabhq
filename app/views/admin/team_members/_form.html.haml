@@ -1,0 +1,34 @@
+= form_for @admin_team_member, :as => :team_member, :url => @admin_team_member.new_record? ? admin_team_members_path(@admin_team_member) : admin_team_member_path(@admin_team_member)  do |f|
+  -if @admin_team_member.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@admin_team_member.errors.count, "error")} prohibited this admin_project from being saved:"
+      %ul
+        - @admin_team_member.errors.full_messages.each do |msg|
+          %li= msg
+
+  .span-10
+    - if @admin_team_member.new_record?
+      .field
+        = f.label :user_id
+        %br
+        = f.select :user_id, User.all.map { |user| [user.name, user.id] }
+    .field
+      = f.label :project_id
+      %br
+      = f.select :project_id, Project.all.map { |user| [user.name, user.id] }
+
+  .span-10
+    .span-6
+      %b Access:
+    .span-8
+      = f.check_box :read
+      Web Access (Browse Repo)
+    .span-8
+      = f.check_box :write
+      Git Access (User will be added to commiters list)
+    .span-6.append-bottom
+      = f.check_box :admin
+      Admin (Can manage project)
+  %hr
+  .actions
+    = f.submit 'Save'

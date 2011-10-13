@@ -1,0 +1,18 @@
+- user = member.user
+%tr{:id => dom_id(member)}
+  %td
+    = image_tag gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding:0 5px;"
+    = truncate user.name, :lenght => 16
+  %td= truncate user.email, :lenght => 16
+  - if can? current_user, :admin_project, @project
+    = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f| 
+      %td= f.check_box :read, :onclick => "$(this.form).submit();"
+      %td= f.check_box :write, :onclick => "$(this.form).submit();"
+      %td= f.check_box :admin, :onclick => "$(this.form).submit();"
+  - else 
+    %td= check_box_tag "read",   1, member.read, :disabled => :disabled
+    %td= check_box_tag "commit", 1, member.write, :disabled => :disabled
+    %td= check_box_tag "admin",  1, member.admin, :disabled => :disabled
+  - if can? current_user, :admin_team_member, @project
+    %td
+      = link_to 'Cancel', project_team_member_path(:project_id => @project, :id => member.id), :confirm => 'Are you sure?', :method => :delete, :class => "lbutton negative delete-team-member", :remote => true
