@@ -22,20 +22,11 @@ GIT
 
 GIT
   remote: git://github.com/mbleigh/seed-fu.git
-<<<<<<< HEAD
   revision: 77be06852b18fb01e272ab763ddb292da575586c
   specs:
     seed-fu (2.1.0)
       activerecord (~> 3.1.0)
       activesupport (~> 3.1.0)
-=======
-  revision: 29fe8c61ca6cc4408115ea7475fe2647081bd348
-  branch: rails-3-1
-  specs:
-    seed-fu (2.0.1.rails31)
-      activerecord (~> 3.1.0.rc4)
-      activesupport (~> 3.1.0.rc4)
->>>>>>> d3784687943e0bd699d73d82a6bc6cac39689473
 
 GEM
   remote: http://rubygems.org/
