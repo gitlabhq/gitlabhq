@@ -8,6 +8,7 @@ class CommitsController < ApplicationController
   before_filter :authorize_read_project!
 
   def index
+    refs_from_cookie
     @repo = project.repo
     @branch = if !params[:branch].blank?
                 params[:branch]

@@ -45,6 +45,13 @@
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
         = render :partial => "projects/tree_item", :locals => { :content => content }
 
+
+:javascript
+  $(function(){
+    $.cookie('branch', '#{params[:branch]}', { expires: 1 });
+    $.cookie('tag', '#{params[:tag]}', { expires: 1 });
+  });
+
 :javascript
   $(function(){
     $('select#branch').selectmenu({style:'popup', width:200});

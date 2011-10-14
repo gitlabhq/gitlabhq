@@ -41,4 +41,13 @@ class ApplicationController < ActionController::Base
       super
     end
   end
+
+  def refs_from_cookie
+    # branch is high priority so we should reset
+    # it if tag selected
+    cookies[:branch] = nil if params[:tag]
+
+    params[:branch] ||= cookies[:branch]
+    params[:tag] ||= cookies[:tag]
+  end
 end

@@ -16,6 +16,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    refs_from_cookie
     @repo = project.repo
     @commit = @repo.commits.first
     @tree = @commit.tree
@@ -32,6 +33,7 @@ class ProjectsController < ApplicationController
   end
 
   def tree
+    refs_from_cookie
     @repo = project.repo
     @branch = if !params[:branch].blank?
                 params[:branch]
