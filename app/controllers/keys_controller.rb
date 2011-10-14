@@ -18,8 +18,6 @@ class KeysController < ApplicationController
     respond_with(@key)
   end
 
-  # DELETE /keys/1
-  # DELETE /keys/1.json
   def destroy
     @key = current_user.keys.find(params[:id])
     @key.destroy
