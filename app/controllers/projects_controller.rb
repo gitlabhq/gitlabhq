@@ -8,10 +8,52 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = current_user.projects.all
+  end
+
+  def new
+    @project = Project.new
+  end
+
+  def edit
+  end
+
+  def create
+    @project = Project.new(params[:project])
+    @project.owner = current_user
+
+    Project.transaction do 
+      @project.save!
+      @project.users_projects.create!(:admin => true, :read => true, :write => true, :user => current_user)
+    end
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @projects }
+      if @project.valid?
+        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.js 
+      else
+        format.html { render action: "new" }
+        format.js
+      end
+    end
+  rescue Gitosis::AccessDenied
+    render :js => "location.href = '#{errors_gitosis_path}'" and return
+  rescue StandardError => ex
+    @project.errors.add(:base, "Cant save project. Please try again later")
+    respond_to do |format|
+      format.html { render action: "new" }
+      format.js
+    end
+  end
+
+  def update
+    respond_to do |format|
+      if project.update_attributes(params[:project])
+        format.html { redirect_to project, notice: 'Project was successfully updated.' }
+        format.js 
+      else
+        format.html { render action: "edit" }
+        format.js 
+      end
     end
   end
 
@@ -21,20 +63,27 @@ class ProjectsController < ApplicationController
     @tree = @commit.tree
     @tree = @tree / params[:path] if params[:path]
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: project }
-    end
   rescue Grit::NoSuchPathError => ex
     respond_to do |format|
       format.html {render "projects/empty"}
     end
   end
 
+  #
+  # Wall
+  #
+
+  def wall
+    @notes = @project.common_notes
+    @note = Note.new
+  end
+
+  #
+  # Repository preview
+  #
+
   def tree
     load_refs # load @branch, @tag & @ref
-
-
 
     @repo = project.repo
 
@@ -74,75 +123,12 @@ class ProjectsController < ApplicationController
     return render_404
   end
 
-  def new
-    @project = Project.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @project }
-    end
-  end
-
-  def edit
-  end
-
-  def create
-    @project = Project.new(params[:project])
-    @project.owner = current_user
-
-    Project.transaction do 
-      @project.save!
-      @project.users_projects.create!(:admin => true, :read => true, :write => true, :user => current_user)
-    end
-
-    respond_to do |format|
-      if @project.valid?
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
-        format.js 
-        format.json { render json: @project, status: :created, location: @project }
-      else
-        format.html { render action: "new" }
-        format.js
-        format.json { render json: @project.errors, status: :unprocessable_entity }
-      end
-    end
-  rescue Gitosis::AccessDenied
-    render :js => "location.href = '#{errors_gitosis_path}'" and return
-  rescue StandardError => ex
-    @project.errors.add(:base, "Cant save project. Please try again later")
-    respond_to do |format|
-      format.html { render action: "new" }
-      format.js
-      format.json { render json: @project.errors, status: :unprocessable_entity }
-    end
-  end
-
-  def update
-    respond_to do |format|
-      if project.update_attributes(params[:project])
-        format.html { redirect_to project, notice: 'Project was successfully updated.' }
-        format.js 
-        format.json { head :ok }
-      else
-        format.html { render action: "edit" }
-        format.js 
-        format.json { render json: project.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   def destroy
     project.destroy
 
     respond_to do |format|
       format.html { redirect_to projects_url }
-      format.json { head :ok }
     end
-  end
-
-  def wall
-    @notes = @project.common_notes
-    @note = Note.new
   end
 
   protected 
