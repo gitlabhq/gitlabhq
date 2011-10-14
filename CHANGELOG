@@ -1,3 +1,8 @@
+v 1.0.1
+  - fixed: with invalid source code for commit
+  - fixed: lose branch/tag selection when use tree navigateion
+  - when history clicked - display path
+  - bug fix & code cleaning
 v 1.0.0
   - bug fix
   - projects preview mode
