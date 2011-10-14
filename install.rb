@@ -15,11 +15,7 @@ env = if envs.include?(ARGV[0])
 puts green " == Install for ENV=#{env} ..."
 
 # bundle install
-if env == "production"
-`bundle install --without development test`
-else
 `bundle install`
-end
   
 # migrate db
 `bundle exec rake db:create RAILS_ENV=#{env}`

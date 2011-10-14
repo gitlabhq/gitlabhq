@@ -17,12 +17,7 @@ puts green " == Update for ENV=#{env}"
 # pull from github
 `git pull`
 
-# bundle install
-if env == "production"
-`bundle install --without development test`
-else
 `bundle install`
-end
 
 # migrate db
 `bundle exec rake db:migrate RAILS_ENV=#{env}`
