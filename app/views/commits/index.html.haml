@@ -13,3 +13,10 @@
     %h3{:style => "color:#555"} /#{params[:path]}
   %div{:id => dom_id(@project)}
     = render "commits"
+
+
+:javascript
+  $(function(){
+    $.cookie('branch', '#{params[:branch]}', { expires: 1 });
+    $.cookie('tag', '#{params[:tag]}', { expires: 1 });
+  });
