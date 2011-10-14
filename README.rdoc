@@ -45,7 +45,8 @@ sqlite as default db
 
 Install gitosis, edit conf/gitosis.yml & start server
 
-  rails s
+  rails s -e production
+
 
 == Install Gitosis
   sudo aptitude install gitosis
