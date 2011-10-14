@@ -16,7 +16,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    refs_from_cookie
     @repo = project.repo
     @commit = @repo.commits.first
     @tree = @commit.tree
@@ -33,34 +32,30 @@ class ProjectsController < ApplicationController
   end
 
   def tree
-    refs_from_cookie
+    load_refs # load @branch, @tag & @ref
+
     @repo = project.repo
-    @branch = if !params[:branch].blank?
-                params[:branch]
-              elsif !params[:tag].blank?
-                params[:tag]
-              else
-                "master"
-              end
 
     if params[:commit_id]
       @commit = @repo.commits(params[:commit_id]).first
     else 
-      @commit = @repo.commits(@branch || "master").first
+      @commit = @repo.commits(@ref || "master").first
     end
+
     @tree = @commit.tree
     @tree = @tree / params[:path] if params[:path]
 
     respond_to do |format|
       format.html # show.html.erb
       format.js do 
-        # temp solution
+        # diasbale cache to allow back button works
         response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
       end
-      format.json { render json: project }
     end
+  rescue
+    return render_404
   end
 
   def blob
@@ -73,6 +68,8 @@ class ProjectsController < ApplicationController
     else 
       head(404)
     end
+  rescue
+    return render_404
   end
 
   def new
