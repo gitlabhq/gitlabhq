@@ -20,9 +20,10 @@ if env == "production"
 else
 `bundle install`
 end
-
+  
 # migrate db
-`bundle exec rake db:setup RAILS_ENV=#{env}`
+`bundle exec rake db:create RAILS_ENV=#{env}`
+`bundle exec rake db:schema:load RAILS_ENV=#{env}`
 `bundle exec rake db:seed_fu RAILS_ENV=#{env}`
 
 puts green %q[
