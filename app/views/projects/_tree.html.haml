@@ -46,11 +46,7 @@
         = render :partial => "projects/tree_item", :locals => { :content => content }
 
 
-:javascript
-  $(function(){
-    $.cookie('branch', '#{params[:branch]}', { expires: 1 });
-    $.cookie('tag', '#{params[:tag]}', { expires: 1 });
-  });
+- remember_refs
 
 :javascript
   $(function(){
