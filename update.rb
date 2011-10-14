@@ -12,10 +12,10 @@ env = if envs.include?(ARGV[0])
         "production"
       end
 
-puts green " == Update for ENV=#{env} from 1x"
+puts green " == Update for ENV=#{env}"
 
 # pull from github
-`git pull origin 1x`
+`git pull`
 
 # bundle install
 if env == "production"
