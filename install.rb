@@ -14,9 +14,6 @@ env = if envs.include?(ARGV[0])
 
 puts green " == Install for ENV=#{env} ..."
 
-# pull from github
-`git pull origin 1x`
-
 # bundle install
 if env == "production"
 `bundle install --without development test`
