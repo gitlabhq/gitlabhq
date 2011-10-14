@@ -11,7 +11,7 @@
   - @admin_users.each do |user|
     %tr
       %td= check_box_tag "admin",   1, user.admin, :disabled => :disabled
-      %td= user.name
+      %td= link_to user.name, [:admin, user]
       %td= user.email
       %td= user.users_projects.count
       %td= link_to 'Show', [:admin, user]
