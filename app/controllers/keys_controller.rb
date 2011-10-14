@@ -3,11 +3,6 @@ class KeysController < ApplicationController
 
   def index
     @keys = current_user.keys.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @keys }
-    end
   end
 
   def new
@@ -32,7 +27,6 @@ class KeysController < ApplicationController
     respond_to do |format|
       format.html { redirect_to keys_url }
       format.js { render :nothing => true }  
-      format.json { head :ok }
     end
   end
 end

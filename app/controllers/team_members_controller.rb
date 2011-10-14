@@ -12,7 +12,6 @@ class TeamMembersController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.js
-      format.json { render json: @team_member }
     end
   end
 
@@ -22,7 +21,6 @@ class TeamMembersController < ApplicationController
     respond_to do |format|
       format.html # new.html.erb
       format.js
-      format.json { render json: @team_member }
     end
   end
 
@@ -34,11 +32,9 @@ class TeamMembersController < ApplicationController
       if @team_member.save
         format.html { redirect_to @team_member, notice: 'Team member was successfully created.' }
         format.js
-        format.json { render json: @team_member, status: :created, location: @team_member }
       else
         format.html { render action: "new" }
         format.js
-        format.json { render json: @team_member.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -59,7 +55,6 @@ class TeamMembersController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to root_path }
-      format.json { head :ok }
       format.js { render :nothing => true }  
     end
   end
