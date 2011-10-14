@@ -3,7 +3,6 @@
   .view_file_header
     %strong
       = name
-      -#= file.mime_type
       = link_to "raw", blob_project_path(@project, :commit_id => @commit.id, :path => params[:path] ), :class => "right", :target => "_blank"
       = link_to "history", project_commits_path(@project, :path => params[:path]), :class => "right", :style => "margin-right:10px;"
       %br/
