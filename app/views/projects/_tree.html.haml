@@ -5,7 +5,7 @@
   &nbsp;
   .left.prepend-1
     = form_tag tree_project_path(@project), :method => :get do
-      = select_tag "tag", options_for_select(@project.tags, @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
+      = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
   = text_field_tag "ssh", @project.url_to_repo, :class => ["ssh_project_url","one_click_select"]
   .clear
 
@@ -18,7 +18,7 @@
       - if part_path.empty?
         - part_path = part
       \/
-      = link_to truncate(part, :length => 40), tree_file_project_path(@project, :path => part_path, :commit_id => @commit.try(:id)), :remote => :true
+      = link_to truncate(part, :length => 40), tree_file_project_path(@project, :path => part_path, :commit_id => @commit.try(:id), :branch => @branch, :tag => @tag), :remote => :true
 #tree-content-holder
   - if tree.is_a?(Grit::Blob)
     = render :partial => "projects/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
@@ -36,7 +36,7 @@
         %tr{ :class => "tree-item", :url => tree_file_project_path(@project, @commit.id, file) }
           %td.tree-item-file-name
             = image_tag "dir.png"
-            = link_to "..", tree_file_project_path(@project, @commit.id, file), :remote => :true
+            = link_to "..", tree_file_project_path(@project, @commit.id, file, :branch => @branch, :tag => @tag), :remote => :true
           %td 
           %td 
 
@@ -44,9 +44,6 @@
         = render :partial => "projects/tree_item", :locals => { :content => content }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
         = render :partial => "projects/tree_item", :locals => { :content => content }
-
-
-- remember_refs
 
 :javascript
   $(function(){

@@ -7,7 +7,7 @@
       = image_tag "txt.png"
     - else
       = image_tag "dir.png"
-    = link_to truncate(content.name, :length => 40), tree_file_project_path(@project, @commit.id, file), :remote => :true
+    = link_to truncate(content.name, :length => 40), tree_file_project_path(@project, @commit.id, file, :branch => @branch, :tag => @tag), :remote => :true
   %td
     = time_ago_in_words(content_commit.committed_date)
     ago

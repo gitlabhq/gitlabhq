@@ -6,12 +6,10 @@
     &nbsp;
     .left.prepend-1
       = form_tag project_commits_path(@project), :method => :get do
-        = select_tag "tag", options_for_select(@project.tags, @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
+        = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
     = text_field_tag "ssh", @project.url_to_repo, :class => ["ssh_project_url", "one_click_select"]
     .clear
   - if params[:path]
     %h3{:style => "color:#555"} /#{params[:path]}
   %div{:id => dom_id(@project)}
     = render "commits"
-
-- remember_refs

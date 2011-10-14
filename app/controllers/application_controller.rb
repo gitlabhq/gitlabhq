@@ -42,15 +42,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def refs_from_cookie
-    if @project && session[:ui] && 
-      session[:ui][@project.id]
-      project_session = session[:ui][@project.id]
-      project_session[:branch] = nil if params[:tag]
-      params[:branch] ||= project_session[:branch]
-      params[:tag] ||= project_session[:tag]
-    end
-  rescue 
-    session[:ui] = nil
+  def load_refs
+    @branch = unless params[:branch].blank?
+                params[:branch]
+              else
+                nil
+              end
+
+    @tag = unless params[:tag].blank?
+             params[:tag]
+           else 
+             nil
+           end
+
+    @ref = @branch || @tag || "master"
+  end
+
+  def render_404
+    render :file => File.join(Rails.root, "public", "404"), :layout => false, :status => "404"
   end
 end
