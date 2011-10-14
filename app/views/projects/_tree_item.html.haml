@@ -1,5 +1,5 @@
 - file = params[:path] ? File.join(params[:path], content.name) : content.name
-- content_commit = @project.repo.log(@branch, file, :max_count => 1).last
+- content_commit = @project.repo.log(@commit.id, file, :max_count => 1).last
 - return unless content_commit
 %tr{ :class => "tree-item", :url => tree_file_project_path(@project, @commit.id, file) }
   %td.tree-item-file-name
@@ -7,7 +7,7 @@
       = image_tag "txt.png"
     - else
       = image_tag "dir.png"
-    = link_to truncate(content.name, :length => 40), tree_file_project_path(@project, @commit.id, file), :remote => :true
+    = link_to truncate(content.name, :length => 40), tree_file_project_path(@project, @commit.id, file, :branch => @branch, :tag => @tag), :remote => :true
   %td
     = time_ago_in_words(content_commit.committed_date)
     ago

@@ -8,25 +8,19 @@ class CommitsController < ApplicationController
   before_filter :authorize_read_project!
 
   def index
+    load_refs # load @branch, @tag & @ref
+
     @repo = project.repo
-    @branch = if !params[:branch].blank?
-                params[:branch]
-              elsif !params[:tag].blank?
-                params[:tag]
-              else
-                "master"
-              end
 
     if params[:path]
-      @commits = @repo.log(@branch, params[:path], :max_count => params[:limit] || 100, :skip => params[:offset] || 0)
+      @commits = @repo.log(@ref, params[:path], :max_count => params[:limit] || 100, :skip => params[:offset] || 0)
     else
-      @commits = @repo.commits(@branch, params[:limit] || 100, params[:offset] || 0)
+      @commits = @repo.commits(@ref, params[:limit] || 100, params[:offset] || 0)
     end
 
     respond_to do |format|
       format.html # index.html.erb
       format.js
-      format.json { render json: @commits }
     end
   end
 
@@ -38,7 +32,6 @@ class CommitsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.js
-      format.json { render json: @commit }
     end
   end
 end

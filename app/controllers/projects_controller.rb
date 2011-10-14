@@ -8,78 +8,10 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = current_user.projects.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @projects }
-    end
-  end
-
-  def show
-    @repo = project.repo
-    @commit = @repo.commits.first
-    @tree = @commit.tree
-    @tree = @tree / params[:path] if params[:path]
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: project }
-    end
-  rescue Grit::NoSuchPathError => ex
-    respond_to do |format|
-      format.html {render "projects/empty"}
-    end
-  end
-
-  def tree
-    @repo = project.repo
-    @branch = if !params[:branch].blank?
-                params[:branch]
-              elsif !params[:tag].blank?
-                params[:tag]
-              else
-                "master"
-              end
-
-    if params[:commit_id]
-      @commit = @repo.commits(params[:commit_id]).first
-    else 
-      @commit = @repo.commits(@branch || "master").first
-    end
-    @tree = @commit.tree
-    @tree = @tree / params[:path] if params[:path]
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.js do 
-        # temp solution
-        response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-      end
-      format.json { render json: project }
-    end
-  end
-
-  def blob
-    @repo = project.repo
-    @commit = project.commit(params[:commit_id])
-    @tree = project.tree(@commit, params[:path])
-
-    if @tree.is_a?(Grit::Blob)
-      send_data(@tree.data, :type => @tree.mime_type, :disposition => 'inline', :filename => @tree.name)
-    else 
-      head(404)
-    end
   end
 
   def new
     @project = Project.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @project }
-    end
   end
 
   def edit
@@ -98,11 +30,9 @@ class ProjectsController < ApplicationController
       if @project.valid?
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
         format.js 
-        format.json { render json: @project, status: :created, location: @project }
       else
         format.html { render action: "new" }
         format.js
-        format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   rescue Gitosis::AccessDenied
@@ -112,7 +42,6 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html { render action: "new" }
       format.js
-      format.json { render json: @project.errors, status: :unprocessable_entity }
     end
   end
 
@@ -121,13 +50,77 @@ class ProjectsController < ApplicationController
       if project.update_attributes(params[:project])
         format.html { redirect_to project, notice: 'Project was successfully updated.' }
         format.js 
-        format.json { head :ok }
       else
         format.html { render action: "edit" }
         format.js 
-        format.json { render json: project.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def show
+    @repo = project.repo
+    @commit = @repo.commits.first
+    @tree = @commit.tree
+    @tree = @tree / params[:path] if params[:path]
+
+  rescue Grit::NoSuchPathError => ex
+    respond_to do |format|
+      format.html {render "projects/empty"}
+    end
+  end
+
+  #
+  # Wall
+  #
+
+  def wall
+    @notes = @project.common_notes
+    @note = Note.new
+  end
+
+  #
+  # Repository preview
+  #
+
+  def tree
+    load_refs # load @branch, @tag & @ref
+
+    @repo = project.repo
+
+    if params[:commit_id]
+      @commit = @repo.commits(params[:commit_id]).first
+    else 
+      @commit = @repo.commits(@ref || "master").first
+    end
+
+    @tree = @commit.tree
+    @tree = @tree / params[:path] if params[:path]
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.js do 
+        # diasbale cache to allow back button works
+        response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+      end
+    end
+  rescue
+    return render_404
+  end
+
+  def blob
+    @repo = project.repo
+    @commit = project.commit(params[:commit_id])
+    @tree = project.tree(@commit, params[:path])
+
+    if @tree.is_a?(Grit::Blob)
+      send_data(@tree.data, :type => @tree.mime_type, :disposition => 'inline', :filename => @tree.name)
+    else 
+      head(404)
+    end
+  rescue
+    return render_404
   end
 
   def destroy
@@ -135,13 +128,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to projects_url }
-      format.json { head :ok }
     end
-  end
-
-  def wall
-    @notes = @project.common_notes
-    @note = Note.new
   end
 
   protected 

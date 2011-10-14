@@ -14,7 +14,7 @@
     - members.each do |tm|
       - user = tm.user
       %tr
-        %td.span-6= tm.user_name
+        %td.span-6= link_to tm.user_name, admin_team_member_path(tm)
         %td.span-6= tm.user_email
         %td.span-1= check_box_tag "read",   1, project.readers.include?(user), :disabled => :disabled
         %td.span-1= check_box_tag "commit", 1, project.writers.include?(user), :disabled => :disabled

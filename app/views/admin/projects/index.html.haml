@@ -11,7 +11,7 @@
 
   - @admin_projects.each do |project|
     %tr
-      %td= project.name
+      %td= link_to project.name, [:admin, project]
       %td= project.code
       %td= project.path
       %td= project.users_projects.count

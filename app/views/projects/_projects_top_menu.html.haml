@@ -1,6 +1,7 @@
 %div.top_project_menu
   %span= link_to 'All', projects_path, :class => current_page?(projects_path) ? "current" : nil
-  %span= link_to "New Project", new_project_path, :class => current_page?(:controller => "projects", :action => "new") ? "current" : nil
+  - if current_user.can_create_project?
+    %span= link_to "New Project", new_project_path, :class => current_page?(:controller => "projects", :action => "new") ? "current" : nil
   %span.right
     = link_to_function(image_tag("list_view_icon.jpg"), "switchProjectView()", :style => "border:none;box-shadow:none;")
 

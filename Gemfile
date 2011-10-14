@@ -13,7 +13,7 @@ gem "carrierwave"
 gem 'six'
 gem 'therubyracer'
 gem 'faker'
-gem 'seed-fu', :branch => 'rails-3-1', :git => 'git://github.com/mbleigh/seed-fu.git'
+gem 'seed-fu', :git => 'git://github.com/mbleigh/seed-fu.git'
 gem "inifile"
 gem "albino", :git => "git://github.com/gitlabhq/albino.git"
 gem "kaminari"
