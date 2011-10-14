@@ -34,6 +34,8 @@ class ProjectsController < ApplicationController
   def tree
     load_refs # load @branch, @tag & @ref
 
+
+
     @repo = project.repo
 
     if params[:commit_id]
