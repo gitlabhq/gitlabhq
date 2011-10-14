@@ -28,5 +28,11 @@ end
 `bundle exec rake db:setup RAILS_ENV=#{env}`
 `bundle exec rake db:seed_fu RAILS_ENV=#{env}`
 
+puts green %q[
+Administrator account created:
+
+login.........admin@local.host
+password......5iveL!fe
+]
 
 puts green " == Done! Now you can start server"
