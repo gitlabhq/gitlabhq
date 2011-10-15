@@ -71,7 +71,7 @@ class IssuesController < ApplicationController
   end
 
   def sort
-    @issues = @project.issues.all
+    @issues = @project.issues.where(:id => params['issue'])
     @issues.each do |issue|
       issue.position = params['issue'].index(issue.id.to_s) + 1
       issue.save
