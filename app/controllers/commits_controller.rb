@@ -6,6 +6,7 @@ class CommitsController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
+  before_filter :require_non_empty_project
 
   def index
     load_refs # load @branch, @tag & @ref

@@ -3,7 +3,7 @@ require "grit"
 class Project < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
 
-  has_many :issues, :dependent => :destroy
+  has_many :issues, :dependent => :destroy, :order => "position"
   has_many :users_projects, :dependent => :destroy
   has_many :users, :through => :users_projects
   has_many :notes, :dependent => :destroy
@@ -16,6 +16,8 @@ class Project < ActiveRecord::Base
   validates :path,
             :uniqueness => true,
             :presence => true,
+            :format => { :with => /^[a-zA-Z0-9_\-]*$/,
+                         :message => "only letters, digits & '_' '-' allowed" },
             :length   => { :within => 0..255 }
   
   validates :description,
@@ -24,14 +26,15 @@ class Project < ActiveRecord::Base
   validates :code,
             :presence => true,
             :uniqueness => true,
-            :length   => { :within => 3..12 }
+            :format => { :with => /^[a-zA-Z0-9_\-]*$/,
+                         :message => "only letters, digits & '_' '-' allowed"  },
+            :length   => { :within => 3..16 }
 
   validates :owner,
             :presence => true
 
   validate :check_limit
   
-  before_save :format_code
   after_destroy :destroy_gitosis_project
   after_save :update_gitosis_project
 
@@ -45,10 +48,6 @@ class Project < ActiveRecord::Base
 
   def common_notes
     notes.where(:noteable_type => ["", nil])
-  end
-
-  def format_code
-    read_attribute(:code).downcase.strip.gsub(' ', '')
   end
 
   def update_gitosis_project

@@ -10,12 +10,13 @@
       </div>
       <div class="right">
         <%= link_to truncate(@project.name, :length => 20), project_path(@project), :class => "current button" if @project && !@project.new_record? %>
-        <%= link_to 'Home', root_path, :class => current_page?(root_url) ? "current button" : "button" %>
         <%= link_to 'Projects', projects_path, :class => current_page?(projects_path) ? "current button" : "button" %>
-        <%= link_to 'Profile', profile_path, :class => (controller.controller_name == "keys") ? "current button" : "button" %>
         <%= link_to('Admin', admin_root_path, :class => admin_namespace? ? "current button" : "button" ) if current_user.is_admin? %>
-        <%#= link_to 'Profile', edit_user_registration_path, :class => "button" %>
-        <%= link_to 'Logout', destroy_user_session_path, :class => "button", :method => :delete %>
+        <%= link_to profile_path, :class => ((controller.controller_name == "keys" || controller.controller_name == "profile") ? "current button" : "button") do %>
+          <%= image_tag gravatar_icon(current_user.email) %>
+          <%= current_user.name.split(" ").first %>
+        <% end %>
+        <%= link_to 'Logout', destroy_user_session_path, :style => "border-left: 1px solid #666;", :class => "button", :method => :delete %>
       </div>
     </div>
   </div>
