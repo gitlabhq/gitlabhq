@@ -19,6 +19,7 @@ gem "albino", :git => "git://github.com/gitlabhq/albino.git"
 gem "kaminari"
 gem "thin"
 gem "git"
+gem "acts_as_list"
 
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"
