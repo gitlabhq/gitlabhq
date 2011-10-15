@@ -5,7 +5,7 @@
       %td{:align => "left", :style => "padding: 20px 0 0;"}
         %h2{:style => "color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
           New comment - 
-          = link_to project_issue_url(@project, @issue) do 
+          = link_to project_issue_url(@project, @issue, :anchor => "note_#{@note.id}") do 
             = "Issue ##{@issue.id.to_s}"
             = truncate(@issue.title, :length => 35) 
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
