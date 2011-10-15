@@ -88,7 +88,7 @@ describe "Admin::Projects" do
       visit new_admin_project_path
       fill_in 'Name', :with => 'NewProject'
       fill_in 'Code', :with => 'NPR'
-      fill_in 'Path', :with => '/tmp/legit_test/legit'
+      fill_in 'Path', :with => 'legit_1'
       expect { click_button "Save" }.to change { Project.count }.by(1)
       @project = Project.last
     end

@@ -32,7 +32,7 @@ Gitlab::Application.routes.draw do
       get "tree/:commit_id/:path" => "projects#tree",
       :as => :tree_file,
       :constraints => { 
-        :id => /[a-zA-Z0-9]+/,
+        :id => /[a-zA-Z0-9_\-]+/,
         :commit_id => /[a-zA-Z0-9]+/,
         :path => /.*/
       }
