@@ -61,4 +61,8 @@ class ApplicationController < ActionController::Base
   def render_404
     render :file => File.join(Rails.root, "public", "404"), :layout => false, :status => "404"
   end
+
+  def require_non_empty_project
+    redirect_to @project unless @project.repo_exists?
+  end
 end
