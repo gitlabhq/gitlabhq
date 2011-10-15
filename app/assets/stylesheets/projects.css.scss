@@ -539,3 +539,13 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     float:left;
   }
 }
+
+.handle:hover{
+  cursor: move;
+}
+
+.handle{
+  width: 12px;
+  height: 12px;
+  padding: 10px;
+}

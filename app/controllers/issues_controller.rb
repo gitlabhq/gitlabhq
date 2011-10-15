@@ -5,7 +5,7 @@ class IssuesController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_issue!
-  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update] 
+  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort] 
   before_filter :authorize_admin_issue!, :only => [:destroy] 
 
   respond_to :js
@@ -68,5 +68,15 @@ class IssuesController < ApplicationController
     respond_to do |format|
       format.js { render :nothing => true }  
     end
+  end
+
+  def sort
+    @issues = @project.issues.all
+    @issues.each do |issue|
+      issue.position = params['issue'].index(issue.id.to_s) + 1
+      issue.save
+    end
+
+    render :nothing => true
   end
 end

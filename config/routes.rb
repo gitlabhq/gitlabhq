@@ -40,7 +40,11 @@ Gitlab::Application.routes.draw do
     end
     resources :commits
     resources :team_members
-    resources :issues
+    resources :issues do
+      collection do
+        post :sort
+      end
+    end
     resources :notes, :only => [:create, :destroy]
   end
   root :to => "projects#index"
