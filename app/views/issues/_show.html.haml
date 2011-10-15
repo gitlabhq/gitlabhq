@@ -1,6 +1,6 @@
 %tr{ :id => dom_id(issue), :class => "issue", :url => project_issue_path(@project, issue) }
   %td
-    = image_tag gravatar_icon(issue.assignee.email), :class => "left", :width => 40, :style => "padding:0 5px;"
+    = image_tag gravatar_icon(issue.assignee.email), :class => ["left", "handle"], :width => 40, :style => "padding:0 5px;"
     = truncate issue.assignee.name, :lenght => 20
   %td ##{issue.id}
   %td= html_escape issue.title

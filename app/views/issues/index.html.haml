@@ -22,3 +22,29 @@
 :javascript
   $('.delete-issue').live('ajax:success', function() {  
     $(this).closest('tr').fadeOut(); });  
+  
+  function setSortable(){
+    $('#issues-table>tbody').sortable({
+      axis: 'y',
+      dropOnEmpty: false,
+      handle: '.handle',
+      cursor: 'crosshair',
+      items: 'tr',
+      opacity: 0.4,
+      scroll: true,
+      update: function(){
+        $.ajax({
+        type: 'post',
+        data: $('#issues-table>tbody').sortable('serialize'),
+        dataType: 'script',
+        complete: function(request){
+          $('#issues-table>tbody').effect('highlight');
+        },
+        url: "#{sort_project_issues_path(@project)}"})
+        }
+      });
+  }
+
+  $(function(){
+    setSortable();
+  });

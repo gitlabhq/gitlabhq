@@ -21,6 +21,8 @@ class Issue < ActiveRecord::Base
   scope :opened, where(:closed => false)
   scope :closed, where(:closed => true)
   scope :assigned, lambda { |u| where(:assignee_id => u.id)}
+
+  acts_as_list
 end
 # == Schema Information
 #

@@ -69,4 +69,14 @@ class IssuesController < ApplicationController
       format.js { render :nothing => true }  
     end
   end
+
+  def sort
+    @issues = @project.issues.all
+    @issues.each do |issue|
+      issue.position = params['issue'].index(issue.id.to_s) + 1
+      issue.save
+    end
+
+    render :nothing => true
+  end
 end
