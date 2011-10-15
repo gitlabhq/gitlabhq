@@ -5,7 +5,7 @@ class IssuesController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_issue!
-  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update] 
+  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort] 
   before_filter :authorize_admin_issue!, :only => [:destroy] 
 
   respond_to :js
