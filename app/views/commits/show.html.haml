@@ -1,5 +1,5 @@
 %h3
-  = "[ #{@commit.committer} ]  #{truncate @commit.message, :length => 80}"
+  = "[ #{@commit.committer} ]  #{truncate_commit_message(@commit, 80)}"
 -#= link_to 'Back', project_commits_path(@project), :class => "button"
 %table.round-borders
   %tr
