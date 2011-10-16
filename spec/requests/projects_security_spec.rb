@@ -107,5 +107,14 @@ describe "Projects" do
       it { project_issues_path(@project).should be_denied_for :user }
       it { project_issues_path(@project).should be_denied_for :visitor }
     end
+
+    describe "GET /project_code/snippets" do 
+      it { project_snippets_path(@project).should be_allowed_for @u1 }
+      it { project_snippets_path(@project).should be_allowed_for @u3 }
+      it { project_snippets_path(@project).should be_denied_for :admin }
+      it { project_snippets_path(@project).should be_denied_for @u2 }
+      it { project_snippets_path(@project).should be_denied_for :user }
+      it { project_snippets_path(@project).should be_denied_for :visitor }
+    end
   end
 end

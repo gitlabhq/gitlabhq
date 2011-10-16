@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111015154310) do
+ActiveRecord::Schema.define(:version => 20111016195506) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -54,6 +54,16 @@ ActiveRecord::Schema.define(:version => 20111015154310) do
     t.boolean  "private_flag", :default => true, :null => false
     t.string   "code"
     t.integer  "owner_id"
+  end
+
+  create_table "snippets", :force => true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "author_id",  :null => false
+    t.integer  "project_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_name"
   end
 
   create_table "users", :force => true do |t|

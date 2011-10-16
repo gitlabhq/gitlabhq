@@ -1,0 +1,14 @@
+%div
+  - if can? current_user, :write_snippet, @project
+    .left= link_to 'New Snippet', new_project_snippet_path(@project), :class => "lbutton vm"
+
+  %table.round-borders#snippets-table
+    %tr
+      %th Author
+      %th Title
+      %th File name
+      %th
+    = render @snippets
+:javascript
+  $('.delete-snippet').live('ajax:success', function() {  
+    $(this).closest('tr').fadeOut(); });  

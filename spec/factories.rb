@@ -35,6 +35,12 @@ Factory.add(:issue, Issue) do |obj|
   obj.content = Faker::Lorem.sentences
 end
 
+Factory.add(:snippet, Snippet) do |obj|
+  obj.title = Faker::Lorem.sentence
+  obj.file_name = Faker::Lorem.sentence
+  obj.content = Faker::Lorem.sentences
+end
+
 Factory.add(:note, Note) do |obj|
   obj.note = Faker::Lorem.sentence
 end

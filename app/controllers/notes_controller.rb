@@ -41,6 +41,8 @@ class NotesController < ApplicationController
         Notify.note_commit_email(u, @note).deliver
       when "Issue" then
         Notify.note_issue_email(u, @note).deliver
+      when "Snippet"
+        true
       else
         Notify.note_wall_email(u, @note).deliver
       end
