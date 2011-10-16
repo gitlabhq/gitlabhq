@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   has_many :users_projects, :dependent => :destroy
   has_many :users, :through => :users_projects
   has_many :notes, :dependent => :destroy
+  has_many :snippets, :dependent => :destroy
 
   validates :name,
             :uniqueness => true,

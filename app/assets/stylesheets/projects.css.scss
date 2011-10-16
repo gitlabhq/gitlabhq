@@ -310,6 +310,7 @@ input.ssh_project_url {
 }
 
 #projects-list .project,
+#snippets-table .snippet,
 #issues-table .issue{ 
   cursor:pointer;
 
@@ -360,6 +361,8 @@ input.ssh_project_url {
 .user_new,
 .edit_user,
 .new_project,
+.new_snippet,
+.edit_snippet,
 .edit_project { 
   input[type='text'],
   input[type='email'],

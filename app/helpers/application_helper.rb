@@ -53,7 +53,7 @@ module ApplicationHelper
     [projects, default_nav, project_nav].flatten.to_json
   end
 
-  def handle_file_type(file_name, mime_type)
+  def handle_file_type(file_name, mime_type = nil)
     if file_name =~ /(\.rb|\.ru|\.rake|Rakefile|\.gemspec|\.rbx|Gemfile)$/
       :ruby
     elsif file_name =~ /\.py$/

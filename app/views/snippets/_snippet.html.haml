@@ -1,0 +1,11 @@
+%tr{ :id => dom_id(snippet), :class => "snippet", :url => project_snippet_path(@project, snippet) }
+  %td
+    = image_tag gravatar_icon(snippet.author.email), :class => "left", :width => 40, :style => "padding:0 5px;"
+    = truncate snippet.author.name, :lenght => 20
+  %td= html_escape snippet.title
+  %td= html_escape snippet.file_name
+  %td
+    - if can?(current_user, :admin_snippet, @project) || snippet.author == current_user
+      = link_to 'Edit', edit_project_snippet_path(@project, snippet), :class => "lbutton positive"
+    - if can?(current_user, :admin_snippet, @project) || snippet.author == current_user
+      = link_to 'Destroy', [@project, snippet], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "lbutton delete-snippet negative", :id => "destroy_snippet_#{snippet.id}"
