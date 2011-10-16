@@ -22,10 +22,12 @@ module CommitsHelper
       :remote => true, :class => "lite_button vm", :style => "text-align:center; width:930px; ", :id => "more-commits-link"
   end
 
+  # Cause some errors with trucate & encoding use this method
   def truncate_commit_message(commit, size = 60)
-    truncate(commit.message, :length => size)
+    message = commit.message
+    message.length > size ? (message[0..(size - 1)] + "...") : message
   # if special characters occurs
   rescue
-    commit.message.length > size ? (commit.message[0..(size - 1)] + "...") : commit.message
+    commit.message
   end
 end
