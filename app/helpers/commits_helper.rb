@@ -21,4 +21,11 @@ module CommitsHelper
     link_to "More", project_commits_path(@project, :offset =>  offset.to_i + limit.to_i, :limit => limit),
       :remote => true, :class => "lite_button vm", :style => "text-align:center; width:930px; ", :id => "more-commits-link"
   end
+
+  def truncate_commit_message(commit, size = 60)
+    truncate(commit.message, :length => size)
+  # if special characters occurs
+  rescue
+    commit.message.length > size ? (commit.message[0..(size - 1)] + "...") : commit.message
+  end
 end
