@@ -11,6 +11,10 @@ module Color
     colorize(text, "32m")
   end
 
+  def yellow(text)
+    colorize(text, "93m")
+  end
+
   def command(string)
     `#{string}`
     if $?.to_i > 0 
