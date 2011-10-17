@@ -1,0 +1,4 @@
+- @notes.each do |note|
+  - next unless note.author
+  = render :partial => "notes/show", :locals => {:note => note}
+
