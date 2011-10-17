@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
             :uniqueness => true,
             :format => { :with => /^[a-zA-Z0-9_\-]*$/,
                          :message => "only letters, digits & '_' '-' allowed"  },
-            :length   => { :within => 3..16 }
+            :length   => { :within => 3..255 }
 
   validates :owner,
             :presence => true
