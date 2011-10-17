@@ -14,3 +14,17 @@ describe Snippet do
     it { should validate_presence_of(:content) }
   end
 end
+# == Schema Information
+#
+# Table name: snippets
+#
+#  id         :integer         not null, primary key
+#  title      :string(255)
+#  content    :text
+#  author_id  :integer         not null
+#  project_id :integer         not null
+#  created_at :datetime
+#  updated_at :datetime
+#  file_name  :string(255)
+#
+
