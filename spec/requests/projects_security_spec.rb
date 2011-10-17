@@ -82,12 +82,18 @@ describe "Projects" do
     end
 
     describe "GET /project_code/blob" do 
-      it { blob_project_path(@project).should be_allowed_for @u1 }
-      it { blob_project_path(@project).should be_allowed_for @u3 }
-      it { blob_project_path(@project).should be_denied_for :admin }
-      it { blob_project_path(@project).should be_denied_for @u2 }
-      it { blob_project_path(@project).should be_denied_for :user }
-      it { blob_project_path(@project).should be_denied_for :visitor }
+      before do 
+        @commit = @project.commit
+        @path = @commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
+        @blob_path = blob_project_path(@project, :commit_id => @commit.id, :path => @path)
+      end
+
+      it { @blob_path.should be_allowed_for @u1 }
+      it { @blob_path.should be_allowed_for @u3 }
+      it { @blob_path.should be_denied_for :admin }
+      it { @blob_path.should be_denied_for @u2 }
+      it { @blob_path.should be_denied_for :user }
+      it { @blob_path.should be_denied_for :visitor }
     end
 
     describe "GET /project_code/edit" do 

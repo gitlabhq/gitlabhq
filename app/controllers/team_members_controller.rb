@@ -3,8 +3,8 @@ class TeamMembersController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
-  before_filter :authorize_read_team_member!
-  before_filter :authorize_admin_team_member!, :only => [:new, :create, :destroy, :update] 
+  before_filter :authorize_read_project!
+  before_filter :authorize_admin_project!, :only => [:new, :create, :destroy, :update] 
 
   def show
     @team_member = project.users_projects.find(params[:id])

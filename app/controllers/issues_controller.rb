@@ -1,12 +1,12 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project 
+  before_filter :issue, :only => [:edit, :update, :destroy, :show]
 
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_issue!
   before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort] 
-  before_filter :authorize_admin_issue!, :only => [:destroy] 
 
   respond_to :js
 
@@ -30,12 +30,10 @@ class IssuesController < ApplicationController
   end
 
   def edit
-    @issue = @project.issues.find(params[:id])
     respond_with(@issue)
   end
 
   def show
-    @issue = @project.issues.find(params[:id])
     @notes = @issue.notes
     @note = @project.notes.new(:noteable => @issue)
   end
@@ -51,7 +49,6 @@ class IssuesController < ApplicationController
   end
 
   def update
-    @issue = @project.issues.find(params[:id])
     @issue.update_attributes(params[:issue])
 
     respond_to do |format|
@@ -62,7 +59,8 @@ class IssuesController < ApplicationController
 
 
   def destroy
-    @issue = @project.issues.find(params[:id])
+    return access_denied! unless can?(current_user, :admin_issue, @issue)
+
     @issue.destroy
 
     respond_to do |format|
@@ -78,5 +76,11 @@ class IssuesController < ApplicationController
     end
 
     render :nothing => true
+  end
+
+  protected 
+
+  def issue
+    @issue ||= @project.issues.find(params[:id])
   end
 end
