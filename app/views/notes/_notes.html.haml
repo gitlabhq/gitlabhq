@@ -1,7 +1,4 @@
-%ul#notes-list
-  - @notes.each do |note|
-    - next unless note.author
-    = render :partial => "notes/show", :locals => {:note => note}
+%ul#notes-list= render "notes/notes_list"
 
 %br
 %br
@@ -12,4 +9,12 @@
   $('.delete-note').live('ajax:success', function() {  
     $(this).closest('li').fadeOut(); });  
 
+- if ["issues", "projects"].include?(controller.controller_name)
+  :javascript
+    $(function(){
+      var int =self.setInterval("updatePage()", 20000);
+    });
 
+    function updatePage(){
+      $.ajax({type: "GET", url: location.href, dataType: "script"});
+    }
