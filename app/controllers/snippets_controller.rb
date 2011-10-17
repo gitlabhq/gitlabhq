@@ -52,12 +52,11 @@ class SnippetsController < ApplicationController
 
   def destroy
     @snippet = @project.snippets.find(params[:id])
-    authorize_admin_snippet! unless @snippet.author == current_user
+
+    return access_denied! unless can?(current_user, :admin_snippet, @snippet)
 
     @snippet.destroy
 
-    respond_to do |format|
-      format.js { render :nothing => true }  
-    end
+    redirect_to project_snippets_path(@project)
   end
 end

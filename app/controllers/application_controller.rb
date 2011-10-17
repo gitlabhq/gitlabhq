@@ -27,11 +27,15 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_admin!
-    return redirect_to(new_user_session_path) unless current_user.is_admin?
+    return render_404 unless current_user.is_admin?
   end
 
   def authorize_project!(action)
-    return redirect_to(new_user_session_path) unless can?(current_user, action, project)
+    return render_404 unless can?(current_user, action, project)
+  end
+
+  def access_denied!
+    render_404
   end
 
   def method_missing(method_sym, *arguments, &block)
