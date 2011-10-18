@@ -60,17 +60,21 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @date = Date.today - 7.days
+    @date = case params[:view]
+            when "week" then Date.today - 7.days
+            else Date.today
+            end
+
     @heads = @project.repo.heads
     @commits = @heads.map do |h| 
-      @project.repo.log(h.name, nil, :since => @date)
+      @project.repo.log(h.name, nil, :since => @date - 1.day)
     end.flatten.uniq { |c| c.id }
     
     @commits.sort! do |x, y|
       y.committed_date <=> x.committed_date
     end
 
-    @messages = project.notes.last_week.limit(40).order("created_at DESC")
+    @messages = project.notes.since(@date).limit(40).order("created_at DESC")
   end
 
   #
