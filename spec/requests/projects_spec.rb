@@ -72,7 +72,10 @@ describe "Projects" do
       current_path.should == project_path(@project)
     end
 
-    it_behaves_like :tree_view
+    it "should beahave like dashboard" do 
+      page.should have_content("Recent history")
+    end
+
   end
 
   describe "GET /projects/team" do
@@ -134,8 +137,6 @@ describe "Projects" do
     it "should show project" do
       page.should have_content("Awesome")
     end
-
-    it_behaves_like :tree_view
   end
 
   #describe "DELETE /projects/:id", :js => true do
