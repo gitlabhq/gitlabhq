@@ -26,8 +26,6 @@
       = noteable_link(item[0], item[1], @project)
     - notes.each do |note|
       %div.message
-        .span-2
-          &nbsp;
         = image_tag gravatar_icon(note.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
         %p{:style => "margin-bottom: 3px;"}
           = link_to truncate(note.note, :length => 50), "#" 
