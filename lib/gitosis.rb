@@ -27,13 +27,14 @@ class Gitosis
   def configure
     status = Timeout::timeout(20) do
       File.open(File.join(Dir.tmpdir,"gitlabhq-gitosis.lock"), "w+") do |f|
-        f.flock(File::LOCK_EX)
-
-        pull
-        yield(self)
-        push
-
-        f.flock(File::LOCK_UN)
+        begin 
+          f.flock(File::LOCK_EX)
+          pull
+          yield(self)
+          push
+        ensure
+          f.flock(File::LOCK_UN)
+        end
       end
     end
   rescue Exception => ex
