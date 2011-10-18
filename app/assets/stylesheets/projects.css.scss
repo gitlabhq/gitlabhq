@@ -552,3 +552,26 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   height: 12px;
   padding: 10px;
 }
+
+.recent_message_parent { 
+  img { 
+    padding-right:10px;
+  }
+  background: #fff !important;
+  background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#EAEAEA)) !important;
+  background: -moz-linear-gradient(top,#fff,#EAEAEA) !important;
+  background: transparent 9 !important;
+
+  float: left;
+  margin: 0 20px 20px 0px;
+  padding: 5px 5px;;
+  width: 420px;
+
+  h4 { 
+    margin-bottom:3px;
+  }
+
+  span { 
+    
+  }
+}

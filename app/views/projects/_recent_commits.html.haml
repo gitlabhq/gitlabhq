@@ -1,0 +1,18 @@
+- @commits.each do |commit|
+  %div.commit
+    - if commit.author.email
+      = image_tag gravatar_icon(commit.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
+    - else
+      = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
+    %p{:style => "margin-bottom: 3px;"}
+      %strong
+        = link_to truncate_commit_message(commit, 60), project_commit_path(@project, :id => commit.id) 
+      
+    %span
+      %span
+        [ #{commit.author} ]
+      %cite
+        = time_ago_in_words(commit.committed_date)
+        ago
+  %br
+
