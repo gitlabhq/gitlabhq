@@ -66,6 +66,10 @@ Install gitosis, edit conf/gitosis.yml & start server
   sudo -H -u git gitosis-init < ~/.ssh/id_rsa.pub
   sudo chmod 755 /home/git/repositories/gitosis-admin.git/hooks/post-update
 
+  # change to your username and host
+  git config --global user.email "username@host"
+  git config --global user.name "username"
+
 
 == Install ruby 1.9.2
 
