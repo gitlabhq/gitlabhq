@@ -64,7 +64,7 @@ class ProjectsController < ApplicationController
     @heads = @project.repo.heads
     @commits = @heads.map do |h| 
       @project.repo.log(h.name, nil, :since => @date)
-    end.flatten.uniq { |c| c.id }
+    end.flatten.uniq { |c| c.id }.sort { |x, y| x.committed_date <=> x.committed_date }
 
     @messages = project.notes.last_week.limit(40).order("created_at DESC")
   end
