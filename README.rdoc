@@ -11,7 +11,7 @@ sqlite as default db
 
 == Requirements
 
-* ruby 1.9.2
+* ruby 1.9.2 or 1.9.3-rc1 
 
 * sqlite
 
@@ -19,7 +19,7 @@ sqlite as default db
 
 * gitosis
 
-* ubuntu/debian
+* ubuntu/debian/fedora
 
 * pygments lib  - sudo easy_install pygments
 
