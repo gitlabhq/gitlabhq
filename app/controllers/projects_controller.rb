@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
   before_filter :authorize_read_project!, :except => [:index, :new, :create] 
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy] 
 
-  before_filter :require_non_empty_project, :only => [:blob, :tree]
+  before_filter :require_non_empty_project, :only => [:blob, :tree, :show]
 
   def index
     @projects = current_user.projects.all
@@ -60,15 +60,13 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @repo = project.repo
-    @commit = @repo.commits.first
-    @tree = @commit.tree
-    @tree = @tree / params[:path] if params[:path]
+    @date = Date.today - 7.days
+    @heads = @project.repo.heads
+    @commits = @heads.map do |h| 
+      @project.repo.log(h.name, nil, :since => @date)
+    end.flatten.uniq { |c| c.id }
 
-  rescue Grit::NoSuchPathError => ex
-    respond_to do |format|
-      format.html {render "projects/empty"}
-    end
+    @messages = project.notes.last_week.limit(40).order("created_at DESC")
   end
 
   #
