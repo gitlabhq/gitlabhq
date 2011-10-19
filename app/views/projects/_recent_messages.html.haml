@@ -10,6 +10,11 @@
     - item_code = issue.author.email
     - link_item_name = truncate(issue.title, :length => 50)
     - link_to_item = project_issue_path(@project, issue)
+  - when "Snippet"
+    - css_class = "dash_snippet"
+    - item_code = parent.author.email
+    - link_item_name = parent.title
+    - link_to_item = project_snippet_path(@project, parent)
   - when "Commit"
     - css_class = "dash_commit"
     - commit = parent
@@ -33,13 +38,15 @@
     %div.message
       = image_tag gravatar_icon(note.author.email), :class => "left", :width => 24, :style => "padding-right:5px;"
       %p{:style => "margin-bottom: 3px;"}
+        %span.author
+          = note.author.name
         = link_to truncate(note.note, :length => 200), link_to_item + "#note_#{note.id}"
         - if note.attachment.url
           %br
           Attachment:
           = link_to note.attachment_identifier, note.attachment.url
           %br
-      %span
+      -#%span
         %span
           [ #{note.author.name} ]
         %cite

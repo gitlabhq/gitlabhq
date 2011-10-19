@@ -4,7 +4,7 @@
       %div{ :class => "project", :url => project_path(project) }
         %h2
           = image_tag gravatar_icon(project.name), :class => "left", :width => 40, :style => "padding-right:5px;"
-          = "/" + project.code
+          = link_to ("/" + project.code), project_path(project), :style => "text-decoration:none"
         %p= project.name
         %p= project.url_to_repo
         -#%p

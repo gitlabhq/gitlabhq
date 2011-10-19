@@ -575,8 +575,6 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     border-bottom: 2px solid #ffbbbb;
     span { 
       background: #ffbbbb;
-      color:black;
-      padding:2px;
     }
   }
   &.dash_commit{
@@ -584,17 +582,35 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 
     span{ 
       background: #bbbbff;
-      color:black;
-      padding:2px;
     }
+  }
+
+  &.dash_snippet{
+    border-bottom: 2px solid #bbffbb;
+
+    span{ 
+      background: #bbffbb;
+    }
+  }
+
+
+  span{ 
+    border: 1px solid #aaa;
+    color:black;
+    padding:1px 4px;
   }
 
   h4 { 
     margin-bottom:3px;
   }
 
+}
+.message{
   .author { 
     background: #eaeaea;
     color: #333;
+    border: 1px solid #aaa;
+    padding:1px 2px;
+    margin-right:5px;
   }
 }
