@@ -5,21 +5,24 @@
 
   - case type
   - when "Issue"
+    - css_class = "dash_issue"
     - issue = parent
     - item_code = issue.author.email
     - link_item_name = truncate(issue.title, :length => 50)
     - link_to_item = project_issue_path(@project, issue)
   - when "Commit"
+    - css_class = "dash_commit"
     - commit = parent
     - item_code = commit.author.email
     - link_item_name = truncate_commit_message(commit, 50)
     - link_to_item = project_commit_path(@project, :id => commit.id)
   - else
+    - css_class = "dash_wall"
     - item_code = @project.name
     - link_item_name = "Project Wall"
     - link_to_item = wall_project_path(@project)
 
-  %div.recent_message_parent
+  %div{ :class => "recent_message_parent #{css_class}"}
     = image_tag gravatar_icon(item_code), :class => "left", :width => 40
     %h4
       = link_to(link_item_name, link_to_item)
@@ -30,7 +33,7 @@
     %div.message
       = image_tag gravatar_icon(note.author.email), :class => "left", :width => 24, :style => "padding-right:5px;"
       %p{:style => "margin-bottom: 3px;"}
-        = link_to truncate(note.note, :length => 50), "#" 
+        = link_to truncate(note.note, :length => 200), link_to_item + "#note_#{note.id}"
         - if note.attachment.url
           %br
           Attachment:

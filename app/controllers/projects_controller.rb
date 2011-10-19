@@ -64,11 +64,11 @@ class ProjectsController < ApplicationController
       @date = case params[:view]
               when "week" then Date.today - 7.days
               else Date.today
-              end
+              end.at_beginning_of_day
 
       @heads = @project.repo.heads
       @commits = @heads.map do |h| 
-        @project.repo.log(h.name, nil, :since => @date - 1.day)
+        @project.repo.log(h.name, nil, :since => @date)
       end.flatten.uniq { |c| c.id }
 
       @commits.sort! do |x, y|
