@@ -14,6 +14,17 @@
     %b Projects limit:
     = @admin_user.projects_limit
 
+  %p
+    %b Skype:
+    = @admin_user.skype
+  %p
+    %b LinkedIn:
+    = @admin_user.linkedin    
+  %p
+    %b Twitter:
+    = @admin_user.twitter
+
+
   .clear
   = link_to 'Edit', edit_admin_user_path(@admin_user)
   \|

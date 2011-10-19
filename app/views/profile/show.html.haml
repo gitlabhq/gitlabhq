@@ -6,3 +6,28 @@
 %p
   %b Email:
   = @user.email
+
+%br
+
+= form_for @user, :url => profile_edit_path, :method => :put do |f|
+  -if @user.errors.any?
+    #error_explanation
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+
+  .div
+    = f.label :skype
+    %br
+    = f.text_field :skype
+  .div
+    = f.label :linkedin
+    %br
+    = f.text_field :linkedin
+  .div
+    = f.label :twitter
+    %br
+    = f.text_field :twitter
+  .actions
+    = f.submit 'Save', :class => "lbutton vm"
+
