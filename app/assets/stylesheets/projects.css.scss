@@ -557,21 +557,44 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   img { 
     padding-right:10px;
   }
-  background: #fff !important;
-  background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#EAEAEA)) !important;
-  background: -moz-linear-gradient(top,#fff,#EAEAEA) !important;
-  background: transparent 9 !important;
 
   float: left;
   margin: 0 20px 20px 0px;
-  padding: 5px 5px;;
+  padding: 5px 0px;;
   width: 420px;
+
+  &.dash_wall{
+    border-bottom: 2px solid orange;
+    span { 
+      background: orange;
+      color:black;
+    }
+  }
+
+  &.dash_issue{
+    border-bottom: 2px solid #ffbbbb;
+    span { 
+      background: #ffbbbb;
+      color:black;
+      padding:2px;
+    }
+  }
+  &.dash_commit{
+    border-bottom: 2px solid #bbbbff;
+
+    span{ 
+      background: #bbbbff;
+      color:black;
+      padding:2px;
+    }
+  }
 
   h4 { 
     margin-bottom:3px;
   }
 
-  span { 
-    
+  .author { 
+    background: #eaeaea;
+    color: #333;
   }
 }
