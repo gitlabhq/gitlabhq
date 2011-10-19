@@ -39,5 +39,8 @@ end
 #  name                   :string(255)
 #  admin                  :boolean         default(FALSE), not null
 #  projects_limit         :integer
+#  skype                  :string
+#  linkedin               :string
+#  twitter                :string
 #
 
