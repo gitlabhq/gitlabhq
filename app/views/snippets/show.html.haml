@@ -15,6 +15,7 @@
   = link_to 'Edit', edit_project_snippet_path(@project, @snippet), :class => "lbutton positive"
 - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
   = link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "lbutton delete-snippet negative", :id => "destroy_snippet_#{@snippet.id}"
+.clear
 %br
 .snippet_notes= render "notes/notes"
 
