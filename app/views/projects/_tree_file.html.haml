@@ -1,4 +1,3 @@
-- require "utils"
 .view_file
   .view_file_header
     %strong
@@ -6,14 +5,13 @@
       = link_to "raw", blob_project_path(@project, :commit_id => @commit.id, :path => params[:path] ), :class => "right", :target => "_blank"
       = link_to "history", project_commits_path(@project, :path => params[:path]), :class => "right", :style => "margin-right:10px;"
       %br/
-  - if file.mime_type =~ /application|text/ && !Utils.binary?(file.data)
+  - if file.text?
     .view_file_content
-      - ft = handle_file_type(file.name, file.mime_type)
       :erb
-        <%= raw Albino.colorize(content, ft, :html, 'utf-8', "linenos=True") %>
-  - elsif file.mime_type =~ /image/
+        <%= raw file.colorize %>
+  - elsif file.image?
     .view_file_content_image
-      %img{ :src => "data:image/jpeg;base64,#{Base64.encode64(file.data)}"}
+      %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
   - else
     %p 
       %center No preview for this file type

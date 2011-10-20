@@ -1,4 +1,6 @@
 class Snippet < ActiveRecord::Base
+  include Utils::Colorize
+
   belongs_to :project
   belongs_to :author, :class_name => "User"
   has_many :notes, :as => :noteable
@@ -27,6 +29,11 @@ class Snippet < ActiveRecord::Base
       ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
       ".js", ".sh", ".coffee", ".yml", ".md"
     ]
+  end
+
+  def colorize
+    ft = handle_file_type(file_name)
+    Albino.colorize(content, ft, :html, 'utf-8', "linenos=True")
   end
 end
 # == Schema Information
