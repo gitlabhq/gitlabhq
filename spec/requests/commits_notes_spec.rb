@@ -17,7 +17,7 @@ describe "Issues" do
       click_button "Add note"
     end
 
-    it "should conatin new note" do
+    it "should contain new note" do
       page.should have_content("I commented this commit")
     end
   end
