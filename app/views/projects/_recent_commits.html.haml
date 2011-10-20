@@ -9,8 +9,8 @@
         = link_to truncate_commit_message(commit, 60), project_commit_path(@project, :id => commit.id) 
       
     %span
-      %span
-        [ #{commit.author} ]
+      %span.author
+        = commit.author.name.force_encoding("UTF-8")
       %cite
         = time_ago_in_words(commit.committed_date)
         ago
