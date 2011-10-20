@@ -1,9 +1,12 @@
-%ul#notes-list= render "notes/notes_list"
+- if controller.action_name == "wall"
+  %ul#notes-list= render "notes/notes_list"
 
-%br
-%br
-- if can? current_user, :write_note, @project
-  = render "notes/form"
+- else 
+  %ul#notes-list= render "notes/notes_list"
+  %br
+  %br
+  - if can? current_user, :write_note, @project
+    = render "notes/form"
 
 :javascript
   $('.delete-note').live('ajax:success', function() {  
@@ -23,7 +26,3 @@
     $(function(){
       var int =self.setInterval("updatePage()", 20000);
     });
-
-    function updatePage(){
-      $.ajax({type: "GET", url: location.href, dataType: "script"});
-    }

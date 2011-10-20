@@ -75,7 +75,7 @@ class ProjectsController < ApplicationController
         y.committed_date <=> x.committed_date
       end
 
-      @messages = project.notes.since(@date).limit(40).order("created_at DESC")
+      @messages = project.notes.since(@date).order("created_at DESC")
     else 
       return render "projects/empty"
     end
@@ -86,7 +86,14 @@ class ProjectsController < ApplicationController
   #
 
   def wall
-    @notes = @project.common_notes
+    @date = case params[:view]
+            when "week" then Date.today - 7.days
+            when "all" then nil
+            else Date.today
+            end
+
+    @notes = @project.common_notes.order("created_at DESC")
+    @notes = @notes.since(@date.at_beginning_of_day) if @date
     @note = Note.new
   end
 
