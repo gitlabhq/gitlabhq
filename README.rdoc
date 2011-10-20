@@ -32,6 +32,8 @@ sqlite as default db
 
   # install this library first
   sudo easy_install pygments
+  
+  echo "gitlabhq ALL = (git) NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
 
   sudo gem install bundler
   bundle
