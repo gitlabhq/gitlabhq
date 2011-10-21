@@ -60,24 +60,21 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    if @project.repo_exists?
-      @date = case params[:view]
-              when "week" then Date.today - 7.days
-              else Date.today
-              end.at_beginning_of_day
+    return render "projects/empty" unless @project.repo_exists?
+    @date = case params[:view]
+            when "week" then Date.today - 7.days
+            when "day" then Date.today
+            else nil
+            end
 
-      @heads = @project.repo.heads
-      @commits = @heads.map do |h| 
-        @project.repo.log(h.name, nil, :since => @date)
-      end.flatten.uniq { |c| c.id }
+    if @date
+      @date = @date.at_beginning_of_day
 
-      @commits.sort! do |x, y|
-        y.committed_date <=> x.committed_date
-      end
-
+      @commits = @project.commits_since(@date)
       @messages = project.notes.since(@date).order("created_at DESC")
-    else 
-      return render "projects/empty"
+    else
+      @commits = @project.fresh_commits
+      @messages = project.notes.fresh.limit(10)
     end
   end
 
@@ -86,15 +83,15 @@ class ProjectsController < ApplicationController
   #
 
   def wall
-    @date = case params[:view]
-            when "week" then Date.today - 7.days
-            when "all" then nil
-            else Date.today
-            end
-
-    @notes = @project.common_notes.order("created_at DESC")
-    @notes = @notes.since(@date.at_beginning_of_day) if @date
     @note = Note.new
+    @notes = @project.common_notes.order("created_at DESC")
+
+    @notes = case params[:view]
+             when "week" then @notes.since((Date.today - 7.days).at_beginning_of_day)
+             when "all" then @notes.all
+             when "day" then @notes.since(Date.today.at_beginning_of_day)
+             else @notes.fresh.limit(10)
+             end
   end
 
   #
