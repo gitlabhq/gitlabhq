@@ -31,7 +31,8 @@
       - if diff.deleted_file
         %strong{:id => "#{diff.b_path}"}= diff.a_path
       - else 
-        %strong{:id => "#{diff.b_path}"}= diff.b_path
+        = link_to tree_file_project_path(@project, @commit.id, diff.b_path) do
+          %strong{:id => "#{diff.b_path}"}= diff.b_path
       %br/
     .diff_file_content
       - if file.text?
