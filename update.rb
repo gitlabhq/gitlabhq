@@ -19,8 +19,8 @@ env = if envs.include?(ARGV[0])
 puts yellow "== RAILS ENV | #{env}"
 current_version = version
 puts yellow "Your version is #{current_version}"
-puts yellow "Check for new version: $ git pull origin"
-`git pull origin` # pull from origin
+puts yellow "Check for new version: $ git pull origin 1x"
+`git pull origin 1x` # pull from origin
 
 # latest version
 if version == current_version
