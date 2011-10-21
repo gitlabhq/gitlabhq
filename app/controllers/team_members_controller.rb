@@ -8,35 +8,16 @@ class TeamMembersController < ApplicationController
 
   def show
     @team_member = project.users_projects.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.js
-    end
   end
 
   def new
     @team_member = project.users_projects.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.js
-    end
   end
 
   def create
     @team_member = UsersProject.new(params[:team_member])
     @team_member.project = project
-
-    respond_to do |format|
-      if @team_member.save
-        format.html { redirect_to @team_member, notice: 'Team member was successfully created.' }
-        format.js
-      else
-        format.html { render action: "new" }
-        format.js
-      end
-    end
+    @team_member.save
   end
 
   def update
@@ -45,7 +26,12 @@ class TeamMembersController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.html { redirect_to team_project_path(@project)}
+      format.html do 
+        unless @team_member.valid?
+          flash[:alert] = "User should have at least one role"
+        end
+        redirect_to team_project_path(@project)
+      end
     end
   end
 
