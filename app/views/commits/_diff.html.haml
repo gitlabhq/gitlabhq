@@ -1,27 +1,5 @@
-.file_stats
-  - @commit.diffs.each do |diff|
-    - if diff.deleted_file
-      %span.removed_file
-        %a{:href => "##{diff.a_path}"}
-          = diff.a_path
-          = image_tag "blueprint_delete.png"
-    - elsif diff.renamed_file
-      %span.moved_file
-        %a{:href => "##{diff.b_path}"}
-          = diff.a_path
-          = "->"
-          = diff.b_path
-          = image_tag "blueprint_notice.png"
-    - elsif diff.new_file
-      %span.new_file
-        %a{:href => "##{diff.b_path}"}
-          = diff.b_path
-          = image_tag "blueprint_add.png"
-    - else
-      %span.edit_file
-        %a{:href => "##{diff.b_path}"}
-          = diff.b_path
-          = image_tag "blueprint_info.png"
+.file_stats= render "commits/diff_head"
+
 - @commit.diffs.each do |diff|
   - next if diff.diff.empty?
   - file = (@commit.tree / diff.b_path)
@@ -36,20 +14,7 @@
       %br/
     .diff_file_content
       - if file.text?
-        - lines_arr = diff.diff.lines.to_a
-        - line_old = lines_arr[2].match(/-(\d)/)[0].to_i.abs rescue 0
-        - line_new = lines_arr[2].match(/\+(\d)/)[0].to_i.abs rescue 0
-        - lines = lines_arr[3..-1].join
-        - lines.each_line do |line|
-          = diff_line(line, line_new, line_old)
-          - if line[0] == "+"
-            - line_new += 1
-          - elsif 
-            - line[0] == "-"
-            - line_old += 1
-          - else 
-            - line_new += 1
-            - line_old += 1
+        = render :partial => "commits/text_file", :locals => { :diff => diff }
       - elsif file.image?
         .diff_file_content_image
           %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
