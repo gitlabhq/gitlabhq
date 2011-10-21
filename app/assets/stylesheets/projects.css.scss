@@ -491,8 +491,14 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
       background: white;
     }
     p { 
-      margin-bottom: 3px;
-      font-size: 12px;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color:#111;
+    }
+  }
+  cite { 
+    &.ago { 
+      color:#666;
     }
   }
 }
@@ -515,7 +521,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 .note_content { 
   float:left;
-  width:750px;
+  width:650px;
 }
 
 .issue_notes { 
@@ -605,12 +611,39 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   }
 
 }
-.message{
+.commit,
+.message, 
+#notes-list{
   .author { 
     background: #eaeaea;
     color: #333;
     border: 1px solid #aaa;
     padding:1px 2px;
     margin-right:5px;
+  }
+}
+
+/* Note textare */
+#note_note { 
+  height:100px;
+  width:97%;
+  font-size:14px;
+}
+
+.wall_page { 
+  #note_note { 
+    height:25px;
+  }
+  .attach_holder { 
+    display:none;
+  }
+}
+
+.field_with_errors {
+  input[type="text"],
+  input[type="password"],
+  textarea
+  {
+    background: none repeat scroll 0 0 #FFBBBB
   }
 }

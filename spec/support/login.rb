@@ -3,7 +3,8 @@ module LoginMacros
     @user = User.create(:email => "user#{User.count}@mail.com", 
                         :name => "John Smith",
                         :password => "123456",
-                        :password_confirmation => "123456")
+                        :password_confirmation => "123456",
+                        :skype => 'user_skype')
  
     if role == :admin 
       @user.admin = true
