@@ -1,4 +1,3 @@
-- require "utils"
 .view_file
   .view_file_header
     %strong
@@ -9,7 +8,7 @@
   - if ! file.binary?
     .view_file_content
       :erb
-        <%= raw file.colorize() %>
+        <%= raw file.colorize(:options => {:linenos => 'True'}) %>
   - elsif file.image?
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
