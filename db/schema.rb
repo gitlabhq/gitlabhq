@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111019212429) do
+ActiveRecord::Schema.define(:version => 20111021101550) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -82,9 +82,9 @@ ActiveRecord::Schema.define(:version => 20111019212429) do
     t.string   "name"
     t.boolean  "admin",                                 :default => false, :null => false
     t.integer  "projects_limit",                        :default => 10
-    t.string   "skype"
-    t.string   "linkedin"
-    t.string   "twitter"
+    t.string   "skype",                                 :default => "",    :null => false
+    t.string   "linkedin",                              :default => "",    :null => false
+    t.string   "twitter",                               :default => "",    :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
