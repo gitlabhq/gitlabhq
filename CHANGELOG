@@ -1,4 +1,6 @@
 v 1.1.0
+  - project dashboard
+  - wall redesigned
   - feature: code snippets
   - fixed horizontal scroll on file preview
   - fixed app crash if commit message has invalid chars

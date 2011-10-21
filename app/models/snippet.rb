@@ -1,4 +1,6 @@
 class Snippet < ActiveRecord::Base
+  include Utils::Colorize
+
   belongs_to :project
   belongs_to :author, :class_name => "User"
   has_many :notes, :as => :noteable
@@ -27,6 +29,10 @@ class Snippet < ActiveRecord::Base
       ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
       ".js", ".sh", ".coffee", ".yml", ".md"
     ]
+  end
+
+  def colorize
+    system_colorize(content, file_name)
   end
 end
 # == Schema Information

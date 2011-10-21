@@ -73,7 +73,7 @@ describe "Projects" do
     end
 
     it "should beahave like dashboard" do 
-      page.should have_content("Recent history")
+      page.should have_content("History")
     end
 
   end
