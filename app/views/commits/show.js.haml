@@ -1,6 +1,8 @@
-:plain
+-#:plain
   $("#side-commit-preview").remove();
   var side = $("<div id='side-commit-preview'></div>");
   side.html("#{escape_javascript(render "commits/show")}");
   $("##{dom_id(@project)}").parent().append(side);
   $("##{dom_id(@project)}").addClass("span-14");
+:plain 
+  $("#notes-list").html("#{escape_javascript(render(:partial => 'notes/notes_list'))}");

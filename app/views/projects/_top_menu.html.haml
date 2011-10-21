@@ -5,7 +5,7 @@
     %span= link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
     %span= link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
     %span
-      = link_to team_project_path(@project), :class => current_page?(:controller => "projects", :action => "team", :id => @project) ?  "current" : nil do 
+      = link_to team_project_path(@project), :class => (current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members") ? "current" : nil do
         Team
         - if @project.users_projects.count > 0
           %span{ :class => "top_menu_count" }= @project.users_projects.count

@@ -35,7 +35,8 @@ class Project < ActiveRecord::Base
             :presence => true
 
   validate :check_limit
-  
+  validate :repo_name
+
   after_destroy :destroy_gitosis_project
   after_save :update_gitosis_project
 
@@ -126,6 +127,34 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def heads 
+    @heads ||= repo.heads
+  end
+
+  def fresh_commits
+    commits = heads.map do |h| 
+      repo.commits(h.name, 10)
+    end.flatten.uniq { |c| c.id }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits[0..10]
+  end
+
+  def commits_since(date)
+    commits = heads.map do |h| 
+      repo.log(h.name, nil, :since => date)
+    end.flatten.uniq { |c| c.id }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits
+  end
+
   def tree(fcommit, path = nil)
     fcommit = commit if fcommit == :head
     tree = fcommit.tree
@@ -138,6 +167,12 @@ class Project < ActiveRecord::Base
     end
   rescue 
     errors[:base] << ("Cant check your ability to create project")
+  end
+
+  def repo_name
+    if path == "gitosis-admin"
+      errors.add(:path, " like 'gitosis-admin' is not allowed")
+    end
   end
 
   def valid_repo?
