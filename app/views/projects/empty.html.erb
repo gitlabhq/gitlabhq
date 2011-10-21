@@ -1,12 +1,17 @@
 <div class="">
   <div class="git-empty">
     <h2>Git global setup:</h2>
-<% setup_str = <<eos
+<%
+
+bash_lexer = Pygments::Lexer[:bash]
+
+setup_str = <<eos
 git config --global user.name "#{current_user.name}"
 git config --global user.email  "#{current_user.email}"
 eos
+
 %>
-    <%= raw Albino.colorize(setup_str, :bash) %>
+<%= raw bash_lexer.highlight(setup_str) %>
     <br />
     <br />
     <h2>Next steps:</h2>
@@ -21,7 +26,7 @@ git remote add origin #{@project.url_to_repo}
 git push -u origin master
 eos
 %>
-    <%= raw Albino.colorize(repo_setup_str, :bash) %>
+    <%= raw bash_lexer.highlight(repo_setup_str) %>
 
     <br /><br />
     <h2>Existing Git Repo?</h2>
@@ -31,7 +36,7 @@ git remote add origin   #{@project.url_to_repo}
 git push -u origin master
 eos
 %>
-    <%= raw Albino.colorize(exist_repo_setup_str, :bash) %>
+    <%= raw bash_lexer.highlight(exist_repo_setup_str) %>
 
     <br /><br />
     <h2>Remove this project?</h2>

@@ -5,11 +5,14 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: git://github.com/gitlabhq/albino.git
-  revision: 118380924969f3a856659f86ea1f40c1ba7bfcb1
+  remote: git://github.com/github/linguist.git
+  revision: d8903afc12b1f11a82d4b4bce5b677a039b60bf4
   specs:
-    albino (1.3.3)
-      posix-spawn (>= 0.3.6)
+    linguist (1.0.0)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.2.3)
+      mime-types (~> 1.16)
+      pygments.rb (~> 0.2.3)
 
 GIT
   remote: git://github.com/gitlabhq/grit.git
@@ -72,6 +75,7 @@ GEM
       ZenTest (= 4.5)
     awesome_print (0.4.0)
     bcrypt-ruby (3.0.1)
+    blankslate (2.1.2.4)
     builder (3.0.0)
     capybara (1.0.1)
       mime-types (>= 1.16)
@@ -82,6 +86,7 @@ GEM
       xpath (~> 0.1.4)
     carrierwave (0.5.7)
       activesupport (~> 3.0)
+    charlock_holmes (0.6.8)
     childprocess (0.2.2)
       ffi (~> 1.0.6)
     coffee-rails (3.1.1)
@@ -100,6 +105,7 @@ GEM
       warden (~> 1.0.3)
     diff-lcs (1.1.3)
     erubis (2.7.0)
+    escape_utils (0.2.4)
     eventmachine (0.12.10)
     execjs (1.2.6)
       multi_json (~> 1.0)
@@ -138,6 +144,8 @@ GEM
     orm_adapter (0.0.5)
     polyglot (0.3.2)
     posix-spawn (0.3.6)
+    pygments.rb (0.2.3)
+      rubypython (>= 0.5.1)
     rack (1.3.2)
     rack-cache (1.0.3)
       rack (>= 0.4)
@@ -189,6 +197,9 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    rubypython (0.5.1)
+      blankslate (>= 2.1.2.3)
+      ffi (~> 1.0.7)
     rubyzip (0.9.4)
     sass (3.1.7)
     sass-rails (3.1.1)
@@ -242,7 +253,6 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_list
-  albino!
   annotate!
   autotest
   autotest-rails
@@ -260,6 +270,7 @@ DEPENDENCIES
   jquery-rails
   kaminari
   launchy
+  linguist!
   rails (= 3.1.0)
   rails-footnotes (>= 3.7.5.rc4)
   rspec-rails

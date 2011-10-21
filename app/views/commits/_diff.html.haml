@@ -35,7 +35,7 @@
         %strong{:id => "#{diff.b_path}"}= diff.b_path
       %br/
     .diff_file_content
-      - if file.mime_type =~ /application|text/ && !Utils.binary?(file.data)
+      - if ! file.binary?
         - lines_arr = diff.diff.lines.to_a
         - line_old = lines_arr[2].match(/-(\d)/)[0].to_i.abs rescue 0
         - line_new = lines_arr[2].match(/\+(\d)/)[0].to_i.abs rescue 0
@@ -50,9 +50,9 @@
           - else 
             - line_new += 1
             - line_old += 1
-      - elsif file.mime_type =~ /image/
+      - elsif file.image?
         .diff_file_content_image
-          %img{:src => "data:image/jpeg;base64,#{Base64.encode64(file.data)}"}
+          %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
       - else
         %p 
           %center No preview for this file type

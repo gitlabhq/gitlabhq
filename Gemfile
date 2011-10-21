@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source :rubygems
 
 gem 'rails', '3.1.0'
 
@@ -15,11 +15,11 @@ gem 'therubyracer'
 gem 'faker'
 gem 'seed-fu', :git => 'git://github.com/mbleigh/seed-fu.git'
 gem "inifile"
-gem "albino", :git => "git://github.com/gitlabhq/albino.git"
 gem "kaminari"
 gem "thin"
 gem "git"
 gem "acts_as_list"
+gem "linguist", :git => "git://github.com/github/linguist.git"
 
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"
@@ -44,8 +44,8 @@ group :development, :test do
   gem 'launchy'
 end
 
-
 group :test do
   gem 'turn', :require => false
   gem 'simplecov', :require => false
 end
+
