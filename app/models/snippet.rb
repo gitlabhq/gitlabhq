@@ -32,8 +32,7 @@ class Snippet < ActiveRecord::Base
   end
 
   def colorize
-    ft = handle_file_type(file_name)
-    Albino.colorize(content, ft, :html, 'utf-8', "linenos=True")
+    system_colorize(content, file_name)
   end
 end
 # == Schema Information
