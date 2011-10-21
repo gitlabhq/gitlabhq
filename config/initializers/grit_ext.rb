@@ -1,5 +1,5 @@
 require 'grit'
-require 'albino'
+require 'pygments'
 require "utils"
 
 Grit::Blob.class_eval do
