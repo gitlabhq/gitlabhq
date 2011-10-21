@@ -15,7 +15,7 @@ gem 'therubyracer'
 gem 'faker'
 gem 'seed-fu', :git => 'git://github.com/mbleigh/seed-fu.git'
 gem "inifile"
-gem "albino", :git => "git://github.com/gitlabhq/albino.git"
+gem "pygments.rb", "0.2.3"
 gem "kaminari"
 gem "thin"
 gem "git"

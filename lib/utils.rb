@@ -18,8 +18,12 @@ module Utils
 
   module Colorize
     def colorize
-      ft = handle_file_type(name, mime_type)
-      Albino.colorize(data, ft, :html, 'utf-8', "linenos=True")
+      system_colorize(data, name)
+    end
+
+    def system_colorize(data, file_name)
+      ft = handle_file_type(file_name)
+      Pygments.highlight(data, :lexer => ft, :options => { :encoding => 'utf-8', :linenos => 'True' })
     end
 
     def handle_file_type(file_name, mime_type = nil)
