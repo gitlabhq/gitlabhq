@@ -35,7 +35,6 @@ class Project < ActiveRecord::Base
             :presence => true
 
   validate :check_limit
-  
   validate :repo_name
 
   after_destroy :destroy_gitosis_project
@@ -172,7 +171,7 @@ class Project < ActiveRecord::Base
 
   def repo_name
     if path == "gitosis-admin"
-      errors.add(:path, "Project path like 'gitosis-admin' is not allowed")
+      errors.add(:path, " like 'gitosis-admin' is not allowed")
     end
   end
 
