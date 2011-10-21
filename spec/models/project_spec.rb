@@ -4,11 +4,15 @@ describe Project do
   describe "Associations" do
     it { should have_many(:users) }
     it { should have_many(:users_projects) }
+    it { should have_many(:issues) }
+    it { should have_many(:notes) }
+    it { should have_many(:snippets) }
   end
 
   describe "Validation" do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:path) }
+    it { should validate_presence_of(:code) }
   end
 
   describe "Respond to" do
@@ -29,6 +33,11 @@ describe Project do
     it { should respond_to(:repo) }
     it { should respond_to(:tags) }
     it { should respond_to(:commit) }
+  end
+
+  it "should not allow 'gitosis-admin' as repo name" do
+    should allow_value("blah").for(:path)
+    should_not allow_value("gitosis-admin").for(:path)
   end
 
   it "should return valid url to repo" do 
