@@ -83,16 +83,15 @@ class ProjectsController < ApplicationController
   #
 
   def wall
-    @date = case params[:view]
-            when "week" then Date.today - 7.days
-            when "all" then nil
-            when "day" then Date.today
-            else nil
-            end
-
-    @notes = @project.common_notes.order("created_at DESC")
-    @notes = @date ? @notes.since(@date.at_beginning_of_day) : @notes.fresh.limit(10)
     @note = Note.new
+    @notes = @project.common_notes.order("created_at DESC")
+
+    @notes = case params[:view]
+             when "week" then @notes.since((Date.today - 7.days).at_beginning_of_day)
+             when "all" then @notes.all
+             when "day" then @notes.since(Date.today.at_beginning_of_day)
+             else @notes.fresh.limit(10)
+             end
   end
 
   #
