@@ -7,6 +7,15 @@ describe "TeamMembers" do
     @project.add_access(@user, :read, :admin)
   end
 
+  describe "View profile" do
+    it "should be available" do
+      visit(team_project_path(@project))
+      find(:xpath, "//table[@id='team-table']//a[1]").click
+      page.should have_content @user.skype
+      page.should_not have_content 'Twitter'
+    end
+  end
+
   describe "New Team member", :js => true do 
     before do 
       @user_1 = Factory :user
