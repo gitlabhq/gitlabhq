@@ -638,3 +638,12 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     display:none;
   }
 }
+
+.field_with_errors {
+  input[type="text"],
+  input[type="password"],
+  textarea
+  {
+    background: none repeat scroll 0 0 #FFBBBB
+  }
+}
