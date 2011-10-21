@@ -1,8 +1,10 @@
 - user = member.user
 %tr{:id => dom_id(member)}
   %td
-    = image_tag gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding:0 5px;"
-    = truncate user.name, :lenght => 16
+    = link_to image_tag(gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding:0 5px;"), project_team_member_path(@project, member)
+
+    = link_to truncate(user.name, :lenght => 16), project_team_member_path(@project, member)
+
   %td= truncate user.email, :lenght => 16
   - if can? current_user, :admin_project, @project
     = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f| 

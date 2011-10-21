@@ -1,8 +1,6 @@
 = form_for(@project, :remote => true) do |f|
   %div.form_content
-    - if @project.new_record?
-      %h1 New Project
-    - else
+    - unless @project.new_record?
       %h1 Edit Project
     - if @project.errors.any?
       #error_explanation
@@ -26,7 +24,7 @@
         %td 
           .left= f.label :code
           %cite.right http://yourserver/
-        %td= f.text_field :code, :placeholder => "example (3..12 symbols only)"
+        %td= f.text_field :code, :placeholder => "example"
     .field
       = f.label :description
       %br/

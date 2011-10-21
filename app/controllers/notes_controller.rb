@@ -4,7 +4,6 @@ class NotesController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_write_note!, :only => [:create] 
-  before_filter :authorize_admin_note!, :only => [:destroy] 
 
   respond_to :js
 
@@ -25,6 +24,9 @@ class NotesController < ApplicationController
 
   def destroy
     @note = @project.notes.find(params[:id])
+
+    return access_denied! unless can?(current_user, :admin_note, @note)
+
     @note.destroy
 
     respond_to do |format|
@@ -41,6 +43,8 @@ class NotesController < ApplicationController
         Notify.note_commit_email(u, @note).deliver
       when "Issue" then
         Notify.note_issue_email(u, @note).deliver
+      when "Snippet"
+        true
       else
         Notify.note_wall_email(u, @note).deliver
       end

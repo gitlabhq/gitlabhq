@@ -1,14 +1,32 @@
+v 1.1.0
+  - project dashboard
+  - wall redesigned
+  - feature: code snippets
+  - fixed horizontal scroll on file preview
+  - fixed app crash if commit message has invalid chars
+  - bugfix & code cleaning
+
+v 1.0.2
+  - fixed bug with empty project 
+  - added adv validation for project path & code
+  - feature: issues can be sortable
+  - bugfix
+  - username dispalyed on top panel
+
 v 1.0.1
   - fixed: with invalid source code for commit
   - fixed: lose branch/tag selection when use tree navigateion
   - when history clicked - display path
   - bug fix & code cleaning
+
 v 1.0.0
   - bug fix
   - projects preview mode
+
 v 0.9.6
   - css fix
   - new repo empty tree until restart server - fixed
+
 v 0.9.4
   - security improved
   - authorization improved
@@ -24,6 +42,7 @@ v 0.9.1
   - updated app name
   - issue redesigned
   - issue can be edit
+
 v 0.8.0
   - sytax highlight for main file types
   - redesign

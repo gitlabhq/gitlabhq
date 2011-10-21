@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111015154310) do
+ActiveRecord::Schema.define(:version => 20111021101550) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -56,6 +56,16 @@ ActiveRecord::Schema.define(:version => 20111015154310) do
     t.integer  "owner_id"
   end
 
+  create_table "snippets", :force => true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "author_id",  :null => false
+    t.integer  "project_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_name"
+  end
+
   create_table "users", :force => true do |t|
     t.string   "email",                                 :default => "",    :null => false
     t.string   "encrypted_password",     :limit => 128, :default => "",    :null => false
@@ -72,6 +82,9 @@ ActiveRecord::Schema.define(:version => 20111015154310) do
     t.string   "name"
     t.boolean  "admin",                                 :default => false, :null => false
     t.integer  "projects_limit",                        :default => 10
+    t.string   "skype",                                 :default => "",    :null => false
+    t.string   "linkedin",                              :default => "",    :null => false
+    t.string   "twitter",                               :default => "",    :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

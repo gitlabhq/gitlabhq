@@ -37,5 +37,6 @@ end
 #  created_at  :datetime
 #  updated_at  :datetime
 #  closed      :boolean         default(FALSE), not null
+#  position    :integer         default(0)
 #
 

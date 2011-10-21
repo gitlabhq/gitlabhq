@@ -60,14 +60,21 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @repo = project.repo
-    @commit = @repo.commits.first
-    @tree = @commit.tree
-    @tree = @tree / params[:path] if params[:path]
+    return render "projects/empty" unless @project.repo_exists?
+    @date = case params[:view]
+            when "week" then Date.today - 7.days
+            when "day" then Date.today
+            else nil
+            end
 
-  rescue Grit::NoSuchPathError => ex
-    respond_to do |format|
-      format.html {render "projects/empty"}
+    if @date
+      @date = @date.at_beginning_of_day
+
+      @commits = @project.commits_since(@date)
+      @messages = project.notes.since(@date).order("created_at DESC")
+    else
+      @commits = @project.fresh_commits
+      @messages = project.notes.fresh.limit(10)
     end
   end
 
@@ -76,8 +83,15 @@ class ProjectsController < ApplicationController
   #
 
   def wall
-    @notes = @project.common_notes
     @note = Note.new
+    @notes = @project.common_notes.order("created_at DESC")
+
+    @notes = case params[:view]
+             when "week" then @notes.since((Date.today - 7.days).at_beginning_of_day)
+             when "all" then @notes.all
+             when "day" then @notes.since(Date.today.at_beginning_of_day)
+             else @notes.fresh.limit(10)
+             end
   end
 
   #

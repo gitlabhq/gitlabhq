@@ -21,4 +21,13 @@ module CommitsHelper
     link_to "More", project_commits_path(@project, :offset =>  offset.to_i + limit.to_i, :limit => limit),
       :remote => true, :class => "lite_button vm", :style => "text-align:center; width:930px; ", :id => "more-commits-link"
   end
+
+  # Cause some errors with trucate & encoding use this method
+  def truncate_commit_message(commit, size = 60)
+    message = commit.message
+    message.length > size ? (message[0..(size - 1)] + "...") : message
+  # if special characters occurs
+  rescue
+    commit.message
+  end
 end

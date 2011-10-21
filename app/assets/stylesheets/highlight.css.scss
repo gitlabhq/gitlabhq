@@ -22,8 +22,8 @@ td.linenos{
 
 .highlight{
   background:none;
-  padding:10px 0px 0px 0;
-  margin-left:10px;
+  padding:10px 0px 0px 10px;
+  margin-left:0px;
 }
 .highlight pre{
 }
@@ -43,7 +43,7 @@ td.linenos {
 }
 
 td.code .highlight { 
-  overflow-x: scroll;
+  overflow: auto;
 }
 table.highlighttable pre{
   padding:0;

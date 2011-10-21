@@ -22,6 +22,10 @@ class Note < ActiveRecord::Base
 
   scope :common, where(:noteable_id => nil)
 
+  scope :last_week, where("created_at  >= :date", :date => (Date.today - 7.days))
+  scope :since, lambda { |day| where("created_at  >= :date", :date => (day)) }
+  scope :fresh, order("created_at DESC")
+
   mount_uploader :attachment, AttachmentUploader
 end
 # == Schema Information

@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   has_many :users_projects, :dependent => :destroy
   has_many :users, :through => :users_projects
   has_many :notes, :dependent => :destroy
+  has_many :snippets, :dependent => :destroy
 
   validates :name,
             :uniqueness => true,
@@ -123,6 +124,34 @@ class Project < ActiveRecord::Base
     else 
       repo.commits.first
     end
+  end
+
+  def heads 
+    @heads ||= repo.heads
+  end
+
+  def fresh_commits
+    commits = heads.map do |h| 
+      repo.commits(h.name, 10)
+    end.flatten.uniq { |c| c.id }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits[0..10]
+  end
+
+  def commits_since(date)
+    commits = heads.map do |h| 
+      repo.log(h.name, nil, :since => date)
+    end.flatten.uniq { |c| c.id }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits
   end
 
   def tree(fcommit, path = nil)

@@ -1,10 +1,11 @@
 %div.top_project_menu
   -#%span= link_to @project.code.capitalize, @project, :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
   - if @project.repo_exists?
-    %span= link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) || current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
+    %span= link_to image_tag("home.png", :width => 20), project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
+    %span= link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
     %span= link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
     %span
-      = link_to team_project_path(@project), :class => current_page?(:controller => "projects", :action => "team", :id => @project) ?  "current" : nil do 
+      = link_to team_project_path(@project), :class => (current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members") ? "current" : nil do
         Team
         - if @project.users_projects.count > 0
           %span{ :class => "top_menu_count" }= @project.users_projects.count
@@ -18,6 +19,11 @@
       Wall
       - if @project.common_notes.count > 0
         %span{ :class => "top_menu_count" }= @project.common_notes.count
+  %span
+    = link_to project_snippets_path(@project), :class => (controller.controller_name == "snippets") ? "current" : nil do
+      Snippets
+      - if @project.snippets.count > 0
+        %span{ :class => "top_menu_count" }= @project.snippets.count
 
   - if @commit
     %span= link_to truncate(commit_name(@project,@commit), :length => 15), project_commit_path(@project, :id => @commit.id), :class => current_page?(:controller => "commits", :action => "show", :project_id => @project, :id => @commit.id) ? "current" : nil

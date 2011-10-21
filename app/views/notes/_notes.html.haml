@@ -1,15 +1,28 @@
-%ul#notes-list
-  - @notes.each do |note|
-    - next unless note.author
-    = render :partial => "notes/show", :locals => {:note => note}
+- if controller.action_name == "wall"
+  %ul#notes-list= render "notes/notes_list"
 
-%br
-%br
-- if can? current_user, :write_note, @project
-  = render "notes/form"
+- else 
+  %ul#notes-list= render "notes/notes_list"
+  %br
+  %br
+  - if can? current_user, :write_note, @project
+    = render "notes/form"
 
 :javascript
   $('.delete-note').live('ajax:success', function() {  
     $(this).closest('li').fadeOut(); });  
 
+  $("#new_note").live("ajax:before", function(){
+    $("#submit_note").attr("disabled", "disabled"); 
+  })
 
+  $("#new_note").live("ajax:complete", function(){
+    $("#submit_note").removeAttr("disabled"); 
+  })
+  
+
+- if ["issues", "projects"].include?(controller.controller_name)
+  :javascript
+    $(function(){
+      var int =self.setInterval("updatePage()", 20000);
+    });
