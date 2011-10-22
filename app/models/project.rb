@@ -35,7 +35,8 @@ class Project < ActiveRecord::Base
             :presence => true
 
   validate :check_limit
-  
+  validate :repo_name
+
   after_destroy :destroy_gitosis_project
   after_save :update_gitosis_project
 
@@ -166,6 +167,12 @@ class Project < ActiveRecord::Base
     end
   rescue 
     errors[:base] << ("Cant check your ability to create project")
+  end
+
+  def repo_name
+    if path == "gitosis-admin"
+      errors.add(:path, " like 'gitosis-admin' is not allowed")
+    end
   end
 
   def valid_repo?

@@ -29,19 +29,37 @@ describe "TeamMembers" do
 
     describe "fill in" do 
       before do
-        check "team_member_read"
         click_link "Select user"
         click_link @user_1.name
-        #select @user_1.name, :from => "team_member_user_id"
+
+        within "#team_member_new" do 
+          check "team_member_read"
+          check "team_member_write"
+        end
       end
 
-      it { expect { click_button "Save" }.to change {UsersProject.count}.by(1) }
+      it { expect { click_button "Save";sleep(1) }.to change {UsersProject.count}.by(1) }
 
       it "should add new member to table" do 
         click_button "Save"
+        @member = UsersProject.last
 
-        page.should_not have_content("Add new member")
         page.should have_content @user_1.name
+
+        @member.read.should be_true
+        @member.write.should be_true
+        @member.admin.should be_false
+      end
+
+      it "should not allow creation without access selected" do 
+        within "#team_member_new" do 
+          uncheck "team_member_read"
+          uncheck "team_member_write"
+          uncheck "team_member_admin"
+        end
+
+        expect { click_button "Save" }.to_not change {UsersProject.count}
+        page.should have_content("Please choose at least one Role in the Access list")
       end
     end
   end
