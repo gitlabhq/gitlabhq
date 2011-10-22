@@ -42,7 +42,7 @@ class Gitosis
   end
 
   def destroy_project(project)
-    `rm -Rf #{project.path_to_repo}`
+    `sudo -u git rm -Rf #{project.path_to_repo}`
     
     conf = IniFile.new(File.join(@local_dir,'gitosis','gitosis.conf'))
 
