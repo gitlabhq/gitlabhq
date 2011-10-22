@@ -144,4 +144,26 @@ describe "Issues" do
       end
     end
   end
+
+  describe "Search issue", :js => true do
+    before do
+      ['foobar', 'foobar2', 'gitlab'].each do |title|
+        @issue = Factory :issue,
+          :author => @user,
+          :assignee => @user,
+          :project => project,
+          :title => title
+        @issue.save
+      end
+    end
+      
+    it "should search and return the correct results" do  
+      visit project_issues_path(project)
+      fill_in "issue_search", :with => "foobar"
+      page.should have_content 'foobar'
+      page.should have_content 'foobar2'
+      page.should_not have_content 'gitlab'
+    end
+  end
+
 end

@@ -47,6 +47,9 @@ Gitlab::Application.routes.draw do
       collection do
         post :sort
       end
+      collection do
+        get :search
+      end
     end
     resources :notes, :only => [:create, :destroy]
   end
