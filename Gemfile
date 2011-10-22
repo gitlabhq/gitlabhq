@@ -15,11 +15,12 @@ gem 'therubyracer'
 gem 'faker'
 gem 'seed-fu', :git => 'git://github.com/mbleigh/seed-fu.git'
 gem "inifile"
-gem "albino", :git => "git://github.com/gitlabhq/albino.git"
+gem "pygments.rb", "0.2.3"
 gem "kaminari"
 gem "thin"
 gem "git"
 gem "acts_as_list"
+gem "mysql2"
 
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"

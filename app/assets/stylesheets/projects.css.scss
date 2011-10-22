@@ -491,8 +491,14 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
       background: white;
     }
     p { 
-      margin-bottom: 3px;
-      font-size: 12px;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color:#111;
+    }
+  }
+  cite { 
+    &.ago { 
+      color:#666;
     }
   }
 }
@@ -515,7 +521,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 .note_content { 
   float:left;
-  width:750px;
+  width:650px;
 }
 
 .issue_notes { 
@@ -557,21 +563,78 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   img { 
     padding-right:10px;
   }
-  background: #fff !important;
-  background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#EAEAEA)) !important;
-  background: -moz-linear-gradient(top,#fff,#EAEAEA) !important;
-  background: transparent 9 !important;
 
   float: left;
   margin: 0 20px 20px 0px;
-  padding: 5px 5px;;
+  padding: 5px 0px;;
   width: 420px;
+
+  &.dash_wall{
+    border-bottom: 2px solid orange;
+    span { 
+      background: orange;
+      color:black;
+    }
+  }
+
+  &.dash_issue{
+    border-bottom: 2px solid #ffbbbb;
+    span { 
+      background: #ffbbbb;
+    }
+  }
+  &.dash_commit{
+    border-bottom: 2px solid #bbbbff;
+
+    span{ 
+      background: #bbbbff;
+    }
+  }
+
+  &.dash_snippet{
+    border-bottom: 2px solid #bbffbb;
+
+    span{ 
+      background: #bbffbb;
+    }
+  }
+
+
+  span{ 
+    border: 1px solid #aaa;
+    color:black;
+    padding:1px 4px;
+  }
 
   h4 { 
     margin-bottom:3px;
   }
 
-  span { 
-    
+}
+.commit,
+.message, 
+#notes-list{
+  .author { 
+    background: #eaeaea;
+    color: #333;
+    border: 1px solid #aaa;
+    padding:1px 2px;
+    margin-right:5px;
+  }
+}
+
+/* Note textare */
+#note_note { 
+  height:100px;
+  width:97%;
+  font-size:14px;
+}
+
+.wall_page { 
+  #note_note { 
+    height:25px;
+  }
+  .attach_holder { 
+    display:none;
   }
 }

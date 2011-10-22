@@ -8,6 +8,7 @@ module ProjectsHelper
     case type
     when "Issue" then @project.issues.find(id)
     when "Commit" then @project.repo.commits(id).first
+    when "Snippet" then @project.snippets.find(id)
     else
       true
     end

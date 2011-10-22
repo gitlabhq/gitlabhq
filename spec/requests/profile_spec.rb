@@ -14,6 +14,22 @@ describe "Profile" do
     it { page.should have_content(@user.email) }
   end
 
+  describe "Profile update" do
+    before do 
+      visit profile_path
+      fill_in "user_skype", :with => "testskype"
+      fill_in "user_linkedin", :with => "testlinkedin"      
+      fill_in "user_twitter", :with => "testtwitter"
+      click_button "Save"
+      @user.reload     
+    end
+
+    it { @user.skype.should == 'testskype' }
+    it { @user.linkedin.should == 'testlinkedin' }
+    it { @user.twitter.should == 'testtwitter' }
+  end
+
+
   describe "Password update" do
     before do 
       visit profile_password_path

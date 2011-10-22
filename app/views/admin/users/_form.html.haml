@@ -25,13 +25,26 @@
           = f.label :password_confirmation
           %br
           = f.password_field :password_confirmation
-      .span-11
-        .field.prepend-top.append-bottom
+        .field.prepend-top
           = f.check_box :admin
           = f.label :admin
+      .span-11
         .field.prepend-top
           = f.text_field :projects_limit, :class => "small_input"
           = f.label :projects_limit
+
+        .field
+          = f.label :skype
+          %br
+          = f.text_field :skype
+        .field
+          = f.label :linkedin
+          %br
+          = f.text_field :linkedin
+        .field
+          = f.label :twitter
+          %br
+          = f.text_field :twitter 
     .clear
     %br
     .actions

@@ -78,6 +78,13 @@ class IssuesController < ApplicationController
     render :nothing => true
   end
 
+  def search
+    @project = Project.find(params['project'])
+    @issues = @project.issues.where("title LIKE ? OR content LIKE ?", "%#{params['terms']}%", "%#{params['terms']}%")
+
+    render :partial => 'issues'
+  end
+
   protected 
 
   def issue

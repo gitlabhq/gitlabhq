@@ -1,10 +1,13 @@
 %div
-  %h2.left Recent history
+  %h2.left History
   .right
     = form_tag project_path(@project), :method => :get do
       .span-2
-        = radio_button_tag :view, "day", (params[:view] || "day") == "day", :onclick => "this.form.submit()", :id => "day_view"
-        = label_tag "day_view","Day"
+        = radio_button_tag :view, "recent", (params[:view] || "recent") == "recent", :onclick => "this.form.submit()", :id => "recent_view"
+        = label_tag "recent_view","Recent"
+      .span-2
+        = radio_button_tag :view, "day", params[:view] == "day", :onclick => "this.form.submit()", :id => "day_view"
+        = label_tag "day_view","Today"
       .span-2
         = radio_button_tag :view, "week", params[:view] == "week", :onclick => "this.form.submit()", :id => "week_view"
         = label_tag "week_view","Week"
@@ -15,6 +18,6 @@
   =render "projects/recent_commits"
 
 .span-11.right
-  %h3 Messages
+  %h3 Talk
   =render "projects/recent_messages"
 

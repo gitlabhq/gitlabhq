@@ -5,13 +5,6 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: git://github.com/gitlabhq/albino.git
-  revision: 118380924969f3a856659f86ea1f40c1ba7bfcb1
-  specs:
-    albino (1.3.3)
-      posix-spawn (>= 0.3.6)
-
-GIT
   remote: git://github.com/gitlabhq/grit.git
   revision: ff015074ef35bd94cba943f9c0f98e161ab5851c
   specs:
@@ -72,6 +65,7 @@ GEM
       ZenTest (= 4.5)
     awesome_print (0.4.0)
     bcrypt-ruby (3.0.1)
+    blankslate (2.1.2.4)
     builder (3.0.0)
     capybara (1.0.1)
       mime-types (>= 1.16)
@@ -134,10 +128,13 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     multi_json (1.0.3)
+    mysql2 (0.3.7)
     nokogiri (1.5.0)
     orm_adapter (0.0.5)
     polyglot (0.3.2)
     posix-spawn (0.3.6)
+    pygments.rb (0.2.3)
+      rubypython (>= 0.5.1)
     rack (1.3.2)
     rack-cache (1.0.3)
       rack (>= 0.4)
@@ -189,6 +186,9 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    rubypython (0.5.1)
+      blankslate (>= 2.1.2.3)
+      ffi (~> 1.0.7)
     rubyzip (0.9.4)
     sass (3.1.7)
     sass-rails (3.1.1)
@@ -242,7 +242,6 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_list
-  albino!
   annotate!
   autotest
   autotest-rails
@@ -260,6 +259,8 @@ DEPENDENCIES
   jquery-rails
   kaminari
   launchy
+  mysql2
+  pygments.rb (= 0.2.3)
   rails (= 3.1.0)
   rails-footnotes (>= 3.7.5.rc4)
   rspec-rails

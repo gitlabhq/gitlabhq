@@ -16,3 +16,7 @@ $(function(){
   $('select#branch').selectmenu({style:'popup', width:200});
   $('select#tag').selectmenu({style:'popup', width:200});
 });
+
+function updatePage(){
+  $.ajax({type: "GET", url: location.href, dataType: "script"});
+}

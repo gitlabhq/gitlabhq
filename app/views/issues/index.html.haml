@@ -1,6 +1,10 @@
 %div
   - if can? current_user, :write_issue, @project
-    .left= link_to 'New Issue', new_project_issue_path(@project), :remote => true, :class => "lbutton vm"
+    .left
+      = form_tag search_project_issues_path(@project), :method => :get, :remote => true do
+        = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
+      = link_to 'New Issue', new_project_issue_path(@project), :remote => true, :class => "lbutton vm"
+    
   .right
     = form_tag project_issues_path(@project), :method => :get do
       .span-2
@@ -20,6 +24,18 @@
   #issues-table-holder= render "issues"
   %br
 :javascript
+  $('.issue_search').keyup(function() {
+    var terms = $(this).val();
+    var project_id = 1;
+
+    if (terms.length >= 2) {
+      $.get($(this).parent().attr('action'), { 'terms': terms, project: project_id  }, function(response) {
+        $('#issues-table').html(response);
+        setSortable();
+      });
+    }
+  });
+
   $('.delete-issue').live('ajax:success', function() {  
     $(this).closest('tr').fadeOut(); });  
   

@@ -13,6 +13,7 @@ Gitlab::Application.routes.draw do
   get "errors/gitosis" 
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
+  put "profile/edit", :to => "profile#social_update"
   get "profile", :to => "profile#show"
   #get "profile/:id", :to => "profile#show"
 
@@ -45,6 +46,9 @@ Gitlab::Application.routes.draw do
     resources :issues do
       collection do
         post :sort
+      end
+      collection do
+        get :search
       end
     end
     resources :notes, :only => [:create, :destroy]
