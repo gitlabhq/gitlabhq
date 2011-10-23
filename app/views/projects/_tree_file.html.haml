@@ -4,7 +4,7 @@
     %strong
       = name
       = link_to "raw", blob_project_path(@project, :commit_id => @commit.id, :path => params[:path] ), :class => "right", :target => "_blank"
-      = link_to "history", project_commits_path(@project, :path => params[:path]), :class => "right", :style => "margin-right:10px;"
+      = link_to "history", project_commits_path(@project, :path => params[:path], :branch => params[:branch], :tag => params[:tag] ), :class => "right", :style => "margin-right:10px;"
       %br/
   - if file.text?
     .view_file_content
@@ -14,6 +14,6 @@
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
   - else
-    %p 
+    %p
       %center No preview for this file type
 
