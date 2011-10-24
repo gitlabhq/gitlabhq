@@ -11,7 +11,7 @@
             = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
           %p
             %strong
-              = truncate_commit_message(commit)
+              = commit.truncated_message
             = link_to "Browse Code", tree_project_path(@project, :commit_id => commit.id), :class => "lite_button", :style => "float:right"
             = link_to truncate(commit.id.to_s, :length => 16), project_commit_path(@project, :id => commit.id), :class => "lite_button", :style => "width:120px;float:right"
           %span
