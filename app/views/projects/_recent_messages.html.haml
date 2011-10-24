@@ -19,7 +19,7 @@
     - css_class = "dash_commit"
     - commit = parent
     - item_code = commit.author.email
-    - link_item_name = truncate_commit_message(commit, 50)
+    - link_item_name = commit.truncated_message(50)
     - link_to_item = project_commit_path(@project, :id => commit.id)
   - else
     - css_class = "dash_wall"
