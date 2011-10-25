@@ -10,7 +10,9 @@ describe "TeamMembers" do
   describe "View profile" do
     it "should be available" do
       visit(team_project_path(@project))
-      find(:xpath, "//table[@id='team-table']//a[1]").click
+      within "#team-table" do 
+        click_link(@user.name)
+      end
       page.should have_content @user.skype
       page.should_not have_content 'Twitter'
     end
