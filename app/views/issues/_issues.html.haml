@@ -1,10 +1,15 @@
 %table.round-borders#issues-table
   %tr
+    - if can?(current_user, :admin_issue, @project) && !params[:f] || params[:f] == "0"
+      %th 
     %th Assignee
     %th ID
     %th Title
     %th Closed?
     %th
 
-  - @issues.each do |issue|
+  - @issues.critical.each do |issue|
+    = render(:partial => 'show', :locals => {:issue => issue})
+
+  - @issues.non_critical.each do |issue|
     = render(:partial => 'show', :locals => {:issue => issue})

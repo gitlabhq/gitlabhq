@@ -12,4 +12,4 @@
     = time_ago_in_words(content_commit.committed_date)
     ago
   %td
-    = link_to content_commit.truncated_message(40), project_commit_path(@project, content_commit)
+    = link_to truncate(content_commit.safe_message, :length => 40), project_commit_path(@project, content_commit)

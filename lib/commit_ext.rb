@@ -1,8 +1,10 @@
 module CommitExt
-  # Cause of encoding rails truncate raise error
-  # this method is temporary decision
-  def truncated_message(size = 80)
-    message.length > size ? (message[0..(size - 1)] + "...") : message
+  def safe_message
+    message.encode("UTF-8", 
+                   :invalid => :replace, 
+                   :undef => :replace, 
+                   :universal_newline => true,
+                   :replace => "")
   rescue 
     "-- invalid encoding for commit message"
   end
