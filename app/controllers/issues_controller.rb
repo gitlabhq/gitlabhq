@@ -12,7 +12,7 @@ class IssuesController < ApplicationController
 
   def index
     @issues = case params[:f].to_i
-              when 1 then @project.issues.all
+              when 1 then @project.issues
               when 2 then @project.issues.closed
               when 3 then @project.issues.opened.assigned(current_user)
               else @project.issues.opened

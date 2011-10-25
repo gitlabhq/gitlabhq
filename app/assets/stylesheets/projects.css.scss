@@ -638,3 +638,46 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     display:none;
   }
 }
+
+.field_with_errors {
+  input[type="text"],
+  input[type="password"],
+  textarea
+  {
+    background: none repeat scroll 0 0 #FFBBBB
+  }
+}
+
+.tag {
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  border:none;
+
+  &.high { 
+    background: #D12F19;
+    color:white;
+  }
+
+  &.today { 
+    background: #44aa22;
+    color:white;
+  }
+
+  &.yours { 
+    background: #4466cc;
+    color:white;
+  }
+  &.notes {
+    background: #2c5c66;
+    color:white;
+  }
+}
+
+#issues-table .issue { 
+  &.critical { 
+    td {
+      //background: #D12F19;
+      //color:#fff;
+    }
+  }
+}

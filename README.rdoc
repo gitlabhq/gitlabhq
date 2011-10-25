@@ -28,24 +28,33 @@ sqlite as default db
 
 
   git clone git://github.com/gitlabhq/gitlabhq.git
+
   cd gitlabhq/
 
   # install this library first
   sudo easy_install pygments
+ 
+  # give your user access to remove git repo 
+  # Ex.
+  #   If you are going to use user 'gitlabhq' for rails server
+  #   gitlabhq ALL = (git) NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
+  #
+  echo "USERNAME ALL = (git) NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
 
   sudo gem install bundler
+
   bundle
 
-  RAILS_ENV=production rake db:setup
+  bundle exec rake db:setup RAILS_ENV=production
   
   # create admin user 
   # login....admin@local.host
   # pass.....5iveL!fe
-  RAILS_ENV=production rake db:seed_fu 
+  bundle exec rake db:seed_fu RAILS_ENV=production
 
 Install gitosis, edit conf/gitosis.yml & start server
 
-  rails s
+  rails s -e production
 
 == Install Gitosis
   sudo aptitude install gitosis
@@ -63,6 +72,7 @@ Install gitosis, edit conf/gitosis.yml & start server
   ssh-keygen -t rsa
 
   sudo -H -u git gitosis-init < ~/.ssh/id_rsa.pub
+
   sudo chmod 755 /home/git/repositories/gitosis-admin.git/hooks/post-update
 
 
@@ -83,3 +93,8 @@ Install gitosis, edit conf/gitosis.yml & start server
 
 
   echo "gem: --no-rdoc --no-ri" > ~/.gemrc
+
+== Contribute
+
+We develop project on our private server.
+Want to help? Contact us on twitter or email to become a team member.

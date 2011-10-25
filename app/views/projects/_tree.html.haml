@@ -30,15 +30,15 @@
         %th Last Update
         %th
           Last commit
-          = link_to "history", project_commits_path(@project, :path => params[:path]), :class => "right"
+          = link_to "history", project_commits_path(@project, :path => params[:path], :branch => params[:branch],:tag => params[:tag]), :class => "right"
       - if params[:path]
         - file = File.join(params[:path], "..")
         %tr{ :class => "tree-item", :url => tree_file_project_path(@project, @commit.id, file) }
           %td.tree-item-file-name
             = image_tag "dir.png"
             = link_to "..", tree_file_project_path(@project, @commit.id, file, :branch => @branch, :tag => @tag), :remote => :true
-          %td 
-          %td 
+          %td
+          %td
 
       - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
         = render :partial => "projects/tree_item", :locals => { :content => content }
@@ -52,7 +52,7 @@
   });
 
 - if params[:path] && request.xhr?
-  :javascript 
+  :javascript
     $(window).unbind('popstate');
     $(window).bind('popstate', function() {
       if(location.pathname.search("tree") != -1) {

@@ -1,5 +1,5 @@
 %h3
-  = "[ #{@commit.committer} ]  #{truncate_commit_message(@commit, 80)}"
+  = "[ #{@commit.committer} ]  #{truncate(@commit.safe_message)}"
 -#= link_to 'Back', project_commits_path(@project), :class => "button"
 %table.round-borders
   %tr
@@ -16,7 +16,7 @@
     %td= @commit.committed_date
   %tr
     %td Message
-    %td= @commit.message
+    %td= @commit.safe_message
   %tr
     %td Tree
     %td= link_to 'Browse Code', tree_project_path(@project, :commit_id => @commit.id)
