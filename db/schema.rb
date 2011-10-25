@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111021101550) do
+ActiveRecord::Schema.define(:version => 20111025134235) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20111021101550) do
     t.datetime "updated_at"
     t.boolean  "closed",      :default => false, :null => false
     t.integer  "position",    :default => 0
+    t.boolean  "critical",    :default => false, :null => false
   end
 
   create_table "keys", :force => true do |t|

@@ -18,11 +18,22 @@ class Issue < ActiveRecord::Base
             :presence => true,
             :length   => { :within => 0..2000 }
 
+  scope :critical, where(:critical => true)
+  scope :non_critical, where(:critical => false)
+
   scope :opened, where(:closed => false)
   scope :closed, where(:closed => true)
   scope :assigned, lambda { |u| where(:assignee_id => u.id)}
 
   acts_as_list
+
+  def today?
+    Date.today == created_at.to_date
+  end
+  
+  def new?
+    today? && created_at == updated_at
+  end
 end
 # == Schema Information
 #

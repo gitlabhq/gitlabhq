@@ -1,10 +1,24 @@
-%tr{ :id => dom_id(issue), :class => "issue", :url => project_issue_path(@project, issue) }
+%tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(@project, issue) }
+  - if can?(current_user, :admin_issue, @project) && !params[:f] || params[:f] == "0"
+    %td
+      = image_tag "move.png" , :class => [:handle, :left]
   %td
-    = image_tag "move.png" , :class => [:handle, :left]
     = image_tag gravatar_icon(issue.assignee.email), :class => "left", :width => 40, :style => "padding:0 5px;"
     = truncate issue.assignee.name, :lenght => 20
   %td ##{issue.id}
-  %td= html_escape issue.title
+  %td
+    = html_escape issue.title
+    %br
+    - if issue.critical
+      %span.tag.high critical
+    - if issue.today?
+      %span.tag.today today
+    -#- if issue.author == current_user
+      -#%span.tag.yours yours
+    -#- if issue.notes.count > 0
+      -#%span.tag.notes
+        -#= issue.notes.count
+        -#notes
   %td
     - if can? current_user, :write_issue, @project
       = form_for([@project, issue], :remote => true) do |f| 
