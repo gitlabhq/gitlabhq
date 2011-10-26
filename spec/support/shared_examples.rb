@@ -6,13 +6,12 @@ shared_examples_for :project_side_pane do
   it { should have_content("Tree") }
 end
 
-
 shared_examples_for :tree_view do
   subject { page }
 
   it "should have Tree View of project" do
-    should have_content("app") 
-    should have_content("history") 
-    should have_content("Gemfile") 
+    should have_content("app")
+    should have_content("history")
+    should have_content("Gemfile")
   end
 end

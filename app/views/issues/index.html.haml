@@ -12,7 +12,7 @@
       .span-2
         = radio_button_tag :f, 3, params[:f] == "3", :onclick => "this.form.submit()", :id => "my_issues"
         = label_tag "my_issues","To Me"
-        
+
       .span-2
         = radio_button_tag :f, 1, params[:f] == "1", :onclick => "this.form.submit()", :id => "all_issues"
         = label_tag "all_issues","All"
@@ -20,9 +20,9 @@
   #issues-table-holder= render "issues"
   %br
 :javascript
-  $('.delete-issue').live('ajax:success', function() {  
-    $(this).closest('tr').fadeOut(); });  
-  
+  $('.delete-issue').live('ajax:success', function() {
+    $(this).closest('tr').fadeOut(); });
+
   function setSortable(){
     $('#issues-table>tbody').sortable({
       axis: 'y',

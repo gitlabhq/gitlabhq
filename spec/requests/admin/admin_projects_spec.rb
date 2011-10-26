@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Admin::Projects" do
-  before do 
+  before do
     @project = Factory :project,
       :name => "LeGiT",
       :code => "LGT"
@@ -9,7 +9,7 @@ describe "Admin::Projects" do
   end
 
   describe "GET /admin/projects" do
-    before do 
+    before do
       visit admin_projects_path
     end
 
@@ -17,49 +17,49 @@ describe "Admin::Projects" do
       current_path.should == admin_projects_path
     end
 
-    it "should have projects list" do 
+    it "should have projects list" do
       page.should have_content(@project.code)
       page.should have_content(@project.name)
     end
   end
 
-  describe "GET /admin/projects/:id" do 
-    before do 
+  describe "GET /admin/projects/:id" do
+    before do
       visit admin_projects_path
       click_link "Show"
     end
 
-    it "should have project info" do 
+    it "should have project info" do
       page.should have_content(@project.code)
       page.should have_content(@project.name)
     end
   end
 
-  describe "GET /admin/projects/:id/edit" do 
-    before do 
+  describe "GET /admin/projects/:id/edit" do
+    before do
       visit admin_projects_path
       click_link "edit_project_#{@project.id}"
     end
 
-    it "should have project edit page" do 
+    it "should have project edit page" do
       page.should have_content("Name")
       page.should have_content("Code")
     end
 
     describe "Update project" do
-      before do 
+      before do
         fill_in "project_name", :with => "Big Bang"
         fill_in "project_code", :with => "BB1"
         click_button "Save"
         @project.reload
       end
 
-      it "should show page with  new data" do 
+      it "should show page with  new data" do
         page.should have_content("BB1")
         page.should have_content("Big Bang")
       end
 
-      it "should change project entry" do 
+      it "should change project entry" do
         @project.name.should == "Big Bang"
         @project.code.should == "BB1"
       end
@@ -67,24 +67,24 @@ describe "Admin::Projects" do
   end
 
   describe "GET /admin/projects/new" do
-    before do 
+    before do
       visit admin_projects_path
       click_link "New Project"
     end
 
     it "should be correct path" do
-      current_path.should == new_admin_project_path 
+      current_path.should == new_admin_project_path
     end
 
     it "should have labels for new project" do
-      page.should have_content("Name") 
-      page.should have_content("Path") 
-      page.should have_content("Description") 
+      page.should have_content("Name")
+      page.should have_content("Path")
+      page.should have_content("Description")
     end
   end
 
   describe "POST /admin/projects" do
-    before do 
+    before do
       visit new_admin_project_path
       fill_in 'Name', :with => 'NewProject'
       fill_in 'Code', :with => 'NPR'

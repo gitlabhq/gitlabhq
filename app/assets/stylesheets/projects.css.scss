@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-@mixin round-borders-bottom($radius) { 
+@mixin round-borders-bottom($radius) {
   border-top: 1px solid #eaeaea;
 
   -moz-border-radius-bottomright: $radius;
@@ -15,7 +15,7 @@
   -webkit-border-bottom-right-radius: $radius;
 }
 
-@mixin round-borders-top($radius) { 
+@mixin round-borders-top($radius) {
   border-top: 1px solid #eaeaea;
 
   -moz-border-radius-topright: $radius;
@@ -28,14 +28,14 @@
   -webkit-border-top-right-radius: $radius;
 }
 
-@mixin round-borders-all($radius) { 
+@mixin round-borders-all($radius) {
   border: 1px solid #eaeaea;
   -moz-border-radius: $radius;
   -webkit-border-radius: $radius;
   border-radius: $radius;
 }
 
-@mixin hover-color { 
+@mixin hover-color {
   background: #fff !important;
   background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#FFF6BF)) !important;
   background: -moz-linear-gradient(top,#fff,#FFF6BF) !important;
@@ -46,47 +46,47 @@
   border:1px solid #CCC;
   margin-bottom:1em;
 
-  .diff_file_header { 
+  .diff_file_header {
     padding:5px 5px;
     border-bottom:1px solid #CCC;
     background: #eee;
   }
-  .diff_file_content { 
+  .diff_file_content {
     overflow-x: scroll;
     background:#fff;
     color:#333;
     font-size: 12px;
     font-family: 'Courier New', 'andale mono','lucida console',monospace;
   }
-  .diff_file_content_image { 
+  .diff_file_content_image {
     background:#eee;
     text-align:center;
-    img { 
+    img {
       padding:100px;
       max-width:300px;
     }
   }
 }
 
-#logo { 
- &:hover { 
+#logo {
+ &:hover {
    background:none;
  }
 }
 
-.file_stats { 
+.file_stats {
   margin-bottom:10px;
   @include round-borders-all(4px);
 
-  span { 
+  span {
     border-top: 1px solid #eaeaea;
     padding:5px 5px;
     display:block;
-    &:first-child { 
+    &:first-child {
       border-top:none;
     }
 
-    img { 
+    img {
       width:18px;
       float:left;
       margin-right: 6px;
@@ -94,15 +94,15 @@
   }
 }
 
-.round-borders { 
+.round-borders {
   @include round-borders-all(4px);
   padding: 4px 0px;
 }
-table.round-borders { 
+table.round-borders {
   float:left;
 }
 
-.day-commits-table { 
+.day-commits-table {
   @include round-borders-all(4px);
   padding: 4px 0px;
   margin-bottom:10px;
@@ -110,55 +110,54 @@ table.round-borders {
   width:100%;
   background: #E6F1F6;
 
-  .day-header { 
+  .day-header {
     padding:10px;
     h3 {
       margin:0px;
     }
   }
 
-  ul { 
+  ul {
     display:block;
     list-style:none;
     margin:0px;
     padding:0px;
 
-    li.commit { 
+    li.commit {
       display:list-item;
       padding:8px;
       margin:0px;
       background: #F7FBFC;
       border-top: 1px solid #E2EAEE;
 
-      &:first-child { 
+      &:first-child {
         border-top: 1px solid #E2EAEE;
       }
       &:nth-child(2n+1) {
         background: white;
       }
 
-      a.button { 
+      a.button {
         width:85px;
         padding:10px;
         margin:0px;
         float:right;
       }
-      p { 
+      p {
         margin-bottom: 3px;
         font-size: 13px;
       }
     }
   }
 }
-@mixin panel-color { 
+@mixin panel-color {
   background: #111 !important;
   background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111)) !important;
   background: -moz-linear-gradient(top,#333,#111) !important;
   background: transparent 9 !important;
 }
 
-
-#header-panel { 
+#header-panel {
   @include panel-color;
   height:40px;
   position:fixed;
@@ -178,23 +177,23 @@ table.round-borders {
       color:white;
     }
 
-    &.current { 
+    &.current {
       border-bottom: 3px solid #EAEAEA !important;
       padding: 10px 20px 0;
       color: #eaeaea;
     }
   }
-  .search-holder { 
+  .search-holder {
     float:left;
-    width:290px; 
+    width:290px;
     input {
       @include round-borders-all(4px);
-      width:290px; 
+      width:290px;
       border-color:#888;
       padding:5px;
       background:#666;
       color:#222;
-      &:focus { 
+      &:focus {
         background:#fff;
         color:#000;
       }
@@ -211,7 +210,7 @@ table.round-borders {
   padding:20px;
 }
 
-body { 
+body {
   background: #eaeaea;
 }
 
@@ -220,7 +219,7 @@ a {
 }
 
 .diff_file_content{
-  .old_line, .new_line { 
+  .old_line, .new_line {
     background:#ECECEC;
     color:#777;
     width:15px;
@@ -230,9 +229,8 @@ a {
   }
 }
 
-
 .view_file_content{
-  .old_line, .new_line { 
+  .old_line, .new_line {
     background:#ECECEC;
     color:#777;
     width:15px;
@@ -249,20 +247,20 @@ a {
   border:1px solid #CCC;
   margin-bottom:1em;
 
-  .view_file_header { 
+  .view_file_header {
     padding:5px 5px;
     border-bottom:1px solid #CCC;
     background: #eee;
   }
-  .view_file_content { 
+  .view_file_content {
     background:#fff;
     color:#514721;
     font-size: 11px;
   }
-  .view_file_content_image { 
+  .view_file_content_image {
     background:#eee;
     text-align:center;
-    img { 
+    img {
       padding:100px;
       max-width:300px;
     }
@@ -273,7 +271,7 @@ a {
 
 }
 
-input.ssh_project_url { 
+input.ssh_project_url {
   padding:5px;
   margin:0px;
   float:right;
@@ -281,12 +279,10 @@ input.ssh_project_url {
   text-align:center;
 }
 
-
-
-.day-commits-table li.commit { 
+.day-commits-table li.commit {
   cursor:pointer;
 
-  &:hover { 
+  &:hover {
     @include hover-color;
   }
 }
@@ -295,39 +291,39 @@ input.ssh_project_url {
 #FFF6BF
 #FFD324
 */
-#tree-slider tr.tree-item { 
+#tree-slider tr.tree-item {
   cursor:pointer;
 
-  &:hover { 
+  &:hover {
     @include hover-color;
-    td { 
+    td {
       @include hover-color;
     }
   }
 }
-#projects-list .project { 
+#projects-list .project {
   height:50px;
 }
 
 #projects-list .project,
 #snippets-table .snippet,
-#issues-table .issue{ 
+#issues-table .issue{
   cursor:pointer;
 
-  &:hover { 
+  &:hover {
       @include hover-color;
-    td { 
+    td {
       @include hover-color;
     }
   }
 }
 
-.clear { 
+.clear {
   clear: both;
 }
 
-.top_project_menu { 
-  a { 
+.top_project_menu {
+  a {
     border-right: 1px solid #FFFFFF;
     box-shadow: -1px 0 #DDDDDD inset;
     color: #666;
@@ -339,7 +335,7 @@ input.ssh_project_url {
     text-shadow: 0 1px 0 #FFFFFF;
     float:left;
 
-    &.current { 
+    &.current {
       background-color: #FFFFFF;
       color: #222222;
     }
@@ -363,11 +359,11 @@ input.ssh_project_url {
 .new_project,
 .new_snippet,
 .edit_snippet,
-.edit_project { 
+.edit_project {
   input[type='text'],
   input[type='email'],
   input[type='password'],
-  textarea { 
+  textarea {
     width:400px;
     padding:8px;
     font-size:14px;
@@ -375,7 +371,7 @@ input.ssh_project_url {
   }
 }
 
-.input_button { 
+.input_button {
   //@include round-borders-all(4px);
   padding:8px;
   font-size:14px;
@@ -393,7 +389,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   border-bottom: 1px solid #E2EAEE;
 }
 
-.top_menu_count { 
+.top_menu_count {
   background: none repeat scroll 0 0 #FFF6BF;
   border-color: #FFD324;
   color: #514721;
@@ -417,7 +413,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 
 /** FALSH **/
 
-#flash_container { 
+#flash_container {
   height:40px;
   position:fixed;
   z-index:1009;
@@ -429,7 +425,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   cursor:pointer;
   border-bottom:1px solid #777;
 
-  h4 { 
+  h4 {
     color:#444;
     font-size:22px;
     padding-top:5px;
@@ -460,50 +456,50 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     color: #0099FF;
   }
 
-  &.hm { 
+  &.hm {
     margin: 0px 0px;
   }
 
-  &.vm { 
+  &.vm {
     margin: 5px 0px;
   }
 }
 
 /** Notes **/
 
-#notes-list { 
+#notes-list {
   display:block;
   list-style:none;
   margin:0px;
   padding:0px;
 
-  li { 
+  li {
     display:list-item;
     padding:8px;
     margin:0px;
     background: #F7FBFC;
     border-top: 1px solid #E2EAEE;
 
-    &:first-child { 
+    &:first-child {
       border-top: none;
     }
     &:nth-child(2n+1) {
       background: white;
     }
-    p { 
+    p {
       margin-bottom: 4px;
       font-size: 13px;
       color:#111;
     }
   }
-  cite { 
-    &.ago { 
+  cite {
+    &.ago {
       color:#666;
     }
   }
 }
 
-.notes_count { 
+.notes_count {
   background: none repeat scroll 0 0 #FFF6BF;
   border-color: #FFD324;
   color: #514721;
@@ -515,36 +511,36 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   right: 6px;
   top: 6px;
 }
-.note_author { 
+.note_author {
   float:left;
   width:60px;
 }
-.note_content { 
+.note_content {
   float:left;
   width:650px;
 }
 
-.issue_notes { 
-  .note_content { 
+.issue_notes {
+  .note_content {
     float:left;
     width:400px;
   }
 }
 
 #user_projects_limit{
-  width: 60px;  
+  width: 60px;
 }
 
-.project_thumb { 
+.project_thumb {
   margin:20px 0;
   width: 250px;
   float:left;
   padding:20px;
   text-align:center;
-  p, h4 { 
+  p, h4 {
     text-align:left;
   }
-  .lbutton { 
+  .lbutton {
     float:left;
   }
 }
@@ -559,8 +555,8 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   padding: 10px;
 }
 
-.recent_message_parent { 
-  img { 
+.recent_message_parent {
+  img {
     padding-right:10px;
   }
 
@@ -571,7 +567,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 
   &.dash_wall{
     border-bottom: 2px solid orange;
-    span { 
+    span {
       background: orange;
       color:black;
     }
@@ -579,14 +575,14 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 
   &.dash_issue{
     border-bottom: 2px solid #ffbbbb;
-    span { 
+    span {
       background: #ffbbbb;
     }
   }
   &.dash_commit{
     border-bottom: 2px solid #bbbbff;
 
-    span{ 
+    span{
       background: #bbbbff;
     }
   }
@@ -594,27 +590,26 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   &.dash_snippet{
     border-bottom: 2px solid #bbffbb;
 
-    span{ 
+    span{
       background: #bbffbb;
     }
   }
 
-
-  span{ 
+  span{
     border: 1px solid #aaa;
     color:black;
     padding:1px 4px;
   }
 
-  h4 { 
+  h4 {
     margin-bottom:3px;
   }
 
 }
 .commit,
-.message, 
+.message,
 #notes-list{
-  .author { 
+  .author {
     background: #eaeaea;
     color: #333;
     border: 1px solid #aaa;
@@ -624,17 +619,17 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 
 /* Note textare */
-#note_note { 
+#note_note {
   height:100px;
   width:97%;
   font-size:14px;
 }
 
-.wall_page { 
-  #note_note { 
+.wall_page {
+  #note_note {
     height:25px;
   }
-  .attach_holder { 
+  .attach_holder {
     display:none;
   }
 }
@@ -653,17 +648,17 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   padding:2px 4px;
   border:none;
 
-  &.high { 
+  &.high {
     background: #D12F19;
     color:white;
   }
 
-  &.today { 
+  &.today {
     background: #44aa22;
     color:white;
   }
 
-  &.yours { 
+  &.yours {
     background: #4466cc;
     color:white;
   }
@@ -673,8 +668,8 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   }
 }
 
-#issues-table .issue { 
-  &.critical { 
+#issues-table .issue {
+  &.critical {
     td {
       //background: #D12F19;
       //color:#fff;

@@ -12,7 +12,7 @@ module ProjectsHelper
     else
       true
     end
-  rescue 
+  rescue
     nil
   end
 end

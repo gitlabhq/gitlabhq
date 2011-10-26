@@ -8,7 +8,7 @@
     .diff_file_header
       - if diff.deleted_file
         %strong{:id => "#{diff.b_path}"}= diff.a_path
-      - else 
+      - else
         = link_to tree_file_project_path(@project, @commit.id, diff.b_path) do
           %strong{:id => "#{diff.b_path}"}= diff.b_path
       %br/
@@ -19,5 +19,5 @@
         .diff_file_content_image
           %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
       - else
-        %p 
+        %p
           %center No preview for this file type

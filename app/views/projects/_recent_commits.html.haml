@@ -6,8 +6,8 @@
       = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
     %p{:style => "margin-bottom: 3px;"}
       %strong
-        = link_to truncate(commit.safe_message, :length => 60), project_commit_path(@project, :id => commit.id) 
-      
+        = link_to truncate(commit.safe_message, :length => 60), project_commit_path(@project, :id => commit.id)
+
     %span
       %span.author
         = commit.author.name.force_encoding("UTF-8")

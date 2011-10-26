@@ -4,5 +4,5 @@
   side.html("#{escape_javascript(render "commits/show")}");
   $("##{dom_id(@project)}").parent().append(side);
   $("##{dom_id(@project)}").addClass("span-14");
-:plain 
+:plain
   $("#notes-list").html("#{escape_javascript(render(:partial => 'notes/notes_list'))}");

@@ -21,10 +21,10 @@
         -#notes
   %td
     - if can? current_user, :write_issue, @project
-      = form_for([@project, issue], :remote => true) do |f| 
+      = form_for([@project, issue], :remote => true) do |f|
         = f.check_box :closed, :onclick => "$(this).parent().submit();"
         = hidden_field_tag :status_only, true
-    - else 
+    - else
       = check_box_tag "closed", 1, issue.closed, :disabled => true
   %td
     - if can?(current_user, :admin_issue, @project) || issue.author == current_user

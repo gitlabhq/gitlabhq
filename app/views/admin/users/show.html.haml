@@ -19,11 +19,10 @@
     = @admin_user.skype
   %p
     %b LinkedIn:
-    = @admin_user.linkedin    
+    = @admin_user.linkedin
   %p
     %b Twitter:
     = @admin_user.twitter
-
 
   .clear
   = link_to 'Edit', edit_admin_user_path(@admin_user)
@@ -31,16 +30,16 @@
   = link_to 'Back', admin_users_path
 
 .span-14
-  %h2 Projects 
+  %h2 Projects
 
   %table.round-borders
     %tr
       %th Name
-      %th Added 
+      %th Added
       %th Web
       %th Git
       %th Admin
-      %th 
+      %th
 
     - @admin_user.users_projects.each do |tm|
       - project = tm.project

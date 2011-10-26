@@ -14,7 +14,7 @@ describe User do
     it { should respond_to(:name) }
   end
 
-  it "should return valid identifier" do 
+  it "should return valid identifier" do
     user = User.new(:email => "test@mail.com")
     user.identifier.should == "test_mail.com"
   end

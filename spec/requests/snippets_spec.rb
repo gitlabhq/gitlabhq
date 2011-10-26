@@ -3,13 +3,13 @@ require 'spec_helper'
 describe "Snippets" do
   let(:project) { Factory :project }
 
-  before do 
+  before do
     login_as :user
     project.add_access(@user, :read, :write)
   end
 
   describe "GET /snippets" do
-    before do 
+    before do
       @snippet = Factory :snippet,
         :author => @user,
         :project => project
@@ -23,15 +23,15 @@ describe "Snippets" do
     it { should have_content(@snippet.project.name) }
     it { should have_content(@snippet.author.name) }
 
-    describe "Destroy" do 
-      before do 
+    describe "Destroy" do
+      before do
         # admin access to remove snippet
         @user.users_projects.destroy_all
         project.add_access(@user, :read, :write, :admin)
         visit project_snippets_path(project)
       end
 
-      it "should remove entry" do 
+      it "should remove entry" do
         expect {
           click_link "destroy_snippet_#{@snippet.id}"
         }.to change { Snippet.count }.by(-1)
@@ -39,17 +39,17 @@ describe "Snippets" do
     end
   end
 
-  describe "New snippet" do 
-    before do 
+  describe "New snippet" do
+    before do
       visit project_snippets_path(project)
       click_link "New Snippet"
     end
 
-    it "should open new snippet popup" do 
+    it "should open new snippet popup" do
       page.current_path.should == new_project_snippet_path(project)
     end
 
-    describe "fill in" do 
+    describe "fill in" do
       before do
         fill_in "snippet_title", :with => "login function"
         fill_in "snippet_file_name", :with => "test.rb"
@@ -58,7 +58,7 @@ describe "Snippets" do
 
       it { expect { click_button "Save" }.to change {Snippet.count}.by(1) }
 
-      it "should add new snippet to table" do 
+      it "should add new snippet to table" do
         click_button "Save"
         page.current_path.should == project_snippet_path(project, Snippet.last)
         page.should have_content "login function"
@@ -67,8 +67,8 @@ describe "Snippets" do
     end
   end
 
-  describe "Edit snippet" do 
-    before do 
+  describe "Edit snippet" do
+    before do
       @snippet = Factory :snippet,
         :author => @user,
         :project => project
@@ -76,11 +76,11 @@ describe "Snippets" do
       click_link "Edit"
     end
 
-    it "should open edit page" do 
+    it "should open edit page" do
       page.current_path.should == edit_project_snippet_path(project, @snippet)
     end
 
-    describe "fill in" do 
+    describe "fill in" do
       before do
         fill_in "snippet_title", :with => "login function"
         fill_in "snippet_file_name", :with => "test.rb"
@@ -89,7 +89,7 @@ describe "Snippets" do
 
       it { expect { click_button "Save" }.to_not change {Snippet.count} }
 
-      it "should update snippet fields" do 
+      it "should update snippet fields" do
         click_button "Save"
 
         page.current_path.should == project_snippet_path(project, @snippet)

@@ -1,11 +1,11 @@
 class SnippetsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :project 
+  before_filter :project
 
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_snippet!
-  before_filter :authorize_write_snippet!, :only => [:new, :create, :close, :edit, :update, :sort] 
+  before_filter :authorize_write_snippet!, :only => [:new, :create, :close, :edit, :update, :sort]
 
   respond_to :html
 
@@ -13,7 +13,7 @@ class SnippetsController < ApplicationController
     @snippets = @project.snippets
   end
 
-  def new 
+  def new
     @snippet = @project.snippets.new
   end
 
