@@ -2,37 +2,44 @@
   - if can? current_user, :write_issue, @project
     .left
       = form_tag search_project_issues_path(@project), :method => :get, :remote => true do
+        = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
         = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
       = link_to 'New Issue', new_project_issue_path(@project), :remote => true, :class => "lbutton vm"
     
   .right
     = form_tag project_issues_path(@project), :method => :get do
       .span-2
-        = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "this.form.submit()", :id => "open_issues"
+        = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "this.form.submit()", :id => "open_issues", :class => "status"
         = label_tag "open_issues","Open"
       .span-2
-        = radio_button_tag :f, 2, params[:f] == "2", :onclick => "this.form.submit()", :id => "closed_issues"
+        = radio_button_tag :f, 2, params[:f] == "2", :onclick => "this.form.submit()", :id => "closed_issues", :class => "status"
         = label_tag "closed_issues","Closed"
       .span-2
-        = radio_button_tag :f, 3, params[:f] == "3", :onclick => "this.form.submit()", :id => "my_issues"
+        = radio_button_tag :f, 3, params[:f] == "3", :onclick => "this.form.submit()", :id => "my_issues", :class => "status"
         = label_tag "my_issues","To Me"
-        
       .span-2
-        = radio_button_tag :f, 1, params[:f] == "1", :onclick => "this.form.submit()", :id => "all_issues"
+        = radio_button_tag :f, 1, params[:f] == "1", :onclick => "this.form.submit()", :id => "all_issues", :class => "status"
         = label_tag "all_issues","All"
 
   #issues-table-holder= render "issues"
   %br
 :javascript
-  $('.issue_search').keyup(function() {
-    var terms = $(this).val();
-    var project_id = 1;
+  var href       = $('.issue_search').parent().attr('action');
+  var last_terms = '';
 
-    if (terms.length >= 2) {
-      $.get($(this).parent().attr('action'), { 'terms': terms, project: project_id  }, function(response) {
-        $('#issues-table').html(response);
-        setSortable();
-      });
+  $('.issue_search').keyup(function() {
+    var terms       = $(this).val();
+    var project_id  = $('#project_id').val();
+    var status      = $('.status:checked').val();
+    if (terms != last_terms) {
+      last_terms = terms;
+
+      if (terms.length >= 2 || terms.length == 0) {
+        $.get(href, { 'status': status, 'terms': terms, project: project_id  }, function(response) {
+          $('#issues-table').html(response);
+          setSortable();
+        });
+      }
     }
   });
 

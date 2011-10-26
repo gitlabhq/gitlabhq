@@ -79,8 +79,17 @@ class IssuesController < ApplicationController
   end
 
   def search
-    @project = Project.find(params['project'])
-    @issues = @project.issues.where("title LIKE ? OR content LIKE ?", "%#{params['terms']}%", "%#{params['terms']}%")
+    terms = params['terms']
+
+    @project  = Project.find(params['project'])
+    @issues   = case params[:status].to_i
+                  when 1 then @project.issues
+                  when 2 then @project.issues.closed
+                  when 3 then @project.issues.opened.assigned(current_user)
+                  else @project.issues.opened
+                end
+
+    @issues = @issues.where("title LIKE ? OR content LIKE ?", "%#{terms}%", "%#{terms}%") unless terms.blank?
 
     render :partial => 'issues'
   end

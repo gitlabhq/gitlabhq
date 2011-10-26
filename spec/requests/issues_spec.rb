@@ -149,21 +149,46 @@ describe "Issues" do
     before do
       ['foobar', 'foobar2', 'gitlab'].each do |title|
         @issue = Factory :issue,
-          :author => @user,
+          :author   => @user,
           :assignee => @user,
-          :project => project,
-          :title => title
+          :project  => project,
+          :title    => title
         @issue.save
       end
     end
       
-    it "should search and return the correct results" do  
+    it "should be able to search on different statuses" do
+      @issue = Issue.first
+      @issue.closed = true
+      @issue.save
+
       visit project_issues_path(project)
-      fill_in "issue_search", :with => "foobar"
+      choose 'closed_issues'
+      fill_in 'issue_search', :with => 'foobar'
+      
+      page.should have_content 'foobar'
+      page.should_not have_content 'foobar2'
+      page.should_not have_content 'gitlab'
+    end
+
+    it "should search for term and return the correct results" do  
+      visit project_issues_path(project)
+      fill_in 'issue_search', :with => 'foobar'
+
       page.should have_content 'foobar'
       page.should have_content 'foobar2'
       page.should_not have_content 'gitlab'
     end
-  end
 
+    it "should return all results if term has been cleared" do
+      visit project_issues_path(project)
+      fill_in "issue_search", :with => "foobar"
+      # Because fill_in, :with => "" triggers nothing we need to trigger a keyup event
+      page.execute_script("$('.issue_search').val('').keyup();");
+
+      page.should have_content 'foobar'
+      page.should have_content 'foobar2'
+      page.should have_content 'gitlab'
+    end
+  end
 end
