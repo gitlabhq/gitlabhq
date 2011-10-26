@@ -20,7 +20,6 @@ gem "kaminari"
 gem "thin"
 gem "git"
 gem "acts_as_list"
-gem "mysql2"
 
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"

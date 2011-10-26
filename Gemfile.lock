@@ -128,7 +128,6 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     multi_json (1.0.3)
-    mysql2 (0.3.7)
     nokogiri (1.5.0)
     orm_adapter (0.0.5)
     polyglot (0.3.2)
@@ -259,7 +258,6 @@ DEPENDENCIES
   jquery-rails
   kaminari
   launchy
-  mysql2
   pygments.rb (= 0.2.3)
   rails (= 3.1.0)
   rails-footnotes (>= 3.7.5.rc4)
