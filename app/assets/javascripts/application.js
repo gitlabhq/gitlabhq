@@ -5,7 +5,10 @@
 // the compiled file.
 //
 //= require jquery
+//= require jquery-ui
 //= require jquery_ujs
+//= require jquery.ui.selectmenu
+//= require jquery.cookie
 //= require_tree .
 
 $(function(){
