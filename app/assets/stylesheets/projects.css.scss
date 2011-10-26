@@ -681,3 +681,20 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     }
   }
 }
+
+.top_panel_issues{
+  #issue_search_form { 
+    margin:5px 0; 
+    input { 
+      border:1px solid #D3D3D3;
+      padding: 3px;
+      height: 20px;
+      width: 300px;
+
+      &:focus { 
+        border-color:#c2e1ef;
+      }
+    }
+  }
+}
+
