@@ -9,7 +9,7 @@
 //= require_tree .
 
 $(function(){
-  $(".one_click_select").click(function(){
+  $(".one_click_select").live("click", function(){
     $(this).select();
   });
 
