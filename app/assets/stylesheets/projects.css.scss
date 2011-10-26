@@ -688,8 +688,11 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     input { 
       border:1px solid #D3D3D3;
       padding: 3px;
-      height: 20px;
+      height: 28px;
       width: 300px;
+      -webkit-appearance:none;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
 
       &:focus { 
         border-color:#c2e1ef;
