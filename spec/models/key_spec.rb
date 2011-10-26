@@ -10,7 +10,7 @@ describe Key do
     it { should validate_presence_of(:key) }
   end
 
-  describe "Methods" do 
+  describe "Methods" do
     it { should respond_to :projects }
   end
 

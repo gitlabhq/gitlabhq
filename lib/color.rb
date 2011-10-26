@@ -17,7 +17,7 @@ module Color
 
   def command(string)
     `#{string}`
-    if $?.to_i > 0 
+    if $?.to_i > 0
       puts red " == #{string} - FAIL"
       puts red " == Error during configure"
       exit

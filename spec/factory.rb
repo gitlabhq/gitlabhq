@@ -1,7 +1,7 @@
 class Factory
   @factories = {}
 
-  class << self 
+  class << self
     def add(name, klass, &block)
       @factories[name] = [klass, block]
     end
@@ -13,10 +13,10 @@ class Factory
     def new(name, opts)
       factory = @factories[name]
       factory[0].new.tap do |obj|
-        factory[1].call(obj) 
+        factory[1].call(obj)
       end.tap do |obj|
         opts.each do |k, opt|
-          obj.send("#{k}=", opt) 
+          obj.send("#{k}=", opt)
         end
       end
     end

@@ -20,7 +20,7 @@ class Admin::MailerController < ApplicationController
     else
       render :file => 'notify/note_wall_email.html.haml', :layout => 'notify'
     end
-  rescue 
+  rescue
     render :text => "Preview not avaialble"
   end
 
@@ -29,7 +29,7 @@ class Admin::MailerController < ApplicationController
     @password = "DHasJKDHAS!"
 
     render :file => 'notify/new_user_email.html.haml', :layout => 'notify'
-  rescue 
+  rescue
     render :text => "Preview not avaialble"
   end
 
@@ -38,7 +38,7 @@ class Admin::MailerController < ApplicationController
     @user = @issue.assignee
     @project = @issue.project
     render :file => 'notify/new_issue_email.html.haml', :layout => 'notify'
-  rescue 
+  rescue
     render :text => "Preview not avaialble"
   end
 end

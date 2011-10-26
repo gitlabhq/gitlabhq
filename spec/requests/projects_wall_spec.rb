@@ -3,13 +3,13 @@ require 'spec_helper'
 describe "Projects", "Wall" do
   let(:project) { Factory :project }
 
-  before do 
+  before do
     login_as :user
     project.add_access(@user, :read, :write)
   end
 
   describe "View notes on wall" do
-    before do 
+    before do
       Factory :note, :project => project, :note => "Project specs", :author => @user
       visit wall_project_path(project)
     end
@@ -19,8 +19,8 @@ describe "Projects", "Wall" do
     it { page.should have_content("less than a minute ago") }
   end
 
-  describe "add new note", :js => true do 
-    before do 
+  describe "add new note", :js => true do
+    before do
       visit wall_project_path(project)
       fill_in "note_note", :with => "my post on wall"
       click_button "Add note"

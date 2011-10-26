@@ -18,17 +18,17 @@ RSpec::Matchers.define :be_denied_for do |user|
   match do |url|
     include UrlAccess
     url_denied?(user, url)
-  end 
+  end
 end
 
 RSpec::Matchers.define :be_404_for do |user|
   match do |url|
     include UrlAccess
     url_404?(user, url)
-  end 
+  end
 end
 
-module UrlAccess 
+module UrlAccess
   def url_allowed?(user, url)
     emulate_user(user)
     visit url

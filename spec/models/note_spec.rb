@@ -13,8 +13,8 @@ describe Note do
   it { Factory.create(:note,
                       :project => Factory.create(:project)).should be_valid }
 
-  describe :authorization do 
-    before do 
+  describe :authorization do
+    before do
       @p1 = Factory :project
       @p2 = Factory :project, :code => "alien", :path => "legit_1"
       @u1 = Factory :user
@@ -24,10 +24,10 @@ describe Note do
       @abilities << Ability
     end
 
-    describe :read do 
-      before do 
-        @p1.users_projects.create(:user => @u1, :read => false) 
-        @p1.users_projects.create(:user => @u2, :read => true) 
+    describe :read do
+      before do
+        @p1.users_projects.create(:user => @u1, :read => false)
+        @p1.users_projects.create(:user => @u2, :read => true)
         @p2.users_projects.create(:user => @u3, :read => true)
       end
 
@@ -36,11 +36,11 @@ describe Note do
       it { @abilities.allowed?(@u3, :read_note, @p1).should be_false }
     end
 
-    describe :write do 
-      before do 
-        @p1.users_projects.create(:user => @u1, :write => false) 
-        @p1.users_projects.create(:user => @u2, :write => true) 
-        @p2.users_projects.create(:user => @u3, :write => true) 
+    describe :write do
+      before do
+        @p1.users_projects.create(:user => @u1, :write => false)
+        @p1.users_projects.create(:user => @u2, :write => true)
+        @p2.users_projects.create(:user => @u3, :write => true)
       end
 
       it { @abilities.allowed?(@u1, :write_note, @p1).should be_false }
@@ -48,11 +48,11 @@ describe Note do
       it { @abilities.allowed?(@u3, :write_note, @p1).should be_false }
     end
 
-    describe :admin do 
-      before do 
-        @p1.users_projects.create(:user => @u1, :admin => false) 
-        @p1.users_projects.create(:user => @u2, :admin => true) 
-        @p2.users_projects.create(:user => @u3, :admin => true) 
+    describe :admin do
+      before do
+        @p1.users_projects.create(:user => @u1, :admin => false)
+        @p1.users_projects.create(:user => @u2, :admin => true)
+        @p2.users_projects.create(:user => @u3, :admin => true)
       end
 
       it { @abilities.allowed?(@u1, :admin_note, @p1).should be_false }

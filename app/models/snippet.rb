@@ -13,7 +13,7 @@ class Snippet < ActiveRecord::Base
   validates :title,
             :presence => true,
             :length   => { :within => 0..255 }
-  
+
   validates :file_name,
             :presence => true,
             :length   => { :within => 0..255 }
@@ -22,9 +22,8 @@ class Snippet < ActiveRecord::Base
             :presence => true,
             :length   => { :within => 0..10000 }
 
-
   def self.content_types
-    [ 
+    [
       ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
       ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
       ".js", ".sh", ".coffee", ".yml", ".md"

@@ -3,7 +3,7 @@
 .ui-selectmenu { background:none; font-size:12px;display: block; display: inline-block; position: relative; height: 2.2em; vertical-align: middle; text-decoration: none; overflow: hidden; zoom: 1; }
 .ui-selectmenu-icon { position:absolute; right:6px; margin-top:-8px; top: 50%; }
 .ui-selectmenu-menu { padding:0; margin:0; position:absolute; top: 0; display: none; z-index: 1005;} /* z-index: 1005 to make selectmenu work with dialog */
-.ui-selectmenu-menu  ul { padding:0; margin:0; list-style:none; position: relative; overflow: auto; overflow-y: auto ; overflow-x: hidden; } 
+.ui-selectmenu-menu  ul { padding:0; margin:0; list-style:none; position: relative; overflow: auto; overflow-y: auto ; overflow-x: hidden; }
 .ui-selectmenu-open { display: block; }
 .ui-selectmenu.ui-widget { background:none; }
 .ui-selectmenu-menu-popup { margin-top: -1px; }

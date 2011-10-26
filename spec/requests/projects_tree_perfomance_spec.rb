@@ -6,13 +6,13 @@ describe "Projects" do
 
   describe "GET /projects/tree" do
     describe "head" do
-      before do 
+      before do
         @project = Factory :project
         @project.add_access(@user, :read)
 
       end
 
-      it "should be fast" do 
+      it "should be fast" do
         time = Benchmark.realtime do
           visit tree_project_path(@project)
         end
@@ -21,12 +21,12 @@ describe "Projects" do
     end
 
     describe ValidCommit::ID do
-      before do 
+      before do
         @project = Factory :project
         @project.add_access(@user, :read)
       end
 
-      it "should be fast" do 
+      it "should be fast" do
         time = Benchmark.realtime do
           visit tree_project_path(@project, :commit_id => ValidCommit::ID)
         end

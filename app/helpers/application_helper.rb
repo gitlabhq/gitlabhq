@@ -23,9 +23,9 @@ module ApplicationHelper
   end
 
   def last_commit(project)
-    if project.repo_exists?  
+    if project.repo_exists?
       time_ago_in_words(project.commit.committed_date) + " ago"
-    else 
+    else
       "Never"
     end
   end
@@ -33,8 +33,8 @@ module ApplicationHelper
   def search_autocomplete_source
     projects = current_user.projects.map{ |p| { :label => p.name, :url => project_path(p) } }
     default_nav = [
-      { :label => "Keys", :url => keys_path }, 
-      { :label => "Projects", :url => projects_path }, 
+      { :label => "Keys", :url => keys_path },
+      { :label => "Projects", :url => projects_path },
       { :label => "Admin", :url => admin_root_path }
     ]
 
@@ -42,10 +42,10 @@ module ApplicationHelper
 
     if @project && !@project.new_record?
       project_nav = [
-        { :label => "#{@project.code} / Issues", :url => project_issues_path(@project) }, 
-        { :label => "#{@project.code} / Wall", :url => wall_project_path(@project) }, 
-        { :label => "#{@project.code} / Tree", :url => tree_project_path(@project) }, 
-        { :label => "#{@project.code} / Commits", :url => project_commits_path(@project) }, 
+        { :label => "#{@project.code} / Issues", :url => project_issues_path(@project) },
+        { :label => "#{@project.code} / Wall", :url => wall_project_path(@project) },
+        { :label => "#{@project.code} / Tree", :url => tree_project_path(@project) },
+        { :label => "#{@project.code} / Commits", :url => project_commits_path(@project) },
         { :label => "#{@project.code} / Team", :url => team_project_path(@project) }
       ]
     end

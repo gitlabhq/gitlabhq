@@ -1,12 +1,12 @@
 module LoginMacros
   def login_as role
-    @user = User.create(:email => "user#{User.count}@mail.com", 
+    @user = User.create(:email => "user#{User.count}@mail.com",
                         :name => "John Smith",
                         :password => "123456",
                         :password_confirmation => "123456",
                         :skype => 'user_skype')
- 
-    if role == :admin 
+
+    if role == :admin
       @user.admin = true
       @user.save!
     end
@@ -23,7 +23,7 @@ module LoginMacros
     fill_in "Password", :with => "123456"
     click_button "Sign in"
   end
-  
+
   def logout
     click_link "Logout" rescue nil
   end

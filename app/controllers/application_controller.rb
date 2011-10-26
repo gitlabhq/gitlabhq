@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
     render :file => File.join(Rails.root, "public", "gitosis_error"), :layout => false
   end
 
-  protected 
+  protected
 
   def abilities
     @abilities ||= Six.new
@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
     abilities.allowed?(object, action, subject)
   end
 
-  def project 
+  def project
     @project ||= Project.find_by_code(params[:project_id])
   end
 
@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
 
     @tag = unless params[:tag].blank?
              params[:tag]
-           else 
+           else
              nil
            end
 

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Issues" do
   let(:project) { Factory :project }
 
-  before do 
+  before do
     login_as :user
     project.add_access(@user, :read, :write)
 
@@ -13,8 +13,8 @@ describe "Issues" do
       :project => project
   end
 
-  describe "add new note", :js => true do 
-    before do 
+  describe "add new note", :js => true do
+    before do
       visit project_issue_path(project, @issue)
       fill_in "note_note", :with => "I commented this issue"
       click_button "Add note"
