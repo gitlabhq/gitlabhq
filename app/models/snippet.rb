@@ -33,6 +33,10 @@ class Snippet < ActiveRecord::Base
   def colorize
     system_colorize(content, file_name)
   end
+
+  def expired?
+    expires_at && expires_at < Time.current
+  end
 end
 # == Schema Information
 #
