@@ -1,22 +1,26 @@
-%h2
-  = "Snippet ##{@snippet.id} - #{@snippet.title}"
+- if !@snippet.expired?
+  %h2
+    = "Snippet ##{@snippet.id} - #{@snippet.title}"
 
-.view_file
-  .view_file_header
-    %strong
-      = @snippet.file_name
-      %br/
-  .view_file_content
-    :erb
-      <%= raw @snippet.colorize %>
+  .view_file
+    .view_file_header
+      %strong
+        = @snippet.file_name
+        %br/
+    .view_file_content
+      :erb
+        <%= raw @snippet.colorize %>
 
-- if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-  = link_to 'Edit', edit_project_snippet_path(@project, @snippet), :class => "lbutton positive"
-- if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-  = link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "lbutton delete-snippet negative", :id => "destroy_snippet_#{@snippet.id}"
-.clear
-%br
-.snippet_notes= render "notes/notes"
+  - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
+    = link_to 'Edit', edit_project_snippet_path(@project, @snippet), :class => "lbutton positive"
+  - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
+    = link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "lbutton delete-snippet negative", :id => "destroy_snippet_#{@snippet.id}"
+  .clear
+  %br
+  .snippet_notes= render "notes/notes"
 
-.clear
+  .clear
 
+- else
+  %h2
+    Sorry, this snippet is no longer exists

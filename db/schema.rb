@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(:version => 20111027142641) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
+    t.datetime "expires_at"
   end
 
   create_table "users", :force => true do |t|

@@ -22,6 +22,9 @@ class Snippet < ActiveRecord::Base
             :presence => true,
             :length   => { :within => 0..10000 }
 
+  scope :fresh, order("created_at DESC")
+  scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
+
   def self.content_types
     [
       ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
@@ -32,6 +35,10 @@ class Snippet < ActiveRecord::Base
 
   def colorize
     system_colorize(content, file_name)
+  end
+
+  def expired?
+    expires_at && expires_at < Time.current
   end
 end
 # == Schema Information
@@ -46,5 +53,6 @@ end
 #  created_at :datetime
 #  updated_at :datetime
 #  file_name  :string(255)
+#  expires_at :datetime
 #
 
