@@ -3,6 +3,10 @@
 
 .span-15
   = simple_format html_escape(@issue.content)
+
+
+  .clear
+  %br
   .issue_notes= render "notes/notes"
 .span-8.right
   .span-8
@@ -39,5 +43,10 @@
         - else
           = check_box_tag "closed", 1, @issue.closed, :disabled => true
 
+
+  - if can?(current_user, :admin_issue, @issue)
+    .clear
+      = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
+      .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
 

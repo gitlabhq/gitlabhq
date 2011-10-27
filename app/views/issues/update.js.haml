@@ -6,7 +6,7 @@
   - if @issue.valid?
     :plain
       $("#edit_issue_dialog").dialog("close");
-      $.ajax({type: "GET", url: location.href, dataType: "script"});
+      updatePage();
   - else
     :plain
       $("#edit_issue_dialog").empty();
