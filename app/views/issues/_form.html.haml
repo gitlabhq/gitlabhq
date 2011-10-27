@@ -7,10 +7,10 @@
 
     .span-8
       = f.label :title
-      = f.text_field :title, :style => "width:450px"
-    .span-8
-      = f.label :content
-      = f.text_area :content, :style => "width:450px; height:130px"
+      = f.text_area :title, :style => "width:450px; height:100px", :maxlength => 255
+    -#.span-8
+      -#= f.label :content
+      -#= f.text_area :content, :style => "width:450px; height:130px"
     .span-8.append-bottom
       = f.label :assignee_id
       = f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })

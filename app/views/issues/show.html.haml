@@ -1,12 +1,8 @@
 %h2
-  = "Issue ##{@issue.id} - #{@issue.title}"
+  = "Issue ##{@issue.id} - #{truncate @issue.title, :length => 50}"
 
 .span-15
-  = simple_format html_escape(@issue.content)
-
-
-  .clear
-  %br
+  -#= simple_format html_escape(@issue.content)
   .issue_notes= render "notes/notes"
 .span-8.right
   .span-8
