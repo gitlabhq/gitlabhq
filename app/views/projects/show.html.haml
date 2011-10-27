@@ -21,3 +21,8 @@
   %h3 Talk
   =render "projects/recent_messages"
 
+:javascript
+  function updateDashboard(){
+    $('#content-container').load("#{escape_javascript(project_path(@project))} #content-container>*");
+  }
+  setInterval("updateDashboard()", 300000);

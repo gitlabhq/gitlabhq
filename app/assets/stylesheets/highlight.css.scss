@@ -1,4 +1,4 @@
-@mixin round-borders-all($radius) { 
+@mixin round-borders-all($radius) {
   border: 1px solid #eaeaea;
   -moz-border-radius: $radius;
   -webkit-border-radius: $radius;
@@ -28,11 +28,11 @@ td.linenos{
 .highlight pre{
 }
 
-.linenodiv pre { 
+.linenodiv pre {
   white-space:pre-line;
 }
 
-td.linenos { 
+td.linenos {
   background:#ECECEC;
   color:#777;
   padding:10px 0px 0px 10px;
@@ -42,7 +42,7 @@ td.linenos {
 
 }
 
-td.code .highlight { 
+td.code .highlight {
   overflow: auto;
 }
 table.highlighttable pre{
@@ -53,9 +53,8 @@ table.highlighttable pre{
   text-align:left;
 }
 
-
 .git-empty .highlight {
-  @include round-borders-all(4px); 
+  @include round-borders-all(4px);
   background:#eee;
   padding:5px;
   //overflow-x:scroll;
@@ -71,9 +70,8 @@ table.highlighttable pre{
 .shadow{
   -webkit-box-shadow:0 5px 15px #000;
   -moz-box-shadow:0 5px 15px #000;
-  box-shadow:0 5px 15px #000;   
+  box-shadow:0 5px 15px #000;
 }
-
 
 .hll { background-color: #ffffff }
 .c { color: #888888; font-style: italic } /* Comment */
@@ -105,7 +103,7 @@ table.highlighttable pre{
 .highlight .nb{color:#0086B3;} /* Name.Builtin */
 .highlight .nc{color:#458;font-weight:bold;} /* Name.Class */
 .highlight .no{color:#008080;} /* Name.Constant */
-.highlight .ni{color:#800080;} 
+.highlight .ni{color:#800080;}
 .highlight .ne{color:#900;font-weight:bold;} /* Name.Exception */
 .highlight .nf{color:#900;font-weight:bold;} /* Name.Function */
 .highlight .nn{color:#005;font-weight:bold;} /* Name.Namespace */

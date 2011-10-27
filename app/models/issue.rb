@@ -13,7 +13,7 @@ class Issue < ActiveRecord::Base
   validates :title,
             :presence => true,
             :length   => { :within => 0..255 }
-  
+
   validates :content,
             :presence => true,
             :length   => { :within => 0..2000 }
@@ -30,7 +30,7 @@ class Issue < ActiveRecord::Base
   def today?
     Date.today == created_at.to_date
   end
-  
+
   def new?
     today? && created_at == updated_at
   end

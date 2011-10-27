@@ -8,24 +8,24 @@
   .span-8
     - if @issue.closed
       %center.success Closed
-    - else 
+    - else
       %center.error Open
   %table.round-borders
     %tr
-      %td Title: 
+      %td Title:
       %td
         = truncate html_escape(@issue.title)
     %tr
-      %td Project 
+      %td Project
       %td
         %strong= @issue.project.name
     %tr
-      %td Author: 
+      %td Author:
       %td
         = image_tag gravatar_icon(@issue.author.email), :class => "left", :width => 40, :style => "padding:0 5px;"
         = @issue.author.name
     %tr
-      %td Assignee: 
+      %td Assignee:
       %td
         = image_tag gravatar_icon(@issue.assignee.email), :class => "left", :width => 40, :style => "padding:0 5px;"
         = @issue.assignee.name
@@ -33,12 +33,11 @@
       %td Closed?
       %td
         - if can? current_user, :write_issue, @project
-          = form_for([@project, @issue]) do |f| 
+          = form_for([@project, @issue]) do |f|
             = f.check_box :closed, :onclick => "$(this).parent().submit();"
             = hidden_field_tag :status_only, true
-        - else 
+        - else
           = check_box_tag "closed", 1, @issue.closed, :disabled => true
-
 
 .clear
 

@@ -33,7 +33,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'shoulda'
+  gem "shoulda", "~> 3.0.0.beta2"
   gem 'capybara'
   gem 'autotest'
   gem 'autotest-rails'

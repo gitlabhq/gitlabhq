@@ -1,13 +1,13 @@
 module CommitsHelper
   def diff_line(line, line_new = 0, line_old = 0)
     full_line = html_escape(line.gsub(/\n/, ''))
-    color = if line[0] == "+" 
+    color = if line[0] == "+"
               full_line = "<span class=\"old_line\">&nbsp;</span><span class=\"new_line\">#{line_new}</span> " + full_line
               "#DFD"
-            elsif line[0] == "-" 
+            elsif line[0] == "-"
               full_line = "<span class=\"old_line\">#{line_old}</span><span class=\"new_line\">&nbsp;</span> " + full_line
               "#FDD"
-            else 
+            else
               full_line = "<span class=\"old_line\">#{line_old}</span><span class=\"new_line\">#{line_new}</span> " + full_line
               "none"
             end

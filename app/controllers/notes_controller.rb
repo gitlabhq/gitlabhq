@@ -1,9 +1,9 @@
 class NotesController < ApplicationController
-  before_filter :project 
+  before_filter :project
 
   # Authorize
   before_filter :add_project_abilities
-  before_filter :authorize_write_note!, :only => [:create] 
+  before_filter :authorize_write_note!, :only => [:create]
 
   respond_to :js
 
@@ -15,10 +15,9 @@ class NotesController < ApplicationController
       notify if params[:notify] == '1'
     end
 
-
     respond_to do |format|
       format.html {redirect_to :back}
-      format.js  
+      format.js
     end
   end
 
@@ -30,11 +29,11 @@ class NotesController < ApplicationController
     @note.destroy
 
     respond_to do |format|
-      format.js { render :nothing => true }  
+      format.js { render :nothing => true }
     end
   end
 
-  protected 
+  protected
 
   def notify
     @project.users.reject { |u| u.id == current_user.id } .each do |u|

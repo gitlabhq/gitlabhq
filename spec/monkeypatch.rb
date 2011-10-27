@@ -1,6 +1,6 @@
 # Stubbing Project <-> gitosis path
 # create project using Factory only
-class Project 
+class Project
   def update_gitosis_project
     true
   end
@@ -9,12 +9,12 @@ class Project
     true
   end
 
-  def path_to_repo 
+  def path_to_repo
     File.join(Rails.root, "tmp", "tests", path)
   end
 end
 
-class Key 
+class Key
   def update_gitosis
     true
   end

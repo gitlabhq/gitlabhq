@@ -5,7 +5,7 @@ describe "Projects" do
 
   describe "GET /projects/tree" do
     describe "head" do
-      before do 
+      before do
         @project = Factory :project
         @project.add_access(@user, :read)
 
@@ -20,7 +20,7 @@ describe "Projects" do
     end
 
     describe ValidCommit::ID do
-      before do 
+      before do
         @project = Factory :project
         @project.add_access(@user, :read)
 
@@ -36,7 +36,7 @@ describe "Projects" do
     end
 
     describe "branch passed" do
-      before do 
+      before do
         @project = Factory :project
         @project.add_access(@user, :read)
 
@@ -53,7 +53,7 @@ describe "Projects" do
 
     # TREE FILE PREVIEW
     describe "file preview" do
-      before do 
+      before do
         @project = Factory :project
         @project.add_access(@user, :read)
 
@@ -70,9 +70,9 @@ describe "Projects" do
     end
   end
 
-  # RAW FILE 
+  # RAW FILE
   describe "GET /projects/blob" do
-    before do 
+    before do
       @project = Factory :project
       @project.add_access(@user, :read)
 
@@ -85,7 +85,7 @@ describe "Projects" do
       current_path.should == blob_project_path(@project)
     end
 
-    it "raw file response" do 
+    it "raw file response" do
       page.source.should == ValidCommit::BLOB_FILE
     end
   end

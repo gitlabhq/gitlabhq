@@ -21,7 +21,7 @@
         %td
           = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
       %tr
-        %td 
+        %td
           .left= f.label :code
           %cite.right http://yourserver/
         %td= f.text_field :code, :placeholder => "example"
@@ -39,10 +39,10 @@
       = image_tag "ajax-loader.gif", :class => "append-bottom"
       - if @project.new_record?
         %h3.prepend-top Creating project &amp; repository. Please wait for few minutes
-      - else 
+      - else
         %h3.prepend-top Updating project &amp; repository. Please wait for few minutes
 :javascript
-  $('.new_project, .edit_project').bind('ajax:before', function() {  
-    $(this).find(".form_content").hide();  
+  $('.new_project, .edit_project').bind('ajax:before', function() {
+    $(this).find(".form_content").hide();
     $('.ajax_loader').show();
-  });  
+  });

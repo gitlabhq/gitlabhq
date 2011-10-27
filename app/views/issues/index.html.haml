@@ -6,7 +6,7 @@
     = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :class => :left, :id => "issue_search_form" do
       = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
       = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
-      
+
     .right
       = form_tag project_issues_path(@project), :method => :get do
         .span-2
@@ -44,9 +44,9 @@
     }
   });
 
-  $('.delete-issue').live('ajax:success', function() {  
-    $(this).closest('tr').fadeOut(); });  
-  
+  $('.delete-issue').live('ajax:success', function() {
+    $(this).closest('tr').fadeOut(); });
+
   function setSortable(){
     $('#issues-table>tbody').sortable({
       axis: 'y',
