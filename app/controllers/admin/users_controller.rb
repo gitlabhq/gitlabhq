@@ -4,29 +4,14 @@ class Admin::UsersController < ApplicationController
 
   def index
     @admin_users = User.page(params[:page])
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @admin_users }
-    end
   end
 
   def show
     @admin_user = User.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @admin_user }
-    end
   end
 
   def new
     @admin_user = User.new(:projects_limit => 10)
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @admin_user }
-    end
   end
 
   def edit

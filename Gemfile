@@ -5,7 +5,7 @@ gem 'rails', '3.1.0'
 gem 'sqlite3'
 gem 'devise', "1.4.7"
 gem 'stamp'
-gem 'will_paginate', '~> 3.0'
+gem 'kaminari'
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'grit', :git => 'git://github.com/gitlabhq/grit.git'
@@ -16,7 +16,6 @@ gem 'faker'
 gem 'seed-fu', :git => 'git://github.com/mbleigh/seed-fu.git'
 gem "inifile"
 gem "pygments.rb", "0.2.3"
-gem "kaminari"
 gem "thin"
 gem "git"
 gem "acts_as_list"
