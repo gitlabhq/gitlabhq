@@ -23,6 +23,7 @@ class Snippet < ActiveRecord::Base
             :length   => { :within => 0..10000 }
 
   scope :fresh, order("created_at DESC")
+  scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
 
   def self.content_types
     [

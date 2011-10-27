@@ -23,7 +23,7 @@
     = link_to project_snippets_path(@project), :class => (controller.controller_name == "snippets") ? "current" : nil do
       Snippets
       - if @project.snippets.count > 0
-        %span{ :class => "top_menu_count" }= @project.snippets.count
+        %span{ :class => "top_menu_count" }= @project.snippets.non_expired.count
 
   - if @commit
     %span= link_to truncate(commit_name(@project,@commit), :length => 15), project_commit_path(@project, :id => @commit.id), :class => current_page?(:controller => "commits", :action => "show", :project_id => @project, :id => @commit.id) ? "current" : nil
