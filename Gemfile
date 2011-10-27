@@ -27,7 +27,7 @@ group :assets do
   gem 'uglifier'
 end
 
-group :development do 
+group :development do
   gem 'rails-footnotes', '>= 3.7.5.rc4'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end
@@ -42,6 +42,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'database_cleaner'
   gem 'launchy'
+  gem 'timecop'
 end
 
 
