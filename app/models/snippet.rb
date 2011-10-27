@@ -22,6 +22,8 @@ class Snippet < ActiveRecord::Base
             :presence => true,
             :length   => { :within => 0..10000 }
 
+  scope :fresh, order("created_at DESC")
+
   def self.content_types
     [
       ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
