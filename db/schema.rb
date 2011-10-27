@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(:version => 20111027142641) do
   end
 
   create_table "notes", :force => true do |t|
-    t.text     "note",          :limit => 255
+    t.text     "note"
     t.string   "noteable_id"
     t.string   "noteable_type"
     t.integer  "author_id"
