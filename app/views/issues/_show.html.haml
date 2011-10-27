@@ -1,5 +1,5 @@
 %tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(@project, issue) }
-  - if can?(current_user, :admin_issue, @project) && !params[:f] || params[:f] == "0"
+  - if can?(current_user, :admin_issue, @project) && (!params[:f] || params[:f] == "0")
     %td
       = image_tag "move.png" , :class => [:handle, :left]
   %td
