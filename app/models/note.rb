@@ -13,7 +13,7 @@ class Note < ActiveRecord::Base
 
   validates :note,
             :presence => true,
-            :length   => { :within => 0..255 }
+            :length   => { :within => 0..5000 }
 
   validates :attachment,
             :file_size => {
