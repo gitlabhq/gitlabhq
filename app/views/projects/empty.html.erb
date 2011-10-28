@@ -28,7 +28,7 @@ eos
     <h2>Existing Git Repo?</h2>
 <% exist_repo_setup_str = <<eos
 cd existing_git_repo
-git remote add origin   #{@project.url_to_repo}
+git remote add origin #{@project.url_to_repo}
 git push -u origin master
 eos
 %>
