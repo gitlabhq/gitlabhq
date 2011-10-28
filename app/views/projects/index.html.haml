@@ -1,3 +1,10 @@
+- content_for(:page_title) do
+  .page-title
+    .container_3
+      - if current_user.can_create_project?
+        %a.grey-button{:href => new_project_path} Create new project
+      %h1 Projects
+
 - unless @projects.empty?
   %div{:class => "tile", :style => view_mode_style("tile")}
     = render "tile"
