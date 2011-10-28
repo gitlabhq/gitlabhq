@@ -4,13 +4,13 @@ describe "Issues" do
   let(:project) { Factory :project }
   let!(:commit) { project.repo.commits.first }
 
-  before do 
+  before do
     login_as :user
     project.add_access(@user, :read, :write)
   end
 
-  describe "add new note", :js => true do 
-    before do 
+  describe "add new note", :js => true do
+    before do
       visit project_commit_path(project, commit)
       click_link "Comments" # notes tab
       fill_in "note_note", :with => "I commented this commit"

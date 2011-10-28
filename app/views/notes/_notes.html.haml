@@ -1,7 +1,7 @@
 - if controller.action_name == "wall"
   %ul#notes-list= render "notes/notes_list"
 
-- else 
+- else
   %ul#notes-list= render "notes/notes_list"
   %br
   %br
@@ -9,17 +9,16 @@
     = render "notes/form"
 
 :javascript
-  $('.delete-note').live('ajax:success', function() {  
-    $(this).closest('li').fadeOut(); });  
+  $('.delete-note').live('ajax:success', function() {
+    $(this).closest('li').fadeOut(); });
 
   $("#new_note").live("ajax:before", function(){
-    $("#submit_note").attr("disabled", "disabled"); 
+    $("#submit_note").attr("disabled", "disabled");
   })
 
   $("#new_note").live("ajax:complete", function(){
-    $("#submit_note").removeAttr("disabled"); 
+    $("#submit_note").removeAttr("disabled");
   })
-  
 
 - if ["issues", "projects"].include?(controller.controller_name)
   :javascript

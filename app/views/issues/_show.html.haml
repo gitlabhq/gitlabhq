@@ -1,5 +1,5 @@
 %tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(@project, issue) }
-  - if can?(current_user, :admin_issue, @project) && !params[:f] || params[:f] == "0"
+  - if can?(current_user, :admin_issue, @project) && (!params[:f] || params[:f] == "0")
     %td
       = image_tag "move.png" , :class => [:handle, :left]
   %td
@@ -7,7 +7,7 @@
     = truncate issue.assignee.name, :lenght => 20
   %td ##{issue.id}
   %td
-    = html_escape issue.title
+    = truncate(html_escape(issue.title), :length => 60)
     %br
     - if issue.critical
       %span.tag.high critical
@@ -21,10 +21,10 @@
         -#notes
   %td
     - if can? current_user, :write_issue, @project
-      = form_for([@project, issue], :remote => true) do |f| 
+      = form_for([@project, issue], :remote => true) do |f|
         = f.check_box :closed, :onclick => "$(this).parent().submit();"
         = hidden_field_tag :status_only, true
-    - else 
+    - else
       = check_box_tag "closed", 1, issue.closed, :disabled => true
   %td
     - if can?(current_user, :admin_issue, @project) || issue.author == current_user

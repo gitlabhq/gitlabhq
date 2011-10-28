@@ -40,20 +40,20 @@ describe Project do
     should_not allow_value("gitosis-admin").for(:path)
   end
 
-  it "should return valid url to repo" do 
+  it "should return valid url to repo" do
     project = Project.new(:path => "somewhere")
     project.url_to_repo.should == "git@localhost:somewhere.git"
   end
 
-  it "should return path to repo" do 
+  it "should return path to repo" do
     project = Project.new(:path => "somewhere")
     project.path_to_repo.should == File.join(Rails.root, "tmp", "tests", "somewhere")
   end
 
-  describe :valid_repo? do 
-    it "should be valid repo" do 
+  describe :valid_repo? do
+    it "should be valid repo" do
       project = Factory :project
-      project.valid_repo?.should be_true 
+      project.valid_repo?.should be_true
     end
 
     it "should be invalid repo" do
@@ -62,43 +62,43 @@ describe Project do
     end
   end
 
-  describe "Git methods" do 
+  describe "Git methods" do
     let(:project) { Factory :project }
 
-    describe :repo do 
-      it "should return valid repo" do 
+    describe :repo do
+      it "should return valid repo" do
         project.repo.should be_kind_of(Grit::Repo)
       end
 
-      it "should return nil" do 
+      it "should return nil" do
         lambda { Project.new(:path => "invalid").repo }.should raise_error(Grit::NoSuchPathError)
       end
 
-      it "should return nil" do 
+      it "should return nil" do
         lambda { Project.new.repo }.should raise_error(TypeError)
       end
     end
 
-    describe :commit do 
-      it "should return first head commit if without params" do 
+    describe :commit do
+      it "should return first head commit if without params" do
         project.commit.id.should == project.repo.commits.first.id
       end
 
-      it "should return valid commit" do 
+      it "should return valid commit" do
         project.commit(ValidCommit::ID).should be_valid_commit
       end
 
-      it "should return nil" do 
+      it "should return nil" do
         project.commit("+123_4532530XYZ").should be_nil
       end
     end
 
-    describe :tree do 
-      before do 
+    describe :tree do
+      before do
         @commit = project.commit(ValidCommit::ID)
       end
 
-      it "should raise error w/o arguments" do 
+      it "should raise error w/o arguments" do
         lambda { project.tree }.should raise_error
       end
 

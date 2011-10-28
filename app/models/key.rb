@@ -17,11 +17,11 @@ class Key < ActiveRecord::Base
   def set_identifier
     self.identifier = "#{user.identifier}_#{Time.now.to_i}"
   end
-  
+
   def update_gitosis
     Gitosis.new.configure do |c|
       c.update_keys(identifier, key)
-      
+
       projects.each do |project|
         c.update_project(project.path, project.gitosis_writers)
       end

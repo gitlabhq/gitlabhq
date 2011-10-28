@@ -13,10 +13,13 @@
         %td= f.label :file_name
         %td= f.text_field :file_name, :placeholder => "example.rb"
       %tr
+        %td= f.label "Lifetime"
+        %td= f.select :expires_at, lifetime_select_options
+      %tr
         %td{:colspan => 2}
           = f.label :content, "Code"
           %br
           = f.text_area :content, :style => "height:240px;width:932px;"
-    
+
     .actions.prepend-top
       = f.submit 'Save', :class => "lbutton vm"

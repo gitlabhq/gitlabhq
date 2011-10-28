@@ -1,12 +1,12 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :project 
+  before_filter :project
   before_filter :issue, :only => [:edit, :update, :destroy, :show]
 
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_issue!
-  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort] 
+  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort]
 
   respond_to :js
 
@@ -34,7 +34,7 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @notes = @issue.notes
+    @notes = @issue.notes.order("created_at ASC")
     @note = @project.notes.new(:noteable => @issue)
   end
 
@@ -57,14 +57,13 @@ class IssuesController < ApplicationController
     end
   end
 
-
   def destroy
     return access_denied! unless can?(current_user, :admin_issue, @issue)
 
     @issue.destroy
 
     respond_to do |format|
-      format.js { render :nothing => true }  
+      format.js { render :nothing => true }
     end
   end
 
@@ -78,7 +77,23 @@ class IssuesController < ApplicationController
     render :nothing => true
   end
 
-  protected 
+  def search
+    terms = params['terms']
+
+    @project  = Project.find(params['project'])
+    @issues   = case params[:status].to_i
+                  when 1 then @project.issues
+                  when 2 then @project.issues.closed
+                  when 3 then @project.issues.opened.assigned(current_user)
+                  else @project.issues.opened
+                end
+
+    @issues = @issues.where("title LIKE ? OR content LIKE ?", "%#{terms}%", "%#{terms}%") unless terms.blank?
+
+    render :partial => 'issues'
+  end
+
+  protected
 
   def issue
     @issue ||= @project.issues.find(params[:id])

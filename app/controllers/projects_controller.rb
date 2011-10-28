@@ -1,10 +1,10 @@
 class ProjectsController < ApplicationController
-  before_filter :project, :except => [:index, :new, :create] 
+  before_filter :project, :except => [:index, :new, :create]
 
   # Authorize
   before_filter :add_project_abilities
-  before_filter :authorize_read_project!, :except => [:index, :new, :create] 
-  before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy] 
+  before_filter :authorize_read_project!, :except => [:index, :new, :create]
+  before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
 
   before_filter :require_non_empty_project, :only => [:blob, :tree]
 
@@ -23,7 +23,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @project.owner = current_user
 
-    Project.transaction do 
+    Project.transaction do
       @project.save!
       @project.users_projects.create!(:admin => true, :read => true, :write => true, :user => current_user)
     end
@@ -31,7 +31,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.valid?
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
-        format.js 
+        format.js
       else
         format.html { render action: "new" }
         format.js
@@ -51,10 +51,10 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if project.update_attributes(params[:project])
         format.html { redirect_to project, :notice => 'Project was successfully updated.' }
-        format.js 
+        format.js
       else
         format.html { render action: "edit" }
-        format.js 
+        format.js
       end
     end
   end
@@ -105,7 +105,7 @@ class ProjectsController < ApplicationController
 
     if params[:commit_id]
       @commit = @repo.commits(params[:commit_id]).first
-    else 
+    else
       @commit = @repo.commits(@ref || "master").first
     end
 
@@ -114,8 +114,8 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.js do 
-        # disable cache to allow back button works
+      format.js do
+        # diasbale cache to allow back button works
         response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
@@ -132,7 +132,7 @@ class ProjectsController < ApplicationController
 
     if @tree.is_a?(Grit::Blob)
       send_data(@tree.data, :type => @tree.mime_type, :disposition => 'inline', :filename => @tree.name)
-    else 
+    else
       head(404)
     end
   rescue
@@ -147,9 +147,9 @@ class ProjectsController < ApplicationController
     end
   end
 
-  protected 
+  protected
 
-  def project 
+  def project
     @project ||= Project.find_by_code(params[:id])
   end
 end

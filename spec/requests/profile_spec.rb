@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe "Profile" do
-  before do 
+  before do
     login_as :user
   end
 
   describe "Show profile" do
-    before do 
+    before do
       visit profile_path
     end
 
@@ -15,13 +15,13 @@ describe "Profile" do
   end
 
   describe "Profile update" do
-    before do 
+    before do
       visit profile_path
       fill_in "user_skype", :with => "testskype"
-      fill_in "user_linkedin", :with => "testlinkedin"      
+      fill_in "user_linkedin", :with => "testlinkedin"
       fill_in "user_twitter", :with => "testtwitter"
       click_button "Save"
-      @user.reload     
+      @user.reload
     end
 
     it { @user.skype.should == 'testskype' }
@@ -29,18 +29,17 @@ describe "Profile" do
     it { @user.twitter.should == 'testtwitter' }
   end
 
-
   describe "Password update" do
-    before do 
+    before do
       visit profile_password_path
     end
 
     it { page.should have_content("Password") }
     it { page.should have_content("Password confirmation") }
 
-    describe "change password" do 
-      before do 
-        @old_pwd = @user.encrypted_password 
+    describe "change password" do
+      before do
+        @old_pwd = @user.encrypted_password
         fill_in "user_password", :with => "777777"
         fill_in "user_password_confirmation", :with => "777777"
         click_button "Save"
@@ -51,18 +50,18 @@ describe "Profile" do
         current_path.should == new_user_session_path
       end
 
-      it "should change password" do 
+      it "should change password" do
         @user.encrypted_password.should_not == @old_pwd
       end
 
-      describe "login with new password" do 
+      describe "login with new password" do
         before do
           fill_in "user_email", :with => @user.email
           fill_in "user_password", :with => "777777"
           click_button "Sign in"
         end
-        
-        it "should login user" do 
+
+        it "should login user" do
           current_path.should == root_path
         end
       end

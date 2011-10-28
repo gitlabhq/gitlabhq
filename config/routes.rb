@@ -1,5 +1,5 @@
 Gitlab::Application.routes.draw do
-  namespace :admin do 
+  namespace :admin do
     resources :users
     resources :projects
     resources :team_members
@@ -10,7 +10,7 @@ Gitlab::Application.routes.draw do
     root :to => "users#index"
   end
 
-  get "errors/gitosis" 
+  get "errors/gitosis"
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
   put "profile/edit", :to => "profile#social_update"
@@ -21,8 +21,8 @@ Gitlab::Application.routes.draw do
   resources :keys
   devise_for :users
 
-  resources :projects, :except => [:new, :create, :index], :path => "/" do 
-    member do 
+  resources :projects, :except => [:new, :create, :index], :path => "/" do
+    member do
       get "tree"
       get "blob"
       get "team"
@@ -32,7 +32,7 @@ Gitlab::Application.routes.draw do
       get "tree/:commit_id" => "projects#tree"
       get "tree/:commit_id/:path" => "projects#tree",
       :as => :tree_file,
-      :constraints => { 
+      :constraints => {
         :id => /[a-zA-Z0-9_\-]+/,
         :commit_id => /[a-zA-Z0-9]+/,
         :path => /.*/
@@ -46,6 +46,9 @@ Gitlab::Application.routes.draw do
     resources :issues do
       collection do
         post :sort
+      end
+      collection do
+        get :search
       end
     end
     resources :notes, :only => [:create, :destroy]

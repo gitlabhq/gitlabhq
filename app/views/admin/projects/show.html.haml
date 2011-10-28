@@ -1,7 +1,7 @@
 %p#notice= notice
 
 .span-8.colborder
-  %h2= @admin_project.name 
+  %h2= @admin_project.name
 
   %p
     %b Name:
@@ -22,16 +22,16 @@
 
 .span-14
 
-  %h2 Team 
+  %h2 Team
 
   %table.round-borders
     %tr
       %th Name
-      %th Added 
+      %th Added
       %th Web
       %th Git
       %th Admin
-      %th 
+      %th
 
     - @admin_project.users_projects.each do |tm|
       %tr

@@ -8,7 +8,7 @@ $(document).ready(function(){
       e.stopPropagation();
       $(this).find("td.tree-item-file-name a").click();
       return false;
-    }  
+    }
   });
 
   $("#projects-list .project").live('click', function(e){

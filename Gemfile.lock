@@ -200,7 +200,11 @@ GEM
       ffi (>= 1.0.7)
       json_pure
       rubyzip
-    shoulda (2.11.3)
+    shoulda (3.0.0.beta2)
+      shoulda-context (~> 1.0.0.beta1)
+      shoulda-matchers (~> 1.0.0.beta1)
+    shoulda-context (1.0.0.beta1)
+    shoulda-matchers (1.0.0.beta3)
     simplecov (0.5.3)
       multi_json (~> 1.0.3)
       simplecov-html (~> 0.5.3)
@@ -232,7 +236,6 @@ GEM
       multi_json (>= 1.0.2)
     warden (1.0.5)
       rack (>= 1.0)
-    will_paginate (3.0.0)
     xpath (0.1.4)
       nokogiri (~> 1.3)
 
@@ -265,7 +268,7 @@ DEPENDENCIES
   ruby-debug19
   sass-rails (~> 3.1.0)
   seed-fu!
-  shoulda
+  shoulda (~> 3.0.0.beta2)
   simplecov
   six
   sqlite3
@@ -274,4 +277,3 @@ DEPENDENCIES
   thin
   turn
   uglifier
-  will_paginate (~> 3.0)

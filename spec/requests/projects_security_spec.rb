@@ -1,33 +1,33 @@
 require 'spec_helper'
 
 describe "Projects" do
-  describe "GET /projects" do 
+  describe "GET /projects" do
     it { projects_path.should be_allowed_for :admin }
     it { projects_path.should be_allowed_for :user }
     it { projects_path.should be_denied_for :visitor }
   end
 
-  describe "GET /projects/new" do 
+  describe "GET /projects/new" do
     it { projects_path.should be_allowed_for :admin }
     it { projects_path.should be_allowed_for :user }
     it { projects_path.should be_denied_for :visitor }
   end
 
   describe "Project" do
-    before do 
+    before do
       @project = Factory :project
       @u1 = Factory :user
       @u2 = Factory :user
       @u3 = Factory :user
       # full access
-      @project.users_projects.create(:user => @u1, :read => true, :write => true, :admin => true) 
+      @project.users_projects.create(:user => @u1, :read => true, :write => true, :admin => true)
       # no access
-      @project.users_projects.create(:user => @u2, :read => false, :write => false, :admin => false) 
+      @project.users_projects.create(:user => @u2, :read => false, :write => false, :admin => false)
       # readonly
-      @project.users_projects.create(:user => @u3, :read => true, :write => false, :admin => false) 
+      @project.users_projects.create(:user => @u3, :read => true, :write => false, :admin => false)
     end
 
-    describe "GET /project_code" do 
+    describe "GET /project_code" do
       it { project_path(@project).should be_allowed_for @u1 }
       it { project_path(@project).should be_allowed_for @u3 }
       it { project_path(@project).should be_denied_for :admin }
@@ -36,7 +36,7 @@ describe "Projects" do
       it { project_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/tree" do 
+    describe "GET /project_code/tree" do
       it { tree_project_path(@project).should be_allowed_for @u1 }
       it { tree_project_path(@project).should be_allowed_for @u3 }
       it { tree_project_path(@project).should be_denied_for :admin }
@@ -45,7 +45,7 @@ describe "Projects" do
       it { tree_project_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/commits" do 
+    describe "GET /project_code/commits" do
       it { project_commits_path(@project).should be_allowed_for @u1 }
       it { project_commits_path(@project).should be_allowed_for @u3 }
       it { project_commits_path(@project).should be_denied_for :admin }
@@ -54,7 +54,7 @@ describe "Projects" do
       it { project_commits_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/commit" do 
+    describe "GET /project_code/commit" do
       it { project_commit_path(@project, @project.commit).should be_allowed_for @u1 }
       it { project_commit_path(@project, @project.commit).should be_allowed_for @u3 }
       it { project_commit_path(@project, @project.commit).should be_denied_for :admin }
@@ -63,7 +63,7 @@ describe "Projects" do
       it { project_commit_path(@project, @project.commit).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/team" do 
+    describe "GET /project_code/team" do
       it { team_project_path(@project).should be_allowed_for @u1 }
       it { team_project_path(@project).should be_allowed_for @u3 }
       it { team_project_path(@project).should be_denied_for :admin }
@@ -72,7 +72,7 @@ describe "Projects" do
       it { team_project_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/wall" do 
+    describe "GET /project_code/wall" do
       it { wall_project_path(@project).should be_allowed_for @u1 }
       it { wall_project_path(@project).should be_allowed_for @u3 }
       it { wall_project_path(@project).should be_denied_for :admin }
@@ -81,8 +81,8 @@ describe "Projects" do
       it { wall_project_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/blob" do 
-      before do 
+    describe "GET /project_code/blob" do
+      before do
         @commit = @project.commit
         @path = @commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
         @blob_path = blob_project_path(@project, :commit_id => @commit.id, :path => @path)
@@ -96,7 +96,7 @@ describe "Projects" do
       it { @blob_path.should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/edit" do 
+    describe "GET /project_code/edit" do
       it { edit_project_path(@project).should be_allowed_for @u1 }
       it { edit_project_path(@project).should be_denied_for @u3 }
       it { edit_project_path(@project).should be_denied_for :admin }
@@ -105,7 +105,7 @@ describe "Projects" do
       it { edit_project_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/issues" do 
+    describe "GET /project_code/issues" do
       it { project_issues_path(@project).should be_allowed_for @u1 }
       it { project_issues_path(@project).should be_allowed_for @u3 }
       it { project_issues_path(@project).should be_denied_for :admin }
@@ -114,7 +114,7 @@ describe "Projects" do
       it { project_issues_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/snippets" do 
+    describe "GET /project_code/snippets" do
       it { project_snippets_path(@project).should be_allowed_for @u1 }
       it { project_snippets_path(@project).should be_allowed_for @u3 }
       it { project_snippets_path(@project).should be_denied_for :admin }

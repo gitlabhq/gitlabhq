@@ -1,7 +1,7 @@
 %table.round-borders#issues-table
   %tr
     - if can?(current_user, :admin_issue, @project) && !params[:f] || params[:f] == "0"
-      %th 
+      %th
     %th Assignee
     %th ID
     %th Title

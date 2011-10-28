@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
             :format => { :with => /^[a-zA-Z0-9_\-]*$/,
                          :message => "only letters, digits & '_' '-' allowed" },
             :length   => { :within => 0..255 }
-  
+
   validates :description,
             :length   => { :within => 0..2000 }
 
@@ -57,13 +57,13 @@ class Project < ActiveRecord::Base
       c.update_project(path, gitosis_writers)
     end
   end
-  
+
   def destroy_gitosis_project
     Gitosis.new.configure do |c|
       c.destroy_project(self)
     end
   end
-  
+
   def add_access(user, *access)
     opts = { :user => user }
     access.each { |name| opts.merge!(name => true) }
@@ -102,12 +102,12 @@ class Project < ActiveRecord::Base
   def url_to_repo
     "#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{path}.git"
   end
-  
+
   def path_to_repo
     GITOSIS["base_path"] + path + ".git"
   end
 
-  def repo 
+  def repo
     @repo ||= Grit::Repo.new(path_to_repo)
   end
 
@@ -122,17 +122,17 @@ class Project < ActiveRecord::Base
   def commit(commit_id = nil)
     if commit_id
       repo.commits(commit_id).first
-    else 
+    else
       repo.commits.first
     end
   end
 
-  def heads 
+  def heads
     @heads ||= repo.heads
   end
 
   def fresh_commits
-    commits = heads.map do |h| 
+    commits = heads.map do |h|
       repo.commits(h.name, 10)
     end.flatten.uniq { |c| c.id }
 
@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
   end
 
   def commits_since(date)
-    commits = heads.map do |h| 
+    commits = heads.map do |h|
       repo.log(h.name, nil, :since => date)
     end.flatten.uniq { |c| c.id }
 
@@ -165,7 +165,7 @@ class Project < ActiveRecord::Base
     unless owner.can_create_project?
       errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
     end
-  rescue 
+  rescue
     errors[:base] << ("Cant check your ability to create project")
   end
 
