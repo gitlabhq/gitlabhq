@@ -34,7 +34,7 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @notes = @issue.notes
+    @notes = @issue.notes.order("created_at ASC")
     @note = @project.notes.new(:noteable => @issue)
   end
 
