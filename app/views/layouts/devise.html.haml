@@ -1,0 +1,16 @@
+!!!
+%html
+  %head
+    %title
+      GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
+    = stylesheet_link_tag    "application"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+    %link{:href => "/assets/favicon.png", :rel => "icon", :type => "image/png"}/
+    = javascript_tag do
+      REQ_URI = "#{request.env["REQUEST_URI"]}";
+      REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
+  %body.login-page
+    #container
+      = render :partial => "layouts/flash"
+    = yield

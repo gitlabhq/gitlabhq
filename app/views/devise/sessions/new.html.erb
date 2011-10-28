@@ -1,20 +1,12 @@
-<h2>Sign in</h2>
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f| %>
+  <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
+  <%= f.text_field :email, :class => "text top" %>
+  <%= f.password_field :password, :class => "text bottom"  %>
 
-<div class="span-12 colborder">
-  <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-    <div><%= f.label :email %><br />
-      <%= f.text_field :email %></div>
-
-    <div><%= f.label :password %><br />
-      <%= f.password_field :password %></div>
-
-    <% if devise_mapping.rememberable? -%>
-      <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
-    <% end -%>
-    <br/>
-    <div><%= f.submit "Sign in", :class => "lbutton vm" %></div>
-  <% end %>
-</div>
-<div>
-  <%= render :partial => "devise/shared/links" %>
-</div>
+  <% if devise_mapping.rememberable? -%>
+    <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+  <% end -%>
+  <br/>
+  <%= f.submit "Sign in", :class => "grey-button" %>
+  <div class="right"> <%= render :partial => "devise/shared/links" %></div>
+<% end %>
