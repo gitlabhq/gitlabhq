@@ -390,16 +390,17 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 
 .top_menu_count {
-  background: none repeat scroll 0 0 #FFF6BF;
-  border-color: #FFD324;
-  color: #514721;
-  border: 1px solid #DDDDDD;
+  background: none repeat scroll 0 0 white;
+  color: #333;
+  border-color: #4BB8D2;
   padding: 2px;
-  font-size:12px;
-  position:relative;
-  top:-14px;
-  left:10px;
+  font-size:10px;
   border-top:none;
+  text-align:center;
+  float:right;
+  width:25px;
+
+
 }
 
 #logo {
@@ -700,3 +701,9 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   }
 }
 
+.left { 
+  float:left;
+}
+.right { 
+  float:right;
+}
