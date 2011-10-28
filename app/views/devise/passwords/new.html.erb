@@ -1,15 +1,8 @@
-<h2>Forgot your password?</h2>
-
-<div class="span-12 colborder">
-  <%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f| %>
-    <%= devise_error_messages! %>
-
-    <div><%= f.label :email %><br />
-      <%= f.email_field :email %></div>
-
-    <div><%= f.submit "Send me reset password instructions", :class => "lbutton vm"  %></div>
-  <% end %>
-</div>
-<div>
-  <%= render :partial => "devise/shared/links" %>
-</div>
+<%= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :class => "login-box", :method => :post }) do |f| %>
+  <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
+  <%= devise_error_messages! %>
+  <%= f.email_field :email, :placeholder => "Email",  :class => "text top" %>
+  <br/>
+  <%= f.submit "Reset password", :class => "grey-button"  %>
+  <div class="right"> <%= render :partial => "devise/shared/links" %></div>
+<% end %>
