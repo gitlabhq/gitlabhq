@@ -7,7 +7,7 @@
     = truncate issue.assignee.name, :lenght => 20
   %td ##{issue.id}
   %td
-    = html_escape issue.title
+    = truncate(html_escape(issue.title), :length => 60)
     %br
     - if issue.critical
       %span.tag.high critical

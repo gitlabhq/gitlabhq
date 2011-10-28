@@ -662,6 +662,10 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     background: #4466cc;
     color:white;
   }
+  &.normal {
+    background: #2c5ca6;
+    color:white;
+  }
   &.notes {
     background: #2c5c66;
     color:white;

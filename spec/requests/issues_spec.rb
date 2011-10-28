@@ -80,7 +80,6 @@ describe "Issues" do
     describe "fill in" do
       before do
         fill_in "issue_title", :with => "bug 345"
-        fill_in "issue_content", :with => "app bug 345"
         click_link "Select user"
         click_link @user.name
       end
@@ -112,6 +111,23 @@ describe "Issues" do
     end
   end
 
+  describe "Show issue" do 
+    before do
+      @issue = Factory :issue,
+        :author => @user,
+        :assignee => @user,
+        :project => project
+
+      visit project_issue_path(project, @issue)
+    end
+
+    it "should have valid show page for issue" do
+      page.should have_content @issue.title
+      page.should have_content @user.name
+      page.should have_content "today"
+    end
+  end
+
   describe "Edit issue", :js => true do
     before do
       @issue = Factory :issue,
@@ -129,7 +145,6 @@ describe "Issues" do
     describe "fill in" do
       before do
         fill_in "issue_title", :with => "bug 345"
-        fill_in "issue_content", :with => "app bug 345"
       end
 
       it { expect { click_button "Save" }.to_not change {Issue.count} }

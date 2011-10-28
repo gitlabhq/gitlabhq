@@ -45,7 +45,7 @@
   });
 
   $('.delete-issue').live('ajax:success', function() {
-    $(this).closest('tr').fadeOut(); });
+    $(this).closest('tr').fadeOut(); updatePage();});
 
   function setSortable(){
     $('#issues-table>tbody').sortable({

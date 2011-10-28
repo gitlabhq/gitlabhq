@@ -1,8 +1,7 @@
 %h2
-  = "Issue ##{@issue.id} - #{@issue.title}"
-
+  = "Issue ##{@issue.id} - #{html_escape(@issue.title)}"
 .span-15
-  = simple_format html_escape(@issue.content)
+  -#= simple_format html_escape(@issue.content)
   .issue_notes= render "notes/notes"
 .span-8.right
   .span-8
@@ -29,6 +28,16 @@
       %td
         = image_tag gravatar_icon(@issue.assignee.email), :class => "left", :width => 40, :style => "padding:0 5px;"
         = @issue.assignee.name
+    %tr 
+      %td Tags
+      %td
+        - if @issue.critical
+          %span.tag.high critical
+        - else 
+          %span.tag.normal normal
+
+        - if @issue.today?
+          %span.tag.today today
     %tr
       %td Closed?
       %td
@@ -39,5 +48,10 @@
         - else
           = check_box_tag "closed", 1, @issue.closed, :disabled => true
 
+
+  - if can?(current_user, :admin_issue, @issue)
+    .clear
+      = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
+      .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
 
