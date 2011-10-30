@@ -2,7 +2,7 @@
   %div.note_author
     = image_tag gravatar_icon(note.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
   %div.note_content.left
-    = raw RDiscount.new(note.note, :smart, :filter_html).to_html
+    = markdown(note.note)
     - if note.attachment.url
       Attachment:
       = link_to note.attachment_identifier, note.attachment.url, :target => "_blank"
