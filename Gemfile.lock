@@ -161,6 +161,7 @@ GEM
       rdoc (~> 3.4)
       thor (~> 0.14.6)
     rake (0.9.2)
+    rdiscount (1.6.8)
     rdoc (3.9.4)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
@@ -264,6 +265,7 @@ DEPENDENCIES
   pygments.rb (= 0.2.3)
   rails (= 3.1.0)
   rails-footnotes (>= 3.7.5.rc4)
+  rdiscount
   rspec-rails
   ruby-debug19
   sass-rails (~> 3.1.0)
