@@ -28,6 +28,7 @@ group :assets do
 end
 
 group :development do
+  gem 'letter_opener'
   gem 'rails-footnotes', '>= 3.7.5.rc4'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end

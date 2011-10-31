@@ -119,6 +119,8 @@ GEM
       rails (>= 3.0.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
+    letter_opener (0.0.2)
+      launchy
     libv8 (3.3.10.2)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
@@ -262,6 +264,7 @@ DEPENDENCIES
   jquery-rails
   kaminari
   launchy
+  letter_opener
   pygments.rb (= 0.2.3)
   rails (= 3.1.0)
   rails-footnotes (>= 3.7.5.rc4)
