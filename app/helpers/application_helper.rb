@@ -30,6 +30,10 @@ module ApplicationHelper
     end
   end
 
+  def markdown(text)
+    RDiscount.new(text, :autolink, :no_pseudo_protocols, :safelink, :smart, :filter_html).to_html.html_safe
+  end
+
   def search_autocomplete_source
     projects = current_user.projects.map{ |p| { :label => p.name, :url => project_path(p) } }
     default_nav = [

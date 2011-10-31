@@ -19,6 +19,7 @@ gem "pygments.rb", "0.2.3"
 gem "thin"
 gem "git"
 gem "acts_as_list"
+gem 'rdiscount'
 
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"
@@ -26,7 +27,7 @@ group :assets do
   gem 'uglifier'
 end
 
-group :development do 
+group :development do
   gem 'rails-footnotes', '>= 3.7.5.rc4'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
 end
