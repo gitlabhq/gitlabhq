@@ -40,7 +40,7 @@
       %p{:style => "margin-bottom: 3px;"}
         %span.author
           = note.author.name
-        = link_to truncate(markdown(note.note), :length => 200), link_to_item + "#note_#{note.id}"
+        = link_to markdown(truncate(note.note, :length => 200)), link_to_item + "#note_#{note.id}"
         - if note.attachment.url
           %br
           Attachment:
