@@ -1,6 +1,7 @@
 - if content_for?(:page_title)
   = yield :page_title
 - else 
-  .page-title
+  .grid-4
     .container_3
-      %h1= controller.controller_name.capitalize
+      %h2.icon
+        %span= controller.controller_name.capitalize

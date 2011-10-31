@@ -228,14 +228,14 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 /* General */
 
 /* Header */
-header{background: #474D57 url('../img/bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%}
+header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%}
 header a{color: white; text-shadow: 0 -1px 0 black}
 header a:hover{color: #f1f1f1}
 header h1{
 	width: 65px;
 }
 header h1.logo{
-	background: url('../img/images.png') no-repeat -3px -6px;
+	background: url('images.png') no-repeat -3px -6px;
 	width: 65px;
 	height: 26px;
 	margin: 5px 0;
@@ -282,9 +282,9 @@ header nav a.admin{
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
 }
-header nav a.dashboard span{background: url('../img/images.png') no-repeat -161px -4px; width: 20px; height: 20px; }
-header nav a.admin span{background: url('../img/images.png') no-repeat -184px -4px; width: 20px; height: 20px;}
-header nav a.project span{background: url('../img/images.png') no-repeat -209px -5px; width: 20px; height: 18px; top: 7px}
+header nav a.dashboard span{background: url('images.png') no-repeat -161px -4px; width: 20px; height: 20px; }
+header nav a.admin span{background: url('images.png') no-repeat -184px -4px; width: 20px; height: 20px;}
+header nav a.project span{background: url('images.png') no-repeat -209px -5px; width: 20px; height: 18px; top: 7px}
 
 header .login-top{float: right; width: 180px;
 	background-image: -webkit-gradient(linear, 0 0, 0 62, color-stop(0.032, #464c56), to(#363c45));
@@ -366,7 +366,7 @@ header a.arrow-up{
   border-bottom: 5px solid white;
 }
 /* eo Account Box */
-input.search-input{float: right; text-shadow: none; width: 216px; background-image: url('../img/icon-search.png') ; background-repeat: no-repeat; background-position: 10px; border-radius: 100px; border: 1px solid rgba(0,0,0,.7); box-shadow: 0 1px 0 rgba(255,255,255,.2), 0 2px 2px rgba(0,0,0,.4) inset ; background-color: #D2D5DA; background-color: rgba(255,255,255,.5); padding: 5px; padding-left: 26px;  margin-top: 4px; margin-right: 10px }
+input.search-input{float: right; text-shadow: none; width: 216px; background-image: url('icon-search.png') ; background-repeat: no-repeat; background-position: 10px; border-radius: 100px; border: 1px solid rgba(0,0,0,.7); box-shadow: 0 1px 0 rgba(255,255,255,.2), 0 2px 2px rgba(0,0,0,.4) inset ; background-color: #D2D5DA; background-color: rgba(255,255,255,.5); padding: 5px; padding-left: 26px;  margin-top: 4px; margin-right: 10px }
 input.search-input:focus{ background-color: white; }
 input.search-input::-webkit-input-placeholder {color: #666}
 /* eo Header */
