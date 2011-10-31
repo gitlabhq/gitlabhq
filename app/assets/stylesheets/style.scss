@@ -66,168 +66,17 @@ td { vertical-align: top; }
    ========================================================================== */
 
 /* 960gs */
-/*
-	Variable Grid System (Fluid Version).
-	Learn more ~ http://www.spry-soft.com/grids/
-	Based on 960 Grid System - http://960.gs/ & 960 Fluid - http://www.designinfluences.com/
-
-	Licensed under GPL and MIT.
-*/
-
-
-/* Containers
-----------------------------------------------------------------------------------------------------*/
-.container_3 {
-	width: 98%;
-	margin-left: 1%;
-	margin-right: 1%;
-}
-
-/* Grid >> Global
-----------------------------------------------------------------------------------------------------*/
-
-.grid_1,
-.grid_2,
-.grid_3 {
-	display:inline;
-	float: left;
-	position: relative;
-	margin-left: 1%;
-	margin-right: 1%;
-}
-
-/* Grid >> Children (Alpha ~ First, Omega ~ Last)
-----------------------------------------------------------------------------------------------------*/
-
-.alpha {
-	margin-left: 0;
-}
-
-.omega {
-	margin-right: 0;
-}
-
-/* Grid >> 3 Columns
-----------------------------------------------------------------------------------------------------*/
-
-
-.container_3 .grid_1 {
-	width:31.333%;
-}
-
-.container_3 .grid_2 {
-	width:64.667%;
-}
-
-.container_3 .grid_3 {
-	width:98.0%;
-}
-
-
-
-/* Prefix Extra Space >> 3 Columns
-----------------------------------------------------------------------------------------------------*/
-
-
-.container_3 .prefix_1 {
-	padding-left:33.333%;
-}
-
-.container_3 .prefix_2 {
-	padding-left:66.667%;
-}
-
-
-
-/* Suffix Extra Space >> 3 Columns
-----------------------------------------------------------------------------------------------------*/
-
-
-.container_3 .suffix_1 {
-	padding-right:33.333%;
-}
-
-.container_3 .suffix_2 {
-	padding-right:66.667%;
-}
-
-
-
-/* Push Space >> 3 Columns
-----------------------------------------------------------------------------------------------------*/
-
-
-.container_3 .push_1 {
-	left:33.333%;
-}
-
-.container_3 .push_2 {
-	left:66.667%;
-}
-
-
-
-/* Pull Space >> 3 Columns
-----------------------------------------------------------------------------------------------------*/
-
-
-.container_3 .pull_1 {
-	left:-33.333%;
-}
-
-.container_3 .pull_2 {
-	left:-66.667%;
-}
-
-
-
-
-/* Clear Floated Elements
-----------------------------------------------------------------------------------------------------*/
-
-/* http://sonspring.com/journal/clearing-floats */
-
-.clear {
-	clear: both;
-	display: block;
-	overflow: hidden;
-	visibility: hidden;
-	width: 0;
-	height: 0;
-}
-
-/* http://perishablepress.com/press/2008/02/05/lessons-learned-concerning-the-clearfix-css-hack */
-
-.clearfix:after {
-	clear: both;
-	content: ' ';
-	display: block;
-	font-size: 0;
-	line-height: 0;
-	visibility: hidden;
-	width: 0;
-	height: 0;
-}
-
-.clearfix {
-	display: inline-block;
-}
-
-* html .clearfix {
-	height: 1%;
-}
-
-.clearfix {
-	display: block;
-}/* eo 960gs*/
+.container_4{width:98%;margin-left:1%;margin-right:1%}.grid_1,.grid_2,.grid_3,.grid_4{display:inline;float:left;position:relative;margin-left:1%;margin-right:1%}.alpha{margin-left:0}.omega{margin-right:0}.container_4 .grid_1{width:23.0%}.container_4 .grid_2{width:48.0%}.container_4 .grid_3{width:73.0%}.container_4 .grid_4{width:98.0%}.container_4 .prefix_1{padding-left:25.0%}.container_4 .prefix_2{padding-left:50.0%}.container_4 .prefix_3{padding-left:75.0%}.container_4 .suffix_1{padding-right:25.0%}.container_4 .suffix_2{padding-right:50.0%}.container_4 .suffix_3{padding-right:75.0%}.container_4 .push_1{left:25.0%}.container_4 .push_2{left:50.0%}.container_4 .push_3{left:75.0%}.container_4 .pull_1{left:-25.0%}.container_4 .pull_2{left:-50.0%}.container_4 .pull_3{left:-75.0%}.clear{clear:both;display:block;overflow:hidden;visibility:hidden;width:0;height:0}.clearfix:after{clear:both;content:' ';display:block;font-size:0;line-height:0;visibility:hidden;width:0;height:0}.clearfix{display:inline-block}* html .clearfix{height:1%}.clearfix{display:block}
+/* eo 960gs*/
 
 
 *{text-shadow: 0 1px 0 white}
 body{font-size: 12px}
-a{text-decoration: none; font-weight: bold; color: #333}
-a:hover{color: #000}
+a{text-decoration: none; font-weight: bold; color: #666}
+a:hover{color: #333}
 /* Typography */
 h1,h2,h3,h4,h5{font-weight: normal; color: #666}
+h2{margin: 1.5em 0}
 /* eo Typography */
 
 /* Forms */
@@ -243,6 +92,7 @@ input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 
 	padding: 6px 20px;
 	border: 1px solid #999;
 	color: #666;
+	display: inline-block;
 	box-shadow: 0 1px 2px rgba(0,0,0,.3);
 	background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #f7f7f7), to(#d5d5d5));
 	background-image: -webkit-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
@@ -293,6 +143,7 @@ input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 
 	padding: 1em;
 	font-size: 12px;
 	font-weight: normal;
+	font-weight: bold;
 	font-size: 16px;
 	border-bottom: 1px solid #DEDFE1;
 	-webkit-border-top-left-radius: 5px;
@@ -301,6 +152,11 @@ input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 
 	-moz-border-radius-topright: 5px;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
+}
+
+.ui-box.ui-box-small h3{
+	padding: 8px 10px;
+	font-size: 12px;
 }
 
 .ui-box h3 a{font-weight: normal;}
@@ -316,7 +172,7 @@ input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 
 	border-bottom-left-radius: 5px;	
 }
 
-.ui-box:hover{box-shadow: 0 0 10px rgba(0,0,0,.1); border: 1px solid #ccc;
+.ui-box.hover:hover{box-shadow: 0 0 10px rgba(0,0,0,.1); border: 1px solid #ccc;
 	
 	-webkit-transition: all 200ms cubic-bezier(0.470, 0.000, 0.745, 0.715);
 	-moz-transition: all 200ms cubic-bezier(0.470, 0.000, 0.745, 0.715);
@@ -370,14 +226,16 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 
 
 /* General */
-header{background: #474D57 url('bg-header.png') repeat-x bottom; overflow: hidden; padding: 10px 2% 6px 2%}
+
+/* Header */
+header{background: #474D57 url('../img/bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%}
 header a{color: white; text-shadow: 0 -1px 0 black}
 header a:hover{color: #f1f1f1}
 header h1{
 	width: 65px;
 }
 header h1.logo{
-	background: url('images.png') no-repeat -3px -6px;
+	background: url('../img/images.png') no-repeat -3px -6px;
 	width: 65px;
 	height: 26px;
 	margin: 5px 0;
@@ -385,7 +243,7 @@ header h1.logo{
 	float: left;
 	text-indent: -1000em;
 }
-header nav{border-radius: 4px; box-shadow: 0 1px 2px black; width: 321px; margin: auto;
+header nav{border-radius: 4px; box-shadow: 0 1px 2px black; width: 294px; margin: auto;
 	background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595d63), to(#31363e));
 	background-image: -webkit-linear-gradient(#595d63 6.6%, #31363e);
 	background-image: -moz-linear-gradient(#595d63 6.6%, #31363e);
@@ -424,9 +282,9 @@ header nav a.admin{
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
 }
-header nav a.dashboard span{background: url('images.png') no-repeat -161px -4px; width: 20px; height: 20px; }
-header nav a.admin span{background: url('images.png') no-repeat -184px -4px; width: 20px; height: 20px;}
-header nav a.project span{background: url('images.png') no-repeat -209px -5px; width: 20px; height: 18px; top: 7px}
+header nav a.dashboard span{background: url('../img/images.png') no-repeat -161px -4px; width: 20px; height: 20px; }
+header nav a.admin span{background: url('../img/images.png') no-repeat -184px -4px; width: 20px; height: 20px;}
+header nav a.project span{background: url('../img/images.png') no-repeat -209px -5px; width: 20px; height: 18px; top: 7px}
 
 header .login-top{float: right; width: 180px;
 	background-image: -webkit-gradient(linear, 0 0, 0 62, color-stop(0.032, #464c56), to(#363c45));
@@ -446,7 +304,110 @@ header{margin-bottom: 0; clear: both; }
 
 .page-title{background-color: #f1f1f1;display: block; float: left; clear: both; width: 98%; padding: 0 1%; border-bottom: 1px solid #ccc; box-shadow: 0 -1px 0 white inset; margin-bottom: 1.5em}
 .page-title a.grey-button{float: right;}
+.right{float: right;}
 
+/* Account box */
+header .account-box{position: relative;z-index: 10000; top: -3px; width: 38px; height: 38px; font-size: 11px; float: right; display: block;  cursor: pointer; }
+header .account-box img{ border-radius: 4px; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
+header .account-box:after{
+	content: " "; 
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+left: 0;
+  bottom: 0;
+float: right;
+	border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-bottom: 0;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .15)), to(rgba(0, 0, 0, .25))), -webkit-gradient(linear, left top, right bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.5, rgba(255, 255, 255, .1)), color-stop(0.501, rgba(255, 255, 255, 0)), color-stop(1, rgba(255, 255, 255, 0)));
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, .15), rgba(0, 0, 0, .25)), -moz-linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+  background: linear-gradient(top, rgba(255, 255, 255, .15), rgba(0, 0, 0, .25)), linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+  -webkit-background-origin: border-box;
+  -moz-background-origin: border;
+  background-origin: border-box;
+}
+
+.account-box:hover > .account-links, .account-box:hover > .arrow-up{display: block;}
+header .account-links{background: white; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); }
+header .account-links a{color: #666; padding: 6px 10px; display: block; text-shadow: none;  border-bottom: 1px solid #eee}
+header .account-links a:hover{background-color: #f1f1f1; text-shadow: none; color: #333}
+
+header .account-links a:first-child{
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+header .account-links a:last-child{
+	-webkit-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	border-bottom: 0;
+}
+
+header a.arrow-up{
+	display: none;
+	width: 0;
+  height: 0;
+	float: right;
+	margin-right: 26px;
+	margin-bottom: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+
+  border-bottom: 5px solid white;
+}
+/* eo Account Box */
+input.search-input{float: right; text-shadow: none; width: 216px; background-image: url('../img/icon-search.png') ; background-repeat: no-repeat; background-position: 10px; border-radius: 100px; border: 1px solid rgba(0,0,0,.7); box-shadow: 0 1px 0 rgba(255,255,255,.2), 0 2px 2px rgba(0,0,0,.4) inset ; background-color: #D2D5DA; background-color: rgba(255,255,255,.5); padding: 5px; padding-left: 26px;  margin-top: 4px; margin-right: 10px }
+input.search-input:focus{ background-color: white; }
+input.search-input::-webkit-input-placeholder {color: #666}
+/* eo Header */
+
+
+h2.icon{position: relative; padding-left: 36px}
+h2.icon span{background: #E3E5EA; height: 26px; width: 26px; left: 0; top: -2px; border-radius: 4px; display: inline-block; position: absolute}
+
+.button-small{ text-shadow: none;  padding: 4px 10px; }
+.button-green{background: #A6B807; color: white}
+
+
+
+
+
+/* Dashboard Page */
+.dashboard-page header{margin-bottom: 0}
+.dashboard-page .news-feed{padding-left: 1em; margin-right: 450px; margin-left: 1%}
+
+.dashboard-content{ position: absolute; float: left; width: 100%; height: 100%;}
+.dashboard-page .news-feed h2{float: left;}
+.dashboard-page aside{  width: 420px;  float: right; right: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; border-left: 1px solid #ccc }
+.dashboard-page aside h4{margin: 0; border-bottom: 1px solid #ccc; padding: 10px 10px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
+.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-top: -4px; display: block;}
+.dashboard-page aside .project-list {list-style: none; margin: 0; padding: 0;}
+.dashboard-page aside .project-list li a {background: white;  color: #4BB8D2; display: block; border-bottom: 1px solid #eee; padding: 14px 6% 14px 14px;}
+.dashboard-page aside .project-list li a:hover {background: #f1f1f1}
+.dashboard-page aside .project-list li a:hover span.arrow{background-color: #E3E5EA;}
+.dashboard-page aside .project-list li a span.project-name{font-size: 14px; display: block; margin-bottom: 8px}
+.dashboard-page aside .project-list li a span.time{color: #666; font-weight: normal; font-size: 11px}
+.dashboard-page aside .project-list li a span.arrow{float: right; background: #E3E5EA; padding: 10px; border-radius: 5px; margin-top: 2px; text-shadow: none; color: #999}
+.dashboard-page .news-feed .project-updates  {margin-bottom: 20px;}
+.dashboard-page .news-feed .project-updates .data{ padding: 0}
+.dashboard-page .news-feed .project-updates a.project-update {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+.dashboard-page .news-feed .project-updates a.project-update:last-child{border-bottom: 0}
+.dashboard-page .news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
+.dashboard-page .news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+.dashboard-page .news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
+.dashboard-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
+.dashboard-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
+/* eo Dashboard Page */
 
 
 
