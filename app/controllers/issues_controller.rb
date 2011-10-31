@@ -42,7 +42,9 @@ class IssuesController < ApplicationController
     @issue = @project.issues.new(params[:issue])
     @issue.author = current_user
     if @issue.save
-      Notify.new_issue_email(@issue).deliver
+      @project.users.reject { |u| u.id == current_user.id } .each do |u|
+        Notify.new_issue_email(@issue).deliver
+      end
     end
 
     respond_with(@issue)
