@@ -41,10 +41,8 @@ class IssuesController < ApplicationController
   def create
     @issue = @project.issues.new(params[:issue])
     @issue.author = current_user
-    if @issue.save
-      @project.users.reject { |u| u.id == current_user.id } .each do |u|
-        Notify.new_issue_email(@issue).deliver
-      end
+    if @issue.save && @issue.assignee != current_user
+      Notify.new_issue_email(@issue).deliver
     end
 
     respond_with(@issue)
