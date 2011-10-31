@@ -119,6 +119,26 @@ class Project < ActiveRecord::Base
     repo rescue false
   end
 
+  def last_activity 
+    updates(1).first
+  rescue 
+    nil
+  end
+
+  def last_activity_date
+    last_activity.try(:created_at)
+  end
+
+  def updates(n = 3)
+    [ 
+      fresh_commits(n),
+      issues.last(n),
+      notes.fresh.limit(n)
+    ].compact.flatten.sort do |x, y|
+      y.created_at <=> x.created_at
+    end[0..n]
+  end
+
   def commit(commit_id = nil)
     if commit_id
       repo.commits(commit_id).first
@@ -131,16 +151,16 @@ class Project < ActiveRecord::Base
     @heads ||= repo.heads
   end
 
-  def fresh_commits
+  def fresh_commits(n = 10)
     commits = heads.map do |h|
-      repo.commits(h.name, 10)
+      repo.commits(h.name, n)
     end.flatten.uniq { |c| c.id }
 
     commits.sort! do |x, y|
       y.committed_date <=> x.committed_date
     end
 
-    commits[0..10]
+    commits[0..n]
   end
 
   def commits_since(date)

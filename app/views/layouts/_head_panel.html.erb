@@ -10,6 +10,7 @@
       </div>
       <div class="right">
         <%= link_to truncate(@project.name, :length => 20), project_path(@project), :class => "current button" if @project && !@project.new_record? %>
+        <%= link_to 'Dashboard', dashboard_path, :class => current_page?(dashboard_path) ? "current button" : "button" %>
         <%= link_to 'Projects', projects_path, :class => current_page?(projects_path) ? "current button" : "button" %>
         <%= link_to('Admin', admin_root_path, :class => admin_namespace? ? "current button" : "button" ) if current_user.is_admin? %>
         <%= link_to profile_path, :class => ((controller.controller_name == "keys" || controller.controller_name == "profile") ? "current button" : "button") do %>

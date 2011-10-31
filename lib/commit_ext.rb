@@ -8,4 +8,8 @@ module CommitExt
   rescue
     "-- invalid encoding for commit message"
   end
+
+  def created_at
+    committed_date
+  end
 end
