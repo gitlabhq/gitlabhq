@@ -10,7 +10,10 @@
           <%= current_user.name %> 
         <% end %>
         <%= link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete %>
-  </div>
+    </div>
+    <div class="search">
+        <%= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"  %>
+      </div>
   <!-- .login-top -->
   <nav>
     <%= link_to root_path, :class => current_page?(root_path) ? "current dashboard" : "dashboard" do %>
@@ -31,7 +34,6 @@
     <div class="span-24">
       <div class="span-10">
         <span class="search-holder">
-          <%= text_field_tag "search", nil, :placeholder => "Search"  %>
         </span>
       </div>
       <div class="right">

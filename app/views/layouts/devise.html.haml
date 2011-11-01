@@ -11,6 +11,5 @@
       REQ_URI = "#{request.env["REQUEST_URI"]}";
       REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
   %body.login-page
-    #container
-      = render :partial => "layouts/flash"
+    = render :partial => "layouts/flash"
     = yield
