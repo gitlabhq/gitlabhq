@@ -102,54 +102,6 @@ table.round-borders {
   float:left;
 }
 
-.day-commits-table {
-  @include round-borders-all(4px);
-  padding: 4px 0px;
-  margin-bottom:10px;
-  display:block;
-  width:100%;
-  background: #E6F1F6;
-
-  .day-header {
-    padding:10px;
-    h3 {
-      margin:0px;
-    }
-  }
-
-  ul {
-    display:block;
-    list-style:none;
-    margin:0px;
-    padding:0px;
-
-    li.commit {
-      display:list-item;
-      padding:8px;
-      margin:0px;
-      background: #F7FBFC;
-      border-top: 1px solid #E2EAEE;
-
-      &:first-child {
-        border-top: 1px solid #E2EAEE;
-      }
-      &:nth-child(2n+1) {
-        background: white;
-      }
-
-      a.button {
-        width:85px;
-        padding:10px;
-        margin:0px;
-        float:right;
-      }
-      p {
-        margin-bottom: 3px;
-        font-size: 13px;
-      }
-    }
-  }
-}
 @mixin panel-color {
   background: #111 !important;
   background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111)) !important;
