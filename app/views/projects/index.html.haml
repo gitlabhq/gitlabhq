@@ -1,8 +1,9 @@
+- content_for(:body_class, "projects-page")
 - content_for(:page_title) do
-  .grid-4
-    %h2.icon
-      - if current_user.can_create_project?
-        %a.grey-button.right{:href => new_project_path} Create new project
+  .grid_4
+    - if current_user.can_create_project?
+      %a.grey-button.right{:href => new_project_path} Create new project
+    %h2.icon  
       %span
       Projects
 
