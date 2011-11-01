@@ -41,6 +41,5 @@
                 - if @commit
                   = link_to truncate(commit_name(@project,@commit), :length => 15), project_commit_path(@project, :id => @commit.id), :class => current_page?(:controller => "commits", :action => "show", :project_id => @project, :id => @commit.id) ? "current" : nil
 
-
         .project-content
           = yield

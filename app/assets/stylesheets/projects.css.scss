@@ -335,11 +335,6 @@ input.ssh_project_url {
   border-width: 1px;
 }
 
-tbody tr:nth-child(2n) td, tbody tr.even td {
-  background: none repeat scroll 0 0 #F7FBFC;
-  border-top: 1px solid #E2EAEE;
-  border-bottom: 1px solid #E2EAEE;
-}
 
 .top_menu_count {
   background: none repeat scroll 0 0 white;
@@ -672,6 +667,42 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 .width-65p{
   width:65%;
+}
 pre.commit_message {
   white-space: pre-wrap;
+}
+
+#container { 
+  min-height:100%;
+}
+.ui-selectmenu{
+  @include round-borders-all(4px);
+  margin-right:10px;
+  font-size:1.5em;
+  height:auto;
+  font-weight:bold;
+  .ui-selectmenu-status { 
+    padding:3px 10px;
+  }
+}
+
+td.code { 
+  width: 100%;
+  .highlight { 
+    margin-left: 55px;
+    overflow:auto;
+    overflow-y:hidden;
+  }
+}
+.highlight pre { 
+  white-space: pre;
+  word-wrap:normal;
+}
+
+.highlighttable tr:hover {
+  background:white;
+}
+table.highlighttable pre{ 
+  line-height:16px !important;
+  font-size:12px !important;
 }
