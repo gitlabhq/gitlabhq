@@ -2,6 +2,7 @@ class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :issue, :only => [:edit, :update, :destroy, :show]
+  layout "project"
 
   # Authorize
   before_filter :add_project_abilities

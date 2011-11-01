@@ -13,14 +13,14 @@ describe "Projects" do
     end
 
     it "should have link to new project" do
-      page.should have_content("New Project")
+      page.should have_content("Create new project")
     end
   end
 
   describe "GET /projects/new" do
     before do
       visit projects_path
-      click_link "New Project"
+      click_link "Create new project"
     end
 
     it "should be correct path" do

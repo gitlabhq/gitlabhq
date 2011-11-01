@@ -102,54 +102,6 @@ table.round-borders {
   float:left;
 }
 
-.day-commits-table {
-  @include round-borders-all(4px);
-  padding: 4px 0px;
-  margin-bottom:10px;
-  display:block;
-  width:100%;
-  background: #E6F1F6;
-
-  .day-header {
-    padding:10px;
-    h3 {
-      margin:0px;
-    }
-  }
-
-  ul {
-    display:block;
-    list-style:none;
-    margin:0px;
-    padding:0px;
-
-    li.commit {
-      display:list-item;
-      padding:8px;
-      margin:0px;
-      background: #F7FBFC;
-      border-top: 1px solid #E2EAEE;
-
-      &:first-child {
-        border-top: 1px solid #E2EAEE;
-      }
-      &:nth-child(2n+1) {
-        background: white;
-      }
-
-      a.button {
-        width:85px;
-        padding:10px;
-        margin:0px;
-        float:right;
-      }
-      p {
-        margin-bottom: 3px;
-        font-size: 13px;
-      }
-    }
-  }
-}
 @mixin panel-color {
   background: #111 !important;
   background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111)) !important;
@@ -210,9 +162,9 @@ table.round-borders {
   padding:20px;
 }
 
-body {
-  background: #eaeaea;
-}
+//body {
+  //background: #eaeaea;
+//}
 
 a {
   color: #111;
@@ -383,23 +335,19 @@ input.ssh_project_url {
   border-width: 1px;
 }
 
-tbody tr:nth-child(2n) td, tbody tr.even td {
-  background: none repeat scroll 0 0 #F7FBFC;
-  border-top: 1px solid #E2EAEE;
-  border-bottom: 1px solid #E2EAEE;
-}
 
 .top_menu_count {
-  background: none repeat scroll 0 0 #FFF6BF;
-  border-color: #FFD324;
-  color: #514721;
-  border: 1px solid #DDDDDD;
+  background: none repeat scroll 0 0 white;
+  color: #333;
+  border-color: #4BB8D2;
   padding: 2px;
-  font-size:12px;
-  position:relative;
-  top:-14px;
-  left:10px;
+  font-size:10px;
   border-top:none;
+  text-align:center;
+  float:right;
+  width:25px;
+
+
 }
 
 #logo {
@@ -429,6 +377,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
     color:#444;
     font-size:22px;
     padding-top:5px;
+    margin:2px;
   }
 }
 
@@ -700,6 +649,60 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   }
 }
 
+.left { 
+  float:left;
+}
+.right { 
+  float:right;
+}
+
+.width-50p{
+  width:50%;
+}
+.width-49p{
+  width:49%;
+}
+.width-30p{
+  width:30%;
+}
+.width-65p{
+  width:65%;
+}
 pre.commit_message {
   white-space: pre-wrap;
+}
+
+#container { 
+  min-height:100%;
+}
+.ui-selectmenu{
+  @include round-borders-all(4px);
+  margin-right:10px;
+  font-size:1.5em;
+  height:auto;
+  font-weight:bold;
+  .ui-selectmenu-status { 
+    padding:3px 10px;
+  }
+}
+
+td.code { 
+  width: 100%;
+  .highlight { 
+    margin-left: 55px;
+    overflow:auto;
+    overflow-y:hidden;
+  }
+}
+.highlight pre { 
+  white-space: pre;
+  word-wrap:normal;
+}
+
+.highlighttable tr:hover {
+  background:white;
+}
+table.highlighttable pre{ 
+  line-height:16px !important;
+  font-size:12px !important;
 }

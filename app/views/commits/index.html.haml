@@ -1,15 +1,33 @@
-%div
-  %h3
-    .left
-      = form_tag project_commits_path(@project), :method => :get do
-        = select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Branches"
-    &nbsp;
-    .left.prepend-1
-      = form_tag project_commits_path(@project), :method => :get do
-        = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
-    = text_field_tag "ssh", @project.url_to_repo, :class => ["ssh_project_url", "one_click_select"]
-    .clear
+- content_for(:body_class, "project-page commits-page")
+
+.left
+  = form_tag project_commits_path(@project), :method => :get do
+    = select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Branches"
+.left
+  = form_tag project_commits_path(@project), :method => :get do
+    = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
+.clear
+
+%br
+
+
+-#%a.right.button{:href => "#"} Download
+-#-if can? current_user, :admin_project, @project
+  %a.right.button.blue{:href => "#"} EDIT
+%h2.icon
+  %span
+  %a.project-name{:href => "#"}
+    %i.arrow>
+    Project
+  &nbsp;
+  %d
+    %a{:href => "#"}
+      = @ref
   - if params[:path]
-    %h3{:style => "color:#555"} /#{params[:path]}
-  %div{:id => dom_id(@project)}
-    = render "commits"
+    &nbsp;
+    %d
+      %a{:href => "#"}= params[:path].split("/").join(" / ")
+
+
+%div{:id => dom_id(@project)}
+  = render "commits"

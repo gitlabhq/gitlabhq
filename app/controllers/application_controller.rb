@@ -8,7 +8,17 @@ class ApplicationController < ActionController::Base
     render :file => File.join(Rails.root, "public", "gitosis_error"), :layout => false
   end
 
+  layout :layout_by_resource
+
   protected
+
+  def layout_by_resource
+    if devise_controller?
+      "devise"
+    else
+      "application"
+    end
+  end
 
   def abilities
     @abilities ||= Six.new
