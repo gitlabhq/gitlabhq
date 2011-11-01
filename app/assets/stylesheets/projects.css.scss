@@ -364,7 +364,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
   text-shadow: #555 1px 1px;
 }
 
-/** FALSH **/
+/** FLASH **/
 
 #flash_container {
   height:40px;
@@ -636,9 +636,9 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 
 .top_panel_issues{
-  #issue_search_form { 
-    margin:5px 0; 
-    input { 
+  #issue_search_form {
+    margin:5px 0;
+    input {
       border:1px solid #D3D3D3;
       padding: 3px;
       height: 28px;
@@ -647,7 +647,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
       box-sizing: border-box;
       -moz-box-sizing: border-box;
 
-      &:focus { 
+      &:focus {
         border-color:#c2e1ef;
       }
     }
@@ -672,4 +672,6 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 .width-65p{
   width:65%;
+pre.commit_message {
+  white-space: pre-wrap;
 }
