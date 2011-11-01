@@ -2,6 +2,7 @@ require "base64"
 
 class CommitsController < ApplicationController
   before_filter :project
+  layout "project"
 
   # Authorize
   before_filter :add_project_abilities
