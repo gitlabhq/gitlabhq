@@ -136,7 +136,7 @@ class Project < ActiveRecord::Base
       notes.fresh.limit(n)
     ].compact.flatten.sort do |x, y|
       y.created_at <=> x.created_at
-    end[0..n]
+    end[0...n]
   end
 
   def commit(commit_id = nil)
@@ -160,7 +160,7 @@ class Project < ActiveRecord::Base
       y.committed_date <=> x.committed_date
     end
 
-    commits[0..n]
+    commits[0...n]
   end
 
   def commits_since(date)

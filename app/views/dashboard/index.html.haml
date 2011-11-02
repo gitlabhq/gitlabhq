@@ -3,12 +3,13 @@
 #dashboard-content.dashboard-content.content
   %aside
     %h4
-      %a.button-small.button-green{:href => ""} New Repository
+      - if current_user.can_create_project?
+        %a.button-small.button-green{:href => new_project_path} New Repository
       Your Repositories
     %ol.project-list
       - @projects.each do |project|
         %li
-          %a{:href => "#"}
+          %a{:href => project_path(project)}
             %span.arrow →
             %span.project-name= project.name
             %span.time
@@ -18,19 +19,20 @@
     %h2.icon
       %span>
       Dashboard
-    - @active_projects.each do |project|
+    - @active_projects.first(3).each do |project|
       .project-box.project-updates.ui-box.ui-box-small.ui-box-big
         %h3= project.name
         .data
           - project.updates.each do |update|
-            %a.project-update{:href => path_to_object(project, update)}
-              %img{:src => "http://placehold.it/40x40"}
-                %span.update-title [#{update.class.name}] added a matcher that helps debugging matching problems
-                %span.update-author
-                  %strong= update.author.name
-                  authored
-                  = time_ago_in_words(update.created_at) 
-                  ago
+            %a.project-update{:href => dashboard_feed_path(project, update)}
+              = image_tag gravatar_icon(update.author.email), :class => "left", :width => 40
+              %span.update-title
+                = dashboard_feed_title(update)
+              %span.update-author
+                %strong= update.author.name
+                authored
+                = time_ago_in_words(update.created_at) 
+                ago
             %br
             / .project-update
       / .project-updates

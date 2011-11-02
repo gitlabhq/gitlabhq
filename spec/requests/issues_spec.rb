@@ -105,11 +105,6 @@ describe "Issues" do
           Notify.should_not_receive(:new_issue_email)
           click_button "Save"
         end
-
-        it "should send valid email to user with email & password" do
-          click_button "Save"
-          ActionMailer::Base.deliveries.last.should be_nil
-        end
       end
 
       describe 'assign to other' do 

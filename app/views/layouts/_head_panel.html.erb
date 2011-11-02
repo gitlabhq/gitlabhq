@@ -22,9 +22,9 @@
     <%= link_to projects_path, :class => current_page?(projects_path) ? "current project" : "project" do %>
       <span></span>Projects
     <% end %>
-    <%= link_to( admin_root_path, :class => admin_namespace? ? "current admin" : "admin" ) do %>
+    <%= link_to((current_user.is_admin? ? admin_root_path : "#"), :class => (admin_namespace? ? "current admin" : "admin")) do %>
       <span></span>Admin
-    <% end if current_user.is_admin? %>
+    <% end  %>
   </nav>
 </header>
 <!-- eo Page Header -->
