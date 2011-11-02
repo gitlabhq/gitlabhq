@@ -2,6 +2,7 @@ class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :issue, :only => [:edit, :update, :destroy, :show]
+  layout "project"
 
   # Authorize
   before_filter :add_project_abilities
@@ -41,7 +42,7 @@ class IssuesController < ApplicationController
   def create
     @issue = @project.issues.new(params[:issue])
     @issue.author = current_user
-    if @issue.save
+    if @issue.save && @issue.assignee != current_user
       Notify.new_issue_email(@issue).deliver
     end
 

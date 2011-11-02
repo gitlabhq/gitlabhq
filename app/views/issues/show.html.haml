@@ -1,9 +1,9 @@
 %h2
   = "Issue ##{@issue.id} - #{html_escape(@issue.title)}"
-.span-15
+.left.width-65p
   -#= simple_format html_escape(@issue.content)
   .issue_notes= render "notes/notes"
-.span-8.right
+.right.width-30p
   .span-8
     - if @issue.closed
       %center.success Closed

@@ -1,5 +1,4 @@
 %div.top_project_menu
-  -#%span= link_to @project.code.capitalize, @project, :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
   - if @project.repo_exists?
     %span= link_to image_tag("home.png", :width => 20), project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
     %span= link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil

@@ -3,10 +3,10 @@
   %head
     %title
       GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
-    = stylesheet_link_tag 'blueprint/screen', :media => "screen, projection"
-    = stylesheet_link_tag 'blueprint/print', :media => "print"
-    = stylesheet_link_tag 'blueprint/plugins/buttons/screen', :media => "screen, projection"
-    = stylesheet_link_tag 'blueprint/plugins/link-icons/screen', :media => "screen, projection"
+    -#= stylesheet_link_tag 'blueprint/screen', :media => "screen, projection"
+    -#= stylesheet_link_tag 'blueprint/print', :media => "print"
+    -#= stylesheet_link_tag 'blueprint/plugins/buttons/screen', :media => "screen, projection"
+    -#= stylesheet_link_tag 'blueprint/plugins/link-icons/screen', :media => "screen, projection"
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     = csrf_meta_tags
@@ -14,15 +14,10 @@
     = javascript_tag do
       REQ_URI = "#{request.env["REQUEST_URI"]}";
       REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body#thebody
-    = render :partial => "layouts/flash"
-    - if user_signed_in?
+  %body{ :class => yield(:body_class), :id => yield(:boyd_id)}
+    #container
+      = render :partial => "layouts/flash"
       = render :partial => "layouts/head_panel"
-      .top_bar.container
-        = render :partial => "projects/top_menu" if @project && !@project.new_record?
-        = render :partial => "projects/projects_top_menu" if (controller.controller_name == "projects" && ["index", "new", "create"].include?(controller.action_name)) && !admin_namespace?
-        = render :partial => "profile/top_menu" if ["keys", "profile"].include?(controller.controller_name)
-        = render :partial => "admin/top_menu" if admin_namespace?
-    #content-container.container
-      .span-24
+      %div{ :id => "main", :role => "main", :class => "container_4" }
+        = render :partial => "layouts/page_title"
         = yield
