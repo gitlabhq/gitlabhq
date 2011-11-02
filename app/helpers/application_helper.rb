@@ -28,6 +28,8 @@ module ApplicationHelper
     else
       "Never"
     end
+  rescue 
+    "Never"
   end
 
   def markdown(text)

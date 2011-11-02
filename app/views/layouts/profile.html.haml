@@ -1,0 +1,29 @@
+!!!
+%html
+  %head
+    %title
+      GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
+    = stylesheet_link_tag    "application"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+    %link{:href => "/assets/favicon.png", :rel => "icon", :type => "image/png"}/
+    = javascript_tag do
+      REQ_URI = "#{request.env["REQUEST_URI"]}";
+      REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
+  %body{ :class => content_for?(:body_class) ? yield(:body_class) : 'project-page', :id => yield(:boyd_id)}
+    #container
+      = render :partial => "layouts/flash"
+      = render :partial => "layouts/head_panel"
+      .project-container
+        .project-sidebar
+          .fixed
+            %aside
+              = link_to "Profile", profile_path, :class => current_page?(:controller => "profile", :action => :show) ? "current" : nil
+              = link_to "Password", profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
+              = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do 
+                Keys
+                - unless current_user.keys.empty?
+                  %span{ :class => "number" }= current_user.keys.count
+
+        .project-content
+          = yield

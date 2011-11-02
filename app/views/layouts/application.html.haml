@@ -19,11 +19,5 @@
       = render :partial => "layouts/flash"
       = render :partial => "layouts/head_panel"
       %div{ :id => "main", :role => "main", :class => "container_4" }
-        - if @project && !@project.new_record?
-          .top_bar.container= render :partial => "projects/top_menu" 
-        - if ["keys", "profile"].include?(controller.controller_name)
-          .top_bar.container= render :partial => "profile/top_menu"
-        - if admin_namespace?
-          .top_bar.container= render :partial => "admin/top_menu"
         = render :partial => "layouts/page_title"
         = yield

@@ -1,4 +1,5 @@
 class KeysController < ApplicationController
+  layout "profile"
   respond_to :js
 
   def index
