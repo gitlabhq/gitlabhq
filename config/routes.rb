@@ -54,5 +54,5 @@ Gitlab::Application.routes.draw do
     end
     resources :notes, :only => [:create, :destroy]
   end
-  root :to => "projects#index"
+  root :to => "dashboard#index"
 end
