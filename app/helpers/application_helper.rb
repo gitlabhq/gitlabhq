@@ -32,6 +32,15 @@ module ApplicationHelper
     "Never"
   end
 
+  def grouped_options_refs
+    options = [
+      ["Branch", @repo.heads.map(&:name) ],
+      [ "Tag", @project.tags ]
+    ]
+
+    grouped_options_for_select(options, @ref)
+  end
+
   def markdown(text)
     RDiscount.new(text, :autolink, :no_pseudo_protocols, :safelink, :smart, :filter_html).to_html.html_safe
   end

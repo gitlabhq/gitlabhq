@@ -57,19 +57,13 @@ class ApplicationController < ActionController::Base
   end
 
   def load_refs
-    @branch = unless params[:branch].blank?
-                params[:branch]
-              else
-                nil
-              end
-
-    @tag = unless params[:tag].blank?
-             params[:tag]
-           else
-             nil
-           end
-
-    @ref = @branch || @tag || "master"
+    unless params[:ref].blank?
+      @ref = params[:ref]
+    else
+      @branch = params[:branch].blank? ? nil : params[:branch]
+      @tag = params[:tag].blank? ? nil : params[:tag]
+      @ref = @branch || @tag || "master"
+    end
   end
 
   def render_404

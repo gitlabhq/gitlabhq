@@ -1,33 +1,18 @@
 - content_for(:body_class, "project-page commits-page")
 
-.left
-  = form_tag project_commits_path(@project), :method => :get do
-    = select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Branches"
-.left
-  = form_tag project_commits_path(@project), :method => :get do
-    = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
-.clear
-
-%br
-
-
 -#%a.right.button{:href => "#"} Download
 -#-if can? current_user, :admin_project, @project
   %a.right.button.blue{:href => "#"} EDIT
 %h2.icon
   %span
-  %a.project-name{:href => "#"}
-    %i.arrow>
-    Project
-  &nbsp;
   %d
-    %a{:href => "#"}
-      = @ref
-  - if params[:path]
-    &nbsp;
-    %d
+    = link_to project_commits_path(@project) do 
+      = @project.name
+    - if params[:path]
+      \/
       %a{:href => "#"}= params[:path].split("/").join(" / ")
 
+.right= render "projects/refs"
 
 %div{:id => dom_id(@project)}
   = render "commits"

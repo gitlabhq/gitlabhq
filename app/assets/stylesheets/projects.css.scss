@@ -706,3 +706,16 @@ table.highlighttable pre{
   line-height:16px !important;
   font-size:12px !important;
 }
+
+.project-refs-form { 
+  span {
+    background: none !important;
+    position:static !important;
+    width:auto !important;
+    height: auto !important;
+  }
+}
+
+.project-refs-select {
+  width:200px;
+}
