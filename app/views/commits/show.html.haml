@@ -7,7 +7,7 @@
     %td= @commit.id
   %tr
     %td Author
-    %td= @commit.author
+    %td= @commit.author_name
   %tr
     %td Commiter
     %td= @commit.committer
@@ -16,7 +16,9 @@
     %td= @commit.committed_date
   %tr
     %td Message
-    %td= @commit.safe_message
+    %td
+      %pre.commit_message
+        = preserve @commit.safe_message
   %tr
     %td Tree
     %td= link_to 'Browse Code', tree_project_path(@project, :commit_id => @commit.id)

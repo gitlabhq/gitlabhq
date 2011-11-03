@@ -5,7 +5,10 @@ describe "Issues" do
 
   before do
     login_as :user
+    @user2 = Factory :user
+
     project.add_access(@user, :read, :write)
+    project.add_access(@user2, :read, :write)
   end
 
   describe "GET /issues" do
@@ -49,20 +52,20 @@ describe "Issues" do
       end
 
       it "should show only open" do
-        should have_content(@issue.title)
+        should have_content(@issue.title[0..25])
         should have_no_content(@closed_issue.title)
       end
 
       it "should show only closed" do
         choose "closed_issues"
         should have_no_content(@issue.title)
-        should have_content(@closed_issue.title)
+        should have_content(@closed_issue.title[0..25])
       end
 
       it "should show all" do
         choose "all_issues"
-        should have_content(@issue.title)
-        should have_content(@closed_issue.title)
+        should have_content(@issue.title[0..25])
+        should have_content(@closed_issue.title[0..25])
       end
     end
   end
@@ -78,35 +81,66 @@ describe "Issues" do
     end
 
     describe "fill in" do
-      before do
-        fill_in "issue_title", :with => "bug 345"
-        click_link "Select user"
-        click_link @user.name
+      describe 'assign to me' do 
+        before do
+          fill_in "issue_title", :with => "bug 345"
+          click_link "Select user"
+          within "#issue_assignee_id-menu" do
+            click_link @user.name
+          end 
+        end
+
+        it { expect { click_button "Save" }.to change {Issue.count}.by(1) }
+
+        it "should add new issue to table" do
+          click_button "Save"
+
+          page.should_not have_content("Add new issue")
+          page.should have_content @user.name
+          page.should have_content "bug 345"
+          page.should have_content project.name
+        end
+
+        it "should call send mail" do
+          Notify.should_not_receive(:new_issue_email)
+          click_button "Save"
+        end
       end
 
-      it { expect { click_button "Save" }.to change {Issue.count}.by(1) }
+      describe 'assign to other' do 
+        before do
+          fill_in "issue_title", :with => "bug 345"
+          click_link "Select user"
+          within "#issue_assignee_id-menu" do
+            click_link @user2.name
+          end 
+        end
 
-      it "should add new issue to table" do
-        click_button "Save"
+        it { expect { click_button "Save" }.to change {Issue.count}.by(1) }
 
-        page.should_not have_content("Add new issue")
-        page.should have_content @user.name
-        page.should have_content "bug 345"
-        page.should have_content project.name
-      end
+        it "should add new issue to table" do
+          click_button "Save"
 
-      it "should call send mail" do
-        Notify.should_receive(:new_issue_email).and_return(stub(:deliver => true))
-        click_button "Save"
-      end
+          page.should_not have_content("Add new issue")
+          page.should have_content @user2.name
+          page.should have_content "bug 345"
+          page.should have_content project.name
+        end
 
-      it "should send valid email to user with email & password" do
-        click_button "Save"
-        issue = Issue.last
-        email = ActionMailer::Base.deliveries.last
-        email.subject.should have_content("New Issue was created")
-        email.body.should have_content(issue.title)
-        email.body.should have_content(issue.assignee.name)
+        it "should call send mail" do
+          Notify.should_receive(:new_issue_email).and_return(stub(:deliver => true))
+          click_button "Save"
+        end
+
+        it "should send valid email to user with email & password" do
+          click_button "Save"
+          issue = Issue.last
+          email = ActionMailer::Base.deliveries.last
+          email.subject.should have_content("New Issue was created")
+          email.body.should have_content(issue.title)
+          email.body.should have_content(issue.assignee.name)
+        end
+
       end
     end
   end

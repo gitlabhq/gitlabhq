@@ -12,15 +12,15 @@ module LoginMacros
     end
 
     visit new_user_session_path
-    fill_in "Email", :with => @user.email
-    fill_in "Password", :with => "123456"
+    fill_in "user_email", :with => @user.email
+    fill_in "user_password", :with => "123456"
     click_button "Sign in"
   end
 
   def login_with(user)
     visit new_user_session_path
-    fill_in "Email", :with => user.email
-    fill_in "Password", :with => "123456"
+    fill_in "user_email", :with => user.email
+    fill_in "user_password", :with => "123456"
     click_button "Sign in"
   end
 

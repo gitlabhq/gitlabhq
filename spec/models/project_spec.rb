@@ -62,6 +62,51 @@ describe Project do
     end
   end
 
+  describe "updates" do 
+    let(:project) { Factory :project }
+
+    before do 
+      @issue = Factory :issue,
+        :project => project,
+        :author => Factory(:user),
+        :assignee => Factory(:user)
+
+      @note = Factory :note,
+        :project => project,
+        :author => Factory(:user)
+
+      @commit = project.fresh_commits(1).first
+    end
+
+    describe "return commit, note & issue" do
+      it { project.updates(3).count.should == 3 }
+      it { project.updates(3).last.id.should == @commit.id }
+      it { project.updates(3).include?(@issue).should be_true }
+      it { project.updates(3).include?(@note).should be_true }
+    end
+  end
+
+  describe "last_activity" do 
+    let(:project) { Factory :project }
+
+    before do 
+      @note = Factory :note,
+        :project => project,
+        :author => Factory(:user)
+    end
+
+    it { project.last_activity.should == @note }
+    it { project.last_activity_date.to_s.should == @note.created_at.to_s }
+  end
+
+  describe "fresh commits" do 
+    let(:project) { Factory :project }
+
+    it { project.fresh_commits(3).count.should == 3 }
+    it { project.fresh_commits.first.id.should == "2fb376f61875b58bceee0492e270e9c805294b1a" }
+    it { project.fresh_commits.last.id.should == "0dac878dbfe0b9c6104a87d65fe999149a8d862c" }
+  end
+
   describe "Git methods" do
     let(:project) { Factory :project }
 

@@ -15,6 +15,7 @@ Gitlab::Application.routes.draw do
   put "profile/password", :to => "profile#password_update"
   put "profile/edit", :to => "profile#social_update"
   get "profile", :to => "profile#show"
+  get "dashboard", :to => "dashboard#index"
   #get "profile/:id", :to => "profile#show"
 
   resources :projects, :only => [:new, :create, :index]
@@ -53,5 +54,5 @@ Gitlab::Application.routes.draw do
     end
     resources :notes, :only => [:create, :destroy]
   end
-  root :to => "projects#index"
+  root :to => "dashboard#index"
 end

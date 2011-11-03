@@ -7,6 +7,11 @@ class Note < ActiveRecord::Base
   belongs_to :author,
     :class_name => "User"
 
+  delegate :name,
+           :email, 
+           :to => :author, 
+           :prefix => true
+
   attr_protected :author, :author_id
 
   validates_presence_of :project

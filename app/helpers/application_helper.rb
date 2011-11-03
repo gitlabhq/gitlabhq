@@ -28,6 +28,12 @@ module ApplicationHelper
     else
       "Never"
     end
+  rescue 
+    "Never"
+  end
+
+  def markdown(text)
+    RDiscount.new(text, :autolink, :no_pseudo_protocols, :safelink, :smart, :filter_html).to_html.html_safe
   end
 
   def search_autocomplete_source

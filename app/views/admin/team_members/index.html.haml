@@ -1,7 +1,7 @@
 - @admin_team_members.group_by(&:project).sort.each do |project, members|
   %h3= link_to project.name, [:admin, project]
   %table
-    %tr
+    %thead
       %th Name
       %th Email
       %th Read

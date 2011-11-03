@@ -10,6 +10,11 @@ class Issue < ActiveRecord::Base
   validates_presence_of :assignee_id
   validates_presence_of :author_id
 
+  delegate :name,
+           :email, 
+           :to => :author, 
+           :prefix => true
+
   validates :title,
             :presence => true,
             :length   => { :within => 0..255 }

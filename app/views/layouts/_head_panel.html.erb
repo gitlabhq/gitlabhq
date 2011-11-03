@@ -1,22 +1,43 @@
-<div id="header-panel">
+<!-- Page Header -->
+<header>
+<h1 class="logo">
+  <a href="/">GITLAB</a></h1>
+  <div class="login-top">
+        <%= link_to profile_path, :class => "pic" do %>
+          <%= image_tag gravatar_icon(current_user.email) %>
+        <% end %>
+        <%= link_to profile_path, :class => "username" do %>
+          <%= current_user.name %> 
+        <% end %>
+        <%= link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete %>
+    </div>
+    <div class="search">
+        <%= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"  %>
+      </div>
+  <!-- .login-top -->
+  <nav>
+    <%= link_to dashboard_path, :class => current_page?(root_path) ? "current dashboard" : "dashboard" do %>
+      <span></span>Dashboard
+    <% end %>
+    <%= link_to projects_path, :class => current_page?(projects_path) ? "current project" : "project" do %>
+      <span></span>Projects
+    <% end %>
+    <%= link_to((current_user.is_admin? ? admin_root_path : "#"), :class => (admin_namespace? ? "current admin" : "admin")) do %>
+      <span></span>Admin
+    <% end  %>
+  </nav>
+</header>
+<!-- eo Page Header -->
+
+<div id="header-panel" style="display:none">
   <div class="container">
     <div class="span-24">
       <div class="span-10">
-        <%#= image_tag "git.png", :height => 40, :class => "left" %>
-        <%#= link_to "gitlab", root_path, :id => "logo" %>
         <span class="search-holder">
-          <%= text_field_tag "search", nil, :placeholder => "Search"  %>
         </span>
       </div>
       <div class="right">
         <%= link_to truncate(@project.name, :length => 20), project_path(@project), :class => "current button" if @project && !@project.new_record? %>
-        <%= link_to 'Projects', projects_path, :class => current_page?(projects_path) ? "current button" : "button" %>
-        <%= link_to('Admin', admin_root_path, :class => admin_namespace? ? "current button" : "button" ) if current_user.is_admin? %>
-        <%= link_to profile_path, :class => ((controller.controller_name == "keys" || controller.controller_name == "profile") ? "current button" : "button") do %>
-          <%= image_tag gravatar_icon(current_user.email) %>
-          <%= current_user.name.split(" ").first %>
-        <% end %>
-        <%= link_to 'Logout', destroy_user_session_path, :style => "border-left: 1px solid #666;", :class => "button", :method => :delete %>
       </div>
     </div>
   </div>

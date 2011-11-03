@@ -1,5 +1,6 @@
 class TeamMembersController < ApplicationController
   before_filter :project
+  layout "project"
 
   # Authorize
   before_filter :add_project_abilities
