@@ -11,15 +11,15 @@
                 %i
               %data.commit-browse{ :onclick => "location.href='#{tree_project_path(@project, :commit_id => commit.id)}';return false;"}
                 Browse Code
-            - if commit.author.email
-              = image_tag gravatar_icon(commit.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
+            - if commit.author_email
+              = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
             - else
               = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
             %span.commit-title
               %strong
                 = truncate(commit.safe_message, :length => 60)
             %span.commit-author
-              %strong= commit.author
+              %strong= commit.author_name
               = time_ago_in_words(commit.committed_date)
               ago
 = more_commits_link if @commits.size > 99
