@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
+  before_filter :view_style
+
   protect_from_forgery
 
   helper_method :abilities, :can?
@@ -72,5 +74,13 @@ class ApplicationController < ActionController::Base
 
   def require_non_empty_project
     redirect_to @project unless @project.repo_exists?
+  end
+
+  def view_style
+    if params[:view_style] == "collapsed"
+      cookies[:view_style] = "collapsed" 
+    elsif params[:view_style] == "fluid"
+      cookies[:view_style] = "" 
+    end
   end
 end

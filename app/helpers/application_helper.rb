@@ -4,6 +4,14 @@ module ApplicationHelper
     "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
   end
 
+  def body_class(default_class = nil)
+    main = content_for(:body_class).blank? ? 
+      default_class :
+      content_for(:body_class)
+
+    [main, cookies[:view_style]].join(" ")
+  end
+
   def commit_name(project, commit)
     if project.commit.id == commit.id
       "master"

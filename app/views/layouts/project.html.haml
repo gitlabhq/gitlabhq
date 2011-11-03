@@ -9,7 +9,7 @@
     = javascript_tag do
       REQ_URI = "#{request.env["REQUEST_URI"]}";
       REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body{ :class => content_for?(:body_class) ? yield(:body_class) : 'project-page', :id => yield(:boyd_id)}
+  %body{ :class => body_class('project-page'), :id => yield(:boyd_id)}
     #container
       = render :partial => "layouts/flash"
       = render :partial => "layouts/head_panel"
