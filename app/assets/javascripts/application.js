@@ -8,6 +8,7 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require jquery.ui.selectmenu
+//= require jquery.tagify
 //= require jquery.cookie
 //= require_tree .
 
