@@ -20,6 +20,6 @@ $(function(){
   $('select#tag').selectmenu({style:'popup', width:200});
 });
 
-function updatePage(){
-  $.ajax({type: "GET", url: location.href, dataType: "script"});
+function updatePage(data){
+  $.ajax({type: "GET", url: location.href, data: data, dataType: "script"});
 }

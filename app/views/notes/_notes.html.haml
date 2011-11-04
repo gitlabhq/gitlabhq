@@ -20,8 +20,8 @@
     $("#submit_note").removeAttr("disabled");
   })
 
-- if ["issues", "projects"].include?(controller.controller_name)
+-#- if ["issues", "projects"].include?(controller.controller_name)
   :javascript
     $(function(){
-      var int =self.setInterval("updatePage()", 20000);
+      var int =self.setInterval("updatePage('ref=#{params[:ref]}')", 20000);
     });
