@@ -7,10 +7,6 @@
     %center= image_tag "ajax-loader.gif"
 .right.width-30p
   .span-8
-    - if @issue.closed
-      %center.success Closed
-    - else
-      %center.error Open
   %table.round-borders
     %tr
       %td Title:
