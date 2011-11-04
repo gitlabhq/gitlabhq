@@ -1,12 +1,8 @@
-- if controller.action_name == "wall"
-  %ul#notes-list= render "notes/notes_list"
-
-- else
-  %ul#notes-list= render "notes/notes_list"
-  %br
-  %br
-  - if can? current_user, :write_note, @project
-    = render "notes/form"
+- if can? current_user, :write_note, @project
+  = render "notes/form"
+.clear
+%hr
+%ul#notes-list= render "notes/notes_list"
 
 :javascript
   $('.delete-note').live('ajax:success', function() {
@@ -20,8 +16,11 @@
     $("#submit_note").removeAttr("disabled");
   })
 
--#- if ["issues", "projects"].include?(controller.controller_name)
-  :javascript
-    $(function(){
-      var int =self.setInterval("updatePage('ref=#{params[:ref]}')", 20000);
+  $(function(){
+    $("#note_note").live("click", function(){
+      $(this).css("height", "100px");
+      $('.attach_holder').show();
     });
+
+    NoteList.init("wall", #{@notes.last.try(:id) || 0}, #{@notes.first.try(:id) || 0});
+  });

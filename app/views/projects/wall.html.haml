@@ -1,19 +1,6 @@
 %div.wall_page
-  - if can? current_user, :write_note, @project
-    = render "notes/form"
-  .clear
-  %hr
-= render "notes/notes"
+  = render "notes/notes"
 
 .loading{ :style => "display:none;"}
   %center= image_tag "ajax-loader.gif"
 
-:javascript
-  $(function(){
-    $("#note_note").live("click", function(){
-      $(this).css("height", "100px");
-      $('.attach_holder').show();
-    });
-
-    NoteList.init("wall", #{@notes.last.id}, #{@notes.first.id});
-  });

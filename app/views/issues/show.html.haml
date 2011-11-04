@@ -1,8 +1,10 @@
 %h2
   = "Issue ##{@issue.id} - #{html_escape(@issue.title)}"
 .left.width-65p
-  -#= simple_format html_escape(@issue.content)
   .issue_notes= render "notes/notes"
+
+  .loading{ :style => "display:none;"}
+    %center= image_tag "ajax-loader.gif"
 .right.width-30p
   .span-8
     - if @issue.closed
@@ -55,3 +57,12 @@
       .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
 
+:javascript
+  $(function(){
+    $("#note_note").live("click", function(){
+      $(this).css("height", "100px");
+      $('.attach_holder').show();
+    });
+
+    NoteList.init("wall", #{@notes.last.id}, #{@notes.first.id});
+  });
