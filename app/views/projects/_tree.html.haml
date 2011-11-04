@@ -1,12 +1,3 @@
-.left
-  = form_tag tree_project_path(@project), :method => :get do
-    = select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Branches"
-.left
-  = form_tag tree_project_path(@project), :method => :get do
-    = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
-.clear
-
-%br
 
 -#%a.right.button{:href => "#"} Download
 -#-if can? current_user, :admin_project, @project
@@ -14,14 +5,9 @@
 #tree-breadcrumbs
   %h2.icon
     %span
-    = link_to tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true, :class => 'project-name' do 
-      %i.arrow>
-      = @project.name
-    &nbsp;
     %d
-      %a{:href => "#"}
-        = @ref
-
+      = link_to tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true do 
+        = @project.name
       - if params[:path]
         - part_path = ""
         - params[:path].split("\/").each do |part|
@@ -30,7 +16,8 @@
             - part_path = part
           \/
           = link_to truncate(part, :length => 40), tree_file_project_path(@project, :path => part_path, :commit_id => @commit.try(:id), :branch => @branch, :tag => @tag), :remote => :true
-
+        &nbsp;
+  .right= render :partial => "projects/refs", :locals => { :destination => tree_project_path(@project) }
 .clear
 
 #tree-content-holder
