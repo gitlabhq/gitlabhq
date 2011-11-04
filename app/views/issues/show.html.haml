@@ -56,13 +56,3 @@
       = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
       .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
-
-:javascript
-  $(function(){
-    $("#note_note").live("click", function(){
-      $(this).css("height", "100px");
-      $('.attach_holder').show();
-    });
-
-    NoteList.init("wall", #{@notes.last.id}, #{@notes.first.id});
-  });
