@@ -9,6 +9,8 @@ class Project < ActiveRecord::Base
   has_many :notes, :dependent => :destroy
   has_many :snippets, :dependent => :destroy
 
+  acts_as_taggable
+
   validates :name,
             :uniqueness => true,
             :presence => true,
