@@ -22,4 +22,3 @@
               %strong= commit.author_name
               = time_ago_in_words(commit.committed_date)
               ago
-= more_commits_link if @commits.size > 99

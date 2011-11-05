@@ -15,4 +15,14 @@
 .right= render :partial => "projects/refs", :locals => { :destination => project_commits_path(@project) }
 
 %div{:id => dom_id(@project)}
-  = render "commits"
+  #commits_list= render "commits"
+.clear
+.loading{ :style => "display:none;"}
+  %center= image_tag "ajax-loader.gif"
+
+
+
+:javascript
+  $(function(){
+    CommitsList.init("#{@ref}", 20);
+  });

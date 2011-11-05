@@ -13,11 +13,12 @@ class CommitsController < ApplicationController
     load_refs # load @branch, @tag & @ref
 
     @repo = project.repo
+    limit, offset = (params[:limit] || 20), (params[:offset] || 0) 
 
     if params[:path]
-      @commits = @repo.log(@ref, params[:path], :max_count => params[:limit] || 100, :skip => params[:offset] || 0)
+      @commits = @repo.log(@ref, params[:path], :max_count => limit, :skip => offset)
     else
-      @commits = @repo.commits(@ref, params[:limit] || 100, params[:offset] || 0)
+      @commits = @repo.commits(@ref, limit, offset)
     end
 
     respond_to do |format|
