@@ -82,6 +82,12 @@ class ApplicationController < ActionController::Base
     elsif params[:view_style] == "fluid"
       cookies[:view_style] = "" 
     end
+
+    @view_mode = if cookies[:view_style] == "collapsed"
+                   :fixed
+                 else
+                   :fluid
+                 end
   end
 
   def respond_with_notes

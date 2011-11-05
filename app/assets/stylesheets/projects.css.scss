@@ -163,10 +163,6 @@ table.round-borders {
   padding:20px;
 }
 
-//body {
-  //background: #eaeaea;
-//}
-
 a {
   color: #111;
 }
@@ -232,43 +228,15 @@ input.ssh_project_url {
   text-align:center;
 }
 
-.day-commits-table li.commit {
-  cursor:pointer;
-
-  &:hover {
-    @include hover-color;
-  }
-}
-
-/*
-#FFF6BF
-#FFD324
-*/
-#tree-slider tr.tree-item {
-  cursor:pointer;
-
-  &:hover {
-    @include hover-color;
-    td {
-      @include hover-color;
-    }
-  }
-}
 #projects-list .project {
   height:50px;
 }
 
+#tree-slider .tree-item,
 #projects-list .project,
 #snippets-table .snippet,
 #issues-table .issue{
   cursor:pointer;
-
-  &:hover {
-      @include hover-color;
-    td {
-      @include hover-color;
-    }
-  }
 }
 
 .clear {
@@ -563,6 +531,7 @@ input.ssh_project_url {
   @include round-borders-all(4px);
   padding:2px 4px;
   border:none;
+  text-shadow:none;
 
   &.high {
     background: #D12F19;
@@ -685,6 +654,13 @@ table.highlighttable pre{
 
 .project-refs-select {
   width:200px;
+}
+
+.issues_filter {
+  margin-top:10px;
+  .left { 
+    margin-right:15px;
+  }
 }
 
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
