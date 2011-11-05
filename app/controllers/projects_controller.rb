@@ -10,7 +10,9 @@ class ProjectsController < ApplicationController
   before_filter :require_non_empty_project, :only => [:blob, :tree]
 
   def index
-    @projects = current_user.projects.all
+    source = current_user.projects
+    source = source.tagged_with(params[:tag]) unless params[:tag].blank?
+    @projects = source.all
   end
 
   def new

@@ -1,2 +1,11 @@
-%h1 Tags#index
-%p Find me in app/views/tags/index.html.haml
+- content_for(:body_class, "projects-page")
+- content_for(:page_title) do
+  .grid_4
+    %h2  
+      Tags
+
+ 
+  .tags-list
+    - @tags.all.each do |tag|
+      = link_to "#{tag.name}(#{tag.count})", "/tags/#{tag.name}"
+        

@@ -1,0 +1,16 @@
+.tags-list {
+	padding : 0px 10px 10px 10px;
+	
+}
+
+.tags-list a {
+    display: inline-block;
+    padding: 8px 11px 8px 11px;
+    margin: 1px 5px 0px 0px;
+    border-radius: 4px;
+    border: 1px solid #d0e1ff;
+    background-color: #d0e1ff;
+    color: #0f326d;
+    font-weight: bold;
+    font-size: 14px;
+}

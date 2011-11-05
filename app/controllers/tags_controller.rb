@@ -1,15 +1,11 @@
 class TagsController < ApplicationController
 	def index
-	end
-
-	def autocomplete
-		tags = Project.tag_counts.limit 8
-		tags = tags.where('name like ?', "%#{params[:term]}%") unless params[:term].blank?
-		tags = tags.map {|t| t.name}
+		@tags = Project.tag_counts.order('count DESC')
+		@tags = @tags.where('name like ?', "%#{params[:term]}%") unless params[:term].blank?
 
 		respond_to do |format|
-			format.json { render json: tags}
+			format.html
+			format.json { render json: @tags.limit(8).map {|t| t.name}}
 		end
 	end
-
 end

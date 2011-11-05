@@ -11,13 +11,13 @@ describe "Tags" do
   # end
 
 
-  describe "GET '/tags/autocomplete'" do
+  describe "GET '/tags.json'" do
     before do
      @project = Factory :project
      @project.add_access(@user, :read)
      @project.tag_list = 'demo1'
      @project.save
-     visit '/tags/autocomplete.json'
+     visit '/tags.json'
     end
 
 

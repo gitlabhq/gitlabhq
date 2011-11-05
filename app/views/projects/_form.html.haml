@@ -57,11 +57,8 @@
   $(function(){
     var tag_field = $('#tag_field').tagify();
 
-
     tag_field.tagify('inputField').autocomplete({
-        source: '/tags/autocomplete.json',
-        position: { of: tag_field.tagify('containerDiv') },
-        close: function(event, ui) { tag_field.tagify('add'); },
+        source: '/tags.json'
     });
 
 
@@ -70,6 +67,4 @@
          tag_field.val( tag_field.tagify('serialize') );
          return true;
     });
-
-
   })  
