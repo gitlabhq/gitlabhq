@@ -52,7 +52,8 @@
     background: #eee;
   }
   .diff_file_content {
-    overflow-x: scroll;
+    overflow:auto;
+    overflow-y:hidden;
     background:#fff;
     color:#333;
     font-size: 12px;
@@ -174,9 +175,9 @@ a {
   .old_line, .new_line {
     background:#ECECEC;
     color:#777;
-    width:15px;
+    width:30px;
     float:left;
-    padding: 0px 10px;
+    padding: 0px 5px;
     border-right: 1px solid #ccc;
   }
 }
