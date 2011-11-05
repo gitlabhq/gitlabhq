@@ -92,10 +92,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format| 
       format.html
-      format.js do 
-        @notes = @notes.where("id > ?", params[:last_id]) if params[:last_id]
-        @notes = @notes.where("id < ?", params[:first_id]) if params[:first_id]
-      end
+      format.js { respond_with_notes }
     end
   end
 

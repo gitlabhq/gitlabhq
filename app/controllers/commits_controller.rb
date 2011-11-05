@@ -13,11 +13,12 @@ class CommitsController < ApplicationController
     load_refs # load @branch, @tag & @ref
 
     @repo = project.repo
+    limit, offset = (params[:limit] || 20), (params[:offset] || 0) 
 
     if params[:path]
-      @commits = @repo.log(@ref, params[:path], :max_count => params[:limit] || 100, :skip => params[:offset] || 0)
+      @commits = @repo.log(@ref, params[:path], :max_count => limit, :skip => offset)
     else
-      @commits = @repo.commits(@ref, params[:limit] || 100, params[:offset] || 0)
+      @commits = @repo.commits(@ref, limit, offset)
     end
 
     respond_to do |format|
@@ -33,10 +34,7 @@ class CommitsController < ApplicationController
 
     respond_to do |format| 
       format.html
-      format.js do 
-        @notes = @notes.where("id > ?", params[:last_id]) if params[:last_id]
-        @notes = @notes.where("id < ?", params[:first_id]) if params[:first_id]
-      end
+      format.js { respond_with_notes }
     end
   end
 end

@@ -12,7 +12,6 @@ describe "Issues" do
   describe "add new note", :js => true do
     before do
       visit project_commit_path(project, commit)
-      click_link "Comments" # notes tab
       fill_in "note_note", :with => "I commented this commit"
       click_button "Add note"
     end
