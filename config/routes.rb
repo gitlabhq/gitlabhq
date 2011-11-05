@@ -1,4 +1,7 @@
 Gitlab::Application.routes.draw do
+  get "tags/index"
+  get "tags/autocomplete"
+
   namespace :admin do
     resources :users
     resources :projects
