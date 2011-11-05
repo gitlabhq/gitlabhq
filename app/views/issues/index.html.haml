@@ -7,18 +7,18 @@
       = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
       = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
-    .right
+    .right.issues_filter
       = form_tag project_issues_path(@project), :method => :get do
-        .span-2
+        .left
           = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "this.form.submit()", :id => "open_issues", :class => "status"
           = label_tag "open_issues","Open"
-        .span-2
+        .left
           = radio_button_tag :f, 2, params[:f] == "2", :onclick => "this.form.submit()", :id => "closed_issues", :class => "status"
           = label_tag "closed_issues","Closed"
-        .span-2
+        .left
           = radio_button_tag :f, 3, params[:f] == "3", :onclick => "this.form.submit()", :id => "my_issues", :class => "status"
           = label_tag "my_issues","To Me"
-        .span-2
+        .left
           = radio_button_tag :f, 1, params[:f] == "1", :onclick => "this.form.submit()", :id => "all_issues", :class => "status"
           = label_tag "all_issues","All"
 
