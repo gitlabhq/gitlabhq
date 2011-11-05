@@ -31,6 +31,15 @@ append:
     this.initLoadMore();
   },
 
+replace: 
+  function(fid, lid, html) {
+    this.first_id = fid;
+    this.last_id = lid;
+    $("#notes-list").html(html);
+    this.initLoadMore();
+  },
+
+
 prepend:
   function(id, html) {
     this.last_id = id;
@@ -47,10 +56,23 @@ getNew:
       dataType: "script"});
   },
 
+refresh:
+  function() { 
+    // refersh notes list
+    $.ajax({
+      type: "GET",
+      url: location.href,
+      data: "first_id=" + this.first_id + "&last_id=" + this.last_id,
+      dataType: "script"});
+  },
+
+
+
 initRefresh:
   function() {
     // init timer
-    var int = setInterval("NoteList.getNew()", 20000);
+    var intNew = setInterval("NoteList.getNew()", 15000);
+    var intRefresh = setInterval("NoteList.refresh()", 90000);
   },
 
 initLoadMore:

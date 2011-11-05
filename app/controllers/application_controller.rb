@@ -83,4 +83,16 @@ class ApplicationController < ActionController::Base
       cookies[:view_style] = "" 
     end
   end
+
+  def respond_with_notes
+    if params[:last_id] && params[:first_id]
+      @notes = @notes.where("id >= ?", params[:first_id])
+    elsif params[:last_id]
+      @notes = @notes.where("id > ?", params[:last_id])
+    elsif params[:first_id]
+      @notes = @notes.where("id < ?", params[:first_id]) 
+    else 
+      nil
+    end
+  end
 end
