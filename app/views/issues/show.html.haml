@@ -1,14 +1,12 @@
 %h2
   = "Issue ##{@issue.id} - #{html_escape(@issue.title)}"
 .left.width-65p
-  -#= simple_format html_escape(@issue.content)
   .issue_notes= render "notes/notes"
+
+  .loading{ :style => "display:none;"}
+    %center= image_tag "ajax-loader.gif"
 .right.width-30p
   .span-8
-    - if @issue.closed
-      %center.success Closed
-    - else
-      %center.error Open
   %table.round-borders
     %tr
       %td Title:
@@ -54,4 +52,3 @@
       = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
       .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
-

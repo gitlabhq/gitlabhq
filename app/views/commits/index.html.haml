@@ -12,7 +12,7 @@
       \/
       %a{:href => "#"}= params[:path].split("/").join(" / ")
 
-.right= render "projects/refs"
+.right= render :partial => "projects/refs", :locals => { :destination => project_commits_path(@project) }
 
 %div{:id => dom_id(@project)}
   = render "commits"

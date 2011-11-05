@@ -1,4 +1,4 @@
-= form_tag project_commits_path(@project), :method => :get, :class => "project-refs-form" do
+= form_tag destination, :method => :get, :class => "project-refs-form" do
   = select_tag "ref", grouped_options_refs, :onchange => "this.form.submit();", :class => "project-refs-select"
 
 

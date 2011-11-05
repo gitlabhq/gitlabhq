@@ -1,0 +1,10 @@
+- unless @notes.blank?
+
+  - if params[:last_id]
+    :plain
+      NoteList.prepend(#{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
+
+  - if params[:first_id]
+    :plain
+      NoteList.append(#{@notes.last.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
+

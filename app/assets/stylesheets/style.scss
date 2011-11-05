@@ -292,7 +292,7 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 
 /* General */
 #container{background-color: white; overflow: hidden;}
-/*#container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}*/
+body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
 
 
 

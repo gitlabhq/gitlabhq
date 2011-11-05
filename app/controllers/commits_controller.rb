@@ -28,12 +28,15 @@ class CommitsController < ApplicationController
 
   def show
     @commit = project.repo.commits(params[:id]).first
-    @notes = project.notes.where(:noteable_id => @commit.id, :noteable_type => "Commit")
+    @notes = project.notes.where(:noteable_id => @commit.id, :noteable_type => "Commit").order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable_id => @commit.id, :noteable_type => "Commit")
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.js
+    respond_to do |format| 
+      format.html
+      format.js do 
+        @notes = @notes.where("id > ?", params[:last_id]) if params[:last_id]
+        @notes = @notes.where("id < ?", params[:first_id]) if params[:first_id]
+      end
     end
   end
 end

@@ -1,19 +1,29 @@
 <!-- Page Header -->
 <header>
-<h1 class="logo">
-  <a href="/">GITLAB</a></h1>
-  <div class="login-top">
-        <%= link_to profile_path, :class => "pic" do %>
-          <%= image_tag gravatar_icon(current_user.email) %>
-        <% end %>
-        <%= link_to profile_path, :class => "username" do %>
-          <%= current_user.name %> 
-        <% end %>
-        <%= link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete %>
+  <h1 class="logo">
+    <a href="/">GITLAB</a>
+  </h1>
+  <div class="account-box">
+    <%= link_to profile_path, :class => "pic" do %>
+      <%= image_tag gravatar_icon(current_user.email) %>
+    <% end %>
+
+    <a href="#" class="arrow-up"></a>
+
+    <div class="account-links">
+      <%= link_to profile_path, :class => "username" do %>
+        <%#= current_user.name %> 
+        Your profile
+      <% end %>
+      <%= link_to "Fluid layout", url_for( :view_style => 'fluid' ) if cookies[:view_style] == "collapsed"%>
+      <%= link_to "Fixed layout", url_for( :view_style => 'collapsed' ) unless cookies[:view_style] == "collapsed"%>
+      <%= link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete %>
     </div>
-    <div class="search">
-        <%= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"  %>
-      </div>
+  </div><!-- .account-box -->
+
+  <div class="search">
+    <%= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"  %>
+  </div>
   <!-- .login-top -->
   <nav>
     <%= link_to dashboard_path, :class => current_page?(root_path) ? "current dashboard" : "dashboard" do %>
@@ -26,22 +36,9 @@
       <span></span>Admin
     <% end  %>
   </nav>
+
 </header>
 <!-- eo Page Header -->
-
-<div id="header-panel" style="display:none">
-  <div class="container">
-    <div class="span-24">
-      <div class="span-10">
-        <span class="search-holder">
-        </span>
-      </div>
-      <div class="right">
-        <%= link_to truncate(@project.name, :length => 20), project_path(@project), :class => "current button" if @project && !@project.new_record? %>
-      </div>
-    </div>
-  </div>
-</div>
 
 <% if current_user %>
   <%= javascript_tag do %>

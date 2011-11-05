@@ -35,8 +35,16 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @notes = @issue.notes.order("created_at ASC")
+    @notes = @issue.notes.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
+
+    respond_to do |format| 
+      format.html
+      format.js do 
+        @notes = @notes.where("id > ?", params[:last_id]) if params[:last_id]
+        @notes = @notes.where("id < ?", params[:first_id]) if params[:first_id]
+      end
+    end
   end
 
   def create
