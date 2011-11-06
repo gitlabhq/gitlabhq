@@ -42,8 +42,10 @@ replace:
 
 prepend:
   function(id, html) {
-    this.last_id = id;
-    $("#notes-list").prepend(html);
+    if(id != this.last_id) { 
+      this.last_id = id;
+      $("#notes-list").prepend(html);
+    }
   },
 
 getNew:
