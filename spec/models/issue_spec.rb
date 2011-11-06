@@ -14,7 +14,7 @@ describe Issue do
     it { should validate_presence_of(:assignee_id) }
   end
 
-  describe "Scope" do 
+  describe "Scope" do
     it { Issue.should respond_to :closed }
     it { Issue.should respond_to :opened }
   end

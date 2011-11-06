@@ -1,32 +1,18 @@
 class Admin::UsersController < ApplicationController
+  layout "admin"
   before_filter :authenticate_user!
   before_filter :authenticate_admin!
 
   def index
     @admin_users = User.page(params[:page])
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @admin_users }
-    end
   end
 
   def show
     @admin_user = User.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @admin_user }
-    end
   end
 
   def new
     @admin_user = User.new(:projects_limit => 10)
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @admin_user }
-    end
   end
 
   def edit
@@ -36,7 +22,7 @@ class Admin::UsersController < ApplicationController
   def create
     admin = params[:user].delete("admin")
 
-    @admin_user = User.new(params[:user]) 
+    @admin_user = User.new(params[:user])
     @admin_user.admin = (admin && admin.to_i > 0)
 
     respond_to do |format|
@@ -54,8 +40,8 @@ class Admin::UsersController < ApplicationController
   def update
     admin = params[:user].delete("admin")
     if params[:user][:password].empty?
-      params[:user].delete(:password) 
-      params[:user].delete(:password_confirmation) 
+      params[:user].delete(:password)
+      params[:user].delete(:password_confirmation)
     end
 
     @admin_user = User.find(params[:id])

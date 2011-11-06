@@ -1,22 +1,24 @@
 - @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
-  .day-commits-table
-    .day-header
+  %div{ :class => "commits-date ui-box ui-box-small ui-box-big" }
+    .day-commits-table
       %h3= day.stamp("28 Aug, 2010")
-    %ul
-      - commits.each do |commit|
-        %li{ :class => "commit", :url => project_commit_path(@project, :id => commit.id) }
-          - if commit.author.email
-            = image_tag gravatar_icon(commit.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
-          - else
-            = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-          %p
-            %strong
-              = truncate(commit.safe_message, :length => 60)
-            = link_to "Browse Code", tree_project_path(@project, :commit_id => commit.id), :class => "lite_button", :style => "float:right"
-            = link_to truncate(commit.id.to_s, :length => 16), project_commit_path(@project, :id => commit.id), :class => "lite_button", :style => "width:120px;float:right"
-          %span
-            %span.author
-              = commit.author
-            = time_ago_in_words(commit.committed_date)
-            ago
-= more_commits_link if @commits.size > 99
+      .data
+        - commits.each do |commit|
+          %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }
+            %span.commit-info
+              %data.commit-button
+                = truncate(commit.id.to_s, :length => 16)
+                %i
+              %data.commit-browse{ :onclick => "location.href='#{tree_project_path(@project, :commit_id => commit.id)}';return false;"}
+                Browse Code
+            - if commit.author_email
+              = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+            - else
+              = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
+            %span.commit-title
+              %strong
+                = truncate(commit.safe_message, :length => 60)
+            %span.commit-author
+              %strong= commit.author_name
+              = time_ago_in_words(commit.committed_date)
+              ago

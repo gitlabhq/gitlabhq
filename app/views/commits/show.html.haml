@@ -1,5 +1,5 @@
 %h3
-  = "[ #{@commit.committer} ]  #{truncate(@commit.safe_message)}"
+  = "[ #{@commit.author_name} ]  #{truncate(@commit.safe_message, :length => 70)}"
 -#= link_to 'Back', project_commits_path(@project), :class => "button"
 %table.round-borders
   %tr
@@ -7,33 +7,21 @@
     %td= @commit.id
   %tr
     %td Author
-    %td= @commit.author
-  %tr
-    %td Commiter
-    %td= @commit.committer
+    %td= @commit.author_name
   %tr
     %td Commited Date
-    %td= @commit.committed_date
+    %td= @commit.committed_date.stamp("21 Aug 2011, 11:15pm")
   %tr
     %td Message
-    %td= @commit.safe_message
+    %td
+      %pre.commit_message
+        = preserve @commit.safe_message
   %tr
     %td Tree
     %td= link_to 'Browse Code', tree_project_path(@project, :commit_id => @commit.id)
 .clear
 
-#tabs
-  %ul
-    %li
-      %a{ :href => "#tabs-1" } Diff
-    %li
-      %a{ :href => "#tabs-2" } Comments
-      %span{ :class => "notes_count" }= @notes.count
-  %hr
-  #tabs-1
-    = render "commits/diff"
-  #tabs-2
-    = render "notes/notes"
+%br
 
-:javascript
-  $(function() { $( "#tabs" ).tabs(); });
+= render "commits/diff"
+= render "notes/notes"

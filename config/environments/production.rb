@@ -58,7 +58,6 @@ Gitlab::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-
   config.action_mailer.delivery_method = :sendmail
   # Defaults to:
   # # config.action_mailer.sendmail_settings = {

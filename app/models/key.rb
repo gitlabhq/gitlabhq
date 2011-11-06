@@ -8,7 +8,7 @@ class Key < ActiveRecord::Base
   validates :key,
             :presence => true,
             :uniqueness => true,
-            :length   => { :within => 0..1024 }
+            :length   => { :within => 0..1600 }
 
   before_save :set_identifier
   after_save :update_gitosis
@@ -17,11 +17,11 @@ class Key < ActiveRecord::Base
   def set_identifier
     self.identifier = "#{user.identifier}_#{Time.now.to_i}"
   end
-  
+
   def update_gitosis
     Gitosis.new.configure do |c|
       c.update_keys(identifier, key)
-      
+
       projects.each do |project|
         c.update_project(project.path, project.gitosis_writers)
       end

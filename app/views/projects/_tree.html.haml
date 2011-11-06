@@ -1,31 +1,32 @@
-%h3
-  .left
-    = form_tag tree_project_path(@project), :method => :get do
-      = select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "", :prompt => "Branches"
-  &nbsp;
-  .left.prepend-1
-    = form_tag tree_project_path(@project), :method => :get do
-      = select_tag "tag", options_for_select(@project.tags, @tag), :onchange => "this.form.submit();", :class => "", :prompt => "Tags"
-  = text_field_tag "ssh", @project.url_to_repo, :class => ["ssh_project_url","one_click_select"]
-  .clear
 
-%h3#tree-breadcrumbs
-  = link_to @project.name, tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true
-  - if params[:path]
-    - part_path = ""
-    - params[:path].split("\/").each do |part|
-      - part_path = File.join(part_path, part) unless part_path.empty?
-      - if part_path.empty?
-        - part_path = part
-      \/
-      = link_to truncate(part, :length => 40), tree_file_project_path(@project, :path => part_path, :commit_id => @commit.try(:id), :branch => @branch, :tag => @tag), :remote => :true
+-#%a.right.button{:href => "#"} Download
+-#-if can? current_user, :admin_project, @project
+  %a.right.button.blue{:href => "#"} EDIT
+#tree-breadcrumbs
+  %h2.icon
+    %span
+    %d
+      = link_to tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true do 
+        = @project.name
+      - if params[:path]
+        - part_path = ""
+        - params[:path].split("\/").each do |part|
+          - part_path = File.join(part_path, part) unless part_path.empty?
+          - if part_path.empty?
+            - part_path = part
+          \/
+          = link_to truncate(part, :length => 40), tree_file_project_path(@project, :path => part_path, :commit_id => @commit.try(:id), :branch => @branch, :tag => @tag), :remote => :true
+        &nbsp;
+  .right= render :partial => "projects/refs", :locals => { :destination => tree_project_path(@project) }
+.clear
+
 #tree-content-holder
   - if tree.is_a?(Grit::Blob)
     = render :partial => "projects/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
     %table#tree-slider.round-borders
-      %tr
+      %thead
         %th Name
         %th Last Update
         %th

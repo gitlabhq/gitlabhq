@@ -17,14 +17,14 @@ class Ability
       :read_issue,
       :read_snippet,
       :read_team_member,
-      :read_note 
+      :read_note
     ] if project.readers.include?(user)
 
     rules << [
       :write_project,
       :write_issue,
       :write_snippet,
-      :write_note 
+      :write_note
     ] if project.writers.include?(user)
 
     rules << [
@@ -32,13 +32,13 @@ class Ability
       :admin_issue,
       :admin_snippet,
       :admin_team_member,
-      :admin_note 
+      :admin_note
     ] if project.admins.include?(user)
 
     rules.flatten
   end
 
-  class << self 
+  class << self
     [:issue, :note, :snippet].each do |name|
       define_method "#{name}_abilities" do |user, subject|
         if subject.author == user
@@ -48,7 +48,7 @@ class Ability
             :"admin_#{name}"
           ]
         else
-          subject.respond_to?(:project) ? 
+          subject.respond_to?(:project) ?
             project_abilities(user, subject.project) : []
         end
       end

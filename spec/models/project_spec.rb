@@ -40,20 +40,20 @@ describe Project do
     should_not allow_value("gitosis-admin").for(:path)
   end
 
-  it "should return valid url to repo" do 
+  it "should return valid url to repo" do
     project = Project.new(:path => "somewhere")
     project.url_to_repo.should == "git@localhost:somewhere.git"
   end
 
-  it "should return path to repo" do 
+  it "should return path to repo" do
     project = Project.new(:path => "somewhere")
     project.path_to_repo.should == File.join(Rails.root, "tmp", "tests", "somewhere")
   end
 
-  describe :valid_repo? do 
-    it "should be valid repo" do 
+  describe :valid_repo? do
+    it "should be valid repo" do
       project = Factory :project
-      project.valid_repo?.should be_true 
+      project.valid_repo?.should be_true
     end
 
     it "should be invalid repo" do
@@ -62,43 +62,88 @@ describe Project do
     end
   end
 
-  describe "Git methods" do 
+  describe "updates" do 
     let(:project) { Factory :project }
 
-    describe :repo do 
-      it "should return valid repo" do 
+    before do 
+      @issue = Factory :issue,
+        :project => project,
+        :author => Factory(:user),
+        :assignee => Factory(:user)
+
+      @note = Factory :note,
+        :project => project,
+        :author => Factory(:user)
+
+      @commit = project.fresh_commits(1).first
+    end
+
+    describe "return commit, note & issue" do
+      it { project.updates(3).count.should == 3 }
+      it { project.updates(3).last.id.should == @commit.id }
+      it { project.updates(3).include?(@issue).should be_true }
+      it { project.updates(3).include?(@note).should be_true }
+    end
+  end
+
+  describe "last_activity" do 
+    let(:project) { Factory :project }
+
+    before do 
+      @note = Factory :note,
+        :project => project,
+        :author => Factory(:user)
+    end
+
+    it { project.last_activity.should == @note }
+    it { project.last_activity_date.to_s.should == @note.created_at.to_s }
+  end
+
+  describe "fresh commits" do 
+    let(:project) { Factory :project }
+
+    it { project.fresh_commits(3).count.should == 3 }
+    it { project.fresh_commits.first.id.should == "2fb376f61875b58bceee0492e270e9c805294b1a" }
+    it { project.fresh_commits.last.id.should == "0dac878dbfe0b9c6104a87d65fe999149a8d862c" }
+  end
+
+  describe "Git methods" do
+    let(:project) { Factory :project }
+
+    describe :repo do
+      it "should return valid repo" do
         project.repo.should be_kind_of(Grit::Repo)
       end
 
-      it "should return nil" do 
+      it "should return nil" do
         lambda { Project.new(:path => "invalid").repo }.should raise_error(Grit::NoSuchPathError)
       end
 
-      it "should return nil" do 
+      it "should return nil" do
         lambda { Project.new.repo }.should raise_error(TypeError)
       end
     end
 
-    describe :commit do 
-      it "should return first head commit if without params" do 
+    describe :commit do
+      it "should return first head commit if without params" do
         project.commit.id.should == project.repo.commits.first.id
       end
 
-      it "should return valid commit" do 
+      it "should return valid commit" do
         project.commit(ValidCommit::ID).should be_valid_commit
       end
 
-      it "should return nil" do 
+      it "should return nil" do
         project.commit("+123_4532530XYZ").should be_nil
       end
     end
 
-    describe :tree do 
-      before do 
+    describe :tree do
+      before do
         @commit = project.commit(ValidCommit::ID)
       end
 
-      it "should raise error w/o arguments" do 
+      it "should raise error w/o arguments" do
         lambda { project.tree }.should raise_error
       end
 

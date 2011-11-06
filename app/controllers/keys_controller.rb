@@ -1,4 +1,5 @@
 class KeysController < ApplicationController
+  layout "profile"
   respond_to :js
 
   def index
@@ -24,7 +25,7 @@ class KeysController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to keys_url }
-      format.js { render :nothing => true }  
+      format.js { render :nothing => true }
     end
   end
 end

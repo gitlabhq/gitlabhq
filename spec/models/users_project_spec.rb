@@ -11,7 +11,7 @@ describe UsersProject do
     it { should validate_presence_of(:project_id) }
   end
 
-  describe "Delegate methods" do 
+  describe "Delegate methods" do
     it { should respond_to(:user_name) }
     it { should respond_to(:user_email) }
   end

@@ -4,38 +4,38 @@ describe "Projects" do
   before { login_as :user }
 
   describe "GET /projects" do
-    before do 
+    before do
       visit projects_path
     end
 
     it "should be on projects page" do
-      current_path.should == projects_path 
+      current_path.should == projects_path
     end
 
     it "should have link to new project" do
-      page.should have_content("New Project") 
+      page.should have_content("Create new project")
     end
   end
 
   describe "GET /projects/new" do
-    before do 
+    before do
       visit projects_path
-      click_link "New Project"
+      click_link "Create new project"
     end
 
     it "should be correct path" do
-      current_path.should == new_project_path 
+      current_path.should == new_project_path
     end
 
     it "should have labels for new project" do
-      page.should have_content("Name") 
-      page.should have_content("Path") 
-      page.should have_content("Description") 
+      page.should have_content("Name")
+      page.should have_content("Path")
+      page.should have_content("Description")
     end
   end
 
   describe "POST /projects" do
-    before do 
+    before do
       visit new_project_path
       fill_in 'Name', :with => 'NewProject'
       fill_in 'Code', :with => 'NPR'
@@ -61,7 +61,7 @@ describe "Projects" do
   end
 
   describe "GET /projects/show" do
-    before do 
+    before do
       @project = Factory :project
       @project.add_access(@user, :read)
 
@@ -72,14 +72,14 @@ describe "Projects" do
       current_path.should == project_path(@project)
     end
 
-    it "should beahave like dashboard" do 
+    it "should beahave like dashboard" do
       page.should have_content("History")
     end
 
   end
 
   describe "GET /projects/team" do
-    before do 
+    before do
       @project = Factory :project
       @project.add_access(@user, :read)
 
@@ -92,13 +92,13 @@ describe "Projects" do
       current_path.should == team_project_path(@project)
     end
 
-    it "should have as as team member" do 
+    it "should have as as team member" do
       page.should have_content(@user.name)
     end
   end
 
   describe "GET /projects/:id/edit" do
-    before do 
+    before do
       @project = Factory :project
       @project.add_access(@user, :admin, :read)
 
@@ -110,14 +110,14 @@ describe "Projects" do
     end
 
     it "should have labels for new project" do
-      page.should have_content("Name") 
-      page.should have_content("Path") 
-      page.should have_content("Description") 
+      page.should have_content("Name")
+      page.should have_content("Path")
+      page.should have_content("Description")
     end
   end
 
   describe "PUT /projects/:id" do
-    before do 
+    before do
       @project = Factory :project
       @project.add_access(@user, :admin, :read)
 
@@ -140,14 +140,14 @@ describe "Projects" do
   end
 
   #describe "DELETE /projects/:id", :js => true do
-    #before do 
+    #before do
       #@project = Factory :project
       #@project.add_access(@user, :read, :admin)
       #visit projects_path
     #end
 
     #it "should be correct path" do
-      #expect { click_link "Destroy" }.to change {Project.count}.by(1) 
+      #expect { click_link "Destroy" }.to change {Project.count}.by(1)
     #end
   #end
 end

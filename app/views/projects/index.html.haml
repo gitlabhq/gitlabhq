@@ -1,9 +1,20 @@
-- unless @projects.empty?
-  %div{:class => "tile", :style => view_mode_style("tile")}
-    = render "tile"
-  %div{:class => "list", :style => view_mode_style("list")}
-    = render "list"
-- else 
-  %center.prepend-top
-    %h2
-      %cite Nothing here
+- content_for(:body_class, "projects-page")
+- content_for(:page_title) do
+  .container_4
+    .grid_4
+      - if current_user.can_create_project?
+        %a.grey-button.right{:href => new_project_path} Create new project
+      %h2.icon  
+        %span
+        Projects
+
+    %div.clear
+    - unless @projects.empty?
+      %div{:class => "tile", :style => view_mode_style("tile")}
+        = render "tile"
+      %div{:class => "list", :style => view_mode_style("list")}
+        = render "list"
+    - else
+      %center.prepend-top
+        %h2
+          %cite Nothing here

@@ -5,11 +5,15 @@
 // the compiled file.
 //
 //= require jquery
+//= require jquery-ui
 //= require jquery_ujs
+//= require jquery.ui.selectmenu
+//= require jquery.tagify
+//= require jquery.cookie
 //= require_tree .
 
 $(function(){
-  $(".one_click_select").click(function(){
+  $(".one_click_select").live("click", function(){
     $(this).select();
   });
 
@@ -17,6 +21,6 @@ $(function(){
   $('select#tag').selectmenu({style:'popup', width:200});
 });
 
-function updatePage(){
-  $.ajax({type: "GET", url: location.href, dataType: "script"});
+function updatePage(data){
+  $.ajax({type: "GET", url: location.href, data: data, dataType: "script"});
 }

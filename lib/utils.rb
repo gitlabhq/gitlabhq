@@ -1,8 +1,8 @@
 module Utils
   module FileHelper
-    def binary?(string) 
+    def binary?(string)
       string.each_byte do |x|
-        x.nonzero? or return true 
+        x.nonzero? or return true
       end
       false
     end

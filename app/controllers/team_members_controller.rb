@@ -1,10 +1,11 @@
 class TeamMembersController < ApplicationController
-  before_filter :project 
+  before_filter :project
+  layout "project"
 
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, :only => [:new, :create, :destroy, :update] 
+  before_filter :authorize_admin_project!, :only => [:new, :create, :destroy, :update]
 
   def show
     @team_member = project.users_projects.find(params[:id])
@@ -26,7 +27,7 @@ class TeamMembersController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         unless @team_member.valid?
           flash[:alert] = "User should have at least one role"
         end
@@ -41,7 +42,7 @@ class TeamMembersController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to root_path }
-      format.js { render :nothing => true }  
+      format.js { render :nothing => true }
     end
   end
 end

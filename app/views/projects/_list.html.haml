@@ -10,13 +10,18 @@
 
   - @projects.each do |project|
     %tr{ :class => "project", :url => project_path(project) }
-      %td= project.name
+      %td
+        = project.name
+        .small-tags
+          - project.tag_list.each do |tag|
+            = link_to tag, "/tags/#{tag}"
+
       %td= truncate project.url_to_repo
       %td= project.code
       %td= check_box_tag "read",   1, project.readers.include?(current_user), :disabled => :disabled
       %td= check_box_tag "commit", 1, project.writers.include?(current_user), :disabled => :disabled
       %td= check_box_tag "admin",  1, project.admins.include?(current_user), :disabled => :disabled
-      %td 
+      %td
         -if can? current_user, :admin_project, project
           = link_to 'Edit', edit_project_path(project), :class => "lbutton positive"
 %br

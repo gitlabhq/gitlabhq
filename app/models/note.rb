@@ -7,18 +7,23 @@ class Note < ActiveRecord::Base
   belongs_to :author,
     :class_name => "User"
 
-  attr_protected :author, :author_id 
+  delegate :name,
+           :email, 
+           :to => :author, 
+           :prefix => true
+
+  attr_protected :author, :author_id
 
   validates_presence_of :project
 
   validates :note,
             :presence => true,
-            :length   => { :within => 0..255 }
+            :length   => { :within => 0..5000 }
 
-  validates :attachment, 
-            :file_size => { 
-              :maximum => 10.megabytes.to_i 
-            } 
+  validates :attachment,
+            :file_size => {
+              :maximum => 10.megabytes.to_i
+            }
 
   scope :common, where(:noteable_id => nil)
 

@@ -13,11 +13,16 @@
         = label_tag "week_view","Week"
   .clear
   %hr
-.span-11
+.left.width-49p
   %h3 Commits
   =render "projects/recent_commits"
 
-.span-11.right
+.right.width-49p
   %h3 Talk
   =render "projects/recent_messages"
 
+:javascript
+  function updateDashboard(){
+    $('#content-container').load("#{escape_javascript(project_path(@project))} #content-container>*");
+  }
+  setInterval("updateDashboard()", 300000);

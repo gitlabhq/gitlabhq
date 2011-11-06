@@ -25,7 +25,6 @@
         text-decoration: none;
       }
 
-
       #page {
         background-color: #f0f0f0;
         width: 750px;
@@ -57,7 +56,6 @@
         padding-right: 30px;
       }
 
-
       #header {
         background-image: url("/assets/rails.png");
         background-repeat: no-repeat;
@@ -70,7 +68,6 @@
         font-weight: normal;
         font-size: 16px;
       }
-
 
       #about h3 {
         margin: 0;
@@ -112,7 +109,6 @@
         padding: 10px;
       }
 
-
       #getting-started {
         border-top: 1px solid #ccc;
         margin-top: 25px;
@@ -148,7 +144,6 @@
         color: #555;
         font-size: 13px;
       }
-
 
       #sidebar ul {
         margin-left: 0;

@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
+  before_filter :view_style
+
   protect_from_forgery
 
   helper_method :abilities, :can?
@@ -8,7 +10,17 @@ class ApplicationController < ActionController::Base
     render :file => File.join(Rails.root, "public", "gitosis_error"), :layout => false
   end
 
-  protected 
+  layout :layout_by_resource
+
+  protected
+
+  def layout_by_resource
+    if devise_controller?
+      "devise"
+    else
+      "application"
+    end
+  end
 
   def abilities
     @abilities ||= Six.new
@@ -18,7 +30,7 @@ class ApplicationController < ActionController::Base
     abilities.allowed?(object, action, subject)
   end
 
-  def project 
+  def project
     @project ||= Project.find_by_code(params[:project_id])
   end
 
@@ -47,19 +59,13 @@ class ApplicationController < ActionController::Base
   end
 
   def load_refs
-    @branch = unless params[:branch].blank?
-                params[:branch]
-              else
-                nil
-              end
-
-    @tag = unless params[:tag].blank?
-             params[:tag]
-           else 
-             nil
-           end
-
-    @ref = @branch || @tag || "master"
+    unless params[:ref].blank?
+      @ref = params[:ref]
+    else
+      @branch = params[:branch].blank? ? nil : params[:branch]
+      @tag = params[:tag].blank? ? nil : params[:tag]
+      @ref = @branch || @tag || "master"
+    end
   end
 
   def render_404
@@ -68,5 +74,31 @@ class ApplicationController < ActionController::Base
 
   def require_non_empty_project
     redirect_to @project unless @project.repo_exists?
+  end
+
+  def view_style
+    if params[:view_style] == "collapsed"
+      cookies[:view_style] = "collapsed" 
+    elsif params[:view_style] == "fluid"
+      cookies[:view_style] = "" 
+    end
+
+    @view_mode = if cookies[:view_style] == "collapsed"
+                   :fixed
+                 else
+                   :fluid
+                 end
+  end
+
+  def respond_with_notes
+    if params[:last_id] && params[:first_id]
+      @notes = @notes.where("id >= ?", params[:first_id])
+    elsif params[:last_id]
+      @notes = @notes.where("id > ?", params[:last_id])
+    elsif params[:first_id]
+      @notes = @notes.where("id < ?", params[:first_id]) 
+    else 
+      nil
+    end
   end
 end

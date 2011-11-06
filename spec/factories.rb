@@ -32,7 +32,6 @@ end
 
 Factory.add(:issue, Issue) do |obj|
   obj.title = Faker::Lorem.sentence
-  obj.content = Faker::Lorem.sentences
 end
 
 Factory.add(:snippet, Snippet) do |obj|

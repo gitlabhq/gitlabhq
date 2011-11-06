@@ -8,7 +8,7 @@
       %th Title
       %th File name
       %th
-    = render @snippets
+    = render @snippets.fresh
 :javascript
-  $('.delete-snippet').live('ajax:success', function() {  
-    $(this).closest('tr').fadeOut(); });  
+  $('.delete-snippet').live('ajax:success', function() {
+    $(this).closest('tr').fadeOut(); });

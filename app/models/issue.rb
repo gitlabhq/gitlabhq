@@ -10,13 +10,18 @@ class Issue < ActiveRecord::Base
   validates_presence_of :assignee_id
   validates_presence_of :author_id
 
+  delegate :name,
+           :email, 
+           :to => :author, 
+           :prefix => true
+
   validates :title,
             :presence => true,
             :length   => { :within => 0..255 }
-  
-  validates :content,
-            :presence => true,
-            :length   => { :within => 0..2000 }
+
+  #validates :content,
+            #:presence => true,
+            #:length   => { :within => 0..2000 }
 
   scope :critical, where(:critical => true)
   scope :non_critical, where(:critical => false)
@@ -30,7 +35,7 @@ class Issue < ActiveRecord::Base
   def today?
     Date.today == created_at.to_date
   end
-  
+
   def new?
     today? && created_at == updated_at
   end

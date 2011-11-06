@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  layout "profile"
   def show
     @user = current_user
   end
@@ -14,7 +15,7 @@ class ProfileController < ApplicationController
   end
 
   def password_update
-    params[:user].reject!{ |k, v| k != "password" && k != "password_confirmation"} 
+    params[:user].reject!{ |k, v| k != "password" && k != "password_confirmation"}
     @user = current_user
 
     if @user.update_attributes(params[:user])

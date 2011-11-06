@@ -1,29 +1,6 @@
 %div.wall_page
-  - if can? current_user, :write_note, @project
-    = render "notes/form"
-  .right
-    = form_tag wall_project_path(@project), :method => :get do
-      .span-2
-        = radio_button_tag :view, "recent", (params[:view] || "recent") == "recent", :onclick => "this.form.submit()", :id => "recent_view"
-        = label_tag "recent_view","Recent"
-      .span-2
-        = radio_button_tag :view, "day", params[:view] == "day", :onclick => "this.form.submit()", :id => "day_view"
-        = label_tag "day_view","Today"
-      .span-2
-        = radio_button_tag :view, "week", params[:view] == "week", :onclick => "this.form.submit()", :id => "week_view"
-        = label_tag "week_view","Week"
-      .span-2
-        = radio_button_tag :view, "all", params[:view] == "all", :onclick => "this.form.submit()", :id => "all_view"
-        = label_tag "all_view","All"
-  .clear
-  %br
-  %hr
-= render "notes/notes"
+  = render "notes/notes"
 
-:javascript 
-  $(function(){
-    $("#note_note").live("click", function(){
-      $(this).css("height", "100px");
-      $('.attach_holder').show();
-    });
-  });
+.loading{ :style => "display:none;"}
+  %center= image_tag "ajax-loader.gif"
+
