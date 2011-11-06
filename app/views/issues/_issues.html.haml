@@ -6,7 +6,6 @@
     %th ID
     %th Title
     %th Closed?
-    %th
 
   - @issues.critical.each do |issue|
     = render(:partial => 'show', :locals => {:issue => issue})
