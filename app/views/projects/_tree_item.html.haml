@@ -11,5 +11,8 @@
   %td
     = time_ago_in_words(content_commit.committed_date)
     ago
-  %td
-    = link_to truncate(content_commit.safe_message, :length => 40), project_commit_path(@project, content_commit)
+  %td.commit
+    = link_to truncate(content_commit.safe_message, :length => fixed_mode? ? 40 : 80), project_commit_path(@project, content_commit), :class => "tree-commit-link"
+    - user = @project.users.find_by_email(content_commit.author_email)
+    - if user
+      = link_to "[#{user.name}]", project_team_member_path(@project, @project.users_projects.find_by_user_id(user.id))
