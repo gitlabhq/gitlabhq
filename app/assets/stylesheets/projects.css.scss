@@ -667,6 +667,15 @@ table.highlighttable pre{
 .cred { color:#D12F19; }
 .cgreen { color:#44aa22; }
 
+body.project-page table .commit { 
+  a.tree-commit-link { 
+    color:gray;
+    &:hover { 
+      text-decoration:underline;
+    }
+  }
+}
+
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
 body.project-page #notes-list .note img{float: left; margin-right: 10px;}

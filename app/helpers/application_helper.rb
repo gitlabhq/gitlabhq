@@ -4,6 +4,10 @@ module ApplicationHelper
     "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
   end
 
+  def fixed_mode?
+    @view_mode == :fixed
+  end
+
   def body_class(default_class = nil)
     main = content_for(:body_class).blank? ? 
       default_class :
