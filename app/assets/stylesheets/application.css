@@ -4,6 +4,7 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require jquery-ui/jquery-ui
  *= require jquery-ui/jquery.ui.selectmenu
+ *= require jquery-ui/jquery.tagify
  *= require_self
  *= require_tree .
 */

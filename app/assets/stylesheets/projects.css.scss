@@ -52,7 +52,8 @@
     background: #eee;
   }
   .diff_file_content {
-    overflow-x: scroll;
+    overflow:auto;
+    overflow-y:hidden;
     background:#fff;
     color:#333;
     font-size: 12px;
@@ -162,10 +163,6 @@ table.round-borders {
   padding:20px;
 }
 
-//body {
-  //background: #eaeaea;
-//}
-
 a {
   color: #111;
 }
@@ -174,9 +171,9 @@ a {
   .old_line, .new_line {
     background:#ECECEC;
     color:#777;
-    width:15px;
+    width:30px;
     float:left;
-    padding: 0px 10px;
+    padding: 0px 5px;
     border-right: 1px solid #ccc;
   }
 }
@@ -231,43 +228,15 @@ input.ssh_project_url {
   text-align:center;
 }
 
-.day-commits-table li.commit {
-  cursor:pointer;
-
-  &:hover {
-    @include hover-color;
-  }
-}
-
-/*
-#FFF6BF
-#FFD324
-*/
-#tree-slider tr.tree-item {
-  cursor:pointer;
-
-  &:hover {
-    @include hover-color;
-    td {
-      @include hover-color;
-    }
-  }
-}
 #projects-list .project {
   height:50px;
 }
 
+#tree-slider .tree-item,
 #projects-list .project,
 #snippets-table .snippet,
 #issues-table .issue{
   cursor:pointer;
-
-  &:hover {
-      @include hover-color;
-    td {
-      @include hover-color;
-    }
-  }
 }
 
 .clear {
@@ -421,31 +390,6 @@ input.ssh_project_url {
   list-style:none;
   margin:0px;
   padding:0px;
-
-  li {
-    display:list-item;
-    padding:8px;
-    margin:0px;
-    background: #F7FBFC;
-    border-top: 1px solid #E2EAEE;
-
-    &:first-child {
-      border-top: none;
-    }
-    &:nth-child(2n+1) {
-      background: white;
-    }
-    p {
-      margin-bottom: 4px;
-      font-size: 13px;
-      color:#111;
-    }
-  }
-  cite {
-    &.ago {
-      color:#666;
-    }
-  }
 }
 
 .notes_count {
@@ -459,14 +403,6 @@ input.ssh_project_url {
   position: relative;
   right: 6px;
   top: 6px;
-}
-.note_author {
-  float:left;
-  width:60px;
-}
-.note_content {
-  float:left;
-  width:650px;
 }
 
 .issue_notes {
@@ -556,8 +492,7 @@ input.ssh_project_url {
 
 }
 .commit,
-.message,
-#notes-list{
+.message{
   .author {
     background: #eaeaea;
     color: #333;
@@ -574,7 +509,7 @@ input.ssh_project_url {
   font-size:14px;
 }
 
-.wall_page {
+#new_note {
   #note_note {
     height:25px;
   }
@@ -596,6 +531,7 @@ input.ssh_project_url {
   @include round-borders-all(4px);
   padding:2px 4px;
   border:none;
+  text-shadow:none;
 
   &.high {
     background: #D12F19;
@@ -706,3 +642,44 @@ table.highlighttable pre{
   line-height:16px !important;
   font-size:12px !important;
 }
+
+.project-refs-form { 
+  span {
+    background: none !important;
+    position:static !important;
+    width:auto !important;
+    height: auto !important;
+  }
+}
+
+.project-refs-select {
+  width:200px;
+}
+
+.issues_filter {
+  margin-top:10px;
+  .left { 
+    margin-right:15px;
+  }
+}
+
+.cgray { color:gray; }
+.cred { color:#D12F19; }
+.cgreen { color:#44aa22; }
+
+body.project-page table .commit { 
+  a.tree-commit-link { 
+    color:gray;
+    &:hover { 
+      text-decoration:underline;
+    }
+  }
+}
+
+body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+body.project-page #notes-list .note img{float: left; margin-right: 10px;}
+body.project-page #notes-list .note span.note-title{display: block;}
+body.project-page #notes-list .note span.note-title{margin-bottom: 10px}
+body.project-page #notes-list .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
+body.project-page #notes-list .note span.note-author strong{font-weight: bold; font-style: normal;}

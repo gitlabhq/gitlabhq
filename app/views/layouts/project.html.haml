@@ -6,40 +6,39 @@
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     = csrf_meta_tags
-    %link{:href => "/assets/favicon.png", :rel => "icon", :type => "image/png"}/
     = javascript_tag do
       REQ_URI = "#{request.env["REQUEST_URI"]}";
       REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body{ :class => content_for?(:body_class) ? yield(:body_class) : 'project-page', :id => yield(:boyd_id)}
+  %body{ :class => body_class('project-page'), :id => yield(:boyd_id)}
     #container
       = render :partial => "layouts/flash"
       = render :partial => "layouts/head_panel"
       .project-container
         .project-sidebar
           .fixed
-            %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo}
-              %aside
-                = link_to "History", project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
-                = link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
-                = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
-                = link_to team_project_path(@project), :class => (current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members") ? "current" : nil do
-                  Team
-                  - if @project.users_projects.count > 0
-                    %span{ :class => "number" }= @project.users_projects.count
-                = link_to  project_issues_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
-                  Issues
-                  - if @project.issues.opened.count > 0
-                    %span{ :class => "number" }= @project.issues.opened.count
-                = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
-                  Wall
-                  - if @project.common_notes.count > 0
-                    %span{ :class => "number" }= @project.common_notes.count
-                = link_to project_snippets_path(@project), :class => (controller.controller_name == "snippets") ? "current" : nil do
-                  Snippets
-                  - if @project.snippets.count > 0
-                    %span{ :class => "number" }= @project.snippets.non_expired.count
-                - if @commit
-                  = link_to truncate(commit_name(@project,@commit), :length => 15), project_commit_path(@project, :id => @commit.id), :class => current_page?(:controller => "commits", :action => "show", :project_id => @project, :id => @commit.id) ? "current" : nil
+            %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
+            %aside
+              = link_to "History", project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
+              = link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
+              = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
+              = link_to team_project_path(@project), :class => (current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members") ? "current" : nil do
+                Team
+                - if @project.users_projects.count > 0
+                  %span{ :class => "number" }= @project.users_projects.count
+              = link_to  project_issues_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
+                Issues
+                - if @project.issues.opened.count > 0
+                  %span{ :class => "number" }= @project.issues.opened.count
+              = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
+                Wall
+                - if @project.common_notes.count > 0
+                  %span{ :class => "number" }= @project.common_notes.count
+              = link_to project_snippets_path(@project), :class => (controller.controller_name == "snippets") ? "current" : nil do
+                Snippets
+                - if @project.snippets.count > 0
+                  %span{ :class => "number" }= @project.snippets.non_expired.count
+              - if @commit
+                = link_to truncate(commit_name(@project,@commit), :length => 15), project_commit_path(@project, :id => @commit.id), :class => current_page?(:controller => "commits", :action => "show", :project_id => @project, :id => @commit.id) ? "current" : nil
 
         .project-content
           = yield

@@ -1,23 +1,17 @@
 %h2
-  = "Issue ##{@issue.id} - #{html_escape(@issue.title)}"
+  %strong
+    Issue
+    = "##{@issue.id}"
+  &ndash;
+  = html_escape(@issue.title)
 .left.width-65p
-  -#= simple_format html_escape(@issue.content)
   .issue_notes= render "notes/notes"
+
+  .loading{ :style => "display:none;"}
+    %center= image_tag "ajax-loader.gif"
 .right.width-30p
   .span-8
-    - if @issue.closed
-      %center.success Closed
-    - else
-      %center.error Open
   %table.round-borders
-    %tr
-      %td Title:
-      %td
-        = truncate html_escape(@issue.title)
-    %tr
-      %td Project
-      %td
-        %strong= @issue.project.name
     %tr
       %td Author:
       %td
@@ -41,7 +35,7 @@
     %tr
       %td Closed?
       %td
-        - if can? current_user, :write_issue, @project
+        - if can? current_user, :write_issue, @issue
           = form_for([@project, @issue]) do |f|
             = f.check_box :closed, :onclick => "$(this).parent().submit();"
             = hidden_field_tag :status_only, true
@@ -49,9 +43,9 @@
           = check_box_tag "closed", 1, @issue.closed, :disabled => true
 
 
-  - if can?(current_user, :admin_issue, @issue)
+  - if can?(current_user, :write_issue, @issue)
     .clear
-      = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
-      .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
+    %br
+    = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
+    .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
-

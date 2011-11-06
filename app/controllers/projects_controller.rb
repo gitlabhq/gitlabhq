@@ -10,7 +10,9 @@ class ProjectsController < ApplicationController
   before_filter :require_non_empty_project, :only => [:blob, :tree]
 
   def index
-    @projects = current_user.projects.all
+    source = current_user.projects
+    source = source.tagged_with(params[:tag]) unless params[:tag].blank?
+    @projects = source.all
   end
 
   def new
@@ -86,13 +88,12 @@ class ProjectsController < ApplicationController
   def wall
     @note = Note.new
     @notes = @project.common_notes.order("created_at DESC")
+    @notes = @notes.fresh.limit(20)
 
-    @notes = case params[:view]
-             when "week" then @notes.since((Date.today - 7.days).at_beginning_of_day)
-             when "all" then @notes.all
-             when "day" then @notes.since(Date.today.at_beginning_of_day)
-             else @notes.fresh.limit(10)
-             end
+    respond_to do |format| 
+      format.html
+      format.js { respond_with_notes }
+    end
   end
 
   #

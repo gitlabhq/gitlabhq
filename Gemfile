@@ -21,6 +21,8 @@ gem "git"
 gem "acts_as_list"
 gem 'rdiscount'
 
+gem 'acts-as-taggable-on', '~>2.1.0'
+
 group :assets do
   gem 'sass-rails', "  ~> 3.1.0"
   gem 'coffee-rails', "~> 3.1.0"

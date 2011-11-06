@@ -9,6 +9,8 @@ class Project < ActiveRecord::Base
   has_many :notes, :dependent => :destroy
   has_many :snippets, :dependent => :destroy
 
+  acts_as_taggable
+
   validates :name,
             :uniqueness => true,
             :presence => true,
@@ -46,6 +48,11 @@ class Project < ActiveRecord::Base
 
   def to_param
     code
+  end
+
+  def team_member_by_name_or_email(email = nil, name = nil)
+    user = users.where("email like ? or name like ?", email, name).first
+    users_projects.find_by_user_id(user.id) if user
   end
 
   def common_notes

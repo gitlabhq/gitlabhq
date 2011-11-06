@@ -35,8 +35,13 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @notes = @issue.notes.order("created_at ASC")
+    @notes = @issue.notes.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
+
+    respond_to do |format| 
+      format.html
+      format.js { respond_with_notes }
+    end
   end
 
   def create

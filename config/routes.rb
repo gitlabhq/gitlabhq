@@ -1,4 +1,9 @@
 Gitlab::Application.routes.draw do
+
+  get 'tags'=> 'tags#index'
+  get 'tags/:tag' => 'projects#index'
+
+
   namespace :admin do
     resources :users
     resources :projects
@@ -20,6 +25,7 @@ Gitlab::Application.routes.draw do
 
   resources :projects, :only => [:new, :create, :index]
   resources :keys
+
   devise_for :users
 
   resources :projects, :except => [:new, :create, :index], :path => "/" do

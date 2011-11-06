@@ -292,7 +292,7 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 
 /* General */
 #container{background-color: white; overflow: hidden;}
-/*#container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}*/
+body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
 
 
 
@@ -323,6 +323,7 @@ header nav{border-radius: 4px; box-shadow: 0 1px 2px black; width: 294px; margin
 	background-image: -moz-linear-gradient(#595d63 6.6%, #31363e);
 	background-image: -o-linear-gradient(#595d63 6.6%, #31363e);
 	margin-top: 2px;
+	height:30px
 }
 header nav a{padding: 8px 12px 8px 34px; display: inline-block; color: #D6DADF; border-right: 1px solid #31363E; position: relative; box-shadow: 1px 0 0 rgba(255,255,255,.1); margin: 0}
 header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 6px;}

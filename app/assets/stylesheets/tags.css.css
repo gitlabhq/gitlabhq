@@ -1,0 +1,30 @@
+.tags-list {
+	padding : 0px 10px 10px 10px;
+	
+}
+
+.tags-list a {
+    display: inline-block;
+    padding: 8px 11px 8px 11px;
+    margin: 1px 5px 0px 0px;
+    border-radius: 4px;
+    border: 1px solid #72bbdf;
+    background-color: #72bbdf;
+    color: #0f326d;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+
+.small-tags a{
+  font-size: 9px;
+
+  display: inline-block;
+  padding: 2px 3px 1px 3px;
+  margin: 0px 3px 0px 0px;
+  border-radius: 2px;
+  background-color: #72bbdf;
+  color: #FFF;
+  text-shadow: none;
+  font-weight: bold;  
+}
