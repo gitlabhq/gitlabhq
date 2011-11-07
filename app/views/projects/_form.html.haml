@@ -29,8 +29,8 @@
       %tr
         %td= f.label :tag_list
         %td= f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
-
-    .field
+  
+    .form-row
       = f.label :description
       %br/
       = f.text_area :description, :style => "height:140px;width:932px;"
@@ -55,16 +55,5 @@
 
 :javascript
   $(function(){
-    var tag_field = $('#tag_field').tagify();
-
-    tag_field.tagify('inputField').autocomplete({
-        source: '/tags.json'
-    });
-
-
-    $('form').submit( function() {
-      var tag_field = $('#tag_field')
-         tag_field.val( tag_field.tagify('serialize') );
-         return true;
-    });
+    taggifyForm();
   })  
