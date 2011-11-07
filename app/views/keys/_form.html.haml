@@ -5,12 +5,12 @@
         - @key.errors.full_messages.each do |msg|
           %li= msg
 
-    .span-6
+    .form-row
       = f.label :title
       = f.text_field :title, :style => "width:300px"
-    .span-6
+    .form-row
       = f.label :key
       = f.text_area :key, :style => "width:300px; height:130px"
-    .span-6
+    .form-row
       = f.submit 'Save', :class => "lbutton vm"
 

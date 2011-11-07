@@ -16,15 +16,15 @@
         - @user.errors.full_messages.each do |msg|
           %li= msg
 
-  .div
+  .form-row
     = f.label :skype
     %br
     = f.text_field :skype
-  .div
+  .form-row
     = f.label :linkedin
     %br
     = f.text_field :linkedin
-  .div
+  .form-row
     = f.label :twitter
     %br
     = f.text_field :twitter

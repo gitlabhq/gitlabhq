@@ -10,13 +10,16 @@
 
     %div
       = f.label :note
-      %cite
+      %cite.cgray markdown supported
+      %br
       %br
       = f.text_area :note,  :size => 255
-
+     
     %div.attach_holder
+      %br
       = f.label :attachment
-      %cite (less than 10 MB)
+      %cite.cgray (less than 10 MB)
+      %br
       %br
       = f.file_field :attachment
 
