@@ -12,9 +12,8 @@
     %tr{ :class => "project", :url => project_path(project) }
       %td
         = project.name
-        .small-tags
-          - project.tag_list.each do |tag|
-            = link_to tag, tag_path(tag)
+        .small-tags= tag_list project
+
 
       %td= truncate project.url_to_repo
       %td= project.code
