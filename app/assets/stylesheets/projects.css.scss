@@ -679,6 +679,30 @@ body.project-page table .commit {
   }
 }
 
+#notes-list .note .delete-note { display:none; }
+#notes-list .note:hover .delete-note { display:block; }
+
+#issues-table-holder .issue .action-links {
+  display:none; 
+  a { 
+    margin-left:10px;
+  }
+}
+  
+.issue-number {
+  float: left;
+  border-radius: 5px;
+  text-shadow: none;
+  background: rgba(0, 0, 0, 0.12);
+  text-align: center;
+  padding: 14px 8px;
+  width: 40px;
+  margin-right: 10px;
+  color: #444;
+}
+
+#issues-table-holder .issue:hover .action-links { display:block; }
+
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
 body.project-page #notes-list .note img{float: left; margin-right: 10px;}
