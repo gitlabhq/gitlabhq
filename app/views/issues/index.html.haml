@@ -10,16 +10,16 @@
     .right.issues_filter
       = form_tag project_issues_path(@project), :method => :get do
         .left
-          = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "this.form.submit()", :id => "open_issues", :class => "status"
+          = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "setIssueFilter(this.form, 0);", :id => "open_issues", :class => "status"
           = label_tag "open_issues","Open"
         .left
-          = radio_button_tag :f, 2, params[:f] == "2", :onclick => "this.form.submit()", :id => "closed_issues", :class => "status"
+          = radio_button_tag :f, 2, params[:f] == "2", :onclick => "setIssueFilter(this.form, 2);", :id => "closed_issues", :class => "status"
           = label_tag "closed_issues","Closed"
         .left
-          = radio_button_tag :f, 3, params[:f] == "3", :onclick => "this.form.submit()", :id => "my_issues", :class => "status"
+          = radio_button_tag :f, 3, params[:f] == "3", :onclick => "setIssueFilter(this.form, 3);", :id => "my_issues", :class => "status"
           = label_tag "my_issues","To Me"
         .left
-          = radio_button_tag :f, 1, params[:f] == "1", :onclick => "this.form.submit()", :id => "all_issues", :class => "status"
+          = radio_button_tag :f, 1, params[:f] == "1", :onclick => "setIssueFilter(this.form, 1);", :id => "all_issues", :class => "status"
           = label_tag "all_issues","All"
 
   #issues-table-holder= render "issues"
@@ -27,6 +27,12 @@
 :javascript
   var href       = $('.issue_search').parent().attr('action');
   var last_terms = '';
+
+
+  var setIssueFilter = function(form, value){
+    $.cookie('issue_filter', value, { expires: 140 });
+    form.submit();
+  }
 
   $('.issue_search').keyup(function() {
     var terms       = $(this).val();
