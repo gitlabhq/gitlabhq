@@ -87,6 +87,17 @@ h2{margin: 1.5em 0}
 /* Forms */
 input[type="text"]:focus, input[type="password"]:focus {  outline: none; }
 input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 10px}
+
+.form-row{
+	padding: 0px 0px 10px 0px;	
+}
+
+.form-row label{
+	font-weight:bold;
+	display: inline-block;
+	padding: 0px 0px 5px 0px;
+}
+
 /* eo Forms */
 
 /* Tables */
