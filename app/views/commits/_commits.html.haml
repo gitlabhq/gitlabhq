@@ -17,7 +17,7 @@
               = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
             %span.commit-title
               %strong
-                = truncate(commit.safe_message, :length => 60)
+                = truncate(commit.safe_message, :length => fixed_mode? ? 60 : 120)
             %span.commit-author
               %strong= commit.author_name
               = time_ago_in_words(commit.committed_date)

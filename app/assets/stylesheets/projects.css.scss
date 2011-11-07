@@ -276,6 +276,9 @@ input.ssh_project_url {
 /** FORM INPUTS **/
 
 .user_new,
+.new_key,
+.new_issue,
+.new_note,
 .edit_user,
 .new_project,
 .new_snippet,
@@ -666,6 +669,15 @@ table.highlighttable pre{
 .cgray { color:gray; }
 .cred { color:#D12F19; }
 .cgreen { color:#44aa22; }
+
+body.project-page table .commit { 
+  a.tree-commit-link { 
+    color:gray;
+    &:hover { 
+      text-decoration:underline;
+    }
+  }
+}
 
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
 body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}

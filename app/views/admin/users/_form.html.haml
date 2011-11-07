@@ -7,44 +7,42 @@
           - @admin_user.errors.full_messages.each do |msg|
             %li= msg
 
-    .span-24
-      .span-11.colborder
-        .field
-          = f.label :name
-          %br
-          = f.text_field :name
-        .field
-          = f.label :email
-          %br
-          = f.text_field :email
-        .field
-          = f.label :password
-          %br
-          = f.password_field :password
-        .field
-          = f.label :password_confirmation
-          %br
-          = f.password_field :password_confirmation
-        .field.prepend-top
-          = f.check_box :admin
-          = f.label :admin
-      .span-11
-        .field.prepend-top
-          = f.text_field :projects_limit, :class => "small_input"
-          = f.label :projects_limit
+    .form-row
+      = f.label :name
+      %br
+      = f.text_field :name
+    .form-row
+      = f.label :email
+      %br
+      = f.text_field :email
+    .form-row
+      = f.label :password
+      %br
+      = f.password_field :password
+    .form-row
+      = f.label :password_confirmation
+      %br
+      = f.password_field :password_confirmation
+    .form-row
+      = f.check_box :admin
+      = f.label :admin
 
-        .field
-          = f.label :skype
-          %br
-          = f.text_field :skype
-        .field
-          = f.label :linkedin
-          %br
-          = f.text_field :linkedin
-        .field
-          = f.label :twitter
-          %br
-          = f.text_field :twitter
+    .form-row
+      = f.text_field :projects_limit, :class => "small_input"
+      = f.label :projects_limit
+
+    .form-row
+      = f.label :skype
+      %br
+      = f.text_field :skype
+    .form-row
+      = f.label :linkedin
+      %br
+      = f.text_field :linkedin
+    .form-row
+      = f.label :twitter
+      %br
+      = f.text_field :twitter
     .clear
     %br
     .actions
