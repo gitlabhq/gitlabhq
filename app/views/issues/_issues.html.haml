@@ -1,9 +1,5 @@
-%table.round-borders#issues-table
-  %thead
-    %th Issues
+- @issues.critical.each do |issue|
+  = render(:partial => 'show', :locals => {:issue => issue})
 
-  - @issues.critical.each do |issue|
-    = render(:partial => 'show', :locals => {:issue => issue})
-
-  - @issues.non_critical.each do |issue|
-    = render(:partial => 'show', :locals => {:issue => issue})
+- @issues.non_critical.each do |issue|
+  = render(:partial => 'show', :locals => {:issue => issue})
