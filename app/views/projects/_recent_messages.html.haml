@@ -3,50 +3,25 @@
   - parent = load_note_parent(id, type, @project)
   - next unless parent
 
-  - case type
-  - when "Issue"
-    - css_class = "dash_issue"
-    - issue = parent
-    - item_code = issue.author.email
-    - link_item_name = truncate(issue.title, :length => 50)
-    - link_to_item = project_issue_path(@project, issue)
-  - when "Snippet"
-    - css_class = "dash_snippet"
-    - item_code = parent.author.email
-    - link_item_name = parent.title
-    - link_to_item = project_snippet_path(@project, parent)
-  - when "Commit"
-    - css_class = "dash_commit"
-    - commit = parent
-    - item_code = commit.author.email
-    - link_item_name = truncate(commit.safe_message, :length => 50)
-    - link_to_item = project_commit_path(@project, :id => commit.id)
-  - else
-    - css_class = "dash_wall"
-    - item_code = @project.name
-    - link_item_name = "Project Wall"
-    - link_to_item = wall_project_path(@project)
-
-  %div{ :class => "recent_message_parent #{css_class}"}
-    = image_tag gravatar_icon(item_code), :class => "left", :width => 40
-    %h4
-      = link_to(link_item_name, link_to_item)
-    %span
-      = type
-  .clear
-  - notes.sort {|x,y| x.updated_at <=> y.updated_at }.each do |note|
-    %div.message
-      = image_tag gravatar_icon(note.author.email), :class => "left", :width => 24, :style => "padding-right:5px;"
-      %p{:style => "margin-bottom: 3px;"}
-        %span.author
-          = note.author.name
-        = link_to markdown(truncate(note.note, :length => 200)), link_to_item + "#note_#{note.id}"
-        - if note.attachment.url
-          %br
-          Attachment:
-          = link_to note.attachment_identifier, note.attachment.url
-          %br
-    %br
-  .append-bottom
-    &nbsp;
-  .clear
+  %table
+    %thead
+      %th
+        %div{ :class => "recent_message_parent"}
+          = link_to(truncate(dashboard_feed_title(parent), :length => fixed_mode? ? 40 : 100 ), dashboard_feed_path(@project, parent))
+    - notes.sort {|x,y| y.updated_at <=> x.updated_at }.each do |note|
+      %tr
+        %td
+          %div.message
+            = image_tag gravatar_icon(note.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+            %div.note-author
+              %strong= note.author_name
+              %cite.cgray
+                = time_ago_in_words(note.updated_at)
+                ago
+            %div.note-title
+              = link_to markdown(truncate(note.note, :length => fixed_mode? ? 40 : 100)), dashboard_feed_path(@project, parent) + "#note_#{note.id}"
+              - if note.attachment.url
+                %br
+                Attachment:
+                = link_to note.attachment_identifier, note.attachment.url
+  %br

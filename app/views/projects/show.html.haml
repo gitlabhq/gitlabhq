@@ -1,28 +1,11 @@
-%div
-  %h2.left History
-  .right
-    = form_tag project_path(@project), :method => :get do
-      .span-2
-        = radio_button_tag :view, "recent", (params[:view] || "recent") == "recent", :onclick => "this.form.submit()", :id => "recent_view"
-        = label_tag "recent_view","Recent"
-      .span-2
-        = radio_button_tag :view, "day", params[:view] == "day", :onclick => "this.form.submit()", :id => "day_view"
-        = label_tag "day_view","Today"
-      .span-2
-        = radio_button_tag :view, "week", params[:view] == "week", :onclick => "this.form.submit()", :id => "week_view"
-        = label_tag "week_view","Week"
-  .clear
-  %hr
 .left.width-49p
-  %h3 Commits
   =render "projects/recent_commits"
 
 .right.width-49p
-  %h3 Talk
   =render "projects/recent_messages"
 
 :javascript
   function updateDashboard(){
-    $('#content-container').load("#{escape_javascript(project_path(@project))} #content-container>*");
+    $('.project-content').load("#{escape_javascript(project_path(@project))} .project-content>*");
   }
   setInterval("updateDashboard()", 300000);

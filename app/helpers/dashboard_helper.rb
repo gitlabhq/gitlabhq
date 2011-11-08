@@ -12,7 +12,7 @@ module DashboardHelper
       when "Commit" then project_commit_path(project, :id => note.noteable_id)
       else wall_project_path(project)
       end
-    else "#" 
+    else wall_project_path(project) 
     end
   rescue 
     "#"
@@ -23,7 +23,7 @@ module DashboardHelper
             when "Note" then markdown(object.note)
             when "Issue" then object.title
             when "Grit::Commit" then object.safe_message
-            else ""
+            else return "Project Wall"
             end
     "[#{object.class.name}] #{truncate(sanitize(title, :tags => []), :length => 60)} "
   end

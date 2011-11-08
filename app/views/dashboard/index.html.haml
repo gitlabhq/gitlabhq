@@ -23,7 +23,7 @@
       .project-box.project-updates.ui-box.ui-box-small.ui-box-big
         %h3= project.name
         .data
-          - project.updates.each do |update|
+          - project.updates(4).each do |update|
             %a.project-update{:href => dashboard_feed_path(project, update)}
               = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
               %span.update-title
@@ -34,7 +34,5 @@
                 = time_ago_in_words(update.created_at) 
                 ago
             %br
-            / .project-update
-      / .project-updates
   / #news-feed
 / #dashboard-content
