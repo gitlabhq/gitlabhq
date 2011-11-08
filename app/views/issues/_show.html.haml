@@ -1,37 +1,26 @@
 %tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(@project, issue) }
-  - if can?(current_user, :admin_issue, @project) && (!params[:f] || params[:f] == "0")
-    %td
-      = image_tag "move.png" , :class => [:handle, :left]
   %td
-    = image_tag gravatar_icon(issue.assignee.email), :class => "left", :width => 40, :style => "padding:0 5px;"
-    = issue.assignee.name
-  %td ##{issue.id}
-  %td
-    = truncate(html_escape(issue.title), :length => 200)
+    %strong.issue-number{:class => sort_class}= "##{issue.id}"
+    %span
+      = truncate(html_escape(issue.title), :length => fixed_mode? ? 100 : 200)
     %br
     %br
-    - if issue.critical
-      %span.tag.high critical
-    - if issue.today?
-      %span.tag.today today
-
-    .right
-      - if can?(current_user, :admin_issue, @project) || issue.author == current_user
-        = link_to 'Edit', edit_project_issue_path(@project, issue), :class => "cgray", :remote => true
-      - if can?(current_user, :admin_issue, @project) || issue.author == current_user
-        &nbsp;
-        = link_to 'Destroy', [@project, issue], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-issue negative", :id => "destroy_issue_#{issue.id}"
-
-    -#- if issue.author == current_user
-      -#%span.tag.yours yours
-    -#- if issue.notes.count > 0
-      -#%span.tag.notes
-        -#= issue.notes.count
-        -#notes
-  %td
-    - if can? current_user, :write_issue, @project
-      = form_for([@project, issue], :remote => true) do |f|
-        = f.check_box :closed, :onclick => "$(this).parent().submit();"
-        = hidden_field_tag :status_only, true
-    - else
-      = check_box_tag "closed", 1, issue.closed, :disabled => true
+    %div.note-author
+      %strong= issue.assignee.name
+      %cite.cgray
+        = time_ago_in_words(issue.updated_at)
+        ago
+      - if issue.critical
+        %span.tag.high critical
+      - if issue.today?
+        %span.tag.today today
+      .right.action-links
+        - if can? current_user, :write_issue, issue
+          - if issue.closed
+            = link_to 'Reopen', project_issue_path(@project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "cgray", :remote => true
+          - else 
+            = link_to 'Resolve', project_issue_path(@project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "cgray", :remote => true
+        - if can? current_user, :write_issue, issue
+          = link_to 'Edit', edit_project_issue_path(@project, issue), :class => "cgray edit-issue-link", :remote => true
+        - if can?(current_user, :admin_issue, @project) || issue.author == current_user
+          = link_to 'Destroy', [@project, issue], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-issue negative", :id => "destroy_issue_#{issue.id}"

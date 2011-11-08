@@ -169,6 +169,7 @@ describe "Issues" do
         :assignee => @user,
         :project => project
       visit project_issues_path(project)
+      page.execute_script("$('.action-links').css('display', 'block');")
       click_link "Edit"
     end
 
