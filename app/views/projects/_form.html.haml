@@ -1,7 +1,9 @@
 = form_for(@project, :remote => true) do |f|
   %div.form_content
     - unless @project.new_record?
-      %h1 Edit Project
+      %h2.icon  
+        %span
+        = @project.name
     - if @project.errors.any?
       #error_explanation
         %h2
@@ -10,7 +12,7 @@
         %ul
           - @project.errors.full_messages.each do |msg|
             %li= msg
-    %table.round-borders
+    %table
       %tr
         %td= f.label :name
         %td= f.text_field :name, :placeholder => "Example Project"
@@ -29,15 +31,13 @@
       %tr
         %td= f.label :tag_list
         %td= f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
+      %tr
+        %td= f.label :description
+        %td= f.text_area :description, :placeholder => "project description", :style => "height:50px"
 
-    .field
-      = f.label :description
-      %br/
-      = f.text_area :description, :style => "height:140px;width:932px;"
-    .clear
-      %hr.prepend-top
+    %br
     .actions
-      = f.submit :class => "lbutton vm"
+      = f.submit :class => "button"
 
   %div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
     %center

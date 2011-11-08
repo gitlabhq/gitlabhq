@@ -710,3 +710,14 @@ body.project-page #notes-list .note span.note-title{display: block;}
 body.project-page #notes-list .note span.note-title{margin-bottom: 10px}
 body.project-page #notes-list .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
 body.project-page #notes-list .note span.note-author strong{font-weight: bold; font-style: normal;}
+
+
+/** NEW PROJECT **/
+.new-project-hodler { 
+  .icon span { 
+    background-position: -31px -70px;
+  }
+  td {
+    border-bottom: 1px solid #DEE2E3;
+  }
+}
