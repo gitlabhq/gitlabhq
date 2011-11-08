@@ -25,7 +25,7 @@
                 Team
                 - if @project.users_projects.count > 0
                   %span{ :class => "number" }= @project.users_projects.count
-              = link_to  project_issues_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
+              = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
                 Issues
                 - if @project.issues.opened.count > 0
                   %span{ :class => "number" }= @project.issues.opened.count
