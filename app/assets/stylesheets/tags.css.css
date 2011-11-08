@@ -28,3 +28,17 @@
   text-shadow: none;
   font-weight: bold;  
 }
+
+
+.medium-tags a{
+  font-size: 12px;
+
+  display: inline-block;
+  padding: 3px 4px 2px 4px;
+  margin: 0px 7px 8px 0px;
+  border-radius: 3px;
+  background-color: #72bbdf;
+  color: #FFF;
+  text-shadow: none;
+  font-weight: bold;  
+}

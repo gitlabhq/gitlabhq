@@ -40,3 +40,19 @@ $(document).ready(function(){
 function focusSearch() {
   $("#search").focus();
 }
+
+function taggifyForm(){
+  var tag_field = $('#tag_field').tagify();
+
+  tag_field.tagify('inputField').autocomplete({
+      source: '/tags.json'
+  });
+
+
+  $('form').submit( function() {
+    var tag_field = $('#tag_field')
+       tag_field.val( tag_field.tagify('serialize') );
+       return true;
+  });
+}
+
