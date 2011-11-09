@@ -158,7 +158,6 @@ describe "Issues" do
     it "should have valid show page for issue" do
       page.should have_content @issue.title
       page.should have_content @user.name
-      page.should have_content "today"
     end
   end
 
@@ -169,6 +168,7 @@ describe "Issues" do
         :assignee => @user,
         :project => project
       visit project_issues_path(project)
+      page.execute_script("$('.action-links').css('display', 'block');")
       click_link "Edit"
     end
 

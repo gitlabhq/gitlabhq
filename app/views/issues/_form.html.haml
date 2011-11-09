@@ -5,24 +5,21 @@
         - @issue.errors.full_messages.each do |msg|
           %li= msg
 
-    .span-8
+    .form-row
       = f.label :title
       = f.text_area :title, :style => "width:450px; height:100px", :maxlength => 255
-    -#.span-8
-      -#= f.label :content
-      -#= f.text_area :content, :style => "width:450px; height:130px"
-    .span-8.append-bottom
+    .form-row
       = f.label :assignee_id
       = f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
-    .span-1
+    .form-row
       = f.label :critical, "Critical"
       %br
       = f.check_box :critical
     - unless @issue.new_record?
-      .span-2.right
+      .form-row
         = f.label :closed
         %br
         = f.check_box :closed
     %hr
-    .span-6
+    .form-row
       = f.submit 'Save', :class => "lbutton vm"

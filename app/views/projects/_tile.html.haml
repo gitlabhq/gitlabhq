@@ -13,9 +13,7 @@
             - last_note = project.notes.last
             = last_note ? last_note.created_at.stamp("24 Aug, 2011") : "Never"
 
-          %p.small-tags
-            - project.tag_list.each do |tag|
-              = link_to tag, "/tags/#{tag}"
+          %p.small-tags= tag_list project
 
         .buttons
           %a.browse-code.button.yellow{:href => tree_project_path(project)} Browse code
