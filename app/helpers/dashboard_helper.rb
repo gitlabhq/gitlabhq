@@ -19,12 +19,15 @@ module DashboardHelper
   end
 
   def dashboard_feed_title(object)
-    title = case object.class.name.to_s
+    klass = object.class.to_s.split("::").last
+
+    title = case klass
             when "Note" then markdown(object.note)
             when "Issue" then object.title
-            when "Grit::Commit" then object.safe_message
+            when "Commit" then object.safe_message
             else return "Project Wall"
             end
-    "[#{object.class.name}] #{truncate(sanitize(title, :tags => []), :length => 60)} "
+
+    "[#{klass}] #{truncate(sanitize(title, :tags => []), :length => 60)} "
   end
 end
