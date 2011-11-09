@@ -670,3 +670,13 @@ body.projects-page .browse-code{margin-right: 10px}
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+
+/**
+ * author:DZ
+ * date: Nov 09
+ * fix different fonts for firefox & webkit
+ */
+body, button, input, select, textarea {
+  font-family: "Helvetica", sans-serif;
+}
+
