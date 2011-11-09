@@ -1,7 +1,9 @@
 require 'digest/md5'
 module ApplicationHelper
+
   def gravatar_icon(user_email)
-    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
+    gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
   end
 
   def fixed_mode?
