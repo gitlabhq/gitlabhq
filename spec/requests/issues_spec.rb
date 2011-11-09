@@ -158,7 +158,6 @@ describe "Issues" do
     it "should have valid show page for issue" do
       page.should have_content @issue.title
       page.should have_content @user.name
-      page.should have_content "today"
     end
   end
 

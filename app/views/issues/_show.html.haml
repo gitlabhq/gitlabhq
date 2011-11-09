@@ -1,9 +1,6 @@
 %tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(@project, issue) }
-  -#- if can?(current_user, :admin_issue, @project) && (!params[:f] || params[:f] == "0")
-    %td
-      = image_tag "move.png" , :class => [:handle, :left]
   %td
-    %strong.issue-number= "##{issue.id}"
+    %strong.issue-number{:class => sort_class}= "##{issue.id}"
     %span
       = truncate(html_escape(issue.title), :length => fixed_mode? ? 100 : 200)
     %br

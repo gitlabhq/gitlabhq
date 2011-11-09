@@ -1,18 +1,32 @@
-- @commits.each do |commit|
-  %div.commit
-    - if commit.author.email
-      = image_tag gravatar_icon(commit.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
-    - else
-      = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-    %p{:style => "margin-bottom: 3px;"}
-      %strong
-        = link_to truncate(commit.safe_message, :length => 60), project_commit_path(@project, :id => commit.id)
+%table
+  %thead
+    %th
+      Commits
+      .filter.right
+        = form_tag project_path(@project), :method => :get, :class => "right" do
+          .left
+            = radio_button_tag :view, "recent", (params[:view] || "recent") == "recent", :onclick => "this.form.submit()", :id => "recent_view"
+            = label_tag "recent_view","Recent"
+          .left
+            = radio_button_tag :view, "day", params[:view] == "day", :onclick => "this.form.submit()", :id => "day_view"
+            = label_tag "day_view","Today"
+          .left
+            = radio_button_tag :view, "week", params[:view] == "week", :onclick => "this.form.submit()", :id => "week_view"
+            = label_tag "week_view","Week"
+  - @commits.each do |commit|
+    %tr
+      %td
+        %div.commit
+          - if commit.author.email
+            = image_tag gravatar_icon(commit.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
+          - else
+            = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
+          .title
+            %p= link_to truncate(commit.safe_message, :length => fixed_mode? ? 40 : 100), project_commit_path(@project, :id => commit.id)
 
-    %span
-      %span.author
-        = commit.author.name.force_encoding("UTF-8")
-      %cite
-        = time_ago_in_words(commit.committed_date)
-        ago
-  %br
-
+          %span
+            %span.author
+              %strong= commit.author.name.force_encoding("UTF-8")
+            %cite.cgray
+              = time_ago_in_words(commit.committed_date)
+              ago
