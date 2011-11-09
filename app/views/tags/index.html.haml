@@ -7,5 +7,5 @@
  
   .tags-list
     - @tags.all.each do |tag|
-      = link_to "#{tag.name}(#{tag.count})", "/tags/#{tag.name}"
+      = link_to "#{tag.name}(#{tag.count})", tag_path(name)
         

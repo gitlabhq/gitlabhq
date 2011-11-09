@@ -443,67 +443,6 @@ input.ssh_project_url {
   padding: 10px;
 }
 
-.recent_message_parent {
-  img {
-    padding-right:10px;
-  }
-
-  float: left;
-  margin: 0 20px 20px 0px;
-  padding: 5px 0px;;
-  width: 420px;
-
-  &.dash_wall{
-    border-bottom: 2px solid orange;
-    span {
-      background: orange;
-      color:black;
-    }
-  }
-
-  &.dash_issue{
-    border-bottom: 2px solid #ffbbbb;
-    span {
-      background: #ffbbbb;
-    }
-  }
-  &.dash_commit{
-    border-bottom: 2px solid #bbbbff;
-
-    span{
-      background: #bbbbff;
-    }
-  }
-
-  &.dash_snippet{
-    border-bottom: 2px solid #bbffbb;
-
-    span{
-      background: #bbffbb;
-    }
-  }
-
-  span{
-    border: 1px solid #aaa;
-    color:black;
-    padding:1px 4px;
-  }
-
-  h4 {
-    margin-bottom:3px;
-  }
-
-}
-.commit,
-.message{
-  .author {
-    background: #eaeaea;
-    color: #333;
-    border: 1px solid #aaa;
-    padding:1px 2px;
-    margin-right:5px;
-  }
-}
 
 /* Note textare */
 #note_note {
@@ -665,6 +604,8 @@ table.highlighttable pre{
     margin-right:15px;
   }
 }
+.filter .left { margin-right:15px; }
+ 
 
 .cgray { color:gray; }
 .cred { color:#D12F19; }
@@ -719,5 +660,24 @@ body.project-page #notes-list .note span.note-author strong{font-weight: bold; f
   }
   td {
     border-bottom: 1px solid #DEE2E3;
+  }
+}
+
+//.message .note-title p { margin-bottom:0px; }
+
+.commit,
+.message { 
+  .title { 
+    color:#666;
+    a { 
+      color:#666 !important;
+    }
+    p { 
+      margin-top:0px;
+    }
+  }
+
+  .author { 
+    color: #999
   }
 }
