@@ -13,10 +13,8 @@
   = diff_line(line, line_new, line_old)
   - if line[0] == "+"
     - line_new += 1
-  - elsif
-    - line[0] == "-"
+  - elsif line[0] == "-"
     - line_old += 1
   - else
     - line_new += 1
     - line_old += 1
-
