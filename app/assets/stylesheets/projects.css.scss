@@ -443,16 +443,6 @@ input.ssh_project_url {
   padding: 10px;
 }
 
-.commit,
-.message{
-  .author {
-    background: #eaeaea;
-    color: #333;
-    border: 1px solid #aaa;
-    padding:1px 2px;
-    margin-right:5px;
-  }
-}
 
 /* Note textare */
 #note_note {
@@ -673,4 +663,21 @@ body.project-page #notes-list .note span.note-author strong{font-weight: bold; f
   }
 }
 
-.message .note-title p { margin-bottom:0px; }
+//.message .note-title p { margin-bottom:0px; }
+
+.commit,
+.message { 
+  .title { 
+    color:#666;
+    a { 
+      color:#666 !important;
+    }
+    p { 
+      margin-top:0px;
+    }
+  }
+
+  .author { 
+    color: #999
+  }
+}

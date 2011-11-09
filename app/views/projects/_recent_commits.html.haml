@@ -21,12 +21,11 @@
             = image_tag gravatar_icon(commit.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
           - else
             = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-          %p{:style => "margin-bottom: 3px;"}
-            %strong
-              = link_to truncate(commit.safe_message, :length => fixed_mode? ? 40 : 100), project_commit_path(@project, :id => commit.id)
+          .title
+            %p= link_to truncate(commit.safe_message, :length => fixed_mode? ? 40 : 100), project_commit_path(@project, :id => commit.id)
 
           %span
-            %span.note-author
+            %span.author
               %strong= commit.author.name.force_encoding("UTF-8")
             %cite.cgray
               = time_ago_in_words(commit.committed_date)
