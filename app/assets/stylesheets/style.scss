@@ -144,7 +144,7 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
 	background-image: -o-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
 }
 
-a.button, input.button{
+a.button, input.button, .lbutton {
 	font-weight: bold;
 	padding: 10px 20px;
 	text-align: center;
@@ -585,6 +585,11 @@ body.project-page .project-content .button.right{margin-left: 20px}
 body.project-page table .commit a{color: #{$blue_link}}
 body.project-page table th, body.project-page table td{	border-bottom: 1px solid #DEE2E3;}
 body.project-page .fixed{position: fixed; }
+
+/* New project Page */
+.new-project-page .container{width: 600px; background-color: rgba(0,0,0,.02); margin: auto; border: 1px solid #eee; padding: 0 20px; margin: 30px auto 60px auto; border-radius: 5px}
+.new-project-page .container table{background: white}
+/* eo New Project Page */
 
 /* Commit Page */
 body.project-page.commits-page .commit-info{float: right;}
