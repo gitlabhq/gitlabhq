@@ -302,7 +302,7 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 /* eo Icons*/
 
 /* General */
-#container{background-color: white; overflow: hidden;}
+#container{background-color: white; overflow: hidden; }
 body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
 
 
@@ -506,9 +506,9 @@ body.dashboard-page header{margin-bottom: 0}
 body.dashboard-page .news-feed{padding-left: 1em; margin-right: 450px; margin-left: 1%}
 body.dashboard-page .dashboard-content{ position: relative; float: left; width: 100%; height: 100%; }
 body.dashboard-page .news-feed h2{float: left;}
-body.dashboard-page aside{  width: 420px;  float: right; right: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; border-left: 1px solid #ccc }
+body.dashboard-page aside{ min-height: 700px; width: 420px;  float: right;  background-color: #f7f7f7; border-left: 1px solid #ccc }
 body.dashboard-page aside h4{margin: 0; border-bottom: 1px solid #ccc; padding: 10px 10px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
-body.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 4%; margin-top: -4px; display: block;}
+body.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 2%; margin-top: -4px; display: block;}
 body.dashboard-page aside .project-list {list-style: none; margin: 0; padding: 0;}
 body.dashboard-page aside .project-list li a {background: white;  color: #{$blue_link}; display: block; border-bottom: 1px solid #eee; padding: 14px 6% 14px 14px;}
 body.dashboard-page aside .project-list li a:hover {background: #f1f1f1}
