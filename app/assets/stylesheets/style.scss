@@ -144,7 +144,8 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
 	background-image: -o-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
 }
 
-.button{
+a.button, input.button{
+	font-weight: bold;
 	padding: 10px 20px;
 	text-align: center;
 	display: inline-block;
@@ -158,6 +159,8 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
 	background-image: -moz-linear-gradient(#dbf5f6 79.4%, #c5eef0);
 	background-image: -o-linear-gradient(#dbf5f6 79.4%, #c5eef0);
 }
+
+input.button{margin-bottom: 1.5em}
 
 .button:hover {color: rgba(0,0,0,.8)}
 
@@ -308,7 +311,7 @@ body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0
 
 
 /* Header */
-header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%}
+header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%; position: relative}
 header a{color: white; text-shadow: 0 -1px 0 black}
 header a:hover{color: #f1f1f1}
 header h1{
@@ -370,7 +373,7 @@ header nav a.admin{
 }
 
 
-header .search{ display: inline-block; float: right;  margin-right: 10px}
+header .search{ display: inline-block; float: right;  margin-right: 46px}
 
 header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 6px;}
 
@@ -426,10 +429,11 @@ header{margin-bottom: 0; clear: both; }
 .page-title a.grey-button{float: right;}
 .right{float: right;}
 
+
 /* Account box */
-header .account-box{position: relative;z-index: 10000; top: -3px; width: 38px; height: 38px; font-size: 11px; float: right; display: block;  cursor: pointer; }
-header .account-box img{ border-radius: 4px; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
-header .account-box:after{
+header .account-box{position: absolute; right: 0; top: 8px; z-index: 10000; width: 128px; height: 138px; font-size: 11px; float: right; display: block; cursor: pointer;}
+header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
+header .account-box img:after{
 	content: " "; 
   display: block;
   position: absolute;
@@ -449,11 +453,21 @@ float: right;
   background-origin: border-box;
 }
 
-.account-box:hover > .account-links, .account-box:hover > .arrow-up{display: block;}
-header .account-links{background: white; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); }
-header .account-links a{color: #666; padding: 6px 10px; display: block; text-shadow: none;  border-bottom: 1px solid #eee}
-header .account-links a:hover{background-color: #f1f1f1; text-shadow: none; color: #333}
+.account-box.hover{}
+.account-box.hover .account-links, .account-box.hover .arrow-up{display: block;}
 
+/* Inspired by http://maxvoltar.com/temp/nowplaying/ */
+header .account-links{background: white; display: none; z-index: 100000; border-radius: 5px; width: 100px; position: absolute; right: 20px; top: 46px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); }
+header .account-links a{color: #666; padding: 6px 10px; display: block; text-shadow: none;  border-bottom: 1px solid #eee}
+header .account-links a:hover{
+  background: #3aacec;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#39acec), to(#279ada), color-stop(.05, #4cbefe));
+  background: -moz-linear-gradient(top, #39acec, #4cbefe 5%, #279ada);
+  background: linear-gradient(top, #39acec, #4cbefe 5%, #279ada);	
+	color: #fff;
+  text-shadow: #1488c8 0 -1px 0;
+}
+.account-box.hover .arrow-up{top: 41px; right: 6px; position: absolute}
 header .account-links a:first-child{
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
@@ -548,7 +562,7 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 body.project-page h2.icon span{	background-position:  -78px -68px; }
 body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; }
 body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 220px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; border-left: 1px solid #ccc; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
+body.project-page .project-sidebar {width: 220px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
 body.project-page .project-sidebar input.text.git-url{ font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 14px 8px 30px;  margin-bottom: 20px;	background: white url('images.png') no-repeat 8px -40px;}
 body.project-page .project-sidebar aside{width: 219px}
 body.project-page .project-sidebar aside a{display: block; position: relative; background: white; padding: 15px 10px; border-bottom: 1px solid #eee}

@@ -19,8 +19,20 @@ $(function(){
 
   $('select#branch').selectmenu({style:'popup', width:200});
   $('select#tag').selectmenu({style:'popup', width:200});
+
+	$(".account-box").mouseenter(showMenu);
+	$(".account-box").mouseleave(resetMenu);
+	
 });
 
 function updatePage(data){
   $.ajax({type: "GET", url: location.href, data: data, dataType: "script"});
+}
+
+function showMenu() {
+	$(this).toggleClass('hover');
+}
+
+function resetMenu() {
+	$(this).removeClass("hover");
 }
