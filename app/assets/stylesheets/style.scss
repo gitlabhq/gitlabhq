@@ -431,7 +431,7 @@ header{margin-bottom: 0; clear: both; }
 
 
 /* Account box */
-header .account-box{position: absolute; right: 0; top: 8px; z-index: 10000; width: 128px; height: 138px; font-size: 11px; float: right; display: block; cursor: pointer;}
+header .account-box{position: absolute; right: 0; top: 8px; z-index: 10000; width: 128px;  font-size: 11px; float: right; display: block; cursor: pointer;}
 header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
 header .account-box img:after{
 	content: " "; 
@@ -453,7 +453,7 @@ float: right;
   background-origin: border-box;
 }
 
-.account-box.hover{}
+.account-box.hover{height: 138px;}
 .account-box.hover .account-links, .account-box.hover .arrow-up{display: block;}
 
 /* Inspired by http://maxvoltar.com/temp/nowplaying/ */
