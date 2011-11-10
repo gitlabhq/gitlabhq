@@ -9,16 +9,54 @@ class Repository
     @project = project
   end
 
+  def path 
+    @path ||= project.path
+  end
+
+  def project_id
+    project.id
+  end
+
   def repo
     @repo ||= Grit::Repo.new(project.path_to_repo)
+  end
+
+  def url_to_repo
+    "#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{path}.git"
+  end
+
+  def path_to_repo
+    GITOSIS["base_path"] + path + ".git"
+  end
+
+  def update_gitosis_project
+    Gitosis.new.configure do |c|
+      c.update_project(path, project.gitosis_writers)
+    end
+  end
+
+  def destroy_gitosis_project
+    Gitosis.new.configure do |c|
+      c.destroy_project(@project)
+    end
+  end
+
+  def repo_exists?
+    repo rescue false
   end
 
   def tags
     repo.tags.map(&:name).sort.reverse
   end
 
-  def repo_exists?
-    repo rescue false
+  def heads
+    @heads ||= repo.heads
+  end
+
+  def tree(fcommit, path = nil)
+    fcommit = commit if fcommit == :head
+    tree = fcommit.tree
+    path ? (tree / path) : tree
   end
 
   def commit(commit_id = nil)
@@ -27,12 +65,6 @@ class Repository
     else
       repo.commits.first
     end
-  end
-
-  def tree(fcommit, path = nil)
-    fcommit = commit if fcommit == :head
-    tree = fcommit.tree
-    path ? (tree / path) : tree
   end
 
   def fresh_commits(n = 10)
@@ -45,10 +77,6 @@ class Repository
     end
 
     commits[0...n]
-  end
-
-  def heads
-    @heads ||= repo.heads
   end
 
   def commits_since(date)

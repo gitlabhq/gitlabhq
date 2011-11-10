@@ -6,8 +6,8 @@ class ProjectsController < ApplicationController
   before_filter :add_project_abilities
   before_filter :authorize_read_project!, :except => [:index, :new, :create]
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
-
   before_filter :require_non_empty_project, :only => [:blob, :tree]
+  before_filter :load_refs, :only => :tree # load @branch, @tag & @ref
 
   def index
     source = current_user.projects
@@ -101,15 +101,13 @@ class ProjectsController < ApplicationController
   #
 
   def tree
-    load_refs # load @branch, @tag & @ref
-
     @repo = project.repo
 
-    if params[:commit_id]
-      @commit = @repo.commits(params[:commit_id]).first
-    else
-      @commit = @repo.commits(@ref).first
-    end
+    @commit = if params[:commit_id]
+                @repo.commits(params[:commit_id]).first
+              else
+                @repo.commits(@ref).first
+              end
 
     @tree = @commit.tree
     @tree = @tree / params[:path] if params[:path]

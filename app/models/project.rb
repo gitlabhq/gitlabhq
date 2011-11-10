@@ -51,6 +51,10 @@ class Project < ActiveRecord::Base
   end
 
   delegate :repo,
+    :url_to_repo,
+    :path_to_repo,
+    :update_gitosis_project,
+    :destroy_gitosis_project,
     :tags,
     :repo_exists?,
     :commit,
@@ -74,16 +78,12 @@ class Project < ActiveRecord::Base
     notes.where(:noteable_type => ["", nil])
   end
 
-  def update_gitosis_project
-    Gitosis.new.configure do |c|
-      c.update_project(path, gitosis_writers)
-    end
+  def build_commit_note(commit)
+    notes.new(:noteable_id => commit.id, :noteable_type => "Commit")
   end
 
-  def destroy_gitosis_project
-    Gitosis.new.configure do |c|
-      c.destroy_project(self)
-    end
+  def commit_notes(commit)
+    notes.where(:noteable_id => commit.id, :noteable_type => "Commit")
   end
 
   def add_access(user, *access)
@@ -119,14 +119,6 @@ class Project < ActiveRecord::Base
 
   def private?
     private_flag
-  end
-
-  def url_to_repo
-    "#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{path}.git"
-  end
-
-  def path_to_repo
-    GITOSIS["base_path"] + path + ".git"
   end
 
   def last_activity 
