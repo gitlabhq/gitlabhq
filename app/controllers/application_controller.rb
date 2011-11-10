@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
     else
       @branch = params[:branch].blank? ? nil : params[:branch]
       @tag = params[:tag].blank? ? nil : params[:tag]
-      @ref = @branch || @tag || "master"
+      @ref = @branch || @tag || Repository.default_ref
     end
   end
 

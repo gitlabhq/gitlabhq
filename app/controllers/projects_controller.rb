@@ -108,7 +108,7 @@ class ProjectsController < ApplicationController
     if params[:commit_id]
       @commit = @repo.commits(params[:commit_id]).first
     else
-      @commit = @repo.commits(@ref || "master").first
+      @commit = @repo.commits(@ref).first
     end
 
     @tree = @commit.tree
