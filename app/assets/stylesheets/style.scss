@@ -304,6 +304,22 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 
 /* eo Icons*/
 
+/* Errors */
+#error_explanation{background: #ffe5eb;  padding: 20px; margin-bottom: 20px; border-radius: 5px}
+#error_explanation h2{margin: 0; margin-bottom: 20px; color: red}
+#error_explanation ul li{margin-bottom: 10px}
+#error_explanation ul li:last-child{margin-bottom: 0}
+.field_with_errors {
+  input[type="text"],
+  input[type="password"],
+  textarea
+  {
+    border: 1px solid #FFBBBB;
+		background: #fff4f6;
+  }
+}
+/* eo Errors */
+
 /* General */
 #container{background-color: white; overflow: hidden; }
 body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
@@ -380,33 +396,7 @@ header nav a span{width: 20px; height: 20px; display: inline-block; background: 
 header nav a.dashboard span{background: url('images.png') no-repeat -161px 0;}
 header nav a.admin span{background: url('images.png') no-repeat 	-184px 0;}
 header nav a.project span{background: url('images.png') 		no-repeat -209px -1px; top: 7px}
-/*
-			
-header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 14px;}
 
-header nav a.dashboard.current span{ background-position: -163px -22px; }			
-header nav a.admin.current span{ background-position: -186px -22px;}			
-header nav a.project.current span{ background-position: -211px -23px;}		
-
-header nav a.project span{background: url('images.png') 		no-repeat -209px -1px; top: 15px}
-	
-
-header nav a span.current{top: 18px}
-
-
-header nav {margin-left: 180px; display: inline-block; float: left;}
-header nav a{float: left; background: #31363e; padding: 16px 20px 20px 34px; margin-right: 10px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-topright: 5px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;	
-	position: relative; 
-}
-
-header nav a.current{background: white; color: #333; text-shadow: none;}
-*/
 
 header .login-top{float: right; width: 180px;
 	background-image: -webkit-gradient(linear, 0 0, 0 62, color-stop(0.032, #464c56), to(#363c45));
@@ -579,7 +569,7 @@ body.project-page .project-sidebar aside a:first-child{
 body.project-page .project-sidebar aside a:hover{background-color: #eee;}
 body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
 body.project-page .project-sidebar aside a.current{background-color: #79c3e0; color: white; text-shadow: none; border-color: transparent}
-body.project-page .project-content{ padding: 20px; display: block; margin-left: 250px }
+body.project-page .project-content{ padding: 20px; display: block; margin-left: 250px; min-height: 400px}
 body.project-page .project-content h2{ margin-top: 6px}
 body.project-page .project-content .button.right{margin-left: 20px}
 body.project-page table .commit a{color: #{$blue_link}}

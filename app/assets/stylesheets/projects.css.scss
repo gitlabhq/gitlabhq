@@ -460,14 +460,7 @@ input.ssh_project_url {
   }
 }
 
-.field_with_errors {
-  input[type="text"],
-  input[type="password"],
-  textarea
-  {
-    background: none repeat scroll 0 0 #FFBBBB
-  }
-}
+
 
 .tag {
   @include round-borders-all(4px);
