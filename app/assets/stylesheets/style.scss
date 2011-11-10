@@ -101,7 +101,7 @@ input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 
 /* eo Forms */
 
 /* Tables */
-table {width:100%; border: 1px solid #DEE2E3}
+table {width:100%; border: 1px solid #DEE2E3; margin-bottom: 20px}
 table thead{
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
@@ -144,7 +144,7 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
 	background-image: -o-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
 }
 
-a.button, input.button, .lbutton {
+a.button, input.button {
 	font-weight: bold;
 	padding: 10px 20px;
 	text-align: center;
