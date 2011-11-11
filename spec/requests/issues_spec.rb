@@ -27,6 +27,15 @@ describe "Issues" do
     it { should have_content(@issue.project.name) }
     it { should have_content(@issue.assignee.name) }
 
+    it "should render atom feed" do
+      visit project_issues_path(project, :atom)
+
+      page.response_headers['Content-Type'].should have_content("application/atom+xml")
+      page.body.should have_selector("title", :text => "#{project.name} issues")
+      page.body.should have_selector("author email", :text => @issue.author_email)
+      page.body.should have_selector("entry summary", :text => @issue.title)
+    end
+
     describe "Destroy" do
       before do
         # admin access to remove issue
@@ -81,13 +90,13 @@ describe "Issues" do
     end
 
     describe "fill in" do
-      describe 'assign to me' do 
+      describe 'assign to me' do
         before do
           fill_in "issue_title", :with => "bug 345"
           click_link "Select user"
           within "#issue_assignee_id-menu" do
             click_link @user.name
-          end 
+          end
         end
 
         it { expect { click_button "Save" }.to change {Issue.count}.by(1) }
@@ -107,13 +116,13 @@ describe "Issues" do
         end
       end
 
-      describe 'assign to other' do 
+      describe 'assign to other' do
         before do
           fill_in "issue_title", :with => "bug 345"
           click_link "Select user"
           within "#issue_assignee_id-menu" do
             click_link @user2.name
-          end 
+          end
         end
 
         it { expect { click_button "Save" }.to change {Issue.count}.by(1) }
@@ -145,7 +154,7 @@ describe "Issues" do
     end
   end
 
-  describe "Show issue" do 
+  describe "Show issue" do
     before do
       @issue = Factory :issue,
         :author => @user,
@@ -205,7 +214,7 @@ describe "Issues" do
         @issue.save
       end
     end
-      
+
     it "should be able to search on different statuses" do
       @issue = Issue.first
       @issue.closed = true
@@ -214,13 +223,13 @@ describe "Issues" do
       visit project_issues_path(project)
       choose 'closed_issues'
       fill_in 'issue_search', :with => 'foobar'
-      
+
       page.should have_content 'foobar'
       page.should_not have_content 'foobar2'
       page.should_not have_content 'gitlab'
     end
 
-    it "should search for term and return the correct results" do  
+    it "should search for term and return the correct results" do
       visit project_issues_path(project)
       fill_in 'issue_search', :with => 'foobar'
 

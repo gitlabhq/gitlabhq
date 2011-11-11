@@ -22,6 +22,7 @@ class IssuesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.js
+      format.atom { render :layout => false }
     end
   end
 
@@ -38,7 +39,7 @@ class IssuesController < ApplicationController
     @notes = @issue.notes.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
 
-    respond_to do |format| 
+    respond_to do |format|
       format.html
       format.js { respond_with_notes }
     end
