@@ -573,7 +573,7 @@ body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; col
 body.projects-page input.text.git-url {margin:10px 0 0 }
 .git_url_wrapper { margin-right:50px }
 
-.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .5); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .5); box-shadow:0px 0px 10px rgba(0, 0, 0, .5); }
+.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
 
 
 body.project-page .project-sidebar aside{width: 219px}
