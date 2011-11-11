@@ -7,7 +7,7 @@ module ApplicationHelper
   end
 
   def fixed_mode?
-    @view_mode == :fixed
+    @view_mode == :fluid
   end
 
   def body_class(default_class = nil)
@@ -15,7 +15,7 @@ module ApplicationHelper
       default_class :
       content_for(:body_class)
 
-    [main, cookies[:view_style]].join(" ")
+    [main, @view_mode].join(" ")
   end
 
   def commit_name(project, commit)

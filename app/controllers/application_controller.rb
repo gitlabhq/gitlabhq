@@ -80,13 +80,13 @@ class ApplicationController < ActionController::Base
     if params[:view_style] == "collapsed"
       cookies[:view_style] = "collapsed" 
     elsif params[:view_style] == "fluid"
-      cookies[:view_style] = "" 
+      cookies[:view_style] = "fluid" 
     end
 
-    @view_mode = if cookies[:view_style] == "collapsed"
-                   :fixed
-                 else
+    @view_mode = if cookies[:view_style] == "fluid"
                    :fluid
+                 else
+                   :collapsed
                  end
   end
 
