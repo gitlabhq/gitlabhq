@@ -22,7 +22,7 @@
           - else
             = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
           .title
-            %p= link_to truncate(commit.safe_message, :length => fixed_mode? ? 40 : 100), project_commit_path(@project, :id => commit.id)
+            %p= link_to truncate(commit.safe_message_no_signoff, :length => fixed_mode? ? 40 : 100), project_commit_path(@project, :id => commit.id)
 
           %span
             %span.author

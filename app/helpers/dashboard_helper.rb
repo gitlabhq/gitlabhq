@@ -24,7 +24,7 @@ module DashboardHelper
     title = case klass
             when "Note" then markdown(object.note)
             when "Issue" then object.title
-            when "Commit" then object.safe_message
+            when "Commit" then object.safe_message_no_signoff
             else return "Project Wall"
             end
 

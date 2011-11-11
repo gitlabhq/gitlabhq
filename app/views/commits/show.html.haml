@@ -1,5 +1,5 @@
 %h3
-  = "[ #{@commit.author_name} ]  #{truncate(@commit.safe_message, :length => 70)}"
+  = "[ #{@commit.author_name} ]  #{truncate(@commit.safe_message_no_signoff, :length => 70)}"
 -#= link_to 'Back', project_commits_path(@project), :class => "button"
 %table.round-borders
   %tr
@@ -15,7 +15,7 @@
     %td Message
     %td
       %pre.commit_message
-        = preserve @commit.safe_message
+        = preserve @commit.safe_message_no_signoff
   %tr
     %td Tree
     %td= link_to 'Browse Code', tree_project_path(@project, :commit_id => @commit.id)
