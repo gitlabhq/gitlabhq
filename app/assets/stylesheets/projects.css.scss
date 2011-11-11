@@ -576,8 +576,12 @@ td.code {
 table.highlighttable pre{ 
   line-height:16px !important;
   font-size:12px !important;
-	text-align: right;
-	padding-right: 4px;
+}
+
+
+table.highlighttable .linenodiv pre {
+  text-align: right;
+  padding-right: 4px;
 }
 
 .project-refs-form { 
