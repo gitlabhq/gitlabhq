@@ -11,10 +11,8 @@
     <div class="account-links">
       <%= link_to profile_path, :class => "username" do %>
         <%#= current_user.name %> 
-        Your profile
+        My profile
       <% end %>
-      <%= link_to "Fluid layout", url_for( :view_style => 'fluid' ) unless cookies[:view_style] == "fluid"%>
-      <%= link_to "Fixed layout", url_for( :view_style => 'collapsed' ) if cookies[:view_style] == "fluid"%>
       <%= link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete %>
     </div>
   </div><!-- .account-box -->

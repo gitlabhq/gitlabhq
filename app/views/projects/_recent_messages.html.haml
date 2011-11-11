@@ -7,14 +7,14 @@
     %thead
       %th
         %div{ :class => "recent_message_parent"}
-          = link_to(truncate(dashboard_feed_title(parent), :length => fixed_mode? ? 40 : 100 ), dashboard_feed_path(@project, parent))
+          = link_to(truncate(dashboard_feed_title(parent), :length => 40 ), dashboard_feed_path(@project, parent))
     - notes.sort {|x,y| y.updated_at <=> x.updated_at }.each do |note|
       %tr
         %td
           %div.message
             = image_tag gravatar_icon(note.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
             %div.title
-              = link_to markdown(truncate(note.note, :length => fixed_mode? ? 40 : 100)), dashboard_feed_path(@project, parent) + "#note_#{note.id}"
+              = link_to markdown(truncate(note.note, :length => 40)), dashboard_feed_path(@project, parent) + "#note_#{note.id}"
               - if note.attachment.url
                 %br
                 Attachment:
