@@ -13,7 +13,7 @@ class CommitsController < ApplicationController
     load_refs # load @branch, @tag & @ref
 
     @repo = project.repo
-    limit, offset = (params[:limit] || 20), (params[:offset] || 0) 
+    limit, offset = (params[:limit] || 20), (params[:offset] || 0)
 
     if params[:path]
       @commits = @repo.log(@ref, params[:path], :max_count => limit, :skip => offset)
@@ -24,6 +24,7 @@ class CommitsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.js
+      format.atom { render :layout => false }
     end
   end
 
@@ -32,7 +33,7 @@ class CommitsController < ApplicationController
     @notes = project.notes.where(:noteable_id => @commit.id, :noteable_type => "Commit").order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable_id => @commit.id, :noteable_type => "Commit")
 
-    respond_to do |format| 
+    respond_to do |format|
       format.html
       format.js { respond_with_notes }
     end
