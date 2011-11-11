@@ -9,6 +9,14 @@ module CommitExt
     "-- invalid encoding for commit message"
   end
 
+  def safe_message_no_signoff
+    if safe_message.include? 'Signed-off-by:'
+      safe_message[0..safe_message.index('Signed-off-by:')-2]
+    else
+      safe_message
+    end
+  end
+
   def created_at
     committed_date
   end
