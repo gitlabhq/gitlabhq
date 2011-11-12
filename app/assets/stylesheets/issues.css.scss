@@ -10,14 +10,13 @@
   color: #444;
 }
 
-#issues-table-holder .issue:hover .action-links { display:block; }
-
 .issues_filter {
   margin-top:10px;
   .left { 
     margin-right:15px;
   }
 }
+
 .top_panel_issues{
   #issue_search_form {
     margin:5px 0;
@@ -36,3 +35,14 @@
     }
   }
 }
+
+/** ISSUES LIST **/
+.issue .action-links {
+  display:none; 
+  a { 
+    margin-left:10px;
+  }
+}
+.issue:hover .action-links { display:block; }
+
+
