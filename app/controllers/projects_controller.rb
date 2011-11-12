@@ -1,3 +1,5 @@
+require File.join(Rails.root, 'lib', 'graph_commit')
+
 class ProjectsController < ApplicationController
   before_filter :project, :except => [:index, :new, :create]
   layout :determine_layout
@@ -125,6 +127,36 @@ class ProjectsController < ApplicationController
     return render_404
   end
 
+  def graph
+    @repo = project.repo
+    commits = Grit::Commit.find_all(@repo, nil, {:max_count => 650})
+    ref_cache = {}
+    commits.collect! do |commit|
+      add_refs(commit, ref_cache)
+      GraphCommit.new(commit)
+    end
+
+    days = GraphCommit.index_commits(commits)
+    @days_json = days.compact.collect{|d| [d.day, d.strftime("%b")] }.to_json
+    @commits_json = commits.collect do |c|
+      h = {}
+      h[:parents] = c.parents.collect do |p|
+        [p.id,0,0]
+      end
+      h[:author] = c.author.name.force_encoding("UTF-8")
+      h[:time] = c.time
+      h[:space] = c.space
+      h[:refs] = c.refs.collect{|r|r.name}.join(" ") unless c.refs.nil?
+      h[:id] = c.sha
+      h[:date] = c.date
+      h[:message] = c.message.force_encoding("UTF-8")
+      h[:email] = c.author.email
+      h
+    end.to_json
+
+    render :text => @commits_json
+  end
+
   def blob
     @repo = project.repo
     @commit = project.commit(params[:commit_id])
@@ -148,6 +180,14 @@ class ProjectsController < ApplicationController
   end
 
   protected
+
+  def add_refs(commit, ref_cache)
+    if ref_cache.empty?
+      @repo.refs.each {|ref| ref_cache[ref.commit.id] ||= [];ref_cache[ref.commit.id] << ref}
+    end
+    commit.refs = ref_cache[commit.id] if ref_cache.include? commit.id
+    commit.refs ||= []
+  end
 
   def project
     @project ||= Project.find_by_code(params[:id])

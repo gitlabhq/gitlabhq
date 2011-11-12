@@ -10,6 +10,8 @@
 //= require jquery.ui.selectmenu
 //= require jquery.tagify
 //= require jquery.cookie
+//= require raphael
+//= require branch-graph
 //= require_tree .
 
 $(function(){
