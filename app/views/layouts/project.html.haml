@@ -19,7 +19,7 @@
             .git_url_wrapper
               %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
             %aside
-              = link_to "History", project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
+              = link_to "Activities", project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
               = link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
               = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
               = link_to team_project_path(@project), :class => (current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members") ? "current" : nil do

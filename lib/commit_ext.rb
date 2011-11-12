@@ -1,4 +1,6 @@
 module CommitExt
+  attr_accessor :head
+
   def safe_message
     message.encode("UTF-8",
                    :invalid => :replace,

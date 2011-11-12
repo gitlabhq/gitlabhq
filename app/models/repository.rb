@@ -73,7 +73,7 @@ class Repository
 
   def fresh_commits(n = 10)
     commits = heads.map do |h|
-      repo.commits(h.name, n)
+      repo.commits(h.name, n).each { |c| c.head = h }
     end.flatten.uniq { |c| c.id }
 
     commits.sort! do |x, y|
@@ -85,7 +85,7 @@ class Repository
 
   def commits_since(date)
     commits = heads.map do |h|
-      repo.log(h.name, nil, :since => date)
+      repo.log(h.name, nil, :since => date).each { |c| c.head = h }
     end.flatten.uniq { |c| c.id }
 
     commits.sort! do |x, y|
