@@ -622,13 +622,16 @@ body.project-page table .commit {
 #notes-list .note .delete-note { display:none; }
 #notes-list .note:hover .delete-note { display:block; }
 
+.snippet .action-links,
 #issues-table-holder .issue .action-links {
   display:none; 
   a { 
     margin-left:10px;
   }
 }
-  
+ 
+.snippet:hover .action-links { display:block; }
+
 .issue-number {
   float: left;
   border-radius: 5px;
@@ -665,6 +668,7 @@ body.project-page #notes-list .note span.note-author strong{font-weight: bold; f
 //.message .note-title p { margin-bottom:0px; }
 
 .commit,
+.snippet,
 .message { 
   .title { 
     color:#666;
