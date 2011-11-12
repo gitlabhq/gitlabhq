@@ -73,7 +73,7 @@ describe "Projects" do
     end
 
     it "should beahave like activities page" do
-      within ".commit"  do 
+      within ".project-update"  do 
         page.should have_content("master")
         page.should have_content(@project.commit.author.name)
         page.should have_content(@project.commit.safe_message)

@@ -1,8 +1,12 @@
-.left.width-49p
-  =render "projects/recent_commits"
+- content_for(:body_class, "project-page dashboard")
 
-.right.width-49p
-  =render "projects/recent_messages"
+#news-feed.news-feed
+  %h2.icon
+    %span>
+    Activities
+  .project-box.project-updates.ui-box.ui-box-small.ui-box-big
+    - @project.updates(20).each do |update|
+      = render "projects/feed", :update => update, :project => @project
 
 :javascript
   function updateDashboard(){

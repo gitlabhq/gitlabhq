@@ -344,12 +344,32 @@ body.project-page table .commit {
     background: #2c5c66;
     color:white;
   }
+  &.note {
+    background: #2c5c66;
+    color:white;
+  }
   &.issue { 
     background: #D12F19;
     color:white;
   }
   &.commit { 
-    background: #2c5c66;
+    background: #44aacc;
     color:white;
   }
 }
+
+
+/* Project Dashboard Page */
+html, body { height: 100%; }
+
+body.dashboard.project-page .news-feed h2{float: left;}
+body.dashboard.project-page .news-feed .project-updates  {margin-bottom: 20px; display: block; width: 100%;}
+body.dashboard.project-page .news-feed .project-updates .data{ padding: 0}
+body.dashboard.project-page .news-feed .project-updates a.project-update {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+body.dashboard.project-page .news-feed .project-updates a.project-update:last-child{border-bottom: 0}
+body.dashboard.project-page .news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
+body.dashboard.project-page .news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+body.dashboard.project-page .news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
+body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
+body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
+/* eo Dashboard Page */
