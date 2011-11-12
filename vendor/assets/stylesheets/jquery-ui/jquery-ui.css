@@ -382,15 +382,13 @@
 	padding:.2em .4em;
 	line-height:1.5;
 	zoom:1;
+	font-weight: normal;
 }
 .ui-menu .ui-menu-item a.ui-state-hover,
 .ui-menu .ui-menu-item a.ui-state-active {
 	font-weight: normal;
 	margin: -1px;
-        background: #fff !important;
-        background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#FFF6BF)) !important;
-        background: -moz-linear-gradient(top,#fff,#FFF6BF) !important;
-        background: transparent 9 !important;
+        background: #eee;
         border-radius:0px;
         border-color:white;
         border-bottom: 1px solid #E2EAEE;

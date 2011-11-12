@@ -110,50 +110,6 @@ table.round-borders {
   background: transparent 9 !important;
 }
 
-#header-panel {
-  @include panel-color;
-  height:40px;
-  position:fixed;
-  z-index:999;
-  top:0px;
-  width:100%;
-  margin-bottom:10px;
-  overflow:hidden;
-  .button{
-    color:#bbb;
-    border:none;
-    margin:0px;
-    height:25px;
-    background:transparent;
-    padding:10px 20px 5px 20px;
-    &:hover{
-      color:white;
-    }
-
-    &.current {
-      border-bottom: 3px solid #EAEAEA !important;
-      padding: 10px 20px 0;
-      color: #eaeaea;
-    }
-  }
-  .search-holder {
-    float:left;
-    width:290px;
-    input {
-      @include round-borders-all(4px);
-      width:290px;
-      border-color:#888;
-      padding:5px;
-      background:#666;
-      color:#222;
-      &:focus {
-        background:#fff;
-        color:#000;
-      }
-    }
-  }
-}
-
 #content-container{
   min-height:250px;
   background: #fff;
