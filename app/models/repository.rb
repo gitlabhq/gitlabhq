@@ -22,7 +22,11 @@ class Repository
   end
 
   def url_to_repo
-    "#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{path}.git"
+    if !GITOSIS["port"] or GITOSIS["port"] == 22
+      "#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{path}.git"
+    else
+      "ssh://#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{GITOSIS["port"]}/#{path}.git"
+    end
   end
 
   def path_to_repo
