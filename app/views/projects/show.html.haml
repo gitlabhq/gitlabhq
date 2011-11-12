@@ -5,7 +5,7 @@
     %span>
     Activities
   .project-box.project-updates.ui-box.ui-box-small.ui-box-big
-    - @project.updates(20).each do |update|
+    - @activities.each do |update|
       = render "projects/feed", :update => update, :project => @project
 
 :javascript

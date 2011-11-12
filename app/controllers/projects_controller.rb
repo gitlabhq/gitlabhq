@@ -64,21 +64,8 @@ class ProjectsController < ApplicationController
 
   def show
     return render "projects/empty" unless @project.repo_exists?
-    @date = case params[:view]
-            when "week" then Date.today - 7.days
-            when "day" then Date.today
-            else nil
-            end
-
-    if @date
-      @date = @date.at_beginning_of_day
-
-      @commits = @project.commits_since(@date)
-      @messages = project.notes.since(@date).order("created_at DESC")
-    else
-      @commits = @project.fresh_commits
-      @messages = project.notes.fresh.limit(10)
-    end
+    limit = (params[:limit] || 40).to_i
+    @activities = @project.updates(limit)
   end
 
   #

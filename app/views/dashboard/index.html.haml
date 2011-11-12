@@ -28,7 +28,7 @@
               = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
               %span.update-title
                 - if update.kind_of?(Grit::Commit) 
-                  %span.tag.commit= update.head.name
+                  %span.right.tag.commit= update.head.name
                 = dashboard_feed_title(update)
               %span.update-author
                 %strong= update.author_name
