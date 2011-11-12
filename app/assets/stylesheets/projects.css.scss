@@ -4,26 +4,20 @@
 
 @mixin round-borders-bottom($radius) {
   border-top: 1px solid #eaeaea;
-
   -moz-border-radius-bottomright: $radius;
   -moz-border-radius-bottomleft: $radius;
-
   border-bottom-right-radius: $radius;
   border-bottom-left-radius: $radius;
-
   -webkit-border-bottom-left-radius: $radius;
   -webkit-border-bottom-right-radius: $radius;
 }
 
 @mixin round-borders-top($radius) {
   border-top: 1px solid #eaeaea;
-
   -moz-border-radius-topright: $radius;
   -moz-border-radius-topleft: $radius;
-
   border-top-right-radius: $radius;
   border-top-left-radius: $radius;
-
   -webkit-border-top-left-radius: $radius;
   -webkit-border-top-right-radius: $radius;
 }
@@ -36,45 +30,18 @@
 }
 
 @mixin hover-color {
-  background: #fff !important;
-  background: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#FFF6BF)) !important;
-  background: -moz-linear-gradient(top,#fff,#FFF6BF) !important;
+  background-color:#FFFFCF;
+}
+
+@mixin panel-color {
+  background: #111 !important;
+  background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111)) !important;
+  background: -moz-linear-gradient(top,#333,#111) !important;
   background: transparent 9 !important;
 }
 
-.diff_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
 
-  .diff_file_header {
-    padding:5px 5px;
-    border-bottom:1px solid #CCC;
-    background: #eee;
-  }
-  .diff_file_content {
-    overflow:auto;
-    overflow-y:hidden;
-    background:#fff;
-    color:#333;
-    font-size: 12px;
-    font-family: 'Courier New', 'andale mono','lucida console',monospace;
-  }
-  .diff_file_content_image {
-    background:#eee;
-    text-align:center;
-    img {
-      padding:100px;
-      max-width:300px;
-    }
-  }
-}
-
-#logo {
- &:hover {
-   background:none;
- }
-}
-
+/** File stat **/
 .file_stats {
   margin-bottom:10px;
   @include round-borders-all(4px);
@@ -103,12 +70,6 @@ table.round-borders {
   float:left;
 }
 
-@mixin panel-color {
-  background: #111 !important;
-  background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111)) !important;
-  background: -moz-linear-gradient(top,#333,#111) !important;
-  background: transparent 9 !important;
-}
 
 #content-container{
   min-height:250px;
@@ -121,17 +82,6 @@ table.round-borders {
 
 a {
   color: #111;
-}
-
-.diff_file_content{
-  .old_line, .new_line {
-    background:#ECECEC;
-    color:#777;
-    width:30px;
-    float:left;
-    padding: 0px 5px;
-    border-right: 1px solid #ccc;
-  }
 }
 
 .view_file_content{
@@ -263,36 +213,12 @@ input.ssh_project_url {
   border-width: 1px;
 }
 
-
-.top_menu_count {
-  background: none repeat scroll 0 0 white;
-  color: #333;
-  border-color: #4BB8D2;
-  padding: 2px;
-  font-size:10px;
-  border-top:none;
-  text-align:center;
-  float:right;
-  width:25px;
-
-
-}
-
-#logo {
-  color: #EAEAEA;
-  font-family: monospace;
-  font-size: 26px;
-  padding: 4px;
-  text-decoration: none;
-  text-shadow: #555 1px 1px;
-}
-
 /** FLASH **/
 
 #flash_container {
   height:40px;
   position:fixed;
-  z-index:1009;
+  z-index:1209;
   top:0px;
   width:100%;
   margin-bottom:10px;
@@ -342,34 +268,6 @@ input.ssh_project_url {
   }
 }
 
-/** Notes **/
-
-#notes-list {
-  display:block;
-  list-style:none;
-  margin:0px;
-  padding:0px;
-}
-
-.notes_count {
-  background: none repeat scroll 0 0 #FFF6BF;
-  border-color: #FFD324;
-  color: #514721;
-  border: 2px solid #DDDDDD;
-  margin-bottom: 1em;
-  margin-top: 3px;
-  padding: 2px 5px;
-  position: relative;
-  right: 6px;
-  top: 6px;
-}
-
-.issue_notes {
-  .note_content {
-    float:left;
-    width:400px;
-  }
-}
 
 #user_projects_limit{
   width: 60px;
@@ -398,24 +296,6 @@ input.ssh_project_url {
   height: 12px;
   padding: 10px;
 }
-
-
-/* Note textare */
-#note_note {
-  height:100px;
-  width:97%;
-  font-size:14px;
-}
-
-#new_note {
-  #note_note {
-    height:25px;
-  }
-  .attach_holder {
-    display:none;
-  }
-}
-
 
 
 .tag {
@@ -448,33 +328,6 @@ input.ssh_project_url {
   }
 }
 
-#issues-table .issue {
-  &.critical {
-    td {
-      //background: #D12F19;
-      //color:#fff;
-    }
-  }
-}
-
-.top_panel_issues{
-  #issue_search_form {
-    margin:5px 0;
-    input {
-      border:1px solid #D3D3D3;
-      padding: 3px;
-      height: 28px;
-      width: 300px;
-      -webkit-appearance:none;
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-
-      &:focus {
-        border-color:#c2e1ef;
-      }
-    }
-  }
-}
 
 .left { 
   float:left;
@@ -553,12 +406,6 @@ table.highlighttable .linenodiv pre {
   width:200px;
 }
 
-.issues_filter {
-  margin-top:10px;
-  .left { 
-    margin-right:15px;
-  }
-}
 .filter .left { margin-right:15px; }
  
 
@@ -575,8 +422,6 @@ body.project-page table .commit {
   }
 }
 
-#notes-list .note .delete-note { display:none; }
-#notes-list .note:hover .delete-note { display:block; }
 
 .snippet .action-links,
 #issues-table-holder .issue .action-links {
@@ -588,27 +433,6 @@ body.project-page table .commit {
  
 .snippet:hover .action-links { display:block; }
 
-.issue-number {
-  float: left;
-  border-radius: 5px;
-  text-shadow: none;
-  background: rgba(0, 0, 0, 0.12);
-  text-align: center;
-  padding: 14px 8px;
-  width: 40px;
-  margin-right: 10px;
-  color: #444;
-}
-
-#issues-table-holder .issue:hover .action-links { display:block; }
-
-body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page #notes-list .note {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page #notes-list .note img{float: left; margin-right: 10px;}
-body.project-page #notes-list .note span.note-title{display: block;}
-body.project-page #notes-list .note span.note-title{margin-bottom: 10px}
-body.project-page #notes-list .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
-body.project-page #notes-list .note span.note-author strong{font-weight: bold; font-style: normal;}
 
 
 /** NEW PROJECT **/
@@ -640,3 +464,8 @@ body.project-page #notes-list .note span.note-author strong{font-weight: bold; f
     color: #999
   }
 }
+
+/** UI autocomplete **/
+.ui-autocomplete { @include round-borders-all(5px); }
+.ui-menu-item { cursor: pointer }
+ 
