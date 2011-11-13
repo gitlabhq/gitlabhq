@@ -1,5 +1,5 @@
 module CommitExt
-  
+  attr_accessor :head
   attr_accessor :refs
 
   def safe_message
