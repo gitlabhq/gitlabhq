@@ -150,11 +150,9 @@ class ProjectsController < ApplicationController
       h[:id] = c.sha
       h[:date] = c.date
       h[:message] = c.message.force_encoding("UTF-8")
-      h[:email] = c.author.email
+      h[:login] = c.author.email
       h
     end.to_json
-
-    render :text => @commits_json
   end
 
   def blob

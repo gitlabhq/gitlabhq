@@ -468,4 +468,13 @@ body.project-page table .commit {
 /** UI autocomplete **/
 .ui-autocomplete { @include round-borders-all(5px); }
 .ui-menu-item { cursor: pointer }
- 
+
+#holder {
+  border: solid 1px #999;
+  cursor: move;
+  height: 70%;
+  overflow: scroll;
+  position: absolute;
+  width: auto;
+  margin: 6ex 3ex 0ex 0ex;
+}
