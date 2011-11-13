@@ -25,7 +25,7 @@ class GraphCommit
 
     commits.reverse.each_with_index do |c,i|
       c.time = i
-      days[i]=c.committed_date 
+      days[i] = c.committed_date 
       map[c.id] = c
       heads += c.refs unless c.refs.nil?
     end
@@ -63,7 +63,7 @@ class GraphCommit
     m1 = mark - 1
     marks = commit.parents.collect do |p|
       if map.include? p.id  and map[p.id].space == 0 then
-        mark_chain(m1+=1, map[p.id],map) 
+        mark_chain(m1 += 1, map[p.id],map) 
       else
         m1 + 1
       end
@@ -72,11 +72,4 @@ class GraphCommit
     marks.compact.max
   end
   
-  def self.add_refs(commit, ref_cache)
-    if ref_cache.empty?
-      @repo.refs.each {|ref| ref_cache[ref.commit.id] ||= [];ref_cache[ref.commit.id] << ref}
-    end
-    commit.refs = ref_cache[commit.id] if ref_cache.include? commit.id
-    commit.refs ||= []
-  end
 end

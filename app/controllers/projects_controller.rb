@@ -181,7 +181,10 @@ class ProjectsController < ApplicationController
 
   def add_refs(commit, ref_cache)
     if ref_cache.empty?
-      @repo.refs.each {|ref| ref_cache[ref.commit.id] ||= [];ref_cache[ref.commit.id] << ref}
+      @repo.refs.each do |ref| 
+        ref_cache[ref.commit.id] ||= []
+        ref_cache[ref.commit.id] << ref
+      end
     end
     commit.refs = ref_cache[commit.id] if ref_cache.include? commit.id
     commit.refs ||= []
