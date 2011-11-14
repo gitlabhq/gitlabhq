@@ -8,18 +8,18 @@ class CommitsController < ApplicationController
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project
+  before_filter :load_refs, :only => :index # load @branch, @tag & @ref
+
 
   def index
-    load_refs # load @branch, @tag & @ref
-
     @repo = project.repo
     limit, offset = (params[:limit] || 20), (params[:offset] || 0)
 
-    if params[:path]
-      @commits = @repo.log(@ref, params[:path], :max_count => limit, :skip => offset)
-    else
-      @commits = @repo.commits(@ref, limit, offset)
-    end
+    @commits = if params[:path]
+                 @repo.log(@ref, params[:path], :max_count => limit, :skip => offset)
+               else
+                 @repo.commits(@ref, limit, offset)
+               end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -30,8 +30,8 @@ class CommitsController < ApplicationController
 
   def show
     @commit = project.repo.commits(params[:id]).first
-    @notes = project.notes.where(:noteable_id => @commit.id, :noteable_type => "Commit").order("created_at DESC").limit(20)
-    @note = @project.notes.new(:noteable_id => @commit.id, :noteable_type => "Commit")
+    @notes = project.commit_notes(@commit).fresh.limit(20)
+    @note = @project.build_commit_note(@commit)
 
     respond_to do |format|
       format.html

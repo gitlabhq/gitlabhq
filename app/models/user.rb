@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
     :foreign_key => :author_id,
     :dependent => :destroy
 
+  has_many :notes,
+    :foreign_key => :author_id,
+    :dependent => :destroy
+
   has_many :assigned_issues,
     :class_name => "Issue",
     :foreign_key => :assignee_id,

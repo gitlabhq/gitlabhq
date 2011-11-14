@@ -1,13 +1,13 @@
 - @projects.in_groups_of(3, false) do |projects|
   - projects.each_with_index do |project, i|
-    %div.grid_1
+    %div.grid_1.projects_selector
       %div{ :class => "project-box ui-box ui-box-big" }
         = link_to project_path(project) do 
-          %h3= project.name
+          %h3= truncate(project.name, :length => 20)
         .data
-          %p.title.repository
+          %p.title.repository.git_url_wrapper
             %span Repository:
-            = project.url_to_repo
+            %input{ :value => project.url_to_repo, :class => ['git-url', 'one_click_select', 'text', 'project_list_url'], :readonly => 'readonly' }
           %p.title.activity
             %span Last Activity:
             - last_note = project.notes.last

@@ -1,9 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
-  before_filter :view_style
-
   protect_from_forgery
-
   helper_method :abilities, :can?
 
   rescue_from Gitosis::AccessDenied do |exception|
@@ -64,7 +61,7 @@ class ApplicationController < ActionController::Base
     else
       @branch = params[:branch].blank? ? nil : params[:branch]
       @tag = params[:tag].blank? ? nil : params[:tag]
-      @ref = @branch || @tag || "master"
+      @ref = @branch || @tag || Repository.default_ref
     end
   end
 
@@ -74,20 +71,6 @@ class ApplicationController < ActionController::Base
 
   def require_non_empty_project
     redirect_to @project unless @project.repo_exists?
-  end
-
-  def view_style
-    if params[:view_style] == "collapsed"
-      cookies[:view_style] = "collapsed" 
-    elsif params[:view_style] == "fluid"
-      cookies[:view_style] = "" 
-    end
-
-    @view_mode = if cookies[:view_style] == "collapsed"
-                   :fixed
-                 else
-                   :fluid
-                 end
   end
 
   def respond_with_notes

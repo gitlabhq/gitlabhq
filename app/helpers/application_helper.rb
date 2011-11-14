@@ -1,11 +1,13 @@
 require 'digest/md5'
 module ApplicationHelper
+
   def gravatar_icon(user_email)
-    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
+    gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
   end
 
   def fixed_mode?
-    @view_mode == :fixed
+    true
   end
 
   def body_class(default_class = nil)
@@ -13,7 +15,7 @@ module ApplicationHelper
       default_class :
       content_for(:body_class)
 
-    [main, cookies[:view_style]].join(" ")
+    [main, "collapsed"].join(" ")
   end
 
   def commit_name(project, commit)

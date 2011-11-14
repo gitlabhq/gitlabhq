@@ -1,3 +1,5 @@
+require File.join(Rails.root, 'lib', 'graph_commit')
+
 class ProjectsController < ApplicationController
   before_filter :project, :except => [:index, :new, :create]
   layout :determine_layout
@@ -6,8 +8,8 @@ class ProjectsController < ApplicationController
   before_filter :add_project_abilities
   before_filter :authorize_read_project!, :except => [:index, :new, :create]
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
-
   before_filter :require_non_empty_project, :only => [:blob, :tree]
+  before_filter :load_refs, :only => :tree # load @branch, @tag & @ref
 
   def index
     source = current_user.projects
@@ -64,21 +66,8 @@ class ProjectsController < ApplicationController
 
   def show
     return render "projects/empty" unless @project.repo_exists?
-    @date = case params[:view]
-            when "week" then Date.today - 7.days
-            when "day" then Date.today
-            else nil
-            end
-
-    if @date
-      @date = @date.at_beginning_of_day
-
-      @commits = @project.commits_since(@date)
-      @messages = project.notes.since(@date).order("created_at DESC")
-    else
-      @commits = @project.fresh_commits
-      @messages = project.notes.fresh.limit(10)
-    end
+    limit = (params[:limit] || 40).to_i
+    @activities = @project.updates(limit)
   end
 
   #
@@ -101,15 +90,13 @@ class ProjectsController < ApplicationController
   #
 
   def tree
-    load_refs # load @branch, @tag & @ref
-
     @repo = project.repo
 
-    if params[:commit_id]
-      @commit = @repo.commits(params[:commit_id]).first
-    else
-      @commit = @repo.commits(@ref || "master").first
-    end
+    @commit = if params[:commit_id]
+                @repo.commits(params[:commit_id]).first
+              else
+                @repo.commits(@ref).first
+              end
 
     @tree = @commit.tree
     @tree = @tree / params[:path] if params[:path]
@@ -125,6 +112,34 @@ class ProjectsController < ApplicationController
     end
   rescue
     return render_404
+  end
+
+  def graph
+    @repo = project.repo
+    commits = Grit::Commit.find_all(@repo, nil, {:max_count => 650})
+    ref_cache = {}
+    commits.collect! do |commit|
+      add_refs(commit, ref_cache)
+      GraphCommit.new(commit)
+    end
+
+    days = GraphCommit.index_commits(commits)
+    @days_json = days.compact.collect{|d| [d.day, d.strftime("%b")] }.to_json
+    @commits_json = commits.collect do |c|
+      h = {}
+      h[:parents] = c.parents.collect do |p|
+        [p.id,0,0]
+      end
+      h[:author] = c.author.name.force_encoding("UTF-8")
+      h[:time] = c.time
+      h[:space] = c.space
+      h[:refs] = c.refs.collect{|r|r.name}.join(" ") unless c.refs.nil?
+      h[:id] = c.sha
+      h[:date] = c.date
+      h[:message] = c.message.force_encoding("UTF-8")
+      h[:login] = c.author.email
+      h
+    end.to_json
   end
 
   def blob
@@ -150,6 +165,17 @@ class ProjectsController < ApplicationController
   end
 
   protected
+
+  def add_refs(commit, ref_cache)
+    if ref_cache.empty?
+      @repo.refs.each do |ref| 
+        ref_cache[ref.commit.id] ||= []
+        ref_cache[ref.commit.id] << ref
+      end
+    end
+    commit.refs = ref_cache[commit.id] if ref_cache.include? commit.id
+    commit.refs ||= []
+  end
 
   def project
     @project ||= Project.find_by_code(params[:id])

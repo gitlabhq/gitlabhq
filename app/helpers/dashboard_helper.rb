@@ -1,7 +1,7 @@
 module DashboardHelper
   def dashboard_feed_path(project, object)
     case object.class.name.to_s
-    when "Issue" then project_issues_path(project, project.issues.find(object.id))
+    when "Issue" then project_issue_path(project, project.issues.find(object.id))
     when "Grit::Commit" then project_commit_path(project, project.repo.commits(object.id).first)
     when "Note"
       then 
@@ -19,12 +19,15 @@ module DashboardHelper
   end
 
   def dashboard_feed_title(object)
-    title = case object.class.name.to_s
+    klass = object.class.to_s.split("::").last
+
+    title = case klass
             when "Note" then markdown(object.note)
             when "Issue" then object.title
-            when "Grit::Commit" then object.safe_message
+            when "Commit" then object.safe_message
             else return "Project Wall"
             end
-    "[#{object.class.name}] #{truncate(sanitize(title, :tags => []), :length => 60)} "
+
+    "[#{klass}] #{truncate(sanitize(title, :tags => []), :length => 60)} "
   end
 end

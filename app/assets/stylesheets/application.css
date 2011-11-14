@@ -8,3 +8,34 @@
  *= require_self
  *= require_tree .
 */
+
+/** COLORS **/
+.cgray { color:gray; }
+.cred { color:#D12F19; }
+.cgreen { color:#44aa22; }
+
+/** COMMON STYLES **/
+.left { 
+  float:left;
+}
+.right { 
+  float:right;
+}
+.width-50p{
+  width:50%;
+}
+.width-49p{
+  width:49%;
+}
+.width-30p{
+  width:30%;
+}
+.width-65p{
+  width:65%;
+}
+.append-bottom-10 { 
+  margin-bottom:10px;
+}
+.prepend-top-10 {
+  margin-top:10px;
+}

@@ -1,13 +1,10 @@
 %div
   - if can? current_user, :write_snippet, @project
-    .left= link_to 'New Snippet', new_project_snippet_path(@project), :class => "lbutton vm"
+    = link_to 'New Snippet', new_project_snippet_path(@project), :class => "button append-bottom-10"
 
   %table.round-borders#snippets-table
-    %tr
-      %th Author
-      %th Title
-      %th File name
-      %th
+    %thead
+      %th 
     = render @snippets.fresh
 :javascript
   $('.delete-snippet').live('ajax:success', function() {

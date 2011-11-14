@@ -27,12 +27,13 @@
             %a.project-update{:href => dashboard_feed_path(project, update)}
               = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
               %span.update-title
+                - if update.kind_of?(Grit::Commit) 
+                  %span.right.tag.commit= update.head.name
                 = dashboard_feed_title(update)
               %span.update-author
                 %strong= update.author_name
                 authored
                 = time_ago_in_words(update.created_at) 
                 ago
-            %br
   / #news-feed
 / #dashboard-content

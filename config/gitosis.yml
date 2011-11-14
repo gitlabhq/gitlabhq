@@ -2,3 +2,4 @@ admin_uri: git@localhost:gitosis-admin.git
 base_path: /home/git/repositories/
 host: localhost
 git_user: git
+# port: 22

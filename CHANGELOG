@@ -1,3 +1,10 @@
+v 1.2.0
+  - new design
+  - user dashboard
+  - markdown support for comments
+  - encoding issues
+  - wall like twitter timeline
+
 v 1.1.0
   - project dashboard
   - wall redesigned

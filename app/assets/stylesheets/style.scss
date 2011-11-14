@@ -101,7 +101,7 @@ input.text{border: 1px solid #ccc; border-radius: 4px; display: block; padding: 
 /* eo Forms */
 
 /* Tables */
-table {width:100%; border: 1px solid #DEE2E3}
+table {width:100%; border: 1px solid #DEE2E3; margin-bottom: 20px}
 table thead{
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
@@ -144,7 +144,8 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
 	background-image: -o-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
 }
 
-.button{
+a.button, input.button {
+	font-weight: bold;
 	padding: 10px 20px;
 	text-align: center;
 	display: inline-block;
@@ -158,6 +159,8 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
 	background-image: -moz-linear-gradient(#dbf5f6 79.4%, #c5eef0);
 	background-image: -o-linear-gradient(#dbf5f6 79.4%, #c5eef0);
 }
+
+input.button{margin-bottom: 1.5em}
 
 .button:hover {color: rgba(0,0,0,.8)}
 
@@ -301,14 +304,30 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 
 /* eo Icons*/
 
+/* Errors */
+#error_explanation{background: #ffe5eb;  padding: 20px; margin-bottom: 20px; border-radius: 5px}
+#error_explanation h2{margin: 0; margin-bottom: 20px; color: red}
+#error_explanation ul li{margin-bottom: 10px}
+#error_explanation ul li:last-child{margin-bottom: 0}
+.field_with_errors {
+  input[type="text"],
+  input[type="password"],
+  textarea
+  {
+    border: 1px solid #FFBBBB;
+		background: #fff4f6;
+  }
+}
+/* eo Errors */
+
 /* General */
-#container{background-color: white; overflow: hidden;}
+#container{background-color: white; overflow: hidden; }
 body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
 
 
 
 /* Header */
-header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%}
+header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%; position: relative}
 header a{color: white; text-shadow: 0 -1px 0 black}
 header a:hover{color: #f1f1f1}
 header h1{
@@ -370,40 +389,14 @@ header nav a.admin{
 }
 
 
-header .search{ display: inline-block; float: right;  margin-right: 10px}
+header .search{ display: inline-block; float: right;  margin-right: 46px}
 
 header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 6px;}
 
 header nav a.dashboard span{background: url('images.png') no-repeat -161px 0;}
 header nav a.admin span{background: url('images.png') no-repeat 	-184px 0;}
 header nav a.project span{background: url('images.png') 		no-repeat -209px -1px; top: 7px}
-/*
-			
-header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 14px;}
 
-header nav a.dashboard.current span{ background-position: -163px -22px; }			
-header nav a.admin.current span{ background-position: -186px -22px;}			
-header nav a.project.current span{ background-position: -211px -23px;}		
-
-header nav a.project span{background: url('images.png') 		no-repeat -209px -1px; top: 15px}
-	
-
-header nav a span.current{top: 18px}
-
-
-header nav {margin-left: 180px; display: inline-block; float: left;}
-header nav a{float: left; background: #31363e; padding: 16px 20px 20px 34px; margin-right: 10px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-topright: 5px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;	
-	position: relative; 
-}
-
-header nav a.current{background: white; color: #333; text-shadow: none;}
-*/
 
 header .login-top{float: right; width: 180px;
 	background-image: -webkit-gradient(linear, 0 0, 0 62, color-stop(0.032, #464c56), to(#363c45));
@@ -426,10 +419,11 @@ header{margin-bottom: 0; clear: both; }
 .page-title a.grey-button{float: right;}
 .right{float: right;}
 
+
 /* Account box */
-header .account-box{position: relative;z-index: 10000; top: -3px; width: 38px; height: 38px; font-size: 11px; float: right; display: block;  cursor: pointer; }
-header .account-box img{ border-radius: 4px; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
-header .account-box:after{
+header .account-box{position: absolute; right: 0; top: 8px; z-index: 10000; width: 128px;  font-size: 11px; float: right; display: block; cursor: pointer;}
+header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
+header .account-box img:after{
 	content: " "; 
   display: block;
   position: absolute;
@@ -449,11 +443,38 @@ float: right;
   background-origin: border-box;
 }
 
-.account-box:hover > .account-links, .account-box:hover > .arrow-up{display: block;}
-header .account-links{background: white; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); }
-header .account-links a{color: #666; padding: 6px 10px; display: block; text-shadow: none;  border-bottom: 1px solid #eee}
-header .account-links a:hover{background-color: #f1f1f1; text-shadow: none; color: #333}
+.account-box.hover{height: 138px;}
 
+.account-box:hover > .account-links{display: block;}
+header .account-links{background: white; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); position:relative;}
+header .account-links:before {
+  content: ".";
+  width:0;
+  height:0;
+  position:absolute;
+  border:5px solid transparent;
+  border-color:rgba(255,255,255,0);
+  border-bottom-color:#fafafa;
+  text-indent:-9999px;
+  top:-10px;
+  line-height:0;
+  right:10px;
+  z-index:10;
+}
+
+
+/* Inspired by http://maxvoltar.com/temp/nowplaying/ */
+header .account-links{background: white; display: none; z-index: 100000; border-radius: 5px; width: 100px; position: absolute; right: 20px; top: 46px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); }
+header .account-links a{color: #666; padding: 6px 10px; display: block; text-shadow: none;  border-bottom: 1px solid #eee}
+header .account-links a:hover{
+  background: #3aacec;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#39acec), to(#279ada), color-stop(.05, #4cbefe));
+  background: -moz-linear-gradient(top, #39acec, #4cbefe 5%, #279ada);
+  background: linear-gradient(top, #39acec, #4cbefe 5%, #279ada);	
+	color: #fff;
+  text-shadow: #1488c8 0 -1px 0;
+}
+.account-box.hover .arrow-up{top: 41px; right: 6px; position: absolute}
 header .account-links a:first-child{
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
@@ -473,18 +494,15 @@ header .account-links a:last-child{
 	border-bottom: 0;
 }
 
-header a.arrow-up{
-	display: none;
-	width: 0;
-  height: 0;
-	float: right;
-	margin-right: 26px;
-	margin-bottom: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-
-  border-bottom: 5px solid white;
+#no_ssh_key_defined {
+  border:1px solid #ee8801;
+  margin:20px;
+  padding:20px;
+  background:#ffe3f0;
+  h2{margin:0;}
+  p {margin:10px 0 0;}
 }
+
 /* eo Account Box */
 input.search-input{float: left; text-shadow: none; width: 116px; background-image: url('icon-search.png') ; background-repeat: no-repeat; background-position: 10px; border-radius: 100px; border: 1px solid rgba(0,0,0,.7); box-shadow: 0 1px 0 rgba(255,255,255,.2), 0 2px 2px rgba(0,0,0,.4) inset ; background-color: #D2D5DA; background-color: rgba(255,255,255,.5); padding: 5px; padding-left: 26px;  margin-top: 4px; margin-right: 10px }
 input.search-input:focus{ background-color: white; width: 216px;}
@@ -506,9 +524,9 @@ body.dashboard-page header{margin-bottom: 0}
 body.dashboard-page .news-feed{padding-left: 1em; margin-right: 450px; margin-left: 1%}
 body.dashboard-page .dashboard-content{ position: relative; float: left; width: 100%; height: 100%; }
 body.dashboard-page .news-feed h2{float: left;}
-body.dashboard-page aside{  width: 420px;  float: right; right: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; border-left: 1px solid #ccc }
+body.dashboard-page aside{ min-height: 700px; width: 420px;  float: right;  background-color: #f7f7f7; border-left: 1px solid #ccc }
 body.dashboard-page aside h4{margin: 0; border-bottom: 1px solid #ccc; padding: 10px 10px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
-body.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 4%; margin-top: -4px; display: block;}
+body.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 2%; margin-top: -4px; display: block;}
 body.dashboard-page aside .project-list {list-style: none; margin: 0; padding: 0;}
 body.dashboard-page aside .project-list li a {background: white;  color: #{$blue_link}; display: block; border-bottom: 1px solid #eee; padding: 14px 6% 14px 14px;}
 body.dashboard-page aside .project-list li a:hover {background: #f1f1f1}
@@ -548,8 +566,16 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 body.project-page h2.icon span{	background-position:  -78px -68px; }
 body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; }
 body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 220px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; border-left: 1px solid #ccc; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
-body.project-page .project-sidebar input.text.git-url{ font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 14px 8px 30px;  margin-bottom: 20px;	background: white url('images.png') no-repeat 8px -40px;}
+body.project-page .project-sidebar {width: 220px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
+
+body.project-page input.text.git-url,
+body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 14px 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px;}
+body.projects-page input.text.git-url {margin:10px 0 0 }
+.git_url_wrapper { margin-right:50px }
+
+.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
+
+
 body.project-page .project-sidebar aside{width: 219px}
 body.project-page .project-sidebar aside a{display: block; position: relative; background: white; padding: 15px 10px; border-bottom: 1px solid #eee}
 body.project-page .project-sidebar aside a:first-child{
@@ -565,12 +591,17 @@ body.project-page .project-sidebar aside a:first-child{
 body.project-page .project-sidebar aside a:hover{background-color: #eee;}
 body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
 body.project-page .project-sidebar aside a.current{background-color: #79c3e0; color: white; text-shadow: none; border-color: transparent}
-body.project-page .project-content{ padding: 20px; display: block; margin-left: 250px }
+body.project-page .project-content{ padding: 20px; display: block; margin-left: 250px; min-height: 400px}
 body.project-page .project-content h2{ margin-top: 6px}
 body.project-page .project-content .button.right{margin-left: 20px}
 body.project-page table .commit a{color: #{$blue_link}}
 body.project-page table th, body.project-page table td{	border-bottom: 1px solid #DEE2E3;}
 body.project-page .fixed{position: fixed; }
+
+/* New project Page */
+.new-project-page .container{width: 600px; background-color: rgba(0,0,0,.02); margin: auto; border: 1px solid #eee; padding: 0 20px; margin: 30px auto 60px auto; border-radius: 5px}
+.new-project-page .container table{background: white}
+/* eo New Project Page */
 
 /* Commit Page */
 body.project-page.commits-page .commit-info{float: right;}
@@ -670,3 +701,13 @@ body.projects-page .browse-code{margin-right: 10px}
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+
+/**
+ * author:DZ
+ * date: Nov 09
+ * fix different fonts for firefox & webkit
+ */
+body, button, input, select, textarea {
+  font-family: "Helvetica", sans-serif;
+}
+

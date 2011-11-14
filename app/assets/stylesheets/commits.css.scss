@@ -1,0 +1,42 @@
+/** Commit diff view **/
+.diff_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
+  .diff_file_header {
+    padding:5px 5px;
+    border-bottom:1px solid #CCC;
+    background: #eee;
+  }
+  .diff_file_content {
+    overflow:auto;
+    overflow-y:hidden;
+    background:#fff;
+    color:#333;
+    font-size: 12px;
+    font-family: 'Courier New', 'andale mono','lucida console',monospace;
+  }
+  .diff_file_content_image {
+    background:#eee;
+    text-align:center;
+    img {
+      padding:100px;
+      max-width:300px;
+    }
+  }
+}
+
+.diff_file_content{
+  .old_line, .new_line {
+    background:#ECECEC;
+    color:#777;
+    width:30px;
+    float:left;
+    padding: 0px 5px;
+    border-right: 1px solid #ccc;
+  }
+}
+
+pre.commit_message {
+  white-space: pre-wrap;
+}

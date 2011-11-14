@@ -34,6 +34,7 @@ Gitlab::Application.routes.draw do
       get "blob"
       get "team"
       get "wall"
+      get "graph"
 
       # tree viewer
       get "tree/:commit_id" => "projects#tree"

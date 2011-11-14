@@ -38,7 +38,7 @@ end
 # Table name: notes
 #
 #  id            :integer         not null, primary key
-#  note          :string(255)
+#  note          :text
 #  noteable_id   :string(255)
 #  noteable_type :string(255)
 #  author_id     :integer

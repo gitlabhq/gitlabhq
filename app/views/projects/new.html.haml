@@ -1,8 +1,10 @@
-.new-project-hodler
-  .container_4
-    %h2.icon  
-      %span
-      New Project
+- content_for(:body_class, "new-project-page")
+- content_for(:page_title) do
+	.new-project-hodler
+		.container
+			%h2.icon	
+				%span
+				New Project
 
-    %div.clear
-    = render 'form' 
+			%div.clear
+			= render 'form' 

@@ -8,15 +8,11 @@
       <%= image_tag gravatar_icon(current_user.email) %>
     <% end %>
 
-    <a href="#" class="arrow-up"></a>
-
     <div class="account-links">
       <%= link_to profile_path, :class => "username" do %>
         <%#= current_user.name %> 
-        Your profile
+        My profile
       <% end %>
-      <%= link_to "Fluid layout", url_for( :view_style => 'fluid' ) if cookies[:view_style] == "collapsed"%>
-      <%= link_to "Fixed layout", url_for( :view_style => 'collapsed' ) unless cookies[:view_style] == "collapsed"%>
       <%= link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete %>
     </div>
   </div><!-- .account-box -->
@@ -49,4 +45,12 @@
         });
     });
   <% end %>
+<% end %>
+
+<% if current_user.keys.all.empty? %>
+  <div id="no_ssh_key_defined">
+    <h2>ATTENTION!</h2>
+    <p>No SSH Key is defined. You won't be able to use any Git command!
+    <p>Click <%=link_to( 'here', keys_path ) %> to add one!
+  </div>
 <% end %>
