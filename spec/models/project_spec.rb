@@ -62,10 +62,10 @@ describe Project do
     end
   end
 
-  describe "updates" do 
+  describe "updates" do
     let(:project) { Factory :project }
 
-    before do 
+    before do
       @issue = Factory :issue,
         :project => project,
         :author => Factory(:user),
@@ -86,10 +86,10 @@ describe Project do
     end
   end
 
-  describe "last_activity" do 
+  describe "last_activity" do
     let(:project) { Factory :project }
 
-    before do 
+    before do
       @note = Factory :note,
         :project => project,
         :author => Factory(:user)
@@ -99,7 +99,7 @@ describe Project do
     it { project.last_activity_date.to_s.should == @note.created_at.to_s }
   end
 
-  describe "fresh commits" do 
+  describe "fresh commits" do
     let(:project) { Factory :project }
 
     it { project.fresh_commits(3).count.should == 3 }

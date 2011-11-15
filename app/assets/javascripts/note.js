@@ -1,20 +1,20 @@
-var NoteList = { 
+var NoteList = {
 
 first_id: 0,
 last_id: 0,
 resource_name: null,
 
-init: 
-  function(resource_name, first_id, last_id) { 
-    this.resource_name = resource_name; 
-    this.first_id = first_id; 
-    this.last_id = last_id; 
+init:
+  function(resource_name, first_id, last_id) {
+    this.resource_name = resource_name;
+    this.first_id = first_id;
+    this.last_id = last_id;
     this.initRefresh();
     this.initLoadMore();
   },
 
 getOld:
-  function() { 
+  function() {
     $('.loading').show();
     $.ajax({
       type: "GET",
@@ -31,7 +31,7 @@ append:
     this.initLoadMore();
   },
 
-replace: 
+replace:
   function(fid, lid, html) {
     this.first_id = fid;
     this.last_id = lid;
@@ -39,17 +39,16 @@ replace:
     this.initLoadMore();
   },
 
-
 prepend:
   function(id, html) {
-    if(id != this.last_id) { 
+    if(id != this.last_id) {
       this.last_id = id;
       $("#notes-list").prepend(html);
     }
   },
 
 getNew:
-  function() { 
+  function() {
     // refersh notes list
     $.ajax({
       type: "GET",
@@ -59,7 +58,7 @@ getNew:
   },
 
 refresh:
-  function() { 
+  function() {
     // refersh notes list
     $.ajax({
       type: "GET",
@@ -67,8 +66,6 @@ refresh:
       data: "first_id=" + this.first_id + "&last_id=" + this.last_id,
       dataType: "script"});
   },
-
-
 
 initRefresh:
   function() {
@@ -78,7 +75,7 @@ initRefresh:
   },
 
 initLoadMore:
-  function() { 
+  function() {
     $(window).bind('scroll', function(){
       if($(window).scrollTop() == $(document).height() - $(window).height()){
         $(window).unbind('scroll');

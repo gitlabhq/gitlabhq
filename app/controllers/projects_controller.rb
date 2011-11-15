@@ -79,7 +79,7 @@ class ProjectsController < ApplicationController
     @notes = @project.common_notes.order("created_at DESC")
     @notes = @notes.fresh.limit(20)
 
-    respond_to do |format| 
+    respond_to do |format|
       format.html
       format.js { respond_with_notes }
     end
@@ -168,7 +168,7 @@ class ProjectsController < ApplicationController
 
   def add_refs(commit, ref_cache)
     if ref_cache.empty?
-      @repo.refs.each do |ref| 
+      @repo.refs.each do |ref|
         ref_cache[ref.commit.id] ||= []
         ref_cache[ref.commit.id] << ref
       end

@@ -24,6 +24,7 @@ class IssuesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.js
+      format.atom { render :layout => false }
     end
   end
 
@@ -40,7 +41,7 @@ class IssuesController < ApplicationController
     @notes = @issue.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
 
-    respond_to do |format| 
+    respond_to do |format|
       format.html
       format.js { respond_with_notes }
     end
@@ -97,7 +98,7 @@ class IssuesController < ApplicationController
                   else @project.issues.opened
                 end
 
-    @issues = @issues.where("title LIKE ? OR content LIKE ?", "%#{terms}%", "%#{terms}%") unless terms.blank?
+    @issues = @issues.where("title LIKE ?", "%#{terms}%") unless terms.blank?
 
     render :partial => 'issues'
   end

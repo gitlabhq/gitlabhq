@@ -9,7 +9,7 @@ class Repository
     @project = project
   end
 
-  def path 
+  def path
     @path ||= project.path
   end
 

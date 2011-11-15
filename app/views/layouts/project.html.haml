@@ -5,6 +5,10 @@
       GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
+    - if current_page?(tree_project_path(@project)) || current_page?(project_commits_path(@project))
+      = auto_discovery_link_tag(:atom, project_commits_url(@project, :atom, :ref => @ref, :private_token => current_user.private_token), :title => "Recent commits to #{@project.name}:#{@ref}")
+    - if request.path == project_issues_path(@project)
+      = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, :private_token => current_user.private_token), :title => "#{@project.name} issues")
     = csrf_meta_tags
     = javascript_tag do
       REQ_URI = "#{request.env["REQUEST_URI"]}";

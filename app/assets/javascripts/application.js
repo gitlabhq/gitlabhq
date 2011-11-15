@@ -10,6 +10,8 @@
 //= require jquery.ui.selectmenu
 //= require jquery.tagify
 //= require jquery.cookie
+//= require modernizr
+//= require chosen
 //= require raphael
 //= require branch-graph
 //= require_tree .
@@ -22,9 +24,9 @@ $(function(){
   $('select#branch').selectmenu({style:'popup', width:200});
   $('select#tag').selectmenu({style:'popup', width:200});
 
-	$(".account-box").mouseenter(showMenu);
-	$(".account-box").mouseleave(resetMenu);
-	
+  $(".account-box").mouseenter(showMenu);
+  $(".account-box").mouseleave(resetMenu);
+
 });
 
 function updatePage(data){
@@ -32,9 +34,9 @@ function updatePage(data){
 }
 
 function showMenu() {
-	$(this).toggleClass('hover');
+  $(this).toggleClass('hover');
 }
 
 function resetMenu() {
-	$(this).removeClass("hover");
+  $(this).removeClass("hover");
 }

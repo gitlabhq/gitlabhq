@@ -19,15 +19,20 @@ describe User do
     user.identifier.should == "test_mail.com"
   end
 
+  it "should have authentication token" do
+    user = Factory(:user)
+    user.authentication_token.should_not == ""
+  end
+
   describe "dependent" do
-    before do 
+    before do
       @user = Factory :user
-      @note = Factory :note, 
+      @note = Factory :note,
         :author => @user,
         :project => Factory(:project)
     end
 
-    it "should destroy all notes with user" do 
+    it "should destroy all notes with user" do
       Note.find_by_id(@note.id).should_not be_nil
       @user.destroy
       Note.find_by_id(@note.id).should be_nil

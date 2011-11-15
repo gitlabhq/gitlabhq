@@ -11,7 +11,7 @@ module ApplicationHelper
   end
 
   def body_class(default_class = nil)
-    main = content_for(:body_class).blank? ? 
+    main = content_for(:body_class).blank? ?
       default_class :
       content_for(:body_class)
 
@@ -42,7 +42,7 @@ module ApplicationHelper
     else
       "Never"
     end
-  rescue 
+  rescue
     "Never"
   end
 

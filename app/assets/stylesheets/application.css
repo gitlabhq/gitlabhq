@@ -5,6 +5,7 @@
  *= require jquery-ui/jquery-ui
  *= require jquery-ui/jquery.ui.selectmenu
  *= require jquery-ui/jquery.tagify
+ *= require chosen
  *= require_self
  *= require_tree .
 */
@@ -15,10 +16,10 @@
 .cgreen { color:#44aa22; }
 
 /** COMMON STYLES **/
-.left { 
+.left {
   float:left;
 }
-.right { 
+.right {
   float:right;
 }
 .width-50p{
@@ -33,7 +34,7 @@
 .width-65p{
   width:65%;
 }
-.append-bottom-10 { 
+.append-bottom-10 {
   margin-bottom:10px;
 }
 .prepend-top-10 {

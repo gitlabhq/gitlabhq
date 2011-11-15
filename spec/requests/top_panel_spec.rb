@@ -7,7 +7,7 @@ describe "Top Panel", :js => true do
     before do
       visit projects_path
       fill_in "search", :with => "Ke"
-      within ".ui-autocomplete" do 
+      within ".ui-autocomplete" do
         find(:xpath, "//a[.=\"Keys\"]").click
       end
     end
@@ -24,7 +24,7 @@ describe "Top Panel", :js => true do
       visit project_path(@project)
 
       fill_in "search", :with => "Commi"
-      within ".ui-autocomplete" do 
+      within ".ui-autocomplete" do
         find(:xpath, "//a[.=\"#{@project.code} / Commits\"]").click
       end
     end

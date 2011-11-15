@@ -11,8 +11,8 @@ class Issue < ActiveRecord::Base
   validates_presence_of :author_id
 
   delegate :name,
-           :email, 
-           :to => :author, 
+           :email,
+           :to => :author,
            :prefix => true
 
   validates :title,

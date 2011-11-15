@@ -1,7 +1,6 @@
 = form_tag destination, :method => :get, :class => "project-refs-form" do
   = select_tag "ref", grouped_options_refs, :onchange => "this.form.submit();", :class => "project-refs-select"
 
-
 :javascript
   $(function(){
     $('.project-refs-select').chosen();

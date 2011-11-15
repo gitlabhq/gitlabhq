@@ -10,7 +10,6 @@ describe "Tags" do
   #   end
   # end
 
-
   describe "GET '/tags.json'" do
     before do
      @project = Factory :project
@@ -20,12 +19,9 @@ describe "Tags" do
      visit '/tags.json'
     end
 
-
     it "should contains tags" do
       page.should have_content('demo1')
     end
 end
-
-
 
 end

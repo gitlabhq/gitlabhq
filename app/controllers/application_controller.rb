@@ -79,8 +79,8 @@ class ApplicationController < ActionController::Base
     elsif params[:last_id]
       @notes = @notes.where("id > ?", params[:last_id])
     elsif params[:first_id]
-      @notes = @notes.where("id < ?", params[:first_id]) 
-    else 
+      @notes = @notes.where("id < ?", params[:first_id])
+    else
       nil
     end
   end

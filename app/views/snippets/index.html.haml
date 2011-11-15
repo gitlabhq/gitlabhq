@@ -4,7 +4,7 @@
 
   %table.round-borders#snippets-table
     %thead
-      %th 
+      %th
     = render @snippets.fresh
 :javascript
   $('.delete-snippet').live('ajax:success', function() {

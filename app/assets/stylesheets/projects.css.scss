@@ -99,15 +99,15 @@ a {
   }
 }
 
-td.code { 
+td.code {
   width: 100%;
-  .highlight { 
+  .highlight {
     margin-left: 55px;
     overflow:auto;
     overflow-y:hidden;
   }
 }
-.highlight pre { 
+.highlight pre {
   white-space: pre;
   word-wrap:normal;
 }
@@ -115,11 +115,10 @@ td.code {
 .highlighttable tr:hover {
   background:white;
 }
-table.highlighttable pre{ 
+table.highlighttable pre{
   line-height:16px !important;
   font-size:12px !important;
 }
-
 
 table.highlighttable .linenodiv pre {
   text-align: right;
@@ -235,7 +234,6 @@ input.ssh_project_url {
   }
 }
 
-
 #user_projects_limit{
   width: 60px;
 }
@@ -244,7 +242,7 @@ input.ssh_project_url {
   cursor: move;
 }
 
-.project-refs-form { 
+.project-refs-form {
   span {
     background: none !important;
     position:static !important;
@@ -258,18 +256,18 @@ input.ssh_project_url {
 }
 
 .filter .left { margin-right:15px; }
- 
-body.project-page table .commit { 
-  a.tree-commit-link { 
+
+body.project-page table .commit {
+  a.tree-commit-link {
     color:gray;
-    &:hover { 
+    &:hover {
       text-decoration:underline;
     }
   }
 }
 
 /** NEW PROJECT **/
-.new-project-hodler { 
+.new-project-hodler {
   .icon span { background-position: -31px -70px; }
   td { border-bottom: 1px solid #DEE2E3; }
 }
@@ -277,8 +275,8 @@ body.project-page table .commit {
 /** Feed entry **/
 .commit,
 .snippet,
-.message { 
-  .title { 
+.message {
+  .title {
     color:#666;
     a { color:#666 !important; }
     p { margin-top:0px; }
@@ -295,21 +293,21 @@ body.project-page table .commit {
   font-size:1.5em;
   height:auto;
   font-weight:bold;
-  .ui-selectmenu-status { 
+  .ui-selectmenu-status {
     padding:3px 10px;
   }
 }
- 
+
 /** Snippets **/
-.new_snippet textarea, 
-.edit_snippet textarea { 
+.new_snippet textarea,
+.edit_snippet textarea {
   height:300px;
   padding: 8px;
   width: 95%;
 }
 .snippet .action-links {
-  display:none; 
-  a { 
+  display:none;
+  a {
     margin-left:10px;
   }
 }
@@ -348,11 +346,11 @@ body.project-page table .commit {
     background: #2c5c66;
     color:white;
   }
-  &.issue { 
+  &.issue {
     background: #D12F19;
     color:white;
   }
-  &.commit { 
+  &.commit {
     background: #44aacc;
     color:white;
   }

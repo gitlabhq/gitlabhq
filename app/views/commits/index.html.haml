@@ -6,7 +6,7 @@
 %h2.icon
   %span
   %d
-    = link_to project_commits_path(@project) do 
+    = link_to project_commits_path(@project) do
       = @project.name
     - if params[:path]
       \/
@@ -19,8 +19,6 @@
 .clear
 .loading{ :style => "display:none;"}
   %center= image_tag "ajax-loader.gif"
-
-
 
 :javascript
   $(function(){
