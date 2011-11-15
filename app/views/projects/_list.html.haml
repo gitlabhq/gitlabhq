@@ -14,7 +14,6 @@
         = project.name
         .small-tags= tag_list project
 
-
       %td= truncate project.url_to_repo
       %td= project.code
       %td= check_box_tag "read",   1, project.readers.include?(current_user), :disabled => :disabled

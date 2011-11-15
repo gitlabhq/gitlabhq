@@ -48,7 +48,6 @@ function taggifyForm(){
       source: '/tags.json'
   });
 
-
   $('form').submit( function() {
     var tag_field = $('#tag_field')
        tag_field.val( tag_field.tagify('serialize') );

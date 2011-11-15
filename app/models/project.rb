@@ -121,9 +121,9 @@ class Project < ActiveRecord::Base
     private_flag
   end
 
-  def last_activity 
+  def last_activity
     updates(1).first
-  rescue 
+  rescue
     nil
   end
 
@@ -132,7 +132,7 @@ class Project < ActiveRecord::Base
   end
 
   def updates(n = 3)
-    [ 
+    [
       fresh_commits(n),
       issues.last(n),
       notes.fresh.limit(n)

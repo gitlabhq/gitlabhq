@@ -5,11 +5,11 @@
   %span.update-author
     %strong= update.author_name
     authored
-    = time_ago_in_words(update.created_at) 
+    = time_ago_in_words(update.created_at)
     ago
   .right
     - klass = update.class.to_s.split("::").last.downcase
     %span.tag{ :class => klass }= klass
-    - if update.kind_of?(Grit::Commit) 
+    - if update.kind_of?(Grit::Commit)
       %span.tag.commit= update.head.name
 

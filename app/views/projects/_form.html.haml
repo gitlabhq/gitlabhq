@@ -1,7 +1,7 @@
 = form_for(@project, :remote => true) do |f|
   %div.form_content
     - unless @project.new_record?
-      %h2.icon  
+      %h2.icon
         %span
         = @project.name
     - if @project.errors.any?
@@ -56,4 +56,4 @@
 :javascript
   $(function(){
     taggifyForm();
-  })  
+  })

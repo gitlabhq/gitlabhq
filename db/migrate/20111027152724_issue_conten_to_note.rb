@@ -15,16 +15,16 @@ class IssueContenToNote < ActiveRecord::Migration
       if note.save
         issue.update_attributes(:content => nil)
         print "."
-      else 
+      else
         print "F"
       end
     end
 
     total = Issue.where("content is not null").count
 
-    if total > 0 
-      puts "content of #{total} issues were not migrated" 
-    else 
+    if total > 0
+      puts "content of #{total} issues were not migrated"
+    else
       puts "Done"
     end
   end

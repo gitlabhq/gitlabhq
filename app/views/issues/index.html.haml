@@ -31,7 +31,6 @@
   var href       = $('.issue_search').parent().attr('action');
   var last_terms = '';
 
-
   var setIssueFilter = function(form, value){
     $.cookie('issue_filter', value, { expires: 140 });
     form.submit();

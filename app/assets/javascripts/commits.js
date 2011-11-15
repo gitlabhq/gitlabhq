@@ -8,25 +8,23 @@ $(document).ready(function(){
   });
 });
 
-
-
-var CommitsList = { 
+var CommitsList = {
 
 ref:null,
 limit:0,
 offset:0,
 
-init: 
-  function(ref, limit) { 
-    this.ref=ref; 
-    this.limit=limit; 
-    this.offset=limit; 
+init:
+  function(ref, limit) {
+    this.ref=ref;
+    this.limit=limit;
+    this.offset=limit;
     this.initLoadMore();
     $('.loading').show();
   },
 
 getOld:
-  function() { 
+  function() {
     $('.loading').show();
     $.ajax({
       type: "GET",
@@ -39,14 +37,14 @@ getOld:
 append:
   function(count, html) {
     $("#commits_list").append(html);
-    if(count > 0) { 
+    if(count > 0) {
       this.offset += count;
       this.initLoadMore();
-    }  
+    }
   },
 
 initLoadMore:
-  function() { 
+  function() {
     $(window).bind('scroll', function(){
       if($(window).scrollTop() == $(document).height() - $(window).height()){
         $(window).unbind('scroll');

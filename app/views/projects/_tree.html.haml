@@ -1,4 +1,3 @@
-
 -#%a.right.button{:href => "#"} Download
 -#-if can? current_user, :admin_project, @project
   %a.right.button.blue{:href => "#"} EDIT
@@ -6,7 +5,7 @@
   %h2.icon
     %span
     %d
-      = link_to tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true do 
+      = link_to tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true do
         = @project.name
       - if params[:path]
         - part_path = ""

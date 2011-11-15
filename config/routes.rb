@@ -3,7 +3,6 @@ Gitlab::Application.routes.draw do
   get 'tags'=> 'tags#index'
   get 'tags/:tag' => 'projects#index'
 
-
   namespace :admin do
     resources :users
     resources :projects

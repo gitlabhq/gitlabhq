@@ -7,7 +7,7 @@
       ago
     - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
       = link_to "Remove", [@project, note], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-note right"
-    
+
   %div.note-title
     = markdown(note.note)
     - if note.attachment.url

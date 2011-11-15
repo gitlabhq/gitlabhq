@@ -12,7 +12,7 @@
 
 .issues_filter {
   margin-top:10px;
-  .left { 
+  .left {
     margin-right:15px;
   }
 }
@@ -38,11 +38,10 @@
 
 /** ISSUES LIST **/
 .issue .action-links {
-  display:none; 
-  a { 
+  display:none;
+  a {
     margin-left:10px;
   }
 }
 .issue:hover .action-links { display:block; }
-
 

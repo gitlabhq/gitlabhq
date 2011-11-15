@@ -8,8 +8,8 @@ class Note < ActiveRecord::Base
     :class_name => "User"
 
   delegate :name,
-           :email, 
-           :to => :author, 
+           :email,
+           :to => :author,
            :prefix => true
 
   attr_protected :author, :author_id

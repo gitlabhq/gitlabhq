@@ -18,7 +18,7 @@
         - if can? current_user, :write_issue, issue
           - if issue.closed
             = link_to 'Reopen', project_issue_path(@project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "cgray", :remote => true
-          - else 
+          - else
             = link_to 'Resolve', project_issue_path(@project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "cgray", :remote => true
         - if can? current_user, :write_issue, issue
           = link_to 'Edit', edit_project_issue_path(@project, issue), :class => "cgray edit-issue-link", :remote => true

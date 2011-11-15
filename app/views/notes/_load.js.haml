@@ -4,7 +4,6 @@
     :plain
       NoteList.replace(#{@notes.last.id}, #{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
 
-
   - elsif params[:last_id]
     :plain
       NoteList.prepend(#{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");

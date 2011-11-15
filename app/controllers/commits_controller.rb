@@ -10,7 +10,6 @@ class CommitsController < ApplicationController
   before_filter :require_non_empty_project
   before_filter :load_refs, :only => :index # load @branch, @tag & @ref
 
-
   def index
     @repo = project.repo
     limit, offset = (params[:limit] || 20), (params[:offset] || 0)
