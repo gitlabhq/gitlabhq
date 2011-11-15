@@ -74,8 +74,16 @@ class Project < ActiveRecord::Base
     users_projects.find_by_user_id(user.id) if user
   end
 
+  def fresh_issues(n)
+    issues.includes(:project, :author).order("created_at desc").first(n)
+  end
+
+  def fresh_notes(n)
+    notes.inc_author_project.order("created_at desc").first(n)
+  end
+
   def common_notes
-    notes.where(:noteable_type => ["", nil])
+    notes.where(:noteable_type => ["", nil]).inc_author_project
   end
 
   def build_commit_note(commit)
@@ -134,8 +142,8 @@ class Project < ActiveRecord::Base
   def updates(n = 3)
     [ 
       fresh_commits(n),
-      issues.last(n),
-      notes.fresh.limit(n)
+      fresh_issues(n),
+      fresh_notes(n)
     ].compact.flatten.sort do |x, y|
       y.created_at <=> x.created_at
     end[0...n]

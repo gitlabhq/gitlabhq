@@ -19,6 +19,8 @@ class IssuesController < ApplicationController
               else @project.issues.opened
               end
 
+    @issues = @issues.includes(:author, :project)
+
     respond_to do |format|
       format.html # index.html.erb
       format.js
@@ -35,7 +37,7 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @notes = @issue.notes.order("created_at DESC").limit(20)
+    @notes = @issue.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
 
     respond_to do |format| 
