@@ -5,6 +5,7 @@
  *= require jquery-ui/jquery-ui
  *= require jquery-ui/jquery.ui.selectmenu
  *= require jquery-ui/jquery.tagify
+ *= require chosen
  *= require_self
  *= require_tree .
 */

@@ -10,6 +10,8 @@
 //= require jquery.ui.selectmenu
 //= require jquery.tagify
 //= require jquery.cookie
+//= require modernizr
+//= require chosen
 //= require raphael
 //= require branch-graph
 //= require_tree .
@@ -24,7 +26,7 @@ $(function(){
 
   $(".account-box").mouseenter(showMenu);
   $(".account-box").mouseleave(resetMenu);
-  
+
 });
 
 function updatePage(data){
