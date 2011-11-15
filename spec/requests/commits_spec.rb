@@ -34,6 +34,16 @@ describe "Commits" do
       page.body.should have_selector("author email", :text => commit.author_email)
       page.body.should have_selector("entry summary", :text => commit.message)
     end
+
+    it "should render atom feed via private token" do
+      logout
+      visit project_commits_path(project, :atom, :private_token => @user.private_token)
+
+      page.response_headers['Content-Type'].should have_content("application/atom+xml")
+      page.body.should have_selector("title", :text => "Recent commits to #{project.name}")
+      page.body.should have_selector("author email", :text => commit.author_email)
+      page.body.should have_selector("entry summary", :text => commit.message)
+    end
   end
 
   describe "GET /commits/:id" do

@@ -26,6 +26,7 @@ class User < ActiveRecord::Base
     :dependent => :destroy
 
   before_create :ensure_authentication_token
+  alias_attribute :private_token, :authentication_token
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
 
   def identifier
