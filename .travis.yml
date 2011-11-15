@@ -1,0 +1,8 @@
+branches:
+  only:
+    - 'master'
+rvm: 1.9.2
+before_script:
+  - "bundle exec rake db:seed_fu RAILS_ENV=test"
+  - "sh -e /etc/init.d/xvfb start"
+script: "bundle exec rake travis"
