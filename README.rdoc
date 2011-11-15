@@ -94,6 +94,10 @@ Install gitosis, edit conf/gitosis.yml & start server
 
   echo "gem: --no-rdoc --no-ri" > ~/.gemrc
 
+== Community
+
+gitlabhq[https://groups.google.com/forum/?hl=en#!forum/gitlabhq] Google Group
+
 == Contribute
 
 We develop project on our private server.
