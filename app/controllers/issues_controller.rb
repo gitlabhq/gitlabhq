@@ -96,7 +96,7 @@ class IssuesController < ApplicationController
                   else @project.issues.opened
                 end
 
-    @issues = @issues.where("title LIKE ? OR content LIKE ?", "%#{terms}%", "%#{terms}%") unless terms.blank?
+    @issues = @issues.where("title LIKE ?", "%#{terms}%") unless terms.blank?
 
     render :partial => 'issues'
   end
