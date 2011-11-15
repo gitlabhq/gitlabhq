@@ -52,10 +52,8 @@ Gitlab::Application.routes.draw do
     resources :team_members
     resources :issues do
       collection do
-        post :sort
-      end
-      collection do
-        get :search
+        post  :sort
+        get   :search
       end
     end
     resources :notes, :only => [:create, :destroy]
