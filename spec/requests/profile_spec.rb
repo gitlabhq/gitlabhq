@@ -29,6 +29,19 @@ describe "Profile" do
     it { @user.twitter.should == 'testtwitter' }
   end
 
+  describe "Reset private token" do
+    before do
+      visit profile_password_path
+    end
+
+    it "should reset private token" do
+      user_first_token = @user.private_token
+      click_button "Reset"
+      @user.reload
+      @user.private_token.should_not == user_first_token
+    end
+  end
+
   describe "Password update" do
     before do
       visit profile_password_path
