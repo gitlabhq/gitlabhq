@@ -377,3 +377,11 @@ body.dashboard.project-page .news-feed .project-updates a.project-update span.up
 body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
 body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
 /* eo Dashboard Page */
+
+/* Breadcrumbs fix */
+#tree-breadcrumbs { 
+  width: 100%;
+  overflow: hidden;
+  height: 45px;
+}
+

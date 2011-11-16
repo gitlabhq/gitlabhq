@@ -8,6 +8,16 @@ class RefsController < ApplicationController
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project
 
+  def switch 
+    new_path = if params[:destination] == "tree"
+                 tree_project_ref_path(@project, params[:ref]) 
+               else
+                 project_commits_path(@project, :ref => params[:ref])
+               end
+
+    redirect_to new_path
+  end
+
   #
   # Repository preview
   #

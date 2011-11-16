@@ -16,7 +16,7 @@
           \/
           = link_to truncate(part, :length => 40), tree_file_project_ref_path(@project, @ref, :path => part_path), :remote => :true
         &nbsp;
-  .right= render :partial => "projects/refs", :locals => { :destination => tree_project_ref_path(@project, @ref) }
+  .right= render :partial => "projects/refs", :locals => { :destination => :tree }
 .clear
 
 #tree-content-holder

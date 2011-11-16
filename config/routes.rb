@@ -36,15 +36,19 @@ Gitlab::Application.routes.draw do
     end
 
     resources :refs, :only => [], :path => "/" do 
+      collection do 
+        get "switch"
+      end
+
       member do 
-        get "tree"
+        get "tree", :constraints => { :id => /[a-zA-Z.0-9_\-]+/ }
         get "blob"
 
         # tree viewer
         get "tree/:path" => "refs#tree",
           :as => :tree_file,
           :constraints => {
-            :id => /[a-zA-Z0-9_\-]+/,
+            :id => /[a-zA-Z.0-9_\-]+/,
             :path => /.*/
           }
       end
