@@ -37,7 +37,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'capybara'
+  gem 'capybara', '~> 1.1.2'
   gem 'autotest'
   gem 'autotest-rails'
   gem 'ruby-debug19', :require => 'ruby-debug'
