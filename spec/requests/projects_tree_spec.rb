@@ -9,11 +9,11 @@ describe "Projects" do
         @project = Factory :project
         @project.add_access(@user, :read)
 
-        visit tree_project_path(@project)
+        visit tree_project_ref_path(@project, @project.root_ref)
       end
 
       it "should be correct path" do
-        current_path.should == tree_project_path(@project)
+        current_path.should == tree_project_ref_path(@project, @project.root_ref)
       end
 
       it_behaves_like :tree_view
@@ -24,11 +24,11 @@ describe "Projects" do
         @project = Factory :project
         @project.add_access(@user, :read)
 
-        visit tree_project_path(@project, :commit_id => ValidCommit::ID)
+        visit tree_project_ref_path(@project, ValidCommit::ID)
       end
 
       it "should be correct path" do
-        current_path.should == tree_project_path(@project)
+        current_path.should == tree_project_ref_path(@project, ValidCommit::ID)
       end
 
       it_behaves_like :tree_view
@@ -40,11 +40,11 @@ describe "Projects" do
         @project = Factory :project
         @project.add_access(@user, :read)
 
-        visit tree_project_path(@project, :branch => "master")
+        visit tree_project_ref_path(@project, @project.root_ref)
       end
 
       it "should be correct path" do
-        current_path.should == tree_project_path(@project)
+        current_path.should ==  tree_project_ref_path(@project, @project.root_ref)
       end
 
       it_behaves_like :tree_view
@@ -57,11 +57,11 @@ describe "Projects" do
         @project = Factory :project
         @project.add_access(@user, :read)
 
-        visit tree_project_path(@project, :path => ".rvmrc")
+        visit tree_project_ref_path(@project, @project.root_ref, :path => ".rvmrc")
       end
 
       it "should be correct path" do
-        current_path.should == tree_project_path(@project)
+        current_path.should == tree_project_ref_path(@project, @project.root_ref)
       end
 
       it "should contain file view" do
@@ -76,13 +76,11 @@ describe "Projects" do
       @project = Factory :project
       @project.add_access(@user, :read)
 
-      visit blob_project_path(@project,
-                              :path => ValidCommit::BLOB_FILE_PATH,
-                              :commit_id => ValidCommit::ID)
+      visit blob_project_ref_path(@project, ValidCommit::ID, :path => ValidCommit::BLOB_FILE_PATH)
     end
 
     it "should be correct path" do
-      current_path.should == blob_project_path(@project)
+      current_path.should == blob_project_ref_path(@project, ValidCommit::ID)
     end
 
     it "raw file response" do

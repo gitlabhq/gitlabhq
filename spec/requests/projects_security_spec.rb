@@ -36,13 +36,13 @@ describe "Projects" do
       it { project_path(@project).should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/tree" do
-      it { tree_project_path(@project).should be_allowed_for @u1 }
-      it { tree_project_path(@project).should be_allowed_for @u3 }
-      it { tree_project_path(@project).should be_denied_for :admin }
-      it { tree_project_path(@project).should be_denied_for @u2 }
-      it { tree_project_path(@project).should be_denied_for :user }
-      it { tree_project_path(@project).should be_denied_for :visitor }
+    describe "GET /project_code/master/tree" do
+      it { tree_project_ref_path(@project, @project.root_ref).should be_allowed_for @u1 }
+      it { tree_project_ref_path(@project, @project.root_ref).should be_allowed_for @u3 }
+      it { tree_project_ref_path(@project, @project.root_ref).should be_denied_for :admin }
+      it { tree_project_ref_path(@project, @project.root_ref).should be_denied_for @u2 }
+      it { tree_project_ref_path(@project, @project.root_ref).should be_denied_for :user }
+      it { tree_project_ref_path(@project, @project.root_ref).should be_denied_for :visitor }
     end
 
     describe "GET /project_code/commits" do
@@ -85,7 +85,7 @@ describe "Projects" do
       before do
         @commit = @project.commit
         @path = @commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
-        @blob_path = blob_project_path(@project, :commit_id => @commit.id, :path => @path)
+        @blob_path = blob_project_ref_path(@project, @commit.id, :path => @path)
       end
 
       it { @blob_path.should be_allowed_for @u1 }

@@ -14,7 +14,7 @@ describe "Projects" do
 
       it "should be fast" do
         time = Benchmark.realtime do
-          visit tree_project_path(@project)
+          visit tree_project_ref_path(@project, @project.root_ref)
         end
         (time < 1.0).should be_true
       end
@@ -28,7 +28,7 @@ describe "Projects" do
 
       it "should be fast" do
         time = Benchmark.realtime do
-          visit tree_project_path(@project, :commit_id => ValidCommit::ID)
+          visit tree_project_ref_path(@project, ValidCommit::ID)
         end
         (time < 1.0).should be_true
       end
