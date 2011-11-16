@@ -19,10 +19,6 @@ class Issue < ActiveRecord::Base
             :presence => true,
             :length   => { :within => 0..255 }
 
-  #validates :content,
-            #:presence => true,
-            #:length   => { :within => 0..2000 }
-
   scope :critical, where(:critical => true)
   scope :non_critical, where(:critical => false)
 
@@ -46,7 +42,6 @@ end
 #
 #  id          :integer         not null, primary key
 #  title       :string(255)
-#  content     :text
 #  assignee_id :integer
 #  author_id   :integer
 #  project_id  :integer
