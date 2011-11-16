@@ -16,5 +16,5 @@
           %p.small-tags= tag_list project
 
         .buttons
-          %a.browse-code.button.yellow{:href => tree_project_path(project)} Browse code
+          %a.browse-code.button.yellow{:href => tree_project_ref_path(project, project.root_ref)} Browse code
           %a.commits.button.green{:href => project_commits_path(project)} Commits
