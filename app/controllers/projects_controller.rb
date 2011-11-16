@@ -88,35 +88,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  #
-  # Repository preview
-  #
-
-  def tree
-    @repo = project.repo
-
-    @commit = if params[:commit_id]
-                @repo.commits(params[:commit_id]).first
-              else
-                @repo.commits(@ref).first
-              end
-
-    @tree = @commit.tree
-    @tree = @tree / params[:path] if params[:path]
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.js do
-        # diasbale cache to allow back button works
-        response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-      end
-    end
-  rescue
-    return render_404
-  end
-
   def graph
     @repo = project.repo
     commits = Grit::Commit.find_all(@repo, nil, {:max_count => 650})
@@ -143,20 +114,6 @@ class ProjectsController < ApplicationController
       h[:login] = c.author.email
       h
     end.to_json
-  end
-
-  def blob
-    @repo = project.repo
-    @commit = project.commit(params[:commit_id])
-    @tree = project.tree(@commit, params[:path])
-
-    if @tree.is_a?(Grit::Blob)
-      send_data(@tree.data, :type => @tree.mime_type, :disposition => 'inline', :filename => @tree.name)
-    else
-      head(404)
-    end
-  rescue
-    return render_404
   end
 
   def destroy

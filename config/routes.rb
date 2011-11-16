@@ -30,22 +30,24 @@ Gitlab::Application.routes.draw do
 
   resources :projects, :except => [:new, :create, :index], :path => "/" do
     member do
-      get "tree"
-      get "blob"
       get "team"
       get "wall"
       get "graph"
+    end
 
-      # tree viewer
-      get "tree/:commit_id" => "projects#tree"
-      get "tree/:commit_id/:path" => "projects#tree",
-      :as => :tree_file,
-      :constraints => {
-        :id => /[a-zA-Z0-9_\-]+/,
-        :commit_id => /[a-zA-Z0-9]+/,
-        :path => /.*/
-      }
+    resources :refs, :only => [], :path => "/" do 
+      member do 
+        get "tree"
+        get "blob"
 
+        # tree viewer
+        get "tree/:path" => "refs#tree",
+          :as => :tree_file,
+          :constraints => {
+            :id => /[a-zA-Z0-9_\-]+/,
+            :path => /.*/
+          }
+      end
     end
 
     resources :snippets

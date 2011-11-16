@@ -1,0 +1,5 @@
+:plain
+  $("#tree-holder table").hide("slide", { direction: "left" }, 150, function(){
+    $("#tree-holder").html("#{escape_javascript(render(:partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @tree}))}");
+    $("#tree-holder table").show("slide", { direction: "right" }, 150);
+  });

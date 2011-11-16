@@ -5,7 +5,7 @@
       GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
-    - if current_page?(tree_project_path(@project)) || current_page?(project_commits_path(@project))
+    - if current_page?(tree_project_ref_path(@project, @project.root_ref)) || current_page?(project_commits_path(@project))
       = auto_discovery_link_tag(:atom, project_commits_url(@project, :atom, :ref => @ref, :private_token => current_user.private_token), :title => "Recent commits to #{@project.name}:#{@ref}")
     - if request.path == project_issues_path(@project)
       = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, :private_token => current_user.private_token), :title => "#{@project.name} issues")
@@ -24,7 +24,7 @@
               %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
             %aside
               = link_to "Activities", project_path(@project), :class => current_page?(:controller => "projects", :action => "show", :id => @project) ? "current" : nil
-              = link_to "Tree", tree_project_path(@project), :class => current_page?(:controller => "projects", :action => "tree", :id => @project) ? "current" : nil
+              = link_to "Tree", tree_project_ref_path(@project,  @project.root_ref), :class => current_page?(:controller => "refs", :action => "tree", :project_id => @project, :id => @ref || @project.root_ref ) ? "current" : nil
               = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
               = link_to "Network graph", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
               = link_to team_project_path(@project), :class => (current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members") ? "current" : nil do

@@ -9,7 +9,7 @@
               %data.commit-button
                 = truncate(commit.id.to_s, :length => 16)
                 %i
-              %data.commit-browse{ :onclick => "location.href='#{tree_project_path(@project, :commit_id => commit.id)}';return false;"}
+              %data.commit-browse{ :onclick => "location.href='#{tree_project_ref_path(@project, commit.id)}';return false;"}
                 Browse Code
             - if commit.author_email
               = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"

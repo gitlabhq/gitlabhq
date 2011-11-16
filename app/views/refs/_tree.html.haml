@@ -5,7 +5,7 @@
   %h2.icon
     %span
     %d
-      = link_to tree_project_path(@project, :path => nil, :commit_id => @commit.try(:id)), :remote => true do
+      = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
         = @project.name
       - if params[:path]
         - part_path = ""
@@ -14,14 +14,14 @@
           - if part_path.empty?
             - part_path = part
           \/
-          = link_to truncate(part, :length => 40), tree_file_project_path(@project, :path => part_path, :commit_id => @commit.try(:id), :branch => @branch, :tag => @tag), :remote => :true
+          = link_to truncate(part, :length => 40), tree_file_project_ref_path(@project, @ref, :path => part_path), :remote => :true
         &nbsp;
-  .right= render :partial => "projects/refs", :locals => { :destination => tree_project_path(@project) }
+  .right= render :partial => "projects/refs", :locals => { :destination => tree_project_ref_path(@project, @ref) }
 .clear
 
 #tree-content-holder
   - if tree.is_a?(Grit::Blob)
-    = render :partial => "projects/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
+    = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
     %table#tree-slider.round-borders
@@ -30,20 +30,20 @@
         %th Last Update
         %th
           Last commit
-          = link_to "history", project_commits_path(@project, :path => params[:path], :branch => params[:branch],:tag => params[:tag]), :class => "right"
+          = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right"
       - if params[:path]
         - file = File.join(params[:path], "..")
-        %tr{ :class => "tree-item", :url => tree_file_project_path(@project, @commit.id, file) }
+        %tr{ :class => "tree-item", :url => tree_file_project_ref_path(@project, @ref, file) }
           %td.tree-item-file-name
             = image_tag "dir.png"
-            = link_to "..", tree_file_project_path(@project, @commit.id, file, :branch => @branch, :tag => @tag), :remote => :true
+            = link_to "..", tree_file_project_ref_path(@project, @ref, file), :remote => :true
           %td
           %td
 
       - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
-        = render :partial => "projects/tree_item", :locals => { :content => content }
+        = render :partial => "refs/tree_item", :locals => { :content => content }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
-        = render :partial => "projects/tree_item", :locals => { :content => content }
+        = render :partial => "refs/tree_item", :locals => { :content => content }
 
 :javascript
   $(function(){

@@ -73,7 +73,7 @@ module ApplicationHelper
       project_nav = [
         { :label => "#{@project.code} / Issues", :url => project_issues_path(@project) },
         { :label => "#{@project.code} / Wall", :url => wall_project_path(@project) },
-        { :label => "#{@project.code} / Tree", :url => tree_project_path(@project) },
+        { :label => "#{@project.code} / Tree", :url => tree_project_ref_path(@project, @project.root_ref) },
         { :label => "#{@project.code} / Commits", :url => project_commits_path(@project) },
         { :label => "#{@project.code} / Team", :url => team_project_path(@project) }
       ]

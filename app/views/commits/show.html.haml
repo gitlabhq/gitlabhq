@@ -18,7 +18,7 @@
         = preserve @commit.safe_message
   %tr
     %td Tree
-    %td= link_to 'Browse Code', tree_project_path(@project, :commit_id => @commit.id)
+    %td= link_to 'Browse Code', tree_project_ref_path(@project, @commit.id)
 .clear
 
 %br

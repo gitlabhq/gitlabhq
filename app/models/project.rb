@@ -121,6 +121,10 @@ class Project < ActiveRecord::Base
     @admins ||=users_projects.includes(:user).where(:admin => true).map(&:user)
   end
 
+  def root_ref 
+    "master"
+  end
+
   def public?
     !private_flag
   end
