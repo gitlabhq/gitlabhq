@@ -316,6 +316,19 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 }
 /* eo Errors */
 
+/* Notices */
+#notice{background: #dfffe1;  padding: 20px; margin-bottom: 20px; border-radius: 5px; color: green; font-size: 1.3em;}
+/* eo Notices */
+
+/* InfoBlock */
+#infoblock{
+  background: #eeeeee;  
+  padding: 20px; 
+  margin-bottom: 20px; 
+  border-radius: 5px; 
+}
+/* eo InfoBlock */
+
 /* General */
 #container{background-color: white; overflow: hidden; }
 body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
