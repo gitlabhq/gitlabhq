@@ -50,6 +50,7 @@ GEM
     acts_as_list (0.1.4)
     addressable (2.2.6)
     ansi (1.4.1)
+    archive-tar-minitar (0.5.2)
     arel (2.2.1)
     autotest (4.4.6)
       ZenTest (>= 4.4.1)
@@ -77,6 +78,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.1.3)
+    columnize (0.3.4)
     daemons (1.1.4)
     database_cleaner (0.7.0)
     devise (1.5.0)
@@ -113,6 +115,8 @@ GEM
     letter_opener (0.0.2)
       launchy
     libv8 (3.3.10.4)
+    linecache19 (0.5.12)
+      ruby_core_source (>= 0.1.4)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -168,6 +172,16 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.7.0)
+    ruby-debug-base19 (0.11.25)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
+    ruby_core_source (0.1.5)
+      archive-tar-minitar (>= 0.5.2)
     rubypython (0.5.3)
       blankslate (>= 2.1.2.3)
       ffi (~> 1.0.7)
@@ -254,6 +268,7 @@ DEPENDENCIES
   rails-footnotes (~> 3.7.5)
   rdiscount
   rspec-rails
+  ruby-debug19
   sass-rails (~> 3.1.0)
   seed-fu (~> 2.1.0)
   shoulda (~> 3.0.0.beta2)
