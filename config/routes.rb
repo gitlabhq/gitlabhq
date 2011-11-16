@@ -41,14 +41,19 @@ Gitlab::Application.routes.draw do
       end
 
       member do 
-        get "tree", :constraints => { :id => /[a-zA-Z.0-9_\-]+/ }
-        get "blob"
+        get "tree", :constraints => { :id => /[a-zA-Z.\/0-9_\-]+/ }
+        get "blob", 
+          :constraints => {
+            :id => /[a-zA-Z.0-9\/_\-]+/,
+            :path => /.*/
+          }
+
 
         # tree viewer
         get "tree/:path" => "refs#tree",
           :as => :tree_file,
           :constraints => {
-            :id => /[a-zA-Z.0-9_\-]+/,
+            :id => /[a-zA-Z.0-9\/_\-]+/,
             :path => /.*/
           }
       end
