@@ -20,7 +20,5 @@
       %td= link_to 'Edit', edit_admin_project_path(project), :id => "edit_#{dom_id(project)}"
       %td= link_to 'Destroy', [:admin, project], :confirm => 'Are you sure?', :method => :delete
 
-%br
-
 = paginate @admin_projects
-= link_to 'New Project', new_admin_project_path
+= link_to 'New Project', new_admin_project_path, :class => "lbutton"
