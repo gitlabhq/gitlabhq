@@ -12,7 +12,12 @@ describe Note do
 
   it { Factory.create(:note,
                       :project => Factory.create(:project)).should be_valid }
-
+  describe "Scopes" do
+    it "should have a today named scope that returns ..." do
+      Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
+    end
+  end
+  
   describe :authorization do
     before do
       @p1 = Factory :project
