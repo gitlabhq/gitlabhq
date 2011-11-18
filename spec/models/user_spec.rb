@@ -16,7 +16,7 @@ describe User do
 
   it "should return valid identifier" do
     user = User.new(:email => "test@mail.com")
-    user.identifier.should == "test_mail.com"
+    user.identifier.should == "test_mail_com"
   end
 
   it "should have authentication token" do
