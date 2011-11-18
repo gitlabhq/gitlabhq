@@ -1,4 +1,5 @@
-%p#notice= notice
+- unless notice.nil?
+  %p#notice= notice
 
 #infoblock
   %h2= @admin_project.name
