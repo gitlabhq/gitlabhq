@@ -39,7 +39,7 @@ group :development, :test do
   gem 'capybara'
   gem 'autotest'
   gem 'autotest-rails'
-  # gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'awesome_print'
   gem 'database_cleaner'
   gem 'launchy'

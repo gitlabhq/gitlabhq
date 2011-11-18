@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
 
   def identifier
-    email.gsub "@", "_"
+    email.gsub /[@.]/, "_"
   end
 
   def is_admin?

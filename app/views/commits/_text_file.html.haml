@@ -2,6 +2,7 @@
 - line_new = 0
 - lines_arr = diff.diff.lines.to_a
 - lines_arr.each do |line|
+  - line.force_encoding(Encoding::UTF_8)
   - next if line.match(/^--- \/dev\/null/)
   - next if line.match(/^--- a/)
   - next if line.match(/^\+\+\+ b/)
