@@ -31,7 +31,6 @@ end
 #
 #  id          :integer         not null, primary key
 #  title       :string(255)
-#  content     :text
 #  assignee_id :integer
 #  author_id   :integer
 #  project_id  :integer
