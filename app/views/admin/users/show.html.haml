@@ -1,46 +1,64 @@
 - unless notice.nil?
   %p#notice= notice
 
-#infoblock
-  %p
-    %b Name:
-    = @admin_user.name
-  %p
-    %b Email:
-    = @admin_user.email
-  %p
-    %b Admin:
-    = @admin_user.admin
-  %p
-    %b Projects limit:
-    = @admin_user.projects_limit
+%h2= @admin_user.name
 
-  %p
-    %b Skype:
-    = @admin_user.skype
-  %p
-    %b LinkedIn:
-    = @admin_user.linkedin
-  %p
-    %b Twitter:
-    = @admin_user.twitter
-
-  .clear
-  = link_to 'Edit', edit_admin_user_path(@admin_user)
-  \|
-  = link_to 'Back', admin_users_path
+%table.round-borders
+  %tr
+    %td
+      %b
+        Email:
+    %td
+      = @admin_user.email
+  %tr
+    %td
+      %b
+        Admin:
+        %td= check_box_tag "admin", 1, @admin_user.admin, :disabled => :disabled
+  %tr
+    %td
+      %b
+        Projects limit:
+    %td
+      = @admin_user.projects_limit
+  - unless @admin_user.skype.empty?
+    %tr
+      %td
+        %b
+          Skype:
+      %td
+        = @admin_user.skype
+  - unless @admin_user.linkedin.empty?
+    %tr
+      %td
+        %b
+          Linkedin:
+      %td
+        = @admin_user.linkedin
+  - unless @admin_user.twitter.empty?
+    %tr
+      %td
+        %b
+          Twitter:
+      %td
+        = @admin_user.twitter
+  %tr
+    %td{:colspan => 2}
+      = link_to 'Edit', edit_admin_user_path(@admin_user), :class => "lbutton"
+      = link_to 'Back', admin_users_path, :class => "right lbutton"
 
 .span-14
   %h2 Projects
 
   %table.round-borders
     %tr
-      %th Name
-      %th Added
-      %th Web
-      %th Git
-      %th Admin
-      %th
+      %thead
+        %th Name
+        %th Added
+        %th Web
+        %th Git
+        %th Admin
+        %th
 
     - @admin_user.users_projects.each do |tm|
       - project = tm.project
@@ -53,4 +71,4 @@
         %td= link_to 'Edit', edit_admin_team_member_path(tm)
         %td= link_to 'Cancel', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
 
-  = link_to 'Add To Another Project', new_admin_team_member_path(:team_member => {:user_id => @admin_user.id})
+  = link_to 'Add To Another Project', new_admin_team_member_path(:team_member => {:user_id => @admin_user.id}), :class => "lbutton"
