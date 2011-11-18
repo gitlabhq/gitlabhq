@@ -58,9 +58,10 @@ end
 #  updated_at             :datetime
 #  name                   :string(255)
 #  admin                  :boolean         default(FALSE), not null
-#  projects_limit         :integer
-#  skype                  :string
-#  linkedin               :string
-#  twitter                :string
+#  projects_limit         :integer         default(10)
+#  skype                  :string(255)     default(""), not null
+#  linkedin               :string(255)     default(""), not null
+#  twitter                :string(255)     default(""), not null
+#  authentication_token   :string(255)
 #
 
