@@ -11,8 +11,8 @@ html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-
 body { margin: 0; font-size: 13px; line-height: 1.231; }
 body, button, input, select, textarea { font-family: sans-serif; color: #222; }
 
-::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
-::selection { background: #fe57a1; color: #fff; text-shadow: none; }
+::-moz-selection { background: #79c3e0; color: #fff; text-shadow: none; }
+::selection { background: #79c3e0; color: #fff; text-shadow: none; }
 
 a { color: #00e; }
 a:hover { color: #06e; }
@@ -315,6 +315,19 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 }
 /* eo Errors */
 
+/* Notices */
+#notice{background: #dfffe1;  padding: 20px; margin-bottom: 20px; border-radius: 5px; color: green; font-size: 1.3em;}
+/* eo Notices */
+
+/* InfoBlock */
+#infoblock{
+  background: #eeeeee;  
+  padding: 20px; 
+  margin-bottom: 20px; 
+  border-radius: 5px; 
+}
+/* eo InfoBlock */
+
 /* General */
 #container{background-color: white; overflow: hidden; }
 body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
@@ -588,7 +601,7 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 }
 
 body.project-page h2.icon span{  background-position:  -78px -68px; }
-body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; }
+body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
 body.project-page .page-title{margin-bottom: 0}
 body.project-page .project-sidebar {width: 220px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
 
