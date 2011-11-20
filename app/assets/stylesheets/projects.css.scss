@@ -184,12 +184,12 @@ input.ssh_project_url {
 
 /** FLASH **/
 #flash_container {
-  height:40px;
+  height:45px;
   position:fixed;
-  z-index:1209;
+  z-index:10001;
   top:0px;
-  width:100%;
-  margin-bottom:10px;
+  width:980px;
+  margin-bottom:15px;
   overflow:hidden;
   background:white;
   cursor:pointer;
