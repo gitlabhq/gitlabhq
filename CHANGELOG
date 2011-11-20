@@ -1,6 +1,7 @@
 v 1.2.0
   - new design
   - user dashboard
+  - network graph
   - markdown support for comments
   - encoding issues
   - wall like twitter timeline
