@@ -25,16 +25,14 @@ class RefsController < ApplicationController
     @repo = project.repo
 
     @commit = @repo.commits(@ref).first
-    @tree = @commit.tree
-    @tree = @tree / params[:path] if params[:path]
+    @tree = Tree.new(@commit.tree, project, @ref, params[:path])
+    @tree = TreeDecorator.new(@tree)
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html
       format.js do
-        # diasbale cache to allow back button works
-        response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+        # disable cache to allow back button works
+        no_cache_headers
       end
     end
   rescue

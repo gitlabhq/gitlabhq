@@ -1,26 +1,17 @@
--#%a.right.button{:href => "#"} Download
--#-if can? current_user, :admin_project, @project
-  %a.right.button.blue{:href => "#"} EDIT
 #tree-breadcrumbs
   %h2.icon
     %span
     %d
       = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
         = @project.name
-      - if params[:path]
-        - part_path = ""
-        - params[:path].split("\/").each do |part|
-          - part_path = File.join(part_path, part) unless part_path.empty?
-          - if part_path.empty?
-            - part_path = part
-          \/
-          = link_to truncate(part, :length => 40), tree_file_project_ref_path(@project, @ref, :path => part_path), :remote => :true
-        &nbsp;
+      - tree.breadcrumbs(2) do |link|
+        \/
+        = link
+      &nbsp;
   .right= render :partial => "projects/refs", :locals => { :destination => :tree }
 .clear
-
 #tree-content-holder
-  - if tree.is_a?(Grit::Blob)
+  - if tree.is_blob?
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
@@ -30,13 +21,13 @@
         %th Last Update
         %th
           Last commit
-          = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right"
-      - if params[:path]
-        - file = File.join(params[:path], "..")
-        %tr{ :class => "tree-item", :url => tree_file_project_ref_path(@project, @ref, file) }
+          = link_to "history", tree.history_path, :class => "right"
+      
+      - if tree.up_dir?
+        %tr{ :class => "tree-item", :url => tree.up_dir_path }
           %td.tree-item-file-name
             = image_tag "dir.png"
-            = link_to "..", tree_file_project_ref_path(@project, @ref, file), :remote => :true
+            = link_to "..", tree.up_dir_path, :remote => :true
           %td
           %td
 

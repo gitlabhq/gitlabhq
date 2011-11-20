@@ -6,7 +6,8 @@ $(document).ready(function(){
   $("#tree-slider tr.tree-item").live('click', function(e){
     if(e.target.nodeName != "A") {
       e.stopPropagation();
-      $(this).find("td.tree-item-file-name a").click();
+      link = $(this).find("td.tree-item-file-name a")
+      link.click();
       return false;
     }
   });
