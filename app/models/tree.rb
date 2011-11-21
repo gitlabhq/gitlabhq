@@ -5,6 +5,7 @@ class Tree
     :basename,
     :name,
     :data,
+    :mime_type,
     :text?,
     :colorize,
     :to => :tree

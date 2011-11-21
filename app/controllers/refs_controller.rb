@@ -1,6 +1,7 @@
 class RefsController < ApplicationController
   before_filter :project
   before_filter :ref
+  before_filter :define_tree_vars, :only => [:tree, :blob]
   layout "project"
 
   # Authorize
@@ -22,12 +23,6 @@ class RefsController < ApplicationController
   # Repository preview
   #
   def tree
-    @repo = project.repo
-
-    @commit = @repo.commits(@ref).first
-    @tree = Tree.new(@commit.tree, project, @ref, params[:path])
-    @tree = TreeDecorator.new(@tree)
-
     respond_to do |format|
       format.html
       format.js do
@@ -40,11 +35,7 @@ class RefsController < ApplicationController
   end
 
   def blob
-    @repo = project.repo
-    @commit = project.commit(@ref)
-    @tree = project.tree(@commit, params[:path])
-
-    if @tree.is_a?(Grit::Blob)
+    if @tree.is_blob?
       send_data(@tree.data, :type => @tree.mime_type, :disposition => 'inline', :filename => @tree.name)
     else
       head(404)
@@ -55,6 +46,13 @@ class RefsController < ApplicationController
 
   protected
 
+  def define_tree_vars
+    @repo = project.repo
+    @commit = project.commit(@ref)
+    @tree = Tree.new(@commit.tree, project, @ref, params[:path])
+    @tree = TreeDecorator.new(@tree)
+  end
+    
   def ref
     @ref = params[:id]
   end
