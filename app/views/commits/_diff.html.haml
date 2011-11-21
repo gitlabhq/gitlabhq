@@ -1,4 +1,5 @@
-.file_stats= render "commits/diff_head"
+.file_stats
+  = render "commits/diff_head"
 
 - @commit.diffs.each do |diff|
   - next if diff.diff.empty?

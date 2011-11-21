@@ -28,17 +28,7 @@
 
 /** File stat **/
 .file_stats {
-  margin-bottom:10px;
-  @include round-borders-all(4px);
-
   span {
-    border-top: 1px solid #eaeaea;
-    padding:5px 5px;
-    display:block;
-    &:first-child {
-      border-top:none;
-    }
-
     img {
       width:18px;
       float:left;

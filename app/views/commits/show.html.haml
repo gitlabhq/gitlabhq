@@ -1,7 +1,18 @@
-%h3
-  = "[ #{@commit.author_name} ]  #{truncate(@commit.safe_message, :length => 70)}"
+- content_for(:body_class, "project-page commits-page")
+
+-#%a.right.button{:href => "#"} Download
+-#-if can? current_user, :admin_project, @project
+  %a.right.button.blue{:href => "#"} EDIT
+%h2.icon
+  %span
+  %d
+    = "#{truncate(@commit.safe_message, :length => 50)}"
+.right 
+  = link_to 'Browse Code', tree_project_ref_path(@project, @commit.id), :class => "button"
 -#= link_to 'Back', project_commits_path(@project), :class => "button"
 %table.round-borders
+  %thead
+    %th{:colspan => 2} Details
   %tr
     %td ID
     %td= @commit.id
@@ -16,9 +27,6 @@
     %td
       %pre.commit_message
         = preserve @commit.safe_message
-  %tr
-    %td Tree
-    %td= link_to 'Browse Code', tree_project_ref_path(@project, @commit.id)
 .clear
 
 %br
