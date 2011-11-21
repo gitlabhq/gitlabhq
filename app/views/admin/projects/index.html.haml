@@ -7,7 +7,6 @@
     %th Last Commit
     %th
     %th
-    %th
 
   - @admin_projects.each do |project|
     %tr
@@ -16,9 +15,8 @@
       %td= project.path
       %td= project.users_projects.count
       %td= last_commit(project)
-      %td= link_to 'Show', [:admin, project]
       %td= link_to 'Edit', edit_admin_project_path(project), :id => "edit_#{dom_id(project)}"
       %td= link_to 'Destroy', [:admin, project], :confirm => 'Are you sure?', :method => :delete
 
 = paginate @admin_projects
-= link_to 'New Project', new_admin_project_path, :class => "lbutton"
+= link_to 'New Project', new_admin_project_path, :class => "grey-button"

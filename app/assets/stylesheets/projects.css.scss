@@ -178,7 +178,7 @@ input.ssh_project_url {
   position:fixed;
   z-index:10001;
   top:0px;
-  width:980px;
+  width:100%;
   margin-bottom:15px;
   overflow:hidden;
   background:white;
@@ -368,3 +368,6 @@ body.dashboard.project-page .news-feed .project-updates a.project-update span.up
 body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
 body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
 /* eo Dashboard Page */
+
+body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }
+

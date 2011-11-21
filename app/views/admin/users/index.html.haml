@@ -6,7 +6,6 @@
     %th Projects
     %th
     %th
-    %th
 
   - @admin_users.each do |user|
     %tr
@@ -14,9 +13,9 @@
       %td= link_to user.name, [:admin, user]
       %td= user.email
       %td= user.users_projects.count
-      %td= link_to 'Show', [:admin, user]
       %td= link_to 'Edit', edit_admin_user_path(user), :id => "edit_#{dom_id(user)}"
       %td= link_to 'Destroy', [:admin, user], :confirm => 'Are you sure?', :method => :delete
 
 = paginate @admin_users
-= link_to 'New User', new_admin_user_path, :class => "lbutton"
+%br
+= link_to 'New User', new_admin_user_path, :class => "grey-button"

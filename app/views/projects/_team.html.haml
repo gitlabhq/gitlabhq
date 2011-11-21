@@ -1,6 +1,7 @@
 - if can? current_user, :admin_team_member, @project
   %div#new-member-holder
-    = link_to "Add new", new_project_team_member_path(@project), :remote => true, :class => "lbutton vm"
+    = link_to "Add new", new_project_team_member_path(@project), :remote => true, :class => "grey-button"
+  %br
 %table.round-borders#team-table
   %thead
     %th Name

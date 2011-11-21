@@ -31,8 +31,7 @@
       = @admin_project.description
   %tr
     %td{:colspan => 2}
-      = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "lbutton"
-      = link_to 'Back', admin_projects_path, :class => "right lbutton"
+      = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "grey-button"
 
 
 .span-14
@@ -58,4 +57,4 @@
         %td.span-2= check_box_tag "admin",  1, @admin_project.admins.include?(tm.user), :disabled => :disabled
         %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
 
-  = link_to 'New Team Member', new_admin_team_member_path(:team_member => {:project_id => @admin_project.id}),  :class => "lbutton"
+  = link_to 'New Team Member', new_admin_team_member_path(:team_member => {:project_id => @admin_project.id}),  :class => "grey-button"

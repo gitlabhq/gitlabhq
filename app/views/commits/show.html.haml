@@ -1,15 +1,10 @@
 - content_for(:body_class, "project-page commits-page")
-
--#%a.right.button{:href => "#"} Download
--#-if can? current_user, :admin_project, @project
-  %a.right.button.blue{:href => "#"} EDIT
 %h2.icon
   %span
   %d
     = "#{truncate(@commit.safe_message, :length => 50)}"
 .right 
-  = link_to 'Browse Code', tree_project_ref_path(@project, @commit.id), :class => "button"
--#= link_to 'Back', project_commits_path(@project), :class => "button"
+  = link_to 'Browse Code', tree_project_ref_path(@project, @commit.id), :class => "browse-code button yellow"
 %table.round-borders
   %thead
     %th{:colspan => 2} Details

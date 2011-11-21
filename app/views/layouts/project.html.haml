@@ -14,8 +14,8 @@
       REQ_URI = "#{request.env["REQUEST_URI"]}";
       REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
   %body{ :class => body_class('project-page'), :id => yield(:boyd_id)}
+    = render :partial => "layouts/flash"
     #container
-      = render :partial => "layouts/flash"
       = render :partial => "layouts/head_panel"
       .project-container
         .project-sidebar

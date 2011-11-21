@@ -17,4 +17,4 @@
     %td= check_box_tag "admin",  1, member.admin, :disabled => :disabled
   - if can? current_user, :admin_team_member, @project
     %td
-      = link_to 'Cancel', project_team_member_path(:project_id => @project, :id => member.id), :confirm => 'Are you sure?', :method => :delete, :class => "lbutton negative delete-team-member", :remote => true
+      = link_to 'Cancel', project_team_member_path(:project_id => @project, :id => member.id), :confirm => 'Are you sure?', :method => :delete, :class => "grey-button negative delete-team-member", :remote => true

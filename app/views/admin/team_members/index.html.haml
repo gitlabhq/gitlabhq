@@ -10,7 +10,6 @@
       %th Added
       %th
       %th
-      %th
     - members.each do |tm|
       - user = tm.user
       %tr
@@ -20,11 +19,10 @@
         %td.span-1= check_box_tag "commit", 1, project.writers.include?(user), :disabled => :disabled
         %td.span-2= check_box_tag "admin",  1, project.admins.include?(user), :disabled => :disabled
         %td.span-3= time_ago_in_words(tm.updated_at) + " ago"
-        %td= link_to 'Show', admin_team_member_path(tm)
         %td= link_to 'Edit', edit_admin_team_member_path(tm), :id => "edit_#{dom_id(tm)}"
         %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
 
 %br
 
 = paginate @admin_team_members
-= link_to 'New Team Member', new_admin_team_member_path
+= link_to 'New Team Member', new_admin_team_member_path, :class => "grey-button"
