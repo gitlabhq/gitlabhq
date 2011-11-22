@@ -22,7 +22,7 @@ describe "Dashboard" do
 
     it "should have news feed" do
       within "#news-feed"  do
-        page.should have_content("master")
+        page.should have_content("commit")
         page.should have_content(@project.commit.author.name)
         page.should have_content(@project.commit.safe_message)
       end
