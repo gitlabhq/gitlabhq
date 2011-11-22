@@ -71,9 +71,17 @@ a {
   margin-bottom:1em;
 
   .view_file_header {
-    padding:5px 5px;
-    border-bottom:1px solid #CCC;
-    background: #eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    margin: 0;
+    font-weight: normal;
+    font-weight: bold;
+    text-align: left;
+    color: #666;
+    border-bottom: 1px solid #DEE2E3;
+    padding: .9em 1em;
   }
   .view_file_content {
     background:#fff;
@@ -96,6 +104,8 @@ td.code {
     margin-left: 55px;
     overflow:auto;
     overflow-y:hidden;
+    border-left: 1px solid #DEE2E3;
+    background: white;
   }
 }
 .highlight pre {
@@ -103,9 +113,13 @@ td.code {
   word-wrap:normal;
 }
 
-.highlighttable tr:hover {
-  background:white;
+table.highlighttable { 
+  border: none;
+  background: #F7F7F7;
 }
+body.project-page table.highlighttable td { border: none }
+table.highlighttable tr:hover { background:none;}
+
 table.highlighttable pre{
   line-height:16px !important;
   font-size:12px !important;
