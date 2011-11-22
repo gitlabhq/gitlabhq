@@ -8,7 +8,7 @@
     %div.note-author
       %strong= issue.assignee.name
       %cite.cgray
-        = time_ago_in_words(issue.updated_at)
+        = time_ago_in_words(issue.created_at)
         ago
       - if issue.critical
         %span.tag.high critical
