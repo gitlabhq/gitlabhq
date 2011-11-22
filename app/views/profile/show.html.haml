@@ -1,13 +1,8 @@
-.span-2
-  = image_tag gravatar_icon(@user.email), :class => "left", :width => 60, :style => "padding-right:5px;"
-%p
-  %b Name:
+%h2.icon
+  %span>
   = @user.name
-%p
-  %b Email:
-  = @user.email
 
-%br
+.clear
 
 = form_for @user, :url => profile_edit_path, :method => :put do |f|
   -if @user.errors.any?
@@ -16,6 +11,14 @@
         - @user.errors.full_messages.each do |msg|
           %li= msg
 
+  .form-row
+    = f.label :name
+    %br
+    = f.text_field :name
+  .form-row
+    = f.label :email
+    %br
+    = f.text_field :email
   .form-row
     = f.label :skype
     %br
@@ -29,5 +32,5 @@
     %br
     = f.text_field :twitter
   .actions
-    = f.submit 'Save', :class => "lbutton vm"
+    = f.submit 'Save', :class => "grey-button"
 

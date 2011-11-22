@@ -11,7 +11,6 @@ describe "Profile" do
     end
 
     it { page.should have_content(@user.name) }
-    it { page.should have_content(@user.email) }
   end
 
   describe "Profile update" do
