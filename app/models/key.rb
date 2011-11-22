@@ -8,7 +8,7 @@ class Key < ActiveRecord::Base
   validates :key,
             :presence => true,
             :uniqueness => true,
-            :length   => { :within => 0..1600 }
+            :length   => { :within => 0..5000 }
 
   before_save :set_identifier
   after_save :update_gitosis

@@ -71,6 +71,10 @@ ssh-keygen -t rsa
 sudo -H -u git gitosis-init < ~/.ssh/id_rsa.pub
 
 sudo chmod 755 /home/git/repositories/gitosis-admin.git/hooks/post-update
+
+cd /tmp && git clone git@localhost:gitosis-admin.git 
+
+rm -rf gitosis-admin.git && cd
 ```
 
 ## Install ruby 1.9.2
