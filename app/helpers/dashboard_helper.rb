@@ -28,6 +28,6 @@ module DashboardHelper
             else return "Project Wall"
             end
 
-    "[#{klass}] #{truncate(sanitize(title, :tags => []), :length => 60)} "
+    truncate(sanitize(title, :tags => []), :length => 60)
   end
 end
