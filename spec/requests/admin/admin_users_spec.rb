@@ -57,7 +57,7 @@ describe "Admin::Users" do
   describe "GET /admin/users/:id" do
     before do
       visit admin_users_path
-      click_link "Show"
+      click_link "#{@user.name}"
     end
 
     it "should have user info" do

@@ -26,7 +26,7 @@ describe "Admin::Projects" do
   describe "GET /admin/projects/:id" do
     before do
       visit admin_projects_path
-      click_link "Show"
+      click_link "#{@project.name}"
     end
 
     it "should have project info" do
