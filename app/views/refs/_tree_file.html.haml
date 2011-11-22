@@ -8,8 +8,12 @@
       %br/
   - if file.text?
     .view_file_content
-      :erb
-        <%= raw file.colorize %>
+      - unless file.empty?
+        :erb
+          <%= raw file.colorize %>
+      - else 
+        %h3
+          %center Empty file
   - elsif file.image?
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}

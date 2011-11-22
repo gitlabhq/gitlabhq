@@ -1,6 +1,6 @@
 %div
   - if can? current_user, :write_snippet, @project
-    = link_to 'New Snippet', new_project_snippet_path(@project), :class => "button append-bottom-10"
+    = link_to 'New Snippet', new_project_snippet_path(@project), :class => "grey-button append-bottom-10"
 
   %table.round-borders#snippets-table
     %thead

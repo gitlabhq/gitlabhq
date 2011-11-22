@@ -22,4 +22,8 @@ class Tree
   def is_blob?
     tree.is_a?(Grit::Blob)
   end
+
+  def empty?
+    data.blank?
+  end
 end
