@@ -45,6 +45,6 @@
   - if can?(current_user, :write_issue, @issue)
     .clear
     %br
-    = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "lbutton positive", :remote => true
-    .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "lbutton delete-issue negative", :id => "destroy_issue_#{@issue.id}"
+    = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive", :remote => true
+    .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "grey-button delete-issue negative", :id => "destroy_issue_#{@issue.id}"
 .clear
