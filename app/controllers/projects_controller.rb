@@ -11,9 +11,6 @@ class ProjectsController < ApplicationController
   before_filter :require_non_empty_project, :only => [:blob, :tree]
   before_filter :load_refs, :only => :tree # load @branch, @tag & @ref
 
-  # expire show page every 4 minute
-  caches_action :show, :expires_in => 4.minutes
-
   def index
     source = current_user.projects
     source = source.tagged_with(params[:tag]) unless params[:tag].blank?
