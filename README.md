@@ -36,7 +36,7 @@ echo "USERNAME ALL = (git) NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
 
 sudo gem install bundler
 
-bundle
+bundle install --without development test
 
 bundle exec rake db:setup RAILS_ENV=production
 
