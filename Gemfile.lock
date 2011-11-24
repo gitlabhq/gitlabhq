@@ -1,11 +1,11 @@
 GIT
-  remote: git://github.com/ctran/annotate_models.git
+  remote: https://github.com/ctran/annotate_models.git
   revision: fb73329243056a6d9a64878e5c543aba9b6417de
   specs:
     annotate (2.4.1.beta1)
 
 GIT
-  remote: git://github.com/gitlabhq/grit.git
+  remote: https://github.com/gitlabhq/grit.git
   revision: ff015074ef35bd94cba943f9c0f98e161ab5851c
   specs:
     grit (2.4.1)
