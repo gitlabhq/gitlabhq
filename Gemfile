@@ -8,7 +8,7 @@ gem 'stamp'
 gem 'kaminari'
 gem 'haml-rails'
 gem 'jquery-rails'
-gem 'grit', :git => 'git://github.com/gitlabhq/grit.git'
+gem 'grit', :git => 'https://github.com/gitlabhq/grit.git'
 gem "carrierwave"
 gem 'six'
 gem 'therubyracer'
@@ -32,7 +32,7 @@ end
 group :development do
   gem 'letter_opener'
   gem 'rails-footnotes', '~> 3.7.5'
-  gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
+  gem 'annotate', :git => 'https://github.com/ctran/annotate_models.git'
 end
 
 group :development, :test do
