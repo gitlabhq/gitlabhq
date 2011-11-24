@@ -12,47 +12,34 @@
 
 .clear
 
+%h3= @issue.title
+
 %table.round-borders
   %thead
-    %th{:colspan => 3} Details
-  %tr
-    %td{:colspan => 3}
-      %h3= @issue.title
+    %th Assignee
+    %th Status
+    %th Opened
+    %th Tags
   %tr
     %td
-      %center
-        = image_tag gravatar_icon(@issue.author_email), :width => 40, :style => "padding:0 5px;"
-        %br
-        %br
-        = @issue.author_name
+      = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
+      = @issue.assignee_name
     %td
-      %center
-        - if @issue.closed
-          Resolved
-          %br
-          %span{:style => "font-size:36px;"} &larr;
-        - else 
-          Open
-          %br
-          %span{:style => "font-size:36px;"} &rarr;
-        %br
-        = @issue.created_at.stamp("21 Aug 2011, 11:15pm")
-
+      - if @issue.closed
+        %span.tag.high Resolved
+      - else 
+        %span.tag.today Open
     %td
-      %center
-        = image_tag gravatar_icon(@issue.assignee_email),  :width => 40, :style => "padding:0 5px;"
-        %br
-        %br
-        = @issue.assignee_name
-
-  %tr
-    %td{:colspan => 3}
+      = @issue.created_at.stamp("21 Aug 2011, 11:15pm")
+    %td
       - if @issue.critical
         %span.tag.high critical
       - else
         %span.tag.normal normal
       - if @issue.today?
         %span.tag.today today
+
+
 
 .clear
 
