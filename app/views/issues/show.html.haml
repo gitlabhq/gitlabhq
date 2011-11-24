@@ -1,50 +1,85 @@
-%h2
-  %strong
-    Issue
-    = "##{@issue.id}"
-  &ndash;
-  = html_escape(@issue.title)
-.left.width-65p
-  .issue_notes= render "notes/notes"
+%h2.icon
+  %span
+  %d
+    = "Issue ##{@issue.id}" 
+    &ndash;
+    = truncate(@issue.title, :length => 50)
 
-  .loading{ :style => "display:none;"}
-    %center= image_tag "ajax-loader.gif"
-.right.width-30p
-  .span-8
+- unless @commits.blank?
+  .right 
+    = link_to 'Browse Code', tree_project_ref_path(@project, @issue.branch_name), :class => "browse-code button yellow", :style => "margin-right:10px;"
+    = link_to 'Commits', project_commits_path(@project, :ref => @issue.branch_name), :class => "browse-code button"
+
+
+
+.clear
+
+%table.round-borders
+  %thead
+    %th 
+      %center Author
+    %th 
+    %th
+      %center
+        Assignee
+  %tr
+    %td
+      %center
+        = image_tag gravatar_icon(@issue.author_email), :width => 40, :style => "padding:0 5px;"
+        %br
+        %br
+        = @issue.author_name
+    %td
+      %center
+        - if @issue.closed
+          Resolved
+          %br
+          %span{:style => "font-size:36px;"} &larr;
+        - else 
+          Open
+          %br
+          %span{:style => "font-size:36px;"} &rarr;
+        %br
+        = @issue.created_at.stamp("21 Aug 2011, 11:15pm")
+
+    %td
+      %center
+        = image_tag gravatar_icon(@issue.assignee_email),  :width => 40, :style => "padding:0 5px;"
+        %br
+        %br
+        = @issue.assignee_name
+
+
+
+- if can? current_user, :write_issue, @issue
+  - if @issue.closed
+    = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "grey-button"
+  - else
+    = link_to 'Resolve', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
+  .right
+    = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive"
+    &nbsp;
+    = link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "grey-button delete-issue negative", :id => "destroy_issue_#{@issue.id}"
+
+%br
+%br
+- unless @commits.blank?
   %table.round-borders
-    %tr
-      %td Author:
-      %td
-        = image_tag gravatar_icon(@issue.author.email), :class => "left", :width => 40, :style => "padding:0 5px;"
-        = @issue.author.name
-    %tr
-      %td Assignee:
-      %td
-        = image_tag gravatar_icon(@issue.assignee.email), :class => "left", :width => 40, :style => "padding:0 5px;"
-        = @issue.assignee.name
-    %tr
-      %td Tags
-      %td
-        - if @issue.critical
-          %span.tag.high critical
-        - else
-          %span.tag.normal normal
+    %thead
+      %th Unmerged Commits
+    - @commits.each do |commit|
+      %tr
+        %td
+          = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 20, :style => "padding-right:5px;"
+          = link_to commit.id.to_s, project_commit_path(@project, :id => commit.id)
+          .right
+            = time_ago_in_words(commit.created_at)
+            ago
 
-        - if @issue.today?
-          %span.tag.today today
-    %tr
-      %td Closed?
-      %td
-        - if can? current_user, :write_issue, @issue
-          = form_for([@project, @issue]) do |f|
-            = f.check_box :closed, :onclick => "$(this).parent().submit();"
-            = hidden_field_tag :status_only, true
-        - else
-          = check_box_tag "closed", 1, @issue.closed, :disabled => true
 
-  - if can?(current_user, :write_issue, @issue)
-    .clear
-    %br
-    = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive", :remote => true
-    .right= link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "grey-button delete-issue negative", :id => "destroy_issue_#{@issue.id}"
+.issue_notes= render "notes/notes"
+
+.loading{ :style => "display:none;"}
+  %center= image_tag "ajax-loader.gif"
+
 .clear

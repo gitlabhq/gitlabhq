@@ -9,7 +9,7 @@ class IssuesController < ApplicationController
   before_filter :authorize_read_issue!
   before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort]
 
-  respond_to :js
+  respond_to :js, :html
 
   def index
     @issues = case params[:f].to_i
@@ -40,6 +40,13 @@ class IssuesController < ApplicationController
   def show
     @notes = @issue.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
+
+    @commits = if @issue.branch_name && @project.repo.heads.map(&:name).include?(@issue.branch_name)
+                 @project.repo.commits_between("master", @issue.branch_name)
+               else 
+                 []
+               end
+
 
     respond_to do |format|
       format.html
