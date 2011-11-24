@@ -2,8 +2,6 @@
   %span
   %d
     = "Issue ##{@issue.id}" 
-    &ndash;
-    = truncate(@issue.title, :length => 50)
 
 - unless @commits.blank?
   .right 
@@ -16,12 +14,10 @@
 
 %table.round-borders
   %thead
-    %th 
-      %center Author
-    %th 
-    %th
-      %center
-        Assignee
+    %th{:colspan => 3} Details
+  %tr
+    %td{:colspan => 3}
+      %h3= @issue.title
   %tr
     %td
       %center
@@ -49,6 +45,16 @@
         %br
         = @issue.assignee_name
 
+  %tr
+    %td{:colspan => 3}
+      - if @issue.critical
+        %span.tag.high critical
+      - else
+        %span.tag.normal normal
+      - if @issue.today?
+        %span.tag.today today
+
+.clear
 
 
 - if can? current_user, :write_issue, @issue
