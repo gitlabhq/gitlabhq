@@ -8,7 +8,7 @@
         %span.tag.today Open
 
   .data
-    %h4= @issue.title
+    %p= @issue.title
 
     - if @issue.author == @issue.assignee
       = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
