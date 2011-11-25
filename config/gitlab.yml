@@ -1,0 +1,24 @@
+# Gitlab application config file
+
+# Email used for notification
+# about new issues, comments
+email:
+  from: notify@gitlabhq.com
+  host: gitlabhq.com
+
+# Gitosis congiguration
+gitosis:
+  admin_uri: git@localhost:gitosis-admin.git
+  base_path: /home/git/repositories/
+  host: localhost
+  git_user: git
+  # port: 22
+
+# Git settings
+# Use default values unless you understand it
+git:
+  # Max size of git object like commit, in bytes
+  # This value can be increased if you have a very large commits
+  git_max_size: 5242880 # 5.megabytes
+  # Git timeout to read commit, in seconds
+  git_timeout: 10
