@@ -1,12 +1,4 @@
 :plain
   var new_issue_dialog = $("<div id='new_issue_dialog'></div>");
   new_issue_dialog.html("#{escape_javascript(render('form'))}");
-  $(new_issue_dialog).dialog({
-    width: 500,
-    resizable: false,
-    draggable: false,
-    title: "Add new issue",
-    modala: true,
-    close: function(event, ui) { $("#new_issue_dialog").remove();}
-  });
-  $('select#issue_assignee_id').selectmenu({width:300});
+  switchToNewIssue(new_issue_dialog);

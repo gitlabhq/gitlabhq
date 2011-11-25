@@ -1,24 +1,45 @@
-%div
-  = form_for [@project, @issue], :remote => "true" do |f|
-    -if @issue.errors.any?
-      %ul
-        - @issue.errors.full_messages.each do |msg|
-          %li= msg
+%div.issue-form-holder
+  .issue-show-holder.ui-box
+    %h3
+      = @issue.new_record? ? "New issue" : "Edit Issue ##{@issue.id}"
+      - unless @issue.new_record?
+        .right
+          - if @issue.closed
+            %span.tag.high Resolved
+          - else 
+            %span.tag.today Open
+    = form_for [@project, @issue], :remote => "true" do |f|
+      .data
+        %table.no-borders
+          -if @issue.errors.any?
+            %tr 
+              %td Errors
+              %td
+                #error_explanation
+                  - @issue.errors.full_messages.each do |msg|
+                    %span= msg
+                    %br
 
-    .form-row
-      = f.label :title
-      = f.text_area :title, :style => "width:450px; height:100px", :maxlength => 255
-    .form-row
-      = f.label :assignee_id
-      = f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
-    .form-row
-      = f.label :critical, "Critical"
-      %br
-      = f.check_box :critical
-    - unless @issue.new_record?
-      .form-row
-        = f.label :closed
-        %br
-        = f.check_box :closed
-    .form-row
-      = f.submit 'Save', :class => "grey-button"
+          %tr
+            %td= f.label :title
+            %td= f.text_area :title, :style => "width:450px; height:100px", :maxlength => 255
+
+          %tr
+            %td= f.label :assignee_id
+            %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+
+          %tr
+            %td= f.label :critical, "Critical"
+            %td= f.check_box :critical
+          
+          - unless @issue.new_record?
+            %tr
+              %td= f.label :closed
+              %td= f.check_box :closed
+      .buttons 
+        = f.submit 'Save', :class => "grey-button"
+        .right
+          - if request.xhr? 
+            = link_to_function "Back", "backToIssues();", :class => "grey-button"
+          - else 
+            = link_to "Back", [@project, @issue], :class => "grey-button"

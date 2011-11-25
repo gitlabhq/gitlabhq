@@ -1,12 +1,5 @@
 :plain
   var edit_issue_dialog = $("<div id='edit_issue_dialog'></div>");
   edit_issue_dialog.html("#{escape_javascript(render('form'))}");
-  $(edit_issue_dialog).dialog({
-    width: 500,
-    resizable: false,
-    draggable: false,
-    title: "Issue ##{@issue.id} #{"[CLOSED]" if @issue.closed}",
-    close: function(event, ui) { $("#edit_issue_dialog").remove();},
-    modal: true
-  });
-  $('select#issue_assignee_id').selectmenu({width:300});
+  switchToEditIssue(edit_issue_dialog);
+

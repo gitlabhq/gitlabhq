@@ -95,18 +95,16 @@ describe "Issues" do
       click_link "New Issue"
     end
 
-    it "should open new issue popup" do
-      page.should have_content("Add new issue")
+    it "should open new issue form" do
+      page.should have_content("New issue")
     end
 
     describe "fill in" do
       describe 'assign to me' do
         before do
           fill_in "issue_title", :with => "bug 345"
-          click_link "Select user"
-          within "#issue_assignee_id-menu" do
-            click_link @user.name
-          end
+          page.execute_script("$('#issue_assignee_id').show();")
+          select @user.name, :from => "issue_assignee_id" 
         end
 
         it { expect { click_button "Save" }.to change {Issue.count}.by(1) }
@@ -129,10 +127,8 @@ describe "Issues" do
       describe 'assign to other' do
         before do
           fill_in "issue_title", :with => "bug 345"
-          click_link "Select user"
-          within "#issue_assignee_id-menu" do
-            click_link @user2.name
-          end
+          page.execute_script("$('#issue_assignee_id').show();")
+          select @user2.name, :from => "issue_assignee_id" 
         end
 
         it { expect { click_button "Save" }.to change {Issue.count}.by(1) }

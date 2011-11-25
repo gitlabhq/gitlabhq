@@ -40,3 +40,6 @@
 .prepend-top-10 {
   margin-top:10px;
 }
+.no-borders { 
+  border:none;
+}

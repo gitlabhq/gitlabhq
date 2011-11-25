@@ -5,10 +5,10 @@
 - else
   - if @issue.valid?
     :plain
-      $("#edit_issue_dialog").dialog("close");
       updatePage();
+      switchFromEditIssue();
   - else
     :plain
       $("#edit_issue_dialog").empty();
       $("#edit_issue_dialog").append("#{escape_javascript(render('form'))}");
-      $('select#issue_assignee_id').selectmenu({width:300});
+      $('select#issue_assignee_id').chosen();

@@ -387,3 +387,10 @@ body.dashboard.project-page .news-feed .project-updates a.project-update span.up
 body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }
 
 body.projects-page input.text.git-url.project_list_url { width:165px; }
+
+
+
+body.project-page table.no-borders tr,
+body.project-page table.no-borders td{ 
+  border:none;
+}
