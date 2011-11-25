@@ -2,6 +2,10 @@
 
 GitLab is a free Project/Repository management application
 
+
+<img src="http://gitlabhq.com/front.png" width="900" height="471">
+
+
 ## Application details
 
 rails 3.1
@@ -46,10 +50,10 @@ bundle exec rake db:setup RAILS_ENV=production
 bundle exec rake db:seed_fu RAILS_ENV=production
 ```
 
-Install gitosis, edit `conf/gitosis.yml` and start server
+Install gitosis, edit `config/gitlab.yml` and start server
 
 ```bash
-rails s -e production
+bundle exec rails s -e production
 ```
 
 ## Install Gitosis
