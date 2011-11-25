@@ -1,0 +1,37 @@
+%div.issue-form-holder
+  = form_for [@project, @issue] do |f|
+    -if @issue.errors.any?
+      %ul
+        - @issue.errors.full_messages.each do |msg|
+          %li= msg
+
+    %table
+      %thead
+        %th Name
+        %th Value
+      %tr
+        %td= f.label :title
+        %td= f.text_area :title, :style => "width:450px; height:100px", :maxlength => 255
+      %tr
+        %td= f.label :assignee_id
+        %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+      -#%tr
+        %td= f.label :branch_name
+        %td= f.select(:branch_name, @project.heads.map(&:name), { :include_blank => "Select git branch" })
+      %tr
+        %td
+          = f.label :critical, "Critical"
+          %br
+        %td= f.check_box :critical
+      - unless @issue.new_record?
+        %tr
+          %td= f.label :closed
+          %td= f.check_box :closed
+    = f.submit 'Save', :class => "grey-button"
+
+:javascript 
+  $(function(){ 
+    $('select#issue_branch_name').selectmenu({width:300});
+    $('select#issue_assignee_id').selectmenu({width:300});
+  });
+
