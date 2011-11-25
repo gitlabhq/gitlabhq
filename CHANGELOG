@@ -1,3 +1,13 @@
+v 1.2.2
+  - common config file gitlab.yml
+  - issues restyle
+  - snippets restyle
+  - clickable news feed header on dashboard
+  - bugfix
+
+v 1.2.1
+  - bugfix
+
 v 1.2.0
   - new design
   - user dashboard
