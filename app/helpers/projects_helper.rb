@@ -15,4 +15,12 @@ module ProjectsHelper
   rescue
     nil
   end
+
+  def switch_colorscheme_link(opts)
+    if cookies[:colorschema].blank?
+      link_to_function "paint it black!", "$.cookie('colorschema','black'); window.location.reload()", opts
+    else
+      link_to_function "paint it white!", "$.cookie('colorschema',''); window.location.reload()", opts
+    end
+  end
 end

@@ -3,7 +3,7 @@
     %span
     %d
       = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
-        = @project.name
+        = @project.code
       - tree.breadcrumbs(2) do |link|
         \/
         = link
