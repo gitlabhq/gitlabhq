@@ -37,11 +37,11 @@
                   %span{ :class => "number" }= @project.issues.opened.count
               = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
                 Wall
-                - if @project.common_notes.count > 0
+                - if @project.common_notes.today.count > 0
                   %span{ :class => "number" }= @project.common_notes.today.count
               = link_to project_snippets_path(@project), :class => (controller.controller_name == "snippets") ? "current" : nil do
                 Snippets
-                - if @project.snippets.count > 0
+                - if @project.snippets.non_expired.count > 0
                   %span{ :class => "number" }= @project.snippets.non_expired.count
 
               - if can? current_user, :admin_project, @project
