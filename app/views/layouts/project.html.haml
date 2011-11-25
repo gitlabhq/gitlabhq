@@ -43,11 +43,9 @@
                 Snippets
                 - if @project.snippets.count > 0
                   %span{ :class => "number" }= @project.snippets.non_expired.count
-              - if @commit
-                = link_to truncate(commit_name(@project,@commit), :length => 15), project_commit_path(@project, :id => @commit.id), :class => current_page?(:controller => "commits", :action => "show", :project_id => @project, :id => @commit.id) ? "current" : nil
 
               - if can? current_user, :admin_project, @project
-                = link_to "Edit", edit_project_path(@project), :class => (current_page?(edit_project_path(@project))) ? "current" : nil
+                = link_to "Project", edit_project_path(@project), :class => (current_page?(edit_project_path(@project))) ? "current" : nil
 
             .medium-tags{:style => 'padding: 10px 0 0 10px; width: 210px;'}= tag_list @project
 
