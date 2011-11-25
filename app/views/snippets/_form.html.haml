@@ -1,26 +1,34 @@
 %div
-  = form_for [@project, @snippet] do |f|
-    -if @snippet.errors.any?
-      %ul
-        - @snippet.errors.full_messages.each do |msg|
-          %li= msg
+  .ui-box.width-100p
+    %h3
+      = @snippet.new_record? ? "New snippet" : "Edit snippet ##{@snippet.id}"
+    = form_for [@project, @snippet] do |f|
+      .data.no-padding
+        %table.no-borders
+          -if @snippet.errors.any?
+            %tr 
+              %td Errors
+              %td
+                #error_explanation
+                  - @snippet.errors.full_messages.each do |msg|
+                    %span= msg
+                    %br
 
-    %table.round-borders
-      %tr
-        %td= f.label :title
-        %td= f.text_field :title, :placeholder => "Example Snippet"
-      %tr
-        %td= f.label :file_name
-        %td= f.text_field :file_name, :placeholder => "example.rb"
-      %tr
-        %td= f.label "Lifetime"
-        %td= f.select :expires_at, lifetime_select_options
-      %tr
-        %td{:colspan => 2}
-          = f.label :content, "Code"
-          %br
-          %br
-          = f.text_area :content
+          %tr
+            %td= f.label :title
+            %td= f.text_field :title, :placeholder => "Example Snippet"
+          %tr
+            %td= f.label :file_name
+            %td= f.text_field :file_name, :placeholder => "example.rb"
+          %tr
+            %td= f.label "Lifetime"
+            %td= f.select :expires_at, lifetime_select_options
+          %tr
+            %td{:colspan => 2}
+              = f.label :content, "Code"
+              %br
+              %br
+              = f.text_area :content
 
-    .actions.prepend-top
-      = f.submit 'Save', :class => "button"
+      .buttons
+        = f.submit 'Save', :class => "grey-button"

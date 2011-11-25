@@ -59,7 +59,11 @@
 }
 
 body.project-page .issue-form-holder table.no-borders tr,
-body.project-page .issue-form-holder table.no-borders td
+body.project-page .issue-form-holder table.no-borders td,
+body.project-page .new_snippet table tr,
+body.project-page .new_snippet table td,
+body.project-page .edit_snippet table tr,
+body.project-page .edit_snippet table td
 {
   &:hover { 
     background:none;

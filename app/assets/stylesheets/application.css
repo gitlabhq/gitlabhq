@@ -34,6 +34,9 @@
 .width-65p{
   width:65%;
 }
+.width-100p{
+  width:100%;
+}
 .append-bottom-10 {
   margin-bottom:10px;
 }
@@ -42,4 +45,7 @@
 }
 .no-borders { 
   border:none;
+}
+.no-padding { 
+  padding:0 !important;
 }
