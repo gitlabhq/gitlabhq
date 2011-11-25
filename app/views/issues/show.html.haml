@@ -1,78 +1,42 @@
-%h2.icon
-  %span
-  %d
-    = "Issue ##{@issue.id}" 
-
-- unless @commits.blank?
-  .right 
-    = link_to 'Browse Code', tree_project_ref_path(@project, @issue.branch_name), :class => "browse-code button yellow", :style => "margin-right:10px;"
-    = link_to 'Commits', project_commits_path(@project, :ref => @issue.branch_name), :class => "browse-code button"
-
-
-
-.clear
-
-%h3= @issue.title
-
-%table.round-borders
-  %thead
-    %th Assignee
-    %th Status
-    %th Opened
-    %th Tags
-  %tr
-    %td
-      = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
-      = @issue.assignee_name
-    %td
+.issue-show-holder.ui-box
+  %h3
+    = "Issue ##{@issue.id}"
+    .right
       - if @issue.closed
         %span.tag.high Resolved
       - else 
         %span.tag.today Open
-    %td
-      = @issue.created_at.stamp("21 Aug 2011, 11:15pm")
-    %td
-      - if @issue.critical
-        %span.tag.high critical
+
+  .data
+    %h4= @issue.title
+
+    - if @issue.author == @issue.assignee
+      = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
+      = @issue.assignee_name
+    - else 
+      = image_tag gravatar_icon(@issue.author_email),  :width => 20, :style => "padding:0 5px;"
+      = @issue.author_name
+      &rarr;
+      = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
+      = @issue.assignee_name
+    .right
+      %cite.cgray= @issue.created_at.stamp("21 Aug 2011, 11:15pm")
+    .clear
+
+  .buttons
+    - if can? current_user, :write_issue, @issue
+      - if @issue.closed
+        = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "grey-button"
       - else
-        %span.tag.normal normal
-      - if @issue.today?
-        %span.tag.today today
-
-
+        = link_to 'Resolve', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
+      .right
+        = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive"
 
 .clear
-
-
-- if can? current_user, :write_issue, @issue
-  - if @issue.closed
-    = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "grey-button"
-  - else
-    = link_to 'Resolve', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
-  .right
-    = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive"
-    &nbsp;
-    = link_to 'Destroy', [@project, @issue], :confirm => 'Are you sure?', :method => :delete,  :class => "grey-button delete-issue negative", :id => "destroy_issue_#{@issue.id}"
-
 %br
 %br
-- unless @commits.blank?
-  %table.round-borders
-    %thead
-      %th Unmerged Commits
-    - @commits.each do |commit|
-      %tr
-        %td
-          = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 20, :style => "padding-right:5px;"
-          = link_to commit.id.to_s, project_commit_path(@project, :id => commit.id)
-          .right
-            = time_ago_in_words(commit.created_at)
-            ago
-
 
 .issue_notes= render "notes/notes"
-
 .loading{ :style => "display:none;"}
   %center= image_tag "ajax-loader.gif"
-
 .clear

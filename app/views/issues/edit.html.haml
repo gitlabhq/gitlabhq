@@ -15,7 +15,7 @@
       %tr
         %td= f.label :assignee_id
         %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
-      %tr
+      -#%tr
         %td= f.label :branch_name
         %td= f.select(:branch_name, @project.heads.map(&:name), { :include_blank => "Select git branch" })
       %tr
