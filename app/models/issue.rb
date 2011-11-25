@@ -15,6 +15,11 @@ class Issue < ActiveRecord::Base
            :to => :author,
            :prefix => true
 
+  delegate :name,
+           :email,
+           :to => :assignee,
+           :prefix => true
+
   validates :title,
             :presence => true,
             :length   => { :within => 0..255 }
