@@ -143,6 +143,23 @@ class Project < ActiveRecord::Base
     last_activity.try(:created_at)
   end
 
+  # Get project updates from cache
+  # or calculate. 
+  def cached_updates(limit, expire = 2.minutes)
+    activities_key = "project_#{id}_activities"
+    cached_activities = Rails.cache.read(activities_key)
+    if cached_activities
+      activities = cached_activities
+    else
+      activities = updates(limit)
+      Rails.cache.write(activities_key, activities, :expires_in => 60.seconds)
+    end
+
+    activities
+  end
+
+  # Get 20 events for project like
+  # commits, issues or notes
   def updates(n = 3)
     [
       fresh_commits(n),
