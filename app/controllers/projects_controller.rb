@@ -66,7 +66,7 @@ class ProjectsController < ApplicationController
 
   def show
     return render "projects/empty" unless @project.repo_exists?
-    limit = (params[:limit] || 40).to_i
+    limit = (params[:limit] || 20).to_i
     @activities = @project.updates(limit)
   end
 
