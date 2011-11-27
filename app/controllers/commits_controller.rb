@@ -12,12 +12,12 @@ class CommitsController < ApplicationController
 
   def index
     @repo = project.repo
-    limit, offset = (params[:limit] || 20), (params[:offset] || 0)
+    @limit, @offset = (params[:limit] || 20), (params[:offset] || 0)
 
     @commits = if params[:path]
-                 @repo.log(@ref, params[:path], :max_count => limit, :skip => offset)
+                 @repo.log(@ref, params[:path], :max_count => @limit, :skip => @offset)
                else
-                 @repo.commits(@ref, limit, offset)
+                 @repo.commits(@ref, @limit, @offset)
                end
 
     respond_to do |format|

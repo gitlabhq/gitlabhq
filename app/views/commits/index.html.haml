@@ -20,7 +20,8 @@
 .loading{ :style => "display:none;"}
   %center= image_tag "ajax-loader.gif"
 
-:javascript
-  $(function(){
-    CommitsList.init("#{@ref}", 20);
-  });
+- if @commits.count == @limit
+  :javascript
+    $(function(){
+      CommitsList.init("#{@ref}", 20);
+    });
