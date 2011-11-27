@@ -2,14 +2,22 @@ require "grit"
 
 class GraphCommit
   attr_accessor :time, :space
-  def initialize(commit)
-    @_commit = commit
-    @time = -1
-    @space = 0
-  end
+  attr_accessor :refs
 
-  def method_missing(m, *args, &block)
-    @_commit.send(m, *args, &block)
+  def self.to_graph(project)
+    @repo = project.repo
+    commits = Grit::Commit.find_all(@repo, nil, {:max_count => 650})
+
+    ref_cache = {}
+
+    commits.map! {|c| GraphCommit.new(Commit.new(c))}
+    commits.each { |commit| commit.add_refs(ref_cache, @repo) }
+
+    days = GraphCommit.index_commits(commits)
+    @days_json = days.compact.collect{|d| [d.day, d.strftime("%b")] }.to_json
+    @commits_json = commits.map(&:to_graph_hash).to_json
+
+    return @days_json, @commits_json
   end
 
   # Method is adding time and space on the
@@ -72,4 +80,41 @@ class GraphCommit
     marks.compact.max
   end
 
+
+  def initialize(commit)
+    @_commit = commit
+    @time = -1
+    @space = 0
+  end
+
+  def method_missing(m, *args, &block)
+    @_commit.send(m, *args, &block)
+  end
+
+  def to_graph_hash
+    h = {}
+    h[:parents] = self.parents.collect do |p|
+      [p.id,0,0]
+    end
+    h[:author]  = author.name.force_encoding("UTF-8")
+    h[:time]    = time
+    h[:space]   = space
+    h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
+    h[:id]      = sha
+    h[:date]    = date
+    h[:message] = message.force_encoding("UTF-8")
+    h[:login]   = author.email
+    h
+  end
+
+  def add_refs(ref_cache, repo)
+    if ref_cache.empty?
+      repo.refs.each do |ref|
+        ref_cache[ref.commit.id] ||= []
+        ref_cache[ref.commit.id] << ref
+      end
+    end
+    @refs = ref_cache[@_commit.id] if ref_cache.include?(@_commit.id)
+    @refs ||= []
+  end
 end

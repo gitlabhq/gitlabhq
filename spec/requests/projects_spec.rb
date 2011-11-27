@@ -79,6 +79,7 @@ describe "Projects" do
     end
 
     it "should beahave like activities page" do
+      save_and_open_page
       within ".project-update"  do
         page.should have_content("master")
         page.should have_content(@project.commit.author.name)

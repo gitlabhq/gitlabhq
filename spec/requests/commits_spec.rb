@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Commits" do
   let(:project) { Factory :project }
-  let!(:commit) { project.repo.commits.first }
+  let!(:commit) { project.commit }
   before do
     login_as :user
     project.add_access(@user, :read)
@@ -48,11 +48,11 @@ describe "Commits" do
 
   describe "GET /commits/:id" do
     before do
-      visit project_commit_path(project, commit)
+      visit project_commit_path(project, commit.id)
     end
 
     it "should have valid path" do
-      current_path.should == project_commit_path(project, commit)
+      current_path.should == project_commit_path(project, commit.id)
     end
   end
 end

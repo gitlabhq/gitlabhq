@@ -13,12 +13,7 @@ class CommitsController < ApplicationController
   def index
     @repo = project.repo
     @limit, @offset = (params[:limit] || 20), (params[:offset] || 0)
-
-    @commits = if params[:path]
-                 @repo.log(@ref, params[:path], :max_count => @limit, :skip => @offset)
-               else
-                 @repo.commits(@ref, @limit, @offset)
-               end
+    @commits = @project.commits(@ref, params[:path], @limit, @offset)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -28,7 +23,7 @@ class CommitsController < ApplicationController
   end
 
   def show
-    @commit = project.repo.commits(params[:id]).first
+    @commit = project.commit(params[:id])
     @notes = project.commit_notes(@commit).fresh.limit(20)
     @note = @project.build_commit_note(@commit)
 

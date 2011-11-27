@@ -10,6 +10,6 @@
   .right
     - klass = update.class.to_s.split("::").last.downcase
     %span.tag{ :class => klass }= klass
-    - if update.kind_of?(Grit::Commit)
+    - if update.kind_of?(Commit)
       %span.tag.commit= update.head.name
 

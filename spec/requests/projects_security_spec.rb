@@ -55,12 +55,12 @@ describe "Projects" do
     end
 
     describe "GET /project_code/commit" do
-      it { project_commit_path(@project, @project.commit).should be_allowed_for @u1 }
-      it { project_commit_path(@project, @project.commit).should be_allowed_for @u3 }
-      it { project_commit_path(@project, @project.commit).should be_denied_for :admin }
-      it { project_commit_path(@project, @project.commit).should be_denied_for @u2 }
-      it { project_commit_path(@project, @project.commit).should be_denied_for :user }
-      it { project_commit_path(@project, @project.commit).should be_denied_for :visitor }
+      it { project_commit_path(@project, @project.commit.id).should be_allowed_for @u1 }
+      it { project_commit_path(@project, @project.commit.id).should be_allowed_for @u3 }
+      it { project_commit_path(@project, @project.commit.id).should be_denied_for :admin }
+      it { project_commit_path(@project, @project.commit.id).should be_denied_for @u2 }
+      it { project_commit_path(@project, @project.commit.id).should be_denied_for :user }
+      it { project_commit_path(@project, @project.commit.id).should be_denied_for :visitor }
     end
 
     describe "GET /project_code/team" do
