@@ -33,6 +33,10 @@ class Issue < ActiveRecord::Base
 
   acts_as_list
 
+  def self.open_for(user)
+    opened.assigned(user)
+  end
+
   def today?
     Date.today == created_at.to_date
   end
