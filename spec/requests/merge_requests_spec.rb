@@ -48,4 +48,22 @@ describe "MergeRequests" do
       end
     end
   end
+
+  describe "GET /merge_requests/new" do 
+    before do 
+      visit new_project_merge_request_path(project)
+      fill_in "merge_request_title", :with => "Merge Request Title" 
+      select "master", :from => "merge_request_source_branch"
+      select "master", :from => "merge_request_target_branch"
+      select @user.name, :from => "merge_request_assignee_id"
+      click_button "Save"
+    end
+
+    it { current_path.should == project_merge_request_path(project, project.merge_requests.last) }
+
+    it "should create merge request" do
+      page.should have_content "Open"
+      page.should have_content @user.name
+    end
+  end
 end
