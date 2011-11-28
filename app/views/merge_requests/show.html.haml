@@ -40,20 +40,20 @@
 %br
 %br
 
+#gitlab-tabs
+  %ul
+    %li= link_to "Notes", "#merge-notes"
+    %li= link_to "Commits", commits_project_merge_request_path(@project, @merge_request)
+    %li= link_to "Diff", diffs_project_merge_request_path(@project, @merge_request)
 
-- if @commits.size > 0
-  .merge-request-commits.ui-box.width-100p
-    - @commits.each do |commit|
-      %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }
-        - if commit.author_email
-          = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-        - else
-          = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-        %span.update-title
-          = commit.id.to_s
-        %span.update-author
-          %strong= commit.author_name
-          authored
-          = time_ago_in_words(commit.created_at)
-          ago
-  .clear
+  #merge-notes
+    .issue_notes= render "notes/notes"
+    .loading{ :style => "display:none;"}
+      %center= image_tag "ajax-loader.gif"
+    .clear
+
+
+:javascript
+  $(function(){
+    $("#gitlab-tabs").tabs();
+  })

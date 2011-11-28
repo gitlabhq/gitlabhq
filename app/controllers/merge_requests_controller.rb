@@ -1,7 +1,7 @@
 class MergeRequestsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
-  before_filter :merge_request, :only => [:edit, :update, :destroy, :show]
+  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs]
   layout "project"
 
   # Authorize
@@ -19,7 +19,24 @@ class MergeRequestsController < ApplicationController
       head(404)and return 
     end
 
+    @notes = @merge_request.notes.inc_author.order("created_at DESC").limit(20)
+    @note = @project.notes.new(:noteable => @merge_request)
+
+    respond_to do |format|
+      format.html
+      format.js { respond_with_notes }
+    end
+  end
+
+  def commits
     @commits = @project.repo.commits_between(@merge_request.target_branch, @merge_request.source_branch).map {|c| Commit.new(c)}
+    render :template => "merge_requests/_commits", :layout => false
+  end
+
+  def diffs
+    @commit = @project.commit(@merge_request.source_branch)
+    @diffs = @project.repo.diff(@merge_request.target_branch, @merge_request.source_branch)
+    render :template => "merge_requests/_diffs", :layout => false
   end
 
   def new

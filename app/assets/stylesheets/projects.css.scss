@@ -426,3 +426,39 @@ body.project-page table.no-borders tr,
 body.project-page table.no-borders td{ 
   border:none;
 }
+
+#gitlab-tabs { 
+  .ui-tabs-nav {
+    border-bottom: 1px solid #DEDFE1;
+
+    li { 
+      background: none;
+      border:none;
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+
+      a { 
+        margin: 0;
+        padding: 10px 16px;
+        width:150px;
+      }
+
+      &.ui-tabs-selected { 
+        background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+        background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+        background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+        background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+        font-weight: bold;
+        border:1px solid #DEDFE1;
+        border-bottom: 1px solid #DEDFE1;
+        -webkit-border-top-left-radius: 5px;
+        -webkit-border-top-right-radius: 5px;
+        -moz-border-radius-topleft: 5px;
+        -moz-border-radius-topright: 5px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+    } 
+  } 
+}

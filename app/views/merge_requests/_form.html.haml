@@ -18,11 +18,11 @@
             %td= f.label :title
             %td= f.text_field :title
           %tr
-            %td= f.label :target_branch, "From"
-            %td= f.select(:target_branch, @project.heads.map(&:name), { :include_blank => "Select branch" })
-          %tr
-            %td= f.label :source_branch, "To"
+            %td= f.label :source_branch, "From"
             %td= f.select(:source_branch, @project.heads.map(&:name), { :include_blank => "Select branch" })
+          %tr
+            %td= f.label :target_branch, "To"
+            %td= f.select(:target_branch, @project.heads.map(&:name), { :include_blank => "Select branch" })
           %tr
             %td= f.label :assignee_id, "Assign to"
             %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
