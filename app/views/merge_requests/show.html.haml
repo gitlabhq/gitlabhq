@@ -2,12 +2,12 @@
   %h3
     = "Merge Request ##{@merge_request.id}:"
     &nbsp;
-    = "'#{@merge_request.source_branch}'"
+    .tag.commit.inline= @merge_request.source_branch
     &rarr;
-    = "'#{@merge_request.target_branch}'"
+    .tag.commit.inline= @merge_request.target_branch
     .right
       - if @merge_request.closed
-        %span.tag.high Resolved
+        %span.tag.high Closed
       - else 
         %span.tag.today Open
 
@@ -32,7 +32,7 @@
       - if @merge_request.closed
         = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "grey-button"
       - else
-        = link_to 'Resolve', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
       .right
         = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), :class => "grey-button positive"
 

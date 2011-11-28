@@ -328,12 +328,16 @@ body.project-page table .commit {
   border:none;
   text-shadow:none;
 
-  &.high {
+  &.inline { 
+    display:inline;
+  }
+
+  &.high, &.closed {
     background: #D12F19;
     color:white;
   }
 
-  &.today {
+  &.today, &.open {
     background: #44aa22;
     color:white;
   }
@@ -397,6 +401,19 @@ body.project-page .merge-request-commits a.commit span.update-title, .dashboard-
 body.project-page .merge-request-commits a.commit span.update-title{margin-bottom: 10px}
 body.project-page .merge-request-commits a.commit span.update-author{color: #999; font-weight: normal; font-style: italic;}
 body.project-page .merge-request-commits a.commit span.update-author strong{font-weight: bold; font-style: normal;}
+
+
+/** Update entry **/
+.update-data { padding: 0 }
+.update-data { width:100%; }
+.update-data.ui-box .data { padding:0; }
+a.update-item {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+a.update-item:last-child{border-bottom: 0}
+a.update-item img{float: left; margin-right: 10px;}
+a.update-item span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+a.update-item span.update-title{margin-bottom: 10px}
+a.update-item span.update-author{color: #999; font-weight: normal; font-style: italic;}
+a.update-item span.update-author strong{font-weight: bold; font-style: normal;}
 
 
 body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }

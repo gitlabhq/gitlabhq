@@ -10,7 +10,7 @@ class MergeRequestsController < ApplicationController
   before_filter :authorize_write_project!, :only => [:new, :create, :edit, :update]
 
   def index
-    @merge_requests = @project.merge_requests.all
+    @merge_requests = @project.merge_requests
   end
 
   def show

@@ -1,25 +1,20 @@
-%table
-  %thead
-    %th Target branch
-    %th Source branch
-    %th Author
-    %th Assignee
-    %th Title
-    %th
-    %th
-    %th
+- if @merge_requests.opened.count > 0
+  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
+    %h3
+      %span.tag.open Open
+    .data
+      = render @merge_requests.opened
 
-  - @merge_requests.each do |merge_request|
-    %tr
-      %td= merge_request.target_branch
-      %td= merge_request.source_branch
-      %td= merge_request.author_id
-      %td= merge_request.assignee_id
-      %td= merge_request.title
-      %td= link_to 'Show', [@project, merge_request]
-      %td= link_to 'Edit', edit_project_merge_request_path(@project, merge_request)
-      %td= link_to 'Destroy', [@project, merge_request], :confirm => 'Are you sure?', :method => :delete
+  .clear
+  %br
 
-%br
+- if @merge_requests.closed.count > 0
+  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
+    %h3 
+      %span.tag.closed Closed
+    .data
+      = render @merge_requests.closed
+  .clear
+  %br
 
-= link_to 'New Merge request', new_project_merge_request_path(@project)
+= link_to 'New Merge request', new_project_merge_request_path(@project), :class => "grey-button"

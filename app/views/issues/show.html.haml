@@ -3,9 +3,9 @@
     = "Issue ##{@issue.id}"
     .right
       - if @issue.closed
-        %span.tag.high Resolved
+        %span.tag.closed Closed
       - else 
-        %span.tag.today Open
+        %span.tag.open Open
 
   .data
     %p= @issue.title
@@ -28,7 +28,7 @@
       - if @issue.closed
         = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "grey-button"
       - else
-        = link_to 'Resolve', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
+        = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
       .right
         = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive"
 
