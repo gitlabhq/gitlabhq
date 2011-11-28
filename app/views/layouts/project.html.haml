@@ -33,8 +33,8 @@
                   %span{ :class => "number" }= @project.users_projects.count
               = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
                 Issues
-                - if @project.issues.opened.count > 0
-                  %span{ :class => "number" }= @project.issues.opened.count
+                - if @project.issues.assigned(current_user).count > 0
+                  %span{ :class => "number" }= @project.issues.assigned(current_user).count
               = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
                 Wall
                 - if @project.common_notes.today.count > 0
