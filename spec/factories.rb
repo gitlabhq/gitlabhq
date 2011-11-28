@@ -34,6 +34,12 @@ Factory.add(:issue, Issue) do |obj|
   obj.title = Faker::Lorem.sentence
 end
 
+Factory.add(:merge_request, MergeRequest) do |obj|
+  obj.title = Faker::Lorem.sentence
+  obj.source_branch = "master"
+  obj.target_branch = "master"
+end
+
 Factory.add(:snippet, Snippet) do |obj|
   obj.title = Faker::Lorem.sentence
   obj.file_name = Faker::Lorem.sentence

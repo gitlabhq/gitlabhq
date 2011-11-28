@@ -1,0 +1,17 @@
+- if @commits.size > 0
+  .merge-request-commits.ui-box.width-100p
+    - @commits.each do |commit|
+      %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }
+        - if commit.author_email
+          = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+        - else
+          = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
+        %span.update-title
+          = truncate commit.safe_message, :length => 60
+        %span.update-author
+          %strong= commit.author_name
+          authored
+          = time_ago_in_words(commit.created_at)
+          ago
+  .clear
+

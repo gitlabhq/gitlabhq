@@ -59,6 +59,12 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :merge_requests do 
+      member do 
+        get :diffs
+        get :commits
+      end
+    end
     resources :snippets
     resources :commits
     resources :team_members

@@ -39,6 +39,10 @@
                 Wall
                 - if @project.common_notes.today.count > 0
                   %span{ :class => "number" }= @project.common_notes.today.count
+              = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
+                Merge Requests
+                - if @project.merge_requests.opened.count > 0
+                  %span{ :class => "number" }= @project.merge_requests.opened.count
               = link_to project_snippets_path(@project), :class => (controller.controller_name == "snippets") ? "current" : nil do
                 Snippets
                 - if @project.snippets.non_expired.count > 0
