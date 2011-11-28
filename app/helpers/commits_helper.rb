@@ -1,4 +1,5 @@
 module CommitsHelper
+  include Utils::CharEncode
   def diff_line(line, line_new = 0, line_old = 0)
     full_line = html_escape(line.gsub(/\n/, ''))
     color = if line[0] == "+"
