@@ -1,0 +1,39 @@
+%div.merge-request-form-holder
+  .ui-box.width-100p
+    %h3
+      = @merge_request.new_record? ? "New Merge Request" : "Edit Merge Request ##{@merge_request.id}"
+    = form_for [@project, @merge_request] do |f|
+      .data
+        %table.no-borders
+          -if @merge_request.errors.any?
+            %tr 
+              %td Errors
+              %td
+                #error_explanation
+                  - @merge_request.errors.full_messages.each do |msg|
+                    %span= msg
+                    %br
+
+          %tr
+            %td= f.label :title
+            %td= f.text_field :title
+          %tr
+            %td= f.label :target_branch, "From"
+            %td= f.select(:target_branch, @project.heads.map(&:name), { :include_blank => "Select branch" })
+          %tr
+            %td= f.label :source_branch, "To"
+            %td= f.select(:source_branch, @project.heads.map(&:name), { :include_blank => "Select branch" })
+          %tr
+            %td= f.label :assignee_id, "Assign to"
+            %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+      .buttons
+        = f.submit 'Save', :class => "grey-button"
+        .right= link_to 'Back', project_merge_requests_path(@project), :class => "grey-button"
+
+:javascript
+  $(function(){
+    $('select#merge_request_assignee_id').chosen();
+    $('select#merge_request_source_branch').chosen();
+    $('select#merge_request_target_branch').chosen();
+  });
+

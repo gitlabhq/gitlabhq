@@ -155,6 +155,8 @@ input.ssh_project_url {
 }
 
 /** FORM INPUTS **/
+.new_merge_request,
+.edit_merge_request,
 .user_new,
 .new_key,
 .new_issue,
@@ -383,6 +385,19 @@ body.dashboard.project-page .news-feed .project-updates a.project-update span.up
 body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
 body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
 /* eo Dashboard Page */
+
+
+/** Merge requests */
+body.project-page .merge-request-commits  {margin-bottom: 20px; display: block; width: 100%;}
+body.project-page .merge-request-commits .data{ padding: 0}
+body.project-page .merge-request-commits a.commit {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+body.project-page .merge-request-commits a.commit:last-child{border-bottom: 0}
+body.project-page .merge-request-commits a.commit img{float: left; margin-right: 10px;}
+body.project-page .merge-request-commits a.commit span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+body.project-page .merge-request-commits a.commit span.update-title{margin-bottom: 10px}
+body.project-page .merge-request-commits a.commit span.update-author{color: #999; font-weight: normal; font-style: italic;}
+body.project-page .merge-request-commits a.commit span.update-author strong{font-weight: bold; font-style: normal;}
+
 
 body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }
 

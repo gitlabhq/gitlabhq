@@ -17,6 +17,7 @@ class Ability
       :read_issue,
       :read_snippet,
       :read_team_member,
+      :read_merge_request,
       :read_note
     ] if project.readers.include?(user)
 
@@ -24,6 +25,7 @@ class Ability
       :write_project,
       :write_issue,
       :write_snippet,
+      :write_merge_request,
       :write_note
     ] if project.writers.include?(user)
 
@@ -32,6 +34,7 @@ class Ability
       :admin_issue,
       :admin_snippet,
       :admin_team_member,
+      :admin_merge_request,
       :admin_note
     ] if project.admins.include?(user)
 
@@ -39,7 +42,7 @@ class Ability
   end
 
   class << self
-    [:issue, :note, :snippet].each do |name|
+    [:issue, :note, :snippet, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
         if subject.author == user
           [
