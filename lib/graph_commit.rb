@@ -1,6 +1,7 @@
 require "grit"
 
 class GraphCommit
+  include Utils::CharEncode
   attr_accessor :time, :space
   attr_accessor :refs
 
@@ -65,7 +66,7 @@ class GraphCommit
   # @param [GraphCommit] the commit object.
   # @param [Hash<String,GraphCommit>] map of commits
   #
-  # @return [Fixnum] max space used.  
+  # @return [Fixnum] max space used.
   def self.mark_chain(mark, commit, map)
     commit.space = mark  if commit.space == 0
     m1 = mark - 1
@@ -96,13 +97,13 @@ class GraphCommit
     h[:parents] = self.parents.collect do |p|
       [p.id,0,0]
     end
-    h[:author]  = author.name.force_encoding("UTF-8")
+    h[:author]  = encode(author.name)
     h[:time]    = time
     h[:space]   = space
     h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
     h[:id]      = sha
     h[:date]    = date
-    h[:message] = message.force_encoding("UTF-8")
+    h[:message] = encode(message)
     h[:login]   = author.email
     h
   end

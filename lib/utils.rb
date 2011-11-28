@@ -16,9 +16,20 @@ module Utils
     end
   end
 
+  module CharEncode
+    def encode(string)
+      cd = CharDet.detect(string)
+      if cd.confidence > 0.6
+        string.force_encoding(cd.encoding)
+      end
+      string.encode("utf-8", :undef => :replace, :replace => "?", :invalid => :replace)
+    end
+  end
+
   module Colorize
+    include CharEncode
     def colorize
-      system_colorize(data, name)
+      system_colorize(encode(data), name)
     end
 
     def system_colorize(data, file_name)

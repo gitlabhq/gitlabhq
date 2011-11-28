@@ -1,4 +1,6 @@
 class Commit
+  include Utils::CharEncode
+
   attr_accessor :commit
   attr_accessor :head
 
@@ -20,7 +22,7 @@ class Commit
   end
 
   def safe_message
-    message.force_encoding(Encoding::UTF_8)
+    encode(message)
   end
 
   def created_at
@@ -28,10 +30,10 @@ class Commit
   end
 
   def author_email
-    author.email.force_encoding(Encoding::UTF_8)
+    encode(author.email)
   end
 
   def author_name
-    author.name.force_encoding(Encoding::UTF_8)
+    encode(author.name)
   end
 end
