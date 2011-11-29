@@ -34,8 +34,9 @@ class MergeRequestsController < ApplicationController
   end
 
   def diffs
-    @commit = @project.commit(@merge_request.source_branch)
-    @diffs = @project.repo.diff(@merge_request.target_branch, @merge_request.source_branch)
+    @diffs = @merge_request.diffs
+    @commit = @merge_request.last_commit
+
     render :template => "merge_requests/_diffs", :layout => false
   end
 

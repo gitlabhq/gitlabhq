@@ -36,4 +36,8 @@ class Commit
   def author_name
     encode(author.name)
   end
+
+  def prev_commit
+    parents.first
+  end
 end
