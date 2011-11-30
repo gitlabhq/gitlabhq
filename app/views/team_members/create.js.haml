@@ -6,4 +6,4 @@
   :plain
     $("#new_tm_dialog").empty();
     $("#new_tm_dialog").append("#{escape_javascript(render('form'))}");
-    $('select#team_member_user_id').selectmenu({width:300});
+    $('select#team_member_user_id').chosen();

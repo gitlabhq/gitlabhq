@@ -8,7 +8,7 @@
     .span-6.append-bottom
       %b Name
     .span-6
-      = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+      = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
     .span-6
       %b Access:
     .span-6

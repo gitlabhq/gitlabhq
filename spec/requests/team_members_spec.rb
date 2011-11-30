@@ -31,8 +31,8 @@ describe "TeamMembers" do
 
     describe "fill in" do
       before do
-        click_link "Select user"
-        click_link @user_1.name
+        page.execute_script("$('#team_member_user_id').show();")
+        select @user_1.name, :from => "team_member_user_id"
 
         within "#team_member_new" do
           check "team_member_read"
