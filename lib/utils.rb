@@ -29,12 +29,12 @@ module Utils
   module Colorize
     include CharEncode
     def colorize
-      system_colorize(encode(data), name)
+      system_colorize(data, name)
     end
 
     def system_colorize(data, file_name)
       ft = handle_file_type(file_name)
-      Pygments.highlight(data, :lexer => ft, :options => { :encoding => 'utf-8', :linenos => 'True' })
+      Pygments.highlight(encode(data), :lexer => ft, :options => { :encoding => 'utf-8', :linenos => 'True' })
     end
 
     def handle_file_type(file_name, mime_type = nil)
