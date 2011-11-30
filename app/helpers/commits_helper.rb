@@ -1,19 +1,22 @@
 module CommitsHelper
   include Utils::CharEncode
-  def diff_line(line, line_new = 0, line_old = 0)
-    full_line = html_escape(line.gsub(/\n/, ''))
-    color = if line[0] == "+"
-              full_line = "<span class=\"old_line\">&nbsp;</span><span class=\"new_line\">#{line_new}</span> " + full_line
-              "#DFD"
-            elsif line[0] == "-"
-              full_line = "<span class=\"old_line\">#{line_old}</span><span class=\"new_line\">&nbsp;</span> " + full_line
-              "#FDD"
-            else
-              full_line = "<span class=\"old_line\">#{line_old}</span><span class=\"new_line\">#{line_new}</span> " + full_line
-              "none"
-            end
 
-    raw "<div style=\"white-space:pre;background:#{color};\">#{full_line}</div>"
+  def old_line_number(line, i)
+
+  end
+
+  def new_line_number(line, i)
+
+  end
+
+  def diff_line_class(line)
+    if line[0] == "+"
+      "new"
+    elsif line[0] == "-"
+      "old"
+    else
+      nil
+    end
   end
 
   def more_commits_link

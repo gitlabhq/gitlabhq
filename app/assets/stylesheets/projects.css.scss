@@ -66,11 +66,8 @@ a {
   }
 }
 
-.view_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
-
-  .view_file_header {
+.view_file .view_file_header, 
+.diff_file .diff_file_header { 
     background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
     background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
     background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
@@ -81,8 +78,13 @@ a {
     text-align: left;
     color: #666;
     border-bottom: 1px solid #DEE2E3;
-    padding: .9em 1em;
-  }
+    padding: 7px 10px;
+}
+
+.view_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
   .view_file_content {
     background:#fff;
     color:#514721;

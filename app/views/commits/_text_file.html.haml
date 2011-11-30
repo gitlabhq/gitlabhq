@@ -1,21 +1,28 @@
-- line_old = 0
-- line_new = 0
-- lines_arr = diff.diff.lines.to_a
-- lines_arr.each do |line|
-  - line = encode(line)
-  - next if line.match(/^--- \/dev\/null/)
-  - next if line.match(/^--- a/)
-  - next if line.match(/^\+\+\+ b/)
-  - if line.match(/^@@ -/)
-    - line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
-    - line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
-    - next
+%table
+  - line_old = 0
+  - line_new = 0
+  - lines_arr = diff.diff.lines.to_a
+  - lines_arr.each do |line|
+    - line = encode(line)
+    - next if line.match(/^--- \/dev\/null/)
+    - next if line.match(/^--- a/)
+    - next if line.match(/^\+\+\+ b/)
+    - if line.match(/^@@ -/)
+      - line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
+      - line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
+      - next
 
-  = diff_line(line, line_new, line_old)
-  - if line[0] == "+"
-    - line_new += 1
-  - elsif line[0] == "-"
-    - line_old += 1
-  - else
-    - line_new += 1
-    - line_old += 1
+    - full_line = html_escape(line.gsub(/\n/, ''))
+    %tr.line_holder
+      %td.old_line
+        = link_to raw(diff_line_class(line) == "new" ? "&nbsp;" : line_old), "#OLD#{index}-#{line_old}", :id => "OLD#{index}-#{line_old}"
+      %td.new_line
+        = link_to raw(diff_line_class(line) == "old" ? "&nbsp;" : line_new) , "#NEW#{index}-#{line_new}", :id => "NEW#{index}-#{line_new}"
+      %td.line_content{:class => diff_line_class(full_line)}= raw "#{full_line} &nbsp;"  
+    - if line[0] == "+"
+      - line_new += 1
+    - elsif line[0] == "-"
+      - line_old += 1
+    - else
+      - line_new += 1
+      - line_old += 1
