@@ -1,29 +1,26 @@
 - content_for(:body_class, "project-page commits-page")
-%h2.icon
-  %span
-  %d
-    = "#{truncate(@commit.safe_message, :length => 50)}"
-.right 
-  = link_to 'Browse Code', tree_project_ref_path(@project, @commit.id), :class => "browse-code button yellow"
-%table.round-borders
-  %thead
-    %th{:colspan => 2} Details
-  %tr
-    %td ID
-    %td= @commit.id
-  %tr
-    %td Author
-    %td= @commit.author_name
-  %tr
-    %td Committed Date
-    %td= @commit.created_at.stamp("Aug 21, 2011, 11:15pm")
-  %tr
-    %td Message
-    %td
-      %pre.commit_message
-        = preserve @commit.safe_message
-.clear
+.commit
+  %span.commit-info
+    = link_to tree_project_ref_path(@project, @commit.id) do 
+      %data.commit-button
+        Browse Code
+        %i
+  - if @commit.author_email
+    = image_tag gravatar_icon(@commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+  - else
+    = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
+  %span.commit-title
+    %strong
+      = truncate(@commit.id.to_s, :length => 60)
+  %span.commit-author
+    %strong= @commit.author_name
+    = @commit.created_at.stamp("Aug 21, 2011 9:23pm")
 
+%hr
+%pre.commit_message
+  = preserve @commit.safe_message
+
+.clear
 %br
 
 = render "commits/diff"

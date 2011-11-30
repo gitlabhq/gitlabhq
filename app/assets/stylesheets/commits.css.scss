@@ -30,13 +30,18 @@
   .old_line, .new_line {
     background:#ECECEC;
     color:#777;
-    width:30px;
+    width:35px;
     float:left;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
+    text-align:right;
   }
 }
 
 pre.commit_message {
   white-space: pre-wrap;
+  font-family: "Helvetica", sans-serif;
+  color: #555;
+  font-weight:bold;
+  font-size:15px;
 }

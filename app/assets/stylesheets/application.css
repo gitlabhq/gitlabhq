@@ -50,3 +50,9 @@
   padding:0 !important;
 }
 
+
+/** COMMIT BLOCK **/
+.commit-title{display: block;}
+.commit-title{margin-bottom: 10px}
+.commit-author{color: #999; font-weight: normal; font-style: italic;}
+.commit-author strong{font-weight: bold; font-style: normal;}
