@@ -16,11 +16,12 @@ module ProjectsHelper
     nil
   end
 
+  # expires in 360 days
   def switch_colorscheme_link(opts)
     if cookies[:colorschema].blank?
-      link_to_function "paint it black!", "$.cookie('colorschema','black'); window.location.reload()", opts
+      link_to_function "paint it black!", "$.cookie('colorschema','black', {expires:360}); window.location.reload()", opts
     else
-      link_to_function "paint it white!", "$.cookie('colorschema',''); window.location.reload()", opts
+      link_to_function "paint it white!", "$.cookie('colorschema','', {expires:360}); window.location.reload()", opts
     end
   end
 end
