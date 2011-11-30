@@ -603,16 +603,16 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 body.project-page h2.icon span{  background-position:  -78px -68px; }
 body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
 body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 220px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
+body.project-page .project-sidebar {width: 200px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
 
 body.project-page input.text.git-url,
-body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 176px}
+body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 156px}
 body.projects-page input.text.git-url {margin:10px 0 0 }
 .git_url_wrapper { margin-right:50px }
 
 .projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
 
-body.project-page .project-sidebar aside{width: 219px}
+body.project-page .project-sidebar aside{width: 199px}
 body.project-page .project-sidebar aside a{display: block; position: relative; background: white; padding: 15px 10px; border-bottom: 1px solid #eee}
 body.project-page .project-sidebar aside a:first-child{
   -webkit-border-top-left-radius: 5px;
@@ -627,7 +627,7 @@ body.project-page .project-sidebar aside a:first-child{
 body.project-page .project-sidebar aside a:hover{background-color: #eee;}
 body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
 body.project-page .project-sidebar aside a.current{background-color: #79c3e0; color: white; text-shadow: none; border-color: transparent}
-body.project-page .project-content{ padding: 20px; display: block; margin-left: 250px; min-height: 600px}
+body.project-page .project-content{ padding: 20px; display: block; margin-left: 230px; min-height: 600px}
 body.project-page .project-content h2{ margin-top: 6px}
 body.project-page .project-content .button.right{margin-left: 20px}
 body.project-page table .commit a{color: #{$blue_link}}
