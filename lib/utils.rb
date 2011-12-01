@@ -23,6 +23,8 @@ module Utils
         string.force_encoding(cd.encoding)
       end
       string.encode("utf-8", :undef => :replace, :replace => "?", :invalid => :replace)
+    rescue
+      "Invalid code encoding"
     end
   end
 
