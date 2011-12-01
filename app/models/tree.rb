@@ -1,4 +1,5 @@
 class Tree
+  include Utils::FileHelper
   attr_accessor :path, :tree, :project, :ref
 
   delegate :contents,
