@@ -22,25 +22,25 @@ class Repository
   end
 
   def url_to_repo
-    if !GITOSIS["port"] or GITOSIS["port"] == 22
-      "#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{path}.git"
+    if !GIT_HOST["port"] or GIT_HOST["port"] == 22
+      "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:#{path}.git"
     else
-      "ssh://#{GITOSIS["git_user"]}@#{GITOSIS["host"]}:#{GITOSIS["port"]}/#{path}.git"
+      "ssh://#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:#{GIT_HOST["port"]}/#{path}.git"
     end
   end
 
   def path_to_repo
-    GITOSIS["base_path"] + path + ".git"
+    GIT_HOST["base_path"] + path + ".git"
   end
 
   def update_gitosis_project
-    Gitosis.new.configure do |c|
+    GitProxy.system.new.configure do |c|
       c.update_project(path, project.gitosis_writers)
     end
   end
 
   def destroy_gitosis_project
-    Gitosis.new.configure do |c|
+    GitProxy.system.new.configure do |c|
       c.destroy_project(@project)
     end
   end

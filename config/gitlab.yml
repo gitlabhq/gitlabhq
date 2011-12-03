@@ -7,7 +7,8 @@ email:
   host: gitlabhq.com
 
 # Gitosis congiguration
-gitosis:
+git_host:
+  system: gitolite# or gitosis
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
   host: localhost

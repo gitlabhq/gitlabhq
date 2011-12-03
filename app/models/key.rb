@@ -19,7 +19,7 @@ class Key < ActiveRecord::Base
   end
 
   def update_gitosis
-    Gitosis.new.configure do |c|
+    GitoProxy.system.new.configure do |c|
       c.update_keys(identifier, key)
 
       projects.each do |project|
@@ -29,7 +29,7 @@ class Key < ActiveRecord::Base
   end
 
   def gitosis_delete_key
-    Gitosis.new.configure do |c|
+    GitoProxy.system.new.configure do |c|
       c.delete_key(identifier)
 
       projects.each do |project|
