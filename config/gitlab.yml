@@ -8,7 +8,7 @@ email:
 
 # Gitosis congiguration
 gitosis:
-  admin_uri: git@localhost:gitosis-admin.git
+  admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
   host: localhost
   git_user: git
