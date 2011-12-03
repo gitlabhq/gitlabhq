@@ -29,7 +29,8 @@ git clone git://github.com/gitlabhq/gitlabhq.git
 cd gitlabhq/
 
 # install this library first
-sudo easy_install pygments
+sudo pip install pygments
+sudo apt-get install python-dev
 
 # give your user access to remove git repo
 # Ex.
@@ -56,10 +57,9 @@ Install gitosis, edit `config/gitlab.yml` and start server
 bundle exec rails s -e production
 ```
 
-## Install Gitosis
+### Create git user 
 
 ```bash
-sudo aptitude install gitosis
 
 sudo adduser \
   --system \
@@ -70,6 +70,22 @@ sudo adduser \
   --home /home/git \
   git
 
+
+# Add your user to git group
+usermod -a -G git gitlabhq_user_name 
+
+```
+
+## Install Gitolite
+
+### !!! IMPORTANT !!! Gitolite umask should be 0007 so users from git group has read/write access to repo
+
+## Install Gitosis
+
+```bash
+sudo aptitude install gitosis
+
+
 ssh-keygen -t rsa
 
 sudo -H -u git gitosis-init < ~/.ssh/id_rsa.pub
@@ -79,6 +95,7 @@ sudo chmod 755 /home/git/repositories/gitosis-admin.git/hooks/post-update
 cd /tmp && git clone git@localhost:gitosis-admin.git 
 
 rm -rf gitosis-admin.git && cd
+
 ```
 
 ## Install ruby 1.9.2
