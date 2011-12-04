@@ -1,3 +1,5 @@
+require File.join(Rails.root, "lib", "gitlabhq", "git_host")
+
 class Repository
   attr_accessor :project
 
@@ -34,13 +36,13 @@ class Repository
   end
 
   def update_gitosis_project
-    GitProxy.system.new.configure do |c|
+    Gitlabhq::GitHost.system.new.configure do |c|
       c.update_project(path, project.gitosis_writers)
     end
   end
 
   def destroy_gitosis_project
-    GitProxy.system.new.configure do |c|
+    Gitlabhq::GitHost.system.new.configure do |c|
       c.destroy_project(@project)
     end
   end
