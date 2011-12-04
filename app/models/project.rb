@@ -180,7 +180,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo_name
-    if path == "gitosis-admin"
+    if path == "gitosis-admin" && path == "gitolite-admin"
       errors.add(:path, " like 'gitosis-admin' is not allowed")
     end
   end

@@ -1,13 +1,14 @@
 class RefsController < ApplicationController
   before_filter :project
-  before_filter :ref
-  before_filter :define_tree_vars, :only => [:tree, :blob]
-  layout "project"
 
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project
+
+  before_filter :ref
+  before_filter :define_tree_vars, :only => [:tree, :blob]
+  layout "project"
 
   def switch 
     new_path = if params[:destination] == "tree"

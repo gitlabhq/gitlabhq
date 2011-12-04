@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_filter :add_project_abilities
   before_filter :authorize_read_project!, :except => [:index, :new, :create]
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
-  before_filter :require_non_empty_project, :only => [:blob, :tree]
+  before_filter :require_non_empty_project, :only => [:blob, :tree, :graph]
   before_filter :load_refs, :only => :tree # load @branch, @tag & @ref
 
   def index
