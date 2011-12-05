@@ -112,7 +112,6 @@ GEM
     hashery (1.4.0)
     hike (1.2.1)
     i18n (0.6.0)
-    inifile (0.4.1)
     jquery-rails (1.0.17)
       railties (~> 3.0)
       thor (~> 0.14)
@@ -271,7 +270,6 @@ DEPENDENCIES
   gitolite!
   grit!
   haml-rails
-  inifile
   jquery-rails
   kaminari
   launchy

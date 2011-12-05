@@ -32,13 +32,6 @@ cd gitlabhq/
 sudo pip install pygments
 sudo apt-get install python-dev
 
-# give your user access to remove git repo
-# Ex.
-#   If you are going to use user 'gitlabhq' for rails server
-#   gitlabhq ALL = (git) NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
-#
-echo "USERNAME ALL = (git) NOPASSWD: /bin/rm" | sudo tee -a /etc/sudoers
-
 sudo gem install bundler
 
 bundle install --without development test
@@ -107,7 +100,7 @@ gl-setup ~/rails.pub
 ## Install ruby 1.9.2
 
 ```bash
-sudo aptitude install git-core curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline5-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev
+sudo aptitude install git-core openssh-server curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline5-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev
 
 wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
 

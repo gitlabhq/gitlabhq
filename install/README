@@ -1,0 +1,11 @@
+Ubuntu installation
+
+1. install git & generate ssh key
+2. install ruby 
+  ./ubuntu_ruby.sh
+3. install git user & gitolite with umask 0007
+  ./ubuntu_gitolite.sh
+4. logout
+5. install gitlabhq
+  ./ubuntu_gitlab.sh
+6 start server
