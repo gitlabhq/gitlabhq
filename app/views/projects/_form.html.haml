@@ -20,13 +20,13 @@
       %tr
         %td
           .left= f.label :path
-          %cite.right= "git@#{GITOSIS["host"]}:"
+          %cite.right= "git@#{GIT_HOST["host"]}:"
         %td
           = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
       %tr
         %td
           .left= f.label :code
-          %cite.right= "http://#{GITOSIS["host"]}/"
+          %cite.right= "http://#{GIT_HOST["host"]}/"
         %td= f.text_field :code, :placeholder => "example"
 
       %tr

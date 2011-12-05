@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_filter :add_project_abilities
   before_filter :authorize_read_project!, :except => [:index, :new, :create]
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
-  before_filter :require_non_empty_project, :only => [:blob, :tree]
+  before_filter :require_non_empty_project, :only => [:blob, :tree, :graph]
   before_filter :load_refs, :only => :tree # load @branch, @tag & @ref
 
   def index
@@ -42,8 +42,8 @@ class ProjectsController < ApplicationController
         format.js
       end
     end
-  rescue Gitosis::AccessDenied
-    render :js => "location.href = '#{errors_gitosis_path}'" and return
+  rescue Gitlabhq::Gitolite::AccessDenied
+    render :js => "location.href = '#{errors_githost_path}'" and return
   rescue StandardError => ex
     @project.errors.add(:base, "Cant save project. Please try again later")
     respond_to do |format|
@@ -65,7 +65,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    return render "projects/empty" unless @project.repo_exists?
+    return render "projects/empty" unless @project.repo_exists? && @project.has_commits?
     limit = (params[:limit] || 20).to_i
     @activities = @project.cached_updates(limit)
   end

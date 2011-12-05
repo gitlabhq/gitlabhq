@@ -11,29 +11,29 @@ class Key < ActiveRecord::Base
             :length   => { :within => 0..5000 }
 
   before_save :set_identifier
-  after_save :update_gitosis
-  after_destroy :gitosis_delete_key
+  after_save :update_repository
+  after_destroy :repository_delete_key
 
   def set_identifier
     self.identifier = "#{user.identifier}_#{Time.now.to_i}"
   end
 
-  def update_gitosis
-    Gitosis.new.configure do |c|
+  def update_repository
+    Gitlabhq::GitHost.system.new.configure do |c|
       c.update_keys(identifier, key)
 
       projects.each do |project|
-        c.update_project(project.path, project.gitosis_writers)
+        c.update_project(project.path, project.repository_writers)
       end
     end
   end
 
-  def gitosis_delete_key
-    Gitosis.new.configure do |c|
+  def repository_delete_key
+    Gitlabhq::GitHost.system.new.configure do |c|
       c.delete_key(identifier)
 
       projects.each do |project|
-        c.update_project(project.path, project.gitosis_writers)
+        c.update_project(project.path, project.repository_writers)
       end
     end
   end

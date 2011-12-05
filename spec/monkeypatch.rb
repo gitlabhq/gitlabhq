@@ -1,11 +1,11 @@
-# Stubbing Project <-> gitosis path
+# Stubbing Project <-> git host path
 # create project using Factory only
 class Project
-  def update_gitosis_project
+  def update_repository
     true
   end
 
-  def update_gitosis
+  def update_repository
     true
   end
 
@@ -15,17 +15,17 @@ class Project
 end
 
 class Key
-  def update_gitosis
+  def update_repository
     true
   end
 
-  def gitosis_delete_key
+  def repository_delete_key
     true
   end
 end
 
 class UsersProject
-  def update_gitosis_project
+  def update_repository
     true
   end
 end

@@ -5,6 +5,14 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
+  remote: https://github.com/gitlabhq/gitolite.git
+  revision: 36dabd226caa40ff052677719adaacbfe667b36c
+  specs:
+    gitolite (0.0.3.alpha)
+      grit (~> 2.4.1)
+      hashery (~> 1.4.0)
+
+GIT
   remote: https://github.com/gitlabhq/grit.git
   revision: ff015074ef35bd94cba943f9c0f98e161ab5851c
   specs:
@@ -101,6 +109,7 @@ GEM
       activesupport (~> 3.0)
       haml (~> 3.0)
       railties (~> 3.0)
+    hashery (1.4.0)
     hike (1.2.1)
     i18n (0.6.0)
     inifile (0.4.1)
@@ -259,6 +268,7 @@ DEPENDENCIES
   drapper
   faker
   git
+  gitolite!
   grit!
   haml-rails
   inifile

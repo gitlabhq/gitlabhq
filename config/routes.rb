@@ -14,7 +14,7 @@ Gitlab::Application.routes.draw do
     root :to => "users#index"
   end
 
-  get "errors/gitosis"
+  get "errors/githost"
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
   put "profile/reset_private_token", :to => "profile#reset_private_token"
