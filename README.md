@@ -80,8 +80,6 @@ usermod -a -G git gitlabhq_user_name
 
 ### !!! IMPORTANT !!! Gitolite umask should be 0007 so users from git group has read/write access to repo
 
-```
-
 
 ## Install ruby 1.9.2
 
