@@ -18,12 +18,12 @@ describe Project do
   describe "Respond to" do
     it { should respond_to(:readers) }
     it { should respond_to(:writers) }
-    it { should respond_to(:gitosis_writers) }
+    it { should respond_to(:repository_writers) }
     it { should respond_to(:admins) }
     it { should respond_to(:add_access) }
     it { should respond_to(:reset_access) }
-    it { should respond_to(:update_gitosis_project) }
-    it { should respond_to(:destroy_gitosis_project) }
+    it { should respond_to(:update_repository) }
+    it { should respond_to(:destroy_repository) }
     it { should respond_to(:public?) }
     it { should respond_to(:private?) }
     it { should respond_to(:url_to_repo) }
@@ -35,9 +35,9 @@ describe Project do
     it { should respond_to(:commit) }
   end
 
-  it "should not allow 'gitosis-admin' as repo name" do
+  it "should not allow 'gitolite-admin' as repo name" do
     should allow_value("blah").for(:path)
-    should_not allow_value("gitosis-admin").for(:path)
+    should_not allow_value("gitolite-admin").for(:path)
   end
 
   it "should return valid url to repo" do

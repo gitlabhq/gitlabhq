@@ -24,24 +24,20 @@ class Repository
   end
 
   def url_to_repo
-    if !GIT_HOST["port"] or GIT_HOST["port"] == 22
-      "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:#{path}.git"
-    else
-      "ssh://#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:#{GIT_HOST["port"]}/#{path}.git"
-    end
+    Gitlabhq::GitHost.url_to_repo(path)
   end
 
   def path_to_repo
     GIT_HOST["base_path"] + path + ".git"
   end
 
-  def update_gitosis_project
+  def update_repository
     Gitlabhq::GitHost.system.new.configure do |c|
-      c.update_project(path, project.gitosis_writers)
+      c.update_project(path, project.repository_writers)
     end
   end
 
-  def destroy_gitosis_project
+  def destroy_repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.destroy_project(@project)
     end

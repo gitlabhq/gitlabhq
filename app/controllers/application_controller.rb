@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :abilities, :can?
 
-  rescue_from Gitlabhq::Gitosis::AccessDenied, Gitlabhq::Gitolite::AccessDenied do |exception|
-    render :file => File.join(Rails.root, "public", "gitosis_error"), :layout => false
+  rescue_from Gitlabhq::Gitolite::AccessDenied do |exception|
+    render :file => File.join(Rails.root, "public", "githost_error"), :layout => false
   end
 
   layout :layout_by_resource

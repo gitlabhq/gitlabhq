@@ -40,8 +40,8 @@ class Project < ActiveRecord::Base
   validate :check_limit
   validate :repo_name
 
-  after_destroy :destroy_gitosis_project
-  after_save :update_gitosis_project
+  after_destroy :destroy_repository
+  after_save :update_repository
 
   attr_protected :private_flag, :owner_id
 
@@ -54,8 +54,8 @@ class Project < ActiveRecord::Base
   delegate :repo,
     :url_to_repo,
     :path_to_repo,
-    :update_gitosis_project,
-    :destroy_gitosis_project,
+    :update_repository,
+    :destroy_repository,
     :tags,
     :repo_exists?,
     :commit,
@@ -113,7 +113,7 @@ class Project < ActiveRecord::Base
     @writers ||= users_projects.includes(:user).where(:write => true).map(&:user)
   end
 
-  def gitosis_writers
+  def repository_writers
     keys = Key.joins({:user => :users_projects}).where("users_projects.project_id = ? AND users_projects.write = ?", id, true)
     keys.map(&:identifier)
   end
@@ -184,8 +184,8 @@ class Project < ActiveRecord::Base
   end
 
   def repo_name
-    if path == "gitosis-admin" && path == "gitolite-admin"
-      errors.add(:path, " like 'gitosis-admin' is not allowed")
+    if path == "gitolite-admin"
+      errors.add(:path, " like 'gitolite-admin' is not allowed")
     end
   end
 

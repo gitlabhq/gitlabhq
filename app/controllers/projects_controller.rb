@@ -42,8 +42,8 @@ class ProjectsController < ApplicationController
         format.js
       end
     end
-  rescue Gitlabhq::Gitosis::AccessDenied, Gitlabhq::Gitolite::AccessDenied
-    render :js => "location.href = '#{errors_gitosis_path}'" and return
+  rescue Gitlabhq::Gitolite::AccessDenied
+    render :js => "location.href = '#{errors_githost_path}'" and return
   rescue StandardError => ex
     @project.errors.add(:base, "Cant save project. Please try again later")
     respond_to do |format|
