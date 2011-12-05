@@ -1,3 +1,8 @@
+v 2.0.0
+  - gitolite as main git host system
+  - merge requests
+  - bugfix
+
 v 1.2.2
   - common config file gitlab.yml
   - issues restyle

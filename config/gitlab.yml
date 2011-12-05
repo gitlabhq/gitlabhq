@@ -7,9 +7,6 @@ email:
   host: gitlabhq.com
 
 # Git Hosting congiguration
-# You can use both gitolite & gitosis
-# But gitosis wiil be deprecated & 
-# some new features wont work with it
 git_host:
   system: gitolite
   admin_uri: git@localhost:gitolite-admin

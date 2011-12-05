@@ -9,7 +9,7 @@ GitLab is a free Project/Repository management application
 ## Application details
 
 rails 3.1
-works only with gitosis
+works only with gitolite
 sqlite as default a database
 
 ## Requirements
@@ -17,7 +17,7 @@ sqlite as default a database
 * ruby 1.9.2
 * sqlite
 * git
-* gitosis
+* gitolite
 * ubuntu/debian
 * pygments lib - `sudo easy_install pygments`
 
@@ -51,7 +51,7 @@ bundle exec rake db:setup RAILS_ENV=production
 bundle exec rake db:seed_fu RAILS_ENV=production
 ```
 
-Install gitosis, edit `config/gitlab.yml` and start server
+Install gitolite (with repo umask 0007), edit `config/gitlab.yml` and start server
 
 ```bash
 bundle exec rails s -e production
@@ -80,23 +80,8 @@ usermod -a -G git gitlabhq_user_name
 
 ### !!! IMPORTANT !!! Gitolite umask should be 0007 so users from git group has read/write access to repo
 
-## Install Gitosis
-
-```bash
-sudo aptitude install gitosis
-
-
-ssh-keygen -t rsa
-
-sudo -H -u git gitosis-init < ~/.ssh/id_rsa.pub
-
-sudo chmod 755 /home/git/repositories/gitosis-admin.git/hooks/post-update
-
-cd /tmp && git clone git@localhost:gitosis-admin.git 
-
-rm -rf gitosis-admin.git && cd
-
 ```
+
 
 ## Install ruby 1.9.2
 
