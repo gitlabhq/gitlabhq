@@ -40,21 +40,30 @@ module Utils
     end
 
     def handle_file_type(file_name, mime_type = nil)
-      if file_name =~ /(\.rb|\.ru|\.rake|Rakefile|\.gemspec|\.rbx|Gemfile)$/
-        :ruby
-      elsif file_name =~ /\.py$/
-        :python
-      elsif file_name =~ /(\.pl|\.scala|\.c|\.cpp|\.java|\.haml|\.html|\.sass|\.scss|\.xml|\.php|\.erb)$/
+      case file_name
+      when /(\.pl|\.scala|\.java|\.haml|\.jade|\.scaml|\.html|\.sass|\.scss|\.php|\.erb)$/
         $1[1..-1].to_sym
-      elsif file_name =~ /\.js$/
+      when /(\.c|\.h|\.idc)$/
+        :c
+      when /(\.cpp|\.hpp|\.c++|\.h++|\.cc|\.hh|\.cxx|\.hxx)$/
+        :cpp
+      when /(\.rb|\.ru|\.rake|Rakefile|\.gemspec|\.rbx|Gemfile)$/
+        :ruby
+      when /(\.py|\.pyw|\.sc|SConstruct|SConscript|\.tac)$/
+        :python
+      when /(\.js|\.json)$/
         :javascript
-      elsif file_name =~ /\.sh$/
+      when /(\.xml|\.xsl|\.rss|\.xslt|\.xsd|\.wsdl)$/
+        :xml
+      when /(\.vm|\.fhtml)$/
+        :velocity
+      when /\.sh$/
         :bash
-      elsif file_name =~ /\.coffee$/
+      when /\.coffee$/
         :coffeescript
-      elsif file_name =~ /\.yml$/
+      when /(\.yml|\.yaml)$/
         :yaml
-      elsif file_name =~ /\.md$/
+      when /\.md$/
         :minid
       else
         :text
