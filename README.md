@@ -57,10 +57,14 @@ Install gitolite (with repo umask 0007), edit `config/gitlab.yml` and start serv
 bundle exec rails s -e production
 ```
 
-### Create git user 
+
+## Install Gitolite
+
 
 ```bash
 
+
+# create git user
 sudo adduser \
   --system \
   --shell /bin/sh \
@@ -76,9 +80,28 @@ usermod -a -G git gitlabhq_user_name
 
 ```
 
-## Install Gitolite
+### !!! IMPORTANT !!! Gitolite should have repository umask 0007 so users from git group has read/write access to repo
 
-### !!! IMPORTANT !!! Gitolite umask should be 0007 so users from git group has read/write access to repo
+```bash
+
+# copy your pub key to git home
+cp ~/.ssh/id_rsa.pub /home/git/rails.pub
+
+# enter user git
+sudo -i -u git 
+
+# clone gitolite
+git clone git://github.com/gitlabhq/gitolite
+
+# install gitolite
+gitolite/src/gl-system-install
+
+
+# Setup (Dont forget to set umask as 0007!!)
+gl-setup ~/rails.pub
+
+
+```
 
 
 ## Install ruby 1.9.2

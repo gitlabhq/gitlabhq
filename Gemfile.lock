@@ -5,7 +5,7 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: https://github.com/gitlabhq/gitolite.git
+  remote: https://github.com/gitlabhq/gitolite-client.git
   revision: 36dabd226caa40ff052677719adaacbfe667b36c
   specs:
     gitolite (0.0.3.alpha)
