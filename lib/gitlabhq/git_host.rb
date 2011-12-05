@@ -4,10 +4,10 @@ require File.join(Rails.root, "lib", "gitlabhq", "gitosis")
 module Gitlabhq
   class GitHost
     def self.system
-      if GIT_HOST["system"] == "gitolite"
-        Gitlabhq::Gitolite
-      else 
+      if GIT_HOST["system"] == "gitosis"
         Gitlabhq::Gitosis
+      else 
+        Gitlabhq::Gitolite
       end
     end
 

@@ -95,6 +95,10 @@ class Project < ActiveRecord::Base
     notes.where(:noteable_id => commit.id, :noteable_type => "Commit")
   end
 
+  def has_commits?
+    !!commit
+  end
+
   def add_access(user, *access)
     opts = { :user => user }
     access.each { |name| opts.merge!(name => true) }

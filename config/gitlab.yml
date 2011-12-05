@@ -11,7 +11,7 @@ email:
 # But gitosis wiil be deprecated & 
 # some new features wont work with it
 git_host:
-  system: gitolite# or gitosis
+  system: gitolite
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
   host: localhost

@@ -70,7 +70,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_non_empty_project
-    redirect_to @project unless @project.repo_exists?
+    redirect_to @project unless @project.repo_exists? && @project.has_commits?
   end
 
   def respond_with_notes

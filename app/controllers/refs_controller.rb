@@ -52,6 +52,8 @@ class RefsController < ApplicationController
     @commit = project.commit(@ref)
     @tree = Tree.new(@commit.tree, project, @ref, params[:path])
     @tree = TreeDecorator.new(@tree)
+  rescue
+    return render_404
   end
     
   def ref
