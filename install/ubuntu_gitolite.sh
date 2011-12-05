@@ -7,9 +7,6 @@ sudo adduser \
   --home /home/git \
   git
 
-
-PATH=/home/dzaporozhets/bin:$PATH
-
 # Add your user to git group
 sudo usermod -a -G git `eval whoami` 
 
