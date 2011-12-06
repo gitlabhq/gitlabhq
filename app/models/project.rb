@@ -1,6 +1,11 @@
 require "grit"
 
 class Project < ActiveRecord::Base
+  PROJECT_N = 0
+  PROJECT_R = 1
+  PROJECT_RW = 2
+  PROJECT_RWA = 3
+
   belongs_to :owner, :class_name => "User"
 
   has_many :merge_requests, :dependent => :destroy
@@ -46,6 +51,16 @@ class Project < ActiveRecord::Base
   attr_protected :private_flag, :owner_id
 
   scope :public_only, where(:private_flag => false)
+
+
+  def self.access_options
+    {
+      "Denied" => PROJECT_N,
+      "Read"   => PROJECT_R,
+      "Report" => PROJECT_RW,
+      "Admin"  => PROJECT_RWA
+    }
+  end
 
   def repository
     @repository ||= Repository.new(self)
@@ -109,21 +124,28 @@ class Project < ActiveRecord::Base
     users_projects.where(:project_id => self.id, :user_id => user.id).destroy if self.id
   end
 
-  def writers
-    @writers ||= users_projects.includes(:user).where(:write => true).map(&:user)
+  def repository_readers
+    keys = Key.joins({:user => :users_projects}).
+      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_R)
+    keys.map(&:identifier)
   end
 
   def repository_writers
-    keys = Key.joins({:user => :users_projects}).where("users_projects.project_id = ? AND users_projects.write = ?", id, true)
+    keys = Key.joins({:user => :users_projects}).
+      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_RW)
     keys.map(&:identifier)
   end
 
   def readers
-    @readers ||= users_projects.includes(:user).where(:read => true).map(&:user)
+    @readers ||= users_projects.includes(:user).where(:project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).map(&:user)
+  end
+
+  def writers
+    @writers ||= users_projects.includes(:user).where(:project_access => [PROJECT_RW, PROJECT_RWA]).map(&:user)
   end
 
   def admins
-    @admins ||=users_projects.includes(:user).where(:admin => true).map(&:user)
+    @admins ||= users_projects.includes(:user).where(:project_access => PROJECT_RWA).map(&:user)
   end
 
   def root_ref 

@@ -1,10 +1,22 @@
 require File.join(Rails.root, "lib", "gitlabhq", "git_host")
 
 class Repository
+  REPO_N = 0
+  REPO_R = 1
+  REPO_RW = 2
+
   attr_accessor :project
 
   def self.default_ref
     "master"
+  end
+
+  def self.access_options
+    {
+      "Denied"      => REPO_N,
+      "Pull"        => REPO_R,
+      "Pull & Push" => REPO_RW
+    }
   end
 
   def initialize(project)
@@ -33,7 +45,7 @@ class Repository
 
   def update_repository
     Gitlabhq::GitHost.system.new.configure do |c|
-      c.update_project(path, project.repository_writers)
+      c.update_project(path, project)
     end
   end
 

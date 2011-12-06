@@ -1,4 +1,5 @@
 - user = member.user
+- allow_admin = can? current_user, :admin_project, @project
 %tr{:id => dom_id(member)}
   %td
     = link_to image_tag(gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding:0 5px;"), project_team_member_path(@project, member)
@@ -6,15 +7,13 @@
     = link_to truncate(user.name, :lenght => 24), project_team_member_path(@project, member)
     %br
     .cgray{:style => "padding-top:10px;"}= truncate user.email, :lenght => 24
-  - if can? current_user, :admin_project, @project
-    = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
-      %td= f.check_box :read, :onclick => "$(this.form).submit();"
-      %td= f.check_box :write, :onclick => "$(this.form).submit();"
-      %td= f.check_box :admin, :onclick => "$(this.form).submit();"
-  - else
-    %td= check_box_tag "read",   1, member.read, :disabled => :disabled
-    %td= check_box_tag "commit", 1, member.write, :disabled => :disabled
-    %td= check_box_tag "admin",  1, member.admin, :disabled => :disabled
-  - if can? current_user, :admin_team_member, @project
+    %td
+      = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
+        = f.select :project_access, options_for_select(Project.access_options, member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
+    %td
+      = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
+        = f.select :repo_access, options_for_select(Repository.access_options, member.repo_access), {}, :class => "repo-access-select", :disabled => !allow_admin
+  - if allow_admin
     %td
       = link_to 'Cancel', project_team_member_path(:project_id => @project, :id => member.id), :confirm => 'Are you sure?', :method => :delete, :class => "grey-button negative delete-team-member", :remote => true
+

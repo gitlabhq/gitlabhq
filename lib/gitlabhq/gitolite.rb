@@ -61,7 +61,7 @@ module Gitlabhq
     end
 
     # update or create
-    def update_project(repo_name, name_writers)
+    def update_project(repo_name, project)
       ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(@local_dir,'gitolite'))
       conf = ga_repo.config
 
@@ -71,8 +71,13 @@ module Gitlabhq
                ::Gitolite::Config::Repo.new(repo_name)
              end
 
+      name_readers = project.repository_readers
+      name_writers = project.repository_writers
+
+      repo.clean_permissions
+      repo.add_permission("R", "", name_readers) unless name_readers.blank?
       repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
-      conf.add_repo(repo)
+      conf.add_repo(repo, true)
 
       ga_repo.save
     end

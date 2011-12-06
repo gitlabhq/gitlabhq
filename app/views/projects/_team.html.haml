@@ -5,14 +5,19 @@
 %table.round-borders#team-table
   %thead
     %th Name
-    %th Web
-    %th Git
-    %th Admin
+    %th Project
+    %th Repository
     - if can? current_user, :admin_team_member, @project
       %th Actions
   - @project.users_projects.each do |up|
     = render(:partial => 'team_members/show', :locals => {:member => up})
 
 :javascript
+  $(function(){
+    $('.repo-access-select, .project-access-select').live("change", function() { 
+      $(this.form).submit();
+    });
+  })
+
   $('.delete-team-member').live('ajax:success', function() {
     $(this).closest('tr').fadeOut(); });

@@ -23,7 +23,7 @@ class Key < ActiveRecord::Base
       c.update_keys(identifier, key)
 
       projects.each do |project|
-        c.update_project(project.path, project.repository_writers)
+        c.update_project(project.path, project)
       end
     end
   end
@@ -33,7 +33,7 @@ class Key < ActiveRecord::Base
       c.delete_key(identifier)
 
       projects.each do |project|
-        c.update_project(project.path, project.repository_writers)
+        c.update_project(project.path, project)
       end
     end
   end

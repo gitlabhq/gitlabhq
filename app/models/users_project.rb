@@ -4,25 +4,20 @@ class UsersProject < ActiveRecord::Base
 
   attr_protected :project_id, :project
 
-  after_commit :update_repository
+  after_save :update_repository
+  after_destroy :update_repository
 
   validates_uniqueness_of :user_id, :scope => [:project_id]
   validates_presence_of :user_id
   validates_presence_of :project_id
-  validate :user_has_a_role_selected
 
   delegate :name, :email, :to => :user, :prefix => true
 
   def update_repository
-    Gitosis.new.configure do |c|
-      c.update_project(project.path, project.repository)
+    Gitlabhq::GitHost.system.new.configure do |c|
+      c.update_project(project.path, project)
     end
   end
-
-  def user_has_a_role_selected
-    errors.add(:base, "Please choose at least one Role in the Access list") unless read || write || admin
-  end
-
 end
 # == Schema Information
 #
