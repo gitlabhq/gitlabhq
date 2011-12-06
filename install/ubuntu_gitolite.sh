@@ -1,3 +1,5 @@
+sudo apt-get install openssh-server 
+
 sudo adduser \
   --system \
   --shell /bin/sh \
