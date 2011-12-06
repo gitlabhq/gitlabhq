@@ -27,15 +27,18 @@ Checkout wiki pages for installation information, migration, etc.
 ## Community
 
 [Google Group](https://groups.google.com/group/gitlabhq)
+
 IRC freenode: #gitlabhq
 
 ## Contacts
 
-Twitter
+Twitter:
+
  * @gitalbhq
  * @dzaporozhets 
 
-Email 
+Email
+
  * m@gitlabhq.com
 
 ## Contribute
