@@ -31,6 +31,10 @@ class ProjectsController < ApplicationController
     Project.transaction do
       @project.save!
       @project.users_projects.create!(:admin => true, :read => true, :write => true, :user => current_user)
+
+      # when project saved no team member exist so 
+      # project repository should be updated after first user add
+      @project.update_repository
     end
 
     respond_to do |format|
