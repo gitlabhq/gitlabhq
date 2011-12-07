@@ -23,14 +23,6 @@ describe "Snippets" do
     it { should have_content(@snippet.project.name) }
     it { should have_content(@snippet.author.name) }
 
-    it "doesn't show expired snippets" do
-      @snippet.update_attribute(:expires_at, 1.day.ago.to_time)
-      visit project_snippet_path(project, @snippet)
-      page.should have_content("Sorry, this snippet is no longer exists")
-      page.should_not have_content(@snippet.title)
-      page.should_not have_content(@snippet.content)
-    end
-
     describe "Destroy" do
       before do
         # admin access to remove snippet
