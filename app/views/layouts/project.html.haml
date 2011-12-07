@@ -49,7 +49,7 @@
                   %span{ :class => "number" }= @project.snippets.non_expired.count
 
               - if can? current_user, :admin_project, @project
-                = link_to "Project", edit_project_path(@project), :class => (current_page?(edit_project_path(@project))) ? "current" : nil
+                = link_to "Admin", edit_project_path(@project), :class => (current_page?(edit_project_path(@project))) ? "current" : nil
 
             .medium-tags{:style => 'padding: 10px 0 0 10px; width: 210px;'}= tag_list @project
 

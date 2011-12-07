@@ -29,6 +29,11 @@
           %cite.right= "http://#{GIT_HOST["host"]}/"
         %td= f.text_field :code, :placeholder => "example"
 
+      - unless @project.heads.empty?  
+        %tr
+          %td= f.label :default_branch, "Default Branch"
+          %td= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
+
       %tr
         %td= f.label :tag_list
         %td= f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
@@ -57,4 +62,5 @@
 :javascript
   $(function(){
     taggifyForm();
+    $('form #project_default_branch').chosen();
   })

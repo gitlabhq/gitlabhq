@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111206222316) do
+ActiveRecord::Schema.define(:version => 20111207211728) do
 
   create_table "features", :force => true do |t|
     t.string   "name"
@@ -76,9 +76,10 @@ ActiveRecord::Schema.define(:version => 20111206222316) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "private_flag", :default => true, :null => false
+    t.boolean  "private_flag",   :default => true,     :null => false
     t.string   "code"
     t.integer  "owner_id"
+    t.string   "default_branch", :default => "master", :null => false
   end
 
   create_table "snippets", :force => true do |t|

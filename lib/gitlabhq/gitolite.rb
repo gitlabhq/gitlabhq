@@ -42,7 +42,7 @@ module Gitlabhq
     end
 
     def destroy_project(project)
-      `sudo -u git rm -rf #{project.path_to_repo}`
+      FileUtils.rm_rf(project.path_to_repo)
       
       ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(@local_dir,'gitolite'))
       conf = ga_repo.config

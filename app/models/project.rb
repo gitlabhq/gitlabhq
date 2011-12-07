@@ -158,7 +158,7 @@ class Project < ActiveRecord::Base
   end
 
   def root_ref 
-    "master"
+    default_branch || "master"
   end
 
   def public?
