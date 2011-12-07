@@ -114,9 +114,18 @@ class Project < ActiveRecord::Base
     !!commit
   end
 
+  # Compatible with all access rights
+  # Should be rewrited for new access rights
   def add_access(user, *access)
+    access = if access.include?(:admin) 
+               { :project_access => PROJECT_RWA } 
+             elsif access.include?(:write)
+               { :project_access => PROJECT_RW } 
+             else
+               { :project_access => PROJECT_R } 
+             end
     opts = { :user => user }
-    access.each { |name| opts.merge!(name => true) }
+    opts.merge!(access)
     users_projects.create(opts)
   end
 
