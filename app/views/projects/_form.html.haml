@@ -29,7 +29,7 @@
           %cite.right= "http://#{GIT_HOST["host"]}/"
         %td= f.text_field :code, :placeholder => "example"
 
-      - unless @project.heads.empty?  
+      - unless @project.new_record? || @project.heads.empty?  
         %tr
           %td= f.label :default_branch, "Default Branch"
           %td= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
