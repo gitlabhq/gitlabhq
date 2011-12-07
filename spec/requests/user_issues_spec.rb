@@ -48,6 +48,8 @@ describe "User Issues Dashboard" do
       page.body.should have_selector("title", :text => "#{@user.name} issues")
       page.body.should have_selector("author email", :text => @issue1.author_email)
       page.body.should have_selector("entry summary", :text => @issue1.title)
+      page.body.should have_selector("author email", :text => @issue2.author_email)
+      page.body.should have_selector("entry summary", :text => @issue2.title)
     end
   end
 end
