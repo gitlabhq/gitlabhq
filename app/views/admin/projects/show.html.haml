@@ -43,18 +43,17 @@
       %tr
         %th Name
         %th Added
-        %th Web
-        %th Git
-        %th Admin
+        %th Project Access
+        %th Repository Access
         %th
 
     - @admin_project.users_projects.each do |tm|
       %tr
-        %td= link_to tm.user_name, admin_team_member_path(tm)
+        %td
+          = link_to tm.user_name, admin_team_member_path(tm)
         %td= time_ago_in_words(tm.updated_at) + " ago"
-        %td= check_box_tag "read",   1, @admin_project.readers.include?(tm.user), :disabled => :disabled
-        %td= check_box_tag "commit", 1, @admin_project.writers.include?(tm.user), :disabled => :disabled
-        %td.span-2= check_box_tag "admin",  1, @admin_project.admins.include?(tm.user), :disabled => :disabled
+        %td= select_tag :project_access, options_for_select(Project.access_options, tm.project_access), :class => "project-access-select", :disabled => :disabled
+        %td= select_tag :repo_access, options_for_select(Repository.access_options, tm.repo_access), :class => "repo-access-select", :disabled => :disabled
         %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
 
   = link_to 'New Team Member', new_admin_team_member_path(:team_member => {:project_id => @admin_project.id}),  :class => "grey-button"

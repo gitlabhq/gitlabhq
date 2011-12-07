@@ -31,9 +31,9 @@ describe Note do
 
     describe :read do
       before do
-        @p1.users_projects.create(:user => @u1, :read => false)
-        @p1.users_projects.create(:user => @u2, :read => true)
-        @p2.users_projects.create(:user => @u3, :read => true)
+        @p1.users_projects.create(:user => @u1, :project_access => Project::PROJECT_N)
+        @p1.users_projects.create(:user => @u2, :project_access => Project::PROJECT_R)
+        @p2.users_projects.create(:user => @u3, :project_access => Project::PROJECT_R)
       end
 
       it { @abilities.allowed?(@u1, :read_note, @p1).should be_false }
@@ -43,9 +43,9 @@ describe Note do
 
     describe :write do
       before do
-        @p1.users_projects.create(:user => @u1, :write => false)
-        @p1.users_projects.create(:user => @u2, :write => true)
-        @p2.users_projects.create(:user => @u3, :write => true)
+        @p1.users_projects.create(:user => @u1, :project_access => Project::PROJECT_R)
+        @p1.users_projects.create(:user => @u2, :project_access => Project::PROJECT_RW)
+        @p2.users_projects.create(:user => @u3, :project_access => Project::PROJECT_RW)
       end
 
       it { @abilities.allowed?(@u1, :write_note, @p1).should be_false }
@@ -55,9 +55,9 @@ describe Note do
 
     describe :admin do
       before do
-        @p1.users_projects.create(:user => @u1, :admin => false)
-        @p1.users_projects.create(:user => @u2, :admin => true)
-        @p2.users_projects.create(:user => @u3, :admin => true)
+        @p1.users_projects.create(:user => @u1, :project_access => Project::PROJECT_R)
+        @p1.users_projects.create(:user => @u2, :project_access => Project::PROJECT_RWA)
+        @p2.users_projects.create(:user => @u3, :project_access => Project::PROJECT_RWA)
       end
 
       it { @abilities.allowed?(@u1, :admin_note, @p1).should be_false }

@@ -11,19 +11,13 @@
 
 #infoblock
   .span-6
-    %b Access:
+    %b Project Access:
+    = select_tag :project_access, options_for_select(Project.access_options, @admin_team_member.project_access), :class => "project-access-select", :disabled => true
+
   %br
   .span-6
-    = check_box_tag "read",   1, @admin_team_member.read, :disabled => :disabled
-    Web Access (Browse Repo)
-  %br
-  .span-6
-    = check_box_tag "commit", 1, @admin_team_member.write, :disabled => :disabled
-    Git Access (User will be added to commiters list)
-  %br
-  .span-6.append-bottom
-    = check_box_tag "admin",  1, @admin_team_member.admin, :disabled => :disabled
-    Admin (Can manage project)
+    %b Repository Access:
+    = select_tag :repo_access, options_for_select(Repository.access_options, @admin_team_member.repo_access), :class => "repo-access-select", :disabled => true
 
 %br
 

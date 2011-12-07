@@ -32,11 +32,10 @@ describe "TeamMembers" do
     describe "fill in" do
       before do
         page.execute_script("$('#team_member_user_id').show();")
-        select @user_1.name, :from => "team_member_user_id"
-
-        within "#team_member_new" do
-          check "team_member_read"
-          check "team_member_write"
+        within "#team_member_new" do 
+          select @user_1.name, :from => "team_member_user_id"
+          select "Report", :from => "team_member_project_access"
+          select "Pull",   :from => "team_member_repo_access"
         end
       end
 
@@ -48,20 +47,9 @@ describe "TeamMembers" do
 
         page.should have_content @user_1.name
 
-        @member.read.should be_true
-        @member.write.should be_true
-        @member.admin.should be_false
-      end
-
-      it "should not allow creation without access selected" do
-        within "#team_member_new" do
-          uncheck "team_member_read"
-          uncheck "team_member_write"
-          uncheck "team_member_admin"
-        end
-
-        expect { click_button "Save" }.to_not change {UsersProject.count}
-        page.should have_content("Please choose at least one Role in the Access list")
+        @member.reload
+        @member.project_access.should == Project::PROJECT_RW
+        @member.repo_access.should == Repository::REPO_R
       end
     end
   end

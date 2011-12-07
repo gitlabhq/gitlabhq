@@ -10,16 +10,15 @@
     .span-6
       = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
     .span-6
-      %b Access:
+      %b Project Access:
     .span-6
-      = f.check_box :read
-      Web Access
+      = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
+
     .span-6
-      = f.check_box :write
-      Git Access
-    .span-6.append-bottom
-      = f.check_box :admin
-      Admin
+      %b Repository Access:
+    .span-6
+      = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select"
     %br
     .span-6
       = f.submit 'Save', :class => "grey-button"
+
