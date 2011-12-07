@@ -32,3 +32,5 @@
 
       .buttons
         = f.submit 'Save', :class => "grey-button"
+        - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
+          .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "grey-button delete-snippet negative", :id => "destroy_snippet_#{@snippet.id}"

@@ -5,6 +5,10 @@ class Snippet < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   has_many :notes, :as => :noteable
 
+  delegate :name,
+           :email,
+           :to => :author,
+           :prefix => true
   attr_protected :author, :author_id, :project, :project_id
 
   validates_presence_of :project_id

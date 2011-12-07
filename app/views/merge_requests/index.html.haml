@@ -1,3 +1,7 @@
+%h2.icon
+  %span>
+  Merge Requests
+.right= link_to 'New Merge request', new_project_merge_request_path(@project), :class => "grey-button"
 - if @merge_requests.opened.count > 0
   %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
     %h3
@@ -17,4 +21,3 @@
   .clear
   %br
 
-= link_to 'New Merge request', new_project_merge_request_path(@project), :class => "grey-button"

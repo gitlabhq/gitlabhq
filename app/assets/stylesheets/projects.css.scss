@@ -476,3 +476,33 @@ body.project-page table.no-borders td{
 }
 
 #tree-content-holder { float:left; width:100%; }
+
+
+
+/* Commit Page */
+.entity-info {float: right;}
+.entity-button{
+  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.192, #fff), to(#f4f4f4));
+  background-image: -webkit-linear-gradient(#fff 19.2%, #f4f4f4);
+  background-image: -moz-linear-gradient(#fff 19.2%, #f4f4f4);
+  background-image: -o-linear-gradient(#fff 19.2%, #f4f4f4);
+  box-shadow: 0 -1px 0 white inset;
+  display: block;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  margin-bottom: 2px;
+  position: relative;
+  padding: 4px 10px;
+  font-size: 11px;
+  padding-right: 20px;
+}
+
+.entity-button i{
+  background: url('images.png') no-repeat -138px -27px;
+  width: 6px;
+  height: 9px;
+  float: right;
+  position: absolute;
+  top: 6px;
+  right: 5px;
+}

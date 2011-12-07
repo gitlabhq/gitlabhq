@@ -1,23 +1,31 @@
-- if !@snippet.expired?
-  .ui-box.width-100p
-    %h3
-      = @snippet.title
-      .right= @snippet.file_name
-    .data.no-padding
-      :erb
-        <%= raw @snippet.colorize %>
+%div
+  %span.entity-info
+    - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
+      = link_to  edit_project_snippet_path(@project, @snippet) do 
+        .entity-button
+          Edit Snippet
+          %i
+  - if @snippet.author_email
+    = image_tag gravatar_icon(@snippet.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+  - else
+    = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
+  %span.commit-title
+    %strong
+      = truncate(@snippet.title, :length => 60)
+  %span.commit-author
+    %strong= @snippet.author_name
+    = @snippet.created_at.stamp("Aug 21, 2011 9:23pm")
 
-    .buttons
-      - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-        = link_to 'Edit', edit_project_snippet_path(@project, @snippet), :class => "grey-button"
-      - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-        .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "grey-button delete-snippet negative", :id => "destroy_snippet_#{@snippet.id}"
-  .clear
-  %br
-  .snippet_notes= render "notes/notes"
+%hr
 
-  .clear
+.view_file
+  .view_file_header
+    %strong= @snippet.file_name
+  .data.no-padding
+    :erb
+      <%= raw @snippet.colorize %>
+.clear
+%br
+.snippet_notes= render "notes/notes"
 
-- else
-  %h2
-    Sorry, this snippet is no longer exists
+.clear
