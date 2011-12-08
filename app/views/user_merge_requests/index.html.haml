@@ -1,0 +1,10 @@
+- if @merge_requests.opened.count > 0
+  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
+    %h3
+      %span.tag.open Open
+    .data
+      = render @merge_requests.opened
+
+  .clear
+  %br
+
