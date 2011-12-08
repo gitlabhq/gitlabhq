@@ -1,0 +1,7 @@
+:plain
+  $("#feeds_content_holder").hide("slide", { direction: "left" }, 150, function(){
+    $("#news-feed").html("#{escape_javascript(render(:partial => "merge_requests_feed"))}");
+    $("#feeds_content_holder").show("slide", { direction: "right" }, 150);
+    history.pushState({ path: this.path }, '', '#{dashboard_merge_requests_path}')
+  });
+

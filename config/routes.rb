@@ -1,6 +1,5 @@
 Gitlab::Application.routes.draw do
 
-  get "user_issues/index"
 
   get 'tags'=> 'tags#index'
   get 'tags/:tag' => 'projects#index'
@@ -22,9 +21,10 @@ Gitlab::Application.routes.draw do
   put "profile/reset_private_token", :to => "profile#reset_private_token"
   put "profile/edit", :to => "profile#social_update"
   get "profile", :to => "profile#show"
+
   get "dashboard", :to => "dashboard#index"
-  get "issues", :to => "user_issues#index", :as => "issues"
-  get "merge_requests", :to => "user_merge_requests#index", :as => "merge_requests"
+  get "dashboard/issues", :to => "dashboard#issues"
+  get "dashboard/merge_requests", :to => "dashboard#merge_requests"
 
   #get "profile/:id", :to => "profile#show"
 

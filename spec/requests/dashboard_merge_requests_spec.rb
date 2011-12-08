@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "User MergeRequests" do
+describe "User MergeRequests", :js => true do
   describe "GET /issues" do
     before do
 
@@ -27,7 +27,8 @@ describe "User MergeRequests" do
         :assignee => @user,
         :project => @project2
 
-      visit merge_requests_path
+      visit dashboard_path
+      click_link "merge_requests_slide"
     end
 
     subject { page }

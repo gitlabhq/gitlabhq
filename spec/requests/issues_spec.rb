@@ -23,7 +23,7 @@ describe "Issues" do
 
     subject { page }
 
-    it { should have_content(@issue.title) }
+    it { should have_content(@issue.title[0..20]) }
     it { should have_content(@issue.project.name) }
     it { should have_content(@issue.assignee.name) }
 
