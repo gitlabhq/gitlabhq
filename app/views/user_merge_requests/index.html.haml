@@ -1,10 +1,18 @@
-- if @merge_requests.opened.count > 0
-  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
-    %h3
-      %span.tag.open Open
-    .data
-      = render @merge_requests.opened
+- content_for(:body_class, "dashboard-page")
 
-  .clear
-  %br
-
+#dashboard-content.dashboard-content.content
+  %aside
+    %h4
+      - if current_user.can_create_project?
+        %a.button-small.button-green{:href => new_project_path} New Project
+      Your Projects
+    %ol.project-list
+      - @projects.each do |project|
+        %li
+          %a{:href => project_path(project)}
+            %span.arrow →
+            %span.project-name= project.name
+            %span.time
+              %strong Last activity:
+              = project.last_activity_date ? time_ago_in_words(project.last_activity_date) + " ago" : "Never"
+  = render "dashboard/merge_requests_feed"

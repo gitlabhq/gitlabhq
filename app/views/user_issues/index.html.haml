@@ -1,9 +1,18 @@
-%div#issues-table-holder
-  %table.round-borders#issues-table
-    %thead
-      %th
-        .top_panel_issues
-          %h2 Issues assigned to me
+- content_for(:body_class, "dashboard-page")
 
-    = render 'issues/issues'
-  %br
+#dashboard-content.dashboard-content.content
+  %aside
+    %h4
+      - if current_user.can_create_project?
+        %a.button-small.button-green{:href => new_project_path} New Project
+      Your Projects
+    %ol.project-list
+      - @projects.each do |project|
+        %li
+          %a{:href => project_path(project)}
+            %span.arrow →
+            %span.project-name= project.name
+            %span.time
+              %strong Last activity:
+              = project.last_activity_date ? time_ago_in_words(project.last_activity_date) + " ago" : "Never"
+  = render "dashboard/issues_feed"

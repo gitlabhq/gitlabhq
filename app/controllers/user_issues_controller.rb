@@ -1,11 +1,10 @@
 class UserIssuesController < ApplicationController
   before_filter :authenticate_user!
 
-  layout "user"
-
   respond_to :js, :html
 
   def index
+    @projects = current_user.projects.all
     @user   = current_user
     @issues = current_user.assigned_issues.opened
 

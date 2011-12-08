@@ -25,9 +25,6 @@
     <%= link_to dashboard_path, :class => current_page?(root_path) ? "current dashboard" : "dashboard" do %>
       <span></span>Dashboard
     <% end %>
-    <%= link_to issues_path, :class => current_page?(issues_path) ? "current issues" : "issues" do %>
-      <span></span>Issues
-    <% end %>
     <%= link_to projects_path, :class => current_page?(projects_path) ? "current project" : "project" do %>
       <span></span>Projects
     <% end %>

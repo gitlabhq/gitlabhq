@@ -2,13 +2,10 @@
   %td
     %strong.issue-number{:class => sort_class}= "##{issue.id}"
     %span
-      = truncate(html_escape(issue.title), :length => fixed_mode? ? 100 : 200)
+      = truncate(html_escape(issue.title), :length => 40)
     %br
     %br
     %div.note-author
-      - if not @project.present?
-        %strong= issue.project.name
-        = '-'
       %strong= issue.assignee.name
       %cite.cgray
         = time_ago_in_words(issue.created_at)

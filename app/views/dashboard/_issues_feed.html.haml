@@ -1,0 +1,28 @@
+#news-feed.news-feed
+  %div
+    = link_to dashboard_path, :class => "left" do 
+      .box-arrow
+        &larr;
+    %h2{:style => "width:86%; text-align:center"}
+      Issues
+    = link_to merge_requests_path, :class => "right" do 
+      .box-arrow 
+        &rarr;
+
+
+  .project-box.project-updates.ui-box.ui-box-small.ui-box-big
+    .data
+      - @issues.each do |update|
+        %a.project-update{:href => dashboard_feed_path(update.project, update)}
+          = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
+          %span.update-title
+            = dashboard_feed_title(update)
+          %span.update-author
+            %strong= update.author_name
+            authored
+            = time_ago_in_words(update.created_at)
+            ago
+          .right
+            - klass = update.class.to_s.split("::").last.downcase
+            %span.tag{ :class => klass }= klass
+
