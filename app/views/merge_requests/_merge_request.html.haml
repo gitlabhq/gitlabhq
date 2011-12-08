@@ -1,8 +1,11 @@
-%a.update-item{:href => project_merge_request_path(@project, merge_request)}
+%a.update-item{:href => project_merge_request_path(merge_request.project, merge_request)}
   = image_tag gravatar_icon(merge_request.author_email), :class => "left", :width => 40
   %span.update-title
     = merge_request.title
   %span.update-author
+    - if not @project.present?
+      %strong= merge_request.project.name
+      = '-'
     %strong= merge_request.author_name
     authored
     = time_ago_in_words(merge_request.created_at)

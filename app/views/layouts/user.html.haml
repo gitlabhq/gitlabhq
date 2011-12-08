@@ -21,6 +21,10 @@
                 Issues
                 - unless current_user.assigned_issues.empty?
                   %span{ :class => "number" }= current_user.assigned_issues.count
+              = link_to merge_requests_path, :class => current_page?(:controller => "user_merge_requests", :action => "index") ? "current" : nil do
+                Merge Requests
+                - unless current_user.assigned_merge_requests.empty?
+                  %span{ :class => "number" }= current_user.assigned_merge_requests.count
 
         .project-content
           = yield

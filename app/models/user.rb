@@ -25,6 +25,15 @@ class User < ActiveRecord::Base
     :foreign_key => :assignee_id,
     :dependent => :destroy
 
+  has_many :merge_requests,
+    :foreign_key => :author_id,
+    :dependent => :destroy
+
+  has_many :assigned_merge_requests,
+    :class_name => "MergeRequest",
+    :foreign_key => :assignee_id,
+    :dependent => :destroy
+
   before_create :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
