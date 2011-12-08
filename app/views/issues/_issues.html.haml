@@ -1,5 +1,5 @@
 - @issues.critical.each do |issue|
-  = render(:partial => 'show', :locals => {:issue => issue})
+  = render(:partial => 'issues/show', :locals => {:issue => issue})
 
 - @issues.non_critical.each do |issue|
-  = render(:partial => 'show', :locals => {:issue => issue})
+  = render(:partial => 'issues/show', :locals => {:issue => issue})

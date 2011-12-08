@@ -6,6 +6,8 @@ describe User do
     it { should have_many(:users_projects) }
     it { should have_many(:issues) }
     it { should have_many(:assigned_issues) }
+    it { should have_many(:merge_requests) }
+    it { should have_many(:assigned_merge_requests) }
   end
 
   describe "Respond to" do

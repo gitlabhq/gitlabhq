@@ -50,7 +50,7 @@ describe "MergeRequests" do
   end
 
   describe "GET /merge_requests/new" do 
-    before do 
+    before do
       visit new_project_merge_request_path(project)
       fill_in "merge_request_title", :with => "Merge Request Title" 
       select "master", :from => "merge_request_source_branch"
