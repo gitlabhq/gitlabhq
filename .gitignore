@@ -7,3 +7,4 @@ tmp/
 coverage/*
 *.swp
 public/uploads/
+.rvmrc
