@@ -53,7 +53,7 @@ module ApplicationHelper
       [ "Tag", @project.tags ]
     ]
 
-    grouped_options_for_select(options, @ref)
+    grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
   def markdown(text)
