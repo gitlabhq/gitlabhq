@@ -1,0 +1,13 @@
+%h4.dash-tabs
+  = link_to "Activities", dashboard_path, :remote => true, :class => "button-small dash-button #{"active" if current_page?(dashboard_path) || current_page?(root_path) }", :id => "activities_slide"
+  = link_to "Issues", dashboard_issues_path, :remote => true, :class => "button-small dash-button #{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
+  = link_to "Merge Requests", dashboard_merge_requests_path, :remote => true, :class => "button-small dash-button #{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
+
+
+:javascript 
+  $(function(){
+    $(".dash-button").live("click", function() { 
+      $(".dash-button").removeClass("active");
+      $(this).addClass("active");
+    })
+  });

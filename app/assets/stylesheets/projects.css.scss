@@ -507,3 +507,25 @@ body.project-page table.no-borders td{
   right: 5px;
 }
 .box-arrow{float: right; background: #E3E5EA; padding: 10px; border-radius: 5px; margin-top: 2px; text-shadow: none; color: #999; margin: 1.5em 0;}
+
+h4.dash-tabs { 
+  margin: 0; 
+  border-bottom: 1px solid #ccc; 
+  padding: 10px 10px;
+  font-size: 11px;
+  padding-left:20px;
+  font-weight: bold; text-transform: uppercase;
+  background: #F7F7F7;
+  margin-bottom:20px;
+}
+
+.dash-button { 
+  margin-right:5px;
+  @include round-borders-all(4px);
+  border: 1px solid #ddd;
+  background:none;
+
+  &.active { 
+    background: #eaeaea;
+  }
+}
