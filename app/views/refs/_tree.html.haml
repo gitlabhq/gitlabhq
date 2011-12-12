@@ -4,7 +4,7 @@
     %d
       = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
         = @project.code
-      - tree.breadcrumbs(2) do |link|
+      - tree.breadcrumbs(3) do |link|
         \/
         = link
       &nbsp;

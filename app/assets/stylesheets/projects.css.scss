@@ -358,8 +358,12 @@ body.project-page table .commit {
     color:white;
   }
   &.note {
-    background: #2c5c66;
-    color:white;
+    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    color: #777;
+    border: 1px solid #DEDFE1;
   }
   &.issue {
     background: #D12F19;
