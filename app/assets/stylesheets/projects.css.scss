@@ -67,8 +67,8 @@ a {
   }
 }
 
-.view_file .view_file_header, 
-.diff_file .diff_file_header { 
+.view_file .view_file_header,
+.diff_file .diff_file_header {
     background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
     background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
     background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
@@ -116,7 +116,7 @@ td.code {
   word-wrap:normal;
 }
 
-table.highlighttable { 
+table.highlighttable {
   border: none;
   background: #F7F7F7;
 }
@@ -331,7 +331,7 @@ body.project-page table .commit {
   border:none;
   text-shadow:none;
 
-  &.inline { 
+  &.inline {
     display:inline;
   }
 
@@ -430,28 +430,28 @@ body.projects-page input.text.git-url.project_list_url { width:165px; }
 
 
 body.project-page table.no-borders tr,
-body.project-page table.no-borders td{ 
+body.project-page table.no-borders td{
   border:none;
 }
 
-#gitlab-tabs { 
+#gitlab-tabs {
   .ui-tabs-nav {
     border-bottom: 1px solid #DEDFE1;
 
-    li { 
+    li {
       background: none;
       border:none;
       font-size: 16px;
       margin: 0;
       padding: 0;
 
-      a { 
+      a {
         margin: 0;
         padding: 10px 16px;
         width:150px;
       }
 
-      &.ui-tabs-selected { 
+      &.ui-tabs-selected {
         background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
         background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
         background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
@@ -466,16 +466,27 @@ body.project-page table.no-borders td{
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
       }
-    } 
-  } 
+    }
+  }
 }
 
-.ajax-tab-loading { 
+.ajax-tab-loading {
   padding:40px;
   display:none;
 }
 
 #tree-content-holder { float:left; width:100%; }
+
+#tree-readme-holder {
+  float:left;
+  width:100%;
+
+  .readme {
+    @include round-borders-all(4px);
+    padding: 4px 15px;
+    background:#F7F7F7;
+  }
+}
 
 
 

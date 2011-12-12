@@ -22,7 +22,7 @@
         %th
           Last commit
           = link_to "history", tree.history_path, :class => "right"
-      
+
       - if tree.up_dir?
         %tr{ :class => "tree-item", :url => tree.up_dir_path }
           %td.tree-item-file-name
@@ -35,6 +35,12 @@
         = render :partial => "refs/tree_item", :locals => { :content => content }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
         = render :partial => "refs/tree_item", :locals => { :content => content }
+
+    - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme\.(md|markdown)$/i }.first
+      #tree-readme-holder
+        %h3= content.name
+        .readme
+          = markdown(encode content.data)
 
 :javascript
   $(function(){
