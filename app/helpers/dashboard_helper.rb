@@ -10,6 +10,7 @@ module DashboardHelper
       when "Issue" then project_issue_path(project, note.noteable_id)
       when "Snippet" then project_snippet_path(project, note.noteable_id)
       when "Commit" then project_commit_path(project, :id => note.noteable_id)
+      when "MergeRequest" then project_merge_request_path(project, note.noteable_id)
       else wall_project_path(project)
       end
     else wall_project_path(project)
