@@ -6,7 +6,7 @@ Gitlab::Application.routes.draw do
 
   namespace :admin do
     resources :users
-    resources :projects
+    resources :projects, :constraints => { :id => /[^\/]+/ }
     resources :team_members
     get 'emails', :to => 'mailer#preview'
     get 'mailer/preview_note'
@@ -28,12 +28,12 @@ Gitlab::Application.routes.draw do
 
   #get "profile/:id", :to => "profile#show"
 
-  resources :projects, :only => [:new, :create, :index]
+  resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create, :index]
   resources :keys
 
   devise_for :users
 
-  resources :projects, :except => [:new, :create, :index], :path => "/" do
+  resources :projects, :constraints => { :id => /[^\/]+/ }, :except => [:new, :create, :index], :path => "/" do
     member do
       get "team"
       get "wall"

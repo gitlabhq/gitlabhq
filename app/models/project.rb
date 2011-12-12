@@ -25,8 +25,8 @@ class Project < ActiveRecord::Base
   validates :path,
             :uniqueness => true,
             :presence => true,
-            :format => { :with => /^[a-zA-Z0-9_\-]*$/,
-                         :message => "only letters, digits & '_' '-' allowed" },
+            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed" },
             :length   => { :within => 0..255 }
 
   validates :description,
@@ -35,8 +35,8 @@ class Project < ActiveRecord::Base
   validates :code,
             :presence => true,
             :uniqueness => true,
-            :format => { :with => /^[a-zA-Z0-9_\-]*$/,
-                         :message => "only letters, digits & '_' '-' allowed"  },
+            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed"  },
             :length   => { :within => 3..255 }
 
   validates :owner,
