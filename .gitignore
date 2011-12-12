@@ -9,3 +9,4 @@ coverage/*
 public/uploads/
 .rvmrc
 config/gitlab.yml
+config/database.yml
