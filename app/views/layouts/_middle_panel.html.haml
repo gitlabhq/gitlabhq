@@ -1,0 +1,7 @@
+%h4.middle-panel 
+  .project_name= truncate @project.name, :length => 20
+  .git_url_wrapper
+    %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
+  - if @project.repo_exists?
+    .right= render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
+

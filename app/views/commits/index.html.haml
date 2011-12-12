@@ -3,16 +3,14 @@
 -#%a.right.button{:href => "#"} Download
 -#-if can? current_user, :admin_project, @project
   %a.right.button.blue{:href => "#"} EDIT
-%h2.icon
-  %span
-  %d
-    = link_to project_commits_path(@project) do
-      = @project.name
-    - if params[:path]
+- if params[:path]
+  %h2.icon
+    %span
+    %d
+      = link_to project_commits_path(@project) do
+        = @project.code
       \/
       %a{:href => "#"}= params[:path].split("/").join(" / ")
-
-.right= render :partial => "projects/refs", :locals => { :destination => :commits }
 
 %div{:id => dom_id(@project)}
   #commits_list= render "commits"

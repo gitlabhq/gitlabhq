@@ -48,7 +48,7 @@ module ApplicationHelper
 
   def grouped_options_refs(destination = :tree)
     options = [
-      ["Branch", @repo.heads.map(&:name) ],
+      ["Branch", @project.repo.heads.map(&:name) ],
       [ "Tag", @project.tags ]
     ]
 
