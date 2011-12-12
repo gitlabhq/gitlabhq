@@ -18,13 +18,14 @@ module Utils
 
   module CharEncode
     def encode(string)
+      return '' unless string
       cd = CharDet.detect(string)
       if cd.confidence > 0.6
         string.force_encoding(cd.encoding)
       end
       string.encode("utf-8", :undef => :replace, :replace => "?", :invalid => :replace)
     rescue
-      "Invalid code encoding"
+      "Invalid Encoding"
     end
   end
 
