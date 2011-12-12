@@ -1,5 +1,6 @@
 require 'digest/md5'
 module ApplicationHelper
+  include Utils::CharEncode
 
   def gravatar_icon(user_email)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"

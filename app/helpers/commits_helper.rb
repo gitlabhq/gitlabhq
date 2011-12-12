@@ -1,6 +1,4 @@
 module CommitsHelper
-  include Utils::CharEncode
-
   def old_line_number(line, i)
 
   end
