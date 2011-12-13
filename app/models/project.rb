@@ -90,6 +90,10 @@ class Project < ActiveRecord::Base
     users_projects.find_by_user_id(user.id) if user
   end
 
+  def team_member_by_id(user_id)
+    users_projects.find_by_user_id(user_id)
+  end
+
   def fresh_issues(n)
     issues.includes(:project, :author).order("created_at desc").first(n)
   end
