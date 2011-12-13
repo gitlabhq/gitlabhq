@@ -5,6 +5,8 @@
         %a.project-update{:href => project_merge_request_path(update.project, update)}
           = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
           %span.update-title
+            - state = update.closed ? 'closed' : 'open'
+            %span.tag{ :class => state } #{state.capitalize}
             = truncate update.title, :length => 70
             .right= update.project.name
           %span.update-author
