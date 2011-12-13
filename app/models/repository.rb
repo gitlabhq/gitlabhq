@@ -31,6 +31,17 @@ class Repository
     project.id
   end
 
+  # repo.update_hook('post-receive', File.read('some-hook'))
+  def update_hook(name, content)
+    hook_file = File.join(project.path_to_repo, 'hooks', name)
+
+    File.open(hook_file, 'w') do |f|
+      f.write(content)
+    end
+
+    File.chmod(0775, hook_file)
+  end
+
   def repo
     @repo ||= Grit::Repo.new(project.path_to_repo)
   end
