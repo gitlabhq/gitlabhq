@@ -28,7 +28,12 @@
             %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
       .buttons
         = f.submit 'Save', :class => "grey-button"
-        .right= link_to 'Back', project_merge_requests_path(@project), :class => "grey-button"
+        &nbsp;
+        = link_to 'Back', project_merge_requests_path(@project), :class => "grey-button"
+        - unless @merge_request.new_record?
+          .right
+            = link_to 'Remove', [@project, @merge_request], :confirm => 'Are you sure?', :method => :delete, :class => "grey-button"
+
 
 :javascript
   $(function(){

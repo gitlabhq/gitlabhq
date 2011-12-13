@@ -30,14 +30,11 @@ class MergeRequestsController < ApplicationController
 
   def commits
     @commits = @project.repo.commits_between(@merge_request.target_branch, @merge_request.source_branch).map {|c| Commit.new(c)}
-    render :template => "merge_requests/_commits", :layout => false
   end
 
   def diffs
     @diffs = @merge_request.diffs
     @commit = @merge_request.last_commit
-
-    render :template => "merge_requests/_diffs", :layout => false
   end
 
   def new
