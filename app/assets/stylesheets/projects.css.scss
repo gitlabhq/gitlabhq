@@ -552,7 +552,7 @@ h4.middle-panel {
   display:none;
 }
 
-ul.merge-tabs { 
+.merge-tabs { 
   margin: 0; 
   border: 1px solid #ccc; 
   padding: 10px;
@@ -567,9 +567,32 @@ ul.merge-tabs {
     border: 1px solid #ddd;
     background:none;
     padding: 4px 10px;
+    width:160px;
 
     &.active {
       background: #eaeaea;
     }
   }
+}
+.merge-tabs .reopen-request { 
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  border:1px solid #aaa;
+  text-shadow:none;
+  background: #D12F19;
+  color:white;
+}
+
+.merge-tabs .close-request { 
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  border:1px solid #aaa;
+  text-shadow:none;
+  background: #44aa22;
+  color:white;
+}
+
+.user-mention { 
+  color: #2FA0BB;
+  font-weight: bold;
 }
