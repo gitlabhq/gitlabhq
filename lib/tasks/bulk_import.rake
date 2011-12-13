@@ -66,7 +66,7 @@ def create_repo_project(project_name, user_email)
         code: project_name,
         path: project_name,
         owner: user,
-        description: "Automatically created from CVS on #{Time.now.to_s}"
+        description: "Automatically created from Rake on #{Time.now.to_s}"
       )
 
       # Add user as admin for project
