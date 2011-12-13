@@ -15,33 +15,42 @@
       .tag.commit.inline= @merge_request.target_branch
   %span.commit-author
     %strong
-      = link_to project_team_member_path(@project, @project.users_projects.find(@merge_request.author.id)) do 
-        = @merge_request.author_name
+      = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
+        %span.author= @merge_request.author_name
       &rarr;
-      = link_to project_team_member_path(@project, @project.users_projects.find(@merge_request.assignee.id)) do 
-        = @merge_request.assignee_name
+      = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
+        %span.author= @merge_request.assignee_name
 
     &nbsp;
     &nbsp;
     = @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
 
   %hr
-  %h3= @merge_request.title
+  %br
+  %h3
+    = simple_format @merge_request.title
 
 .clear
 %br
 %br
 
 .merge-tabs
-  = link_to "Notes", "#notes", :class => "merge-notes-tab active"
-  = link_to "Commits","#commits", "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab"
-  = link_to "Diff", "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab"
+  = link_to "#notes", :class => "merge-notes-tab active tab" do 
+    %span
+    Notes
+  = link_to "#commits", "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab tab" do 
+    %span
+    Commits
+  = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
+    %span
+    Diff
+
   - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
     .right
       - if @merge_request.closed
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "reopen-request"
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "red-button"
       - else
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "close-request", :title => "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "positive-button", :title => "Close merge request"
   %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes
