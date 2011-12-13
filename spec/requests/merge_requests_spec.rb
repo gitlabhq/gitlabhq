@@ -42,8 +42,8 @@ describe "MergeRequests" do
 
       it { should have_content(@merge_request.title) }
       it "Show page should inform user that merge request closed" do 
-        within ".merge-request-show-holder h3" do 
-          page.should have_content "Closed" 
+        within ".merge-tabs" do 
+          page.should have_content "Reopen" 
         end
       end
     end
@@ -62,7 +62,7 @@ describe "MergeRequests" do
     it { current_path.should == project_merge_request_path(project, project.merge_requests.last) }
 
     it "should create merge request" do
-      page.should have_content "Open"
+      page.should have_content "Close"
       page.should have_content @user.name
     end
   end
