@@ -40,20 +40,24 @@
 %br
 %br
 
-#gitlab-tabs
-  %ul
-    %li= link_to "Notes", "#merge-notes"
-    %li= link_to "Commits", commits_project_merge_request_path(@project, @merge_request)
-    %li= link_to "Diff", diffs_project_merge_request_path(@project, @merge_request)
+%ul.merge-tabs
+  = link_to "Notes", "#", :class => "merge-notes-tab"
+  = link_to "Commits","#",  "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab"
+  = link_to "Diff", diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab"
+  %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
-  #merge-notes
-    .issue_notes= render "notes/notes"
-    .loading{ :style => "display:none;"}
-      %center= image_tag "ajax-loader.gif"
-    .clear
+.merge-request-notes
+  .issue_notes= render "notes/notes"
+  .loading{ :style => "display:none;"}
+    %center= image_tag "ajax-loader.gif"
+  .clear
+
+.merge-request-commits
+
+.merge-request-diffs
 
 
 :javascript
   $(function(){
-    $("#gitlab-tabs").tabs();
+    MergeRequest.init();
   })

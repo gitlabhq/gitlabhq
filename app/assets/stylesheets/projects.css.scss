@@ -438,42 +438,6 @@ body.project-page table.no-borders td{
   border:none;
 }
 
-#gitlab-tabs {
-  .ui-tabs-nav {
-    border-bottom: 1px solid #DEDFE1;
-
-    li {
-      background: none;
-      border:none;
-      font-size: 16px;
-      margin: 0;
-      padding: 0;
-
-      a {
-        margin: 0;
-        padding: 10px 16px;
-        width:150px;
-      }
-
-      &.ui-tabs-selected {
-        background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-        background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-        background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-        background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
-        font-weight: bold;
-        border:1px solid #DEDFE1;
-        border-bottom: 1px solid #DEDFE1;
-        -webkit-border-top-left-radius: 5px;
-        -webkit-border-top-right-radius: 5px;
-        -moz-border-radius-topleft: 5px;
-        -moz-border-radius-topright: 5px;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-      }
-    }
-  }
-}
-
 .ajax-tab-loading {
   padding:40px;
   display:none;
@@ -586,4 +550,26 @@ h4.middle-panel {
   float:right;
   margin-right:30px;
   display:none;
+}
+
+ul.merge-tabs { 
+  margin: 0; 
+  border: 1px solid #ccc; 
+  padding: 10px;
+  font-size: 11px;
+  font-weight: bold; text-transform: uppercase;
+  background: #F7F7F7;
+  margin-bottom:20px;
+
+  a { 
+    margin-right:5px;
+    @include round-borders-all(4px);
+    border: 1px solid #ddd;
+    background:none;
+    padding: 4px 10px;
+
+    &.active {
+      background: #eaeaea;
+    }
+  }
 }
