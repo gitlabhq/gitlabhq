@@ -31,8 +31,13 @@ class Repository
     project.id
   end
 
-  # repo.update_hook('post-receive', File.read('some-hook'))
-  def update_hook(name, content)
+  def write_hooks
+    %w(post-receive).each do |hook|
+      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
+    end
+  end
+
+  def write_hook(name, content)
     hook_file = File.join(project.path_to_repo, 'hooks', name)
 
     File.open(hook_file, 'w') do |f|
@@ -58,6 +63,8 @@ class Repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.update_project(path, project)
     end
+
+    write_hooks
   end
 
   def destroy_repository
