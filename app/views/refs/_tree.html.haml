@@ -35,11 +35,14 @@
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
         = render :partial => "refs/tree_item", :locals => { :content => content }
 
-    - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme\.(md|markdown)$/i }.first
+    - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
       #tree-readme-holder
         %h3= content.name
         .readme
-          = markdown(encode content.data)
+          - if content.name =~ /\.(md|markdown)$/i
+            = markdown(encode content.data)
+          - else
+            = simple_format(encode content.data)
 
 :javascript
   $(function(){
