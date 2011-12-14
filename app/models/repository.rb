@@ -133,4 +133,8 @@ class Repository
       repo.commits(ref)
     end.map{ |c| Commit.new(c) } 
   end
+
+  def commits_between(from, to)
+    repo.commits_between(from, to).map { |c| Commit.new(c) }
+  end
 end

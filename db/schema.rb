@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111207211728) do
+ActiveRecord::Schema.define(:version => 20111214091851) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -130,6 +130,20 @@ ActiveRecord::Schema.define(:version => 20111207211728) do
     t.datetime "updated_at"
     t.integer  "repo_access",    :default => 0, :null => false
     t.integer  "project_access", :default => 0, :null => false
+  end
+
+  create_table "web_hook_urls", :force => true do |t|
+    t.string   "url"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "web_hooks", :force => true do |t|
+    t.string   "url"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

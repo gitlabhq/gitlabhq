@@ -8,6 +8,7 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
 require 'capybara/dsl'
+require 'webmock/rspec'
 require 'factories'
 require 'monkeypatch'
 
@@ -48,6 +49,8 @@ RSpec.configure do |config|
     end
 
     DatabaseCleaner.start
+
+    WebMock.disable_net_connect!(allow_localhost: true)
   end
 
   config.after do

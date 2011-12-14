@@ -7,6 +7,7 @@ describe Project do
     it { should have_many(:issues) }
     it { should have_many(:notes) }
     it { should have_many(:snippets) }
+    it { should have_many(:web_hooks).dependent(:destroy) }
   end
 
   describe "Validation" do
@@ -33,6 +34,7 @@ describe Project do
     it { should respond_to(:repo) }
     it { should respond_to(:tags) }
     it { should respond_to(:commit) }
+    it { should respond_to(:commits_between) }
   end
 
   it "should not allow 'gitolite-admin' as repo name" do
@@ -50,6 +52,11 @@ describe Project do
     project.path_to_repo.should == File.join(Rails.root, "tmp", "tests", "somewhere")
   end
 
+  it "returns the full web URL for this repo" do
+    project = Project.new(:code => "somewhere")
+    project.web_url.should == "#{GIT_HOST['host']}/somewhere"
+  end
+
   describe :valid_repo? do
     it "should be valid repo" do
       project = Factory :project
@@ -59,6 +66,85 @@ describe Project do
     it "should be invalid repo" do
       project = Project.new(:name => "ok_name", :path => "/INVALID_PATH/", :code => "NEOK")
       project.valid_repo?.should be_false
+    end
+  end
+
+  describe "web hooks" do
+    let(:project) { Factory :project }
+
+    context "with no web hooks" do
+      it "raises no errors" do
+        lambda {
+          project.execute_web_hooks('oldrev', 'newrev', 'ref')
+        }.should_not raise_error
+      end
+    end
+
+    context "with web hooks" do
+      before do
+        @webhook = Factory(:web_hook)
+        @webhook_2 = Factory(:web_hook)
+        project.web_hooks << [@webhook, @webhook_2]
+      end
+
+      it "executes multiple web hook" do
+        @webhook.should_receive(:execute).once
+        @webhook_2.should_receive(:execute).once
+
+        project.execute_web_hooks('oldrev', 'newrev', 'ref')
+      end
+    end
+
+    context "when gathering commit data" do
+      before do
+        @oldrev, @newrev, @ref = project.fresh_commits(2).last.sha, project.fresh_commits(2).first.sha, 'refs/heads/master'
+        @commit = project.fresh_commits(2).first
+
+        # Fill nil/empty attributes
+        project.description = "This is a description"
+
+        @data = project.web_hook_data(@oldrev, @newrev, @ref)
+      end
+
+      subject { @data }
+
+      it { should include(before: @oldrev) }
+      it { should include(after: @newrev) }
+      it { should include(ref: @ref) }
+
+      context "with repository data" do
+        subject { @data[:repository] }
+
+        it { should include(name: project.name) }
+        it { should include(url: project.web_url) }
+        it { should include(description: project.description) }
+        it { should include(homepage: project.web_url) }
+        it { should include(private: project.private?) }
+      end
+
+      context "with commits" do
+        subject { @data[:commits] }
+
+        it { should be_an(Array) }
+        it { should have(1).element }
+
+        context "the commit" do
+          subject { @data[:commits].first }
+
+          it { should include(id: @commit.id) }
+          it { should include(message: @commit.safe_message) }
+          it { should include(timestamp: @commit.date.xmlschema) }
+          it { should include(url: "http://localhost/#{project.code}/commits/#{@commit.id}") }
+
+          context "with a author" do
+            subject { @data[:commits].first[:author] }
+
+            it { should include(name: @commit.author_name) }
+            it { should include(email: @commit.author_email) }
+          end
+        end
+      end
+
     end
   end
 
@@ -105,6 +191,21 @@ describe Project do
     it { project.fresh_commits(3).count.should == 3 }
     it { project.fresh_commits.first.id.should == "2fb376f61875b58bceee0492e270e9c805294b1a" }
     it { project.fresh_commits.last.id.should == "0dac878dbfe0b9c6104a87d65fe999149a8d862c" }
+  end
+
+  describe "commits_between" do
+    let(:project) { Factory :project }
+
+    subject do
+      commits = project.commits_between("a6d1d4aca0c85816ddfd27d93773f43a31395033",
+                                        "2fb376f61875b58bceee0492e270e9c805294b1a")
+      commits.map { |c| c.id }
+    end
+
+    it { should have(2).elements }
+    it { should include("2fb376f61875b58bceee0492e270e9c805294b1a") }
+    it { should include("4571e226fbcd7be1af16e9fa1e13b7ac003bebdf") }
+    it { should_not include("a6d1d4aca0c85816ddfd27d93773f43a31395033") }
   end
 
   describe "Git methods" do
