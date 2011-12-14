@@ -96,7 +96,7 @@ describe "Issues" do
     end
 
     it "should open new issue form" do
-      page.should have_content("New issue")
+      page.should have_content("New Issue")
     end
 
     describe "fill in" do
