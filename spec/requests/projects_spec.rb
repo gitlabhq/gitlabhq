@@ -46,7 +46,7 @@ describe "Projects" do
       fill_in 'Name', :with => 'NewProject'
       fill_in 'Code', :with => 'NPR'
       fill_in 'Path', :with => 'newproject'
-      expect { click_button "Create Project" }.to change { Project.count }.by(1)
+      expect { click_button "Save" }.to change { Project.count }.by(1)
       @project = Project.last
     end
 
@@ -135,7 +135,7 @@ describe "Projects" do
       fill_in 'Name', :with => 'Awesome'
       fill_in 'Path', :with => 'legit'
       fill_in 'Description', :with => 'Awesome project'
-      click_button "Update Project"
+      click_button "Save"
       @project = @project.reload
     end
 

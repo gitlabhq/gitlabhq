@@ -28,7 +28,7 @@ describe "Snippets" do
         # admin access to remove snippet
         @user.users_projects.destroy_all
         project.add_access(@user, :read, :write, :admin)
-        visit project_snippets_path(project)
+        visit edit_project_snippet_path(project, @snippet)
       end
 
       it "should remove entry" do
@@ -72,8 +72,8 @@ describe "Snippets" do
       @snippet = Factory :snippet,
         :author => @user,
         :project => project
-      visit project_snippets_path(project)
-      click_link "Edit"
+      visit project_snippet_path(project, @snippet)
+      click_link "Edit Snippet"
     end
 
     it "should open edit page" do

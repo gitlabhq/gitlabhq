@@ -38,6 +38,7 @@ Factory.add(:merge_request, MergeRequest) do |obj|
   obj.title = Faker::Lorem.sentence
   obj.source_branch = "master"
   obj.target_branch = "master"
+  obj.closed = false
 end
 
 Factory.add(:snippet, Snippet) do |obj|

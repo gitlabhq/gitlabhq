@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "User MergeRequests", :js => true do
+describe "User MergeRequests" do
   describe "GET /issues" do
     before do
 
@@ -27,19 +27,18 @@ describe "User MergeRequests", :js => true do
         :assignee => @user,
         :project => @project2
 
-      visit dashboard_path
-      click_link "merge_requests_slide"
+      visit dashboard_merge_requests_path
     end
 
     subject { page }
 
-    it { should have_content(@merge_request1.title) }
+    it { should have_content(@merge_request1.title[0..10]) }
     it { should have_content(@merge_request1.project.name) }
     it { should have_content(@merge_request1.target_branch) }
     it { should have_content(@merge_request1.source_branch) }
     it { should have_content(@merge_request1.assignee.name) }
 
-    it { should have_content(@merge_request2.title) }
+    it { should have_content(@merge_request2.title[0..10]) }
     it { should have_content(@merge_request2.project.name) }
     it { should have_content(@merge_request2.target_branch) }
     it { should have_content(@merge_request2.source_branch) }

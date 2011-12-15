@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "User Issues Dashboard", :js => true do
+describe "User Issues Dashboard" do
   describe "GET /issues" do
     before do
 
@@ -27,8 +27,7 @@ describe "User Issues Dashboard", :js => true do
         :assignee => @user,
         :project => @project2
 
-      visit dashboard_path
-      click_link "issues_slide"
+      visit dashboard_issues_path
     end
 
     subject { page }
