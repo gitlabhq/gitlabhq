@@ -496,14 +496,23 @@ h4.dash-tabs {
   font-weight: bold; text-transform: uppercase;
   background: #F7F7F7;
   margin-bottom:20px;
+  height:13px;
+
 }
 
 .dash-button { 
-  margin-right:5px;
-  @include round-borders-all(4px);
-  border: 1px solid #ddd;
+  border-right: 1px solid #ddd;
   background:none;
+  padding: 10px 15px;
+  float:left;
+  position:relative;
+  top:-10px;
+  left:0px;
+  height:13px;
 
+  &:first-child { 
+    border-left: 1px solid #ddd;
+  }
   &.active { 
     background: #eaeaea;
   }
