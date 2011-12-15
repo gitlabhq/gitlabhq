@@ -1,36 +1,53 @@
-%div
-  .ui-box.width-100p
-    %h3
-      = @snippet.new_record? ? "New snippet" : "Edit snippet ##{@snippet.id}"
-    = form_for [@project, @snippet] do |f|
-      .data.no-padding
-        %table.no-borders
-          -if @snippet.errors.any?
-            %tr 
-              %td Errors
-              %td
-                #error_explanation
-                  - @snippet.errors.full_messages.each do |msg|
-                    %span= msg
-                    %br
+= form_for [@project, @snippet] do |f|
+  %div
+    %span.entity-info
+      - if @snippet.new_record?
+        = link_to project_snippets_path(@project) do 
+          .entity-button
+            Back
+            %i
+      - else    
+        = link_to project_snippet_path(@project, @snippet) do 
+          .entity-button
+            Back
+            %i
+    %h2= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 
-          %tr
-            %td= f.label :title
-            %td= f.text_field :title, :placeholder => "Example Snippet"
-          %tr
-            %td= f.label :file_name
-            %td= f.text_field :file_name, :placeholder => "example.rb"
-          %tr
-            %td= f.label "Lifetime"
-            %td= f.select :expires_at, lifetime_select_options
-          %tr
-            %td{:colspan => 2}
-              = f.label :content, "Code"
+    %hr
+  %table.no-borders
+    -if @snippet.errors.any?
+      %tr 
+        %td{:colspan => 2}
+          #error_explanation
+            - @snippet.errors.full_messages.each do |msg|
+              %span= msg
               %br
-              %br
-              = f.text_area :content
 
-      .buttons
-        = f.submit 'Save', :class => "grey-button"
-        - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-          .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "grey-button delete-snippet negative", :id => "destroy_snippet_#{@snippet.id}"
+    %tr
+      %td= f.label :title
+      %td= f.text_field :title, :placeholder => "Example Snippet"
+    %tr
+      %td= f.label :file_name
+      %td= f.text_field :file_name, :placeholder => "example.rb"
+    %tr
+      %td= f.label "Lifetime"
+      %td= f.select :expires_at, lifetime_select_options, {}, :style => "width:200px;"
+    %tr
+      %td{:colspan => 2}
+        = f.label :content, "Code"
+        %br
+        %br
+        = f.text_area :content
+
+  .merge-tabs
+    = f.submit 'Save', :class => "grey-button"
+    - unless @snippet.new_record?
+      .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "red-button delete-snippet", :id => "destroy_snippet_#{@snippet.id}"
+
+
+
+:javascript 
+  $(function(){ 
+    $('select#snippet_expires_at').chosen();
+  });
+
