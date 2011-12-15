@@ -20,19 +20,26 @@ task :import_projects, [:email] => :environment  do |t, args|
     clone_path = "#{REPOSITORY_DIRECTORY}/#{repo_name}.git"
 
     if Dir.exists? clone_path
-      puts "  INFO: #{clone_path} already exists in repositories directory, skipping."
-      skipped_count += 1
-      next
-    else
-      if clone_bare_repo_as_git(repo_full_path, clone_path)
-        if create_repo_project(repo_name, user_email)
-          imported_count += 1
-        else
-          failed_count += 1
-        end
+      if Project.find_by_code(repo_name)
+        puts "  INFO: #{clone_path} already exists in repositories directory, skipping."
+        skipped_count += 1
+        next
       else
-        failed_count += 1
+        puts "  INFO: Project doesn't exist for #{repo_name} (but the repo does)."
       end
+    else
+      # Clone the repo
+      unless clone_bare_repo_as_git(repo_full_path, clone_path)
+        failed_count += 1
+        next
+      end
+    end
+
+    # Create the project and repo
+    if create_repo_project(repo_name, user_email)
+      imported_count += 1
+    else
+      failed_count += 1
     end
 
   end
@@ -61,13 +68,25 @@ def create_repo_project(project_name, user_email)
       puts "  INFO: Project #{project_name} already exists in Gitlab, skipping."
       false
     else
-      project = Project.create(
-        name: project_name,
-        code: project_name,
-        path: project_name,
-        owner: user,
-        description: "Automatically created from Rake on #{Time.now.to_s}"
-      )
+      project = nil
+      if Project.find_by_code(project_name)
+        puts "  ERROR: Project already exists #{project_name}"
+        return false
+        project = Project.find_by_code(project_name)
+      else
+        project = Project.create(
+          name: project_name,
+          code: project_name,
+          path: project_name,
+          owner: user,
+          description: "Automatically created from Rake on #{Time.now.to_s}"
+        )
+      end
+
+      unless project.valid?
+        puts "  ERROR: Failed to create project #{project} because #{project.errors.first}"
+        return false
+      end
 
       # Add user as admin for project
       project.users_projects.create!(
@@ -82,7 +101,7 @@ def create_repo_project(project_name, user_email)
       if project.valid?
         true
       else
-        puts "  ERROR: Failed to create project #{project} because #{project.errors}"
+        puts "  ERROR: Failed to create project #{project} because #{project.errors.first}"
         false
       end
     end
