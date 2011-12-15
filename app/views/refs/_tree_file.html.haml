@@ -20,6 +20,10 @@
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
   - else
-    %p
-      %center No preview for this file type
-
+    %center
+      = link_to blob_project_ref_path(@project, @ref, :path => params[:path] ) do 
+        %div
+          %br
+          = image_tag "download.png", :width => 64
+          %h3 
+            Download (#{file.mb_size})

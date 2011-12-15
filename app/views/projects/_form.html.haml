@@ -34,7 +34,7 @@
           %td= f.label :default_branch, "Default Branch"
           %td= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
 
-      %tr
+      -#%tr
         %td= f.label :tag_list
         %td= f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
       %tr

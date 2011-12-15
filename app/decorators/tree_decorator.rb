@@ -32,4 +32,13 @@ class TreeDecorator < ApplicationDecorator
   def history_path
     h.project_commits_path(project, :path => path, :ref => ref)
   end
+
+  def mb_size
+    size = (tree.size / 1024)
+    if size < 1024
+      "#{size} KB" 
+    else 
+      "#{size/1024} MB"
+    end
+  end
 end
