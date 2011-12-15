@@ -34,17 +34,6 @@ eos
 %>
     <%= raw bash_lexer.highlight(exist_repo_setup_str) %>
 
-    <br /><br />
-    <h2>Remove this project?</h2>
-    <div class="error">
-      <p>
-      Be careful! <br/>
-      Project cant be recovered after destroy.</p>
-      <%= link_to 'Destroy', @project,
-      :confirm => 'Are you sure?', :method => :delete,
-      :class => "left button negative span-6", :style => "text-align:center" %>
-      <div class="clear"></div>
-    </div>
     <br/>
   </div>
 </div>

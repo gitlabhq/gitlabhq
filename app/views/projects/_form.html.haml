@@ -42,9 +42,6 @@
         %td= f.text_area :description, :placeholder => "project description", :style => "height:50px"
 
     %br
-    .actions
-      = f.submit :class => "button"
-
   %div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
     %center
       = image_tag "ajax-loader.gif", :class => "append-bottom"
@@ -52,6 +49,14 @@
         %h3.prepend-top Creating project &amp; repository. Please wait for few minutes
       - else
         %h3.prepend-top Updating project &amp; repository. Please wait for few minutes
+  
+  .merge-tabs
+    = f.submit 'Save', :class => "grey-button"
+    &nbsp;
+    - unless @project.new_record?
+      .right
+        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
+
 
 :javascript
   $('.new_project, .edit_project').bind('ajax:before', function() {
