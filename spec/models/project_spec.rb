@@ -91,8 +91,29 @@ describe Project do
         @webhook.should_receive(:execute).once
         @webhook_2.should_receive(:execute).once
 
-        project.execute_web_hooks('oldrev', 'newrev', 'ref')
+        project.execute_web_hooks('oldrev', 'newrev', 'refs/heads/master')
       end
+    end
+
+    context "does not execute web hooks" do
+      before do
+        @webhook = Factory(:web_hook)
+        project.web_hooks << [@webhook]
+      end
+
+      it "when pushing a branch for the first time" do
+        @webhook.should_not_receive(:execute)
+        project.execute_web_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/mster')
+      end
+
+      it "when pushing tags" do
+        @webhook.should_not_receive(:execute)
+        project.execute_web_hooks('oldrev', 'newrev', 'refs/tags/v1.0.0')
+      end
+    end
+
+    context "when pushing new branches" do
+
     end
 
     context "when gathering commit data" do

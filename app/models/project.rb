@@ -92,6 +92,11 @@ class Project < ActiveRecord::Base
   end
 
   def execute_web_hooks(oldrev, newrev, ref)
+    ref_parts = ref.split('/')
+
+    # Return if this is not a push to a branch (e.g. new commits)
+    return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
+
     data = web_hook_data(oldrev, newrev, ref)
     web_hooks.each { |web_hook| web_hook.execute(data) }
   end
