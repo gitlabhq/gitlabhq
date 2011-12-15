@@ -6,8 +6,18 @@ class MergeRequestsController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
-  before_filter :authorize_read_project!
-  before_filter :authorize_write_project!, :only => [:new, :create, :edit, :update]
+
+  # Allow read any merge_request
+  before_filter :authorize_read_merge_request!
+
+  # Allow write(create) merge_request
+  before_filter :authorize_write_merge_request!, :only => [:new, :create]
+
+  # Allow modify merge_request
+  before_filter :authorize_modify_merge_request!, :only => [:close, :edit, :update, :sort]
+
+  # Allow destroy merge_request
+  before_filter :authorize_admin_merge_request!, :only => [:destroy]
 
   def index
     @merge_requests = @project.merge_requests
@@ -84,5 +94,14 @@ class MergeRequestsController < ApplicationController
 
   def merge_request
     @merge_request ||= @project.merge_requests.find(params[:id])
+  end
+
+  def authorize_modify_merge_request!
+    can?(current_user, :modify_merge_request, @merge_request) || 
+      @merge_request.assignee == current_user
+  end
+
+  def authorize_admin_merge_request!
+    can?(current_user, :admin_merge_request, @merge_request)
   end
 end

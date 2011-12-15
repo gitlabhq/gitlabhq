@@ -5,8 +5,18 @@ class SnippetsController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
+
+  # Allow read any snippet
   before_filter :authorize_read_snippet!
-  before_filter :authorize_write_snippet!, :only => [:new, :create, :close, :edit, :update, :sort]
+
+  # Allow write(create) snippet
+  before_filter :authorize_write_snippet!, :only => [:new, :create]
+
+  # Allow modify snippet
+  before_filter :authorize_modify_snippet!, :only => [:edit, :update]
+
+  # Allow destroy snippet
+  before_filter :authorize_admin_snippet!, :only => [:destroy]
 
   respond_to :html
 
@@ -59,5 +69,15 @@ class SnippetsController < ApplicationController
     @snippet.destroy
 
     redirect_to project_snippets_path(@project)
+  end
+
+  protected
+
+  def authorize_modify_snippet!
+    can?(current_user, :modify_snippet, @snippet)
+  end
+
+  def authorize_admin_snippet!
+    can?(current_user, :admin_snippet, @snippet)
   end
 end

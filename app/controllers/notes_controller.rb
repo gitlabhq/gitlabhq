@@ -3,6 +3,8 @@ class NotesController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
+
+  before_filter :authorize_read_note!
   before_filter :authorize_write_note!, :only => [:create]
 
   respond_to :js

@@ -161,6 +161,18 @@ class Project < ActiveRecord::Base
     @admins ||= users_projects.includes(:user).where(:project_access => PROJECT_RWA).map(&:user)
   end
 
+  def allow_read_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).empty?
+  end
+
+  def allow_write_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RW, PROJECT_RWA]).empty?
+  end
+
+  def allow_admin_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RWA]).empty? || owner_id == user.id
+  end
+
   def root_ref 
     default_branch || "master"
   end
