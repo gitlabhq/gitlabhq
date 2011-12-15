@@ -19,7 +19,7 @@ describe "MergeRequests" do
 
     subject { page }
 
-    it { should have_content(@merge_request.title) }
+    it { should have_content(@merge_request.title[0..10]) }
     it { should have_content(@merge_request.target_branch) }
     it { should have_content(@merge_request.source_branch) }
     it { should have_content(@merge_request.assignee.name) }
@@ -32,7 +32,7 @@ describe "MergeRequests" do
 
     subject { page }
 
-    it { should have_content(@merge_request.title) }
+    it { should have_content(@merge_request.title[0..10]) }
     it { should have_content(@merge_request.target_branch) }
     it { should have_content(@merge_request.source_branch) }
     it { should have_content(@merge_request.assignee.name) }
@@ -40,7 +40,7 @@ describe "MergeRequests" do
     describe "Close merge request" do 
       before { click_link "Close" }
 
-      it { should have_content(@merge_request.title) }
+      it { should have_content(@merge_request.title[0..10]) }
       it "Show page should inform user that merge request closed" do 
         within ".merge-tabs" do 
           page.should have_content "Reopen" 
