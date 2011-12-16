@@ -93,7 +93,11 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
+    # Disable the UsersProject update_repository call, otherwise it will be
+    # called once for every person removed from the project
+    UsersProject.skip_callback(:destroy, :after, :update_repository)
     project.destroy
+    UsersProject.set_callback(:destroy, :after, :update_repository)
 
     respond_to do |format|
       format.html { redirect_to projects_url }
