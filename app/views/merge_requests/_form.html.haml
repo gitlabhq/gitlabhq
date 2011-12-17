@@ -4,12 +4,12 @@
       - if @merge_request.new_record?
         = link_to project_merge_requests_path(@project) do 
           .entity-button
-            Back
+            Merge Requests
             %i
       - else    
         = link_to project_merge_request_path(@project, @merge_request) do 
           .entity-button
-            Back
+            Show Merge Request
             %i
 
     %h2= @merge_request.new_record? ? "New Merge Request" : "Edit Merge Request ##{@merge_request.id}"

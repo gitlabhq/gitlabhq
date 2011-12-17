@@ -5,18 +5,18 @@
         - if request.xhr? 
           = link_to "#back", :onclick => "backToIssues();" do 
             .entity-button
-              Back
+              Issues
               %i
         - else 
           - if @issue.new_record?
             = link_to project_issues_path(@project) do 
               .entity-button
-                Back
+                Issues
                 %i
           - else    
             = link_to project_issue_path(@project, @issue) do 
               .entity-button
-                Back
+                Show Issue
                 %i
 
       %h2= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
