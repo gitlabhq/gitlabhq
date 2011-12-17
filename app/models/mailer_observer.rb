@@ -1,11 +1,12 @@
 class MailerObserver < ActiveRecord::Observer
-  observe :issue, :user, :note, :snippet
+  observe :issue, :user, :note, :merge_request
   cattr_accessor :current_user
 
   def after_create(model)
     new_issue(model) if model.kind_of?(Issue)
     new_user(model) if model.kind_of?(User)
     new_note(model) if model.kind_of?(Note)
+    new_merge_request(model) if model.kind_of?(MergeRequest)
   end
 
   protected
@@ -35,6 +36,12 @@ class MailerObserver < ActiveRecord::Observer
         else
           Notify.note_wall_email(u, note).deliver
         end
+      end
+    end
+
+    def new_merge_request(merge_request)
+      if merge_request.assignee != current_user
+        Notify.new_merge_request_email(merge_request).deliver
       end
     end
 

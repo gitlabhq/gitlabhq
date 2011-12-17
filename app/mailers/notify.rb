@@ -38,4 +38,11 @@ class Notify < ActionMailer::Base
     @issue = note.noteable
     mail(:to => @user.email, :subject => "gitlab | #{@note.project.name} ")
   end
+  
+  def new_merge_request_email(merge_request)
+    @user = merge_request.assignee
+    @merge_request = merge_request
+    @project = merge_request.project
+    mail(:to => @user.email, :subject => "gitlab | #{@merge_request.title} ")
+  end
 end
