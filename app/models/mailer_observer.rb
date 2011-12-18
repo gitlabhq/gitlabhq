@@ -34,8 +34,8 @@ class MailerObserver < ActiveRecord::Observer
           Notify.note_commit_email(u, note).deliver
         when "Issue" then
           Notify.note_issue_email(u, note).deliver
-        when "MergeRequest"
-          true # someone should write email notification
+        when "MergeRequest" then
+          Notify.note_merge_request_email(u, note).deliver
         when "Snippet"
           true
         else

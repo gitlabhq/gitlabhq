@@ -30,6 +30,14 @@ class Notify < ActionMailer::Base
     @commit = @project.repo.commits(note.noteable_id).first
     mail(:to => @user.email, :subject => "gitlab | #{@note.project.name} ")
   end
+  
+  def note_merge_request_email(user, note)
+    @user = user
+    @note = note
+    @project = note.project
+    @merge_request = note.noteable
+    mail(:to => @user.email, :subject => "gitlab | #{@note.project.name} ")
+  end
 
   def note_issue_email(user, note)
     @user = user
