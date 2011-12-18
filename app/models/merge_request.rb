@@ -2,7 +2,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :project
   belongs_to :author, :class_name => "User"
   belongs_to :assignee, :class_name => "User"
-  has_many :notes, :as => :noteable
+  has_many :notes, :as => :noteable, :dependent => :destroy
 
   attr_protected :author, :author_id, :project, :project_id
 

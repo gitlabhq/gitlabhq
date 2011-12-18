@@ -3,7 +3,7 @@ class Snippet < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :author, :class_name => "User"
-  has_many :notes, :as => :noteable
+  has_many :notes, :as => :noteable, :dependent => :destroy
 
   delegate :name,
            :email,
