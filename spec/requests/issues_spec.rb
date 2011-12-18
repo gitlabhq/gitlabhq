@@ -147,13 +147,12 @@ describe "Issues" do
           click_button "Save"
         end
 
-        it "should send valid email to user with email & password" do
+        it "should send valid email to user" do
           click_button "Save"
           issue = Issue.last
           email = ActionMailer::Base.deliveries.last
           email.subject.should have_content("New Issue was created")
           email.body.should have_content(issue.title)
-          email.body.should have_content(issue.assignee.name)
         end
 
       end
