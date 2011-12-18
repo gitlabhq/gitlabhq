@@ -39,5 +39,6 @@ end
 #  closed      :boolean         default(FALSE), not null
 #  position    :integer         default(0)
 #  critical    :boolean         default(FALSE), not null
+#  branch_name :string(255)
 #
 
