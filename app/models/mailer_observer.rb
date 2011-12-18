@@ -11,6 +11,7 @@ class MailerObserver < ActiveRecord::Observer
 
   def after_update(model)
     changed_merge_request(model) if model.kind_of?(MergeRequest)
+    changed_issue(model) if model.kind_of?(Issue)
   end
 
   protected
@@ -61,4 +62,16 @@ class MailerObserver < ActiveRecord::Observer
       end
     end
 
+    def changed_issue(issue)
+      if issue.assignee_id_changed?
+        recipients_ids = [issue.assignee_id_was]
+        recipients_ids << issue.assignee_id
+        recipients_ids.delete current_user.id
+
+        User.find(recipients_ids).each do |user|
+          Notify.changed_issue_email(user, issue).deliver
+        end
+      end
+
+    end
 end

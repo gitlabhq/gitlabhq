@@ -4,13 +4,13 @@
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
       %td{:align => "left", :style => "padding: 20px 0 0;"}
         %h2{:style => "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
-          New Issue was created and assigned to you.
+          Reassigned Issue
+          = link_to truncate(@issue.title, :length => 16), project_issue_url(@project, @issue)
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
     %tr
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
-      %td{:align => "left", :style => "padding: 20px 0 0;"}
-        %h2{:style => "color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
-          = link_to project_issue_url(@project, @issue), :title => @issue.title do
-            = "Issue ##{@issue.id.to_s}"
-            = truncate(@issue.title, :length => 45)
-        %br
+      %td{:style => "padding: 15px 0 15px;", :valign => "top"}
+        %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
+          Assignee changed from #{@assignee_was.name} to #{@issue.assignee.name}
+      %td
+
