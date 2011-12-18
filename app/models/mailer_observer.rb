@@ -52,8 +52,7 @@ class MailerObserver < ActiveRecord::Observer
 
     def changed_merge_request(merge_request)
       if merge_request.assignee_id_changed?
-        recipients_ids = [merge_request.assignee_id_was]
-        recipients_ids << merge_request.assignee_id
+        recipients_ids = merge_request.assignee_id_was, merge_request.assignee_id
         recipients_ids.delete current_user.id
 
         User.find(recipients_ids).each do |user|
@@ -64,8 +63,7 @@ class MailerObserver < ActiveRecord::Observer
 
     def changed_issue(issue)
       if issue.assignee_id_changed?
-        recipients_ids = [issue.assignee_id_was]
-        recipients_ids << issue.assignee_id
+        recipients_ids = issue.assignee_id_was, issue.assignee_id
         recipients_ids.delete current_user.id
 
         User.find(recipients_ids).each do |user|
