@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   end
 
   def can_create_project?
-    projects_limit >= my_own_projects.count
+    projects_limit > my_own_projects.count
   end
 
   def last_activity_project
