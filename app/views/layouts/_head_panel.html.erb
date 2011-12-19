@@ -47,7 +47,7 @@
   <% end %>
 <% end %>
 
-<% if current_user.keys.all.empty? %>
+<% if current_user.require_ssh_key? %>
   <div id="no_ssh_key_defined" class="big-message error">
     <p>No SSH Key is defined. You won't be able to use any Git command!. Click <%=link_to( 'here', keys_path ) %> to add one!
   </div>

@@ -46,6 +46,10 @@ class User < ActiveRecord::Base
     admin
   end
 
+  def require_ssh_key?
+    keys.count == 0
+  end
+
   def can_create_project?
     projects_limit >= my_own_projects.count
   end

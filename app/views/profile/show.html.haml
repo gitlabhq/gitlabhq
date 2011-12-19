@@ -1,36 +1,33 @@
-%h2.icon
-  %span>
-  = @user.name
+.ui-box.width-100p
+  %h3= @user.name
+  = form_for @user, :url => profile_edit_path, :method => :put do |f|
+    .data
+      -if @user.errors.any?
+        #error_explanation
+          %ul
+            - @user.errors.full_messages.each do |msg|
+              %li= msg
 
-.clear
-
-= form_for @user, :url => profile_edit_path, :method => :put do |f|
-  -if @user.errors.any?
-    #error_explanation
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
-
-  .form-row
-    = f.label :name
-    %br
-    = f.text_field :name
-  .form-row
-    = f.label :email
-    %br
-    = f.text_field :email
-  .form-row
-    = f.label :skype
-    %br
-    = f.text_field :skype
-  .form-row
-    = f.label :linkedin
-    %br
-    = f.text_field :linkedin
-  .form-row
-    = f.label :twitter
-    %br
-    = f.text_field :twitter
-  .actions
-    = f.submit 'Save', :class => "grey-button"
+      .form-row
+        = f.label :name
+        %br
+        = f.text_field :name
+      .form-row
+        = f.label :email
+        %br
+        = f.text_field :email
+      .form-row
+        = f.label :skype
+        %br
+        = f.text_field :skype
+      .form-row
+        = f.label :linkedin
+        %br
+        = f.text_field :linkedin
+      .form-row
+        = f.label :twitter
+        %br
+        = f.text_field :twitter
+    .buttons
+      = f.submit 'Save', :class => "grey-button"
 
