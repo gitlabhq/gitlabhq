@@ -26,3 +26,19 @@ describe MergeRequest do
                       :assignee => Factory(:user),
                       :project => Factory.create(:project)).should be_valid }
 end
+# == Schema Information
+#
+# Table name: merge_requests
+#
+#  id            :integer         not null, primary key
+#  target_branch :string(255)     not null
+#  source_branch :string(255)     not null
+#  project_id    :integer         not null
+#  author_id     :integer
+#  assignee_id   :integer
+#  title         :string(255)
+#  closed        :boolean         default(FALSE), not null
+#  created_at    :datetime
+#  updated_at    :datetime
+#
+

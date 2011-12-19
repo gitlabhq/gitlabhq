@@ -13,6 +13,7 @@ class Note < ActiveRecord::Base
            :prefix => true
 
   attr_protected :author, :author_id
+  attr_accessor :notify
 
   validates_presence_of :project
 
@@ -35,6 +36,10 @@ class Note < ActiveRecord::Base
   scope :inc_author, includes(:author)
 
   mount_uploader :attachment, AttachmentUploader
+
+  def notify
+    @notify ||= false
+  end
 end
 # == Schema Information
 #

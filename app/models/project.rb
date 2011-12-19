@@ -247,14 +247,15 @@ end
 #
 # Table name: projects
 #
-#  id           :integer         not null, primary key
-#  name         :string(255)
-#  path         :string(255)
-#  description  :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#  private_flag :boolean         default(TRUE), not null
-#  code         :string(255)
-#  owner_id     :integer
+#  id             :integer         not null, primary key
+#  name           :string(255)
+#  path           :string(255)
+#  description    :text
+#  created_at     :datetime
+#  updated_at     :datetime
+#  private_flag   :boolean         default(TRUE), not null
+#  code           :string(255)
+#  owner_id       :integer
+#  default_branch :string(255)     default("master"), not null
 #
 

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
+  before_filter :set_current_user_for_mailer
   protect_from_forgery
   helper_method :abilities, :can?
 
@@ -17,6 +18,10 @@ class ApplicationController < ActionController::Base
     else
       "application"
     end
+  end
+
+  def set_current_user_for_mailer
+    MailerObserver.current_user = current_user
   end
 
   def abilities

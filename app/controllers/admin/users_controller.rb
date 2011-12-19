@@ -27,7 +27,6 @@ class Admin::UsersController < ApplicationController
 
     respond_to do |format|
       if @admin_user.save
-        Notify.new_user_email(@admin_user, params[:user][:password]).deliver
         format.html { redirect_to [:admin, @admin_user], notice: 'User was successfully created.' }
         format.json { render json: @admin_user, status: :created, location: @admin_user }
       else
