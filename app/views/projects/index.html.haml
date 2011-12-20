@@ -7,13 +7,23 @@
       %h2.icon
         %span
         Projects
+      %center
+        = form_tag projects_path, :method => :get, :remote => true, :id => "projects_search_form" do
+          = search_field_tag :project_search, nil, { :placeholder => 'Filter projects by name', :class => 'project_search text' }
 
     %div.clear
     - unless @projects.empty?
-      %div{:class => "tile", :style => view_mode_style("tile")}
+      %div{:class => "tile"}
         = render "tile"
-      %div{:class => "list", :style => view_mode_style("list")}
-        = render "list"
+      .clear
+      .loading{ :style => "display:none;"}
+        %center= image_tag "ajax-loader.gif"
+
+      - if @projects.count == @limit
+        :javascript
+          $(function(){
+            ProjectsList.init(16);
+          });
     - else
       %center.prepend-top
         %h2

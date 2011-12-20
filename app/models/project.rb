@@ -52,6 +52,9 @@ class Project < ActiveRecord::Base
 
   scope :public_only, where(:private_flag => false)
 
+  def self.active
+    joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
+  end
 
   def self.access_options
     {
@@ -195,6 +198,24 @@ class Project < ActiveRecord::Base
     last_activity.try(:created_at)
   end
 
+  def last_activity_date_cached(expire = 1.hour)
+    activity_date_key = "project_#{id}_activity_date"
+
+    cached_activities = Rails.cache.read(activity_date_key)
+    if cached_activities
+      activity_date = if cached_activities == "Never"
+                        nil
+                      else
+                        cached_activities
+                      end
+    else
+      activity_date = last_activity_date
+      Rails.cache.write(activity_date_key, activity_date || "Never", :expires_in => expire)
+    end
+
+    activity_date
+  end
+
   # Get project updates from cache
   # or calculate. 
   def cached_updates(limit, expire = 2.minutes)
@@ -204,7 +225,7 @@ class Project < ActiveRecord::Base
       activities = cached_activities
     else
       activities = updates(limit)
-      Rails.cache.write(activities_key, activities, :expires_in => 60.seconds)
+      Rails.cache.write(activities_key, activities, :expires_in => expire)
     end
 
     activities

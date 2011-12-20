@@ -11,5 +11,5 @@
           %span.project-name= project.name
           %span.time
             %strong Last activity:
-            = project.last_activity_date ? time_ago_in_words(project.last_activity_date) + " ago" : "Never"
+            = project.last_activity_date_cached ? time_ago_in_words(project.last_activity_date_cached) + " ago" : "Never"
 

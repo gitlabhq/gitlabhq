@@ -3,7 +3,7 @@ class DashboardController < ApplicationController
 
   def index
     @projects = current_user.projects.all
-    @active_projects = @projects.select(&:last_activity_date).sort_by(&:last_activity_date).reverse
+    @active_projects = @projects.select(&:last_activity_date_cached).sort_by(&:last_activity_date_cached).reverse
 
     respond_to do |format|
       format.html

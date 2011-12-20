@@ -3,9 +3,6 @@
 GitLab is a free Project/Repository management application
 
 
-<img src="http://gitlabhq.com/front.png" width="900" height="471">
-
-
 ## Application details
 
 rails 3.1

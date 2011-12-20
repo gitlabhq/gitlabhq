@@ -11,9 +11,10 @@ class ProjectsController < ApplicationController
   before_filter :require_non_empty_project, :only => [:blob, :tree, :graph]
 
   def index
-    source = current_user.projects
-    source = source.tagged_with(params[:tag]) unless params[:tag].blank?
-    @projects = source.all
+    @limit, @offset = (params[:limit] || 16), (params[:offset] || 0)
+    @projects = current_user.projects
+    @projects = @projects.where("name LIKE ?", "%#{params[:terms]}%") unless params[:terms].blank?
+    @projects = @projects.limit(@limit).offset(@offset)
   end
 
   def new

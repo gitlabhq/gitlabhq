@@ -1,0 +1,7 @@
+- if params[:replace]
+  :plain
+    ProjectsList.replace(#{@projects.count}, "#{escape_javascript(render(:partial => 'projects/tile'))}");
+- else 
+  :plain
+    ProjectsList.append(#{@projects.count}, "#{escape_javascript(render(:partial => 'projects/tile'))}");
+

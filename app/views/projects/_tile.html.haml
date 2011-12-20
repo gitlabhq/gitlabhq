@@ -10,10 +10,10 @@
             %input{ :value => project.url_to_repo, :class => ['git-url', 'one_click_select', 'text', 'project_list_url'], :readonly => 'readonly' }
           %p.title.activity
             %span Last Activity:
-            - last_note = project.notes.last
-            = last_note ? last_note.created_at.stamp("24 Aug, 2011") : "Never"
-
-          %p.small-tags= tag_list project
+            - if project.last_activity_date_cached
+              = project.last_activity_date_cached.stamp("24 Aug, 2011")
+            - else 
+              Never
 
         .buttons
           %a.browse-code.button.yellow{:href => tree_project_ref_path(project, project.root_ref)} Browse code
