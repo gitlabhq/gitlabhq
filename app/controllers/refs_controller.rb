@@ -26,7 +26,10 @@ class RefsController < ApplicationController
   def tree
     respond_to do |format|
       format.html
-      format.js
+      format.js do
+        # disable cache to allow back button works
+        no_cache_headers
+      end
     end
   rescue
     return render_404
