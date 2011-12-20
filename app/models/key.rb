@@ -21,20 +21,14 @@ class Key < ActiveRecord::Base
   def update_repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.update_keys(identifier, key)
-
-      projects.each do |project|
-        c.update_project(project.path, project)
-      end
+      c.update_projects(projects)
     end
   end
 
   def repository_delete_key
     Gitlabhq::GitHost.system.new.configure do |c|
       c.delete_key(identifier)
-
-      projects.each do |project|
-        c.update_project(project.path, project)
-      end
+      c.update_projects(projects)
     end
   end
 
