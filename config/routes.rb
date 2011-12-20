@@ -19,8 +19,9 @@ Gitlab::Application.routes.draw do
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
   put "profile/reset_private_token", :to => "profile#reset_private_token"
-  put "profile/edit", :to => "profile#social_update"
   get "profile", :to => "profile#show"
+  get "profile/design", :to => "profile#design"
+  put "profile/update", :to => "profile#update"
 
   get "dashboard", :to => "dashboard#index"
   get "dashboard/issues", :to => "dashboard#issues"

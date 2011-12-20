@@ -2,9 +2,9 @@ require 'digest/md5'
 module ApplicationHelper
   include Utils::CharEncode
 
-  def gravatar_icon(user_email)
+  def gravatar_icon(user_email, size = 40)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
-    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=#{size}&d=identicon"
   end
 
   def fixed_mode?

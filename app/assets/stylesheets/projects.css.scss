@@ -654,3 +654,15 @@ body.project-page h2.icon.loading {
     background: url("ajax-loader-tree.gif") no-repeat;
   }
 }
+
+.dark_scheme_box { 
+  padding:20px 0;
+
+  label { 
+    float:left;
+    box-shadow: 0 0px 5px rgba(0,0,0,.3);
+
+    img { 
+    }
+  }
+}
