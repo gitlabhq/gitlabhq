@@ -81,5 +81,33 @@ module Gitlabhq
 
       ga_repo.save
     end
+
+    # Updates many projects and uses project.path as the repo path
+    # An order of magnitude faster than update_project
+    def update_projects(projects)
+      ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(@local_dir,'gitolite'))
+      conf = ga_repo.config
+
+      projects.each do |project|
+        repo_name = project.path
+
+        repo = if conf.has_repo?(repo_name)
+                 conf.get_repo(repo_name)
+               else 
+                 ::Gitolite::Config::Repo.new(repo_name)
+               end
+
+        name_readers = project.repository_readers
+        name_writers = project.repository_writers
+
+        repo.clean_permissions
+        repo.add_permission("R", "", name_readers) unless name_readers.blank?
+        repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
+        conf.add_repo(repo, true)
+      end
+
+      ga_repo.save
+    end
+
   end
 end
