@@ -7,19 +7,6 @@ var ProjectsList = {
       this.limit=limit;
       this.offset=limit;
       this.initLoadMore();
-
-      $('.project_search').keyup(function() {
-        var terms = $(this).val();
-        if (terms.length >= 2 || terms.length == 0) {
-          url = $('.project_search').parent().attr('action');
-          $.ajax({
-            type: "GET",
-            url: location.href,
-            data: { 'terms': terms, 'replace': true  },
-            dataType: "script"
-          });
-        }
-      });
     },
 
   getOld:
@@ -31,17 +18,6 @@ var ProjectsList = {
         data: "limit=" + this.limit + "&offset=" + this.offset,
         complete: function(){ $('.loading').hide()},
         dataType: "script"});
-    },
-
-  replace:
-    function(count, html) {
-      $(".tile").html(html);
-      if(count == ProjectsList.limit) {
-        this.offset = count;
-        this.initLoadMore();
-      } else {
-        this.offset = 0;
-      }
     },
 
   append:

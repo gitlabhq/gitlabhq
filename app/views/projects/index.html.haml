@@ -1,30 +1,29 @@
 - content_for(:body_class, "projects-page")
-- content_for(:page_title) do
-  .container_4
-    .grid_4
-      - if current_user.can_create_project?
-        %a.grey-button.right{:href => new_project_path} Create new project
-      %h2.icon
-        %span
-        Projects
-      %center
-        = form_tag projects_path, :method => :get, :remote => true, :id => "projects_search_form" do
-          = search_field_tag :project_search, nil, { :placeholder => 'Filter projects by name', :class => 'project_search text' }
+.container_4
+  .grid_4
+    - if current_user.can_create_project?
+      %a.grey-button.right{:href => new_project_path} Create new project
+    %h2.icon
+      %span
+      Projects
 
-    %div.clear
-    - unless @projects.empty?
-      %div{:class => "tile"}
-        = render "tile"
+  %div.clear
+  - unless @projects.empty?
+    %div{:class => "tile"}
+      = render "tile"
+
+    -# If projects requris paging
+    -# We add ajax loader & init script
+    - if @projects.count == @limit
       .clear
       .loading{ :style => "display:none;"}
         %center= image_tag "ajax-loader.gif"
 
-      - if @projects.count == @limit
-        :javascript
-          $(function(){
-            ProjectsList.init(16);
-          });
-    - else
-      %center.prepend-top
-        %h2
-          %cite Nothing here
+      :javascript
+        $(function(){
+          ProjectsList.init(16);
+        });
+  - else
+    %center.prepend-top
+      %h2
+        %cite Nothing here

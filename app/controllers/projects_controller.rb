@@ -12,9 +12,7 @@ class ProjectsController < ApplicationController
 
   def index
     @limit, @offset = (params[:limit] || 16), (params[:offset] || 0)
-    @projects = current_user.projects
-    @projects = @projects.where("name LIKE ?", "%#{params[:terms]}%") unless params[:terms].blank?
-    @projects = @projects.limit(@limit).offset(@offset)
+    @projects = current_user.projects.limit(@limit).offset(@offset)
   end
 
   def new
