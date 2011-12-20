@@ -7,7 +7,7 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { no_cache_headers }
+      format.js
     end
   end
 
@@ -18,7 +18,7 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { no_cache_headers }
+      format.js
     end
   end
 
@@ -32,7 +32,7 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { no_cache_headers }
+      format.js
       format.atom { render :layout => false }
     end
   end

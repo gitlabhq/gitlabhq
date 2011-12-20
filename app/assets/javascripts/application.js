@@ -50,8 +50,16 @@ $(document).ready(function(){
         e.preventDefault();
     }
   });
-
 });
+
+if (history && history.pushState) {
+  $(function() {
+    $(window).bind("popstate", function() {
+      $.getScript(location.href);
+    });
+
+  });
+}
 
 function focusSearch() {
   $("#search").focus();

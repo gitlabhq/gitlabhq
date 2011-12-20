@@ -49,11 +49,3 @@
     $('select#branch').selectmenu({style:'popup', width:200});
     $('select#tag').selectmenu({style:'popup', width:200});
   });
-
-- if params[:path] && request.xhr?
-  :javascript
-    $(window).unbind('popstate');
-    $(window).bind('popstate', function() {
-      if(location.pathname.search("tree") != -1) {
-        $.ajax({type: "GET", url: location.pathname, dataType: "script"})}
-        else { location.href = location.pathname;}});
