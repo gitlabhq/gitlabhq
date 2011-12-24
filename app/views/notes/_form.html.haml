@@ -23,8 +23,12 @@
       %br
       = f.file_field :attachment
 
-      = check_box_tag :notify, 1, true
+      = check_box_tag :notify, 1, @note.noteable_type != "Commit"
       = label_tag :notify, "Notify project team about your note"
+
+      -if @note.noteable_type == "Commit"
+        = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
+        = label_tag :notify_author, "Notify commit author about your note"
 
     .clear
     %br

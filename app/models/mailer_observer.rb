@@ -27,7 +27,7 @@ class MailerObserver < ActiveRecord::Observer
     end
 
     def new_note(note)
-      return unless note.notify
+      return unless note.notify or note.notify_author
       note.project.users.reject { |u| u.id == current_user.id } .each do |u|
         case note.noteable_type
         when "Commit" then
