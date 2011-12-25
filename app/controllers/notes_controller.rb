@@ -13,6 +13,7 @@ class NotesController < ApplicationController
     @note = @project.notes.new(params[:note])
     @note.author = current_user
     @note.notify = true if params[:notify] == '1'
+    @note.notify_author = true if params[:notify_author] == '1'
     @note.save
 
     respond_to do |format|
