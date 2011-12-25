@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe "Dashboard" do
-  before { login_as :user }
+  before do 
+    @project = Factory :project
+    login_as :user
+  end
 
   describe "GET /dashboard" do
     before do
-      @project = Factory :project
       @project.add_access(@user, :read, :write)
       visit dashboard_path
     end
