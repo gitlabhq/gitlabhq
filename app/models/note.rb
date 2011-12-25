@@ -14,6 +14,7 @@ class Note < ActiveRecord::Base
 
   attr_protected :author, :author_id
   attr_accessor :notify
+  attr_accessor :notify_author
 
   validates_presence_of :project
 
@@ -39,6 +40,10 @@ class Note < ActiveRecord::Base
 
   def notify
     @notify ||= false
+  end
+
+  def notify_author
+    @notify_author ||= false
   end
 end
 # == Schema Information
