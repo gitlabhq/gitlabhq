@@ -103,7 +103,7 @@ describe Project do
 
       it "when pushing a branch for the first time" do
         @webhook.should_not_receive(:execute)
-        project.execute_web_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/mster')
+        project.execute_web_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/master')
       end
 
       it "when pushing tags" do
