@@ -23,4 +23,23 @@ module CommitsHelper
     link_to "More", project_commits_path(@project, :offset =>  offset.to_i + limit.to_i, :limit => limit),
       :remote => true, :class => "lite_button vm", :style => "text-align:center; width:930px; ", :id => "more-commits-link"
   end
+
+  def commit_msg_with_link_to_issues
+    out = ""
+    @commit.safe_message.split(/(#[0-9]+)/m).each do |m|
+      if m =~ /(#([0-9]+))/m
+        begin
+          issue = Issue.find($2)
+          raise Exception('Issue not belonging to current project, not creating link !') unless issue.project_id == @project.id
+          out+=link_to($1, project_issue_path(@project, $2))
+        rescue
+          out+=$1
+        end
+      else
+        out+= m
+      end
+    end
+    out
+  end
+
 end
