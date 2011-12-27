@@ -21,16 +21,18 @@
     <%= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"  %>
   </div>
   <!-- .login-top -->
-  <nav>
-    <%= link_to dashboard_path, :class => current_page?(root_path) ? "current dashboard" : "dashboard" do %>
+  <nav class="<%= 'shorter_nav' unless current_user.is_admin? %>">
+    <%= link_to dashboard_path, :class => "#{'current' if current_page?(root_path)} dashboard" do %>
       <span></span>Dashboard
     <% end %>
-    <%= link_to projects_path, :class => current_page?(projects_path) ? "current project" : "project" do %>
+    <%= link_to projects_path, :class =>"#{'current' if current_page?(projects_path)} project #{'last_elem' unless current_user.is_admin?}" do %>
       <span></span>Projects
     <% end %>
-    <%= link_to((current_user.is_admin? ? admin_root_path : "#"), :class => (admin_namespace? ? "current admin" : "admin")) do %>
-      <span></span>Admin
-    <% end  %>
+    <% if current_user.is_admin? %>
+      <%= link_to((current_user.is_admin? ? admin_root_path : "#"), :class => "#{'current' if admin_namespace?} admin last_elem") do %>
+        <span></span>Admin
+      <% end  %>
+    <% end %>
   </nav>
 
 </header>
