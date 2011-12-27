@@ -30,8 +30,7 @@ module CommitsHelper
     message.split(/(#[0-9]+)/m).each do |m|
       if m =~ /(#([0-9]+))/m
         begin
-          issue = Issue.find($2)
-          raise Exception('Issue not belonging to current project, not creating link !') unless issue.project_id == project.id
+          issue = project.issues.find($2)
           out += link_to($1, project_issue_path(project, $2))
         rescue
           out += $1
