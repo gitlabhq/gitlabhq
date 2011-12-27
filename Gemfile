@@ -23,6 +23,8 @@ gem "rdiscount"
 gem "acts-as-taggable-on", "~> 2.1.0"
 gem "drapper"
 gem "rchardet19", "~> 1.3.5"
+gem "resque"
+gem "httparty"
 
 group :assets do
   gem "sass-rails",   "~> 3.1.0"
@@ -47,6 +49,7 @@ group :development, :test do
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
+  gem "webmock"
 end
 
 group :test do

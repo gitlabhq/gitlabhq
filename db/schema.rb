@@ -145,4 +145,18 @@ ActiveRecord::Schema.define(:version => 20111220190817) do
     t.integer  "project_access", :default => 0, :null => false
   end
 
+  create_table "web_hook_urls", :force => true do |t|
+    t.string   "url"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "web_hooks", :force => true do |t|
+    t.string   "url"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
 end

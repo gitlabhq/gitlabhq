@@ -43,14 +43,14 @@ module Gitlabhq
 
     def destroy_project(project)
       FileUtils.rm_rf(project.path_to_repo)
-      
+
       ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(@local_dir,'gitolite'))
       conf = ga_repo.config
       conf.rm_repo(project.path)
       ga_repo.save
     end
 
-     #update or create
+    #update or create
     def update_keys(user, key)
       File.open(File.join(@local_dir, 'gitolite/keydir',"#{user}.pub"), 'w') {|f| f.write(key.gsub(/\n/,'')) }
     end

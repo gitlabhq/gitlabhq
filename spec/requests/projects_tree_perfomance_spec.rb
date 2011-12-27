@@ -9,7 +9,6 @@ describe "Projects" do
       before do
         @project = Factory :project
         @project.add_access(@user, :read)
-
       end
 
       it "should be fast" do

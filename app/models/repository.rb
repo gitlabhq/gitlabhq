@@ -31,6 +31,22 @@ class Repository
     project.id
   end
 
+  def write_hooks
+    %w(post-receive).each do |hook|
+      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
+    end
+  end
+
+  def write_hook(name, content)
+    hook_file = File.join(project.path_to_repo, 'hooks', name)
+
+    File.open(hook_file, 'w') do |f|
+      f.write(content)
+    end
+
+    File.chmod(0775, hook_file)
+  end
+
   def repo
     @repo ||= Grit::Repo.new(project.path_to_repo)
   end
@@ -47,6 +63,8 @@ class Repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.update_project(path, project)
     end
+
+    write_hooks
   end
 
   def destroy_repository
@@ -114,5 +132,9 @@ class Repository
     else
       repo.commits(ref)
     end.map{ |c| Commit.new(c) } 
+  end
+
+  def commits_between(from, to)
+    repo.commits_between(from, to).map { |c| Commit.new(c) }
   end
 end
