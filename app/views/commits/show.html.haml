@@ -18,8 +18,7 @@
 
 %hr
 %pre.commit_message
-  = preserve @commit.safe_message
-
+  = commit_msg_with_link_to_issues(@project, @commit.safe_message)
 .clear
 %br
 
