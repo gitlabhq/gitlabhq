@@ -3,12 +3,16 @@ require 'spec_helper'
 describe "Dashboard" do
   before do 
     @project = Factory :project
-    login_as :user
+    @user = User.create(:email => "test917@mail.com",
+                        :name => "John Smith",
+                        :password => "123456",
+                        :password_confirmation => "123456")
+    @project.add_access(@user, :read, :write)
+    login_with(@user)
   end
 
   describe "GET /dashboard" do
     before do
-      @project.add_access(@user, :read, :write)
       visit dashboard_path
     end
 
