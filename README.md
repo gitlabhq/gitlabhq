@@ -31,7 +31,7 @@ IRC freenode: #gitlabhq
 
 Twitter:
 
- * @gitalbhq
+ * @gitlabhq
  * @dzaporozhets 
 
 Email
