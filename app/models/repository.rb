@@ -64,7 +64,7 @@ class Repository
       c.update_project(path, project)
     end
 
-    write_hooks
+    write_hooks if File.exists?(project.path_to_repo)
   end
 
   def destroy_repository
