@@ -42,6 +42,10 @@ Gitlab::Application.routes.draw do
       get "team"
       get "wall"
       get "graph"
+      get "activities"
+      get "branches"
+      get "tags"
+      get "files"
     end
 
     resources :refs, :only => [], :path => "/" do 

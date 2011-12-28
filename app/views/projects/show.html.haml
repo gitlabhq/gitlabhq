@@ -1,15 +1,6 @@
-- content_for(:body_class, "project-page dashboard")
+= render "project_head"
+.stats
+  - unless @project.description.empty?
+    %h3= simple_format @project.description
 
-#news-feed.news-feed
-  %h2.icon
-    %span>
-    Activities
-  .project-box.project-updates.ui-box.ui-box-small.ui-box-big
-    - @activities.each do |update|
-      = render "projects/feed", :update => update, :project => @project
 
-:javascript
-  function updateDashboard(){
-    $('.project-content').load("#{escape_javascript(project_path(@project))} .project-content>*");
-  }
-  setInterval("updateDashboard()", 300000);

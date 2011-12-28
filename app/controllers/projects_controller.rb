@@ -67,6 +67,13 @@ class ProjectsController < ApplicationController
   end
 
   def show
+  end
+
+  def files
+    @notes = @project.notes.where("attachment != 'NULL'").order("created_at DESC")
+  end
+
+  def activities
     return render "projects/empty" unless @project.repo_exists? && @project.has_commits?
     limit = (params[:limit] || 20).to_i
     @activities = @project.cached_updates(limit)

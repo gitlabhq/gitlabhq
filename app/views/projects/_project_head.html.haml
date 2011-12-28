@@ -1,0 +1,27 @@
+%div
+  -#- if can? current_user, :admin_project, @project
+    -#%span.entity-info
+      -#= link_to edit_project_path(@project) do 
+        -#.entity-button
+          -#Edit Project
+          -#%i
+
+  -#%h2= @project.name
+.merge-tabs
+  = link_to activities_project_path(@project), :class => "activities-tab tab #{'active' if current_page?(activities_project_path(@project)) }" do 
+    %span
+    Activities
+  = link_to project_path(@project), :class => "stat-tab tab" do 
+    %span
+    Info
+  = link_to team_project_path(@project), :class => "team-tab tab" do 
+    %span 
+    Team
+  = link_to files_project_path(@project), :class => "files-tab tab" do 
+    %span
+    Files
+  = link_to project_snippets_path(@project), :class => "snippets-tab tab" do 
+    %span
+    Snippets
+
+

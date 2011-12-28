@@ -6,7 +6,7 @@
   %ol.project-list
     - @projects.each do |project|
       %li
-        %a{:href => project_path(project)}
+        %a{:href => activities_project_path(project)}
           %span.arrow →
           %span.project-name= project.name
           %span.time
