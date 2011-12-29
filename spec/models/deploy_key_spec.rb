@@ -10,11 +10,7 @@ describe DeployKey do
     it { should validate_presence_of(:key) }
   end
 
-  describe "Methods" do
-    it { should respond_to :projects }
-  end
-
-  it { Factory.create(:key,
+  it { Factory.create(:deploy_key,
                       :project => Factory(:project)).should be_valid }
 end
 # == Schema Information
