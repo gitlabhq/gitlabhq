@@ -2,8 +2,10 @@ class DeployKeysController < ApplicationController
   respond_to :js
   layout "project"
   before_filter :project
-  # before_filter :authorize_admin_project!
-  # before_filter :require_non_empty_project
+
+  # Authorize
+  before_filter :add_project_abilities
+  before_filter :authorize_admin_project!
 
   def project
     @project ||= Project.find_by_code(params[:project_id])
