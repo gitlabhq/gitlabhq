@@ -191,7 +191,7 @@ class Project < ActiveRecord::Base
   def repository_readers
     keys = Key.joins({:user => :users_projects}).
       where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_R)
-    keys.map(&:identifier)
+    keys.map(&:identifier) + deploy_keys.map(&:identifier)
   end
 
   def repository_writers
