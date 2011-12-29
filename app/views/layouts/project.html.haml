@@ -3,6 +3,7 @@
   %head
     %title
       GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
+    = favicon_link_tag 'favicon.ico'
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     - if current_page?(tree_project_ref_path(@project, @project.root_ref)) || current_page?(project_commits_path(@project))

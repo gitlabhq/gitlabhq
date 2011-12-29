@@ -3,6 +3,7 @@
   %head
     %title
       GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
+    = favicon_link_tag 'favicon.ico'
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     = csrf_meta_tags

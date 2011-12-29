@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   has_many :notes, :dependent => :destroy
   has_many :snippets, :dependent => :destroy
   has_many :deploy_keys, :dependent => :destroy
+  has_many :web_hooks, :dependent => :destroy
 
   acts_as_taggable
 
@@ -83,10 +84,56 @@ class Project < ActiveRecord::Base
     :heads,
     :commits_since,
     :fresh_commits,
+    :commits_between,
     :to => :repository, :prefix => nil
 
   def to_param
     code
+  end
+
+  def web_url
+    [GIT_HOST['host'], code].join("/")
+  end
+
+  def execute_web_hooks(oldrev, newrev, ref)
+    ref_parts = ref.split('/')
+
+    # Return if this is not a push to a branch (e.g. new commits)
+    return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
+
+    data = web_hook_data(oldrev, newrev, ref)
+    web_hooks.each { |web_hook| web_hook.execute(data) }
+  end
+
+  def web_hook_data(oldrev, newrev, ref)
+    data = {
+      before: oldrev,
+      after: newrev,
+      ref: ref,
+      repository: {
+        name: name,
+        url: web_url,
+        description: description,
+        homepage: web_url,
+        private: private?
+      },
+      commits: []
+    }
+
+    commits_between(oldrev, newrev).each do |commit|
+      data[:commits] << {
+        id: commit.id,
+        message: commit.safe_message,
+        timestamp: commit.date.xmlschema,
+        url: "http://#{GIT_HOST['host']}/#{code}/commits/#{commit.id}",
+        author: {
+          name: commit.author_name,
+          email: commit.author_email
+        }
+      }
+    end
+
+    data
   end
 
   def team_member_by_name_or_email(email = nil, name = nil)
