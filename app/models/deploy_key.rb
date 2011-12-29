@@ -21,14 +21,14 @@ class DeployKey < ActiveRecord::Base
   def update_repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.update_keys(identifier, key)
-      c.update_project(project)
+      c.update_project(project.path, project)
     end
   end
 
   def repository_delete_key
     Gitlabhq::GitHost.system.new.configure do |c|
       c.delete_key(identifier)
-      c.update_project(project)
+      c.update_project(project.path, project)
     end
   end
 
