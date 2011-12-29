@@ -1,3 +1,5 @@
+include IssuesHelper
+
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
@@ -73,6 +75,9 @@ class IssuesController < ApplicationController
   end
 
   def update
+    if (@issue.closed != params[:issue][:closed])
+      project_issues_change_status(@issue, params[:issue][:closed] == "true")
+    end
     @issue.update_attributes(params[:issue])
 
     respond_to do |format|
