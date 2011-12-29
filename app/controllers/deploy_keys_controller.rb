@@ -24,7 +24,7 @@ class DeployKeysController < ApplicationController
   end
 
   def create
-    @key = @project.deploy_keys.new(params[:key])
+    @key = @project.deploy_keys.new(params[:deploy_key])
     @key.save
 
     respond_with(@key)
@@ -35,7 +35,7 @@ class DeployKeysController < ApplicationController
     @key.destroy
 
     respond_to do |format|
-      format.html { redirect_to deploy_keys_url }
+      format.html { redirect_to project_deploy_keys_url }
       format.js { render :nothing => true }
     end
   end
