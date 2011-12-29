@@ -1,0 +1,7 @@
+%a.update-item{:href => project_deploy_key_path(key)}
+  %span.update-title
+    = key.title
+  %span.update-author
+    Added
+    = time_ago_in_words(key.created_at)
+    ago

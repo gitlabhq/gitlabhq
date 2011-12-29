@@ -71,7 +71,7 @@ module Gitlabhq
                ::Gitolite::Config::Repo.new(repo_name)
              end
 
-      name_readers = project.repository_readers
+      name_readers = project.repository_readers + project.deploy_keys
       name_writers = project.repository_writers
 
       repo.clean_permissions

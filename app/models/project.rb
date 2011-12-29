@@ -14,6 +14,7 @@ class Project < ActiveRecord::Base
   has_many :users, :through => :users_projects
   has_many :notes, :dependent => :destroy
   has_many :snippets, :dependent => :destroy
+  has_many :deploy_keys, :dependent => :destroy
 
   acts_as_taggable
 
