@@ -46,6 +46,8 @@ Gitlab::Application.routes.draw do
       get "files"
     end
 
+    resource :repository
+
     resources :refs, :only => [], :path => "/" do 
       collection do 
         get "switch"

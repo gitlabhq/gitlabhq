@@ -24,6 +24,7 @@
           .fixed
             %aside
               = link_to "Project", project_path(@project), :class => project_tab_class
+              = link_to "Repository", project_repository_path(@project), :class => repository_tab_class
               = link_to "Tree", tree_project_ref_path(@project,  @project.root_ref), :class => tree_tab_class
               = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
               = link_to "Network graph", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil

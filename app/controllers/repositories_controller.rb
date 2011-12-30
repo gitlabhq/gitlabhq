@@ -1,0 +1,14 @@
+class RepositoriesController < ApplicationController
+  before_filter :project
+
+  # Authorize
+  before_filter :add_project_abilities
+  before_filter :authorize_read_project!
+  before_filter :require_non_empty_project
+
+  layout "project"
+
+  def show
+    @activities = @project.fresh_commits(20)
+  end
+end

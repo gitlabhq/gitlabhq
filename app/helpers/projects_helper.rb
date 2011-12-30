@@ -33,4 +33,10 @@ module ProjectsHelper
                   :project_id => @project, 
                   :id => @ref || @project.root_ref ) ? "current" : nil
   end
+
+  def repository_tab_class
+    if controller.controller_name == "repositories"
+     "current"
+    end
+  end
 end
