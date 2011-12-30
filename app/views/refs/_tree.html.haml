@@ -40,9 +40,9 @@
         %h3= content.name
         .readme
           - if content.name =~ /\.(md|markdown)$/i
-            = markdown(encode content.data)
+            = markdown(content.data)
           - else
-            = simple_format(encode content.data)
+            = simple_format(content.data)
 
 :javascript
   $(function(){

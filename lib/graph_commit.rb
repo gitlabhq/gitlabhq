@@ -1,7 +1,6 @@
 require "grit"
 
 class GraphCommit
-  include Utils::CharEncode
   attr_accessor :time, :space
   attr_accessor :refs
 
@@ -97,13 +96,13 @@ class GraphCommit
     h[:parents] = self.parents.collect do |p|
       [p.id,0,0]
     end
-    h[:author]  = encode(author.name)
+    h[:author]  = author.name
     h[:time]    = time
     h[:space]   = space
     h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
     h[:id]      = sha
     h[:date]    = date
-    h[:message] = encode(message)
+    h[:message] = message
     h[:login]   = author.email
     h
   end

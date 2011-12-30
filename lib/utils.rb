@@ -16,28 +16,14 @@ module Utils
     end
   end
 
-  module CharEncode
-    def encode(string)
-      return '' unless string
-      cd = CharDet.detect(string)
-      if cd.confidence > 0.6
-        string.force_encoding(cd.encoding)
-      end
-      string.encode("utf-8", :undef => :replace, :replace => "?", :invalid => :replace)
-    rescue
-      "Invalid Encoding"
-    end
-  end
-
   module Colorize
-    include CharEncode
     def colorize
       system_colorize(data, name)
     end
 
     def system_colorize(data, file_name)
       ft = handle_file_type(file_name)
-      Pygments.highlight(encode(data), :lexer => ft, :options => { :encoding => 'utf-8', :linenos => 'True' })
+      Pygments.highlight(data, :lexer => ft, :options => { :encoding => 'utf-8', :linenos => 'True' })
     end
 
     def handle_file_type(file_name, mime_type = nil)
