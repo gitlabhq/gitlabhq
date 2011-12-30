@@ -45,7 +45,7 @@ describe "Projects", "DeployKeys" do
         fill_in "deploy_key_key", :with => "publickey234="
       end
 
-      it { expect { click_button "Save" }.to change {Key.count}.by(1) }
+      it { expect { click_button "Save" }.to change {DeployKey.count}.by(1) }
 
       it "should add new key to table" do
         click_button "Save"
