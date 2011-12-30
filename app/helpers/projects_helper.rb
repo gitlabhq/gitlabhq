@@ -16,12 +16,21 @@ module ProjectsHelper
     nil
   end
 
-  # expires in 360 days
-  def switch_colorscheme_link(opts)
-    if cookies[:colorschema].blank?
-      link_to_function "paint it black!", "$.cookie('colorschema','black', {expires:360}); window.location.reload()", opts
-    else
-      link_to_function "paint it white!", "$.cookie('colorschema','', {expires:360}); window.location.reload()", opts
+  def project_tab_class
+    [:show, :files, :team, :edit, :update, :info].each do |action|
+      return "current" if current_page?(:controller => "projects", :action => action, :id => @project)
     end
+
+    if controller.controller_name == "snippets" || 
+     controller.controller_name == "team_members"
+     "current"
+    end
+  end
+
+  def tree_tab_class
+    current_page?(:controller => "refs",
+                  :action => "tree", 
+                  :project_id => @project, 
+                  :id => @ref || @project.root_ref ) ? "current" : nil
   end
 end

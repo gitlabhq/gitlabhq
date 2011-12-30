@@ -73,7 +73,7 @@ class ProjectsController < ApplicationController
   end
 
   def files
-    @notes = @project.notes.where("attachment != 'NULL'").order("created_at DESC")
+    @notes = @project.notes.where("attachment != 'NULL'").order("created_at DESC").limit(100)
   end
 
   def info
