@@ -1,3 +1,5 @@
+require 'unique_public_key_validator'
+
 class DeployKey < ActiveRecord::Base
   belongs_to :project
 
@@ -9,6 +11,8 @@ class DeployKey < ActiveRecord::Base
             :presence => true,
             :uniqueness => true,
             :length   => { :within => 0..5000 }
+
+  validates_with UniquePublicKeyValidator
 
   before_save :set_identifier
   after_save :update_repository

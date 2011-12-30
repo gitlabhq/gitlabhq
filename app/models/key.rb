@@ -1,3 +1,5 @@
+require 'unique_public_key_validator'
+
 class Key < ActiveRecord::Base
   belongs_to :user
 
@@ -9,6 +11,8 @@ class Key < ActiveRecord::Base
             :presence => true,
             :uniqueness => true,
             :length   => { :within => 0..5000 }
+
+  validates_with UniquePublicKeyValidator
 
   before_save :set_identifier
   after_save :update_repository
