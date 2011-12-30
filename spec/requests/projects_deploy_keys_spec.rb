@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "DeployKeys" do
+describe "Projects", "DeployKeys" do
   let(:project) { Factory :project }
 
   before do

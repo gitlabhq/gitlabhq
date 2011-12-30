@@ -24,6 +24,16 @@ class Key
   end
 end
 
+class DeployKey
+  def update_repository
+    true
+  end
+
+  def repository_delete_key
+    true
+  end
+end
+
 class UsersProject
   def update_repository
     true
