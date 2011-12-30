@@ -17,13 +17,15 @@ module Utils
   end
 
   module CharEncode
-    def encode(content)
-      content ||= ''
-      detection = CharlockHolmes::EncodingDetector.detect(content)
-      if hash = detection
-        content = CharlockHolmes::Converter.convert(content, hash[:encoding], 'UTF-8') if hash[:encoding]
+    def encode(string)
+      return '' unless string
+      cd = CharDet.detect(string)
+      if cd.confidence > 0.6
+        string.force_encoding(cd.encoding)
       end
-      content
+      string.encode("utf-8", :undef => :replace, :replace => "?", :invalid => :replace)
+    rescue
+      "Invalid Encoding"
     end
   end
 
