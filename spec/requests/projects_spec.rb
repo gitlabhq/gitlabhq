@@ -140,7 +140,7 @@ describe "Projects" do
     end
 
     it "should be correct path" do
-      current_path.should == project_path(@project)
+      current_path.should == info_project_path(@project)
     end
 
     it "should show project" do

@@ -561,6 +561,7 @@ h4.middle-panel {
   display:none;
 }
 
+
 .merge-tabs { 
   margin: 0; 
   border: 1px solid #ccc; 
@@ -572,11 +573,10 @@ h4.middle-panel {
 
   .tab { 
     font-weight: bold;
-    text-transform: uppercase;
     border-right: 1px solid #ddd;
     background:none;
     padding: 10px;
-    width:60px;
+    min-width:60px;
     float:left;
     position:relative;
     top:-5px;
@@ -598,6 +598,11 @@ h4.middle-panel {
     }
   }
 }
+.activities-tab span {  background: url("images.png") no-repeat -161px -1px; } 
+.stat-tab span,
+.team-tab span,
+.snippets-tab span {  background: url("images.png") no-repeat -38px -77px; } 
+.files-tab span {  background: url("images.png") no-repeat -112px -23px; } 
 
 .merge-notes-tab span {  background: url("images.png") no-repeat -161px -1px; } 
 .merge-commits-tab span {  background: url("images.png") no-repeat -86px 1px; } 
