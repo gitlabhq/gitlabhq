@@ -42,9 +42,7 @@ Gitlab::Application.routes.draw do
       get "team"
       get "wall"
       get "graph"
-      get "activities"
-      get "branches"
-      get "tags"
+      get "info"
       get "files"
     end
 

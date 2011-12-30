@@ -23,7 +23,7 @@
         .project-sidebar
           .fixed
             %aside
-              = link_to "Project", project_path(@project), :class => (current_page?(:controller => "projects", :action => "activities", :id => @project) || controller.controller_name == "snippets" || current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members" || current_page?(project_path(@project))) ? "current" : nil
+              = link_to "Project", project_path(@project), :class => (current_page?(:controller => "projects", :action => "show", :id => @project) || controller.controller_name == "snippets" || current_page?(:controller => "projects", :action => "team", :id => @project) || controller.controller_name == "team_members" || current_page?(project_path(@project))) ? "current" : nil
               = link_to "Tree", tree_project_ref_path(@project,  @project.root_ref), :class => current_page?(:controller => "refs", :action => "tree", :project_id => @project, :id => @ref || @project.root_ref ) ? "current" : nil
               = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
               = link_to "Network graph", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil

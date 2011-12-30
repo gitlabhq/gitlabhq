@@ -573,7 +573,6 @@ h4.middle-panel {
 
   .tab { 
     font-weight: bold;
-    text-transform: uppercase;
     border-right: 1px solid #ddd;
     background:none;
     padding: 10px;
@@ -600,7 +599,9 @@ h4.middle-panel {
   }
 }
 .activities-tab span {  background: url("images.png") no-repeat -161px -1px; } 
-.stat-tab, .team-tab, .snippets-tab span {  background: url("images.png") no-repeat -38px -77px; } 
+.stat-tab span,
+.team-tab span,
+.snippets-tab span {  background: url("images.png") no-repeat -38px -77px; } 
 .files-tab span {  background: url("images.png") no-repeat -112px -23px; } 
 
 .merge-notes-tab span {  background: url("images.png") no-repeat -161px -1px; } 
