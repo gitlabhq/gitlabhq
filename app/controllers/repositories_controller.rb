@@ -11,4 +11,12 @@ class RepositoriesController < ApplicationController
   def show
     @activities = @project.fresh_commits(20)
   end
+
+  def branches
+    @branches = @project.repo.heads.sort_by(&:name)
+  end
+
+  def tags
+    @tags = @project.repo.tags.sort_by(&:name).reverse
+  end
 end

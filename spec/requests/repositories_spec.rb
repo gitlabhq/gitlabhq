@@ -31,5 +31,28 @@ describe "Repository" do
       page.all(:css, ".project-update").size.should == 20
     end
   end
+
+  describe "GET /:project_name/repository/branches" do
+    before do
+      visit branches_project_repository_path(@project)
+    end
+
+    it "should have link to repo activities" do
+      page.should have_content("Branches")
+      page.should have_content("master")
+    end
+  end
+
+  # TODO: Add new repo to seeds with tags list
+  describe "GET /:project_name/repository/tags" do
+    before do
+      visit tags_project_repository_path(@project)
+    end
+
+    it "should have link to repo activities" do
+      page.should have_content("Tags")
+      page.should have_content("No tags")
+    end
+  end
 end
 
