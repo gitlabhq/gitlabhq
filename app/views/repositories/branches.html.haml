@@ -1,0 +1,10 @@
+= render "head"
+- unless @branches.empty?
+  %div.update-data.ui-box.ui-box-small
+    .data
+      - @branches.each do |branch|
+        %a.update-item{:href => project_commits_path(@project, :ref => branch.name)}
+          %span.update-title{:style => "margin-bottom:0px;"}
+            = branch.name
+- else 
+  %h3 No brances

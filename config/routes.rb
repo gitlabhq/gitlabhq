@@ -46,6 +46,13 @@ Gitlab::Application.routes.draw do
       get "files"
     end
 
+    resource :repository do 
+      member do 
+        get "branches"
+        get "tags"
+      end
+    end
+
     resources :refs, :only => [], :path => "/" do 
       collection do 
         get "switch"

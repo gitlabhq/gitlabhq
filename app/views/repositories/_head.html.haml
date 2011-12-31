@@ -1,0 +1,19 @@
+.merge-tabs.repository
+  = link_to project_repository_path(@project), :class => "activities-tab tab #{'active' if current_page?(project_repository_path(@project)) }" do 
+    %span
+    Activities
+  = link_to branches_project_repository_path(@project), :class => "tab #{'active' if current_page?(branches_project_repository_path(@project)) }" do 
+    %span
+    Branches
+  = link_to tags_project_repository_path(@project), :class => "tab #{'active' if current_page?(tags_project_repository_path(@project)) }" do 
+    %span 
+    Tags
+  -#= link_to "#", :class => "tab" do 
+    %span
+    Hooks
+  -#= link_to "#", :class => "tab" do 
+    %span
+    Deploy Keys
+
+
+
