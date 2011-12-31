@@ -10,7 +10,7 @@ describe "Projects", "DeployKeys" do
 
   describe "GET /keys" do
     before do
-      @key = Factory :deploy_key, :project => project
+      @key = Factory :key, :project => project
       visit project_deploy_keys_path(project)
     end
 
@@ -41,11 +41,11 @@ describe "Projects", "DeployKeys" do
 
     describe "fill in" do
       before do
-        fill_in "deploy_key_title", :with => "laptop"
-        fill_in "deploy_key_key", :with => "publickey234="
+        fill_in "key_title", :with => "laptop"
+        fill_in "key_key", :with => "publickey234="
       end
 
-      it { expect { click_button "Save" }.to change {DeployKey.count}.by(1) }
+      it { expect { click_button "Save" }.to change {Key.count}.by(1) }
 
       it "should add new key to table" do
         click_button "Save"
@@ -58,7 +58,7 @@ describe "Projects", "DeployKeys" do
 
   describe "Show page" do 
     before do
-      @key = Factory :deploy_key, :project => project
+      @key = Factory :key, :project => project
       visit project_deploy_key_path(project, @key) 
     end
     
