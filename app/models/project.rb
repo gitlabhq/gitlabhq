@@ -14,7 +14,7 @@ class Project < ActiveRecord::Base
   has_many :users, :through => :users_projects
   has_many :notes, :dependent => :destroy
   has_many :snippets, :dependent => :destroy
-  has_many :deploy_keys, :dependent => :destroy
+  has_many :keys, :dependent => :destroy
   has_many :web_hooks, :dependent => :destroy
 
   acts_as_taggable
@@ -189,15 +189,15 @@ class Project < ActiveRecord::Base
   end
 
   def repository_readers
-    keys = Key.joins({:user => :users_projects}).
+    read_keys = Key.joins({:user => :users_projects}).
       where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_R)
-    keys.map(&:identifier) + deploy_keys.map(&:identifier)
+    read_keys.map(&:identifier) + keys.map(&:identifier)
   end
 
   def repository_writers
-    keys = Key.joins({:user => :users_projects}).
+    write_keys = Key.joins({:user => :users_projects}).
       where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_RW)
-    keys.map(&:identifier)
+    write_keys.map(&:identifier)
   end
 
   def readers

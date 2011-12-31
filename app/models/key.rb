@@ -1,7 +1,6 @@
-require 'unique_public_key_validator'
-
 class Key < ActiveRecord::Base
   belongs_to :user
+  belongs_to :project
 
   validates :title,
             :presence => true,
@@ -12,14 +11,16 @@ class Key < ActiveRecord::Base
             :uniqueness => true,
             :length   => { :within => 0..5000 }
 
-  validates_with UniquePublicKeyValidator
-
   before_save :set_identifier
   after_save :update_repository
   after_destroy :repository_delete_key
 
   def set_identifier
-    self.identifier = "#{user.identifier}_#{Time.now.to_i}"
+    if is_deploy_key
+      self.identifier = "deploy_#{project.code}_#{Time.now.to_i}"
+    else
+      self.identifier = "#{user.identifier}_#{Time.now.to_i}"
+    end
   end
 
   def update_repository
@@ -35,10 +36,18 @@ class Key < ActiveRecord::Base
       c.update_projects(projects)
     end
   end
+  
+  def is_deploy_key
+    true if project_id
+  end
 
    #projects that has this key
   def projects
-    user.projects
+    if is_deploy_key
+      [project]
+    else
+      user.projects
+    end
   end
 end
 # == Schema Information

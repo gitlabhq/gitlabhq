@@ -12,28 +12,28 @@ class DeployKeysController < ApplicationController
   end
 
   def index
-    @keys = @project.deploy_keys.all
+    @keys = @project.keys.all
   end
 
   def show
-    @key = @project.deploy_keys.find(params[:id])
+    @key = @project.keys.find(params[:id])
   end
 
   def new
-    @key = @project.deploy_keys.new
+    @key = @project.keys.new
 
     respond_with(@key)
   end
 
   def create
-    @key = @project.deploy_keys.new(params[:deploy_key])
+    @key = @project.keys.new(params[:key])
     @key.save
 
     respond_with(@key)
   end
 
   def destroy
-    @key = @project.deploy_keys.find(params[:id])
+    @key = @project.keys.find(params[:id])
     @key.destroy
 
     respond_to do |format|

@@ -1,5 +1,5 @@
 %div
-  = form_for [@project, @key], :remote => true do |f|
+  = form_for [@project, @key], :url => project_deploy_keys_path, :remote => true do |f|
     -if @key.errors.any?
       %ul
         - @key.errors.full_messages.each do |msg|
