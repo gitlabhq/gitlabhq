@@ -1,6 +1,6 @@
 # Welcome to GitLab [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://secure.travis-ci.org/gitlabhq/gitlabhq)
 
-GitLab is a free Project/Repository management application
+GitLab is a free project and repository management application
 
 
 ## Application details
@@ -15,7 +15,7 @@ GitLab is a free Project/Repository management application
 * sqlite
 * git
 * gitolite
-* pygments lib - `sudo easy_install pygments`
+* redis
 
 ## Install
 
@@ -25,13 +25,11 @@ Checkout wiki pages for installation information, migration, etc.
 
 [Google Group](https://groups.google.com/group/gitlabhq)
 
-IRC freenode: #gitlabhq
-
 ## Contacts
 
 Twitter:
 
- * @gitalbhq
+ * @gitlabhq
  * @dzaporozhets 
 
 Email
@@ -40,7 +38,5 @@ Email
 
 ## Contribute
 
-We are on our way to full open source. 
-Want to help - create an issue on github and notify us that you are ready to start it.
-If approved - fork, code, cover with tests & make pull request.
+Want to help - send a pull request.
 We'll accept good pull requests.
