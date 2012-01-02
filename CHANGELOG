@@ -1,6 +1,15 @@
+v 2.1.0
+  - Project tab r1
+  - Repository tab r1
+
 v 2.0.0
   - gitolite as main git host system
   - merge requests
+  - project/repo access 
+  - link to commit/issue feed
+  - design tab
+  - improved email notifications
+  - restyled dashboard
   - bugfix
 
 v 1.2.2
