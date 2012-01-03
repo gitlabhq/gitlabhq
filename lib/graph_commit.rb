@@ -102,7 +102,7 @@ class GraphCommit
     h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
     h[:id]      = sha
     h[:date]    = date
-    h[:message] = message
+    h[:message] = message.force_encoding("UTF-8")
     h[:login]   = author.email
     h
   end
