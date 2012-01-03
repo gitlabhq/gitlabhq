@@ -8,3 +8,4 @@ coverage/*
 *.swp
 public/uploads/
 .rvmrc
+.directory
