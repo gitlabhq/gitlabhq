@@ -1,0 +1,10 @@
+= render "repositories/head"
+- unless @hooks.empty?
+  %div.update-data.ui-box.ui-box-small
+    .data
+      - @hooks.each do |hook|
+        %a.update-item{:href => project_hooks_path(@project, hook)}
+          %span.update-title{:style => "margin-bottom:0px;"}
+            = hook.url
+- else 
+  %h3 No hooks
