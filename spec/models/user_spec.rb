@@ -65,5 +65,6 @@ end
 #  linkedin               :string(255)     default(""), not null
 #  twitter                :string(255)     default(""), not null
 #  authentication_token   :string(255)
+#  dark_scheme            :boolean         default(FALSE), not null
 #
 
