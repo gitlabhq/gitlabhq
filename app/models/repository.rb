@@ -112,6 +112,16 @@ class Repository
     commits[0...n]
   end
 
+  def commits_with_refs(n = 20)
+    commits = repo.refs.map { |ref| Commit.new(ref.commit, ref) }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end[0..n]
+
+    commits
+  end
+
   def commits_since(date)
     commits = heads.map do |h|
       repo.log(h.name, nil, :since => date).each { |c| Commit.new(c, h) }

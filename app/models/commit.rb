@@ -2,6 +2,7 @@ class Commit
 
   attr_accessor :commit
   attr_accessor :head
+  attr_accessor :refs
 
   delegate :message,
     :committed_date,

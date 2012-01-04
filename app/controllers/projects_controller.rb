@@ -69,7 +69,7 @@ class ProjectsController < ApplicationController
   def show
     return render "projects/empty" unless @project.repo_exists? && @project.has_commits?
     limit = (params[:limit] || 20).to_i
-    @activities = @project.cached_updates(limit)
+    @activities = @project.updates_wo_repo(limit)
   end
 
   def files

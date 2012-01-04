@@ -6,5 +6,8 @@
         %a.update-item{:href => project_commits_path(@project, :ref => branch.name)}
           %span.update-title{:style => "margin-bottom:0px;"}
             = branch.name
+            %span.update-author.right
+              = time_ago_in_words(branch.commit.committed_date)
+              ago
 - else 
   %h3 No brances

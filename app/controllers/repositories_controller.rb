@@ -9,7 +9,7 @@ class RepositoriesController < ApplicationController
   layout "project"
 
   def show
-    @activities = @project.fresh_commits(20)
+    @activities = @project.commits_with_refs(20)
   end
 
   def branches

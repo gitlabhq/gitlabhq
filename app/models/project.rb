@@ -79,6 +79,7 @@ class Project < ActiveRecord::Base
     :repo_exists?,
     :commit,
     :commits,
+    :commits_with_refs,
     :tree,
     :heads,
     :commits_since,
@@ -142,6 +143,10 @@ class Project < ActiveRecord::Base
 
   def team_member_by_id(user_id)
     users_projects.find_by_user_id(user_id)
+  end
+
+  def fresh_merge_requests(n)
+    merge_requests.includes(:project, :author).order("created_at desc").first(n)
   end
 
   def fresh_issues(n)
@@ -284,6 +289,16 @@ class Project < ActiveRecord::Base
     [
       fresh_commits(n),
       fresh_issues(n),
+      fresh_notes(n)
+    ].compact.flatten.sort do |x, y|
+      y.created_at <=> x.created_at
+    end[0...n]
+  end
+
+  def updates_wo_repo(n=3)
+    [
+      fresh_issues(n),
+      fresh_merge_requests(n),
       fresh_notes(n)
     ].compact.flatten.sort do |x, y|
       y.created_at <=> x.created_at
