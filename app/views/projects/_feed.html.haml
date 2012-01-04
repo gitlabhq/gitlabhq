@@ -1,15 +1,81 @@
-%a.project-update{:href => dashboard_feed_path(project, update)}
-  = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
-  %span.update-title
-    = dashboard_feed_title(update)
-  %span.update-author
-    %strong= update.author_name
-    authored
-    = time_ago_in_words(update.created_at)
-    ago
-  .right
-    - klass = update.class.to_s.split("::").last.downcase
-    %span.tag{ :class => klass }= klass
-    - if update.kind_of?(Commit)
-      %span.tag.commit= update.head.name
+- if update.kind_of?(Note)
+  %a.project-update.titled{:href => dashboard_feed_path(project, update)}
+    = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
+    %span.update-title
+      = dashboard_feed_title(update)
+    %span.update-author
+      %strong= update.author_name
+      = time_ago_in_words(update.created_at)
+      ago
+    - noteable = update.target
+    - if noteable.kind_of?(MergeRequest)
+      .title-block
+        %span.update-title
+          %span.commit.tag
+            Merge Request #
+            = noteable.id
+        %span.update-author
+          %span= noteable.source_branch
+          &rarr;
+          %span= noteable.target_branch
 
+    - elsif noteable.kind_of?(Issue)
+      .title-block
+        %span.update-title
+          %span.commit.tag
+            Issue #
+            = noteable.id
+        %span.update-author
+          .left= truncate noteable.title
+
+    - elsif noteable.kind_of?(Commit)
+      .title-block
+        %span.update-title
+          %span.commit.tag
+            commit
+        %span.update-author
+          .left= truncate noteable.id
+    - else 
+      .title-block
+        %span.update-title
+          %span.commit.tag
+            Project Wall
+        %span.update-author
+          \...
+
+
+- elsif update.kind_of?(MergeRequest)
+  %a.project-update.titled{:href => project_merge_request_path(project, update)}
+    = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
+    %span.update-title
+      Opened merge request
+    %span.update-author
+      %strong= update.author_name
+      = time_ago_in_words(update.created_at)
+      ago
+    .title-block
+      %span.update-title
+        %span.commit.tag
+          Merge Request #
+          = update.id
+      %span.update-author
+        %span= update.source_branch
+        &rarr;
+        %span= update.target_branch
+  
+- elsif update.kind_of?(Issue)
+  %a.project-update.titled{:href => dashboard_feed_path(project, update)}
+    = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
+    %span.update-title
+      Created new Issue
+    %span.update-author
+      %strong= update.author_name
+      = time_ago_in_words(update.created_at)
+      ago
+    .title-block
+      %span.update-title
+        %span.commit.tag
+          Issue #
+          = update.id
+      %span.update-author
+        .left= truncate update.title

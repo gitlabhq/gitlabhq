@@ -13,9 +13,9 @@
           authored
           = time_ago_in_words(update.created_at)
           ago
-        .right-block
+        .title-block
           %span.update-title
             %span.commit.tag= update.head.name
           %span.update-author
-            .right= truncate update.commit.id
+            .left= truncate update.commit.id
 
