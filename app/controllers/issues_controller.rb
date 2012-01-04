@@ -87,6 +87,7 @@ class IssuesController < ApplicationController
     @issue.destroy
 
     respond_to do |format|
+      format.html { redirect_to project_issues_path }
       format.js { render :nothing => true }
     end
   end
