@@ -1,10 +1,16 @@
 = render "repositories/head"
+.right= link_to "Add new", new_project_hook_path(@project), :class => "grey-button append-bottom-10"
 - unless @hooks.empty?
   %div.update-data.ui-box.ui-box-small
     .data
       - @hooks.each do |hook|
-        %a.update-item{:href => project_hooks_path(@project, hook)}
+        %a.update-item{:href => project_hook_path(@project, hook)}
           %span.update-title{:style => "margin-bottom:0px;"}
             = hook.url
+            %span.update-author.right
+              Added
+              = time_ago_in_words(hook.created_at)
+              ago
 - else 
   %h3 No hooks
+

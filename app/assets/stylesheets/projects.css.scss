@@ -181,6 +181,13 @@ input.ssh_project_url {
   }
 }
 
+.text_field { 
+    width:400px;
+    padding:8px;
+    font-size:14px;
+    @include round-borders-all(4px);
+}
+
 .input_button {
   padding:8px;
   font-size:14px;

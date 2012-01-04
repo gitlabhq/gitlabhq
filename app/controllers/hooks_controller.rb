@@ -20,13 +20,12 @@ class HooksController < ApplicationController
 
   def create
     @hook = @project.web_hooks.new(params[:hook])
-    @hook.author = current_user
     @hook.save
 
     if @hook.valid?
-      redirect_to [@project, @hook]
+      redirect_to project_hook_path(@project, @hook)
     else
-      respond_with(@hook)
+      render :new
     end
   end
 
