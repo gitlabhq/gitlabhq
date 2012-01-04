@@ -113,7 +113,7 @@ class Repository
   end
 
   def commits_with_refs(n = 20)
-    commits = repo.refs.map { |ref| Commit.new(ref.commit, ref) }
+    commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
 
     commits.sort! do |x, y|
       y.committed_date <=> x.committed_date
