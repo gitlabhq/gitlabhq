@@ -34,6 +34,11 @@ class User < ActiveRecord::Base
     :foreign_key => :assignee_id,
     :dependent => :destroy
 
+  validates :projects_limit,
+            :presence => true,
+            :numericality => {:greater_than_or_equal_to => 0}
+            
+
   before_create :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
@@ -82,5 +87,6 @@ end
 #  linkedin               :string(255)     default(""), not null
 #  twitter                :string(255)     default(""), not null
 #  authentication_token   :string(255)
+#  dark_scheme            :boolean         default(FALSE), not null
 #
 
