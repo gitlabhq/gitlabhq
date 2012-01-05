@@ -45,6 +45,14 @@ class Note < ActiveRecord::Base
   def notify_author
     @notify_author ||= false
   end
+
+  def target
+    if noteable_type == "Commit" 
+      project.commit(noteable_id)
+    else 
+      noteable
+    end
+  end
 end
 # == Schema Information
 #

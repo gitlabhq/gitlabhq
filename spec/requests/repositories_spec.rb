@@ -28,7 +28,7 @@ describe "Repository" do
     end
 
     it "should show commits list" do
-      page.all(:css, ".project-update").size.should == 20
+      page.all(:css, ".project-update").size.should == @project.repo.branches.size
     end
   end
 

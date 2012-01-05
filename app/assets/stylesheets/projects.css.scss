@@ -675,14 +675,14 @@ body.project-page h2.icon.loading {
 
 a.project-update.titled { 
   position: relative;
-  padding-right: 310px !important;
+  padding-left: 235px !important;
 
-  .right-block { 
+  .title-block { 
     padding: 10px;
-    width: 280px;
+    width: 205px;
     background: #f5f5f5;
     position: absolute;
-    right: 0;
+    left: 0;
     top: 0;
   }
 }

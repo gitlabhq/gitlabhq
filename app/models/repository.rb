@@ -117,9 +117,9 @@ class Repository
 
     commits.sort! do |x, y|
       y.committed_date <=> x.committed_date
-    end[0..n]
+    end
 
-    commits
+    commits[0..n]
   end
 
   def commits_since(date)
