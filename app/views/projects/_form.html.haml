@@ -59,13 +59,13 @@
 
 
 :javascript
-  $('.new_project, .edit_project').bind('ajax:before', function() {
-    $(this).find(".form_content").hide();
-    $('.ajax_loader').show();
-  });
-
-:javascript
   $(function(){
+    $('.new_project, .edit_project').bind('ajax:before', function() {
+      $(this).find(".form_content").hide();
+      $('.ajax_loader').show();
+    });
+    
     taggifyForm();
+    
     $('form #project_default_branch').chosen();
   })
