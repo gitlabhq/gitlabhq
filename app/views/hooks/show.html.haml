@@ -1,5 +1,8 @@
 = render "repositories/head"
-%h3= @hook.url
+%h3
+  %span.commit.tag POST
+  = @hook.url
+
 
 - if can? current_user, :admin_project, @project
   .merge-tabs
