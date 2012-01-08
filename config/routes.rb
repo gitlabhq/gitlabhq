@@ -85,7 +85,11 @@ Gitlab::Application.routes.draw do
     end
     
     resources :snippets
-    resources :hooks, :only => [:index, :new, :create, :destroy, :show]
+    resources :hooks, :only => [:index, :new, :create, :destroy, :show] do 
+      member do 
+        get :test
+      end
+    end
     resources :commits
     resources :team_members
     resources :issues do

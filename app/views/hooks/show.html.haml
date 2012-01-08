@@ -1,7 +1,8 @@
 = render "repositories/head"
-= debug @hook
+%h3= @hook.url
 
 - if can? current_user, :admin_project, @project
   .merge-tabs
+    = link_to 'Test Hook', test_project_hook_path(@project, @hook), :class => "grey-button"
     .right
       = link_to 'Remove', project_hook_path(@project, @hook), :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
