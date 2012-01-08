@@ -1,0 +1,30 @@
+= render "repositories/head"
+
+
+
+
+.right= link_to "Add new", new_project_hook_path(@project), :class => "grey-button append-bottom-10"
+- unless @hooks.empty?
+  %div.update-data.ui-box.ui-box-small
+    .data
+      - @hooks.each do |hook|
+        %a.update-item{:href => project_hook_path(@project, hook)}
+          %span.update-title{:style => "margin-bottom:0px;"}
+            = hook.url
+            %span.update-author.right
+              Added
+              = time_ago_in_words(hook.created_at)
+              ago
+- else 
+  %h3 No hooks
+
+.clear
+%h3 Help
+%p 
+  Post receive hooks. For now only POST request allowed. We send some data with request. Example below
+
+.view_file
+  .view_file_header
+    %strong POST data passed
+  .data.no-padding
+    = render "data_ex"

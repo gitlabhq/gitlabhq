@@ -1,8 +1,8 @@
 Gitlab::Application.routes.draw do
 
   # Optionally, enable Resque here
-  # require 'resque/server'
-  # mount Resque::Server.new, at: '/info/resque'
+  require 'resque/server'
+  mount Resque::Server.new, at: '/info/resque'
 
   get 'tags'=> 'tags#index'
   get 'tags/:tag' => 'projects#index'
@@ -83,7 +83,13 @@ Gitlab::Application.routes.draw do
         get :commits
       end
     end
+    
     resources :snippets
+    resources :hooks, :only => [:index, :new, :create, :destroy, :show] do 
+      member do 
+        get :test
+      end
+    end
     resources :commits
     resources :team_members
     resources :issues do

@@ -8,7 +8,7 @@
   = link_to tags_project_repository_path(@project), :class => "tab #{'active' if current_page?(tags_project_repository_path(@project)) }" do 
     %span 
     Tags
-  -#= link_to "#", :class => "tab" do 
+  = link_to project_hooks_path, :class => "tab #{'active' if controller.controller_name == "hooks" }" do 
     %span
     Hooks
   -#= link_to "#", :class => "tab" do 
