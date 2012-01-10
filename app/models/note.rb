@@ -53,6 +53,23 @@ class Note < ActiveRecord::Base
       noteable
     end
   end
+
+  def line_file_id
+    @line_file_id ||= line_code.split("_")[1].to_i if line_code
+  end
+
+  def line_type_id
+    @line_type_id ||= line_code.split("_").first if line_code
+  end
+
+  def line_number 
+    @line_number ||= line_code.split("_").last.to_i if line_code
+  end
+
+  def for_line?(file_id, old_line, new_line)
+    line_file_id == file_id && 
+      ((line_type_id == "NEW" && line_number == new_line) || (line_type_id == "OLD" && line_number == old_line ))
+  end
 end
 # == Schema Information
 #
