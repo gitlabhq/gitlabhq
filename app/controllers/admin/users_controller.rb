@@ -38,7 +38,7 @@ class Admin::UsersController < ApplicationController
 
   def update
     admin = params[:user].delete("admin")
-    if params[:user][:password].empty?
+    if params[:user][:password].blank?
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
     end
