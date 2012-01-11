@@ -28,10 +28,8 @@ module ProjectsHelper
   end
 
   def tree_tab_class
-    current_page?(:controller => "refs",
-                  :action => "tree", 
-                  :project_id => @project, 
-                  :id => @ref || @project.root_ref ) ? "current" : nil
+    controller.controller_name == "refs" ? 
+     "current" : nil
   end
 
   def repository_tab_class

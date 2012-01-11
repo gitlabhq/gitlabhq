@@ -22,7 +22,7 @@ describe "TeamMembers" do
     before do
       @user_1 = Factory :user
       visit team_project_path(@project)
-      click_link "Add new"
+      click_link "New Team Member"
     end
 
     it "should open new team member popup" do

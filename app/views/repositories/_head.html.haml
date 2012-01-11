@@ -15,5 +15,9 @@
     %span
     Deploy Keys
 
+  - if current_page?(project_hooks_path(@project))
+    - if can? current_user, :admin_project, @project
+      = link_to new_project_hook_path(@project), :class => "add_new", :title => "New Web Hook" do 
+        = image_tag "add_new.png", :width => 14
 
 

@@ -5,7 +5,7 @@
 var Tree = { 
   init: 
     function() { 
-      (new Image).src = "/assets/ajax-loader-tree.gif";
+      (new Image).src = "ajax-loader-facebook.gif";
 
       $('#tree-slider td.tree-item-file-name a, #tree-breadcrumbs a').live("click", function() {
         history.pushState({ path: this.path }, '', this.href)
@@ -20,8 +20,8 @@ var Tree = {
       });
 
       $('#tree-slider td.tree-item-file-name a, #tree-breadcrumbs a').live({ 
-        "ajax:beforeSend": function() { $('h2.icon').addClass("loading") },
-        "ajax:complete": function() { $('h2.icon').removeClass("loading")} 
+        "ajax:beforeSend": function() { $('.tree_progress').addClass("loading"); },
+        "ajax:complete": function() { $('.tree_progress').removeClass("loading"); } 
       });
     }
 }

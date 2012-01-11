@@ -15,4 +15,13 @@
     %span
     Snippets
 
+  - if current_page?(project_snippets_path(@project))
+    - if can? current_user, :write_snippet, @project
+      = link_to new_project_snippet_path(@project), :class => "add_new", :title => "New Snippet" do 
+        = image_tag "add_new.png", :width => 14
 
+
+  - if current_page?(team_project_path(@project))
+    - if can? current_user, :admin_team_member, @project
+      = link_to new_project_team_member_path(@project), :class => "add_new", :title => "New Team Member", :remote => true do 
+        = image_tag "add_new.png", :width => 14

@@ -1,13 +1,12 @@
 #tree-breadcrumbs
-  %h2.icon
-    %span
-    %d
-      = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
-        = @project.code
-      - tree.breadcrumbs(3) do |link|
-        \/
-        = link
-      &nbsp;
+  %h2
+    = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
+      = @project.code
+    - tree.breadcrumbs(4) do |link|
+      \/
+      = link
+    &nbsp;
+  %span.tree_progress
 .clear
 #tree-content-holder
   - if tree.is_blob?

@@ -1,9 +1,4 @@
 = render "repositories/head"
-
-
-
-
-.right= link_to "Add new", new_project_hook_path(@project), :class => "grey-button append-bottom-10"
 - unless @hooks.empty?
   %div.update-data.ui-box.ui-box-small
     .data
@@ -19,7 +14,7 @@
   %h3 No hooks
 
 .clear
-%h3 Help
+%hr
 %p 
   Post receive hooks. For now only POST request allowed. We send some data with request. Example below
 

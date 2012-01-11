@@ -693,3 +693,36 @@ a.project-update.titled {
     top: 0;
   }
 }
+
+.add_new { 
+  float:right;
+  padding: 5px 12px;
+  border: 1px solid #CCC;
+
+  &:hover { 
+    background:#eee;
+  }
+
+  &:active { 
+    background:#ddd;
+  }
+}
+
+.tree_progress { 
+  float:left;
+  width:16px;
+  height:16px;
+  margin:6px;
+  &.loading { 
+    background-position: 0px 0px;
+    background: url("ajax-loader-facebook.gif") no-repeat;
+  }
+}
+
+#tree-breadcrumbs { 
+  h2 {
+    margin:0;
+    margin-bottom:20px;
+    float:left;
+  }
+}
