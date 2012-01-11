@@ -42,4 +42,11 @@ module CommitsHelper
     preserve out
   end
 
+  def build_line_code(line, index, line_new, line_old)
+    if diff_line_class(line) == "new"
+      "NEW_#{index}_#{line_new}"
+    else
+      "OLD_#{index}_#{line_old}"
+    end
+  end
 end
