@@ -18,7 +18,11 @@
         = link_to raw(diff_line_class(line) == "new" ? "&nbsp;" : line_old), "#OLD#{index}-#{line_old}", :id => "OLD#{index}-#{line_old}"
       %td.new_line
         = link_to raw(diff_line_class(line) == "old" ? "&nbsp;" : line_new) , "#NEW#{index}-#{line_new}", :id => "NEW#{index}-#{line_new}"
-      %td.line_content{:class => diff_line_class(full_line)}= raw "#{full_line} &nbsp;"
+      %td.line_content{:class => "#{diff_line_class(full_line)} #{build_line_code(line, index, line_new, line_old)}", "line_code" => build_line_code(line, index, line_new, line_old)}= raw "#{full_line} &nbsp;"
+    - comments = @line_notes.select { |n| n.for_line?(index, line_old, line_new) }.sort_by(&:created_at).reverse
+    - unless comments.empty?
+      - comments.each do |note|
+        = render "notes/per_line_show", :note => note
     - if line[0] == "+"
       - line_new += 1
     - elsif line[0] == "-"

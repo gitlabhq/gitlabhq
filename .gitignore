@@ -1,6 +1,7 @@
 .bundle
 .rbx/
 db/*.sqlite3
+db/*.sqlite3-journal
 log/*.log
 tmp/
 .sass-cache/
@@ -9,3 +10,4 @@ coverage/*
 public/uploads/
 .rvmrc
 .directory
+nohup.out

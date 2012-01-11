@@ -96,3 +96,13 @@ ul.bordered-list {
 }
 
 ul.bordered-list li:last-child { border:none } 
+
+.line_holder { 
+  cursor:pointer;
+
+  &:hover { 
+    td { 
+      background: #FFFFCF !important;
+    }
+  }
+}
