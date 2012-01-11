@@ -19,6 +19,15 @@
               %strong
                 = truncate(commit.safe_message, :length => 70)
             %span.commit-author
+              Authored by
+              &nbsp;
               %strong= commit.author_name
-              = time_ago_in_words(commit.committed_date)
+              = time_ago_in_words(commit.authored_date)
               ago
+            - if commit.author_name != commit.committer_name or commit.author_email != commit.committer_email or commit.authored_date != commit.committed_date
+              %span.commit-committer
+                Committed by
+                &nbsp;
+                %strong= commit.committer_name
+                = time_ago_in_words(commit.committed_date)
+                ago
