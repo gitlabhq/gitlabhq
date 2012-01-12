@@ -333,8 +333,12 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
 
 /* Header */
-header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%; position: relative}
-header a{color: white; text-shadow: 0 -1px 0 black}
+header{
+  background: #474D57 url('bg-header.png') repeat-x bottom;
+  z-index: 10000;
+  height: 44px; 
+  padding: 10px 2% 6px 2%;
+}
 header a:hover{color: #f1f1f1}
 header h1{
   width: 65px;
@@ -417,7 +421,7 @@ header .login-top a.pic{float: left; margin-right: 10px;
 }
 header .login-top a.username{margin-bottom: 5px}
 header .login-top a.logout{color: #ccc}
-header{margin-bottom: 0; clear: both; }
+header{margin-bottom: 0; clear: both; position:relative;}
 
 .page-title{background-color: #f1f1f1;display: block; float: left; clear: both; width: 98%; padding: 1% 1%; border-bottom: 1px solid #ccc; box-shadow: 0 -1px 0 white inset; margin-bottom: 1.5em}
 .page-title h1{font-size: 20px; width: 400px; margin: 0; padding-top: 8px }
@@ -426,7 +430,7 @@ header{margin-bottom: 0; clear: both; }
 
 /* Account box */
 header .account-box{position: absolute; right: 0; top: 8px; z-index: 10000; width: 128px;  font-size: 11px; float: right; display: block; cursor: pointer;}
-header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
+header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black; top:-3px;}
 header .account-box img:after{
   content: " ";
   display: block;
@@ -550,7 +554,7 @@ header .account-links a:last-child{
 
 /* eo Account Box */
 input.search-input{float: left; text-shadow: none; width: 116px; background-image: url('icon-search.png') ; background-repeat: no-repeat; background-position: 10px; border-radius: 100px; border: 1px solid rgba(0,0,0,.7); box-shadow: 0 1px 0 rgba(255,255,255,.2), 0 2px 2px rgba(0,0,0,.4) inset ; background-color: #D2D5DA; background-color: rgba(255,255,255,.5); padding: 5px; padding-left: 26px;  margin-top: 4px; margin-right: 10px }
-input.search-input:focus{ background-color: white; width: 216px;}
+/*input.search-input:focus{ background-color: white; width: 216px;}*/
 input.search-input::-webkit-input-placeholder {color: #666}
 /* eo Header */
 
@@ -607,7 +611,7 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 body.project-page h2.icon span{  background-position:  -78px -68px; }
 body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
 body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 180px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
+body.project-page .project-sidebar {width: 110px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
 
 body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
 body.projects-page input.text.git-url {margin:10px 0 0 }
@@ -615,22 +619,15 @@ body.projects-page input.text.git-url {margin:10px 0 0 }
 
 .projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
 
-body.project-page .project-sidebar aside{width: 179px}
-body.project-page .project-sidebar aside a{display: block; position: relative; background: white; padding: 15px 10px; border-bottom: 1px solid #eee}
-body.project-page .project-sidebar aside a:first-child{
-  -webkit-border-top-left-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  border-top-left-radius: 5px;
-}
-.project-page .project-sidebar aside a:last-child{
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-left-radius: 5px;
+body.project-page .project-sidebar aside{width: 109px}
+body.project-page .project-sidebar aside a{
+  display: block; position: relative; background: white; padding: 15px 10px; border-bottom: 1px solid #eee; margin: 10px 20px 0 0;
+  border-radius:5px;
 }
 body.project-page .project-sidebar aside a:hover{background-color: #eee;}
 body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
-body.project-page .project-sidebar aside a.current{background-color: #79c3e0; color: white; text-shadow: none; border-color: transparent}
-body.project-page .project-content{ padding: 20px; display: block; margin-left: 205px; min-height: 600px}
+body.project-page .project-sidebar aside a.current{border: 2px solid #79c3e0; }
+body.project-page .project-content{ padding: 20px; display: block; margin-left: 125px; min-height: 600px}
 body.project-page .project-content h2{ margin-top: 6px}
 body.project-page .project-content .button.right{margin-left: 20px}
 body.project-page table .commit a{color: #{$blue_link}}

@@ -18,31 +18,32 @@
     = render :partial => "layouts/flash"
     #container
       = render :partial => "layouts/head_panel"
-      = render :partial => "layouts/middle_panel" if @project && !@project.new_record?
+      -#= render :partial => "layouts/middle_panel" if @project && !@project.new_record?
       .project-container
         .project-sidebar
           .fixed
             %aside
-              = link_to "Project", project_path(@project), :class => project_tab_class
+              = link_to project_path(@project), :class => project_tab_class do 
+                = image_tag "Home-UI.PNG", :width => 26
+                %span{ :class => "number" } Pr
+
               = link_to "Repository", project_repository_path(@project), :class => repository_tab_class
               = link_to "Tree", tree_project_ref_path(@project,  @project.root_ref), :class => tree_tab_class
               = link_to "Commits", project_commits_path(@project), :class => current_page?(:controller => "commits", :action => "index", :project_id => @project) ? "current" : nil
-              = link_to "Network graph", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
+              = link_to "Network", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
               = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
                 Issues
-                - if @project.issues.open_for(current_user).count > 0
+                -#- if @project.issues.open_for(current_user).count > 0
                   %span{ :class => "number" }= @project.issues.open_for(current_user).count
               = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
                 Wall
                 - if @project.common_notes.today.count > 0
                   %span{ :class => "number" }= @project.common_notes.today.count
               = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
-                Merge Requests
-                - if @project.merge_requests.opened.count > 0
+                Merge
+                -#- if @project.merge_requests.opened.count > 0
                   %span{ :class => "number" }= @project.merge_requests.opened.count
 
-
-            .medium-tags{:style => 'padding: 10px 0 0 10px; width: 210px;'}= tag_list @project
 
         .project-content
           = yield
