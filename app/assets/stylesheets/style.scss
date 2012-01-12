@@ -74,9 +74,9 @@ $blue_link: "#2fa0bb";
 /* eo Vars */
 
 html{ -webkit-font-smoothing:antialiased; }
-body{font-size: 12px; background-color: #eee;}
-a{text-decoration: none; font-weight: bold; color: #666}
-a:hover{color: #333}
+body{font-size: 12px; background-color: #F5F5F5;}
+a{text-decoration: none; font-weight: bold; color: #444}
+a:hover{color: #555}
 /* Typography */
 h1,h2,h3,h4,h5{font-weight: normal; color: #666}
 h2{margin: 1.5em 0}
@@ -611,7 +611,7 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 body.project-page h2.icon span{  background-position:  -78px -68px; }
 body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
 body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 110px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
+body.project-page .project-sidebar {width: 110px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #eee; float: left; display: inline-block; background: #eee; padding: 20px 0 20px 2%; margin: 0; }
 
 body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
 body.projects-page input.text.git-url {margin:10px 0 0 }

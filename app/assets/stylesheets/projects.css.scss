@@ -277,7 +277,7 @@ input.ssh_project_url {
 
 body.project-page table .commit {
   a.tree-commit-link {
-    color:gray;
+    color:#444;
     &:hover {
       text-decoration:underline;
     }
@@ -527,11 +527,18 @@ h4.dash-tabs {
 
 body header,
 h4.middle-panel { 
+
+  background: #999; /* for non-css3 browsers */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA'); /* for IE */
+  background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA)); /* for webkit browsers */
+  background: -moz-linear-gradient(top,  #FAFAFA,  #EAEAEA); /* for firefox 3.6+ */ 
+
   margin: 0; 
   border-bottom: 1px solid #ccc; 
   padding: 10px 20px;
   font-size: 11px;
-  background: #F7F7F7;
+  //background: #F7F7F7;
   height:30px;
 
   .project_name {
