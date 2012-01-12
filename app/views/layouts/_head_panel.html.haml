@@ -1,15 +1,23 @@
 / Page Header
-%header
+%header.top_panel_holder
+  %div.top_links_holder
+    = link_to root_path, :class => "top_link home", :title => "Home" do 
+      = image_tag "Home-UI.PNG", :width => 26
+    - if current_user.is_admin?
+      = link_to admin_root_path, :class => "top_link admin", :title => "Admin"  do 
+        = image_tag "Gear-UI.PNG", :width => 20
+
+
   - if @project && !@project.new_record?
     .project_name
       = truncate @project.name, :length => 20
     .git_url_wrapper
       %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
-    = yield :rss_icon
-
     - if @project.repo_exists?
       .left{:style => "margin-left:5px;"}
         = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
+    = yield :rss_icon
+
   .account-box
     = link_to profile_path, :class => "pic" do
       = image_tag gravatar_icon(current_user.email)

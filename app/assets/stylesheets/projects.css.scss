@@ -548,7 +548,7 @@ h4.middle-panel {
     font-size:16px;
     font-weight:bold;
     padding:5px 7px;
-    color:#777;
+    color:#333;
   }
 
   .git_url_wrapper {
@@ -560,12 +560,50 @@ h4.middle-panel {
       padding:0px;
       margin:0px;
       font-size: 12px;
-      border-radius: 5px;
+
+      border-radius: 0px;
+      -moz-border-radius: 0px;
+
+      -moz-border-radius-bottomleft: 4px;
+      -moz-border-radius-topleft: 4px;
+
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+
       color: #666; 
-      box-shadow: 0 1px 2px rgba(0,0,0,.2) inset;
-      padding:  7px 0 5px 30px;
-      background: white url('images.png') no-repeat 8px -40px; 
-      width: 250px;
+      border: 1px solid #AAA;
+      padding:  0 0 0 30px;
+      background: white url('images.png') no-repeat 8px -42px; 
+      width: 160px;
+      height:26px;
+    }
+  }
+}
+
+.top_panel_holder .chzn-container { 
+  position:relative;
+
+  .chzn-drop { 
+    margin:7px 0;
+    border: 1px solid #CCC;
+    min-width: 300px;
+
+    .chzn-results { 
+      max-height:300px;
+    }
+  }
+
+  .chzn-single { 
+    background:white;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-topright: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+
+    div { 
+      background:white;
     }
   }
 }
@@ -762,3 +800,32 @@ tr.line_notes_row {
     }
   }
 }
+.top_links_holder {
+  width:124px;
+  float:left;
+
+  .top_link {
+    position: relative;
+    float:left;
+
+    &.home { 
+      width:28px;  
+      height:27px;
+      top: -12px;
+      border: 1px solid #474D57;
+      border-radius: 3px;
+      background: #fff;
+
+      margin-right:15px;
+      padding: 6px 7px;
+    }
+
+    &.admin { 
+      top: -3px;
+      padding: 3px;
+      width: 21px;
+      height: 21px;
+    }
+  }
+}
+

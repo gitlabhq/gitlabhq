@@ -24,8 +24,7 @@
           .fixed
             %aside
               = link_to project_path(@project), :class => project_tab_class do 
-                = image_tag "Home-UI.PNG", :width => 26
-                %span{ :class => "number" } Pr
+                Project
 
               = link_to "Repository", project_repository_path(@project), :class => repository_tab_class
               = link_to "Tree", tree_project_ref_path(@project,  @project.root_ref), :class => tree_tab_class
