@@ -569,7 +569,7 @@ html, body { height: 100%; }
 
 body.dashboard-page h2.icon span{ background-position:  9px -69px; }
 body.dashboard-page header{margin-bottom: 0}
-body.dashboard-page .news-feed{padding-left: 1em; margin-right: 450px; min-height: 600px; margin-left: 1%}
+body.dashboard-page .news-feed{padding-left: 1em; margin-right: 450px; min-height: 600px; margin-left: 1%; margin-top: 20px;}
 body.dashboard-page .dashboard-content{ position: relative; float: left; width: 100%; height: 100%; }
 body.dashboard-page .news-feed h2{float: left;}
 body.dashboard-page aside{ min-height: 820px; position: relative; top: 0; bottom: 0; right: 0; width: 420px;  float: right;  background-color: #f7f7f7; border-left: 1px solid #ccc }
@@ -611,7 +611,7 @@ body.project-page h2.icon .project-name i.arrow{float: right;
 body.project-page h2.icon span{  background-position:  -78px -68px; }
 body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
 body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 110px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #eee; float: left; display: inline-block; background: #eee; padding: 20px 0 20px 2%; margin: 0; border-right: 1px solid #ddd; }
+body.project-page .project-sidebar {width: 110px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; float: left; display: inline-block; background: #F7F7F7; padding: 20px 0 20px 2%; margin: 0; border-right: 1px solid #ddd; }
 
 body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
 body.projects-page input.text.git-url {margin:10px 0 0 }
@@ -621,11 +621,15 @@ body.projects-page input.text.git-url {margin:10px 0 0 }
 
 body.project-page .project-sidebar aside{width: 109px}
 body.project-page .project-sidebar aside a{
-  display: block; position: relative; background: #F5F5F5; padding: 15px 10px; 
-  border: 1px solid #ccc; margin: 10px 20px 0 0;
+  display: block;
+  position: relative; 
+  background: #FFF; 
+  padding: 15px 10px; 
+  border: 1px solid #ccc; 
+  margin: 10px 20px 0 0;
   border-radius:5px;
 }
-body.project-page .project-sidebar aside a:hover{background-color: #eee;}
+body.project-page .project-sidebar aside a:hover{background-color: #FFFFFF;}
 body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
 body.project-page .project-sidebar aside a.current{border: 2px solid #79c3e0; background:white; }
 body.project-page .project-content{ padding: 20px; display: block; margin-left: 130px; min-height: 600px}
@@ -636,7 +640,7 @@ body.project-page table th, body.project-page table td{  border-bottom: 1px soli
 body.project-page .fixed{position: fixed; }
 
 /* New project Page */
-.new-project-page .container{width: 600px; background-color: rgba(0,0,0,.02); margin: auto; border: 1px solid #eee; padding: 0 20px; margin: 30px auto 60px auto; border-radius: 5px}
+.new-project-page .container{ margin:20px}
 .new-project-page .container table{background: white}
 /* eo New Project Page */
 

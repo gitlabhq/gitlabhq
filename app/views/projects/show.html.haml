@@ -2,7 +2,7 @@
 
 = render "project_head"
 #news-feed.news-feed
-  .project-box.project-updates.ui-box.ui-box-small.ui-box-big
+  .project-box.project-updates
     - @activities.each do |update|
       = render "projects/feed", :update => update, :project => @project
 

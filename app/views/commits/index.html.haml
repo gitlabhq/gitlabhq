@@ -6,13 +6,11 @@
         = image_tag "rss_icon_gray.png", :width => 16, :title => "feed"
 
 - if params[:path]
-  %h2.icon
-    %span
-    %d
-      = link_to project_commits_path(@project) do
-        = @project.code
-      \/
-      %a{:href => "#"}= params[:path].split("/").join(" / ")
+  %h2
+    = link_to project_commits_path(@project) do
+      = @project.code
+    \/
+    %a{:href => "#"}= params[:path].split("/").join(" / ")
 
 %div{:id => dom_id(@project)}
   #commits_list= render "commits"

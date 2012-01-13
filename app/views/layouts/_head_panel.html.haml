@@ -10,13 +10,18 @@
 
   - if @project && !@project.new_record?
     .project_name
-      = truncate @project.name, :length => 20
+      = truncate @project.name, :length => 28
     .git_url_wrapper
       %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
     - if @project.repo_exists?
       .left{:style => "margin-left:5px;"}
         = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
     = yield :rss_icon
+
+  - if controller.controller_name == "dashboard"
+    = link_to "Activities", dashboard_path, :class => "dash_top_link #{"active" if current_page?(dashboard_path) || current_page?(root_path) }"
+    = link_to "Issues", dashboard_issues_path, :class => "dash_top_link #{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
+    = link_to "Merge Requests", dashboard_merge_requests_path, :class => "dash_top_link #{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
 
   .account-box
     = link_to profile_path, :class => "pic" do

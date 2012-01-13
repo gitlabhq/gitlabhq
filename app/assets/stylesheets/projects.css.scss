@@ -543,7 +543,7 @@ h4.middle-panel {
 
   .project_name {
     float:left;
-    width:160px;
+    width:235px;
     margin-right:30px;
     font-size:16px;
     font-weight:bold;
@@ -572,7 +572,7 @@ h4.middle-panel {
 
       color: #666; 
       border: 1px solid #AAA;
-      padding:  0 0 0 30px;
+      padding:  0 10px 0 30px;
       background: white url('images.png') no-repeat 8px -42px; 
       width: 160px;
       height:26px;
@@ -623,6 +623,10 @@ h4.middle-panel {
   background: #F7F7F7;
   margin-bottom:20px;
   height:26px;
+
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 
   .tab { 
     font-weight: bold;
@@ -733,7 +737,6 @@ a.project-update.titled {
   .title-block { 
     padding: 10px;
     width: 205px;
-    background: #f5f5f5;
     position: absolute;
     left: 0;
     top: 0;
@@ -829,3 +832,16 @@ tr.line_notes_row {
   }
 }
 
+
+.dash_top_link { 
+  margin: 4px 14px;
+  float: left;
+  font-size: 14px;
+
+  &.active { 
+    color:#2FA0BB;
+  }
+  &:hover { 
+    color:#2FA0BB;
+  }
+}
