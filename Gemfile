@@ -54,6 +54,10 @@ group :development, :test do
   gem "webmock"
 end
 
+group :production do
+  gem "mysql2"
+end
+
 group :test do
   gem "turn", :require => false
   gem "simplecov", :require => false
