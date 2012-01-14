@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Key do
   describe "Associations" do
-    it { should belong_to(:user) }
+    it { should belong_to(:user) or belong_to(:project)  }
   end
 
   describe "Validation" do

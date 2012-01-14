@@ -1,0 +1,16 @@
+%div
+  = form_for [@project, @key], :url => project_deploy_keys_path, :remote => true do |f|
+    -if @key.errors.any?
+      %ul
+        - @key.errors.full_messages.each do |msg|
+          %li= msg
+
+    .form-row
+      = f.label :title
+      = f.text_field :title, :style => "width:300px"
+    .form-row
+      = f.label :key
+      = f.text_area :key, :style => "width:300px; height:130px"
+    .form-row
+      = f.submit 'Save', :class => "grey-button"
+

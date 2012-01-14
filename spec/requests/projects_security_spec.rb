@@ -105,6 +105,15 @@ describe "Projects" do
       it { edit_project_path(@project).should be_denied_for :visitor }
     end
 
+    describe "GET /project_code/deploy_keys" do
+      it { project_deploy_keys_path(@project).should be_allowed_for @u1 }
+      it { project_deploy_keys_path(@project).should be_denied_for @u3 }
+      it { project_deploy_keys_path(@project).should be_denied_for :admin }
+      it { project_deploy_keys_path(@project).should be_denied_for @u2 }
+      it { project_deploy_keys_path(@project).should be_denied_for :user }
+      it { project_deploy_keys_path(@project).should be_denied_for :visitor }
+    end
+
     describe "GET /project_code/issues" do
       it { project_issues_path(@project).should be_allowed_for @u1 }
       it { project_issues_path(@project).should be_allowed_for @u3 }

@@ -39,12 +39,13 @@ ActiveRecord::Schema.define(:version => 20120110180749) do
   end
 
   create_table "keys", :force => true do |t|
-    t.integer  "user_id",    :null => false
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "key"
     t.string   "title"
     t.string   "identifier"
+    t.integer  "project_id"
   end
 
   create_table "merge_requests", :force => true do |t|

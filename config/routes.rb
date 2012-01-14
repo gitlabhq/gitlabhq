@@ -53,6 +53,8 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :deploy_keys
+
     resources :refs, :only => [], :path => "/" do 
       collection do 
         get "switch"

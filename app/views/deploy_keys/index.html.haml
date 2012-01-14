@@ -1,0 +1,11 @@
+= render "repositories/head"
+
+%div#keys-table{ :class => "update-data ui-box ui-box-small ui-box-big" }
+  .data
+    - @keys.each do |key|
+      = render(:partial => 'show', :locals => {:key => key})
+
+:javascript
+  $('.delete-key').live('ajax:success', function() {
+    $(this).closest('.update-item').fadeOut(); });
+
