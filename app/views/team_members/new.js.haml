@@ -1,16 +1,8 @@
--#$("#new-member-holder").empty();
--#$("#new-member-holder").append("#{escape_javascript(render('form'))}");
 :plain
-  var new_tm_dialog = $("<div id='new_tm_dialog'></div>");
-  new_tm_dialog.html("#{escape_javascript(render('form'))}");
-  $(new_tm_dialog).dialog({
-    width: 350,
-    resizable: false,
-    draggable: false,
-    title: "Add new member to project team",
-    close: function(event, ui) { $("#new_tm_dialog").remove();},
-    modal: true
-
+  $("#team-table").hide("slide", { direction: "left" }, 150, function(){
+    $(this).parent().append("#{escape_javascript(render('form'))}");
+    $('#team_member_new select#team_member_user_id').chosen();
+    $("#team_member_new").show("slide", { direction: "right" }, 150);
+    $(".add_new").hide();
   });
 
-  $('#team_member_new select#team_member_user_id').chosen();

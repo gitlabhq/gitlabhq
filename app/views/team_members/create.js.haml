@@ -1,9 +1,13 @@
 - if @team_member.valid?
   :plain
-    $("#new_tm_dialog").dialog("close");
-    $("#team-table").append("#{escape_javascript(render(:partial => 'show', :locals => {:member => @team_member} ))}");
+    $("#team_member_new").hide("slide", { direction: "right" }, 150, function(){
+      $("#team-table").show("slide", { direction: "left" }, 150, function() { 
+        $("#team_member_new").remove();
+        $("#team-table").replaceWith("#{escape_javascript(render('projects/team'))}");
+        $(".add_new").show();
+      });
+    });
 - else
   :plain
-    $("#new_tm_dialog").empty();
-    $("#new_tm_dialog").append("#{escape_javascript(render('form'))}");
+    $("#team_member_new").replaceWith("#{escape_javascript(render('form'))}");
     $('select#team_member_user_id').chosen();

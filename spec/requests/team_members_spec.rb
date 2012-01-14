@@ -26,7 +26,7 @@ describe "TeamMembers" do
     end
 
     it "should open new team member popup" do
-      page.should have_content("Add new member to project")
+      page.should have_content("New Team member")
     end
 
     describe "fill in" do
