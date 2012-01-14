@@ -1,8 +1,8 @@
-= form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member), :remote => "true" do |f|
+= form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member) do |f|
   %div
     %span.entity-info
       - if request.xhr? 
-        = link_to "#back", :onclick => "backToMembers();" do 
+        = link_to project_team_members_path(@project)  do 
           .entity-button
             Team List
             %i

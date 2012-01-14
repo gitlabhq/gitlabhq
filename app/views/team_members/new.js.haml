@@ -1,8 +1,0 @@
-:plain
-  $("#team-table").hide("slide", { direction: "left" }, 150, function(){
-    $(this).parent().append("#{escape_javascript(render('form'))}");
-    $('#team_member_new select#team_member_user_id').chosen();
-    $("#team_member_new").show("slide", { direction: "right" }, 150);
-    $(".add_new").hide();
-  });
-

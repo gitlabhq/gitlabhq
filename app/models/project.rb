@@ -300,11 +300,11 @@ class Project < ActiveRecord::Base
     end[0...n]
   end
 
-  def updates_wo_repo(n=3)
+  def activities(n=3)
     [
       fresh_issues(n),
       fresh_merge_requests(n),
-      fresh_notes(n)
+      notes.inc_author_project.where("noteable_type is not null").order("created_at desc").first(n)
     ].compact.flatten.sort do |x, y|
       y.created_at <=> x.created_at
     end[0...n]

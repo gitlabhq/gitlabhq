@@ -745,16 +745,7 @@ a.project-update.titled {
 
 .add_new { 
   float:right;
-  padding: 5px 12px;
-  border: 1px solid #CCC;
-
-  &:hover { 
-    background:#eee;
-  }
-
-  &:active { 
-    background:#ddd;
-  }
+  padding: 6px 12px;
 }
 
 .tree_progress { 
@@ -843,5 +834,28 @@ tr.line_notes_row {
   }
   &:hover { 
     color:#2FA0BB;
+  }
+}
+
+.top-tabs { 
+  margin: 0; 
+  padding: 5px;
+  font-size: 14px;
+  padding-bottom:10px;
+  margin-bottom:20px;
+  height:26px;
+  border-bottom:1px solid #ccc;
+
+  .tab { 
+    font-weight: bold;
+    background:none;
+    padding: 10px;
+    float:left;
+    padding-left:0px;
+    padding-right:40px;
+
+    &.active {
+      color: #2FA0BB;
+    }
   }
 }
