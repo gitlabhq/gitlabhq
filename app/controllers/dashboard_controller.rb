@@ -1,25 +1,15 @@
 class DashboardController < ApplicationController
-  respond_to :js, :html
+  respond_to :html
 
   def index
     @projects = current_user.projects.all
     @active_projects = @projects.select(&:repo_exists?).select(&:last_activity_date_cached).sort_by(&:last_activity_date_cached).reverse
-
-    respond_to do |format|
-      format.html
-      format.js { no_cache_headers }
-    end
   end
 
   # Get authored or assigned open merge requests
   def merge_requests
     @projects = current_user.projects.all
     @merge_requests = MergeRequest.where("author_id = :id or assignee_id = :id", :id => current_user.id).opened.order("created_at DESC").limit(40)
-
-    respond_to do |format|
-      format.html
-      format.js { no_cache_headers }
-    end
   end
 
   # Get only assigned issues
@@ -32,7 +22,6 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { no_cache_headers }
       format.atom { render :layout => false }
     end
   end
