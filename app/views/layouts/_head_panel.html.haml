@@ -1,52 +1,53 @@
 / Page Header
 %header.top_panel_holder
-  %div.top_links_holder
-    = link_to root_path, :class => "top_link home", :title => "Home" do 
-      = image_tag "Home-UI.PNG", :width => 26
-    - if current_user.is_admin?
-      = link_to admin_root_path, :class => "top_link admin", :title => "Admin"  do 
-        = image_tag "Gear-UI.PNG", :width => 20
+  .wrapper
+    %div.top_links_holder
+      = link_to root_path, :class => "top_link home", :title => "Home" do 
+        = image_tag "Home-UI.PNG", :width => 26
+      - if current_user.is_admin?
+        = link_to admin_root_path, :class => "top_link admin", :title => "Admin"  do 
+          = image_tag "Gear-UI.PNG", :width => 20
 
 
-  - if project_layout
-    .project_name
-      = truncate @project.name, :length => 28
-    .git_url_wrapper
-      %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
-    - if @project.repo_exists?
-      .left{:style => "margin-left:5px;"}
-        = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
-    = yield :rss_icon
+    - if project_layout
+      .project_name
+        = truncate @project.name, :length => 28
+      .git_url_wrapper
+        %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
+      - if @project.repo_exists?
+        .left{:style => "margin-left:5px;"}
+          = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
+      = yield :rss_icon
 
-  - elsif profile_layout
-    = link_to "Activities", dashboard_path, :class => "dash_top_link #{"active" if current_page?(dashboard_path) || current_page?(root_path) }"
-    = link_to "Projects", projects_path, :class => "dash_top_link #{"active" if current_page?(projects_path)}"
-    = link_to "Issues", dashboard_issues_path, :class => "dash_top_link #{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
-    = link_to "Merge Requests", dashboard_merge_requests_path, :class => "dash_top_link #{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
-    .search
+    - elsif profile_layout
+      = link_to "Activities", dashboard_path, :class => "dash_top_link #{"active" if current_page?(dashboard_path) || current_page?(root_path) }"
+      = link_to "Projects", projects_path, :class => "dash_top_link #{"active" if current_page?(projects_path)}"
+      = link_to "Issues", dashboard_issues_path, :class => "dash_top_link #{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
+      = link_to "Merge Requests", dashboard_merge_requests_path, :class => "dash_top_link #{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
+      .search
+        = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
+
+    .account-box
+      = link_to profile_path, :class => "pic" do
+        = image_tag gravatar_icon(current_user.email)
+      .account-links
+        = link_to profile_path, :class => "username" do
+          My profile
+        = link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete
+    / .account-box
+    -#.search
       = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
+    / .login-top
+  - if current_user
+    = javascript_tag do
+      $(function(){
+      $("#search").autocomplete({
+      source: #{raw search_autocomplete_source},
+      select: function(event, ui) { location.href = ui.item.url }
+      });
+      });
 
-  .account-box
-    = link_to profile_path, :class => "pic" do
-      = image_tag gravatar_icon(current_user.email)
-    .account-links
-      = link_to profile_path, :class => "username" do
-        My profile
-      = link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete
-  / .account-box
-  -#.search
-    = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
-  / .login-top
-- if current_user
-  = javascript_tag do
-    $(function(){
-    $("#search").autocomplete({
-    source: #{raw search_autocomplete_source},
-    select: function(event, ui) { location.href = ui.item.url }
-    });
-    });
-
-- if current_user.require_ssh_key?
-  #no_ssh_key_defined.big-message.error
-    %p
-      No SSH Key is defined. You won't be able to use any Git command!. Click #{link_to( 'here', keys_path )} to add one!
+  - if current_user.require_ssh_key?
+    #no_ssh_key_defined.big-message.error
+      %p
+        No SSH Key is defined. You won't be able to use any Git command!. Click #{link_to( 'here', keys_path )} to add one!

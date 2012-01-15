@@ -525,22 +525,28 @@ h4.dash-tabs {
   }
 }
 
-body header,
-h4.middle-panel { 
-
+body header { 
+  position:absolute;
+  width:100%;
+  padding:0;
+  margin:0;
+  top:0;
+  left:0;
   background: #999; /* for non-css3 browsers */
-
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA'); /* for IE */
   background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA)); /* for webkit browsers */
   background: -moz-linear-gradient(top,  #FAFAFA,  #EAEAEA); /* for firefox 3.6+ */ 
-
-  margin: 0; 
   border-bottom: 1px solid #ccc; 
-  padding: 10px 20px;
-  font-size: 11px;
-  //background: #F7F7F7;
-  height:30px;
 
+  height:50px;
+
+  .wrapper { 
+    margin:auto;
+    width:980px;
+    padding: 10px 0;
+    font-size: 11px;
+    position:relative;
+  }
   .project_name {
     float:left;
     width:235px;
