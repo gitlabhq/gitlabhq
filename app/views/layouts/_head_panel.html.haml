@@ -8,7 +8,7 @@
         = image_tag "Gear-UI.PNG", :width => 20
 
 
-  - if @project && !@project.new_record?
+  - if project_layout
     .project_name
       = truncate @project.name, :length => 28
     .git_url_wrapper
@@ -18,7 +18,7 @@
         = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
     = yield :rss_icon
 
-  - if controller.controller_name == "dashboard" || current_page?(projects_path)
+  - elsif profile_layout
     = link_to "Activities", dashboard_path, :class => "dash_top_link #{"active" if current_page?(dashboard_path) || current_page?(root_path) }"
     = link_to "Projects", projects_path, :class => "dash_top_link #{"active" if current_page?(projects_path)}"
     = link_to "Issues", dashboard_issues_path, :class => "dash_top_link #{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"

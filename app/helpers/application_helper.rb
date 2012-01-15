@@ -82,4 +82,11 @@ module ApplicationHelper
     [projects, default_nav, project_nav].flatten.to_json
   end
 
+  def project_layout
+    @project && !@project.new_record?
+  end
+
+  def profile_layout
+    controller.controller_name == "dashboard" || current_page?(projects_path) || controller.controller_name == "profile" || controller.controller_name == "keys"
+  end
 end
