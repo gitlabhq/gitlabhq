@@ -74,7 +74,9 @@ class Repository
   end
 
   def repo_exists?
-    repo rescue false
+    repo && !repo.branches.empty?
+  rescue 
+    false
   end
 
   def tags

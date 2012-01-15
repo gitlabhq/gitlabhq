@@ -565,7 +565,7 @@ input.search-input{
   background-color: #FFF;
   padding: 5px; 
   padding-left: 26px;
-  margin-top: 4px;
+  margin-top: 2px;
   margin-right: 10px;
 }
 /*input.search-input:focus{ background-color: white; width: 216px;}*/
@@ -637,18 +637,19 @@ body.project-page .project-sidebar aside{width: 109px}
 body.project-page .project-sidebar aside a{
   display: block;
   position: relative; 
-  background: #FFF; 
+  //background: #FFF; 
   padding: 15px 10px; 
-  border: 1px solid #ccc; 
+  //border: 1px solid #ccc; 
   margin: 10px 20px 0 0;
-  border-radius:5px;
+  //border-radius:5px;
 }
-body.project-page .project-sidebar aside a:hover{background-color: #FFFFFF;}
+//body.project-page .project-sidebar aside a:hover{background-color: #FFFFFF;}
 body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
 body.project-page .project-sidebar aside a.current {
   color: white;
   background: #79C3E0;
   border: 1px solid #2FA0BB;
+  border-radius:5px;
 }
 body.project-page .project-content{ padding: 20px; display: block; margin-left: 130px; min-height: 600px}
 body.project-page .project-content h2{ margin-top: 6px}
