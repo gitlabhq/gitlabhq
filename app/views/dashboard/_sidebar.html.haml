@@ -7,7 +7,7 @@
     - @projects.each do |project|
       %li
         %a{:href => project_path(project)}
-          %span.arrow →
+          -#%span.arrow →
           %span.project-name= project.name
           %span.time
             %strong Last activity:

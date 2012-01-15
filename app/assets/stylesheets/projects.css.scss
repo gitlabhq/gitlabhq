@@ -439,6 +439,11 @@ body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:1
 body.projects-page input.text.git-url.project_list_url { width:165px; }
 
 
+body.project-page table.no-borders th { 
+  background:none;
+  border-bottom:1px solid #CCC;
+  color:#333;
+}
 
 body.project-page table.no-borders tr,
 body.project-page table.no-borders td{
