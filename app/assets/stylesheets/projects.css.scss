@@ -1,30 +1,77 @@
-/** MIXINS **/
-@mixin round-borders-bottom($radius) {
-  border-top: 1px solid #eaeaea;
-  -moz-border-radius-bottomright: $radius;
-  -moz-border-radius-bottomleft: $radius;
-  border-bottom-right-radius: $radius;
-  border-bottom-left-radius: $radius;
-  -webkit-border-bottom-left-radius: $radius;
-  -webkit-border-bottom-right-radius: $radius;
+body.project-page h2.icon .project-name, body.project-page h2.icon d{border: 1px solid #eee; padding: 5px 30px 5px 10px; border-radius: 5px; position: relative;}
+body.project-page h2.icon .project-name i.arrow{float: right;
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  display: block;
+  background: url('images.png') no-repeat -97px -29px;
+  width: 4px;
+  height: 5px;
 }
 
-@mixin round-borders-top($radius) {
-  border-top: 1px solid #eaeaea;
-  -moz-border-radius-topright: $radius;
-  -moz-border-radius-topleft: $radius;
-  border-top-right-radius: $radius;
-  border-top-left-radius: $radius;
-  -webkit-border-top-left-radius: $radius;
-  -webkit-border-top-right-radius: $radius;
+body.project-page h2.icon span{  background-position:  -78px -68px; }
+body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
+body.project-page .page-title{margin-bottom: 0}
+
+body.project-page .project-sidebar { 
+  width: 110px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  bottom: 0;
+  position: absolute;
+  float: left;
+  display: inline-block;
+  background: #FFF;
+  padding: $app_padding;
+  padding-right:0px;
+  margin: 0; 
+  border-right: 1px solid #ddd;
 }
 
-@mixin round-borders-all($radius) {
-  border: 1px solid #eaeaea;
-  -moz-border-radius: $radius;
-  -webkit-border-radius: $radius;
-  border-radius: $radius;
+body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
+body.projects-page input.text.git-url {margin:10px 0 0 }
+.git_url_wrapper { margin-right:50px }
+
+.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
+
+
+/* New project Page */
+.new-project-page .container table{background: white}
+body.project-page .project-sidebar aside{width: 109px}
+body.project-page .project-sidebar aside a{
+  display: block;
+  position: relative; 
+  padding: 15px 10px; 
+  margin: 10px 0 0 0;
+
+
 }
+body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
+body.project-page .project-sidebar aside a.current {
+  color: white;
+  background: $active_bg_color;
+  border: 1px solid $active_bd_color;
+  border-radius:5px;
+
+
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: -1px;
+}
+body.project-page .project-content{ padding: $app_padding; display: block; margin-left: 130px; min-height: 600px}
+body.project-page .project-content h2{ margin-top: 6px}
+body.project-page .project-content .button.right{margin-left: 20px}
+body.project-page table .commit a{color: #{$blue_link}}
+body.project-page table th, body.project-page table td{  border-bottom: 1px solid #DEE2E3;}
+body.project-page .fixed{position: fixed; }
+
+
+
 
 /** File stat **/
 .file_stats {
@@ -530,90 +577,6 @@ h4.dash-tabs {
   }
 }
 
-body header { 
-  position:absolute;
-  width:100%;
-  padding:0;
-  margin:0;
-  top:0;
-  left:0;
-  background: #999; /* for non-css3 browsers */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#EAEAEA'); /* for IE */
-  background: -webkit-gradient(linear, left top, left bottom, from(#FAFAFA), to(#EAEAEA)); /* for webkit browsers */
-  background: -moz-linear-gradient(top,  #FAFAFA,  #EAEAEA); /* for firefox 3.6+ */ 
-  border-bottom: 1px solid #ccc; 
-
-  height:50px;
-
-  .wrapper { 
-    margin:auto;
-    width:980px;
-    padding: 10px 0;
-    font-size: 11px;
-    position:relative;
-  }
-  .project_name {
-    float:left;
-    width:235px;
-    margin-right:30px;
-    font-size:16px;
-    font-weight:bold;
-    padding:5px 7px;
-    color:#333;
-  }
-
-  .git_url_wrapper {
-    padding:0px;
-    margin:0px;
-    float:left;
-
-    .git-url {
-      padding:0px;
-      margin:0px;
-      font-size: 12px;
-
-      margin-right:10px;
-      border-radius: 4px;
-      -moz-border-radius: 4px;
-
-
-      color: #666; 
-      border: 1px solid #AAA;
-      padding:  0 10px 0 30px;
-      background: white url('images.png') no-repeat 8px -42px; 
-      width: 160px;
-      height:26px;
-    }
-  }
-}
-
-.top_panel_holder .chzn-container { 
-  position:relative;
-
-  .chzn-drop { 
-    margin:7px 0;
-    border: 1px solid #CCC;
-    min-width: 300px;
-
-    .chzn-results { 
-      max-height:300px;
-    }
-  }
-
-  .chzn-single { 
-    background:white;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-
-    div { 
-      background:white;
-    }
-
-    span { 
-      font-weight: normal;
-    }
-  }
-}
 
 .dashboard-loader { 
   float:right;
@@ -801,68 +764,9 @@ tr.line_notes_row {
     }
   }
 }
-.top_links_holder {
-  width:124px;
-  float:left;
-
-  .top_link {
-    position: relative;
-    float:left;
-
-    &.home { 
-      width:28px;  
-      height:27px;
-      top: -12px;
-      border: 1px solid #CCC;
-      border-radius: 3px;
-      background: #fff;
-
-      margin-right:15px;
-      padding: 6px 7px;
-    }
-
-    &.admin { 
-      top: -3px;
-      padding: 3px;
-      width: 21px;
-      height: 21px;
-    }
-  }
-}
 
 
-.dash_top_link { 
-  margin: 4px 14px;
-  float: left;
-  font-size: 14px;
 
-  &.active { 
-    color:#2FA0BB;
-  }
-  &:hover { 
-    color:#2FA0BB;
-  }
-}
 
-.top-tabs { 
-  margin: 0; 
-  padding: 5px;
-  font-size: 14px;
-  padding-bottom:10px;
-  margin-bottom:20px;
-  height:26px;
-  border-bottom:1px solid #ccc;
 
-  .tab { 
-    font-weight: bold;
-    background:none;
-    padding: 10px;
-    float:left;
-    padding-left:0px;
-    padding-right:40px;
 
-    &.active {
-      color: #2FA0BB;
-    }
-  }
-}

@@ -1,0 +1,110 @@
+$text_color:#222;
+$lite_text_color: #666; 
+$link_color:#FFF; 
+$active_link_color:#2FA0BB;
+$active_bg_color:#79C3E0;
+$active_bd_color: #2FA0BB;
+$border_color:#FFF;
+$app_width:980px;
+$app_padding:20px;
+$bg_color: #FFF;
+$styled_border_color: #2FA0BB;
+
+/** MIXINS **/
+@mixin round-borders-bottom($radius) {
+  border-top: 1px solid #eaeaea;
+  -moz-border-radius-bottomright: $radius;
+  -moz-border-radius-bottomleft: $radius;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  -webkit-border-bottom-left-radius: $radius;
+  -webkit-border-bottom-right-radius: $radius;
+}
+
+@mixin round-borders-top($radius) {
+  border-top: 1px solid #eaeaea;
+  -moz-border-radius-topright: $radius;
+  -moz-border-radius-topleft: $radius;
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+  -webkit-border-top-left-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+}
+
+@mixin round-borders-all($radius) {
+  border: 1px solid #eaeaea;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+/** COLORS **/
+.cgray { color:gray; }
+.cred { color:#D12F19; }
+.cgreen { color:#44aa22; }
+
+/** COMMON STYLES **/
+.left {
+  float:left;
+}
+.right {
+  float:right;
+}
+.width-50p{
+  width:50%;
+}
+.width-49p{
+  width:49%;
+}
+.width-30p{
+  width:30%;
+}
+.width-65p{
+  width:65%;
+}
+.width-100p{
+  width:100%;
+}
+.append-bottom-10 {
+  margin-bottom:10px;
+}
+.append-bottom-20 {
+  margin-bottom:20px;
+}
+.prepend-top-10 {
+  margin-top:10px;
+}
+.no-borders { 
+  border:none;
+}
+.no-padding { 
+  padding:0 !important;
+}
+
+/* General */
+
+body.collapsed { 
+  background-color: $bg_color;
+
+  #container{ 
+    margin: auto;
+    margin-top:51px;
+    width: $app_width;
+    border-top: 0;
+    background-color: $bg_color;
+  }
+}
+
+
+@import "style.scss";
+@import "projects.css.scss";
+@import "commits.css.scss";
+@import "notes.css.scss";
+@import "merge_requests.css.scss";
+@import "highlight.css.scss";
+@import "highlight.black.css.scss";
+@import "issues.css.scss";
+@import "commits.css.scss";
+
+@import "top_panel.scss";
+@import "dashboard.scss";

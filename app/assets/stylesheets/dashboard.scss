@@ -1,0 +1,26 @@
+body.dashboard-page h2.icon span{ background-position:  9px -69px; }
+body.dashboard-page header{margin-bottom: 0}
+body.dashboard-page .news-feed{margin-left: 285px; min-height: 600px; margin-top: 20px; margin-right:2px; padding:20px;}
+body.dashboard-page .dashboard-content{ position: relative; float: left; width: 100%; height: 100%; }
+body.dashboard-page .news-feed h2{float: left;}
+body.dashboard-page aside{ min-height: 820px; position: relative; top: 0; bottom: 0; right: 0; width: 260px;  float: left;  border-right: 1px solid #ccc; padding:20px; padding-right:0; }
+body.dashboard-page aside h4{margin: 0; border-bottom: 1px solid #ccc; padding: 20px 20px 20px 0px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
+body.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 2%; margin-top: -4px; display: block;}
+body.dashboard-page aside .project-list {list-style: none; margin: 0; padding: 0;}
+body.dashboard-page aside .project-list li a {background: white;  color: #{$blue_link}; display: block; border-bottom: 1px solid #eee; padding: 14px 6% 14px 0px;}
+//body.dashboard-page aside .project-list li a:hover {background: #f1f1f1}
+//body.dashboard-page aside .project-list li a:hover span.arrow{background-color: #E3E5EA;}
+body.dashboard-page aside .project-list li a span.project-name{font-size: 14px; display: block; margin-bottom: 8px}
+body.dashboard-page aside .project-list li a span.time{color: #666; font-weight: normal; font-size: 11px}
+body.dashboard-page aside .project-list li a span.arrow{float: right; background: #E3E5EA; padding: 10px; border-radius: 5px; margin-top: 2px; text-shadow: none; color: #999}
+body.dashboard-page .news-feed .project-updates  {margin-bottom: 20px; display: block; width: 100%;}
+body.dashboard-page .news-feed .project-updates .data{ padding: 0}
+body.dashboard-page .news-feed .project-updates a.project-update {padding: 10px; overflow: hidden; display: block;}
+body.dashboard-page .news-feed .project-updates a.project-update:last-child{border-bottom: 0}
+body.dashboard-page .news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
+body.dashboard-page .news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+body.dashboard-page .news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
+body.dashboard-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
+body.dashboard-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
+/* eo Dashboard Page */
+

@@ -1,0 +1,146 @@
+.main_links {
+  width:124px;
+  float:left;
+  a {
+    position: relative;
+    float:left;
+    padding: 4px;
+
+    &.home { 
+      margin-right:15px;
+      width: 26px;
+    }
+
+    &.admin { 
+      width: 21px;
+    }
+  }
+}
+
+.dashboard_links { 
+  padding:7px;
+  float:left;
+  a {
+    margin: 0 14px;
+    float: left;
+    font-size: 14px;
+
+    &.active { 
+      color:$active_link_color;
+    }
+    &:hover { 
+      color:$active_link_color;
+    }
+  }
+}
+
+.top-tabs { 
+  margin: 0; 
+  padding: 5px;
+  font-size: 14px;
+  padding-bottom:10px;
+  margin-bottom:20px;
+  height:26px;
+  border-bottom:1px solid #ccc;
+
+  .tab { 
+    font-weight: bold;
+    background:none;
+    padding: 10px;
+    float:left;
+    padding-left:0px;
+    padding-right:40px;
+
+    &.active {
+      color: $active_link_color;
+    }
+  }
+}
+
+body header { 
+  position:absolute;
+  width:100%;
+  padding:0;
+  margin:0;
+  top:0;
+  left:0;
+  background: #999; /* for non-css3 browsers */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EAEAEA'); /* for IE */
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#EAEAEA)); /* for webkit browsers */
+  background: -moz-linear-gradient(top,  #FFFFFF,  #EAEAEA); /* for firefox 3.6+ */ 
+  border-bottom: 2px solid $styled_border_color; 
+
+  height:50px;
+
+  .wrapper { 
+    margin:auto;
+    width:$app_width;
+    position:relative;
+    
+    .top_panel_content { 
+      padding:10px $app_padding;
+    }
+  }
+
+  .project_name {
+    float:left;
+    width:235px;
+    margin-right:30px;
+    font-size:16px;
+    font-weight:bold;
+    padding:5px 7px;
+    color:#333;
+  }
+
+  .git_url_wrapper {
+    padding:0px;
+    margin:0px;
+    float:left;
+
+    .git-url {
+      padding:0px;
+      margin:0px;
+      font-size: 12px;
+
+      margin-right:10px;
+      border-radius: 4px;
+      -moz-border-radius: 4px;
+
+
+      color: #666; 
+      border: 1px solid #AAA;
+      padding:  0 10px 0 30px;
+      background: white url('images.png') no-repeat 8px -42px; 
+      width: 160px;
+      height:26px;
+    }
+  }
+}
+
+.top_panel_holder .chzn-container { 
+  position:relative;
+
+  .chzn-drop { 
+    margin:7px 0;
+    border: 1px solid #CCC;
+    min-width: 300px;
+
+    .chzn-results { 
+      max-height:300px;
+    }
+  }
+
+  .chzn-single { 
+    background:white;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    div { 
+      background:white;
+    }
+
+    span { 
+      font-weight: normal;
+    }
+  }
+}
