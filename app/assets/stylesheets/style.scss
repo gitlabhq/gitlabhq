@@ -220,13 +220,9 @@ input.button{margin-bottom: 1.5em}
 
 .ui-box .data{padding: .5em 1em}
 
-.ui-box .buttons{background-color: #f7f8f9; padding: 1em;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;  
+.ui-box .buttons{
+  padding: 1em;
+  border-top:1px solid $lite_border_color;
 }
 
 .ui-box .buttons .button{padding: 8px 9px; font-size: 11px}
@@ -713,3 +709,17 @@ body, button, input, select, textarea {
   }
 }
 
+
+.errors_holder {
+  background:#FBB;
+  border:1px solid $lite_border_color;
+  @include round-borders-all(4px);
+  padding:5px;
+  list-style:none;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.25);
+
+  li { 
+    padding:10px;
+  }
+}

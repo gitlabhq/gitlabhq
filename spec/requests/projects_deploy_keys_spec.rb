@@ -36,7 +36,7 @@ describe "Projects", "DeployKeys" do
     end
 
     it "should open new key popup" do
-      page.should have_content("Add new public key")
+      page.should have_content("New Deploy key")
     end
 
     describe "fill in" do
@@ -50,7 +50,6 @@ describe "Projects", "DeployKeys" do
       it "should add new key to table" do
         click_button "Save"
 
-        page.should_not have_content("Add new public key")
         page.should have_content "laptop"
       end
     end

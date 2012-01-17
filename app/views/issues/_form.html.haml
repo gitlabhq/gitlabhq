@@ -20,18 +20,13 @@
                 %i
 
       %h2= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
-
       %hr
+    -if @issue.errors.any?
+      %ul.errors_holder
+        - @issue.errors.full_messages.each do |msg|
+          %li= msg
+
     %table.no-borders
-      -if @issue.errors.any?
-        %tr 
-          %td{:colspan => 2}
-            #error_explanation
-              - @issue.errors.full_messages.each do |msg|
-                %span= msg
-                %br
-
-
       %tr
         %td= f.label :assignee_id
         %td= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
