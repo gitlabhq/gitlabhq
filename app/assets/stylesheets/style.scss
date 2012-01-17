@@ -310,8 +310,7 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
   input[type="password"],
   textarea
   {
-    border: 1px solid #FFBBBB;
-    background: #fff4f6;
+    border: 1px solid #D30 !important;
   }
 }
 /* eo Errors */
@@ -711,13 +710,14 @@ body, button, input, select, textarea {
 
 
 .errors_holder {
-  background:#FBB;
+  background:#D30;
+  color:#fff;
   border:1px solid $lite_border_color;
   @include round-borders-all(4px);
   padding:5px;
   list-style:none;
   font-weight: bold;
-  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 
   li { 
     padding:10px;

@@ -27,9 +27,11 @@ class DeployKeysController < ApplicationController
 
   def create
     @key = @project.deploy_keys.new(params[:key])
-    @key.save
-
-    redirect_to project_deploy_keys_path(@project)
+    if @key.save
+      redirect_to project_deploy_keys_path(@project)
+    else
+      render "new"
+    end
   end
 
   def destroy
