@@ -1,0 +1,115 @@
+#tree-breadcrumbs { 
+  div {
+    margin:0;
+    margin-bottom:20px;
+    float:left;
+    font-size:14px;
+  }
+}
+
+.tree_progress { 
+  float:left;
+  width:16px;
+  height:16px;
+  margin:2px 6px;
+  &.loading { 
+    background-position: 0px 0px;
+    background: url("ajax-loader-facebook.gif") no-repeat;
+  }
+}
+
+
+/** FILE CONTENT VIEW **/
+.view_file_content{
+  .old_line, .new_line {
+    background:#ECECEC;
+    color:#777;
+    width:15px;
+    float:left;
+    padding: 0px 10px;
+    border-right: 1px solid #ccc;
+  }
+  .old_line{
+    display:none;
+  }
+}
+
+.view_file .view_file_header,
+.diff_file .diff_file_header {
+    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    margin: 0;
+    font-weight: normal;
+    font-weight: bold;
+    text-align: left;
+    color: #666;
+    border-bottom: 1px solid #DEE2E3;
+    padding: 7px 10px;
+
+    .mode_text,
+    .file_icon { 
+      margin-right:15px;
+      padding-right:15px;
+      border-right:1px solid $lite_border_color;
+      float:left;
+      color:#aaa;
+    }
+
+    .file_icon { 
+      padding-left:15px;
+    }
+}
+
+.view_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
+  .view_file_content {
+    background:#fff;
+    color:#514721;
+    font-size: 11px;
+  }
+  .view_file_content_image {
+    background:#eee;
+    text-align:center;
+    img {
+      padding:100px;
+      max-width:300px;
+    }
+  }
+}
+
+td.code {
+  width: 100%;
+  .highlight {
+    margin-left: 55px;
+    overflow:auto;
+    overflow-y:hidden;
+    border-left: 1px solid #DEE2E3;
+    background: white;
+  }
+}
+.highlight pre {
+  white-space: pre;
+  word-wrap:normal;
+}
+
+table.highlighttable {
+  border: none;
+  background: #F7F7F7;
+}
+body.project-page table.highlighttable td { border: none }
+table.highlighttable tr:hover { background:none;}
+
+table.highlighttable pre{
+  line-height:16px !important;
+  font-size:12px !important;
+}
+
+table.highlighttable .linenodiv pre {
+  text-align: right;
+  padding-right: 4px;
+  color:#888;
+}

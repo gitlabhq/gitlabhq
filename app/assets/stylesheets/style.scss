@@ -646,12 +646,70 @@ body.projects-page .browse-code{margin-right: 10px}
   h2, h3 { page-break-after: avoid; }
 }
 
-/**
- * author:DZ
- * date: Nov 09
- * fix different fonts for firefox & webkit
- */
 body, button, input, select, textarea {
   font-family: "Helvetica", sans-serif;
+}
+
+/** FORM INPUTS **/
+.new_merge_request,
+.edit_merge_request,
+.user_new,
+.new_key,
+.new_issue,
+.new_note,
+.edit_user,
+.edit_issue,
+.new_project,
+.new_snippet,
+.edit_snippet,
+.edit_project {
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  textarea {
+    width:400px;
+    padding:8px;
+    font-size:14px;
+    @include round-borders-all(4px);
+  }
+}
+
+.text_field { 
+    width:400px;
+    padding:8px;
+    font-size:14px;
+    @include round-borders-all(4px);
+}
+
+.input_button {
+  padding:8px;
+  font-size:14px;
+  cursor:pointer;
+  background-color: #F5F5F5;
+  border-color: #EEEEEE #DEDEDE #DEDEDE #EEEEEE;
+  border-right: 1px solid #DEDEDE;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/** FLASH **/
+#flash_container {
+  height:45px;
+  position:fixed;
+  z-index:10001;
+  top:0px;
+  width:100%;
+  margin-bottom:15px;
+  overflow:hidden;
+  background:white;
+  cursor:pointer;
+  border-bottom:1px solid #777;
+
+  h4 {
+    color:#444;
+    font-size:22px;
+    padding-top:5px;
+    margin:2px;
+  }
 }
 

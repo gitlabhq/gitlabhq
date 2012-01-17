@@ -32,16 +32,12 @@
               = link_to "Network", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
               = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
                 Issues
-                -#- if @project.issues.open_for(current_user).count > 0
-                  %span{ :class => "number" }= @project.issues.open_for(current_user).count
               = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
                 Wall
                 - if @project.common_notes.today.count > 0
                   %span{ :class => "number" }= @project.common_notes.today.count
               = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
                 Requests
-                -#- if @project.merge_requests.opened.count > 0
-                  %span{ :class => "number" }= @project.merge_requests.opened.count
 
 
 

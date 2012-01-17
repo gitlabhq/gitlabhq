@@ -1,10 +1,11 @@
 $text_color:#222;
 $lite_text_color: #666; 
-$link_color:#FFF; 
+$link_color:#111; 
 $active_link_color:#2FA0BB;
 $active_bg_color:#79C3E0;
 $active_bd_color: #2FA0BB;
-$border_color:#FFF;
+$border_color:#CCC;
+$lite_border_color:#EEE;
 $app_width:980px;
 $app_padding:20px;
 $bg_color: #FFF;
@@ -95,6 +96,9 @@ body.collapsed {
   }
 }
 
+a {
+  color: $link_color;
+}
 
 @import "style.scss";
 @import "projects.css.scss";
@@ -108,3 +112,4 @@ body.collapsed {
 
 @import "top_panel.scss";
 @import "dashboard.scss";
+@import "tree.scss";

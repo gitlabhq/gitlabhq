@@ -1,8 +1,8 @@
 #tree-breadcrumbs
-  %h2
+  %div
     = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
       = @project.code
-    - tree.breadcrumbs(4) do |link|
+    - tree.breadcrumbs(6) do |link|
       \/
       = link
     &nbsp;
@@ -19,7 +19,7 @@
         %th Last Update
         %th
           Last commit
-          = link_to "history", tree.history_path, :class => "right"
+          = link_to "History", tree.history_path, :class => "right"
 
       - if tree.up_dir?
         %tr{ :class => "tree-item", :url => tree.up_dir_path }

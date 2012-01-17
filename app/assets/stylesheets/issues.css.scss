@@ -72,3 +72,13 @@ body.project-page .edit_snippet table td
   }
 }
 
+
+#issues-table {
+  tr { 
+    border-top: 1px solid $lite_border_color;
+    &:first-child { 
+      border:none;
+    }
+  }
+
+}

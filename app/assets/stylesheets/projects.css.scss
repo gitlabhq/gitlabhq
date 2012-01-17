@@ -26,7 +26,7 @@ body.project-page .project-sidebar {
   padding: $app_padding;
   padding-right:0px;
   margin: 0; 
-  border-right: 1px solid #ddd;
+  border-right: 1px solid $border_color;
 }
 
 body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
@@ -95,90 +95,7 @@ table.round-borders {
   text-align: left;
 }
 
-a {
-  color: #111;
-}
 
-/** FILE CONTENT VIEW **/
-.view_file_content{
-  .old_line, .new_line {
-    background:#ECECEC;
-    color:#777;
-    width:15px;
-    float:left;
-    padding: 0px 10px;
-    border-right: 1px solid #ccc;
-  }
-  .old_line{
-    display:none;
-  }
-}
-
-.view_file .view_file_header,
-.diff_file .diff_file_header {
-    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    margin: 0;
-    font-weight: normal;
-    font-weight: bold;
-    text-align: left;
-    color: #666;
-    border-bottom: 1px solid #DEE2E3;
-    padding: 7px 10px;
-}
-
-.view_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
-
-  .view_file_content {
-    background:#fff;
-    color:#514721;
-    font-size: 11px;
-  }
-  .view_file_content_image {
-    background:#eee;
-    text-align:center;
-    img {
-      padding:100px;
-      max-width:300px;
-    }
-  }
-}
-
-td.code {
-  width: 100%;
-  .highlight {
-    margin-left: 55px;
-    overflow:auto;
-    overflow-y:hidden;
-    border-left: 1px solid #DEE2E3;
-    background: white;
-  }
-}
-.highlight pre {
-  white-space: pre;
-  word-wrap:normal;
-}
-
-table.highlighttable {
-  border: none;
-  background: #F7F7F7;
-}
-body.project-page table.highlighttable td { border: none }
-table.highlighttable tr:hover { background:none;}
-
-table.highlighttable pre{
-  line-height:16px !important;
-  font-size:12px !important;
-}
-
-table.highlighttable .linenodiv pre {
-  text-align: right;
-  padding-right: 4px;
-}
 
 /** PROJECTS **/
 input.ssh_project_url {
@@ -204,68 +121,6 @@ input.ssh_project_url {
   clear: both;
 }
 
-/** FORM INPUTS **/
-.new_merge_request,
-.edit_merge_request,
-.user_new,
-.new_key,
-.new_issue,
-.new_note,
-.edit_user,
-.edit_issue,
-.new_project,
-.new_snippet,
-.edit_snippet,
-.edit_project {
-  input[type='text'],
-  input[type='email'],
-  input[type='password'],
-  textarea {
-    width:400px;
-    padding:8px;
-    font-size:14px;
-    @include round-borders-all(4px);
-  }
-}
-
-.text_field { 
-    width:400px;
-    padding:8px;
-    font-size:14px;
-    @include round-borders-all(4px);
-}
-
-.input_button {
-  padding:8px;
-  font-size:14px;
-  cursor:pointer;
-  background-color: #F5F5F5;
-  border-color: #EEEEEE #DEDEDE #DEDEDE #EEEEEE;
-  border-right: 1px solid #DEDEDE;
-  border-style: solid;
-  border-width: 1px;
-}
-
-/** FLASH **/
-#flash_container {
-  height:45px;
-  position:fixed;
-  z-index:10001;
-  top:0px;
-  width:100%;
-  margin-bottom:15px;
-  overflow:hidden;
-  background:white;
-  cursor:pointer;
-  border-bottom:1px solid #777;
-
-  h4 {
-    color:#444;
-    font-size:22px;
-    padding-top:5px;
-    margin:2px;
-  }
-}
 
 /** Buttons **/
 .lbutton,
@@ -434,7 +289,8 @@ body.project-page table .commit {
 }
 
 #holder {
-  border: solid 1px #999;
+  background:#FAFAFA;
+  border: 1px solid #EEE;
   cursor: move;
   height: 70%;
   overflow: hidden;
@@ -673,20 +529,6 @@ h4.dash-tabs {
   color: white;
 }
 
-.rss-icon { 
-  margin:0 15px;
-  padding:5px;
-  border:1px solid #ccc;
-  border-radius:3px;
-  float:left;
-}
-
-body.project-page h2.icon.loading { 
-  span { 
-    background-position: 0px 0px;
-    background: url("ajax-loader-tree.gif") no-repeat;
-  }
-}
 
 .dark_scheme_box { 
   padding:20px 0;
@@ -718,24 +560,6 @@ a.project-update.titled {
   padding: 6px 12px;
 }
 
-.tree_progress { 
-  float:left;
-  width:16px;
-  height:16px;
-  margin:6px;
-  &.loading { 
-    background-position: 0px 0px;
-    background: url("ajax-loader-facebook.gif") no-repeat;
-  }
-}
-
-#tree-breadcrumbs { 
-  h2 {
-    margin:0;
-    margin-bottom:20px;
-    float:left;
-  }
-}
 
 tr.line_notes_row { 
   &:hover { 
@@ -764,9 +588,3 @@ tr.line_notes_row {
     }
   }
 }
-
-
-
-
-
-
