@@ -6,13 +6,9 @@
         = @project.name
       .clear
     - if @project.errors.any?
-      #error_explanation
-        %h2
-          = pluralize(@project.errors.count, "error")
-          prohibited this project from being saved:
-        %ul
-          - @project.errors.full_messages.each do |msg|
-            %li= msg
+      %ul.errors_holder
+        - @project.errors.full_messages.each do |msg|
+          %li= msg
     %table
       %tr
         %td= f.label :name

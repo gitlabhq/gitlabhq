@@ -712,12 +712,42 @@ body, button, input, select, textarea {
 .errors_holder {
   background:#D30;
   color:#fff;
-  border:1px solid $lite_border_color;
   @include round-borders-all(4px);
+  border:1px solid #a30;
   padding:5px;
   list-style:none;
   font-weight: bold;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+  li { 
+    padding:10px;
+  }
+}
+
+.notice_holder {
+  background:#DDF4FB;
+  color:#444;
+  border:1px solid #C6EDF9;
+  @include round-borders-all(4px);
+  padding:5px;
+  list-style:none;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.25);
+
+  li { 
+    padding:10px;
+  }
+}
+
+.alert_holder {
+  background:#FDF5D9;
+  color:#444;
+  border:1px solid #FCEEC1;
+  @include round-borders-all(4px);
+  padding:5px;
+  list-style:none;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.25);
 
   li { 
     padding:10px;

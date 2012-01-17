@@ -4,3 +4,9 @@
   %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
     .data
       = render @snippets.fresh
+- else 
+  .notice_holder
+    %li Snippets do not exist yet.
+    - if can? current_user, :write_snippet, @project
+      %li You can add a new one by clicking on plus icon
+    
