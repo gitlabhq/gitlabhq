@@ -113,3 +113,9 @@ table.highlighttable .linenodiv pre {
   padding-right: 4px;
   color:#888;
 }
+
+.tree-item { 
+  &:hover { 
+    background: #FFFFCF;
+  }
+}

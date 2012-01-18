@@ -1,18 +1,18 @@
 .main_links {
-  width:124px;
+  width:90px;
+  margin-right:40px;
   float:left;
+  background:#ddd;
+  @include round-borders-all(8px);
+  border-color:#ccc;
+
   a {
     position: relative;
     float:left;
-    padding: 4px;
+    padding: 3px 10px;
 
-    &.home { 
-      margin-right:15px;
-      width: 26px;
-    }
-
-    &.admin { 
-      width: 21px;
+    img { 
+      width: 22px;
     }
   }
 }
@@ -147,8 +147,9 @@ body header {
 
 .rss-icon { 
   margin:0 15px;
-  padding:5px;
+  padding:3px;
   border:1px solid #ccc;
   border-radius:3px;
   float:left;
+  background:#DDD;
 }

@@ -556,8 +556,13 @@ a.project-update.titled {
 }
 
 .add_new { 
-  float:right;
-  padding: 6px 12px;
+  float: right;
+  background: #A6B807;
+  color: white;
+  padding: 4px 10px;
+  @include round-borders-all(4px);
+  font-size:11px;
+  margin: 10px 0;
 }
 
 

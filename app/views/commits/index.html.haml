@@ -3,7 +3,7 @@
   = content_for :rss_icon do 
     .rss-icon
       = link_to project_commits_path(@project, :atom, { :private_token => current_user.private_token, :ref => @ref }) do 
-        = image_tag "rss_icon_gray.png", :width => 16, :title => "feed"
+        = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
 
 - if params[:path]
   %h2

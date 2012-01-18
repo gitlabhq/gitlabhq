@@ -1,23 +1,9 @@
-.top-tabs
-  = link_to project_issues_path(@project), :class => "tab #{'active' if current_page?(project_issues_path(@project)) }" do 
-    %span 
-    Issues  
-  
-  -#= link_to project_issues_path(@project), :class => "tab" do 
-    %span 
-    Milestones
-
-  - if current_page?(project_issues_path(@project))
-    - if can? current_user, :write_issue, @project
-      = link_to new_project_issue_path(@project), :class => "add_new", :title => "New Issue", :remote => true do 
-        = image_tag "add_new.png", :width => 14
-
-
+= render "issues/head"
 - if current_user.private_token   
   = content_for :rss_icon do 
     .rss-icon
       = link_to project_issues_path(@project, :atom, { :private_token => current_user.private_token }) do 
-        = image_tag "rss_icon_gray.png", :width => 16, :title => "feed"
+        = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
 
 %div#issues-table-holder
   .top_panel_issues

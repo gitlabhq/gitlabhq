@@ -4,10 +4,9 @@
     .top_panel_content
       %div.main_links
         = link_to root_path, :class => "home", :title => "Home" do 
-          = image_tag "Home-UI.PNG", :width => 26
-        - if current_user.is_admin?
-          = link_to admin_root_path, :class => "admin", :title => "Admin"  do 
-            = image_tag "Gear-UI.PNG", :width => 20
+          = image_tag "Home-UI.PNG"
+        = link_to :back, :title => "Back" do 
+          = image_tag "Arrow-Left-UI.PNG"
 
       - if project_layout
         .project_name
@@ -19,12 +18,16 @@
             = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
         = yield :rss_icon
 
-      - elsif profile_layout
+      - else
         .dashboard_links
           = link_to "Activities", dashboard_path, :class => "#{"active" if current_page?(dashboard_path) || current_page?(root_path) }"
           -#= link_to "Projects", projects_path, :class => "#{"active" if current_page?(projects_path)}"
           = link_to "Issues", dashboard_issues_path, :class => "#{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
-          = link_to "Merge Requests", dashboard_merge_requests_path, :class => "#{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
+          = link_to "Requests", dashboard_merge_requests_path, :class => "#{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
+          - if current_user.is_admin?
+            = link_to admin_root_path, :class => "admin", :title => "Admin"  do 
+              Admin
+          = link_to "Help", help_path, :class => "#{"active" if controller.controller_name == "help"}"
         .search
           = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
 

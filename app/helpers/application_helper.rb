@@ -89,4 +89,8 @@ module ApplicationHelper
   def profile_layout
     controller.controller_name == "dashboard" || current_page?(projects_path) || controller.controller_name == "profile" || controller.controller_name == "keys"
   end
+
+  def help_layout
+    controller.controller_name == "help" 
+  end
 end

@@ -1,7 +1,5 @@
-%h2.icon
-  %span>
-  Merge Requests
-.right= link_to 'New Merge request', new_project_merge_request_path(@project), :class => "grey-button"
+= render "merge_requests/head"
+
 - if @merge_requests.opened.count > 0
   %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
     %h3
@@ -20,4 +18,10 @@
       = render @merge_requests.closed
   .clear
   %br
+
+- unless @merge_requests.count > 0
+  .notice_holder
+    %li Merge Requests do not exist yet.
+    - if can? current_user, :write_merge_request, @project
+      %li You can add a new one by clicking on "Add New" button
 

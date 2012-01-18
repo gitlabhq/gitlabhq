@@ -6,11 +6,11 @@
           .entity-button
             Team List
             %i
-    %h2= "New Team member"
+    %h3= "New Team member"
 
     %hr
   -if @team_member.errors.any?
-    %ul
+    %ul.errors_holder
       - @team_member.errors.full_messages.each do |msg|
         %li= msg
 
