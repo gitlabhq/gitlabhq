@@ -18,7 +18,7 @@ describe "TeamMembers" do
     end
   end
 
-  describe "New Team member", :js => true do
+  describe "New Team member" do
     before do
       @user_1 = Factory :user
       visit team_project_path(@project)

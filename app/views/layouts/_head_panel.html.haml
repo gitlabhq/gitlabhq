@@ -5,8 +5,8 @@
       %div.main_links
         = link_to root_path, :class => "home", :title => "Home" do 
           = image_tag "Home-UI.PNG"
-        = link_to :back, :title => "Back" do 
-          = image_tag "Arrow-Left-UI.PNG"
+        = link_to projects_path, :title => "Projects" do 
+          = image_tag "Storage-UI.PNG"
 
       - if project_layout
         .project_name

@@ -29,7 +29,7 @@ describe "Projects", "DeployKeys" do
     end
   end
 
-  describe "New key", :js => true do
+  describe "New key" do
     before do
       visit project_deploy_keys_path(project)
       click_link "New Deploy Key"
