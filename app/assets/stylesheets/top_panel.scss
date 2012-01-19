@@ -1,19 +1,9 @@
 .main_links {
-  width:90px;
-  margin-right:40px;
+  width:130px;
   float:left;
-  background:#ddd;
-  @include round-borders-all(8px);
-  border-color:#ccc;
 
-  a {
-    position: relative;
+  a { 
     float:left;
-    padding: 3px 10px;
-
-    img { 
-      width: 22px;
-    }
   }
 }
 
@@ -88,7 +78,7 @@ body header {
     margin-right:30px;
     font-size:16px;
     font-weight:bold;
-    padding:5px 7px;
+    padding:8px;
     color:#333;
   }
 

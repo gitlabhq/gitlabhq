@@ -4,9 +4,7 @@
     .top_panel_content
       %div.main_links
         = link_to root_path, :class => "home", :title => "Home" do 
-          = image_tag "Home-UI.PNG"
-        = link_to projects_path, :title => "Projects" do 
-          = image_tag "Storage-UI.PNG"
+          = image_tag "logo.png", :width => 100
 
       - if project_layout
         .project_name

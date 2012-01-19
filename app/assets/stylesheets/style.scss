@@ -435,7 +435,12 @@ header .account-box{
   float: right;
   display: block;
   cursor: pointer;}
-header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black; top:-3px;}
+header .account-box img{ 
+  border-radius: 4px;
+  right: 20px;
+  position: absolute;
+  width: 33px; height: 33px;
+  display: block; box-shadow: 0 1px 2px black; top:0;}
 header .account-box img:after{
   content: " ";
   display: block;
@@ -459,7 +464,8 @@ float: right;
 .account-box.hover{height: 138px;}
 
 .account-box:hover > .account-links{display: block;}
-header .account-links{background: white; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); position:relative;}
+header .account-links{ 
+  background: #79C3E0; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); position:relative;}
 header .account-links:before {
   content: ".";
   width:0;
