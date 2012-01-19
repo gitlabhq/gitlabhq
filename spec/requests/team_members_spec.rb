@@ -31,7 +31,6 @@ describe "TeamMembers" do
 
     describe "fill in" do
       before do
-        page.execute_script("$('#team_member_user_id').show();")
         within "#team_member_new" do 
           select @user_1.name, :from => "team_member_user_id"
           select "Report", :from => "team_member_project_access"
