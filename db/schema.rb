@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120119202326) do
+ActiveRecord::Schema.define(:version => 20120119203233) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(:version => 20120119202326) do
 
   create_table "notes", :force => true do |t|
     t.text     "note"
-    t.string   "noteable_id"
+    t.integer  "noteable_id",   :limit => 255
     t.string   "noteable_type"
     t.integer  "author_id"
     t.datetime "created_at"
