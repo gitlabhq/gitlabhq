@@ -171,7 +171,7 @@ class Project < ActiveRecord::Base
   end
 
   def commit_line_notes(commit)
-    notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code not null")
+    notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code is not null")
   end
 
   def has_commits?

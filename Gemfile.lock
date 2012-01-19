@@ -309,6 +309,7 @@ DEPENDENCIES
   pygments.rb (= 0.2.4)
   rails (= 3.1.1)
   rails-footnotes (~> 3.7.5)
+  rake (= 0.9.2.2)
   rdiscount
   resque
   rspec-rails
