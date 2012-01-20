@@ -6,7 +6,7 @@
 
   - if current_page?(project_merge_requests_path(@project))
     - if can? current_user, :write_merge_request, @project
-      = link_to new_project_merge_request_path(@project), :class => "add_new", :title => "New Merge request", :remote => true do 
+      = link_to new_project_merge_request_path(@project), :class => "add_new", :title => "New Merge request" do 
         Add new
 
 
