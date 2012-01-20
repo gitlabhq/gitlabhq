@@ -52,6 +52,10 @@ class Note < ActiveRecord::Base
     else 
       noteable
     end
+  # Temp fix to prevent app crash
+  # if note commit id doesnt exist
+  rescue 
+    nil
   end
 
   def line_file_id

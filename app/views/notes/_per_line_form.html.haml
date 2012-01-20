@@ -18,17 +18,17 @@
             %br
             %br
             = f.text_area :note,  :size => 255
-            
-            %p.notify_controls
-              %span Notify:
-              = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-              = label_tag :notify, "Project team"
-
-              -if @note.noteable_type == "Commit"
-                = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-                = label_tag :notify_author, "Commit author"
 
           .clear
           %br
           = f.submit 'Add note', :class => "grey-button", :id => "submit_note"
+          .right
+            = link_to "remove", "#", :class => "hide-button"
 
+:javascript 
+  $(function(){
+    $(".per_line_form .hide-button").bind("click", function(){
+      $('.per_line_form').hide();
+      return false;
+    });
+  });

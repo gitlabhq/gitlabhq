@@ -78,7 +78,7 @@ body.project-page.commits-page .commits-date a.commit span.commit-author strong{
     padding:0px;
     border:none;
     background:#F7F7F7;
-    color:#333;
+    color:#aaa;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
     text-align:right;
@@ -89,7 +89,7 @@ body.project-page.commits-page .commits-date a.commit span.commit-author strong{
       float:left;
       width:35px;
       font-weight:normal;
-      color:#888;
+      color:#aaa;
       &:hover { 
         text-decoration:underline;
       }
@@ -144,5 +144,20 @@ ul.bordered-list li:last-child { border:none }
     td { 
       background: #FFFFCF !important;
     }
+  }
+}
+
+.per_line_form { 
+  background: #79C3E0;
+
+  form { 
+    width: 743px;
+    border: 1px solid #CCC;
+    padding: 20px;
+    background: white;
+  }
+
+  .hide-button { 
+    color:#c33;
   }
 }
