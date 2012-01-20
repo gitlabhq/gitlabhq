@@ -141,6 +141,7 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.3)
     multi_xml (0.4.1)
+    mysql2 (0.3.11)
     nokogiri (1.5.0)
     orm_adapter (0.0.5)
     polyglot (0.3.3)
@@ -306,6 +307,7 @@ DEPENDENCIES
   kaminari
   launchy
   letter_opener
+  mysql2
   pygments.rb (= 0.2.4)
   rails (= 3.1.1)
   rails-footnotes (~> 3.7.5)
