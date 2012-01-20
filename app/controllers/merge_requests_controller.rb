@@ -45,6 +45,7 @@ class MergeRequestsController < ApplicationController
   def diffs
     @diffs = @merge_request.diffs
     @commit = @merge_request.last_commit
+    @line_notes = []
   end
 
   def new

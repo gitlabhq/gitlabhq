@@ -89,6 +89,7 @@ body.project-page.commits-page .commits-date a.commit span.commit-author strong{
       float:left;
       width:35px;
       font-weight:normal;
+      color:#888;
       &:hover { 
         text-decoration:underline;
       }
@@ -139,8 +140,6 @@ ul.bordered-list {
 ul.bordered-list li:last-child { border:none } 
 
 .line_holder { 
-  cursor:pointer;
-
   &:hover { 
     td { 
       background: #FFFFCF !important;
