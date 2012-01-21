@@ -9,7 +9,9 @@ audio:not([controls]) { display: none; }
 
 html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body { margin: 0; font-size: 13px; line-height: 1.231; }
-body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+body, button, input, select, textarea { 
+  font-family: "helvetica", "arial", "freesans", "clean", sans-serif;
+color: #222; }
 
 ::-moz-selection { background: #79c3e0; color: #fff; text-shadow: none; }
 ::selection { background: #79c3e0; color: #fff; text-shadow: none; }
@@ -648,7 +650,7 @@ body.projects-page .browse-code{margin-right: 10px}
 }
 
 body, button, input, select, textarea {
-  font-family: "Helvetica", sans-serif;
+  font-family: "helvetica", "arial", "freesans", "clean", sans-serif;
 }
 
 /** FORM INPUTS **/
