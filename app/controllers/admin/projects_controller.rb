@@ -9,6 +9,12 @@ class Admin::ProjectsController < ApplicationController
 
   def show
     @admin_project = Project.find_by_code(params[:id])
+
+    @users = if @admin_project.users.empty?
+               User
+             else
+               User.not_in_project(@admin_project)
+             end.all
   end
 
   def new
@@ -17,11 +23,6 @@ class Admin::ProjectsController < ApplicationController
 
   def edit
     @admin_project = Project.find_by_code(params[:id])
-  end
-
-  def team
-    @admin_project = Project.find_by_code(params[:id])
-    @users = User.not_in_project(@admin_project).all
   end
 
   def team_update

@@ -38,6 +38,23 @@
 
   %h2 Team
 
+  = form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do 
+    %table
+      %thead
+        %tr
+          %th Users
+          %th Project Access:
+          %th Repo Access:
+
+      %tr
+        %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name),  :multiple => true
+        %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
+        %td= select_tag :repo_access, options_for_select(Repository.access_options), :class => "repo-access-select"
+
+      %tr
+        %td{ :colspan => 3 }
+          = submit_tag 'Add', :class => "positive-button"
+
   %table.round-borders
     %thead
       %tr
@@ -52,9 +69,22 @@
         %td
           = link_to tm.user_name, admin_team_member_path(tm)
         %td= time_ago_in_words(tm.updated_at) + " ago"
-        %td= select_tag :project_access, options_for_select(Project.access_options, tm.project_access), :class => "project-access-select", :disabled => :disabled
-        %td= select_tag :repo_access, options_for_select(Repository.access_options, tm.repo_access), :class => "repo-access-select", :disabled => :disabled
+        %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "project-access-select", :disabled => :disabled
+        %td= select_tag :tm_repo_access, options_for_select(Repository.access_options, tm.repo_access), :class => "repo-access-select", :disabled => :disabled
         %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
 
-  = link_to 'New Team Member', new_admin_team_member_path(:team_member => {:project_id => @admin_project.id}),  :class => "grey-button"
-  .right= link_to 'Bulk Import', team_admin_project_path(@admin_project),  :class => "grey-button"
+:css 
+  form select { 
+    width:150px;
+  }
+
+  #user_ids {
+    width:300px;
+  }
+
+  
+:javascript 
+  $('select#user_ids').chosen();
+  $('select#repo_access').chosen();
+  $('select#project_access').chosen();
+
