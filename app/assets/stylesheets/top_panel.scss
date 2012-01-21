@@ -58,6 +58,7 @@ body header {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EAEAEA'); /* for IE */
   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#EAEAEA)); /* for webkit browsers */
   background: -moz-linear-gradient(top,  #FFFFFF,  #EAEAEA); /* for firefox 3.6+ */ 
+  background: -o-linear-gradient(top,  #FFFFFF,  #EAEAEA); /* for firefox 3.6+ */ 
   border-bottom: 1px solid #ccc; 
 
   height:50px;
