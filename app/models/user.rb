@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :token_authenticatable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me,
@@ -62,6 +62,10 @@ class User < ActiveRecord::Base
   def last_activity_project
     projects.first
   end
+
+  def self.generate_random_password
+    (0...8).map{ ('a'..'z').to_a[rand(26)] }.join
+  end 
 end
 # == Schema Information
 #

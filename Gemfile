@@ -28,6 +28,7 @@ gem "resque"
 gem "httparty"
 gem "charlock_holmes"
 gem "foreman"
+gem "omniauth-ldap"
 
 group :assets do
   gem "sass-rails",   "~> 3.1.0"
