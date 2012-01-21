@@ -148,16 +148,44 @@ ul.bordered-list li:last-child { border:none }
 }
 
 .per_line_form { 
-  background: #79C3E0;
+  font-family: "Helvetica", sans-serif;
+  background: #2FA0BB;
+
+  td {
+    padding:0; 
+  }
 
   form { 
-    width: 743px;
+    margin:5px;
+    width: 756px;
     border: 1px solid #CCC;
     padding: 20px;
     background: white;
   }
+}
 
-  .hide-button { 
-    color:#c33;
+
+tr.line_notes_row { 
+  font-family: "Helvetica", sans-serif;
+  &:hover { 
+    background:none;
+  }
+  td { 
+    margin:0px;
+    padding:0px;
+    border-bottom:1px solid #DEE2E3;
+    
+
+    ul {
+      display:block;
+      list-style:none;
+      margin:0px;
+      padding:0px;
+
+      li { 
+        border-top:1px solid #DEE2E3;
+        padding:10px;
+      }
+    }
   }
 }

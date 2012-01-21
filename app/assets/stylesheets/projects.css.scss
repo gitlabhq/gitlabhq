@@ -566,33 +566,6 @@ a.project-update.titled {
 }
 
 
-tr.line_notes_row { 
-  &:hover { 
-    background:none;
-  }
-  td { 
-    margin:0px;
-    padding:0px;
-    border-bottom:1px solid #DEE2E3;
-    
-
-    ul {
-      display:block;
-      list-style:none;
-      margin:0px;
-      padding:0px;
-
-      li { 
-        border-top:1px solid #DEE2E3;
-        padding:10px;
-
-        .delete-note { 
-          display:none; 
-        }
-      }
-    }
-  }
-}
 
 .new-project-hodler { 
   padding:20px;
