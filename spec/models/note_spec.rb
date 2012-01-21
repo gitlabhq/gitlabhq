@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe Note do
+  let(:project) { Factory :project }
+  let!(:commit) { project.commit }
+
   describe "Associations" do
     it { should belong_to(:project) }
   end
@@ -11,16 +14,60 @@ describe Note do
   end
 
   it { Factory.create(:note,
-                      :project => Factory.create(:project)).should be_valid }
+                      :project => project).should be_valid }
   describe "Scopes" do
     it "should have a today named scope that returns ..." do
       Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
     end
   end
-  
+ 
+  describe "Commit notes" do 
+
+    before do 
+      @note = Factory :note,
+        :project => project,
+        :noteable_id => commit.id,
+        :noteable_type => "Commit"
+    end
+
+    it "should save a valid note" do
+      @note.noteable_id.should == commit.id
+      @note.target.id.should == commit.id
+    end
+  end
+
+  describe "Pre-line commit notes" do 
+    before do 
+      @note = Factory :note,
+        :project => project,
+        :noteable_id => commit.id,
+        :noteable_type => "Commit", 
+        :line_code => "OLD_1_23"
+    end
+
+    it "should save a valid note" do
+      @note.noteable_id.should == commit.id
+      @note.target.id.should == commit.id
+    end
+
+    it { @note.line_type_id.should == "OLD" }
+    it { @note.line_file_id.should == 1 }
+    it { @note.line_number.should == 23 }
+
+    it { @note.for_line?(1, 23, 34).should be_true } 
+    it { @note.for_line?(1, 23, nil).should be_true } 
+    it { @note.for_line?(1, 23, 0).should be_true } 
+    it { @note.for_line?(1, 23, 23).should be_true } 
+
+    it { @note.for_line?(1, nil, 34).should be_false } 
+    it { @note.for_line?(1, 24, nil).should be_false } 
+    it { @note.for_line?(1, 24, 0).should be_false } 
+    it { @note.for_line?(1, 24, 23).should be_false } 
+  end
+
   describe :authorization do
     before do
-      @p1 = Factory :project
+      @p1 = project
       @p2 = Factory :project, :code => "alien", :path => "legit_1"
       @u1 = Factory :user
       @u2 = Factory :user
@@ -79,5 +126,6 @@ end
 #  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
+#  line_code     :string(255)
 #
 

@@ -88,5 +88,6 @@ end
 #  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
+#  line_code     :string(255)
 #
 

@@ -19,5 +19,10 @@ describe "Issues" do
     it "should conatin new note" do
       page.should have_content("I commented this commit")
     end
+
+    it "should be displayed when i visit this commit again" do 
+      visit project_commit_path(project, commit)
+      page.should have_content("I commented this commit")
+    end
   end
 end
