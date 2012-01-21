@@ -10,7 +10,12 @@ Gitlab::Application.routes.draw do
 
   namespace :admin do
     resources :users
-    resources :projects, :constraints => { :id => /[^\/]+/ }
+    resources :projects, :constraints => { :id => /[^\/]+/ } do 
+      member do 
+        get :team
+        put :team_update
+      end
+    end
     resources :team_members
     get 'emails', :to => 'mailer#preview'
     get 'mailer/preview_note'

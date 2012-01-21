@@ -57,3 +57,4 @@
         %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
 
   = link_to 'New Team Member', new_admin_team_member_path(:team_member => {:project_id => @admin_project.id}),  :class => "grey-button"
+  .right= link_to 'Bulk Import', team_admin_project_path(@admin_project),  :class => "grey-button"
