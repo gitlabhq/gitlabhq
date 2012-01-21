@@ -7,18 +7,20 @@
 
 %div#issues-table-holder
   .top_panel_issues
-    = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :class => :left, :id => "issue_search_form" do
+    = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :class => :right, :id => "issue_search_form" do
       = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
       = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
-    .right.issues_filter
+    .left.issues_filter
       = form_tag project_issues_path(@project), :method => :get do
         .left
           = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "setIssueFilter(this.form, 0)", :id => "open_issues", :class => "status"
-          = label_tag "open_issues","Open"
+          = label_tag "open_issues" do 
+            %span.tag.open Open
         .left
           = radio_button_tag :f, 2, params[:f] == "2", :onclick => "setIssueFilter(this.form, 2)", :id => "closed_issues", :class => "status"
-          = label_tag "closed_issues","Closed"
+          = label_tag "closed_issues" do 
+            %span.tag.closed Closed
         .left
           = radio_button_tag :f, 3, params[:f] == "3", :onclick => "setIssueFilter(this.form, 3)", :id => "my_issues", :class => "status"
           = label_tag "my_issues","To Me"

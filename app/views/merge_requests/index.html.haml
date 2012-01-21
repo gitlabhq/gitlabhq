@@ -1,25 +1,28 @@
 = render "merge_requests/head"
 
-- if @merge_requests.opened.count > 0
+.left.issues_filter
+  = form_tag project_merge_requests_path(@project), :method => :get do
+    .left
+      = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "this.form.submit()", :id => "open_merge_requests", :class => "status"
+      = label_tag "open_merge_requests" do 
+        %span.tag.open Open
+    .left
+      = radio_button_tag :f, 2, params[:f] == "2", :onclick => "this.form.submit()", :id => "closed_merge_requests", :class => "status"
+      = label_tag "closed_merge_requests" do 
+        %span.tag.closed Closed
+
+.clear
+%hr
+
+- if @merge_requests.count > 0
   %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
-    %h3
-      %span.tag.open Open
     .data
-      = render @merge_requests.opened
+      = render @merge_requests
 
   .clear
   %br
 
-- if @merge_requests.closed.count > 0
-  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
-    %h3 
-      %span.tag.closed Closed
-    .data
-      = render @merge_requests.closed
-  .clear
-  %br
-
-- unless @merge_requests.count > 0
+- unless @merge_requests.count > 0 || params[:f] == "2"
   .notice_holder
     %li Merge Requests do not exist yet.
     - if can? current_user, :write_merge_request, @project

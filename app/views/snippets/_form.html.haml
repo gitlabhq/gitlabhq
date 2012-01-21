@@ -4,12 +4,12 @@
       - if @snippet.new_record?
         = link_to project_snippets_path(@project) do 
           .entity-button
-            Back
+            Snippets
             %i
       - else    
         = link_to project_snippet_path(@project, @snippet) do 
           .entity-button
-            Back
+            Show Snippet
             %i
     %h2= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 
@@ -40,7 +40,7 @@
         = f.text_area :content
 
   .merge-tabs
-    = f.submit 'Save', :class => "grey-button"
+    = f.submit 'Save', :class => "positive-button"
     - unless @snippet.new_record?
       .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "red-button delete-snippet", :id => "destroy_snippet_#{@snippet.id}"
 

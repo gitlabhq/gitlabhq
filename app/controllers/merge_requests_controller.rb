@@ -21,6 +21,13 @@ class MergeRequestsController < ApplicationController
 
   def index
     @merge_requests = @project.merge_requests
+
+    @merge_requests = case params[:f].to_i
+                      when 2 then @merge_requests.closed
+                      else @merge_requests.opened
+                      end
+
+    @merge_requests = @merge_requests.includes(:author, :project)
   end
 
   def show

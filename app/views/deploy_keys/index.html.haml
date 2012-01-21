@@ -9,7 +9,7 @@
   .notice_holder
     %li Deploy Keys do not exist yet.
     - if can? current_user, :admin_project, @project
-      %li You can add a new one by clicking on plus icon
+      %li You can add a new one by clicking on "Add New" button
 
 :javascript
   $('.delete-key').live('ajax:success', function() {
