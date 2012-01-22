@@ -761,3 +761,42 @@ body, button, input, select, textarea {
     padding:10px;
   }
 }
+
+.help_content { 
+  margin:20px;
+  margin-top:71px;
+
+  h2 { 
+    margin:0;
+    padding:0;
+  }
+
+  .menu { 
+    float:left;
+    width:20%;
+
+    .active { 
+      color: $active_bd_color;
+    }
+  }
+
+  .content { 
+    float:right;
+    width:78%;
+  }
+
+  .bash {
+    @include round-borders-all(4px);
+    background:#eee;
+    padding:5px;
+    //overflow-x:scroll;
+    pre{
+      padding:0;
+      line-height:2.0;
+      margin:0;
+      font-family: 'Courier New', 'andale mono','lucida console',monospace;
+      color: #333;
+      text-align:left;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+- bash_lexer = Pygments::Lexer[:bash]
+%div.help_content
+  %h2 
+    Gitlabhq
+    %span.right v2.1
+  %hr
+  %h3 Self Hosted Git Management
+  %h3 Fast, secure and stable solution based on Ruby on Rails & Gitolite. 
+
+  %hr
+
+  .menu
+    %h3= link_to "Workflow", "#", :class => "active"
+
+  .content
+    %h3 Clone project
+    .bash
+      %pre 
+        git clone git@example.com:project-name.git
+
+    %h3 Create branch with your feature
+    .bash
+      %pre 
+        git checkout -b $feature_name
+
+    %h3 Write code. Commit changes
+    .bash
+      %pre 
+        git commit -am "My feature is ready"
+
+    %h3 Push your branch to gitlabhq
+    .bash
+      %pre 
+        git push origin $feature_name
+
+    %h3 Review your code
+    .bash= image_tag "help_commit.png", :width => 600
+
+
+    %h3 Open a merge request
+    .bash= image_tag "help_merge_request.png", :width => 600
+
+    %h3 Your team lead will review code &amp; merge it to main branch
