@@ -1,5 +1,5 @@
 .file_stats
-  = render "commits/diff_head"
+  = render "commits/diff_head", :diffs => @commit.diffs
 
 - @commit.diffs.each_with_index do |diff, i|
   - next if diff.diff.empty?
