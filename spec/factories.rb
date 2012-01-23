@@ -38,6 +38,7 @@ Factory.add(:merge_request, MergeRequest) do |obj|
   obj.title = Faker::Lorem.sentence
   obj.source_branch = "master"
   obj.target_branch = "master"
+  obj.closed = false
 end
 
 Factory.add(:snippet, Snippet) do |obj|
@@ -53,4 +54,8 @@ end
 Factory.add(:key, Key) do |obj|
   obj.title = "Example key"
   obj.key = File.read(File.join(Rails.root, "db", "pkey.example"))
+end
+
+Factory.add(:web_hook, WebHook) do |obj|
+  obj.url = Faker::Internet.url
 end

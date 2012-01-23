@@ -14,6 +14,8 @@ class Project < ActiveRecord::Base
   has_many :users, :through => :users_projects
   has_many :notes, :dependent => :destroy
   has_many :snippets, :dependent => :destroy
+  has_many :deploy_keys, :dependent => :destroy, :foreign_key => "project_id", :class_name => "Key"
+  has_many :web_hooks, :dependent => :destroy
 
   acts_as_taggable
 
@@ -25,8 +27,8 @@ class Project < ActiveRecord::Base
   validates :path,
             :uniqueness => true,
             :presence => true,
-            :format => { :with => /^[a-zA-Z0-9_\-]*$/,
-                         :message => "only letters, digits & '_' '-' allowed" },
+            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed" },
             :length   => { :within => 0..255 }
 
   validates :description,
@@ -35,8 +37,8 @@ class Project < ActiveRecord::Base
   validates :code,
             :presence => true,
             :uniqueness => true,
-            :format => { :with => /^[a-zA-Z0-9_\-]*$/,
-                         :message => "only letters, digits & '_' '-' allowed"  },
+            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed"  },
             :length   => { :within => 3..255 }
 
   validates :owner,
@@ -52,6 +54,9 @@ class Project < ActiveRecord::Base
 
   scope :public_only, where(:private_flag => false)
 
+  def self.active
+    joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
+  end
 
   def self.access_options
     {
@@ -75,19 +80,74 @@ class Project < ActiveRecord::Base
     :repo_exists?,
     :commit,
     :commits,
+    :commits_with_refs,
     :tree,
     :heads,
     :commits_since,
     :fresh_commits,
+    :commits_between,
     :to => :repository, :prefix => nil
 
   def to_param
     code
   end
 
+  def web_url
+    [GIT_HOST['host'], code].join("/")
+  end
+
+  def execute_web_hooks(oldrev, newrev, ref)
+    ref_parts = ref.split('/')
+
+    # Return if this is not a push to a branch (e.g. new commits)
+    return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
+
+    data = web_hook_data(oldrev, newrev, ref)
+    web_hooks.each { |web_hook| web_hook.execute(data) }
+  end
+
+  def web_hook_data(oldrev, newrev, ref)
+    data = {
+      before: oldrev,
+      after: newrev,
+      ref: ref,
+      repository: {
+        name: name,
+        url: web_url,
+        description: description,
+        homepage: web_url,
+        private: private?
+      },
+      commits: []
+    }
+
+    commits_between(oldrev, newrev).each do |commit|
+      data[:commits] << {
+        id: commit.id,
+        message: commit.safe_message,
+        timestamp: commit.date.xmlschema,
+        url: "http://#{GIT_HOST['host']}/#{code}/commits/#{commit.id}",
+        author: {
+          name: commit.author_name,
+          email: commit.author_email
+        }
+      }
+    end
+
+    data
+  end
+
   def team_member_by_name_or_email(email = nil, name = nil)
     user = users.where("email like ? or name like ?", email, name).first
     users_projects.find_by_user_id(user.id) if user
+  end
+
+  def team_member_by_id(user_id)
+    users_projects.find_by_user_id(user_id)
+  end
+
+  def fresh_merge_requests(n)
+    merge_requests.includes(:project, :author).order("created_at desc").first(n)
   end
 
   def fresh_issues(n)
@@ -107,7 +167,11 @@ class Project < ActiveRecord::Base
   end
 
   def commit_notes(commit)
-    notes.where(:noteable_id => commit.id, :noteable_type => "Commit")
+    notes.where(:noteable_id => commit.id, :noteable_type => "Commit", :line_code => nil)
+  end
+
+  def commit_line_notes(commit)
+    notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code is not null")
   end
 
   def has_commits?
@@ -136,7 +200,7 @@ class Project < ActiveRecord::Base
   def repository_readers
     keys = Key.joins({:user => :users_projects}).
       where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_R)
-    keys.map(&:identifier)
+    keys.map(&:identifier) + deploy_keys.map(&:identifier)
   end
 
   def repository_writers
@@ -155,6 +219,18 @@ class Project < ActiveRecord::Base
 
   def admins
     @admins ||= users_projects.includes(:user).where(:project_access => PROJECT_RWA).map(&:user)
+  end
+
+  def allow_read_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).empty?
+  end
+
+  def allow_write_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RW, PROJECT_RWA]).empty?
+  end
+
+  def allow_admin_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RWA]).empty? || owner_id == user.id
   end
 
   def root_ref 
@@ -179,6 +255,24 @@ class Project < ActiveRecord::Base
     last_activity.try(:created_at)
   end
 
+  def last_activity_date_cached(expire = 1.hour)
+    activity_date_key = "project_#{id}_activity_date"
+
+    cached_activities = Rails.cache.read(activity_date_key)
+    if cached_activities
+      activity_date = if cached_activities == "Never"
+                        nil
+                      else
+                        cached_activities
+                      end
+    else
+      activity_date = last_activity_date
+      Rails.cache.write(activity_date_key, activity_date || "Never", :expires_in => expire)
+    end
+
+    activity_date
+  end
+
   # Get project updates from cache
   # or calculate. 
   def cached_updates(limit, expire = 2.minutes)
@@ -188,7 +282,7 @@ class Project < ActiveRecord::Base
       activities = cached_activities
     else
       activities = updates(limit)
-      Rails.cache.write(activities_key, activities, :expires_in => 60.seconds)
+      Rails.cache.write(activities_key, activities, :expires_in => expire)
     end
 
     activities
@@ -201,6 +295,16 @@ class Project < ActiveRecord::Base
       fresh_commits(n),
       fresh_issues(n),
       fresh_notes(n)
+    ].compact.flatten.sort do |x, y|
+      y.created_at <=> x.created_at
+    end[0...n]
+  end
+
+  def activities(n=3)
+    [
+      fresh_issues(n),
+      fresh_merge_requests(n),
+      notes.inc_author_project.where("noteable_type is not null").order("created_at desc").first(n)
     ].compact.flatten.sort do |x, y|
       y.created_at <=> x.created_at
     end[0...n]
@@ -231,14 +335,15 @@ end
 #
 # Table name: projects
 #
-#  id           :integer         not null, primary key
-#  name         :string(255)
-#  path         :string(255)
-#  description  :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#  private_flag :boolean         default(TRUE), not null
-#  code         :string(255)
-#  owner_id     :integer
+#  id             :integer         not null, primary key
+#  name           :string(255)
+#  path           :string(255)
+#  description    :text
+#  created_at     :datetime
+#  updated_at     :datetime
+#  private_flag   :boolean         default(TRUE), not null
+#  code           :string(255)
+#  owner_id       :integer
+#  default_branch :string(255)     default("master"), not null
 #
 

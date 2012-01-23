@@ -1,9 +1,9 @@
 require 'digest/md5'
 module ApplicationHelper
 
-  def gravatar_icon(user_email)
+  def gravatar_icon(user_email, size = 40)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
-    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=40&d=identicon"
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=#{size}&d=identicon"
   end
 
   def fixed_mode?
@@ -48,11 +48,11 @@ module ApplicationHelper
 
   def grouped_options_refs(destination = :tree)
     options = [
-      ["Branch", @repo.heads.map(&:name) ],
+      ["Branch", @project.repo.heads.map(&:name) ],
       [ "Tag", @project.tags ]
     ]
 
-    grouped_options_for_select(options, @ref)
+    grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
   def markdown(text)
@@ -82,4 +82,15 @@ module ApplicationHelper
     [projects, default_nav, project_nav].flatten.to_json
   end
 
+  def project_layout
+    @project && !@project.new_record?
+  end
+
+  def profile_layout
+    controller.controller_name == "dashboard" || current_page?(projects_path) || controller.controller_name == "profile" || controller.controller_name == "keys"
+  end
+
+  def help_layout
+    controller.controller_name == "help" 
+  end
 end

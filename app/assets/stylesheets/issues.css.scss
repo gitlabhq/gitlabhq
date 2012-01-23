@@ -11,8 +11,8 @@
 }
 
 .issues_filter {
-  margin-top:10px;
-  .left {
+  margin:10px 0;
+  .left { 
     margin-right:15px;
   }
 }
@@ -72,3 +72,13 @@ body.project-page .edit_snippet table td
   }
 }
 
+
+#issues-table {
+  tr { 
+    border-top: 1px solid $lite_border_color;
+    &:first-child { 
+      border:none;
+    }
+  }
+
+}

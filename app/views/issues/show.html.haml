@@ -1,42 +1,49 @@
-.issue-show-holder.ui-box
+%div
+  %span.entity-info
+    - if can?(current_user, :admin_project, @project) || @issue.author == current_user
+      = link_to edit_project_issue_path(@project, @issue) do 
+        .entity-button
+          Edit Issue
+          %i
+  = image_tag gravatar_icon(@issue.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+  %span.commit-title
+    %strong
+      = "Issue ##{@issue.id}:"
+  %span.commit-author
+    %strong
+      = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.author.id)) do 
+        %span.author= @issue.author_name
+      - if @issue.author != @issue.assignee
+        &rarr;
+        = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.assignee.id)) do 
+          %span.author= @issue.assignee_name
+        &nbsp;
+
+    &nbsp;
+    = @issue.created_at.stamp("Aug 21, 2011 9:23pm")
+
+  %hr
+  %br
   %h3
-    = "Issue ##{@issue.id}"
-    .right
-      - if @issue.closed
-        %span.tag.closed Closed
-      - else 
-        %span.tag.open Open
-
-  .data
-    %p= @issue.title
-
-    - if @issue.author == @issue.assignee
-      = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
-      = @issue.assignee_name
-    - else 
-      = image_tag gravatar_icon(@issue.author_email),  :width => 20, :style => "padding:0 5px;"
-      = @issue.author_name
-      &rarr;
-      = image_tag gravatar_icon(@issue.assignee_email),  :width => 20, :style => "padding:0 5px;"
-      = @issue.assignee_name
-    .right
-      %cite.cgray= @issue.created_at.stamp("21 Aug 2011, 11:15pm")
-    .clear
-
-  .buttons
-    - if can? current_user, :write_issue, @issue
-      - if @issue.closed
-        = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "grey-button"
-      - else
-        = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "grey-button"
-      .right
-        = link_to 'Edit', edit_project_issue_path(@project, @issue), :class => "grey-button positive"
+    = simple_format @issue.title
 
 .clear
 %br
 %br
 
-.issue_notes= render "notes/notes"
-.loading{ :style => "display:none;"}
-  %center= image_tag "ajax-loader.gif"
-.clear
+.merge-tabs
+  = link_to "#notes", :class => "merge-notes-tab active tab" do 
+    %span
+    Notes
+  .right
+    - if @issue.closed
+      = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "red-button"
+    - else
+      = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "positive-button"
+
+.merge-request-notes
+  .issue_notes= render "notes/notes"
+  .loading{ :style => "display:none;"}
+    %center= image_tag "ajax-loader.gif"
+  .clear
+

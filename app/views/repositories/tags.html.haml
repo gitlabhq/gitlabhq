@@ -1,0 +1,13 @@
+= render "head"
+- unless @tags.empty?
+  %div.update-data.ui-box.ui-box-small
+    .data
+      - @tags.each do |tag|
+        %a.update-item{:href => project_commits_path(@project, :ref => tag.name)}
+          %span.update-title{:style => "margin-bottom:0px;"}
+            = tag.name
+            %span.update-author.right
+              = time_ago_in_words(tag.commit.committed_date)
+              ago
+- else 
+  %h3 No tags

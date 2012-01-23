@@ -6,11 +6,28 @@ class MergeRequestsController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
-  before_filter :authorize_read_project!
-  before_filter :authorize_write_project!, :only => [:new, :create, :edit, :update]
+
+  # Allow read any merge_request
+  before_filter :authorize_read_merge_request!
+
+  # Allow write(create) merge_request
+  before_filter :authorize_write_merge_request!, :only => [:new, :create]
+
+  # Allow modify merge_request
+  before_filter :authorize_modify_merge_request!, :only => [:close, :edit, :update, :sort]
+
+  # Allow destroy merge_request
+  before_filter :authorize_admin_merge_request!, :only => [:destroy]
 
   def index
     @merge_requests = @project.merge_requests
+
+    @merge_requests = case params[:f].to_i
+                      when 2 then @merge_requests.closed
+                      else @merge_requests.opened
+                      end
+
+    @merge_requests = @merge_requests.includes(:author, :project)
   end
 
   def show
@@ -30,14 +47,12 @@ class MergeRequestsController < ApplicationController
 
   def commits
     @commits = @project.repo.commits_between(@merge_request.target_branch, @merge_request.source_branch).map {|c| Commit.new(c)}
-    render :template => "merge_requests/_commits", :layout => false
   end
 
   def diffs
     @diffs = @merge_request.diffs
     @commit = @merge_request.last_commit
-
-    render :template => "merge_requests/_diffs", :layout => false
+    @line_notes = []
   end
 
   def new
@@ -87,5 +102,14 @@ class MergeRequestsController < ApplicationController
 
   def merge_request
     @merge_request ||= @project.merge_requests.find(params[:id])
+  end
+
+  def authorize_modify_merge_request!
+    can?(current_user, :modify_merge_request, @merge_request) || 
+      @merge_request.assignee == current_user
+  end
+
+  def authorize_admin_merge_request!
+    can?(current_user, :admin_merge_request, @merge_request)
   end
 end

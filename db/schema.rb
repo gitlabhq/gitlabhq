@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111207211728) do
+ActiveRecord::Schema.define(:version => 20120121122616) do
 
   create_table "features", :force => true do |t|
     t.string   "name"
@@ -38,13 +38,16 @@ ActiveRecord::Schema.define(:version => 20111207211728) do
     t.string   "branch_name"
   end
 
+  add_index "issues", ["project_id"], :name => "index_issues_on_project_id"
+
   create_table "keys", :force => true do |t|
-    t.integer  "user_id",    :null => false
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "key"
     t.string   "title"
     t.string   "identifier"
+    t.integer  "project_id"
   end
 
   create_table "merge_requests", :force => true do |t|
@@ -59,6 +62,8 @@ ActiveRecord::Schema.define(:version => 20111207211728) do
     t.datetime "updated_at"
   end
 
+  add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
+
   create_table "notes", :force => true do |t|
     t.text     "note"
     t.string   "noteable_id"
@@ -68,7 +73,11 @@ ActiveRecord::Schema.define(:version => 20111207211728) do
     t.datetime "updated_at"
     t.integer  "project_id"
     t.string   "attachment"
+    t.string   "line_code"
   end
+
+  add_index "notes", ["noteable_id"], :name => "index_notes_on_noteable_id"
+  add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
 
   create_table "projects", :force => true do |t|
     t.string   "name"
@@ -130,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20111207211728) do
     t.string   "linkedin",                              :default => "",    :null => false
     t.string   "twitter",                               :default => "",    :null => false
     t.string   "authentication_token"
+    t.boolean  "dark_scheme",                           :default => false, :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
@@ -142,6 +152,13 @@ ActiveRecord::Schema.define(:version => 20111207211728) do
     t.datetime "updated_at"
     t.integer  "repo_access",    :default => 0, :null => false
     t.integer  "project_access", :default => 0, :null => false
+  end
+
+  create_table "web_hooks", :force => true do |t|
+    t.string   "url"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

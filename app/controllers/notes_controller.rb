@@ -3,6 +3,8 @@ class NotesController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
+
+  before_filter :authorize_read_note!
   before_filter :authorize_write_note!, :only => [:create]
 
   respond_to :js
@@ -10,10 +12,9 @@ class NotesController < ApplicationController
   def create
     @note = @project.notes.new(params[:note])
     @note.author = current_user
-
-    if @note.save
-      notify if params[:notify] == '1'
-    end
+    @note.notify = true if params[:notify] == '1'
+    @note.notify_author = true if params[:notify_author] == '1'
+    @note.save
 
     respond_to do |format|
       format.html {redirect_to :back}
@@ -33,22 +34,4 @@ class NotesController < ApplicationController
     end
   end
 
-  protected
-
-  def notify
-    @project.users.reject { |u| u.id == current_user.id } .each do |u|
-      case @note.noteable_type
-      when "Commit" then
-        Notify.note_commit_email(u, @note).deliver
-      when "Issue" then
-        Notify.note_issue_email(u, @note).deliver
-      when "MergeRequest"
-        true # someone should write email notification
-      when "Snippet"
-        true
-      else
-        Notify.note_wall_email(u, @note).deliver
-      end
-    end
-  end
 end

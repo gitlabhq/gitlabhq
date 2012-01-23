@@ -3,7 +3,7 @@ class Snippet < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :author, :class_name => "User"
-  has_many :notes, :as => :noteable
+  has_many :notes, :as => :noteable, :dependent => :destroy
 
   delegate :name,
            :email,
@@ -28,6 +28,7 @@ class Snippet < ActiveRecord::Base
 
   scope :fresh, order("created_at DESC")
   scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
+  scope :expired, where(["expires_at IS NOT NULL AND expires_at < ?", Time.current])
 
   def self.content_types
     [

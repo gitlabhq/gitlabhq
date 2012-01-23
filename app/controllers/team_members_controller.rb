@@ -5,7 +5,7 @@ class TeamMembersController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, :only => [:new, :create, :destroy, :update]
+  before_filter :authorize_admin_project!, :except => [:show]
 
   def show
     @team_member = project.users_projects.find(params[:id])
@@ -18,7 +18,11 @@ class TeamMembersController < ApplicationController
   def create
     @team_member = UsersProject.new(params[:team_member])
     @team_member.project = project
-    @team_member.save
+    if @team_member.save
+      redirect_to team_project_path(@project)
+    else
+      render "new"
+    end
   end
 
   def update

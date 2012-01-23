@@ -8,3 +8,16 @@
 
       %div.clear
       = render 'form'
+
+:javascript
+  $(function(){
+    $("#project_name").change(function(){
+      var slug = slugify($(this).val());
+      $("#project_code").val(slug);
+      $("#project_path").val(slug);
+    });
+  });
+
+  function slugify(text) {
+    return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
+  }

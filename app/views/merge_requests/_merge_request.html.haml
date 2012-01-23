@@ -1,7 +1,7 @@
-%a.update-item{:href => project_merge_request_path(@project, merge_request)}
+%a.update-item{:href => project_merge_request_path(merge_request.project, merge_request)}
   = image_tag gravatar_icon(merge_request.author_email), :class => "left", :width => 40
   %span.update-title
-    = merge_request.title
+    = truncate(merge_request.title, :length => 60)
   %span.update-author
     %strong= merge_request.author_name
     authored

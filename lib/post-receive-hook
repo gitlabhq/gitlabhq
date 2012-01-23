@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# This file was placed here by Gitlab. It makes sure that your pushed commits
+# will be processed properly.
+
+while read oldrev newrev ref
+do
+  # For every branch or tag that was pushed, create a Resque job in redis.
+  pwd=`pwd`
+  reponame=`basename "$pwd" | cut -d. -f1`
+  env -i redis-cli rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\"]}" > /dev/null 2>&1
+done

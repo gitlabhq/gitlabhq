@@ -1,30 +1,36 @@
+= render "issues/head"
+- if current_user.private_token   
+  = content_for :rss_icon do 
+    .rss-icon
+      = link_to project_issues_path(@project, :atom, { :private_token => current_user.private_token }) do 
+        = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
+
 %div#issues-table-holder
-  %table.round-borders#issues-table
-    %thead
-      %th
-        .top_panel_issues
-          - if can? current_user, :write_issue, @project
-            %div{:class => "left", :style => "margin-right: 10px;" }
-              = link_to 'New Issue', new_project_issue_path(@project), :remote => true, :class => "grey-button", :style => "margin-top:5px;"
-          = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :class => :left, :id => "issue_search_form" do
-            = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
-            = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
+  .top_panel_issues
+    = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :class => :right, :id => "issue_search_form" do
+      = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
+      = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
-          .right.issues_filter
-            = form_tag project_issues_path(@project), :method => :get do
-              .left
-                = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "setIssueFilter(this.form, 0)", :id => "open_issues", :class => "status"
-                = label_tag "open_issues","Open"
-              .left
-                = radio_button_tag :f, 2, params[:f] == "2", :onclick => "setIssueFilter(this.form, 2)", :id => "closed_issues", :class => "status"
-                = label_tag "closed_issues","Closed"
-              .left
-                = radio_button_tag :f, 3, params[:f] == "3", :onclick => "setIssueFilter(this.form, 3)", :id => "my_issues", :class => "status"
-                = label_tag "my_issues","To Me"
-              .left
-                = radio_button_tag :f, 1, params[:f] == "1", :onclick => "setIssueFilter(this.form, 1)", :id => "all_issues", :class => "status"
-                = label_tag "all_issues","All"
+    .left.issues_filter
+      = form_tag project_issues_path(@project), :method => :get do
+        .left
+          = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "setIssueFilter(this.form, 0)", :id => "open_issues", :class => "status"
+          = label_tag "open_issues" do 
+            %span.tag.open Open
+        .left
+          = radio_button_tag :f, 2, params[:f] == "2", :onclick => "setIssueFilter(this.form, 2)", :id => "closed_issues", :class => "status"
+          = label_tag "closed_issues" do 
+            %span.tag.closed Closed
+        .left
+          = radio_button_tag :f, 3, params[:f] == "3", :onclick => "setIssueFilter(this.form, 3)", :id => "my_issues", :class => "status"
+          = label_tag "my_issues","To Me"
+        .left
+          = radio_button_tag :f, 1, params[:f] == "1", :onclick => "setIssueFilter(this.form, 1)", :id => "all_issues", :class => "status"
+          = label_tag "all_issues","All"
 
+  .clear
+  %hr
+  %table.no-borders#issues-table
     = render "issues"
   %br
 :javascript

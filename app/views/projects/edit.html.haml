@@ -1,0 +1,69 @@
+= render "project_head"
+
+= form_for(@project, :remote => true) do |f|
+  %div
+    %span.entity-info
+      = link_to info_project_path(@project) do 
+        .entity-button
+          Info
+          %i
+    %h2= @project.name
+    %hr
+  %table.no-borders
+    -if @project.errors.any?
+      %tr 
+        %td{:colspan => 2}
+          #error_explanation
+            - @project.errors.full_messages.each do |msg|
+              %span= msg
+              %br
+
+    %tr
+      %td= f.label :name
+      %td= f.text_field :name, :placeholder => "Example Project"
+    %tr
+      %td
+        .left= f.label :path
+        %cite.right= "git@#{GIT_HOST["host"]}:"
+      %td
+        = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+    %tr
+      %td
+        .left= f.label :code
+        %cite.right= "http://#{GIT_HOST["host"]}/"
+      %td= f.text_field :code, :placeholder => "example"
+
+    - unless @project.new_record? || @project.heads.empty?  
+      %tr
+        %td= f.label :default_branch, "Default Branch"
+        %td= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
+
+    %tr
+      %td= f.label :description
+      %td= f.text_area :description, :placeholder => "project description", :style => "height:50px"
+
+    %br
+  
+  .merge-tabs
+    = f.submit 'Save', :class => "grey-button"
+    &nbsp;
+    - unless @project.new_record?
+      .right
+        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
+
+%div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
+  %center
+    = image_tag "ajax-loader.gif", :class => "append-bottom"
+    %h3.prepend-top Updating project &amp; repository. Please wait for few minutes
+
+:javascript
+  $('.edit_project').bind('ajax:before', function() {
+    $(".edit_project").hide();
+    $('.ajax_loader').show();
+  });
+
+:javascript
+  $(function(){
+    $('#project_default_branch').chosen();
+  })
+

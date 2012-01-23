@@ -23,7 +23,7 @@ describe "Issues" do
 
     subject { page }
 
-    it { should have_content(@issue.title) }
+    it { should have_content(@issue.title[0..20]) }
     it { should have_content(@issue.project.name) }
     it { should have_content(@issue.assignee.name) }
 
@@ -96,7 +96,7 @@ describe "Issues" do
     end
 
     it "should open new issue form" do
-      page.should have_content("New issue")
+      page.should have_content("New Issue")
     end
 
     describe "fill in" do
@@ -147,13 +147,12 @@ describe "Issues" do
           click_button "Save"
         end
 
-        it "should send valid email to user with email & password" do
+        it "should send valid email to user" do
           click_button "Save"
           issue = Issue.last
           email = ActionMailer::Base.deliveries.last
           email.subject.should have_content("New Issue was created")
           email.body.should have_content(issue.title)
-          email.body.should have_content(issue.assignee.name)
         end
 
       end

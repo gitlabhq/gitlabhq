@@ -1,58 +1,42 @@
-$(document).ready(function(){
-  $('#tree-slider td.tree-item-file-name a, #tree-breadcrumbs a').live("click", function() {
-    history.pushState({ path: this.path }, '', this.href)
-  })
+var ProjectsList = {
+  limit:0,
+  offset:0,
 
-  $("#tree-slider tr.tree-item").live('click', function(e){
-    if(e.target.nodeName != "A") {
-      e.stopPropagation();
-      link = $(this).find("td.tree-item-file-name a")
-      link.click();
-      return false;
+  init:
+    function(limit) {
+      this.limit=limit;
+      this.offset=limit;
+      this.initLoadMore();
+    },
+
+  getOld:
+    function() {
+      $('.loading').show();
+      $.ajax({
+        type: "GET",
+        url: location.href,
+        data: "limit=" + this.limit + "&offset=" + this.offset,
+        complete: function(){ $('.loading').hide()},
+        dataType: "script"});
+    },
+
+  append:
+    function(count, html) {
+      $(".tile").append(html);
+      if(count > 0) {
+        this.offset += count;
+        this.initLoadMore();
+      }
+    },
+
+  initLoadMore:
+    function() {
+      $(window).bind('scroll', function(){
+        if($(window).scrollTop() == $(document).height() - $(window).height()){
+          $(window).unbind('scroll');
+          $('.loading').show();
+          ProjectsList.getOld();
+        }
+      });
     }
-  });
-
-  $("#projects-list .project").live('click', function(e){
-    if(e.target.nodeName != "A" && e.target.nodeName != "INPUT") {
-      location.href = $(this).attr("url");
-      e.stopPropagation();
-      return false;
-    }
-  });
-
-  $("#issues-table .issue").live('click', function(e){
-    if(e.target.nodeName != "A" && e.target.nodeName != "INPUT") {
-      location.href = $(this).attr("url");
-      e.stopPropagation();
-      return false;
-    }
-  });
-
-  $(document).keypress(function(e) {
-    if( $(e.target).is(":input") ) return;
-    switch(e.which)  {
-      case 115:  focusSearch();
-        e.preventDefault();
-    }
-  });
-
-});
-
-function focusSearch() {
-  $("#search").focus();
 }
-
-function taggifyForm(){
-  var tag_field = $('#tag_field').tagify();
-
-  tag_field.tagify('inputField').autocomplete({
-      source: '/tags.json'
-  });
-
-  $('form').submit( function() {
-    var tag_field = $('#tag_field')
-       tag_field.val( tag_field.tagify('serialize') );
-       return true;
-  });
-}
-

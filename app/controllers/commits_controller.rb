@@ -27,6 +27,8 @@ class CommitsController < ApplicationController
     @notes = project.commit_notes(@commit).fresh.limit(20)
     @note = @project.build_commit_note(@commit)
 
+    @line_notes = project.commit_line_notes(@commit)
+
     respond_to do |format|
       format.html
       format.js { respond_with_notes }

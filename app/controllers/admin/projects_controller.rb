@@ -9,6 +9,12 @@ class Admin::ProjectsController < ApplicationController
 
   def show
     @admin_project = Project.find_by_code(params[:id])
+
+    @users = if @admin_project.users.empty?
+               User
+             else
+               User.not_in_project(@admin_project)
+             end.all
   end
 
   def new
@@ -17,6 +23,19 @@ class Admin::ProjectsController < ApplicationController
 
   def edit
     @admin_project = Project.find_by_code(params[:id])
+  end
+
+  def team_update
+    @admin_project = Project.find_by_code(params[:id])
+
+    UsersProject.bulk_import(
+      @admin_project, 
+      params[:user_ids],
+      params[:project_access],
+      params[:repo_access]
+    )
+
+    redirect_to [:admin, @admin_project], notice: 'Project was successfully updated.'
   end
 
   def create

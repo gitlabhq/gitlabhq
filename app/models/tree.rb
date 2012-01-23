@@ -7,6 +7,8 @@ class Tree
     :name,
     :data,
     :mime_type,
+    :mode,
+    :size,
     :text?,
     :colorize,
     :to => :tree

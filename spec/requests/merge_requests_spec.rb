@@ -19,7 +19,7 @@ describe "MergeRequests" do
 
     subject { page }
 
-    it { should have_content(@merge_request.title) }
+    it { should have_content(@merge_request.title[0..10]) }
     it { should have_content(@merge_request.target_branch) }
     it { should have_content(@merge_request.source_branch) }
     it { should have_content(@merge_request.assignee.name) }
@@ -32,7 +32,7 @@ describe "MergeRequests" do
 
     subject { page }
 
-    it { should have_content(@merge_request.title) }
+    it { should have_content(@merge_request.title[0..10]) }
     it { should have_content(@merge_request.target_branch) }
     it { should have_content(@merge_request.source_branch) }
     it { should have_content(@merge_request.assignee.name) }
@@ -40,17 +40,17 @@ describe "MergeRequests" do
     describe "Close merge request" do 
       before { click_link "Close" }
 
-      it { should have_content(@merge_request.title) }
+      it { should have_content(@merge_request.title[0..10]) }
       it "Show page should inform user that merge request closed" do 
-        within ".merge-request-show-holder h3" do 
-          page.should have_content "Closed" 
+        within ".merge-tabs" do 
+          page.should have_content "Reopen" 
         end
       end
     end
   end
 
   describe "GET /merge_requests/new" do 
-    before do 
+    before do
       visit new_project_merge_request_path(project)
       fill_in "merge_request_title", :with => "Merge Request Title" 
       select "master", :from => "merge_request_source_branch"
@@ -62,7 +62,7 @@ describe "MergeRequests" do
     it { current_path.should == project_merge_request_path(project, project.merge_requests.last) }
 
     it "should create merge request" do
-      page.should have_content "Open"
+      page.should have_content "Close"
       page.should have_content @user.name
     end
   end

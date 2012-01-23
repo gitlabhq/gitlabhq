@@ -1,12 +1,12 @@
-%h2.icon
-  %span>
-  Snippets
-- if can? current_user, :write_snippet, @project
-  .right= link_to 'New Snippet', new_project_snippet_path(@project), :class => "grey-button append-bottom-10"
+= render "projects/project_head"
 
-%table#snippets-table
-  = render @snippets.fresh
-
-:javascript
-  $('.delete-snippet').live('ajax:success', function() {
-    $(this).closest('tr').fadeOut(); });
+- unless @snippets.fresh.empty?
+  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
+    .data
+      = render @snippets.fresh
+- else 
+  .notice_holder
+    %li Snippets do not exist yet.
+    - if can? current_user, :write_snippet, @project
+      %li You can add a new one by clicking on "Add New" button
+    

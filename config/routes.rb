@@ -1,11 +1,21 @@
 Gitlab::Application.routes.draw do
 
+  # Optionally, enable Resque here
+  require 'resque/server'
+  mount Resque::Server.new, at: '/info/resque'
+
   get 'tags'=> 'tags#index'
   get 'tags/:tag' => 'projects#index'
+  get 'help' => 'help#index'
 
   namespace :admin do
     resources :users
-    resources :projects
+    resources :projects, :constraints => { :id => /[^\/]+/ } do 
+      member do 
+        get :team
+        put :team_update
+      end
+    end
     resources :team_members
     get 'emails', :to => 'mailer#preview'
     get 'mailer/preview_note'
@@ -18,22 +28,38 @@ Gitlab::Application.routes.draw do
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
   put "profile/reset_private_token", :to => "profile#reset_private_token"
-  put "profile/edit", :to => "profile#social_update"
   get "profile", :to => "profile#show"
+  get "profile/design", :to => "profile#design"
+  put "profile/update", :to => "profile#update"
+
   get "dashboard", :to => "dashboard#index"
+  get "dashboard/issues", :to => "dashboard#issues"
+  get "dashboard/merge_requests", :to => "dashboard#merge_requests"
+
   #get "profile/:id", :to => "profile#show"
 
-  resources :projects, :only => [:new, :create, :index]
+  resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create, :index]
   resources :keys
 
   devise_for :users
 
-  resources :projects, :except => [:new, :create, :index], :path => "/" do
+  resources :projects, :constraints => { :id => /[^\/]+/ }, :except => [:new, :create, :index], :path => "/" do
     member do
       get "team"
       get "wall"
       get "graph"
+      get "info"
+      get "files"
     end
+
+    resource :repository do 
+      member do 
+        get "branches"
+        get "tags"
+      end
+    end
+
+    resources :deploy_keys
 
     resources :refs, :only => [], :path => "/" do 
       collection do 
@@ -65,7 +91,13 @@ Gitlab::Application.routes.draw do
         get :commits
       end
     end
+    
     resources :snippets
+    resources :hooks, :only => [:index, :new, :create, :destroy, :show] do 
+      member do 
+        get :test
+      end
+    end
     resources :commits
     resources :team_members
     resources :issues do

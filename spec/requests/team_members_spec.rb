@@ -18,20 +18,19 @@ describe "TeamMembers" do
     end
   end
 
-  describe "New Team member", :js => true do
+  describe "New Team member" do
     before do
       @user_1 = Factory :user
       visit team_project_path(@project)
-      click_link "Add new"
+      click_link "New Team Member"
     end
 
     it "should open new team member popup" do
-      page.should have_content("Add new member to project")
+      page.should have_content("New Team member")
     end
 
     describe "fill in" do
       before do
-        page.execute_script("$('#team_member_user_id').show();")
         within "#team_member_new" do 
           select @user_1.name, :from => "team_member_user_id"
           select "Report", :from => "team_member_project_access"

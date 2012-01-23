@@ -1,18 +1,16 @@
 - content_for(:body_class, "project-page commits-page")
+- if current_user.private_token   
+  = content_for :rss_icon do 
+    .rss-icon
+      = link_to project_commits_path(@project, :atom, { :private_token => current_user.private_token, :ref => @ref }) do 
+        = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
 
--#%a.right.button{:href => "#"} Download
--#-if can? current_user, :admin_project, @project
-  %a.right.button.blue{:href => "#"} EDIT
-%h2.icon
-  %span
-  %d
+- if params[:path]
+  %h2
     = link_to project_commits_path(@project) do
-      = @project.name
-    - if params[:path]
-      \/
-      %a{:href => "#"}= params[:path].split("/").join(" / ")
-
-.right= render :partial => "projects/refs", :locals => { :destination => :commits }
+      = @project.code
+    \/
+    %a{:href => "#"}= params[:path].split("/").join(" / ")
 
 %div{:id => dom_id(@project)}
   #commits_list= render "commits"

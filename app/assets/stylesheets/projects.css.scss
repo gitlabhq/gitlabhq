@@ -1,30 +1,77 @@
-/** MIXINS **/
-@mixin round-borders-bottom($radius) {
-  border-top: 1px solid #eaeaea;
-  -moz-border-radius-bottomright: $radius;
-  -moz-border-radius-bottomleft: $radius;
-  border-bottom-right-radius: $radius;
-  border-bottom-left-radius: $radius;
-  -webkit-border-bottom-left-radius: $radius;
-  -webkit-border-bottom-right-radius: $radius;
+body.project-page h2.icon .project-name, body.project-page h2.icon d{border: 1px solid #eee; padding: 5px 30px 5px 10px; border-radius: 5px; position: relative;}
+body.project-page h2.icon .project-name i.arrow{float: right;
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  display: block;
+  background: url('images.png') no-repeat -97px -29px;
+  width: 4px;
+  height: 5px;
 }
 
-@mixin round-borders-top($radius) {
-  border-top: 1px solid #eaeaea;
-  -moz-border-radius-topright: $radius;
-  -moz-border-radius-topleft: $radius;
-  border-top-right-radius: $radius;
-  border-top-left-radius: $radius;
-  -webkit-border-top-left-radius: $radius;
-  -webkit-border-top-right-radius: $radius;
+body.project-page h2.icon span{  background-position:  -78px -68px; }
+body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
+body.project-page .page-title{margin-bottom: 0}
+
+body.project-page .project-sidebar { 
+  width: 110px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  bottom: 0;
+  position: absolute;
+  float: left;
+  display: inline-block;
+  background: #FFF;
+  padding: $app_padding;
+  padding-right:0px;
+  margin: 0; 
+  border-right: 1px solid $border_color;
 }
 
-@mixin round-borders-all($radius) {
-  border: 1px solid #eaeaea;
-  -moz-border-radius: $radius;
-  -webkit-border-radius: $radius;
-  border-radius: $radius;
+body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
+body.projects-page input.text.git-url {margin:10px 0 0 }
+.git_url_wrapper { margin-right:50px }
+
+.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
+
+
+/* New project Page */
+.new-project-page .container table{background: white}
+body.project-page .project-sidebar aside{width: 109px}
+body.project-page .project-sidebar aside a{
+  display: block;
+  position: relative; 
+  padding: 15px 10px; 
+  margin: 10px 0 0 0;
+
+
 }
+body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
+body.project-page .project-sidebar aside a.current {
+  color: white;
+  background: $active_bg_color;
+  border: 1px solid $active_bd_color;
+  border-radius:5px;
+
+
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-topright: 0px;
+  -moz-border-radius-bottomright: 0px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: -1px;
+}
+body.project-page .project-content{ padding: $app_padding; display: block; margin-left: 130px; min-height: 600px}
+body.project-page .project-content h2{ margin-top: 6px}
+body.project-page .project-content .button.right{margin-left: 20px}
+body.project-page table .commit a{color: #{$blue_link}}
+body.project-page table th, body.project-page table td{  border-bottom: 1px solid #DEE2E3;}
+body.project-page .fixed{position: fixed; }
+
+
+
 
 /** File stat **/
 .file_stats {
@@ -48,90 +95,7 @@ table.round-borders {
   text-align: left;
 }
 
-a {
-  color: #111;
-}
 
-/** FILE CONTENT VIEW **/
-.view_file_content{
-  .old_line, .new_line {
-    background:#ECECEC;
-    color:#777;
-    width:15px;
-    float:left;
-    padding: 0px 10px;
-    border-right: 1px solid #ccc;
-  }
-  .old_line{
-    display:none;
-  }
-}
-
-.view_file .view_file_header, 
-.diff_file .diff_file_header { 
-    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    margin: 0;
-    font-weight: normal;
-    font-weight: bold;
-    text-align: left;
-    color: #666;
-    border-bottom: 1px solid #DEE2E3;
-    padding: 7px 10px;
-}
-
-.view_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
-
-  .view_file_content {
-    background:#fff;
-    color:#514721;
-    font-size: 11px;
-  }
-  .view_file_content_image {
-    background:#eee;
-    text-align:center;
-    img {
-      padding:100px;
-      max-width:300px;
-    }
-  }
-}
-
-td.code {
-  width: 100%;
-  .highlight {
-    margin-left: 55px;
-    overflow:auto;
-    overflow-y:hidden;
-    border-left: 1px solid #DEE2E3;
-    background: white;
-  }
-}
-.highlight pre {
-  white-space: pre;
-  word-wrap:normal;
-}
-
-table.highlighttable { 
-  border: none;
-  background: #F7F7F7;
-}
-body.project-page table.highlighttable td { border: none }
-table.highlighttable tr:hover { background:none;}
-
-table.highlighttable pre{
-  line-height:16px !important;
-  font-size:12px !important;
-}
-
-table.highlighttable .linenodiv pre {
-  text-align: right;
-  padding-right: 4px;
-}
 
 /** PROJECTS **/
 input.ssh_project_url {
@@ -157,61 +121,6 @@ input.ssh_project_url {
   clear: both;
 }
 
-/** FORM INPUTS **/
-.new_merge_request,
-.edit_merge_request,
-.user_new,
-.new_key,
-.new_issue,
-.new_note,
-.edit_user,
-.edit_issue,
-.new_project,
-.new_snippet,
-.edit_snippet,
-.edit_project {
-  input[type='text'],
-  input[type='email'],
-  input[type='password'],
-  textarea {
-    width:400px;
-    padding:8px;
-    font-size:14px;
-    @include round-borders-all(4px);
-  }
-}
-
-.input_button {
-  padding:8px;
-  font-size:14px;
-  cursor:pointer;
-  background-color: #F5F5F5;
-  border-color: #EEEEEE #DEDEDE #DEDEDE #EEEEEE;
-  border-right: 1px solid #DEDEDE;
-  border-style: solid;
-  border-width: 1px;
-}
-
-/** FLASH **/
-#flash_container {
-  height:45px;
-  position:fixed;
-  z-index:10001;
-  top:0px;
-  width:100%;
-  margin-bottom:15px;
-  overflow:hidden;
-  background:white;
-  cursor:pointer;
-  border-bottom:1px solid #777;
-
-  h4 {
-    color:#444;
-    font-size:22px;
-    padding-top:5px;
-    margin:2px;
-  }
-}
 
 /** Buttons **/
 .lbutton,
@@ -270,7 +179,7 @@ input.ssh_project_url {
 
 body.project-page table .commit {
   a.tree-commit-link {
-    color:gray;
+    color:#444;
     &:hover {
       text-decoration:underline;
     }
@@ -331,7 +240,7 @@ body.project-page table .commit {
   border:none;
   text-shadow:none;
 
-  &.inline { 
+  &.inline {
     display:inline;
   }
 
@@ -358,8 +267,12 @@ body.project-page table .commit {
     color:white;
   }
   &.note {
-    background: #2c5c66;
-    color:white;
+    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    color: #777;
+    border: 1px solid #DEDFE1;
   }
   &.issue {
     background: #D12F19;
@@ -376,7 +289,8 @@ body.project-page table .commit {
 }
 
 #holder {
-  border: solid 1px #999;
+  background:#FAFAFA;
+  border: 1px solid #EEE;
   cursor: move;
   height: 70%;
   overflow: hidden;
@@ -428,54 +342,34 @@ body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:1
 body.projects-page input.text.git-url.project_list_url { width:165px; }
 
 
+body.project-page table.no-borders th { 
+  background:none;
+  border-bottom:1px solid #CCC;
+  color:#333;
+}
 
 body.project-page table.no-borders tr,
-body.project-page table.no-borders td{ 
+body.project-page table.no-borders td{
   border:none;
 }
 
-#gitlab-tabs { 
-  .ui-tabs-nav {
-    border-bottom: 1px solid #DEDFE1;
-
-    li { 
-      background: none;
-      border:none;
-      font-size: 16px;
-      margin: 0;
-      padding: 0;
-
-      a { 
-        margin: 0;
-        padding: 10px 16px;
-        width:150px;
-      }
-
-      &.ui-tabs-selected { 
-        background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-        background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-        background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-        background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
-        font-weight: bold;
-        border:1px solid #DEDFE1;
-        border-bottom: 1px solid #DEDFE1;
-        -webkit-border-top-left-radius: 5px;
-        -webkit-border-top-right-radius: 5px;
-        -moz-border-radius-topleft: 5px;
-        -moz-border-radius-topright: 5px;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-      }
-    } 
-  } 
-}
-
-.ajax-tab-loading { 
+.ajax-tab-loading {
   padding:40px;
   display:none;
 }
 
 #tree-content-holder { float:left; width:100%; }
+
+#tree-readme-holder {
+  float:left;
+  width:100%;
+
+  .readme {
+    @include round-borders-all(4px);
+    padding: 4px 15px;
+    background:#F7F7F7;
+  }
+}
 
 
 
@@ -505,4 +399,174 @@ body.project-page table.no-borders td{
   position: absolute;
   top: 6px;
   right: 5px;
+}
+.box-arrow{float: right; background: #E3E5EA; padding: 10px; border-radius: 5px; margin-top: 2px; text-shadow: none; color: #999; margin: 1.5em 0;}
+
+h4.dash-tabs { 
+  margin: 0; 
+  border-bottom: 1px solid #ccc; 
+  padding: 10px 10px;
+  font-size: 11px;
+  padding-left:20px;
+  font-weight: bold; text-transform: uppercase;
+  background: #F7F7F7;
+  margin-bottom:20px;
+  height:13px;
+
+}
+
+.dash-button { 
+  border-right: 1px solid #ddd;
+  background:none;
+  padding: 10px 15px;
+  float:left;
+  position:relative;
+  top:-10px;
+  left:0px;
+  height:13px;
+
+  &:first-child { 
+    border-left: 1px solid #ddd;
+  }
+  &.active { 
+    background: #eaeaea;
+  }
+}
+
+
+.dashboard-loader { 
+  float:right;
+  margin-right:30px;
+  display:none;
+}
+
+
+.merge-tabs { 
+  margin: 0; 
+  border: 1px solid #ccc; 
+  padding: 5px;
+  font-size: 12px;
+  background: #F7F7F7;
+  margin-bottom:20px;
+  height:26px;
+
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+
+  .tab { 
+    font-weight: bold;
+    border-right: 1px solid #ddd;
+    background:none;
+    padding: 10px;
+    min-width:60px;
+    float:left;
+    position:relative;
+    top:-5px;
+    left:-5px;
+    height:16px;
+    padding-left:34px;
+
+    span { 
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+    }
+
+    &.active {
+      background: #eaeaea;
+    }
+  }
+}
+.merge-tabs.repository .tab span{ background: url("images.png") no-repeat -38px -77px; }
+.activities-tab span {  background: url("images.png") no-repeat -161px -1px; } 
+.stat-tab span,
+.team-tab span,
+.snippets-tab span {  background: url("images.png") no-repeat -38px -77px; } 
+.files-tab span {  background: url("images.png") no-repeat -112px -23px; } 
+
+.merge-notes-tab span {  background: url("images.png") no-repeat -161px -1px; } 
+.merge-commits-tab span {  background: url("images.png") no-repeat -86px 1px; } 
+.merge-diffs-tab span {  background: url("images.png") no-repeat -118px 1px; } 
+.merge-tabs .dashboard-loader { padding:8px; }
+
+.user-mention { 
+  color: #2FA0BB;
+  font-weight: bold;
+}
+
+.author { 
+  color: #999;
+}
+
+
+.red-button{
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 17px;
+  border: 1px solid #999;
+  color: #666;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  background: #D12F19;
+  color: white;
+}
+
+.positive-button{
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 17px;
+  border: 1px solid #999;
+  color: #666;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  background: #4A2;
+  color: white;
+}
+
+
+.dark_scheme_box { 
+  padding:20px 0;
+
+  label { 
+    float:left;
+    box-shadow: 0 0px 5px rgba(0,0,0,.3);
+
+    img { 
+    }
+  }
+}
+
+a.project-update.titled { 
+  position: relative;
+  padding-left: 235px !important;
+
+  .title-block { 
+    padding: 10px;
+    width: 205px;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+.add_new { 
+  float: right;
+  background: #A6B807;
+  color: white;
+  padding: 4px 10px;
+  @include round-borders-all(4px);
+  font-size:11px;
+  margin: 10px 0;
+}
+
+
+
+.new-project-hodler { 
+  padding:20px;
 }

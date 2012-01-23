@@ -1,10 +1,8 @@
 - content_for(:body_class, "project-page dashboard")
 
+= render "project_head"
 #news-feed.news-feed
-  %h2.icon
-    %span>
-    Activities
-  .project-box.project-updates.ui-box.ui-box-small.ui-box-big
+  .project-box.project-updates
     - @activities.each do |update|
       = render "projects/feed", :update => update, :project => @project
 

@@ -1,3 +1,4 @@
+before_install: sudo apt-get install libicu-dev -y
 branches:
   only:
     - 'master'

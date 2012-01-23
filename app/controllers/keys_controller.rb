@@ -6,6 +6,10 @@ class KeysController < ApplicationController
     @keys = current_user.keys.all
   end
 
+  def show
+    @key = current_user.keys.find(params[:id])
+  end
+
   def new
     @key = current_user.keys.new
 

@@ -1,0 +1,34 @@
+%table{:style => "display:none;"}
+  %tr.per_line_form
+    %td{:colspan => 3 }
+      %div
+        = form_for [@project, @note], :remote => "true", :multipart => true do |f|
+          -if @note.errors.any?
+            .errors.error
+              - @note.errors.full_messages.each do |msg|
+                %div= msg
+
+          = f.hidden_field :noteable_id
+          = f.hidden_field :noteable_type
+          = f.hidden_field :line_code
+
+          %div
+            = f.label :note
+            %cite.cgray markdown supported
+            %br
+            %br
+            = f.text_area :note,  :size => 255
+
+          .clear
+          %br
+          = f.submit 'Add note', :class => "positive-button", :id => "submit_note"
+          .right
+            = link_to "Close", "#", :class => "grey-button hide-button"
+
+:javascript 
+  $(function(){
+    $(".per_line_form .hide-button").bind("click", function(){
+      $('.per_line_form').hide();
+      return false;
+    });
+  });

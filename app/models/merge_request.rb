@@ -2,7 +2,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :project
   belongs_to :author, :class_name => "User"
   belongs_to :assignee, :class_name => "User"
-  has_many :notes, :as => :noteable
+  has_many :notes, :as => :noteable, :dependent => :destroy
 
   attr_protected :author, :author_id, :project, :project_id
 
@@ -35,12 +35,27 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diffs
-    commit = project.commit(source_branch)
     commits = project.repo.commits_between(target_branch, source_branch).map {|c| Commit.new(c)}
-    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id)
+    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id) rescue []
   end
 
   def last_commit
     project.commit(source_branch)
   end
 end
+# == Schema Information
+#
+# Table name: merge_requests
+#
+#  id            :integer         not null, primary key
+#  target_branch :string(255)     not null
+#  source_branch :string(255)     not null
+#  project_id    :integer         not null
+#  author_id     :integer
+#  assignee_id   :integer
+#  title         :string(255)
+#  closed        :boolean         default(FALSE), not null
+#  created_at    :datetime
+#  updated_at    :datetime
+#
+

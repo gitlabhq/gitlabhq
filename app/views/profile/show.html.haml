@@ -1,36 +1,38 @@
-%h2.icon
-  %span>
-  = @user.name
+.ui-box.width-100p
+  %h3= @user.name
+  = form_for @user, :url => profile_update_path, :method => :put do |f|
+    .data
+      .left
+        -if @user.errors.any?
+          #error_explanation
+            %ul
+              - @user.errors.full_messages.each do |msg|
+                %li= msg
 
-.clear
+        .form-row
+          = f.label :name
+          %br
+          = f.text_field :name
+        .form-row
+          = f.label :email
+          %br
+          = f.text_field :email
+        .form-row
+          = f.label :skype
+          %br
+          = f.text_field :skype
+        .form-row
+          = f.label :linkedin
+          %br
+          = f.text_field :linkedin
+        .form-row
+          = f.label :twitter
+          %br
+          = f.text_field :twitter
 
-= form_for @user, :url => profile_edit_path, :method => :put do |f|
-  -if @user.errors.any?
-    #error_explanation
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
-
-  .form-row
-    = f.label :name
-    %br
-    = f.text_field :name
-  .form-row
-    = f.label :email
-    %br
-    = f.text_field :email
-  .form-row
-    = f.label :skype
-    %br
-    = f.text_field :skype
-  .form-row
-    = f.label :linkedin
-    %br
-    = f.text_field :linkedin
-  .form-row
-    = f.label :twitter
-    %br
-    = f.text_field :twitter
-  .actions
-    = f.submit 'Save', :class => "grey-button"
+      .right
+        = image_tag gravatar_icon(current_user.email,64), :width => 64, :style => "margin:5px; border:5px solid #eee;"
+      .clear
+    .buttons
+      = f.submit 'Save', :class => "grey-button"
 

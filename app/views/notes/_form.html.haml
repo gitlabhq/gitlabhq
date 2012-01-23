@@ -22,10 +22,16 @@
       %br
       %br
       = f.file_field :attachment
+      
+      %p.notify_controls
+        %span Notify:
+        = check_box_tag :notify, 1, @note.noteable_type != "Commit"
+        = label_tag :notify, "Project team"
 
-      = check_box_tag :notify, 1, true
-      = label_tag :notify, "Notify project team about your note"
+        -if @note.noteable_type == "Commit"
+          = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
+          = label_tag :notify_author, "Commit author"
 
     .clear
     %br
-    = f.submit 'Add note', :class => "grey-button", :id => "submit_note"
+    = f.submit 'Add note', :class => "positive-button", :id => "submit_note"

@@ -9,12 +9,10 @@ class ProjectsController < ApplicationController
   before_filter :authorize_read_project!, :except => [:index, :new, :create]
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
   before_filter :require_non_empty_project, :only => [:blob, :tree, :graph]
-  before_filter :load_refs, :only => :tree # load @branch, @tag & @ref
 
   def index
-    source = current_user.projects
-    source = source.tagged_with(params[:tag]) unless params[:tag].blank?
-    @projects = source.all
+    @limit, @offset = (params[:limit] || 16), (params[:offset] || 0)
+    @projects = current_user.projects.limit(@limit).offset(@offset)
   end
 
   def new
@@ -59,7 +57,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if project.update_attributes(params[:project])
-        format.html { redirect_to project, :notice => 'Project was successfully updated.' }
+        format.html { redirect_to info_project_path(project), :notice => 'Project was successfully updated.' }
         format.js
       else
         format.html { render action: "edit" }
@@ -71,7 +69,14 @@ class ProjectsController < ApplicationController
   def show
     return render "projects/empty" unless @project.repo_exists? && @project.has_commits?
     limit = (params[:limit] || 20).to_i
-    @activities = @project.cached_updates(limit)
+    @activities = @project.activities(limit)#updates_wo_repo(limit)
+  end
+
+  def files
+    @notes = @project.notes.where("attachment != 'NULL'").order("created_at DESC").limit(100)
+  end
+
+  def info
   end
 
   #
@@ -94,7 +99,11 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
+    # Disable the UsersProject update_repository call, otherwise it will be
+    # called once for every person removed from the project
+    UsersProject.skip_callback(:destroy, :after, :update_repository)
     project.destroy
+    UsersProject.set_callback(:destroy, :after, :update_repository)
 
     respond_to do |format|
       format.html { redirect_to projects_url }

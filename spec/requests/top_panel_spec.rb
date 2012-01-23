@@ -1,3 +1,4 @@
+__END__
 require 'spec_helper'
 
 describe "Top Panel", :js => true do

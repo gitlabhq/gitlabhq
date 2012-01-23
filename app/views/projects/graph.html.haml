@@ -1,7 +1,7 @@
-%h2.icon
-  %span>
-  Network Graph
-.clear
+.top-tabs
+  = link_to graph_project_path(@project), :class => "tab #{'active' if current_page?(graph_project_path(@project)) }" do 
+    %span
+    Network Graph
 #holder.graph
 
 :javascript

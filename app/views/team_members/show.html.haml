@@ -1,27 +1,72 @@
+- allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
-.span-2
-  = image_tag gravatar_icon(user.email), :class => "left", :width => 60, :style => "padding-right:5px;"
-%p
-  %b Name:
-  = user.name
-%p
-  %b Email:
-  = user.email
+%div
+  %span.entity-info
+    = link_to team_project_path(@project) do 
+      .entity-button
+        Team
+        %i
 
-%br
+  = image_tag gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding-right:5px;"
+  %span.commit-title
+    %strong
+      = user.name
+  %span.commit-author
+    %strong
+      = user.email
+  %hr
+  %br
 
-- unless user.skype.empty?
-  .div
-    %b Skype:
-    = user.skype
+%table.no-borders
+  %tr
+    %td Name
+    %td= user.name
+  
+  %tr
+    %td Email
+    %td= user.email
 
-- unless user.linkedin.empty?
-  .div
-    %b LinkedIn:
-    = user.linkedin
+  %tr
+    %td Member since
+    %td= @team_member.created_at.stamp("Aug 21, 2011")
 
-- unless user.twitter.empty?
-  .div
-    %b Twitter:
-    = user.twitter
+  %tr
+    %td Project Access
+    %td
+      = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
+        = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
+
+  %tr
+    %td Repository Access
+    %td
+      = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
+        = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select", :disabled => !allow_admin
+
+
+  - unless user.skype.empty?
+    %tr
+      %td Skype:
+      %td= user.skype
+
+  - unless user.linkedin.empty?
+    %tr
+      %td LinkedIn:
+      %td= user.linkedin
+
+  - unless user.twitter.empty?
+    %tr
+      %td Twitter:
+      %td= user.twitter
+
+- if can? current_user, :admin_project, @project
+  .merge-tabs
+    .right
+      = link_to 'Remove from team', [@project, @issue], :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
+
+:javascript
+  $(function(){
+    $('.repo-access-select, .project-access-select').live("change", function() { 
+      $(this.form).submit();
+    });
+  })
 

@@ -1,0 +1,14 @@
+.top-tabs
+  = link_to project_issues_path(@project), :class => "tab #{'active' if current_page?(project_issues_path(@project)) }" do 
+    %span 
+    Issues  
+  
+  -#= link_to project_issues_path(@project), :class => "tab" do 
+    %span 
+    Milestones
+
+  - if current_page?(project_issues_path(@project))
+    - if can? current_user, :write_issue, @project
+      = link_to new_project_issue_path(@project), :class => "add_new", :title => "New Issue", :remote => true do 
+        Add new
+

@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me,
-                  :name, :projects_limit, :skype, :linkedin, :twitter
+                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme
 
   has_many :users_projects, :dependent => :destroy
   has_many :projects, :through => :users_projects
@@ -25,6 +25,20 @@ class User < ActiveRecord::Base
     :foreign_key => :assignee_id,
     :dependent => :destroy
 
+  has_many :merge_requests,
+    :foreign_key => :author_id,
+    :dependent => :destroy
+
+  has_many :assigned_merge_requests,
+    :class_name => "MergeRequest",
+    :foreign_key => :assignee_id,
+    :dependent => :destroy
+
+  validates :projects_limit,
+            :presence => true,
+            :numericality => {:greater_than_or_equal_to => 0}
+            
+
   before_create :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
@@ -37,8 +51,12 @@ class User < ActiveRecord::Base
     admin
   end
 
+  def require_ssh_key?
+    keys.count == 0
+  end
+
   def can_create_project?
-    projects_limit >= my_own_projects.count
+    projects_limit > my_own_projects.count
   end
 
   def last_activity_project
@@ -69,5 +87,6 @@ end
 #  linkedin               :string(255)     default(""), not null
 #  twitter                :string(255)     default(""), not null
 #  authentication_token   :string(255)
+#  dark_scheme            :boolean         default(FALSE), not null
 #
 

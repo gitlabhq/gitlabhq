@@ -1,0 +1,15 @@
+%aside
+  %h4
+    - if current_user.can_create_project?
+      %a.button-small.button-green{:href => new_project_path} New Project
+    Your Projects
+  %ol.project-list
+    - @projects.each do |project|
+      %li
+        %a{:href => project_path(project)}
+          -#%span.arrow →
+          %span.project-name= project.name
+          %span.time
+            %strong Last activity:
+            = project.last_activity_date_cached ? time_ago_in_words(project.last_activity_date_cached) + " ago" : "Never"
+

@@ -1,24 +1,33 @@
-%div
-  = form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member), :remote => "true" do |f|
-    -if @team_member.errors.any?
-      %ul
-        - @team_member.errors.full_messages.each do |msg|
-          %li= msg
+= form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member) do |f|
+  %div
+    %span.entity-info
+      - if request.xhr? 
+        = link_to project_team_members_path(@project)  do 
+          .entity-button
+            Team List
+            %i
+    %h3= "New Team member"
 
-    .span-6.append-bottom
-      %b Name
-    .span-6
-      = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
-    .span-6
-      %b Project Access:
-    .span-6
-      = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
+    %hr
+  -if @team_member.errors.any?
+    %ul.errors_holder
+      - @team_member.errors.full_messages.each do |msg|
+        %li= msg
 
-    .span-6
-      %b Repository Access:
-    .span-6
-      = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select"
-    %br
-    .span-6
-      = f.submit 'Save', :class => "grey-button"
+  .span-6.append-bottom
+    %b Name
+  .span-6
+    = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
+  .span-6
+    %b Project Access:
+  .span-6
+    = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
+
+  .span-6
+    %b Repository Access:
+  .span-6
+    = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select"
+  %br
+  .merge-tabs
+    = f.submit 'Save', :class => "grey-button"
 

@@ -9,7 +9,9 @@ audio:not([controls]) { display: none; }
 
 html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body { margin: 0; font-size: 13px; line-height: 1.231; }
-body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+body, button, input, select, textarea { 
+  font-family: "helvetica", "arial", "freesans", "clean", sans-serif;
+color: #222; }
 
 ::-moz-selection { background: #79c3e0; color: #fff; text-shadow: none; }
 ::selection { background: #79c3e0; color: #fff; text-shadow: none; }
@@ -74,9 +76,12 @@ $blue_link: "#2fa0bb";
 /* eo Vars */
 
 html{ -webkit-font-smoothing:antialiased; }
-body{font-size: 12px; background-color: #eee;}
-a{text-decoration: none; font-weight: bold; color: #666}
-a:hover{color: #333}
+body { 
+  font-size: 12px; 
+  background-color: #FFFFFF;
+}
+a{text-decoration: none; font-weight: bold; color: #444}
+a:hover{color: #555}
 /* Typography */
 h1,h2,h3,h4,h5{font-weight: normal; color: #666}
 h2{margin: 1.5em 0}
@@ -122,7 +127,7 @@ table  thead th{
 td, th{ padding: .9em 1em; vertical-align: middle; }
 
 table  thead .image{width:100px}
-table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
+.listed_items tr.odd:hover{background-color:#FFFFCF}
 /* eo Tables */
 
 /* Buttons */
@@ -130,7 +135,7 @@ table  tr:hover, .listed_items tr.odd:hover{background-color:#FFFFCF}
   border-radius: 5px;
   font-size: 12px;
   font-weight: bold;
-  padding: 6px 20px;
+  padding: 5px 17px;
   border: 1px solid #999;
   color: #666;
   display: inline-block;
@@ -187,12 +192,14 @@ input.button{margin-bottom: 1.5em}
 /* eo Buttons */
 
 /* UI Box */
-.ui-box{border: 1px solid #DEDFE1; float: left; border-radius: 5px}
+//.ui-box{border: 1px solid #DEDFE1; float: left; border-radius: 5px}
+.ui-box{float: left;}
 .ui-box h3{
   background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
   background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
   background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
   background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  background:none;
   margin: 0;
   padding: 1em;
   font-size: 12px;
@@ -215,13 +222,9 @@ input.button{margin-bottom: 1.5em}
 
 .ui-box .data{padding: .5em 1em}
 
-.ui-box .buttons{background-color: #f7f8f9; padding: 1em;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;  
+.ui-box .buttons{
+  padding: 1em;
+  border-top:1px solid $lite_border_color;
 }
 
 .ui-box .buttons .button{padding: 8px 9px; font-size: 11px}
@@ -309,8 +312,7 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
   input[type="password"],
   textarea
   {
-    border: 1px solid #FFBBBB;
-    background: #fff4f6;
+    border: 1px solid #D30 !important;
   }
 }
 /* eo Errors */
@@ -328,13 +330,13 @@ body.login-page{background-color: #f1f1f1; padding-top: 10%}
 }
 /* eo InfoBlock */
 
-/* General */
-#container{background-color: white; overflow: hidden; }
-body.collapsed #container{margin: auto; width: 980px; border: 1px solid rgba(0,0,0,.22); border-top: 0; box-shadow: 0 0 0px 4px rgba(0,0,0,.04)}
-
 /* Header */
-header{background: #474D57 url('bg-header.png') repeat-x bottom; z-index: 10000; height: 44px; padding: 10px 2% 6px 2%; position: relative}
-header a{color: white; text-shadow: 0 -1px 0 black}
+header{
+  background: #474D57 url('bg-header.png') repeat-x bottom;
+  z-index: 10000;
+  height: 44px; 
+  padding: 10px 2% 6px 2%;
+}
 header a:hover{color: #f1f1f1}
 header h1{
   width: 65px;
@@ -359,6 +361,9 @@ header nav{border-radius: 4px; box-shadow: 0 1px 2px black; width: 294px; margin
   margin-top: 2px;
   height:30px
 }
+header nav.shorter_nav{
+  width: 207px;
+}
 header nav a{padding: 8px 12px 8px 34px; display: inline-block; color: #D6DADF; border-right: 1px solid #31363E; position: relative; box-shadow: 1px 0 0 rgba(255,255,255,.1); margin: 0}
 header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 6px;}
 header nav a:last-child {border: 0; box-shadow: none}
@@ -382,7 +387,7 @@ header nav a.dashboard {
   border-bottom-left-radius: 4px;
 }
 
-header nav a.admin{
+header nav a.last_elem{
   -webkit-border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
   -moz-border-radius-topright: 4px;
@@ -391,13 +396,14 @@ header nav a.admin{
   border-bottom-right-radius: 4px;
 }
 
-header .search{ display: inline-block; float: right;  margin-right: 46px}
+header .search{ display: inline-block; float: right;  margin-right: 90px}
 
 header nav a span{width: 20px; height: 20px; display: inline-block; background: red; position: absolute; left: 8px; top: 6px;}
 
 header nav a.dashboard span{background: url('images.png') no-repeat -161px 0;}
 header nav a.admin span{background: url('images.png') no-repeat   -184px 0;}
 header nav a.project span{background: url('images.png')     no-repeat -209px -1px; top: 7px}
+header nav a.issues span{background: url('images.png')     no-repeat -209px -1px; top: 7px}
 
 header .login-top{float: right; width: 180px;
   background-image: -webkit-gradient(linear, 0 0, 0 62, color-stop(0.032, #464c56), to(#363c45));
@@ -413,7 +419,7 @@ header .login-top a.pic{float: left; margin-right: 10px;
 }
 header .login-top a.username{margin-bottom: 5px}
 header .login-top a.logout{color: #ccc}
-header{margin-bottom: 0; clear: both; }
+header{margin-bottom: 0; clear: both; position:relative;}
 
 .page-title{background-color: #f1f1f1;display: block; float: left; clear: both; width: 98%; padding: 1% 1%; border-bottom: 1px solid #ccc; box-shadow: 0 -1px 0 white inset; margin-bottom: 1.5em}
 .page-title h1{font-size: 20px; width: 400px; margin: 0; padding-top: 8px }
@@ -421,8 +427,22 @@ header{margin-bottom: 0; clear: both; }
 .right{float: right;}
 
 /* Account box */
-header .account-box{position: absolute; right: 0; top: 8px; z-index: 10000; width: 128px;  font-size: 11px; float: right; display: block; cursor: pointer;}
-header .account-box img{ border-radius: 4px; right: 20px; position: absolute; width: 38px; height: 38px; display: block; box-shadow: 0 1px 2px black}
+header .account-box{ 
+  position: absolute; 
+  right: 0; 
+  top: 8px;
+  z-index: 10000;
+  width: 128px;
+  font-size: 11px;
+  float: right;
+  display: block;
+  cursor: pointer;}
+header .account-box img{ 
+  border-radius: 4px;
+  right: 20px;
+  position: absolute;
+  width: 33px; height: 33px;
+  display: block; top:0;}
 header .account-box img:after{
   content: " ";
   display: block;
@@ -446,7 +466,8 @@ float: right;
 .account-box.hover{height: 138px;}
 
 .account-box:hover > .account-links{display: block;}
-header .account-links{background: white; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); position:relative;}
+header .account-links{ 
+  background: #79C3E0; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); position:relative;}
 header .account-links:before {
   content: ".";
   width:0;
@@ -545,8 +566,22 @@ header .account-links a:last-child{
 }
 
 /* eo Account Box */
-input.search-input{float: left; text-shadow: none; width: 116px; background-image: url('icon-search.png') ; background-repeat: no-repeat; background-position: 10px; border-radius: 100px; border: 1px solid rgba(0,0,0,.7); box-shadow: 0 1px 0 rgba(255,255,255,.2), 0 2px 2px rgba(0,0,0,.4) inset ; background-color: #D2D5DA; background-color: rgba(255,255,255,.5); padding: 5px; padding-left: 26px;  margin-top: 4px; margin-right: 10px }
-input.search-input:focus{ background-color: white; width: 216px;}
+input.search-input{ 
+  float: left; 
+  text-shadow: none;
+  width: 116px;
+  background-image: url('icon-search.png') ;
+  background-repeat: no-repeat;
+  background-position: 10px;
+  border-radius: 4px;
+  border: 1px solid #AAA;
+  background-color: #FFF;
+  padding: 5px; 
+  padding-left: 26px;
+  margin-top: 2px;
+  margin-right: 10px;
+}
+/*input.search-input:focus{ background-color: white; width: 216px;}*/
 input.search-input::-webkit-input-placeholder {color: #666}
 /* eo Header */
 
@@ -559,127 +594,12 @@ html, body { height: 100%; }
 
 
 
-body.dashboard-page h2.icon span{ background-position:  9px -69px; }
-body.dashboard-page header{margin-bottom: 0}
-body.dashboard-page .news-feed{padding-left: 1em; margin-right: 450px; min-height: 600px; margin-left: 1%}
-body.dashboard-page .dashboard-content{ position: relative; float: left; width: 100%; height: 100%; }
-body.dashboard-page .news-feed h2{float: left;}
-body.dashboard-page aside{ min-height: 820px; position: relative; top: 0; bottom: 0; right: 0; width: 420px;  float: right;  background-color: #f7f7f7; border-left: 1px solid #ccc }
-body.dashboard-page aside h4{margin: 0; border-bottom: 1px solid #ccc; padding: 10px 10px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
-body.dashboard-page aside h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 2%; margin-top: -4px; display: block;}
-body.dashboard-page aside .project-list {list-style: none; margin: 0; padding: 0;}
-body.dashboard-page aside .project-list li a {background: white;  color: #{$blue_link}; display: block; border-bottom: 1px solid #eee; padding: 14px 6% 14px 14px;}
-body.dashboard-page aside .project-list li a:hover {background: #f1f1f1}
-body.dashboard-page aside .project-list li a:hover span.arrow{background-color: #E3E5EA;}
-body.dashboard-page aside .project-list li a span.project-name{font-size: 14px; display: block; margin-bottom: 8px}
-body.dashboard-page aside .project-list li a span.time{color: #666; font-weight: normal; font-size: 11px}
-body.dashboard-page aside .project-list li a span.arrow{float: right; background: #E3E5EA; padding: 10px; border-radius: 5px; margin-top: 2px; text-shadow: none; color: #999}
-body.dashboard-page .news-feed .project-updates  {margin-bottom: 20px; display: block; width: 100%;}
-body.dashboard-page .news-feed .project-updates .data{ padding: 0}
-body.dashboard-page .news-feed .project-updates a.project-update {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.dashboard-page .news-feed .project-updates a.project-update:last-child{border-bottom: 0}
-body.dashboard-page .news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
-body.dashboard-page .news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
-body.dashboard-page .news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
-body.dashboard-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
-body.dashboard-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
-/* eo Dashboard Page */
 
 .grey-button.right{margin-top: 20px}
 
 /* Project Page */
-
-body.project-page h2.icon .project-name, body.project-page h2.icon d{border: 1px solid #eee; padding: 5px 30px 5px 10px; border-radius: 5px; position: relative;}
-body.project-page h2.icon .project-name i.arrow{float: right;
-  position: absolute;
-  right: 10px;
-  top: 13px;
-  display: block;
-  background: url('images.png') no-repeat -97px -29px;
-  width: 4px;
-  height: 5px;
-}
-
-body.project-page h2.icon span{  background-position:  -78px -68px; }
-body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
-body.project-page .page-title{margin-bottom: 0}
-body.project-page .project-sidebar {width: 180px;  left: 0; top: 0; height: 100%; bottom: 0;  position: absolute; background-color: #f7f7f7; float: left; display: inline-block; background: #f7f7f7; padding: 20px 0 20px 2%; margin: 0; }
-
-body.project-page input.text.git-url,
-body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
-body.projects-page input.text.git-url {margin:10px 0 0 }
-.git_url_wrapper { margin-right:50px }
-
-.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
-
-body.project-page .project-sidebar aside{width: 179px}
-body.project-page .project-sidebar aside a{display: block; position: relative; background: white; padding: 15px 10px; border-bottom: 1px solid #eee}
-body.project-page .project-sidebar aside a:first-child{
-  -webkit-border-top-left-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  border-top-left-radius: 5px;
-}
-.project-page .project-sidebar aside a:last-child{
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-left-radius: 5px;
-}
-body.project-page .project-sidebar aside a:hover{background-color: #eee;}
-body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
-body.project-page .project-sidebar aside a.current{background-color: #79c3e0; color: white; text-shadow: none; border-color: transparent}
-body.project-page .project-content{ padding: 20px; display: block; margin-left: 205px; min-height: 600px}
-body.project-page .project-content h2{ margin-top: 6px}
-body.project-page .project-content .button.right{margin-left: 20px}
-body.project-page table .commit a{color: #{$blue_link}}
-body.project-page table th, body.project-page table td{  border-bottom: 1px solid #DEE2E3;}
-body.project-page .fixed{position: fixed; }
-
-/* New project Page */
-.new-project-page .container{width: 600px; background-color: rgba(0,0,0,.02); margin: auto; border: 1px solid #eee; padding: 0 20px; margin: 30px auto 60px auto; border-radius: 5px}
-.new-project-page .container table{background: white}
 /* eo New Project Page */
 
-/* Commit Page */
-body.project-page.commits-page .commit-info{float: right;}
-body.project-page.commits-page .commit-info data{
-  padding: 4px 10px;
-  font-size: 11px;
-}
-body.project-page.commits-page .commit-info data.commit-button{
-  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.192, #fff), to(#f4f4f4));
-  background-image: -webkit-linear-gradient(#fff 19.2%, #f4f4f4);
-  background-image: -moz-linear-gradient(#fff 19.2%, #f4f4f4);
-  background-image: -o-linear-gradient(#fff 19.2%, #f4f4f4);
-  box-shadow: 0 -1px 0 white inset;
-  display: block;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  margin-bottom: 2px;
-  position: relative;
-  padding-right: 20px;
-}
-
-body.project-page.commits-page .commit-button i{
-  background: url('images.png') no-repeat -138px -27px;
-  width: 6px;
-  height: 9px;
-  float: right;
-  position: absolute;
-  top: 6px;
-  right: 5px;
-}
-body.project-page.commits-page .commits-date {display: block; width: 100%; margin-bottom: 20px}
-body.project-page.commits-page .commits-date .data {padding: 0}
-body.project-page.commits-page a.commit{padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page.commits-page .commits-date a.commit {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page.commits-page .commits-date a.commit:last-child{border-bottom: 0}
-body.project-page.commits-page .commits-date a.commit img{float: left; margin-right: 10px;}
-body.project-page.commits-page .commits-date a.commit span.commit-title{display: block;}
-body.project-page.commits-page .commits-date a.commit span.commit-title{margin-bottom: 10px}
-body.project-page.commits-page .commits-date a.commit span.commit-author{color: #999; font-weight: normal; font-style: italic;}
-body.project-page.commits-page .commits-date a.commit span.commit-author strong{font-weight: bold; font-style: normal;}
-
-/* eo Commit Page */
 
 /* eo Project Page */
 
@@ -729,12 +649,154 @@ body.projects-page .browse-code{margin-right: 10px}
   h2, h3 { page-break-after: avoid; }
 }
 
-/**
- * author:DZ
- * date: Nov 09
- * fix different fonts for firefox & webkit
- */
 body, button, input, select, textarea {
-  font-family: "Helvetica", sans-serif;
+  font-family: "helvetica", "arial", "freesans", "clean", sans-serif;
 }
 
+/** FORM INPUTS **/
+.new_merge_request,
+.edit_merge_request,
+.user_new,
+.new_key,
+.new_issue,
+.new_note,
+.edit_user,
+.edit_issue,
+.new_project,
+.new_snippet,
+.edit_snippet,
+.edit_project {
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  textarea {
+    width:400px;
+    padding:8px;
+    font-size:14px;
+    @include round-borders-all(4px);
+  }
+}
+
+.text_field { 
+    width:400px;
+    padding:8px;
+    font-size:14px;
+    @include round-borders-all(4px);
+}
+
+.input_button {
+  padding:8px;
+  font-size:14px;
+  cursor:pointer;
+  background-color: #F5F5F5;
+  border-color: #EEEEEE #DEDEDE #DEDEDE #EEEEEE;
+  border-right: 1px solid #DEDEDE;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/** FLASH **/
+#flash_container {
+  height:45px;
+  position:fixed;
+  z-index:10001;
+  top:0px;
+  width:100%;
+  margin-bottom:15px;
+  overflow:hidden;
+  background:white;
+  cursor:pointer;
+  border-bottom:1px solid #777;
+
+  h4 {
+    color:#444;
+    font-size:22px;
+    padding-top:5px;
+    margin:2px;
+  }
+}
+
+
+.errors_holder {
+  background:#D30;
+  color:#fff;
+  @include round-borders-all(4px);
+  border:1px solid #a30;
+  padding:5px;
+  list-style:none;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+  li { 
+    padding:10px;
+  }
+}
+
+.notice_holder {
+  background:#DDF4FB;
+  color:#444;
+  border:1px solid #C6EDF9;
+  @include round-borders-all(4px);
+  padding:5px;
+  list-style:none;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.25);
+
+  li { 
+    padding:10px;
+  }
+}
+
+.alert_holder {
+  background:#FDF5D9;
+  color:#444;
+  border:1px solid #FCEEC1;
+  @include round-borders-all(4px);
+  padding:5px;
+  list-style:none;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.25);
+
+  li { 
+    padding:10px;
+  }
+}
+
+.help_content { 
+  margin:20px;
+  margin-top:71px;
+
+  h2 { 
+    margin:0;
+    padding:0;
+  }
+
+  .menu { 
+    float:left;
+    width:20%;
+
+    .active { 
+      color: $active_bd_color;
+    }
+  }
+
+  .content { 
+    float:right;
+    width:78%;
+  }
+
+  .bash {
+    @include round-borders-all(4px);
+    background:#eee;
+    padding:5px;
+    //overflow-x:scroll;
+    pre{
+      padding:0;
+      line-height:2.0;
+      margin:0;
+      font-family: 'Courier New', 'andale mono','lucida console',monospace;
+      color: #333;
+      text-align:left;
+    }
+  }
+}

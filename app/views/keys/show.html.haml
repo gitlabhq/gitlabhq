@@ -1,0 +1,10 @@
+.ui-box.width-100p
+  %h3= @key.title
+  .data
+    %pre= @key.key
+    .clear
+  .buttons
+    = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => "red-button delete-key right"
+    .clear
+
+

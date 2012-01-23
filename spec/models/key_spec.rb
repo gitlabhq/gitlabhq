@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Key do
   describe "Associations" do
-    it { should belong_to(:user) }
+    it { should belong_to(:user) or belong_to(:project)  }
   end
 
   describe "Validation" do
@@ -22,11 +22,12 @@ end
 # Table name: keys
 #
 #  id         :integer         not null, primary key
-#  user_id    :integer         not null
+#  user_id    :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  key        :text
 #  title      :string(255)
 #  identifier :string(255)
+#  project_id :integer
 #
 

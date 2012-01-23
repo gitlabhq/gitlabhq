@@ -3,6 +3,7 @@
   %head
     %title
       GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
+    = favicon_link_tag 'favicon.ico'
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     = csrf_meta_tags
@@ -21,6 +22,7 @@
               = link_to "Projects", admin_projects_path, :class => controller.controller_name == "projects" ? "current" : nil
               = link_to "Teams", admin_team_members_path, :class => controller.controller_name == "team_members" ? "current" : nil
               = link_to "Emails", admin_emails_path, :class => controller.controller_name == "mailer" ? "current" : nil
+              = link_to "Resque", "/info/resque"
 
         .project-content
           = yield

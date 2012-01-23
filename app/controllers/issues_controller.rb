@@ -6,8 +6,18 @@ class IssuesController < ApplicationController
 
   # Authorize
   before_filter :add_project_abilities
+
+  # Allow read any issue
   before_filter :authorize_read_issue!
-  before_filter :authorize_write_issue!, :only => [:new, :create, :close, :edit, :update, :sort]
+
+  # Allow write(create) issue
+  before_filter :authorize_write_issue!, :only => [:new, :create]
+
+  # Allow modify issue
+  before_filter :authorize_modify_issue!, :only => [:close, :edit, :update, :sort]
+
+  # Allow destroy issue
+  before_filter :authorize_admin_issue!, :only => [:destroy]
 
   respond_to :js, :html
 
@@ -57,10 +67,7 @@ class IssuesController < ApplicationController
   def create
     @issue = @project.issues.new(params[:issue])
     @issue.author = current_user
-
-    if @issue.save && @issue.assignee != current_user
-      Notify.new_issue_email(@issue).deliver
-    end
+    @issue.save
 
     respond_with(@issue)
   end
@@ -80,6 +87,7 @@ class IssuesController < ApplicationController
     @issue.destroy
 
     respond_to do |format|
+      format.html { redirect_to project_issues_path }
       format.js { render :nothing => true }
     end
   end
@@ -114,5 +122,14 @@ class IssuesController < ApplicationController
 
   def issue
     @issue ||= @project.issues.find(params[:id])
+  end
+
+  def authorize_modify_issue!
+    can?(current_user, :modify_issue, @issue) || 
+      @issue.assignee == current_user
+  end
+
+  def authorize_admin_issue!
+    can?(current_user, :admin_issue, @issue)
   end
 end

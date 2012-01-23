@@ -105,6 +105,15 @@ describe "Projects" do
       it { edit_project_path(@project).should be_denied_for :visitor }
     end
 
+    describe "GET /project_code/deploy_keys" do
+      it { project_deploy_keys_path(@project).should be_allowed_for @u1 }
+      it { project_deploy_keys_path(@project).should be_denied_for @u3 }
+      it { project_deploy_keys_path(@project).should be_denied_for :admin }
+      it { project_deploy_keys_path(@project).should be_denied_for @u2 }
+      it { project_deploy_keys_path(@project).should be_denied_for :user }
+      it { project_deploy_keys_path(@project).should be_denied_for :visitor }
+    end
+
     describe "GET /project_code/issues" do
       it { project_issues_path(@project).should be_allowed_for @u1 }
       it { project_issues_path(@project).should be_allowed_for @u3 }
@@ -130,6 +139,51 @@ describe "Projects" do
       it { project_merge_requests_path(@project).should be_denied_for @u2 }
       it { project_merge_requests_path(@project).should be_denied_for :user }
       it { project_merge_requests_path(@project).should be_denied_for :visitor }
+    end
+
+    describe "GET /project_code/repository" do
+      it { project_repository_path(@project).should be_allowed_for @u1 }
+      it { project_repository_path(@project).should be_allowed_for @u3 }
+      it { project_repository_path(@project).should be_denied_for :admin }
+      it { project_repository_path(@project).should be_denied_for @u2 }
+      it { project_repository_path(@project).should be_denied_for :user }
+      it { project_repository_path(@project).should be_denied_for :visitor }
+    end
+
+    describe "GET /project_code/repository/branches" do
+      it { branches_project_repository_path(@project).should be_allowed_for @u1 }
+      it { branches_project_repository_path(@project).should be_allowed_for @u3 }
+      it { branches_project_repository_path(@project).should be_denied_for :admin }
+      it { branches_project_repository_path(@project).should be_denied_for @u2 }
+      it { branches_project_repository_path(@project).should be_denied_for :user }
+      it { branches_project_repository_path(@project).should be_denied_for :visitor }
+    end
+
+    describe "GET /project_code/repository/tags" do
+      it { tags_project_repository_path(@project).should be_allowed_for @u1 }
+      it { tags_project_repository_path(@project).should be_allowed_for @u3 }
+      it { tags_project_repository_path(@project).should be_denied_for :admin }
+      it { tags_project_repository_path(@project).should be_denied_for @u2 }
+      it { tags_project_repository_path(@project).should be_denied_for :user }
+      it { tags_project_repository_path(@project).should be_denied_for :visitor }
+    end
+
+    describe "GET /project_code/hooks" do
+      it { project_hooks_path(@project).should be_allowed_for @u1 }
+      it { project_hooks_path(@project).should be_allowed_for @u3 }
+      it { project_hooks_path(@project).should be_denied_for :admin }
+      it { project_hooks_path(@project).should be_denied_for @u2 }
+      it { project_hooks_path(@project).should be_denied_for :user }
+      it { project_hooks_path(@project).should be_denied_for :visitor }
+    end
+
+    describe "GET /project_code/files" do
+      it { files_project_path(@project).should be_allowed_for @u1 }
+      it { files_project_path(@project).should be_allowed_for @u3 }
+      it { files_project_path(@project).should be_denied_for :admin }
+      it { files_project_path(@project).should be_denied_for @u2 }
+      it { files_project_path(@project).should be_denied_for :user }
+      it { files_project_path(@project).should be_denied_for :visitor }
     end
   end
 end

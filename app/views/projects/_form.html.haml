@@ -6,13 +6,9 @@
         = @project.name
       .clear
     - if @project.errors.any?
-      #error_explanation
-        %h2
-          = pluralize(@project.errors.count, "error")
-          prohibited this project from being saved:
-        %ul
-          - @project.errors.full_messages.each do |msg|
-            %li= msg
+      %ul.errors_holder
+        - @project.errors.full_messages.each do |msg|
+          %li= msg
     %table
       %tr
         %td= f.label :name
@@ -34,7 +30,7 @@
           %td= f.label :default_branch, "Default Branch"
           %td= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
 
-      %tr
+      -#%tr
         %td= f.label :tag_list
         %td= f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
       %tr
@@ -42,9 +38,6 @@
         %td= f.text_area :description, :placeholder => "project description", :style => "height:50px"
 
     %br
-    .actions
-      = f.submit :class => "button"
-
   %div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
     %center
       = image_tag "ajax-loader.gif", :class => "append-bottom"
@@ -52,15 +45,23 @@
         %h3.prepend-top Creating project &amp; repository. Please wait for few minutes
       - else
         %h3.prepend-top Updating project &amp; repository. Please wait for few minutes
+  
+  .merge-tabs
+    = f.submit 'Save', :class => "grey-button"
+    &nbsp;
+    - unless @project.new_record?
+      .right
+        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
 
-:javascript
-  $('.new_project, .edit_project').bind('ajax:before', function() {
-    $(this).find(".form_content").hide();
-    $('.ajax_loader').show();
-  });
 
 :javascript
   $(function(){
+    $('.new_project, .edit_project').bind('ajax:before', function() {
+      $(this).find(".form_content").hide();
+      $('.ajax_loader').show();
+    });
+    
     taggifyForm();
+    
     $('form #project_default_branch').chosen();
   })

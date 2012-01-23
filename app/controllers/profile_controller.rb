@@ -4,10 +4,14 @@ class ProfileController < ApplicationController
     @user = current_user
   end
 
-  def social_update
+  def design
+    @user = current_user
+  end
+
+  def update
     @user = current_user
     @user.update_attributes(params[:user])
-    redirect_to [:profile]
+    redirect_to :back
   end
 
   def password

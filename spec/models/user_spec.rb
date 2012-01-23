@@ -6,6 +6,8 @@ describe User do
     it { should have_many(:users_projects) }
     it { should have_many(:issues) }
     it { should have_many(:assigned_issues) }
+    it { should have_many(:merge_requests) }
+    it { should have_many(:assigned_merge_requests) }
   end
 
   describe "Respond to" do
@@ -63,5 +65,6 @@ end
 #  linkedin               :string(255)     default(""), not null
 #  twitter                :string(255)     default(""), not null
 #  authentication_token   :string(255)
+#  dark_scheme            :boolean         default(FALSE), not null
 #
 

@@ -1,0 +1,17 @@
+= render "repositories/head"
+
+%div#keys-table{ :class => "update-data ui-box ui-box-small ui-box-big" }
+  .data
+    - @keys.each do |key|
+      = render(:partial => 'show', :locals => {:key => key})
+
+- if @keys.blank?
+  .notice_holder
+    %li Deploy Keys do not exist yet.
+    - if can? current_user, :admin_project, @project
+      %li You can add a new one by clicking on "Add New" button
+
+:javascript
+  $('.delete-key').live('ajax:success', function() {
+    $(this).closest('.update-item').fadeOut(); });
+
