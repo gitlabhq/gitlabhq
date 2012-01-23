@@ -4,8 +4,6 @@ Gitlab::Application.routes.draw do
   require 'resque/server'
   mount Resque::Server.new, at: '/info/resque'
 
-  get 'tags'=> 'tags#index'
-  get 'tags/:tag' => 'projects#index'
   get 'help' => 'help#index'
 
   namespace :admin do
