@@ -29,7 +29,7 @@
 
 :javascript
   $(document).ready(function(){
-    $(".line_content").live("dblclick", function(e) { 
+    $(".noteable_line").live("dblclick", function(e) { 
       var form = $(".per_line_form");
       $(this).parent().after(form);
       form.find("#note_line_code").val($(this).attr("line_code"));

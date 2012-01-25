@@ -7,16 +7,6 @@ module CommitsHelper
 
   end
 
-  def diff_line_class(line)
-    if line[0] == "+"
-      "new"
-    elsif line[0] == "-"
-      "old"
-    else
-      nil
-    end
-  end
-
   def more_commits_link
     offset = params[:offset] || 0
     limit = params[:limit] || 100
@@ -42,11 +32,56 @@ module CommitsHelper
     preserve out
   end
 
-  def build_line_code(line, index, line_new, line_old)
-    if diff_line_class(line) == "new"
-      "NEW_#{index}_#{line_new}"
+  def diff_line_class(line)
+    if line[0] == "+"
+      "new"
+    elsif line[0] == "-"
+      "old"
     else
-      "OLD_#{index}_#{line_old}"
+      nil
+    end
+  end
+
+  def build_line_code(line, index, line_new, line_old)
+    "#{index}_#{line_old}_#{line_new}"
+  end
+
+  def each_diff_line(diff_arr, index)
+    line_old = 1
+    line_new = 1
+    type = nil
+
+    lines_arr = diff_arr
+    lines_arr.each do |line|
+      full_line = html_escape(line.gsub(/\n/, ''))
+
+      next if line.match(/^--- \/dev\/null/)
+      next if line.match(/^--- a/)
+      next if line.match(/^\+\+\+ b/)
+      if line.match(/^@@ -/)
+        next if line_old == 1 && line_new == 1
+        type = "match"
+
+        line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
+        line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
+
+        yield(nil, type, nil, nil, nil)
+        next
+      else
+        type = diff_line_class(line)
+        line_code = build_line_code(line, index, line_new, line_old)
+        yield(full_line, type, line_code, line_new, line_old)
+      end
+
+
+      if line[0] == "+"
+        line_new += 1
+      elsif line[0] == "-"
+        line_old += 1
+      else
+        line_new += 1
+        line_old += 1
+      end
     end
   end
 end
