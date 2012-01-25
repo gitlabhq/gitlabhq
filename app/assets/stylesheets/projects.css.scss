@@ -233,60 +233,6 @@ body.project-page table .commit {
 }
 .snippet:hover .action-links { display:block; }
 
-/** ISSUES TAGS **/
-.tag {
-  @include round-borders-all(4px);
-  padding:2px 4px;
-  border:none;
-  text-shadow:none;
-
-  &.inline {
-    display:inline;
-  }
-
-  &.high, &.closed {
-    background: #D12F19;
-    color:white;
-  }
-
-  &.today, &.open {
-    background: #44aa22;
-    color:white;
-  }
-
-  &.yours {
-    background: #4466cc;
-    color:white;
-  }
-  &.normal {
-    background: #2c5ca6;
-    color:white;
-  }
-  &.notes {
-    background: #2c5c66;
-    color:white;
-  }
-  &.note {
-    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    color: #777;
-    border: 1px solid #DEDFE1;
-  }
-  &.issue {
-    background: #D12F19;
-    color:white;
-  }
-  &.commit {
-    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    color: #777;
-    border: 1px solid #DEDFE1;
-  }
-}
 
 #holder {
   background:#FAFAFA;
