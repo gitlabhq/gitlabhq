@@ -3,6 +3,7 @@ function switchToNewIssue(form){
     $(".project-content").append(form);
     $('select#issue_assignee_id').chosen();
     $("#new_issue_dialog").show("slide", { direction: "right" }, 150);
+    $('.top-tabs .add_new').hide();
   });
 }
 
@@ -11,6 +12,7 @@ function switchToEditIssue(form){
     $(".project-content").append(form);
     $('select#issue_assignee_id').chosen();
     $("#edit_issue_dialog").show("slide", { direction: "right" }, 150);
+    $('.top-tabs .add_new').hide();
   });
 }
 
@@ -27,6 +29,7 @@ function backToIssues(){
     $("#issues-table-holder").show("slide", { direction: "left" }, 150, function() { 
       $("#edit_issue_dialog").remove();
       $("#new_issue_dialog").remove();
+      $('.top-tabs .add_new').show();
     });
   });
 }
