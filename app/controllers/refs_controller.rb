@@ -37,7 +37,12 @@ class RefsController < ApplicationController
 
   def blob
     if @tree.is_blob?
-      send_data(@tree.data, :type => @tree.mime_type, :disposition => 'inline', :filename => @tree.name)
+      send_data(
+        @tree.data,
+        :type => @tree.text? ? "text/plain" : @tree.mime_type,
+        :disposition => 'inline',
+        :filename => @tree.name
+      )
     else
       head(404)
     end
