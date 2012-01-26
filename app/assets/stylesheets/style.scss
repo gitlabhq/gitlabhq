@@ -130,64 +130,7 @@ table  thead .image{width:100px}
 .listed_items tr.odd:hover{background-color:#FFFFCF}
 /* eo Tables */
 
-/* Buttons */
-.grey-button{
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px 17px;
-  border: 1px solid #999;
-  color: #666;
-  display: inline-block;
-  box-shadow: 0 1px 2px rgba(0,0,0,.3);
-  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #f7f7f7), to(#d5d5d5));
-  background-image: -webkit-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
-  background-image: -moz-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
-  background-image: -o-linear-gradient(#f7f7f7 7.6%, #d5d5d5);
-}
 
-a.button, input.button {
-  font-weight: bold;
-  padding: 10px 20px;
-  text-align: center;
-  display: inline-block;
-  border-radius: 5px;
-  color: #578E91;
-  font-size: 12px;
-  text-transform: uppercase;
-  border: 1px solid #8CE2E6;
-  background-image: -webkit-gradient(linear, 0 0, 0 34, color-stop(0.794, #dbf5f6), to(#c5eef0));
-  background-image: -webkit-linear-gradient(#dbf5f6 79.4%, #c5eef0);
-  background-image: -moz-linear-gradient(#dbf5f6 79.4%, #c5eef0);
-  background-image: -o-linear-gradient(#dbf5f6 79.4%, #c5eef0);
-}
-
-input.button{margin-bottom: 1.5em}
-
-.button:hover {color: rgba(0,0,0,.8)}
-
-.button.green {margin-right: 0; }
-
-.button.yellow{
-  color: #908054;
-  border-color: #DDCDA1;
-  background-image: -webkit-gradient(linear, 0 0, 0 34, color-stop(0.794, #FFEFC3), to(#F3E3B7));
-  background-image: -webkit-linear-gradient(#FFEFC3 79.4%, #F3E3B7);
-  background-image: -moz-linear-gradient(#FFEFC3 79.4%, #F3E3B7);
-  background-image: -o-linear-gradient(#FFEFC3 79.4%, #F3E3B7);  
-}
-
-.button.blue{
-  color: #417E97;
-  border-color: #b2cdec;
-  background-image: -webkit-gradient(linear, 0 0, 0 34, color-stop(0.794, #dbe8f6), to(#c7daf1));
-  background-image: -webkit-linear-gradient(#dbe8f6 79.4%, #c7daf1);
-  background-image: -moz-linear-gradient(#dbe8f6 79.4%, #c7daf1);
-  background-image: -o-linear-gradient(#dbe8f6 79.4%, #c7daf1);
-}
-
-.button-small{ text-shadow: none;  padding: 4px 10px; }
-.button-green{background: #A6B807; color: white}
 
 /* eo Buttons */
 

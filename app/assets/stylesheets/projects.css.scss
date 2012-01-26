@@ -122,37 +122,6 @@ input.ssh_project_url {
 }
 
 
-/** Buttons **/
-.lbutton,
-.lite_button {
-  display:block;
-  float:left;
-  margin: 0px 5px 0px 0px;
-  padding:5px 10px;
-
-  font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
-  border:1px solid #D3D3D3;
-  background:white;
-  font-size:12px !important;
-  line-height:130%;
-  text-decoration:none;
-  font-weight:bold;
-  color:#565656;
-  cursor:pointer;
-
-  &:hover {
-    border:1px solid #C2E1EF;
-    color: #0099FF;
-  }
-
-  &.hm {
-    margin: 0px 0px;
-  }
-
-  &.vm {
-    margin: 5px 0px;
-  }
-}
 
 #user_projects_limit{
   width: 60px;
@@ -449,31 +418,6 @@ h4.dash-tabs {
 }
 
 
-.red-button{
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px 17px;
-  border: 1px solid #999;
-  color: #666;
-  display: inline-block;
-  box-shadow: 0 1px 2px rgba(0,0,0,.3);
-  background: #D12F19;
-  color: white;
-}
-
-.positive-button{
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px 17px;
-  border: 1px solid #999;
-  color: #666;
-  display: inline-block;
-  box-shadow: 0 1px 2px rgba(0,0,0,.3);
-  background: #4A2;
-  color: white;
-}
 
 
 .dark_scheme_box { 
