@@ -1,3 +1,5 @@
+require "iconv"
+
 class Commit
 
   attr_accessor :commit
@@ -22,7 +24,8 @@ class Commit
   end
 
   def safe_message
-    message
+    iconv = Iconv.new("UTF-8//IGNORE", "UTF-8")
+    iconv.iconv(message + ' ')[0..-2]
   end
 
   def created_at
