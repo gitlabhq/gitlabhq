@@ -6,9 +6,9 @@
           = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
         - else
           = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-        %span.update-title
+        %span.commit-title
           = truncate commit.safe_message, :length => 60
-        %span.update-author
+        %span.commit-author
           %strong= commit.author_name
           authored
           = time_ago_in_words(commit.created_at)

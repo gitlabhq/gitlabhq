@@ -8,12 +8,9 @@
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     = csrf_meta_tags
-    = javascript_tag do
-      REQ_URI = "#{request.env["REQUEST_URI"]}";
-      REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body{ :class => body_class, :id => yield(:boyd_id)}
+  %body.application
     = render :partial => "layouts/flash"
-    #container
-      = render :partial => "layouts/head_panel"
-      = render :partial => "layouts/page_title"
-      = yield
+    = render :partial => "layouts/head_panel"
+    .container-fluid
+      .sidebar= render :partial => "dashboard/sidebar"
+      .content= yield

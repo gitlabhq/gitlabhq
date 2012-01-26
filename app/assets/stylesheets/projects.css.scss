@@ -1,77 +1,33 @@
-body.project-page h2.icon .project-name, body.project-page h2.icon d{border: 1px solid #eee; padding: 5px 30px 5px 10px; border-radius: 5px; position: relative;}
-body.project-page h2.icon .project-name i.arrow{float: right;
-  position: absolute;
-  right: 10px;
-  top: 13px;
-  display: block;
-  background: url('images.png') no-repeat -97px -29px;
-  width: 4px;
-  height: 5px;
-}
-
-body.project-page h2.icon span{  background-position:  -78px -68px; }
-body.project-page .project-container{ position: relative; float: left; width: 100%; height: 100%; padding-bottom: 10px;}
-body.project-page .page-title{margin-bottom: 0}
-
-body.project-page .project-sidebar { 
-  width: 110px;
-  left: 0;
-  top: 0;
-  height: 100%;
-  bottom: 0;
-  position: absolute;
-  float: left;
-  display: inline-block;
-  background: #FFF;
-  padding: $app_padding;
-  padding-right:0px;
-  margin: 0; 
-  border-right: 1px solid $border_color;
-}
-
-body.projects-page input.text.git-url { font-size: 12px; border-radius: 5px; color: #666; box-shadow: 0 1px 2px rgba(0,0,0,.2) inset; padding:  8px 0 8px 30px;  margin-bottom: 20px;  background: white url('images.png') no-repeat 8px -40px; width: 136px}
-body.projects-page input.text.git-url {margin:10px 0 0 }
 .git_url_wrapper { margin-right:50px }
 
-.projects_selector:hover > .project-box{ -moz-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); -webkit-box-shadow:0px 0px 10px rgba(0, 0, 0, .1); box-shadow:0px 0px 10px rgba(0, 0, 0, .1); }
-
-
-/* New project Page */
-.new-project-page .container table{background: white}
-body.project-page .project-sidebar aside{width: 109px}
-body.project-page .project-sidebar aside a{
+.sidebar aside a{
   display: block;
   position: relative; 
   padding: 15px 10px; 
   margin: 10px 0 0 0;
 
+  span.number{ 
+    float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px;
+  }
+  &.current {
+    color: white;
+    background: $active_bg_color;
+    border: 1px solid $active_bd_color;
+    border-radius:5px;
 
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 0px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: -1px;
+  }
 }
-body.project-page .project-sidebar aside a span.number{float: right; border-radius: 5px; text-shadow: none; background: rgba(0,0,0,.12); text-align: center; padding: 5px 8px; position: absolute; top: 10px; right: 10px}
-body.project-page .project-sidebar aside a.current {
-  color: white;
-  background: $active_bg_color;
-  border: 1px solid $active_bd_color;
-  border-radius:5px;
 
-
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-topright: 0px;
-  -moz-border-radius-bottomright: 0px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  margin-right: -1px;
-}
-body.project-page .project-content{ padding: $app_padding; display: block; margin-left: 130px; min-height: 600px}
-body.project-page .project-content h2{ margin-top: 6px}
-body.project-page .project-content .button.right{margin-left: 20px}
-body.project-page table .commit a{color: #{$blue_link}}
-body.project-page table th, body.project-page table td{  border-bottom: 1px solid #DEE2E3;}
-body.project-page .fixed{position: fixed; }
-
-
-
+body table .commit a{color: #{$blue_link}}
+body table th, body table td{  border-bottom: 1px solid #DEE2E3;}
+body .fixed{position: fixed; }
 
 /** File stat **/
 .file_stats {
@@ -146,7 +102,7 @@ input.ssh_project_url {
 
 .filter .left { margin-right:15px; }
 
-body.project-page table .commit {
+body table .commit {
   a.tree-commit-link {
     color:#444;
     &:hover {
@@ -187,22 +143,6 @@ body.project-page table .commit {
   }
 }
 
-/** Snippets **/
-.new_snippet textarea,
-.edit_snippet textarea {
-  height:300px;
-  padding: 8px;
-  width: 95%;
-}
-.snippet .action-links {
-  display:none;
-  a {
-    margin-left:10px;
-  }
-}
-.snippet:hover .action-links { display:block; }
-
-
 #holder {
   background:#FAFAFA;
   border: 1px solid #EEE;
@@ -214,29 +154,17 @@ body.project-page table .commit {
 /* Project Dashboard Page */
 html, body { height: 100%; }
 
-body.dashboard.project-page .news-feed h2{float: left;}
-body.dashboard.project-page .news-feed .project-updates  {margin-bottom: 20px; display: block; width: 100%;}
-body.dashboard.project-page .news-feed .project-updates .data{ padding: 0}
-body.dashboard.project-page .news-feed .project-updates a.project-update {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.dashboard.project-page .news-feed .project-updates a.project-update:last-child{border-bottom: 0}
-body.dashboard.project-page .news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
-body.dashboard.project-page .news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
-body.dashboard.project-page .news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
-body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
-body.dashboard.project-page .news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
+.news-feed h2{float: left;}
+.news-feed .project-updates  {margin-bottom: 20px; display: block; width: 100%;}
+.news-feed .project-updates .data{ padding: 0}
+.news-feed .project-updates a.project-update {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+.news-feed .project-updates a.project-update:last-child{border-bottom: 0}
+.news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
+.news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+.news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
+.news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
+.news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
 /* eo Dashboard Page */
-
-
-/** Merge requests */
-body.project-page .merge-request-commits  {margin-bottom: 20px; display: block; width: 100%;}
-body.project-page .merge-request-commits .data{ padding: 0}
-body.project-page .merge-request-commits a.commit {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page .merge-request-commits a.commit:last-child{border-bottom: 0}
-body.project-page .merge-request-commits a.commit img{float: left; margin-right: 10px;}
-body.project-page .merge-request-commits a.commit span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
-body.project-page .merge-request-commits a.commit span.update-title{margin-bottom: 10px}
-body.project-page .merge-request-commits a.commit span.update-author{color: #999; font-weight: normal; font-style: italic;}
-body.project-page .merge-request-commits a.commit span.update-author strong{font-weight: bold; font-style: normal;}
 
 
 /** Update entry **/
@@ -252,19 +180,19 @@ a.update-item span.update-author{color: #999; font-weight: normal; font-style: i
 a.update-item span.update-author strong{font-weight: bold; font-style: normal;}
 
 
-body.project-page .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }
+body .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }
 
 body.projects-page input.text.git-url.project_list_url { width:165px; }
 
 
-body.project-page table.no-borders th { 
+body table.no-borders th { 
   background:none;
   border-bottom:1px solid #CCC;
   color:#333;
 }
 
-body.project-page table.no-borders tr,
-body.project-page table.no-borders td{
+body table.no-borders tr,
+body table.no-borders td{
   border:none;
 }
 
@@ -453,10 +381,4 @@ a.project-update.titled {
   @include round-borders-all(4px);
   font-size:11px;
   margin: 10px 0;
-}
-
-
-
-.new-project-hodler { 
-  padding:20px;
 }

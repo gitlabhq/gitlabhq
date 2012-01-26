@@ -3,7 +3,8 @@
   %head
     %meta{:charset => "utf-8"}
     %title
-      GitLab #{" - #{@project.name}" if @project && !@project.new_record?}
+      GitLab
+      = " - #{@project.name}" if @project && !@project.new_record?
     = favicon_link_tag 'favicon.ico'
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
@@ -12,14 +13,9 @@
     - if request.path == project_issues_path(@project)
       = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, :private_token => current_user.private_token), :title => "#{@project.name} issues")
     = csrf_meta_tags
-    = javascript_tag do
-      REQ_URI = "#{request.env["REQUEST_URI"]}";
-      REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body{ :class => body_class('project-page'), :id => yield(:boyd_id)}
+  %body.project
     = render :partial => "layouts/flash"
-    #container
-      = render :partial => "layouts/head_panel"
-      .project-container
-        = render :partial => "layouts/project_side"
-        .project-content
-          = yield
+    = render :partial => "layouts/head_panel"
+    .container-fluid
+      .sidebar= render :partial => "layouts/project_side"
+      .content= yield

@@ -1,19 +1,19 @@
 /* Commit Page */
-body.project-page.commits-page .commit-info{float: right;}
-body.project-page.commits-page .commit-info data{
+.commit-info{float: right;}
+.commit-info data{
   padding: 4px 10px;
   font-size: 11px;
 }
-body.project-page.commits-page .commits-date {display: block; width: 100%; margin-bottom: 20px}
-body.project-page.commits-page .commits-date .data {padding: 0}
-body.project-page.commits-page a.commit{padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page.commits-page .commits-date a.commit {padding: 10px; border-bottom: none; overflow: hidden; display: block;}
-body.project-page.commits-page .commits-date a.commit:last-child{border-bottom: 0}
-body.project-page.commits-page .commits-date a.commit img{float: left; margin-right: 10px;}
-body.project-page.commits-page .commits-date a.commit span.commit-title{display: block;}
-body.project-page.commits-page .commits-date a.commit span.commit-title{margin-bottom: 10px}
-body.project-page.commits-page .commits-date a.commit span.commit-author{color: #999; font-weight: normal; font-style: italic;}
-body.project-page.commits-page .commits-date a.commit span.commit-author strong{font-weight: bold; font-style: normal;}
+.commits-date {display: block; width: 100%; margin-bottom: 20px}
+.commits-date .data {padding: 0}
+a.commit{padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+a.commit {padding: 10px; border-bottom: none; overflow: hidden; display: block;}
+a.commit:last-child{border-bottom: 0}
+a.commit img{float: left; margin-right: 10px;}
+a.commit .commit-title{display: block;}
+a.commit .commit-title{margin-bottom: 10px}
+a.commit .commit-author{color: #999; font-weight: normal; font-style: italic;}
+a.commit .commit-author strong{font-weight: bold; font-style: normal;}
 
 /* eo Commit Page */
 /** Commit diff view **/
