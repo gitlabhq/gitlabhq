@@ -1,3 +1,5 @@
+@import "bootstrap";
+
 $text_color:#222;
 $lite_text_color: #666; 
 $link_color:#111; 
@@ -10,6 +12,8 @@ $app_width:980px;
 $app_padding:20px;
 $bg_color: #FFF;
 $styled_border_color: #2FA0BB;
+$color: "#4BB8D2";
+$blue_link: "#2fa0bb";
 
 /** MIXINS **/
 @mixin round-borders-bottom($radius) {
@@ -98,7 +102,9 @@ body.collapsed {
 
 a {
   color: $link_color;
+  &:hover { text-decoration:none; }
 }
+
 
 @import "style.scss";
 @import "projects.css.scss";
