@@ -9,7 +9,8 @@ $active_bg_color:#79C3E0;
 $active_bd_color: #2FA0BB;
 $border_color:#CCC;
 $lite_border_color:#EEE;
-$app_width:980px;
+$min_app_width:940px;
+$max_app_width:980px;
 $app_padding:20px;
 $bg_color: #FFF;
 $styled_border_color: #2FA0BB;
@@ -90,58 +91,40 @@ $blue_link: "#2fa0bb";
 /** LAYOUT **/
 
 .container-fluid { 
-  max-width:980px;
+  min-width:$min_app_width;
+  max-width:$max_app_width;
   margin:auto;
-  margin-top:80px;
+  margin-top:60px;
 }
 
 .container-fluid > .sidebar { 
-  width: 110px;
-  left: 0;
-  top: 0;
-  height: 100%;
-  bottom: 0;
-  position: absolute;
-  float: left;
-  display: inline-block;
-  background: #FFF;
-  padding: $app_padding;
-  padding-right:0px;
-  margin: 0; 
+  width: 140px;
   border-right: 1px solid $border_color;
-
-  aside { 
-    width: 109px
-  }
+  height:100%;
 }
 
 .container-fluid > .content {
-  margin-left: 130px;
+  margin-left: 160px;
 }
 
-/** GITLAB reset **/
-a {
-  color: $link_color;
-  &:hover { text-decoration:none; }
-}
-
+@import "reset_bootstrap.scss";
 @import "top_panel.scss";
 @import "projects.css.scss";
-
-@import "style.scss";
-@import "commits.css.scss";
-@import "notes.css.scss";
-@import "merge_requests.css.scss";
-
-@import "issues.css.scss";
 @import "commits.css.scss";
 
-@import "dashboard.scss";
-@import "tree.scss";
-@import "tags.scss";
-@import "buttons.scss";
+//@import "style.scss";
+//@import "notes.css.scss";
+//@import "merge_requests.css.scss";
+
+//@import "issues.css.scss";
+//@import "commits.css.scss";
+
+//@import "dashboard.scss";
+//@import "tree.scss";
+//@import "tags.scss";
+//@import "buttons.scss";
 
 /** CODE HIGHTLIGHT **/
-@import "highlight.css.scss";
-@import "highlight.black.css.scss";
+//@import "highlight.css.scss";
+//@import "highlight.black.css.scss";
 

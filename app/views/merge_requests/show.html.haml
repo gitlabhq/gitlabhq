@@ -26,31 +26,26 @@
     = @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
 
   %hr
-  %br
-  %h3
-    = simple_format @merge_request.title
+  %div.well= simple_format @merge_request.title
 
-.clear
-%br
-%br
 
-.merge-tabs
-  = link_to "#notes", :class => "merge-notes-tab active tab" do 
-    %span
-    Notes
-  = link_to "#commits", "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab tab" do 
-    %span
-    Commits
-  = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
-    %span
-    Diff
+.tabs
+  %li.active
+    = link_to "#notes", :class => "merge-notes-tab tab" do 
+      Notes
+  %li
+    = link_to "#commits", "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab tab" do 
+      Commits
+  %li
+    = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
+      Diff
 
   - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
     .right
       - if @merge_request.closed
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "red-button"
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
       - else
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "positive-button", :title => "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
   %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes

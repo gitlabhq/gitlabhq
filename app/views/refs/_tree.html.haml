@@ -1,11 +1,10 @@
-#tree-breadcrumbs
-  %div
+%ul.breadcrumb
+  %li
     = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
       = @project.code
-    - tree.breadcrumbs(6) do |link|
-      \/
-      = link
-    &nbsp;
+  - tree.breadcrumbs(6) do |link|
+    \/
+    %li= link
   %span.tree_progress
 .clear
 #tree-content-holder
