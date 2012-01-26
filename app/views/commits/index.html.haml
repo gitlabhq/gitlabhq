@@ -1,4 +1,3 @@
-- content_for(:body_class, "project-page commits-page")
 - if current_user.private_token   
   = content_for :rss_icon do 
     .rss-icon
@@ -6,11 +5,14 @@
         = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
 
 - if params[:path]
-  %h2
-    = link_to project_commits_path(@project) do
-      = @project.code
-    \/
-    %a{:href => "#"}= params[:path].split("/").join(" / ")
+  %ul.breadcrumb
+    %li
+      = link_to project_commits_path(@project) do
+        = @project.code
+      %span.divider 
+        \/
+    %li
+      %a{:href => "#"}= params[:path].split("/").join(" / ")
 
 %div{:id => dom_id(@project)}
   #commits_list= render "commits"

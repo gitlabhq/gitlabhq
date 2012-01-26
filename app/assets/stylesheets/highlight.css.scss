@@ -25,7 +25,13 @@ td.linenos{
   padding:10px 0px 0px 10px;
   margin-left:0px;
 }
+
+.linenodiv pre,
 .highlight pre{
+  margin:0;
+  padding:0;
+  background:none;
+  border:none;
 }
 
 .linenodiv pre {

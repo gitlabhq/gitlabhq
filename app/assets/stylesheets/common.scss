@@ -101,6 +101,7 @@ $blue_link: "#2fa0bb";
   width: 140px;
   border-right: 1px solid $border_color;
   height:100%;
+  min-height:450px;
 }
 
 .container-fluid > .content {
@@ -111,6 +112,7 @@ $blue_link: "#2fa0bb";
 @import "top_panel.scss";
 @import "projects.css.scss";
 @import "commits.css.scss";
+@import "tree.scss";
 
 //@import "style.scss";
 //@import "notes.css.scss";
@@ -120,11 +122,10 @@ $blue_link: "#2fa0bb";
 //@import "commits.css.scss";
 
 //@import "dashboard.scss";
-//@import "tree.scss";
 //@import "tags.scss";
 //@import "buttons.scss";
 
 /** CODE HIGHTLIGHT **/
-//@import "highlight.css.scss";
-//@import "highlight.black.css.scss";
+@import "highlight.css.scss";
+@import "highlight.black.css.scss";
 

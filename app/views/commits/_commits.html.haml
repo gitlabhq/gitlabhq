@@ -1,7 +1,8 @@
 - @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
   %div{ :class => "commits-date ui-box ui-box-small ui-box-big" }
     .day-commits-table
-      %h3= day.stamp("28 Aug, 2010")
+      %div.alert-message.info
+        %p= day.stamp("28 Aug, 2010")
       .data
         - commits.each do |commit|
           %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }

@@ -12,7 +12,7 @@
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.no-borders
+    %table#tree-slider
       %thead
         %th Name
         %th Last Update
