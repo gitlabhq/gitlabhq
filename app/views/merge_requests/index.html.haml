@@ -1,5 +1,3 @@
-= render "merge_requests/head"
-
 .left.issues_filter
   = form_tag project_merge_requests_path(@project), :method => :get do
     .left
@@ -14,17 +12,17 @@
 .clear
 %hr
 
-- if @merge_requests.count > 0
-  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
-    .data
-      = render @merge_requests
 
-  .clear
-  %br
-
-- unless @merge_requests.count > 0 || params[:f] == "2"
-  .notice_holder
-    %li Merge Requests do not exist yet.
+.row
+  .span10
+    - if @merge_requests.count > 0
+      %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
+        .data
+          = render @merge_requests
+  .span4
     - if can? current_user, :write_merge_request, @project
-      %li You can add a new one by clicking on "Add New" button
-
+      .alert-message.block-message.info
+        %p You can open a new merge request.
+        - if current_page?(project_merge_requests_path(@project))
+          = link_to new_project_merge_request_path(@project), :class => "btn small", :title => "New Merge request" do 
+            Add new

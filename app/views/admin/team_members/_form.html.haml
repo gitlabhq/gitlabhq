@@ -27,7 +27,7 @@
     = f.select :repo_access, options_for_select(Repository.access_options, @admin_team_member.repo_access), {}, :class => "repo-access-select"
   %br
   .actions
-    = f.submit 'Save', :class => "grey-button"
+    = f.submit 'Save', :class => "btn"
 
 :css
   form select { 

@@ -1,32 +1,31 @@
-%div
+= form_for [@project, @note], :remote => "true", :multipart => true do |f|
   %h3 Leave a note
-  = form_for [@project, @note], :remote => "true", :multipart => true do |f|
-    -if @note.errors.any?
-      .errors.error
-        - @note.errors.full_messages.each do |msg|
-          %div= msg
+  -if @note.errors.any?
+    .alert-message.block-message.error
+      - @note.errors.full_messages.each do |msg|
+        %div= msg
 
-    = f.hidden_field :noteable_id
-    = f.hidden_field :noteable_type
-    = f.text_area :note,  :size => 255
+  = f.hidden_field :noteable_id
+  = f.hidden_field :noteable_type
+  = f.text_area :note,  :size => 255
 
-    .row
-      .span6
-        %h5 Notify via email:
-        .clearfix
-          = label_tag :notify do 
-            = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-            %span Project team
+  .row
+    .span6
+      %h5 Notify via email:
+      .clearfix
+        = label_tag :notify do 
+          = check_box_tag :notify, 1, @note.noteable_type != "Commit"
+          %span Project team
 
-          -if @note.noteable_type == "Commit"
-            = label_tag :notify_author do 
-              = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-              %span Commit author
-      .span6
-        %h5 Attachment:
-        .clearfix
-          = f.label :attachment, "Any file, < 10 MB"
-          .input= f.file_field :attachment, :class => "input-file"
+        -if @note.noteable_type == "Commit"
+          = label_tag :notify_author do 
+            = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
+            %span Commit author
+    .span6
+      %h5 Attachment:
+      .clearfix
+        = f.label :attachment, "Any file, < 10 MB"
+        .input= f.file_field :attachment, :class => "input-file"
 
 
-    = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
+  = f.submit 'Add note', :class => "btn primary", :id => "submit_note"

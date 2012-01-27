@@ -31,7 +31,7 @@
       = @admin_project.description
   %tr
     %td{:colspan => 2}
-      = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "grey-button"
+      = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "btn"
 
 
 .span-14
@@ -53,7 +53,7 @@
 
       %tr
         %td{ :colspan => 3 }
-          = submit_tag 'Add', :class => "positive-button"
+          = submit_tag 'Add', :class => "btn primary"
 
   %table.round-borders
     %thead
