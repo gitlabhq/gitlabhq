@@ -4,8 +4,8 @@
       .data
         - @issues.each do |update|
           %a.project-update{:href => dashboard_feed_path(update.project, update)}
-            %strong.issue-number= "##{update.id}"
-            %span.update-title
+            .avatar= image_tag gravatar_icon(update.assignee_email), :class => "avatar", :width => 32
+            %div
               = truncate update.title, :length => 35
               .right= truncate update.project.name
             %span.update-author
@@ -15,9 +15,9 @@
               ago
             .right
               - if update.critical
-                %span.tag.high critical
+                %span.label.important critical
               - if update.today?
-                %span.tag.today today
+                %span.label.new today
 
   - else 
     %h2

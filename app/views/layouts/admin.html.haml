@@ -11,19 +11,17 @@
     = javascript_tag do
       REQ_URI = "#{request.env["REQUEST_URI"]}";
       REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body{ :class => body_class('project-page'), :id => yield(:boyd_id)}
+  %body.admin
     = render :partial => "layouts/flash"
-    #container
-      = render :partial => "layouts/head_panel"
-      .project-container
-        .project-sidebar
-          .fixed
-            %aside
-              = link_to "Users", admin_users_path, :class => controller.controller_name == "users" ? "current" : nil
-              = link_to "Projects", admin_projects_path, :class => controller.controller_name == "projects" ? "current" : nil
-              = link_to "Teams", admin_team_members_path, :class => controller.controller_name == "team_members" ? "current" : nil
-              = link_to "Emails", admin_emails_path, :class => controller.controller_name == "mailer" ? "current" : nil
-              = link_to "Resque", "/info/resque"
+    = render :partial => "layouts/head_panel"
+    .container-fluid
+      .sidebar
+        .fixed
+          %aside
+            = link_to "Users", admin_users_path, :class => controller.controller_name == "users" ? "current" : nil
+            = link_to "Projects", admin_projects_path, :class => controller.controller_name == "projects" ? "current" : nil
+            = link_to "Teams", admin_team_members_path, :class => controller.controller_name == "team_members" ? "current" : nil
+            = link_to "Emails", admin_emails_path, :class => controller.controller_name == "mailer" ? "current" : nil
+            = link_to "Resque", "/info/resque"
 
-        .project-content
-          = yield
+      .content= yield

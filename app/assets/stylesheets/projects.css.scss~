@@ -1,0 +1,385 @@
+.git_url_wrapper { margin-right:50px }
+
+.sidebar aside a{
+  display: block;
+  position: relative; 
+  padding: 15px 10px; 
+  margin: 10px 0 0 0;
+
+  font-size:13px;
+  font-weight:bold;
+  color:#333;
+
+  &.current {
+    color: white;
+    background: $active_bg_color;
+    border: 1px solid $active_bd_color;
+    border-radius:5px;
+
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 0px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: -1px;
+  }
+}
+
+body table .commit a{color: #{$blue_link}}
+body table th, body table td{  border-bottom: 1px solid #DEE2E3;}
+body .fixed{position: fixed; }
+
+/** File stat **/
+.file_stats {
+  span {
+    img {
+      width:14px;
+      float:left;
+      margin-right: 6px;
+      padding:2px 0;
+    }
+  }
+}
+
+.round-borders {
+  @include round-borders-all(4px);
+  padding: 4px 0px;
+}
+
+table.round-borders {
+  float:left;
+  text-align: left;
+}
+
+
+
+/** PROJECTS **/
+input.ssh_project_url {
+  padding:5px;
+  margin:0px;
+  float:right;
+  width:400px;
+  text-align:center;
+}
+
+#projects-list .project {
+  height:50px;
+}
+
+#tree-slider .tree-item,
+#projects-list .project,
+#snippets-table .snippet,
+#issues-table .issue{
+  cursor:pointer;
+}
+
+.clear {
+  clear: both;
+}
+
+
+
+#user_projects_limit{
+  width: 60px;
+}
+
+.handle:hover{
+  cursor: move;
+}
+
+.project-refs-form {
+  span {
+    background: none !important;
+    position:static !important;
+    width:auto !important;
+    height: auto !important;
+  }
+}
+
+.project-refs-select {
+  width:200px;
+}
+
+.filter .left { margin-right:15px; }
+
+body table .commit {
+  a.tree-commit-link {
+    color:#444;
+    &:hover {
+      text-decoration:underline;
+    }
+  }
+}
+
+/** NEW PROJECT **/
+.new-project-hodler {
+  .icon span { background-position: -31px -70px; }
+  td { border-bottom: 1px solid #DEE2E3; }
+}
+
+/** Feed entry **/
+.commit,
+.snippet,
+.message {
+  .title {
+    color:#666;
+    a { color:#666 !important; }
+    p { margin-top:0px; }
+  }
+  .author { color: #999 }
+}
+
+/** JQuery UI **/
+.ui-autocomplete { @include round-borders-all(5px); }
+.ui-menu-item { cursor: pointer }
+.ui-selectmenu{
+  @include round-borders-all(4px);
+  margin-right:10px;
+  font-size:1.5em;
+  height:auto;
+  font-weight:bold;
+  .ui-selectmenu-status {
+    padding:3px 10px;
+  }
+}
+
+#holder {
+  background:#FAFAFA;
+  border: 1px solid #EEE;
+  cursor: move;
+  height: 70%;
+  overflow: hidden;
+}
+
+/* Project Dashboard Page */
+html, body { height: 100%; }
+
+.news-feed h2{float: left;}
+.news-feed .project-updates  {margin-bottom: 20px; display: block; width: 100%;}
+.news-feed .project-updates .data{ padding: 0}
+.news-feed .project-updates a.project-update {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+.news-feed .project-updates a.project-update:last-child{border-bottom: 0}
+.news-feed .project-updates a.project-update img{float: left; margin-right: 10px;}
+.news-feed .project-updates a.project-update span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+.news-feed .project-updates a.project-update span.update-title{margin-bottom: 10px}
+.news-feed .project-updates a.project-update span.update-author{color: #999; font-weight: normal; font-style: italic;}
+.news-feed .project-updates a.project-update span.update-author strong{font-weight: bold; font-style: normal;}
+/* eo Dashboard Page */
+
+
+/** Update entry **/
+.update-data { padding: 0 }
+.update-data { width:100%; }
+.update-data.ui-box .data { padding:0; }
+a.update-item {padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+a.update-item:last-child{border-bottom: 0}
+a.update-item img{float: left; margin-right: 10px;}
+a.update-item span.update-title, .dashboard-page .news-feed .project-updates li a span.update-author{display: block;}
+a.update-item span.update-title{margin-bottom: 10px}
+a.update-item span.update-author{color: #999; font-weight: normal; font-style: italic;}
+a.update-item span.update-author strong{font-weight: bold; font-style: normal;}
+
+
+body .team_member_new .span-6, .team_member_edit .span-6{ padding:10px 0; }
+
+body.projects-page input.text.git-url.project_list_url { width:165px; }
+
+
+body table.no-borders th { 
+  background:none;
+  border-bottom:1px solid #CCC;
+  color:#333;
+}
+
+body table.no-borders tr,
+body table.no-borders td{
+  border:none;
+}
+
+.ajax-tab-loading {
+  padding:40px;
+  display:none;
+}
+
+#tree-content-holder { float:left; width:100%; }
+
+#tree-readme-holder {
+  float:left;
+  width:100%;
+
+  .readme {
+    @include round-borders-all(4px);
+    padding: 4px 15px;
+    background:#F7F7F7;
+  }
+}
+
+
+
+/* Commit Page */
+.entity-info {float: right;}
+.entity-button{
+  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.192, #fff), to(#f4f4f4));
+  background-image: -webkit-linear-gradient(#fff 19.2%, #f4f4f4);
+  background-image: -moz-linear-gradient(#fff 19.2%, #f4f4f4);
+  background-image: -o-linear-gradient(#fff 19.2%, #f4f4f4);
+  box-shadow: 0 -1px 0 white inset;
+  display: block;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  margin-bottom: 2px;
+  position: relative;
+  padding: 4px 10px;
+  font-size: 11px;
+  padding-right: 20px;
+}
+
+.entity-button i{
+  background: url('images.png') no-repeat -138px -27px;
+  width: 6px;
+  height: 9px;
+  float: right;
+  position: absolute;
+  top: 6px;
+  right: 5px;
+}
+.box-arrow{float: right; background: #E3E5EA; padding: 10px; border-radius: 5px; margin-top: 2px; text-shadow: none; color: #999; margin: 1.5em 0;}
+
+h4.dash-tabs { 
+  margin: 0; 
+  border-bottom: 1px solid #ccc; 
+  padding: 10px 10px;
+  font-size: 11px;
+  padding-left:20px;
+  font-weight: bold; text-transform: uppercase;
+  background: #F7F7F7;
+  margin-bottom:20px;
+  height:13px;
+
+}
+
+.dash-button { 
+  border-right: 1px solid #ddd;
+  background:none;
+  padding: 10px 15px;
+  float:left;
+  position:relative;
+  top:-10px;
+  left:0px;
+  height:13px;
+
+  &:first-child { 
+    border-left: 1px solid #ddd;
+  }
+  &.active { 
+    background: #eaeaea;
+  }
+}
+
+
+.dashboard-loader { 
+  float:right;
+  margin-right:30px;
+  display:none;
+}
+
+
+.merge-tabs { 
+  margin: 0; 
+  border: 1px solid #ccc; 
+  padding: 5px;
+  font-size: 12px;
+  background: #F7F7F7;
+  margin-bottom:20px;
+  height:26px;
+
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+
+  .tab { 
+    font-weight: bold;
+    border-right: 1px solid #ddd;
+    background:none;
+    padding: 10px;
+    min-width:60px;
+    float:left;
+    position:relative;
+    top:-5px;
+    left:-5px;
+    height:16px;
+    padding-left:34px;
+
+    span { 
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+    }
+
+    &.active {
+      background: #eaeaea;
+    }
+  }
+}
+.merge-tabs.repository .tab span{ background: url("images.png") no-repeat -38px -77px; }
+.activities-tab span {  background: url("images.png") no-repeat -161px -1px; } 
+.stat-tab span,
+.team-tab span,
+.snippets-tab span {  background: url("images.png") no-repeat -38px -77px; } 
+.files-tab span {  background: url("images.png") no-repeat -112px -23px; } 
+
+.merge-notes-tab span {  background: url("images.png") no-repeat -161px -1px; } 
+.merge-commits-tab span {  background: url("images.png") no-repeat -86px 1px; } 
+.merge-diffs-tab span {  background: url("images.png") no-repeat -118px 1px; } 
+.merge-tabs .dashboard-loader { padding:8px; }
+
+.user-mention { 
+  color: #2FA0BB;
+  font-weight: bold;
+}
+
+.author { 
+  color: #999;
+}
+
+
+
+
+.dark_scheme_box { 
+  padding:20px 0;
+
+  label { 
+    float:left;
+    box-shadow: 0 0px 5px rgba(0,0,0,.3);
+
+    img { 
+    }
+  }
+}
+
+a.project-update.titled { 
+  position: relative;
+  padding-left: 235px !important;
+
+  .title-block { 
+    padding: 10px;
+    width: 205px;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+.add_new { 
+  float: right;
+  background: #A6B807;
+  color: white;
+  padding: 4px 10px;
+  @include round-borders-all(4px);
+  font-size:11px;
+  margin: 10px 0;
+}

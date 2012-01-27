@@ -1,29 +1,17 @@
-- content_for(:body_class, "projects-page")
-.container_4
-  .grid_4
-    - if current_user.can_create_project?
-      %a.grey-button.right{:href => new_project_path} Create new project
-    %h2.icon
-      %span
-      Projects
+%h3 Projects
+%hr
+- unless @projects.empty?
+  %div.tile= render "tile"
 
-  %div.clear
-  - unless @projects.empty?
-    %div{:class => "tile"}
-      = render "tile"
+  -# If projects requris paging
+  -# We add ajax loader & init script
+  - if @projects.count == @limit
+    .loading{ :style => "display:none;"}
+      %center= image_tag "ajax-loader.gif"
 
-    -# If projects requris paging
-    -# We add ajax loader & init script
-    - if @projects.count == @limit
-      .clear
-      .loading{ :style => "display:none;"}
-        %center= image_tag "ajax-loader.gif"
-
-      :javascript
-        $(function(){
-          ProjectsList.init(16);
-        });
-  - else
-    %center.prepend-top
-      %h2
-        %cite Nothing here
+    :javascript
+      $(function(){
+        ProjectsList.init(16);
+      });
+- else
+  %h2 Nothing here

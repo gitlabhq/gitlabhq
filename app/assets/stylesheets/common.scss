@@ -105,11 +105,35 @@ $blue_link: "#2fa0bb";
   border-right: 1px solid $border_color;
   height:100%;
   min-height:450px;
+
+  .fixed { 
+    position:fixed;
+  }
+
+  aside a {
+    display:block;
+    position:relative;
+    padding:15px 10px;
+    margin:10px 0 0 0;
+    font-size:13px;
+    font-weight:bold;
+  }
 }
 
 .container-fluid > .content {
   margin-left: 160px;
   margin-top:20px;
+}
+
+aside.projects { 
+  margin-left: 0;
+  padding-left: 20px;
+}
+
+img.avatar { 
+  width:32px;
+  float:left;
+  padding-right:5px;
 }
 
 @import "reset_bootstrap.scss";

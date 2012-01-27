@@ -12,5 +12,9 @@
     = render :partial => "layouts/flash"
     = render :partial => "layouts/head_panel"
     .container-fluid
-      .sidebar= render :partial => "dashboard/sidebar"
-      .content= yield
+      .sidebar
+        = render :partial => "layouts/app_side"
+      .content
+        .row
+          .span10= yield
+          .span4= render "layouts/projects_side"
