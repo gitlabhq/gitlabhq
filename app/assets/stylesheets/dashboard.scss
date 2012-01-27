@@ -1,5 +1,3 @@
-.application h2.icon span{ background-position:  9px -69px; }
-.application header{margin-bottom: 0}
 .application .news-feed{margin-left: 285px; min-height: 600px; margin-top: 20px; margin-right:2px; padding:20px;}
 .application .application-content{ position: relative; float: left; width: 100%; height: 100%; }
 .application .news-feed h2{float: left;}
@@ -7,7 +5,6 @@
 body.application aside{
   min-height: 820px; position: relative; top: 0; bottom: 0; right: 0; width: 260px;  float: left;  border-right: 1px solid $border_color; padding:20px; padding-right:0;
   h4{margin: 0; border-bottom: 1px solid #ccc; padding: 20px 20px 20px 0px; font-size: 11px; font-weight: bold; text-transform: uppercase;}
-  h4 a.button-small{float: right; text-transform: none; border-radius: 4px; margin-right: 2%; margin-top: -4px; display: block;}
   .project-list {list-style: none; margin: 0; padding: 0;}
   .project-list li a {background: white;  color: #{$blue_link}; display: block; border-bottom: 1px solid $lite_border_color; padding: 14px 6% 14px 0px;}
   .project-list li a span.project-name{font-size: 14px; display: block; margin-bottom: 8px}

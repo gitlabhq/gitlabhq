@@ -1,8 +1,9 @@
 %aside
   %h4
-    - if current_user.can_create_project?
-      %a.button-small.button-green{:href => new_project_path} New Project
     Your Projects
+    - if current_user.can_create_project?
+      = link_to new_project_path, :class => "btn small" do 
+        New Project
   %ol.project-list
     - @projects.each do |project|
       %li
