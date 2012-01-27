@@ -10,61 +10,6 @@
   color: #444;
 }
 
-.issues_filter {
-  margin:10px 0;
-  .left { 
-    margin-right:15px;
-  }
-}
-
-.top_panel_issues{
-  #issue_search_form {
-    margin:5px 0;
-    input {
-      border:1px solid #D3D3D3;
-      padding: 3px;
-      height: 28px;
-      width: 250px;
-      -webkit-appearance:none;
-      box-sizing: border-box;
-      -moz-box-sizing: border-box;
-
-      &:focus {
-        border-color:#c2e1ef;
-      }
-    }
-  }
-}
-
-/** ISSUES LIST **/
-.issue .action-links {
-  display:none;
-  a {
-    margin-left:10px;
-  }
-}
-.issue:hover .action-links { display:block; }
-.issue-show-holder { 
-  width:100%;
-  .data p { font-size:16px }
-}
-
 #issue_assignee_id {
   width:300px;
-}
-
-.issue-form-holder .ui-box .data { 
-  margin: 0;
-  padding: 0;
-}
-
-
-#issues-table {
-  tr { 
-    border-top: 1px solid $lite_border_color;
-    &:first-child { 
-      border:none;
-    }
-  }
-
 }

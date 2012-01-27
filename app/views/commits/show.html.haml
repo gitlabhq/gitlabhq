@@ -1,9 +1,7 @@
 .commit
   %span.commit-info
-    = link_to tree_project_ref_path(@project, @commit.id) do 
-      %data.commit-button
-        Browse Code
-        %i
+    = link_to tree_project_ref_path(@project, @commit.id), :class => "btn" do 
+      Browse Code »
   - if @commit.author_email
     = image_tag gravatar_icon(@commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
   - else

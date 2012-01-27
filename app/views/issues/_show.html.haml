@@ -1,10 +1,8 @@
 %tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
   %td
-    %strong.issue-number{:class => sort_class}= "##{issue.id}"
+    = image_tag gravatar_icon(issue.assignee_email), :class => "left", :width => 40, :style => "padding-right:5px;"
     %span
       = truncate(html_escape(issue.title), :length => 100)
-    %br
-    %br
     %div.note-author
       %strong= issue.assignee.name
       %cite.cgray

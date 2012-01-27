@@ -87,6 +87,9 @@ $blue_link: "#2fa0bb";
 .no-padding { 
   padding:0 !important;
 }
+.underlined { 
+  border-bottom: 1px solid $border_color;
+}
 
 /** LAYOUT **/
 
@@ -94,7 +97,7 @@ $blue_link: "#2fa0bb";
   min-width:$min_app_width;
   max-width:$max_app_width;
   margin:auto;
-  margin-top:60px;
+  margin-top:51px;
 }
 
 .container-fluid > .sidebar { 
@@ -106,6 +109,7 @@ $blue_link: "#2fa0bb";
 
 .container-fluid > .content {
   margin-left: 160px;
+  margin-top:20px;
 }
 
 @import "reset_bootstrap.scss";
@@ -113,12 +117,12 @@ $blue_link: "#2fa0bb";
 @import "projects.css.scss";
 @import "commits.css.scss";
 @import "tree.scss";
+@import "issues.css.scss";
+@import "merge_requests.css.scss";
+@import "notes.css.scss";
 
 //@import "style.scss";
-//@import "notes.css.scss";
-//@import "merge_requests.css.scss";
 
-//@import "issues.css.scss";
 //@import "commits.css.scss";
 
 //@import "dashboard.scss";

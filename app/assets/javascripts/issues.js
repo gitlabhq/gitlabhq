@@ -1,6 +1,6 @@
 function switchToNewIssue(form){
-  $("#issues-table-holder").hide("slide", { direction: "left" }, 150, function(){
-    $(".project-content").append(form);
+  $("#issues-table").hide("slide", { direction: "left" }, 150, function(){
+    $("#issues-table").after(form);
     $('select#issue_assignee_id').chosen();
     $("#new_issue_dialog").show("slide", { direction: "right" }, 150);
     $('.top-tabs .add_new').hide();
@@ -8,11 +8,11 @@ function switchToNewIssue(form){
 }
 
 function switchToEditIssue(form){
-  $("#issues-table-holder").hide("slide", { direction: "left" }, 150, function(){
-    $(".project-content").append(form);
+  $("#issues-table").hide("slide", { direction: "left" }, 150, function(){
+    $("#issues-table").after(form);
     $('select#issue_assignee_id').chosen();
     $("#edit_issue_dialog").show("slide", { direction: "right" }, 150);
-    $('.top-tabs .add_new').hide();
+    $('.add_new').hide();
   });
 }
 
@@ -26,10 +26,10 @@ function switchFromEditIssue(){
 
 function backToIssues(){
   $("#edit_issue_dialog, #new_issue_dialog").hide("slide", { direction: "right" }, 150, function(){
-    $("#issues-table-holder").show("slide", { direction: "left" }, 150, function() { 
+    $("#issues-table").show("slide", { direction: "left" }, 150, function() { 
       $("#edit_issue_dialog").remove();
       $("#new_issue_dialog").remove();
-      $('.top-tabs .add_new').show();
+      $('.add_new').show();
     });
   });
 }
