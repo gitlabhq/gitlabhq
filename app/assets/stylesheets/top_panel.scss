@@ -1,5 +1,5 @@
 .main_links {
-  width:130px;
+  width:155px;
   float:left;
 
   a { 
@@ -68,10 +68,7 @@ body header {
     min-width:$min_app_width;
     max-width:$max_app_width;
     position:relative;
-    
-    .top_panel_content { 
-      padding:10px $app_padding;
-    }
+    padding:10px $app_padding;
   }
 
   .project_name {

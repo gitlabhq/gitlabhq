@@ -2,14 +2,3 @@
   %li{:class => "#{'active' if current_page?(project_issues_path(@project))}"}
     = link_to project_issues_path(@project), :class => "tab" do 
       Issues  
-  
-  -#= link_to project_issues_path(@project), :class => "tab" do 
-    %span 
-    Milestones
-
-  - if current_page?(project_issues_path(@project))
-    - if can? current_user, :write_issue, @project
-      %li
-        = link_to new_project_issue_path(@project), :class => "add_new", :title => "New Issue", :remote => true do 
-          Add new
-

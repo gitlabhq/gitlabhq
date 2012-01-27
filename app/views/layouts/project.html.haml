@@ -18,4 +18,11 @@
     = render :partial => "layouts/head_panel"
     .container-fluid
       .sidebar= render :partial => "layouts/project_side"
-      .content= yield
+      .content
+        - if @full_content
+          = yield
+        - else
+          .row
+            .span10= yield
+            .span4= render "layouts/project_side_right"
+

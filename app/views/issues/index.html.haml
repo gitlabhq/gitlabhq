@@ -1,40 +1,45 @@
-= render "issues/head"
+- if can? current_user, :write_issue, @project
+  = content_for :sidebar_top_block do 
+    - if current_user.can_create_project?
+      .alert-message.block-message.error
+        You are able to create an issue. Click on button to add a new one
+        = link_to new_project_issue_path(@project), :class => "btn small", :title => "New Issue", :remote => true do 
+          New Issue
+
 - if current_user.private_token   
   = content_for :rss_icon do 
     .rss-icon
       = link_to project_issues_path(@project, :atom, { :private_token => current_user.private_token }) do 
         = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
 
-%div#issues-table-holder
-  .well
-    = form_tag project_issues_path(@project), :method => :get, :class => :left do
-      = label_tag "open_issues" do 
-        = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "setIssueFilter(this.form, 0)", :id => "open_issues", :class => "status"
-        %span.tag.open Open
-      = label_tag "closed_issues" do 
-        = radio_button_tag :f, 2, params[:f] == "2", :onclick => "setIssueFilter(this.form, 2)", :id => "closed_issues", :class => "status"
-        %span.tag.closed Closed
-      = label_tag "my_issues" do 
-        = radio_button_tag :f, 3, params[:f] == "3", :onclick => "setIssueFilter(this.form, 3)", :id => "my_issues", :class => "status"
-        %span To Me
-      = label_tag "all_issues" do 
-        = radio_button_tag :f, 1, params[:f] == "1", :onclick => "setIssueFilter(this.form, 1)", :id => "all_issues", :class => "status"
-        %span All
+
+.issues_content
+  %h3 Issues
+  %hr
+  %div#issues-table-holder
+    %ul.pills.left
+      %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
+        = link_to project_issues_path(@project, :f => 0) do 
+          Open
+      %li{:class => ("active" if params[:f] == "2")}
+        = link_to project_issues_path(@project, :f => 2) do 
+          Closed
+      %li{:class => ("active" if params[:f] == "3")}
+        = link_to project_issues_path(@project, :f => 3) do 
+          To Me
+      %li{:class => ("active" if params[:f] == "1")}
+        = link_to project_issues_path(@project, :f => 1) do 
+          All
+
     = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :id => "issue_search_form", :class => :right  do
       = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
       = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
-  %table#issues-table
-    = render "issues"
-  %br
+    %table#issues-table= render "issues"
+
 :javascript
   var href       = $('.issue_search').parent().attr('action');
   var last_terms = '';
-
-  var setIssueFilter = function(form, value){
-    $.cookie('issue_filter', value, { expires: 140 });
-    form.submit();
-  }
 
   $('.issue_search').keyup(function() {
     var terms       = $(this).val();
