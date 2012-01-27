@@ -121,8 +121,8 @@ pre.commit_message {
 /** COMMIT BLOCK **/
 .commit-title{display: block;}
 .commit-title{margin-bottom: 10px}
-.commit-author{color: #999; font-weight: normal; font-style: italic;}
-.commit-author strong{font-weight: bold; font-style: normal;}
+.commit-author, .commit-committer{display: block;color: #999; font-weight: normal; font-style: italic;}
+.commit-author strong, .commit-committer strong{font-weight: bold; font-style: normal;}
 
 /** bordered list **/
 ul.bordered-list { 
