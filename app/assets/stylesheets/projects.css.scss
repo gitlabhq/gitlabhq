@@ -143,3 +143,11 @@ a.project-update.titled {
     top:0;
   }
 }
+/**
+ * Project graph
+ */
+#holder {
+  cursor: move;
+  height: 70%;
+  overflow: hidden;
+}
