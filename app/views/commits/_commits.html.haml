@@ -5,21 +5,15 @@
       %ul.unstyled
         - commits.each do |commit|
           %li
-            %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }
-              %span.commit-info
-                %data.commit-button
-                  = truncate(commit.id.to_s, :length => 16)
-                  %i
-                %data.commit-browse{ :onclick => "location.href='#{tree_project_ref_path(@project, commit.id)}';return false;"}
-                  Browse Code
-              - if commit.author_email
-                = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-              - else
-                = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-              %span.commit-title
+            %a{ :class => "update-item", :href => project_commit_path(@project, :id => commit.id) }
+              .right.btn
+                = truncate(commit.id.to_s, :length => 10)
+                »
+              = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 32
+              %div
                 %strong
-                  = truncate(commit.safe_message, :length => 70)
-              %span.commit-author
+                  = truncate(commit.safe_message, :length => 50)
+              %span.update-author
                 %strong= commit.author_name
                 = time_ago_in_words(commit.committed_date)
                 ago

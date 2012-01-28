@@ -52,18 +52,19 @@
   float:left;
   margin-right:10px;
 }
-.news-feed .project-updates a.project-update span.update-title,.dashboard-page .news-feed .project-updates li a span.update-author {
+span.update-title,
+span.update-author {
   display:block;
 }
-.news-feed .project-updates a.project-update span.update-title {
+span.update-title {
   margin-bottom:10px
 }
-.news-feed .project-updates a.project-update span.update-author {
+span.update-author {
   color:#999;
   font-weight:normal;
   font-style:italic;
 }
-.news-feed .project-updates a.project-update span.update-author strong {
+span.update-author strong {
   font-weight:bold;
   font-style: normal;
 }
@@ -87,7 +88,8 @@ a.update-item img {
   float:left;
   margin-right:10px;
 }
-a.update-item span.update-title,.dashboard-page .news-feed .project-updates li a span.update-author {
+span.update-title,
+span.update-author {
   display:block;
 }
 a.update-item span.update-title {
