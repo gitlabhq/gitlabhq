@@ -5,10 +5,12 @@ class Commit
   attr_accessor :refs
 
   delegate :message,
+    :authored_date,
     :committed_date,
     :parents,
     :sha,
     :date,
+    :committer,
     :author,
     :message,
     :diffs,
@@ -35,6 +37,14 @@ class Commit
 
   def author_name
     author.name
+  end
+
+  def committer_name
+    committer.name
+  end
+
+  def committer_email
+    committer.email
   end
 
   def prev_commit
