@@ -138,6 +138,15 @@ img.avatar {
   padding-right:5px;
 }
 
+.media-grid { 
+  h3, h2 , h4 {
+    &.media_h { 
+      padding-left:10px;
+      float:left;
+    }
+  }
+}
+
 @import "reset_bootstrap.scss";
 @import "top_panel.scss";
 @import "projects.css.scss";

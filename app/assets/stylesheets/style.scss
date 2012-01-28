@@ -483,26 +483,6 @@ body, button, input, select, textarea {
   border-width: 1px;
 }
 
-/** FLASH **/
-#flash_container {
-  height:45px;
-  position:fixed;
-  z-index:10001;
-  top:0px;
-  width:100%;
-  margin-bottom:15px;
-  overflow:hidden;
-  background:white;
-  cursor:pointer;
-  border-bottom:1px solid #777;
-
-  h4 {
-    color:#444;
-    font-size:22px;
-    padding-top:5px;
-    margin:2px;
-  }
-}
 
 
 .errors_holder {
