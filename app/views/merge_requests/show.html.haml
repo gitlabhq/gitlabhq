@@ -7,27 +7,39 @@
 
   %span.right
     - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
+      - if @merge_request.closed
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
+      - else
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
+    - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
       = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
-        Edit Merge Request
-%hr
+        Edit
 
-%div
-  %span.entity-info
-  = image_tag gravatar_icon(@merge_request.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      %span.commit-author
-    %strong
-      = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
-        %span.author= @merge_request.author_name
-      &rarr;
-      = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
-        %span.author= @merge_request.assignee_name
-    %br
-    = @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
 %hr
-.clearfix
-%div.well= simple_format @merge_request.title
+- if @merge_request.closed
+  .alert-message.error Closed
+- else 
+  .alert-message.success Open
+
+
+%div.well
+  %div
+    %span.entity-info
+    = image_tag gravatar_icon(@merge_request.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
+    %span.commit-title
+      %strong
+        %span.commit-author
+      %strong
+        = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
+          %span.author= @merge_request.author_name
+        &rarr;
+        = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
+          %span.author= @merge_request.assignee_name
+      %br
+      .cgray= @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
+    
+
+  %div= simple_format @merge_request.title
 
 
 .tabs
@@ -41,12 +53,6 @@
     = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
       Diff
 
-  - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
-    .right
-      - if @merge_request.closed
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
-      - else
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
   %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes

@@ -27,7 +27,7 @@ class Commit
     @head = head
   end
 
-  def safe_message
+  def safe_message()
     message
   end
 
