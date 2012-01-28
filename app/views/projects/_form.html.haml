@@ -18,10 +18,10 @@
       %cite= "http://#{GIT_HOST["host"]}/"
     .input= f.text_field :code, :placeholder => "example"
 
-    - unless @project.new_record? || @project.heads.empty?  
-      .clearfix
-        = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
+  - unless @project.new_record? || @project.heads.empty?  
+    .clearfix
+      = f.label :default_branch, "Default Branch"
+      .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
 
     
   .clearfix
@@ -30,9 +30,9 @@
 
   %br
   
-  .merge-tabs
+  .actions
     = f.submit 'Save', :class => "btn primary"
-    &nbsp;
+    = link_to 'Cancel', @project, :class => "btn"
     - unless @project.new_record?
       .right
-        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn"
+        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"

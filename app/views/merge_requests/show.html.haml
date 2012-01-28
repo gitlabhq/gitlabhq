@@ -1,32 +1,33 @@
+%h3
+  = "Merge Request ##{@merge_request.id}:"
+  &nbsp;
+  %span.label= @merge_request.source_branch
+  &rarr;
+  %span.label= @merge_request.target_branch
+
+  %span.right
+    - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
+      = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
+        Edit Merge Request
+%hr
+
 %div
   %span.entity-info
-    - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
-      = link_to edit_project_merge_request_path(@project, @merge_request) do 
-        .entity-button
-          Edit Merge Request
-          %i
   = image_tag gravatar_icon(@merge_request.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
   %span.commit-title
     %strong
-      = "Merge Request ##{@merge_request.id}:"
-      &nbsp;
-      .tag.commit.inline= @merge_request.source_branch
-      &rarr;
-      .tag.commit.inline= @merge_request.target_branch
-  %span.commit-author
+      %span.commit-author
     %strong
       = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
         %span.author= @merge_request.author_name
       &rarr;
       = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
         %span.author= @merge_request.assignee_name
-
-    &nbsp;
-    &nbsp;
+    %br
     = @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
-
-  %hr
-  %div.well= simple_format @merge_request.title
+%hr
+.clearfix
+%div.well= simple_format @merge_request.title
 
 
 .tabs

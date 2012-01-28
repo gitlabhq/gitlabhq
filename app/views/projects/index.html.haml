@@ -1,4 +1,6 @@
-%h3 Projects
+%h3
+  Projects
+  %small= "( #{current_user.projects.count} )"
 %hr
 - unless @projects.empty?
   %div.tile= render "tile"

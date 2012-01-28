@@ -1,4 +1,6 @@
 class Commit
+  include ActiveModel::Conversion
+  extend ActiveModel::Naming
 
   attr_accessor :commit
   attr_accessor :head
@@ -15,6 +17,10 @@ class Commit
     :tree,
     :id,
     :to => :commit
+
+  def persisted?
+    false
+  end
 
   def initialize(raw_commit, head = nil)
     @commit = raw_commit

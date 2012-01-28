@@ -1,13 +1,21 @@
-- content_for(:body_class, "project-page dashboard")
-
 = render "project_head"
-#news-feed.news-feed
-  .project-box.project-updates
-    - @activities.each do |update|
-      = render "projects/feed", :update => update, :project => @project
-
-:javascript
-  function updateDashboard(){
-    $('.project-content').load("#{escape_javascript(project_path(@project))} .project-content>*");
-  }
-  setInterval("updateDashboard()", 300000);
+- @activities.each do |update|
+  .alert-message.entry
+    = link_to dashboard_feed_path(@project, update) do 
+      - if update.kind_of? Note
+        %p
+          %strong
+            = update.target.class.name.titleize
+            = truncate update.target.id.to_s, :length => 10
+            commented
+          &ndash;
+          = image_tag gravatar_icon(update.author_email), :class => "", :width => 16
+          = truncate dashboard_feed_title(update), :length => 50
+      - else 
+        %p
+          %strong
+            = update.class.name.titleize
+            = truncate update.id.to_s
+          &ndash;
+          = image_tag gravatar_icon(update.author_email), :class => "", :width => 16
+          = truncate dashboard_feed_title(update), :length => 50

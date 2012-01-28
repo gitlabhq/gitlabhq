@@ -1,79 +1,29 @@
-- if update.kind_of?(Note)
-  %a.project-update.titled{:href => dashboard_feed_path(project, update)}
-    = image_tag gravatar_icon(update.author_email), :class => "avatar", :width => 32
-    %div
-      = dashboard_feed_title(update)
-    %span.update-author
-      %strong= update.author_name
-      = time_ago_in_words(update.created_at)
-      ago
-    - noteable = update.target
-    - if noteable.kind_of?(MergeRequest)
-      .title-block
-        %div
-          %span.commit.tag
-            Merge Request #
-            = noteable.id
-        %span.update-author
-          %span= noteable.source_branch
+%li.wll
+  .row
+    .span9
+      = image_tag gravatar_icon(update.author_email), :class => "avatar thumb"
+      %p
+        %strong.author= update.author_name
+        %span
+          &ndash;
+          authored
+          = time_ago_in_words(update.created_at)
+          ago
+      - if update.kind_of? MergeRequest
+        = link_to project_merge_request_path(@project, update) do
+          = "Opened merge request ##{update.id}."
+          %span.label= update.source_branch
           &rarr;
-          %span= noteable.target_branch
-
-    - elsif noteable.kind_of?(Issue)
-      .title-block
-        %div
-          %span.commit.tag
-            Issue #
-            = noteable.id
-        %span.update-author
-          .left= truncate noteable.title
-
-    - elsif noteable.kind_of?(Commit)
-      .title-block
-        %div
-          %span.commit.tag
-            commit
-        %span.update-author
-          .left= truncate noteable.id
-    - else 
-      .title-block
-        %div
-          %span.commit.tag
-            Project Wall
-
-
-- elsif update.kind_of?(MergeRequest)
-  %a.project-update.titled{:href => project_merge_request_path(project, update)}
-    = image_tag gravatar_icon(update.author_email), :class => "avatar", :width => 32
-    %div
-      Opened merge request
-    %span.update-author
-      %strong= update.author_name
-      = time_ago_in_words(update.created_at)
-      ago
-    .title-block
-      %div
-        %span.commit.tag
-          Merge Request #
-          = update.id
-      %span.update-author
-        %span= update.source_branch
-        &rarr;
-        %span= update.target_branch
-  
-- elsif update.kind_of?(Issue)
-  %a.project-update.titled{:href => dashboard_feed_path(project, update)}
-    = image_tag gravatar_icon(update.author_email), :class => "avatar", :width => 32
-    %div
-      Created new Issue
-    %span.update-author
-      %strong= update.author_name
-      = time_ago_in_words(update.created_at)
-      ago
-    .title-block
-      %div
-        %span.commit.tag
-          Issue #
-          = update.id
-      %span.update-author
-        .left= truncate update.title
+          %span.label= update.target_branch
+      - elsif update.kind_of? Issue
+        = link_to project_issue_path(@project, update) do
+          Opened new 
+          %span.label.important= "issue ##{update.id}"
+          = truncate update.title
+      - else 
+        = link_to [@project, update.target] do
+          %p
+            = update.target.class.name.titleize
+            = truncate(update.target.id.to_s, :length => 10)
+            &nbsp;
+            = dashboard_feed_title(update)

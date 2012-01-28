@@ -1,4 +1,12 @@
 a {
   color: $link_color;
-  &:hover { text-decoration:none; }
+  &:hover { 
+    text-decoration:none; 
+    color: $active_link_color;
+  }
+}
+
+.alert-message.entry { 
+  background:#F1F1F1;
+  border-color:#ccc;
 }
