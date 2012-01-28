@@ -9,5 +9,7 @@
   <br/>
   <%= f.submit "Sign in", :class => "grey-button" %>
   <div class="right"> <%= render :partial => "devise/shared/links" %></div>
-  <%= user_omniauth_authorize_path(:ldap)%>
+  <% if ldap_enable? -%>
+    <p><%= link_to "via LDAP", user_omniauth_authorize_path(:ldap)%></p>
+  <% end -%>
 <% end %>

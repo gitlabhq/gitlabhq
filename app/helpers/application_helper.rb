@@ -93,4 +93,8 @@ module ApplicationHelper
   def help_layout
     controller.controller_name == "help" 
   end
+
+  def ldap_enable?
+    Devise.omniauth_providers.include?(:ldap)
+  end
 end
