@@ -13,25 +13,29 @@
         New Issue
   %hr
   %div#issues-table-holder
-    %ul.pills.left
-      %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-        = link_to project_issues_path(@project, :f => 0) do 
-          Open
-      %li{:class => ("active" if params[:f] == "2")}
-        = link_to project_issues_path(@project, :f => 2) do 
-          Closed
-      %li{:class => ("active" if params[:f] == "3")}
-        = link_to project_issues_path(@project, :f => 3) do 
-          To Me
-      %li{:class => ("active" if params[:f] == "1")}
-        = link_to project_issues_path(@project, :f => 1) do 
-          All
+    .row
+      .span8
+        %ul.pills.left
+          %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
+            = link_to project_issues_path(@project, :f => 0) do 
+              Open
+          %li{:class => ("active" if params[:f] == "2")}
+            = link_to project_issues_path(@project, :f => 2) do 
+              Closed
+          %li{:class => ("active" if params[:f] == "3")}
+            = link_to project_issues_path(@project, :f => 3) do 
+              To Me
+          %li{:class => ("active" if params[:f] == "1")}
+            = link_to project_issues_path(@project, :f => 1) do 
+              All
 
-    = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :id => "issue_search_form", :class => :right  do
-      = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
-      = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
+      .span2.right
+        = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :id => "issue_search_form", :class => :right  do
+          = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
+          = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
-    %table#issues-table= render "issues"
+    %hr
+    %ul#issues-table.unstyled= render "issues"
 
 :javascript
   var href       = $('.issue_search').parent().attr('action');
@@ -46,7 +50,7 @@
 
       if (terms.length >= 2 || terms.length == 0) {
         $.get(href, { 'status': status, 'terms': terms, project: project_id  }, function(response) {
-          $('#issues-table tbody').html(response);
+          $('#issues-table').html(response);
           setSortable();
         });
       }
@@ -57,7 +61,7 @@
     $(this).closest('tr').fadeOut(); updatePage();});
 
   function setSortable(){
-    $('#issues-table>tbody').sortable({
+    $('#issues-table').sortable({
       axis: 'y',
       dropOnEmpty: false,
       handle: '.handle',
@@ -68,10 +72,10 @@
       update: function(){
         $.ajax({
         type: 'post',
-        data: $('#issues-table>tbody').sortable('serialize'),
+        data: $('#issues-table').sortable('serialize'),
         dataType: 'script',
         complete: function(request){
-          $('#issues-table>tbody').effect('highlight');
+          $('#issues-table').effect('highlight');
         },
         url: "#{sort_project_issues_path(@project)}"})
         }

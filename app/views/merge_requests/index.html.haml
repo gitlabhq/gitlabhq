@@ -1,28 +1,19 @@
-.left.issues_filter
-  = form_tag project_merge_requests_path(@project), :method => :get do
-    .left
-      = radio_button_tag :f, 0, (params[:f] || "0") == "0", :onclick => "this.form.submit()", :id => "open_merge_requests", :class => "status"
-      = label_tag "open_merge_requests" do 
-        %span.tag.open Open
-    .left
-      = radio_button_tag :f, 2, params[:f] == "2", :onclick => "this.form.submit()", :id => "closed_merge_requests", :class => "status"
-      = label_tag "closed_merge_requests" do 
-        %span.tag.closed Closed
+%h3
+  Merge Requests
+  - if can? current_user, :write_issue, @project
+    = link_to new_project_merge_request_path(@project), :class => "right btn small", :title => "New Merge Request" do 
+      New Merge Request
 
-.clear
 %hr
 
+%ul.pills
+  %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
+    = link_to project_merge_requests_path(@project, :f => 0) do 
+      Open
+  %li{:class => ("active" if params[:f] == "2")}
+    = link_to project_merge_requests_path(@project, :f => 2) do 
+      Closed
 
-.row
-  .span10
-    - if @merge_requests.count > 0
-      %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
-        .data
-          = render @merge_requests
-  .span4
-    - if can? current_user, :write_merge_request, @project
-      .alert-message.block-message.info
-        %p You can open a new merge request.
-        - if current_page?(project_merge_requests_path(@project))
-          = link_to new_project_merge_request_path(@project), :class => "btn small", :title => "New Merge request" do 
-            Add new
+%hr
+%ul.unstyled= render @merge_requests
+

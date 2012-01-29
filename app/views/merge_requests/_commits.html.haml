@@ -1,19 +1,15 @@
 - if @commits.size > 0
-  .merge-request-commits.ui-box.width-100p
+  .merge-request-commits
     - @commits.each do |commit|
-      %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }
-        - if commit.author_email
-          = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-        - else
-          = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-        %span.commit-title
-          = truncate commit.safe_message, :length => 60
-        %span.commit-author
-          %strong= commit.author_name
-          authored
-          = time_ago_in_words(commit.created_at)
-          ago
-  .clear
+      .entry
+        = link_to project_commit_path(@project, :id => commit.id) do
+          %strong
+            = truncate(commit.id.to_s, :length => 10)
+          = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
+          %span= truncate(commit.safe_message, :length => 40)
+          %span.right
+            = time_ago_in_words(commit.committed_date)
+            ago
 
 - if @commits.empty? 
   %p.cgray Nothing to merge

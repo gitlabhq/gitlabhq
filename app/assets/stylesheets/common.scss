@@ -162,6 +162,10 @@ img.avatar {
   p { padding-top:5px;}
 }
 
+.author_link { 
+  color: $active_link_color;
+}
+
 @import "reset_bootstrap.scss";
 @import "top_panel.scss";
 @import "projects.css.scss";

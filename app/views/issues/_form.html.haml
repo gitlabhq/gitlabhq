@@ -24,7 +24,7 @@
     .clearfix
       = f.label :title
       .input= f.text_area :title, :maxlength => 255, :class => "xlarge"
-    .clearfix
+    .actions
       = f.submit 'Save', :class => "primary btn"
 
       - if request.xhr?
@@ -36,6 +36,6 @@
           = link_to "Cancel", project_issue_path(@project, @issue), :class => "btn"
 
 
-      -#- unless @issue.new_record?
+      - unless @issue.new_record?
         .right
-          = link_to 'Remove', [@project, @issue], :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
+          = link_to 'Remove', [@project, @issue], :confirm => 'Are you sure?', :method => :delete, :class => "danger btn"
