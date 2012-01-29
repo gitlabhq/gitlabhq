@@ -1,24 +1,10 @@
-#feeds_content_holder
-  - unless @merge_requests.empty?
-    .project-box.project-updates.ui-box.ui-box-small.ui-box-big
-      .data
-        - @merge_requests.each do |update|
-          %a.project-update{:href => project_merge_request_path(update.project, update)}
-            = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
-            %span.update-title
-              = truncate update.title, :length => 35
-              .right= truncate update.project.name
-            %span.update-author
-              %strong= update.author_name
-              authored
-              = time_ago_in_words(update.created_at)
-              ago
-            .right
-              %span.tag.commit= update.source_branch
-              &rarr;
-              %span.tag.commit= update.target_branch
-  - else 
-    %h2
-      No authored or assigned
-      %span.tag.open open
-      merge requests
+- @merge_requests.each do |merge_request|
+  .alert-message.entry
+    = link_to [merge_request.project, merge_request] do 
+      %p
+        %strong
+          = merge_request.project.name
+          &ndash;
+          Merge Request #
+          = merge_request.id
+        = truncate merge_request.title, :length => 50

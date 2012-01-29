@@ -1,15 +1,14 @@
 = render "project_head"
+%h3= @project.name
+%br
 
-%div
-  %span.entity-info
-    = link_to edit_project_path(@project) do 
-      .entity-button
-        Edit
-        %i
-  %h2= @project.name
-  %hr
+  
 
-%table.no-borders
+%pre
+  = "git clone #{@project.url_to_repo}"
+
+
+%table
   %tr
     %td Name
     %td= @project.name
@@ -17,6 +16,36 @@
   %tr
     %td Slug
     %td= @project.code
+  
+  %tr
+    %td Path
+    %td= @project.path
+
+  %tr
+    %td Owner
+    %td= link_to @project.owner.name, project_team_member_path(@project, @project.team_member_by_id(@project.owner))
+
+  %tr
+    %td Last commit
+    %td
+      = time_ago_in_words(@project.commit.committed_date)
+      ago
+
+  %tr
+    %td Team
+    %td
+      = @project.users_projects.count
+      users
+
+  %tr
+    %td Open Issues
+    %td
+      = @project.issues.opened.count
+
+  %tr
+    %td Merge Requests
+    %td
+      = @project.merge_requests.opened.count
 
   %tr
     %td Created
@@ -25,4 +54,6 @@
   %tr
     %td{:colspan => 2}= simple_format @project.description
 
+.actions
+  = link_to "Edit", edit_project_path(@project), :class => "btn"
 

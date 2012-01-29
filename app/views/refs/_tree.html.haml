@@ -1,19 +1,25 @@
-#tree-breadcrumbs
-  %div
+%ul.breadcrumb
+  %li
+    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form left", :remote => true do
+      = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
+      = hidden_field_tag :destination, "tree"
+      = hidden_field_tag :path, params[:path]
+
+  %li
     = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
       = @project.code
-    - tree.breadcrumbs(6) do |link|
-      \/
-      = link
-    &nbsp;
-  %span.tree_progress
+  - tree.breadcrumbs(6) do |link|
+    \/
+    %li= link
 .clear
+%div.tree_progress
+  = image_tag "ajax-loader.gif"
 #tree-content-holder
   - if tree.is_blob?
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.no-borders
+    %table#tree-slider
       %thead
         %th Name
         %th Last Update
@@ -43,11 +49,19 @@
           - else
             = simple_format(content.data)
 
+- if params[:path]
+  - history_path = tree_file_project_ref_path(@project, @ref, params[:path])
+- else
+  - history_path = tree_project_ref_path(@project, @ref)
 :javascript
   $(function(){
     $('select#branch').selectmenu({style:'popup', width:200});
     $('select#tag').selectmenu({style:'popup', width:200});
+    $('.project-refs-select').chosen();
+
+    history.pushState({ path: this.path }, '', "#{history_path}")
   });
+
 
 - if params[:path] && request.xhr?
   :javascript

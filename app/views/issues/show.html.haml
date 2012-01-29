@@ -1,49 +1,42 @@
-%div
-  %span.entity-info
+%h3 
+  Issue ##{@issue.id} 
+  %small
+    created at 
+    = @issue.created_at.stamp("Aug 21, 2011")
+
+  %span.right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
-      = link_to edit_project_issue_path(@project, @issue) do 
-        .entity-button
-          Edit Issue
-          %i
-  = image_tag gravatar_icon(@issue.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = "Issue ##{@issue.id}:"
-  %span.commit-author
-    %strong
-      = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.author.id)) do 
-        %span.author= @issue.author_name
-      - if @issue.author != @issue.assignee
-        &rarr;
-        = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.assignee.id)) do 
-          %span.author= @issue.assignee_name
-        &nbsp;
+      - if @issue.closed
+        = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
+      - else
+        = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
+    - if can?(current_user, :admin_project, @project) || @issue.author == current_user
+      = link_to edit_project_issue_path(@project, @issue), :class => "btn small" do 
+        Edit
 
-    &nbsp;
-    = @issue.created_at.stamp("Aug 21, 2011 9:23pm")
+%hr
+- if @issue.closed
+  .alert-message.error Closed
+- else 
+  .alert-message.success Open
 
-  %hr
-  %br
-  %h3
-    = simple_format @issue.title
 
-.clear
-%br
-%br
+%div.well
+  %div
+    %cite.cgray Created by
+    = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
+    = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.author.id)) do 
+      %strong.author= @issue.author_name
 
-.merge-tabs
-  = link_to "#notes", :class => "merge-notes-tab active tab" do 
-    %span
-    Notes
-  .right
-    - if @issue.closed
-      = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "red-button"
-    - else
-      = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "positive-button"
+    %cite.cgray and currently assigned to 
+    = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
+    = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.assignee.id)) do 
+      %strong.author= @issue.assignee_name
+      
+    %hr
+    
+  %div= simple_format @issue.title
 
-.merge-request-notes
-  .issue_notes= render "notes/notes"
-  .loading{ :style => "display:none;"}
-    %center= image_tag "ajax-loader.gif"
-  .clear
+
+.issue_notes= render "notes/notes"
 

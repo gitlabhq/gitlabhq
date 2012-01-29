@@ -1,13 +1,14 @@
 - if current_user.require_ssh_key?
-  %ul.errors_holder
-    %li You have no ssh keys added to your profile.
-    %li You wont be able to pull/push repository. 
-    %li Visit profile &rarr; keys and add public key of every machine you want to use for work with gitlabhq. 
+  .alert-message.block-message.error
+    %ul
+      %li You have no ssh keys added yo tour profile.
+      %li You wont be able to pull/push repository. 
+      %li Visit profile &rarr; keys and add public key of every machine you want to use for work with gitlabhq. 
 
-
-%ul.alert_holder
-  %li You should push repository to proceed.
-  %li After push you will be able to browse code, commits etc. 
+.alert-message.block-message.error
+  %ul.alert_holder
+    %li You should push repository to proceed.
+    %li After push you will be able to browse code, commits etc. 
 
 - bash_lexer = Pygments::Lexer[:bash]
 %div.git-empty

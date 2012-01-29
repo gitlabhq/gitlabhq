@@ -1,3 +1,6 @@
+@import "bootstrap";
+
+/** GITLAB colors **/
 $text_color:#222;
 $lite_text_color: #666; 
 $link_color:#111; 
@@ -6,10 +9,13 @@ $active_bg_color:#79C3E0;
 $active_bd_color: #2FA0BB;
 $border_color:#CCC;
 $lite_border_color:#EEE;
-$app_width:980px;
+$min_app_width:980px;
+$max_app_width:980px;
 $app_padding:20px;
 $bg_color: #FFF;
 $styled_border_color: #2FA0BB;
+$color: "#4BB8D2";
+$blue_link: "#2fa0bb";
 
 /** MIXINS **/
 @mixin round-borders-bottom($radius) {
@@ -81,36 +87,103 @@ $styled_border_color: #2FA0BB;
 .no-padding { 
   padding:0 !important;
 }
+.underlined { 
+  border-bottom: 1px solid $border_color;
+}
 
-/* General */
+/** LAYOUT **/
 
-body.collapsed { 
-  background-color: $bg_color;
+.container-fluid { 
+  min-width:$min_app_width;
+  max-width:$max_app_width;
+  margin:auto;
+  margin-top:51px;
+}
 
-  #container{ 
-    margin: auto;
-    margin-top:51px;
-    width: $app_width;
-    border-top: 0;
-    background-color: $bg_color;
+.container-fluid > .sidebar { 
+  width: 140px;
+  border-right: 1px solid $border_color;
+  height:100%;
+  min-height:450px;
+
+  .fixed { 
+    position:fixed;
+  }
+
+  aside a {
+    display:block;
+    position:relative;
+    padding:15px 10px;
+    margin:10px 0 0 0;
+    font-size:13px;
+    font-weight:bold;
+    color:#444;
   }
 }
 
-a {
-  color: $link_color;
+.container-fluid > .content {
+  margin-left: 160px;
+  margin-top:20px;
 }
 
-@import "style.scss";
+aside.projects,
+aside.project-side
+{ 
+  margin-left: 0;
+  padding-left: 20px;
+}
+
+img.avatar { 
+  float:left;
+  margin-right:15px;
+  width:40px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+img.lil_av { 
+  padding-left: 5px;
+  position: relative;
+  top: 3px;
+}
+
+.media-grid { 
+  h3, h2 , h4 {
+    &.media_h { 
+      padding-left:10px;
+      float:left;
+    }
+  }
+}
+
+.wll { 
+  background-color: #FFF;
+  margin-bottom: 10px;
+  padding: 5px;
+  min-height: 20px;
+  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  .author { color: #999; }
+  &:last-child { border:none }
+  p { padding-top:5px;}
+}
+
+.author_link { 
+  color: $active_link_color;
+}
+
+@import "reset_bootstrap.scss";
+@import "top_panel.scss";
 @import "projects.css.scss";
 @import "commits.css.scss";
-@import "notes.css.scss";
+@import "tree.scss";
+@import "issues.css.scss";
 @import "merge_requests.css.scss";
+@import "notes.css.scss";
+@import "login.scss";
+
+/** CODE HIGHTLIGHT **/
 @import "highlight.css.scss";
 @import "highlight.black.css.scss";
-@import "issues.css.scss";
-@import "commits.css.scss";
 
-@import "top_panel.scss";
-@import "dashboard.scss";
-@import "tree.scss";
-@import "tags.scss";

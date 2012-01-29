@@ -6,34 +6,31 @@
         - @admin_project.errors.full_messages.each do |msg|
           %li= msg
 
-  .form-row
+  .clearfix
     = f.label :name
-    %br
-    = f.text_field :name
-  .form-row
+    .input= f.text_field :name
+  .clearfix
     = f.label :code
-    %br
-    = f.text_field :code
-  .form-row
+    .input= f.text_field :code
+  .clearfix
     = f.label :path
-    %br
-    = f.text_field :path
+    .input= f.text_field :path
 
-  .form-row
-    = f.label :tag_list
-    %br
-    = f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
+  - unless @admin_project.new_record?
+    .clearfix
+      = f.label :owner_id
+      .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
 
-  .form-row
+  .clearfix
     = f.label :description
-    %br
-    = f.text_area :description
+    .input= f.text_area :description
   .clear
   %br
   .actions
-    = f.submit 'Save', :class => "grey-button"
+    = f.submit 'Save', :class => "btn"
 
 :javascript
   $(function(){
     taggifyForm();
+    $('#project_owner_id').chosen();
   })

@@ -29,6 +29,7 @@ gem "httparty"
 gem "charlock_holmes"
 gem "foreman"
 gem "omniauth-ldap"
+gem 'bootstrap-sass'
 
 group :assets do
   gem "sass-rails",   "~> 3.1.0"

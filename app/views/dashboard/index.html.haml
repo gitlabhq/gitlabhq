@@ -1,5 +1,3 @@
-- content_for(:body_class, "dashboard-page")
-
-#dashboard-content.dashboard-content.content
-  = render "dashboard/sidebar"
-  #news-feed.news-feed= render "dashboard/projects_feed"
+%h3 Activities
+%hr
+.news-feed= render "dashboard/projects_feed"

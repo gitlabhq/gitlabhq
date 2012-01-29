@@ -1,20 +1,17 @@
-#feeds_content_holder
-  - @active_projects.first(3).each do |project|
-    .project-box.project-updates.ui-box.ui-box-small.ui-box-big
-      = link_to project do 
-        %h3= project.name
-        .data
-          - project.updates(3).each do |update|
-            %a.project-update{:href => dashboard_feed_path(project, update)}
-              = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
-              %span.update-title
-                = dashboard_feed_title(update)
-              %span.update-author
-                %strong= update.author_name
-                authored
-                = time_ago_in_words(update.created_at)
-                ago
-              .right
-                - klass = update.class.to_s.split("::").last.downcase
-                %span.tag{ :class => klass }= klass
+- @active_projects.first(3).each do |project|
+  = link_to project do 
+    %h4= project.name
+  - project.updates(3).each do |update|
+    %a.project-update{:href => dashboard_feed_path(project, update)}
+      = image_tag gravatar_icon(update.author_email), :class => "avatar", :width => 32
+      %div
+        = dashboard_feed_title(update)
+      %span.update-author
+        %strong= update.author_name
+        authored
+        = time_ago_in_words(update.created_at)
+        ago
+      .right
+        - klass = update.class.to_s.split("::").last.downcase
+        %span.tag{ :class => klass }= klass
 

@@ -1,20 +1,11 @@
-- @projects.in_groups_of(3, false) do |projects|
-  - projects.each_with_index do |project, i|
-    %div.grid_1.projects_selector
-      %div{ :class => "project-box ui-box ui-box-big" }
+- @projects.in_groups_of(2, false) do |projects|
+  .row
+    - projects.each_with_index do |project, i|
+      .span4.well
         = link_to project_path(project) do
           %h3= truncate(project.name, :length => 20)
-        .data
-          %p.title.repository.git_url_wrapper
-            %span Repository:
-            %input{ :value => project.url_to_repo, :class => ['git-url', 'one_click_select', 'text', 'project_list_url'], :readonly => 'readonly' }
-          %p.title.activity
-            %span Last Activity:
-            - if project.last_activity_date_cached
-              = project.last_activity_date_cached.stamp("Aug 24, 2011")
-            - else 
-              Never
+        %p.title.repository.git_url_wrapper
+          %input{ :value => project.url_to_repo, :class => ['git-url', 'one_click_select', 'text', 'project_list_url'], :readonly => 'readonly' }
 
-        .buttons
-          %a.browse-code.button.yellow{:href => tree_project_ref_path(project, project.root_ref)} Browse code
-          %a.commits.button.green{:href => project_commits_path(project)} Commits
+        %a.btn{:href => tree_project_ref_path(project, project.root_ref)} Browse code
+        %a.btn{:href => project_commits_path(project)} Commits

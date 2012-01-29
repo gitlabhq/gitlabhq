@@ -1,5 +1,62 @@
+body header { 
+  position:absolute;
+  width:100%;
+  padding:0;
+  margin:0;
+  top:0;
+  left:0;
+  background: #F1F1F1; /* for non-css3 browsers */
+  border-bottom: 1px solid #ccc; 
+  box-shadow: 0 -1px 0 white inset;
+  -moz-box-shadow: 0 -1px 0 white inset;
+  -webkit-box-shadow: 0 -1px 0 white inset;
+
+  height:50px;
+
+  .wrapper { 
+    margin:auto;
+    min-width:$min_app_width;
+    max-width:$max_app_width;
+    position:relative;
+    padding:10px $app_padding;
+  }
+
+  .project_name {
+    float:left;
+    width:235px;
+    margin-right:30px;
+    font-size:16px;
+    font-weight:bold;
+    padding:8px;
+    color:#333;
+  }
+
+  .git_url_wrapper {
+    padding:0px;
+    margin:0px;
+    float:left;
+
+    .git-url {
+      padding:0px;
+      margin:0px;
+      font-size: 12px;
+
+      margin-right:10px;
+      border-radius: 4px;
+      -moz-border-radius: 4px;
+
+
+      color: #666; 
+      border: 1px solid #AAA;
+      padding:  0 10px 0 30px;
+      background: transparent url('images.png') no-repeat 8px -42px; 
+      width: 260px;
+      height:26px;
+    }
+  }
+}
 .main_links {
-  width:130px;
+  width:155px;
   float:left;
 
   a { 
@@ -47,100 +104,103 @@
   }
 }
 
-body header { 
-  position:absolute;
-  width:100%;
-  padding:0;
-  margin:0;
-  top:0;
-  left:0;
-  background: #999; /* for non-css3 browsers */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#EAEAEA'); /* for IE */
-  background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#EAEAEA)); /* for webkit browsers */
-  background: -moz-linear-gradient(top,  #FFFFFF,  #EAEAEA); /* for firefox 3.6+ */ 
-  background: -o-linear-gradient(top,  #FFFFFF,  #EAEAEA); /* for firefox 3.6+ */ 
-  border-bottom: 1px solid #ccc; 
-
-  height:50px;
-
-  .wrapper { 
-    margin:auto;
-    width:$app_width;
-    position:relative;
-    
-    .top_panel_content { 
-      padding:10px $app_padding;
-    }
-  }
-
-  .project_name {
-    float:left;
-    width:235px;
-    margin-right:30px;
-    font-size:16px;
-    font-weight:bold;
-    padding:8px;
-    color:#333;
-  }
-
-  .git_url_wrapper {
-    padding:0px;
-    margin:0px;
-    float:left;
-
-    .git-url {
-      padding:0px;
-      margin:0px;
-      font-size: 12px;
-
-      margin-right:10px;
-      border-radius: 4px;
-      -moz-border-radius: 4px;
-
-
-      color: #666; 
-      border: 1px solid #AAA;
-      padding:  0 10px 0 30px;
-      background: transparent url('images.png') no-repeat 8px -42px; 
-      width: 160px;
-      height:26px;
-    }
-  }
-}
-
-.top_panel_holder .chzn-container { 
-  position:relative;
-
-  .chzn-drop { 
-    margin:7px 0;
-    border: 1px solid #CCC;
-    min-width: 300px;
-
-    .chzn-results { 
-      max-height:300px;
-    }
-  }
-
-  .chzn-single { 
-    background:transparent;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-
-    div { 
-      background:transparent;
-      border-left:none;
-    }
-
-    span { 
-      font-weight: normal;
-    }
-  }
-}
 
 .rss-icon { 
   margin:0 15px;
   padding:3px;
-  border:1px solid #AAA;
   border-radius:3px;
-  float:left;
+}
+
+
+
+/* Account box */
+header .account-box{ 
+  position: absolute; 
+  right: 0; 
+  top: 8px;
+  z-index: 10000;
+  width: 128px;
+  font-size: 11px;
+  float: right;
+  display: block;
+  cursor: pointer;}
+header .account-box img{ 
+  border-radius: 4px;
+  right: 20px;
+  position: absolute;
+  width: 33px; height: 33px;
+  display: block; top:0;}
+header .account-box img:after{
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+left: 0;
+  bottom: 0;
+float: right;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-bottom: 0;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .15)), to(rgba(0, 0, 0, .25))), -webkit-gradient(linear, left top, right bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.5, rgba(255, 255, 255, .1)), color-stop(0.501, rgba(255, 255, 255, 0)), color-stop(1, rgba(255, 255, 255, 0)));
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, .15), rgba(0, 0, 0, .25)), -moz-linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+  background: linear-gradient(top, rgba(255, 255, 255, .15), rgba(0, 0, 0, .25)), linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+  -webkit-background-origin: border-box;
+  -moz-background-origin: border;
+  background-origin: border-box;
+}
+
+.account-box.hover{height: 138px;}
+.account-box:hover > .account-links{display: block;}
+header .account-links{ background: #79C3E0; display: none; border-radius: 5px; width: 100px; margin-top: 0; float: right; box-shadow: 0 1px 1px rgba(0,0,0,.2); position:relative;}
+
+header .account-links:before {
+  content: ".";
+  width:0;
+  height:0;
+  position:absolute;
+  border:5px solid transparent;
+  border-color:rgba(255,255,255,0);
+  border-bottom-color:#333;
+  text-indent:-9999px;
+  top:-10px;
+  line-height:0;
+  right:10px;
+  z-index:10;
+}
+
+header .account-links{ 
+  background: #333;
+  display: none;
+  z-index: 100000;
+  border-radius: 5px;
+  width: 100px;
+  position: absolute;
+  right: 20px; 
+  top: 46px; 
+  margin-top: 0;
+  float: right; 
+  box-shadow: 0 1px 1px rgba(0,0,0,.2); 
+}
+
+header .account-links a{color: #EEE; padding: 6px 10px; display: block; text-shadow: none;  border-bottom: 1px solid #555}
+header .account-links a:hover{ background: #444;}
+.account-box.hover .arrow-up{top: 41px; right: 6px; position: absolute}
+header .account-links a:first-child{
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+header .account-links a:last-child{
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom: 0;
 }

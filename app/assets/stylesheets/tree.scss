@@ -8,13 +8,10 @@
 }
 
 .tree_progress { 
-  float:left;
-  width:16px;
-  height:16px;
-  margin:2px 6px;
+  display:none;
+  margin:20px;
   &.loading { 
-    background-position: 0px 0px;
-    background: url("ajax-loader-facebook.gif") no-repeat;
+    display:block;
   }
 }
 
@@ -117,5 +114,15 @@ table.highlighttable .linenodiv pre {
 .tree-item { 
   &:hover { 
     background: #FFFFCF;
+    cursor:pointer;
+  }
+
+  .tree-item-file-name { 
+    font-weight:bold;
+
+    img { 
+      position: relative;
+      top: 2px;
+    }
   }
 }

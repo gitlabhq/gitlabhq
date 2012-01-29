@@ -1,45 +1,10 @@
-/* Commit Page */
-body.project-page.commits-page .commit-info{float: right;}
-body.project-page.commits-page .commit-info data{
-  padding: 4px 10px;
-  font-size: 11px;
-}
-body.project-page.commits-page .commit-info data.commit-button{
-  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.192, #fff), to(#f4f4f4));
-  background-image: -webkit-linear-gradient(#fff 19.2%, #f4f4f4);
-  background-image: -moz-linear-gradient(#fff 19.2%, #f4f4f4);
-  background-image: -o-linear-gradient(#fff 19.2%, #f4f4f4);
-  box-shadow: 0 -1px 0 white inset;
-  display: block;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  margin-bottom: 2px;
-  position: relative;
-  padding-right: 20px;
-}
+/**
+ * 
+ * COMMIT SHOw
+ *
+ */
 
-body.project-page.commits-page .commit-button i{
-  background: url('images.png') no-repeat -138px -27px;
-  width: 6px;
-  height: 9px;
-  float: right;
-  position: absolute;
-  top: 6px;
-  right: 5px;
-}
-body.project-page.commits-page .commits-date {display: block; width: 100%; margin-bottom: 20px}
-body.project-page.commits-page .commits-date .data {padding: 0}
-body.project-page.commits-page a.commit{padding: 10px; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page.commits-page .commits-date a.commit {padding: 10px; border-bottom: none; overflow: hidden; display: block;}
-body.project-page.commits-page .commits-date a.commit:last-child{border-bottom: 0}
-body.project-page.commits-page .commits-date a.commit img{float: left; margin-right: 10px;}
-body.project-page.commits-page .commits-date a.commit span.commit-title{display: block;}
-body.project-page.commits-page .commits-date a.commit span.commit-title{margin-bottom: 10px}
-body.project-page.commits-page .commits-date a.commit span.commit-author{color: #999; font-weight: normal; font-style: italic;}
-body.project-page.commits-page .commits-date a.commit span.commit-author strong{font-weight: bold; font-style: normal;}
 
-/* eo Commit Page */
-/** Commit diff view **/
 .diff_file {
   border:1px solid #CCC;
   margin-bottom:1em;
@@ -72,6 +37,11 @@ body.project-page.commits-page .commits-date a.commit span.commit-author strong{
     border:none;
     margin:0px;
     padding:0px;
+    tr {
+      td { 
+        font-size:12px;
+      }
+    }
   }
   .old_line, .new_line {
     margin:0px;
@@ -110,14 +80,6 @@ body.project-page.commits-page .commits-date a.commit span.commit-author strong{
   }
 }
 
-pre.commit_message {
-  white-space: pre-wrap;
-  font-family: "Helvetica", sans-serif;
-  color: #555;
-  font-weight:bold;
-  font-size:15px;
-}
-
 /** COMMIT BLOCK **/
 .commit-title{display: block;}
 .commit-title{margin-bottom: 10px}
@@ -147,45 +109,28 @@ ul.bordered-list li:last-child { border:none }
   }
 }
 
-.per_line_form { 
-  font-family: "Helvetica", sans-serif;
-  background: #2FA0BB;
-
-  td {
-    padding:0; 
-  }
-
-  form { 
-    margin:5px;
-    width: 756px;
-    border: 1px solid #CCC;
-    padding: 20px;
-    background: white;
-  }
-}
-
 
 tr.line_notes_row { 
-  font-family: "Helvetica", sans-serif;
-  &:hover { 
-    background:none;
-  }
-  td { 
-    margin:0px;
-    padding:0px;
-    border-bottom:1px solid #DEE2E3;
-    
+  border-bottom:1px solid #DDD;
+}
 
-    ul {
-      display:block;
-      list-style:none;
-      margin:0px;
-      padding:0px;
+/** FLASH **/
+#flash_container {
+  height:45px;
+  position:fixed;
+  z-index:10001;
+  top:0px;
+  width:100%;
+  margin-bottom:15px;
+  overflow:hidden;
+  background:white;
+  cursor:pointer;
+  border-bottom:1px solid #777;
 
-      li { 
-        border-top:1px solid #DEE2E3;
-        padding:10px;
-      }
-    }
+  h4 {
+    color:#444;
+    font-size:22px;
+    padding-top:5px;
+    margin:2px;
   }
 }

@@ -1,38 +1,32 @@
-.ui-box.width-100p
-  %h3= @user.name
-  = form_for @user, :url => profile_update_path, :method => :put do |f|
-    .data
-      .left
-        -if @user.errors.any?
-          #error_explanation
-            %ul
-              - @user.errors.full_messages.each do |msg|
-                %li= msg
+.media-grid
+  = link_to "#" do
+    = image_tag gravatar_icon(@user.email, 90), :class => "thumbnail"
+  %h3.media_h= @user.name
 
-        .form-row
-          = f.label :name
-          %br
-          = f.text_field :name
-        .form-row
-          = f.label :email
-          %br
-          = f.text_field :email
-        .form-row
-          = f.label :skype
-          %br
-          = f.text_field :skype
-        .form-row
-          = f.label :linkedin
-          %br
-          = f.text_field :linkedin
-        .form-row
-          = f.label :twitter
-          %br
-          = f.text_field :twitter
+%hr
 
-      .right
-        = image_tag gravatar_icon(current_user.email,64), :width => 64, :style => "margin:5px; border:5px solid #eee;"
-      .clear
-    .buttons
-      = f.submit 'Save', :class => "grey-button"
+= form_for @user, :url => profile_update_path, :method => :put do |f|
+  -if @user.errors.any?
+    %div.alert-message.block-message.error
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+
+  .clearfix
+    = f.label :name
+    .input= f.text_field :name
+  .clearfix
+    = f.label :email
+    .input= f.text_field :email
+  .clearfix
+    = f.label :skype
+    .input= f.text_field :skype
+  .clearfix
+    = f.label :linkedin
+    .input= f.text_field :linkedin
+  .clearfix
+    = f.label :twitter
+    .input= f.text_field :twitter
+
+  = f.submit 'Save', :class => "primary btn"
 

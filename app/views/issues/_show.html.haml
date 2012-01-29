@@ -1,26 +1,32 @@
-%tr{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
-  %td
-    %strong.issue-number{:class => sort_class}= "##{issue.id}"
-    %span
-      = truncate(html_escape(issue.title), :length => 100)
-    %br
-    %br
-    %div.note-author
-      %strong= issue.assignee.name
-      %cite.cgray
-        = time_ago_in_words(issue.created_at)
-        ago
-      - if issue.critical
-        %span.tag.high critical
-      - if issue.today?
-        %span.tag.today today
-      .right.action-links
-        - if can? current_user, :write_issue, issue
-          - if issue.closed
-            = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "cgray", :remote => true
-          - else
-            = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "cgray", :remote => true
-        - if can? current_user, :write_issue, issue
-          = link_to 'Edit', edit_project_issue_path(issue.project, issue), :class => "cgray edit-issue-link", :remote => true
-        - if can?(current_user, :admin_issue, @project) || issue.author == current_user
-          = link_to 'Remove', [issue.project, issue], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-issue negative", :id => "destroy_issue_#{issue.id}"
+%li.wll{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
+  = image_tag gravatar_icon(issue.assignee_email), :class => "avatar"
+  %span.update-author
+    assigned to
+    %strong
+      = link_to project_team_member_path(@project, @project.team_member_by_id(issue.author_id)), :class => "author_link" do
+        = issue.assignee_name
+    - if issue.critical
+      %span.label.important critical
+    - if issue.today?
+      %span.label.success today
+
+  .right
+    - if can? current_user, :write_issue, issue
+      - if issue.closed
+        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small", :remote => true
+      - else
+        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small", :remote => true
+    - if can? current_user, :write_issue, issue
+      = link_to 'Edit', edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true
+    -#- if can?(current_user, :admin_issue, @project) || issue.author == current_user
+      = link_to 'Remove', [issue.project, issue], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "danger btn small delete-issue", :id => "destroy_issue_#{issue.id}"
+
+
+  = link_to project_issue_path(issue.project, issue) do
+    %p
+      Issue ##{issue.id}:
+      = truncate(issue.title, :length => 50)
+
+
+
+

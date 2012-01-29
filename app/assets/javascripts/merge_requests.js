@@ -4,17 +4,17 @@ var MergeRequest = {
 
   init:
     function() { 
-      $(".merge-tabs a").live("click", function() { 
-        $(".merge-tabs a").removeClass("active");
-        $(this).addClass("active");
+      $(".tabs a").live("click", function() { 
+        $(".tabs a").parent().removeClass("active");
+        $(this).parent().addClass("active");
       });
 
-      $(".merge-tabs a.merge-notes-tab").live("click", function() { 
+      $(".tabs a.merge-notes-tab").live("click", function() { 
         $(".merge-request-commits, .merge-request-diffs").hide();
         $(".merge-request-notes").show();
       });
 
-      $(".merge-tabs a.merge-commits-tab").live("click", function() { 
+      $(".tabs a.merge-commits-tab").live("click", function() { 
         if(!MergeRequest.commits_loaded) { 
           MergeRequest.loadCommits(); 
         }
@@ -22,7 +22,7 @@ var MergeRequest = {
         $(".merge-request-commits").show();
       });
 
-      $(".merge-tabs a.merge-diffs-tab").live("click", function() { 
+      $(".tabs a.merge-diffs-tab").live("click", function() { 
         if(!MergeRequest.diffs_loaded) { 
           MergeRequest.loadDiff(); 
         }

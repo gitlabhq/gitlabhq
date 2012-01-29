@@ -1,15 +1,13 @@
-%a.project-update.titled{:href => project_commits_path(project, :ref => update.head.name)}
-  = image_tag gravatar_icon(update.author_email), :class => "left", :width => 40
-  %span.update-title
-    = dashboard_feed_title(update)
-  %span.update-author
-    %strong= update.author_name
-    authored
-    = time_ago_in_words(update.created_at)
-    ago
-  .title-block
-    %span.update-title
-      %span.commit.tag= update.head.name
-    %span.update-author
-      .left= truncate update.commit.id
-
+- commit = update
+.alert-message.entry
+  = link_to project_commits_path(@project, :ref => commit.head.name) do 
+    %p
+      %strong
+        = commit.head.name
+        &ndash;
+        = truncate(commit.id.to_s, :length => 10)
+      = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
+      = truncate(commit.safe_message, :length => 40)
+      %span.right
+        = time_ago_in_words(commit.committed_date)
+        ago

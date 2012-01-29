@@ -39,6 +39,8 @@ class MergeRequestsController < ApplicationController
     @notes = @merge_request.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @merge_request)
 
+    render_full_content
+
     respond_to do |format|
       format.html
       format.js { respond_with_notes }

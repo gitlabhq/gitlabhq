@@ -1,25 +1,18 @@
 = render "repositories/head"
-- unless @hooks.empty?
-  %div.update-data.ui-box.ui-box-small
-    .data
-      - @hooks.each do |hook|
-        %a.update-item{:href => project_hook_path(@project, hook)}
-          %span.update-title{:style => "margin-bottom:0px;"}
-            = hook.url
-            %span.update-author.right
-              Added
-              = time_ago_in_words(hook.created_at)
-              ago
-- else 
-  %h3 No hooks
 
-.clear
-%hr
-%p 
-  Post receive hooks. For now only POST request allowed. We send some data with request. Example below
+- if can? current_user, :admin_project, @project
+  .alert-message.block-message.info
+    Post receive hooks for binding events when someone push to repository.
+    = link_to new_project_hook_path(@project), :class => "btn small", :title => "New Web Hook" do 
+      Add Post Receive Hook
 
-.view_file
-  .view_file_header
-    %strong POST data passed
-  .data.no-padding
-    = render "data_ex"
+%ul.unstyled
+  - @hooks.each do |hook|
+    %li
+      %a.update-item{:href => project_hook_path(@project, hook)}
+        = hook.url
+
+.alert-message.block-message.info
+  We send some data with POST request when someone makes git push
+
+.well= render "data_ex"

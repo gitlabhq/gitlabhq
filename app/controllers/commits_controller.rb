@@ -29,6 +29,8 @@ class CommitsController < ApplicationController
 
     @line_notes = project.commit_line_notes(@commit)
 
+    render_full_content
+
     respond_to do |format|
       format.html
       format.js { respond_with_notes }

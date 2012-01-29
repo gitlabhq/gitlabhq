@@ -1,5 +1,6 @@
-- content_for(:body_class, "dashboard-page")
+%h3
+  Merge Requests
+  %small ( authored or assigned to you )
 
-#dashboard-content.dashboard-content.content
-  = render "dashboard/sidebar"
-  #news-feed.news-feed= render "dashboard/merge_requests_feed"
+%hr
+= render "dashboard/merge_requests_feed"

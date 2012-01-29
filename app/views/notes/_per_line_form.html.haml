@@ -1,29 +1,22 @@
 %table{:style => "display:none;"}
   %tr.per_line_form
     %td{:colspan => 3 }
-      %div
+      %div.well
         = form_for [@project, @note], :remote => "true", :multipart => true do |f|
+          %h3 Leave a note
           -if @note.errors.any?
-            .errors.error
+            .alert-message.block-message.error
               - @note.errors.full_messages.each do |msg|
                 %div= msg
 
           = f.hidden_field :noteable_id
           = f.hidden_field :noteable_type
           = f.hidden_field :line_code
-
-          %div
-            = f.label :note
-            %cite.cgray markdown supported
-            %br
-            %br
-            = f.text_area :note,  :size => 255
-
-          .clear
-          %br
-          = f.submit 'Add note', :class => "positive-button", :id => "submit_note"
-          .right
-            = link_to "Close", "#", :class => "grey-button hide-button"
+          = f.text_area :note,  :size => 255
+          .prepend-top-10
+            = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
+            .right
+              = link_to "Close", "#", :class => "btn hide-button"
 
 :javascript 
   $(function(){

@@ -32,13 +32,12 @@
 
 #notes-list .note .delete-note { display:none; }
 #notes-list .note:hover .delete-note { display:block; }
-
-body.project-page #notes-list .note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-body.project-page #notes-list .note img{float: left; margin-right: 10px;}
-body.project-page #notes-list .note span.note-title{display: block;}
-body.project-page #notes-list .note span.note-title{margin-bottom: 10px}
-body.project-page #notes-list .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
-body.project-page #notes-list .note span.note-author strong{font-weight: bold; font-style: normal;}
+#notes-list .note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+#notes-list .note img{float: left; margin-right: 10px;}
+#notes-list .note span.note-title{display: block;}
+#notes-list .note span.note-title{margin-bottom: 10px}
+#notes-list .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
+#notes-list .note span.note-author strong{font-weight: bold; font-style: normal;}
 
 
 .note .note-title { margin-left:55px; }

@@ -1,13 +1,20 @@
 = render "head"
 - unless @branches.empty?
-  %div.update-data.ui-box.ui-box-small
-    .data
+  %table
+    %thead
+      %tr
+        %th Name
+        %th Last commit
+    %tbody
       - @branches.each do |branch|
-        %a.update-item{:href => project_commits_path(@project, :ref => branch.name)}
-          %span.update-title{:style => "margin-bottom:0px;"}
-            = branch.name
-            %span.update-author.right
-              = time_ago_in_words(branch.commit.committed_date)
-              ago
-- else 
-  %h3 No brances
+        %tr
+          %td
+            = link_to project_commits_path(@project, :ref => branch.name) do
+              %strong= branch.name
+              - if branch.name == @project.root_ref
+                %span.label default
+          %td
+            = link_to project_commits_path(@project, branch.commit.id) do
+              = truncate branch.commit.id.to_s, :length => 10
+            = time_ago_in_words(branch.commit.committed_date)
+            ago

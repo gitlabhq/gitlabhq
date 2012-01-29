@@ -26,14 +26,14 @@ describe "Issues" do
     end
   end
 
-  describe "New key", :js => true do
+  describe "New key" do
     before do
       visit keys_path
       click_link "Add new"
     end
 
     it "should open new key popup" do
-      page.should have_content("Add new public key")
+      page.should have_content("New key")
     end
 
     describe "fill in" do
@@ -47,7 +47,7 @@ describe "Issues" do
       it "should add new key to table" do
         click_button "Save"
 
-        page.should_not have_content("Add new public key")
+        page.should_not have_content("New key")
         page.should have_content "laptop"
       end
     end

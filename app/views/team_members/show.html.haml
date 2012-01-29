@@ -1,21 +1,13 @@
 - allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
 %div
-  %span.entity-info
-    = link_to team_project_path(@project) do 
-      .entity-button
-        Team
-        %i
+  = link_to team_project_path(@project), :class => "btn right" do 
+    Team »
 
-  = image_tag gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = user.name
-  %span.commit-author
-    %strong
-      = user.email
-  %hr
-  %br
+  .media-grid
+    = link_to "#" do
+      = image_tag gravatar_icon(user.email, 90), :class => "thumbnail"
+    %h3.media_h= user.name
 
 %table.no-borders
   %tr
@@ -59,9 +51,8 @@
       %td= user.twitter
 
 - if can? current_user, :admin_project, @project
-  .merge-tabs
-    .right
-      = link_to 'Remove from team', [@project, @issue], :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
+  .actions
+    = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
 
 :javascript
   $(function(){

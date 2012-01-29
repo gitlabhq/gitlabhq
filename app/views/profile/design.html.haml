@@ -1,22 +1,20 @@
-.ui-box.width-100p
-  %h3 Design
-  = form_for @user, :url => profile_update_path, :method => :put do |f|
-    .data
-      .left.dark_scheme_box
-        %label{:for => "user_dark_scheme_false"}
-          = image_tag "white.png", :width => 310, :height => 212
-          %center
-            %h4
-              = f.radio_button :dark_scheme, false
-              White code preview
-      .right.dark_scheme_box
-        %label{:for => "user_dark_scheme_true"}
-          = image_tag "dark.png", :width => 310, :height => 212
-          %center
-            %h4
-              = f.radio_button :dark_scheme, true
-              Dark code preview
-      .clear
-    .buttons
-      = f.submit 'Save', :class => "grey-button"
+%h3 Design
+%hr
+= form_for @user, :url => profile_update_path, :method => :put do |f|
+  .row
+    %label.span4{:for => "user_dark_scheme_false"}
+      = image_tag "white.png", :width => 210
+      %center
+        %h4
+          = f.radio_button :dark_scheme, false
+          White code preview
+    %label.span4{:for => "user_dark_scheme_true"}
+      = image_tag "dark.png", :width => 210
+      %center
+        %h4
+          = f.radio_button :dark_scheme, true
+          Dark code preview
+  .clearfix
+  .actions
+    = f.submit 'Save', :class => "btn"
 
