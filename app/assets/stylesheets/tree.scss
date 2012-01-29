@@ -122,5 +122,10 @@ table.highlighttable .linenodiv pre {
 
   .tree-item-file-name { 
     font-weight:bold;
+
+    img { 
+      position: relative;
+      top: 2px;
+    }
   }
 }
