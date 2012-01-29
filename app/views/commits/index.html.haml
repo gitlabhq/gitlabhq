@@ -1,8 +1,13 @@
-- if current_user.private_token   
-  = content_for :rss_icon do 
-    .rss-icon
+%h3 
+  Commits
+  - if current_user.private_token   
+    %span.rss-icon
       = link_to project_commits_path(@project, :atom, { :private_token => current_user.private_token, :ref => @ref }) do 
         = image_tag "Rss-UI.PNG", :width => 22, :title => "feed"
+  = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form right" do
+    = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
+    = hidden_field_tag :destination, "commits"
+%hr
 
 - if params[:path]
   %ul.breadcrumb
@@ -24,4 +29,5 @@
   :javascript
     $(function(){
       CommitsList.init("#{@ref}", 20);
+      $('.project-refs-select').chosen();
     });

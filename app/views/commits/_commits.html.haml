@@ -2,19 +2,18 @@
   %div{ :class => "commits-date ui-box ui-box-small ui-box-big" }
     .day-commits-table
       %h5.underlined= day.stamp("28 Aug, 2010")
+      %br
       %ul.unstyled
         - commits.each do |commit|
-          %li.wll
-            %a{ :class => "update-item", :href => project_commit_path(@project, :id => commit.id) }
-              .right.btn
-                = truncate(commit.id.to_s, :length => 10)
-                »
-              = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 32
-              %span.update-author
-                %strong= commit.author_name
-                &ndash;
-                = time_ago_in_words(commit.committed_date)
-                ago
-              %p
+          %li.entry
+            = link_to project_commit_path(@project, :id => commit.id) do
+              %div
                 %strong
-                  = truncate(commit.safe_message, :length => 50)
+                  = truncate commit.id.to_s, :length => 10
+                &ndash;
+                = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
+                = truncate(commit.safe_message, :length => 50)
+
+                %span.right.cgray
+                  = time_ago_in_words(commit.committed_date)
+                  ago
