@@ -11,10 +11,6 @@
           = truncate @project.name, :length => 28
         .git_url_wrapper
           %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
-        -#- if @project.repo_exists?
-          .left{:style => "margin-left:5px;"}
-            = render :partial => "projects/refs", :locals => { :destination => controller.controller_name == "commits" ? "commits" : "tree" }
-        = yield :rss_icon
 
 
       .account-box

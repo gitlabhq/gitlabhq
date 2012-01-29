@@ -117,6 +117,7 @@ $blue_link: "#2fa0bb";
     margin:10px 0 0 0;
     font-size:13px;
     font-weight:bold;
+    color:#444;
   }
 }
 
@@ -139,6 +140,12 @@ img.avatar {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+}
+
+img.lil_av { 
+  padding-left: 5px;
+  position: relative;
+  top: 3px;
 }
 
 .media-grid { 
@@ -175,14 +182,6 @@ img.avatar {
 @import "merge_requests.css.scss";
 @import "notes.css.scss";
 @import "login.scss";
-
-//@import "style.scss";
-
-//@import "commits.css.scss";
-
-//@import "dashboard.scss";
-//@import "tags.scss";
-//@import "buttons.scss";
 
 /** CODE HIGHTLIGHT **/
 @import "highlight.css.scss";

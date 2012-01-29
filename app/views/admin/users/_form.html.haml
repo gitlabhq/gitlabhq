@@ -2,48 +2,41 @@
   = form_for [:admin, @admin_user] do |f|
     -if @admin_user.errors.any?
       #error_explanation
-        %h2= "#{pluralize(@admin_user.errors.count, "error")} prohibited this admin_user from being saved:"
         %ul
           - @admin_user.errors.full_messages.each do |msg|
             %li= msg
 
-    .form-row
+    .clearfix
       = f.label :name
-      %br
-      = f.text_field :name
-    .form-row
+      .input= f.text_field :name
+    .clearfix
       = f.label :email
-      %br
-      = f.text_field :email
-    .form-row
+      .input= f.text_field :email
+    .clearfix
       = f.label :password
-      %br
-      = f.password_field :password
-    .form-row
+      .input= f.password_field :password
+    .clearfix
       = f.label :password_confirmation
-      %br
-      = f.password_field :password_confirmation
-    .form-row
+      .input= f.password_field :password_confirmation
+    .clearfix
       = f.check_box :admin
       = f.label :admin
 
-    .form-row
-      = f.text_field :projects_limit, :class => "small_input"
+    .clearfix
       = f.label :projects_limit
+      .input= f.text_field :projects_limit, :class => "small_input"
 
-    .form-row
+    .clearfix
       = f.label :skype
-      %br
-      = f.text_field :skype
-    .form-row
+      .input= f.text_field :skype
+    .clearfix
       = f.label :linkedin
-      %br
-      = f.text_field :linkedin
-    .form-row
+      .input= f.text_field :linkedin
+    .clearfix
       = f.label :twitter
-      %br
-      = f.text_field :twitter
+      .input= f.text_field :twitter
     .clear
     %br
     .actions
-      = f.submit 'Save', :class => "btn"
+      = f.submit 'Save', :class => "btn primary"
+      = link_to 'Cancel', admin_users_path, :class => "btn"

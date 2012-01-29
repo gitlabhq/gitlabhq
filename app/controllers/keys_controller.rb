@@ -1,6 +1,6 @@
 class KeysController < ApplicationController
   layout "profile"
-  respond_to :js
+  respond_to :js, :html
 
   def index
     @keys = current_user.keys.all

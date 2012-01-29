@@ -5,7 +5,7 @@ describe "Projects" do
 
   describe "GET /projects" do
     before do
-      @project = Factory :project
+      @project = Factory :project, :owner => @user
       @project.add_access(@user, :read)
       visit projects_path
     end
@@ -15,7 +15,7 @@ describe "Projects" do
     end
 
     it "should have link to new project" do
-      page.should have_content("Create new project")
+      page.should have_content("New Project")
     end
 
     it "should have project" do 
@@ -26,7 +26,7 @@ describe "Projects" do
   describe "GET /projects/new" do
     before do
       visit projects_path
-      click_link "Create new project"
+      click_link "New Project"
     end
 
     it "should be correct path" do
@@ -68,7 +68,7 @@ describe "Projects" do
 
   describe "GET /projects/show" do
     before do
-      @project = Factory :project
+      @project = Factory :project, :owner => @user
       @project.add_access(@user, :read)
 
       visit project_path(@project)
@@ -128,7 +128,7 @@ describe "Projects" do
 
   describe "PUT /projects/:id" do
     before do
-      @project = Factory :project
+      @project = Factory :project, :owner => @user
       @project.add_access(@user, :admin, :read)
 
       visit edit_project_path(@project)

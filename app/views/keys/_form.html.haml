@@ -1,16 +1,18 @@
 %div
-  = form_for @key, :remote => true do |f|
+  = form_for @key do |f|
     -if @key.errors.any?
-      %ul
-        - @key.errors.full_messages.each do |msg|
-          %li= msg
+      .alert-message.block-message.error
+        %ul
+          - @key.errors.full_messages.each do |msg|
+            %li= msg
 
-    .form-row
+    .clearfix
       = f.label :title
-      = f.text_field :title, :style => "width:300px"
-    .form-row
+      .input= f.text_field :title
+    .clearfix
       = f.label :key
-      = f.text_area :key, :style => "width:300px; height:130px"
-    .form-row
-      = f.submit 'Save', :class => "grey-button"
+      .input= f.text_area :key, :class => "xlarge"
+    .actions
+      = f.submit 'Save', :class => "primary btn"
+      = link_to "Cancel", keys_path, :class => "btn"
 

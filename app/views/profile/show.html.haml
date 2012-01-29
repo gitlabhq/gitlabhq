@@ -1,4 +1,9 @@
-%h3= @user.name
+.media-grid
+  = link_to "#" do
+    = image_tag gravatar_icon(@user.email, 90), :class => "thumbnail"
+  %h3.media_h= @user.name
+
+%hr
 
 = form_for @user, :url => profile_update_path, :method => :put do |f|
   -if @user.errors.any?

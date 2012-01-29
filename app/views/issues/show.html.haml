@@ -1,5 +1,8 @@
 %h3 
   Issue ##{@issue.id} 
+  %small
+    created at 
+    = @issue.created_at.stamp("Aug 21, 2011")
 
   %span.right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
@@ -20,21 +23,18 @@
 
 %div.well
   %div
-    %span.entity-info
-    = image_tag gravatar_icon(@issue.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-    %span.commit-title
-      %strong
-        %span.commit-author
-      %strong
-        = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.author.id)) do 
-          %span.author= @issue.author_name
-        &rarr;
-        = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.assignee.id)) do 
-          %span.author= @issue.assignee_name
-      %br
-      .cgray= @issue.created_at.stamp("Aug 21, 2011 9:23pm")
-    
+    %cite.cgray Created by
+    = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
+    = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.author.id)) do 
+      %strong.author= @issue.author_name
 
+    %cite.cgray and currently assigned to 
+    = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
+    = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.assignee.id)) do 
+      %strong.author= @issue.assignee_name
+      
+    %hr
+    
   %div= simple_format @issue.title
 
 

@@ -1,7 +1,7 @@
-%a.update-item{:href => key_path(key)}
-  %span.update-title
-    = key.title
-  %span.update-author
-    Added
-    = time_ago_in_words(key.created_at)
-    ago
+%li.entry
+  = link_to key_path(key) do
+    %strong= key.title
+    %span.right.cgray
+      Added
+      = time_ago_in_words(key.created_at)
+      ago

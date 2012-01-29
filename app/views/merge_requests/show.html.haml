@@ -5,6 +5,10 @@
   &rarr;
   %span.label= @merge_request.target_branch
 
+  %small
+    created at 
+    = @merge_request.created_at.stamp("Aug 21, 2011")
+
   %span.right
     - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
       - if @merge_request.closed
@@ -24,19 +28,17 @@
 
 %div.well
   %div
-    %span.entity-info
-    = image_tag gravatar_icon(@merge_request.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-    %span.commit-title
-      %strong
-        %span.commit-author
-      %strong
-        = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
-          %span.author= @merge_request.author_name
-        &rarr;
-        = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
-          %span.author= @merge_request.assignee_name
-      %br
-      .cgray= @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
+    %cite.cgray Created by
+    = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
+    = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
+      %strong.author= @merge_request.author_name
+
+    %cite.cgray and currently assigned to 
+    = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
+    = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
+      %strong.author= @merge_request.assignee_name
+      
+    %hr
     
 
   %div= simple_format @merge_request.title
@@ -56,7 +58,7 @@
   %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes
-  .issue_notes= render "notes/notes"
+  .merge_request_notes= render "notes/notes"
   .loading{ :style => "display:none;"}
     %center= image_tag "ajax-loader.gif"
   .clear
