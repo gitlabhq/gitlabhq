@@ -13,13 +13,22 @@ class RefsController < ApplicationController
   layout "project"
 
   def switch 
-    new_path = if params[:destination] == "tree"
-                 tree_project_ref_path(@project, params[:ref]) 
-               else
-                 project_commits_path(@project, :ref => params[:ref])
-               end
+    respond_to do |format| 
+      format.html do 
+        new_path = if params[:destination] == "tree"
+                     tree_project_ref_path(@project, params[:ref]) 
+                   else
+                     project_commits_path(@project, :ref => params[:ref])
+                   end
 
-    redirect_to new_path
+        redirect_to new_path 
+      end
+      format.js do 
+        @ref = params[:ref]
+        define_tree_vars
+        render "tree"
+      end
+    end
   end
 
   #

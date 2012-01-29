@@ -7,29 +7,32 @@
       = link_to new_project_path, :class => "btn small" do 
         New Project
 
-  %h4
-    Recent Projects:
-  %ul
-    - current_user.projects.order("id DESC").limit(5).each do |project|
-      %li
-        = link_to project_path(project) do
-          = project.name
+  - if current_user.projects.count > 0
+    %div.entry
+      %h5
+        Recent Projects:
+      %ul
+        - current_user.projects.order("id DESC").limit(5).each do |project|
+          %li
+            = link_to project_path(project) do
+              = project.name
+      = link_to "More  » ", projects_path
 
-  %h4
-    Recent Issues:
-  %ul
-    - current_user.assigned_issues.order("id DESC").limit(5).each do |issue|
-      %li
-        = link_to project_issue_path(issue.project, issue) do
-          = truncate issue.title
+  -#%h5
+    -#Your Issues:
+  -#%ul
+    -#- current_user.assigned_issues.order("id DESC").limit(5).each do |issue|
+      -#%li
+        -#= link_to project_issue_path(issue.project, issue) do
+          -#= truncate issue.title
 
 
-  %h4
-    Recent Requests:
-  %ul
-    - current_user.assigned_merge_requests.order("id DESC").limit(5).each do |issue|
-      %li
-        = link_to project_merge_request_path(issue.project, issue) do
-          = truncate issue.title
+  -#%h5
+    -#Your Merge Requests:
+  -#%ul
+    -#- current_user.assigned_merge_requests.order("id DESC").limit(5).each do |issue|
+      -#%li
+        -#= link_to project_merge_request_path(issue.project, issue) do
+          -#= truncate issue.title
 
 
