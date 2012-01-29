@@ -34,11 +34,9 @@ describe "User Issues Dashboard" do
 
     it { should have_content(@issue1.title[0..10]) }
     it { should have_content(@issue1.project.name) }
-    it { should have_content(@issue1.assignee.name) }
 
     it { should have_content(@issue2.title[0..10]) }
     it { should have_content(@issue2.project.name) }
-    it { should have_content(@issue2.assignee.name) }
 
     describe "atom feed", :js => false do
       it "should render atom feed via private token" do

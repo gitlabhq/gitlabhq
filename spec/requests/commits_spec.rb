@@ -22,8 +22,8 @@ describe "Commits" do
     end
 
     it "should list commits" do
-      page.should have_content(commit.author)
       page.should have_content(commit.message)
+      page.should have_content(commit.id.to_s[0..5])
     end
 
     it "should render atom feed" do

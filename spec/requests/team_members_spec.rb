@@ -10,9 +10,7 @@ describe "TeamMembers" do
   describe "View profile" do
     it "should be available" do
       visit(team_project_path(@project))
-      within "#team-table" do
-        click_link(@user.name)
-      end
+      click_link(@user.name)
       page.should have_content @user.skype
       page.should_not have_content 'Twitter'
     end
@@ -55,8 +53,8 @@ describe "TeamMembers" do
 
   describe "Cancel membership" do
     it "should cancel membership" do
-      visit team_project_path(@project)
-      expect { click_link "Cancel" }.to change { UsersProject.count }.by(-1)
+      visit project_team_member_path(@project, @project.users_projects.last)
+      expect { click_link "Remove from team" }.to change { UsersProject.count }.by(-1)
     end
   end
 end

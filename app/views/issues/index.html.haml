@@ -29,6 +29,7 @@
       .span2.right
         = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :id => "issue_search_form", :class => :right  do
           = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
+          = hidden_field_tag :status, params[:f]
           = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
     %hr
@@ -41,7 +42,7 @@
   $('.issue_search').keyup(function() {
     var terms       = $(this).val();
     var project_id  = $('#project_id').val();
-    var status      = $('.status:checked').val();
+    var status      = $('#status').val();
     if (terms != last_terms) {
       last_terms = terms;
 
