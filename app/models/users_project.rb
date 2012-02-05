@@ -32,6 +32,14 @@ class UsersProject < ActiveRecord::Base
       c.update_project(project.path, project)
     end
   end
+
+  def project_access_human
+    Project.access_options.key(self.project_access)
+  end
+
+  def repo_access_human
+    Repository.access_options.key(self.repo_access)
+  end
 end
 # == Schema Information
 #

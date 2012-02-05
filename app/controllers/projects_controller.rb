@@ -96,6 +96,7 @@ class ProjectsController < ApplicationController
   end
 
   def graph
+    render_full_content
     @days_json, @commits_json = GraphCommit.to_graph(project)
   end
 

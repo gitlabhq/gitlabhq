@@ -1,0 +1,28 @@
+- member = @project.team_member_by_id(current_user.id)
+.widget
+  .media-grid
+    %li
+      = link_to project_team_member_path(@project, member), :title => current_user.name do 
+        = image_tag gravatar_icon(current_user.email, 90), :class => "thumbnail"
+  .row
+    .span4
+      %h4
+        = truncate(current_user.name, :lenght => 24)
+      - if @project.owner == current_user
+        %span.label Project Owner
+
+    .span3
+      %span.label= member.project_access_human
+      %span.label= member.repo_access_human
+
+  - if can? current_user, :write_project, @project
+    %hr 
+    .span3
+      %p You have access to create new issue or merge request.
+      %div
+        = link_to new_project_issue_path(@project), :title => "New Issue", :class => "" do 
+          New Issue »
+      %div
+        = link_to new_project_merge_request_path(@project), :title => "New Merge Request", :class => "" do 
+          New Merge Request »
+
