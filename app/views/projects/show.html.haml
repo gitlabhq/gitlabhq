@@ -1,6 +1,6 @@
 = render "project_head"
 - @activities.each do |update|
-  .alert-message.entry
+  .entry
     = link_to dashboard_feed_path(@project, update) do 
       - if update.kind_of? Note
         %p
