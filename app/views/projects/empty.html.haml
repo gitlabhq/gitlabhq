@@ -15,7 +15,7 @@
   %h3 Git global setup:
   - setup_str = ["git config --global user.name \"#{current_user.name}\"", 
     "git config --global user.email  \"#{current_user.email}\""].join("\n")
-    = raw bash_lexer.highlight(setup_str, :lexer => 'bash', :options => {:encoding => 'utf-8'})
+  = raw bash_lexer.highlight(setup_str, :lexer => 'bash', :options => {:encoding => 'utf-8'})
 
   %br
   %br
