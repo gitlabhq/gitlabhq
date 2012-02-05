@@ -25,13 +25,11 @@
   %div
     %cite.cgray Created by
     = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
-    = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.author.id)) do 
-      %strong.author= @issue.author_name
+    %strong.author= link_to_issue_author(@issue)
 
     %cite.cgray and currently assigned to 
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
-    = link_to project_team_member_path(@project, @project.team_member_by_id(@issue.assignee.id)) do 
-      %strong.author= @issue.assignee_name
+    %strong.author= link_to_issue_assignee(@issue)
       
     %hr
     
