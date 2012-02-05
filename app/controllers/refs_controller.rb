@@ -64,6 +64,8 @@ class RefsController < ApplicationController
   protected
 
   def define_tree_vars
+    params[:path] = nil if params[:path].blank?
+
     @repo = project.repo
     @commit = project.commit(@ref)
     @tree = Tree.new(@commit.tree, project, @ref, params[:path])
