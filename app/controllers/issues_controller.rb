@@ -1,6 +1,7 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
+  before_filter :module_enabled
   before_filter :issue, :only => [:edit, :update, :destroy, :show]
   layout "project"
 
@@ -131,5 +132,9 @@ class IssuesController < ApplicationController
 
   def authorize_admin_issue!
     can?(current_user, :admin_issue, @issue)
+  end
+
+  def module_enabled
+    return render_404 unless @project.issues_enabled
   end
 end

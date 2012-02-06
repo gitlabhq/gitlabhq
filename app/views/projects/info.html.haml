@@ -1,12 +1,17 @@
 = render "project_head"
-%h3= @project.name
-%br
 
-  
+.entry
+  %h3= @project.name
+  %br
 
-%pre
-  = "git clone #{@project.url_to_repo}"
+    
 
+  %pre
+    = "git clone #{@project.url_to_repo}"
+
+
+
+%h4 Details:
 
 %table
   %tr
@@ -54,6 +59,38 @@
   %tr
     %td{:colspan => 2}= simple_format @project.description
 
+
+%h4 Features:
+
+%table
+  %tr
+    %td Issues
+    %td
+      - if @project.issues_enabled
+        .alert-message.success
+          Enabled
+      - else 
+        .alert-message.error
+          Disabled
+  
+  %tr
+    %td Merge Requests
+    %td
+      - if @project.merge_requests_enabled
+        .alert-message.success
+          Enabled
+      - else 
+        .alert-message.error
+          Disabled
+  %tr
+    %td Wall
+    %td
+      - if @project.wall_enabled
+        .alert-message.success
+          Enabled
+      - else 
+        .alert-message.error
+          Disabled
 .actions
   = link_to "Edit", edit_project_path(@project), :class => "btn"
 

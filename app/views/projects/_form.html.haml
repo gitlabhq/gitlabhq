@@ -23,10 +23,24 @@
       = f.label :default_branch, "Default Branch"
       .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
 
+    .well
+      %h5 Features
+
+      .clearfix
+        = f.label :issues_enabled, "Issues"
+        .input= f.check_box :issues_enabled
+
+      .clearfix
+        = f.label :merge_requests_enabled, "Merge Requests"
+        .input= f.check_box :merge_requests_enabled
+
+      .clearfix
+        = f.label :wall_enabled, "Wall"
+        .input= f.check_box :wall_enabled
     
   .clearfix
     = f.label :description
-    .input= f.text_area :description, :placeholder => "project description", :style => "height:50px"
+    .input= f.text_area :description, :placeholder => "project description", :class => "xlarge", :rows => 4
 
   %br
   

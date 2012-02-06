@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120121122616) do
+ActiveRecord::Schema.define(:version => 20120206170141) do
+
+  create_table "features", :force => true do |t|
+    t.string   "name"
+    t.string   "branch_name"
+    t.integer  "assignee_id"
+    t.integer  "author_id"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "version"
+    t.integer  "status",      :default => 0, :null => false
+  end
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -73,10 +85,13 @@ ActiveRecord::Schema.define(:version => 20120121122616) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "private_flag",   :default => true,     :null => false
+    t.boolean  "private_flag",           :default => true,     :null => false
     t.string   "code"
     t.integer  "owner_id"
-    t.string   "default_branch", :default => "master", :null => false
+    t.string   "default_branch",         :default => "master", :null => false
+    t.boolean  "issues_enabled",         :default => true,     :null => false
+    t.boolean  "wall_enabled",           :default => true,     :null => false
+    t.boolean  "merge_requests_enabled", :default => true,     :null => false
   end
 
   create_table "snippets", :force => true do |t|
