@@ -30,14 +30,14 @@
   }
 }
 
-#notes-list .note .delete-note { display:none; }
-#notes-list .note:hover .delete-note { display:block; }
-#notes-list .note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-#notes-list .note img{float: left; margin-right: 10px;}
-#notes-list .note span.note-title{display: block;}
-#notes-list .note span.note-title{margin-bottom: 10px}
-#notes-list .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
-#notes-list .note span.note-author strong{font-weight: bold; font-style: normal;}
+.note .delete-note { display:none; }
+.note:hover .delete-note { display:block; }
+.note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+.note img{float: left; margin-right: 10px;}
+.note span.note-title{display: block;}
+.note span.note-title{margin-bottom: 10px}
+.note span.note-author{color: #999; font-weight: normal; font-style: italic;}
+.note span.note-author strong{font-weight: bold; font-style: normal;}
 
 
 .note .note-title { margin-left:55px; }
@@ -49,3 +49,15 @@ p.notify_controls input{
 p.notify_controls span{
   font-weight: 700;
 }
+
+tr.line_notes_row { 
+  border-bottom:1px solid #DDD;
+  ul { 
+    margin:0;
+    li { 
+      padding:0;
+      border:none;
+    }
+  }
+}
+
