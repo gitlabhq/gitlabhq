@@ -9,6 +9,7 @@ class CommitsController < ApplicationController
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project
   before_filter :load_refs, :only => :index # load @branch, @tag & @ref
+  before_filter :render_full_content
 
   def index
     @repo = project.repo
@@ -29,11 +30,29 @@ class CommitsController < ApplicationController
 
     @line_notes = project.commit_line_notes(@commit)
 
-    render_full_content
-
     respond_to do |format|
       format.html
       format.js { respond_with_notes }
+    end
+  end
+
+  def compare
+    first = project.commit(params[:to])
+    last = project.commit(params[:from])
+
+    @diffs = []
+    @commits = []
+    @line_notes = []
+
+    if first && last
+      commits = [first, last].sort_by(&:created_at)
+      younger = commits.first
+      older = commits.last
+
+
+      @commits = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
+      @diffs = project.repo.diff(younger.id, older.id) rescue []
+      @commit = older
     end
   end
 end

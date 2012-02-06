@@ -1,7 +1,7 @@
 .file_stats
-  = render "commits/diff_head", :diffs => @commit.diffs
+  = render "commits/diff_head", :diffs => diffs
 
-- @commit.diffs.each_with_index do |diff, i|
+- diffs.each_with_index do |diff, i|
   - next if diff.diff.empty?
   - file = (@commit.tree / diff.b_path)
   - next unless file
@@ -22,3 +22,4 @@
       - else
         %p
           %center No preview for this file type
+

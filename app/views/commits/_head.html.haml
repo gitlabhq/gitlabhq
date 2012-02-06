@@ -1,0 +1,22 @@
+%ul.tabs
+  %li
+    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form commit-refs-form" do
+      = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
+      = hidden_field_tag :destination, "commits"
+
+  %li{:class => "#{'active' if current_page?(project_commits_path(@project)) }"}
+    = link_to project_commits_path(@project) do 
+      %span
+      Commits
+  %li{:class => "#{'active' if current_page?(compare_project_commits_path(@project)) }"}
+    = link_to compare_project_commits_path(@project) do 
+      %span
+      Compare
+
+
+
+
+:javascript
+  $(function(){
+    $('.project-refs-select').chosen();
+  });

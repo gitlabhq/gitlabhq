@@ -19,7 +19,7 @@
 .clear
 %br
 
-= render "commits/diff"
+= render "commits/diffs", :diffs => @commit.diffs
 = render "notes/notes"
 = render "notes/per_line_form"
 

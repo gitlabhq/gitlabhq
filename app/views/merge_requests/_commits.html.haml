@@ -1,15 +1,6 @@
 - if @commits.size > 0
   .merge-request-commits
-    - @commits.each do |commit|
-      .entry
-        = link_to project_commit_path(@project, :id => commit.id) do
-          %strong
-            = truncate(commit.id.to_s, :length => 10)
-          = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
-          %span= truncate(commit.safe_message, :length => 40)
-          %span.right
-            = time_ago_in_words(commit.committed_date)
-            ago
+    %ul.unstyled= render @commits
 
 - if @commits.empty? 
   %p.cgray Nothing to merge

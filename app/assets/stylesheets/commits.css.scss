@@ -134,3 +134,10 @@ ul.bordered-list li:last-child { border:none }
     margin:2px;
   }
 }
+
+.project-refs-form.commit-refs-form .chzn-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-right: 10px;
+}

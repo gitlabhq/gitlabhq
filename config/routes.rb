@@ -96,7 +96,11 @@ Gitlab::Application.routes.draw do
         get :test
       end
     end
-    resources :commits
+    resources :commits do 
+      collection do 
+        get :compare
+      end
+    end
     resources :team_members
     resources :issues do
       collection do

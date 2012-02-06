@@ -55,4 +55,14 @@ describe "Commits" do
       current_path.should == project_commit_path(project, commit.id)
     end
   end
+
+  describe "GET /commits/compare" do 
+    before do
+      visit compare_project_commits_path(project)
+    end
+
+    it "should have valid path" do
+      current_path.should == compare_project_commits_path(project)
+    end
+  end
 end
