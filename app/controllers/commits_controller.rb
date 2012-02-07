@@ -52,7 +52,7 @@ class CommitsController < ApplicationController
 
       @commits = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
       @diffs = project.repo.diff(younger.id, older.id) rescue []
-      @commit = older
+      @commit = Commit.new(older)
     end
   end
 end
