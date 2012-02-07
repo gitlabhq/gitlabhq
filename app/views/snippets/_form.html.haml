@@ -1,48 +1,31 @@
+%h3= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
+%hr
 = form_for [@project, @snippet] do |f|
-  %div
-    %span.entity-info
-      - if @snippet.new_record?
-        = link_to project_snippets_path(@project) do 
-          .entity-button
-            Snippets
-            %i
-      - else    
-        = link_to project_snippet_path(@project, @snippet) do 
-          .entity-button
-            Show Snippet
-            %i
-    %h2= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
-
-    %hr
   %table.no-borders
     -if @snippet.errors.any?
-      %tr 
-        %td{:colspan => 2}
-          #error_explanation
-            - @snippet.errors.full_messages.each do |msg|
-              %span= msg
-              %br
+      .alert-message.block-message.error
+        %ul
+          - @snippet.errors.full_messages.each do |msg|
+            %li= msg
 
-    %tr
-      %td= f.label :title
-      %td= f.text_field :title, :placeholder => "Example Snippet"
-    %tr
-      %td= f.label :file_name
-      %td= f.text_field :file_name, :placeholder => "example.rb"
-    %tr
-      %td= f.label "Lifetime"
-      %td= f.select :expires_at, lifetime_select_options, {}, :style => "width:200px;"
-    %tr
-      %td{:colspan => 2}
-        = f.label :content, "Code"
-        %br
-        %br
-        = f.text_area :content
+    .clearfix
+      = f.label :title
+      .input= f.text_field :title, :placeholder => "Example Snippet"
+    .clearfix
+      = f.label :file_name
+      .input= f.text_field :file_name, :placeholder => "example.rb"
+    .clearfix
+      = f.label "Lifetime"
+      .input= f.select :expires_at, lifetime_select_options, {}, :style => "width:200px;"
+    .clearfix
+      = f.label :content, "Code"
+      = f.text_area :content, :class => "xxlarge"
 
-  .merge-tabs
-    = f.submit 'Save', :class => "positive-button"
+  .actions
+    = f.submit 'Save', :class => "primary btn"
+    = link_to "Cancel", project_snippets_path(@project), :class => " btn"
     - unless @snippet.new_record?
-      .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "red-button delete-snippet", :id => "destroy_snippet_#{@snippet.id}"
+      .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "btn right danger delete-snippet", :id => "destroy_snippet_#{@snippet.id}"
 
 
 

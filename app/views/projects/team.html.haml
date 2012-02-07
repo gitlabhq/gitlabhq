@@ -1,3 +1,12 @@
 = render "project_head"
+
+- if can? current_user, :admin_team_member, @project
+  .alert-message.block-message
+    = link_to new_project_team_member_path(@project), :class => "btn small right", :title => "New Team Member" do 
+      New Team Member
+    Manage project team from this page.
+    %br
+    To open team member profile - click on avatar. 
+
 = render :partial => "team", :locals => {:project => @project}
 

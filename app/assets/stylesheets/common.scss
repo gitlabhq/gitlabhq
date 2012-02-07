@@ -97,7 +97,7 @@ $blue_link: "#2fa0bb";
   min-width:$min_app_width;
   max-width:$max_app_width;
   margin:auto;
-  margin-top:51px;
+  margin-top:52px;
 }
 
 .container-fluid > .sidebar { 
@@ -113,7 +113,7 @@ $blue_link: "#2fa0bb";
   aside a {
     display:block;
     position:relative;
-    padding:15px 10px;
+    padding:12px 10px;
     margin:10px 0 0 0;
     font-size:13px;
     font-weight:bold;
@@ -169,6 +169,7 @@ img.lil_av {
   p { padding-top:5px;}
 }
 
+.visible_link,
 .author_link { 
   color: $active_link_color;
 }

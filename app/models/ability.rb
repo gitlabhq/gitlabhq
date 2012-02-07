@@ -40,6 +40,10 @@ class Ability
       :admin_note
     ] if project.allow_admin_for?(user)
 
+    rules << [
+      :download_code,
+    ] if project.allow_pull_for?(user)
+
     rules.flatten
   end
 

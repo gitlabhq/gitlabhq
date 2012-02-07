@@ -1,29 +1,23 @@
-%li.wll
-  .row
-    .span9
-      = image_tag gravatar_icon(update.author_email), :class => "avatar thumb"
-      %p
-        %strong.author= update.author_name
-        %span
+- @activities.each do |update|
+  .entry
+    = link_to dashboard_feed_path(@project, update) do 
+      - if update.kind_of? Note
+        %p
+          %strong
+            - if update.target
+              = update.target.class.name.titleize
+              = truncate update.target.id.to_s, :length => 10
+              commented
+            - else 
+              Project wall
           &ndash;
-          authored
-          = time_ago_in_words(update.created_at)
-          ago
-      - if update.kind_of? MergeRequest
-        = link_to project_merge_request_path(@project, update) do
-          = "Opened merge request ##{update.id}."
-          %span.label= update.source_branch
-          &rarr;
-          %span.label= update.target_branch
-      - elsif update.kind_of? Issue
-        = link_to project_issue_path(@project, update) do
-          Opened new 
-          %span.label.important= "issue ##{update.id}"
-          = truncate update.title
+          = image_tag gravatar_icon(update.author_email), :class => "", :width => 16
+          = truncate dashboard_feed_title(update), :length => 50
       - else 
-        = link_to [@project, update.target] do
-          %p
-            = update.target.class.name.titleize
-            = truncate(update.target.id.to_s, :length => 10)
-            &nbsp;
-            = dashboard_feed_title(update)
+        %p
+          %strong
+            = update.class.name.titleize
+            = truncate update.id.to_s
+          &ndash;
+          = image_tag gravatar_icon(update.author_email), :class => "", :width => 16
+          = truncate dashboard_feed_title(update), :length => 50

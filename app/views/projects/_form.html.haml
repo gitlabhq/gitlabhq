@@ -10,13 +10,17 @@
   .clearfix
     = f.label :path do 
       Path
-      %cite= "git@#{GIT_HOST["host"]}:"
-    .input= f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+    .input
+      .input-prepend
+        %span.add-on= "git@#{GIT_HOST["host"]}:"
+        = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
   .clearfix
     = f.label :code do 
       Code
-      %cite= "http://#{GIT_HOST["host"]}/"
-    .input= f.text_field :code, :placeholder => "example"
+    .input
+      .input-prepend
+        %span.add-on= "http://#{GIT_HOST["host"]}/"
+        = f.text_field :code, :placeholder => "example"
 
   - unless @project.new_record? || @project.heads.empty?  
     .clearfix

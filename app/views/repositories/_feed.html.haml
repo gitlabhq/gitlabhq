@@ -4,10 +4,10 @@
     %p
       %strong
         = commit.head.name
-        &ndash;
-        = truncate(commit.id.to_s, :length => 10)
+      %br
+      %code= commit.id.to_s[0..10]
       = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
       = truncate(commit.safe_message, :length => 40)
-      %span.right
+      %span.right.cgray
         = time_ago_in_words(commit.committed_date)
         ago

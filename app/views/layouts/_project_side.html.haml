@@ -6,8 +6,12 @@
 
       - if @project.repo_exists?
         = link_to "Repository", project_repository_path(@project), :class => repository_tab_class
-        = link_to "Code", tree_project_ref_path(@project, @project.root_ref), :class => tree_tab_class
-        = link_to "Commits", project_commits_path(@project), :class => (controller.controller_name == "commits") ? "current" : nil
+        %ul 
+          %li 
+            = link_to "Code", tree_project_ref_path(@project, @project.root_ref), :class => tree_tab_class
+          %li
+            = link_to "Commits", project_commits_path(@project), :class => (controller.controller_name == "commits") ? "current" : nil
+
         = link_to "Network", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
         - if @project.issues_enabled
           = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do

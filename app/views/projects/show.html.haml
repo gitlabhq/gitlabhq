@@ -1,24 +1,16 @@
 = render "project_head"
-- @activities.each do |update|
-  .entry
-    = link_to dashboard_feed_path(@project, update) do 
-      - if update.kind_of? Note
-        %p
-          %strong
-            - if update.target
-              = update.target.class.name.titleize
-              = truncate update.target.id.to_s, :length => 10
-              commented
-            - else 
-              Project wall
-          &ndash;
-          = image_tag gravatar_icon(update.author_email), :class => "", :width => 16
-          = truncate dashboard_feed_title(update), :length => 50
-      - else 
-        %p
-          %strong
-            = update.class.name.titleize
-            = truncate update.id.to_s
-          &ndash;
-          = image_tag gravatar_icon(update.author_email), :class => "", :width => 16
-          = truncate dashboard_feed_title(update), :length => 50
+%h3
+  = @project.name
+%hr
+.alert-message.block-message.warning
+  .input
+    .input-prepend
+      %span.add-on git clone
+      = text_field_tag :project_clone, @project.url_to_repo, :class => "xlarge one_click_select git_clone_url"
+
+= simple_format @project.description
+
+%h5.cgray Recent Activity
+.content_list= render "feed"
+
+

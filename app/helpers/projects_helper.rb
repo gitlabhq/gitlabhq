@@ -17,7 +17,7 @@ module ProjectsHelper
   end
 
   def project_tab_class
-    [:show, :files, :team, :edit, :update, :info].each do |action|
+    [:show, :files, :team, :edit, :update].each do |action|
       return "current" if current_page?(:controller => "projects", :action => action, :id => @project)
     end
 

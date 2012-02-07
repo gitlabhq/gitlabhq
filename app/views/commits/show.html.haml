@@ -1,17 +1,11 @@
 .commit
-  %span.commit-info
-    = link_to tree_project_ref_path(@project, @commit.id), :class => "btn right" do 
-      Browse Code »
-  - if @commit.author_email
-    = image_tag gravatar_icon(@commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  - else
-    = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = truncate(@commit.id.to_s, :length => 60)
-  %span.commit-author
-    %strong= @commit.author_name
-    = @commit.created_at.stamp("Aug 21, 2011 9:23pm")
+  = link_to tree_project_ref_path(@project, @commit.id), :class => "btn right small" do 
+    Browse Code »
+  = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
+  %code= @commit.id.to_s
+  %h5
+    = @commit.author_name
+    %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
 
 %hr
 %pre.commit_message

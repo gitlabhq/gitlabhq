@@ -8,9 +8,7 @@
 
       - if project_layout
         .project_name
-          = truncate @project.name, :length => 28
-        .git_url_wrapper
-          %input.git-url.text{:id => "", :name => "", :readonly => "", :type => "text", :value => @project.url_to_repo, :class => "one_click_select"}
+          = truncate @project.name, :length => 35
 
 
       .account-box

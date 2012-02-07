@@ -3,7 +3,7 @@ body header {
   width:100%;
   padding:0;
   margin:0;
-  top:0;
+  top:1px;
   left:0;
   background: #F1F1F1; /* for non-css3 browsers */
   border-bottom: 1px solid #ccc; 
@@ -23,12 +23,13 @@ body header {
 
   .project_name {
     float:left;
-    width:235px;
+    width:400px;
     margin-right:30px;
     font-size:16px;
     font-weight:bold;
     padding:8px;
     color:#333;
+    text-shadow: 0 1px 1px #FFF;
   }
 
   .git_url_wrapper {

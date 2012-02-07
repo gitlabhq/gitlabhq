@@ -1,9 +1,0 @@
-= form_tag project_commits_path(@project), :method => :get do
-  %h3
-    = @project.name
-    [ #{select_tag "branch", options_for_select(@repo.heads.map(&:name), @branch), :onchange => "this.form.submit();", :class => "small"} ]
-= link_to 'Back', project_path(@project), :class => "button"
-%h1 Listing commits
-%div{:id => dom_id(@project)}
-  = render "commits"
-%br/

@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if project.update_attributes(params[:project])
-        format.html { redirect_to info_project_path(project), :notice => 'Project was successfully updated.' }
+        format.html { redirect_to edit_project_path(project), :notice => 'Project was successfully updated.' }
         format.js
       else
         format.html { render action: "edit" }
@@ -69,15 +69,11 @@ class ProjectsController < ApplicationController
   def show
     return render "projects/empty" unless @project.repo_exists? && @project.has_commits?
     limit = (params[:limit] || 10).to_i
-
-    @activities = @project.activities(limit)#updates_wo_repo(limit)
+    @activities = @project.activities(limit)
   end
 
   def files
     @notes = @project.notes.where("attachment != 'NULL'").order("created_at DESC").limit(100)
-  end
-
-  def info
   end
 
   #

@@ -1,8 +1,7 @@
 %li.entry
   = link_to project_commit_path(@project, :id => commit.id) do
     %div
-      %strong
-        = truncate commit.id.to_s, :length => 10
+      %code= commit.id.to_s[0..10]
       &ndash;
       = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
       = truncate(commit.safe_message, :length => 50)

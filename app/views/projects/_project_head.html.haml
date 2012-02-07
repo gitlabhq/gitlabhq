@@ -1,30 +1,18 @@
 %ul.tabs
   %li{ :class => "#{'active' if current_page?(project_path(@project)) }" }
     = link_to project_path(@project), :class => "activities-tab tab" do 
-      Activities
-  %li{ :class => "#{'active' if current_page?(info_project_path(@project)) || current_page?(edit_project_path(@project)) }" }
-    = link_to info_project_path(@project), :class => "stat-tab tab " do 
-      Info
+      Show
+  - if can? current_user, :admin_project, @project
+    %li{ :class => "#{'active' if current_page?(edit_project_path(@project)) }" }
+      = link_to edit_project_path(@project), :class => "stat-tab tab " do 
+        Edit
  
-  %li{ :class => " #{'active' if current_page?(team_project_path(@project)) }" }
+  %li{ :class => " #{'active' if (controller.controller_name == "team_members") || current_page?(team_project_path(@project)) }" }
     = link_to team_project_path(@project), :class => "team-tab tab" do 
       Team
   %li{ :class => "#{'active' if current_page?(files_project_path(@project)) }" }
     = link_to files_project_path(@project), :class => "files-tab tab " do 
       Files
-  %li{ :class => " #{'active' if current_page?(project_snippets_path(@project)) }" }
+  %li{ :class => " #{'active' if (controller.controller_name == "snippets") }" }
     = link_to project_snippets_path(@project), :class => "snippets-tab tab" do 
       Snippets
-
-  - if current_page?(project_snippets_path(@project))
-    - if can? current_user, :write_snippet, @project
-      %li
-        = link_to new_project_snippet_path(@project), :class => "add_new", :title => "New Snippet" do 
-          Add new
-
-
-  - if current_page?(team_project_path(@project))
-    - if can? current_user, :admin_team_member, @project
-      %li
-        = link_to new_project_team_member_path(@project), :class => "add_new", :title => "New Team Member" do 
-          Add New

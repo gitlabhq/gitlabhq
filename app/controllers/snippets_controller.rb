@@ -59,6 +59,7 @@ class SnippetsController < ApplicationController
     @snippet = @project.snippets.find(params[:id])
     @notes = @snippet.notes
     @note = @project.notes.new(:noteable => @snippet)
+    render_full_content
   end
 
   def destroy

@@ -73,7 +73,7 @@ describe "Snippets" do
         :author => @user,
         :project => project
       visit project_snippet_path(project, @snippet)
-      click_link "Edit Snippet"
+      click_link "Edit"
     end
 
     it "should open edit page" do

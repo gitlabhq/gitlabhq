@@ -233,6 +233,10 @@ class Project < ActiveRecord::Base
     !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RWA]).empty? || owner_id == user.id
   end
 
+  def allow_pull_for?(user)
+    !users_projects.where(:user_id => user.id, :repo_access => [Repository::REPO_R, Repository::REPO_RW]).empty?
+  end
+
   def root_ref 
     default_branch || "master"
   end
