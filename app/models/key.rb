@@ -13,14 +13,19 @@ class Key < ActiveRecord::Base
             :length   => { :within => 0..5000 }
 
   before_save :set_identifier
+  before_validation :strip_white_space
   after_save :update_repository
   after_destroy :repository_delete_key
   validate :unique_key
 
+  def strip_white_space
+    self.key = self.key.strip
+  end
+
   def unique_key
-    query = 'key = ?'
-    query << ' AND project_id IS NULL' unless user_id
-    if (Key.where(query, key.strip).count > 0)
+    query = Key.where('key = ?', key)
+    query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
+    if (query.count > 0)
       errors.add :key, 'already exist.'
     end
   end
