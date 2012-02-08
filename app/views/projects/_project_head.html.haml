@@ -12,7 +12,7 @@
       Team
   %li{ :class => "#{'active' if current_page?(files_project_path(@project)) }" }
     = link_to files_project_path(@project), :class => "files-tab tab " do 
-      Files
+      Attachments
   %li{ :class => " #{'active' if (controller.controller_name == "snippets") }" }
     = link_to project_snippets_path(@project), :class => "snippets-tab tab" do 
       Snippets
