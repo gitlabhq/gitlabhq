@@ -2,12 +2,13 @@
 %header.top_panel_holder
   .wrapper
     .top_panel_content
-      %div.main_links
+      %div.app_logo
         = link_to root_path, :class => "home", :title => "Home" do 
-          = image_tag "logo.png", :width => 100
+          = image_tag "logo_tr.png", :width => 50
+          %h1 GITLAB
 
       %h1.project_name= title
-      .search= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input xlarge"
+      .search= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
 
 
       .account-box

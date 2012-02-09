@@ -27,7 +27,7 @@ body header {
     margin:0;
     margin-right:30px;
     font-size:20px;
-    line-height:28px;
+    line-height:34px;
     font-weight:bold;
     color:#666;
     text-shadow: 0 1px 1px #FFF;
@@ -57,12 +57,34 @@ body header {
     }
   }
 }
-.main_links {
-  width:155px;
+
+.app_logo {
+  width:230px;
   float:left;
 
   a { 
     float:left;
+
+    h1 { 
+      float:left;
+      margin-left:5px;
+      font-size:20px;
+      line-height:34px;
+      font-weight:bold;
+      color:#aaa;
+      text-shadow: 0 1px 1px #FFF;
+
+      &:hover {
+        color:$active_link_color;
+      }
+    }
+
+    img { 
+      float: left;
+      position: relative;
+      top: -9px;
+      width:46px;
+    }
   }
 }
 
