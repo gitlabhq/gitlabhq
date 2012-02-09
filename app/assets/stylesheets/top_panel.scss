@@ -11,24 +11,25 @@ body header {
   -moz-box-shadow: 0 -1px 0 white inset;
   -webkit-box-shadow: 0 -1px 0 white inset;
 
-  height:50px;
+  height:60px;
 
   .wrapper { 
     margin:auto;
     min-width:$min_app_width;
     max-width:$max_app_width;
     position:relative;
-    padding:10px $app_padding;
+    padding:15px $app_padding;
   }
 
   .project_name {
     float:left;
     width:400px;
+    margin:0;
     margin-right:30px;
-    font-size:16px;
+    font-size:20px;
+    line-height:28px;
     font-weight:bold;
-    padding:8px;
-    color:#333;
+    color:#666;
     text-shadow: 0 1px 1px #FFF;
   }
 
@@ -118,7 +119,7 @@ body header {
 header .account-box{ 
   position: absolute; 
   right: 0; 
-  top: 8px;
+  top: 13px;
   z-index: 10000;
   width: 128px;
   font-size: 11px;

@@ -2,8 +2,8 @@
 %html{ :lang => "en"}
   = render "layouts/head"
   %body.admin
-    = render :partial => "layouts/flash"
-    = render :partial => "layouts/head_panel"
+    = render "layouts/flash"
+    = render "layouts/head_panel", :title => "Admin area"
     .container-fluid
       .sidebar
         .fixed

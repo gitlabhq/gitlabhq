@@ -71,11 +71,11 @@ module ApplicationHelper
 
     if @project && !@project.new_record?
       project_nav = [
-        { :label => "#{@project.code} / Issues", :url => project_issues_path(@project) },
-        { :label => "#{@project.code} / Wall", :url => wall_project_path(@project) },
-        { :label => "#{@project.code} / Tree", :url => tree_project_ref_path(@project, @project.root_ref) },
-        { :label => "#{@project.code} / Commits", :url => project_commits_path(@project) },
-        { :label => "#{@project.code} / Team", :url => team_project_path(@project) }
+        { :label => "#{@project.name} / Issues", :url => project_issues_path(@project) },
+        { :label => "#{@project.name} / Wall", :url => wall_project_path(@project) },
+        { :label => "#{@project.name} / Tree", :url => tree_project_ref_path(@project, @project.root_ref) },
+        { :label => "#{@project.name} / Commits", :url => project_commits_path(@project) },
+        { :label => "#{@project.name} / Team", :url => team_project_path(@project) }
       ]
     end
 
@@ -83,11 +83,15 @@ module ApplicationHelper
   end
 
   def project_layout
-    @project && !@project.new_record?
+    layout == "project"
+  end
+
+  def admin_layout
+    layout == "admin"
   end
 
   def profile_layout
-    controller.controller_name == "dashboard" || current_page?(projects_path) || controller.controller_name == "profile" || controller.controller_name == "keys"
+    layout == "profile"
   end
 
   def help_layout
@@ -96,5 +100,9 @@ module ApplicationHelper
 
   def ldap_enable?
     Devise.omniauth_providers.include?(:ldap)
+  end
+
+  def layout 
+    controller.send :_layout
   end
 end

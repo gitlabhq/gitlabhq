@@ -2,8 +2,8 @@
 %html{ :lang => "en"}
   = render "layouts/head"
   %body.application
-    = render :partial => "layouts/flash"
-    = render :partial => "layouts/head_panel"
+    = render "layouts/flash"
+    = render "layouts/head_panel", :title => "Dashboard"
     .container-fluid
       .sidebar
         = render :partial => "layouts/app_side"

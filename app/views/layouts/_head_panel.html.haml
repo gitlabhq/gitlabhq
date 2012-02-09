@@ -6,9 +6,8 @@
         = link_to root_path, :class => "home", :title => "Home" do 
           = image_tag "logo.png", :width => 100
 
-      - if project_layout
-        .project_name
-          = truncate @project.name, :length => 35
+      %h1.project_name= title
+      .search= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input xlarge"
 
 
       .account-box
@@ -18,3 +17,20 @@
           = link_to profile_path, :class => "username" do
             My profile
           = link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete
+
+:javascript
+  $(function(){
+    $("#search").autocomplete({
+      source: #{raw search_autocomplete_source},
+      select: function(event, ui) { location.href = ui.item.url }
+    });
+
+    $(document).keypress(function(e) {
+      if( $(e.target).is(":input") ) return;
+        switch(e.which)  {
+        case 115:  focusSearch();
+        e.preventDefault();
+      }
+    });
+  });
+
