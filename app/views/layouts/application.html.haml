@@ -1,13 +1,6 @@
-!!!
-%html
-  %head
-    %meta{:charset => "utf-8"}
-    %title
-      GitLab
-    = favicon_link_tag 'favicon.ico'
-    = stylesheet_link_tag    "application"
-    = javascript_include_tag "application"
-    = csrf_meta_tags
+!!! 5
+%html{ :lang => "en"}
+  = render "layouts/head"
   %body.application
     = render :partial => "layouts/flash"
     = render :partial => "layouts/head_panel"
