@@ -57,6 +57,36 @@ class Note < ActiveRecord::Base
   rescue 
     nil
   end
+
+  # Check if we can notify commit author
+  # with email about our comment
+  #
+  # If commit author email exist in project 
+  # and commit author is not passed user we can 
+  # send email to him
+  #
+  # params:
+  #   user - current user
+  # 
+  # return:
+  #   Boolean
+  #
+  def notify_only_author?(user)
+    commit? && commit_author &&
+      commit_author.email != user.email
+  end
+
+  def commit?
+    noteable_type == "Commit"
+  end
+
+  def commit_author
+    @commit_author ||= 
+      project.users.find_by_email(target.author_email) || 
+      project.users.find_by_name(target.author_name)
+  rescue 
+    nil
+  end
 end
 # == Schema Information
 #

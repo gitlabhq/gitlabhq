@@ -27,8 +27,7 @@ class Notify < ActionMailer::Base
     @user = user
     @note = note
     @project = note.project
-    @commit = @project.repo.commits(note.noteable_id).first
-    return unless ( note.notify or ( note.notify_author and @commit.author.email == @user.email ) )
+    @commit = @note.target
     mail(:to => @user.email, :subject => "gitlab | note for commit | #{@note.project.name} ")
   end
   
