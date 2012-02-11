@@ -75,10 +75,14 @@
     padding:0px;
     border:none;
     &.new { 
-      background: #DFD;
+      background: #CFD;
     }
     &.old { 
       background: #FDD;
+    }
+    &.matched { 
+      color:#ccc;
+      background:#fafafa;
     }
   }
 }

@@ -65,7 +65,7 @@ module CommitsHelper
         line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
         line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
 
-        yield(nil, type, nil, nil, nil)
+        yield(line, type, nil, nil, nil)
         next
       else
         type = diff_line_class(line)

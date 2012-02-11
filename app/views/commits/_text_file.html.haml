@@ -4,7 +4,7 @@
     - if type == "match"
       %td.old_line= "..."
       %td.new_line= "..."
-      %td.line_content &nbsp;
+      %td.line_content.matched= line
     - else 
       %td.old_line= link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", :id => line_code
       %td.new_line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", :id => line_code

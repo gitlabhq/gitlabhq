@@ -1,5 +1,8 @@
 /* Login Page */
-body.login-page{ padding-top: 10%}
+body.login-page{ 
+  padding-top: 10%;
+  background:$style_color;
+}
 
 .login-box{
   width: 304px;
