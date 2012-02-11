@@ -1,13 +1,13 @@
 - if @team_member.valid?
   :plain
-    $("#team_member_new").hide("slide", { direction: "right" }, 150, function(){
+    $("#new_team_member").hide("slide", { direction: "right" }, 150, function(){
       $("#team-table").show("slide", { direction: "left" }, 150, function() { 
-        $("#team_member_new").remove();
+        $("#new_team_member").remove();
         $("#team-table").replaceWith("#{escape_javascript(render('projects/team'))}");
         $(".add_new").show();
       });
     });
 - else
   :plain
-    $("#team_member_new").replaceWith("#{escape_javascript(render('form'))}");
+    $("#new_team_member").replaceWith("#{escape_javascript(render('form'))}");
     $('select#team_member_user_id').chosen();

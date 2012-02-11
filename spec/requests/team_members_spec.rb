@@ -29,7 +29,7 @@ describe "TeamMembers" do
 
     describe "fill in" do
       before do
-        within "#team_member_new" do 
+        within "#new_team_member" do 
           select @user_1.name, :from => "team_member_user_id"
           select "Report", :from => "team_member_project_access"
           select "Pull",   :from => "team_member_repo_access"
