@@ -1,15 +1,15 @@
 = render "repositories/head"
 
 - if can? current_user, :admin_project, @project
-  .alert-message.block-message.info
+  .alert-message.block-message
     Post receive hooks for binding events when someone push to repository.
     = link_to new_project_hook_path(@project), :class => "btn small", :title => "New Web Hook" do 
       Add Post Receive Hook
 
 %ul.unstyled
   - @hooks.each do |hook|
-    %li
-      %a.update-item{:href => project_hook_path(@project, hook)}
+    %li.wll
+      = link_to project_hook_path(@project, hook) do
         = hook.url
 
 .alert-message.block-message.info

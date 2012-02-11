@@ -30,7 +30,7 @@ body header {
     font-size:20px;
     line-height:34px;
     font-weight:bold;
-    color:#666;
+    color:$style_color;
     text-shadow: 0 1px 1px #FFF;
   }
 
@@ -76,7 +76,7 @@ body header {
       text-shadow: 0 1px 1px #FFF;
 
       &:hover {
-        color:$active_link_color;
+        color:$style_color;
       }
     }
 

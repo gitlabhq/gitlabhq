@@ -1,8 +1,8 @@
 - commit = update
-.entry
+.wll
   = link_to project_commits_path(@project, :ref => commit.head.name) do 
     %p
-      %strong
+      %strong.label
         = commit.head.name
       %br
       %code= commit.id.to_s[0..10]

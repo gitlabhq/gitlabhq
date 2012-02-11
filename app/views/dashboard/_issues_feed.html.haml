@@ -1,9 +1,9 @@
 - @issues.each do |issue|
-  .entry
+  .wll
     = link_to [issue.project, issue] do 
       %p
         %strong
-          = issue.project.name
+          %span.label= issue.project.name
           &ndash;
           Issue #
           = issue.id

@@ -21,7 +21,7 @@
   = time_ago_in_words(@activities.first.commit.committed_date)
   ago to 
   = link_to project_commits_path(@project, :ref => @activities.first.head.name), :class => "visible_link" do 
-    = @activities.first.head.name
+    %span.label= @activities.first.head.name
 
 %h4.cgray
   Recent Branches

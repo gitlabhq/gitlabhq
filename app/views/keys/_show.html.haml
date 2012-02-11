@@ -1,7 +1,8 @@
-%li.entry
+%li.wll
   = link_to key_path(key) do
-    %strong= key.title
-    %span.right.cgray
-      Added
-      = time_ago_in_words(key.created_at)
-      ago
+    %p
+      %strong= key.title
+      %span.right.cgray
+        Added
+        = time_ago_in_words(key.created_at)
+        ago

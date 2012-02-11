@@ -113,12 +113,15 @@ table.highlighttable .linenodiv pre {
 
 .tree-item { 
   &:hover { 
-    background: #FFFFCF;
+    background: $hover;
     cursor:pointer;
   }
 
   .tree-item-file-name { 
     font-weight:bold;
+    a { 
+      color:$style_color;
+    }
 
     img { 
       position: relative;

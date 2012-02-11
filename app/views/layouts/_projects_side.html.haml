@@ -1,6 +1,6 @@
 %aside.projects
   - if current_user.can_create_project?
-    .alert-message.block-message.info
+    .alert-message.block-message
       You can create at least
       = current_user.projects_limit
       projects. Click on button to add a new one
@@ -9,7 +9,7 @@
           New Project » 
 
   - if current_user.is_admin?
-    .alert-message.block-message.info
+    .alert-message.block-message
       You have administrator privilegies. You can configure application following this button:
       .alert-actions
         = link_to admin_root_path, :class => "btn small", :title => "Admin"  do 

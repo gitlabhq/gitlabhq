@@ -1,3 +1,28 @@
+a {
+  color: $link_color;
+  &:hover { 
+    text-decoration:none; 
+    color: $style_color;
+  }
+}
+
+.pills .active a {
+  background-color: #474D57;
+}
+
+.label { 
+  background-color: #474D57;
+}
+
+.tabs > li > a, .pills > li > a {
+  color:$style_color;
+}
+
+.diff_file_header a,
+.file_stats a {
+  color:$style_color;
+}
+
 /** COLORS **/
 .cgray { color:gray; }
 .cred { color:#D12F19; }
@@ -70,7 +95,7 @@
     margin:10px 0 0 0;
     font-size:13px;
     font-weight:bold;
-    color:#444;
+    color:$style_color;
   }
 }
 
@@ -112,19 +137,30 @@ img.lil_av {
 
 .wll { 
   background-color: #FFF;
-  margin-bottom: 10px;
-  padding: 5px;
+  padding: 10px 5px;
   min-height: 20px;
   border-bottom: 1px solid #eee;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  .author { color: #999; }
+  cursor:pointer;
+  &:hover { 
+    background:$hover;
+  }
   &:last-child { border:none }
-  p { padding-top:5px;}
+  p { padding-top:5px; margin:0; color:$style_color;}
+  .author { color: #999; }
+  p { 
+    color:$style_color;
+    margin-bottom: 0;
+    img { 
+      position:relative;
+      top:3px;
+    }
+  }
 }
 
 .visible_link,
 .author_link { 
-  color: $active_link_color;
+  color: $link_color;
 }
 .entry { 
   position: relative;
@@ -147,7 +183,9 @@ img.lil_av {
   background:#F1F1F1;
   border: 1px solid #ccc;
 
+
   p { 
+    color:$style_color;
     margin-bottom: 0;
     img { 
       position:relative;
@@ -156,6 +194,11 @@ img.lil_av {
   }
 }
 
+.well { 
+  a h3 {
+    color:$link_color;
+  }
+}
 .widget { 
   padding:20px;
   margin-bottom:20px;

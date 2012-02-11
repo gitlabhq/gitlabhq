@@ -3,7 +3,7 @@
 /** GITLAB colors **/
 $text_color:#222;
 $lite_text_color: #666; 
-$link_color:#111; 
+$link_color:#2A79A3; 
 $active_link_color:#2FA0BB;
 $active_bg_color:#79C3E0;
 $active_bd_color: #2FA0BB;
@@ -16,6 +16,12 @@ $bg_color: #FFF;
 $styled_border_color: #2FA0BB;
 $color: "#4BB8D2";
 $blue_link: "#2fa0bb";
+
+
+/** Style colors **/
+$style_color: #474D57;
+$hover: #FDF5D9;
+
 
 /** MIXINS **/
 @mixin round-borders-bottom($radius) {
@@ -46,14 +52,12 @@ $blue_link: "#2fa0bb";
 }
 
 
-@import "reset_bootstrap.scss";
 @import "common.scss";
 @import "top_panel.scss";
 
 @import "projects.css.scss";
 @import "commits.css.scss";
 @import "tree.scss";
-@import "merge_requests.css.scss";
 @import "notes.css.scss";
 @import "login.scss";
 

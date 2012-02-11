@@ -1,9 +1,9 @@
 - @merge_requests.each do |merge_request|
-  .entry
+  .wll
     = link_to [merge_request.project, merge_request] do 
       %p
         %strong
-          = merge_request.project.name
+          %span.label= merge_request.project.name
           &ndash;
           Merge Request #
           = merge_request.id

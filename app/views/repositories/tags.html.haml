@@ -1,17 +1,17 @@
 = render "head"
 - unless @tags.empty?
-  - @tags.each do |tag|
-    .row
-      .span7
-        .entry
-          = tag.name
-          %code= tag.commit.id.to_s[0..10]
-          %span.update-author.right
-            = time_ago_in_words(tag.commit.committed_date)
-            ago
-      .span3
-        - if can? current_user, :download_code, @project
-          = link_to "Download", archive_project_repository_path(@project, :ref => tag.name), :class => "btn small"
-        = link_to "Commits", project_commits_path(@project, :ref => tag.name), :class => "btn small"
+  %ul.unstyled
+    - @tags.each do |tag|
+      %li.wll
+        .span3.right
+          - if can? current_user, :download_code, @project
+            = link_to "Download", archive_project_repository_path(@project, :ref => tag.name), :class => "btn small"
+          = link_to "Commits", project_commits_path(@project, :ref => tag.name), :class => "btn small"
+
+        = tag.name
+        %code= tag.commit.id.to_s[0..10]
+        %span.update-author.right
+          = time_ago_in_words(tag.commit.committed_date)
+          ago
 - else 
   %h3 No tags
