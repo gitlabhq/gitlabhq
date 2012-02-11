@@ -13,12 +13,6 @@ describe "Admin::Projects" do
     it { admin_users_path.should be_denied_for :visitor }
   end
 
-  describe "GET /admin/team_members" do
-    it { admin_team_members_path.should be_allowed_for :admin }
-    it { admin_team_members_path.should be_denied_for :user }
-    it { admin_team_members_path.should be_denied_for :visitor }
-  end
-
   describe "GET /admin/emails" do
     it { admin_emails_path.should be_allowed_for :admin }
     it { admin_emails_path.should be_denied_for :user }

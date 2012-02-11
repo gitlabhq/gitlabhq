@@ -4,8 +4,16 @@
       You can create at least
       = current_user.projects_limit
       projects. Click on button to add a new one
-      = link_to new_project_path, :class => "btn small" do 
-        New Project
+      .alert-actions
+        = link_to new_project_path, :class => "btn small" do 
+          New Project » 
+
+  - if current_user.is_admin?
+    .alert-message.block-message.info
+      You have administrator privilegies. You can configure application following this button:
+      .alert-actions
+        = link_to admin_root_path, :class => "btn small", :title => "Admin"  do 
+          Visit Admin Area »
 
   - if current_user.projects.count > 0
     %div.entry
@@ -18,21 +26,5 @@
               = project.name
       = link_to "More  » ", projects_path
 
-  -#%h5
-    -#Your Issues:
-  -#%ul
-    -#- current_user.assigned_issues.order("id DESC").limit(5).each do |issue|
-      -#%li
-        -#= link_to project_issue_path(issue.project, issue) do
-          -#= truncate issue.title
-
-
-  -#%h5
-    -#Your Merge Requests:
-  -#%ul
-    -#- current_user.assigned_merge_requests.order("id DESC").limit(5).each do |issue|
-      -#%li
-        -#= link_to project_merge_request_path(issue.project, issue) do
-          -#= truncate issue.title
 
 

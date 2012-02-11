@@ -1,0 +1,64 @@
+@import "bootstrap";
+
+/** GITLAB colors **/
+$text_color:#222;
+$lite_text_color: #666; 
+$link_color:#111; 
+$active_link_color:#2FA0BB;
+$active_bg_color:#79C3E0;
+$active_bd_color: #2FA0BB;
+$border_color:#CCC;
+$lite_border_color:#EEE;
+$min_app_width:980px;
+$max_app_width:980px;
+$app_padding:20px;
+$bg_color: #FFF;
+$styled_border_color: #2FA0BB;
+$color: "#4BB8D2";
+$blue_link: "#2fa0bb";
+
+/** MIXINS **/
+@mixin round-borders-bottom($radius) {
+  border-top: 1px solid #eaeaea;
+  -moz-border-radius-bottomright: $radius;
+  -moz-border-radius-bottomleft: $radius;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  -webkit-border-bottom-left-radius: $radius;
+  -webkit-border-bottom-right-radius: $radius;
+}
+
+@mixin round-borders-top($radius) {
+  border-top: 1px solid #eaeaea;
+  -moz-border-radius-topright: $radius;
+  -moz-border-radius-topleft: $radius;
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+  -webkit-border-top-left-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+}
+
+@mixin round-borders-all($radius) {
+  border: 1px solid #eaeaea;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+
+@import "reset_bootstrap.scss";
+@import "common.scss";
+@import "top_panel.scss";
+
+@import "projects.css.scss";
+@import "commits.css.scss";
+@import "tree.scss";
+@import "merge_requests.css.scss";
+@import "notes.css.scss";
+@import "login.scss";
+
+/** CODE HIGHTLIGHT **/
+@import "highlight.css.scss";
+@import "highlight.black.css.scss";
+
+

@@ -9,7 +9,27 @@ class Admin::UsersController < ApplicationController
 
   def show
     @admin_user = User.find(params[:id])
+
+    @projects = if @admin_user.projects.empty?
+               Project
+             else
+               Project.without_user(@admin_user)
+             end.all
   end
+
+  def team_update
+    @admin_user = User.find(params[:id])
+
+    UsersProject.user_bulk_import(
+      @admin_user, 
+      params[:project_ids],
+      params[:project_access],
+      params[:repo_access]
+    )
+
+    redirect_to [:admin, @admin_user], notice: 'Teams were successfully updated.'
+  end
+
 
   def new
     @admin_user = User.new(:projects_limit => 10)

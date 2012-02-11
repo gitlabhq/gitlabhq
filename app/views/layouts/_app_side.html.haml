@@ -4,7 +4,4 @@
     = link_to "Projects", projects_path, :class => "#{"active" if current_page?(projects_path)}"
     = link_to "Issues", dashboard_issues_path, :class => "#{"active" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
     = link_to "Requests", dashboard_merge_requests_path, :class => "#{"active" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
-    - if current_user.is_admin?
-      = link_to admin_root_path, :class => "admin", :title => "Admin"  do 
-        Admin
     = link_to "Help", help_path, :class => "#{"active" if controller.controller_name == "help"}"

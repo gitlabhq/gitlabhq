@@ -27,6 +27,20 @@ class UsersProject < ActiveRecord::Base
     end
   end
 
+  def self.user_bulk_import(user, project_ids, project_access, repo_access)
+    UsersProject.transaction do
+      project_ids.each do |project_id|
+        users_project = UsersProject.new(
+          :repo_access => repo_access,
+          :project_access => project_access,
+        )
+        users_project.project_id = project_id
+        users_project.user_id = user.id
+        users_project.save
+      end
+    end
+  end
+
   def update_repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.update_project(project.path, project)

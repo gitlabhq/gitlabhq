@@ -18,9 +18,6 @@
     .clearfix
       = f.label :password_confirmation
       .input= f.password_field :password_confirmation
-    .clearfix
-      = f.check_box :admin
-      = f.label :admin
 
     .clearfix
       = f.label :projects_limit
@@ -35,8 +32,13 @@
     .clearfix
       = f.label :twitter
       .input= f.text_field :twitter
-    .clear
-    %br
+    .clearfix
+      = f.label :admin do 
+        = f.check_box :admin
+        %span Administrator
     .actions
       = f.submit 'Save', :class => "btn primary"
-      = link_to 'Cancel', admin_users_path, :class => "btn"
+      - if @admin_user.new_record? 
+        = link_to 'Cancel', admin_users_path, :class => "btn"
+      - else 
+        = link_to 'Cancel', admin_user_path(@admin_user), :class => "btn"

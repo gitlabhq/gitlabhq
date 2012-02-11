@@ -10,7 +10,6 @@
           %aside
             = link_to "Users", admin_users_path, :class => controller.controller_name == "users" ? "current" : nil
             = link_to "Projects", admin_projects_path, :class => controller.controller_name == "projects" ? "current" : nil
-            = link_to "Teams", admin_team_members_path, :class => controller.controller_name == "team_members" ? "current" : nil
             = link_to "Emails", admin_emails_path, :class => controller.controller_name == "mailer" ? "current" : nil
             = link_to "Resque", "/info/resque"
 
