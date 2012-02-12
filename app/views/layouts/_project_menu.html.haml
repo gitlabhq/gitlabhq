@@ -1,0 +1,22 @@
+%nav.main_menu
+  = link_to project_path(@project), :class => project_tab_class do 
+    Project
+
+  - if @project.repo_exists?
+    = link_to "Repository", project_repository_path(@project), :class => repository_tab_class
+    = link_to "Files", tree_project_ref_path(@project, @project.root_ref), :class => tree_tab_class
+    = link_to "Commits", project_commits_path(@project), :class => (controller.controller_name == "commits") ? "current" : nil
+
+    = link_to "Network", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
+    - if @project.issues_enabled
+      = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
+        Issues
+    - if @project.merge_requests_enabled
+      = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
+        Merge Requests
+
+    - if @project.wall_enabled
+      = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
+        @Wall
+        - if @project.common_notes.today.count > 0
+          %span.label= @project.common_notes.today.count
