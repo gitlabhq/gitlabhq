@@ -3,7 +3,7 @@
   %small= "( #{current_user.projects.count} )"
 %hr
 - unless @projects.empty?
-  %div.tile= render "tile"
+  %div.content_list= render "tile"
 
   -# If projects requris paging
   -# We add ajax loader & init script
@@ -13,7 +13,7 @@
 
     :javascript
       $(function(){
-        ProjectsList.init(16);
+        Pager.init(#{@limit});
       });
 - else
   %h2 Nothing here

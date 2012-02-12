@@ -3,6 +3,7 @@ var NoteList = {
 first_id: 0,
 last_id: 0,
 resource_name: null,
+disable:false,
 
 init:
   function(resource_name, first_id, last_id) {
@@ -26,9 +27,12 @@ getOld:
 
 append:
   function(id, html) {
-    this.first_id = id;
-    $("#notes-list").append(html);
-    this.initLoadMore();
+    if(this.first_id == id) { 
+      this.disable = true;
+    } else { 
+      this.first_id = id;
+      $("#notes-list").append(html);
+    }
   },
 
 replace:
@@ -76,11 +80,16 @@ initRefresh:
 
 initLoadMore:
   function() {
-    $(window).bind('scroll', function(){
-      if($(window).scrollTop() == $(document).height() - $(window).height()){
-        $(window).unbind('scroll');
+    $(document).endlessScroll({
+      bottomPixels: 400,
+      fireDelay: 1000,
+      fireOnce:true,
+      ceaseFire: function() { 
+        return NoteList.disable;
+      },
+      callback: function(i) {
         NoteList.getOld();
       }
-    });
+   });
   }
 }

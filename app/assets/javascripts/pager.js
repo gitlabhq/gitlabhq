@@ -1,11 +1,10 @@
 var Pager = {
-  ref:null,
   limit:0,
   offset:0,
+  disable:false,
 
   init:
-    function(ref, limit) {
-      this.ref=ref;
+    function(limit) {
       this.limit=limit;
       this.offset=limit;
       this.initLoadMore();
@@ -28,17 +27,24 @@ var Pager = {
       $(".content_list").append(html);
       if(count > 0) {
         this.offset += count;
-        this.initLoadMore();
+      } else { 
+        this.disable = true;
       }
     },
 
   initLoadMore:
     function() {
-      $(window).bind('scroll', function(){
-        if($(window).scrollTop() == $(document).height() - $(window).height()){
-          $(window).unbind('scroll');
+      $(document).endlessScroll({
+        bottomPixels: 400,
+        fireDelay: 1000,
+        fireOnce:true,
+        ceaseFire: function() { 
+          return Pager.disable;
+        },
+        callback: function(i) {
+          $('.loading').show();
           Pager.getOld();
         }
-      });
+     });
     }
 }

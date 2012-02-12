@@ -10,6 +10,7 @@
 //= require jquery.ui.selectmenu
 //= require jquery.tagify
 //= require jquery.cookie
+//= require jquery.endless-scroll
 //= require modernizr
 //= require chosen
 //= require raphael

@@ -14,3 +14,8 @@
 
   - else
     :plain
+
+- else 
+  - if params[:first_id]
+    :plain
+      NoteList.append(#{params[:first_id]}, "");

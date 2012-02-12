@@ -13,7 +13,7 @@ class CommitsController < ApplicationController
 
   def index
     @repo = project.repo
-    @limit, @offset = (params[:limit] || 20), (params[:offset] || 0)
+    @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
     @commits = @project.commits(@ref, params[:path], @limit, @offset)
 
     respond_to do |format|
