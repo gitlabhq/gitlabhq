@@ -1,30 +1,21 @@
 %aside.projects
   - if current_user.can_create_project?
-    .alert-message.block-message
+    .widget
       You can create at least
       = current_user.projects_limit
       projects. Click on button to add a new one
-      .alert-actions
-        = link_to new_project_path, :class => "btn small" do 
-          New Project » 
+      %hr
+      = link_to new_project_path, :class => "btn small" do 
+        New Project » 
 
   - if current_user.is_admin?
-    .alert-message.block-message
+    .widget
       You have administrator privilegies. You can configure application following this button:
-      .alert-actions
-        = link_to admin_root_path, :class => "btn small", :title => "Admin"  do 
-          Visit Admin Area »
+      %hr
+      = link_to admin_root_path, :class => "btn small", :title => "Admin"  do 
+        Visit Admin Area »
 
   - if current_user.projects.count > 0
-    %div.entry
-      %h5
-        Recent Projects:
-      %ul
-        - current_user.projects.order("id DESC").limit(5).each do |project|
-          %li
-            = link_to project_path(project) do
-              = project.name
-      = link_to "More  » ", projects_path
-
+    = render "widgets/recent_projects"
 
 
