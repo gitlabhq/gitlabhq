@@ -4,15 +4,13 @@
   %body.profile
     = render "layouts/flash"
     = render "layouts/head_panel", :title => "Profile"
-    .container-fluid
+    .container
       %nav.main_menu
         = link_to "Profile", profile_path, :class => current_page?(:controller => "profile", :action => :show) ? "current" : nil
         = link_to "Password & token", profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
         = link_to "Design", profile_design_path, :class => current_page?(:controller => "profile", :action => :design) ? "current" : nil
         = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do
           Keys
-          - unless current_user.keys.empty?
-            %span.label= current_user.keys.count
       .content
         .row
           .span12= yield

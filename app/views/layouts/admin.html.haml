@@ -4,7 +4,7 @@
   %body.admin
     = render "layouts/flash"
     = render "layouts/head_panel", :title => "Admin area"
-    .container-fluid
+    .container
       %nav.main_menu
         = link_to "Users", admin_users_path, :class => controller.controller_name == "users" ? "current" : nil
         = link_to "Projects", admin_projects_path, :class => controller.controller_name == "projects" ? "current" : nil

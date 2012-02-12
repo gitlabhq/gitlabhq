@@ -4,7 +4,7 @@
   %body.project
     = render "layouts/flash"
     = render "layouts/head_panel", :title => @project.name
-    .container-fluid
+    .container
       = render :partial => "layouts/project_menu"
       .content
         - if @full_content

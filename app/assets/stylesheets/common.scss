@@ -71,14 +71,12 @@ a {
 
 /** LAYOUT **/
 
-.container-fluid { 
-  min-width:$min_app_width;
-  max-width:$max_app_width;
-  margin:auto;
+.container { 
+  width:$min_app_width;
   margin-top:62px;
 }
 
-.container-fluid  .sidebar { 
+.container  .sidebar { 
   width: 250px;
   height:100%;
   min-height:450px;
@@ -131,12 +129,6 @@ nav.main_menu {
       background:#DDD;
     }
   }
-}
-
-
-.container-fluid > .content {
-  margin-left: 0px;
-  margin-top:20px;
 }
 
 aside.projects,

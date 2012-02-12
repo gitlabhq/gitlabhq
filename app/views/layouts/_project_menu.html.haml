@@ -17,6 +17,4 @@
 
     - if @project.wall_enabled
       = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
-        @Wall
-        - if @project.common_notes.today.count > 0
-          %span.label= @project.common_notes.today.count
+        Wall
