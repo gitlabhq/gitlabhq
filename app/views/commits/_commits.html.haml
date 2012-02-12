@@ -1,6 +1,4 @@
 - @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
-  %div{ :class => "commits-date ui-box ui-box-small ui-box-big" }
-    .day-commits-table
-      %h5.underlined= day.stamp("28 Aug, 2010")
-      %br
-      %ul.unstyled= render commits
+  %div.ui-box
+    %h5= day.stamp("28 Aug, 2010")
+    %ul.unstyled= render commits
