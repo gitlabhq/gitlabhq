@@ -73,7 +73,8 @@ a {
 
 .container { 
   width:$min_app_width;
-  margin-top:62px;
+  margin-top:50px;
+  padding:$app_padding;
 }
 
 .container  .sidebar { 

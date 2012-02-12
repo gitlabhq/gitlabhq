@@ -129,3 +129,18 @@ table.highlighttable .linenodiv pre {
     }
   }
 }
+
+.breadcrumb a { 
+  color:$style_color;
+  font-weight:bold;
+}
+
+#tree-slider { 
+  td { 
+    padding:7px;
+  }
+
+  th { 
+    background:#f5f5f5;
+  }
+}

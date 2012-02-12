@@ -38,7 +38,8 @@
 .note span.note-title{margin-bottom: 10px}
 .note span.note-author{color: #999; font-weight: normal; font-style: italic;}
 .note span.note-author strong{font-weight: bold; font-style: normal;}
-
+.note p { color:$style_color; }
+.note .note-author { color: $style_color;}
 
 .note .note-title { margin-left:55px; }
 
