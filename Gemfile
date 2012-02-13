@@ -48,9 +48,7 @@ group :development, :test do
   gem "capybara"
   gem "autotest"
   gem "autotest-rails"
-  unless ENV["CI"]
-    gem "ruby-debug19", :require => "ruby-debug"
-  end
+  gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"

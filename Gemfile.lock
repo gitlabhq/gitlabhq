@@ -57,7 +57,6 @@ GEM
     acts_as_list (0.1.4)
     addressable (2.2.6)
     ansi (1.4.2)
-    archive-tar-minitar (0.5.2)
     arel (3.0.0)
     autotest (4.4.6)
       ZenTest (>= 4.4.1)
@@ -81,6 +80,7 @@ GEM
     charlock_holmes (0.6.8)
     childprocess (0.3.1)
       ffi (~> 1.0.6)
+    coderay (1.0.5)
     coffee-rails (3.2.1)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0.beta)
@@ -88,7 +88,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.2.0)
-    columnize (0.3.6)
     crack (0.3.1)
     daemons (1.1.8)
     database_cleaner (0.7.1)
@@ -136,12 +135,11 @@ GEM
     letter_opener (0.0.2)
       launchy
     libv8 (3.3.10.4)
-    linecache19 (0.5.12)
-      ruby_core_source (>= 0.1.4)
     mail (2.4.1)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    method_source (0.7.0)
     mime-types (1.17.2)
     multi_json (1.0.4)
     multi_xml (0.4.1)
@@ -158,6 +156,10 @@ GEM
     orm_adapter (0.0.6)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
+    pry (0.9.8.2)
+      coderay (~> 1.0.5)
+      method_source (~> 0.7)
+      slop (>= 2.4.4, < 3)
     pygments.rb (0.2.4)
       rubypython (~> 0.5.3)
     pyu-ruby-sasl (0.0.3.3)
@@ -212,16 +214,6 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.8.0)
-    ruby-debug-base19 (0.11.25)
-      columnize (>= 0.3.1)
-      linecache19 (>= 0.5.11)
-      ruby_core_source (>= 0.1.4)
-    ruby-debug19 (0.11.6)
-      columnize (>= 0.3.1)
-      linecache19 (>= 0.5.11)
-      ruby-debug-base19 (>= 0.11.19)
-    ruby_core_source (0.1.5)
-      archive-tar-minitar (>= 0.5.2)
     rubyntlm (0.1.1)
     rubypython (0.5.3)
       blankslate (>= 2.1.2.3)
@@ -254,6 +246,7 @@ GEM
       rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
     six (0.2.0)
+    slop (2.4.4)
     sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -319,6 +312,7 @@ DEPENDENCIES
   launchy
   letter_opener
   omniauth-ldap
+  pry
   pygments.rb (= 0.2.4)
   rails (= 3.2.1)
   rails-footnotes
@@ -326,7 +320,6 @@ DEPENDENCIES
   rdiscount
   resque
   rspec-rails
-  ruby-debug19
   sass-rails (= 3.2.3)
   seed-fu
   shoulda (~> 3.0.0.beta2)
