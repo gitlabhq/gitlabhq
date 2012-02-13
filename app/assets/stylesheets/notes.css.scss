@@ -62,3 +62,36 @@ tr.line_notes_row {
   }
 }
 
+.line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.per_line_form { 
+  background:#f5f5f5;
+  form {  margin: 0; }
+  td { 
+    border-bottom:1px solid #ddd;
+  }
+}
+
+td .line_note_link { 
+  position:absolute;
+  margin-left:-70px;
+  margin-top:-10px;
+  z-index:10;
+  background: url("comment_add.png") no-repeat left 0;
+  width:32px;
+  height:32px;
+
+  opacity: 0.0;
+  filter: alpha(opacity=0);
+
+  &:hover { 
+    opacity: 1.0;
+    filter: alpha(opacity=100);
+  }
+}
+
+.diff_file_content tr.line_holder:hover > td { background: $hover !important; }
+.diff_file_content tr.line_holder:hover > td .line_note_link { 
+  opacity: 1.0;
+  filter: alpha(opacity=100);
+}
