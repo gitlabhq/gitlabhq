@@ -11,3 +11,5 @@ public/uploads/
 .rvmrc
 .directory
 nohup.out
+Vagrantfile
+.vagrant
