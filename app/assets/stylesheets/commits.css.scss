@@ -145,3 +145,16 @@ ul.bordered-list li:last-child { border:none }
   left: 0;
   margin-right: 10px;
 }
+
+li.commit { 
+  .avatar { 
+    width:24px;
+    top:-3px;
+    margin-right:10px;
+    margin-left:10px;
+  }
+
+  code { 
+    padding:4px;
+  }
+}
