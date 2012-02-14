@@ -6,6 +6,11 @@
   %h5
     = @commit.author_name
     %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
+    - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
+      &ndash;
+      %cite committed by
+      = @commit.committer_name
+      %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
 
 %hr
 %pre.commit_message
