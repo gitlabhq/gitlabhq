@@ -1,4 +1,4 @@
-- url = content.url(@ref)
+- url = content.url(@ref) rescue nil
 - name = content.basename
 - return unless url
 %tr{ :class => "tree-item", :url => url }
