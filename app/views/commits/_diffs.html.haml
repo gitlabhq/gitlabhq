@@ -1,6 +1,6 @@
 .file_stats
   = render "commits/diff_head", :diffs => diffs
-
+ 
 - diffs.each_with_index do |diff, i|
   - next if diff.diff.empty?
   - file = (@commit.tree / diff.b_path)
@@ -16,7 +16,7 @@
       %br/
     .diff_file_content
       - if file.text?
-        = render :partial => "commits/text_file", :locals => { :diff => diff, :index => i }
+        = render "commits/text_file", :diff => diff, :index => i
       - elsif file.image?
         .diff_file_content_image
           %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}

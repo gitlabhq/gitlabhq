@@ -58,7 +58,7 @@ module CommitsHelper
       next if line.match(/^\-\-\- a/)
       next if line.match(/^\+\+\+ b/)
 
-      full_line = html_escape(line.gsub(/\n/, ''))
+      full_line = html_escape(line.gsub(/\n/, '')).force_encoding("UTF-8")
 
       if line.match(/^@@ -/)
         next if line_old == 1 && line_new == 1

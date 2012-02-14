@@ -49,7 +49,11 @@ class MergeRequestsController < ApplicationController
   end
 
   def commits
-    @commits = @project.repo.commits_between(@merge_request.target_branch, @merge_request.source_branch).map {|c| Commit.new(c)}
+    @commits = @project.repo.
+      commits_between(@merge_request.target_branch, @merge_request.source_branch).
+      map {|c| Commit.new(c)}.
+      sort_by(&:created_at).
+      reverse
   end
 
   def diffs
