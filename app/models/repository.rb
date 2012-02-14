@@ -56,7 +56,7 @@ class Repository
   end
 
   def path_to_repo
-    GIT_HOST["base_path"] + path + ".git"
+    File.join(GIT_HOST["base_path"], "#{path}.git")
   end
 
   def update_repository
