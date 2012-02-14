@@ -34,6 +34,10 @@ module Utils
         :c
       when /(\.cpp|\.hpp|\.c++|\.h++|\.cc|\.hh|\.cxx|\.hxx)$/
         :cpp
+      when /(\.d|\.di)$/
+        :d
+      when /(\.hs|\.lhs)$/
+        :haskell
       when /(\.rb|\.ru|\.rake|Rakefile|\.gemspec|\.rbx|Gemfile)$/
         :ruby
       when /(\.py|\.pyw|\.sc|SConstruct|SConscript|\.tac)$/
