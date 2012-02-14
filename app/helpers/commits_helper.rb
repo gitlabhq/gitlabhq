@@ -53,11 +53,13 @@ module CommitsHelper
 
     lines_arr = diff_arr
     lines_arr.each do |line|
+      next if line.match(/^\-\-\- \/dev\/null/)
+      next if line.match(/^\+\+\+ \/dev\/null/)
+      next if line.match(/^\-\-\- a/)
+      next if line.match(/^\+\+\+ b/)
+
       full_line = html_escape(line.gsub(/\n/, ''))
 
-      next if line.match(/^--- \/dev\/null/)
-      next if line.match(/^--- a/)
-      next if line.match(/^\+\+\+ b/)
       if line.match(/^@@ -/)
         next if line_old == 1 && line_new == 1
         type = "match"
