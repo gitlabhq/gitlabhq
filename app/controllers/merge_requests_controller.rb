@@ -40,20 +40,18 @@ class MergeRequestsController < ApplicationController
     @notes = @merge_request.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @merge_request)
 
+    @commits = @project.repo.
+      commits_between(@merge_request.target_branch, @merge_request.source_branch).
+      map {|c| Commit.new(c)}.
+      sort_by(&:created_at).
+      reverse
+
     render_full_content
 
     respond_to do |format|
       format.html
       format.js { respond_with_notes }
     end
-  end
-
-  def commits
-    @commits = @project.repo.
-      commits_between(@merge_request.target_branch, @merge_request.source_branch).
-      map {|c| Commit.new(c)}.
-      sort_by(&:created_at).
-      reverse
   end
 
   def diffs

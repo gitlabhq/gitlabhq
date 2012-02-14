@@ -1,6 +1,13 @@
-- if @commits.size > 0
-  .merge-request-commits
-    %ul.unstyled= render @commits
+- unless @commits.empty? 
+  .ui-box
+    %h5 Commits
+    .merge-request-commits
+      %ul.unstyled= render @commits
 
-- if @commits.empty? 
-  %p.cgray Nothing to merge
+- else 
+  %h5
+    Nothing to merge from 
+    %span.label #{@merge_request.source_branch} 
+    to 
+    %span.label #{@merge_request.target_branch}
+  %br

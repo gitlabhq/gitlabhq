@@ -41,19 +41,18 @@
 
   %div= simple_format @merge_request.title
 
+= render "merge_requests/commits"
 
-.tabs
-  %li.active
-    = link_to "#notes", :class => "merge-notes-tab tab" do 
-      Notes
-  %li
-    = link_to "#commits", "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab tab" do 
-      Commits
-  %li
-    = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
-      Diff
+- unless @commits.empty?
+  .tabs
+    %li.active
+      = link_to "#notes", :class => "merge-notes-tab tab" do 
+        Notes
+    %li
+      = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
+        Diff
 
-  %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
+    %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes
   .merge_request_notes= render "notes/notes"
@@ -61,7 +60,6 @@
     %center= image_tag "ajax-loader.gif"
   .clear
 
-.merge-request-commits
 .merge-request-diffs
 
 
