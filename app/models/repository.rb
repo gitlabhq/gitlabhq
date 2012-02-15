@@ -4,6 +4,7 @@ class Repository
   REPO_N = 0
   REPO_R = 1
   REPO_RW = 2
+  REPO_MASTER = 3
 
   attr_accessor :project
 
@@ -15,7 +16,8 @@ class Repository
     {
       "Denied"      => REPO_N,
       "Pull"        => REPO_R,
-      "Pull & Push" => REPO_RW
+      "Pull & Push" => REPO_RW,
+      "Master"      => REPO_MASTER
     }
   end
 

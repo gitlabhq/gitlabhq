@@ -1,0 +1,9 @@
+= render "repositories/head"
+%ul.pills
+  %li{:class => ("active" if current_page?(branches_project_repository_path(@project)))}
+    = link_to branches_project_repository_path(@project) do 
+      All
+  %li{:class => ("active" if current_page?(project_protected_branches_path(@project)))}
+    = link_to project_protected_branches_path(@project) do 
+      Protected
+

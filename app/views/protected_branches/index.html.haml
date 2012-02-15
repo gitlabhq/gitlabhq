@@ -1,4 +1,19 @@
 = render "repositories/branches_head"
+
+= form_for [@project, @protected_branch] do |f|
+  -if @protected_branch.errors.any?
+    .alert-message.block-message.error
+      %ul
+        - @protected_branch.errors.full_messages.each do |msg|
+          %li= msg
+
+  .clearfix
+    = f.label :name
+    .input= f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , { :include_blank => "Select branch" }, { :style => "width:300px" })
+  .actions
+    = f.submit 'Add', :class => "primary btn"
+
+
 - unless @branches.empty?
   %table
     %thead
@@ -18,3 +33,7 @@
               = truncate branch.commit.id.to_s, :length => 10
             = time_ago_in_words(branch.commit.committed_date)
             ago
+
+
+:javascript
+  $('select#protected_branch_name').chosen();

@@ -16,6 +16,7 @@ class Project < ActiveRecord::Base
   has_many :snippets, :dependent => :destroy
   has_many :deploy_keys, :dependent => :destroy, :foreign_key => "project_id", :class_name => "Key"
   has_many :web_hooks, :dependent => :destroy
+  has_many :protected_branches, :dependent => :destroy
 
   acts_as_taggable
 
@@ -138,6 +139,15 @@ class Project < ActiveRecord::Base
     data
   end
 
+  def open_branches
+    if protected_branches.empty?
+      self.repo.heads
+    else
+      pnames = protected_branches.map(&:name)
+      self.repo.heads.reject { |h| pnames.include?(h.name) }
+    end.sort_by(&:name)
+  end
+
   def team_member_by_name_or_email(email = nil, name = nil)
     user = users.where("email like ? or name like ?", email, name).first
     users_projects.find_by_user_id(user.id) if user
@@ -210,6 +220,12 @@ class Project < ActiveRecord::Base
     keys.map(&:identifier)
   end
 
+  def repository_masters
+    keys = Key.joins({:user => :users_projects}).
+      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_MASTER)
+    keys.map(&:identifier)
+  end
+
   def readers
     @readers ||= users_projects.includes(:user).where(:project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).map(&:user)
   end
@@ -235,7 +251,7 @@ class Project < ActiveRecord::Base
   end
 
   def allow_pull_for?(user)
-    !users_projects.where(:user_id => user.id, :repo_access => [Repository::REPO_R, Repository::REPO_RW]).empty?
+    !users_projects.where(:user_id => user.id, :repo_access => [Repository::REPO_R, Repository::REPO_RW, Repository::REPO_MASTER]).empty?
   end
 
   def root_ref 
@@ -340,15 +356,18 @@ end
 #
 # Table name: projects
 #
-#  id             :integer         not null, primary key
-#  name           :string(255)
-#  path           :string(255)
-#  description    :text
-#  created_at     :datetime
-#  updated_at     :datetime
-#  private_flag   :boolean         default(TRUE), not null
-#  code           :string(255)
-#  owner_id       :integer
-#  default_branch :string(255)     default("master"), not null
+#  id                     :integer         not null, primary key
+#  name                   :string(255)
+#  path                   :string(255)
+#  description            :text
+#  created_at             :datetime
+#  updated_at             :datetime
+#  private_flag           :boolean         default(TRUE), not null
+#  code                   :string(255)
+#  owner_id               :integer
+#  default_branch         :string(255)     default("master"), not null
+#  issues_enabled         :boolean         default(TRUE), not null
+#  wall_enabled           :boolean         default(TRUE), not null
+#  merge_requests_enabled :boolean         default(TRUE), not null
 #
 

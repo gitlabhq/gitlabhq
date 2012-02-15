@@ -62,6 +62,7 @@ Gitlab::Application.routes.draw do
     end
 
     resources :deploy_keys
+    resources :protected_branches, :only => [:index, :create, :destroy]
 
     resources :refs, :only => [], :path => "/" do 
       collection do 
