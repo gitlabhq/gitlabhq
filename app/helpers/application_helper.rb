@@ -52,6 +52,13 @@ module ApplicationHelper
       [ "Tag", @project.tags ]
     ]
 
+    # If reference is commit id - 
+    # we should add it to branch/tag selectbox
+    if(@ref && !options.include?(@ref) &&
+       @ref =~ /^[0-9a-zA-Z]{6,52}$/)
+      options << ["Commit", [@ref]]
+    end
+
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
