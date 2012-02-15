@@ -34,7 +34,9 @@ module ProjectsHelper
 
   def repository_tab_class
     if controller.controller_name == "repositories" ||
-      controller.controller_name == "hooks"
+      controller.controller_name == "hooks" ||
+      controller.controller_name == "protected_branches" ||
+      controller.controller_name == "deploy_keys"
      "current"
     end
   end

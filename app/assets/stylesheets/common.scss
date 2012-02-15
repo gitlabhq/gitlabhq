@@ -6,6 +6,10 @@ a {
   }
 }
 
+.vlink { 
+  color: $link_color !important;
+}
+
 .pills .active a {
   background-color: #474D57;
 }
@@ -27,6 +31,7 @@ a {
 .cgray { color:gray; }
 .cred { color:#D12F19; }
 .cgreen { color:#44aa22; }
+.cblack { color:#111; }
 
 /** COMMON STYLES **/
 .left {
@@ -259,3 +264,5 @@ img.lil_av {
   }
 
 }
+
+.help li { color:#111 } 

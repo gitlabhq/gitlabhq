@@ -11,9 +11,9 @@
 
     .span3
       = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
-        = f.select :project_access, options_for_select(Project.access_options, member.project_access), {}, :class => "medium project-access-select", :disabled => !allow_admin
-    .span3
-      = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
-        = f.select :repo_access, options_for_select(Repository.access_options, member.repo_access), {}, :class => "medium repo-access-select", :disabled => !allow_admin
+        = f.select :_project_access, options_for_select(UsersProject.access_roles, member.role_access), {}, :class => "medium project-access-select", :disabled => !allow_admin
+    -#.span3
+      -#= form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
+        -#= f.select :repo_access, options_for_select(Repository.access_options, member.repo_access), {}, :class => "medium repo-access-select", :disabled => !allow_admin
     - if @project.owner == user
       %span.label Project Owner

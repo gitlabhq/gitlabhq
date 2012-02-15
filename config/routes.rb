@@ -5,6 +5,8 @@ Gitlab::Application.routes.draw do
   mount Resque::Server.new, at: '/info/resque'
 
   get 'help' => 'help#index'
+  get 'help/permissions' => 'help#permissions'
+  get 'help/workflow' => 'help#workflow'
 
   namespace :admin do
     resources :users do 

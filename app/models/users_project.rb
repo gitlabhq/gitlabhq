@@ -1,4 +1,8 @@
 class UsersProject < ActiveRecord::Base
+  REPORTER = 21
+  DEVELOPER = 22
+  MASTER = 33
+
   belongs_to :user
   belongs_to :project
 
@@ -39,6 +43,18 @@ class UsersProject < ActiveRecord::Base
         users_project.save
       end
     end
+  end
+
+  def self.access_roles
+    {
+      "Reporter"   => REPORTER,
+      "Developer" => DEVELOPER,
+      "Master"  => MASTER
+    }
+  end
+
+  def role_access
+    "#{project_access}#{repo_access}"
   end
 
   def update_repository
