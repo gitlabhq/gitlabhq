@@ -28,7 +28,7 @@ module Utils
 
     def handle_file_type(file_name, mime_type = nil)
       case file_name
-      when /(\.pl|\.scala|\.java|\.haml|\.jade|\.scaml|\.html|\.sass|\.scss|\.php|\.erb)$/
+      when /(\.pl|\.scala|\.java|\.haml|\.jade|\.scaml|\.html|\.sass|\.scss|\.php|\.inc|\.erb|\.install|\.module)$/
         $1[1..-1].to_sym
       when /(\.c|\.h|\.idc)$/
         :c
