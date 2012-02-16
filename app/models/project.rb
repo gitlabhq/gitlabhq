@@ -1,11 +1,6 @@
 require "grit"
 
 class Project < ActiveRecord::Base
-  PROJECT_N = 0
-  PROJECT_R = 1
-  PROJECT_RW = 2
-  PROJECT_RWA = 3
-
   belongs_to :owner, :class_name => "User"
 
   has_many :merge_requests, :dependent => :destroy
@@ -61,12 +56,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.access_options
-    {
-      "Denied" => PROJECT_N,
-      "Read"   => PROJECT_R,
-      "Report" => PROJECT_RW,
-      "Admin"  => PROJECT_RWA
-    }
+    UsersProject.access_roles
   end
 
   def repository
@@ -193,11 +183,11 @@ class Project < ActiveRecord::Base
   # Should be rewrited for new access rights
   def add_access(user, *access)
     access = if access.include?(:admin) 
-               { :project_access => PROJECT_RWA } 
+               { :project_access => UsersProject::MASTER } 
              elsif access.include?(:write)
-               { :project_access => PROJECT_RW } 
+               { :project_access => UsersProject::DEVELOPER } 
              else
-               { :project_access => PROJECT_R } 
+               { :project_access => UsersProject::GUEST } 
              end
     opts = { :user => user }
     opts.merge!(access)
@@ -210,48 +200,48 @@ class Project < ActiveRecord::Base
 
   def repository_readers
     keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_R)
+      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::REPORTER)
     keys.map(&:identifier) + deploy_keys.map(&:identifier)
   end
 
   def repository_writers
     keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_RW)
+      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::DEVELOPER)
     keys.map(&:identifier)
   end
 
   def repository_masters
     keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_MASTER)
+      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::MASTER)
     keys.map(&:identifier)
   end
 
   def readers
-    @readers ||= users_projects.includes(:user).where(:project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).map(&:user)
+    @readers ||= users_projects.includes(:user).map(&:user)
   end
 
   def writers
-    @writers ||= users_projects.includes(:user).where(:project_access => [PROJECT_RW, PROJECT_RWA]).map(&:user)
+    @writers ||= users_projects.includes(:user).map(&:user)
   end
 
   def admins
-    @admins ||= users_projects.includes(:user).where(:project_access => PROJECT_RWA).map(&:user)
+    @admins ||= users_projects.includes(:user).where(:project_access => UsersProject::MASTER).map(&:user)
   end
 
   def allow_read_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).empty?
+    !users_projects.where(:user_id => user.id).empty?
   end
 
   def allow_write_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RW, PROJECT_RWA]).empty?
+    !users_projects.where(:user_id => user.id).empty?
   end
 
   def allow_admin_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RWA]).empty? || owner_id == user.id
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::MASTER]).empty? || owner_id == user.id
   end
 
   def allow_pull_for?(user)
-    !users_projects.where(:user_id => user.id, :repo_access => [Repository::REPO_R, Repository::REPO_RW, Repository::REPO_MASTER]).empty?
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::REPORTER, UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
   end
 
   def root_ref 

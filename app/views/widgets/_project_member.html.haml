@@ -13,7 +13,6 @@
 
     .span3
       %span.label= member.project_access_human
-      %span.label= member.repo_access_human
 
   - if can? current_user, :write_project, @project
     - if @project.issues_enabled && @project.merge_requests_enabled

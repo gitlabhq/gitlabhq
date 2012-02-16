@@ -11,19 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120215182305) do
-
-  create_table "features", :force => true do |t|
-    t.string   "name"
-    t.string   "branch_name"
-    t.integer  "assignee_id"
-    t.integer  "author_id"
-    t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "version"
-    t.integer  "status",      :default => 0, :null => false
-  end
+ActiveRecord::Schema.define(:version => 20120216085842) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -160,7 +148,6 @@ ActiveRecord::Schema.define(:version => 20120215182305) do
     t.integer  "project_id",                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repo_access",    :default => 0, :null => false
     t.integer  "project_access", :default => 0, :null => false
   end
 

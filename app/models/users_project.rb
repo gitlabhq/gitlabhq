@@ -1,7 +1,8 @@
 class UsersProject < ActiveRecord::Base
-  REPORTER = 21
-  DEVELOPER = 22
-  MASTER = 33
+  GUEST     = 10
+  REPORTER  = 20
+  DEVELOPER = 30
+  MASTER    = 40
 
   belongs_to :user
   belongs_to :project
@@ -21,7 +22,6 @@ class UsersProject < ActiveRecord::Base
     UsersProject.transaction do
       user_ids.each do |user_id|
         users_project = UsersProject.new(
-          :repo_access => repo_access,
           :project_access => project_access,
           :user_id => user_id
         )
@@ -35,7 +35,6 @@ class UsersProject < ActiveRecord::Base
     UsersProject.transaction do
       project_ids.each do |project_id|
         users_project = UsersProject.new(
-          :repo_access => repo_access,
           :project_access => project_access,
         )
         users_project.project_id = project_id
@@ -47,6 +46,7 @@ class UsersProject < ActiveRecord::Base
 
   def self.access_roles
     {
+      "Guest"   => GUEST,
       "Reporter"   => REPORTER,
       "Developer" => DEVELOPER,
       "Master"  => MASTER
@@ -54,7 +54,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def role_access
-    "#{project_access}#{repo_access}"
+    project_access
   end
 
   def update_repository
@@ -68,7 +68,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def repo_access_human
-    Repository.access_options.key(self.repo_access)
+    ""
   end
 end
 # == Schema Information

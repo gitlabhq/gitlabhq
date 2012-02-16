@@ -28,13 +28,6 @@
       = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
         = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
 
-  %tr
-    %td Repository Access
-    %td
-      = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
-        = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select", :disabled => !allow_admin
-
-
   - unless user.skype.empty?
     %tr
       %td Skype:

@@ -14,17 +14,8 @@
 
   .clearfix
     = f.label :project_access, "Project Access"
-    .input= f.select :_project_access, options_for_select(UsersProject.access_roles, @team_member.role_access), {}, :class => "project-access-select"
-    
+    .input= f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
 
-
-  -#.clearfix
-    -#= f.label :project_access, "Project Access"
-    -#.input= f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
-
-  -#.clearfix
-    -#= f.label :repo_access, "Repository Access"
-    -#.input= f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select"
 
   .actions
     = f.submit 'Save', :class => "btn primary"
@@ -37,6 +28,6 @@
 
 :javascript
   $('select#team_member_user_id').chosen();
-  $('select#team_member__project_access').chosen();
+  $('select#team_member_project_access').chosen();
   //$('select#team_member_repo_access').chosen();
   //$('select#team_member_project_access').chosen();

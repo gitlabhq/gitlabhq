@@ -10,10 +10,6 @@
     .input
       = f.select :project_access, options_for_select(Project.access_options, @admin_team_member.project_access), {}, :class => "project-access-select"
 
-  .clearfix
-    %label Repository Access:
-    .input
-      = f.select :repo_access, options_for_select(Repository.access_options, @admin_team_member.repo_access), {}, :class => "repo-access-select"
   %br
   .actions
     = f.submit 'Save', :class => "btn primary"
