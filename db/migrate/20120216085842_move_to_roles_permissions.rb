@@ -5,8 +5,8 @@ class MoveToRolesPermissions < ActiveRecord::Migration
     repo_rw = 2
     project_rwa = 3
 
-    UsersProject.update_all ["project_access = ?", UsersProject::MASTER], ["project_access = ?", project_rwa]
     UsersProject.update_all ["project_access = ?", UsersProject::DEVELOPER], ["repo_access = ?", repo_rw]
+    UsersProject.update_all ["project_access = ?", UsersProject::MASTER], ["project_access = ?", project_rwa]
     UsersProject.update_all ["project_access = ?", UsersProject::REPORTER], ["repo_access = ?", repo_r]
     UsersProject.update_all ["project_access = ?", UsersProject::GUEST], ["repo_access = ?", repo_n]
 
