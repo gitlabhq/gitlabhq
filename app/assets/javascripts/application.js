@@ -11,6 +11,7 @@
 //= require jquery.tagify
 //= require jquery.cookie
 //= require jquery.endless-scroll
+//= require bootstrap-modal
 //= require modernizr
 //= require chosen
 //= require raphael

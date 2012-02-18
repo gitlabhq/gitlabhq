@@ -1,0 +1,25 @@
+%div#modal_merge_info.modal.hide
+  .modal-header
+    %a.close{:href => "#"} ×
+    %h3 How To Merge
+  .modal-body
+    %pre
+      :erb
+        git fetch origin
+        git checkout -b <%=@merge_request.source_branch%> origin/<%=@merge_request.source_branch%>
+        git checkout <%=@merge_request.target_branch%>
+        git merge <%=@merge_request.source_branch%>
+        git push origin <%=@merge_request.target_branch%>
+
+
+:javascript
+  $(function(){
+    var modal = $('#modal_merge_info').modal({modal: true});
+    $('.info_link').bind("click", function(){
+      modal.show();
+    });
+    $('.modal-header .close').bind("click", function(){
+      modal.hide();
+    })
+  })
+
