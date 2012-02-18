@@ -19,6 +19,9 @@
       = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
         Edit
 
+.back_link
+  = link_to project_merge_requests_path(@project) do 
+    &larr; To merge requests
 %hr
 - if @merge_request.closed
   .alert-message.error Closed

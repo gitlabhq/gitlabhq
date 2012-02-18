@@ -42,7 +42,7 @@ class Commit
   end
 
   def author_name
-    author.name
+    author.name.force_encoding("UTF-8")
   end
 
   def committer_name

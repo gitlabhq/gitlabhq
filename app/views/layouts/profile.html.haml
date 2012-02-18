@@ -10,7 +10,7 @@
         = link_to "Password & token", profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
         = link_to "Design", profile_design_path, :class => current_page?(:controller => "profile", :action => :design) ? "current" : nil
         = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do
-          Keys
+          SSH Keys
       .content
         .row
           .span12= yield

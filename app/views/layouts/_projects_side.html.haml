@@ -4,16 +4,16 @@
       You can create at least
       = current_user.projects_limit
       projects. Click on button to add a new one
-      %hr
-      = link_to new_project_path, :class => "btn small" do 
-        New Project » 
+      .link_holder
+        = link_to new_project_path, :class => "" do 
+          New Project » 
 
   - if current_user.is_admin?
     .widget
       You have administrator privilegies. You can configure application following this button:
-      %hr
-      = link_to admin_root_path, :class => "btn small", :title => "Admin"  do 
-        Visit Admin Area »
+      .link_holder
+        = link_to admin_root_path, :class => "", :title => "Admin"  do 
+          Visit Admin Area »
 
   - if current_user.projects.count > 0
     = render "widgets/recent_projects"

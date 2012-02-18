@@ -4,7 +4,7 @@
   
 %hr
 
-%div#keys-table{ :class => "update-data ui-box ui-box-small ui-box-big" }
+%div#keys-table
   %ul.unstyled
     - @keys.each do |key|
       = render(:partial => 'show', :locals => {:key => key})

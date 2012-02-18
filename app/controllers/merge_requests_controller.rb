@@ -24,7 +24,9 @@ class MergeRequestsController < ApplicationController
     @merge_requests = @project.merge_requests
 
     @merge_requests = case params[:f].to_i
+                      when 1 then @merge_requests
                       when 2 then @merge_requests.closed
+                      when 2 then @merge_requests.opened.assigned(current_user)
                       else @merge_requests.opened
                       end
 

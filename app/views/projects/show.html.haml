@@ -1,6 +1,11 @@
 = render "project_head"
 %h3
   = @project.name
+  - if can? current_user, :download_code, @project
+    = link_to "Download", archive_project_repository_path(@project), :class => "btn small right"
+.back_link
+  = link_to projects_path do 
+    &larr; To projects list
 %hr
 .alert-message.block-message.warning
   .input
@@ -10,7 +15,8 @@
 
 = simple_format @project.description
 
-%h5.cgray Recent Activity
-.content_list= render "feed"
+.ui-box
+  %h5.cgray Recent Activity
+  .content_list= render "feed"
 
 

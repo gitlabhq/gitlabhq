@@ -6,6 +6,16 @@
 
 
 %hr
+.entry
+  %p
+    Last commit was 
+    %small
+      %code= @activities.first.commit.id.to_s[0..10]
+
+    = time_ago_in_words(@activities.first.commit.committed_date)
+    ago to 
+    = link_to project_commits_path(@project, :ref => @activities.first.head.name), :class => "visible_link" do 
+      %span.label= @activities.first.head.name
 .alert-message.block-message.warning
   .input
     .input-prepend
@@ -13,20 +23,12 @@
       = text_field_tag :project_clone, @project.url_to_repo, :class => "xlarge one_click_select git_clone_url"
 
 
-%p
-  Last commit was 
-  %small
-    %code= @activities.first.commit.id.to_s[0..10]
 
-  = time_ago_in_words(@activities.first.commit.committed_date)
-  ago to 
-  = link_to project_commits_path(@project, :ref => @activities.first.head.name), :class => "visible_link" do 
-    %span.label= @activities.first.head.name
+.ui-box
+  %h5.cgray
+    Recent Branches
 
-%h4.cgray
-  Recent Branches
-
-%ul.unstyled
-  - @activities.each do |update|
-    = render "repositories/feed", :update => update, :project => @project
+  %ul.unstyled
+    - @activities.each do |update|
+      = render "repositories/feed", :update => update, :project => @project
 

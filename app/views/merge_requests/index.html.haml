@@ -6,14 +6,21 @@
 
 %hr
 
-%ul.pills
-  %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-    = link_to project_merge_requests_path(@project, :f => 0) do 
-      Open
-  %li{:class => ("active" if params[:f] == "2")}
-    = link_to project_merge_requests_path(@project, :f => 2) do 
-      Closed
+.ui-box
+  .title
+    %ul.pills
+      %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
+        = link_to project_merge_requests_path(@project, :f => 0) do 
+          Open
+      %li{:class => ("active" if params[:f] == "2")}
+        = link_to project_merge_requests_path(@project, :f => 2) do 
+          Closed
+      %li{:class => ("active" if params[:f] == "3")}
+        = link_to project_merge_requests_path(@project, :f => 3) do 
+          To Me
+      %li{:class => ("active" if params[:f] == "1")}
+        = link_to project_merge_requests_path(@project, :f => 1) do 
+          All
 
-%hr
-%ul.unstyled= render @merge_requests
+  %ul.unstyled= render @merge_requests
 

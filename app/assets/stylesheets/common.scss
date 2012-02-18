@@ -10,8 +10,12 @@ a {
   color: $link_color !important;
 }
 
+.pills a:hover { 
+  background-color:#ccc;
+}
+
 .pills .active a {
-  background-color: #474D57;
+  background-color: #aaa;
 }
 
 .label { 
@@ -83,7 +87,7 @@ a {
 }
 
 .container  .sidebar { 
-  width: 250px;
+  width: 220px;
   height:100%;
   min-height:450px;
   float:right;
@@ -131,6 +135,15 @@ nav.main_menu {
     margin: 0;
     float:left;
     text-shadow:0 1px 1px white;
+
+    &.home { 
+      padding:7px 35px;
+
+      img { 
+        position:relative;
+        top:4px;
+      }
+    }
     &.current { 
       background:#DDD;
     }
@@ -182,7 +195,7 @@ img.lil_av {
   p { padding-top:5px; margin:0; color:$style_color;}
   .author { color: #999; }
   p { 
-    color:$style_color;
+    color:#222;
     margin-bottom: 0;
     img { 
       position:relative;
@@ -230,6 +243,27 @@ img.lil_av {
 .widget { 
   padding:20px;
   margin-bottom:20px;
+  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #fff), to(#f1f1f1));
+  background-image: -webkit-linear-gradient(#fff 6.6%, #f1f1f1);
+  background-image: -moz-linear-gradient(#fff 6.6%, #f1f1f1);
+  background-image: -o-linear-gradient(#fff 6.6%, #f1f1f1);
+  border: 1px solid #DDD;
+  border-radius: 5px;
+
+  .link_holder { 
+    background:#eee;
+    position:relative;
+    left:-20px;
+    top:20px;
+    padding:10px 20px;
+    width:100%;
+    border-top:1px solid #ccc;
+
+    a { 
+      font-size:14px;
+      color:#666;
+    }
+  }
 }
 
 
@@ -242,15 +276,20 @@ img.lil_av {
     margin:0;
   }
 
-  h5 { 
+  h5, .title { 
     padding: 0 10px;
     background:#f5f5f5;
     border-bottom: 1px solid #ccc;
     @include round-borders-top(4px);
     border-top:none;
+
+    form { 
+      padding-top:16px;
+    }
   }
 
-  li {
+
+  li, .wll {
     padding:10px;
     &:first-child { 
       @include round-borders-top(4px);
@@ -266,3 +305,11 @@ img.lil_av {
 }
 
 .help li { color:#111 } 
+
+.back_link { 
+  text-decoration:underline;
+  font-size:14px;
+  font-weight:bold;
+  padding:10px 0;
+  padding-bottom:0;
+}

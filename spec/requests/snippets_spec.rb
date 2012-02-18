@@ -21,7 +21,6 @@ describe "Snippets" do
 
     it { should have_content(@snippet.title[0..10]) }
     it { should have_content(@snippet.project.name) }
-    it { should have_content(@snippet.author.name) }
 
     describe "Destroy" do
       before do

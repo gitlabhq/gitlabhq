@@ -1,5 +1,5 @@
 %nav.main_menu
-  = link_to project_path(@project), :class => project_tab_class do 
+  = link_to project_path(@project), :class => "#{project_tab_class}", :title => "Project" do 
     Project
 
   - if @project.repo_exists?

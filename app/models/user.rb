@@ -65,7 +65,11 @@ class User < ActiveRecord::Base
 
   def self.generate_random_password
     (0...8).map{ ('a'..'z').to_a[rand(26)] }.join
-  end 
+  end
+
+  def first_name 
+    name.split(" ").first unless name.blank?
+  end
 
   def self.find_for_ldap_auth(omniauth)
     username = omniauth.sAMAccountName[0]

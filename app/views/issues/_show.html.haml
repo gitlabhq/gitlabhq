@@ -12,7 +12,7 @@
   = image_tag gravatar_icon(issue.assignee_email), :class => "avatar"
   %span.update-author
     assigned to
-    %strong= link_to_issue_assignee(issue)
+    %strong= issue.assignee_name
     - if issue.critical
       %span.label.important critical
     - if issue.today?

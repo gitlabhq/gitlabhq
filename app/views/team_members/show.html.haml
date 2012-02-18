@@ -1,14 +1,18 @@
 - allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
-%div
-  = link_to team_project_path(@project), :class => "btn right" do 
-    Team »
+.media-grid
+  = link_to "#" do
+    = image_tag gravatar_icon(user.email, 60), :class => "thumbnail", :width => 60
+  %h3.media_h
+    = user.name
+    %br
+    %small= user.email
 
-  .media-grid
-    = link_to "#" do
-      = image_tag gravatar_icon(user.email, 90), :class => "thumbnail"
-    %h3.media_h= user.name
+.back_link
+  = link_to team_project_path(@project), :class => "" do 
+    &larr; To team list
 
+%hr
 %table.no-borders
   %tr
     %td Name
@@ -23,7 +27,10 @@
     %td= @team_member.created_at.stamp("Aug 21, 2011")
 
   %tr
-    %td Project Access
+    %td
+      Project Access
+      (#{link_to "read more", help_permissions_path, :class => "vlink"})
+
     %td
       = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
         = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin

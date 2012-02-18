@@ -1,7 +1,7 @@
 %li.wll
   = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
   %span.update-author
-    %strong= link_to_merge_request_author(merge_request)
+    %strong= merge_request.author_name
     authored
     = time_ago_in_words(merge_request.created_at)
     ago
