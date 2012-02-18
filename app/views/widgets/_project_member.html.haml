@@ -11,14 +11,14 @@
   %p 
     - if @project.issues_enabled
       Assigned issues:
-      = current_user.assigned_issues.count
+      = current_user.assigned_issues.opened.count
       %br
     - if @project.merge_requests_enabled
       Assigned merge request:
-      = current_user.assigned_merge_requests.count
+      = current_user.assigned_merge_requests.opened.count
       %br
       Your merge requests:
-      = current_user.assigned_merge_requests.count
+      = current_user.assigned_merge_requests.opened.count
   .link_holder
     = link_to project_team_member_path(@project, member), :title => current_user.name do 
       = "Access: #{member.project_access_human} »"

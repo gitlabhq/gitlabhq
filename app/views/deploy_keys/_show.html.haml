@@ -1,7 +1,12 @@
-%a.update-item{:href => project_deploy_key_path(key.project, key)}
-  %span.update-title
-    = key.title
-  %span.update-author
-    Added
-    = time_ago_in_words(key.created_at)
-    ago
+%tr
+  %td
+    %a{:href => project_deploy_key_path(key.project, key)}
+      = key.title
+  %td
+    %span.update-author
+      Added
+      = time_ago_in_words(key.created_at)
+      ago
+  %td
+    = link_to 'Remove', project_deploy_key_path(key.project, key), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn delete-key small"
+

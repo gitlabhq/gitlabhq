@@ -1,7 +1,6 @@
-%li.entry
-  %a{:href => project_snippet_path(snippet.project, snippet)}
-    %p
-      %strong
-        = truncate(snippet.title, :length => 60)
+%tr
+  %td
+    %a{:href => project_snippet_path(snippet.project, snippet)}
+      = truncate(snippet.title, :length => 60)
       %span.right.cgray
         = snippet.file_name

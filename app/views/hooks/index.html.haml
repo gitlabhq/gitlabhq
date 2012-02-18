@@ -6,13 +6,17 @@
     = link_to new_project_hook_path(@project), :class => "btn small", :title => "New Web Hook" do 
       Add Post Receive Hook
 
-%ul.unstyled
+%table.zebra-striped.borders
   - @hooks.each do |hook|
-    %li.wll
-      = link_to project_hook_path(@project, hook) do
-        = hook.url
+    %tr
+      %td
+        = link_to project_hook_path(@project, hook) do
+          = hook.url
+      %td
+        = link_to 'Remove', project_hook_path(@project, hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small"
 
-.alert-message.block-message.info
+
+.alert-message.block-message
   We send some data with POST request when someone makes git push
 
 .well= render "data_ex"

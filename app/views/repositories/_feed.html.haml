@@ -1,13 +1,15 @@
 - commit = update
-.wll
-  = link_to project_commits_path(@project, :ref => commit.head.name) do 
-    %p
-      %strong.label
+%tr
+  %td
+    = link_to project_commits_path(@project, :ref => commit.head.name) do 
+      %strong
         = commit.head.name
-      %br
+  %td
+    %div
       %code= commit.id.to_s[0..10]
       = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
       = truncate(commit.safe_message, :length => 40)
-      %span.right.cgray
-        = time_ago_in_words(commit.committed_date)
-        ago
+  %td
+    %span.right.cgray
+      = time_ago_in_words(commit.committed_date)
+      ago

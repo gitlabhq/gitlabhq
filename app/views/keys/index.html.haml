@@ -4,7 +4,6 @@
   
 %hr
 
-%div#keys-table
-  %ul.unstyled
-    - @keys.each do |key|
-      = render(:partial => 'show', :locals => {:key => key})
+%table#keys-table.zebra-striped.borders
+  - @keys.each do |key|
+    = render(:partial => 'show', :locals => {:key => key})

@@ -24,11 +24,10 @@
 
 
 
-.ui-box
-  %h5.cgray
-    Recent Branches
+%h5.cgray
+  Recently updated branches
 
-  %ul.unstyled
-    - @activities.each do |update|
-      = render "repositories/feed", :update => update, :project => @project
+%table.zebra-striped.borders
+  - @activities.each do |update|
+    = render "repositories/feed", :update => update, :project => @project
 

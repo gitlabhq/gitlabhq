@@ -27,7 +27,7 @@
       = f.label :default_branch, "Default Branch"
       .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
 
-    .well
+    .alert-message.block-message.warning
       %h5 Features
 
       .clearfix

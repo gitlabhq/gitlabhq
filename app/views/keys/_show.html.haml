@@ -1,8 +1,13 @@
-%li.wll
-  = link_to key_path(key) do
-    %p
-      %strong= key.title
-      %span.right.cgray
-        Added
-        = time_ago_in_words(key.created_at)
-        ago
+%tr
+  %td
+    = link_to key_path(key) do
+      %p
+        %strong= key.title
+  %td
+    %span.right.cgray
+      Added
+      = time_ago_in_words(key.created_at)
+      ago
+  %td
+    = link_to 'Remove', key, :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger delete-key right"
+
