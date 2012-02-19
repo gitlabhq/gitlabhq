@@ -1,5 +1,4 @@
 body header { 
-  position:absolute;
   width:100%;
   padding:0;
   margin:0;
@@ -19,8 +18,14 @@ body header {
     min-width:$min_app_width;
     max-width:$max_app_width;
     position:relative;
-    padding:15px $app_padding;
+    padding:15px 0;
+
+    .top_panel_content { 
+      margin:0 $app_padding;
+    }
   }
+
+
 
   .project_name {
     float:left;

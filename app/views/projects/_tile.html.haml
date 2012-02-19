@@ -1,11 +1,11 @@
 - @projects.in_groups_of(2, false) do |projects|
   .row
     - projects.each_with_index do |project, i|
-      .span5.well
+      %div.span5.well.padded
         = link_to project_path(project) do
-          %h3= truncate(project.name, :length => 20)
-        %p.title.repository.git_url_wrapper
+          %h3= truncate(project.name, :length => 28)
+        %p
           %input{ :value => project.url_to_repo, :class => ['git-url', 'one_click_select', 'text', 'project_list_url'], :readonly => 'readonly' }
 
-        %a.btn{:href => tree_project_ref_path(project, project.root_ref)} Browse code
+        %a.btn.info{:href => tree_project_ref_path(project, project.root_ref)} Browse code
         %a.btn{:href => project_commits_path(project)} Commits

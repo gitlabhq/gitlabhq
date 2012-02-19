@@ -82,12 +82,16 @@ a {
 
 .container { 
   width:$min_app_width;
-  margin-top:50px;
-  padding:$app_padding;
+  padding-top:0;
+  z-index:5;
+}
+
+.container .content { 
+  margin:0 $app_padding;
 }
 
 .container  .sidebar { 
-  width: 220px;
+  width: 200px;
   height:100%;
   min-height:450px;
   float:right;
@@ -95,10 +99,8 @@ a {
 
 nav.main_menu { 
   border-radius: 4px;
-  width: 100%;
   margin: auto;
-  margin-top:30px;
-  margin-bottom:30px;
+  margin:30px $app_padding;
   background:#f1f1f1;
   border:1px solid #ccc;
   height:38px;
@@ -154,7 +156,6 @@ aside.projects,
 aside.project-side
 { 
   margin-left: 0;
-  padding-left: 20px;
 }
 
 img.avatar { 
@@ -326,4 +327,8 @@ img.lil_av {
 
 .borders { 
   border: 1px solid #ccc;
+}
+
+.well.padded {
+  padding:29px;
 }
