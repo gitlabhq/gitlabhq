@@ -13,3 +13,5 @@ public/uploads/
 nohup.out
 Vagrantfile
 .vagrant
+config/gitlab.yml
+config/database.yml
