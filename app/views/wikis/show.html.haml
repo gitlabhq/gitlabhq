@@ -1,7 +1,11 @@
+%h3
+  = @wiki.title
+  - if can? current_user, :write_wiki, @project
+    = link_to edit_project_wiki_path(@project, @wiki), :class => "right btn small" do
+      Edit
+
 %p#notice= notice
 
-%h3= @wiki.title
 = @wiki.content
 
 %br
-= link_to 'Edit', edit_project_wiki_path(@project, @wiki)

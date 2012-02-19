@@ -5,6 +5,7 @@ class Ability
     when "Issue" then issue_abilities(object, subject)
     when "Note" then note_abilities(object, subject)
     when "Snippet" then snippet_abilities(object, subject)
+    when "Wiki" then wiki_abilities(object, subject)
     else []
     end
   end
@@ -26,12 +27,14 @@ class Ability
       :write_issue,
       :write_snippet,
       :write_merge_request,
-      :write_note
+      :write_note,
+      :write_wiki
     ] if project.allow_write_for?(user)
 
     rules << [
       :modify_issue,
       :modify_snippet,
+      :modify_wiki,
       :admin_project,
       :admin_issue,
       :admin_snippet,
@@ -48,7 +51,7 @@ class Ability
   end
 
   class << self
-    [:issue, :note, :snippet, :merge_request].each do |name|
+    [:issue, :note, :snippet, :merge_request, :wiki].each do |name|
       define_method "#{name}_abilities" do |user, subject|
         if subject.author == user
           [

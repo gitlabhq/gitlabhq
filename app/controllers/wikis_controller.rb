@@ -1,5 +1,6 @@
 class WikisController < ApplicationController
   before_filter :project
+  before_filter :add_project_abilities
   layout "project"
   
   def show

@@ -6,12 +6,13 @@
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
+  .clearfix
     = f.label :title
-    = f.text_field :title
+    .input= f.text_field :title, :class => :xxlarge
     = f.hidden_field :slug
-  .field
+  .clearfix
     = f.label :content
-    = f.text_area :content
+    .input= f.text_area :content, :class => :xxlarge
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', :class => "primary btn"
+    = link_to "Cancel", project_wiki_path(@project, :index), :class => "btn"
