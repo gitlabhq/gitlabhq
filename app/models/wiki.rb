@@ -1,7 +1,8 @@
 class Wiki < ActiveRecord::Base
   belongs_to :project
+  belongs_to :user
 
-  validates :content, :title, :presence => true
+  validates :content, :title, :user_id, :presence => true
   validates :title, :length => 1..250
 
   before_update :set_slug

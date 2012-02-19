@@ -56,7 +56,11 @@ Gitlab::Application.routes.draw do
       get "files"
     end
 
-    resources :wikis, :only => [:show, :edit, :destroy, :create]
+    resources :wikis, :only => [:show, :edit, :destroy, :create] do
+      member do
+        get "history"
+      end
+    end
 
     resource :repository do 
       member do 

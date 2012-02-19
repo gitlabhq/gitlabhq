@@ -4,7 +4,11 @@ class WikisController < ApplicationController
   layout "project"
   
   def show
-    @wiki = @project.wikis.where(:slug => params[:id]).order("created_at").last
+    if params[:old_page_id]
+      @wiki = @project.wikis.find(params[:old_page_id])
+    else
+      @wiki = @project.wikis.where(:slug => params[:id]).order("created_at").last
+    end
     respond_to do |format|
       if @wiki
         format.html
@@ -22,6 +26,7 @@ class WikisController < ApplicationController
 
   def create
     @wiki = @project.wikis.new(params[:wiki])
+    @wiki.user = current_user
 
     respond_to do |format|
       if @wiki.save
@@ -30,6 +35,10 @@ class WikisController < ApplicationController
         format.html { render action: "edit" }
       end
     end
+  end
+
+  def history
+    @wikis = @project.wikis.where(:slug => params[:id]).order("created_at")
   end
   
   def destroy
