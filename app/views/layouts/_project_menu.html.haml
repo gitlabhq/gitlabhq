@@ -11,6 +11,7 @@
     - if @project.issues_enabled
       = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
         Issues
+    
     - if @project.merge_requests_enabled
       = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
         Merge Requests
@@ -18,3 +19,7 @@
     - if @project.wall_enabled
       = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
         Wall
+    
+    - if @project.wiki_enabled
+      -#= link_to project_wikis_path(@project), :class => current_page?(:controller => "projects", :action => "wiki", :id => @project) ? "current" : nil do
+        Wiki

@@ -11,7 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20120216085842) do
+=======
+ActiveRecord::Schema.define(:version => 20120219140810) do
+>>>>>>> wiki base sceleton
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -80,6 +84,7 @@ ActiveRecord::Schema.define(:version => 20120216085842) do
     t.boolean  "issues_enabled",         :default => true,     :null => false
     t.boolean  "wall_enabled",           :default => true,     :null => false
     t.boolean  "merge_requests_enabled", :default => true,     :null => false
+    t.boolean  "wiki_enabled",           :default => true,     :null => false
   end
 
   create_table "protected_branches", :force => true do |t|
@@ -156,6 +161,15 @@ ActiveRecord::Schema.define(:version => 20120216085842) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "wikis", :force => true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "project_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.string   "slug"
   end
 
 end

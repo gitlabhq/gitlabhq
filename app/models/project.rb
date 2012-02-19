@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, :dependent => :destroy, :foreign_key => "project_id", :class_name => "Key"
   has_many :web_hooks, :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
+  has_many :wikis, :dependent => :destroy
 
   acts_as_taggable
 

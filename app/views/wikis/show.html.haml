@@ -1,0 +1,7 @@
+%p#notice= notice
+
+%h3= @wiki.title
+= @wiki.content
+
+%br
+= link_to 'Edit', edit_project_wiki_path(@project, @wiki)
