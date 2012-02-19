@@ -11,11 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(:version => 20120216085842) do
-=======
 ActiveRecord::Schema.define(:version => 20120219140810) do
->>>>>>> wiki base sceleton
 
   create_table "issues", :force => true do |t|
     t.string   "title"
