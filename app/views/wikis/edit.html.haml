@@ -1,7 +1,5 @@
-%h1 Editing wiki
+%h1 Editing page
 
 = render 'form'
 
-= link_to 'Show', @wiki
-\|
-= link_to 'Back', wikis_path
+= link_to 'Show', [@project, @wiki]

@@ -1,4 +1,4 @@
-= form_for @wiki do |f|
+= form_for [@project, @wiki] do |f|
   -if @wiki.errors.any?
     #error_explanation
       %h2= "#{pluralize(@wiki.errors.count, "error")} prohibited this wiki from being saved:"
@@ -9,6 +9,7 @@
   .field
     = f.label :title
     = f.text_field :title
+    = f.hidden_field :slug
   .field
     = f.label :content
     = f.text_area :content

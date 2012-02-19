@@ -1,61 +1,42 @@
 class WikisController < ApplicationController
   before_filter :project
   layout "project"
-  respond_to :html
   
   def show
-    @wiki = @project.wikis.find_by_slug(params[:id])
-    respond_with(@wiki)
-  end
-
-  def new
-    @wiki = Wiki.new
-
+    @wiki = @project.wikis.where(:slug => params[:id]).order("created_at").last
     respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @wiki }
+      if @wiki
+        format.html
+      else
+        @wiki = @project.wikis.new(:slug => params[:id])
+        format.html { render "edit" }
+      end
     end
   end
 
   def edit
-    @wiki = Wiki.find(params[:id])
+    @wiki = @project.wikis.where(:slug => params[:id]).order("created_at").last
+    @wiki = Wiki.regenerate_from @wiki
   end
 
   def create
-    @wiki = Wiki.new(params[:wiki])
+    @wiki = @project.wikis.new(params[:wiki])
 
     respond_to do |format|
       if @wiki.save
-        format.html { redirect_to @wiki, notice: 'Wiki was successfully created.' }
-        format.json { render json: @wiki, status: :created, location: @wiki }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @wiki.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def update
-    @wiki = Wiki.find(params[:id])
-
-    respond_to do |format|
-      if @wiki.update_attributes(params[:wiki])
-        format.html { redirect_to @wiki, notice: 'Wiki was successfully updated.' }
-        format.json { head :no_content }
+        format.html { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
       else
         format.html { render action: "edit" }
-        format.json { render json: @wiki.errors, status: :unprocessable_entity }
       end
     end
   end
-
+  
   def destroy
-    @wiki = Wiki.find(params[:id])
+    @wiki = @project.wikis.find(params[:id])
     @wiki.destroy
 
     respond_to do |format|
       format.html { redirect_to wikis_url }
-      format.json { head :no_content }
     end
   end
 end

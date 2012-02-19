@@ -56,7 +56,8 @@ Gitlab::Application.routes.draw do
       get "files"
     end
 
-    resources :wikis, :only => [:show, :edit, :destroy]
+    resources :wikis, :only => [:show, :edit, :destroy, :create]
+
     resource :repository do 
       member do 
         get "branches"
