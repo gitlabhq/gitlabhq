@@ -1,6 +1,6 @@
 %li.wll.commit
   .right.span2
-    = link_to "Browse Code", tree_project_ref_path(@project, commit.id), :class => "btn small right"
+    = link_to "Browse Code »", tree_project_ref_path(@project, commit.id), :class => "btn small right"
   = link_to project_commit_path(@project, :id => commit.id) do
     %p
       %code.left= commit.id.to_s[0..10]
@@ -12,4 +12,5 @@
       %span.right.cgray
         = time_ago_in_words(commit.committed_date)
         ago
+        &nbsp;
 

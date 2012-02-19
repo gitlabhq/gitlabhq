@@ -101,15 +101,24 @@ nav.main_menu {
   border-radius: 4px;
   margin: auto;
   margin:30px $app_padding;
-  background:#f1f1f1;
+  background:#eee;
   border:1px solid #ccc;
   height:38px;
 
-  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #f1f1f1), to(#dfdfdf));
-  background-image: -webkit-linear-gradient(#f1f1f1 6.6%, #dfdfdf);
-  background-image: -moz-linear-gradient(#f1f1f1 6.6%, #dfdfdf);
-  background-image: -o-linear-gradient(#f1f1f1 6.6%, #dfdfdf);
+  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+  background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+  background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+  background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
+  -moz-box-shadow: 0 0 3px #ddd;
+  -webkit-box-shadow: 0 0 3px #ddd;
+  box-shadow: 0 0 3px #ddd;
+
+
+  .count { 
+    color:#bbb;
+    margin-left:3px;  
+  }
 
   .label { 
     background:$hover;
@@ -131,12 +140,13 @@ nav.main_menu {
     padding: 10px 25px;
     display: inline-block;
     color: $style_color;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #d5d5d5;
     position: relative;
     box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
     margin: 0;
     float:left;
     text-shadow:0 1px 1px white;
+ 
 
     &.home { 
       padding:7px 35px;
@@ -281,7 +291,11 @@ img.lil_av {
   h5, .title { 
     padding: 0 10px;
     background:#f5f5f5;
-    border-bottom: 1px solid #ccc;
+    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+    border-bottom: 1px solid #eee;
     @include round-borders-top(4px);
     border-top:none;
 
