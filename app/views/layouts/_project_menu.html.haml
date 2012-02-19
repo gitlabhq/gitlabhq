@@ -16,7 +16,7 @@
     - if @project.merge_requests_enabled
       = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
         Merge Requests
-        %span.count= @project.issues.opened.count
+        %span.count= @project.merge_requests.opened.count
 
     - if @project.wall_enabled
       = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
