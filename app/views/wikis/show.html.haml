@@ -6,6 +6,4 @@
     = link_to edit_project_wiki_path(@project, @wiki), :class => "right btn small" do
       Edit
 
-= @wiki.content
-
-%br
+= markdown @wiki.content
