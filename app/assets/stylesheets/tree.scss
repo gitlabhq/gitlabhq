@@ -158,6 +158,11 @@ table.highlighttable .linenodiv pre {
   color:#333;
 }
 
-#tree-content-holder { 
+#tree-content-holder .view_file{ 
   @include shade;
+}
+
+#tree-readme-holder .readme { 
+  @include shade;
+  margin-bottom:20px;
 }
