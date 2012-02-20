@@ -16,16 +16,13 @@
   %li{ :class => " #{'active' if (controller.controller_name == "snippets") }" }
     = link_to project_snippets_path(@project), :class => "snippets-tab tab" do 
       Snippets
-  -#%li{:class => "#{'active' if current_page?(project_repository_path(@project)) }"}
-    -#= link_to project_repository_path(@project) do 
-      -#%span
-      -#Activities
-  %li{:class => "#{'active' if controller.controller_name == "hooks" }"}
-    = link_to project_hooks_path(@project) do 
-      %span
-      Hooks
-  %li{:class => "#{'active' if controller.controller_name == "deploy_keys"}"}
-    - if can? current_user, :admin_project, @project
+
+  - if can? current_user, :admin_project, @project
+    %li{:class => "#{'active' if controller.controller_name == "hooks" }"}
+      = link_to project_hooks_path(@project) do 
+        %span
+        Hooks
+    %li{:class => "#{'active' if controller.controller_name == "deploy_keys"}"}
       = link_to project_deploy_keys_path(@project) do 
         %span
         Deploy Keys
