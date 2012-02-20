@@ -58,7 +58,7 @@ Gitlab::Application.routes.draw do
 
     resources :wikis, :only => [:show, :edit, :destroy, :create] do
       member do
-        get "history"
+        get "history"        
       end
     end
 

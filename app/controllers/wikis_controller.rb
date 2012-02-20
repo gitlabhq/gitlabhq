@@ -42,11 +42,10 @@ class WikisController < ApplicationController
   end
   
   def destroy
-    @wiki = @project.wikis.find(params[:id])
-    @wiki.destroy
+    @wikis = @project.wikis.where(:slug => params[:id]).delete_all
 
     respond_to do |format|
-      format.html { redirect_to wikis_url }
+      format.html { redirect_to project_wiki_path(@project, :index), notice: "Page was successfully deleted" }
     end
   end
 end
