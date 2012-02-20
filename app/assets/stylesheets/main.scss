@@ -24,6 +24,13 @@ $hover: #FDF5D9;
 
 
 /** MIXINS **/
+@mixin shade {
+  -moz-box-shadow: 0 0 3px #ddd;
+  -webkit-box-shadow: 0 0 3px #ddd;
+  box-shadow: 0 0 3px #ddd;
+}
+
+
 @mixin round-borders-bottom($radius) {
   border-top: 1px solid #eaeaea;
   -moz-border-radius-bottomright: $radius;

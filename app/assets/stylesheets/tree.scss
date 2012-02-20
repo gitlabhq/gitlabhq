@@ -142,6 +142,8 @@ table.highlighttable .linenodiv pre {
 }
 
 #tree-slider { 
+  @include shade;
+
   td { 
     padding:7px;
     border-color:#f1f1f1;
@@ -154,4 +156,8 @@ table.highlighttable .linenodiv pre {
 
 .tree-commit-link { 
   color:#333;
+}
+
+#tree-content-holder { 
+  @include shade;
 }

@@ -111,9 +111,7 @@ nav.main_menu {
   background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
-  -moz-box-shadow: 0 0 3px #ddd;
-  -webkit-box-shadow: 0 0 3px #ddd;
-  box-shadow: 0 0 3px #ddd;
+  @include shade;
 
 
   .count { 
@@ -282,9 +280,9 @@ img.lil_av {
 
 
 .ui-box { 
-
   margin-bottom: 40px;
   @include round-borders-all(4px);
+  @include shade;
   border-color:#ddd;
 
   ul { 
@@ -294,10 +292,6 @@ img.lil_av {
   h5, .title { 
     padding: 0 10px;
     background:#f5f5f5;
-    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
     border-bottom: 1px solid #eee;
     @include round-borders-top(4px);
     border-top:none;
