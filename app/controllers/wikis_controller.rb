@@ -1,6 +1,9 @@
 class WikisController < ApplicationController
   before_filter :project
   before_filter :add_project_abilities
+  before_filter :authorize_read_wiki!
+  before_filter :authorize_write_wiki!, :except => [:show, :destroy]
+  before_filter :authorize_admin_wiki!, :only => :destroy
   layout "project"
   
   def show
@@ -47,5 +50,19 @@ class WikisController < ApplicationController
     respond_to do |format|
       format.html { redirect_to project_wiki_path(@project, :index), notice: "Page was successfully deleted" }
     end
+  end
+
+  protected 
+
+  def authorize_read_wiki!
+    can?(current_user, :read_wiki, @project)
+  end
+
+  def authorize_write_wiki!
+    can?(current_user, :write_wiki, @project)
+  end
+
+  def authorize_admin_wiki!
+    can?(current_user, :admin_wiki, @project)
   end
 end
