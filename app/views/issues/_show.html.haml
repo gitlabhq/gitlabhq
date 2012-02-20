@@ -22,8 +22,7 @@
 
   = link_to project_issue_path(issue.project, issue) do
     %p
-      Issue ##{issue.id}:
-      = truncate(issue.title, :length => 50)
+      %strong= truncate(issue.title, :length => 60)
 
 
 

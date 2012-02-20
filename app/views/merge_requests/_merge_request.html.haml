@@ -11,5 +11,4 @@
     %span.label= merge_request.target_branch
   = link_to project_merge_request_path(merge_request.project, merge_request) do
     %p
-      Merge Request ##{merge_request.id}:
-      = truncate(merge_request.title, :length => 50)
+      %strong= truncate(merge_request.title, :length => 60)

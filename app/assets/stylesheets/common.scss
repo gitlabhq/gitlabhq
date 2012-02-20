@@ -338,6 +338,7 @@ img.lil_av {
 
 .borders { 
   border: 1px solid #ccc;
+  @include shade;
 }
 
 .well.padded {

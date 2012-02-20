@@ -117,6 +117,7 @@ table.highlighttable .linenodiv pre {
     cursor:pointer;
   }
 
+
   .tree-item-file-name { 
     font-weight:bold;
     a { 
@@ -165,4 +166,10 @@ table.highlighttable .linenodiv pre {
 #tree-readme-holder .readme { 
   @include shade;
   margin-bottom:20px;
+}
+
+a.tree-commit-link { 
+  &:hover { 
+    text-decoration: underline;
+  }
 }
