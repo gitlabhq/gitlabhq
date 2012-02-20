@@ -1,5 +1,6 @@
 %nav.main_menu
-  = link_to "Projects", projects_path, :class => "#{"current" if current_page?(projects_path) || current_page?(root_path)}"
+  = render "layouts/const_menu_links"
+  -#= link_to "Projects", projects_path, :class => "#{"current" if current_page?(projects_path) || current_page?(root_path)}"
   = link_to "Issues", dashboard_issues_path, :class => "#{"current" if current_page?(dashboard_issues_path)}", :id => "issues_slide"
   = link_to "Requests", dashboard_merge_requests_path, :class => "#{"current" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide"
   = link_to "Help", help_path, :class => "#{"current" if controller.controller_name == "help"}"

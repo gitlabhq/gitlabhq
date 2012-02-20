@@ -22,6 +22,8 @@ module ProjectsHelper
     end
 
     if controller.controller_name == "snippets" || 
+     controller.controller_name == "hooks" ||
+     controller.controller_name == "deploy_keys" ||
      controller.controller_name == "team_members"
      "current"
     end
@@ -33,11 +35,26 @@ module ProjectsHelper
   end
 
   def repository_tab_class
-    if controller.controller_name == "repositories" ||
-      controller.controller_name == "hooks" ||
+    #if controller.controller_name == "repositories" ||
+      #controller.controller_name == "hooks" ||
+      #controller.controller_name == "deploy_keys"
+     #"current"
+    #end
+  end
+
+  def commit_tab_class
+    if controller.controller_name == "commits" || 
+      controller.controller_name == "repositories" ||
+      controller.controller_name == "protected_branches"
+      "current"
+    end
+  end
+
+  def branches_tab_class
+    if current_page?(branches_project_repository_path(@project)) ||
       controller.controller_name == "protected_branches" ||
-      controller.controller_name == "deploy_keys"
-     "current"
+      current_page?(project_repository_path(@project))
+      'active' 
     end
   end
 end

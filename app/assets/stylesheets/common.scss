@@ -98,6 +98,7 @@ a {
 }
 
 nav.main_menu { 
+  overflow:hidden;
   border-radius: 4px;
   margin: auto;
   margin:30px $app_padding;
@@ -116,7 +117,7 @@ nav.main_menu {
 
 
   .count { 
-    color:#bbb;
+    color:#aaa;
     margin-left:3px;  
   }
 
@@ -149,7 +150,9 @@ nav.main_menu {
  
 
     &.home { 
-      padding:7px 35px;
+      background: url(home_icon.PNG) no-repeat center center;
+      text-indent:-9999px;
+      min-width:40px;
 
       img { 
         position:relative;
@@ -157,7 +160,7 @@ nav.main_menu {
       }
     }
     &.current { 
-      background:#DDD;
+      background-color:#DDD;
     }
   }
 }
@@ -345,4 +348,25 @@ img.lil_av {
 
 .well.padded {
   padding:29px;
+}
+
+.download_repo_link { 
+  background: url("images.png") no-repeat 0 -48px;
+  padding-left:20px;
+}
+
+.number { 
+  border-radius: 4px; 
+  text-shadow: none; 
+  background: rgba(0,0,0,.12); 
+  text-align: center; 
+  padding: 2px 4px; 
+  line-height:20px;
+  margin-left:2px;
+}
+
+table a code { 
+  position: relative;
+  top: -2px;
+  margin-right: 3px;
 }

@@ -1,0 +1,20 @@
+%tr
+  %td
+    = link_to project_commits_path(@project, :ref => branch.name) do
+      %strong= branch.name
+      - if branch.name == @project.root_ref
+        %span.label default
+  %td
+    = link_to project_commits_path(@project, branch.commit.id) do
+      %code= branch.commit.id.to_s[0..10]
+
+    = image_tag gravatar_icon(Commit.new(branch.commit).author_email), :class => "", :width => 16
+    = truncate(Commit.new(branch.commit).safe_message, :length => 40)
+  %td
+    %span.update-author.right
+      = time_ago_in_words(branch.commit.committed_date)
+      ago
+  %td
+    - if can? current_user, :download_code, @project
+      = link_to "Download", archive_project_repository_path(@project, :ref => branch.name), :class => "visible_link download_repo_link"
+

@@ -4,9 +4,13 @@
     = link_to project_commits_path(@project, :ref => commit.head.name) do 
       %strong
         = commit.head.name
+      - if commit.head.name == @project.root_ref
+        %span.label default
+
   %td
     %div
-      %code= commit.id.to_s[0..10]
+      = link_to project_commits_path(@project, commit.id) do
+        %code= commit.id.to_s[0..10]
       = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
       = truncate(commit.safe_message, :length => 40)
   %td

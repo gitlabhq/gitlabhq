@@ -6,12 +6,19 @@
 
   %li{:class => "#{'active' if current_page?(project_commits_path(@project)) }"}
     = link_to project_commits_path(@project) do 
-      %span
       Commits
   %li{:class => "#{'active' if current_page?(compare_project_commits_path(@project)) }"}
     = link_to compare_project_commits_path(@project) do 
-      %span
       Compare
+  %li{:class => "#{branches_tab_class}"}
+    = link_to project_repository_path(@project) do 
+      Branches
+      %span.number= @project.repo.branches.count
+
+  %li{:class => "#{'active' if current_page?(tags_project_repository_path(@project)) }"}
+    = link_to tags_project_repository_path(@project) do 
+      Tags
+      %span.number= @project.repo.tags.count
 
 
 
