@@ -5,7 +5,7 @@ class Ability
     when "Issue" then issue_abilities(object, subject)
     when "Note" then note_abilities(object, subject)
     when "Snippet" then snippet_abilities(object, subject)
-    when "Wiki" then wiki_abilities(object, subject)
+    when "MergeRequest" then merge_request_abilities(object, subject)
     else []
     end
   end
@@ -23,13 +23,13 @@ class Ability
       :read_note,
       :write_project,
       :write_issue,
-      :write_snippet,
-      :write_merge_request,
       :write_note
     ] if project.guest_access_for?(user)
 
     rules << [
       :download_code,
+      :write_merge_request,
+      :write_snippet
     ] if project.report_access_for?(user)
 
     rules << [
@@ -39,7 +39,7 @@ class Ability
     rules << [
       :modify_issue,
       :modify_snippet,
-      :modify_wiki,
+      :modify_merge_request,
       :admin_project,
       :admin_issue,
       :admin_snippet,
@@ -47,7 +47,7 @@ class Ability
       :admin_merge_request,
       :admin_note,
       :admin_wiki
-    ] if project.master_access_for?(user)
+    ] if project.master_access_for?(user) || project.owner == user
 
 
     rules.flatten
@@ -62,6 +62,12 @@ class Ability
             :"write_#{name}",
             :"modify_#{name}",
             :"admin_#{name}"
+          ]
+        elsif subject.respond_to?(:assignee) && subject.assignee == user
+          [
+            :"read_#{name}",
+            :"write_#{name}",
+            :"modify_#{name}",
           ]
         else
           subject.respond_to?(:project) ?

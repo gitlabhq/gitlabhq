@@ -112,12 +112,11 @@ class MergeRequestsController < ApplicationController
   end
 
   def authorize_modify_merge_request!
-    can?(current_user, :modify_merge_request, @merge_request) || 
-      @merge_request.assignee == current_user
+    return render_404 unless can?(current_user, :modify_merge_request, @merge_request)
   end
 
   def authorize_admin_merge_request!
-    can?(current_user, :admin_merge_request, @merge_request)
+    return render_404 unless can?(current_user, :admin_merge_request, @merge_request)
   end
 
   def module_enabled

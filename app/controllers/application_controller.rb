@@ -48,6 +48,10 @@ class ApplicationController < ActionController::Base
     return render_404 unless can?(current_user, action, project)
   end
 
+  def authorize_code_access!
+    return render_404 unless can?(current_user, :download_code, project)
+  end
+
   def access_denied!
     render_404
   end

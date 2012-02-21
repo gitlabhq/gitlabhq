@@ -126,12 +126,11 @@ class IssuesController < ApplicationController
   end
 
   def authorize_modify_issue!
-    can?(current_user, :modify_issue, @issue) || 
-      @issue.assignee == current_user
+    return render_404 unless can?(current_user, :modify_issue, @issue)
   end
 
   def authorize_admin_issue!
-    can?(current_user, :admin_issue, @issue)
+    return render_404 unless can?(current_user, :admin_issue, @issue)
   end
 
   def module_enabled

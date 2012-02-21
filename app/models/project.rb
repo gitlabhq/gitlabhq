@@ -188,7 +188,7 @@ class Project < ActiveRecord::Base
              elsif access.include?(:write)
                { :project_access => UsersProject::DEVELOPER } 
              else
-               { :project_access => UsersProject::GUEST } 
+               { :project_access => UsersProject::REPORTER } 
              end
     opts = { :user => user }
     opts.merge!(access)

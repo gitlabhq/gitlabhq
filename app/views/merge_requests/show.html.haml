@@ -10,12 +10,11 @@
     = @merge_request.created_at.stamp("Aug 21, 2011")
 
   %span.right
-    - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
+    - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.closed
         = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
       - else
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
-    - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
       = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
         Edit
 
