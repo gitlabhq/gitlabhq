@@ -14,9 +14,9 @@
       = text_field_tag :project_clone, @project.url_to_repo, :class => "xlarge one_click_select git_clone_url"
 
 = simple_format @project.description
-
-.ui-box
-  %h5.cgray Recent Activity
-  .content_list= render "feed"
+- unless @activities.blank?
+  .ui-box
+    %h5.cgray Recent Activity
+    .content_list= render "feed"
 
 

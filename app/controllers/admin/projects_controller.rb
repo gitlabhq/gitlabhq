@@ -52,7 +52,7 @@ class Admin::ProjectsController < ApplicationController
   def update
     @admin_project = Project.find_by_code(params[:id])
 
-    owner_id = params[:project][:owner_id]
+    owner_id = params[:project].delete(:owner_id)
 
     if owner_id 
       @admin_project.owner = User.find(owner_id)
