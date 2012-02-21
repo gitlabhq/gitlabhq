@@ -59,3 +59,8 @@ end
 Factory.add(:web_hook, WebHook) do |obj|
   obj.url = Faker::Internet.url
 end
+
+Factory.add(:wikis, WebHook) do |obj|
+  obj.title = Faker::Lorem.sentence
+  obj.content = Faker::Lorem.sentence
+end

@@ -159,20 +159,6 @@ ActiveRecord::Schema.define(:version => 20120219193300) do
     t.datetime "updated_at"
   end
 
-  create_table "wiki_pages", :force => true do |t|
-    t.string   "slug"
-    t.string   "title"
-    t.text     "content"
-    t.integer  "author_id"
-    t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "wiki_pages", ["author_id"], :name => "index_wiki_pages_on_author_id"
-  add_index "wiki_pages", ["project_id"], :name => "index_wiki_pages_on_project_id"
-  add_index "wiki_pages", ["slug"], :name => "index_wiki_pages_on_slug", :unique => true
-
   create_table "wikis", :force => true do |t|
     t.string   "title"
     t.text     "content"
