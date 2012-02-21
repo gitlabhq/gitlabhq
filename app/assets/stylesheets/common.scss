@@ -253,14 +253,12 @@ img.lil_av {
 }
 
 .widget { 
+  @include shade;
   padding:20px;
   margin-bottom:20px;
-  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #fff), to(#f1f1f1));
-  background-image: -webkit-linear-gradient(#fff 6.6%, #f1f1f1);
-  background-image: -moz-linear-gradient(#fff 6.6%, #f1f1f1);
-  background-image: -o-linear-gradient(#fff 6.6%, #f1f1f1);
   border: 1px solid #DDD;
   border-radius: 5px;
+  background:#fafafa;
 
   .link_holder { 
     background:#eee;
@@ -304,6 +302,9 @@ img.lil_av {
   .row_title { 
     font-weight:bold;
     color:#444;
+    &:hover { 
+      text-decoration:underline;
+    }
   }
 
   li, .wll {
@@ -345,10 +346,6 @@ img.lil_av {
   @include shade;
 }
 
-.well.padded {
-  padding:29px;
-}
-
 .download_repo_link { 
   background: url("images.png") no-repeat 0 -48px;
   padding-left:20px;
@@ -368,4 +365,8 @@ table a code {
   position: relative;
   top: -2px;
   margin-right: 3px;
+}
+
+.span12 hr{
+ margin-top: 5px;
 }

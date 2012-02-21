@@ -222,6 +222,33 @@ input.git_clone_url {
   background:#fff !important;
 }
 
-.span12 hr{
- margin-top: 2px;
+.project_tile { 
+  @include shade;
+  @include round-borders-all(4px);
+  margin-bottom:20px;
+  width:338px;
+  float:left;
+  margin-left:20px;
+  border: 1px solid #DDD;
+  padding-bottom:20px;
+
+  .title { 
+    background:#f5f5f5;
+    padding: 5px 10px 2px 20px;
+    border-bottom: 1px solid #DDD;
+    margin-bottom: 15px;
+
+    h3 { 
+      &:hover { 
+        text-decoration: underline;
+      }
+    }
+  }
+  .data { 
+    margin: 0 20px;
+  }
+  .buttons { 
+    margin: 0 20px;
+  }
 }
+

@@ -1,10 +1,11 @@
 %h3
   = @wiki.title
-  = link_to edit_project_wiki_path(@project, @wiki), :class => "right btn small" do
-    Edit
-  - if can? current_user, :write_wiki, @project
-    = link_to history_project_wiki_path(@project, @wiki), :class => "right btn small" do
-      History
+  %span.right
+    - if can? current_user, :write_wiki, @project
+      = link_to history_project_wiki_path(@project, @wiki), :class => "btn small" do
+        History
+    = link_to edit_project_wiki_path(@project, @wiki), :class => "btn small" do
+      Edit
 %hr
 
 = markdown_to_html @wiki.content

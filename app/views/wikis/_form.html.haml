@@ -6,6 +6,12 @@
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
+  .alert-message.block-message.warning
+    %p 
+      Wiki content is parsed with #{link_to "Markdown", "http://en.wikipedia.org/wiki/Markdown"}. 
+      %br
+      To add link to new page you can just type 
+      %code [Link Title](page-slug)
   .clearfix
     = f.label :title
     .input= f.text_field :title, :class => :xxlarge

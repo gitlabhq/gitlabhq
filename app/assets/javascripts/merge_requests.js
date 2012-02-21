@@ -9,17 +9,19 @@ var MergeRequest = {
         $(this).parent().addClass("active");
       });
 
-      $(".tabs a.merge-notes-tab").live("click", function() { 
+      $(".tabs a.merge-notes-tab").live("click", function(e) { 
         $(".merge-request-diffs").hide();
         $(".merge-request-notes").show();
+        e.preventDefault();
       });
 
-      $(".tabs a.merge-diffs-tab").live("click", function() { 
+      $(".tabs a.merge-diffs-tab").live("click", function(e) { 
         if(!MergeRequest.diffs_loaded) { 
           MergeRequest.loadDiff(); 
         }
         $(".merge-request-notes").hide();
         $(".merge-request-diffs").show();
+        e.preventDefault();
       });
     },
 
