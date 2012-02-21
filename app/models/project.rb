@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, :dependent => :destroy, :foreign_key => "project_id", :class_name => "Key"
   has_many :web_hooks, :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
+  has_many :wikis, :dependent => :destroy
 
   acts_as_taggable
 
@@ -232,16 +233,20 @@ class Project < ActiveRecord::Base
     !users_projects.where(:user_id => user.id).empty?
   end
 
-  def allow_write_for?(user)
+  def guest_access_for?(user)
     !users_projects.where(:user_id => user.id).empty?
   end
 
-  def allow_admin_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::MASTER]).empty? || owner_id == user.id
+  def report_access_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::REPORTER, UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
   end
 
-  def allow_pull_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::REPORTER, UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
+  def dev_access_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
+  end
+
+  def master_access_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::MASTER]).empty? || owner_id == user.id
   end
 
   def root_ref 

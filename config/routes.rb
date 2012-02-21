@@ -1,5 +1,6 @@
 Gitlab::Application.routes.draw do
 
+
   # Optionally, enable Resque here
   require 'resque/server'
   mount Resque::Server.new, at: '/info/resque'
@@ -53,6 +54,12 @@ Gitlab::Application.routes.draw do
       get "wall"
       get "graph"
       get "files"
+    end
+
+    resources :wikis, :only => [:show, :edit, :destroy, :create] do
+      member do
+        get "history"        
+      end
     end
 
     resource :repository do 

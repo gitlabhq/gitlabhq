@@ -1,0 +1,15 @@
+%h3
+  = @wiki.title
+  = link_to edit_project_wiki_path(@project, @wiki), :class => "right btn small" do
+    Edit
+  - if can? current_user, :write_wiki, @project
+    = link_to history_project_wiki_path(@project, @wiki), :class => "right btn small" do
+      History
+%hr
+
+= markdown_to_html @wiki.content
+
+%p.time Last edited by #{@wiki.user.name}, in #{time_ago_in_words @wiki.created_at}
+- if can? current_user, :write_wiki, @project
+  = link_to project_wiki_path(@project, @wiki), :confirm => "Are you sure you want to delete this page?", :method => :delete do
+    Delete this page

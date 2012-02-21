@@ -5,6 +5,7 @@ class Ability
     when "Issue" then issue_abilities(object, subject)
     when "Note" then note_abilities(object, subject)
     when "Snippet" then snippet_abilities(object, subject)
+    when "Wiki" then wiki_abilities(object, subject)
     else []
     end
   end
@@ -14,35 +15,40 @@ class Ability
 
     rules << [
       :read_project,
+      :read_wiki,
       :read_issue,
       :read_snippet,
       :read_team_member,
       :read_merge_request,
-      :read_note
-    ] if project.allow_read_for?(user)
-
-    rules << [
+      :read_note,
       :write_project,
       :write_issue,
       :write_snippet,
       :write_merge_request,
       :write_note
-    ] if project.allow_write_for?(user)
+    ] if project.guest_access_for?(user)
+
+    rules << [
+      :download_code,
+    ] if project.report_access_for?(user)
+
+    rules << [
+      :write_wiki
+    ] if project.dev_access_for?(user)
 
     rules << [
       :modify_issue,
       :modify_snippet,
+      :modify_wiki,
       :admin_project,
       :admin_issue,
       :admin_snippet,
       :admin_team_member,
       :admin_merge_request,
-      :admin_note
-    ] if project.allow_admin_for?(user)
+      :admin_note,
+      :admin_wiki
+    ] if project.master_access_for?(user)
 
-    rules << [
-      :download_code,
-    ] if project.allow_pull_for?(user)
 
     rules.flatten
   end
