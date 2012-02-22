@@ -61,12 +61,12 @@ module CommitsHelper
       full_line = html_escape(line.gsub(/\n/, '')).force_encoding("UTF-8")
 
       if line.match(/^@@ -/)
-        next if line_old == 1 && line_new == 1
         type = "match"
 
         line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
         line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
-
+                
+        next if line_old == 1 && line_new == 1
         yield(line, type, nil, nil, nil)
         next
       else
