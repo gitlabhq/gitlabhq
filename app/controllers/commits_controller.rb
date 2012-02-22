@@ -26,6 +26,9 @@ class CommitsController < ApplicationController
 
   def show
     @commit = project.commit(params[:id])
+
+    git_not_found! and return unless @commit
+
     @notes = project.commit_notes(@commit).fresh.limit(20)
     @note = @project.build_commit_note(@commit)
 

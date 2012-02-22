@@ -1,5 +1,7 @@
 class ErrorsController < ApplicationController
+  layout "error"
+
   def githost
-    render :file => File.join(Rails.root, "public", "githost_error"), :layout => false
+    render "errors/gitolite"
   end
 end

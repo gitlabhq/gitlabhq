@@ -5,7 +5,11 @@ class ApplicationController < ActionController::Base
   helper_method :abilities, :can?
 
   rescue_from Gitlabhq::Gitolite::AccessDenied do |exception|
-    render :file => File.join(Rails.root, "public", "githost_error"), :layout => false
+    render "errors/gitolite", :layout => "error"
+  end
+
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render "errors/not_found", :layout => "error"
   end
 
   layout :layout_by_resource
@@ -33,7 +37,8 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    @project ||= Project.find_by_code(params[:project_id])
+    @project ||= current_user.projects.find_by_code(params[:project_id])
+    @project || render_404
   end
 
   def add_project_abilities
@@ -45,15 +50,23 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_project!(action)
-    return render_404 unless can?(current_user, action, project)
+    return access_denied! unless can?(current_user, action, project)
   end
 
   def authorize_code_access!
-    return render_404 unless can?(current_user, :download_code, project)
+    return access_denied! unless can?(current_user, :download_code, project)
   end
 
   def access_denied!
-    render_404
+    render "errors/access_denied", :layout => "error"
+  end
+
+  def not_found!
+    render "errors/not_found", :layout => "error"
+  end
+
+  def git_not_found!
+    render "errors/git_not_found", :layout => "error"
   end
 
   def method_missing(method_sym, *arguments, &block)

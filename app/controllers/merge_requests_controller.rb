@@ -36,7 +36,7 @@ class MergeRequestsController < ApplicationController
   def show
     unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch) && 
       @project.repo.heads.map(&:name).include?(@merge_request.source_branch)
-      head(404)and return 
+      git_not_found! and return 
     end
 
     @notes = @merge_request.notes.inc_author.order("created_at DESC").limit(20)
