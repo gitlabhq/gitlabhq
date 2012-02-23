@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
-    render "errors/not_found", :layout => "error"
+    render "errors/not_found", :layout => "error", :status => 404
   end
 
   layout :layout_by_resource
@@ -58,15 +58,15 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!
-    render "errors/access_denied", :layout => "error"
+    render "errors/access_denied", :layout => "error", :status => 404
   end
 
   def not_found!
-    render "errors/not_found", :layout => "error"
+    render "errors/not_found", :layout => "error", :status => 404
   end
 
   def git_not_found!
-    render "errors/git_not_found", :layout => "error"
+    render "errors/git_not_found", :layout => "error", :status => 404
   end
 
   def method_missing(method_sym, *arguments, &block)

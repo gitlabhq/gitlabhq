@@ -114,6 +114,7 @@ class ProjectsController < ApplicationController
 
   def project
     @project ||= Project.find_by_code(params[:id])
+    @project || render_404
   end
 
   def determine_layout
