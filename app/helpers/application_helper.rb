@@ -3,7 +3,8 @@ module ApplicationHelper
 
   def gravatar_icon(user_email, size = 40)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
-    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=#{size}&d=identicon"
+    user_email.strip!
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
   end
 
   def fixed_mode?
