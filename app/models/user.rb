@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
 
   def self.find_for_ldap_auth(omniauth_info)
     name = omniauth_info.name
-    email = omniauth_info.email
+    email = omniauth_info.email.downcase
     
     if @user = User.find_by_email(email)
       @user
