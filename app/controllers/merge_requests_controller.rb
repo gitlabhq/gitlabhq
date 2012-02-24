@@ -58,7 +58,9 @@ class MergeRequestsController < ApplicationController
   def diffs
     @diffs = @merge_request.diffs
     @commit = @merge_request.last_commit
-    @line_notes = []
+
+    @comments_allowed = true
+    @line_notes = @merge_request.notes.where("line_code is not null")
   end
 
   def new
