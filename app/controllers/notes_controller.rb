@@ -13,6 +13,8 @@ class NotesController < ApplicationController
     @notes = case params[:target_type]
              when "commit" 
                then project.commit_notes(project.commit((params[:target_id]))).fresh.limit(20)
+             when "snippet"
+               then  project.snippets.find(params[:target_id]).notes
              when "wall"
                then project.common_notes.order("created_at DESC").fresh.limit(20)
              when "issue"

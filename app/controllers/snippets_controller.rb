@@ -55,7 +55,6 @@ class SnippetsController < ApplicationController
   end
 
   def show
-    @notes = @snippet.notes
     @note = @project.notes.new(:noteable => @snippet)
     render_full_content
   end
