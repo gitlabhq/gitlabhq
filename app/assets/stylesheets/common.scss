@@ -374,3 +374,10 @@ table a code {
 .btn.padded { 
   margin-right:3px;
 }
+
+.loading { 
+  margin:20px auto;
+  background: url(ajax-loader-facebook.gif) no-repeat center center;
+  width:40px;
+  height:40px;
+}

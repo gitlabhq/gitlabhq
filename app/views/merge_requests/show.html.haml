@@ -63,10 +63,7 @@
     %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes
-  .merge_request_notes= render "notes/notes"
-  .loading{ :style => "display:none;"}
-    %center= image_tag "ajax-loader.gif"
-  .clear
+  .merge_request_notes= render "notes/notes", :tid => @merge_request.id, :tt => "merge_request"
 
 .merge-request-diffs
 
@@ -75,3 +72,15 @@
   $(function(){
     MergeRequest.init();
   })
+
+= render "notes/per_line_form"
+:javascript
+  $(document).ready(function(){
+    $(".line_note_link, .line_note_reply_link").live("click", function(e) { 
+      var form = $(".per_line_form");
+      $(this).parent().parent().after(form);
+      form.find("#note_line_code").val($(this).attr("line_code"));
+      form.show();  
+      return false;
+    });
+  });

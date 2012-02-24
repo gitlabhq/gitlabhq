@@ -30,7 +30,10 @@
   }
 }
 
-.note .delete-note { display:none; }
+.note .delete-note { 
+  display:none; 
+  float:right;
+}
 .note:hover .delete-note { display:block; }
 .note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
 .note img{float: left; margin-right: 10px;}
@@ -53,6 +56,20 @@ p.notify_controls span{
 
 tr.line_notes_row { 
   border-bottom:1px solid #DDD;
+  &.reply { 
+    background:#eee;
+
+    td { 
+      padding:7px 10px;
+    }
+    a.line_note_reply_link { 
+      @include round-borders-all(4px);
+      border-color:#aaa;
+      background: #bbb;
+      padding: 3px 20px;
+      color: white;
+    }
+  }
   ul { 
     margin:0;
     li { 

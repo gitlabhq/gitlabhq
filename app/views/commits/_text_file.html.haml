@@ -16,6 +16,7 @@
         - if @comments_allowed
           - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at).reverse
           - unless comments.empty?
-            - comments.each do |note|
+            - comments.each_with_index do |note, i|
+              = render "notes/reply_button", :line_code => line_code if i.zero?
               = render "notes/per_line_show", :note => note
               - @line_notes.reject!{ |n| n == note }

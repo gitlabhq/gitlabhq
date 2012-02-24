@@ -14,8 +14,5 @@
   .data.no-padding
     :erb
       <%= raw @snippet.colorize %>
-.clear
-%br
-.snippet_notes= render "notes/notes"
 
-.clear
+= render "notes/notes", :tid => @snippet.id, :tt => "snippet"

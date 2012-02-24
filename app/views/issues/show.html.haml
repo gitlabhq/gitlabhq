@@ -41,5 +41,4 @@
   %div= simple_format @issue.title
 
 
-.issue_notes= render "notes/notes"
-
+.issue_notes= render "notes/notes", :tid => @issue.id, :tt => "issue"

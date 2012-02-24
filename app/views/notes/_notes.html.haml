@@ -2,7 +2,9 @@
   = render "notes/form"
 .clear
 %hr
-%ul#notes-list= render "notes/notes_list"
+%ul#notes-list
+.loading
+
 
 :javascript
   $('.delete-note').live('ajax:success', function() {
@@ -22,5 +24,5 @@
       $('.attach_holder').show();
     });
 
-    NoteList.init("wall", #{@notes.last.try(:id) || 0}, #{@notes.first.try(:id) || 0});
+    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
   });
