@@ -95,18 +95,6 @@ class ApplicationController < ActionController::Base
     redirect_to @project unless @project.repo_exists? && @project.has_commits?
   end
 
-  def respond_with_notes
-    if params[:last_id] && params[:first_id]
-      @notes = @notes.where("id >= ?", params[:first_id])
-    elsif params[:last_id]
-      @notes = @notes.where("id > ?", params[:last_id])
-    elsif params[:first_id]
-      @notes = @notes.where("id < ?", params[:first_id])
-    else
-      nil
-    end
-  end
-
   def no_cache_headers
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"

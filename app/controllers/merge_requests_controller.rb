@@ -39,7 +39,6 @@ class MergeRequestsController < ApplicationController
       git_not_found! and return 
     end
 
-    @notes = @merge_request.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @merge_request)
 
     @commits = @project.repo.
@@ -52,7 +51,7 @@ class MergeRequestsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { respond_with_notes }
+      format.js
     end
   end
 

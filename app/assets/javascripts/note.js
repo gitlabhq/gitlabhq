@@ -1,15 +1,20 @@
 var NoteList = {
 
+notes_path: null,
+target_params: null,
+target_id: 0,
+target_type: null,
 first_id: 0,
 last_id: 0,
-resource_name: null,
 disable:false,
 
 init:
-  function(resource_name, first_id, last_id) {
-    this.resource_name = resource_name;
-    this.first_id = first_id;
-    this.last_id = last_id;
+  function(tid, tt, path) {
+    this.notes_path = path + ".js";
+    this.target_id = tid;
+    this.target_type = tt;
+    this.target_params = "&target_type=" + this.target_type + "&target_id=" + this.target_id
+    this.refresh();
     this.initRefresh();
     this.initLoadMore();
   },
@@ -19,8 +24,8 @@ getOld:
     $('.loading').show();
     $.ajax({
       type: "GET",
-      url: location.href,
-      data: "first_id=" + this.first_id,
+      url: this.notes_path,
+      data: "first_id=" + this.first_id + this.target_params,
       complete: function(){ $('.loading').hide()},
       dataType: "script"});
   },
@@ -56,8 +61,8 @@ getNew:
     // refersh notes list
     $.ajax({
       type: "GET",
-      url: location.href,
-      data: "last_id=" + this.last_id,
+      url: this.notes_path,
+      data: "last_id=" + this.last_id + this.target_params,
       dataType: "script"});
   },
 
@@ -66,8 +71,8 @@ refresh:
     // refersh notes list
     $.ajax({
       type: "GET",
-      url: location.href,
-      data: "first_id=" + this.first_id + "&last_id=" + this.last_id,
+      url: this.notes_path,
+      data: "first_id=" + this.first_id + "&last_id=" + this.last_id + this.target_params,
       dataType: "script"});
   },
 

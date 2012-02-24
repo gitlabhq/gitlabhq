@@ -63,7 +63,7 @@
     %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes
-  .merge_request_notes= render "notes/notes"
+  .merge_request_notes= render "notes/notes", :tid => @merge_request.id, :tt => "merge_request"
   .loading{ :style => "display:none;"}
     %center= image_tag "ajax-loader.gif"
   .clear
