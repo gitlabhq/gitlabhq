@@ -58,9 +58,8 @@ $hover: #FDF5D9;
   border-radius: $radius;
 }
 
-
+@import "ui_basic.scss";
 @import "common.scss";
-@import "top_panel.scss";
 
 @import "projects.css.scss";
 @import "commits.css.scss";
