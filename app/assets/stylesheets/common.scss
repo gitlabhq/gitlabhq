@@ -4,6 +4,10 @@ a {
     text-decoration:none; 
     color: $style_color;
   }
+
+  &.btn { 
+    color: $style_color;
+  }
 }
 
 .vlink { 
@@ -95,78 +99,6 @@ a {
   height:100%;
   min-height:450px;
   float:right;
-}
-
-nav.main_menu { 
-  overflow:hidden;
-  border-radius: 4px;
-  margin: auto;
-  margin:30px $app_padding;
-  background:#eee;
-  border:1px solid #ccc;
-  height:38px;
-
-  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-  background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-  background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-  background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
-
-  @include shade;
-
-
-  .count { 
-    color:#aaa;
-    margin-left:3px;  
-  }
-
-  .label { 
-    background:$hover;
-    text-shadow:none;
-    color:$style_color;
-  }
-
-  a { 
-
-    font-weight:bold;
-    &:first-child{ 
-      -webkit-border-top-left-radius: 4px;
-      -webkit-border-bottom-left-radius: 4px;
-      -moz-border-radius-topleft: 4px;
-      -moz-border-radius-bottomleft: 4px;
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
-    }
-    padding: 10px 25px;
-    display: inline-block;
-    color: $style_color;
-    border-right: 1px solid #d5d5d5;
-    position: relative;
-    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
-    margin: 0;
-    float:left;
-    text-shadow:0 1px 1px white;
- 
-
-    &.home { 
-      background: url(home_icon.PNG) no-repeat center center;
-      text-indent:-9999px;
-      min-width:40px;
-
-      img { 
-        position:relative;
-        top:4px;
-      }
-    }
-    &.current { 
-      background-color:#DDD;
-    }
-  }
-}
-
-aside.projects,
-aside.project-side
-{ 
-  margin-left: 0;
 }
 
 img.avatar { 
@@ -380,4 +312,298 @@ table a code {
   background: url(ajax-loader-facebook.gif) no-repeat center center;
   width:40px;
   height:40px;
+}
+
+/** FLASH message **/
+#flash_container {
+  height:45px;
+  position:fixed;
+  z-index:10001;
+  top:0px;
+  width:100%;
+  margin-bottom:15px;
+  overflow:hidden;
+  background:white;
+  cursor:pointer;
+  border-bottom:1px solid #777;
+
+  h4 {
+    color:#444;
+    font-size:22px;
+    padding-top:5px;
+    margin:2px;
+  }
+}
+
+.git_url_wrapper {
+  margin-right:50px
+}
+.file_stats {
+  span {
+    img {
+      width:14px;
+      float:left;
+      margin-right:6px;
+      padding:2px 0;
+    }
+  }
+}
+
+.handle:hover {
+  cursor:move;
+}
+
+span.update-author {
+  display:block;
+}
+span.update-author {
+  color:#999;
+  font-weight:normal;
+  font-style:italic;
+}
+span.update-author strong {
+  font-weight:bold;
+  font-style: normal;
+}
+
+/** UPDATE ITEM **/
+span.update-author {
+  display:block;
+}
+/** END UPDATE ITEM **/
+.ajax-tab-loading {
+  padding:40px;
+  display:none;
+}
+.dashboard-loader {
+  float:left;
+  margin:10px;
+  display:none;
+}
+.user-mention {
+  color:#2FA0BB;
+  font-weight:bold;
+}
+
+a.project-update.titled {
+  position:relative;
+  padding-left:35% !important;
+  .title-block {
+    padding:10px;
+    width:35%;
+    position:absolute;
+    left:0;
+    top:0;
+  }
+}
+/**
+ * Project graph
+ */
+#holder {
+  cursor: move;
+  height: 70%;
+  overflow: hidden;
+}
+
+
+
+input.git_clone_url { 
+  width:475px;
+}
+
+.team_member_row { 
+  img { 
+    width:60px;
+  }
+}
+
+.merge-request-form-holder {
+  select { 
+    width:300px;
+  }
+}
+
+/** Issues **/
+#issue_assignee_id {
+  width:300px;
+}
+
+#new_issue_dialog textarea{
+    height: 100px;
+}
+
+.project_list_url { 
+  width:270px;
+  background:#fff !important;
+}
+
+.project_tile { 
+  @include shade;
+  @include round-borders-all(4px);
+  margin-bottom:20px;
+  width:338px;
+  float:left;
+  margin-left:20px;
+  border: 1px solid #DDD;
+  padding-bottom:20px;
+
+  .title { 
+    background:#f5f5f5;
+    padding: 5px 10px 2px 20px;
+    border-bottom: 1px solid #DDD;
+    margin-bottom: 15px;
+
+    h3 { 
+      &:hover { 
+        text-decoration: underline;
+      }
+    }
+  }
+  .data { 
+    margin: 0 20px;
+  }
+  .buttons { 
+    margin: 0 20px;
+  }
+}
+
+/**
+ * 
+ * COMMIT SHOw
+ *
+ */
+.diff_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
+  .diff_file_header {
+    padding:5px 5px;
+    border-bottom:1px solid #CCC;
+    background: #eee;
+  }
+  .diff_file_content {
+    overflow:auto;
+    overflow-y:hidden;
+    background:#fff;
+    color:#333;
+    font-size: 12px;
+    font-family: 'Menlo', 'Courier New', 'andale mono','lucida console',monospace;
+  }
+  .diff_file_content_image {
+    background:#eee;
+    text-align:center;
+    img {
+      padding:100px;
+      max-width:300px;
+    }
+  }
+}
+
+.diff_file_content{
+  table { 
+    border:none;
+    margin:0px;
+    padding:0px;
+    tr {
+      td { 
+        font-size:12px;
+      }
+    }
+  }
+  .old_line, .new_line {
+    margin:0px;
+    padding:0px;
+    border:none;
+    background:#F7F7F7;
+    color:#aaa;
+    padding: 0px 5px;
+    border-right: 1px solid #ccc;
+    text-align:right;
+    min-width:35px;
+    max-width:35px;
+    width:35px;
+    moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    a { 
+      float:left;
+      width:35px;
+      font-weight:normal;
+      color:#aaa;
+      &:hover { 
+        text-decoration:underline;
+      }
+    }
+  }
+  .line_content { 
+    white-space:pre; 
+    height:14px;
+    margin:0px;
+    padding:0px;
+    border:none;
+    &.new { 
+      background: #CFD;
+    }
+    &.old { 
+      background: #FDD;
+    }
+    &.matched { 
+      color:#ccc;
+      background:#fafafa;
+    }
+  }
+}
+
+/** COMMIT BLOCK **/
+.commit-title{display: block;}
+.commit-title{margin-bottom: 10px}
+.commit-author, .commit-committer{display: block;color: #999; font-weight: normal; font-style: italic;}
+.commit-author strong, .commit-committer strong{font-weight: bold; font-style: normal;}
+
+/** bordered list **/
+ul.bordered-list { 
+  margin:5px 0px;
+  padding:0px;
+  li { 
+    padding: 5px 0;
+    border-bottom: 1px solid #EEE;
+    overflow: hidden;
+    display: block;
+    margin:0px;
+  }
+}
+
+ul.bordered-list li:last-child { border:none } 
+
+.line_holder { 
+  &:hover { 
+    td { 
+      background: #FFFFCF !important;
+    }
+  }
+}
+
+.project-refs-form.commit-refs-form .chzn-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-right: 10px;
+}
+
+li.commit { 
+  .avatar { 
+    width:24px;
+    top:-3px;
+    margin-right:10px;
+    margin-left:10px;
+  }
+
+  code { 
+    padding:4px;
+  }
+}
+p.time {
+  color: #999;
+  font-size: 90%;
+  margin: 30px 3px 3px 2px;
 }

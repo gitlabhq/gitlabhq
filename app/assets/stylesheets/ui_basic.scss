@@ -1,4 +1,27 @@
+/**
+ * This file represent some UI that can be changed 
+ * during web app restyle or theme select. 
+ * 
+ * Next items should be placed there
+ * - link colors
+ * - header styles
+ * - main menu styles
+ *
+ */
 .ui_basic { 
+  /*
+   * Common styles
+   *
+   */
+  a {
+    color: $link_color;
+    &:hover { 
+      text-decoration:none; 
+      color: $style_color;
+    }
+  }
+
+
   /*
    *  Application Header
    *
@@ -198,6 +221,70 @@
   }
   /*
    *  End of Application Header
+   *
+   */
+
+  /*
+   *  Main Menu of Application
+   *
+   */
+  nav.main_menu { 
+    overflow:hidden;
+    border-radius: 4px;
+    margin: auto;
+    margin:30px $app_padding;
+    background:#eee;
+    border:1px solid #ccc;
+    height:38px;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    @include shade;
+    .count { 
+      color:#aaa;
+      margin-left:3px;  
+    }
+    .label { 
+      background:$hover;
+      text-shadow:none;
+      color:$style_color;
+    }
+    a { 
+      font-weight:bold;
+      &:first-child{ 
+        -webkit-border-top-left-radius: 4px;
+        -webkit-border-bottom-left-radius: 4px;
+        -moz-border-radius-topleft: 4px;
+        -moz-border-radius-bottomleft: 4px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      padding: 10px 25px;
+      display: inline-block;
+      color: $style_color;
+      border-right: 1px solid #d5d5d5;
+      position: relative;
+      box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
+      margin: 0;
+      float:left;
+      text-shadow:0 1px 1px white;
+      &.home { 
+        background: url(home_icon.PNG) no-repeat center center;
+        text-indent:-9999px;
+        min-width:40px;
+        img { 
+          position:relative;
+          top:4px;
+        }
+      }
+      &.current { 
+        background-color:#DDD;
+      }
+    }
+  }
+  /*
+   *  End of Main Menu
    *
    */
 }

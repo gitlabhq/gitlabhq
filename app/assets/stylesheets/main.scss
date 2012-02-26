@@ -58,19 +58,56 @@ $hover: #FDF5D9;
   border-radius: $radius;
 }
 
+/**
+ * This file represent some UI that can be changed 
+ * during web app restyle or theme select. 
+ * 
+ * Next items should be placed there
+ * - link colors
+ * - header styles
+ * - main menu styles
+ *
+ */
 @import "ui_basic.scss";
+
+/**
+ * Most of application styles placed here.
+ * This file represent common UI that should not be changed between themes
+ * or project restyling like form width or user avatar class or commit title
+ * 
+ * TODO: clean it
+ */
 @import "common.scss";
 
-@import "projects.css.scss";
-@import "commits.css.scss";
+/**
+ * This scss file redefine chozen selectbox styles for 
+ * project Branch/Tag select element
+ */
+@import "ref_select.scss";
+
+/**
+ * Code (files list) styles. Browsing project files there 
+ */
 @import "tree.scss";
-@import "notes.css.scss";
+
+/**
+ * This file represent notes(comments) styles 
+ */
+@import "notes.scss";
+
+/**
+ * Devise styles 
+ */
 @import "login.scss";
 
-/** CODE HIGHTLIGHT **/
-@import "highlight.css.scss";
-@import "highlight.black.css.scss";
+/**
+ * CODE HIGHTLIGHT BASE
+ *
+ */
+@import "highlight.scss";
 
-@import "wiki.scss";
-
-
+/**
+ * CODE HIGHTLIGHT DARK schema
+ *
+ */
+@import "highlight.black.scss";

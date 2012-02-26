@@ -1,3 +1,16 @@
+#tree-content-holder {
+  float:left;
+  width:100%;
+}
+#tree-readme-holder {
+  float:left;
+  width:100%;
+  .readme {
+    @include round-borders-all(4px);
+    padding:4px 15px;
+    background: #F7F7F7;
+  }
+}
 #tree-breadcrumbs { 
   div {
     margin:0;

@@ -1,0 +1,49 @@
+/** Branch/tag selector **/
+.project-refs-form {
+  margin:0;
+  span {
+    background:none !important;
+    position:static !important;
+    width:auto !important;
+    height:auto !important;
+  }
+}
+.project-refs-select {
+  width:120px;
+}
+
+.project-refs-form .chzn-container { 
+  position:relative;
+  top: -5px;
+  left: -11px;
+
+  .chzn-drop { 
+    margin:7px 0;
+    border: 1px solid #CCC;
+    min-width: 300px;
+
+    .chzn-results { 
+      max-height:300px;
+    }
+
+    .chzn-search input {
+      min-width:200px;
+    }
+  }
+
+  .chzn-single { 
+    background:#ddd;
+    //border:none;
+    //box-shadow:none;
+
+    div { 
+      background:transparent;
+      border-left:none;
+    }
+
+    span { 
+      font-weight: normal;
+    }
+  }
+}
+
