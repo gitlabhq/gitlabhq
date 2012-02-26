@@ -21,7 +21,7 @@
           = label_tag :notify_author do 
             = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
             %span Commit author
-    .span4.right
+    .span4
       %h5 Attachment:
       .clearfix
         = f.label :attachment, "Any file, < 10 MB"
