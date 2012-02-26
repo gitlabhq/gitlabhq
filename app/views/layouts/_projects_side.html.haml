@@ -1,7 +1,7 @@
 %aside.projects
   - if current_user.can_create_project?
     .widget
-      You can create at least
+      You can create up to
       = current_user.projects_limit
       projects. Click on link below to add a new one
       .link_holder

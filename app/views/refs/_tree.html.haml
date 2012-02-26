@@ -13,7 +13,6 @@
     %li= link
 .clear
 %div.tree_progress
-  = image_tag "ajax-loader.gif"
 #tree-content-holder
   - if tree.is_blob?
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
