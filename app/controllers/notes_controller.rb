@@ -46,7 +46,7 @@ class NotesController < ApplicationController
              when "snippet"
                then  project.snippets.find(params[:target_id]).notes
              when "wall"
-               then project.common_notes.order("created_at DESC").fresh.limit(10)
+               then project.common_notes.order("created_at DESC").fresh.limit(50)
              when "issue"
                then project.issues.find(params[:target_id]).notes.inc_author.order("created_at DESC").limit(20)
              when "merge_request"
