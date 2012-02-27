@@ -98,6 +98,8 @@ getContent:
       type: "GET",
       url: this.notes_path,
       data: "?" + this.target_params,
+      complete: function(){ $('.status').removeClass("loading")},
+      beforeSend: function() { $('.status').addClass("loading") },
       dataType: "script"});
   },
 
