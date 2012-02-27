@@ -1,13 +1,8 @@
 %ul.breadcrumb
   %li
-    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form left", :remote => true do
-      = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
-      = hidden_field_tag :destination, "tree"
-      = hidden_field_tag :path, params[:path]
-
-  %li
+    %span.arrow
     = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
-      = @project.code
+      = @project.name
   - tree.breadcrumbs(6) do |link|
     \/
     %li= link

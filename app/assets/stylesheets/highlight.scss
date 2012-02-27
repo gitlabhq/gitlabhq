@@ -10,7 +10,8 @@ table.highlighttable
   margin:0px;
   padding:0px;
   font-size:12px;
-  table-layout:fixed
+  table-layout:fixed;
+  background: #F7F7F7;
 }
 
 td.code,
@@ -25,6 +26,8 @@ td.linenos{
   background:none;
   padding:10px 0px 0px 10px;
   margin-left:0px;
+  border-left: 1px solid #DEE2E3;
+  background: white;
 }
 
 .linenodiv pre,

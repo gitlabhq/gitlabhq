@@ -1,6 +1,6 @@
 %ul.tabs
   %li
-    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form commit-refs-form" do
+    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form" do
       = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
       = hidden_field_tag :destination, "commits"
 
