@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 class Key < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
@@ -8,16 +10,29 @@ class Key < ActiveRecord::Base
 
   validates :key,
             :presence => true,
-            :uniqueness => true,
             :length   => { :within => 0..5000 }
 
   before_save :set_identifier
+  before_validation :strip_white_space
   after_save :update_repository
   after_destroy :repository_delete_key
+  validate :unique_key
+
+  def strip_white_space
+    self.key = self.key.strip
+  end
+
+  def unique_key
+    query = Key.where('key = ?', key)
+    query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
+    if (query.count > 0)
+      errors.add :key, 'already exist.'
+    end
+  end
 
   def set_identifier
     if is_deploy_key
-      self.identifier = "deploy_#{project.code}_#{Time.now.to_i}"
+      self.identifier = "deploy_" + Digest::MD5.hexdigest(key)
     else
       self.identifier = "#{user.identifier}_#{Time.now.to_i}"
     end
@@ -32,7 +47,10 @@ class Key < ActiveRecord::Base
 
   def repository_delete_key
     Gitlabhq::GitHost.system.new.configure do |c|
-      c.delete_key(identifier)
+      #delete key file is there is no identically deploy keys
+      if !is_deploy_key || Key.where(:identifier => identifier).count() == 0
+        c.delete_key(identifier)
+      end
       c.update_projects(projects)
     end
   end
