@@ -90,6 +90,16 @@ class Project < ActiveRecord::Base
     [GIT_HOST['host'], code].join("/")
   end
 
+  def observe_push(oldrev, newrev, ref)
+    data = web_hook_data(oldrev, newrev, ref)
+
+    Event.create(
+      :project => self,
+      :action => Event::Pushed,
+      :data => data
+    )
+  end
+
   def execute_web_hooks(oldrev, newrev, ref)
     ref_parts = ref.split('/')
 
@@ -97,6 +107,7 @@ class Project < ActiveRecord::Base
     return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
 
     data = web_hook_data(oldrev, newrev, ref)
+
     web_hooks.each { |web_hook| web_hook.execute(data) }
   end
 
