@@ -8,8 +8,9 @@
           %h1 
             GITLAB
 
-        = link_to admin_projects_path, :class => "admin_link", :title => "Admin area" do 
-          = image_tag "admin.PNG", :width => 16
+        - if current_user.is_admin?
+          = link_to admin_projects_path, :class => "admin_link", :title => "Admin area" do 
+            = image_tag "admin.PNG", :width => 16
 
       %h1.project_name= title
       .search= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
