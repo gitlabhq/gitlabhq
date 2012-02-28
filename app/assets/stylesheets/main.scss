@@ -71,6 +71,11 @@ $hover: #FDF5D9;
 @import "ui_basic.scss";
 
 /**
+ * UI mars theme
+ */
+@import "ui_mars.scss";
+
+/**
  * Most of application styles placed here.
  * This file represent common UI that should not be changed between themes
  * or project restyling like form width or user avatar class or commit title
