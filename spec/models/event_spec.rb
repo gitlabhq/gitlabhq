@@ -2,18 +2,31 @@
 #
 # Table name: events
 #
-#  id         :integer         not null, primary key
-#  data_type  :string(255)
-#  data_id    :string(255)
-#  title      :string(255)
-#  data       :text
-#  project_id :integer
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
+#  id          :integer         not null, primary key
+#  target_type :string(255)
+#  target_id   :integer
+#  title       :string(255)
+#  data        :text
+#  project_id  :integer
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
+#  action      :integer
 #
 
 require 'spec_helper'
 
 describe Event do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "Associations" do
+    it { should belong_to(:project) }
+  end
+
+  describe "Creation" do
+    before do 
+      @event = Factory :event
+    end
+
+    it "should create a valid event" do 
+      @event.should be_valid
+    end
+  end
 end

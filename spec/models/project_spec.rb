@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Project do
   describe "Associations" do
+    it { should have_many(:events) }
     it { should have_many(:users) }
     it { should have_many(:users_projects) }
     it { should have_many(:issues) }
