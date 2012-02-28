@@ -3,6 +3,7 @@ require "grit"
 class Project < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
 
+  has_many :events, :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
   has_many :issues, :dependent => :destroy, :order => "position"
   has_many :users_projects, :dependent => :destroy
@@ -89,6 +90,16 @@ class Project < ActiveRecord::Base
     [GIT_HOST['host'], code].join("/")
   end
 
+  def observe_push(oldrev, newrev, ref)
+    data = web_hook_data(oldrev, newrev, ref)
+
+    Event.create(
+      :project => self,
+      :action => Event::Pushed,
+      :data => data
+    )
+  end
+
   def execute_web_hooks(oldrev, newrev, ref)
     ref_parts = ref.split('/')
 
@@ -96,6 +107,7 @@ class Project < ActiveRecord::Base
     return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
 
     data = web_hook_data(oldrev, newrev, ref)
+
     web_hooks.each { |web_hook| web_hook.execute(data) }
   end
 
@@ -364,5 +376,6 @@ end
 #  issues_enabled         :boolean         default(TRUE), not null
 #  wall_enabled           :boolean         default(TRUE), not null
 #  merge_requests_enabled :boolean         default(TRUE), not null
+#  wiki_enabled           :boolean         default(TRUE), not null
 #
 
