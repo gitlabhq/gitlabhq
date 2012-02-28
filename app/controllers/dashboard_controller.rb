@@ -3,7 +3,14 @@ class DashboardController < ApplicationController
 
   def index
     @projects = current_user.projects.all
+
     @active_projects = @projects.select(&:repo_exists?).select(&:last_activity_date_cached).sort_by(&:last_activity_date_cached).reverse
+
+    @merge_requests = MergeRequest.where("author_id = :id or assignee_id = :id", :id => current_user.id).opened.order("created_at DESC").limit(10)
+
+    @user   = current_user
+    @issues = current_user.assigned_issues.opened.order("created_at DESC").limit(10)
+    @issues = @issues.includes(:author, :project)
   end
 
   # Get authored or assigned open merge requests

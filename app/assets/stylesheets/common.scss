@@ -40,6 +40,7 @@ a {
 .cred { color:#D12F19; }
 .cgreen { color:#44aa22; }
 .cblack { color:#111; }
+.cwhite { color:#fff !important }
 
 /** COMMON STYLES **/
 .left {
@@ -74,6 +75,10 @@ a {
 }
 .no-borders { 
   border:none;
+}
+table.no-borders { 
+  border:none;
+  tr, td { border:none }
 }
 .no-padding { 
   padding:0 !important;
@@ -433,7 +438,7 @@ input.git_clone_url {
 }
 
 .project_list_url { 
-  width:270px;
+  width:250px;
   background:#fff !important;
 }
 
@@ -441,7 +446,7 @@ input.git_clone_url {
   @include shade;
   @include round-borders-all(4px);
   margin-bottom:20px;
-  width:338px;
+  width:298px;
   float:left;
   margin-left:20px;
   border: 1px solid #DDD;
@@ -599,4 +604,25 @@ p.time {
   color: #999;
   font-size: 90%;
   margin: 30px 3px 3px 2px;
+}
+
+
+.dashboard_category { 
+  margin-bottom:30px;
+
+  .dashboard_block { 
+    width:700px;
+    margin:auto;
+
+    .wll { 
+      border:none;
+      &:hover { 
+        background:none;
+      }
+
+      h4 {
+        color:#666;
+      }
+    }
+  }
 }

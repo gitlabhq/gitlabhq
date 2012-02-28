@@ -1,6 +1,10 @@
 %h3
   Projects
   %small= "( #{current_user.projects.count} )"
+  - if current_user.can_create_project?
+    %span.right
+      = link_to new_project_path, :class => "btn small" do 
+        New Project
 %hr
 - unless @projects.empty?
   %div.content_list= render "tile"

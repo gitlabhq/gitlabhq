@@ -7,6 +7,4 @@
     .container
       = render :partial => "layouts/app_menu"
       .content
-        .row
-          .span12= yield
-          .sidebar= render "layouts/projects_side"
+        = yield

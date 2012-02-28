@@ -57,11 +57,30 @@
           text-shadow: 0 1px 1px #FFF;
         }
 
-        img { 
-          float: left;
-          position: relative;
-          top: -9px;
-          width:46px;
+        &.home {
+          img { 
+            float: left;
+            position: relative;
+            top: -9px;
+            width:46px;
+
+          }
+        }
+        &.admin_link { 
+          width:16px;
+          height:16px;
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          margin: 0px;
+          background: #eee;
+          margin-left:20px;
+          &:hover { 
+            background:#f7f7f7;
+          }
+          img { 
+            width:16px;
+          }
         }
       }
     }
