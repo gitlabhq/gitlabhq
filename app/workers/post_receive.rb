@@ -5,6 +5,9 @@ class PostReceive
     project = Project.find_by_path(reponame)
     return false if project.nil?
 
+    # Ignore push from non-gitlab users
+    return false unless Key.find_by_identifier(author_key_id)
+
     project.observe_push(oldrev, newrev, ref, author_key_id)
     project.execute_web_hooks(oldrev, newrev, ref, author_key_id)
   end

@@ -117,7 +117,7 @@ class Project < ActiveRecord::Base
       before: oldrev,
       after: newrev,
       ref: ref,
-      user_id: key.user_id,
+      user_id: key.user.id,
       user_name: key.user_name,
       repository: {
         name: name,
