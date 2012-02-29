@@ -1,7 +1,7 @@
 #no_ssh_key_defined {
   float:left;
   width:100%;
-  margin: 20px 0 -20px;
+  margin: 20px 0 20px;
   .wrapper {
     overflow:hidden;
     padding:10px;
@@ -14,6 +14,12 @@
   dt {
     color:#c00;
     font-size:18px;
+    margin:10px 0;
+    cursor:pointer;
+    &.active {color:#000;}
+  }
+  dd {
+    margin:0;
   }
   ul {
     margin:0;
@@ -27,7 +33,7 @@
     padding:5px;
     max-height:285px;
     overflow:auto;
-    font-size:.8em;
+    font-size:.88em;
     li {
       margin:0; list-style:none outside;
     }
