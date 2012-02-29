@@ -12,8 +12,8 @@
           = time_ago_in_words(event.created_at)
           ago.
         - if event.commits.count > 1
-          = link_to compare_project_commits_path(event.project, :from => event.commits.last, :to => event.commits.first) do 
-            Compare #{event.commits.last.id[0..8]}...#{event.commits.first.id[0..8]}
+          = link_to compare_project_commits_path(event.project, :from => event.commits.first.prev_commit_id, :to => event.commits.last.id) do 
+            Compare #{event.commits.first.commit.id[0..8]}...#{event.commits.last.id[0..8]}
         - @project = event.project  
         %ul.unstyled
           = render event.commits
