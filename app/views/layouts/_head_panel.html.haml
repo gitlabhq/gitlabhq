@@ -81,6 +81,7 @@
 
     $('.show_help').on('click', function(){
       $('#no_ssh_key_defined').slideToggle(100);
+      $('#no_ssh_key_defined dt:first').click();
       return false;
     });
 
@@ -89,6 +90,5 @@
       t.addClass('active').siblings('dt').removeClass('active');
       t.next('dd').slideDown(150).siblings('dd').slideUp(150);
     });
-    $('#no_ssh_key_defined dt:first').click();
   });
 
