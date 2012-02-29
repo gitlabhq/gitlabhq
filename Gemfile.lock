@@ -88,6 +88,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.2.0)
+    colored (1.2)
     crack (0.3.1)
     daemons (1.1.8)
     database_cleaner (0.7.1)
@@ -296,6 +297,7 @@ DEPENDENCIES
   carrierwave
   charlock_holmes
   coffee-rails (= 3.2.1)
+  colored
   database_cleaner
   devise
   drapper

@@ -16,7 +16,7 @@ class UsersProject < ActiveRecord::Base
   validates_presence_of :user_id
   validates_presence_of :project_id
 
-  delegate :name, :email, :to => :user, :prefix => true
+  delegate :id, :name, :email, :to => :user, :prefix => true
 
   def self.bulk_import(project, user_ids, project_access, repo_access)
     UsersProject.transaction do

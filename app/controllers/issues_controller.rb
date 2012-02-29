@@ -69,7 +69,10 @@ class IssuesController < ApplicationController
     @issue.author = current_user
     @issue.save
 
-    respond_with(@issue)
+    respond_to do |format|
+      format.html { redirect_to project_issue_path(@project, @issue) }
+      format.js
+    end
   end
 
   def update

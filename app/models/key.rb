@@ -14,6 +14,7 @@ class Key < ActiveRecord::Base
   before_save :set_identifier
   after_save :update_repository
   after_destroy :repository_delete_key
+  delegate :id, :name, :email, :to => :user, :prefix => true
 
   def set_identifier
     if is_deploy_key

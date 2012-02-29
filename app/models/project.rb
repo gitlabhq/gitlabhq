@@ -90,8 +90,8 @@ class Project < ActiveRecord::Base
     [GIT_HOST['host'], code].join("/")
   end
 
-  def observe_push(oldrev, newrev, ref)
-    data = web_hook_data(oldrev, newrev, ref)
+  def observe_push(oldrev, newrev, ref, author_key_id)
+    data = web_hook_data(oldrev, newrev, ref, author_key_id)
 
     Event.create(
       :project => self,
@@ -100,22 +100,25 @@ class Project < ActiveRecord::Base
     )
   end
 
-  def execute_web_hooks(oldrev, newrev, ref)
+  def execute_web_hooks(oldrev, newrev, ref, author_key_id)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
     return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
 
-    data = web_hook_data(oldrev, newrev, ref)
+    data = web_hook_data(oldrev, newrev, ref, author_key_id)
 
     web_hooks.each { |web_hook| web_hook.execute(data) }
   end
 
-  def web_hook_data(oldrev, newrev, ref)
+  def web_hook_data(oldrev, newrev, ref, author_key_id)
+    key = Key.find_by_identifier(author_key_id)
     data = {
       before: oldrev,
       after: newrev,
       ref: ref,
+      user_id: key.user_id,
+      user_name: key.user_name,
       repository: {
         name: name,
         url: web_url,

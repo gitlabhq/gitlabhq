@@ -11,6 +11,8 @@ class Event < ActiveRecord::Base
 
   serialize :data
 
+  scope :recent, order("created_at DESC")
+
   def self.determine_action(record)
     if [Issue, MergeRequest].include? record.class
       Event::Created
@@ -18,6 +20,38 @@ class Event < ActiveRecord::Base
       Event::Commented
     end
   end
+
+  def push?
+    action == self.class::Pushed
+  end
+
+  def new_branch?
+    data[:before] =~ /^00000/
+  end
+
+  def commit_from
+    data[:before]
+  end
+
+  def commit_to
+    data[:after]
+  end
+
+  def branch_name
+    @branch_name ||= data[:ref].gsub("refs/heads/", "")
+  end
+
+  def pusher
+    User.find_by_id(data[:user_id])
+  end
+  
+  def commits
+    @commits ||= data[:commits].map do |commit|
+      project.commit(commit[:id])
+    end
+  end
+
+  delegate :id, :name, :email, :to => :pusher, :prefix => true, :allow_nil => true
 end
 # == Schema Information
 #

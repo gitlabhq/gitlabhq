@@ -30,6 +30,7 @@ gem "charlock_holmes"
 gem "foreman"
 gem "omniauth-ldap"
 gem 'bootstrap-sass', "1.4.4"
+gem "colored"
 
 group :assets do
   gem "sass-rails",   "3.2.3"

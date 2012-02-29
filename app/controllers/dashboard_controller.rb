@@ -11,6 +11,8 @@ class DashboardController < ApplicationController
     @user   = current_user
     @issues = current_user.assigned_issues.opened.order("created_at DESC").limit(10)
     @issues = @issues.includes(:author, :project)
+
+    @events = Event.where(:project_id => @projects.map(&:id)).recent.limit(20)
   end
 
   # Get authored or assigned open merge requests

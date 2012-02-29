@@ -54,3 +54,12 @@
     %hr
     .row
       .dashboard_block= render "dashboard/issues_feed"
+
+- unless @events.blank?
+  %div.dashboard_category
+    %h3
+      Activities
+
+    %hr
+    .row
+      .dashboard_block= render "dashboard/events_feed"
