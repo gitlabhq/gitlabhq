@@ -1,17 +1,8 @@
-- @active_projects.first(3).each do |project|
-  = link_to project do 
-    %h4= project.name
-  - project.updates(3).each do |update|
-    %a.project-update{:href => dashboard_feed_path(project, update)}
-      = image_tag gravatar_icon(update.author_email), :class => "avatar", :width => 32
-      %div
-        = dashboard_feed_title(update)
-      %span.update-author
-        %strong= update.author_name
-        authored
-        = time_ago_in_words(update.created_at)
-        ago
-      .right
-        - klass = update.class.to_s.split("::").last.downcase
-        %span.tag{ :class => klass }= klass
-
+- @active_projects.first(5).each do |project|
+  .wll
+    = link_to project do 
+      %h4
+        = project.name
+        %small
+          last activity at 
+          = project.last_activity_date_cached.stamp("Aug 25, 2011")

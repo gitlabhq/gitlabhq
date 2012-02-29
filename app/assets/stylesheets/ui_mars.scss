@@ -8,7 +8,8 @@
  * - main menu styles
  *
  */
-.ui_basic { 
+.ui_mars {
+
   /*
    * Common styles
    *
@@ -32,37 +33,42 @@
     margin:0;
     top:1px;
     left:0;
-    background: #F1F1F1; /* for non-css3 browsers */
-    border-bottom: 1px solid #ccc; 
-    box-shadow: 0 -1px 0 white inset;
-    -moz-box-shadow: 0 -1px 0 white inset;
-    -webkit-box-shadow: 0 -1px 0 white inset;
+
+
+    background: #474D57 url('bg-header.png') repeat-x bottom;
+
     z-index:10;
     height:60px;
 
+    .search-input { 
+      background:#474D57;
+      border-color:#888;
+    }
     .app_logo {
       width:230px;
       float:left;
+          position:relative;
+          top:-4px;
 
       a { 
         float:left;
 
         h1 { 
-          float:left;
-          margin-left:5px;
-          font-size:20px;
-          line-height:34px;
-          font-weight:bold;
-          color:#aaa;
-          text-shadow: 0 1px 1px #FFF;
+
+          background: url('images.png') no-repeat -3px -7px;
+          width: 65px;
+          height: 26px;
+          margin: 5px 0;
+          padding: 0;
+          display: block;
+          float: left;
+          text-indent: -1000em;
+
         }
 
         &.home {
           img { 
-            float: left;
-            position: relative;
-            top: -9px;
-            width:46px;
+            display:none
 
           }
         }
@@ -70,11 +76,12 @@
           width:16px;
           height:16px;
           padding: 5px;
-          border: 1px solid #ccc;
+          border: 1px solid #888;
           border-radius: 4px;
           margin: 0px;
-          background: #eee;
+          background:#474D57 ;
           margin-left:20px;
+          margin-top:4px;
           &:hover { 
             background:#f7f7f7;
           }
@@ -104,8 +111,8 @@
       font-size:20px;
       line-height:34px;
       font-weight:bold;
-      color:$style_color;
-      text-shadow: 0 1px 1px #FFF;
+      color:#fff;
+      text-shadow: 0 1px 1px #111;
     }
 
     .git_url_wrapper {

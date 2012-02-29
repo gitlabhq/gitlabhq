@@ -232,9 +232,9 @@ GEM
       ffi (~> 1.0.9)
       multi_json (~> 1.0.4)
       rubyzip
-    shoulda (3.0.0.beta2)
-      shoulda-context (~> 1.0.0.beta1)
-      shoulda-matchers (~> 1.0.0.beta1)
+    shoulda (3.0.0)
+      shoulda-context (~> 1.0.0)
+      shoulda-matchers (~> 1.0.0)
     shoulda-context (1.0.0)
     shoulda-matchers (1.0.0)
     simplecov (0.5.4)
@@ -322,7 +322,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (= 3.2.3)
   seed-fu
-  shoulda (~> 3.0.0.beta2)
+  shoulda (= 3.0.0)
   simplecov
   six
   sqlite3
