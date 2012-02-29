@@ -1,0 +1,36 @@
+#no_ssh_key_defined {
+  float:left;
+  width:100%;
+  margin: 20px 0 -20px;
+  .wrapper {
+    overflow:hidden;
+    padding:10px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+    border:2px solid #c00;
+    width: 936px;
+    margin: 0 auto;
+  }
+  dt {
+    color:#c00;
+    font-size:18px;
+  }
+  ul {
+    margin:0;
+  }
+  .helper {
+    float:right;
+    margin:0 0 0 20px;
+    width:230px;
+    border:1px solid #ddd;
+    background:#fafafa;
+    padding:5px;
+    max-height:285px;
+    overflow:auto;
+    font-size:.8em;
+    li {
+      margin:0; list-style:none outside;
+    }
+  }
+}
+

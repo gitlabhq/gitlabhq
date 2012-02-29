@@ -20,9 +20,49 @@
         = link_to profile_path, :class => "pic" do
           = image_tag gravatar_icon(current_user.email)
         .account-links
-          = link_to profile_path, :class => "username" do
-            My profile
+          = link_to 'My profile', profile_path, :class => "username"
+          = link_to 'Help', '#', :class => "show_help"
           = link_to 'Logout', destroy_user_session_path, :class => "logout", :method => :delete
+
+- no_ssh_style = 'display:none'
+-if current_user.keys.all.empty?
+  - no_ssh_style = 'display:block'
+
+%div#no_ssh_key_defined{ :style => no_ssh_style }
+  %div.wrapper
+    %dl.helper
+      %dt Useful resources
+      %dd
+        %ul
+          %li= link_to( 'Git', 'http://git-scm.com/' )
+          %li= link_to( 'Best Clients for OSX', 'http://stackoverflow.com/questions/455698/best-visual-client-for-git-on-mac-os-x' );
+          %li= link_to( 'OSX Gir clients roundup', 'http://shiningthrough.co.uk/Mac-OS-X-Git-Clients-Roundup' );
+          %li= link_to( 'What is the Best Git GUI (Client) for Windows?', 'http://kylecordes.com/2010/git-gui-client-windows' );
+          %li= link_to( 'Git Extensions', 'http://code.google.com/p/gitextensions/' );
+
+      %dt Articles & Tutorials
+      %dd
+        %ul
+          %li= link_to( 'Git Immersion', 'http://library.edgecase.com/git_immersion/' );
+          %li= link_to( 'Think Like a Git', 'http://think-like-a-git.net/epic.html' );
+          %li= link_to( 'Git Is Simpler Than You Think', 'http://nfarina.com/post/9868516270/git-is-simpler' );
+
+          %li= link_to( 'Linus Torvalds on Git', 'http://www.youtube.com/watch?v=4XpnKHJAok8' );
+          %li= link_to( 'Git VS SVN: It’s time to stop using Subversion', 'http://altdevblogaday.com/2011/03/09/its-time-to-stop-using-subversion/' );
+          %li= link_to( 'Get Started with Git', 'http://www.alistapart.com/articles/get-started-with-git/' );
+
+    %h2 ATTENTION!
+    %p It seems that your account is not setup correctly
+    %p Before you adding any key, make sure you don't have anything related to <strong>#{GIT_HOST["host"]}</strong> on <code>~/.ssh/known_hosts</code> file. <br/> If you used Git before (and you already have SSH keys), just skip to the last step (adding ssh key)
+    %ol
+      %li Install Git <a href="http://git-scm.com/">http://git-scm.com/</a> (on windows use these settings: <a href="http://screencast.com/t/zHK3RPKba">1</a> & <a href="http://screencast.com/t/bLdX4GnpQLi">2</a>);
+      %li edit <code>~/.gitconfig</code> file and use <a href="https://gist.github.com/5af9e8c2f3197e993882">these configs</a> (update name & email);
+      %li Generate SSH keys: <a href="https://gist.github.com/5af9e8c2f3197e993882">http://help.github.com/key-setup-redirect/</a>;
+      %li Add the content of <code>~/.ssh/id_rsa.pub</code> to <strong><a href="#{keys_path}">this page</a></strong>.
+    %p
+      %small
+        <code>~/</code> is your home directory. On Linux/OSX you get there by typing <code>cd ~/</code> into terminal or console <br/>
+        on Windows that is <code>c:\users\YOUR_USER_NAME</code>
 
 :javascript
   $(function(){
@@ -37,6 +77,10 @@
         case 115:  focusSearch();
         e.preventDefault();
       }
+    });
+    $('.show_help').on('click', function(){
+      $('#no_ssh_key_defined').slideToggle(100);
+      return false;
     });
   });
 
