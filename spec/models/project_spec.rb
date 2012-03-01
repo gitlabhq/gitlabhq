@@ -103,8 +103,8 @@ describe Project do
         :author => Factory(:user)
     end
 
-    it { project.last_activity.should == @note }
-    it { project.last_activity_date.to_s.should == @note.created_at.to_s }
+    it { project.last_activity.should == Event.last }
+    it { project.last_activity_date.to_s.should == Event.last.created_at.to_s }
   end
 
   describe "fresh commits" do
