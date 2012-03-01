@@ -1,6 +1,7 @@
 %div.dashboard_category
   %h3
-    Projects
+    %span.ico.projects
+    = link_to "Projects" , "#projects", :id => "projects"
     %small
       ( most recent )
 
@@ -26,7 +27,8 @@
 - unless @merge_requests.blank?
   %div.dashboard_category
     %h3
-      Merge Requests
+      = link_to "Merge Requests" , "#merge_requests", :id => "merge_requests"
+      
       %small ( authored or assigned to you )
     %strong.right
       = link_to dashboard_merge_requests_path do 
@@ -38,7 +40,7 @@
 - unless @issues.blank?
   %div.dashboard_category
     %h3
-      Issues
+      = link_to "Issues" , "#issues", :id => "issues"
       %small ( assigned to you )
     %strong.right
       = link_to dashboard_merge_requests_path do 
@@ -46,3 +48,13 @@
     %hr
     .row
       .dashboard_block= render "dashboard/issues_feed"
+
+- unless @events.blank?
+  %div.dashboard_category
+    %h3
+      %span.ico.activities
+      = link_to "Activities" , "#activities", :id => "activities"
+
+    %hr
+    .row
+      .dashboard_block= render "dashboard/events_feed"

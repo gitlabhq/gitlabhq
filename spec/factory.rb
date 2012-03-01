@@ -10,8 +10,8 @@ class Factory
       new(name, opts).tap(&:save!)
     end
 
-    def new(name, opts)
-      factory = @factories[name]
+    def new(name, opts = {})
+      factory= @factories[name]
       factory[0].new.tap do |obj|
         factory[1].call(obj)
       end.tap do |obj|

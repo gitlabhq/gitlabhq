@@ -11,7 +11,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120219193300) do
+ActiveRecord::Schema.define(:version => 20120301185805) do
+
+  create_table "events", :force => true do |t|
+    t.string   "target_type"
+    t.integer  "target_id"
+    t.string   "title"
+    t.text     "data"
+    t.integer  "project_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "action"
+  end
+
+  create_table "features", :force => true do |t|
+    t.string   "name"
+    t.string   "branch_name"
+    t.integer  "assignee_id"
+    t.integer  "author_id"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "version"
+    t.integer  "status",      :default => 0, :null => false
+  end
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -139,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20120219193300) do
     t.string   "twitter",                               :default => "",    :null => false
     t.string   "authentication_token"
     t.boolean  "dark_scheme",                           :default => false, :null => false
+    t.integer  "theme_id",                              :default => 1,     :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

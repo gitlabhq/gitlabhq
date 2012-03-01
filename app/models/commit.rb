@@ -56,4 +56,8 @@ class Commit
   def prev_commit
     parents.first
   end
+
+  def prev_commit_id
+    prev_commit.id
+  end
 end

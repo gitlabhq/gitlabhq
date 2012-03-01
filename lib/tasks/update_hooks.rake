@@ -1,0 +1,15 @@
+desc "Rewrite hooks for repos"
+task :update_hooks => :environment  do
+  puts "Starting Projects"
+  Project.find_each(:batch_size => 100) do |project|
+    begin 
+      if project.commit
+        project.repository.write_hooks 
+        print ".".green
+      end
+    rescue Exception => e
+      print e.message.red
+    end
+  end
+  puts "\nDone with projects"
+end

@@ -3,6 +3,7 @@ require "grit"
 class Project < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
 
+  has_many :events, :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
   has_many :issues, :dependent => :destroy, :order => "position"
   has_many :users_projects, :dependent => :destroy
@@ -89,21 +90,35 @@ class Project < ActiveRecord::Base
     [GIT_HOST['host'], code].join("/")
   end
 
-  def execute_web_hooks(oldrev, newrev, ref)
+  def observe_push(oldrev, newrev, ref, author_key_id)
+    data = web_hook_data(oldrev, newrev, ref, author_key_id)
+
+    Event.create(
+      :project => self,
+      :action => Event::Pushed,
+      :data => data
+    )
+  end
+
+  def execute_web_hooks(oldrev, newrev, ref, author_key_id)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
     return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
 
-    data = web_hook_data(oldrev, newrev, ref)
+    data = web_hook_data(oldrev, newrev, ref, author_key_id)
+
     web_hooks.each { |web_hook| web_hook.execute(data) }
   end
 
-  def web_hook_data(oldrev, newrev, ref)
+  def web_hook_data(oldrev, newrev, ref, author_key_id)
+    key = Key.find_by_identifier(author_key_id)
     data = {
       before: oldrev,
       after: newrev,
       ref: ref,
+      user_id: key.user.id,
+      user_name: key.user_name,
       repository: {
         name: name,
         url: web_url,
@@ -262,31 +277,21 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity
-    updates(1).first
+    events.last
   rescue
     nil
   end
 
   def last_activity_date
-    last_activity.try(:created_at)
+    if events.last
+      events.last.created_at
+    else
+      updated_at
+    end
   end
 
   def last_activity_date_cached(expire = 1.hour)
-    activity_date_key = "project_#{id}_activity_date"
-
-    cached_activities = Rails.cache.read(activity_date_key)
-    if cached_activities
-      activity_date = if cached_activities == "Never"
-                        nil
-                      else
-                        cached_activities
-                      end
-    else
-      activity_date = last_activity_date
-      Rails.cache.write(activity_date_key, activity_date || "Never", :expires_in => expire)
-    end
-
-    activity_date
+    last_activity_date
   end
 
   # Get project updates from cache
@@ -364,5 +369,6 @@ end
 #  issues_enabled         :boolean         default(TRUE), not null
 #  wall_enabled           :boolean         default(TRUE), not null
 #  merge_requests_enabled :boolean         default(TRUE), not null
+#  wiki_enabled           :boolean         default(TRUE), not null
 #
 

@@ -3,7 +3,8 @@ module ApplicationHelper
 
   def gravatar_icon(user_email, size = 40)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
-    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=#{size}&d=identicon"
+    user_email.strip!
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
   end
 
   def fixed_mode?
@@ -111,5 +112,13 @@ module ApplicationHelper
 
   def layout 
     controller.send :_layout
+  end
+
+  def app_theme
+    if current_user && current_user.theme_id == 1
+      "ui_basic"
+    else
+      "ui_mars"
+    end
   end
 end

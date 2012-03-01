@@ -1,20 +1,34 @@
-%h3 Design
-%hr
-= form_for @user, :url => profile_update_path, :method => :put do |f|
+= form_for @user, :url => profile_update_path, :remote => true, :method => :put do |f|
+  %h3 Application theme
+  %hr
+  .clearfix
+    = label_tag do 
+      = f.radio_button :theme_id, 1
+      Default
+
+    = label_tag do 
+      = f.radio_button :theme_id, 2
+      Classic
+  %br
+  %h3 Code review
+  %hr
   .row
     %label.span4{:for => "user_dark_scheme_false"}
-      = image_tag "white.png", :width => 210
       %center
         %h4
           = f.radio_button :dark_scheme, false
           White code preview
+      = image_tag "white.png", :width => 210, :class => "styled_image"
     %label.span4{:for => "user_dark_scheme_true"}
-      = image_tag "dark.png", :width => 210
       %center
         %h4
           = f.radio_button :dark_scheme, true
           Dark code preview
-  .clearfix
-  .actions
-    = f.submit 'Save', :class => "btn"
+      = image_tag "dark.png", :width => 210, :class => "styled_image"
 
+:javascript 
+  $(function(){ 
+    $(".edit_user input").bind("click", function() {
+      $(".edit_user").submit();
+    });
+  })

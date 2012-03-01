@@ -88,6 +88,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.2.0)
+    colored (1.2)
     crack (0.3.1)
     daemons (1.1.8)
     database_cleaner (0.7.1)
@@ -232,7 +233,7 @@ GEM
       ffi (~> 1.0.9)
       multi_json (~> 1.0.4)
       rubyzip
-    shoulda (3.0.0)
+    shoulda (3.0.1)
       shoulda-context (~> 1.0.0)
       shoulda-matchers (~> 1.0.0)
     shoulda-context (1.0.0)
@@ -296,6 +297,7 @@ DEPENDENCIES
   carrierwave
   charlock_holmes
   coffee-rails (= 3.2.1)
+  colored
   database_cleaner
   devise
   drapper
@@ -322,7 +324,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (= 3.2.3)
   seed-fu
-  shoulda (= 3.0.0)
+  shoulda (= 3.0.1)
   simplecov
   six
   sqlite3

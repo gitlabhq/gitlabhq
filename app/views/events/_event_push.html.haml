@@ -1,0 +1,30 @@
+- if event.new_branch?
+  = image_tag gravatar_icon(event.pusher_email), :class => "avatar"
+  %strong #{event.pusher_name} 
+  pushed new branch
+  = link_to project_commits_path(event.project, :ref => event.branch_name) do
+    %strong= event.branch_name
+  at 
+  %strong= link_to event.project.name, event.project
+  %span.cgray
+    = time_ago_in_words(event.created_at)
+    ago.
+- else 
+  = image_tag gravatar_icon(event.pusher_email), :class => "avatar"
+  %strong #{event.pusher_name}
+  pushed to 
+  = link_to project_commits_path(event.project, :ref => event.branch_name) do
+    %strong= event.branch_name
+  at 
+  %strong= link_to event.project.name, event.project
+  %span.cgray
+    = time_ago_in_words(event.created_at)
+    ago.
+  - if event.commits.count > 1
+    = link_to compare_project_commits_path(event.project, :from => event.commits.first.prev_commit_id, :to => event.commits.last.id) do 
+      Compare #{event.commits.first.commit.id[0..8]}...#{event.commits.last.id[0..8]}
+  - @project = event.project  
+  %ul.unstyled
+    = render event.commits
+
+

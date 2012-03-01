@@ -41,8 +41,29 @@
     height:60px;
 
     .search-input { 
-      background:#474D57;
-      border-color:#888;
+      background-image:url("icon-search.png");
+      float: right;
+      text-shadow: none;
+      width: 116px;
+      background-image: url("icon-search.png");
+      background-repeat: no-repeat;
+      background-position: 10px;
+      border-radius: 100px;
+      border: 1px solid rgba(0, 0, 0, 0.7);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 2px rgba(0, 0, 0, 0.4) inset;
+      background-color: #D2D5DA;
+      background-color: rgba(255, 255, 255, 0.5);
+      padding: 5px;
+      padding-left: 26px;
+      margin-right: 50px;
+
+      &:focus {
+        background-color: white;
+        width: 166px;
+      }
+    }
+    .search-input::-webkit-input-placeholder {
+      color: #666;
     }
     .app_logo {
       width:230px;
@@ -76,14 +97,13 @@
           width:16px;
           height:16px;
           padding: 5px;
-          border: 1px solid #888;
           border-radius: 4px;
           margin: 0px;
           background:#474D57 ;
           margin-left:20px;
           margin-top:4px;
           &:hover { 
-            background:#f7f7f7;
+            background:#555;
           }
           img { 
             width:16px;
