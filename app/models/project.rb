@@ -277,31 +277,21 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity
-    updates(1).first
+    events.last
   rescue
     nil
   end
 
   def last_activity_date
-    last_activity.try(:created_at)
+    if events.last
+      events.last.created_at
+    else
+      updated_at
+    end
   end
 
   def last_activity_date_cached(expire = 1.hour)
-    activity_date_key = "project_#{id}_activity_date"
-
-    cached_activities = Rails.cache.read(activity_date_key)
-    if cached_activities
-      activity_date = if cached_activities == "Never"
-                        nil
-                      else
-                        cached_activities
-                      end
-    else
-      activity_date = last_activity_date
-      Rails.cache.write(activity_date_key, activity_date || "Never", :expires_in => expire)
-    end
-
-    activity_date
+    last_activity_date
   end
 
   # Get project updates from cache

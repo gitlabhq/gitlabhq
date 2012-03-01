@@ -615,6 +615,7 @@ p.time {
     margin:auto;
 
     .wll { 
+      padding:5px;
       border:none;
       &:hover { 
         background:none;
@@ -623,12 +624,19 @@ p.time {
       h4 {
         color:#666;
       }
+      &.event_feed { 
+        min-height:40px;
+        border-bottom:1px solid #eee;
+        .avatar { 
+          width:32px;
+        }
+        ul { 
+          margin-left:50px;
+          .avatar { 
+            width:24px;
+          }
+        }
+      }
     }
-  }
-}
-
-.event_feed { 
-  ul { 
-    margin-left:50px;
   }
 }
