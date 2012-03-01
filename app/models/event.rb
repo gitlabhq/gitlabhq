@@ -21,6 +21,11 @@ class Event < ActiveRecord::Base
     end
   end
 
+  # For now only push events enabled for system
+  def allowed?
+    push?
+  end
+
   def push?
     action == self.class::Pushed
   end

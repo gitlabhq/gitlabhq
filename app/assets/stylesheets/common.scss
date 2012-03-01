@@ -616,6 +616,7 @@ p.time {
 
     .wll { 
       padding:5px;
+      margin-top:5px;
       border:none;
       &:hover { 
         background:none;
@@ -632,6 +633,7 @@ p.time {
         }
         ul { 
           margin-left:50px;
+          margin-bottom:5px;
           .avatar { 
             width:24px;
           }
