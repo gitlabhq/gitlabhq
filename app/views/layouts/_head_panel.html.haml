@@ -50,9 +50,11 @@
           %li= link_to( 'Linus Torvalds on Git', 'http://www.youtube.com/watch?v=4XpnKHJAok8' );
           %li= link_to( 'Git VS SVN: It’s time to stop using Subversion', 'http://altdevblogaday.com/2011/03/09/its-time-to-stop-using-subversion/' );
           %li= link_to( 'Get Started with Git', 'http://www.alistapart.com/articles/get-started-with-git/' );
-
-    %h2 ATTENTION!
-    %p It seems that your account is not setup correctly
+    -if current_user.keys.all.empty?
+      %h2 ATTENTION!
+      %p It seems that your account is not setup correctly
+    -else
+      %h2 General Info
     %p Before you adding any key, make sure you don't have anything related to <strong>#{GIT_HOST["host"]}</strong> on <code>~/.ssh/known_hosts</code> file. <br/> If you used Git before (and you already have SSH keys), just skip to the last step (adding ssh key)
     %ol
       %li Install Git <a href="http://git-scm.com/">http://git-scm.com/</a> (on windows use these settings: <a href="http://screencast.com/t/zHK3RPKba">1</a> & <a href="http://screencast.com/t/bLdX4GnpQLi">2</a>);
