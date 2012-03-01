@@ -1,0 +1,13 @@
+- url = content.url(@ref) rescue nil
+- name = content.basename
+- return unless url
+%tr{ :class => "tree-item", :url => url }
+  %td.tree-item-file-name
+    = image_tag "submodule.png"
+    %strong= truncate(name, :length => 40)
+  %td
+    %code= content.id[0..10]
+  %td
+    = link_to truncate(url, :length => 40), url
+
+

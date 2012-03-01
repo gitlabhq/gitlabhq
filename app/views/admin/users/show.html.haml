@@ -1,6 +1,10 @@
-%h2= @admin_user.name
+%h3
+  = @admin_user.name
+  = link_to 'Edit', edit_admin_user_path(@admin_user), :class => "btn small right"
 
-%table.round-borders
+%hr
+
+%table.zebra-striped
   %tr
     %td
       %b
@@ -39,31 +43,55 @@
           Twitter:
       %td
         = @admin_user.twitter
+
+%h3 Projects
+%hr
+
+%table.zebra-striped
   %tr
-    %td{:colspan => 2}
-      = link_to 'Edit', edit_admin_user_path(@admin_user), :class => "grey-button"
+    %thead
+      %th Name
+      %th Project Access
+      %th Repository Access
+      %th
+      %th
 
-.span-14
-  %h2 Projects
-
-  %table.round-borders
+  - @admin_user.users_projects.each do |tm|
+    - project = tm.project
     %tr
-      %thead
-        %th Name
-        %th Added
-        %th Project Access
-        %th Repository Access
-        %th
-        %th
+      %td= link_to project.name, admin_project_path(project)
+      %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "medium project-access-select", :disabled => :disabled
+      %td= link_to 'Edit Access', edit_admin_team_member_path(tm), :class => "btn small"
+      %td= link_to 'Remove from team', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
 
-    - @admin_user.users_projects.each do |tm|
-      - project = tm.project
+= form_tag team_update_admin_user_path(@admin_user), :class => "bulk_import", :method => :put  do 
+  %table
+    %thead
       %tr
-        %td= link_to project.name, admin_project_path(project)
-        %td= time_ago_in_words(tm.updated_at) + " ago"
-        %td= select_tag :project_access, options_for_select(Project.access_options, tm.project_access), :class => "project-access-select", :disabled => :disabled
-        %td= select_tag :repo_access, options_for_select(Repository.access_options, tm.repo_access), :class => "repo-access-select", :disabled => :disabled
-        %td= link_to 'Edit', edit_admin_team_member_path(tm)
-        %td= link_to 'Cancel', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
+        %th Projects
+        %th Project Access:
+        %th Repo Access:
 
-  = link_to 'Add To Another Project', new_admin_team_member_path(:team_member => {:user_id => @admin_user.id}), :class => "grey-button"
+    %tr
+      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name),  :multiple => true
+      %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
+
+  .actions
+    = submit_tag 'Add', :class => "btn primary"
+
+
+:css 
+  form select { 
+    width:150px;
+  }
+
+  #project_ids {
+    width:300px;
+  }
+
+  
+:javascript 
+  $('select#project_ids').chosen();
+  $('select#repo_access').chosen();
+  $('select#project_access').chosen();
+

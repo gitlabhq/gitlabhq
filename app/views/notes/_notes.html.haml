@@ -2,25 +2,12 @@
   = render "notes/form"
 .clear
 %hr
-%ul#notes-list= render "notes/notes_list"
+%ul#new_notes_list
+%ul#notes-list
+.status
+
 
 :javascript
-  $('.delete-note').live('ajax:success', function() {
-    $(this).closest('li').fadeOut(); });
-
-  $("#new_note").live("ajax:before", function(){
-    $("#submit_note").attr("disabled", "disabled");
-  })
-
-  $("#new_note").live("ajax:complete", function(){
-    $("#submit_note").removeAttr("disabled");
-  })
-
   $(function(){
-    $("#note_note").live("click", function(){
-      $(this).css("height", "100px");
-      $('.attach_holder').show();
-    });
-
-    NoteList.init("wall", #{@notes.last.try(:id) || 0}, #{@notes.first.try(:id) || 0});
+    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
   });

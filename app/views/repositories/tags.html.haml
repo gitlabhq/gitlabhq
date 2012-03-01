@@ -1,13 +1,23 @@
-= render "head"
+= render "commits/head"
 - unless @tags.empty?
-  %div.update-data.ui-box.ui-box-small
-    .data
-      - @tags.each do |tag|
-        %a.update-item{:href => project_commits_path(@project, :ref => tag.name)}
-          %span.update-title{:style => "margin-bottom:0px;"}
-            = tag.name
-            %span.update-author.right
-              = time_ago_in_words(tag.commit.committed_date)
-              ago
+  %table.zebra-striped.borders
+    - @tags.each do |tag|
+      %tr
+        %td
+          %strong= link_to tag.name, project_commits_path(@project, :ref => tag.name), :class => ""
+        %td
+          = link_to project_commits_path(@project, tag.commit.id) do
+            %code= tag.commit.id.to_s[0..10]
+          = image_tag gravatar_icon(Commit.new(tag.commit).author_email), :class => "", :width => 16
+          = truncate(Commit.new(tag.commit).safe_message, :length => 40)
+        %td
+          %span.update-author.right
+            = time_ago_in_words(tag.commit.committed_date)
+            ago
+            &nbsp;
+        %td
+          - if can? current_user, :download_code, @project
+            = link_to "Download", archive_project_repository_path(@project, :ref => tag.name), :class => "visible_link download_repo_link"
+
 - else 
   %h3 No tags

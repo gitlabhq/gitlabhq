@@ -1,67 +1,60 @@
 = form_for(@project, :remote => true) do |f|
-  %div.form_content
-    - unless @project.new_record?
-      %h2.icon
-        %span
-        = @project.name
-      .clear
-    - if @project.errors.any?
-      %ul.errors_holder
+  - if @project.errors.any?
+    .alert-message.block-message.error
+      %ul
         - @project.errors.full_messages.each do |msg|
           %li= msg
-    %table
-      %tr
-        %td= f.label :name
-        %td= f.text_field :name, :placeholder => "Example Project"
-      %tr
-        %td
-          .left= f.label :path
-          %cite.right= "git@#{GIT_HOST["host"]}:"
-        %td
-          = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
-      %tr
-        %td
-          .left= f.label :code
-          %cite.right= "http://#{GIT_HOST["host"]}/"
-        %td= f.text_field :code, :placeholder => "example"
+  .clearfix
+    = f.label :name
+    .input= f.text_field :name, :placeholder => "Example Project"
+  .clearfix
+    = f.label :path do 
+      Path
+    .input
+      .input-prepend
+        %span.add-on= "git@#{GIT_HOST["host"]}:"
+        = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+  .clearfix
+    = f.label :code do 
+      Code
+    .input
+      .input-prepend
+        %span.add-on= "http://#{GIT_HOST["host"]}/"
+        = f.text_field :code, :placeholder => "example"
 
-      - unless @project.new_record? || @project.heads.empty?  
-        %tr
-          %td= f.label :default_branch, "Default Branch"
-          %td= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:300px;")
+  - unless @project.new_record? || @project.heads.empty?  
+    .clearfix
+      = f.label :default_branch, "Default Branch"
+      .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
 
-      -#%tr
-        %td= f.label :tag_list
-        %td= f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
-      %tr
-        %td= f.label :description
-        %td= f.text_area :description, :placeholder => "project description", :style => "height:50px"
+    .alert-message.block-message.warning
+      %h5 Features
 
-    %br
-  %div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
-    %center
-      = image_tag "ajax-loader.gif", :class => "append-bottom"
-      - if @project.new_record?
-        %h3.prepend-top Creating project &amp; repository. Please wait for few minutes
-      - else
-        %h3.prepend-top Updating project &amp; repository. Please wait for few minutes
+      .clearfix
+        = f.label :issues_enabled, "Issues"
+        .input= f.check_box :issues_enabled
+
+      .clearfix
+        = f.label :merge_requests_enabled, "Merge Requests"
+        .input= f.check_box :merge_requests_enabled
+
+      .clearfix
+        = f.label :wall_enabled, "Wall"
+        .input= f.check_box :wall_enabled
+      
+      .clearfix
+        = f.label :wiki_enabled, "Wiki"
+        .input= f.check_box :wiki_enabled
+    
+  .clearfix
+    = f.label :description
+    .input= f.text_area :description, :placeholder => "project description", :class => "xlarge", :rows => 4
+
+  %br
   
-  .merge-tabs
-    = f.submit 'Save', :class => "grey-button"
-    &nbsp;
+  .actions
+    = f.submit 'Save', :class => "btn primary"
+    = link_to 'Cancel', @project, :class => "btn"
     - unless @project.new_record?
       .right
-        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
-
-
-:javascript
-  $(function(){
-    $('.new_project, .edit_project').bind('ajax:before', function() {
-      $(this).find(".form_content").hide();
-      $('.ajax_loader').show();
-    });
-    
-    taggifyForm();
-    
-    $('form #project_default_branch').chosen();
-  })
+        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"

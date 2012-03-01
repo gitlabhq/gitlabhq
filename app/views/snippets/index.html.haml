@@ -1,12 +1,12 @@
 = render "projects/project_head"
 
+- if can? current_user, :write_snippet, @project
+  .alert-message.block-message
+    = link_to new_project_snippet_path(@project), :class => "btn small add_new right", :title => "New Snippet" do 
+      Add new snippet
+    Share code pastes with others if it cant be in a git repository
+    %br
+    To add new snippet - click on button. 
+
 - unless @snippets.fresh.empty?
-  %div{ :class => "update-data ui-box ui-box-small ui-box-big" }
-    .data
-      = render @snippets.fresh
-- else 
-  .notice_holder
-    %li Snippets do not exist yet.
-    - if can? current_user, :write_snippet, @project
-      %li You can add a new one by clicking on "Add New" button
-    
+  %table.zebra-striped.borders= render @snippets.fresh

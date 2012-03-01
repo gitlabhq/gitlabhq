@@ -1,19 +1,16 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%tr{:id => dom_id(member)}
-  %td
-    = link_to image_tag(gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding:0 5px;"), project_team_member_path(@project, member)
+%li{:id => dom_id(member), :class => "team_member_row"}
+  = link_to project_team_member_path(@project, member), :title => user.name do 
+    = image_tag gravatar_icon(user.email, 60), :class => "thumbnail"
+  .row
+    .span8
+      %h4
+        = truncate(user.name, :lenght => 24)
+        %small= truncate user.email, :lenght => 24
 
-    = link_to truncate(user.name, :lenght => 24), project_team_member_path(@project, member)
-    %br
-    .cgray{:style => "padding-top:10px;"}= truncate user.email, :lenght => 24
-    %td
+    .span3
       = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
-        = f.select :project_access, options_for_select(Project.access_options, member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
-    %td
-      = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
-        = f.select :repo_access, options_for_select(Repository.access_options, member.repo_access), {}, :class => "repo-access-select", :disabled => !allow_admin
-  - if allow_admin
-    %td
-      = link_to 'Cancel', project_team_member_path(:project_id => @project, :id => member.id), :confirm => 'Are you sure?', :method => :delete, :class => "grey-button negative delete-team-member", :remote => true
-
+        = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, :class => "medium project-access-select", :disabled => !allow_admin
+    - if @project.owner == user
+      %span.label Project Owner

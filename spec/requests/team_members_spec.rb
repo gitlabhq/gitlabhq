@@ -10,9 +10,7 @@ describe "TeamMembers" do
   describe "View profile" do
     it "should be available" do
       visit(team_project_path(@project))
-      within "#team-table" do
-        click_link(@user.name)
-      end
+      click_link(@user.name)
       page.should have_content @user.skype
       page.should_not have_content 'Twitter'
     end
@@ -31,10 +29,9 @@ describe "TeamMembers" do
 
     describe "fill in" do
       before do
-        within "#team_member_new" do 
+        within "#new_team_member" do 
           select @user_1.name, :from => "team_member_user_id"
-          select "Report", :from => "team_member_project_access"
-          select "Pull",   :from => "team_member_repo_access"
+          select "Reporter", :from => "team_member_project_access"
         end
       end
 
@@ -47,16 +44,15 @@ describe "TeamMembers" do
         page.should have_content @user_1.name
 
         @member.reload
-        @member.project_access.should == Project::PROJECT_RW
-        @member.repo_access.should == Repository::REPO_R
+        @member.project_access.should == UsersProject::REPORTER
       end
     end
   end
 
   describe "Cancel membership" do
     it "should cancel membership" do
-      visit team_project_path(@project)
-      expect { click_link "Cancel" }.to change { UsersProject.count }.by(-1)
+      visit project_team_member_path(@project, @project.users_projects.last)
+      expect { click_link "Remove from team" }.to change { UsersProject.count }.by(-1)
     end
   end
 end

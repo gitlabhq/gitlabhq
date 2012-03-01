@@ -1,65 +1,70 @@
-%div
-  %span.entity-info
-    - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
-      = link_to edit_project_merge_request_path(@project, @merge_request) do 
-        .entity-button
-          Edit Merge Request
-          %i
-  = image_tag gravatar_icon(@merge_request.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = "Merge Request ##{@merge_request.id}:"
-      &nbsp;
-      .tag.commit.inline= @merge_request.source_branch
-      &rarr;
-      .tag.commit.inline= @merge_request.target_branch
-  %span.commit-author
-    %strong
-      = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.author.id)) do 
-        %span.author= @merge_request.author_name
-      &rarr;
-      = link_to project_team_member_path(@project, @project.team_member_by_id(@merge_request.assignee.id)) do 
-        %span.author= @merge_request.assignee_name
+%h3
+  = "Merge Request ##{@merge_request.id}:"
+  &nbsp;
+  %span.label= @merge_request.source_branch
+  &rarr;
+  %span.label= @merge_request.target_branch
 
-    &nbsp;
-    &nbsp;
-    = @merge_request.created_at.stamp("Aug 21, 2011 9:23pm")
+  %small
+    created at 
+    = @merge_request.created_at.stamp("Aug 21, 2011")
 
-  %hr
-  %br
-  %h3
-    = simple_format @merge_request.title
-
-.clear
-%br
-%br
-
-.merge-tabs
-  = link_to "#notes", :class => "merge-notes-tab active tab" do 
-    %span
-    Notes
-  = link_to "#commits", "data-url" => commits_project_merge_request_path(@project, @merge_request), :class => "merge-commits-tab tab" do 
-    %span
-    Commits
-  = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
-    %span
-    Diff
-
-  - if can?(current_user, :admin_project, @project) || @merge_request.author == current_user
-    .right
+  %span.right
+    - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.closed
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "red-button"
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
       - else
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "positive-button", :title => "Close merge request"
-  %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
+      = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
+        Edit
+
+.back_link
+  = link_to project_merge_requests_path(@project) do 
+    &larr; To merge requests
+
+
+%hr
+- if @merge_request.closed
+  .alert-message.error Closed
+- else 
+  .alert-message.success 
+    = link_to "#", :class => "info_link", :title => "How To Merge" do 
+      = image_tag "Info-UI.PNG"
+    Open
+
+= render "merge_requests/how_to_merge"
+
+%div.well
+  %div
+    %cite.cgray Created by
+    = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
+    %strong.author= link_to_merge_request_author(@merge_request)
+
+    %cite.cgray and currently assigned to 
+    = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
+    %strong.author= link_to_merge_request_assignee(@merge_request)
+      
+    %hr
+    
+
+  %div= simple_format @merge_request.title
+
+= render "merge_requests/commits"
+
+- unless @commits.empty?
+  .tabs
+    %li.active
+      = link_to "#notes", :class => "merge-notes-tab tab" do 
+        Notes
+    %li
+      = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
+        Diff
+
+    %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
 .merge-request-notes
-  .issue_notes= render "notes/notes"
-  .loading{ :style => "display:none;"}
-    %center= image_tag "ajax-loader.gif"
-  .clear
+  .merge_request_notes= render "notes/notes", :tid => @merge_request.id, :tt => "merge_request"
 
-.merge-request-commits
 .merge-request-diffs
 
 
@@ -67,3 +72,15 @@
   $(function(){
     MergeRequest.init();
   })
+
+= render "notes/per_line_form"
+:javascript
+  $(document).ready(function(){
+    $(".line_note_link, .line_note_reply_link").live("click", function(e) { 
+      var form = $(".per_line_form");
+      $(this).parent().parent().after(form);
+      form.find("#note_line_code").val($(this).attr("line_code"));
+      form.show();  
+      return false;
+    });
+  });

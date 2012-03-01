@@ -1,20 +1,10 @@
-%div
-  %span.entity-info
-    - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-      = link_to  edit_project_snippet_path(@project, @snippet) do 
-        .entity-button
-          Edit Snippet
-          %i
-  - if @snippet.author_email
-    = image_tag gravatar_icon(@snippet.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  - else
-    = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = truncate(@snippet.title, :length => 60)
-  %span.commit-author
-    %strong= @snippet.author_name
-    = @snippet.created_at.stamp("Aug 21, 2011 9:23pm")
+= render "projects/project_head"
+
+%h3
+  = @snippet.title
+  %small= @snippet.file_name
+  - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
+    = link_to "Edit", edit_project_snippet_path(@project, @snippet), :class => "btn small right"
 
 %hr
 
@@ -24,8 +14,5 @@
   .data.no-padding
     :erb
       <%= raw @snippet.colorize %>
-.clear
-%br
-.snippet_notes= render "notes/notes"
 
-.clear
+= render "notes/notes", :tid => @snippet.id, :tt => "snippet"

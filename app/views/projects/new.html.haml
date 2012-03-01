@@ -1,17 +1,14 @@
-- content_for(:body_class, "new-project-page")
-- content_for(:page_title) do
-  .new-project-hodler
-    .container
-      %h2.icon  
-        %span
-        New Project
-
-      %div.clear
-      = render 'form'
+%h3 New Project
+%hr
+= render 'form'
+%div{ :class => "ajax_loader",  :style => "display:none;height:200px;"}
+  %center
+    = image_tag "ajax-loader.gif", :class => "append-bottom"
+    %h3.prepend-top Creating project &amp; repository. Please wait for few minutes
 
 :javascript
   $(function(){
-    $("#project_name").change(function(){
+    $("#project_name").live("change", function(){
       var slug = slugify($(this).val());
       $("#project_code").val(slug);
       $("#project_path").val(slug);
@@ -21,3 +18,11 @@
   function slugify(text) {
     return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
   }
+
+  $(function(){
+    $('.new_project').live('ajax:before', function() {
+      $(this).hide();
+      $('.ajax_loader').show();
+    });
+    $('form #project_default_branch').chosen();
+  })

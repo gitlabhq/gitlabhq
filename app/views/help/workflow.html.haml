@@ -1,0 +1,38 @@
+- bash_lexer = Pygments::Lexer[:bash]
+%h3 Workflow
+%hr
+
+%ol.help
+  %li
+    %p Clone project
+    .bash
+      %pre 
+        git clone git@example.com:project-name.git
+
+  %li
+    %p Create branch with your feature
+    .bash
+      %pre 
+        git checkout -b $feature_name
+
+  %li
+    %p Write code. Commit changes
+    .bash
+      %pre 
+        git commit -am "My feature is ready"
+
+  %li
+    %p Push your branch to gitlabhq
+    .bash
+      %pre 
+        git push origin $feature_name
+
+  %li 
+    %p Review your code on Commits page
+
+  %li 
+    %p Create a merge request
+
+  %li 
+    %p Your team lead will review code &amp; merge it to main branch
+

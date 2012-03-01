@@ -52,6 +52,12 @@ class Admin::ProjectsController < ApplicationController
   def update
     @admin_project = Project.find_by_code(params[:id])
 
+    owner_id = params[:project].delete(:owner_id)
+
+    if owner_id 
+      @admin_project.owner = User.find(owner_id)
+    end
+
     if @admin_project.update_attributes(params[:project])
       redirect_to [:admin, @admin_project], notice: 'Project was successfully updated.'
     else

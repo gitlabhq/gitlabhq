@@ -1,33 +1,33 @@
+%h3= "New Team member"
+%hr
 = form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member) do |f|
-  %div
-    %span.entity-info
-      - if request.xhr? 
-        = link_to project_team_members_path(@project)  do 
-          .entity-button
-            Team List
-            %i
-    %h3= "New Team member"
-
-    %hr
   -if @team_member.errors.any?
-    %ul.errors_holder
-      - @team_member.errors.full_messages.each do |msg|
-        %li= msg
+    .alert-message.block-message.error
+      %ul
+        - @team_member.errors.full_messages.each do |msg|
+          %li= msg
 
-  .span-6.append-bottom
-    %b Name
-  .span-6
-    = f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
-  .span-6
-    %b Project Access:
-  .span-6
-    = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
+  .clearfix
+    = f.label :user_id, "Name"
+    .input= f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
 
-  .span-6
-    %b Repository Access:
-  .span-6
-    = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select"
-  %br
-  .merge-tabs
-    = f.submit 'Save', :class => "grey-button"
 
+  .clearfix
+    = f.label :project_access, "Project Access"
+    .input= f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
+
+
+  .actions
+    = f.submit 'Save', :class => "btn primary"
+    = link_to "Cancel", team_project_path(@project), :class => "btn"
+
+:css
+  form select { 
+    width:300px;
+  }
+
+:javascript
+  $('select#team_member_user_id').chosen();
+  $('select#team_member_project_access').chosen();
+  //$('select#team_member_repo_access').chosen();
+  //$('select#team_member_project_access').chosen();

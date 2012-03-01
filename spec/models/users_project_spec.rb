@@ -25,7 +25,6 @@ end
 #  project_id     :integer         not null
 #  created_at     :datetime
 #  updated_at     :datetime
-#  repo_access    :integer         default(0), not null
 #  project_access :integer         default(0), not null
 #
 

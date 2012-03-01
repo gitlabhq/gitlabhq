@@ -1,0 +1,118 @@
+@import "bootstrap";
+
+/** GITLAB colors **/
+$text_color:#222;
+$lite_text_color: #666; 
+$link_color:#2A79A3; 
+$active_link_color:#2FA0BB;
+$active_bg_color:#79C3E0;
+$active_bd_color: #2FA0BB;
+$border_color:#CCC;
+$lite_border_color:#EEE;
+$min_app_width:980px;
+$max_app_width:980px;
+$app_padding:20px;
+$bg_color: #FFF;
+$styled_border_color: #2FA0BB;
+$color: "#4BB8D2";
+$blue_link: "#2fa0bb";
+
+
+/** Style colors **/
+$style_color: #474D57;
+$hover: #FDF5D9;
+
+
+/** MIXINS **/
+@mixin shade {
+  -moz-box-shadow: 0 0 3px #ddd;
+  -webkit-box-shadow: 0 0 3px #ddd;
+  box-shadow: 0 0 3px #ddd;
+}
+
+
+@mixin round-borders-bottom($radius) {
+  border-top: 1px solid #eaeaea;
+  -moz-border-radius-bottomright: $radius;
+  -moz-border-radius-bottomleft: $radius;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  -webkit-border-bottom-left-radius: $radius;
+  -webkit-border-bottom-right-radius: $radius;
+}
+
+@mixin round-borders-top($radius) {
+  border-top: 1px solid #eaeaea;
+  -moz-border-radius-topright: $radius;
+  -moz-border-radius-topleft: $radius;
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+  -webkit-border-top-left-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+}
+
+@mixin round-borders-all($radius) {
+  border: 1px solid #eaeaea;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+/**
+ * This file represent some UI that can be changed 
+ * during web app restyle or theme select. 
+ * 
+ * Next items should be placed there
+ * - link colors
+ * - header styles
+ * - main menu styles
+ *
+ */
+@import "ui_basic.scss";
+
+/**
+ * UI mars theme
+ */
+@import "ui_mars.scss";
+
+/**
+ * Most of application styles placed here.
+ * This file represent common UI that should not be changed between themes
+ * or project restyling like form width or user avatar class or commit title
+ * 
+ * TODO: clean it
+ */
+@import "common.scss";
+
+/**
+ * This scss file redefine chozen selectbox styles for 
+ * project Branch/Tag select element
+ */
+@import "ref_select.scss";
+
+/**
+ * Code (files list) styles. Browsing project files there 
+ */
+@import "tree.scss";
+
+/**
+ * This file represent notes(comments) styles 
+ */
+@import "notes.scss";
+
+/**
+ * Devise styles 
+ */
+@import "login.scss";
+
+/**
+ * CODE HIGHTLIGHT BASE
+ *
+ */
+@import "highlight.scss";
+
+/**
+ * CODE HIGHTLIGHT DARK schema
+ *
+ */
+@import "highlight.black.scss";

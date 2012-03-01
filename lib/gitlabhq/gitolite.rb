@@ -64,21 +64,9 @@ module Gitlabhq
     def update_project(repo_name, project)
       ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(@local_dir,'gitolite'))
       conf = ga_repo.config
-
-      repo = if conf.has_repo?(repo_name)
-               conf.get_repo(repo_name)
-             else 
-               ::Gitolite::Config::Repo.new(repo_name)
-             end
-
-      name_readers = project.repository_readers
-      name_writers = project.repository_writers
-
-      repo.clean_permissions
-      repo.add_permission("R", "", name_readers) unless name_readers.blank?
-      repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
+      repo = update_project_config(project, conf)
       conf.add_repo(repo, true)
-
+      
       ga_repo.save
     end
 
@@ -89,25 +77,43 @@ module Gitlabhq
       conf = ga_repo.config
 
       projects.each do |project|
-        repo_name = project.path
-
-        repo = if conf.has_repo?(repo_name)
-                 conf.get_repo(repo_name)
-               else 
-                 ::Gitolite::Config::Repo.new(repo_name)
-               end
-
-        name_readers = project.repository_readers
-        name_writers = project.repository_writers
-
-        repo.clean_permissions
-        repo.add_permission("R", "", name_readers) unless name_readers.blank?
-        repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
+        repo = update_project_config(project, conf)
         conf.add_repo(repo, true)
       end
 
       ga_repo.save
     end
 
+    def update_project_config(project, conf)
+      repo_name = project.path
+
+      repo = if conf.has_repo?(repo_name)
+               conf.get_repo(repo_name)
+             else 
+               ::Gitolite::Config::Repo.new(repo_name)
+             end
+
+      name_readers = project.repository_readers
+      name_writers = project.repository_writers
+      name_masters = project.repository_masters
+
+      pr_br = project.protected_branches.map(&:name).join(" ")
+
+      repo.clean_permissions
+
+      # Deny access to protected branches for writers
+      unless name_writers.blank? || pr_br.blank?
+        repo.add_permission("-", pr_br, name_writers)
+      end
+
+      # Add read permissions
+      repo.add_permission("R", "", name_readers) unless name_readers.blank?
+
+      # Add write permissions
+      repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
+      repo.add_permission("RW+", "", name_masters) unless name_masters.blank?
+
+      repo
+    end
   end
 end

@@ -42,27 +42,13 @@ describe Note do
         :project => project,
         :noteable_id => commit.id,
         :noteable_type => "Commit", 
-        :line_code => "OLD_1_23"
+        :line_code => "0_16_1"
     end
 
     it "should save a valid note" do
       @note.noteable_id.should == commit.id
       @note.target.id.should == commit.id
     end
-
-    it { @note.line_type_id.should == "OLD" }
-    it { @note.line_file_id.should == 1 }
-    it { @note.line_number.should == 23 }
-
-    it { @note.for_line?(1, 23, 34).should be_true } 
-    it { @note.for_line?(1, 23, nil).should be_true } 
-    it { @note.for_line?(1, 23, 0).should be_true } 
-    it { @note.for_line?(1, 23, 23).should be_true } 
-
-    it { @note.for_line?(1, nil, 34).should be_false } 
-    it { @note.for_line?(1, 24, nil).should be_false } 
-    it { @note.for_line?(1, 24, 0).should be_false } 
-    it { @note.for_line?(1, 24, 23).should be_false } 
   end
 
   describe :authorization do
@@ -78,9 +64,8 @@ describe Note do
 
     describe :read do
       before do
-        @p1.users_projects.create(:user => @u1, :project_access => Project::PROJECT_N)
-        @p1.users_projects.create(:user => @u2, :project_access => Project::PROJECT_R)
-        @p2.users_projects.create(:user => @u3, :project_access => Project::PROJECT_R)
+        @p1.users_projects.create(:user => @u2, :project_access => UsersProject::GUEST)
+        @p2.users_projects.create(:user => @u3, :project_access => UsersProject::GUEST)
       end
 
       it { @abilities.allowed?(@u1, :read_note, @p1).should be_false }
@@ -90,9 +75,8 @@ describe Note do
 
     describe :write do
       before do
-        @p1.users_projects.create(:user => @u1, :project_access => Project::PROJECT_R)
-        @p1.users_projects.create(:user => @u2, :project_access => Project::PROJECT_RW)
-        @p2.users_projects.create(:user => @u3, :project_access => Project::PROJECT_RW)
+        @p1.users_projects.create(:user => @u2, :project_access => UsersProject::DEVELOPER)
+        @p2.users_projects.create(:user => @u3, :project_access => UsersProject::DEVELOPER)
       end
 
       it { @abilities.allowed?(@u1, :write_note, @p1).should be_false }
@@ -102,9 +86,9 @@ describe Note do
 
     describe :admin do
       before do
-        @p1.users_projects.create(:user => @u1, :project_access => Project::PROJECT_R)
-        @p1.users_projects.create(:user => @u2, :project_access => Project::PROJECT_RWA)
-        @p2.users_projects.create(:user => @u3, :project_access => Project::PROJECT_RWA)
+        @p1.users_projects.create(:user => @u1, :project_access => UsersProject::REPORTER)
+        @p1.users_projects.create(:user => @u2, :project_access => UsersProject::MASTER)
+        @p2.users_projects.create(:user => @u3, :project_access => UsersProject::MASTER)
       end
 
       it { @abilities.allowed?(@u1, :admin_note, @p1).should be_false }

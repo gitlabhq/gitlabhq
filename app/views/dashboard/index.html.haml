@@ -1,6 +1,65 @@
-- content_for(:body_class, "dashboard-page")
+- if current_user.require_ssh_key?
+  .alert-message.warning
+    %p  
+      You wont be able to pull/push project code unless you  
+      = link_to new_key_path, :class => "vlink" do 
+        add new key
+      to your profile
 
-#dashboard-content.dashboard-content.content
-  = render "dashboard/sidebar"
-  = render "dashboard/menu"
-  #news-feed.news-feed= render "dashboard/projects_feed"
+%div.dashboard_category
+  %h3
+    Projects
+    %small
+      ( most recent )
+
+  %strong.right
+    = link_to projects_path do 
+      Projects list &rarr; 
+  %hr
+  .row
+    .dashboard_block
+      .row
+        .span9= render "dashboard/projects_feed"
+        .span3.right
+          - if current_user.can_create_project?
+            .alert-message.block-message.warning
+              You can create up to
+              = current_user.projects_limit
+              projects. Click on link below to add a new one
+              .link_holder
+                = link_to new_project_path, :class => "" do 
+                  New Project » 
+
+
+- unless @merge_requests.blank?
+  %div.dashboard_category
+    %h3
+      Merge Requests
+      %small ( authored or assigned to you )
+    %strong.right
+      = link_to dashboard_merge_requests_path do 
+        Vist merge requests page &rarr; 
+    %hr
+    .row
+      .dashboard_block= render "dashboard/merge_requests_feed"
+
+- unless @issues.blank?
+  %div.dashboard_category
+    %h3
+      Issues
+      %small ( assigned to you )
+    %strong.right
+      = link_to dashboard_merge_requests_path do 
+        Vist issues page &rarr; 
+    %hr
+    .row
+      .dashboard_block= render "dashboard/issues_feed"
+
+- unless @events.blank?
+  %div.dashboard_category
+    %h3
+      Activities
+
+    %hr
+    .row
+      .dashboard_block= render "dashboard/events_feed"

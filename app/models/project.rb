@@ -1,13 +1,9 @@
 require "grit"
 
 class Project < ActiveRecord::Base
-  PROJECT_N = 0
-  PROJECT_R = 1
-  PROJECT_RW = 2
-  PROJECT_RWA = 3
-
   belongs_to :owner, :class_name => "User"
 
+  has_many :events, :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
   has_many :issues, :dependent => :destroy, :order => "position"
   has_many :users_projects, :dependent => :destroy
@@ -16,6 +12,8 @@ class Project < ActiveRecord::Base
   has_many :snippets, :dependent => :destroy
   has_many :deploy_keys, :dependent => :destroy, :foreign_key => "project_id", :class_name => "Key"
   has_many :web_hooks, :dependent => :destroy
+  has_many :protected_branches, :dependent => :destroy
+  has_many :wikis, :dependent => :destroy
 
   acts_as_taggable
 
@@ -53,18 +51,14 @@ class Project < ActiveRecord::Base
   attr_protected :private_flag, :owner_id
 
   scope :public_only, where(:private_flag => false)
+  scope :without_user, lambda { |user|  where("id not in (:ids)", :ids => user.projects.map(&:id) ) }
 
   def self.active
     joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
   end
 
   def self.access_options
-    {
-      "Denied" => PROJECT_N,
-      "Read"   => PROJECT_R,
-      "Report" => PROJECT_RW,
-      "Admin"  => PROJECT_RWA
-    }
+    UsersProject.access_roles
   end
 
   def repository
@@ -96,21 +90,35 @@ class Project < ActiveRecord::Base
     [GIT_HOST['host'], code].join("/")
   end
 
-  def execute_web_hooks(oldrev, newrev, ref)
+  def observe_push(oldrev, newrev, ref, author_key_id)
+    data = web_hook_data(oldrev, newrev, ref, author_key_id)
+
+    Event.create(
+      :project => self,
+      :action => Event::Pushed,
+      :data => data
+    )
+  end
+
+  def execute_web_hooks(oldrev, newrev, ref, author_key_id)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
     return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
 
-    data = web_hook_data(oldrev, newrev, ref)
+    data = web_hook_data(oldrev, newrev, ref, author_key_id)
+
     web_hooks.each { |web_hook| web_hook.execute(data) }
   end
 
-  def web_hook_data(oldrev, newrev, ref)
+  def web_hook_data(oldrev, newrev, ref, author_key_id)
+    key = Key.find_by_identifier(author_key_id)
     data = {
       before: oldrev,
       after: newrev,
       ref: ref,
+      user_id: key.user.id,
+      user_name: key.user_name,
       repository: {
         name: name,
         url: web_url,
@@ -135,6 +143,15 @@ class Project < ActiveRecord::Base
     end
 
     data
+  end
+
+  def open_branches
+    if protected_branches.empty?
+      self.repo.heads
+    else
+      pnames = protected_branches.map(&:name)
+      self.repo.heads.reject { |h| pnames.include?(h.name) }
+    end.sort_by(&:name)
   end
 
   def team_member_by_name_or_email(email = nil, name = nil)
@@ -182,11 +199,11 @@ class Project < ActiveRecord::Base
   # Should be rewrited for new access rights
   def add_access(user, *access)
     access = if access.include?(:admin) 
-               { :project_access => PROJECT_RWA } 
+               { :project_access => UsersProject::MASTER } 
              elsif access.include?(:write)
-               { :project_access => PROJECT_RW } 
+               { :project_access => UsersProject::DEVELOPER } 
              else
-               { :project_access => PROJECT_R } 
+               { :project_access => UsersProject::REPORTER } 
              end
     opts = { :user => user }
     opts.merge!(access)
@@ -199,38 +216,52 @@ class Project < ActiveRecord::Base
 
   def repository_readers
     keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_R)
+      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::REPORTER)
     keys.map(&:identifier) + deploy_keys.map(&:identifier)
   end
 
   def repository_writers
     keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.repo_access = ?", id, Repository::REPO_RW)
+      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::DEVELOPER)
+    keys.map(&:identifier)
+  end
+
+  def repository_masters
+    keys = Key.joins({:user => :users_projects}).
+      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::MASTER)
     keys.map(&:identifier)
   end
 
   def readers
-    @readers ||= users_projects.includes(:user).where(:project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).map(&:user)
+    @readers ||= users_projects.includes(:user).map(&:user)
   end
 
   def writers
-    @writers ||= users_projects.includes(:user).where(:project_access => [PROJECT_RW, PROJECT_RWA]).map(&:user)
+    @writers ||= users_projects.includes(:user).map(&:user)
   end
 
   def admins
-    @admins ||= users_projects.includes(:user).where(:project_access => PROJECT_RWA).map(&:user)
+    @admins ||= users_projects.includes(:user).where(:project_access => UsersProject::MASTER).map(&:user)
   end
 
   def allow_read_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_R, PROJECT_RW, PROJECT_RWA]).empty?
+    !users_projects.where(:user_id => user.id).empty?
   end
 
-  def allow_write_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RW, PROJECT_RWA]).empty?
+  def guest_access_for?(user)
+    !users_projects.where(:user_id => user.id).empty?
   end
 
-  def allow_admin_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [PROJECT_RWA]).empty? || owner_id == user.id
+  def report_access_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::REPORTER, UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
+  end
+
+  def dev_access_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
+  end
+
+  def master_access_for?(user)
+    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::MASTER]).empty? || owner_id == user.id
   end
 
   def root_ref 
@@ -335,15 +366,19 @@ end
 #
 # Table name: projects
 #
-#  id             :integer         not null, primary key
-#  name           :string(255)
-#  path           :string(255)
-#  description    :text
-#  created_at     :datetime
-#  updated_at     :datetime
-#  private_flag   :boolean         default(TRUE), not null
-#  code           :string(255)
-#  owner_id       :integer
-#  default_branch :string(255)     default("master"), not null
+#  id                     :integer         not null, primary key
+#  name                   :string(255)
+#  path                   :string(255)
+#  description            :text
+#  created_at             :datetime
+#  updated_at             :datetime
+#  private_flag           :boolean         default(TRUE), not null
+#  code                   :string(255)
+#  owner_id               :integer
+#  default_branch         :string(255)     default("master"), not null
+#  issues_enabled         :boolean         default(TRUE), not null
+#  wall_enabled           :boolean         default(TRUE), not null
+#  merge_requests_enabled :boolean         default(TRUE), not null
+#  wiki_enabled           :boolean         default(TRUE), not null
 #
 

@@ -58,21 +58,34 @@ class Note < ActiveRecord::Base
     nil
   end
 
-  def line_file_id
-    @line_file_id ||= line_code.split("_")[1].to_i if line_code
+  # Check if we can notify commit author
+  # with email about our comment
+  #
+  # If commit author email exist in project 
+  # and commit author is not passed user we can 
+  # send email to him
+  #
+  # params:
+  #   user - current user
+  # 
+  # return:
+  #   Boolean
+  #
+  def notify_only_author?(user)
+    commit? && commit_author &&
+      commit_author.email != user.email
   end
 
-  def line_type_id
-    @line_type_id ||= line_code.split("_").first if line_code
+  def commit?
+    noteable_type == "Commit"
   end
 
-  def line_number 
-    @line_number ||= line_code.split("_").last.to_i if line_code
-  end
-
-  def for_line?(file_id, old_line, new_line)
-    line_file_id == file_id && 
-      ((line_type_id == "NEW" && line_number == new_line) || (line_type_id == "OLD" && line_number == old_line ))
+  def commit_author
+    @commit_author ||= 
+      project.users.find_by_email(target.author_email) || 
+      project.users.find_by_name(target.author_name)
+  rescue 
+    nil
   end
 end
 # == Schema Information

@@ -9,5 +9,10 @@ coverage/*
 *.swp
 public/uploads/
 .rvmrc
+.rbenv-version
 .directory
 nohup.out
+Vagrantfile
+.vagrant
+config/gitlab.yml
+config/database.yml

@@ -1,18 +1,8 @@
-- if @note.valid?
-  - if @note.line_code
-    :plain
-      $(".per_line_form").hide();
-      $('#new_note textarea').val("");
-      $(".#{@note.line_code}").parent().after("#{escape_javascript(render :partial => "notes/per_line_show", :locals => {:note => @note})}");
-  - else
-    :plain
-      $("#new_note .errors").remove();
-      $('#new_note textarea').val("");
-      NoteList.prepend(#{@note.id}, "#{escape_javascript(render :partial => "notes/show", :locals => {:note => @note})}");
-- else
-  - unless @note.line_code
-    :plain
-      $("#new_note").replaceWith("#{escape_javascript(render('form'))}");
+- if @note.line_code
+  = render "create_line", :note => @note
+- else 
+  = render "create_common", :note => @note
 
+-# Enable submit button
 :plain
   $("#submit_note").removeAttr("disabled");

@@ -1,10 +1,6 @@
 require File.join(Rails.root, "lib", "gitlabhq", "git_host")
 
 class Repository
-  REPO_N = 0
-  REPO_R = 1
-  REPO_RW = 2
-
   attr_accessor :project
 
   def self.default_ref
@@ -12,11 +8,7 @@ class Repository
   end
 
   def self.access_options
-    {
-      "Denied"      => REPO_N,
-      "Pull"        => REPO_R,
-      "Pull & Push" => REPO_RW
-    }
+    {}
   end
 
   def initialize(project)
@@ -56,7 +48,7 @@ class Repository
   end
 
   def path_to_repo
-    GIT_HOST["base_path"] + path + ".git"
+    File.join(GIT_HOST["base_path"], "#{path}.git")
   end
 
   def update_repository

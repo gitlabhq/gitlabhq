@@ -1,10 +1,10 @@
 source "http://rubygems.org"
 
-gem "rails", "3.1.1"
+gem "rails", "3.2.1"
 
 gem "sqlite3"
-gem "rake", "0.9.2.2"
-gem "devise", "1.5.0"
+gem "rake"
+gem "devise"
 gem "stamp"
 gem "kaminari"
 gem "haml", "3.1.4"
@@ -16,7 +16,7 @@ gem "carrierwave"
 gem "six"
 gem "therubyracer"
 gem "faker"
-gem "seed-fu", "~> 2.1.0"
+gem "seed-fu"
 gem "pygments.rb", "0.2.4"
 gem "thin"
 gem "git"
@@ -24,20 +24,23 @@ gem "acts_as_list"
 gem "rdiscount"
 gem "acts-as-taggable-on", "~> 2.1.0"
 gem "drapper"
-gem "resque"
+gem "resque", "~> 1.20.0"
 gem "httparty"
 gem "charlock_holmes"
 gem "foreman"
+gem "omniauth-ldap"
+gem 'bootstrap-sass', "1.4.4"
+gem "colored"
 
 group :assets do
-  gem "sass-rails",   "~> 3.1.0"
-  gem "coffee-rails", "~> 3.1.0"
-  gem "uglifier"
+  gem "sass-rails",   "3.2.3"
+  gem "coffee-rails", "3.2.1"
+  gem "uglifier",     "1.0.3"
 end
 
 group :development do
   gem "letter_opener"
-  gem "rails-footnotes", "~> 3.7.5"
+  gem "rails-footnotes"
   gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
 end
 
@@ -46,9 +49,7 @@ group :development, :test do
   gem "capybara"
   gem "autotest"
   gem "autotest-rails"
-  unless ENV["CI"]
-    gem "ruby-debug19", :require => "ruby-debug"
-  end
+  gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
@@ -58,5 +59,5 @@ end
 group :test do
   gem "turn", :require => false
   gem "simplecov", :require => false
-  gem "shoulda", "~> 3.0.0.beta2"
+  gem "shoulda", "3.0.0"
 end

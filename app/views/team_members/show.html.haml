@@ -1,23 +1,19 @@
 - allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
-%div
-  %span.entity-info
-    = link_to team_project_path(@project) do 
-      .entity-button
-        Team
-        %i
+.media-grid
+  = link_to "#" do
+    = image_tag gravatar_icon(user.email, 60), :class => "thumbnail", :width => 60
+  %h3.media_h
+    = user.name
+    %br
+    %small= user.email
 
-  = image_tag gravatar_icon(user.email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = user.name
-  %span.commit-author
-    %strong
-      = user.email
-  %hr
-  %br
+.back_link
+  = link_to team_project_path(@project), :class => "" do 
+    &larr; To team list
 
-%table.no-borders
+%br
+%table.zebra-striped.borders
   %tr
     %td Name
     %td= user.name
@@ -31,17 +27,13 @@
     %td= @team_member.created_at.stamp("Aug 21, 2011")
 
   %tr
-    %td Project Access
+    %td
+      Project Access
+      (#{link_to "read more", help_permissions_path, :class => "vlink"})
+
     %td
       = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
         = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
-
-  %tr
-    %td Repository Access
-    %td
-      = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
-        = f.select :repo_access, options_for_select(Repository.access_options, @team_member.repo_access), {}, :class => "repo-access-select", :disabled => !allow_admin
-
 
   - unless user.skype.empty?
     %tr
@@ -59,9 +51,8 @@
       %td= user.twitter
 
 - if can? current_user, :admin_project, @project
-  .merge-tabs
-    .right
-      = link_to 'Remove from team', [@project, @issue], :confirm => 'Are you sure?', :method => :delete, :class => "red-button"
+  .actions
+    = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
 
 :javascript
   $(function(){

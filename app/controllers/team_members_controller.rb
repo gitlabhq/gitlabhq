@@ -40,7 +40,7 @@ class TeamMembersController < ApplicationController
     @team_member.destroy
 
     respond_to do |format|
-      format.html { redirect_to root_path }
+      format.html { redirect_to team_project_path(@project) }
       format.js { render :nothing => true }
     end
   end

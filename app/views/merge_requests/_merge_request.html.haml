@@ -1,14 +1,13 @@
-%a.update-item{:href => project_merge_request_path(merge_request.project, merge_request)}
-  = image_tag gravatar_icon(merge_request.author_email), :class => "left", :width => 40
-  %span.update-title
-    = truncate(merge_request.title, :length => 60)
+%li.wll
+  = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
   %span.update-author
     %strong= merge_request.author_name
     authored
     = time_ago_in_words(merge_request.created_at)
     ago
   .right
-    %span.tag.commit= merge_request.source_branch
+    %span.label= merge_request.source_branch
     &rarr;
-    %span.tag.commit= merge_request.target_branch
-
+    %span.label= merge_request.target_branch
+  = link_to project_merge_request_path(merge_request.project, merge_request) do
+    %p.row_title= truncate(merge_request.title, :length => 60)

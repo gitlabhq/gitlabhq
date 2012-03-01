@@ -1,8 +1,6 @@
-- content_for(:body_class, "project-page dashboard")
-= render "head"
+= render "branches_head"
 
-#news-feed.news-feed
-  .project-box.project-updates
-    - @activities.each do |update|
-      = render "repositories/feed", :update => update, :project => @project
+%table.zebra-striped.borders
+  - @activities.each do |update|
+    = render "repositories/branch", :branch => update.head
 

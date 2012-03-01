@@ -7,5 +7,5 @@
  *= require jquery-ui/jquery.tagify
  *= require chosen
  *= require_self
- *= require common
+ *= require main
 */

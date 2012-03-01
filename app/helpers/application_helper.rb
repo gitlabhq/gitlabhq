@@ -3,7 +3,8 @@ module ApplicationHelper
 
   def gravatar_icon(user_email, size = 40)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
-    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email)}?s=#{size}&d=identicon"
+    user_email.strip!
+    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
   end
 
   def fixed_mode?
@@ -52,6 +53,13 @@ module ApplicationHelper
       [ "Tag", @project.tags ]
     ]
 
+    # If reference is commit id - 
+    # we should add it to branch/tag selectbox
+    if(@ref && !options.flatten.include?(@ref) &&
+       @ref =~ /^[0-9a-zA-Z]{6,52}$/)
+      options << ["Commit", [@ref]]
+    end
+
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
@@ -71,11 +79,11 @@ module ApplicationHelper
 
     if @project && !@project.new_record?
       project_nav = [
-        { :label => "#{@project.code} / Issues", :url => project_issues_path(@project) },
-        { :label => "#{@project.code} / Wall", :url => wall_project_path(@project) },
-        { :label => "#{@project.code} / Tree", :url => tree_project_ref_path(@project, @project.root_ref) },
-        { :label => "#{@project.code} / Commits", :url => project_commits_path(@project) },
-        { :label => "#{@project.code} / Team", :url => team_project_path(@project) }
+        { :label => "#{@project.name} / Issues", :url => project_issues_path(@project) },
+        { :label => "#{@project.name} / Wall", :url => wall_project_path(@project) },
+        { :label => "#{@project.name} / Tree", :url => tree_project_ref_path(@project, @project.root_ref) },
+        { :label => "#{@project.name} / Commits", :url => project_commits_path(@project) },
+        { :label => "#{@project.name} / Team", :url => team_project_path(@project) }
       ]
     end
 
@@ -83,14 +91,26 @@ module ApplicationHelper
   end
 
   def project_layout
-    @project && !@project.new_record?
+    layout == "project"
+  end
+
+  def admin_layout
+    layout == "admin"
   end
 
   def profile_layout
-    controller.controller_name == "dashboard" || current_page?(projects_path) || controller.controller_name == "profile" || controller.controller_name == "keys"
+    layout == "profile"
   end
 
   def help_layout
     controller.controller_name == "help" 
+  end
+
+  def ldap_enable?
+    Devise.omniauth_providers.include?(:ldap)
+  end
+
+  def layout 
+    controller.send :_layout
   end
 end

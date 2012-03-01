@@ -1,19 +1,19 @@
-#tree-breadcrumbs
-  %div
+%ul.breadcrumb
+  %li
+    %span.arrow
     = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
-      = @project.code
-    - tree.breadcrumbs(6) do |link|
-      \/
-      = link
-    &nbsp;
-  %span.tree_progress
+      = @project.name
+  - tree.breadcrumbs(6) do |link|
+    \/
+    %li= link
 .clear
+%div.tree_progress
 #tree-content-holder
   - if tree.is_blob?
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.no-borders
+    %table#tree-slider.bordered-table
       %thead
         %th Name
         %th Last Update
@@ -33,6 +33,8 @@
         = render :partial => "refs/tree_item", :locals => { :content => content }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
         = render :partial => "refs/tree_item", :locals => { :content => content }
+      - contents.select{ |i| i.is_a?(Grit::Submodule)}.each do |content|
+        = render :partial => "refs/submodule_item", :locals => { :content => content }
 
     - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
       #tree-readme-holder
@@ -43,11 +45,19 @@
           - else
             = simple_format(content.data)
 
+- if params[:path]
+  - history_path = tree_file_project_ref_path(@project, @ref, params[:path])
+- else
+  - history_path = tree_project_ref_path(@project, @ref)
 :javascript
   $(function(){
     $('select#branch').selectmenu({style:'popup', width:200});
     $('select#tag').selectmenu({style:'popup', width:200});
+    $('.project-refs-select').chosen();
+
+    history.pushState({ path: this.path }, '', "#{history_path}")
   });
+
 
 - if params[:path] && request.xhr?
   :javascript

@@ -1,0 +1,17 @@
+%li.wll.commit
+  .right.span2
+    %p
+      %strong= link_to "Browse Code »", tree_project_ref_path(@project, commit.id), :class => "right"
+  = link_to project_commit_path(@project, :id => commit.id) do
+    %p
+      %code.left= commit.id.to_s[0..10]
+      %strong.cgray= commit.author_name
+      &ndash;
+      = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16
+      %span.row_title= truncate(commit.safe_message, :length => 50) rescue "--broken encoding"
+
+      %span.right.cgray
+        = time_ago_in_words(commit.committed_date)
+        ago
+        &nbsp;
+

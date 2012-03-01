@@ -1,38 +1,22 @@
 %table
-  - line_old = 0
-  - line_new = 0
-  - diff_str = diff.diff
-  - lines_arr = diff_str.lines.to_a
-  - lines_arr.each do |line|
-    - next if line.match(/^--- \/dev\/null/)
-    - next if line.match(/^--- a/)
-    - next if line.match(/^\+\+\+ b/)
-    - if line.match(/^@@ -/)
-      - unless line_old.zero? && line_new.zero?
-        %tr.line_holder
-          %td.old_line= "..."
-          %td.new_line= "..."
-          %td.line_content &nbsp;
-
-      - line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
-      - line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
-      - next
-
-    - full_line = html_escape(line.gsub(/\n/, ''))
+  - each_diff_line(diff.diff.lines.to_a, index) do |line, type, line_code, line_new, line_old|
     %tr.line_holder
-      %td.old_line
-        = link_to raw(diff_line_class(line) == "new" ? "&nbsp;" : line_old), "#OLD#{index}-#{line_old}", :id => "OLD#{index}-#{line_old}"
-      %td.new_line
-        = link_to raw(diff_line_class(line) == "old" ? "&nbsp;" : line_new) , "#NEW#{index}-#{line_new}", :id => "NEW#{index}-#{line_new}"
-      %td.line_content{:class => "#{diff_line_class(full_line)} #{build_line_code(line, index, line_new, line_old)}", "line_code" => build_line_code(line, index, line_new, line_old)}= raw "#{full_line} &nbsp;"
-    - comments = @line_notes.select { |n| n.for_line?(index, line_old, line_new) }.sort_by(&:created_at).reverse
-    - unless comments.empty?
-      - comments.each do |note|
-        = render "notes/per_line_show", :note => note
-    - if line[0] == "+"
-      - line_new += 1
-    - elsif line[0] == "-"
-      - line_old += 1
-    - else
-      - line_new += 1
-      - line_old += 1
+      - if type == "match"
+        %td.old_line= "..."
+        %td.new_line= "..."
+        %td.line_content.matched= line
+      - else 
+        %td.old_line
+          = link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", :id => line_code
+          - if @comments_allowed
+            = link_to "", "#", :class => "line_note_link", "line_code" => line_code, :title => "Add note for this line" 
+        %td.new_line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", :id => line_code
+        %td.line_content{:class => "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
+        
+        - if @comments_allowed
+          - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at).reverse
+          - unless comments.empty?
+            - comments.each_with_index do |note, i|
+              = render "notes/reply_button", :line_code => line_code if i.zero?
+              = render "notes/per_line_show", :note => note
+              - @line_notes.reject!{ |n| n == note }

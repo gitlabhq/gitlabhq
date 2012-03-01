@@ -199,6 +199,15 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
+  #config.omniauth :ldap, 
+  #    :host => 'YOUR_LDAP_SERVER',
+  #    :base => 'THE_BASE_WHERE_YOU_SEARCH_FOR_USERS',
+  #    :uid => 'sAMAccountName',
+  #    :port => 389,
+  #    :method => :plain,
+  #    :bind_dn => 'THE_FULL_DN_OF_THE_USER_YOU_WILL_BIND_WITH',
+  #    :password => 'THE_PASSWORD_OF_THE_BIND_USER'
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

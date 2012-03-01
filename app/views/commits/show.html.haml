@@ -1,20 +1,16 @@
-- content_for(:body_class, "project-page commits-page")
 .commit
-  %span.commit-info
-    = link_to tree_project_ref_path(@project, @commit.id) do 
-      %data.commit-button
-        Browse Code
-        %i
-  - if @commit.author_email
-    = image_tag gravatar_icon(@commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-  - else
-    = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-  %span.commit-title
-    %strong
-      = truncate(@commit.id.to_s, :length => 60)
-  %span.commit-author
-    %strong= @commit.author_name
-    = @commit.created_at.stamp("Aug 21, 2011 9:23pm")
+  = link_to tree_project_ref_path(@project, @commit.id), :class => "btn right small" do 
+    Browse Code »
+  = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
+  %code= @commit.id.to_s
+  %h5
+    = @commit.author_name
+    %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
+    - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
+      &ndash;
+      %cite committed by
+      = @commit.committer_name
+      %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
 
 %hr
 %pre.commit_message
@@ -22,17 +18,20 @@
 .clear
 %br
 
-= render "commits/diff"
-= render "notes/notes"
+%p.cgray
+  Showing #{pluralize(@commit.diffs.count, "changed file")}
+= render "commits/diffs", :diffs => @commit.diffs
+= render "notes/notes", :tid => @commit.id, :tt => "commit"
 = render "notes/per_line_form"
 
 
 :javascript
   $(document).ready(function(){
-    $(".line_content").live("dblclick", function(e) { 
+    $(".line_note_link, .line_note_reply_link").live("click", function(e) { 
       var form = $(".per_line_form");
-      $(this).parent().after(form);
+      $(this).parent().parent().after(form);
       form.find("#note_line_code").val($(this).attr("line_code"));
       form.show();  
+      return false;
     });
   });

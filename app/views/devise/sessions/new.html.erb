@@ -4,9 +4,12 @@
   <%= f.password_field :password, :class => "text bottom", :placeholder => "Password"  %>
 
   <% if devise_mapping.rememberable? -%>
-    <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+    <div class="clearfix inputs-list"> <label for="user_remember_me"><%= f.check_box :remember_me %><span>Remember me</span></label></div>
   <% end -%>
   <br/>
-  <%= f.submit "Sign in", :class => "grey-button" %>
+  <%= f.submit "Sign in", :class => "primary btn" %>
   <div class="right"> <%= render :partial => "devise/shared/links" %></div>
+  <% if ldap_enable? -%>
+    <p><%= link_to "via LDAP", user_omniauth_authorize_path(:ldap)%></p>
+  <% end -%>
 <% end %>

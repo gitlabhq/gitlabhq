@@ -1,0 +1,35 @@
+%ul.tabs
+  %li
+    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form" do
+      = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
+      = hidden_field_tag :destination, "commits"
+
+  %li{:class => "#{'active' if current_page?(project_commits_path(@project)) }"}
+    = link_to project_commits_path(@project) do 
+      Commits
+  %li{:class => "#{'active' if current_page?(compare_project_commits_path(@project)) }"}
+    = link_to compare_project_commits_path(@project) do 
+      Compare
+  %li{:class => "#{branches_tab_class}"}
+    = link_to project_repository_path(@project) do 
+      Branches
+      %span.number= @project.repo.branches.count
+
+  %li{:class => "#{'active' if current_page?(tags_project_repository_path(@project)) }"}
+    = link_to tags_project_repository_path(@project) do 
+      Tags
+      %span.number= @project.repo.tags.count
+
+
+  - if current_page?(project_commits_path(@project)) && current_user.private_token
+    %li.right
+      %span
+        = link_to project_commits_path(@project, :atom, { :private_token => current_user.private_token, :ref => @ref }), :class => "btn" do 
+          feed
+          = image_tag "Rss-UI.PNG", :width => 14, :title => "feed"
+
+
+:javascript
+  $(function(){
+    $('.project-refs-select').chosen();
+  });

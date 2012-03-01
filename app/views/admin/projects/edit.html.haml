@@ -1,7 +1,3 @@
-%h2= @admin_project.name
+%h3= @admin_project.name
+%hr
 = render 'form'
-
-%br
-= link_to 'Back', admin_projects_path, :class => ""
-|
-= link_to 'Show', [:admin, @admin_project], :class => ""

@@ -18,17 +18,8 @@ describe "Repository" do
       current_path.should == project_repository_path(@project)
     end
 
-    it "should have link to repo activities" do
-      page.should have_content("Activities")
-    end
-
     it "should have link to last commit for activities tab" do
       page.should have_content(@project.commit.safe_message[0..20])
-      page.should have_content(@project.commit.author_name)
-    end
-
-    it "should show commits list" do
-      page.all(:css, ".project-update").size.should == @project.repo.branches.size
     end
   end
 

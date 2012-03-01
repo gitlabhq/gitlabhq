@@ -1,121 +1,178 @@
-#tree-breadcrumbs { 
-  div {
-    margin:0;
-    margin-bottom:20px;
+#tree-holder { 
+  #tree-content-holder {
     float:left;
-    font-size:14px;
+    width:100%;
   }
-}
-
-.tree_progress { 
-  float:left;
-  width:16px;
-  height:16px;
-  margin:2px 6px;
-  &.loading { 
-    background-position: 0px 0px;
-    background: url("ajax-loader-facebook.gif") no-repeat;
-  }
-}
-
-
-/** FILE CONTENT VIEW **/
-.view_file_content{
-  .old_line, .new_line {
-    background:#ECECEC;
-    color:#777;
-    width:15px;
+  #tree-readme-holder {
     float:left;
-    padding: 0px 10px;
-    border-right: 1px solid #ccc;
+    width:100%;
+    .readme {
+      @include round-borders-all(4px);
+      padding:4px 15px;
+      background: #F7F7F7;
+    }
   }
-  .old_line{
+
+  .tree_progress { 
     display:none;
+    margin:20px;
+    &.loading { 
+      display:block;
+    }
   }
-}
 
-.view_file .view_file_header,
-.diff_file .diff_file_header {
-    background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
-    background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
-    background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+
+  /** FILE CONTENT VIEW **/
+  .view_file_content{
+    .old_line, .new_line {
+      background:#ECECEC;
+      color:#777;
+      width:15px;
+      float:left;
+      padding: 0px 10px;
+      border-right: 1px solid #ccc;
+    }
+    .old_line{
+      display:none;
+    }
+  }
+
+  .view_file .view_file_header,
+  .diff_file .diff_file_header {
+    background:#f5f5f5;
     margin: 0;
     font-weight: normal;
     font-weight: bold;
     text-align: left;
     color: #666;
-    border-bottom: 1px solid #DEE2E3;
+    border-bottom: 1px solid #ccc;
     padding: 7px 10px;
 
     .mode_text,
     .file_icon { 
-      margin-right:15px;
-      padding-right:15px;
-      border-right:1px solid $lite_border_color;
-      float:left;
       color:#aaa;
     }
-
-    .file_icon { 
-      padding-left:15px;
-    }
-}
-
-.view_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
-
-  .view_file_content {
-    background:#fff;
-    color:#514721;
-    font-size: 11px;
   }
-  .view_file_content_image {
-    background:#eee;
-    text-align:center;
-    img {
-      padding:100px;
-      max-width:300px;
+
+  .view_file {
+    border:1px solid #CCC;
+    margin-bottom:1em;
+
+    .view_file_content {
+      background:#fff;
+      color:#514721;
+      font-size: 11px;
+    }
+    .view_file_content_image {
+      background:#eee;
+      text-align:center;
+      img {
+        padding:100px;
+        max-width:300px;
+      }
     }
   }
-}
 
-td.code {
-  width: 100%;
-  .highlight {
-    margin-left: 55px;
-    overflow:auto;
-    overflow-y:hidden;
-    border-left: 1px solid #DEE2E3;
-    background: white;
+  td.code {
+    width: 100%;
+    .highlight {
+      margin-left: 55px;
+      overflow:auto;
+      overflow-y:hidden;
+    }
   }
-}
-.highlight pre {
-  white-space: pre;
-  word-wrap:normal;
-}
+  .highlight pre {
+    white-space: pre;
+    word-wrap:normal;
+  }
 
-table.highlighttable {
-  border: none;
-  background: #F7F7F7;
-}
-body.project-page table.highlighttable td { border: none }
-table.highlighttable tr:hover { background:none;}
+  table.highlighttable {
+    border: none;
+  }
+  body.project-page table.highlighttable td { border: none }
+  table.highlighttable tr:hover { background:none;}
 
-table.highlighttable pre{
-  line-height:16px !important;
-  font-size:12px !important;
-}
+  table.highlighttable pre{
+    line-height:16px !important;
+    font-size:12px !important;
+  }
 
-table.highlighttable .linenodiv pre {
-  text-align: right;
-  padding-right: 4px;
-  color:#888;
-}
+  table.highlighttable .linenodiv pre {
+    text-align: right;
+    padding-right: 4px;
+    color:#888;
+  }
 
-.tree-item { 
-  &:hover { 
-    background: #FFFFCF;
+  .tree-item { 
+    &:hover { 
+      background: $hover;
+      cursor:pointer;
+    }
+
+
+    .tree-item-file-name { 
+      font-weight:bold;
+      a { 
+        color:$style_color;
+      }
+
+      img { 
+        position: relative;
+        top: 2px;
+      }
+    }
+  }
+
+  ul.breadcrumb {
+    background:white;
+    border:none;
+
+    a { 
+      color:#666;
+      font-weight:bold;
+      font-size:14px;
+    }
+  }
+
+  #tree-slider { 
+    @include shade;
+
+    td { 
+      padding:7px;
+      border-color:#f1f1f1;
+    }
+
+    th { 
+      background:#f5f5f5;
+    }
+  }
+
+  .tree-commit-link { 
+    color:#333;
+  }
+
+  #tree-content-holder .view_file{ 
+    @include shade;
+  }
+
+  #tree-readme-holder .readme { 
+    @include shade;
+    margin-bottom:20px;
+  }
+
+  a.tree-commit-link { 
+    color: #666;
+    &:hover { 
+      text-decoration: underline;
+    }
+  }
+
+  .arrow { 
+    background: url("images.png") no-repeat -85px -77px;
+    width: 19px;
+    height: 16px;
+    float: left;
+    position: relative;
+    left: -10px;
   }
 }

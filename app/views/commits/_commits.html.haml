@@ -1,24 +1,4 @@
 - @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
-  %div{ :class => "commits-date ui-box ui-box-small ui-box-big" }
-    .day-commits-table
-      %h3= day.stamp("28 Aug, 2010")
-      .data
-        - commits.each do |commit|
-          %a{ :class => "commit", :href => project_commit_path(@project, :id => commit.id) }
-            %span.commit-info
-              %data.commit-button
-                = truncate(commit.id.to_s, :length => 16)
-                %i
-              %data.commit-browse{ :onclick => "location.href='#{tree_project_ref_path(@project, commit.id)}';return false;"}
-                Browse Code
-            - if commit.author_email
-              = image_tag gravatar_icon(commit.author_email), :class => "left", :width => 40, :style => "padding-right:5px;"
-            - else
-              = image_tag "no_avatar.png", :class => "left", :width => 40, :style => "padding-right:5px;"
-            %span.commit-title
-              %strong
-                = truncate(commit.safe_message, :length => 70)
-            %span.commit-author
-              %strong= commit.author_name
-              = time_ago_in_words(commit.committed_date)
-              ago
+  %div.ui-box
+    %h5= day.stamp("28 Aug, 2010")
+    %ul.unstyled= render commits

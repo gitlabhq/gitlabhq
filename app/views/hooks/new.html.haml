@@ -4,10 +4,9 @@
     %ul
       - @hook.errors.full_messages.each do |msg|
         %li= msg
-  = f.label :url, "URL:"
-  = f.text_field :url, :class => "text_field"
-  .clear
-  %br
-  .merge-tabs
-    = f.submit "Save", :class => "grey-button"
+  .clearfix
+    = f.label :url, "URL:"
+    .input= f.text_field :url, :class => "text_field"
+  .actions
+    = f.submit "Save", :class => "btn"
 

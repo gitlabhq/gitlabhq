@@ -1,6 +1,7 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
+  before_filter :module_enabled
   before_filter :issue, :only => [:edit, :update, :destroy, :show]
   layout "project"
 
@@ -48,7 +49,6 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @notes = @issue.notes.inc_author.order("created_at DESC").limit(20)
     @note = @project.notes.new(:noteable => @issue)
 
     @commits = if @issue.branch_name && @project.repo.heads.map(&:name).include?(@issue.branch_name)
@@ -60,7 +60,7 @@ class IssuesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js { respond_with_notes }
+      format.js
     end
   end
 
@@ -69,7 +69,10 @@ class IssuesController < ApplicationController
     @issue.author = current_user
     @issue.save
 
-    respond_with(@issue)
+    respond_to do |format|
+      format.html { redirect_to project_issue_path(@project, @issue) }
+      format.js
+    end
   end
 
   def update
@@ -125,11 +128,14 @@ class IssuesController < ApplicationController
   end
 
   def authorize_modify_issue!
-    can?(current_user, :modify_issue, @issue) || 
-      @issue.assignee == current_user
+    return render_404 unless can?(current_user, :modify_issue, @issue)
   end
 
   def authorize_admin_issue!
-    can?(current_user, :admin_issue, @issue)
+    return render_404 unless can?(current_user, :admin_issue, @issue)
+  end
+
+  def module_enabled
+    return render_404 unless @project.issues_enabled
   end
 end

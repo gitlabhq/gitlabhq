@@ -1,6 +1,7 @@
 class SnippetsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
+  before_filter :snippet, :only => [:show, :edit, :destroy, :update]
   layout "project"
 
   # Authorize
@@ -41,11 +42,9 @@ class SnippetsController < ApplicationController
   end
 
   def edit
-    @snippet = @project.snippets.find(params[:id])
   end
 
   def update
-    @snippet = @project.snippets.find(params[:id])
     @snippet.update_attributes(params[:snippet])
 
     if @snippet.valid?
@@ -56,14 +55,11 @@ class SnippetsController < ApplicationController
   end
 
   def show
-    @snippet = @project.snippets.find(params[:id])
-    @notes = @snippet.notes
     @note = @project.notes.new(:noteable => @snippet)
+    render_full_content
   end
 
   def destroy
-    @snippet = @project.snippets.find(params[:id])
-
     return access_denied! unless can?(current_user, :admin_snippet, @snippet)
 
     @snippet.destroy
@@ -72,12 +68,15 @@ class SnippetsController < ApplicationController
   end
 
   protected
+  def snippet
+    @snippet ||= @project.snippets.find(params[:id])
+  end
 
   def authorize_modify_snippet!
-    can?(current_user, :modify_snippet, @snippet)
+    return render_404 unless can?(current_user, :modify_snippet, @snippet)
   end
 
   def authorize_admin_snippet!
-    can?(current_user, :admin_snippet, @snippet)
+    return render_404 unless can?(current_user, :admin_snippet, @snippet)
   end
 end

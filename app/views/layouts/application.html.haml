@@ -1,18 +1,10 @@
-!!!
-%html
-  %head
-    %title
-      GitLab
-    = favicon_link_tag 'favicon.ico'
-    = stylesheet_link_tag    "application"
-    = javascript_include_tag "application"
-    = csrf_meta_tags
-    = javascript_tag do
-      REQ_URI = "#{request.env["REQUEST_URI"]}";
-      REQ_REFFER = "#{request.env["HTTP_REFERER"]}";
-  %body{ :class => body_class, :id => yield(:boyd_id)}
-    = render :partial => "layouts/flash"
-    #container
-      = render :partial => "layouts/head_panel"
-      = render :partial => "layouts/page_title"
-      = yield
+!!! 5
+%html{ :lang => "en"}
+  = render "layouts/head"
+  %body.ui_basic.application
+    = render "layouts/flash"
+    = render "layouts/head_panel", :title => "Dashboard"
+    .container
+      = render :partial => "layouts/app_menu"
+      .content
+        = yield

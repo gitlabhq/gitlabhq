@@ -1,16 +1,9 @@
-%h2.icon
-  %span>
+%h3 
   SSH Keys
-%div#new-key-holder.right
-  = link_to "Add new", new_key_path, :remote => true, :class => "grey-button"
-%br
+  = link_to "Add new", new_key_path, :class => "btn small right"
+  
+%hr
 
-%div#keys-table{ :class => "update-data ui-box ui-box-small ui-box-big" }
-  .data
-    - @keys.each do |key|
-      = render(:partial => 'show', :locals => {:key => key})
-
-:javascript
-  $('.delete-key').live('ajax:success', function() {
-    $(this).closest('.update-item').fadeOut(); });
-
+%table#keys-table.zebra-striped.borders
+  - @keys.each do |key|
+    = render(:partial => 'show', :locals => {:key => key})

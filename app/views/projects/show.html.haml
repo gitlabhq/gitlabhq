@@ -1,13 +1,22 @@
-- content_for(:body_class, "project-page dashboard")
-
 = render "project_head"
-#news-feed.news-feed
-  .project-box.project-updates
-    - @activities.each do |update|
-      = render "projects/feed", :update => update, :project => @project
+%h3
+  = @project.name
+  - if can? current_user, :download_code, @project
+    = link_to "Download", archive_project_repository_path(@project), :class => "btn small right"
+.back_link
+  = link_to projects_path do 
+    &larr; To projects list
+%br
+.alert-message.block-message.warning
+  .input
+    .input-prepend
+      %span.add-on git clone
+      = text_field_tag :project_clone, @project.url_to_repo, :class => "xlarge one_click_select git_clone_url"
 
-:javascript
-  function updateDashboard(){
-    $('.project-content').load("#{escape_javascript(project_path(@project))} .project-content>*");
-  }
-  setInterval("updateDashboard()", 300000);
+= simple_format @project.description
+- unless @activities.blank?
+  .ui-box
+    %h5.cgray Recent Activity
+    .content_list= render "feed"
+
+

@@ -1,10 +1,10 @@
-- unless notice.nil?
-  %p#notice= notice
+%h3
+  = @admin_project.name
+  = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "btn right small"
 
+%hr
 
-%h2= @admin_project.name
-
-%table.round-borders
+%table.zebra-striped
   %tr
     %td
       %b
@@ -29,14 +29,32 @@
         Description:
     %td
       = @admin_project.description
-  %tr
-    %td{:colspan => 2}
-      = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "grey-button"
 
 
 .span-14
 
-  %h2 Team
+  %h3
+    Team
+    %small
+      ( #{@admin_project.users_projects.count} )
+
+  %hr
+
+  %table.zebra-striped
+    %thead
+      %tr
+        %th Name
+        %th Project Access
+        %th Repository Access
+        %th
+
+    - @admin_project.users_projects.each do |tm|
+      %tr
+        %td
+          = link_to tm.user_name, admin_users_path(tm.user)
+        %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "medium project-access-select", :disabled => :disabled
+        %td= link_to 'Edit Access', edit_admin_team_member_path(tm), :class => "btn small"
+        %td= link_to 'Remove from team', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger small"
 
   = form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do 
     %table
@@ -49,29 +67,9 @@
       %tr
         %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name),  :multiple => true
         %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
-        %td= select_tag :repo_access, options_for_select(Repository.access_options), :class => "repo-access-select"
 
-      %tr
-        %td{ :colspan => 3 }
-          = submit_tag 'Add', :class => "positive-button"
-
-  %table.round-borders
-    %thead
-      %tr
-        %th Name
-        %th Added
-        %th Project Access
-        %th Repository Access
-        %th
-
-    - @admin_project.users_projects.each do |tm|
-      %tr
-        %td
-          = link_to tm.user_name, admin_team_member_path(tm)
-        %td= time_ago_in_words(tm.updated_at) + " ago"
-        %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "project-access-select", :disabled => :disabled
-        %td= select_tag :tm_repo_access, options_for_select(Repository.access_options, tm.repo_access), :class => "repo-access-select", :disabled => :disabled
-        %td= link_to 'Destroy', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete
+    .actions
+      = submit_tag 'Add', :class => "btn primary"
 
 :css 
   form select { 

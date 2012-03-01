@@ -1,0 +1,309 @@
+/**
+ * This file represent some UI that can be changed 
+ * during web app restyle or theme select. 
+ * 
+ * Next items should be placed there
+ * - link colors
+ * - header styles
+ * - main menu styles
+ *
+ */
+.ui_basic { 
+  /*
+   * Common styles
+   *
+   */
+  a {
+    color: $link_color;
+    &:hover { 
+      text-decoration:none; 
+      color: $style_color;
+    }
+  }
+
+
+  /*
+   *  Application Header
+   *
+   */
+  header { 
+    width:100%;
+    padding:0;
+    margin:0;
+    top:1px;
+    left:0;
+    background: #F1F1F1; /* for non-css3 browsers */
+    border-bottom: 1px solid #ccc; 
+    box-shadow: 0 -1px 0 white inset;
+    -moz-box-shadow: 0 -1px 0 white inset;
+    -webkit-box-shadow: 0 -1px 0 white inset;
+    z-index:10;
+    height:60px;
+
+    .app_logo {
+      width:230px;
+      float:left;
+
+      a { 
+        float:left;
+
+        h1 { 
+          float:left;
+          margin-left:5px;
+          font-size:20px;
+          line-height:34px;
+          font-weight:bold;
+          color:#aaa;
+          text-shadow: 0 1px 1px #FFF;
+        }
+
+        &.home {
+          img { 
+            float: left;
+            position: relative;
+            top: -9px;
+            width:46px;
+
+          }
+        }
+        &.admin_link { 
+          width:16px;
+          height:16px;
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          margin: 0px;
+          background: #eee;
+          margin-left:20px;
+          &:hover { 
+            background:#f7f7f7;
+          }
+          img { 
+            width:16px;
+          }
+        }
+      }
+    }
+    .wrapper { 
+      margin:auto;
+      min-width:$min_app_width;
+      max-width:$max_app_width;
+      position:relative;
+      padding:15px 0;
+
+      .top_panel_content { 
+        margin:0 $app_padding;
+      }
+    }
+
+    .project_name {
+      float:left;
+      width:400px;
+      margin:0;
+      margin-right:30px;
+      font-size:20px;
+      line-height:34px;
+      font-weight:bold;
+      color:$style_color;
+      text-shadow: 0 1px 1px #FFF;
+    }
+
+    .git_url_wrapper {
+      padding:0px;
+      margin:0px;
+      float:left;
+
+      .git-url {
+        padding:0px;
+        margin:0px;
+        font-size: 12px;
+        margin-right:10px;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        color: #666; 
+        border: 1px solid #AAA;
+        padding:  0 10px 0 30px;
+        background: transparent url('images.png') no-repeat 8px -42px; 
+        width: 260px;
+        height:26px;
+      }
+    }
+
+    /* Account box */
+    .account-box {
+      position: absolute;
+      right: 0;
+      top: 13px;
+      z-index: 10000;
+      width: 128px;
+      font-size: 11px;
+      float: right;
+      display: block;
+      cursor: pointer;
+      img {
+        border-radius: 4px;
+        right: 20px;
+        position: absolute;
+        width: 33px;
+        height: 33px;
+        display: block;
+        top: 0;
+        &:after {
+          content: " ";
+          display: block;
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          bottom: 0;
+          float: right;
+          border-radius: 5px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 0;
+          background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.15)), to(rgba(0, 0, 0, 0.25))), -webkit-gradient(linear, left top, right bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.5, rgba(255, 255, 255, 0.1)), color-stop(0.501, rgba(255, 255, 255, 0)), color-stop(1, rgba(255, 255, 255, 0)));
+          background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.25)), -moz-linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+          background: linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.25)), linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+          -webkit-background-origin: border-box;
+          -moz-background-origin: border;
+    background-origin: border-box; } } }
+
+    .account-box {
+      &.hover {
+      height: 138px; }
+      &:hover > .account-links {
+    display: block; } }
+
+    .account-links {
+      background: #79C3E0;
+      display: none;
+      border-radius: 5px;
+      width: 100px;
+      margin-top: 0;
+      float: right;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      position: relative;
+      &:before {
+        content: ".";
+        width: 0;
+        height: 0;
+        position: absolute;
+        border: 5px solid transparent;
+        border-color: rgba(255, 255, 255, 0);
+        border-bottom-color: #333;
+        text-indent: -9999px;
+        top: -10px;
+        line-height: 0;
+        right: 10px;
+      z-index: 10; }
+      background: #333;
+      display: none;
+      z-index: 100000;
+      border-radius: 5px;
+      width: 100px;
+      position: absolute;
+      right: 20px;
+      top: 46px;
+      margin-top: 0;
+      float: right;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      a {
+        color: #EEE;
+        padding: 6px 10px;
+        display: block;
+        text-shadow: none;
+        border-bottom: 1px solid #555;
+        &:hover {
+    background: #444; } } }
+
+    .account-box.hover .arrow-up {
+      top: 41px;
+      right: 6px;
+    position: absolute; }
+
+    .account-links a {
+      &:first-child {
+        -webkit-border-top-left-radius: 5px;
+        -webkit-border-top-right-radius: 5px;
+        -moz-border-radius-topleft: 5px;
+        -moz-border-radius-topright: 5px;
+        border-top-left-radius: 5px;
+      border-top-right-radius: 5px; }
+      &:last-child {
+        -webkit-border-bottom-right-radius: 5px;
+        -webkit-border-bottom-left-radius: 5px;
+        -moz-border-radius-bottomright: 5px;
+        -moz-border-radius-bottomleft: 5px;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+    border-bottom: 0; } }
+
+  }
+  /*
+   *  End of Application Header
+   *
+   */
+
+  /*
+   *  Main Menu of Application
+   *
+   */
+  nav.main_menu { 
+    overflow:hidden;
+    border-radius: 4px;
+    margin: auto;
+    margin:30px $app_padding;
+    background:#eee;
+    border:1px solid #ccc;
+    height:38px;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    @include shade;
+    .count { 
+      color:#aaa;
+      margin-left:3px;  
+    }
+    .label { 
+      background:$hover;
+      text-shadow:none;
+      color:$style_color;
+    }
+    a { 
+      font-weight:bold;
+      &:first-child{ 
+        -webkit-border-top-left-radius: 4px;
+        -webkit-border-bottom-left-radius: 4px;
+        -moz-border-radius-topleft: 4px;
+        -moz-border-radius-bottomleft: 4px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      padding: 10px 25px;
+      display: inline-block;
+      color: $style_color;
+      border-right: 1px solid #d5d5d5;
+      position: relative;
+      box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
+      margin: 0;
+      float:left;
+      text-shadow:0 1px 1px white;
+      &.home { 
+        background: url(home_icon.PNG) no-repeat center center;
+        text-indent:-9999px;
+        min-width:40px;
+        img { 
+          position:relative;
+          top:4px;
+        }
+      }
+      &.current { 
+        background-color:#DDD;
+      }
+    }
+  }
+  /*
+   *  End of Main Menu
+   *
+   */
+}

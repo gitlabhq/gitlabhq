@@ -1,26 +1,10 @@
-#feeds_content_holder
-  - unless @issues.empty?
-    .project-box.project-updates.ui-box.ui-box-small.ui-box-big
-      .data
-        - @issues.each do |update|
-          %a.project-update{:href => dashboard_feed_path(update.project, update)}
-            %strong.issue-number= "##{update.id}"
-            %span.update-title
-              = truncate update.title, :length => 35
-              .right= truncate update.project.name
-            %span.update-author
-              %strong= update.author_name
-              authored
-              = time_ago_in_words(update.created_at)
-              ago
-            .right
-              - if update.critical
-                %span.tag.high critical
-              - if update.today?
-                %span.tag.today today
-
-  - else 
-    %h2
-      No assigned
-      %span.tag.open open
-      issues
+- @issues.each do |issue|
+  .wll
+    = link_to [issue.project, issue] do 
+      %p
+        %strong
+          %span.label= issue.project.name
+          &ndash;
+          Issue #
+          = issue.id
+        = truncate issue.title, :length => 50

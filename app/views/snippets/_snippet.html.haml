@@ -1,12 +1,6 @@
-%a.update-item{:href => project_snippet_path(snippet.project, snippet)}
-  = image_tag gravatar_icon(snippet.author_email), :class => "left", :width => 40
-  %span.update-title
-    = truncate(snippet.title, :length => 60)
-  %span.update-author
-    %strong= snippet.author_name
-    authored
-    = time_ago_in_words(snippet.created_at)
-    ago
-  .right
-    %span.tag.commit= snippet.file_name
-
+%tr
+  %td
+    %a{:href => project_snippet_path(snippet.project, snippet)}
+      = truncate(snippet.title, :length => 60)
+      %span.right.cgray
+        = snippet.file_name

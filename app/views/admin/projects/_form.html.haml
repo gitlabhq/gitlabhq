@@ -1,39 +1,66 @@
 = form_for [:admin, @admin_project] do |f|
   -if @admin_project.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@admin_project.errors.count, "error")} prohibited this admin_project from being saved:"
+    .alert-message.block-message.error
       %ul
         - @admin_project.errors.full_messages.each do |msg|
           %li= msg
 
-  .form-row
+  .clearfix
     = f.label :name
-    %br
-    = f.text_field :name
-  .form-row
-    = f.label :code
-    %br
-    = f.text_field :code
-  .form-row
-    = f.label :path
-    %br
-    = f.text_field :path
+    .input= f.text_field :name
+  .clearfix
+    = f.label :path do 
+      Path
+    .input
+      .input-prepend
+        %span.add-on= "git@#{GIT_HOST["host"]}:"
+        = f.text_field :path, :placeholder => "example_project", :disabled => !@admin_project.new_record?
+  .clearfix
+    = f.label :code do 
+      Code
+    .input
+      .input-prepend
+        %span.add-on= "http://#{GIT_HOST["host"]}/"
+        = f.text_field :code, :placeholder => "example"
 
-  .form-row
-    = f.label :tag_list
-    %br
-    = f.text_area :tag_list, :placeholder => "project tags", :style => "height:50px", :id => :tag_field
+  - unless @admin_project.new_record?
+    .clearfix
+      = f.label :owner_id
+      .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
 
-  .form-row
+    - unless @admin_project.heads.empty?  
+      .clearfix
+        = f.label :default_branch, "Default Branch"
+        .input= f.select(:default_branch, @admin_project.heads.map(&:name), {}, :style => "width:210px;")
+
+    .well
+      %h5 Features
+
+      .clearfix
+        = f.label :issues_enabled, "Issues"
+        .input= f.check_box :issues_enabled
+
+      .clearfix
+        = f.label :merge_requests_enabled, "Merge Requests"
+        .input= f.check_box :merge_requests_enabled
+
+      .clearfix
+        = f.label :wall_enabled, "Wall"
+        .input= f.check_box :wall_enabled
+
+  .clearfix
     = f.label :description
-    %br
-    = f.text_area :description
+    .input= f.text_area :description, :class => "xxlarge"
   .clear
   %br
   .actions
-    = f.submit 'Save', :class => "grey-button"
+    = f.submit 'Save', :class => "btn primary"
+    = link_to 'Cancel', [:admin, @admin_project], :class => "btn"
+    = link_to 'Destroy', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
 
 :javascript
   $(function(){
     taggifyForm();
+    $('#project_owner_id').chosen();
+    $('#project_default_branch').chosen();
   })

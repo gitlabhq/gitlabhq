@@ -1,0 +1,121 @@
+/**
+ * Notes
+ *
+ */
+#notes-list, 
+#new_notes_list {
+  display:block;
+  list-style:none;
+  margin:0px;
+  padding:0px;
+}
+
+#new_notes_list li:last-child{ 
+  border-bottom:1px solid #aaa;
+}
+
+.issue_notes {
+  .note_content {
+    float:left;
+    width:400px;
+  }
+}
+
+/* Note textare */
+#note_note {
+  height:100px;
+  width:97%;
+  font-size:14px;
+}
+
+#new_note {
+  #note_note {
+    height:25px;
+  }
+  .attach_holder {
+    display:none;
+  }
+}
+
+.note .delete-note { 
+  display:none; 
+  float:right;
+}
+.note:hover .delete-note { display:block; }
+.note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
+.note img{float: left; margin-right: 10px;}
+.note span.note-title{display: block;}
+.note span.note-title{margin-bottom: 10px}
+.note span.note-author{color: #999; font-weight: normal; font-style: italic;}
+.note span.note-author strong{font-weight: bold; font-style: normal;}
+.note p { color:$style_color; }
+.note .note-author { color: $style_color;}
+
+.note .note-title { margin-left:55px; }
+
+p.notify_controls input{
+  margin: 5px;
+}
+
+p.notify_controls span{
+  font-weight: 700;
+}
+
+tr.line_notes_row { 
+  border-bottom:1px solid #DDD;
+  &.reply { 
+    background:#eee;
+
+    td { 
+      padding:7px 10px;
+    }
+    a.line_note_reply_link { 
+      @include round-borders-all(4px);
+      border-color:#aaa;
+      background: #bbb;
+      padding: 3px 20px;
+      color: white;
+    }
+  }
+  ul { 
+    margin:0;
+    li { 
+      padding:0;
+      border:none;
+    }
+  }
+}
+
+.line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.per_line_form { 
+  background:#f5f5f5;
+  form {  margin: 0; }
+  td { 
+    border-bottom:1px solid #ddd;
+  }
+}
+
+td .line_note_link { 
+  position:absolute;
+  margin-left:-70px;
+  margin-top:-10px;
+  z-index:10;
+  background: url("comment_add.png") no-repeat left 0;
+  width:32px;
+  height:32px;
+
+  opacity: 0.0;
+  filter: alpha(opacity=0);
+
+  &:hover { 
+    opacity: 1.0;
+    filter: alpha(opacity=100);
+  }
+}
+
+.diff_file_content tr.line_holder:hover > td { background: $hover !important; }
+.diff_file_content tr.line_holder:hover > td .line_note_link { 
+  opacity: 1.0;
+  filter: alpha(opacity=100);
+}

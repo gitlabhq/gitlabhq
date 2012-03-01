@@ -1,4 +1,9 @@
 class UsersProject < ActiveRecord::Base
+  GUEST     = 10
+  REPORTER  = 20
+  DEVELOPER = 30
+  MASTER    = 40
+
   belongs_to :user
   belongs_to :project
 
@@ -17,7 +22,6 @@ class UsersProject < ActiveRecord::Base
     UsersProject.transaction do
       user_ids.each do |user_id|
         users_project = UsersProject.new(
-          :repo_access => repo_access,
           :project_access => project_access,
           :user_id => user_id
         )
@@ -27,10 +31,44 @@ class UsersProject < ActiveRecord::Base
     end
   end
 
+  def self.user_bulk_import(user, project_ids, project_access, repo_access)
+    UsersProject.transaction do
+      project_ids.each do |project_id|
+        users_project = UsersProject.new(
+          :project_access => project_access,
+        )
+        users_project.project_id = project_id
+        users_project.user_id = user.id
+        users_project.save
+      end
+    end
+  end
+
+  def self.access_roles
+    {
+      "Guest"   => GUEST,
+      "Reporter"   => REPORTER,
+      "Developer" => DEVELOPER,
+      "Master"  => MASTER
+    }
+  end
+
+  def role_access
+    project_access
+  end
+
   def update_repository
     Gitlabhq::GitHost.system.new.configure do |c|
       c.update_project(project.path, project)
     end
+  end
+
+  def project_access_human
+    Project.access_options.key(self.project_access)
+  end
+
+  def repo_access_human
+    ""
   end
 end
 # == Schema Information
@@ -42,7 +80,6 @@ end
 #  project_id     :integer         not null
 #  created_at     :datetime
 #  updated_at     :datetime
-#  repo_access    :integer         default(0), not null
 #  project_access :integer         default(0), not null
 #
 

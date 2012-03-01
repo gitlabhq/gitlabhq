@@ -1,5 +1,5 @@
 %ul.bordered-list
-  - @commit.diffs.each do |diff|
+  - diffs.each do |diff|
     %li
       - if diff.deleted_file
         %span.removed_file

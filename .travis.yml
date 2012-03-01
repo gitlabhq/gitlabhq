@@ -4,6 +4,8 @@ branches:
     - 'master'
 rvm: 1.9.2
 before_script:
+  - "cp config/database.yml.example config/database.yml"
+  - "cp config/gitlab.yml.example config/gitlab.yml"
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:migrate RAILS_ENV=test"
   - "bundle exec rake db:seed_fu RAILS_ENV=test"

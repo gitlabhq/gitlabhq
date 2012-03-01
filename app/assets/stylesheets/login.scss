@@ -1,0 +1,44 @@
+/* Login Page */
+body.login-page{ 
+  padding-top: 10%;
+  background:#f1f1f1;
+}
+
+.login-box{
+  width: 304px;
+  position: relative;
+  border-radius: 5px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+}
+
+.login-box .login-logo{
+  margin: 10px 0 30px 0;
+  display: block;
+}
+
+.login-box input.text{background-color: #f1f1f1; font-size: 16px; border-radius: 0; padding: 14px 10px; width: 280px}
+
+.login-box input.text.top{
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.login-box input.text.bottom{
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top: 0;
+  margin-bottom: 20px;
+}
+
+.login-box a.forgot{float: right; padding-top: 6px}
+

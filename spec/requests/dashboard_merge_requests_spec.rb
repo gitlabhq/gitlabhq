@@ -34,14 +34,7 @@ describe "User MergeRequests" do
 
     it { should have_content(@merge_request1.title[0..10]) }
     it { should have_content(@merge_request1.project.name) }
-    it { should have_content(@merge_request1.target_branch) }
-    it { should have_content(@merge_request1.source_branch) }
-    it { should have_content(@merge_request1.assignee.name) }
-
     it { should have_content(@merge_request2.title[0..10]) }
     it { should have_content(@merge_request2.project.name) }
-    it { should have_content(@merge_request2.target_branch) }
-    it { should have_content(@merge_request2.source_branch) }
-    it { should have_content(@merge_request2.assignee.name) }
   end
 end

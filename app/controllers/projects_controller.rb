@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
 
     Project.transaction do
       @project.save!
-      @project.users_projects.create!(:repo_access => Repository::REPO_RW , :project_access => Project::PROJECT_RWA, :user => current_user)
+      @project.users_projects.create!(:project_access => UsersProject::MASTER, :user => current_user)
 
       # when project saved no team member exist so 
       # project repository should be updated after first user add
@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if project.update_attributes(params[:project])
-        format.html { redirect_to info_project_path(project), :notice => 'Project was successfully updated.' }
+        format.html { redirect_to edit_project_path(project), :notice => 'Project was successfully updated.' }
         format.js
       else
         format.html { render action: "edit" }
@@ -68,15 +68,12 @@ class ProjectsController < ApplicationController
 
   def show
     return render "projects/empty" unless @project.repo_exists? && @project.has_commits?
-    limit = (params[:limit] || 20).to_i
-    @activities = @project.activities(limit)#updates_wo_repo(limit)
+    limit = (params[:limit] || 10).to_i
+    @activities = @project.activities(limit)
   end
 
   def files
     @notes = @project.notes.where("attachment != 'NULL'").order("created_at DESC").limit(100)
-  end
-
-  def info
   end
 
   #
@@ -84,17 +81,16 @@ class ProjectsController < ApplicationController
   #
 
   def wall
+    return render_404 unless @project.wall_enabled
     @note = Note.new
-    @notes = @project.common_notes.order("created_at DESC")
-    @notes = @notes.fresh.limit(20)
 
     respond_to do |format|
       format.html
-      format.js { respond_with_notes }
     end
   end
 
   def graph
+    render_full_content
     @days_json, @commits_json = GraphCommit.to_graph(project)
   end
 
@@ -114,6 +110,7 @@ class ProjectsController < ApplicationController
 
   def project
     @project ||= Project.find_by_code(params[:id])
+    @project || render_404
   end
 
   def determine_layout

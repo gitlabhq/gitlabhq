@@ -1,0 +1,26 @@
+.file_stats
+  = render "commits/diff_head", :diffs => diffs
+ 
+- diffs.each_with_index do |diff, i|
+  - next if diff.diff.empty?
+  - file = (@commit.tree / diff.b_path)
+  - file = (@commit.prev_commit.tree / diff.a_path) unless file
+  - next unless file
+  .diff_file
+    .diff_file_header
+      - if diff.deleted_file
+        %strong{:id => "#{diff.a_path}"}= diff.a_path
+      - else
+        = link_to tree_file_project_ref_path(@project, @commit.id, diff.b_path) do
+          %strong{:id => "#{diff.b_path}"}= diff.b_path
+      %br/
+    .diff_file_content
+      - if file.text?
+        = render "commits/text_file", :diff => diff, :index => i
+      - elsif file.image?
+        .diff_file_content_image
+          %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+      - else
+        %p
+          %center No preview for this file type
+

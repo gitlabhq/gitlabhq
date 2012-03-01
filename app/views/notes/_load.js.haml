@@ -1,12 +1,7 @@
 - unless @notes.blank?
-
-  - if params[:last_id] && params[:first_id]
+  - if params[:last_id]
     :plain
-      NoteList.replace(#{@notes.last.id}, #{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
-
-  - elsif params[:last_id]
-    :plain
-      NoteList.prepend(#{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
+      NoteList.replace("#{escape_javascript(render(:partial => 'notes/notes_list'))}");
 
   - elsif params[:first_id]
     :plain
@@ -14,3 +9,9 @@
 
   - else
     :plain
+      NoteList.setContent(#{@notes.last.id}, #{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
+
+- else 
+  - if params[:first_id]
+    :plain
+      NoteList.append(#{params[:first_id]}, "");

@@ -1,8 +1,6 @@
-.top-tabs
-  = link_to graph_project_path(@project), :class => "tab #{'active' if current_page?(graph_project_path(@project)) }" do 
-    %span
-    Network Graph
-#holder.graph
+%h3 Network Graph
+%br
+#holder.graph.well
 
 :javascript
   var chunk1={commits:#{@commits_json}};

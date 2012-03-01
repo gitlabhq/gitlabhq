@@ -1,6 +1,19 @@
-= render 'form'
+%h3
+  Edit access
+  %small
+    = @admin_team_member.project.name
+    &ndash;
+    = @admin_team_member.user_name
 
-%br
-= link_to 'Show', admin_team_member_path(@admin_team_member)
-\|
-= link_to 'Back', admin_team_members_path
+%hr
+%table.zebra-striped
+  %tr
+    %td User:
+    %td= @admin_team_member.user_name
+  %tr
+    %td Project:
+    %td= @admin_team_member.project.name
+  %tr
+    %td Since:
+    %td= @admin_team_member.updated_at.stamp("Nov 11, 2010")
+= render 'form'

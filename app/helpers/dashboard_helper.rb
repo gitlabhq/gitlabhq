@@ -3,6 +3,7 @@ module DashboardHelper
     case object.class.name.to_s
     when "Issue" then project_issue_path(project, project.issues.find(object.id))
     when "Commit" then project_commit_path(project, project.repo.commits(object.id).first)
+    when "MergeRequest" then project_merge_request_path(project, object.id)
     when "Note"
       then
       note = object
@@ -26,6 +27,7 @@ module DashboardHelper
             when "Note" then markdown(object.note)
             when "Issue" then object.title
             when "Commit" then object.safe_message
+            when "MergeRequest" then object.title
             else return "Project Wall"
             end
 
