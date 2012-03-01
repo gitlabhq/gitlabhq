@@ -113,4 +113,12 @@ module ApplicationHelper
   def layout 
     controller.send :_layout
   end
+
+  def app_theme
+    if current_user && current_user.theme_id == 1
+      "ui_basic"
+    else
+      "ui_mars"
+    end
+  end
 end

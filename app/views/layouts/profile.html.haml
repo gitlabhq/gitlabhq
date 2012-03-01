@@ -1,7 +1,7 @@
 !!! 5
 %html{ :lang => "en"}
   = render "layouts/head"
-  %body.ui_basic.profile
+  %body{:class => "#{app_theme} profile"}
     = render "layouts/flash"
     = render "layouts/head_panel", :title => "Profile"
     .container
