@@ -8,6 +8,7 @@
 
 %div.dashboard_category
   %h3
+    %span.ico.projects
     = link_to "Projects" , "#projects", :id => "projects"
     %small
       ( most recent )
@@ -59,6 +60,7 @@
 - unless @events.blank?
   %div.dashboard_category
     %h3
+      %span.ico.activities
       = link_to "Activities" , "#activities", :id => "activities"
 
     %hr

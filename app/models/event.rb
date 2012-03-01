@@ -21,9 +21,12 @@ class Event < ActiveRecord::Base
     end
   end
 
-  # For now only push events enabled for system
+  # Next events currently enabled for system
+  #  - push 
+  #  - new issue
+  #  - merge request
   def allowed?
-    push?
+    push? || new_issue? || new_merge_request?
   end
 
   def push?
@@ -49,6 +52,28 @@ class Event < ActiveRecord::Base
   def pusher
     User.find_by_id(data[:user_id])
   end
+
+  def new_issue? 
+    target_type == "Issue" && 
+      action == Created
+  end
+
+  def new_merge_request? 
+    target_type == "MergeRequest" && 
+      action == Created
+  end
+
+  def issue 
+    target if target_type == "Issue"
+  end
+
+  def merge_request
+    target if target_type == "MergeRequest"
+  end
+
+  def author 
+    target.author
+  end
   
   def commits
     @commits ||= data[:commits].map do |commit|
@@ -57,6 +82,9 @@ class Event < ActiveRecord::Base
   end
 
   delegate :id, :name, :email, :to => :pusher, :prefix => true, :allow_nil => true
+  delegate :name, :email, :to => :author, :prefix => true, :allow_nil => true
+  delegate :title, :to => :issue, :prefix => true, :allow_nil => true
+  delegate :title, :to => :merge_request, :prefix => true, :allow_nil => true
 end
 # == Schema Information
 #
