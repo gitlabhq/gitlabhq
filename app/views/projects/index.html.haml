@@ -7,17 +7,33 @@
         New Project
 %hr
 - unless @projects.empty?
-  %div.content_list= render "tile"
+  .row
+    .span5
+      %div.content_list.projects_list
+        - @projects.each do |project|
+          = link_to project_path(project), :remote => true, :class => dom_class(project) do
+            %h4
+              %span.ico.project
+              = truncate(project.name, :length => 26)
+    .span11.right.show_holder
+      .loading
 
-  -# If projects requris paging
-  -# We add ajax loader & init script
-  - if @projects.count == @limit
-    .loading{ :style => "display:none;"}
-      %center= image_tag "ajax-loader.gif"
-
-    :javascript
-      $(function(){
-        Pager.init(#{@limit});
-      });
 - else
   %h2 Nothing here
+
+
+:javascript
+  $(function(){
+    $("a.project").live("ajax:before", function() { 
+      $(".show_holder").html("<div class='loading'>");
+      $('a.project').removeClass("active");
+      $(this).addClass("active");
+    });
+    $('a.project:first-child').trigger("click");
+  });
+
+- if @projects.count == @limit
+  :javascript
+    $(function(){
+      Pager.init(#{@limit});
+    });

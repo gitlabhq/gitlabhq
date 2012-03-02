@@ -1,4 +1,5 @@
 a {
+  outline: none;
   color: $link_color;
   &:hover { 
     text-decoration:none; 
@@ -8,6 +9,10 @@ a {
   &.btn { 
     color: $style_color;
   }
+}
+
+a:focus { 
+  outline: none; 
 }
 
 .vlink { 
@@ -442,36 +447,6 @@ input.git_clone_url {
   background:#fff !important;
 }
 
-.project_tile { 
-  @include shade;
-  @include round-borders-all(4px);
-  margin-bottom:20px;
-  width:298px;
-  float:left;
-  margin-left:20px;
-  border: 1px solid #DDD;
-  padding-bottom:20px;
-
-  .title { 
-    background:#f5f5f5;
-    padding: 5px 10px 2px 20px;
-    border-bottom: 1px solid #DDD;
-    margin-bottom: 15px;
-
-    h3 { 
-      &:hover { 
-        text-decoration: underline;
-      }
-    }
-  }
-  .data { 
-    margin: 0 20px;
-  }
-  .buttons { 
-    margin: 0 20px;
-  }
-}
-
 /**
  * 
  * COMMIT SHOw
@@ -610,26 +585,6 @@ p.time {
 .dashboard_category { 
   margin-bottom:30px;
 
-  .ico { 
-    background: url("images.png") no-repeat -85px -77px;
-    width: 19px;
-    height: 16px;
-    float: left;
-    position: relative;
-    margin-right: 10px;
-    top: 8px;
-
-    &.project { 
-      background-position:  -37px -77px;
-    }
-
-    &.activities { 
-      background-position:-162px -22px;
-    }
-    &.projects { 
-      background-position:-209px -21px;
-    }
-  }
 
 
   h3 a { 
@@ -688,3 +643,39 @@ p.time {
   .wll:hover { background:none }
 }
 
+
+.projects_list { 
+  a.project { 
+    h4 { 
+      color:#888;
+    }
+    &.active { 
+      h4 {
+        color:#111;
+        .ico.project { 
+          background-position:-209px -21px;
+        }
+      }
+    }
+  }
+}
+.ico { 
+  background: url("images.png") no-repeat -85px -77px;
+  width: 19px;
+  height: 16px;
+  float: left;
+  position: relative;
+  margin-right: 10px;
+  top: 8px;
+
+  &.project { 
+    background-position:  -37px -77px;
+  }
+
+  &.activities { 
+    background-position:-162px -22px;
+  }
+  &.projects { 
+    background-position:-209px -21px;
+  }
+}

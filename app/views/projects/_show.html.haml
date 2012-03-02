@@ -1,0 +1,23 @@
+%h4
+  = @project.name
+%hr
+%div
+  %a.btn.info{:href => tree_project_ref_path(@project, @project.root_ref)} Browse code
+  &nbsp;
+  %a.btn{:href => project_commits_path(@project)} Commits
+  %strong.right
+    = link_to project_path(@project) do 
+      Switch to project &rarr; 
+%hr
+.alert-message.block-message.warning
+  .input
+    .input-prepend
+      %span.add-on git clone
+      = text_field_tag :project_clone, @project.url_to_repo, :class => "xlarge one_click_select git_clone_url"
+
+= simple_format @project.description
+- unless @events.blank?
+  %h5.cgray Recent Activity
+  .content_list= render @events
+
+
