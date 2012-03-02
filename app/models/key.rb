@@ -24,7 +24,7 @@ class Key < ActiveRecord::Base
   end
 
   def unique_key
-    query = Key.where('key = ?', key)
+    query = Key.where('`key` = ?', key)
     query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
     if (query.count > 0)
       errors.add :key, 'already exist.'
