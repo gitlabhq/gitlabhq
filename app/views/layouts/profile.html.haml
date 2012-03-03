@@ -13,6 +13,4 @@
         = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do
           SSH Keys
       .content
-        .row
-          .span12= yield
-          .sidebar= render "layouts/projects_side"
+        = yield

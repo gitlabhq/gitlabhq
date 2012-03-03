@@ -1,12 +1,14 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%li{:id => dom_id(member), :class => "team_member_row"}
-  = link_to project_team_member_path(@project, member), :title => user.name do 
-    = image_tag gravatar_icon(user.email, 60), :class => "thumbnail"
+%li{:id => dom_id(member), :class => "team_member_row wll"}
+  .left
+    = link_to project_team_member_path(@project, member), :title => user.name do 
+      = image_tag gravatar_icon(user.email, 60), :class => "styled_image"
   .row
     .span8
       %h4
         = truncate(user.name, :lenght => 24)
+        %br
         %small= truncate user.email, :lenght => 24
 
     .span3

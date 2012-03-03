@@ -1,4 +1,4 @@
-%ul.media-grid
+%ul.unstyled.ui-box
   - @project.users_projects.each do |up|
     = render(:partial => 'team_members/show', :locals => {:member => up})
 

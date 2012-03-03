@@ -1,8 +1,0 @@
-%aside.project-right
-  - if content_for? :sidebar_all
-    = render :sidebar_all
-  - else
-    - if content_for? :sidebar_top_block
-      = yield :sidebar_top_block
-    = render "widgets/project_member"
-    = render "widgets/recent_projects"
