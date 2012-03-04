@@ -78,6 +78,10 @@ a:focus {
 .prepend-top-10 {
   margin-top:10px;
 }
+
+.padded { 
+  padding:20px;
+}
 .no-borders { 
   border:none;
 }
@@ -643,22 +647,6 @@ p.time {
   .wll:hover { background:none }
 }
 
-
-.projects_list { 
-  a.project { 
-    h4 { 
-      color:#888;
-    }
-    &.active { 
-      h4 {
-        color:#111;
-        .ico.project { 
-          background-position:-209px -21px;
-        }
-      }
-    }
-  }
-}
 .ico { 
   background: url("images.png") no-repeat -85px -77px;
   width: 19px;
@@ -677,5 +665,38 @@ p.time {
   }
   &.projects { 
     background-position:-209px -21px;
+  }
+}
+
+.leftbar { 
+
+  h5, .title { 
+    padding:5px 10px;
+  }
+
+  h4 { 
+    font-size:14px;
+    padding:2px 10px;
+    color:#888;
+    border-bottom:1px solid #eee;
+    &:last-child { border:none; }
+  }
+
+  a.active { 
+    h4 {
+      color:#111;
+      border-right:4px solid $styled_border_color;
+      .ico.project { 
+        background-position:-209px -21px;
+      }
+    }
+  }
+}
+
+.btn { 
+  &.very_small { 
+    font-size:11px;
+    padding:4px;
+    margin:2px;
   }
 }

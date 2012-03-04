@@ -1,22 +1,22 @@
-%h3
-  Projects
-  %small= "( #{current_user.projects.count} )"
-  - if current_user.can_create_project?
-    %span.right
-      = link_to new_project_path, :class => "btn small" do 
-        New Project
-%hr
 - unless @projects.empty?
   .row
-    .span5
-      %div.content_list.projects_list
-        - @projects.each do |project|
-          = link_to project_path(project), :remote => true, :class => dom_class(project) do
-            %h4
-              %span.ico.project
-              = truncate(project.name, :length => 26)
-    .span11.right.show_holder
-      .loading
+    .span4
+      %div.leftbar.ui-box
+        %h5
+          Projects
+          - if current_user.can_create_project?
+            %span.right
+              = link_to new_project_path, :class => "btn very_small info" do 
+                New Project
+        .content_list
+          - @projects.each do |project|
+            = link_to project_path(project), :remote => true, :class => dom_class(project) do
+              %h4
+                %span.ico.project
+                = truncate(project.name, :length => 22)
+    .span12.right
+      .show_holder.ui-box.padded
+        .loading
 
 - else
   %h2 Nothing here
