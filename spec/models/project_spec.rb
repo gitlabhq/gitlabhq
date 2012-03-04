@@ -2,13 +2,17 @@ require 'spec_helper'
 
 describe Project do
   describe "Associations" do
-    it { should have_many(:events) }
     it { should have_many(:users) }
-    it { should have_many(:users_projects) }
-    it { should have_many(:issues) }
-    it { should have_many(:notes) }
-    it { should have_many(:snippets) }
+    it { should have_many(:protected_branches).dependent(:destroy) }
+    it { should have_many(:events).dependent(:destroy) }
+    it { should have_many(:wikis).dependent(:destroy) }
+    it { should have_many(:merge_requests).dependent(:destroy) }
+    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:issues).dependent(:destroy) }
+    it { should have_many(:notes).dependent(:destroy) }
+    it { should have_many(:snippets).dependent(:destroy) }
     it { should have_many(:web_hooks).dependent(:destroy) }
+    it { should have_many(:deploy_keys).dependent(:destroy) }
   end
 
   describe "Validation" do
@@ -67,30 +71,6 @@ describe Project do
     it "should be invalid repo" do
       project = Project.new(:name => "ok_name", :path => "/INVALID_PATH/", :code => "NEOK")
       project.valid_repo?.should be_false
-    end
-  end
-
-  describe "updates" do
-    let(:project) { Factory :project }
-
-    before do
-      @issue = Factory :issue,
-        :project => project,
-        :author => Factory(:user),
-        :assignee => Factory(:user)
-
-      @note = Factory :note,
-        :project => project,
-        :author => Factory(:user)
-
-      @commit = project.fresh_commits(1).first
-    end
-
-    describe "return commit, note & issue" do
-      it { project.updates(3).count.should == 3 }
-      it { project.updates(3).last.id.should == @commit.id }
-      it { project.updates(3).include?(@issue).should be_true }
-      it { project.updates(3).include?(@note).should be_true }
     end
   end
 

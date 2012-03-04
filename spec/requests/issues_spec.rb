@@ -46,21 +46,6 @@ describe "Issues" do
       page.body.should have_selector("entry summary", :text => @issue.title)
     end
 
-    describe "Destroy" do
-      before do
-        # admin access to remove issue
-        @user.users_projects.destroy_all
-        project.add_access(@user, :read, :write, :admin)
-        visit edit_project_issue_path(project, @issue)
-      end
-
-      it "should remove entry" do
-        expect {
-          click_link "Remove"
-        }.to change { Issue.count }.by(-1)
-      end
-    end
-
     describe "statuses" do
       before do
         @closed_issue = Factory :issue,

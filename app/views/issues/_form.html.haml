@@ -9,6 +9,10 @@
             %li= msg
 
     .clearfix
+      = f.label :title
+      .input= f.text_area :title, :maxlength => 255, :class => "xxlarge"
+
+    .clearfix
       = f.label :assignee_id
       .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
 
@@ -21,9 +25,6 @@
         = f.label :closed
         .input= f.check_box :closed
 
-    .clearfix
-      = f.label :title
-      .input= f.text_area :title, :maxlength => 255, :class => "xxlarge"
     .actions
       = f.submit 'Save', :class => "primary btn"
 
@@ -34,8 +35,3 @@
           = link_to "Cancel", project_issues_path(@project), :class => "btn"
         - else    
           = link_to "Cancel", project_issue_path(@project, @issue), :class => "btn"
-
-
-      - unless @issue.new_record?
-        .right
-          = link_to 'Remove', [@project, @issue], :confirm => 'Are you sure?', :method => :delete, :class => "danger btn"

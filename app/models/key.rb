@@ -14,8 +14,6 @@ class Key < ActiveRecord::Base
 
   before_save :set_identifier
   before_validation :strip_white_space
-  after_save :update_repository
-  after_destroy :repository_delete_key
   delegate :name, :email, :to => :user, :prefix => true
   validate :unique_key
 
