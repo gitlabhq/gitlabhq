@@ -679,8 +679,8 @@ p.time {
     padding:2px 10px;
     color:#888;
     border-bottom:1px solid #eee;
-    &:last-child { border:none; }
   }
+  a:last-child h4 { border:none; }
 
   a.active { 
     h4 {
