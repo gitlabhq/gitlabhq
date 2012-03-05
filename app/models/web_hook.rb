@@ -13,7 +13,7 @@ class WebHook < ActiveRecord::Base
               message: "should be a valid url" }
 
   def execute(data)
-    WebHook.post(url, body: data.to_json)
+    WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
   rescue
     # There was a problem calling this web hook, let's forget about it.
   end
