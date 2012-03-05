@@ -33,6 +33,10 @@ class Event < ActiveRecord::Base
     action == self.class::Pushed
   end
 
+  def new_tag? 
+    data[:ref]["refs/tags"]
+  end
+
   def new_branch?
     data[:before] =~ /^00000/
   end
@@ -47,6 +51,10 @@ class Event < ActiveRecord::Base
 
   def branch_name
     @branch_name ||= data[:ref].gsub("refs/heads/", "")
+  end
+
+  def tag_name
+    @tag_name ||= data[:ref].gsub("refs/tags/", "")
   end
 
   def pusher

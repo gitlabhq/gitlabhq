@@ -1,5 +1,4 @@
 :plain
-  //$("#tree-content-holder").hide("slide", { direction: "left" }, 150, function(){
-    $("#tree-holder").html("#{escape_javascript(render(:partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @tree}))}");
-    $("#tree-content-holder").show("slide", { direction: "right" }, 150);
-  //});
+  $("#tree-holder").html("#{escape_javascript(render(:partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @tree}))}");
+  $("#tree-content-holder").show("slide", { direction: "right" }, 150);
+  $('.project-refs-form #path').val("#{params[:path]}");

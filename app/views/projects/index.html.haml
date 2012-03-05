@@ -1,21 +1,36 @@
-.row
-  .span4
-    %div.leftbar.ui-box
-      %h5
-        Projects
-        - if current_user.can_create_project?
-          %span.right
-            = link_to new_project_path, :class => "btn very_small info" do 
-              New Project
-      .content_list
-        - @projects.each do |project|
-          = link_to project_path(project), :remote => true, :class => dom_class(project) do
-            %h4
-              %span.ico.project
-              = truncate(project.name, :length => 22)
-  .span12.right
-    .show_holder.ui-box.padded
-      .loading
+- if @projects.any?
+  .row
+    .span4
+      %div.leftbar.ui-box
+        %h5
+          Projects
+          - if current_user.can_create_project?
+            %span.right
+              = link_to new_project_path, :class => "btn very_small info" do 
+                New Project
+        .content_list
+          - @projects.each do |project|
+            = link_to project_path(project), :remote => true, :class => dom_class(project) do
+              %h4
+                %span.ico.project
+                = truncate(project.name, :length => 22)
+    .span12.right
+      .show_holder.ui-box.padded
+        .loading
+
+- else 
+  %h3 Nothing here
+  %br
+  - if current_user.can_create_project?
+    .alert-message.block-message.warning
+      You can create up to
+      = current_user.projects_limit
+      projects. Click on link below to add a new one
+      .link_holder
+        = link_to new_project_path, :class => "" do 
+          New Project » 
+  - else 
+    If you will be added to project - it will be displayed here
 
 
 :javascript

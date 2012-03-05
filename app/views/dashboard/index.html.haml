@@ -1,5 +1,5 @@
 - if current_user.require_ssh_key?
-  .alert-message.warning
+  .alert-message.block-message.error
     %p  
       You wont be able to pull/push project code unless you  
       = link_to new_key_path, :class => "vlink" do 
@@ -32,7 +32,7 @@
                   New Project » 
 
 
-- unless @merge_requests.blank?
+- if @merge_requests.any?
   %div.dashboard_category
     %h3
       = link_to "Merge Requests" , "#merge_requests", :id => "merge_requests"
@@ -45,7 +45,7 @@
     .row
       .dashboard_block= render "dashboard/merge_requests_feed"
 
-- unless @issues.blank?
+- if @issues.any?
   %div.dashboard_category
     %h3
       = link_to "Issues" , "#issues", :id => "issues"
@@ -57,7 +57,7 @@
     .row
       .dashboard_block= render "dashboard/issues_feed"
 
-- unless @events.blank?
+- if @events.any?
   %div.dashboard_category
     %h3
       %span.ico.activities

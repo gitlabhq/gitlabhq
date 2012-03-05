@@ -3,4 +3,5 @@
   %small ( authored or assigned to you )
 
 %br
-.ui-box= render "dashboard/merge_requests_feed"
+- if @merge_requests.any?
+  .ui-box= render "dashboard/merge_requests_feed"
