@@ -23,8 +23,7 @@ class Admin::UsersController < ApplicationController
     UsersProject.user_bulk_import(
       @admin_user, 
       params[:project_ids],
-      params[:project_access],
-      params[:repo_access]
+      params[:project_access]
     )
 
     redirect_to [:admin, @admin_user], notice: 'Teams were successfully updated.'

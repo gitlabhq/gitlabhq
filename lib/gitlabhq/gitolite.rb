@@ -6,6 +6,14 @@ module Gitlabhq
   class Gitolite
     class AccessDenied < StandardError; end
 
+    def self.update_project(path, project)
+      self.new.configure { |git| git.update_project(path, project) }
+    end
+
+    def self.destroy_project(project)
+      self.new.configure { |git| git.destroy_project(project) }
+    end
+
     def pull
       # create tmp dir
       @local_dir = File.join(Dir.tmpdir,"gitlabhq-gitolite-#{Time.now.to_i}")

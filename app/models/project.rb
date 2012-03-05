@@ -54,27 +54,6 @@ class Project < ActiveRecord::Base
     UsersProject.access_roles
   end
 
-  def repository
-    @repository ||= Repository.new(self)
-  end
-
-  delegate :repo,
-    :url_to_repo,
-    :path_to_repo,
-    :update_repository,
-    :destroy_repository,
-    :tags,
-    :repo_exists?,
-    :commit,
-    :commits,
-    :commits_with_refs,
-    :tree,
-    :heads,
-    :commits_since,
-    :fresh_commits,
-    :commits_between,
-    :to => :repository, :prefix => nil
-
   def to_param
     code
   end
@@ -213,18 +192,6 @@ class Project < ActiveRecord::Base
     keys.map(&:identifier)
   end
 
-  def readers
-    @readers ||= users_projects.includes(:user).map(&:user)
-  end
-
-  def writers
-    @writers ||= users_projects.includes(:user).map(&:user)
-  end
-
-  def admins
-    @admins ||= users_projects.includes(:user).where(:project_access => UsersProject::MASTER).map(&:user)
-  end
-
   def allow_read_for?(user)
     !users_projects.where(:user_id => user.id).empty?
   end
@@ -269,10 +236,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def last_activity_date_cached(expire = 1.hour)
-    last_activity_date
-  end
-
   def check_limit
     unless owner.can_create_project?
       errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
@@ -293,7 +256,127 @@ class Project < ActiveRecord::Base
     errors.add(:path, "Invalid repository path")
     false
   end
+
+  def commit(commit_id = nil)
+    commit = if commit_id
+               repo.commits(commit_id).first
+             else
+               repo.commits.first
+             end
+    Commit.new(commit) if commit
+  end
+
+  def fresh_commits(n = 10)
+    commits = heads.map do |h|
+      repo.commits(h.name, n).map { |c| Commit.new(c, h) }
+    end.flatten.uniq { |c| c.id }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits[0...n]
+  end
+
+  def commits_with_refs(n = 20)
+    commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits[0..n]
+  end
+
+  def commits_since(date)
+    commits = heads.map do |h|
+      repo.log(h.name, nil, :since => date).each { |c| Commit.new(c, h) }
+    end.flatten.uniq { |c| c.id }
+
+    commits.sort! do |x, y|
+      y.committed_date <=> x.committed_date
+    end
+
+    commits
+  end
+
+  def commits(ref, path = nil, limit = nil, offset = nil)
+    if path
+      repo.log(ref, path, :max_count => limit, :skip => offset)
+    elsif limit && offset
+      repo.commits(ref, limit, offset)
+    else
+      repo.commits(ref)
+    end.map{ |c| Commit.new(c) } 
+  end
+
+  def commits_between(from, to)
+    repo.commits_between(from, to).map { |c| Commit.new(c) }
+  end
+
+  def project_id
+    self.id
+  end
+
+  def write_hooks
+    %w(post-receive).each do |hook|
+      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
+    end
+  end
+
+  def write_hook(name, content)
+    hook_file = File.join(path_to_repo, 'hooks', name)
+
+    File.open(hook_file, 'w') do |f|
+      f.write(content)
+    end
+
+    File.chmod(0775, hook_file)
+  end
+
+  def repo
+    @repo ||= Grit::Repo.new(path_to_repo)
+  end
+
+  def url_to_repo
+    Gitlabhq::GitHost.url_to_repo(path)
+  end
+
+  def path_to_repo
+    File.join(GIT_HOST["base_path"], "#{path}.git")
+  end
+
+  def update_repository
+    Gitlabhq::GitHost.system.update_project(path, self)
+
+    write_hooks if File.exists?(path_to_repo)
+  end
+
+  def destroy_repository
+    Gitlabhq::GitHost.system.destroy_project(self)
+  end
+
+  def repo_exists?
+    @repo_exists ||= (repo && !repo.branches.empty?)
+  rescue 
+    @repo_exists = false
+  end
+
+  def tags
+    repo.tags.map(&:name).sort.reverse
+  end
+
+  def heads
+    @heads ||= repo.heads
+  end
+
+  def tree(fcommit, path = nil)
+    fcommit = commit if fcommit == :head
+    tree = fcommit.tree
+    path ? (tree / path) : tree
+  end
 end
+
 # == Schema Information
 #
 # Table name: projects

@@ -22,10 +22,7 @@ describe Project do
   end
 
   describe "Respond to" do
-    it { should respond_to(:readers) }
-    it { should respond_to(:writers) }
     it { should respond_to(:repository_writers) }
-    it { should respond_to(:admins) }
     it { should respond_to(:add_access) }
     it { should respond_to(:reset_access) }
     it { should respond_to(:update_repository) }
