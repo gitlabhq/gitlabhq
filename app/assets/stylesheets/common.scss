@@ -1,4 +1,5 @@
 a {
+  outline: none;
   color: $link_color;
   &:hover { 
     text-decoration:none; 
@@ -8,6 +9,10 @@ a {
   &.btn { 
     color: $style_color;
   }
+}
+
+a:focus { 
+  outline: none; 
 }
 
 .vlink { 
@@ -72,6 +77,10 @@ a {
 }
 .prepend-top-10 {
   margin-top:10px;
+}
+
+.padded { 
+  padding:20px;
 }
 .no-borders { 
   border:none;
@@ -442,36 +451,6 @@ input.git_clone_url {
   background:#fff !important;
 }
 
-.project_tile { 
-  @include shade;
-  @include round-borders-all(4px);
-  margin-bottom:20px;
-  width:298px;
-  float:left;
-  margin-left:20px;
-  border: 1px solid #DDD;
-  padding-bottom:20px;
-
-  .title { 
-    background:#f5f5f5;
-    padding: 5px 10px 2px 20px;
-    border-bottom: 1px solid #DDD;
-    margin-bottom: 15px;
-
-    h3 { 
-      &:hover { 
-        text-decoration: underline;
-      }
-    }
-  }
-  .data { 
-    margin: 0 20px;
-  }
-  .buttons { 
-    margin: 0 20px;
-  }
-}
-
 /**
  * 
  * COMMIT SHOw
@@ -610,26 +589,6 @@ p.time {
 .dashboard_category { 
   margin-bottom:30px;
 
-  .ico { 
-    background: url("images.png") no-repeat -85px -77px;
-    width: 19px;
-    height: 16px;
-    float: left;
-    position: relative;
-    margin-right: 10px;
-    top: 8px;
-
-    &.project { 
-      background-position:  -37px -77px;
-    }
-
-    &.activities { 
-      background-position:-162px -22px;
-    }
-    &.projects { 
-      background-position:-209px -21px;
-    }
-  }
 
 
   h3 a { 
@@ -688,3 +647,56 @@ p.time {
   .wll:hover { background:none }
 }
 
+.ico { 
+  background: url("images.png") no-repeat -85px -77px;
+  width: 19px;
+  height: 16px;
+  float: left;
+  position: relative;
+  margin-right: 10px;
+  top: 8px;
+
+  &.project { 
+    background-position:  -37px -77px;
+  }
+
+  &.activities { 
+    background-position:-162px -22px;
+  }
+  &.projects { 
+    background-position:-209px -21px;
+  }
+}
+
+.leftbar { 
+
+  h5, .title { 
+    padding:5px 10px;
+  }
+
+  h4 { 
+    font-size:14px;
+    padding:2px 10px;
+    color:#888;
+    border-bottom:1px solid #eee;
+  }
+  a:last-child h4 { border:none; }
+
+  a.active { 
+    h4 {
+      color:#111;
+      border-right:4px solid $styled_border_color;
+      .ico.project { 
+        background-position:-209px -21px;
+      }
+    }
+  }
+}
+
+.btn { 
+  &.very_small { 
+    font-size:11px;
+    padding:4px;
+    margin:2px;
+  }
+}

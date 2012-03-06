@@ -10,4 +10,4 @@
     &rarr;
     %span.label= merge_request.target_branch
   = link_to project_merge_request_path(merge_request.project, merge_request) do
-    %p.row_title= truncate(merge_request.title, :length => 60)
+    %p.row_title= truncate(merge_request.title, :length => 100)

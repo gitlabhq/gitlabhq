@@ -14,8 +14,6 @@ class Key < ActiveRecord::Base
 
   before_save :set_identifier
   before_validation :strip_white_space
-  after_save :update_repository
-  after_destroy :repository_delete_key
   delegate :name, :email, :to => :user, :prefix => true
   validate :unique_key
 
@@ -24,7 +22,7 @@ class Key < ActiveRecord::Base
   end
 
   def unique_key
-    query = Key.where('key = ?', key)
+    query = Key.where(:key => key)
     query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
     if (query.count > 0)
       errors.add :key, 'already exist.'

@@ -11,6 +11,9 @@ end
 Grit::GitRuby::Internal::RawObject.class_eval do
   def content
     transcoding(@content)
+  rescue Exception => ex
+    Rails.logger.error ex.message
+    @content
   end
 
   private
