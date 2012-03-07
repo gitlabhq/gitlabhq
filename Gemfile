@@ -3,6 +3,7 @@ source "http://rubygems.org"
 gem "rails", "3.2.1"
 
 gem "sqlite3"
+gem "mysql2"
 gem "rake"
 gem "devise"
 gem "stamp"
@@ -31,6 +32,7 @@ gem "foreman"
 gem "omniauth-ldap"
 gem 'bootstrap-sass', "1.4.4"
 gem "colored"
+gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 
 group :assets do
   gem "sass-rails",   "3.2.3"
