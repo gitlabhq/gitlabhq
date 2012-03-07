@@ -21,6 +21,12 @@ GIT
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
 
+GIT
+  remote: https://github.com/gitlabhq/yaml_db.git
+  revision: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
+  specs:
+    yaml_db (0.2.2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -144,6 +150,7 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.4)
     multi_xml (0.4.1)
+    mysql2 (0.3.11)
     net-ldap (0.2.2)
     nokogiri (1.5.0)
     omniauth (1.0.2)
@@ -313,6 +320,7 @@ DEPENDENCIES
   kaminari
   launchy
   letter_opener
+  mysql2
   omniauth-ldap
   pry
   pygments.rb (= 0.2.4)
@@ -334,3 +342,4 @@ DEPENDENCIES
   turn
   uglifier (= 1.0.3)
   webmock
+  yaml_db!
