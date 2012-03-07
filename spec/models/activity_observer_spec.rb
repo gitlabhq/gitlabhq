@@ -30,15 +30,15 @@ describe ActivityObserver do
     it { @event.target.should == @issue }
   end
 
-  describe "Issue commented" do 
-    before do 
-      @issue = Factory :issue, :project => project
-      @note = Factory :note, :noteable => @issue, :project => project
-      @event = Event.last
-    end
+  #describe "Issue commented" do 
+    #before do 
+      #@issue = Factory :issue, :project => project
+      #@note = Factory :note, :noteable => @issue, :project => project
+      #@event = Event.last
+    #end
 
-    it_should_be_valid_event
-    it { @event.action.should == Event::Commented }
-    it { @event.target.should == @note }
-  end
+    #it_should_be_valid_event
+    #it { @event.action.should == Event::Commented }
+    #it { @event.target.should == @note }
+  #end
 end

@@ -75,9 +75,7 @@ describe Project do
     let(:project) { Factory :project }
 
     before do
-      @note = Factory :note,
-        :project => project,
-        :author => Factory(:user)
+      @issue = Factory :issue, :project => project,
     end
 
     it { project.last_activity.should == Event.last }
