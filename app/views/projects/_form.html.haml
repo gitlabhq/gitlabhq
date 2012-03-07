@@ -12,7 +12,7 @@
       Path
     .input
       .input-prepend
-        %span.add-on= "git@#{GIT_HOST["host"]}:"
+        %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
         = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
   .clearfix
     = f.label :code do 
