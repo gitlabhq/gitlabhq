@@ -32,7 +32,7 @@ class HooksController < ApplicationController
   def test
     @hook = @project.web_hooks.find(params[:id])
     commits = @project.commits(@project.default_branch, nil, 3)
-    data = @project.web_hook_data(commits.last.id, commits.first.id, "refs/heads/#{@project.default_branch}")
+    data = @project.web_hook_data(commits.last.id, commits.first.id, "refs/heads/#{@project.default_branch}", current_user.keys.first.identifier)
     @hook.execute(data)
 
     redirect_to :back
