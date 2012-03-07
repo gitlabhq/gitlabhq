@@ -89,7 +89,7 @@ def create_repo_project(project_name, user_email)
       end
 
       # Add user as admin for project
-      @project.users_projects.create!(
+      project.users_projects.create!(
         :project_access => UsersProject::MASTER,
         :user => user
       )
