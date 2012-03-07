@@ -68,7 +68,8 @@ class Project < ActiveRecord::Base
     Event.create(
       :project => self,
       :action => Event::Pushed,
-      :data => data
+      :data => data,
+      :author_id => Key.find_by_identifier(author_key_id).user.id
     )
   end
 
@@ -259,7 +260,7 @@ class Project < ActiveRecord::Base
 
   def commit(commit_id = nil)
     commit = if commit_id
-               repo.commits(commit_id).first
+               repo.commit(commit_id)
              else
                repo.commits.first
              end

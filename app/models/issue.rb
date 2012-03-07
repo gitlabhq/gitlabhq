@@ -5,6 +5,7 @@ class Issue < ActiveRecord::Base
   has_many :notes, :as => :noteable, :dependent => :destroy
 
   attr_protected :author, :author_id, :project, :project_id
+  attr_accessor :author_id_of_changes
 
   validates_presence_of :project_id
   validates_presence_of :assignee_id

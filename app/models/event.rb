@@ -1,4 +1,6 @@
 class Event < ActiveRecord::Base
+  default_scope where("author_id IS NOT NULL")
+
   Created   = 1
   Updated   = 2
   Closed    = 3
@@ -26,11 +28,20 @@ class Event < ActiveRecord::Base
   #  - new issue
   #  - merge request
   def allowed?
-    push? || new_issue? || new_merge_request?
+    push? || new_issue? || new_merge_request? || 
+      changed_merge_request? || changed_issue?
   end
 
   def push?
     action == self.class::Pushed
+  end
+
+  def closed?
+    action == self.class::Closed
+  end
+
+  def reopened?
+    action == self.class::Reopened
   end
 
   def new_tag? 
@@ -57,10 +68,6 @@ class Event < ActiveRecord::Base
     @tag_name ||= data[:ref].gsub("refs/tags/", "")
   end
 
-  def pusher
-    User.find_by_id(data[:user_id])
-  end
-
   def new_issue? 
     target_type == "Issue" && 
       action == Created
@@ -69,6 +76,16 @@ class Event < ActiveRecord::Base
   def new_merge_request? 
     target_type == "MergeRequest" && 
       action == Created
+  end
+
+  def changed_merge_request? 
+    target_type == "MergeRequest" && 
+      [Closed, Reopened].include?(action)
+  end
+
+  def changed_issue? 
+    target_type == "Issue" && 
+      [Closed, Reopened].include?(action)
   end
 
   def issue 
@@ -80,7 +97,7 @@ class Event < ActiveRecord::Base
   end
 
   def author 
-    target.author
+    @author ||= User.find(author_id)
   end
   
   def commits
@@ -89,7 +106,6 @@ class Event < ActiveRecord::Base
     end
   end
 
-  delegate :id, :name, :email, :to => :pusher, :prefix => true, :allow_nil => true
   delegate :name, :email, :to => :author, :prefix => true, :allow_nil => true
   delegate :title, :to => :issue, :prefix => true, :allow_nil => true
   delegate :title, :to => :merge_request, :prefix => true, :allow_nil => true

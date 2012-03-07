@@ -20,8 +20,8 @@
   .row
     .dashboard_block
       .row
-        .span9= render "dashboard/projects_feed"
-        .span3.right
+        .span10= render "dashboard/projects_feed"
+        .span4.right
           - if current_user.can_create_project?
             .alert-message.block-message.warning
               You can create up to

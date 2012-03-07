@@ -1,6 +1,6 @@
 - if event.new_branch? || event.new_tag?
-  = image_tag gravatar_icon(event.pusher_email), :class => "avatar"
-  %strong #{event.pusher_name} 
+  = image_tag gravatar_icon(event.author_email), :class => "avatar"
+  %strong #{event.author_name} 
   pushed new 
   - if event.new_tag?
     tag
@@ -16,8 +16,8 @@
     = time_ago_in_words(event.created_at)
     ago.
 - else 
-  = image_tag gravatar_icon(event.pusher_email), :class => "avatar"
-  %strong #{event.pusher_name}
+  = image_tag gravatar_icon(event.author_email), :class => "avatar"
+  %strong #{event.author_name}
   pushed to 
   = link_to project_commits_path(event.project, :ref => event.branch_name) do
     %strong= event.branch_name
@@ -31,6 +31,10 @@
       Compare #{event.commits.first.commit.id[0..8]}...#{event.commits.last.id[0..8]}
   - @project = event.project  
   %ul.unstyled
-    = render event.commits
+    - if event.commits.size > 4
+      = render event.commits[0..2]
+      %li ... and #{event.commits.size - 3} more commits
+    - else 
+      = render event.commits
 
 
