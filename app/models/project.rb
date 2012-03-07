@@ -260,7 +260,7 @@ class Project < ActiveRecord::Base
 
   def commit(commit_id = nil)
     commit = if commit_id
-               repo.commits(commit_id).first
+               repo.commit(commit_id)
              else
                repo.commits.first
              end
