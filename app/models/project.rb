@@ -68,7 +68,8 @@ class Project < ActiveRecord::Base
     Event.create(
       :project => self,
       :action => Event::Pushed,
-      :data => data
+      :data => data,
+      :author_id => Key.find_by_identifier(author_key_id).user.id
     )
   end
 
