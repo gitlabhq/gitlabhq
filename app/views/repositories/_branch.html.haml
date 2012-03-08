@@ -5,7 +5,7 @@
       - if branch.name == @project.root_ref
         %span.label default
   %td
-    = link_to project_commit_path(@project, branch.commit.id) do
+    = link_to project_commit_path(@project, :id => branch.commit.id) do
       %code= branch.commit.id.to_s[0..10]
 
     = image_tag gravatar_icon(Commit.new(branch.commit).author_email), :class => "", :width => 16
