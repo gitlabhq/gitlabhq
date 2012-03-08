@@ -12,7 +12,7 @@ GitLab is a free project and repository management application
 ## Requirements
 
 * ruby 1.9.2
-* sqlite
+* mysql
 * git
 * gitolite
 * redis
