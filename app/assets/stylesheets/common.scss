@@ -234,12 +234,11 @@ header {
  *
  */
 nav.main_menu { 
-  overflow:hidden;
   border-radius: 4px;
   margin: auto;
   margin:30px $app_padding;
   background:#eee;
-  border:1px solid #ccc;
+  border:1px solid #bbb;
   height:38px;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
   background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -268,7 +267,6 @@ nav.main_menu {
     padding: 10px 25px;
     display: inline-block;
     color: $style_color;
-    border-right: 1px solid #d5d5d5;
     position: relative;
     box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
     margin: 0;
@@ -284,7 +282,11 @@ nav.main_menu {
       }
     }
     &.current { 
-      background-color:#DDD;
+      background-color:#D5D5D5;
+      border-bottom: 2px solid #474D57;
+      &:first-child{ 
+        border-bottom:none;
+      }
     }
   }
 }
