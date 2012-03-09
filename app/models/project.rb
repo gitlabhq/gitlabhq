@@ -69,7 +69,7 @@ class Project < ActiveRecord::Base
       :project => self,
       :action => Event::Pushed,
       :data => data,
-      :author_id => Key.find_by_identifier(author_key_id).user.id
+      :author_id => data[:user_id]
     )
   end
 
@@ -259,60 +259,27 @@ class Project < ActiveRecord::Base
   end
 
   def commit(commit_id = nil)
-    commit = if commit_id
-               repo.commit(commit_id)
-             else
-               repo.commits.first
-             end
-    Commit.new(commit) if commit
+    Commit.find_or_first(repo, commit_id)
   end
 
   def fresh_commits(n = 10)
-    commits = heads.map do |h|
-      repo.commits(h.name, n).map { |c| Commit.new(c, h) }
-    end.flatten.uniq { |c| c.id }
-
-    commits.sort! do |x, y|
-      y.committed_date <=> x.committed_date
-    end
-
-    commits[0...n]
+    Commit.fresh_commits(repo, n)
   end
 
   def commits_with_refs(n = 20)
-    commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
-
-    commits.sort! do |x, y|
-      y.committed_date <=> x.committed_date
-    end
-
-    commits[0..n]
+    Commit.commits_with_refs(repo, n)
   end
 
   def commits_since(date)
-    commits = heads.map do |h|
-      repo.log(h.name, nil, :since => date).each { |c| Commit.new(c, h) }
-    end.flatten.uniq { |c| c.id }
-
-    commits.sort! do |x, y|
-      y.committed_date <=> x.committed_date
-    end
-
-    commits
+    Commit.commits_since(repo, date)
   end
 
   def commits(ref, path = nil, limit = nil, offset = nil)
-    if path
-      repo.log(ref, path, :max_count => limit, :skip => offset)
-    elsif limit && offset
-      repo.commits(ref, limit, offset)
-    else
-      repo.commits(ref)
-    end.map{ |c| Commit.new(c) } 
+    Commit.commits(repo, ref, path, limit, offset)
   end
 
   def commits_between(from, to)
-    repo.commits_between(from, to).map { |c| Commit.new(c) }
+    Commit.commits_between(repo, from, to)
   end
 
   def project_id
