@@ -28,7 +28,7 @@
       = f.label :owner_id
       .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
 
-    - unless @admin_project.heads.empty?  
+    - if @admin_project.repo_exists?  
       .clearfix
         = f.label :default_branch, "Default Branch"
         .input= f.select(:default_branch, @admin_project.heads.map(&:name), {}, :style => "width:210px;")
