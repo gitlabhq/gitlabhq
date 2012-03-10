@@ -6,13 +6,15 @@
   - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
     = link_to "Edit", edit_project_snippet_path(@project, @snippet), :class => "btn small right"
 
-%hr
-
-.view_file
-  .view_file_header
-    %strong= @snippet.file_name
-  .data.no-padding
-    :erb
-      <%= raw @snippet.colorize %>
+%br
+#tree-holder
+  #tree-content-holder
+    .view_file
+      .view_file_header
+        %strong= @snippet.file_name
+      .view_file_content
+        %div{:class => current_user.dark_scheme ? "black" : ""} 
+          :erb
+            <%= raw @snippet.colorize %>
 
 = render "notes/notes", :tid => @snippet.id, :tt => "snippet"
