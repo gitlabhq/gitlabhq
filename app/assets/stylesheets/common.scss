@@ -204,12 +204,16 @@ header {
       text-shadow: none;
       border-bottom: 1px solid #555;
       &:hover {
-  background: #444; } } }
+        color:#eee;
+        background: #444;
+      }
+    }
+  }
 
   .account-box.hover .arrow-up {
     top: 41px;
     right: 6px;
-  position: absolute; }
+    position: absolute; }
 
   .account-links a {
     &:first-child {
