@@ -1,5 +1,14 @@
-%h3= @key.title
+%h3
+  Public key: 
+  = @key.title
+  %small
+    created at 
+    = @key.created_at.stamp("Aug 21, 2011")
+.back_link
+  = link_to keys_path do 
+    &larr; To keys list
 %hr
+
 %pre= @key.key
 .actions
   = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger delete-key"

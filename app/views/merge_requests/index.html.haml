@@ -22,5 +22,10 @@
         = link_to project_merge_requests_path(@project, :f => 1) do 
           All
 
-  %ul.unstyled= render @merge_requests
+  %ul.unstyled
+    = render @merge_requests
+    - if @merge_requests.blank?
+      %li
+        %p.padded Nothing to show here
+
 

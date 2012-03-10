@@ -1,7 +1,14 @@
 .media-grid
   = link_to "#" do
     = image_tag gravatar_icon(@user.email, 90), :class => "thumbnail"
-  %h3.media_h= @user.name
+  %h3.media_h
+    = @user.name
+    %br
+    %small
+      = @user.email
+
+  .right
+    %p.alert-message.block-message You can change your avatar at gravatar.com
 
 %hr
 

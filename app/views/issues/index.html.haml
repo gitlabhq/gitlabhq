@@ -33,7 +33,11 @@
             = hidden_field_tag :status, params[:f]
             = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
 
-    %ul#issues-table.unstyled= render "issues"
+    %ul#issues-table.unstyled
+      = render "issues"
+      - if @issues.blank?
+        %li
+          %p.padded Nothing to show here
 
 :javascript
   var href       = $('.issue_search').parent().attr('action');
