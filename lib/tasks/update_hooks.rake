@@ -4,7 +4,7 @@ task :update_hooks => :environment  do
   Project.find_each(:batch_size => 100) do |project|
     begin 
       if project.commit
-        project.repository.write_hooks 
+        project.write_hooks 
         print ".".green
       end
     rescue Exception => e
