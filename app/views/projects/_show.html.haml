@@ -1,6 +1,6 @@
-%h4
+%h4.title
   = @project.name
-%hr
+%br
 %div
   %a.btn.info{:href => tree_project_ref_path(@project, @project.root_ref)} Browse code
   &nbsp;
@@ -8,7 +8,7 @@
   %strong.right
     = link_to project_path(@project) do 
       Switch to project &rarr; 
-%hr
+%br
 .alert-message.block-message.warning
   .input
     .input-prepend
@@ -17,7 +17,7 @@
 
 = simple_format @project.description
 - unless @events.blank?
-  %h5.cgray Recent Activity
+  %h4.middle_title Recent Activity
   .content_list= render @events
 
 
