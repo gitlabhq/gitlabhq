@@ -5,14 +5,15 @@ GitLab is a free project and repository management application
 
 ## Application details
 
-* rails 3.1
-* works only with gitolite
-* sqlite as default a database
+* based on Ruby on Rails
+* distributed under the MIT License
+* works with gitolite
 
 ## Requirements
 
+* Ubuntu/Debian
 * ruby 1.9.2
-* mysql
+* mysql or sqlite
 * git
 * gitolite
 * redis
