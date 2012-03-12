@@ -244,6 +244,9 @@ Create init script in /etc/init.d/gitlab:
 
     exit 0
 
+Adding permission:
+    sudo chmod +x /etc/init.d/gitlab
+
 When server is rebooted then gitlab must starting:
     sudo update-rc.d gitlab defaults
 
