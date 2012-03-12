@@ -2,7 +2,9 @@ before_install: sudo apt-get install libicu-dev -y
 branches:
   only:
     - 'master'
-rvm: 1.9.2
+rvm:
+  - 1.9.2
+  - 1.9.3
 before_script:
   - "cp config/database.yml.sqlite config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
