@@ -4,9 +4,14 @@
 %tr{ :class => "tree-item", :url => tree_file_project_ref_path(@project, @ref, file) }
   %td.tree-item-file-name
     - if content.is_a?(Grit::Blob)
-      = image_tag "txt.png"
+      - if content.text?
+        = image_tag "file_txt.png"
+      - elsif content.image?
+        = image_tag "file_img.png"
+      - else 
+        = image_tag "file_bin.png"
     - else
-      = image_tag "dir.png"
+      = image_tag "file_dir.png"
     = link_to truncate(content.name, :length => 40), tree_file_project_ref_path(@project, @ref || @commit.id, file), :remote => :true
   %td.cgray
     = time_ago_in_words(content_commit.committed_date)

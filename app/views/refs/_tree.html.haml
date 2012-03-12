@@ -24,7 +24,7 @@
       - if tree.up_dir?
         %tr{ :class => "tree-item", :url => tree.up_dir_path }
           %td.tree-item-file-name
-            = image_tag "dir.png"
+            = image_tag "file_empty.png"
             = link_to "..", tree.up_dir_path, :remote => :true
           %td
           %td

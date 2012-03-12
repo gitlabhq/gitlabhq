@@ -2,7 +2,7 @@
 .view_file
   .view_file_header
     .row
-      .span1.file_icon= image_tag "txt.png"
+      .span1.file_icon= image_tag( file.image? ? "file_img.png" : "file_txt.png")
       .span2.mode_text= file.mode
       .span7.file_name= name
       .span4.right
