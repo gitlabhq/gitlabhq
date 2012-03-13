@@ -16,3 +16,5 @@ Vagrantfile
 .vagrant
 config/gitlab.yml
 config/database.yml
+
+.DS_Store
