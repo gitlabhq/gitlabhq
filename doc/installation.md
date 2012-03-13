@@ -82,27 +82,34 @@ Create user for git:
     
 
 Create user for gitlab:
+
     # ubuntu/debian
     sudo adduser --disabled-login --gecos 'gitlab system' gitlab    
 
 Add your user to git group:
+
     sudo usermod -a -G git gitlab
 
 Generate key:
+
     sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 
 Get gitolite source code:
+
     cd /home/git
     sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite    
 
 Setup:
+
     sudo -u git -H /home/git/gitolite/src/gl-system-install
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 777 /home/git/gitlab.pub
 
     sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
+    
 Permissions:
+
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
@@ -131,6 +138,7 @@ Permissions:
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
 
 #### Select db you want to use
+
     # SQLite
     sudo -u gitlab cp config/database.yml.sqlite config/database.yml
 
@@ -140,13 +148,16 @@ Permissions:
     # Change username/password of config/database.yml  to real one
 
 #### Install gems
+
     sudo -u gitlab -H bundle install --without development test --deployment
 
 #### Setup DB
+
     sudo -u gitlab bundle exec rake db:setup RAILS_ENV=production
     sudo -u gitlab bundle exec rake db:seed_fu RAILS_ENV=production
     
 Checking status:
+
     sudo -u gitlab bundle exec rake gitlab_status
 
 
@@ -169,6 +180,7 @@ If you got all YES - congrats! You can go to next step.
 # 5. Server up
 
 Application can be started with next command:
+
     # For test purposes 
     sudo -u gitlab bundle exec rails s -e production
 
@@ -194,6 +206,7 @@ Application can be started with next command:
     sudo apt-get install nginx
 
 ## Unicorn
+
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab unicorn_rails -c config/unicorn.rb -E production -D
@@ -223,9 +236,11 @@ Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 mygitlab.com - change to your domain.
 
 Restart nginx:
+
     /etc/init.d/nginx restart
 
 Create init script in /etc/init.d/gitlab:
+
     #! /bin/bash
     ### BEGIN INIT INFO
     # Provides:          unicorn
@@ -279,10 +294,13 @@ Create init script in /etc/init.d/gitlab:
     exit 0
 
 Adding permission:
+
     sudo chmod +x /etc/init.d/gitlab
 
 When server is rebooted then gitlab must starting:
+
     sudo update-rc.d gitlab defaults
 
 Now you can start/restart/stop gitlab like:
+
     sudo /etc/init.d/gitlab restart
