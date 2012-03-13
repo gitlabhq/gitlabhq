@@ -22,40 +22,20 @@ module Utils
     end
 
     def system_colorize(data, file_name)
+      options = { :encoding => 'utf-8', :linenos => 'True' }
+
+      # Try detect language with pygments
+      Pygments.highlight data, :filename => file_name, :options => options
+    rescue 
+      # if it fails use manual detection
       ft = handle_file_type(file_name)
-      Pygments.highlight(data, :lexer => ft, :options => { :encoding => 'utf-8', :linenos => 'True' })
+      Pygments.highlight(data, :lexer => ft, :options => options)
     end
 
-    def handle_file_type(file_name, mime_type = nil)
+    def handle_file_type(file_name)
       case file_name
-      when /(\.pl|\.scala|\.java|\.haml|\.jade|\.scaml|\.html|\.sass|\.scss|\.php|\.erb)$/
-        $1[1..-1].to_sym
-      when /(\.c|\.h|\.idc)$/
-        :c
-      when /(\.cpp|\.hpp|\.c++|\.h++|\.cc|\.hh|\.cxx|\.hxx)$/
-        :cpp
-      when /(\.d|\.di)$/
-        :d
-      when /(\.hs|\.lhs)$/
-        :haskell
-      when /(\.rb|\.ru|\.rake|Rakefile|\.gemspec|\.rbx|Gemfile)$/
+      when /(\.ru|Gemfile)$/
         :ruby
-      when /(\.py|\.pyw|\.sc|SConstruct|SConscript|\.tac)$/
-        :python
-      when /(\.js|\.json)$/
-        :javascript
-      when /(\.xml|\.xsl|\.rss|\.xslt|\.xsd|\.wsdl)$/
-        :xml
-      when /(\.vm|\.fhtml)$/
-        :velocity
-      when /\.sh$/
-        :bash
-      when /\.coffee$/
-        :coffeescript
-      when /(\.yml|\.yaml)$/
-        :yaml
-      when /\.md$/
-        :minid
       else
         :text
       end
