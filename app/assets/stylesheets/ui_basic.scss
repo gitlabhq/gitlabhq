@@ -43,11 +43,14 @@
     .app_logo {
       width:230px;
       float:left;
+      position:relative;
+      top:-5px;
 
       a { 
         float:left;
 
         h1 { 
+          background: url('logo_tr.png') no-repeat -3px -4px;
           float:left;
           margin-left:5px;
           font-size:20px;
@@ -55,16 +58,8 @@
           font-weight:bold;
           color:#aaa;
           text-shadow: 0 1px 1px #FFF;
-        }
-
-        &.home {
-          img { 
-            float: left;
-            position: relative;
-            top: -9px;
-            width:46px;
-
-          }
+          padding-left:50px;
+          padding-top:5px;
         }
       }
     }

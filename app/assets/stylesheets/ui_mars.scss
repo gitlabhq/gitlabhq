@@ -9,6 +9,28 @@
  *
  */
 .ui_mars {
+  background:#eee;
+
+  .container { 
+    border: 1px solid rgba(0,0,0,.22); 
+    box-shadow: 0 0 0px 4px rgba(0,0,0,.04);
+    background:white;
+    margin-top:20px;
+    min-height:500px;
+
+    nav.main_menu { 
+      margin:0;
+      margin-bottom: 20px;
+      border:none;
+      border-bottom: 1px solid #bbb;
+      border-radius:0;
+
+      a { 
+        border-radius:0;
+      }
+    }
+  }
+
 
   /*
    * Common styles
@@ -70,30 +92,23 @@
     .app_logo {
       width:230px;
       float:left;
-          position:relative;
-          top:-4px;
+      position:relative;
+      top:-5px;
 
       a { 
         float:left;
 
         h1 { 
-
-          background: url('images.png') no-repeat -3px -7px;
-          width: 65px;
-          height: 26px;
-          margin: 5px 0;
-          padding: 0;
-          display: block;
-          float: left;
-          text-indent: -1000em;
-
-        }
-
-        &.home {
-          img { 
-            display:none
-
-          }
+          background: url('logo_wh.png') no-repeat -3px -4px;
+          float:left;
+          margin-left:5px;
+          font-size:20px;
+          line-height:36px;
+          font-weight:bold;
+          color:#ccc;
+          text-shadow: 0 1px 1px #111;
+          padding-left:50px;
+          padding-top:5px;
         }
       }
     }
@@ -104,8 +119,8 @@
       position:relative;
       padding:15px 0;
 
-      .top_panel_content { 
-        margin:0 $app_padding;
+      .account-box img { 
+        right:0;
       }
     }
 

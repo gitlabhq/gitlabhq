@@ -5,22 +5,22 @@
         %span.removed_file
           %a{:href => "##{diff.a_path}"}
             = diff.a_path
-            = image_tag "blueprint_delete.png"
+            = image_tag "diff_file_delete.png"
       - elsif diff.renamed_file
         %span.moved_file
           %a{:href => "##{diff.b_path}"}
             = diff.a_path
             = "->"
             = diff.b_path
-            = image_tag "blueprint_notice.png"
+            = image_tag "diff_file_notice.png"
       - elsif diff.new_file
         %span.new_file
           %a{:href => "##{diff.b_path}"}
             = diff.b_path
-            = image_tag "blueprint_add.png"
+            = image_tag "diff_file_add.png"
       - else
         %span.edit_file
           %a{:href => "##{diff.b_path}"}
             = diff.b_path
-            = image_tag "blueprint_info.png"
+            = image_tag "diff_file_info.png"
 
