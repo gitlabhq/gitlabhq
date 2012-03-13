@@ -2,14 +2,14 @@ require File.join(Rails.root, 'spec', 'factory')
 
 Factory.add(:project, Project) do |obj|
   obj.name = Faker::Internet.user_name
-  obj.path = 'legit'
+  obj.path = 'gitlabhq'
   obj.owner = Factory(:user)
   obj.code = 'LGT'
 end
 
 Factory.add(:public_project, Project) do |obj|
   obj.name = Faker::Internet.user_name
-  obj.path = 'legit'
+  obj.path = 'gitlabhq'
   obj.private_flag = false
   obj.owner = Factory(:user)
   obj.code = 'LGT'
@@ -41,7 +41,7 @@ Factory.add(:merge_request, MergeRequest) do |obj|
   obj.author = Factory :user
   obj.assignee = Factory :user
   obj.source_branch = "master"
-  obj.target_branch = "master"
+  obj.target_branch = "stable"
   obj.closed = false
 end
 

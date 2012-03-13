@@ -57,7 +57,7 @@ describe "Projects" do
         @project = Factory :project
         @project.add_access(@user, :read)
 
-        visit tree_project_ref_path(@project, @project.root_ref, :path => ".rvmrc")
+        visit tree_project_ref_path(@project, @project.root_ref, :path => "Gemfile")
       end
 
       it "should be correct path" do
@@ -65,7 +65,7 @@ describe "Projects" do
       end
 
       it "should contain file view" do
-        page.should have_content("rvm use 1.9.2@legit")
+        page.should have_content("rubygems.org")
       end
     end
   end

@@ -106,6 +106,14 @@ class MergeRequestsController < ApplicationController
     end
   end
 
+  def branch_from
+    @commit = project.commit(params[:ref])
+  end
+
+  def branch_to
+    @commit = project.commit(params[:ref])
+  end
+
   protected
 
   def merge_request

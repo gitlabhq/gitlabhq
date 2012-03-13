@@ -54,7 +54,7 @@ describe Note do
   describe :authorization do
     before do
       @p1 = project
-      @p2 = Factory :project, :code => "alien", :path => "legit_1"
+      @p2 = Factory :project, :code => "alien", :path => "gitlabhq_1"
       @u1 = Factory :user
       @u2 = Factory :user
       @u3 = Factory :user

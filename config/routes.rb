@@ -101,6 +101,11 @@ Gitlab::Application.routes.draw do
       member do 
         get :diffs
       end
+
+      collection do 
+        get :branch_from
+        get :branch_to
+      end
     end
     
     resources :snippets

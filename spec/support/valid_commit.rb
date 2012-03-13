@@ -1,25 +1,15 @@
 module ValidCommit
-  ID = "eaffbe556ec3a8dc84ef15892a9f12d84dde7e1d"
-  MESSAGE = "style"
+  ID = "8470d70da67355c9c009e4401746b1d5410af2e3"
+  MESSAGE = "notes controller refactored"
   AUTHOR_FULL_NAME = "Dmitriy Zaporozhets"
 
-  FILES = [".gitignore", ".rspec", ".rvmrc", "Gemfile", "Gemfile.lock", "LICENSE", "README.rdoc", "Rakefile", "app", "config.ru", "config", "db", "doc", "lib", "log", "public", "script", "spec", "vendor"]
-  FILES_COUNT = 19
+  FILES = [".foreman", ".gitignore", ".rails_footnotes", ".rspec", ".travis.yml", "CHANGELOG", "Gemfile", "Gemfile.lock", "LICENSE", "Procfile", "Procfile.production", "README.md", "Rakefile", "VERSION", "app", "config.ru", "config", "db", "doc", "lib", "log", "public", "resque.sh", "script", "spec", "vendor"]
+  FILES_COUNT = 26
 
   C_FILE_PATH = "app/models"
-  C_FILES = [".gitkeep", "project.rb", "user.rb"]
+  C_FILES = [".gitkeep", "ability.rb", "commit.rb", "issue.rb", "key.rb", "mailer_observer.rb", "merge_request.rb", "note.rb", "project.rb", "protected_branch.rb", "repository.rb", "snippet.rb", "tree.rb", "user.rb", "users_project.rb", "web_hook.rb", "wiki.rb"]
 
-  BLOB_FILE = <<-blob
-<div class="span-14 colborder">
-  <h2>Tree / <%= link_to "Commits", project_commits_path(@project) %></h2>
-  <%= render :partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @commit.tree} %>
-</div>
-
-<div class="span-8 right">
-  <%= render "side_panel" %>
-</div>
-blob
-
-  BLOB_FILE_PATH = "app/views/projects/show.html.erb"
+  BLOB_FILE = %{%h3= @key.title\n%hr\n%pre= @key.key\n.actions\n  = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => \"btn danger delete-key\"\n\n\n}
+  BLOB_FILE_PATH = "app/views/keys/show.html.haml"
 end
 

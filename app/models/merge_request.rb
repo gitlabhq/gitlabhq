@@ -12,6 +12,7 @@ class MergeRequest < ActiveRecord::Base
   validates_presence_of :author_id
   validates_presence_of :source_branch
   validates_presence_of :target_branch
+  validate :validate_branches
 
   delegate :name,
            :email,
@@ -30,6 +31,13 @@ class MergeRequest < ActiveRecord::Base
   scope :opened, where(:closed => false)
   scope :closed, where(:closed => true)
   scope :assigned, lambda { |u| where(:assignee_id => u.id)}
+
+
+  def validate_branches
+    if target_branch == source_branch 
+      errors.add :base, "You can not use same branch for source and target branches"
+    end
+  end
 
   def new?
     today? && created_at == updated_at

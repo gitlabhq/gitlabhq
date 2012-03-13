@@ -10,10 +10,14 @@
     .input= f.text_area :title, :class => "xxlarge", :maxlength => 255, :rows => 5
   .clearfix
     = f.label :source_branch, "From"
-    .input= f.select(:source_branch, @project.heads.map(&:name), { :include_blank => "Select branch" }, :style => "width:250px")
+    .input
+      = f.select(:source_branch, @project.heads.map(&:name), { :include_blank => "Select branch" }, :style => "width:250px")
+      .mr_source_commit
   .clearfix
     = f.label :target_branch, "To"
-    .input= f.select(:target_branch, @project.heads.map(&:name), { :include_blank => "Select branch" }, :style => "width:250px")
+    .input
+      = f.select(:target_branch, @project.heads.map(&:name), { :include_blank => "Select branch" }, :style => "width:250px")
+      .mr_target_commit
   .clearfix
     = f.label :assignee_id, "Assign to"
     .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, :style => "width:250px")
@@ -34,5 +38,15 @@
     $('select#merge_request_assignee_id').chosen();
     $('select#merge_request_source_branch').chosen();
     $('select#merge_request_target_branch').chosen();
+
+
+
+    $("#merge_request_source_branch").live("change", function() { 
+      $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: $(this).val() });
+    });
+
+    $("#merge_request_target_branch").live("change", function() { 
+      $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: $(this).val() });
+    });
   });
 

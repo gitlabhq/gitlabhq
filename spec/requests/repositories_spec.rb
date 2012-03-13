@@ -42,7 +42,7 @@ describe "Repository" do
 
     it "should have link to repo activities" do
       page.should have_content("Tags")
-      page.should have_content("No tags")
+      page.should have_content("v1.2.1")
     end
   end
 end

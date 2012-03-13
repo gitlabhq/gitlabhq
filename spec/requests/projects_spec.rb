@@ -134,7 +134,7 @@ describe "Projects" do
       visit edit_project_path(@project)
 
       fill_in 'Name', :with => 'Awesome'
-      fill_in 'Path', :with => 'legit'
+      fill_in 'Path', :with => 'gitlabhq'
       fill_in 'Description', :with => 'Awesome project'
       click_button "Save"
       @project = @project.reload

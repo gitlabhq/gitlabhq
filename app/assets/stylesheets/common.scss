@@ -531,7 +531,7 @@ table a code {
 
 /** FLASH message **/
 #flash_container {
-  height:45px;
+  height:50px;
   position:fixed;
   z-index:10001;
   top:0px;
@@ -540,7 +540,7 @@ table a code {
   overflow:hidden;
   background:white;
   cursor:pointer;
-  border-bottom:1px solid #777;
+  border-bottom:1px solid #ccc;
 
   h4 {
     color:#444;
@@ -900,4 +900,24 @@ p.time {
     padding:4px;
     margin:2px;
   }
+}
+
+.mr_source_commit , 
+.mr_target_commit { 
+  .commit { 
+    list-style:none;
+    margin-top:10px;
+    &:hover { 
+      background:none;
+    }
+  }
+}
+
+.prettyprint { 
+  background-color: #fefbf3;
+  padding: 9px;
+  border: 1px solid rgba(0,0,0,.2);
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }

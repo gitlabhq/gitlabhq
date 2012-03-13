@@ -10,6 +10,6 @@ Dir.mkdir(repo_dir) unless File.exists?(repo_dir)
 Dir.chdir(repo_dir)
 `tar -xf seed_project.tar.gz`
 3.times do |i|
-`cp -r legit/ legit_#{i}/`
-puts "Unpacked seed repo - tmp/tests/legit_#{i}"
+`cp -r gitlabhq/ gitlabhq_#{i}/`
+puts "Unpacked seed repo - tmp/tests/gitlabhq_#{i}"
 end
