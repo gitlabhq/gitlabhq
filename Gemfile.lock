@@ -169,7 +169,7 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.7)
       slop (>= 2.4.4, < 3)
-    pygments.rb (0.2.4)
+    pygments.rb (0.2.7)
       rubypython (~> 0.5.3)
     pyu-ruby-sasl (0.0.3.3)
     rack (1.4.1)
@@ -329,7 +329,7 @@ DEPENDENCIES
   mysql2
   omniauth-ldap
   pry
-  pygments.rb (= 0.2.4)
+  pygments.rb (= 0.2.7)
   rails (= 3.2.1)
   rails-footnotes
   rake
