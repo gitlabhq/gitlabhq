@@ -1,7 +1,31 @@
-Проект gitlab рассчитан на операционную систему Linux. Имеются сведения о успешной установке ее на FreeBSD и Mac OS, однако мы официально не тестируем на этих системах данный проект и не гарантируем его корректной работы.
-Данная интсрукция написана для систем Debian/Ubuntu.
+## Platform requirements: 
 
-Установка проекта gitlab состоит из 6 частей:
+**The project is designed for the Linux operating system. **
+
+It may work on FreeBSD and Mac OS, but we don't test our application for these systems and can't guarantee stability and full functionality.
+
+We officially support next Linux Distributions:
+
+- Ubuntu
+- Debian
+
+It should work on:
+
+- Fedora
+- CentOs
+- Red Hat
+
+It can work on:
+
+ - Mac Os
+ - FreeBSD
+
+It 100% **wont** work on  Windows
+
+
+## This installation guide created for Debian/Ubuntu and properly tested. 
+
+The installation consists of 6 steps:
 
 1. install packeges.
 2. install ruby
@@ -10,21 +34,23 @@
 5. server up.
 6. run resque process (for processing queue).
 
-Большая просьба - прежде чем составлять отчет об ошибке убедитесь что все шаги вы проделали верно.
+** Before submit an installation issue - please check if you followed all steps **
 
-Первые 3 шага возможно проделать автоматически, для этого установите curl:
-    #для Debian может понадобиться установить утилиту sudo 
-    apt-get install curl sudo
-    
-    # 3 step in 1 command
-    curl http://dl.dropbox.com/u/936096/debian_ubuntu.sh | sh
-
-Затем можно приступать к установке:
-
+> - - -
+> First 3 steps can be easily skipped with simply install script:
+> 
+>     # Install curl and sudo 
+>     apt-get install curl sudo
+>     
+>     # 3 steps in 1 command :)
+>     curl http://dl.dropbox.com/u/936096/debian_ubuntu.sh | sh
+> 
+> Now you can go to step 4"
+> - - -
 
 # 1. Install packages
 
-*Имейте ввиду что в debian по умолчанию не установлена утилита sudo. Установите ее от юзера root:*     **apt-get update && apt-get upgrade && apt-get install sudo**
+*Keep in mind that `sudo` is not installed for debian by default. You should install it with as root:*     **apt-get update && apt-get upgrade && apt-get install sudo**
 
     sudo apt-get update
     sudo apt-get upgrade
@@ -65,7 +91,7 @@ Add your user to git group:
 Generate key:
     sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 
-получение исходников gitolite:
+Get gitolite source code:
     cd /home/git
     sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite    
 
@@ -89,7 +115,8 @@ Permissions:
     # if succeed  you can remove it
     sudo rm -rf /tmp/gitolite-admin 
 
-Если вам не удалось успешно склонировать репозиторий - вы что-то сделали не так. Перепроверьте предидущие шаги. ДАЛЬНЕЙШАЯ УСТАНОВКА БУДЕТ БЕЗУСПЕШНА.
+** IMPORTANT! If you cant clone `gitolite-admin` repository - DONT PROCEED INSTALLATION**
+
 
 # 4. Install gitlab and configuration. Check status configuration.
 
@@ -110,6 +137,7 @@ Permissions:
     # Or 
     # Mysql
     sudo -u gitlab cp config/database.yml.example config/database.yml
+    # Change username/password of config/database.yml  to real one
 
 #### Install gems
     sudo -u gitlab -H bundle install --without development test --deployment
@@ -136,16 +164,16 @@ Checking status:
     Can clone gitolite-admin?............YES
     UMASK for .gitolite.rc is 0007? ............YES
 
-If you have all YES then go next.
-Поздравляем!!! установка завершена. Теперь необходимо запустить сервисы.
+If you got all YES - congrats! You can go to next step.  
 
 # 5. Server up
 
-Сервер можно запустить простой командой:
+Application can be started with next command:
+    # For test purposes 
     sudo -u gitlab bundle exec rails s -e production
-Однако этот способ даст вам только возможность проверить работоспособность сервиса, не более. Чтобы запустить сервис в виде демона, сделайте так
-    sudo -u gitlab bundle exec rails s -e production -d
 
+    # As daemon
+    sudo -u gitlab bundle exec rails s -e production -d
 
 #  6. Run resque process (for processing queue).
 
@@ -154,6 +182,10 @@ If you have all YES then go next.
 
     # Gitlab start script
     ./resque.sh
+
+
+** Ok - we have a working application now. **
+** But keep going - there are some thing that should be done **
 
 # Nginx && Unicorn
 
@@ -166,11 +198,11 @@ If you have all YES then go next.
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab unicorn_rails -c config/unicorn.rb -E production -D
 
-В nginx.conf добавим блок upstream в секцию http:
+Edit /etc/nginx/nginx.conf. Add next code to **http** section:
+
     upstream gitlab {
         server unix:/tmp/gitlab.socket;
     }
-И добавим virtual host:
 
     server {
         listen 80;
@@ -189,8 +221,10 @@ If you have all YES then go next.
     }
 
 mygitlab.com - change to your domain.
+
 Restart nginx:
     /etc/init.d/nginx restart
+
 Create init script in /etc/init.d/gitlab:
     #! /bin/bash
     ### BEGIN INIT INFO
@@ -250,3 +284,5 @@ Adding permission:
 When server is rebooted then gitlab must starting:
     sudo update-rc.d gitlab defaults
 
+Now you can start/restart/stop gitlab like:
+    sudo /etc/init.d/gitlab restart
