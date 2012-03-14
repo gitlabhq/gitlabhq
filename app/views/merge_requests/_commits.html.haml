@@ -2,7 +2,9 @@
   .ui-box
     %h5 Commits
     .merge-request-commits
-      %ul.unstyled= render @commits
+      %ul.unstyled
+        - @commits.each do |commit| 
+          = render "commits/commit", :commit => commit
 
 - else 
   %h5

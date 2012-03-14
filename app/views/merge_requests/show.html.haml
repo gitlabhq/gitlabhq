@@ -11,12 +11,10 @@
 
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
-      - if @merge_request.closed
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
-      - else
+      - if @merge_request.open?
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
-      = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
-        Edit
+        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
+          Edit
 
     - if @merge_request.upvotes > 0
       = link_to "#notes", :class => "btn success" do

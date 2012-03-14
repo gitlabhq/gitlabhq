@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120307095918) do
+ActiveRecord::Schema.define(:version => 20120315132931) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -50,19 +50,8 @@ ActiveRecord::Schema.define(:version => 20120307095918) do
     t.integer  "project_id"
   end
 
-  create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                    :null => false
-    t.string   "source_branch",                    :null => false
-    t.integer  "project_id",                       :null => false
-    t.integer  "author_id"
-    t.integer  "assignee_id"
-    t.string   "title"
-    t.boolean  "closed",        :default => false, :null => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-  end
-
-  add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
+# Could not dump table "merge_requests" because of following StandardError
+#   Unknown type 'true' for column 'merged'
 
   create_table "notes", :force => true do |t|
     t.text     "note"

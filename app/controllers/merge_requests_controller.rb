@@ -41,13 +41,12 @@ class MergeRequestsController < ApplicationController
 
     @note = @project.notes.new(:noteable => @merge_request)
 
-    @commits = @project.repo.
-      commits_between(@merge_request.target_branch, @merge_request.source_branch).
-      map {|c| Commit.new(c)}.
-      sort_by(&:created_at).
-      reverse
+    # Get commits from repository 
+    # or from cache if already merged
+    @commits = @merge_request.commits
 
-    render_full_content
+    # Close MR if nothing to merge
+    #@merge_request.mark_as_merged! if @merge_request.probably_merged?
 
     respond_to do |format|
       format.html
@@ -76,6 +75,8 @@ class MergeRequestsController < ApplicationController
 
     respond_to do |format|
       if @merge_request.save
+        @merge_request.reloaded_commits
+        @merge_request.reloaded_diffs
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.' }
         format.json { render json: @merge_request, status: :created, location: @merge_request }
       else
