@@ -15,11 +15,12 @@
         = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
       - else
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
-      = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
+      = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
         Edit
 
     - if @merge_request.upvotes > 0
-      %button.btn.success= "+#{@merge_request.upvotes}"
+      = link_to "#notes", :class => "btn success" do
+        +#{@merge_request.upvotes}
 
 .back_link
   = link_to project_merge_requests_path(@project) do 
@@ -65,8 +66,7 @@
 
     %img{:src => "/assets/ajax-loader-facebook.gif", :class => "dashboard-loader"}
 
-.merge-request-notes
-  .merge_request_notes= render "notes/notes", :tid => @merge_request.id, :tt => "merge_request"
+.merge_request_notes#notes= render "notes/notes", :tid => @merge_request.id, :tt => "merge_request"
 
 .merge-request-diffs
 
@@ -77,6 +77,7 @@
   })
 
 = render "notes/per_line_form"
+
 :javascript
   $(document).ready(function(){
     $(".line_note_link, .line_note_reply_link").live("click", function(e) { 

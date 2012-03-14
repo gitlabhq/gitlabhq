@@ -15,7 +15,8 @@
         Edit
 
     - if @issue.upvotes > 0
-      %button.btn.success= "+#{@issue.upvotes}"
+      = link_to "#notes", :class => "btn success" do
+        +#{@issue.upvotes}
       
 
 .back_link
@@ -45,4 +46,4 @@
   %div= simple_format @issue.title
 
 
-.issue_notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
+.issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
