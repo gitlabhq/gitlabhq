@@ -14,6 +14,8 @@
       %span.label.important critical
     - if issue.today?
       %span.label.success today
+    - if issue.notes.any?
+      %span.label= pluralize issue.notes.count, 'note'
     - if issue.upvotes > 0
       %span.label.success= "+#{issue.upvotes}"
 

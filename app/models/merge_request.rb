@@ -34,7 +34,7 @@ class MergeRequest < ActiveRecord::Base
 
 
   def validate_branches
-    if target_branch == source_branch 
+    if target_branch == source_branch
       errors.add :base, "You can not use same branch for source and target branches"
     end
   end
@@ -50,6 +50,11 @@ class MergeRequest < ActiveRecord::Base
 
   def last_commit
     project.commit(source_branch)
+  end
+
+  # Return the number of +1 comments (upvotes)
+  def upvotes
+    notes.select(&:upvote?).size
   end
 end
 # == Schema Information

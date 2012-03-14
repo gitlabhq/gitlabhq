@@ -18,6 +18,9 @@
       = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small" do 
         Edit
 
+    - if @merge_request.upvotes > 0
+      %button.btn.success= "+#{@merge_request.upvotes}"
+
 .back_link
   = link_to project_merge_requests_path(@project) do 
     &larr; To merge requests

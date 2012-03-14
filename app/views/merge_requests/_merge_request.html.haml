@@ -5,6 +5,10 @@
     authored
     = time_ago_in_words(merge_request.created_at)
     ago
+    - if merge_request.notes.any?
+      %span.label= pluralize merge_request.notes.count, 'note'
+    - if merge_request.upvotes > 0
+      %span.label.success= "+#{merge_request.upvotes}"
   .right
     %span.label= merge_request.source_branch
     &rarr;

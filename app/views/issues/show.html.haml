@@ -11,8 +11,12 @@
       - else
         = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
-      = link_to edit_project_issue_path(@project, @issue), :class => "btn small" do 
+      = link_to edit_project_issue_path(@project, @issue), :class => "btn" do 
         Edit
+
+    - if @issue.upvotes > 0
+      %button.btn.success= "+#{@issue.upvotes}"
+      
 
 .back_link
   = link_to project_issues_path(@project) do 
@@ -36,9 +40,6 @@
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_assignee(@issue)
 
-    - if @issue.upvotes > 0
-      %span.label.success= "+#{@issue.upvotes}"
-      
     %hr
     
   %div= simple_format @issue.title
