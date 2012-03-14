@@ -35,6 +35,9 @@
     %cite.cgray and currently assigned to 
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_assignee(@issue)
+
+    - if @issue.upvotes > 0
+      %span.label.success= "+#{@issue.upvotes}"
       
     %hr
     
