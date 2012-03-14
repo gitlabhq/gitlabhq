@@ -16,3 +16,4 @@ Vagrantfile
 .vagrant
 config/gitlab.yml
 config/database.yml
+db/data.yml
