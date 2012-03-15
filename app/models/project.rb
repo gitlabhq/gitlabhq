@@ -99,7 +99,8 @@ class Project < ActiveRecord::Base
         Event.create(
           :project => self,
           :action => Event::Merged,
-          :data => {:merge_request_id => merge_request.id},
+          :target_id => merge_request.id,
+          :target_type => "MergeRequest",
           :author_id => user.id
         )
       end

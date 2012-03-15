@@ -68,6 +68,10 @@ class MergeRequest < ActiveRecord::Base
     commits.first
   end
 
+  def merge_event
+    self.project.events.where(:target_id => self.id, :target_type => "MergeRequest", :action => Event::Merged).last
+  end
+
   # Return the number of +1 comments (upvotes)
   def upvotes
     notes.select(&:upvote?).size

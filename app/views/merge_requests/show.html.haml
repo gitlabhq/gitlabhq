@@ -28,6 +28,16 @@
 %hr
 - if @merge_request.closed
   .alert-message.error Closed
+  - if @merge_request.merged
+    - event = @merge_request.merge_event
+    %div
+      %p
+        %strong #{event.author_name} 
+        merged this request
+        %span.cgray
+          = time_ago_in_words(event.created_at)
+          ago.
+    %br
 - else 
   .alert-message.success 
     = link_to "#", :class => "info_link", :title => "How To Merge" do 
