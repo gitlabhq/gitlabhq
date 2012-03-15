@@ -11,7 +11,7 @@ var MergeRequest = {
 
       $(".tabs a.merge-notes-tab").live("click", function(e) { 
         $(".merge-request-diffs").hide();
-        $(".merge-request-notes").show();
+        $(".merge_request_notes").show();
         e.preventDefault();
       });
 
@@ -19,7 +19,7 @@ var MergeRequest = {
         if(!MergeRequest.diffs_loaded) { 
           MergeRequest.loadDiff(); 
         }
-        $(".merge-request-notes").hide();
+        $(".merge_request_notes").hide();
         $(".merge-request-diffs").show();
         e.preventDefault();
       });
@@ -33,7 +33,7 @@ var MergeRequest = {
         url: $(".merge-diffs-tab").attr("data-url"),
         complete: function(){ 
           MergeRequest.diffs_loaded = true;
-          $(".merge-request-notes").hide();
+          $(".merge_request_notes").hide();
           $(".dashboard-loader").hide()},
         dataType: "script"});
     }
