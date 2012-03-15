@@ -294,7 +294,7 @@ class Project < ActiveRecord::Base
 
   def write_hook(name, content)
     hook_file = File.join(path_to_repo, 'hooks', name)
-	cur_content = File.read(hook_file)
+    cur_content = File.read(hook_file)
 
     unless cur_content == content 
       FileUtils.copy(hook_file, hook_file + '.' + Time.now.to_i.to_s)
