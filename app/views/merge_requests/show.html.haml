@@ -26,23 +26,23 @@
 
 
 %hr
-- if @merge_request.closed
-  .alert-message.error Closed
-  - if @merge_request.merged
-    - event = @merge_request.merge_event
-    %div
-      %p
-        %strong #{event.author_name} 
-        merged this request
-        %span.cgray
-          = time_ago_in_words(event.created_at)
-          ago.
-    %br
-- else 
-  .alert-message.success 
-    = link_to "#", :class => "info_link", :title => "How To Merge" do 
-      = image_tag "Info-UI.PNG"
-    Open
+.merge_request_status_holder
+  - if @merge_request.closed
+    %h5
+      .alert-message.error.status_info Closed
+      - if @merge_request.merged?
+        %span
+          Merged by #{@merge_request.merge_event.author_name} 
+          %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+      - elsif @merge_request.closed_event
+        %span
+          Closed by #{@merge_request.closed_event.author_name} 
+          %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+      %br
+  - else 
+    %h5
+      .alert-message.success.status_info Open
+      = link_to "How to merge", "#", :class => "vlink how_to_merge_link", :title => "How To Merge"
 
 = render "merge_requests/how_to_merge"
 

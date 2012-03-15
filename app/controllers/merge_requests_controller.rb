@@ -45,9 +45,6 @@ class MergeRequestsController < ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
-    # Close MR if nothing to merge
-    #@merge_request.mark_as_merged! if @merge_request.probably_merged?
-
     respond_to do |format|
       format.html
       format.js
@@ -75,8 +72,7 @@ class MergeRequestsController < ApplicationController
 
     respond_to do |format|
       if @merge_request.save
-        @merge_request.reloaded_commits
-        @merge_request.reloaded_diffs
+        @merge_request.reload_code
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.' }
         format.json { render json: @merge_request, status: :created, location: @merge_request }
       else
@@ -89,6 +85,7 @@ class MergeRequestsController < ApplicationController
   def update
     respond_to do |format|
       if @merge_request.update_attributes(params[:merge_request].merge(:author_id_of_changes => current_user.id))
+        @merge_request.reload_code
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.' }
         format.json { head :ok }
       else

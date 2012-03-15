@@ -41,10 +41,19 @@ class MergeRequest < ActiveRecord::Base
     where("title like :query", :query => "%#{query}%")
   end
 
+  def self.find_all_by_branch(branch_name)
+    where("source_branch like :branch or target_branch like :branch", :branch => branch_name)
+  end
+
   def validate_branches
     if target_branch == source_branch
       errors.add :base, "You can not use same branch for source and target branches"
     end
+  end
+
+  def reload_code
+    self.reloaded_commits
+    self.reloaded_diffs
   end
 
   def new?
@@ -72,9 +81,18 @@ class MergeRequest < ActiveRecord::Base
     commits.first
   end
 
+  def merged? 
+    merged && merge_event
+  end
+
   def merge_event
     self.project.events.where(:target_id => self.id, :target_type => "MergeRequest", :action => Event::Merged).last
   end
+
+  def closed_event
+    self.project.events.where(:target_id => self.id, :target_type => "MergeRequest", :action => Event::Closed).last
+  end
+
 
   # Return the number of +1 comments (upvotes)
   def upvotes
@@ -114,6 +132,17 @@ class MergeRequest < ActiveRecord::Base
       map {|c| Commit.new(c)}.
       sort_by(&:created_at).
       reverse
+  end
+
+  def merge!(user_id)
+    self.mark_as_merged!
+    Event.create(
+      :project => self.project,
+      :action => Event::Merged,
+      :target_id => self.id,
+      :target_type => "MergeRequest",
+      :author_id => user_id
+    )
   end
 end
 # == Schema Information

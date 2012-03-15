@@ -41,6 +41,10 @@ a:focus {
 
 .label { 
   background-color: #474D57;
+
+  &.pushed { 
+    background-color: $link_color;
+  }
 }
 
 .pretty_label { 
@@ -865,7 +869,7 @@ p.time {
     }
   }
 
-  padding: 10px 5px;
+  padding: 15px 5px;
   border-bottom: 1px solid #eee;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   &:last-child { border:none }
@@ -962,4 +966,18 @@ p.time {
 
 .highlight_word { 
   background:#EEDC94;
+}
+
+.status_info { 
+  font-size:14px;
+  padding:5px 15px;
+  line-height:24px;
+  width:60px;
+  text-align:center;
+  float:left;
+  margin-right:20px;
+}
+
+.merge_request_status_holder { 
+  margin-bottom:20px;
 }
