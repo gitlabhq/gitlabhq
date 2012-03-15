@@ -50,8 +50,22 @@ ActiveRecord::Schema.define(:version => 20120315132931) do
     t.integer  "project_id"
   end
 
-# Could not dump table "merge_requests" because of following StandardError
-#   Unknown type 'true' for column 'merged'
+  create_table "merge_requests", :force => true do |t|
+    t.string   "target_branch",                    :null => false
+    t.string   "source_branch",                    :null => false
+    t.integer  "project_id",                       :null => false
+    t.integer  "author_id"
+    t.integer  "assignee_id"
+    t.string   "title"
+    t.boolean  "closed",        :default => false, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.text     "st_commits"
+    t.text     "st_diffs"
+    t.boolean  "merged",        :default => false, :null => false
+  end
+
+  add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
 
   create_table "notes", :force => true do |t|
     t.text     "note"

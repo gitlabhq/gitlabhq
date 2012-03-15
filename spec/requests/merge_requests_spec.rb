@@ -42,7 +42,7 @@ describe "MergeRequests" do
 
       it { should have_content(@merge_request.title[0..10]) }
       it "Show page should inform user that merge request closed" do 
-        page.should have_content "Reopen" 
+        page.should have_content "Closed" 
       end
     end
   end
