@@ -37,6 +37,10 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, where(:closed => true)
   scope :assigned, lambda { |u| where(:assignee_id => u.id)}
 
+  def self.search query
+    where("title like :query", :query => "%#{query}%")
+  end
+
   def validate_branches
     if target_branch == source_branch
       errors.add :base, "You can not use same branch for source and target branches"

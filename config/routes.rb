@@ -1,5 +1,5 @@
 Gitlab::Application.routes.draw do
-
+  get 'search' => "search#show"
 
   # Optionally, enable Resque here
   require 'resque/server'

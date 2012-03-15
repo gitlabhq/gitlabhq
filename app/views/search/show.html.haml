@@ -1,0 +1,41 @@
+= form_tag search_path, :method => :get do |f|
+  .padded
+    = label_tag :search, "Looking for"
+    .input
+      = text_field_tag :search, params[:search],:placeholder => "issue 143", :class => "xxlarge"
+      = submit_tag 'Search', :class => "btn primary"
+- if params[:search].present?
+  %br
+  %h3 Search results
+  %hr
+  .search_results
+    - if @projects.empty? && @merge_requests.empty?
+      %h3
+        %small Nothing here
+    - else 
+      - if @projects.any?
+        - @projects.each do |project|
+          = link_to project do 
+            %h4
+              %span.ico.project
+              = project.name
+              %small
+                last activity at 
+                = project.last_activity_date.stamp("Aug 25, 2011")
+      - if @merge_requests.any?
+        - @merge_requests.each do |merge_request|
+          = link_to [merge_request.project, merge_request] do 
+            %h5
+              Merge Request #
+              = merge_request.id
+              &ndash;
+              = truncate merge_request.title, :length => 50
+              %small
+                updated at 
+                = merge_request.updated_at.stamp("Aug 25, 2011")
+              %strong
+                %span.label= merge_request.project.name
+  :javascript
+    $(function() {
+      $(".search_results").highlight("#{params[:search]}");
+    })

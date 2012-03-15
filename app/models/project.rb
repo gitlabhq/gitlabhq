@@ -54,6 +54,10 @@ class Project < ActiveRecord::Base
     UsersProject.access_roles
   end
 
+  def self.search query
+    where("name like :query or code like :query or path like :query", :query => "%#{query}%")
+  end
+
   def to_param
     code
   end

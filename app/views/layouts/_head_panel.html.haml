@@ -7,7 +7,9 @@
           %h1 
             GITLAB
       %h1.project_name= title
-      .search= text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
+      .search
+        = form_tag search_path, :method => :get do |f|
+          = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
       - if current_user.is_admin?
         = link_to admin_projects_path, :class => "admin_link", :title => "Admin area" do 
           = image_tag "admin.PNG", :width => 16
