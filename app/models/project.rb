@@ -301,10 +301,10 @@ class Project < ActiveRecord::Base
       File.open(hook_file, 'w') do |f|
         f.write(content)
       end  
-	  cur_perm=sprintf("%o", File.stat(hook_file).mode)
-	  unless cur_perm == "100775"
+      cur_perm=sprintf("%o", File.stat(hook_file).mode)
+      unless cur_perm == "100775"
         File.chmod(0775, hook_file)
-	  end
+      end
       return 0
     end  
 
