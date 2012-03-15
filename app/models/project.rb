@@ -297,11 +297,14 @@ class Project < ActiveRecord::Base
 	cur_content = File.read(hook_file)
 
     unless cur_content == content 
-      FileUtils.mv(hook_file, hook_file + '.' + Time.now.to_i.to_s)
+      FileUtils.copy(hook_file, hook_file + '.' + Time.now.to_i.to_s)
       File.open(hook_file, 'w') do |f|
         f.write(content)
       end  
-      File.chmod(0775, hook_file)
+	  cur_perm=sprintf("%o", File.stat(hook_file).mode)
+	  unless cur_perm == "100775"
+        File.chmod(0775, hook_file)
+	  end
       return 0
     end  
 
