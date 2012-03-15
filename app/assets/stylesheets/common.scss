@@ -43,6 +43,18 @@ a:focus {
   background-color: #474D57;
 }
 
+.pretty_label { 
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+  background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  color: #777;
+  border: 1px solid #DEDFE1;
+
+}
+
 .tabs > li > a, .pills > li > a {
   color:$style_color;
 }
