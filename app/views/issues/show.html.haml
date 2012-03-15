@@ -14,9 +14,9 @@
       = link_to edit_project_issue_path(@project, @issue), :class => "btn" do 
         Edit
 
+    %br
     - if @issue.upvotes > 0
-      = link_to "#notes", :class => "btn success" do
-        +#{@issue.upvotes}
+      .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
       
 
 .back_link
