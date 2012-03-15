@@ -262,11 +262,11 @@ Create init script in /etc/init.d/gitlab:
       start)
             CD_TO_APP_DIR="cd /home/gitlab/gitlab"
             START_DAEMON_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
-            START_RESQUE_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
+            START_RESQUE_PROCESS="./resque.sh"
 
             echo -n "Starting $DESC: "
             if [ `whoami` = root ]; then
-              sudo -u gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && START_RESQUE_PROCESS"
+              sudo -u gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
             else
               $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
             fi
