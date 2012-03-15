@@ -11,6 +11,18 @@ a {
   }
 }
 
+.btn { 
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f1f1), color-stop(25%, #f1f1f1), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: -ms-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: -o-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+
+  &:hover { 
+  }
+}
+
 a:focus { 
   outline: none; 
 }
