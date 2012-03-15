@@ -294,13 +294,10 @@ class Project < ActiveRecord::Base
 
   def write_hook(name, content)
     hook_file = File.join(path_to_repo, 'hooks', name)
-
-    cur_file = File.open(hook_file, 'rb') 
-    cur_content = cur_file.read
-    cur_file.close
+	cur_content = File.read(hook_file)
 
     unless cur_content == content 
-      system("mv", hook_file, hook_file + '.' + Time.now.to_i.to_s)
+      FileUtils.mv(hook_file, hook_file + '.' + Time.now.to_i.to_s)
       File.open(hook_file, 'w') do |f|
         f.write(content)
       end  
