@@ -209,7 +209,7 @@ Application can be started with next command:
 
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
-    sudo -u gitlab unicorn_rails -c config/unicorn.rb -E production -D
+    sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
 Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 
