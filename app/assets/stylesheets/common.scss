@@ -57,6 +57,13 @@ a:focus {
   color: #777;
   border: 1px solid #DEDFE1;
 
+  &.branch { 
+    border:none;
+    font-size:13px;
+    background: #474D57;
+    color:#fff;
+    font-family: monospace;
+  }
 }
 
 .tabs > li > a, .pills > li > a {

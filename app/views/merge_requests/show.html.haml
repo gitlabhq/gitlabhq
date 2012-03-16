@@ -1,9 +1,9 @@
 %h3
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.label= @merge_request.source_branch
+  %span.pretty_label.branch= @merge_request.source_branch
   &rarr;
-  %span.label= @merge_request.target_branch
+  %span.pretty_label.branch= @merge_request.target_branch
 
   %small
     created at 
@@ -46,7 +46,7 @@
 
 = render "merge_requests/how_to_merge"
 
-%div.well
+%div.well.prettyprint
   %div
     %cite.cgray Created by
     = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
