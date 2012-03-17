@@ -14,7 +14,8 @@
       
     .clearfix
       = f.label :description, "Issue Details"
-      .input= f.text_area :description, :maxlength => 2000, :class => "xxlarge"
+      .input
+        = f.text_area :description, :maxlength => 2000, :class => "xxlarge"
         %p.hint Markdown is enabled.
 
     .clearfix
