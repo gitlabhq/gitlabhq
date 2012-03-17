@@ -935,3 +935,16 @@ p.time {
   padding: 4px;
   margin: 2px;
 }
+
+/* Issues Changed */
+/* Could probably rewrite this, a bit sloppy */
+.well {
+  .issue_status.span2 {
+    width:116px;
+    
+    .alert-message {
+      width:34px;
+      margin: 0 0 0 auto;
+    }
+  }
+}

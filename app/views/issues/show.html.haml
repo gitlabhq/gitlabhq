@@ -28,7 +28,7 @@
 
 %div.well
   %div
-    %div.issue_meta
+    %div.issue_meta.span13
       %cite.cgray Created by
       = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_issue_author(@issue)
@@ -37,7 +37,7 @@
       = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_issue_assignee(@issue)
     
-    %div.issue_status
+    %div.issue_status.span2
       - if @issue.closed
         .alert-message.error Closed
       - else 
