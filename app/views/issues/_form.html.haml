@@ -9,7 +9,7 @@
             %li= msg
 
     .clearfix
-      = f.label :title
+      = f.label :title, "Issue Message"
       .input= f.text_area :title, :maxlength => 255, :class => "xxlarge"
 
     .clearfix
@@ -26,7 +26,7 @@
         .input= f.check_box :closed
 
     .actions
-      = f.submit 'Save', :class => "primary btn"
+      = f.submit 'Submit new issue', :class => "primary btn"
 
       - if request.xhr?
         = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
