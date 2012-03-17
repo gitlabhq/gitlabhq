@@ -1,3 +1,7 @@
+.back_link
+= link_to project_issues_path(@project) do 
+  &larr; To issues list
+
 %h3
   #{@issue.title}
   %small
@@ -24,18 +28,20 @@
 
 %div.well
   %div
-    %cite.cgray Created by
-    = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
-    %strong.author= link_to_issue_author(@issue)
-
-    %cite.cgray and currently assigned to 
-    = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
-    %strong.author= link_to_issue_assignee(@issue)
+    %div.issue_meta
+      %cite.cgray Created by
+      = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
+      %strong.author= link_to_issue_author(@issue)
+  
+      %cite.cgray and currently assigned to 
+      = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
+      %strong.author= link_to_issue_assignee(@issue)
     
-    - if @issue.closed
-      .alert-message.error Closed
-    - else 
-      .alert-message.success Open
+    %div.issue_status
+      - if @issue.closed
+        .alert-message.error Closed
+      - else 
+        .alert-message.success Open
 
     %hr
     
