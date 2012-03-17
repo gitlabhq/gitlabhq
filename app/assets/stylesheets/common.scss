@@ -948,3 +948,14 @@ p.time {
     }
   }
 }
+
+/* Fix for readme code (stopped it from being yellow) */
+.readme {
+  pre {
+    background: white !important;
+    
+    code {
+      background: none !important;
+    }
+  }
+}
