@@ -1,5 +1,5 @@
 %h3
-  @issue.title
+  #{@issue.title}
   %small
     created at 
     = @issue.created_at.stamp("Aug 21, 2011")
@@ -43,7 +43,7 @@
 
     %hr
     
-  %div= simple_format @issue.description
+  %div= markdown @issue.description
 
 
 .issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
