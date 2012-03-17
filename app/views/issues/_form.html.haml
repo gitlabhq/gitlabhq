@@ -9,8 +9,12 @@
             %li= msg
 
     .clearfix
-      = f.label :title, "Issue Message"
-      .input= f.text_area :title, :maxlength => 255, :class => "xxlarge"
+      = f.label :title, "Issue Subject"
+      .input= f.text_field :title, :maxlength => 255
+      
+    .clearfix
+      = f.label :description, "Issue Description"
+      .input= f.text_area :description, :maxlength => 2000, :class => "xxlarge"
 
     .clearfix
       = f.label :assignee_id

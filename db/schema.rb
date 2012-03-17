@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20120307095918) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
+    t.text     "description"
     t.integer  "assignee_id"
     t.integer  "author_id"
     t.integer  "project_id"
