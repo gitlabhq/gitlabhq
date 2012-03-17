@@ -43,7 +43,9 @@
 
     %hr
     
-  %div= markdown @issue.description
+  %div
+    - if @project.description.present?
+      = markdown @issue.description
 
 
 .issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
