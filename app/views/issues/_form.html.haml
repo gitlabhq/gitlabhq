@@ -14,7 +14,7 @@
 
     .clearfix
       = f.label :assignee_id
-      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" })
+      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
 
     .clearfix
       = f.label :critical, "Critical"
