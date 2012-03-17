@@ -945,6 +945,18 @@ p.time {
     .alert-message {
       width:34px;
       margin: 0 0 0 auto;
+      
+      .error {
+        width: 40px;
+      }
+    }
+  }
+  
+  pre {
+    background: white !important;
+    
+    code {
+      background: none !important;
     }
   }
 }

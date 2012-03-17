@@ -13,9 +13,9 @@
       .input= f.text_field :title, :maxlength => 255
       
     .clearfix
-      = f.label :description, "Issue Description"
+      = f.label :description, "Issue Details"
       .input= f.text_area :description, :maxlength => 2000, :class => "xxlarge"
-      %p.hint Markdown is enabled.
+        %p.hint Markdown is enabled.
 
     .clearfix
       = f.label :assignee_id
@@ -31,7 +31,10 @@
         .input= f.check_box :closed
 
     .actions
-      = f.submit 'Submit new issue', :class => "primary btn"
+      - if @issue.new_record?
+        = f.submit 'Submit new issue', :class => "primary btn"
+      -else
+        = f.submit 'Save changes', :class => "primary btn"
 
       - if request.xhr?
         = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
