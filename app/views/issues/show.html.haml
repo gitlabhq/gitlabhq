@@ -17,18 +17,9 @@
     %br
     - if @issue.upvotes > 0
       .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
-      
-
-.back_link
-  = link_to project_issues_path(@project) do 
-    &larr; To issues list
 
 
 %hr
-- if @issue.closed
-  .alert-message.error Closed
-- else 
-  .alert-message.success Open
 
 
 %div.well
@@ -40,6 +31,11 @@
     %cite.cgray and currently assigned to 
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_assignee(@issue)
+    
+    - if @issue.closed
+      .alert-message.error Closed
+    - else 
+      .alert-message.success Open
 
     %hr
     
