@@ -199,7 +199,36 @@ Application can be started with next command:
 ** Ok - we have a working application now. **
 ** But keep going - there are some thing that should be done **
 
-# Nginx && Unicorn
+# Select a Server Setup Type
+
+# 1. Apache/Nginx & Phusion Passenger
+
+### Install Phusion Passenger
+
+    sudo gem install passenger --no-ri --no-rdoc
+    
+## Select a Server Type
+
+    # You have a choice between Apache2 or Nginx, it's really up to you.
+    # You will most likely need to install other packages. (It will tell you exactly what to do)
+    # for Ubuntu you need to remember everything needs to begin with sudo, so sudo apt-get ...
+    
+    sudo passenger-install-apache2-module
+    # OR
+    sudo passenger-install-nginx-module
+    
+Edit /etc/nginx/nginx.conf OR /etc/apache2/httpd.conf adding the required text
+(it says what you need to add at the end of the installation process.
+
+Start Apache2 or Nginx
+
+    sudo /etc/init.d/apache2 start
+    # OR
+    sudo /etc/init.d/nginx start
+    
+That's all folks!
+
+# 2. Nginx && Unicorn
 
 ### Install Nginx
 
