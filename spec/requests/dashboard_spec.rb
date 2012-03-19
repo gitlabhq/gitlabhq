@@ -1,6 +1,4 @@
 require 'spec_helper'
-__END__
-# Disabled for now
 describe "Dashboard" do
   before do 
     @project = Factory :project
@@ -22,19 +20,21 @@ describe "Dashboard" do
     end
 
     it "should have projects panel" do
-      within ".project-list"  do
-        page.should have_content(@project.name)
-      end
+      page.should have_content(@project.name)
+    end
+  end
+
+  describe "GET /dashboard/activities" do
+    before do
+      visit dashboard_activities_path
     end
 
-    # Temporary disabled cause of travis
-    # TODO: fix or rewrite
-    #it "should have news feed" do
-      #within "#news-feed"  do
-        #page.should have_content("commit")
-        #page.should have_content(@project.commit.author.name)
-        #page.should have_content(@project.commit.safe_message)
-      #end
-    #end
+    it "should be on dashboard page" do
+      current_path.should == dashboard_activities_path
+    end
+
+    it "should have projects panel" do
+      page.should have_content(@project.name)
+    end
   end
 end

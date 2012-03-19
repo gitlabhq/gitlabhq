@@ -3,7 +3,7 @@ a {
   color: $link_color;
   &:hover { 
     text-decoration:none; 
-    color: $style_color;
+    color: $blue_link;
   }
 
   &.btn { 
@@ -838,12 +838,19 @@ p.time {
     width:840px;
     margin:auto;
 
-    .wll { 
-      padding:5px;
-      margin-top:5px;
+    .dash_project_item { 
+      margin-bottom:10px;
       border:none;
       &:hover { 
         background:none;
+
+        h4 { 
+          color:#2FA0BB;
+          .arrow { 
+          background:#2FA0BB;
+          color:#fff;
+          }
+        }
       }
 
       h4 {
@@ -988,3 +995,14 @@ p.time {
 .merge_request_status_holder { 
   margin-bottom:20px;
 }
+
+.arrow{ 
+  float: right;
+  background: #E3E5EA;
+  padding: 10px;
+  border-radius: 5px;
+  text-shadow: none;
+  color: #999;
+  line-height: 16px;
+  font-weight:bold;
+} 

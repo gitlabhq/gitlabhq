@@ -34,4 +34,9 @@ class DashboardController < ApplicationController
       format.atom { render :layout => false }
     end
   end
+
+  def activities
+    @projects = current_user.projects.all
+    @events = Event.where(:project_id => @projects.map(&:id)).recent.limit(40)
+  end
 end

@@ -3,8 +3,9 @@
     = link_to [merge_request.project, merge_request] do 
       %p
         %strong
-          %span.label= merge_request.project.name
+          %span.pretty_label= merge_request.project.name
           &ndash;
-          Merge Request #
-          = merge_request.id
+          Merge Request ##{merge_request.id}
         = truncate merge_request.title, :length => 50
+        %span.right.cgray
+          = merge_request.updated_at.stamp("Aug 21, 2011")
