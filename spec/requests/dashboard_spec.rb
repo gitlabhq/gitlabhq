@@ -23,18 +23,4 @@ describe "Dashboard" do
       page.should have_content(@project.name)
     end
   end
-
-  describe "GET /dashboard/activities" do
-    before do
-      visit dashboard_activities_path
-    end
-
-    it "should be on dashboard page" do
-      current_path.should == dashboard_activities_path
-    end
-
-    it "should have projects panel" do
-      page.should have_content(@project.name)
-    end
-  end
 end

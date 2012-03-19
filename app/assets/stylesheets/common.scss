@@ -925,7 +925,7 @@ p.time {
   }
   a:last-child h4 { border:none; }
 
-  a.active { 
+  a:hover { 
     h4 {
       color:#111;
       border-right:4px solid $styled_border_color;

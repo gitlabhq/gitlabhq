@@ -1,22 +1,25 @@
 - if @projects.any?
   .row
-    .span4
+    .span11
+      = render @events
+    .span5.right
       %div.leftbar.ui-box
         %h5
           Projects
+          %small
+            (#{@projects.count})
           - if current_user.can_create_project?
             %span.right
               = link_to new_project_path, :class => "btn very_small info" do 
                 New Project
         .content_list
           - @projects.each do |project|
-            = link_to project_path(project), :remote => true, :class => dom_class(project) do
+            = link_to project_path(project), :class => dom_class(project) do
               %h4
                 %span.ico.project
-                = truncate(project.name, :length => 22)
-    .span12.right
-      .show_holder.ui-box.padded
-        .loading
+                = truncate(project.name, :length => 25)
+                %span.right
+                  &rarr;
 
 - else 
   %h3 Nothing here
@@ -31,20 +34,3 @@
           New Project » 
   - else 
     If you will be added to project - it will be displayed here
-
-
-:javascript
-  $(function(){
-    $("a.project").live("ajax:before", function() { 
-      $(".show_holder").html("<div class='loading'>");
-      $('a.project').removeClass("active");
-      $(this).addClass("active");
-    });
-    $('a.project:first-child').trigger("click");
-  });
-
-- if @projects.count == @limit
-  :javascript
-    $(function(){
-      Pager.init(#{@limit});
-    });
