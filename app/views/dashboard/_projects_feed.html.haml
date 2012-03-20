@@ -1,5 +1,5 @@
-- @active_projects.first(5).each do |project|
-  .wll
+- projects.first(5).each do |project|
+  %div.dash_project_item
     = link_to project do 
       %h4
         %span.ico.project
@@ -7,3 +7,5 @@
         %small
           last activity at 
           = project.last_activity_date.stamp("Aug 25, 2011")
+        %span.right.arrow
+          &rarr;

@@ -12,8 +12,8 @@
       = @commit.committer_name
       %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
 
-%hr
-%pre.commit_message
+%br
+%pre.commit_message.prettyprint
   = commit_msg_with_link_to_issues(@project, @commit.safe_message)
 .clear
 %br

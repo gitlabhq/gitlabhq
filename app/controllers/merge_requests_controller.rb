@@ -41,13 +41,9 @@ class MergeRequestsController < ApplicationController
 
     @note = @project.notes.new(:noteable => @merge_request)
 
-    @commits = @project.repo.
-      commits_between(@merge_request.target_branch, @merge_request.source_branch).
-      map {|c| Commit.new(c)}.
-      sort_by(&:created_at).
-      reverse
-
-    render_full_content
+    # Get commits from repository 
+    # or from cache if already merged
+    @commits = @merge_request.commits
 
     respond_to do |format|
       format.html
@@ -76,6 +72,7 @@ class MergeRequestsController < ApplicationController
 
     respond_to do |format|
       if @merge_request.save
+        @merge_request.reload_code
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.' }
         format.json { render json: @merge_request, status: :created, location: @merge_request }
       else
@@ -88,6 +85,7 @@ class MergeRequestsController < ApplicationController
   def update
     respond_to do |format|
       if @merge_request.update_attributes(params[:merge_request].merge(:author_id_of_changes => current_user.id))
+        @merge_request.reload_code
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.' }
         format.json { head :ok }
       else

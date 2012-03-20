@@ -1,5 +1,5 @@
 Gitlab::Application.routes.draw do
-
+  get 'search' => "search#show"
 
   # Optionally, enable Resque here
   require 'resque/server'
@@ -40,6 +40,7 @@ Gitlab::Application.routes.draw do
   get "dashboard", :to => "dashboard#index"
   get "dashboard/issues", :to => "dashboard#issues"
   get "dashboard/merge_requests", :to => "dashboard#merge_requests"
+  get "dashboard/activities", :to => "dashboard#activities"
 
   #get "profile/:id", :to => "profile#show"
 

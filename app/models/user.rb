@@ -86,6 +86,10 @@ class User < ActiveRecord::Base
       )
     end
   end
+
+  def cared_merge_requests
+    MergeRequest.where("author_id = :id or assignee_id = :id", :id => self.id).opened
+  end
 end
 # == Schema Information
 #

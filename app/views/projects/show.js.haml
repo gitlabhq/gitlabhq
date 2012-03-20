@@ -1,7 +1,0 @@
-- if @project.repo_exists? && @project.has_commits?
-  :plain
-    $(".show_holder").html("#{escape_javascript(render(:partial => 'projects/show'))}");
-- else 
-  :plain
-    $(".show_holder").html("#{escape_javascript(render(:template => 'projects/empty'))}");
-

@@ -3,11 +3,23 @@ a {
   color: $link_color;
   &:hover { 
     text-decoration:none; 
-    color: $style_color;
+    color: $blue_link;
   }
 
   &.btn { 
     color: $style_color;
+  }
+}
+
+.btn { 
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f1f1), color-stop(25%, #f1f1f1), to(#e6e6e6));
+  background-image: -webkit-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: -moz-linear-gradient(top, #f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: -ms-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: -o-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+  background-image: linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
+
+  &:hover { 
   }
 }
 
@@ -29,6 +41,29 @@ a:focus {
 
 .label { 
   background-color: #474D57;
+
+  &.pushed { 
+    background-color: $link_color;
+  }
+}
+
+.pretty_label { 
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  background-image: -webkit-gradient(linear, 0 0, 0 26, color-stop(0.076, #fefefe), to(#F6F7F8));
+  background-image: -webkit-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  background-image: -moz-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  background-image: -o-linear-gradient(#fefefe 7.6%, #F6F7F8);
+  color: #777;
+  border: 1px solid #DEDFE1;
+
+  &.branch { 
+    border:none;
+    font-size:13px;
+    background: #474D57;
+    color:#fff;
+    font-family: monospace;
+  }
 }
 
 .tabs > li > a, .pills > li > a {
@@ -807,12 +842,19 @@ p.time {
     width:840px;
     margin:auto;
 
-    .wll { 
-      padding:5px;
-      margin-top:5px;
+    .dash_project_item { 
+      margin-bottom:10px;
       border:none;
       &:hover { 
         background:none;
+
+        h4 { 
+          color:#2FA0BB;
+          .arrow { 
+          background:#2FA0BB;
+          color:#fff;
+          }
+        }
       }
 
       h4 {
@@ -887,7 +929,7 @@ p.time {
   }
   a:last-child h4 { border:none; }
 
-  a.active { 
+  a:hover { 
     h4 {
       color:#111;
       border-right:4px solid $styled_border_color;
@@ -974,3 +1016,32 @@ p.time {
     }
   }
 }
+
+.highlight_word { 
+  background:#EEDC94;
+}
+
+.status_info { 
+  font-size:14px;
+  padding:5px 15px;
+  line-height:24px;
+  width:60px;
+  text-align:center;
+  float:left;
+  margin-right:20px;
+}
+
+.merge_request_status_holder { 
+  margin-bottom:20px;
+}
+
+.arrow{ 
+  float: right;
+  background: #E3E5EA;
+  padding: 10px;
+  border-radius: 5px;
+  text-shadow: none;
+  color: #999;
+  line-height: 16px;
+  font-weight:bold;
+} 

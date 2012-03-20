@@ -7,6 +7,7 @@ class Event < ActiveRecord::Base
   Reopened  = 4
   Pushed    = 5
   Commented = 6
+  Merged    = 7
 
   belongs_to :project
   belongs_to :target, :polymorphic => true

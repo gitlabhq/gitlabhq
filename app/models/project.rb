@@ -54,6 +54,10 @@ class Project < ActiveRecord::Base
     UsersProject.access_roles
   end
 
+  def self.search query
+    where("name like :query or code like :query or path like :query", :query => "%#{query}%")
+  end
+
   def to_param
     code
   end
@@ -71,6 +75,24 @@ class Project < ActiveRecord::Base
       :data => data,
       :author_id => data[:user_id]
     )
+  end
+
+  def update_merge_requests(oldrev, newrev, ref, author_key_id)
+    return true unless ref =~ /heads/
+    branch_name = ref.gsub("refs/heads/", "")
+    user = Key.find_by_identifier(author_key_id).user
+    c_ids = self.commits_between(oldrev, newrev).map(&:id)
+
+    # Update code for merge requests
+    mrs = self.merge_requests.opened.find_all_by_branch(branch_name).all
+    mrs.each { |merge_request| merge_request.reload_code }
+
+    # Close merge requests
+    mrs = self.merge_requests.opened.where(:target_branch => branch_name).all
+    mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) } 
+    mrs.each { |merge_request| merge_request.merge!(user.id) }
+
+    true
   end
 
   def execute_web_hooks(oldrev, newrev, ref, author_key_id)

@@ -20,7 +20,7 @@
   .row
     .dashboard_block
       .row
-        .span10= render "dashboard/projects_feed"
+        .span10= render "dashboard/projects_feed", :projects => @active_projects
         .span4.right
           - if current_user.can_create_project?
             .alert-message.block-message.warning
@@ -65,4 +65,4 @@
 
     %hr
     .row
-      .dashboard_block= render "dashboard/events_feed"
+      .dashboard_block= render @events

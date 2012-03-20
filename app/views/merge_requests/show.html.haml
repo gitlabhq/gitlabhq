@@ -1,9 +1,9 @@
 %h3
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.label= @merge_request.source_branch
+  %span.pretty_label.branch= @merge_request.source_branch
   &rarr;
-  %span.label= @merge_request.target_branch
+  %span.pretty_label.branch= @merge_request.target_branch
 
   %small
     created at 
@@ -11,12 +11,10 @@
 
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
-      - if @merge_request.closed
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
-      - else
+      - if @merge_request.open?
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
-      = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
-        Edit
+        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
+          Edit
 
     %br
     - if @merge_request.upvotes > 0
@@ -28,17 +26,27 @@
 
 
 %hr
-- if @merge_request.closed
-  .alert-message.error Closed
-- else 
-  .alert-message.success 
-    = link_to "#", :class => "info_link", :title => "How To Merge" do 
-      = image_tag "Info-UI.PNG"
-    Open
+.merge_request_status_holder
+  - if @merge_request.closed
+    %h5
+      .alert-message.error.status_info Closed
+      - if @merge_request.merged?
+        %span
+          Merged by #{@merge_request.merge_event.author_name} 
+          %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+      - elsif @merge_request.closed_event
+        %span
+          Closed by #{@merge_request.closed_event.author_name} 
+          %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+      %br
+  - else 
+    %h5
+      .alert-message.success.status_info Open
+      = link_to "How to merge", "#", :class => "vlink how_to_merge_link", :title => "How To Merge"
 
 = render "merge_requests/how_to_merge"
 
-%div.well
+%div.well.prettyprint
   %div
     %cite.cgray Created by
     = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"

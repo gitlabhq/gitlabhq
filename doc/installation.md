@@ -209,7 +209,7 @@ Application can be started with next command:
 
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
-    sudo -u gitlab unicorn_rails -c config/unicorn.rb -E production -D
+    sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
 Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 
@@ -256,33 +256,38 @@ Create init script in /etc/init.d/gitlab:
     NAME=unicorn
     DESC="Gitlab service"
     PID=/home/gitlab/gitlab/tmp/pids/unicorn.pid
+    RESQUE_PID=/home/gitlab/gitlab/tmp/pids/resque_worker.pid
 
     case "$1" in
       start)
             CD_TO_APP_DIR="cd /home/gitlab/gitlab"
             START_DAEMON_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
+            START_RESQUE_PROCESS="./resque.sh"
 
             echo -n "Starting $DESC: "
             if [ `whoami` = root ]; then
-              sudo -u gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS"
+              sudo -u gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
             else
-              $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS
+              $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
             fi
             echo "$NAME."
             ;;
       stop)
             echo -n "Stopping $DESC: "
             kill -QUIT `cat $PID`
+            kill -QUIT `cat $RESQUE_PID`
             echo "$NAME."
             ;;
       restart)
             echo -n "Restarting $DESC: "
             kill -USR2 `cat $PID`
+            kill -USR2 `cat $RESQUE_PID`
             echo "$NAME."
             ;;
       reload)
             echo -n "Reloading $DESC configuration: "
             kill -HUP `cat $PID`
+            kill -HUP `cat $RESQUE_PID`
             echo "$NAME."
             ;;
       *)
