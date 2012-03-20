@@ -13,6 +13,7 @@ at
 %span.cgray
   = time_ago_in_words(event.created_at)
   ago.
+%br
 %span.label= event.merge_request.source_branch
 &rarr;
 %span.label= event.merge_request.target_branch

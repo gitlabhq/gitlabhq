@@ -871,7 +871,7 @@ p.time {
 
 .event_feed { 
   min-height:40px;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #ddd;
   .avatar { 
     width:32px;
   }
@@ -884,8 +884,6 @@ p.time {
   }
 
   padding: 15px 5px;
-  border-bottom: 1px solid #eee;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   &:last-child { border:none }
   .wll:hover { background:none }
 }
