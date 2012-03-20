@@ -250,8 +250,12 @@ nav.main_menu {
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
   @include shade;
   .count { 
-    color:#aaa;
-    margin-left:3px;  
+    margin-left:3px;
+    color: #332;
+    background: white;
+    padding: 1px 6px 2px;
+    font-weight: bold;
+    -webkit-border-radius: 9px;
   }
   .label { 
     background:$hover;
@@ -302,8 +306,8 @@ nav.main_menu {
 
 img.avatar { 
   float:left;
-  margin-right:15px;
-  width:40px;
+  margin-right:10px;
+  width:35px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -326,7 +330,7 @@ img.lil_av {
 
 .wll { 
   background-color: #FFF;
-  padding: 10px 5px;
+  padding: 6px 10px;
   min-height: 20px;
   border-bottom: 1px solid #eee;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
