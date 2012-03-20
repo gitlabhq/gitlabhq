@@ -1,7 +1,7 @@
 %li.wll{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
   .right
-  	- if issue.notes.any?
-  	  %span.label= pluralize issue.notes.count, 'comment'
+    - if issue.notes.any?
+      %span.label= pluralize issue.notes.count, 'comment'
     - if can? current_user, :modify_issue, issue
       - if issue.closed
         = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small", :remote => true
