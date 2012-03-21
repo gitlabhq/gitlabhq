@@ -15,7 +15,25 @@ Issue.seed(:id, [
   { :id => 13, :project_id => 3, :author_id => 2, :assignee_id => 2, :title => Faker::Lorem.sentence(6)},
   { :id => 14, :project_id => 3, :author_id => 3, :assignee_id => 3, :title => Faker::Lorem.sentence(6)},
   { :id => 15, :project_id => 3, :author_id => 4, :assignee_id => 4, :title => Faker::Lorem.sentence(6)},
-  { :id => 16, :project_id => 3, :author_id => 5, :assignee_id => 5, :title => Faker::Lorem.sentence(6)}
+  { :id => 16, :project_id => 3, :author_id => 5, :assignee_id => 5, :title => Faker::Lorem.sentence(6)},
+
+  { :id => 21, :project_id => 1, :author_id => 1, :assignee_id => 1, :title => Faker::Lorem.sentence(6) },
+  { :id => 22, :project_id => 1, :author_id => 2, :assignee_id => 2, :title => Faker::Lorem.sentence(6) },
+  { :id => 23, :project_id => 1, :author_id => 3, :assignee_id => 3, :title => Faker::Lorem.sentence(6) },
+  { :id => 24, :project_id => 1, :author_id => 4, :assignee_id => 4, :title => Faker::Lorem.sentence(6) },
+  { :id => 25, :project_id => 1, :author_id => 5, :assignee_id => 5, :title => Faker::Lorem.sentence(6) },
+
+  { :id => 26, :project_id => 2, :author_id => 1, :assignee_id => 1, :title => Faker::Lorem.sentence(6) },
+  { :id => 27, :project_id => 2, :author_id => 2, :assignee_id => 2, :title => Faker::Lorem.sentence(6) },
+  { :id => 28, :project_id => 2, :author_id => 3, :assignee_id => 3, :title => Faker::Lorem.sentence(6) },
+  { :id => 29, :project_id => 2, :author_id => 4, :assignee_id => 4, :title => Faker::Lorem.sentence(6) },
+  { :id => 30, :project_id => 2, :author_id => 5, :assignee_id => 5, :title => Faker::Lorem.sentence(6) },
+
+  { :id => 32, :project_id => 3, :author_id => 1, :assignee_id => 1, :title => Faker::Lorem.sentence(6)},
+  { :id => 33, :project_id => 3, :author_id => 2, :assignee_id => 2, :title => Faker::Lorem.sentence(6)},
+  { :id => 34, :project_id => 3, :author_id => 3, :assignee_id => 3, :title => Faker::Lorem.sentence(6)},
+  { :id => 35, :project_id => 3, :author_id => 4, :assignee_id => 4, :title => Faker::Lorem.sentence(6)},
+  { :id => 36, :project_id => 3, :author_id => 5, :assignee_id => 5, :title => Faker::Lorem.sentence(6)}
 ])
 
 
