@@ -7,7 +7,6 @@
 -#    paginator:     the paginator that renders the pagination tags inside
 = paginator.render do
   %nav.gitlab_pagination
-    -#= first_page_tag unless current_page.first?
     = prev_page_tag
     - each_page do |page|
       - if page.left_outer? || page.right_outer? || page.inside_window?
@@ -15,4 +14,3 @@
       - elsif !page.was_truncated?
         = gap_tag
     = next_page_tag
-    -#= last_page_tag unless current_page.last?

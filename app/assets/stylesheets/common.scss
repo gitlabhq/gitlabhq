@@ -476,8 +476,7 @@ img.lil_av {
     }
   }
 
-  &.bottom { 
-    padding: 0 10px;
+  .bottom { 
     background:#f5f5f5;
     border-top: 1px solid #eee;
     @include round-borders-bottom(4px);
@@ -1029,11 +1028,11 @@ p.time {
 }
 
 .gitlab_pagination { 
-  span { 
-    padding:0 10px;
-
-    a { 
-      color:$link_color;
-    }
+  span a { color:$link_color; }
+  .prev, .next, .current, .page a { 
+    padding:10px;
+  }
+  .current { 
+    border-bottom:2px solid $style_color;
   }
 }
