@@ -30,13 +30,16 @@
     ago.
   - if event.commits.count > 1
     = link_to compare_project_commits_path(event.project, :from => event.commits.first.prev_commit_id, :to => event.commits.last.id) do 
-      Compare #{event.commits.first.commit.id[0..8]}...#{event.commits.last.id[0..8]}
-  - @project = event.project  
+      %strong #{event.commits.first.commit.id[0..7]}...#{event.commits.last.id[0..7]}
+  - project = event.project  
   %ul.unstyled.event_commits
     - if event.commits.size > 3
-      = render event.commits[0...2]
-      %li ... and #{event.commits.size - 2} more commits
+      - event.commits[0...2].each do |commit|
+        = render "events/commit", :commit => commit, :project => project
+      %li
+        %br
+        \... and #{event.commits.size - 2} more commits
     - else 
-      = render event.commits
-
+      - event.commits.each do |commit|
+        = render "events/commit", :commit => commit, :project => project
 
