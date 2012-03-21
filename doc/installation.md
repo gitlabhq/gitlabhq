@@ -60,7 +60,7 @@ The installation consists of 6 steps:
 # 2. Install ruby
 
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
-    tar xfvz ruby-1.9.2-p290.tar.gz
+    tar xfv ruby-1.9.2-p290.tar.gz
     cd ruby-1.9.2-p290
     ./configure
     make
