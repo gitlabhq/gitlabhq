@@ -19,4 +19,4 @@
       %td= last_commit(project)
       %td= link_to 'Edit', edit_admin_project_path(project), :id => "edit_#{dom_id(project)}", :class => "btn small"
       %td= link_to 'Destroy', [:admin, project], :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
-= paginate @admin_projects
+= paginate @admin_projects, :theme => "admin"

@@ -3,3 +3,5 @@
 
 - @issues.non_critical.each do |issue|
   = render(:partial => 'issues/show', :locals => {:issue => issue})
+
+%li= paginate @issues, :remote => true, :theme => "gitlab"

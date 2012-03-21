@@ -28,7 +28,7 @@ class IssuesController < ApplicationController
               when 2 then @project.issues.closed
               when 3 then @project.issues.opened.assigned(current_user)
               else @project.issues.opened
-              end
+              end.page(params[:page]).per(10)
 
     @issues = @issues.includes(:author, :project)
 
