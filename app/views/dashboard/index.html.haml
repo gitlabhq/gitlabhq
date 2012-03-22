@@ -20,8 +20,8 @@
   .row
     .dashboard_block
       .row
-        .span4
-          %div.prettyprint.ipadded
+        .span4.right
+          %div.borders.ipadded
             %h1
               = pluralize current_user.projects.count, "project", "projects"
             - if current_user.can_create_project?
@@ -34,9 +34,9 @@
                   %br
                   = link_to new_project_path, :class => "btn" do 
                     New Project » 
-        .span10.right= render "dashboard/projects_feed", :projects => @active_projects
+        .span10.left= render "dashboard/projects_feed", :projects => @active_projects
       - if @last_push
-        .ui-box.padded.prepend-top-20
+        .padded.prepend-top-20
           %h5
             %small Latest push was to the #{@last_push.branch_name} branch of #{@last_push.project.name}:
           %ul.unstyled= render @last_push
