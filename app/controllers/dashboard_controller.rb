@@ -13,6 +13,7 @@ class DashboardController < ApplicationController
     @issues = @issues.includes(:author, :project)
 
     @events = Event.where(:project_id => @projects.map(&:id)).recent.limit(20)
+    @last_push = Event.where(:project_id => @projects.map(&:id)).recent.code_push.limit(1).first
   end
 
   # Get authored or assigned open merge requests

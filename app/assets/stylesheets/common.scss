@@ -114,8 +114,16 @@ a:focus {
   margin-top:10px;
 }
 
+.prepend-top-20 {
+  margin-top:20px;
+}
+
 .padded { 
   padding:20px;
+}
+
+.ipadded { 
+  padding:20px !important;
 }
 .no-borders { 
   border:none;
@@ -861,14 +869,7 @@ p.time {
       border:none;
       &:hover { 
         background:none;
-
-        h4 { 
-          color:#2FA0BB;
-          .arrow { 
-          background:#2FA0BB;
-          color:#fff;
-          }
-        }
+        h4 { color:#2FA0BB; }
       }
 
       h4 {

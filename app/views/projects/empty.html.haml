@@ -38,3 +38,7 @@
     "git remote add origin #{@project.url_to_repo}",
     "git push -u origin master"].join("\n")
   = raw bash_lexer.highlight(exist_repo_setup_str)
+
+  - if can? current_user, :admin_project, @project
+    .alert-message.block-message.error.prepend-top-20
+      = link_to 'Remove project', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"

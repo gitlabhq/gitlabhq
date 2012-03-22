@@ -15,6 +15,7 @@ class Event < ActiveRecord::Base
   serialize :data
 
   scope :recent, order("created_at DESC")
+  scope :code_push, where(:action => Pushed)
 
   def self.determine_action(record)
     if [Issue, MergeRequest].include? record.class
