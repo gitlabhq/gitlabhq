@@ -19,7 +19,7 @@
       Code
     .input
       .input-prepend
-        %span.add-on= "http://#{GIT_HOST["host"]}/"
+        %span.add-on= web_app_url
         = f.text_field :code, :placeholder => "example"
 
   - unless @project.new_record? || @project.heads.empty?  

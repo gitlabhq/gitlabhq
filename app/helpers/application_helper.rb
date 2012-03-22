@@ -11,6 +11,14 @@ module ApplicationHelper
     true
   end
 
+  def request_protocol
+    request.ssl? ? "https" : "http"
+  end
+
+  def web_app_url
+    "#{request_protocol}://#{GIT_HOST["host"]}/"
+  end
+
   def body_class(default_class = nil)
     main = content_for(:body_class).blank? ?
       default_class :
