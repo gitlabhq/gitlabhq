@@ -114,7 +114,7 @@ class IssuesController < ApplicationController
                   when 2 then @project.issues.closed
                   when 3 then @project.issues.opened.assigned(current_user)
                   else @project.issues.opened
-                end
+                end.page(params[:page]).per(100)
 
     @issues = @issues.where("title LIKE ?", "%#{terms}%") unless terms.blank?
 
