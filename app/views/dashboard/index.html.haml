@@ -34,6 +34,15 @@
                   %br
                   = link_to new_project_path, :class => "btn" do 
                     New Project » 
+            - else 
+              %hr
+              %div
+                You've reached project limit for your account. 
+                You cannot create new projects.
+                .link_holder
+                  %br
+                  = link_to profile_path, :class => "btn" do 
+                    Your Profile » 
         .span10.left= render "dashboard/projects_feed", :projects => @active_projects
       - if @last_push
         .padded.prepend-top-20

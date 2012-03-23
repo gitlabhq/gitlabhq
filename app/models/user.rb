@@ -5,13 +5,19 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me,
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
                   :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, :theme_id
 
   has_many :users_projects, :dependent => :destroy
   has_many :projects, :through => :users_projects
   has_many :my_own_projects, :class_name => "Project", :foreign_key => :owner_id
   has_many :keys, :dependent => :destroy
+
+  has_many :recent_events, 
+    :class_name => "Event",
+    :foreign_key => :author_id,
+    :order => "id DESC"
+
   has_many :issues,
     :foreign_key => :author_id,
     :dependent => :destroy
@@ -38,6 +44,7 @@ class User < ActiveRecord::Base
             :presence => true,
             :numericality => {:greater_than_or_equal_to => 0}
             
+  validates :bio, :length => { :within => 0..255 }
 
   before_create :ensure_authentication_token
   alias_attribute :private_token, :authentication_token

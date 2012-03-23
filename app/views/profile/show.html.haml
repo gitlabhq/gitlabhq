@@ -1,15 +1,26 @@
-.media-grid
-  = link_to "#" do
-    = image_tag gravatar_icon(@user.email, 90), :class => "thumbnail"
-  %h3.media_h
-    = @user.name
-    %br
-    %small
-      = @user.email
-
-  .right
-    %p.alert-message.block-message You can change your avatar at gravatar.com
-
+.row
+  .span10
+    .profile_avatar_holder
+      = image_tag gravatar_icon(@user.email, 90), :class => "styled_image"
+    %h3
+      = @user.name
+      %br
+      %small
+        = @user.email
+  
+  .span6.right
+    %div
+      %div
+        %h5.cgray
+          Personal projects: 
+          %span.right
+            %span= current_user.my_own_projects.count
+            of 
+            %span= current_user.projects_limit
+        %h5.cgray
+          SSH public keys:
+          %span.right
+            %span= current_user.keys.count
 %hr
 
 = form_for @user, :url => profile_update_path, :method => :put do |f|
@@ -18,23 +29,39 @@
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
-
-  .clearfix
-    = f.label :name
-    .input= f.text_field :name
-  .clearfix
-    = f.label :email
-    .input= f.text_field :email
-  .clearfix
-    = f.label :skype
-    .input= f.text_field :skype
-  .clearfix
-    = f.label :linkedin
-    .input= f.text_field :linkedin
-  .clearfix
-    = f.label :twitter
-    .input= f.text_field :twitter
+  .row
+    .span9
+      .clearfix
+        = f.label :name
+        .input
+          = f.text_field :name, :class => "xlarge"
+          %span.help-block Enter youre name, so people you know can recognize you.
+      .clearfix
+        = f.label :email
+        .input
+          = f.text_field :email, :class => "xlarge"
+          %span.help-block We also use email for avatar detection
+      .clearfix
+        = f.label :skype
+        .input= f.text_field :skype, :class => "xlarge"
+      .clearfix
+        = f.label :linkedin
+        .input= f.text_field :linkedin, :class => "xlarge"
+      .clearfix
+        = f.label :twitter
+        .input= f.text_field :twitter, :class => "xlarge"
+      .clearfix
+        = f.label :bio
+        .input
+          = f.text_area :bio, :rows => 6, :class => "xlarge", :maxlength => 250
+          %span.help-block About yourself in fewer than 250 characters.
+    .span7.right
+      %p.alert-message.block-message 
+        %strong Tip:
+        You can change your avatar at gravatar.com
 
   .actions
     = f.submit 'Save', :class => "primary btn"
 
+-#= link_to "New project", new_project_path, :class => "btn small padded"
+-#= link_to "New public key", new_key_path, :class => "btn small"

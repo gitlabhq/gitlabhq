@@ -358,12 +358,15 @@ img.lil_av {
   top: 3px;
 }
 
-.media-grid { 
-  h3, h2 , h4 {
-    &.media_h { 
-      padding-left:10px;
-      float:left;
-    }
+.profile_avatar_holder { 
+  float:left;
+  width:90px;
+  height:90px;
+  margin-right:20px;
+  img { 
+    width:90px;
+    height:90px;
+    background:#eee;
   }
 }
 
