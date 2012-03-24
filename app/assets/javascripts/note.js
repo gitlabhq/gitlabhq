@@ -38,8 +38,9 @@ init:
     });
 
     $("#note_attachment").change(function(e){
-        var val = $('input[type=file]').val();
+        var val = $('.input-file').val();
         var filename = val.substr(val.lastIndexOf("/"));
+        console.log(filename,val);
         $(".file_name").text(filename);
     });
 
