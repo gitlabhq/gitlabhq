@@ -1040,3 +1040,40 @@ p.time {
     border-bottom:2px solid $style_color;
   }
 }
+
+// Fixes alignment on notes.
+.new_note {
+  label {
+    text-align:left;
+  }
+}
+
+.issue_notes {
+  .input-file {
+    font: 500px monospace;
+    opacity:0;
+    filter: alpha(opacity=0);
+    position: absolute;
+    z-index: 1;
+    top:0;
+    right:0;
+    padding:0;
+    margin: 0;
+  }
+
+  .file_upload {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background:url('http://viget.com/uploads/image/custom-file-input.png');
+    border:0;
+    text-indent:-9999px;
+  }
+
+  div.attachments {
+    position:relative;
+    width: 100px;
+    height: 30px;
+    overflow:hidden;
+  }
+}
