@@ -1102,18 +1102,15 @@ p.time {
 
   .file_upload {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    right:14px;
+    top:7px;
+    height: 30px;
   }
 
   div.attachments {
     position:relative;
-    width: 100px;
-    height: 30px;
+    width: 350px;
+    height: 40px;
     overflow:hidden;
-  }
-
-  label.large {
-    width:160px;
   }
 }
