@@ -1117,6 +1117,20 @@ p.time {
   .file_name {
     line-height:30px;
     width:240px;
+    height:28px;
     overflow:hidden;
+  }
+}
+
+// Fix issue with notes & lists creating a bunch of bottom borders.
+li.note {
+  .note-title {
+    li {
+      border-bottom:none !important;
+    }
+    .file {
+      padding-left:20px;
+      background:url("icon-attachment.png") no-repeat left center;
+    }
   }
 }
