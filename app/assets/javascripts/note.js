@@ -38,7 +38,9 @@ init:
     });
 
     $("#note_attachment").change(function(e){
-        alert($('input[type=file]').val());
+        var val = $('input[type=file]').val();
+        var filename = val.substr(val.lastIndexOf("/"));
+        $(".file_name").text(filename);
     });
 
   },
