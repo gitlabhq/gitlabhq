@@ -1,5 +1,5 @@
 = form_for [@project, @note], :remote => "true", :multipart => true do |f|
-  %h3 Leave a note
+  %h3 Leave a comment
   -if @note.errors.any?
     .alert-message.block-message.error
       - @note.errors.full_messages.each do |msg|
