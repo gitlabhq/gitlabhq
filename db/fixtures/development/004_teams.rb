@@ -1,7 +1,7 @@
 UsersProject.seed(:id, [
   { :id => 1,  :project_id => 1, :user_id => 1, :project_access => UsersProject::MASTER },
-  { :id => 2,  :project_id => 1, :user_id => 2, :project_access => UsersProject::REPORTERW},
-  { :id => 3,  :project_id => 1, :user_id => 3, :project_access => UsersProject::REPORTERW},
+  { :id => 2,  :project_id => 1, :user_id => 2, :project_access => UsersProject::REPORTER},
+  { :id => 3,  :project_id => 1, :user_id => 3, :project_access => UsersProject::REPORTER},
   { :id => 4,  :project_id => 1, :user_id => 4, :project_access => UsersProject::REPORTER},
   { :id => 5,  :project_id => 1, :user_id => 5, :project_access => UsersProject::REPORTER},
 

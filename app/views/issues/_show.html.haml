@@ -1,12 +1,12 @@
 %li.wll{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
   .right
     - if issue.notes.any?
-      %span.label= pluralize issue.notes.count, 'comment'
+      %span.btn.small.disabled.padded= pluralize issue.notes.count, 'note'
     - if can? current_user, :modify_issue, issue
       - if issue.closed
-        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small", :remote => true
+        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small padded", :remote => true
       - else
-        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small", :remote => true
+        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small padded", :remote => true
       = link_to 'Edit', edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true
   = image_tag gravatar_icon(issue.assignee_email), :class => "avatar"
   %span.update-author

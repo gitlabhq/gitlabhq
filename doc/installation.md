@@ -60,7 +60,7 @@ The installation consists of 6 steps:
 # 2. Install ruby
 
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
-    tar xfvz ruby-1.9.2-p290.tar.gz
+    tar xfv ruby-1.9.2-p290.tar.gz
     cd ruby-1.9.2-p290
     ./configure
     make
@@ -220,15 +220,11 @@ Edit /etc/nginx/nginx.conf. Add next code to **http** section:
     server {
         listen 80;
         server_name mygitlab.com;
-
-        location / {
-
-            root /home/gitlab/gitlab/public;
-
-            if (!-f $request_filename) {
-                proxy_pass http://gitlab; 
-                break;
-            }
+        root /home/gitlab/gitlab/public;
+        try_files $uri $uri/index.html $uri.html @gitlab;
+        
+        location @gitlab {
+          proxy_pass http://gitlab;
         }
 
     }

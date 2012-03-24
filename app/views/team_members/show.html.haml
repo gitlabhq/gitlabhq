@@ -1,54 +1,59 @@
 - allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
-.media-grid
-  = link_to "#" do
-    = image_tag gravatar_icon(user.email, 60), :class => "thumbnail", :width => 60
-  %h3.media_h
-    = user.name
+
+.row
+  .span8
+    .profile_avatar_holder
+      = image_tag gravatar_icon(user.email, 90), :class => "styled_image"
+    %h3
+      = user.name
+      %br
+      %small
+        = user.email
     %br
-    %small= user.email
-
-.back_link
-  = link_to team_project_path(@project), :class => "" do 
-    &larr; To team list
-
-%br
-%table.zebra-striped.borders
-  %tr
-    %td Name
-    %td= user.name
+    .back_link
+      %br
+      = link_to team_project_path(@project), :class => "" do 
+        &larr; To team list
   
-  %tr
-    %td Email
-    %td= user.email
+  .span8.right
+    %div
+      %div
+        %h5.cgray
+          Member since: 
+          %span.right
+            = @team_member.created_at.stamp("Aug 21, 2011") 
+        %h5.cgray
+          Project Access: 
+          %small (#{link_to "read more", help_permissions_path, :class => "vlink"})
+          %span.right
+            = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
+              = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
 
-  %tr
-    %td Member since
-    %td= @team_member.created_at.stamp("Aug 21, 2011")
 
-  %tr
-    %td
-      Project Access
-      (#{link_to "read more", help_permissions_path, :class => "vlink"})
 
-    %td
-      = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
-        = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
-
+%div.prepend-top-20
   - unless user.skype.empty?
-    %tr
-      %td Skype:
-      %td= user.skype
+    %p
+      %b Skype:
+      = user.skype
 
   - unless user.linkedin.empty?
-    %tr
-      %td LinkedIn:
-      %td= user.linkedin
+    %p
+      %b LinkedIn:
+      = user.linkedin
 
   - unless user.twitter.empty?
-    %tr
-      %td Twitter:
-      %td= user.twitter
+    %p
+      %b Twitter:
+      = user.twitter
+    - unless user.bio.empty?
+      %p
+        %b Bio:
+        = user.bio
+
+= render user.recent_events.limit(3)
+
 
 - if can? current_user, :admin_project, @project
   .actions

@@ -1,17 +1,19 @@
 %li.wll
+  .right
+    .left
+      - if merge_request.notes.any?
+        %span.btn.small.disabled.padded= pluralize merge_request.notes.count, 'note'
+      %span.btn.small.disabled.padded
+        = merge_request.source_branch
+        &rarr;
+        = merge_request.target_branch
   = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
   %span.update-author
     %strong= merge_request.author_name
     authored
     = time_ago_in_words(merge_request.created_at)
     ago
-    - if merge_request.notes.any?
-      %span.pretty_label= pluralize merge_request.notes.count, 'note'
     - if merge_request.upvotes > 0
       %span.label.success= "+#{merge_request.upvotes}"
-  .right
-    %span.label= merge_request.source_branch
-    &rarr;
-    %span.label= merge_request.target_branch
   = link_to project_merge_request_path(merge_request.project, merge_request) do
-    %p.row_title= truncate(merge_request.title, :length => 100)
+    %p.row_title= truncate(merge_request.title, :length => 80)

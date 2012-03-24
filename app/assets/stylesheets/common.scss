@@ -114,8 +114,16 @@ a:focus {
   margin-top:10px;
 }
 
+.prepend-top-20 {
+  margin-top:20px;
+}
+
 .padded { 
   padding:20px;
+}
+
+.ipadded { 
+  padding:20px !important;
 }
 .no-borders { 
   border:none;
@@ -354,12 +362,15 @@ img.lil_av {
   top: 3px;
 }
 
-.media-grid { 
-  h3, h2 , h4 {
-    &.media_h { 
-      padding-left:10px;
-      float:left;
-    }
+.profile_avatar_holder { 
+  float:left;
+  width:90px;
+  height:90px;
+  margin-right:20px;
+  img { 
+    width:90px;
+    height:90px;
+    background:#eee;
   }
 }
 
@@ -465,8 +476,26 @@ img.lil_av {
     border-top:none;
 
     form { 
-      padding-top:16px;
+      padding:9px 0;
+      margin:0px;
     }
+
+    .pills { 
+      li { 
+        padding:3px 0;
+        &.active a { background-color:$style_color; }
+        a { 
+          border-radius:7px;
+        }
+      }
+    }
+  }
+
+  .bottom { 
+    background:#f5f5f5;
+    border-top: 1px solid #eee;
+    @include round-borders-bottom(4px);
+    border-bottom:none;
   }
 
   &.padded { 
@@ -847,14 +876,7 @@ p.time {
       border:none;
       &:hover { 
         background:none;
-
-        h4 { 
-          color:#2FA0BB;
-          .arrow { 
-          background:#2FA0BB;
-          color:#fff;
-          }
-        }
+        h4 { color:#2FA0BB; }
       }
 
       h4 {
@@ -1042,4 +1064,18 @@ p.time {
   color: #999;
   line-height: 16px;
   font-weight:bold;
-} 
+}
+
+.thin_area{
+  height: 150px;
+}
+
+.gitlab_pagination { 
+  span a { color:$link_color; }
+  .prev, .next, .current, .page a { 
+    padding:10px;
+  }
+  .current { 
+    border-bottom:2px solid $style_color;
+  }
+}

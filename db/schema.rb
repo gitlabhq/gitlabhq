@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120315132931) do
+ActiveRecord::Schema.define(:version => 20120323221339) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(:version => 20120315132931) do
     t.string   "authentication_token"
     t.boolean  "dark_scheme",                           :default => false, :null => false
     t.integer  "theme_id",                              :default => 1,     :null => false
+    t.string   "bio"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

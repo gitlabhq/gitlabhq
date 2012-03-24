@@ -1,6 +1,33 @@
+v 2.3.0
+  - Dashboard r1
+  - Search r1
+  - Project page
+  - Close merge request on push
+  - Persist MR diff after merge
+  - mysql support
+  - Documentation
+
+v 2.2.0
+  - We’ve added support of LDAP auth
+  - Improved permission logic (4 roles system)
+  - Protected branches (now only masters can push to protected branches)
+  - Usability improved
+  - twitter bootstrap integrated
+  - compare view between commits
+  - wiki feature
+  - now you can enable/disable issues, wiki, wall features per project
+  - security fixes
+  - improved code browsing (ajax branch switch etc)
+  - improved per-line commenting
+  - git submodules displayed
+  - moved to rails 3.2
+  - help section improved
+
 v 2.1.0
   - Project tab r1
-  - Repository tab r1
+  - List branches/tags
+  - per line comments
+  - mass user import
 
 v 2.0.0
   - gitolite as main git host system

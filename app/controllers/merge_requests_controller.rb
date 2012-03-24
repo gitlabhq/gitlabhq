@@ -28,7 +28,7 @@ class MergeRequestsController < ApplicationController
                       when 2 then @merge_requests.closed
                       when 3 then @merge_requests.opened.assigned(current_user)
                       else @merge_requests.opened
-                      end
+                      end.page(params[:page]).per(20)
 
     @merge_requests = @merge_requests.includes(:author, :project).order("created_at desc")
   end

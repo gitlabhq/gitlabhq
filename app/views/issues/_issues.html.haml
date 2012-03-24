@@ -1,5 +1,12 @@
-- @issues.critical.each do |issue|
+- @issues.select(&:critical).each do |issue|
   = render(:partial => 'issues/show', :locals => {:issue => issue})
 
-- @issues.non_critical.each do |issue|
+- @issues.reject(&:critical).each do |issue|
   = render(:partial => 'issues/show', :locals => {:issue => issue})
+
+- if @issues.present?
+  %li.bottom
+    .row
+      .span10= paginate @issues, :remote => true, :theme => "gitlab"
+      .span4.right
+        %span.cgray.right #{@issues.total_count} issues for this filter
