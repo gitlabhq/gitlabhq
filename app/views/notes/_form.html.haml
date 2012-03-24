@@ -8,6 +8,7 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
   = f.text_area :note,  :size => 255
+  %p.hint Markdown is enabled.
 
   .row
     .span4
@@ -21,11 +22,14 @@
           = label_tag :notify_author do 
             = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
             %span Commit author
-    .span4
+    .span8
       %h5 Attachment:
       .clearfix
-        = f.label :attachment, "Any file, < 10 MB"
-        .input= f.file_field :attachment, :class => "input-file"
+        .attachments.breadcrumb
+          %div.file_name File name...
+          %button.file_upload.btn.primary Upload File
+          .input= f.file_field :attachment, :class => "input-file"
+        %span Any file less then 10 MB
 
 
-  = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
+  = f.submit 'Add Comment', :class => "btn primary", :id => "submit_note"
