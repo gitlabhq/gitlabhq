@@ -24,10 +24,10 @@
     .span4
       %h5 Attachment:
       .clearfix
-        = f.label :attachment, "Any file less then 10 MB"
         .attachments
-          %button.file_upload
+          %button.file_upload.btn
           .input= f.file_field :attachment, :class => "input-file"
+          = f.label.large :attachment, "Any file less then 10 MB"
 
 
   = f.submit 'Add Comment', :class => "btn primary", :id => "submit_note"
