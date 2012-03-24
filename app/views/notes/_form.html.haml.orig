@@ -22,21 +22,18 @@
           = label_tag :notify_author do 
             = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
             %span Commit author
-    .span4
+    .span8
       %h5 Attachment:
       .clearfix
         = f.label :attachment, "Any file less then 10 MB"
         .attachments
+<<<<<<< HEAD
           %button.file_upload
+=======
+          %button.file_upload.btn "Upload File"
+>>>>>>> fb4c033... Started note attachment changes, and text changes
           .input= f.file_field :attachment, :class => "input-file"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-          %label.large{:for => "attachment"} "Any file less then 10 MB"
->>>>>>> b91128c... Started note attachment changes, and text changes
-=======
-          %label.large{:for => "attachment"} "Any file less then 10 MB"
->>>>>>> b91128c... Started note attachment changes, and text changes
+        %label.large{:for => "attachment"} "Any file less then 10 MB"
 
 
   = f.submit 'Add Comment', :class => "btn primary", :id => "submit_note"
