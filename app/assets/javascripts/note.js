@@ -37,6 +37,10 @@ init:
       $('.attach_holder').show();
     });
 
+    $("#note_attachment").change(function(e){
+        alert($('input[type=file]').val());
+    });
+
   },
 
 
