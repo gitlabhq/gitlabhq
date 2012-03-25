@@ -37,6 +37,12 @@ init:
       $('.attach_holder').show();
     });
 
+    $("#note_attachment").change(function(e){
+        var val = $('.input-file').val();
+        var filename = val.replace(/^.*[\\\/]/, '');
+        $(".file_name").text(filename);
+    });
+
   },
 
 

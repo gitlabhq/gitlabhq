@@ -12,6 +12,6 @@
     = markdown(note.note)
     - if note.attachment.url
       .right
-        %span.file
-        = link_to note.attachment_identifier, note.attachment.url, :target => "_blank"
+        %div.file
+          = link_to note.attachment_identifier, note.attachment.url, :target => "_blank"
   .clear

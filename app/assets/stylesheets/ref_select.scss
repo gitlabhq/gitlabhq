@@ -48,3 +48,13 @@
   }
 }
 
+/** Fix for Search Dropdown Border **/
+.chzn-container {
+  .chzn-search {
+    input:focus {
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+  }
+}

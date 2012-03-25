@@ -1,5 +1,9 @@
-%h3 
-  Issue ##{@issue.id} 
+.back_link
+= link_to project_issues_path(@project) do 
+  &larr; To issues list
+
+%h3
+  #{@issue.title}
   %small
     created at 
     = @issue.created_at.stamp("Aug 21, 2011")
@@ -17,33 +21,33 @@
     %br
     - if @issue.upvotes > 0
       .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
-      
-
-.back_link
-  = link_to project_issues_path(@project) do 
-    &larr; To issues list
 
 
 %hr
-- if @issue.closed
-  .alert-message.error Closed
-- else 
-  .alert-message.success Open
 
 
-%div.well.prettyprint
-  %div
-    %cite.cgray Created by
-    = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
-    %strong.author= link_to_issue_author(@issue)
-
-    %cite.cgray and currently assigned to 
-    = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
-    %strong.author= link_to_issue_assignee(@issue)
-
-    %hr
+%div.well
+  %div.row
+    %div.issue_meta.span13
+      %cite.cgray Created by
+      = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
+      %strong.author= link_to_issue_author(@issue)
+  
+      %cite.cgray and currently assigned to 
+      = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
+      %strong.author= link_to_issue_assignee(@issue)
     
-  %div= simple_format @issue.title
+    %div.issue_status.span2
+      - if @issue.closed
+        .alert-message.error Closed
+      - else 
+        .alert-message.success Open
+
+  %hr
+    
+  %div
+    - if @project.description.present?
+      = markdown @issue.description
 
 
 .issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
