@@ -158,7 +158,7 @@ Permissions:
     
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab_status
+    sudo -u gitlab bundle exec rake gitlab_status RAILS_ENV=production
 
 
     # OUTPUT EXAMPLE
