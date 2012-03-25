@@ -76,6 +76,21 @@ class Project < ActiveRecord::Base
       :author_id => data[:user_id]
     )
   end
+  
+  def update_issues(oldrev, newrev, ref, author_key_id)
+    user = Key.find_by_identifier(author_key_id).user
+    commits = self.commits_between(oldrev, newrev)
+    commits.each do |commit|
+      commit.message.split(/(#[0-9]+)/m).each do |m|
+        if m =~ /(#([0-9]+))/m
+          begin
+            issue = self.issues.find($2)
+            issue.update_attribues(:closed => true, :author_id_of_changes => user.id)
+          end
+        end
+      end
+    end
+  end
 
   def update_merge_requests(oldrev, newrev, ref, author_key_id)
     return true unless ref =~ /heads/
