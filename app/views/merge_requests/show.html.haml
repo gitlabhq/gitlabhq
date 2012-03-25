@@ -16,50 +16,49 @@
         = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
           Edit
 
+        %br
+        %small= link_to "Show how to merge", "#", :class => "vlink how_to_merge_link", :title => "How To Merge"
     %br
     - if @merge_request.upvotes > 0
       .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
 
+= render "merge_requests/how_to_merge"
 .back_link
   = link_to project_merge_requests_path(@project) do 
     &larr; To merge requests
 
 
-%hr
-.merge_request_status_holder
-  - if @merge_request.closed
-    %h5
-      .alert-message.error.status_info Closed
-      - if @merge_request.merged?
-        %span
-          Merged by #{@merge_request.merge_event.author_name} 
-          %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
-      - elsif @merge_request.closed_event
-        %span
-          Closed by #{@merge_request.closed_event.author_name} 
-          %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
-      %br
-  - else 
-    %h5
-      .alert-message.success.status_info Open
-      = link_to "How to merge", "#", :class => "vlink how_to_merge_link", :title => "How To Merge"
+.merge_request_box
+  .merge_request_status_holder
+    - if @merge_request.closed
+      %h5
+        .alert-message.error.status_info Closed
+        - if @merge_request.merged?
+          %span
+            Merged by #{@merge_request.merge_event.author_name} 
+            %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+        - elsif @merge_request.closed_event
+          %span
+            Closed by #{@merge_request.closed_event.author_name} 
+            %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+        %br
+    - else 
+      %h5
+        .alert-message.success.status_info Open
+        = @merge_request.title
 
-= render "merge_requests/how_to_merge"
 
-%div.well.prettyprint
   %div
-    %cite.cgray Created by
-    = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
-    %strong.author= link_to_merge_request_author(@merge_request)
+    %div
+      %cite.cgray Created by
+      = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
+      %strong.author= link_to_merge_request_author(@merge_request)
 
-    %cite.cgray and currently assigned to 
-    = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
-    %strong.author= link_to_merge_request_assignee(@merge_request)
+      %cite.cgray and currently assigned to 
+      = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
+      %strong.author= link_to_merge_request_assignee(@merge_request)
       
-    %hr
-    
 
-  %div= simple_format @merge_request.title
 
 = render "merge_requests/commits"
 

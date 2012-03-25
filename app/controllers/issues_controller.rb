@@ -80,7 +80,13 @@ class IssuesController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.html { redirect_to [@project, @issue]}
+      format.html do 
+        if @issue.valid?
+          redirect_to [@project, @issue]
+        else
+          render :edit
+        end
+      end
     end
   end
 

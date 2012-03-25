@@ -1,9 +1,5 @@
-.back_link
-= link_to project_issues_path(@project) do 
-  &larr; To issues list
-
 %h3
-  #{@issue.title}
+  Issue ##{@issue.id}
   %small
     created at 
     = @issue.created_at.stamp("Aug 21, 2011")
@@ -22,32 +18,35 @@
     - if @issue.upvotes > 0
       .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
 
+.back_link
+  = link_to project_issues_path(@project) do 
+    &larr; To issues list
 
-%hr
-
-
-%div.well
-  %div.row
-    %div.issue_meta.span13
-      %cite.cgray Created by
-      = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
-      %strong.author= link_to_issue_author(@issue)
-  
-      %cite.cgray and currently assigned to 
-      = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
-      %strong.author= link_to_issue_assignee(@issue)
-    
-    %div.issue_status.span2
+.issue_box
+  .merge_request_status_holder
+    %h5
       - if @issue.closed
-        .alert-message.error Closed
+        .alert-message.error.status_info Closed
       - else 
-        .alert-message.success Open
+        .alert-message.success.status_info Open
+      = @issue.title
 
   %hr
-    
   %div
-    - if @project.description.present?
-      = markdown @issue.description
+    %div.row
+      %div.issue_meta.span13
+        %cite.cgray Created by
+        = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
+        %strong.author= link_to_issue_author(@issue)
+    
+        %cite.cgray and currently assigned to 
+        = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
+        %strong.author= link_to_issue_assignee(@issue)
+      
+    %div
+      - if @issue.description
+        %hr
+        = markdown @issue.description
 
 
 .issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"

@@ -294,13 +294,7 @@ nav.main_menu {
   @include shade;
   .count { 
     margin-left:3px;
-    color: #332;
-    background: white;
-    padding: 1px 6px 2px;
-    font-weight: bold;
-    -webkit-border-radius: 9px;
-    -moz-border-radius: 9px;
-    border-radius: 9px;
+    color: #aaa;
   }
   .label { 
     background:$hover;
@@ -351,8 +345,8 @@ nav.main_menu {
 
 img.avatar { 
   float:left;
-  margin-right:10px;
-  width:35px;
+  margin-right:15px;
+  width:40px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -378,7 +372,7 @@ img.lil_av {
 
 .wll { 
   background-color: #FFF;
-  padding: 6px 10px;
+  padding: 10px 5px;
   min-height: 20px;
   border-bottom: 1px solid #eee;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -1004,21 +998,8 @@ p.time {
   margin: 2px;
 }
 
-/* Issues Changed */
-/* Could probably rewrite this, a bit sloppy */
-.well {
-  .issue_status.span2 {
-    width:116px;
-    
-    .alert-message {
-      width:34px;
-      margin: 0 0 0 auto;
-      
-      .error {
-        width: 40px;
-      }
-    }
-  }
+/* Fix for readme code (stopped it from being yellow) */
+.readme {
   pre {
     background: white !important;
     
@@ -1028,8 +1009,13 @@ p.time {
   }
 }
 
-/* Fix for readme code (stopped it from being yellow) */
-.readme {
+.issue_box, 
+.merge_request_box{ 
+  @extend .padded;
+  @extend .borders;
+  @extend .prepend-top-20;
+  @extend .append-bottom-20;
+
   pre {
     background: white !important;
     
@@ -1089,7 +1075,7 @@ p.time {
   }
 }
 
-.issue_notes {
+.new_note {
   .input-file {
     font: 500px monospace;
     opacity:0;

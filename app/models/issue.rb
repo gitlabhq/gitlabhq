@@ -26,7 +26,6 @@ class Issue < ActiveRecord::Base
             :length   => { :within => 0..255 }
             
   validates :description,
-            :presence => true,
             :length   => { :within => 0..2000 }
 
   scope :critical, where(:critical => true)

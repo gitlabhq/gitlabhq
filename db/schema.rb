@@ -27,7 +27,6 @@ ActiveRecord::Schema.define(:version => 20120323221339) do
 
   create_table "issues", :force => true do |t|
     t.string   "title"
-    t.text     "description"
     t.integer  "assignee_id"
     t.integer  "author_id"
     t.integer  "project_id"
@@ -37,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20120323221339) do
     t.integer  "position",    :default => 0
     t.boolean  "critical",    :default => false, :null => false
     t.string   "branch_name"
+    t.text     "description"
   end
 
   add_index "issues", ["project_id"], :name => "index_issues_on_project_id"
