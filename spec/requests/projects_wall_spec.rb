@@ -23,7 +23,7 @@ describe "Projects", "Wall" do
     before do
       visit wall_project_path(project)
       fill_in "note_note", :with => "my post on wall"
-      click_button "Add note"
+      click_button "Add Comment"
     end
 
     it "should conatin new note" do

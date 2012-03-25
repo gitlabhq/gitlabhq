@@ -30,22 +30,12 @@
 
 .merge_request_box
   .merge_request_status_holder
-    - if @merge_request.closed
-      %h5
+    %h5
+      - if @merge_request.closed
         .alert-message.error.status_info Closed
-        - if @merge_request.merged?
-          %span
-            Merged by #{@merge_request.merge_event.author_name} 
-            %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
-        - elsif @merge_request.closed_event
-          %span
-            Closed by #{@merge_request.closed_event.author_name} 
-            %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
-        %br
-    - else 
-      %h5
+      - else 
         .alert-message.success.status_info Open
-        = @merge_request.title
+      = @merge_request.title
 
 
   %div
@@ -57,7 +47,19 @@
       %cite.cgray and currently assigned to 
       = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_merge_request_assignee(@merge_request)
-      
+
+
+  - if @merge_request.closed
+    %hr
+    - if @merge_request.merged?
+      %span
+        Merged by #{@merge_request.merge_event.author_name} 
+        %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+    - elsif @merge_request.closed_event
+      %span
+        Closed by #{@merge_request.closed_event.author_name} 
+        %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+    %br
 
 
 = render "merge_requests/commits"

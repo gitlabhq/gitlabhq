@@ -13,7 +13,7 @@ describe "Issues" do
     before do
       visit project_commit_path(project, commit)
       fill_in "note_note", :with => "I commented this commit"
-      click_button "Add note"
+      click_button "Add Comment"
     end
 
     it "should conatin new note" do

@@ -17,7 +17,7 @@ describe "Issues" do
     before do
       visit project_issue_path(project, @issue)
       fill_in "note_note", :with => "I commented this issue"
-      click_button "Add note"
+      click_button "Add Comment"
     end
 
     it "should conatin new note" do

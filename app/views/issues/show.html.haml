@@ -44,7 +44,7 @@
         %strong.author= link_to_issue_assignee(@issue)
       
     %div
-      - if @issue.description
+      - if @issue.description.present?
         %hr
         = markdown @issue.description
 

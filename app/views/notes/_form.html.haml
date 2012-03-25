@@ -25,9 +25,9 @@
     .span8
       %h5 Attachment:
       .clearfix
-        .attachments.entry
+        .attachments
           %div.file_name File name...
-          %button.file_upload.btn.primary.small Upload File
+          %button.file_upload.btn.small Upload File
           .input= f.file_field :attachment, :class => "input-file"
         %span Any file less then 10 MB
 
