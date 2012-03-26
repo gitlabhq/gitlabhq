@@ -29,7 +29,7 @@
     });
 
     $(document).keypress(function(e) {
-      if( $(e.target).is(":input") ) return;
+      if($(e.target).is(":input")) return;
         switch(e.which)  {
         case 115:  focusSearch();
         e.preventDefault();
