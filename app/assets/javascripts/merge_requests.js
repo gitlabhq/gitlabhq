@@ -31,10 +31,12 @@ var MergeRequest = {
       $.ajax({
         type: "GET",
         url: $(".merge-diffs-tab").attr("data-url"),
+        beforeSend: function(){ $('.status').addClass("loading")},
         complete: function(){ 
           MergeRequest.diffs_loaded = true;
           $(".merge_request_notes").hide();
-          $(".dashboard-loader").hide()},
+          $('.status').removeClass("loading");
+        },
         dataType: "script"});
     }
 }

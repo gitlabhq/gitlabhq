@@ -3,5 +3,6 @@
     location.href = "#{project_path(@project, :notice => 'Project was successfully created.')}";
 - else
   :plain
+    $('.project_new_holder').show();
     $("#new_project").replaceWith("#{escape_javascript(render('form'))}");
     $('.ajax_loader').hide();

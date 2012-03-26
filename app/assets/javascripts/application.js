@@ -70,3 +70,7 @@ function showMenu() {
 function resetMenu() {
   $(this).removeClass("hover");
 }
+
+function slugify(text) {
+  return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
+}
