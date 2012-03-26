@@ -3,7 +3,9 @@ class Issue < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   belongs_to :assignee, :class_name => "User"
   has_many :notes, :as => :noteable, :dependent => :destroy
-
+  
+  serialize :st_commits
+  
   attr_protected :author, :author_id, :project, :project_id
   attr_accessor :author_id_of_changes
 
@@ -49,6 +51,10 @@ class Issue < ActiveRecord::Base
   # Return the number of +1 comments (upvotes)
   def upvotes
     notes.select(&:upvote?).size
+  end
+  
+  def commits
+    st_commits || []
   end
 end
 # == Schema Information
