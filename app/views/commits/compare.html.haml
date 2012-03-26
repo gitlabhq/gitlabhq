@@ -36,12 +36,12 @@
   $(function() {
     var availableTags = #{@project.heads.map(&:name).to_json};
 
-    $( "#from" ).autocomplete({
+    $("#from").autocomplete({
       source: availableTags,
       minLength: 1
     });
 
-    $( "#to" ).autocomplete({
+    $("#to").autocomplete({
       source: availableTags,
       minLength: 1
     });
