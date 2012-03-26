@@ -1011,20 +1011,34 @@ p.time {
 }
 
 .issue_box, 
+.commit_box,
 .merge_request_box{ 
   @extend .padded;
   @extend .borders;
   @extend .prepend-top-20;
   @extend .append-bottom-20;
+  border-width:2px;
 
   img { max-width: 100%; }
 
   pre {
-    background: white !important;
-    
     code {
       background: none !important;
     }
+  }
+}
+
+.commit_box { 
+  .commit_message { 
+    margin: -20px;
+    padding: 20px;
+    margin-top:10px;
+    border-radius:0;
+    border:none;
+    font-size:12px;
+    background-color:#f5f5f5;
+    border:none;
+    border-top:1px solid #eee;
   }
 }
 

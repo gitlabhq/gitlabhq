@@ -1,23 +1,25 @@
-.commit
-  = link_to tree_project_ref_path(@project, @commit.id), :class => "btn right small" do 
-    Browse Code »
-  = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
-  %code= @commit.id.to_s
-  %h5
-    = @commit.author_name
-    %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
-    - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
-      &ndash;
-      %cite committed by
-      = @commit.committer_name
-      %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
+.commit_box
+  .commit
+    .right
+      - unless @notes_count.zero?
+        %span.btn.small.disabled.padded= pluralize @notes_count, 'note'
 
-%br
-%pre.commit_message.prettyprint
-  = commit_msg_with_link_to_issues(@project, @commit.safe_message)
-.clear
-%br
+      = link_to tree_project_ref_path(@project, @commit.id), :class => "btn small" do 
+        Browse Code »
+    = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
+    %code= @commit.id.to_s
+    %h5
+      = @commit.author_name
+      %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
+      - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
+        &ndash;
+        %cite committed by
+        = @commit.committer_name
+        %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
 
+  %pre.commit_message
+    = commit_msg_with_link_to_issues(@project, @commit.safe_message)
+%br
 %p.cgray
   Showing #{pluralize(@commit.diffs.count, "changed file")}
 = render "commits/diffs", :diffs => @commit.diffs

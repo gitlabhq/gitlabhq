@@ -32,6 +32,8 @@ class CommitsController < ApplicationController
     @note = @project.build_commit_note(@commit)
     @comments_allowed = true
     @line_notes = project.commit_line_notes(@commit)
+
+    @notes_count = @line_notes.count + project.commit_notes(@commit).count
   end
 
   def compare
