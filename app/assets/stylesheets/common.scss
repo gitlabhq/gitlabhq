@@ -1010,6 +1010,7 @@ p.time {
   }
 }
 
+.project_box,
 .issue_box, 
 .commit_box,
 .merge_request_box{ 
@@ -1028,18 +1029,17 @@ p.time {
   }
 }
 
-.commit_box { 
-  .commit_message { 
-    margin: -20px;
-    padding: 20px;
-    margin-top:10px;
-    border-radius:0;
-    border:none;
-    font-size:12px;
-    background-color:#f5f5f5;
-    border:none;
-    border-top:1px solid #eee;
-  }
+.project_box .project_descr,
+.commit_box .commit_message { 
+  margin: -20px;
+  padding: 20px;
+  margin-top:10px;
+  border-radius:0;
+  border:none;
+  font-size:12px;
+  background-color:#f5f5f5;
+  border:none;
+  border-top:1px solid #eee;
 }
 
 .highlight_word { 
