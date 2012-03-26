@@ -11,6 +11,7 @@ a {
   }
 }
 
+
 .btn { 
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f1f1), color-stop(25%, #f1f1f1), to(#e6e6e6));
   background-image: -webkit-linear-gradient(#f1f1f1, #f1f1f1 25%, #e6e6e6);
@@ -1016,6 +1017,8 @@ p.time {
   @extend .prepend-top-20;
   @extend .append-bottom-20;
 
+  img { max-width: 100%; }
+
   pre {
     background: white !important;
     
@@ -1111,6 +1114,7 @@ p.time {
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
+  img { max-width:100% }
   .note-title {
     li {
       border-bottom:none !important;
@@ -1119,5 +1123,11 @@ li.note {
       padding-left:20px;
       background:url("icon-attachment.png") no-repeat left center;
     }
+  }
+}
+
+.markdown { 
+  img { 
+    max-width:100%;
   }
 }
