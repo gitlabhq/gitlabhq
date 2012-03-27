@@ -201,7 +201,8 @@ describe Project do
     end
     
     it "should close issue if issue id is in commit message" do
-      
+      @commit.message = "closes ##{@issue.id}"
+      @issue.closed.should be_true
     end
   end
 end
