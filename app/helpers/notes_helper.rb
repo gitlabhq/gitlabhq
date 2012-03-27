@@ -3,20 +3,19 @@ module NotesHelper
 		return '' unless note.note
 		out = ''
 		
-		if note.note =~ /^[0-9a-zA-Z]{6,52}$/
-			begin
-				commit = project.commit(note.note)
-				issue_refs = commit.safe_message.scan(/#([0-9]+)/m).flatten
-				if issue_refs.include?(note.target.id)
-					out += link_to(commit.safe_message, project_commit_path(project,commit))
-				else
-					out += link_to(note.note, project_commit_path(project,commit))
+		note.note.split(/([0-9a-zA-Z]{6,52})/).each do |m|
+			if m =~ /^[0-9a-zA-Z]{6,52}$/
+				begin
+					commit = project.commit(m)
+					issue_refs = commit.safe_message.scan(/#([0-9]+)/m).flatten
+					link_message = issue_refs.include?(note.target.id.to_s)? commit.safe_message : m
+					out += "[#{link_message}](#{project_commit_path(project,:id => commit.id)})"
+				rescue
+					out += m
 				end
-			rescue
-				out += note.note
+			else
+				out += m
 			end
-		else
-			out = note.note
 		end
 		preserve out
 	end

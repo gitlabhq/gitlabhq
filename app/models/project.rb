@@ -81,14 +81,13 @@ class Project < ActiveRecord::Base
     user = Key.find_by_identifier(author_key_id).user
     commits = self.commits_between(oldrev, newrev)
     commits.each do |commit|
-      commit.message.split(/(closes|fixes)\s?(#[0-9]+)/mi).each do |m|
-        if m =~ /(closes|fixes)\s?(#([0-9]+))/mi
-          begin
-            issue = self.issues.find($3)
-            note = self.build_issue_commit_reference(commit,issue)
-            note.save
-            issue.update_attributes(:closed => true, :author_id_of_changes => user.id) unless $1.empty?
-          end
+      commit.message.scan(/(closes|fixes)?\s#([0-9]+)/mi).each do |m|
+        begin
+          issue = self.issues.find(m.last)
+          note = self.build_issue_commit_reference(commit,issue)
+          note.author = user
+          note.save
+          issue.update_attributes(:closed => true, :author_id_of_changes => user.id) unless m.first.nil?
         end
       end
     end
@@ -193,7 +192,7 @@ class Project < ActiveRecord::Base
   end
   
   def build_issue_commit_reference(commit,issue)
-    notes.new(:noteable => issue, :author => commit.author, :note => commit.id)
+    notes.new(:noteable => issue, :note => commit.id)
   end
 
   def has_commits?
