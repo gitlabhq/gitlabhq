@@ -1,10 +1,10 @@
 module ActiveRecord::ConnectionAdapters
-  class MysqlAdapter
+  class Mysql2Adapter
     alias_method :execute_without_retry, :execute
 
     def execute(*args)
       execute_without_retry(*args)
-    rescue ActiveRecord::StatementInvalid => e
+    rescue Mysql2::Error => e
       if e.message =~ /server has gone away/i
         warn "Server timed out, retrying"
         reconnect!
