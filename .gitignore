@@ -16,4 +16,5 @@ Vagrantfile
 .vagrant
 config/gitlab.yml
 config/database.yml
+config/initializers/omniauth.rb
 db/data.yml
