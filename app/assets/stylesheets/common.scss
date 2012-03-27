@@ -999,11 +999,9 @@ p.time {
   margin: 2px;
 }
 
-/* Fix for readme code (stopped it from being yellow) */
-.readme {
+/* Fix for pre code (stopped it from being yellow) */
+.content {
   pre {
-    background: white !important;
-    
     code {
       background: none !important;
     }
@@ -1021,12 +1019,6 @@ p.time {
   border-width:2px;
 
   img { max-width: 100%; }
-
-  pre {
-    code {
-      background: none !important;
-    }
-  }
 }
 
 .project_box .project_descr,
