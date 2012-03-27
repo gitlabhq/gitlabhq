@@ -85,11 +85,14 @@ class Project < ActiveRecord::Base
         if m =~ /(closes|fixes)\s?(#([0-9]+))/mi
           begin
             issue = self.issues.find($3)
+            note = self.build_issue_commit_reference(commit,issue)
+            note.save
             issue.update_attributes(:closed => true, :author_id_of_changes => user.id) unless $1.empty?
           end
         end
       end
     end
+    true
   end
 
   def update_merge_requests(oldrev, newrev, ref, author_key_id)
@@ -187,6 +190,10 @@ class Project < ActiveRecord::Base
 
   def commit_line_notes(commit)
     notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code is not null")
+  end
+  
+  def build_issue_commit_reference(commit,issue)
+    notes.new(:noteable => issue, :author => commit.author, :note => commit.id)
   end
 
   def has_commits?

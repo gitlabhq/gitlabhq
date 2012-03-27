@@ -9,7 +9,7 @@
       %strong= link_to "Remove", [@project, note], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-note btn small"
 
   %div.note-title
-    = markdown(note.note)
+    = markdown(note_with_commit_reference(@project, note))
     - if note.attachment.url
       .right
         %span.file
