@@ -7,8 +7,8 @@
       = link_to edit_project_wiki_path(@project, @wiki), :class => "btn small" do
         Edit
 %hr
-
-= markdown_to_html @wiki.content
+.wiki_content
+  = markdown_to_html @wiki.content
 
 %p.time Last edited by #{@wiki.user.name}, in #{time_ago_in_words @wiki.created_at}
 - if can? current_user, :admin_wiki, @project
