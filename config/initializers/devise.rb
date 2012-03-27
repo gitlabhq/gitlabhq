@@ -1,10 +1,11 @@
+EMAIL_OPTS = YAML.load_file("#{Rails.root}/config/gitlab.yml")["email"]
 # Use this hook to configure devise mailer, warden hooks and so forth. The first
 # four configuration values can also be set straight in your models.
 Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
+  config.mailer_sender = EMAIL_OPTS["from"]
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -199,7 +200,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
-  #config.omniauth :ldap, 
+  #config.omniauth :ldap,
   #    :host => 'YOUR_LDAP_SERVER',
   #    :base => 'THE_BASE_WHERE_YOU_SEARCH_FOR_USERS',
   #    :uid => 'sAMAccountName',
