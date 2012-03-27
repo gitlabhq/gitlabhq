@@ -5,19 +5,14 @@
   &rarr;
   %span.pretty_label.branch= @merge_request.target_branch
 
-  %small
-    created at 
-    = @merge_request.created_at.stamp("Aug 21, 2011")
-
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close merge request"
-        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn" do 
+        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
+        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do 
           Edit
 
-        %br
-        %small= link_to "Show how to merge", "#", :class => "vlink how_to_merge_link", :title => "How To Merge"
     %br
     - if @merge_request.upvotes > 0
       .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
@@ -26,7 +21,6 @@
 .back_link
   = link_to project_merge_requests_path(@project) do 
     &larr; To merge requests
-
 
 .merge_request_box
   .merge_request_status_holder
@@ -38,9 +32,9 @@
       = @merge_request.title
 
 
-  %div
+  %div.middle_area
     %div
-      %cite.cgray Created by
+      %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by 
       = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_merge_request_author(@merge_request)
 

@@ -31,22 +31,19 @@
         .alert-message.success.status_info Open
       = @issue.title
 
-  %hr
-  %div
-    %div.row
-      %div.issue_meta.span13
-        %cite.cgray Created by
-        = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
-        %strong.author= link_to_issue_author(@issue)
-    
-        %cite.cgray and currently assigned to 
-        = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
-        %strong.author= link_to_issue_assignee(@issue)
+  %div.middle_area
+    %cite.cgray Created by
+    = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
+    %strong.author= link_to_issue_author(@issue)
+
+    %cite.cgray and currently assigned to 
+    = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
+    %strong.author= link_to_issue_assignee(@issue)
       
-    %div
-      - if @issue.description.present?
-        %hr
-        = markdown @issue.description
+  %div
+    - if @issue.description.present?
+      %hr
+      = markdown @issue.description
 
 
 .issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
