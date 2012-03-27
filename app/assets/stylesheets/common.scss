@@ -1147,3 +1147,7 @@ li.note {
     max-width:100%;
   }
 }
+
+.wiki_content code, .readme code{
+  background-color: inherit;
+}

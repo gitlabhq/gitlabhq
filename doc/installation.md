@@ -43,7 +43,7 @@ The installation consists of 6 steps:
 >     apt-get install curl sudo
 >     
 >     # 3 steps in 1 command :)
->     curl http://dl.dropbox.com/u/936096/debian_ubuntu.sh | sh
+>     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
 > 
 > Now you can go to step 4"
 > - - -
