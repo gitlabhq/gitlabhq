@@ -3,6 +3,11 @@ require "grit"
 class Project < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
 
+  does "project/validations"
+  does "project/repository"
+  does "project/permissions"
+  does "project/hooks"
+
   has_many :users,          :through => :users_projects
   has_many :events,         :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
@@ -14,32 +19,6 @@ class Project < ActiveRecord::Base
   has_many :web_hooks,      :dependent => :destroy
   has_many :wikis,          :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
-
-  validates :name,
-            :uniqueness => true,
-            :presence => true,
-            :length   => { :within => 0..255 }
-
-  validates :path,
-            :uniqueness => true,
-            :presence => true,
-            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
-                         :message => "only letters, digits & '_' '-' '.' allowed" },
-            :length   => { :within => 0..255 }
-
-  validates :description,
-            :length   => { :within => 0..2000 }
-
-  validates :code,
-            :presence => true,
-            :uniqueness => true,
-            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
-                         :message => "only letters, digits & '_' '-' '.' allowed"  },
-            :length   => { :within => 3..255 }
-
-  validates :owner, :presence => true
-  validate :check_limit
-  validate :repo_name
 
   attr_protected :private_flag, :owner_id
 
@@ -64,89 +43,6 @@ class Project < ActiveRecord::Base
 
   def web_url
     [GIT_HOST['host'], code].join("/")
-  end
-
-  def observe_push(oldrev, newrev, ref, author_key_id)
-    data = web_hook_data(oldrev, newrev, ref, author_key_id)
-
-    Event.create(
-      :project => self,
-      :action => Event::Pushed,
-      :data => data,
-      :author_id => data[:user_id]
-    )
-  end
-
-  def update_merge_requests(oldrev, newrev, ref, author_key_id)
-    return true unless ref =~ /heads/
-    branch_name = ref.gsub("refs/heads/", "")
-    user = Key.find_by_identifier(author_key_id).user
-    c_ids = self.commits_between(oldrev, newrev).map(&:id)
-
-    # Update code for merge requests
-    mrs = self.merge_requests.opened.find_all_by_branch(branch_name).all
-    mrs.each { |merge_request| merge_request.reload_code }
-
-    # Close merge requests
-    mrs = self.merge_requests.opened.where(:target_branch => branch_name).all
-    mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) } 
-    mrs.each { |merge_request| merge_request.merge!(user.id) }
-
-    true
-  end
-
-  def execute_web_hooks(oldrev, newrev, ref, author_key_id)
-    ref_parts = ref.split('/')
-
-    # Return if this is not a push to a branch (e.g. new commits)
-    return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
-
-    data = web_hook_data(oldrev, newrev, ref, author_key_id)
-
-    web_hooks.each { |web_hook| web_hook.execute(data) }
-  end
-
-  def web_hook_data(oldrev, newrev, ref, author_key_id)
-    key = Key.find_by_identifier(author_key_id)
-    data = {
-      before: oldrev,
-      after: newrev,
-      ref: ref,
-      user_id: key.user.id,
-      user_name: key.user_name,
-      repository: {
-        name: name,
-        url: web_url,
-        description: description,
-        homepage: web_url,
-        private: private?
-      },
-      commits: []
-    }
-
-    commits_between(oldrev, newrev).each do |commit|
-      data[:commits] << {
-        id: commit.id,
-        message: commit.safe_message,
-        timestamp: commit.date.xmlschema,
-        url: "http://#{GIT_HOST['host']}/#{code}/commits/#{commit.id}",
-        author: {
-          name: commit.author_name,
-          email: commit.author_email
-        }
-      }
-    end
-
-    data
-  end
-
-  def open_branches
-    if protected_branches.empty?
-      self.repo.heads
-    else
-      pnames = protected_branches.map(&:name)
-      self.repo.heads.reject { |h| pnames.include?(h.name) }
-    end.sort_by(&:name)
   end
 
   def team_member_by_name_or_email(email = nil, name = nil)
@@ -174,71 +70,6 @@ class Project < ActiveRecord::Base
     notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code is not null")
   end
 
-  def has_commits?
-    !!commit
-  end
-
-  # Compatible with all access rights
-  # Should be rewrited for new access rights
-  def add_access(user, *access)
-    access = if access.include?(:admin) 
-               { :project_access => UsersProject::MASTER } 
-             elsif access.include?(:write)
-               { :project_access => UsersProject::DEVELOPER } 
-             else
-               { :project_access => UsersProject::REPORTER } 
-             end
-    opts = { :user => user }
-    opts.merge!(access)
-    users_projects.create(opts)
-  end
-
-  def reset_access(user)
-    users_projects.where(:project_id => self.id, :user_id => user.id).destroy if self.id
-  end
-
-  def repository_readers
-    keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::REPORTER)
-    keys.map(&:identifier) + deploy_keys.map(&:identifier)
-  end
-
-  def repository_writers
-    keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::DEVELOPER)
-    keys.map(&:identifier)
-  end
-
-  def repository_masters
-    keys = Key.joins({:user => :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::MASTER)
-    keys.map(&:identifier)
-  end
-
-  def allow_read_for?(user)
-    !users_projects.where(:user_id => user.id).empty?
-  end
-
-  def guest_access_for?(user)
-    !users_projects.where(:user_id => user.id).empty?
-  end
-
-  def report_access_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::REPORTER, UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
-  end
-
-  def dev_access_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
-  end
-
-  def master_access_for?(user)
-    !users_projects.where(:user_id => user.id, :project_access => [UsersProject::MASTER]).empty? || owner_id == user.id
-  end
-
-  def root_ref 
-    default_branch || "master"
-  end
-
   def public?
     !private_flag
   end
@@ -259,111 +90,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def check_limit
-    unless owner.can_create_project?
-      errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
-    end
-  rescue
-    errors[:base] << ("Cant check your ability to create project")
-  end
-
-  def repo_name
-    if path == "gitolite-admin"
-      errors.add(:path, " like 'gitolite-admin' is not allowed")
-    end
-  end
-
-  def valid_repo?
-    repo
-  rescue
-    errors.add(:path, "Invalid repository path")
-    false
-  end
-
-  def commit(commit_id = nil)
-    Commit.find_or_first(repo, commit_id)
-  end
-
-  def fresh_commits(n = 10)
-    Commit.fresh_commits(repo, n)
-  end
-
-  def commits_with_refs(n = 20)
-    Commit.commits_with_refs(repo, n)
-  end
-
-  def commits_since(date)
-    Commit.commits_since(repo, date)
-  end
-
-  def commits(ref, path = nil, limit = nil, offset = nil)
-    Commit.commits(repo, ref, path, limit, offset)
-  end
-
-  def commits_between(from, to)
-    Commit.commits_between(repo, from, to)
-  end
-
   def project_id
     self.id
-  end
-
-  def write_hooks
-    %w(post-receive).each do |hook|
-      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
-    end
-  end
-
-  def write_hook(name, content)
-    hook_file = File.join(path_to_repo, 'hooks', name)
-
-    File.open(hook_file, 'w') do |f|
-      f.write(content)
-    end
-
-    File.chmod(0775, hook_file)
-  end
-
-  def repo
-    @repo ||= Grit::Repo.new(path_to_repo)
-  end
-
-  def url_to_repo
-    Gitlabhq::GitHost.url_to_repo(path)
-  end
-
-  def path_to_repo
-    File.join(GIT_HOST["base_path"], "#{path}.git")
-  end
-
-  def update_repository
-    Gitlabhq::GitHost.system.update_project(path, self)
-
-    write_hooks if File.exists?(path_to_repo)
-  end
-
-  def destroy_repository
-    Gitlabhq::GitHost.system.destroy_project(self)
-  end
-
-  def repo_exists?
-    @repo_exists ||= (repo && !repo.branches.empty?)
-  rescue 
-    @repo_exists = false
-  end
-
-  def tags
-    repo.tags.map(&:name).sort.reverse
-  end
-
-  def heads
-    @heads ||= repo.heads
-  end
-
-  def tree(fcommit, path = nil)
-    fcommit = commit if fcommit == :head
-    tree = fcommit.tree
-    path ? (tree / path) : tree
   end
 end
 

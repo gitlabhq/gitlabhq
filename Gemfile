@@ -34,6 +34,7 @@ gem "omniauth-ldap"
 gem 'bootstrap-sass', "1.4.4"
 gem "colored"
 gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
+gem 'modularity'
 
 group :assets do
   gem "sass-rails",   "3.2.3"

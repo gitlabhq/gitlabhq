@@ -149,6 +149,7 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.7.0)
     mime-types (1.17.2)
+    modularity (0.6.1)
     multi_json (1.0.4)
     multi_xml (0.4.1)
     mysql2 (0.3.11)
@@ -326,6 +327,7 @@ DEPENDENCIES
   kaminari
   launchy
   letter_opener
+  modularity
   mysql2
   omniauth-ldap
   pry
