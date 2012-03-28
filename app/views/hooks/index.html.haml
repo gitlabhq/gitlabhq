@@ -6,16 +6,14 @@
     = link_to new_project_hook_path(@project), :class => "btn small", :title => "New Web Hook" do 
       Add Post Receive Hook
 
+    %p Read more about web hooks #{link_to "here", help_web_hooks_path, :class => "vlink"}
+
 -if @hooks.any?
-  %table.zebra-striped.borders
+  %table
     - @hooks.each do |hook|
       %tr
         %td
           = link_to project_hook_path(@project, hook) do
             = hook.url
         %td
-          = link_to 'Remove', project_hook_path(@project, hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small"
-
-.ui-box
-  %h5 Hooks request example
-  .data= render "data_ex"
+          = link_to 'Remove', project_hook_path(@project, hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small right"

@@ -1,28 +1,29 @@
 = render "project_head"
-.project_box
-  %h3
-    = @project.name
-    %span.right
-      - if can? current_user, :download_code, @project
-        = link_to "Download", archive_project_repository_path(@project), :class => "btn small padded"
-      - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
-        = link_to new_project_merge_request_path(@project), :title => "New Merge Request", :class => "btn small padded" do 
-          Merge Request
-      - if @project.issues_enabled && can?(current_user, :write_issue, @project)
-        = link_to new_project_issue_path(@project), :title => "New Issue", :class => "btn small" do 
-          Issue
-  .back_link
-    = link_to projects_path do 
-      &larr; To projects list
-  %br
-  .alert-message.block-message.warning
+.main_box
+  .top_box_content
+    %h3
+      = @project.name
+      %span.right
+        - if can? current_user, :download_code, @project
+          = link_to "Download", archive_project_repository_path(@project), :class => "btn small padded"
+        - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+          = link_to new_project_merge_request_path(@project), :title => "New Merge Request", :class => "btn small padded" do 
+            Merge Request
+        - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+          = link_to new_project_issue_path(@project), :title => "New Issue", :class => "btn small" do 
+            Issue
+    .back_link
+      = link_to projects_path do 
+        &larr; To projects list
+  .middle_box_content
     .input
       .input-prepend
         %span.add-on git clone
         = text_field_tag :project_clone, @project.url_to_repo, :class => "xlarge one_click_select git_clone_url"
 
   - if @project.description.present?
-    .markdown.project_descr= markdown @project.description
+    .bottom_box_content
+      .markdown= markdown @project.description
 - unless @events.blank?
   %br
   %h5.cgray

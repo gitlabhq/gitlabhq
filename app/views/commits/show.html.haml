@@ -1,5 +1,5 @@
-.commit_box
-  .commit
+.main_box
+  .top_box_content
     .right
       - unless @notes_count.zero?
         %span.btn.small.disabled.padded= pluralize @notes_count, 'note'
@@ -17,8 +17,9 @@
         = @commit.committer_name
         %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
 
-  %pre.commit_message
-    = commit_msg_with_link_to_issues(@project, @commit.safe_message)
+  .middle_box_content
+    %pre.commit_message
+      = commit_msg_with_link_to_issues(@project, @commit.safe_message)
 %br
 %p.cgray
   Showing #{pluralize(@commit.diffs.count, "changed file")}

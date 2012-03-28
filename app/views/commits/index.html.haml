@@ -14,7 +14,6 @@
   #commits_list= render "commits"
 .clear
 .loading{ :style => "display:none;"}
-  %center= image_tag "ajax-loader.gif"
 
 - if @commits.count == @limit
   :javascript

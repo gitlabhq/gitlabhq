@@ -1010,15 +1010,16 @@ p.time {
   }
 }
 
-.project_box,
-.issue_box, 
-.commit_box,
-.merge_request_box{ 
-  @extend .padded;
+/**
+ *  UI box element 
+ *  contains top, middle, bottom blocks
+ * 
+ */
+.main_box { 
   @extend .borders;
   @extend .prepend-top-20;
   @extend .append-bottom-20;
-  border-width:2px;
+  border-width:1px;
 
   img { max-width: 100%; }
 
@@ -1027,21 +1028,32 @@ p.time {
       background: none !important;
     }
   }
-}
 
-.project_box .project_descr,
-.merge_request_box .middle_area,
-.issue_box .middle_area,
-.commit_box .commit_message { 
-  margin: -20px;
-  padding: 20px;
-  margin-top:10px;
-  border-radius:0;
-  border:none;
-  font-size:12px;
-  background-color:#f5f5f5;
-  border:none;
-  border-top:1px solid #eee;
+  .top_box_content, 
+  .middle_box_content, 
+  .bottom_box_content { 
+    padding:20px;
+
+    pre {
+      background: none !important;
+      margin:0;
+      border:none;
+      padding:0;
+    }
+  }
+
+  .middle_box_content { 
+    border-radius:0;
+    border:none;
+    font-size:12px;
+    background-color:#f5f5f5;
+    border:none;
+    border-top:1px solid #eee;
+  }
+
+  .bottom_box_content { 
+    border-top:1px solid #eee;
+  }
 }
 
 .highlight_word { 
@@ -1056,10 +1068,6 @@ p.time {
   text-align:center;
   float:left;
   margin-right:20px;
-}
-
-.merge_request_status_holder { 
-  margin-bottom:20px;
 }
 
 .arrow{ 

@@ -6,6 +6,6 @@
       Add Deploy Key 
 
 - if @keys.any?
-  %table.zebra-striped.borders
+  %table
     - @keys.each do |key|
       = render(:partial => 'show', :locals => {:key => key})

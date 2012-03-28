@@ -22,8 +22,8 @@
   = link_to project_issues_path(@project) do 
     &larr; To issues list
 
-.issue_box
-  .merge_request_status_holder
+.main_box
+  .top_box_content
     %h5
       - if @issue.closed
         .alert-message.error.status_info Closed
@@ -31,7 +31,7 @@
         .alert-message.success.status_info Open
       = @issue.title
 
-  %div.middle_area
+  .middle_box_content
     %cite.cgray Created by
     = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_author(@issue)
@@ -40,9 +40,8 @@
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_assignee(@issue)
       
-  %div
-    - if @issue.description.present?
-      %hr
+  - if @issue.description.present?
+    .bottom_box_content
       = markdown @issue.description
 
 

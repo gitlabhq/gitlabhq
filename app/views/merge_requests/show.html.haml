@@ -22,8 +22,8 @@
   = link_to project_merge_requests_path(@project) do 
     &larr; To merge requests
 
-.merge_request_box
-  .merge_request_status_holder
+.main_box
+  .top_box_content
     %h5
       - if @merge_request.closed
         .alert-message.error.status_info Closed
@@ -31,8 +31,7 @@
         .alert-message.success.status_info Open
       = @merge_request.title
 
-
-  %div.middle_area
+  .middle_box_content
     %div
       %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by 
       = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
@@ -44,17 +43,15 @@
 
 
   - if @merge_request.closed
-    %hr
-    - if @merge_request.merged?
-      %span
-        Merged by #{@merge_request.merge_event.author_name} 
-        %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
-    - elsif @merge_request.closed_event
-      %span
-        Closed by #{@merge_request.closed_event.author_name} 
-        %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
-    %br
-
+    .bottom_box_content
+      - if @merge_request.merged?
+        %span
+          Merged by #{@merge_request.merge_event.author_name} 
+          %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+      - elsif @merge_request.closed_event
+        %span
+          Closed by #{@merge_request.closed_event.author_name} 
+          %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
 
 = render "merge_requests/commits"
 

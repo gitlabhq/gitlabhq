@@ -4,6 +4,6 @@
   
 %br
 
-%table#keys-table.zebra-striped.borders
+%table#keys-table
   - @keys.each do |key|
     = render(:partial => 'show', :locals => {:key => key})
