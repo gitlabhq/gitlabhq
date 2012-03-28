@@ -1,40 +1,45 @@
 ## Platform requirements: 
 
-**The project is designed for the Linux operating system. **
+**The project is designed for the Linux operating system.**
 
 It may work on FreeBSD and Mac OS, but we don't test our application for these systems and can't guarantee stability and full functionality.
 
-We officially support next Linux Distributions:
+We officially support (recent versions of) these Linux distributions:
 
-- Ubuntu
-- Debian
+- Ubuntu Linux
+- Debian/GNU Linux
 
 It should work on:
 
 - Fedora
 - CentOs
-- Red Hat
+- RedHat
 
-It can work on:
+You might have some luck using these, but no guarantees:
 
- - Mac Os
+ - MacOS X
  - FreeBSD
 
-It 100% **wont** work on  Windows
-
+Gitlab does **not** run on Windows and we have no plans of making Gitlab compatible.
 
 ## This installation guide created for Debian/Ubuntu and properly tested. 
 
 The installation consists of 6 steps:
 
-1. install packeges.
-2. install ruby
-3. install gitolite
-4. install gitlab and configuration. Check status configuration.
-5. server up.
-6. run resque process (for processing queue).
+1. Install packages / dependencies
+2. Install ruby
+3. Install gitolite
+4. Install and configure Gitlab.
+5. Start the web front-end
+6. Start a Resque worker (for background processing)
 
-** Before submit an installation issue - please check if you followed all steps **
+### IMPORTANT
+
+Please make sure you have followed all the steps below before posting to the mailinglist with installation and configuration questions.
+
+Only create a Github Issue if you want a specific part of this installation guide updated.
+
+Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
 
 > - - -
 > First 3 steps can be easily skipped with simply install script:
@@ -56,6 +61,9 @@ The installation consists of 6 steps:
     sudo apt-get upgrade
 
     sudo apt-get install -y git-core wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip sendmail
+    
+    # If you want to use MySQL:
+    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
 # 2. Install ruby
 
@@ -78,8 +86,6 @@ Create user for git:
       --disabled-password \
       --home /home/git \
       git
-
-    
 
 Create user for gitlab:
 
@@ -122,8 +128,7 @@ Permissions:
     # if succeed  you can remove it
     sudo rm -rf /tmp/gitolite-admin 
 
-** IMPORTANT! If you cant clone `gitolite-admin` repository - DONT PROCEED INSTALLATION**
-
+**IMPORTANT! If you cant clone `gitolite-admin` repository - DONT PROCEED INSTALLATION**
 
 # 4. Install gitlab and configuration. Check status configuration.
 
@@ -196,8 +201,8 @@ Application can be started with next command:
     ./resque.sh
 
 
-** Ok - we have a working application now. **
-** But keep going - there are some thing that should be done **
+**Ok - we have a working application now. **
+**But keep going - there are some thing that should be done **
 
 # Nginx && Unicorn
 
