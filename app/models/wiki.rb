@@ -7,7 +7,6 @@ class Wiki < ActiveRecord::Base
 
   before_update :set_slug
 
-
   def to_param
     slug
   end
