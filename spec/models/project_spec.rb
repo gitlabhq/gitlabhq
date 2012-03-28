@@ -188,6 +188,23 @@ describe Project do
       @merge_request.last_commit.id.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
     end
   end
+  
+  describe :update_issues do
+    let(:project) { Factory :project }
+    
+    before do
+      @issue = Factory :issue,
+        :project => project,
+        :closed => false
+      @key = Factory :key, :user_id => project.owner.id
+      @commit = project.commit(ValidCommit::ID)
+    end
+    
+    it "should close issue if issue id is in commit message" do
+      @commit.message = "closes ##{@issue.id}"
+      @issue.closed.should be_true
+    end
+  end
 end
 # == Schema Information
 #

@@ -76,6 +76,23 @@ class Project < ActiveRecord::Base
       :author_id => data[:user_id]
     )
   end
+  
+  def update_issues(oldrev, newrev, ref, author_key_id)
+    user = Key.find_by_identifier(author_key_id).user
+    commits = self.commits_between(oldrev, newrev)
+    commits.each do |commit|
+      commit.message.scan(/(closes|fixes)?\s#([0-9]+)/mi).each do |m|
+        begin
+          issue = self.issues.find(m.last)
+          note = self.build_issue_commit_reference(commit,issue)
+          note.author = user
+          note.save
+          issue.update_attributes(:closed => true, :author_id_of_changes => user.id) unless m.first.nil?
+        end
+      end
+    end
+    true
+  end
 
   def update_merge_requests(oldrev, newrev, ref, author_key_id)
     return true unless ref =~ /heads/
@@ -172,6 +189,10 @@ class Project < ActiveRecord::Base
 
   def commit_line_notes(commit)
     notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code is not null")
+  end
+  
+  def build_issue_commit_reference(commit,issue)
+    notes.new(:noteable => issue, :note => commit.id)
   end
 
   def has_commits?

@@ -14,6 +14,9 @@ class PostReceive
     # Close merged MR 
     project.update_merge_requests(oldrev, newrev, ref, author_key_id)
 
+    # Close referenced Issues
+    project.update_issues(oldrev, newrev, ref, author_key_id)
+
     # Execute web hooks
     project.execute_web_hooks(oldrev, newrev, ref, author_key_id)
   end
