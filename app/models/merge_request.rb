@@ -56,6 +56,10 @@ class MergeRequest < ActiveRecord::Base
     self.reloaded_diffs
   end
 
+  def can_be_merged?
+    auto_merge
+  end
+
   def new?
     today? && created_at == updated_at
   end
@@ -115,6 +119,11 @@ class MergeRequest < ActiveRecord::Base
   def mark_as_merged!
     self.merged = true
     self.closed = true
+    save
+  end
+
+  def mark_as_unmergable
+    self.auto_merge = false
     save
   end
 

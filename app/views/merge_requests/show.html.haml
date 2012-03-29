@@ -8,7 +8,6 @@
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
         = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do 
           Edit
@@ -52,6 +51,22 @@
         %span
           Closed by #{@merge_request.closed_event.author_name} 
           %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+
+- if @merge_request.open? && @commits.any?
+  - if @merge_request.can_be_merged?
+    .alert-message.block-message.success
+      %p You can try to merge this request with GitLab. If failed you can always do it manually
+      .alert-actions
+        = link_to "Try Merge it!", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small success"
+        &nbsp;
+        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
+  - else
+    .alert-message.block-message
+      %p This request cant be merged with GitLab. You should do it manually
+      .alert-actions
+        %span.btn.small.disabled Try Merge it!
+        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded success", :title => "How To Merge"
+
 
 = render "merge_requests/commits"
 
