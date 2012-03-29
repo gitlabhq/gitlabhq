@@ -2,7 +2,7 @@ class MergeRequestsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
-  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs]
+  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs, :automerge]
   layout "project"
 
   # Authorize
@@ -93,6 +93,22 @@ class MergeRequestsController < ApplicationController
         format.json { render json: @merge_request.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def automerge
+    message = ""
+    if GitlabMerge.new(@merge_request).merge
+      @merge_request.update_attributes(
+        :author_id_of_changes => current_user.id,
+        :closed => true
+      )
+      @merge_request.reload_code
+      message = "Successfully merged"
+    else
+      message = "Can not be merged"
+    end
+
+    redirect_to [@merge_request.project, @merge_request], :alert => message
   end
 
   def destroy
