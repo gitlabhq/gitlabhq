@@ -102,6 +102,7 @@ class MergeRequestsController < ApplicationController
 
   def automerge
     render_404 unless @merge_request.open? && @merge_request.can_be_merged?
+    return access_denied! unless can?(current_user, :accept_mr, @project)
     @merge_request.automerge!(current_user)
   end
 

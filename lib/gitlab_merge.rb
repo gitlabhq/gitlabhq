@@ -1,7 +1,8 @@
 class GitlabMerge
-  attr_accessor :project, :merge_path, :merge_request
+  attr_accessor :project, :merge_path, :merge_request, :user
 
-  def initialize(merge_request)
+  def initialize(merge_request, user)
+    self.user = user
     self.merge_request = merge_request
     self.project = merge_request.project
     self.merge_path = File.join(Rails.root, "tmp", "merge_repo", project.path, merge_request.id.to_s)
@@ -30,7 +31,9 @@ class GitlabMerge
     self.project.repo.git.clone({:branch => merge_request.target_branch}, project.url_to_repo, merge_path)
     Dir.chdir(merge_path) do
       merge_repo = Grit::Repo.new('.')
-      output = merge_repo.git.pull({}, "origin", merge_request.source_branch)
+      merge_repo.git.sh "git config user.name \"#{user.name}\""
+      merge_repo.git.sh "git config user.email \"#{user.email}\""
+      output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
       yield(merge_repo, output)
     end
   end
