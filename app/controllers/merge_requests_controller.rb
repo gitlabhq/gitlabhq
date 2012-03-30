@@ -45,6 +45,10 @@ class MergeRequestsController < ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    if @merge_request.unchecked? 
+      @merge_request.check_if_can_be_merged
+    end
+
     respond_to do |format|
       format.html
       format.js
@@ -96,23 +100,8 @@ class MergeRequestsController < ApplicationController
   end
 
   def automerge
-    render_404 unless @merge_request.open?
-
-    message = ""
-
-    if GitlabMerge.new(@merge_request).merge
-      @merge_request.merge!(current_user.id)
-      message = "Successfully merged"
-    else
-      @merge_request.mark_as_unmergable
-      message = "Can not be merged"
-    end
-
-    redirect_to [@merge_request.project, @merge_request], :alert => message
-  rescue => ex
-    @merge_request.mark_as_unmergable
-    message = "Can not be merged"
-  ensure
+    render_404 unless @merge_request.open? && @merge_request.can_be_merged?
+    message = @merge_request.automerge! ? "Successfully merged" : "Can not be merged"
     redirect_to [@merge_request.project, @merge_request], :alert => message
   end
 

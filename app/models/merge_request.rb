@@ -1,6 +1,10 @@
 require File.join(Rails.root, "app/models/commit")
 
 class MergeRequest < ActiveRecord::Base
+  UNCHECKED = 1
+  CAN_BE_MERGED = 2
+  CANNOT_BE_MERGED = 3
+
   belongs_to :project
   belongs_to :author, :class_name => "User"
   belongs_to :assignee, :class_name => "User"
@@ -56,8 +60,21 @@ class MergeRequest < ActiveRecord::Base
     self.reloaded_diffs
   end
 
+  def unchecked?
+    state == UNCHECKED
+  end
+
   def can_be_merged?
-    auto_merge
+    state == CAN_BE_MERGED
+  end
+
+  def check_if_can_be_merged
+    self.state = if GitlabMerge.new(self).can_be_merged?
+                   CAN_BE_MERGED
+                 else
+                   CANNOT_BE_MERGED
+                 end
+    self.save
   end
 
   def new?
@@ -123,8 +140,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    self.auto_merge = false
-    save
+    # TODO: write some code here
   end
 
   def reloaded_commits 
@@ -152,6 +168,16 @@ class MergeRequest < ActiveRecord::Base
       :target_type => "MergeRequest",
       :author_id => user_id
     )
+  end
+
+  def automerge!
+    if GitlabMerge.new(self).merge
+      self.merge!(current_user.id)
+      true
+    end
+  rescue 
+    self.mark_as_unmergable
+    false
   end
 end
 # == Schema Information

@@ -1,6 +1,5 @@
 class AddAutomergeToMergeRequest < ActiveRecord::Migration
   def change
-    add_column :merge_requests, :auto_merge, :boolean, :null => false, :default => true
-
+    add_column :merge_requests, :state, :integer, :null => false, :default => 1
   end
 end

@@ -54,18 +54,18 @@
 
 - if @merge_request.open? && @commits.any?
   - if @merge_request.can_be_merged?
-    .alert-message.block-message.success
-      %p You can try to merge this request with GitLab. If failed you can always do it manually
+    .alert-message.info
+      %p 
+        You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link cwhite", :title => "How To Merge"} for instructions
       .alert-actions
-        = link_to "Try Merge it!", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small success"
+        = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info"
         &nbsp;
-        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
+        
   - else
-    .alert-message.block-message
-      %p This request cant be merged with GitLab. You should do it manually
-      .alert-actions
-        %span.btn.small.disabled Try Merge it!
-        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded success", :title => "How To Merge"
+    .alert-message
+      %p
+        %strong This request cant be merged with GitLab. You should do it manually &nbsp;
+        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
 
 
 = render "merge_requests/commits"
