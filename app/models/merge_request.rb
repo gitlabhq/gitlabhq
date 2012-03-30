@@ -64,6 +64,10 @@ class MergeRequest < ActiveRecord::Base
     state == UNCHECKED
   end
 
+  def mark_as_unchecked
+    self.update_attributes(:state => UNCHECKED)
+  end
+
   def can_be_merged?
     state == CAN_BE_MERGED
   end
@@ -170,7 +174,7 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
-  def automerge!
+  def automerge!(current_user)
     if GitlabMerge.new(self).merge
       self.merge!(current_user.id)
       true

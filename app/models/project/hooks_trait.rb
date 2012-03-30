@@ -19,7 +19,7 @@ module Project::HooksTrait
 
       # Update code for merge requests
       mrs = self.merge_requests.opened.find_all_by_branch(branch_name).all
-      mrs.each { |merge_request| merge_request.reload_code }
+      mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
       # Close merge requests
       mrs = self.merge_requests.opened.where(:target_branch => branch_name).all

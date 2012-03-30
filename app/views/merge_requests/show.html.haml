@@ -54,12 +54,11 @@
 
 - if @merge_request.open? && @commits.any?
   - if @merge_request.can_be_merged?
-    .alert-message.info
+    .ui-box.padded
       %p 
-        You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link cwhite", :title => "How To Merge"} for instructions
-      .alert-actions
-        = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info"
-        &nbsp;
+        You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"} for instructions
+      = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info accept_merge_request", :remote => true
+      &nbsp;
         
   - else
     .alert-message
@@ -88,6 +87,10 @@
 :javascript
   $(function(){
     MergeRequest.init();
+
+    $(".accept_merge_request").live("ajax:beforeSend", function() {
+      $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+    })
   })
 
 = render "notes/per_line_form"

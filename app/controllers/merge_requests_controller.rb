@@ -90,6 +90,7 @@ class MergeRequestsController < ApplicationController
     respond_to do |format|
       if @merge_request.update_attributes(params[:merge_request].merge(:author_id_of_changes => current_user.id))
         @merge_request.reload_code
+        @merge_request.mark_as_unchecked
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.' }
         format.json { head :ok }
       else
@@ -101,8 +102,7 @@ class MergeRequestsController < ApplicationController
 
   def automerge
     render_404 unless @merge_request.open? && @merge_request.can_be_merged?
-    message = @merge_request.automerge! ? "Successfully merged" : "Can not be merged"
-    redirect_to [@merge_request.project, @merge_request], :alert => message
+    @merge_request.automerge!(current_user)
   end
 
   def destroy
