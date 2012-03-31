@@ -223,12 +223,29 @@ Edit /etc/nginx/nginx.conf. Add next code to **http** section:
     }
 
     server {
-        listen 80;
-        server_name mygitlab.com;
+        listen YOUR_SERVER_IP:80;
+        server_name gitlab.YOUR_SUBDOMAIN.com;
         root /home/gitlab/gitlab/public;
-        try_files $uri $uri/index.html $uri.html @gitlab;
         
+        # individual nginx logs for this gitlab vhost
+        access_log  /var/log/nginx/gitlab_access.log;
+        error_log   /var/log/nginx/gitlab_error.log;
+        
+        location / {
+        # serve static files from defined root folder;.
+        # @gitlab is a named location for the upstream fallback, see below
+        try_files $uri $uri/index.html $uri.html @gitlab;
+        }
+        
+        # if a file, which is not found in the root folder is requested, 
+        # then the proxy pass the request to the upsteam (gitlab unicorn)
         location @gitlab {
+          proxy_redirect     off;
+          # you need to change this to "https", if you set "ssl" directive to "on"
+          proxy_set_header   X-FORWARDED_PROTO http;
+          proxy_set_header   Host              gitlab.YOUR_SUBDOMAIN.com:80;
+          proxy_set_header   X-Real-IP         $remote_addr;
+        
           proxy_pass http://gitlab;
         }
 
