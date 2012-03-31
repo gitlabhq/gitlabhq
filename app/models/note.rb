@@ -88,6 +88,10 @@ class Note < ActiveRecord::Base
   rescue
     nil
   end
+  
+  def from_commit?
+    !commit_id.nil?
+  end
 
   # Returns true if this is an upvote note,
   # otherwise false is returned
