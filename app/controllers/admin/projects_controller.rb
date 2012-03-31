@@ -38,13 +38,34 @@ class Admin::ProjectsController < ApplicationController
   end
 
   def create
-    @admin_project = Project.new(params[:project])
-    @admin_project.owner = current_user
+    @project = Project.new(params[:project])
+    @project.owner = current_user
 
-    if @admin_project.save
-      redirect_to [:admin, @admin_project], notice: 'Project was successfully created.'
-    else
-      render :action => "new"
+    Project.transaction do
+      @project.save!
+      @project.users_projects.create!(:project_access => UsersProject::MASTER, :user => current_user)
+
+      # when project saved no team member exist so
+      # project repository should be updated after first user add
+      @project.update_repository
+    end
+
+    respond_to do |format|
+      if @project.valid?
+        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.js
+      else
+        format.html { render action: "new" }
+        format.js
+      end
+    end
+  rescue Gitlabhq::Gitolite::AccessDenied
+    render :js => "location.href = '#{errors_githost_path}'" and return
+  rescue StandardError => ex
+    @project.errors.add(:base, "Cant save project. Please try again later")
+    respond_to do |format|
+      format.html { render action: "new" }
+      format.js
     end
   end
 
