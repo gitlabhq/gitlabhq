@@ -194,7 +194,8 @@ class Project < ActiveRecord::Base
   end
   
   def build_issue_commit_reference(commit,issue)
-    notes.new(:noteable => issue, :note => commit.safe_message, :commit_id => commit.id)
+    message = "[#{commit.safe_message}](#{project_commit_path(self,:id => commit.id)})"
+    notes.new(:noteable => issue, :note => message, :commit_id => commit.id)
   end
 
   def has_commits?
