@@ -60,7 +60,9 @@
   .actions
     = f.submit 'Save', :class => "btn primary"
     = link_to 'Cancel', [:admin, @admin_project], :class => "btn"
-    = link_to 'Remove Project', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
+    - unless @project.new_record?
+      .right
+        = link_to 'Remove Project', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
 
 :javascript
   $(function(){
