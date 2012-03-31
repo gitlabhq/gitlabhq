@@ -63,10 +63,3 @@
     - unless @admin_project.new_record?
       .right
         = link_to 'Remove Project', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
-
-:javascript
-  $(function(){
-    taggifyForm();
-    $('#project_owner_id').chosen();
-    $('#project_default_branch').chosen();
-  })
