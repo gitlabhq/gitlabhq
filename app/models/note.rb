@@ -35,6 +35,7 @@ class Note < ActiveRecord::Base
   scope :fresh, order("created_at DESC")
   scope :inc_author_project, includes(:project, :author)
   scope :inc_author, includes(:author)
+  scope :from_commit, includes(:commit_id)
 
   mount_uploader :attachment, AttachmentUploader
 
@@ -108,5 +109,6 @@ end
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
+#  commit_id     :string(255)
 #
 

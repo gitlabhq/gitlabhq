@@ -84,9 +84,11 @@ class Project < ActiveRecord::Base
       commit.message.scan(/(closes|fixes)?\s#([0-9]+)/mi).each do |m|
         begin
           issue = self.issues.find(m.last)
-          note = self.build_issue_commit_reference(commit,issue)
-          note.author = user
-          note.save
+          unless issue.notes.from_commit.where(:commit_id => commit.id) do
+            note = self.build_issue_commit_reference(commit,issue)
+            note.author = user
+            note.save
+          end
           issue.update_attributes(:closed => true, :author_id_of_changes => user.id) unless m.first.nil?
         end
       end
@@ -192,7 +194,7 @@ class Project < ActiveRecord::Base
   end
   
   def build_issue_commit_reference(commit,issue)
-    notes.new(:noteable => issue, :note => commit.id)
+    notes.new(:noteable => issue, :note => commit.safe_message, :commit_id => commit.id)
   end
 
   def has_commits?
