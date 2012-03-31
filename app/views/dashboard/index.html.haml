@@ -7,48 +7,64 @@
       to your profile
 
 %div.dashboard_category
-  %h3
-    %span.ico.projects
-    = link_to "Projects" , "#projects", :id => "projects"
-    %small
-      (most recent)
+  %table.projects_row
+    %tr
+      -#%td
+        %h3.left
+          %span.ico.projects
+          = link_to "Projects:" , "#projects", :id => "projects"
 
-  %strong.right
-    = link_to projects_path do 
-      Projects list &rarr; 
+      - @active_projects.first(4).each do |project|
+        %td
+          %h3
+            = link_to project, :class => "project" do 
+              = truncate project.name, :length => 18
+
+      - if @active_projects.count > 4
+        %td.more  
+          %h3.right
+            = link_to projects_path do 
+              %small more &rarr; 
+      - else 
+        %td.new_project  
+          %h3.right
+            = link_to new_project_path do 
+              %small New project &rarr; 
+
+  
+
   %hr
-  .row
-    .dashboard_block
-      .row
-        .span4.right
-          %div.borders.ipadded
-            %h1
-              = pluralize current_user.projects.count, "project", "projects"
-            - if current_user.can_create_project?
-              %hr
-              %div
-                You can create up to
-                = current_user.projects_limit
-                projects. Click on button below to add a new one
-                .link_holder
-                  %br
-                  = link_to new_project_path, :class => "btn" do 
-                    New Project » 
-            - else 
-              %hr
-              %div
-                You've reached project limit for your account. 
-                You cannot create new projects.
-                .link_holder
-                  %br
-                  = link_to profile_path, :class => "btn" do 
-                    Your Profile » 
-        .span10.left= render "dashboard/projects_feed", :projects => @active_projects
-      - if @last_push
-        .padded.prepend-top-20
-          %h5
-            %small Latest push was to the #{@last_push.branch_name} branch of #{@last_push.project.name}:
-          %ul.unstyled= render @last_push
+  .dashboard_block
+    .row
+      .span4.right
+        %div.ipadded.lborder
+          %h3
+            = pluralize current_user.projects.count, "project", "projects"
+          - if current_user.can_create_project?
+            %hr
+            %p
+              You can create up to
+              = current_user.projects_limit
+              projects. Click on button below to add a new one
+              .link_holder
+                %br
+                = link_to new_project_path, :class => "btn" do 
+                  New Project » 
+          - else 
+            %hr
+            %p
+              You've reached project limit for your account. 
+              You cannot create new projects.
+              .link_holder
+                %br
+                = link_to profile_path, :class => "btn" do 
+                  Your Profile » 
+      .span12.left
+        - if @last_push
+          %div
+            %h5
+              %small Latest push was to the #{@last_push.branch_name} branch of #{@last_push.project.name}:
+            %ul.unstyled= render @last_push
 
 - if @merge_requests.any?
   %div.dashboard_category
@@ -60,8 +76,7 @@
       = link_to dashboard_merge_requests_path do 
         Visit merge requests page &rarr; 
     %hr
-    .row
-      .dashboard_block= render "dashboard/merge_requests_feed"
+    .dashboard_block= render "dashboard/merge_requests_feed"
 
 - if @issues.any?
   %div.dashboard_category
@@ -72,8 +87,7 @@
       = link_to dashboard_issues_path do 
         Visit issues page &rarr; 
     %hr
-    .row
-      .dashboard_block= render "dashboard/issues_feed"
+    .dashboard_block= render "dashboard/issues_feed"
 
 - if @events.any?
   %div.dashboard_category
@@ -82,5 +96,4 @@
       = link_to "Activities" , "#activities", :id => "activities"
 
     %hr
-    .row
-      .dashboard_block= render @events
+    .dashboard_block= render @events
