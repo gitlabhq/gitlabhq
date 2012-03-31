@@ -144,7 +144,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    # TODO: write some code here
+    self.update_attributes :state => CANNOT_BE_MERGED
   end
 
   def reloaded_commits 
