@@ -60,7 +60,7 @@
   .actions
     = f.submit 'Save', :class => "btn primary"
     = link_to 'Cancel', [:admin, @admin_project], :class => "btn"
-    - unless @project.new_record?
+    - unless @admin_project.new_record?
       .right
         = link_to 'Remove Project', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
 
