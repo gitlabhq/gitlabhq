@@ -4,10 +4,9 @@
       %ul
         - @admin_project.errors.full_messages.each do |msg|
           %li= msg
-
   .clearfix
     = f.label :name
-    .input= f.text_field :name
+    .input= f.text_field :name, :placeholder => "Example Project"
   .clearfix
     = f.label :path do 
       Path
@@ -23,7 +22,7 @@
         %span.add-on= web_app_url
         = f.text_field :code, :placeholder => "example"
 
-  - unless @admin_project.new_record?
+  - unless @admin_project.new_record? || @admin_project.heads.empty?
     .clearfix
       = f.label :owner_id
       .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
@@ -48,15 +47,20 @@
         = f.label :wall_enabled, "Wall"
         .input= f.check_box :wall_enabled
 
+      .clearfix
+        = f.label :wiki_enabled, "Wiki"
+        .input= f.check_box :wiki_enabled
+
   .clearfix
     = f.label :description
-    .input= f.text_area :description, :class => "xxlarge"
-  .clear
+    .input
+      = f.text_area :description, :placeholder => "project description", :class => "xxlarge", :rows => 5
+      %p.hint Markdown is enabled.
   %br
   .actions
     = f.submit 'Save', :class => "btn primary"
     = link_to 'Cancel', [:admin, @admin_project], :class => "btn"
-    = link_to 'Destroy', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
+    = link_to 'Remove Project', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
 
 :javascript
   $(function(){

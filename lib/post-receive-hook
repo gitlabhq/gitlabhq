@@ -8,5 +8,5 @@ do
   # For every branch or tag that was pushed, create a Resque job in redis.
   pwd=`pwd`
   reponame=`basename "$pwd" | cut -d. -f1`
-  env -i redis-cli rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
+  redis-cli rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
 done
