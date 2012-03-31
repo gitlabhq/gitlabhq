@@ -6,6 +6,10 @@ email:
   from: notify@gitlabhq.com
   host: gitlabhq.com
 
+  # Protocol used for links in email letters
+  # Value can be http or https
+  protocol: http # or https
+
 # Git Hosting congiguration
 git_host:
   system: gitolite
