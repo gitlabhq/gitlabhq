@@ -855,8 +855,6 @@ p.time {
 .dashboard_category { 
   margin-bottom:30px;
 
-
-
   h3 a { 
     color:#474D57;
 
@@ -864,6 +862,7 @@ p.time {
       text-decoration:underline;
     }
   }
+
   .dashboard_block { 
     width:840px;
     margin:auto;
@@ -871,9 +870,17 @@ p.time {
     .dash_project_item { 
       margin-bottom:10px;
       border:none;
+      padding:0px 5px;
+
       &:hover { 
-        background:none;
-        h4 { color:#2FA0BB; }
+        background:$hover;
+        //border-left:4px solid $styled_border_color;
+        h4 {
+          color:#111;
+          .ico.project { 
+            background-position:-209px -21px;
+          }
+        }
       }
 
       h4 {
@@ -933,7 +940,6 @@ p.time {
 }
 
 .leftbar { 
-
   h5, .title { 
     padding:5px 10px;
   }
@@ -949,7 +955,7 @@ p.time {
   a:hover { 
     h4 {
       color:#111;
-      border-right:4px solid $styled_border_color;
+      background:$hover;
       .ico.project { 
         background-position:-209px -21px;
       }
@@ -1073,7 +1079,8 @@ p.time {
 .arrow{ 
   float: right;
   background: #E3E5EA;
-  padding: 10px;
+  padding: 5px;
+  margin-top:5px;
   border-radius: 5px;
   text-shadow: none;
   color: #999;
