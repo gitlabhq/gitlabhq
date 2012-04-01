@@ -1,45 +1,28 @@
-- if event.new_branch? || event.new_tag?
+%div
   = image_tag gravatar_icon(event.author_email), :class => "avatar"
   %strong #{event.author_name} 
-  %span.label.pushed pushed
-  &nbsp;new 
-  - if event.new_tag?
-    tag
-    = link_to project_commits_path(event.project, :ref => event.tag_name) do
-      %strong= event.tag_name
-  - else 
-    branch
-    = link_to project_commits_path(event.project, :ref => event.branch_name) do
-      %strong= event.branch_name
+  %span.event_label= event.push_action_name
+  = link_to project_commits_path(event.project, :ref => event.ref_name) do
+    %strong= event.ref_name
   at 
   %strong= link_to event.project.name, event.project
   %span.cgray
     = time_ago_in_words(event.created_at)
     ago.
-- else 
-  = image_tag gravatar_icon(event.author_email), :class => "avatar"
-  %strong #{event.author_name}
-  %span.label.pushed pushed
-  &nbsp;to 
-  = link_to project_commits_path(event.project, :ref => event.branch_name) do
-    %strong= event.branch_name
-  at 
-  %strong= link_to event.project.name, event.project
-  %span.cgray
-    = time_ago_in_words(event.created_at)
-    ago.
-  - if event.commits.count > 1
-    = link_to compare_project_commits_path(event.project, :from => event.commits.first.prev_commit_id, :to => event.commits.last.id) do 
-      %strong #{event.commits.first.commit.id[0..7]}...#{event.commits.last.id[0..7]}
-  - project = event.project  
-  %ul.unstyled.event_commits
-    - if event.commits.size > 3
-      - event.commits[0...2].each do |commit|
-        = render "events/commit", :commit => commit, :project => project
-      %li
-        %br
-        \... and #{event.commits.size - 2} more commits
-    - else 
-      - event.commits.each do |commit|
-        = render "events/commit", :commit => commit, :project => project
+
+  - if event.md_ref?
+    - if event.commits.count > 1
+      = link_to compare_project_commits_path(event.project, :from => event.commits.first.prev_commit_id, :to => event.commits.last.id) do 
+        %strong #{event.commits.first.commit.id[0..7]}...#{event.commits.last.id[0..7]}
+    - project = event.project  
+    %ul.unstyled.event_commits
+      - if event.commits.size > 3
+        - event.commits[0...2].each do |commit|
+          = render "events/commit", :commit => commit, :project => project
+        %li
+          %br
+          \... and #{event.commits.size - 2} more commits
+      - else 
+        - event.commits.each do |commit|
+          = render "events/commit", :commit => commit, :project => project
 

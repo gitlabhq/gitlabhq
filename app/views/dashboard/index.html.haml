@@ -21,8 +21,8 @@
     .dashboard_block
       .row
         .span4.right
-          %div.borders.ipadded
-            %h1
+          %div.lborder.ipadded
+            %h3
               = pluralize current_user.projects.count, "project", "projects"
             - if current_user.can_create_project?
               %hr

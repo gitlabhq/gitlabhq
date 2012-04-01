@@ -1,11 +1,13 @@
 - projects.first(5).each do |project|
   %div.dash_project_item
-    = link_to project do 
-      %h4
+    %h4
+      = link_to project, :class => "project_link" do 
         %span.ico.project
-        = truncate project.name, :length => 30
+        = truncate project.name, :length => 24
+      %small
+        last activity at 
+        = project.last_activity_date.stamp("Aug 25, 2011")
+
+      .right 
         %small
-          last activity at 
-          = project.last_activity_date.stamp("Aug 25, 2011")
-        %span.right.arrow
-          &rarr;
+          %strong= link_to "Browse Code »", tree_project_ref_path(project, project.root_ref), :class => "vlink"

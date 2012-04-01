@@ -1,12 +1,8 @@
 - if event.allowed?
   .event_feed
-    - if event.new_issue? 
-      = render "events/event_new_issue", :event => event
-    - elsif event.new_merge_request? 
-      = render "events/event_new_merge_request", :event => event
-    - elsif event.changed_merge_request? 
-      = render "events/event_changed_merge_request", :event => event
-    - elsif event.changed_issue? 
-      = render "events/event_changed_issue", :event => event
+    - if event.issue? 
+      = render "events/event_issue", :event => event
+    - elsif event.merge_request? 
+      = render "events/event_merge_request", :event => event
     - elsif event.push?
       = render "events/event_push", :event => event

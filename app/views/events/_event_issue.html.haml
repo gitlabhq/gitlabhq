@@ -1,7 +1,7 @@
 = image_tag gravatar_icon(event.author_email), :class => "avatar"
 %strong #{event.author_name} 
-%span.label.success created
-&nbsp;new issue 
+%span.event_label= event.action_name
+&nbsp;issue 
 = link_to project_issue_path(event.project, event.issue) do
   %strong= truncate event.issue_title
 at 

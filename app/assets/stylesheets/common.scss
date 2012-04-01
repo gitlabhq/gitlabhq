@@ -67,6 +67,12 @@ a:focus {
   }
 }
 
+.event_label { 
+  background: #FCEEC1;
+  padding:0 2px;
+  font-family: monospace;
+}
+
 .tabs > li > a, .pills > li > a {
   color:$style_color;
 }
@@ -125,6 +131,9 @@ a:focus {
 
 .ipadded { 
   padding:20px !important;
+}
+.lborder { 
+  border-left:1px solid #eee;
 }
 .no-borders { 
   border:none;
@@ -872,10 +881,9 @@ p.time {
       border:none;
       padding:0px 5px;
 
-      &:hover { 
-        background:$hover;
-        //border-left:4px solid $styled_border_color;
-        h4 {
+      .project_link {
+        color:#888;
+        &:hover {
           color:#111;
           .ico.project { 
             background-position:-209px -21px;
@@ -1077,7 +1085,6 @@ p.time {
 }
 
 .arrow{ 
-  float: right;
   background: #E3E5EA;
   padding: 5px;
   margin-top:5px;

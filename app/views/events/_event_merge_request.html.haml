@@ -1,10 +1,6 @@
 = image_tag gravatar_icon(event.author_email), :class => "avatar"
 %strong #{event.author_name} 
-%span.label.important
-  - if event.closed?
-    closed
-  - else 
-    reopened
+%span.event_label= event.action_name
 &nbsp;merge request 
 = link_to project_merge_request_path(event.project, event.merge_request) do
   %strong= truncate event.merge_request_title
@@ -14,7 +10,7 @@ at
   = time_ago_in_words(event.created_at)
   ago.
 %br
-%span.label= event.merge_request.source_branch
+%span= event.merge_request.source_branch
 &rarr;
-%span.label= event.merge_request.target_branch
+%span= event.merge_request.target_branch
 
