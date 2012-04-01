@@ -129,6 +129,9 @@ a:focus {
 .no-borders { 
   border:none;
 }
+.lborder { 
+  border-left:1px solid #eee;
+}
 table.no-borders { 
   border:none;
   tr, td { border:none }
@@ -855,8 +858,41 @@ p.time {
 .dashboard_category { 
   margin-bottom:30px;
 
-  h3 a { 
-    color:#474D57;
+  table.projects_row { 
+    margin: 50px 0;
+    td {
+      border-top:none;
+
+      &.more { 
+        float:right;
+        width:90px;
+        h3 {
+          padding-right:20px;
+        }
+      }
+
+      &.new_project { 
+        width:150px;
+        float:right;
+        h3 {
+          padding-right:20px;
+        }
+      }
+
+      a.project { 
+        color:#ccc;
+        padding:0 20px;
+
+        &:hover { 
+        color:$style_color;
+          text-decoration:underline;
+        }
+      }
+    }
+  }
+
+  h3 a {
+    color:$style_color;
 
     &:hover { 
       text-decoration:underline;
@@ -864,9 +900,6 @@ p.time {
   }
 
   .dashboard_block { 
-    width:840px;
-    margin:auto;
-
     .dash_project_item { 
       margin-bottom:10px;
       border:none;
