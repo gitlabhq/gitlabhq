@@ -15,9 +15,9 @@
           %strong{:id => "#{diff.b_path}"}= diff.b_path
       %br/
     .diff_file_content
-      - if file.text?
+      - if defined? file.text and file.text?
         = render "commits/text_file", :diff => diff, :index => i
-      - elsif file.image?
+      - elsif defined? file.image and file.image?
         .diff_file_content_image
           %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
       - else
