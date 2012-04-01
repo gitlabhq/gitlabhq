@@ -220,7 +220,7 @@ Application can be started with next command:
 Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 
     upstream gitlab {
-        server unix:/tmp/gitlab.socket;
+        server unix:/home/gitlab/gitlab/tmp/sockets/gitlab.socket;
     }
 
     server {
