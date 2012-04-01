@@ -2,10 +2,13 @@
   = image_tag gravatar_icon(note.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
   %div.note-author
     %strong= note.author_name
-    referenced this issue from a commit
+    referenced this
+    = note.noteable_type.downcase
+    from a
+    = note.reference_type.downcase
     %cite.cgray
       = time_ago_in_words(note.updated_at)
       ago
   %div.note-title
-    = markdown("[#{note.note}](#{project_commit_path(@project,:id => note.commit_id)})")
+    = markdown("[#{note.note}](#{build_reference_link(@project, note)})")
   .clear

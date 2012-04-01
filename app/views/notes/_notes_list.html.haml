@@ -1,7 +1,7 @@
 - @notes.each do |note|
   - next unless note.author
-  - if note.from_commit?
-    = render :partial => "notes/show_from_commit", :locals => {:note => note}
+  - if note.reference?
+    = render :partial => "notes/reference_show", :locals => {:note => note}
   - else
     = render :partial => "notes/show", :locals => {:note => note}
 

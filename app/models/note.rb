@@ -4,6 +4,7 @@ require 'file_size_validator'
 class Note < ActiveRecord::Base
   belongs_to :project
   belongs_to :noteable, :polymorphic => true
+  belongs_to :reference, :polymorphic => true
   belongs_to :author,
     :class_name => "User"
 
@@ -35,7 +36,7 @@ class Note < ActiveRecord::Base
   scope :fresh, order("created_at DESC")
   scope :inc_author_project, includes(:project, :author)
   scope :inc_author, includes(:author)
-  scope :from_commit, includes(:commit_id)
+  scope :from_commit, where(:reference_type => "Commit")
 
   mount_uploader :attachment, AttachmentUploader
 
@@ -89,8 +90,12 @@ class Note < ActiveRecord::Base
     nil
   end
   
+  def reference?
+    !reference_type.nil? && !reference_id.nil?
+  end
+  
   def from_commit?
-    !commit_id.nil?
+    reference? && reference_type == "Commit"
   end
 
   # Returns true if this is an upvote note,
@@ -113,6 +118,7 @@ end
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
-#  commit_id     :string(255)
+#  reference_id  :string(255)
+#  reference_type:string(255)
 #
 

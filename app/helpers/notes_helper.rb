@@ -17,4 +17,12 @@ module NotesHelper
 		end
 		preserve out
 	end
+	
+	def build_reference_link(project, note)
+		return '' unless note.reference?
+		case note.reference_type
+		when "Commit"
+			then project_commit_path(project,:id => note.reference_id)
+		end
+	end
 end

@@ -77,7 +77,8 @@ ActiveRecord::Schema.define(:version => 20120323221339) do
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
-    t.string   "commit_id"
+    t.string   "reference_id"
+    t.string   "reference_type"
   end
 
   add_index "notes", ["noteable_id"], :name => "index_notes_on_noteable_id"
