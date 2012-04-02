@@ -69,7 +69,7 @@ describe Event do
     it { @event.push?.should be_true }
     it { @event.allowed?.should be_true }
     it { @event.new_branch?.should be_true }
-    it { @event.new_tag?.should be_false }
+    it { @event.tag?.should be_false }
     it { @event.branch_name.should == "master" }
     it { @event.author.should == @user }
   end
