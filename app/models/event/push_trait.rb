@@ -63,5 +63,19 @@ module Event::PushTrait
         "pushed to"
       end
     end
+
+    def parent_commit
+      commits.first.prev_commit
+    rescue => ex
+      nil
+    end
+
+    def last_commit
+      commits.last
+    end
+
+    def push_with_commits? 
+      md_ref? && commits.any? && parent_commit && last_commit
+    end
   end
 end

@@ -10,10 +10,10 @@
     = time_ago_in_words(event.created_at)
     ago.
 
-  - if event.md_ref?
+  - if event.push_with_commits?
     - if event.commits.count > 1
-      = link_to compare_project_commits_path(event.project, :from => event.commits.first.prev_commit_id, :to => event.commits.last.id) do 
-        %strong #{event.commits.first.commit.id[0..7]}...#{event.commits.last.id[0..7]}
+      = link_to compare_project_commits_path(event.project, :from => event.parent_commit.id, :to => event.last_commit.id) do 
+        %strong #{event.commits.first.id[0..7]}...#{event.last_commit.id[0..7]}
     - project = event.project  
     %ul.unstyled.event_commits
       - if event.commits.size > 3
