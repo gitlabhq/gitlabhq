@@ -1,63 +1,57 @@
 - allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
 
-.row
-  .span8
-    .profile_avatar_holder
-      = image_tag gravatar_icon(user.email, 90), :class => "styled_image"
-    %h3
-      = user.name
-      %br
-      %small
-        = user.email
+.team_member_show
+  .profile_avatar_holder
+    = image_tag gravatar_icon(user.email, 60), :class => "borders"
+  %h3
+    = user.name
+    %small
+      = user.email
+  %hr
+  .back_link
     %br
-    .back_link
-      %br
-      = link_to team_project_path(@project), :class => "" do 
-        &larr; To team list
-  
-  .span8.right
-    %div
-      %div
-        %h5.cgray
-          Member since: 
-          %span.right
-            = @team_member.created_at.stamp("Aug 21, 2011") 
-        %h5.cgray
-          Project Access: 
-          %small (#{link_to "read more", help_permissions_path, :class => "vlink"})
-          %span.right
+    = link_to team_project_path(@project), :class => "" do 
+      &larr; To team list
+  %br
+  .row
+    .span8
+      %table.no-borders
+        %tr
+          %td Email
+          %td= mail_to user.email
+        %tr
+          %td Skype
+          %td= user.skype
+        - unless user.linkedin.blank?
+          %tr
+            %td LinkedIn
+            %td= user.linkedin
+        - unless user.twitter.blank?
+          %tr
+            %td Twitter
+            %td= user.twitter
+        - unless user.bio.blank?
+          %tr
+            %td Bio
+            %td= user.bio
+    .span8
+      %table.no-borders
+        %tr
+          %td Member since
+          %td= @team_member.created_at.stamp("Aug 21, 2011")
+        %tr
+          %td
+            Project Access:
+            %small (#{link_to "read more", help_permissions_path, :class => "vlink"})
+          %td
             = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
               = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
-
-
-
-%div.prepend-top-20
-  - unless user.skype.empty?
-    %p
-      %b Skype:
-      = user.skype
-
-  - unless user.linkedin.empty?
-    %p
-      %b LinkedIn:
-      = user.linkedin
-
-  - unless user.twitter.empty?
-    %p
-      %b Twitter:
-      = user.twitter
-    - unless user.bio.empty?
-      %p
-        %b Bio:
-        = user.bio
-
-= render user.recent_events.limit(3)
-
-
-- if can? current_user, :admin_project, @project
-  .actions
-    = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
+  %hr
+  = render user.recent_events.limit(3)
+  - if can? current_user, :admin_project, @project
+    .actions
+      = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
 
 :javascript
   $(function(){

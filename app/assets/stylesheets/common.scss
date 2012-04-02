@@ -370,12 +370,12 @@ img.lil_av {
 
 .profile_avatar_holder { 
   float:left;
-  width:90px;
-  height:90px;
+  width:60px;
+  height:60px;
   margin-right:20px;
   img { 
-    width:90px;
-    height:90px;
+    width:60px;
+    height:60px;
     background:#eee;
   }
 }
@@ -1172,4 +1172,10 @@ li.note {
 
 .wiki_content code, .readme code{
   background-color: inherit;
+}
+
+.team_member_show { 
+  td:first-child { 
+    color:#aaa;
+  }
 }
