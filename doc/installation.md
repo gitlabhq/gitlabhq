@@ -159,12 +159,11 @@ Permissions:
 
 #### Setup DB
 
-    sudo -u gitlab bundle exec rake db:setup RAILS_ENV=production
-    sudo -u gitlab bundle exec rake db:seed_fu RAILS_ENV=production
+    sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
     
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab_status RAILS_ENV=production
+    sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
 
 
     # OUTPUT EXAMPLE

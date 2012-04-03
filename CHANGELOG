@@ -1,3 +1,11 @@
+v 2.4.0
+  - Accept merge request
+
+v 2.3.1
+  - Issues pagination
+  - ssl fixes
+  - Merge Request pagination
+
 v 2.3.0
   - Dashboard r1
   - Search r1
