@@ -9,6 +9,14 @@ a {
   &.btn { 
     color: $style_color;
   }
+
+  &.dark { 
+    color: $style_color;
+  }
+
+  &.lined { 
+    text-decoration:underlined; 
+  }
 }
 
 
@@ -30,6 +38,10 @@ a:focus {
 
 .vlink { 
   color: $link_color !important;
+}
+
+.dlink { 
+
 }
 
 .pills a:hover { 
@@ -698,12 +710,6 @@ a.project-update.titled {
 
 input.git_clone_url { 
   width:475px;
-}
-
-.team_member_row { 
-  img { 
-    width:60px;
-  }
 }
 
 .merge-request-form-holder {
