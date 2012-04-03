@@ -144,14 +144,6 @@ class MergeRequest < ActiveRecord::Base
       :author_id => user_id
     )
   end
-
-  def load obj 
-    Marshal.load obj
-  end
-
-  def dump obj 
-    Marshal.dump obj
-  end
 end
 # == Schema Information
 #

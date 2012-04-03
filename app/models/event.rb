@@ -105,14 +105,6 @@ class Event < ActiveRecord::Base
   delegate :name, :email, :to => :author, :prefix => true, :allow_nil => true
   delegate :title, :to => :issue, :prefix => true, :allow_nil => true
   delegate :title, :to => :merge_request, :prefix => true, :allow_nil => true
-
-  def load obj 
-    Marshal.load obj
-  end
-
-  def dump obj 
-    Marshal.dump obj
-  end
 end
 # == Schema Information
 #
