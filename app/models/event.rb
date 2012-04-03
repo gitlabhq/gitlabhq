@@ -14,7 +14,8 @@ class Event < ActiveRecord::Base
   belongs_to :project
   belongs_to :target, :polymorphic => true
 
-  serialize :data, GitlabSerialize.new
+  # For Hash only
+  serialize :data
 
   scope :recent, order("created_at DESC")
   scope :code_push, where(:action => Pushed)
@@ -104,6 +105,14 @@ class Event < ActiveRecord::Base
   delegate :name, :email, :to => :author, :prefix => true, :allow_nil => true
   delegate :title, :to => :issue, :prefix => true, :allow_nil => true
   delegate :title, :to => :merge_request, :prefix => true, :allow_nil => true
+
+  def load obj 
+    Marshal.load obj
+  end
+
+  def dump obj 
+    Marshal.dump obj
+  end
 end
 # == Schema Information
 #
