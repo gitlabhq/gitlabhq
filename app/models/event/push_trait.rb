@@ -1,13 +1,13 @@
 module Event::PushTrait
   as_trait do
     def valid_push?
-      data["ref"]
+      data[:ref]
     rescue => ex
       false
     end
 
     def tag? 
-      data["ref"]["refs/tags"]
+      data[:ref]["refs/tags"]
     end
 
     def new_branch?
@@ -27,11 +27,11 @@ module Event::PushTrait
     end
 
     def commit_from
-      data["before"]
+      data[:before]
     end
 
     def commit_to
-      data["after"]
+      data[:after]
     end
 
     def ref_name 
@@ -43,15 +43,15 @@ module Event::PushTrait
     end
 
     def branch_name
-      @branch_name ||= data["ref"].gsub("refs/heads/", "")
+      @branch_name ||= data[:ref].gsub("refs/heads/", "")
     end
 
     def tag_name
-      @tag_name ||= data["ref"].gsub("refs/tags/", "")
+      @tag_name ||= data[:ref].gsub("refs/tags/", "")
     end
   
     def commits
-      @commits ||= data["commits"].map do |commit|
+      @commits ||= data[:commits].map do |commit|
         project.commit(commit["id"])
       end
     end
