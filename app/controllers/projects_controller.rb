@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
   def index
     @projects = current_user.projects
     @projects = @projects.select(&:last_activity_date).sort_by(&:last_activity_date).reverse
-    @events = Event.where(:project_id => @projects.map(&:id)).recent.limit(40)
+    @events = Event.where(:project_id => @projects.map(&:id)).recent.limit(20)
   end
 
   def new
