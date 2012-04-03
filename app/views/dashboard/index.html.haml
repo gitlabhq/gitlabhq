@@ -44,7 +44,7 @@
                   = link_to profile_path, :class => "btn" do 
                     Your Profile » 
         .span10.left= render "dashboard/projects_feed", :projects => @active_projects
-      - if @last_push
+      - if @last_push && @last_push.valid_push?
         .padded.prepend-top-20
           %h5
             %small Latest push was to the #{@last_push.branch_name} branch of #{@last_push.project.name}:
