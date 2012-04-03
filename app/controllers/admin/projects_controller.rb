@@ -42,8 +42,10 @@ class Admin::ProjectsController < ApplicationController
     @admin_project.owner = current_user
 
     Project.transaction do
-      @admin_project.save!
-      @admin_project.users_projects.create!(:project_access => UsersProject::MASTER, :user => current_user)
+      if @admin_project.save
+        redirect_to [:admin, @admin_project], notice: 'Project was successfully created.'
+      else
+        render :action => "new"
 
       # when project saved no team member exist so
       # project repository should be updated after first user add
