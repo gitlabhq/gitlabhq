@@ -29,14 +29,14 @@ describe PostReceive do
 
     it "asks the project to execute web hooks" do
       Project.stub(find_by_path: project)
-      project.should_receive(:execute_web_hooks).with('sha-old', 'sha-new', 'refs/heads/master', key_id)
+      project.should_receive(:execute_web_hooks).with('sha-old', 'sha-new', 'refs/heads/master', project.owner)
 
       PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id)
     end
 
     it "asks the project to observe push/create event data" do
       Project.stub(find_by_path: project)
-      project.should_receive(:observe_push).with('sha-old', 'sha-new', 'refs/heads/master', key_id)
+      project.should_receive(:observe_push).with('sha-old', 'sha-new', 'refs/heads/master', project.owner)
 
       PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id)
     end

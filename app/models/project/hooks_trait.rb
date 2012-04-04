@@ -1,7 +1,7 @@
 module Project::HooksTrait
   as_trait do
-    def observe_push(oldrev, newrev, ref, author_key_id)
-      data = web_hook_data(oldrev, newrev, ref, author_key_id)
+    def observe_push(oldrev, newrev, ref, user)
+      data = post_receive_data(oldrev, newrev, ref, user)
 
       Event.create(
         :project => self,
@@ -11,10 +11,9 @@ module Project::HooksTrait
       )
     end
 
-    def update_merge_requests(oldrev, newrev, ref, author_key_id)
+    def update_merge_requests(oldrev, newrev, ref, user)
       return true unless ref =~ /heads/
       branch_name = ref.gsub("refs/heads/", "")
-      user = Key.find_by_identifier(author_key_id).user
       c_ids = self.commits_between(oldrev, newrev).map(&:id)
 
       # Update code for merge requests
@@ -29,36 +28,48 @@ module Project::HooksTrait
       true
     end
 
-    def execute_web_hooks(oldrev, newrev, ref, author_key_id)
+    def execute_web_hooks(oldrev, newrev, ref, user)
       ref_parts = ref.split('/')
 
       # Return if this is not a push to a branch (e.g. new commits)
       return if ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000"
 
-      data = web_hook_data(oldrev, newrev, ref, author_key_id)
+      data = post_receive_data(oldrev, newrev, ref, user)
 
       web_hooks.each { |web_hook| web_hook.execute(data) }
     end
 
-    def web_hook_data(oldrev, newrev, ref, author_key_id)
-      key = Key.find_by_identifier(author_key_id)
+    def post_receive_data(oldrev, newrev, ref, user)
+
+      push_commits = commits_between(oldrev, newrev)
+
+      # Total commits count
+      push_commits_count = push_commits.size
+
+      # Get latest 20 commits ASC
+      push_commits_limited = push_commits.last(20)
+
+      # Hash to be passed as post_receive_data
       data = {
         before: oldrev,
         after: newrev,
         ref: ref,
-        user_id: key.user.id,
-        user_name: key.user_name,
+        user_id: user.id,
+        user_name: user.name,
         repository: {
           name: name,
           url: web_url,
           description: description,
           homepage: web_url,
-          private: private?
         },
-        commits: []
+        commits: [],
+        total_commits_count: push_commits_count
       }
 
-      commits_between(oldrev, newrev).each do |commit|
+      # For perfomance purposes maximum 20 latest commits 
+      # will be passed as post receive hook data.
+      #
+      push_commits_limited.each do |commit|
         data[:commits] << {
           id: commit.id,
           message: commit.safe_message,
@@ -72,6 +83,24 @@ module Project::HooksTrait
       end
 
       data
+    end
+
+
+    # This method will be called after each post receive
+    # and only if autor_key_id present in gitlab. 
+    # All callbacks for post receive should be placed here
+    #
+    def trigger_post_receive(oldrev, newrev, ref, author_key_id)
+      user = Key.find_by_identifier(author_key_id).user
+
+      # Create push event
+      self.observe_push(oldrev, newrev, ref, user)
+
+      # Close merged MR 
+      self.update_merge_requests(oldrev, newrev, ref, user)
+
+      # Execute web hooks
+      self.execute_web_hooks(oldrev, newrev, ref, user)
     end
   end
 end

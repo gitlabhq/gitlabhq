@@ -24,7 +24,7 @@
 
 
 - unless @commits.empty?
-  %h4 Commits
+  %h4 Commits (#{@commits.count})
   %ul.unstyled= render @commits
 
 - unless @diffs.empty?

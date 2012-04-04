@@ -4,19 +4,20 @@ describe Project, "Hooks" do
   let(:project) { Factory :project }
   before do 
     @key = Factory :key, :user => project.owner
+    @user = @key.user
     @key_id = @key.identifier
   end
 
   describe "Post Receive Event" do 
     it "should create push event" do 
       oldrev, newrev, ref = '00000000000000000000000000000000', 'newrev', 'refs/heads/master'
-      project.observe_push(oldrev, newrev, ref, @key_id)
+      project.observe_push(oldrev, newrev, ref, @user)
       event = Event.last
 
       event.should_not be_nil
       event.project.should == project
       event.action.should == Event::Pushed
-      event.data == project.web_hook_data(oldrev, newrev, ref, @key_id)
+      event.data == project.post_receive_data(oldrev, newrev, ref, @user)
     end
   end
 
@@ -24,7 +25,7 @@ describe Project, "Hooks" do
     context "with no web hooks" do
       it "raises no errors" do
         lambda {
-          project.execute_web_hooks('oldrev', 'newrev', 'ref', @key_id)
+          project.execute_web_hooks('oldrev', 'newrev', 'ref', @user)
         }.should_not raise_error
       end
     end
@@ -40,7 +41,7 @@ describe Project, "Hooks" do
         @webhook.should_receive(:execute).once
         @webhook_2.should_receive(:execute).once
 
-        project.execute_web_hooks('oldrev', 'newrev', 'refs/heads/master', @key_id)
+        project.execute_web_hooks('oldrev', 'newrev', 'refs/heads/master', @user)
       end
     end
 
@@ -52,12 +53,12 @@ describe Project, "Hooks" do
 
       it "when pushing a branch for the first time" do
         @webhook.should_not_receive(:execute)
-        project.execute_web_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/master', @key_id)
+        project.execute_web_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/master', @user)
       end
 
       it "when pushing tags" do
         @webhook.should_not_receive(:execute)
-        project.execute_web_hooks('oldrev', 'newrev', 'refs/tags/v1.0.0', @key_id)
+        project.execute_web_hooks('oldrev', 'newrev', 'refs/tags/v1.0.0', @user)
       end
     end
 
@@ -73,7 +74,7 @@ describe Project, "Hooks" do
         # Fill nil/empty attributes
         project.description = "This is a description"
 
-        @data = project.web_hook_data(@oldrev, @newrev, @ref, @key_id)
+        @data = project.post_receive_data(@oldrev, @newrev, @ref, @user)
       end
 
       subject { @data }
@@ -91,7 +92,6 @@ describe Project, "Hooks" do
         it { should include(url: project.web_url) }
         it { should include(description: project.description) }
         it { should include(homepage: project.web_url) }
-        it { should include(private: project.private?) }
       end
 
       context "with commits" do

@@ -11,17 +11,17 @@
     ago.
 
   - if event.push_with_commits?
-    - if event.commits.count > 1
+    - if event.commits_count > 1
       = link_to compare_project_commits_path(event.project, :from => event.parent_commit.id, :to => event.last_commit.id) do 
-        %strong #{event.commits.first.id[0..7]}...#{event.last_commit.id[0..7]}
+        %strong #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
     - project = event.project  
     %ul.unstyled.event_commits
-      - if event.commits.size > 3
+      - if event.commits_count > 3
         - event.commits[0...2].each do |commit|
           = render "events/commit", :commit => commit, :project => project
         %li
           %br
-          \... and #{event.commits.size - 2} more commits
+          \... and #{event.commits_count - 2} more commits
       - else 
         - event.commits.each do |commit|
           = render "events/commit", :commit => commit, :project => project

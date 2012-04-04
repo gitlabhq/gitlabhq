@@ -47,7 +47,7 @@
       - if @last_push && @last_push.valid_push?
         .padded.prepend-top-20
           %h5
-            %small Latest push was to the #{@last_push.branch_name} branch of #{@last_push.project.name}:
+            %small Latest push was to the #{@last_push.ref_name} #{@last_push.ref_type} of #{@last_push.project.name}:
           %ul.unstyled= render @last_push
 
 - if @merge_requests.any?
