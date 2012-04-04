@@ -261,13 +261,13 @@ Create init script in /etc/init.d/gitlab:
 
     #! /bin/bash
     ### BEGIN INIT INFO
-    # Provides:          unicorn
-    # Required-Start:    $local_fs $remote_fs $network $syslog
+    # Provides:          gitlab
+    # Required-Start:    $local_fs $remote_fs $network $syslog redis-server
     # Required-Stop:     $local_fs $remote_fs $network $syslog
     # Default-Start:     2 3 4 5
     # Default-Stop:      0 1 6
-    # Short-Description: starts the unicorn web server
-    # Description:       starts unicorn
+    # Short-Description: GitLab git repository management
+    # Description:       GitLab git repository management
     ### END INIT INFO
     
     DAEMON_OPTS="-c /home/gitlab/gitlab/config/unicorn.rb -E production -D"
@@ -322,7 +322,7 @@ Adding permission:
 
 When server is rebooted then gitlab must starting:
 
-    sudo update-rc.d gitlab defaults
+    sudo insserv gitlab
 
 Now you can start/restart/stop gitlab like:
 
