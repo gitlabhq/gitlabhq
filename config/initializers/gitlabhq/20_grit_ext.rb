@@ -40,13 +40,6 @@ Grit::GitRuby::Internal::RawObject.class_eval do
       content.force_encoding("UTF-8")
     end
   end
-
-  def z_binary?(string)
-    string.each_byte do |x|
-      x.nonzero? or return true
-    end
-    false
-  end
 end
 
 
