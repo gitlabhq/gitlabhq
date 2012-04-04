@@ -1,3 +1,4 @@
+require 'benchmark'
 require "base64"
 
 class CommitsController < ApplicationController

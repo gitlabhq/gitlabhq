@@ -17,13 +17,35 @@ Grit::GitRuby::Internal::RawObject.class_eval do
   end
 
   private
+
   def transcoding(content)
     content ||= ""
-    detection = CharlockHolmes::EncodingDetector.detect(content)
-    if hash = detection
-     content = CharlockHolmes::Converter.convert(content, hash[:encoding], 'UTF-8') if hash[:encoding]
+    hash = CharlockHolmes::EncodingDetector.detect(content)
+
+    if hash 
+      return content if hash[:type] == :binary
+
+      if hash[:encoding] == "UTF-8"
+        content = if hash[:confidence] < 100
+                    content
+                  else
+                    content.force_encoding("UTF-8")
+                  end
+
+        return content
+      end
+
+      CharlockHolmes::Converter.convert(content, hash[:encoding], 'UTF-8') if hash[:encoding]
+    else 
+      content.force_encoding("UTF-8")
     end
-    content
+  end
+
+  def z_binary?(string)
+    string.each_byte do |x|
+      x.nonzero? or return true
+    end
+    false
   end
 end
 
