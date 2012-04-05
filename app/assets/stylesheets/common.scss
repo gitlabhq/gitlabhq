@@ -17,8 +17,14 @@ a {
   &.lined { 
     text-decoration:underlined; 
   }
+  &.supp_diff_link { 
+    text-align:center;
+    padding:20px 0;
+    background:#f1f1f1;
+    width:100%;
+    float:left;
+  }
 }
-
 
 .btn { 
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f1f1), color-stop(25%, #f1f1f1), to(#e6e6e6));

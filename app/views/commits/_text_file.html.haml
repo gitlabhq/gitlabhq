@@ -1,4 +1,8 @@
-%table
+- too_big = max_lines = diff.diff.lines.count > 1000
+- if too_big
+  = link_to_function "Diff suppressed. Click to show", "showDiff(this)", :class => "supp_diff_link"
+
+%table{:class => "#{'hide' if too_big}"}
   - each_diff_line(diff.diff.lines.to_a, index) do |line, type, line_code, line_new, line_old|
     %tr.line_holder
       - if type == "match"

@@ -21,8 +21,6 @@
     %pre.commit_message
       = commit_msg_with_link_to_issues(@project, @commit.safe_message)
 %br
-%p.cgray
-  Showing #{pluralize(@commit.diffs.count, "changed file")}
 = render "commits/diffs", :diffs => @commit.diffs
 = render "notes/notes", :tid => @commit.id, :tt => "commit"
 = render "notes/per_line_form"

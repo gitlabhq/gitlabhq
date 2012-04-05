@@ -34,6 +34,10 @@ class CommitsController < ApplicationController
     @line_notes = project.commit_line_notes(@commit)
 
     @notes_count = @line_notes.count + project.commit_notes(@commit).count
+
+    if @commit.diffs.size > 200 && !params[:force_show_diff]
+      @suppress_diff = true 
+    end
   end
 
   def compare
