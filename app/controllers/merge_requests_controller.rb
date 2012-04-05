@@ -2,7 +2,7 @@ class MergeRequestsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
-  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs]
+  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs, :automerge]
   layout "project"
 
   # Authorize
@@ -45,6 +45,10 @@ class MergeRequestsController < ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    if @merge_request.unchecked? 
+      @merge_request.check_if_can_be_merged
+    end
+
     respond_to do |format|
       format.html
       format.js
@@ -86,6 +90,7 @@ class MergeRequestsController < ApplicationController
     respond_to do |format|
       if @merge_request.update_attributes(params[:merge_request].merge(:author_id_of_changes => current_user.id))
         @merge_request.reload_code
+        @merge_request.mark_as_unchecked
         format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.' }
         format.json { head :ok }
       else
@@ -93,6 +98,12 @@ class MergeRequestsController < ApplicationController
         format.json { render json: @merge_request.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def automerge
+    render_404 unless @merge_request.open? && @merge_request.can_be_merged?
+    return access_denied! unless can?(current_user, :accept_mr, @project)
+    @merge_request.automerge!(current_user)
   end
 
   def destroy
