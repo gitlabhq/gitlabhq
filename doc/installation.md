@@ -107,7 +107,7 @@ Get gitolite source code:
 
 Setup:
 
-    sudo -u git sh -c 'echo "PATH=\$PATH:/home/git/bin\nexport PATH" > /home/git/.profile'
+    sudo -u git sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" > /home/git/.profile'
     sudo -u git -i -H /home/git/gitolite/src/gl-system-install
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 777 /home/git/gitlab.pub
