@@ -75,11 +75,11 @@ def create_repo_project(project_name, user_email)
         project = Project.find_by_code(project_name)
       else
         project = Project.create(
-          name: project_name,
-          code: project_name,
-          path: project_name,
-          owner: user,
-          description: "Automatically created from Rake on #{Time.now.to_s}"
+            name => project_name,
+            code => project_name,
+            path => project_name,
+            owner => user,
+            description => "Automatically created from Rake on #{Time.now.to_s}"
         )
       end
 
