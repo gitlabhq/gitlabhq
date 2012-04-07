@@ -67,12 +67,15 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 
 # 2. Install ruby
 
+Note: skip this step if you want to use rvm to install Ruby (covered in step #4)
+
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
     tar xzfv ruby-1.9.2-p290.tar.gz
     cd ruby-1.9.2-p290
     ./configure
     make
     sudo make install
+    sudo gem install bundler charlock_holmes
 
 # 3. Install gitolite
 
@@ -133,11 +136,26 @@ Permissions:
 
 # 4. Install gitlab and configuration. Check status configuration.
 
-    sudo gem install charlock_holmes
+#### Install Ruby using rvm (skip if you installed Ruby in step 2)
+
+    # Install MRI requirements (current as of rvm 1.11.6)
+    sudo apt-get install build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion
+
+    # Install rvm, Ruby 1.9.3-p125 and gitlab gemset under gitlab user
+    sudo -iu gitlab bash -c 'bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)'
+    sudo -iu gitlab rvm install ruby-1.9.3-p125
+    sudo -iu gitlab sh -c 'rvm use ruby-1.9.3-p125 && rvm gemset create gitlab'
+    sudo -iu gitlab rvm use --default ruby-1.9.3-p125@gitlab
+    sudo -iu gitlab gem install bundler charlock_holmes
+
+#### Install gitlab
+
     sudo pip install pygments
-    sudo gem install bundler
-    cd /home/gitlab
-    sudo -H -u gitlab git clone git://github.com/gitlabhq/gitlabhq.git gitlab
+
+    # Switch to gitlab user for the next several commands
+    sudo su -l gitlab
+
+    git clone git://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
 
     # Rename config files
@@ -146,24 +164,24 @@ Permissions:
 #### Select db you want to use
 
     # SQLite
-    sudo -u gitlab cp config/database.yml.sqlite config/database.yml
+    cp config/database.yml.sqlite config/database.yml
 
     # Or 
     # Mysql
-    sudo -u gitlab cp config/database.yml.example config/database.yml
+    cp config/database.yml.example config/database.yml
     # Change username/password of config/database.yml  to real one
 
 #### Install gems
 
-    sudo -u gitlab -H bundle install --without development test --deployment
+    bundle install --without development test --deployment
 
 #### Setup DB
 
-    sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
+    bundle exec rake gitlab:app:setup RAILS_ENV=production
     
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
+    bundle exec rake gitlab:app:status RAILS_ENV=production
 
 
     # OUTPUT EXAMPLE
@@ -187,18 +205,21 @@ If you got all YES - congrats! You can go to next step.
 Application can be started with next command:
 
     # For test purposes 
-    sudo -u gitlab bundle exec rails s -e production
+    bundle exec rails s -e production
 
     # As daemon
-    sudo -u gitlab bundle exec rails s -e production -d
+    bundle exec rails s -e production -d
 
 #  6. Run resque process (for processing queue).
 
     # Manually
-    sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
+    bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
 
     # Gitlab start script
     ./resque.sh
+
+    # Log out of gitlab user session
+    exit
 
 
 **Ok - we have a working application now. **
@@ -214,7 +235,7 @@ Application can be started with next command:
 
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
-    sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
+    sudo -iu gitlab sh -c 'cd gitlab; bundle exec unicorn_rails -c config/unicorn.rb -E production -D'
 
 Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 
@@ -284,7 +305,7 @@ Create init script in /etc/init.d/gitlab:
 
             echo -n "Starting $DESC: "
             if [ `whoami` = root ]; then
-              sudo -u gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
+              sudo -iu gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
             else
               $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
             fi
