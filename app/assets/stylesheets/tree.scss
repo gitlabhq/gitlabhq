@@ -113,13 +113,16 @@
     color:#888;
   }
 
-  .tree-item { 
-    &:hover { 
-      background: $hover;
-      cursor:pointer;
+  #tree-slider {
+    .tree-item { 
+      &:hover { 
+        td { background: $hover; }
+        cursor:pointer;
+      }
     }
+  }
 
-
+  .tree-item { 
     .tree-item-file-name { 
       font-weight:bold;
       a { 
