@@ -3,5 +3,22 @@
   %small (assigned to you)
 
 %br
-- if @issues.any?
-  .ui-box= render "dashboard/issues_feed"
+%div#issues-table-holder.ui-box
+  %title
+  %ul#issues-table.unstyled
+    - if @issues.any?
+      - @issues.group_by(&:project).each do |group|
+        %li.wll.smoke
+          - project = group[0]
+          = project.name
+        - group[1].each do |issue|
+          = render(:partial => 'issues/show', :locals => {:issue => issue})
+      %li.bottom
+        .row
+          .span10= paginate @issues, :theme => "gitlab"
+          .span4.right
+            %span.cgray.right #{@issues.total_count} issues
+
+    - else
+      %li
+        %p.padded Nothing to show here

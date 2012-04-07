@@ -3,5 +3,22 @@
   %small (authored or assigned to you)
 
 %br
-- if @merge_requests.any?
-  .ui-box= render "dashboard/merge_requests_feed"
+%div#merge_requests-table-holder.ui-box
+  %title
+  %ul#merge_requests-table.unstyled
+    - if @merge_requests.any?
+      - @merge_requests.group_by(&:project).each do |group|
+        %li.wll.smoke
+          - project = group[0]
+          = project.name
+        - group[1].each do |merge_request|
+          = render(:partial => 'merge_requests/merge_request', :locals => {:merge_request => merge_request})
+      %li.bottom
+        .row
+          .span10= paginate @merge_requests, :theme => "gitlab"
+          .span4.right
+            %span.cgray.right #{@merge_requests.total_count} merge requests
+
+    - else
+      %li
+        %p.padded Nothing to show here

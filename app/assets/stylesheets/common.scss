@@ -406,6 +406,9 @@ img.lil_av {
   border-bottom: 1px solid #eee;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor:pointer;
+  &.smoke { 
+    background-color:#f5f5f5;
+  }
   &:hover { 
     background:$hover;
   }

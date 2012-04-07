@@ -19,15 +19,14 @@ class DashboardController < ApplicationController
   # Get authored or assigned open merge requests
   def merge_requests
     @projects = current_user.projects.all
-    @merge_requests = current_user.cared_merge_requests.order("created_at DESC").limit(40)
+    @merge_requests = current_user.cared_merge_requests.order("created_at DESC").page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
     @projects = current_user.projects.all
     @user   = current_user
-    @issues = current_user.assigned_issues.opened.order("created_at DESC").limit(40)
-
+    @issues = current_user.assigned_issues.opened.order("created_at DESC").page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
     respond_to do |format|
