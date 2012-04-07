@@ -10,4 +10,5 @@
 
       .right 
         %small
-          %strong= link_to "Browse Code »", tree_project_ref_path(project, project.root_ref), :class => "vlink"
+          %strong= link_to "Browse Code »", tree_project_ref_path(project, project.root_ref), :class => "neib gray"
+          %strong= link_to "Commits »", project_commits_path(project), :class => "gray"

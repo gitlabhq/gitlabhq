@@ -17,12 +17,21 @@ a {
   &.lined { 
     text-decoration:underlined; 
   }
+
+  &.gray { 
+    color:gray;
+  }
+
   &.supp_diff_link { 
     text-align:center;
     padding:20px 0;
     background:#f1f1f1;
     width:100%;
     float:left;
+  }
+
+  &.neib  {
+    margin-right:15px;
   }
 }
 
@@ -46,10 +55,6 @@ a:focus {
   color: $link_color !important;
 }
 
-.dlink { 
-
-}
-
 .pills a:hover { 
   background-color:#ccc;
 }
@@ -60,10 +65,6 @@ a:focus {
 
 .label { 
   background-color: #474D57;
-
-  &.pushed { 
-    background-color: $link_color;
-  }
 }
 
 .pretty_label { 
@@ -873,26 +874,24 @@ p.time {
 }
 
 
+/** 
+ * Dashboard page
+ * 
+ */
 .dashboard_category { 
   margin-bottom:30px;
-
   h3 a { 
     color:#474D57;
-
     &:hover { 
       text-decoration:underline;
     }
   }
 
   .dashboard_block { 
-    width:840px;
-    margin:auto;
-
     .dash_project_item { 
       margin-bottom:10px;
       border:none;
       padding:0px 5px;
-
       .project_link {
         color:#888;
         &:hover {
@@ -902,7 +901,6 @@ p.time {
           }
         }
       }
-
       h4 {
         color:#666;
       }
