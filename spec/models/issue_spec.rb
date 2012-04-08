@@ -23,7 +23,7 @@ describe Issue do
   it { Factory.create(:issue,
                       :author => Factory(:user),
                       :assignee => Factory(:user),
-                      :projet => Factory.create(:project)).should be_valid }
+                      :project => Factory.create(:project)).should be_valid }
 
   describe "plus 1" do
     let(:project) { Factory(:project) }

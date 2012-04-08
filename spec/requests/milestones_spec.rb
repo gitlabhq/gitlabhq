@@ -45,7 +45,7 @@ describe "Milestones" do
     end
 
     it { current_path.should == project_milestone_path(project, project.milestones.last) }
-    it { should have_content(@milestone.title[0..10]) }
-    it { should have_content(@milestone.expires_at) }
+    it { page.should have_content(project.milestones.last.title[0..10]) }
+    it { page.should have_content(project.milestones.last.expires_at) }
   end
 end
