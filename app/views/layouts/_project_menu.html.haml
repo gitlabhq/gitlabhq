@@ -10,7 +10,7 @@
 
     = link_to "Network", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil
     - if @project.issues_enabled
-      = link_to  project_issues_filter_path(@project), :class => (controller.controller_name == "issues") ? "current" : nil do
+      = link_to  project_issues_filter_path(@project), :class => issues_tab? ? "current" : nil do
         Issues 
         %span.count= @project.issues.opened.count
     - if @project.merge_requests_enabled
@@ -19,7 +19,7 @@
         %span.count= @project.merge_requests.opened.count
 
     - if @project.wall_enabled
-      = link_to wall_project_path(@project), :class => current_page?(:controller => "projects", :action => "wall", :id => @project) ? "current" : nil do
+      = link_to wall_project_path(@project), :class => wall_tab? ? "current" : nil do
         Wall
     
     - if @project.wiki_enabled

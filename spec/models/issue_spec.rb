@@ -5,6 +5,7 @@ describe Issue do
     it { should belong_to(:project) }
     it { should belong_to(:author) }
     it { should belong_to(:assignee) }
+    it { should belong_to(:milestone) }
   end
 
   describe "Validation" do
@@ -22,7 +23,7 @@ describe Issue do
   it { Factory.create(:issue,
                       :author => Factory(:user),
                       :assignee => Factory(:user),
-                      :project => Factory.create(:project)).should be_valid }
+                      :projet => Factory.create(:project)).should be_valid }
 
   describe "plus 1" do
     let(:project) { Factory(:project) }
