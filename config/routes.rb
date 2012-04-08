@@ -122,6 +122,7 @@ Gitlab::Application.routes.draw do
       end
     end
     resources :team_members
+    resources :milestones
     resources :issues do
       collection do
         post  :sort

@@ -1,3 +1,4 @@
+= render "issues/head"
 .issues_content
   %h3
     Issues
@@ -5,14 +6,22 @@
       = link_to project_issues_path(@project, :atom, { :private_token => current_user.private_token }) do 
         = image_tag "Rss-UI.PNG", :width => 16, :title => "feed"
 
-    - if can? current_user, :write_issue, @project
-      = link_to new_project_issue_path(@project), :class => "right btn small", :title => "New Issue", :remote => true do 
-        New Issue
+    .right
+      .span4.left
+        = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :id => "issue_search_form", :class => :left  do
+          = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
+          = hidden_field_tag :status, params[:f]
+          = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
+
+      - if can? current_user, :write_issue, @project
+        .span2.left
+          = link_to new_project_issue_path(@project), :class => "right btn small", :title => "New Issue", :remote => true do 
+            New Issue
   %br
   %div#issues-table-holder.ui-box
     .title
       .row
-        .span8
+        .span6
           %ul.pills.left
             %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
               = link_to project_issues_path(@project, :f => 0) do 
@@ -27,17 +36,13 @@
               = link_to project_issues_path(@project, :f => 1) do 
                 All
 
-        .span3.right
-          = form_tag search_project_issues_path(@project), :method => :get, :remote => true, :id => "issue_search_form", :class => :right  do
-            = hidden_field_tag :project_id, @project.id, { :id => 'project_id' }
-            = hidden_field_tag :status, params[:f]
-            = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search' }
+        .span6.right
+          = form_tag project_issues_path(@project), :method => :get, :class => :right  do
+            = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Select milestone")
 
     %ul#issues-table.unstyled
       = render "issues"
-      - if @issues.blank?
-        %li
-          %p.padded Nothing to show here
+
 :javascript
   var href       = $('.issue_search').parent().attr('action');
   var last_terms = '';
@@ -65,9 +70,8 @@
     $('#issues-table').sortable({
       axis: 'y',
       dropOnEmpty: false,
-      handle: '.handle',
-      cursor: 'crosshair',
-      items: 'tr',
+      handle: '.avatar',
+      items: 'li',
       opacity: 0.4,
       scroll: true,
       update: function(){
@@ -85,4 +89,8 @@
 
   $(function(){
     setSortable();
+    $("#milestone_id").chosen();
+    $("#milestone_id").live("change", function(){
+      $(this).closest("form").submit();
+    });
   });

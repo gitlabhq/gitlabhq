@@ -45,6 +45,13 @@ a {
 
   &:hover { 
   }
+
+  &.primary { 
+    background:$link_color;
+    &:hover { 
+      background:$blue_link;
+    }
+  }
 }
 
 a:focus { 

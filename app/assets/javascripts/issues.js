@@ -2,6 +2,7 @@ function switchToNewIssue(form){
   $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
     $(".issues_content").after(form);
     $('select#issue_assignee_id').chosen();
+    $('select#issue_milestone_id').chosen();
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.top-tabs .add_new').hide();
   });
@@ -11,6 +12,7 @@ function switchToEditIssue(form){
   $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
     $(".issues_content").after(form);
     $('select#issue_assignee_id').chosen();
+    $('select#issue_milestone_id').chosen();
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.add_new').hide();
   });

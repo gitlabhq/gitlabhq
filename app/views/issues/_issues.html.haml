@@ -10,3 +10,6 @@
       .span10= paginate @issues, :remote => true, :theme => "gitlab"
       .span4.right
         %span.cgray.right #{@issues.total_count} issues for this filter
+- else
+  %li
+    %p.padded Nothing to show here

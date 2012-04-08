@@ -1,0 +1,54 @@
+%h3= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
+.back_link
+  = link_to project_milestones_path(@project) do 
+    &larr; To milestones
+
+%hr
+
+= form_for [@project, @milestone]  do |f|
+  -if @milestone.errors.any?
+    .alert-message.block-message.error
+      %ul
+        - @milestone.errors.full_messages.each do |msg|
+          %li= msg
+  .row
+    .span7
+      .clearfix
+        = f.label :title, "Title"
+        .input
+          = f.text_field :title, :maxlength => 255, :class => "xlarge"
+          %p.hint Required
+      .clearfix
+        = f.label :description, "Description"
+        .input
+          = f.text_area :description, :maxlength => 2000, :class => "xlarge", :rows => 10
+          %p.hint Markdown is enabled.
+    .span8
+      .clearfix
+        = f.label :due_date, "Due Date"
+        .input= f.hidden_field :due_date
+        .input
+          .datepicker
+
+
+  .actions
+    - if @milestone.new_record?
+      = f.submit 'Create milestone', :class => "primary btn"
+    -else
+      = f.submit 'Save changes', :class => "primary btn"
+
+    - if request.xhr?
+      = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
+    - else 
+      - if @milestone.new_record?
+        = link_to "Cancel", project_milestones_path(@project), :class => "btn"
+      - else    
+        = link_to "Cancel", project_milestone_path(@project, @milestone), :class => "btn"
+
+:javascript
+  $(function() {
+    $( ".datepicker" ).datepicker({
+      dateFormat: "yy-mm-dd",
+      onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
+    });
+  });

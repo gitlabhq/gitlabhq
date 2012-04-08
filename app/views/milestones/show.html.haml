@@ -1,0 +1,50 @@
+%h3
+  Milestone ##{@milestone.id}
+  %small
+    = @milestone.expires_at
+
+  %span.right
+    - if can?(current_user, :admin_milestone, @project)
+      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn" do 
+        Edit
+
+.back_link
+  = link_to project_milestones_path(@project) do 
+    &larr; To milestones list
+
+.main_box
+  .top_box_content
+    %h5
+      - if @milestone.closed
+        .alert-message.error.status_info Closed
+      - else 
+        .alert-message.success.status_info Open
+      = @milestone.title
+
+  .middle_box_content
+    .row
+      .span2
+        = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn small edit-milestone-link"
+      .span4
+        %span
+          = @milestone.expires_at
+
+      .span4.right
+        .progress
+        %br
+        %span
+          #{@milestone.issues.opened.count} open
+          &ndash;
+          #{@milestone.issues.closed.count} closed
+
+  - if @milestone.description.present?
+    .bottom_box_content
+      = markdown @milestone.description
+
+
+:javascript
+  $(function() {
+    $( ".progress" ).progressbar({
+      value: #{@milestone.percent_complete}
+     });
+  });

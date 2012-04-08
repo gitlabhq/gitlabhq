@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   has_many :events,         :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
   has_many :issues,         :dependent => :destroy, :order => "position"
+  has_many :milestones,     :dependent => :destroy
   has_many :users_projects, :dependent => :destroy
   has_many :notes,          :dependent => :destroy
   has_many :snippets,       :dependent => :destroy

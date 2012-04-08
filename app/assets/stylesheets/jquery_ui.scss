@@ -1,0 +1,31 @@
+/** 
+ *  JQUERY UI datepicker
+ * 
+ */ 
+.ui-datepicker { 
+  border-color:#eee;
+  padding:20px;
+
+  .ui-state-default { 
+    background:#f1f1f1;
+    padding:5px;
+  }
+  .ui-state-active { 
+    background:#fff;
+  }
+}
+
+/** 
+ *  JQUERY UI progressbar
+ * 
+ */ 
+.ui-progressbar { 
+  border:1px solid #ddd; 
+  height:6px;
+
+  .ui-progressbar-value { 
+    background-color: #62C462;//$blue_link;
+    margin:0;
+  }
+}
+

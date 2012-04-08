@@ -1,5 +1,6 @@
 class Issue < ActiveRecord::Base
   belongs_to :project
+  belongs_to :milestone
   belongs_to :author, :class_name => "User"
   belongs_to :assignee, :class_name => "User"
   has_many :notes, :as => :noteable, :dependent => :destroy

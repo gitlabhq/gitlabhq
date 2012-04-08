@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120405211750) do
+ActiveRecord::Schema.define(:version => 20120408181910) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -30,13 +30,14 @@ ActiveRecord::Schema.define(:version => 20120405211750) do
     t.integer  "assignee_id"
     t.integer  "author_id"
     t.integer  "project_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-    t.boolean  "closed",      :default => false, :null => false
-    t.integer  "position",    :default => 0
-    t.boolean  "critical",    :default => false, :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.boolean  "closed",       :default => false, :null => false
+    t.integer  "position",     :default => 0
+    t.boolean  "critical",     :default => false, :null => false
     t.string   "branch_name"
     t.text     "description"
+    t.integer  "milestone_id"
   end
 
   add_index "issues", ["project_id"], :name => "index_issues_on_project_id"
@@ -68,6 +69,15 @@ ActiveRecord::Schema.define(:version => 20120405211750) do
   end
 
   add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
+
+  create_table "milestones", :force => true do |t|
+    t.string   "title",       :null => false
+    t.text     "description"
+    t.date     "due_date",    :null => false
+    t.integer  "project_id",  :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "notes", :force => true do |t|
     t.text     "note"

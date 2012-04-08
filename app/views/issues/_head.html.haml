@@ -1,4 +1,7 @@
 .tabs
   %li{:class => "#{'active' if current_page?(project_issues_path(@project))}"}
     = link_to project_issues_path(@project), :class => "tab" do 
-      Issues  
+      Browse Issues  
+  %li{:class => "#{'active' if current_page?(project_milestones_path(@project))}"}
+    = link_to project_milestones_path(@project), :class => "tab" do 
+      Milestones  

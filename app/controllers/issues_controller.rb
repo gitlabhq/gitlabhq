@@ -15,7 +15,7 @@ class IssuesController < ApplicationController
   before_filter :authorize_write_issue!, :only => [:new, :create]
 
   # Allow modify issue
-  before_filter :authorize_modify_issue!, :only => [:close, :edit, :update, :sort]
+  before_filter :authorize_modify_issue!, :only => [:close, :edit, :update]
 
   # Allow destroy issue
   before_filter :authorize_admin_issue!, :only => [:destroy]
@@ -28,8 +28,10 @@ class IssuesController < ApplicationController
               when 2 then @project.issues.closed
               when 3 then @project.issues.opened.assigned(current_user)
               else @project.issues.opened
-              end.page(params[:page]).per(20)
+              end
 
+    @issues = @issues.where(:milestone_id => params[:milestone_id]) if params[:milestone_id].present?
+    @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project).order("critical, updated_at")
 
     respond_to do |format|
@@ -50,13 +52,6 @@ class IssuesController < ApplicationController
 
   def show
     @note = @project.notes.new(:noteable => @issue)
-
-    @commits = if @issue.branch_name && @project.repo.heads.map(&:name).include?(@issue.branch_name)
-                 @project.repo.commits_between("master", @issue.branch_name)
-               else 
-                 []
-               end
-
 
     respond_to do |format|
       format.html
@@ -102,6 +97,8 @@ class IssuesController < ApplicationController
   end
 
   def sort
+    return render_404 unless can?(current_user, :admin_issue, @project)
+
     @issues = @project.issues.where(:id => params['issue'])
     @issues.each do |issue|
       issue.position = params['issue'].index(issue.id.to_s) + 1

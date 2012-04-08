@@ -9,18 +9,25 @@
             %li= msg
 
     .clearfix
-      = f.label :title, "Issue Subject"
-      .input= f.text_field :title, :maxlength => 255, :class => "xxlarge"
-      
+      = f.label :title, "Issue Subject *"
+      .input
+        = f.text_field :title, :maxlength => 255, :class => "xxlarge"
+
+    .clearfix
+      = f.label :assignee_id, "Assign to *"
+      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
+
     .clearfix
       = f.label :description, "Issue Details"
       .input
         = f.text_area :description, :maxlength => 2000, :class => "xxlarge", :rows => 10
         %p.hint Markdown is enabled.
 
+
     .clearfix
-      = f.label :assignee_id
-      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
+      = f.label :milestone_id
+      .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { :include_blank => "Select milestone" })
+
 
     .clearfix
       = f.label :critical, "Critical"
