@@ -1,16 +1,15 @@
 !!! 5
-%html{ :lang => "en"}
+%html{ :lang => t('global.html_lang')}
   = render "layouts/head"
   %body{:class => "#{app_theme} profile"}
     = render "layouts/flash"
-    = render "layouts/head_panel", :title => "Profile"
+    = render "layouts/head_panel", :title => t('.title')
     .container
       %nav.main_menu
         = render "layouts/const_menu_links"
-        = link_to "Profile", profile_path, :class => current_page?(:controller => "profile", :action => :show) ? "current" : nil
-        = link_to "Password & token", profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
-        = link_to "Design", profile_design_path, :class => current_page?(:controller => "profile", :action => :design) ? "current" : nil
-        = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do
-          SSH Keys
+        = link_to t('.title'), profile_path, :class => current_page?(:controller => "profile", :action => :show) ? "current" : nil
+        = link_to t('.security'), profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
+        = link_to t('.design'), profile_design_path, :class => current_page?(:controller => "profile", :action => :design) ? "current" : nil
+        = link_to t('.keys'), keys_path,  :class => controller.controller_name == "keys" ? "current" : nil
       .content
         = yield

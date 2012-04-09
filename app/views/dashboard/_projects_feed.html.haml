@@ -5,10 +5,10 @@
         %span.ico.project
         = truncate project.name, :length => 24
       %small
-        last activity at 
-        = project.last_activity_date.stamp("Aug 25, 2011")
+        = t('.last_active') 
+        = project.last_activity_date.stamp(t('global.timestamp'))
 
       .right 
         %small
-          %strong= link_to "Browse Code »", tree_project_ref_path(project, project.root_ref), :class => "neib gray"
-          %strong= link_to "Commits »", project_commits_path(project), :class => "gray"
+          %strong= link_to t('.browse_code'), tree_project_ref_path(project, project.root_ref), :class => "neib gray"
+          %strong= link_to t('.commits'), project_commits_path(project), :class => "gray"

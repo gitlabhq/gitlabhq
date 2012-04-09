@@ -1,11 +1,11 @@
 %nav.main_menu
   = render "layouts/const_menu_links"
-  = link_to "Projects", projects_path, :class => "#{"current" if current_page?(projects_path)}"
+  = link_to t('.projects'), projects_path, :class => "#{"current" if current_page?(projects_path)}"
   = link_to dashboard_issues_path, :class => "#{"current" if current_page?(dashboard_issues_path)}", :id => "issues_slide" do 
-    Issues
+    = t '.issues'
     %span.count= current_user.assigned_issues.opened.count
   = link_to dashboard_merge_requests_path, :class => "#{"current" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide" do
-    Requests
+    = t '.requests'
     %span.count= current_user.cared_merge_requests.count
-  = link_to "Search", search_path, :class => "#{"current" if current_page?(search_path)}"
-  = link_to "Help", help_path, :class => "#{"current" if controller.controller_name == "help"}"
+  = link_to t('.search'), search_path, :class => "#{"current" if current_page?(search_path)}"
+  = link_to t('.help'), help_path, :class => "#{"current" if controller.controller_name == "help"}"

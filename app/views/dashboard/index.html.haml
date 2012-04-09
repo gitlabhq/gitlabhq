@@ -1,74 +1,77 @@
 - if current_user.require_ssh_key?
   .alert-message.block-message.error
     %p  
-      You wont be able to pull/push project code unless you  
+      = t('.require_key.before')  
       = link_to new_key_path, :class => "vlink" do 
-        add new key
-      to your profile
+        = t('.require_key.href')
+      = t('.require_key.after')
 
 %div.dashboard_category
   %h3
     %span.ico.projects
-    = link_to "Projects" , "#projects", :id => "projects"
+    = link_to t('.projects.title'), "#projects", :id => "projects"
     %small
-      (most recent)
+      = t('.projects.recent')
 
   %strong.right
     = link_to projects_path do 
-      Projects list &rarr; 
+      = t('.projects.list') 
+      &rarr;
   %hr
   .dashboard_block
     .row
       .span4.right
         %div.lborder.ipadded
           %h3
-            = pluralize current_user.projects.count, "project", "projects"
+            = pluralize current_user.projects.count, t('.projects.singular'), t('.projects.plural')
           - if current_user.can_create_project?
             %hr
             %div
-              You can create up to
-              = current_user.projects_limit
-              projects. Click on button below to add a new one
+              = t '.projects.maximum', :limit => current_user.projects_limit
               .link_holder
                 %br
                 = link_to new_project_path, :class => "btn" do 
-                  New Project » 
+                  = t '.projects.new'
           - else 
             %hr
             %div
-              You've reached project limit for your account. 
-              You cannot create new projects.
+              = t '.projects.limit_reached'
               .link_holder
                 %br
                 = link_to profile_path, :class => "btn" do 
-                  Your Profile » 
+                  = t '.projects.my_profile'
       .span12.left= render "dashboard/projects_feed", :projects => @active_projects
     - if @last_push && @last_push.valid_push?
       .padded.prepend-top-20
         %h5
-          %small Latest push was to the #{@last_push.ref_name} #{@last_push.ref_type} of #{@last_push.project.name}:
+          %small
+            = t '.latest_push', :ref_name => @last_push.ref_name, :ref_type => @last_push.ref_type, :project => @last_push.project.name
         %ul.unstyled= render @last_push
 
 - if @merge_requests.any?
   %div.dashboard_category
     %h3
-      = link_to "Merge Requests" , "#merge_requests", :id => "merge_requests"
+      = link_to t('dashboard.merge_requests.title') , "#merge_requests", :id => "merge_requests"
       
-      %small (authored or assigned to you)
+      %small
+        = t 'dashboard.merge_requests.authored_assigned_to_you'
     %strong.right
       = link_to dashboard_merge_requests_path do 
-        Visit merge requests page &rarr; 
+        = t 'dashboard.merge_requests.list'
+        &rarr; 
     %hr
     .dashboard_block= render "dashboard/merge_requests_feed"
 
 - if @issues.any?
   %div.dashboard_category
     %h3
-      = link_to "Issues" , "#issues", :id => "issues"
-      %small (assigned to you)
+      = link_to t('dashboard.issues.title') , "#issues", :id => "issues"
+      %small 
+        = t 'dashboard.issues.assigned_to_you'
     %strong.right
       = link_to dashboard_issues_path do 
-        Visit issues page &rarr; 
+        = t 'dashboard.issues.list'
+        &rarr; 
     %hr
     .dashboard_block= render "dashboard/issues_feed"
 
@@ -76,7 +79,7 @@
   %div.dashboard_category
     %h3
       %span.ico.activities
-      = link_to "Activities" , "#activities", :id => "activities"
+      = link_to t('.activities') , "#activities", :id => "activities"
 
     %hr
     .dashboard_block= render @events

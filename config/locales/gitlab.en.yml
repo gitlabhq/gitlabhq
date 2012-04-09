@@ -1,0 +1,191 @@
+en:
+  #
+  # Global l18n
+  #
+  global:
+    ago: " ago"
+    never: "Never"
+    timestamp: "Aug 21, 2011"
+    html_lang: "en"
+    more: "More"
+    save: "Save"
+    reset: "Cancel"
+    destroy: "Destroy"
+    destroy_confirm: "Are you sure?"
+    edit: "Edit"
+    back: "Back"
+  
+  #
+  # Dashboard
+  #
+  dashboard:
+    issues:
+      title: "Issues"
+      assigned_to_you: "(assigned to you)"
+      list: "Visit issues page"
+      issue_no: "Issue #"
+      total: "issues"
+      no_issues: "Nothing to show here"
+    merge_requests:
+      title: "Merge Requests"
+      authored_assigned_to_you: "(authored or assigned to you)"
+      list: "Visit merge requests page"
+      merge_request_no: "Merge Request #"
+      total: "merge requests"
+      no_requests: "Nothing to show here"
+    projects_feed:
+      last_active: "last activity at"
+      browse_code: "Browse Code »"
+      commits: "Commits »"
+    index:
+      require_key:
+        before: "You wont be able to pull/push project code unless you"
+        href: "add new key"
+        after: "to your profile"
+      projects:
+        title: "Projects"
+        recent: "(most recent)"
+        list: "Projects list" 
+        singular: "project"
+        plural: "projects"
+        maximum: "You can create up to %{limit} projects. Click on button below to add a new one"
+        new: "New Project »"
+        limit_reached: "You've reached project limit for your account. You cannot create new projects."
+        my_profile: "Your Profile »"
+      latest_push: "Latest push was to the %{ref_name} %{ref_type} of %{project}:"
+      activities: "Activities"
+  #
+  # Layouts
+  #
+  layouts:
+    application:
+      dashboard: "Dashboard"
+    head:
+      atom:
+        recent_commits: "Recent commits to %{project}:%{ref}"
+        issues: "%{project} issues"
+    head_panel:
+      home: "Home"
+      search: "Search"
+      admin_area: "Admin area"
+      profile: "My profile"
+      logout: "Logout"
+    const_menu_links:
+      home: "Home"
+    app_menu:
+      projects: "Projects"
+      issues: "Issues"
+      requests: "Requests"
+      search: "Search"
+      help: "Help"
+    project_menu:
+      project: "Project"
+      files: "Files"
+      commits: "Commits"
+      network: "Network"
+      wall: "Wall"
+      wiki: "Wiki"
+    admin:
+      users: "Users"
+      projects: "Projects"
+      emails: "Emails"
+      resque: "Resque"
+    notify:
+      reason: "You're receiving this newsletter because you are in project team."
+    profile:
+      title: "Profile"
+      security: "Password & Token"
+      design: "Design"
+      keys: "SSH Keys"
+  #
+  # Admin Area
+  #
+  admin:
+    mailer:
+      preview:
+        desc: "This is a page with previews for all system emails which are sent to users"
+        availability_hint: "Email previews are built based on existing Projects/Commits/Issues - so some previews maybe unavailable"
+        new_user: "New user"
+        new_issue: "New issue"
+        commit_note: "Commit note"
+        issue_note: "Issue note"
+        wall_note: "Wall note"
+    projects:
+      form:
+        example_project: "example_project"
+        example: "example"
+      index:
+        title: "Projects"
+        new: "New Project »"
+        name: "Name"
+        path: "Path"
+        team_count: "Team Members"
+        last_commit: "Last Commit"
+      new:
+        title: "Create a new project"
+      show:
+        team:
+          title: "Team"
+          member:
+            name: "Name"
+            project_access: "Project Access"
+            repo_access: "Repository Access"
+            edit_access: "Edit Access"
+            remove: "Remove from team"
+            add: "Add"
+        
+    
+    
+
+
+
+
+  #
+  # ActiveRecord: Translations for Models
+  #
+  activerecord:
+    attributes:
+      project:
+        name: "Title"
+        path: "Path"
+        code: "Code"
+        description: "Description"
+        owner_id: "Owner"
+        default_branch: "Default Branch"
+        issues_enabled: "Issues"
+        merge_requests_enabled: "Merge Requests"
+        wall_enabled: "Wall"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

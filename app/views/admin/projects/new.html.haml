@@ -1,6 +1,7 @@
-%h1 New project
+%h1
+  = t '.title'
 
 = render 'form'
 
 %br
-= link_to 'Back', admin_projects_path, :class => ''
+= link_to t('global.back'), admin_projects_path, :class => ''

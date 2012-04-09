@@ -1,0 +1,186 @@
+de:
+  #
+  # Global l18n
+  #
+  global:
+    ago: " her"
+    never: "Nie"
+    timestamp: "21. August 2011"
+    html_lang: "de"
+    more: "Mehr"
+    save: "Speichern"
+    reset: "Abbrechen"
+    destroy: "Löschen"
+    destroy_confirm: "Wirklich löschen? Dieser Vorgang kann nicht wieder rückgängig gemacht werden!"
+    edit: "Ändern"
+    back: "Zurück"
+
+    
+  #
+  # Dashboard
+  #
+  dashboard:
+    issues:
+      title: "Tickets"
+      assigned_to_you: "(Dir zugeordnet)"
+      list: "Alle Tickets"
+      issue_no: "Ticket #"
+      total: "Tickets insgesamt"
+      no_issues: "Es existieren keine Dir zugeordneten Tickets."
+    projects_feed:
+      last_active: "zuletzt aktiv am"
+      browse_code: "Quelltext »"
+      commits: "Commits »"
+    merge_requests:
+      merge_request_no: "Merge Request #"
+      title: "Merge Requests"
+      authored_assigned_to_you: "(von Dir erstellt oder Dir zugeordnet)"
+      list: "Alle Merge Requests"
+      total: "Merge Requests insgesamt"
+      no_requests: "Keine Merge Requests vorhanden."
+    index:
+      require_key:
+        before: "Du kannst erst pushen/pullen sobald Du"
+        href: "einen SSH Pubkey"
+        after: "in Deinem Account hinterlegt hast."
+      projects:
+        title: "Projekte"
+        recent: "(zuletzt aktiv)"
+        list: "Projektliste"
+        singular: "Projekt"
+        plural: "Projekte"
+        maximum: "Du kannst bis zu %{limit} Projekte erstellen."
+        new: "Neues Projekt erstellen »"
+        limit_reached: "Du hast die maximale Anzahl an Projekten für Deinen Account erreicht."
+        my_profile: "Zu meinem Profil »"
+      latest_push: "Zuletzt wurde zur %{ref_name} %{ref_type} von %{project} gepusht:"
+      activities: "Letzte Aktivitäten"
+  #
+  # Layouts
+  #
+  layouts:
+    application:
+      dashboard: "Dashboard"
+    head:
+      atom:
+        recent_commits: "Aktuelle Commits von %{project}:%{ref}"
+        issues: "Tickets von %{project}"
+    head_panel:
+      home: "Zur Startseite"
+      search: "Suche"
+      admin_area: "Administration"
+      profile: "Mein Account"
+      logout: "Abmelden"
+    const_menu_links:
+      home: "Startseite"
+    app_menu:
+      projects: "Projekte"
+      issues: "Tickets"
+      requests: "Merge Requests"
+      search: "Suche"
+      help: "Hilfe"
+    project_menu:
+      project: "Projekt"
+      files: "Dateien"
+      commits: "Commits"
+      network: "Graph"
+      wall: "Pinnwand"
+      wiki: "Wiki"
+    admin:
+      users: "Nutzer"
+      projects: "Projekte"
+      emails: "eMails"
+      resque: "Resque"
+    notify:
+      reason: "Du erhälst diese Nachricht, weil Du dem Team des entsprechenden Projektes angehörst."
+    profile:
+      title: "Mein Account"
+      security: "Passwort & Token"
+      design: "Design"
+      keys: "SSH Keys"
+  #
+  # Admin Area
+  #
+  admin:
+    mailer:
+      preview:
+        desc: "Diese Seite beinhaltet eine Vorschau für jede Benachrichtigungsmail, die an Deine Nutzer verschickt wird."
+        availability_hint: "Eine Vorschau wird anhand eines bestehenden Tickets/Commits/… erstellt. Verschiedene Ansichten können daher noch nicht verfügbar sein."
+        new_user: "Bei einem neuen Nutzer"
+        new_issue: "Bei einem neuen Ticket"
+        commit_note: "Nach einem Commit"
+        issue_note: "Bei Updates eines Tickets"
+        wall_note: "Bei Neuigkeiten auf einer Wall"
+    projects:
+      form:
+        example_project: "mich_kann_man_clonen"
+        example: "beispielurl"
+      index:
+        title: "Projekte"
+        new: "Neues Projekt erstellen »"
+        name: "Titel"
+        path: "Pfad"
+        team_count: "Teammitglieder"
+        last_commit: "Letzter Commit"
+      new:
+        title: "Ein neues Projekt erstellen"
+      show:
+        team:
+          title: "Teammitglieder"
+          member:
+            name: "Nutzer"
+            project_access: "Projektzugriff"
+            repo_access: "Repositoryzugriff"
+            edit_access: "Zugriff bearbeiten"
+            remove: "Aus dem Team entfernen"
+            add: "Hinzufügen"
+
+        
+
+
+#
+# ActiveRecord: Translations for Models
+#
+  activerecord:
+    attributes:
+      project:
+        name: "Titel"
+        path: "Pfad"
+        code: "Repository"
+        description: "Beschreibung"
+        owner_id: "Besitzer"
+        default_branch: "Standard Branch"
+        issues_enabled: "Tickets"
+        merge_requests_enabled: "Merge Requests"
+        wall_enabled: "Wall"
+
+ 
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-%html{:lang => "en"}
+%html{ :lang => t('global.html_lang')}
   %head
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
       %title
@@ -33,4 +33,4 @@
               %td{:align => "center", :style => "padding: 5px 0 10px; font-size: 11px; color:#7d7a7a; margin: 0; line-height: 1.2;font-family: Helvetica, Arial, sans-serif;", :valign => "top"}
                 %br
                   %p{:style => "font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;"}
-                    You're receiving this newsletter because you are in project team.
+                    = t '.reason'
