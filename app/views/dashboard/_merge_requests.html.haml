@@ -1,0 +1,20 @@
+%div.ui-box
+  %h5
+    = link_to "5 Latest Merge Requests" , "#merge_requests", :id => "merge_requests"
+    %small (authored or assigned to you)
+  %ul.unstyled
+    - @merge_requests.each do |merge_request|
+      %li.wll
+        = link_to [merge_request.project, merge_request] do 
+          %p
+            %span.btn.disabled.small= merge_request.project.name
+            %strong
+              &ndash;
+              Merge Request ##{merge_request.id}
+            = truncate merge_request.title, :length => 50
+            %span.right.cgray
+              = merge_request.updated_at.stamp("Aug 21, 2011")
+
+    %li.bottom
+
+

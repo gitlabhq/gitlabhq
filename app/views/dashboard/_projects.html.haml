@@ -1,0 +1,22 @@
+%div
+  %h3
+    %span.ico.projects
+    Projects
+    %small
+      (most recent)
+  %hr
+  %div.dash_projects
+    - projects.first(5).each do |project|
+      %div.dash_project
+        %h4
+          = link_to project, :class => "project_link" do 
+            = truncate project.name, :length => 30
+          %small
+            last activity at 
+            = project.last_activity_date.stamp("Aug 25, 2011")
+
+          .right 
+            %small
+              %strong= link_to "Browse Code »", tree_project_ref_path(project, project.root_ref), :class => "neib"
+              %strong= link_to "Commits »", project_commits_path(project)
+

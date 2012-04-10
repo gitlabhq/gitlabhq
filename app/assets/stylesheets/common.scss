@@ -880,3 +880,17 @@ li.note {
     color:#aaa;
   }
 }
+
+.remember_me { 
+  text-align:left;
+}
+
+
+/**
+ * Milestones list
+ *
+ */
+
+.milestone { 
+  @extend .wll;
+}
