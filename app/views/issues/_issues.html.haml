@@ -7,8 +7,8 @@
 - if @issues.present?
   %li.bottom
     .row
-      .span10= paginate @issues, :remote => true, :theme => "gitlab"
-      .span4.right
+      .span7= paginate @issues, :remote => true, :theme => "gitlab"
+      .span3.right
         %span.cgray.right #{@issues.total_count} issues for this filter
 - else
   %li
