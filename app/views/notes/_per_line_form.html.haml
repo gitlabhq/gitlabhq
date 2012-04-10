@@ -3,31 +3,29 @@
     %td{:colspan => 3 }
       = form_for [@project, @note], :remote => "true", :multipart => true do |f|
         %h3 Leave a note
-        .row
-          .span16
-            -if @note.errors.any?
-              .alert-message.block-message.error
-                - @note.errors.full_messages.each do |msg|
-                  %div= msg
+        %div.span10
+          -if @note.errors.any?
+            .alert-message.block-message.error
+              - @note.errors.full_messages.each do |msg|
+                %div= msg
 
-            = f.hidden_field :noteable_id
-            = f.hidden_field :noteable_type
-            = f.hidden_field :line_code
-            = f.text_area :note,  :size => 255
-            .actions
-              = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
-              = link_to "Close", "#", :class => "btn hide-button"
-          .span6.entry
-            %h5 Notify via email:
-            .clearfix
-              = label_tag :notify do 
-                = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-                %span Project team
+          = f.hidden_field :noteable_id
+          = f.hidden_field :noteable_type
+          = f.hidden_field :line_code
+          = f.text_area :note,  :size => 255
+          %h5 Notify via email:
+          .clearfix
+            = label_tag :notify do 
+              = check_box_tag :notify, 1, @note.noteable_type != "Commit"
+              %span Project team
 
-              - if @note.notify_only_author?(current_user)
-                = label_tag :notify_author do 
-                  = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-                  %span Commit author
+            - if @note.notify_only_author?(current_user)
+              = label_tag :notify_author do 
+                = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
+                %span Commit author
+          .actions
+            = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
+            = link_to "Close", "#", :class => "btn hide-button"
 
 :javascript 
   $(function(){

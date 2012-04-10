@@ -135,6 +135,7 @@
 
       img { 
         position: relative;
+        top:-1px;
       }
     }
   }
@@ -161,7 +162,7 @@
     border-color:#ccc;
 
     td { 
-      padding:7px;
+      padding:8px;
       border-color:#f1f1f1;
       background:#fafafa;
     }

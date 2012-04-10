@@ -4,7 +4,7 @@
   <%= f.password_field :password, :class => "text bottom", :placeholder => "Password"  %>
 
   <% if devise_mapping.rememberable? -%>
-    <div class="clearfix inputs-list"> <label for="user_remember_me"><%= f.check_box :remember_me %><span>Remember me</span></label></div>
+    <div class="clearfix inputs-list"> <label class="checkbox remember_me" for="user_remember_me"><%= f.check_box :remember_me %><span>Remember me</span></label></div>
   <% end -%>
   <br/>
   <%= f.submit "Sign in", :class => "primary btn" %>

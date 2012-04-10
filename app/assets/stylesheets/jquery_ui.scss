@@ -22,6 +22,8 @@
 .ui-progressbar { 
   border:1px solid #ddd; 
   height:6px;
+  margin:0;
+  padding:0;
 
   .ui-progressbar-value { 
     background-color: #62C462;//$blue_link;

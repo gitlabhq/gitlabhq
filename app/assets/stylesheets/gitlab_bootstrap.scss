@@ -35,6 +35,10 @@ a {
   }
 }
 
+.neib { 
+  margin-right:10px;
+}
+
 .alert-message { 
   @extend .alert;
 
@@ -111,7 +115,9 @@ table {
       background:$blue_link;
     }
   }
-  &.danger,
+  &.primary { 
+    @extend .btn-primary;
+  }
   &.btn-danger { 
     background:#DD4B39;
     color:white;
@@ -121,6 +127,9 @@ table {
       color:white;
       background:#DD0000;
     }
+  }
+  &.danger { 
+    @extend .btn-danger;
   }
 
   &.small { 
