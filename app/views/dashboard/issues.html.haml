@@ -15,7 +15,7 @@
           = render(:partial => 'issues/show', :locals => {:issue => issue})
       %li.bottom
         .row
-          .span10= paginate @issues, :theme => "gitlab"
+          .span7= paginate @issues, :theme => "gitlab"
           .span4.right
             %span.cgray.right #{@issues.total_count} issues
 
