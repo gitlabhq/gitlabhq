@@ -4,6 +4,6 @@
   
 %br
 
-%table#keys-table
+%table#keys-table.table
   - @keys.each do |key|
     = render(:partial => 'show', :locals => {:key => key})

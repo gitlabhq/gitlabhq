@@ -9,8 +9,8 @@
 .container { 
   padding-top:0;
   z-index:5;
-  min-width:$min_app_width;
-  padding:0 20px
+  padding:0 20px;
+  min-width: $min_app_width;
 }
 
 .container .content { 
