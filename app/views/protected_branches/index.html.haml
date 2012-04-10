@@ -1,6 +1,6 @@
 = render "repositories/branches_head"
 
-.alert-message.block-message
+.alert
   %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, :class => "vlink"}. 
   %p This ability allows: 
   %ul
@@ -11,7 +11,7 @@
 
 
 - unless @branches.empty?
-  %table.zebra-striped
+  %table.table-striped
     %thead
       %tr
         %th Name

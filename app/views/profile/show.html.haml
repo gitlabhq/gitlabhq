@@ -1,5 +1,5 @@
 .row
-  .span10
+  .span8
     .profile_avatar_holder
       = image_tag gravatar_icon(@user.email, 90), :class => "styled_image"
     %h3
@@ -8,7 +8,7 @@
       %small
         = @user.email
   
-  .span6.right
+  .span4.right
     %div
       %div
         %h5.cgray
@@ -23,45 +23,45 @@
             %span= current_user.keys.count
 %hr
 
-= form_for @user, :url => profile_update_path, :method => :put do |f|
+= form_for @user, :url => profile_update_path, :method => :put, :html => { :class => "edit_user form-horizontal" }  do |f|
   -if @user.errors.any?
     %div.alert-message.block-message.error
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span9
-      .clearfix
-        = f.label :name
-        .input
-          = f.text_field :name, :class => "xlarge"
+    .span7
+      .control-group
+        = f.label :name, :class => "control-label"
+        .controls
+          = f.text_field :name, :class => "input-xlarge"
           %span.help-block Enter youre name, so people you know can recognize you.
-      .clearfix
-        = f.label :email
-        .input
-          = f.text_field :email, :class => "xlarge"
+      .control-group
+        = f.label :email, :class => "control-label"
+        .controls
+          = f.text_field :email, :class => "input-xlarge"
           %span.help-block We also use email for avatar detection
-      .clearfix
-        = f.label :skype
-        .input= f.text_field :skype, :class => "xlarge"
-      .clearfix
-        = f.label :linkedin
-        .input= f.text_field :linkedin, :class => "xlarge"
-      .clearfix
-        = f.label :twitter
-        .input= f.text_field :twitter, :class => "xlarge"
-      .clearfix
-        = f.label :bio
-        .input
-          = f.text_area :bio, :rows => 6, :class => "xlarge", :maxlength => 250
+      .control-group
+        = f.label :skype, :class => "control-label"
+        .controls= f.text_field :skype, :class => "input-xlarge"
+      .control-group
+        = f.label :linkedin, :class => "control-label"
+        .controls= f.text_field :linkedin, :class => "input-xlarge"
+      .control-group
+        = f.label :twitter, :class => "control-label"
+        .controls= f.text_field :twitter, :class => "input-xlarge"
+      .control-group
+        = f.label :bio, :class => "control-label"
+        .controls
+          = f.text_area :bio, :rows => 6, :class => "input-xlarge", :maxlength => 250
           %span.help-block About yourself in fewer than 250 characters.
-    .span7.right
+    .span5.right
       %p.alert-message.block-message 
         %strong Tip:
         You can change your avatar at gravatar.com
 
-  .actions
-    = f.submit 'Save', :class => "primary btn"
+  .form-actions
+    = f.submit 'Save', :class => "btn-primary btn"
 
 -#= link_to "New project", new_project_path, :class => "btn small padded"
 -#= link_to "New public key", new_key_path, :class => "btn small"

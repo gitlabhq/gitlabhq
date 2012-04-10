@@ -1,4 +1,5 @@
 @import "bootstrap";
+@import "bootstrap-responsive";
 
 /** GITLAB colors **/
 $text_color:#222;
@@ -74,6 +75,14 @@ $hover: #FDF5D9;
  * UI mars theme
  */
 @import "ui_mars.scss";
+
+/**
+ * Gitlab bootstrap.
+ * Overrides some styles of twitter bootstrap.
+ * Also give some common classes for gitlab app
+ */
+@import "gitlab_bootstrap.scss";
+
 
 /**
  * Most of application styles placed here.

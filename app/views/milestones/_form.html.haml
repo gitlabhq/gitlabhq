@@ -5,33 +5,33 @@
 
 %hr
 
-= form_for [@project, @milestone]  do |f|
+= form_for [@project, @milestone], :html => {:class => "new_milestone form-horizontal"}  do |f|
   -if @milestone.errors.any?
     .alert-message.block-message.error
       %ul
         - @milestone.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span7
-      .clearfix
-        = f.label :title, "Title"
-        .input
-          = f.text_field :title, :maxlength => 255, :class => "xlarge"
-          %p.hint Required
-      .clearfix
-        = f.label :description, "Description"
-        .input
-          = f.text_area :description, :maxlength => 2000, :class => "xlarge", :rows => 10
-          %p.hint Markdown is enabled.
-    .span8
-      .clearfix
-        = f.label :due_date, "Due Date"
+    .span6
+      .control-group
+        = f.label :title, "Title", :class => "control-label"
+        .controls
+          = f.text_field :title, :maxlength => 255, :class => "input-xlarge"
+          %p.help-block Required
+      .control-group
+        = f.label :description, "Description", :class => "control-label"
+        .controls
+          = f.text_area :description, :maxlength => 2000, :class => "input-xlarge", :rows => 10
+          %p.help-block Markdown is enabled.
+    .span6
+      .control-group
+        = f.label :due_date, "Due Date", :class => "control-label"
         .input= f.hidden_field :due_date
-        .input
+        .controls
           .datepicker
 
 
-  .actions
+  .form-actions
     - if @milestone.new_record?
       = f.submit 'Create milestone', :class => "primary btn"
     -else

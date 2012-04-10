@@ -1,5 +1,5 @@
 = render "commits/head"
-%ul.pills
+%ul.nav.nav-pills
   %li{:class => ("active" if current_page?(project_repository_path(@project)))}
     = link_to project_repository_path(@project) do 
       Recent

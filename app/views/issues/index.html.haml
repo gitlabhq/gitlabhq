@@ -22,7 +22,7 @@
     .title
       .row
         .span6
-          %ul.pills.left
+          %ul.nav.nav-pills.left
             %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
               = link_to project_issues_path(@project, :f => 0) do 
                 Open
@@ -36,7 +36,7 @@
               = link_to project_issues_path(@project, :f => 1) do 
                 All
 
-        .span6.right
+        .span4.right
           = form_tag project_issues_path(@project), :method => :get, :class => :right  do
             = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Select milestone")
 

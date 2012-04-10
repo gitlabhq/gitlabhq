@@ -1,4 +1,4 @@
-%ul.tabs
+%ul.nav.nav-tabs
   %li
     = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form", :remote => true do
       = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"

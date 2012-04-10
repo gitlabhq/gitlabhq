@@ -63,15 +63,11 @@
         }
       }
     }
-    .wrapper { 
-      margin:auto;
-      min-width:$min_app_width;
-      max-width:$max_app_width;
-      position:relative;
-      padding:15px 0;
-
+    .container { 
       .top_panel_content { 
-        margin:0 $app_padding;
+        margin:auto;
+        position:relative;
+        padding:15px 0;
       }
     }
 
