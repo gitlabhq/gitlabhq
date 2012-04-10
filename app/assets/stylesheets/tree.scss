@@ -124,14 +124,17 @@
 
   .tree-item { 
     .tree-item-file-name { 
+      vertical-align:middle;
       font-weight:bold;
       a { 
         color:$style_color;
+        &:hover { 
+          color:$blue_link;
+        }
       }
 
       img { 
         position: relative;
-        top: 2px;
       }
     }
   }
@@ -139,6 +142,10 @@
   ul.breadcrumb {
     background:white;
     border:none;
+    li {
+      display: inline;
+      text-shadow: 0 1px 0 white
+    }
 
     a { 
       color:#474D57;
@@ -149,6 +156,7 @@
 
   #tree-slider { 
     @include shade;
+    width:100%;
 
     border-color:#ccc;
 

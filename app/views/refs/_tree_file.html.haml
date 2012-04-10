@@ -4,14 +4,14 @@
     .row
       .span1.file_icon= image_tag(file.image? ? "file_img.png" : "file_txt.png")
       .span2.mode_text= file.mode
-      .span7.file_name= name
-      .span4.right
+      .span5.file_name= name
+      .span3.right
         = link_to "raw", blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "right", :target => "_blank"
         = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right", :style => "margin-right:10px;"
   - if file.text?
     .view_file_content
       - unless file.empty?
-        %div{:class => current_user.dark_scheme ? "black" : ""} 
+        %div{:class => current_user.dark_scheme ? "black" : "white"} 
           :erb
             <%= raw file.colorize %>
       - else 

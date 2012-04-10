@@ -40,7 +40,7 @@
                 %br
                 = link_to profile_path, :class => "btn" do 
                   = t '.projects.my_profile'
-      .span12.left= render "dashboard/projects_feed", :projects => @active_projects
+      .span8.left= render "dashboard/projects_feed", :projects => @active_projects
     - if @last_push && @last_push.valid_push?
       .padded.prepend-top-20
         %h5

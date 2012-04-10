@@ -56,7 +56,7 @@
 = render "merge_requests/commits"
 
 - unless @commits.empty?
-  .tabs
+  .nav.nav-tabs
     %li.active
       = link_to "#notes", :class => "merge-notes-tab tab" do 
         Notes

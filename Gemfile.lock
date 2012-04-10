@@ -71,8 +71,7 @@ GEM
     awesome_print (1.0.2)
     bcrypt-ruby (3.0.1)
     blankslate (2.1.2.4)
-    bootstrap-sass (1.4.4)
-      sass-rails (~> 3.1)
+    bootstrap-sass (2.0.2)
     builder (3.0.0)
     capybara (1.1.2)
       mime-types (>= 1.16)
@@ -306,7 +305,7 @@ DEPENDENCIES
   autotest
   autotest-rails
   awesome_print
-  bootstrap-sass (= 1.4.4)
+  bootstrap-sass (= 2.0.2)
   capybara
   carrierwave
   charlock_holmes

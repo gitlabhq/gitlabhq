@@ -1,4 +1,4 @@
-.tabs
+%ul.nav.nav-tabs
   %li{:class => "#{'active' if current_page?(project_issues_path(@project))}"}
     = link_to project_issues_path(@project), :class => "tab" do 
       Browse Issues  

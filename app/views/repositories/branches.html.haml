@@ -1,6 +1,6 @@
 = render "repositories/branches_head"
 - unless @branches.empty?
-  %table.zebra-striped.borders
+  %table.table-striped.borders
     %tbody
       - @branches.each do |branch|
         = render "repositories/branch", :branch => branch

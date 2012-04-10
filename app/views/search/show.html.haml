@@ -2,8 +2,8 @@
   .padded
     = label_tag :search, "Looking for"
     .input
-      = text_field_tag :search, params[:search],:placeholder => "issue 143", :class => "xxlarge"
-      = submit_tag 'Search', :class => "btn primary"
+      = text_field_tag :search, params[:search],:placeholder => "issue 143", :class => "input-xxlarge"
+      = submit_tag 'Search', :class => "btn btn-primary"
 - if params[:search].present?
   %br
   %h3 Search results

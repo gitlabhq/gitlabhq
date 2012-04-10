@@ -15,7 +15,7 @@
       &larr; To team list
   %br
   .row
-    .span8
+    .span6
       %table.no-borders
         %tr
           %td Email
@@ -35,7 +35,7 @@
           %tr
             %td Bio
             %td= user.bio
-    .span8
+    .span6
       %table.no-borders
         %tr
           %td Member since
@@ -50,8 +50,9 @@
   %hr
   = render user.recent_events.limit(3)
   - if can? current_user, :admin_project, @project
-    .actions
-      = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
+    .form-horizontal
+      .form-actions
+        = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn btn-danger"
 
 :javascript
   $(function(){
