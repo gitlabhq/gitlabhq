@@ -118,16 +118,6 @@ table {
   &.primary { 
     @extend .btn-primary;
   }
-  &.btn-danger { 
-    background:#DD4B39;
-    color:white;
-    border-color:#990000;
-    text-shadow:0 0 1px #111;
-    &:hover { 
-      color:white;
-      background:#DD0000;
-    }
-  }
   &.danger { 
     @extend .btn-danger;
   }
