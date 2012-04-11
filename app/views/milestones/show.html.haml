@@ -39,7 +39,8 @@
 
   - if @milestone.description.present?
     .bottom_box_content
-      = markdown @milestone.description
+      = preserve do
+        = markdown @milestone.description
 
 
 :javascript

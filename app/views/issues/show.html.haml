@@ -42,7 +42,8 @@
       
   - if @issue.description.present?
     .bottom_box_content
-      = markdown @issue.description
+      = preserve do
+        = markdown @issue.description
 
 
 .issue_notes#notes= render "notes/notes", :tid => @issue.id, :tt => "issue"
