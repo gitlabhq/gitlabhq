@@ -4,11 +4,12 @@
     %h3 How To Merge
   .modal-body
     %pre
-      :erb
-        git checkout <%= @merge_request.target_branch %>
-        git fetch origin
-        git merge origin/<%= @merge_request.source_branch %>
-        git push origin <%= @merge_request.target_branch %>
+      = preserve do
+        :erb
+          git checkout <%= @merge_request.target_branch %>
+          git fetch origin
+          git merge origin/<%= @merge_request.source_branch %>
+          git push origin <%= @merge_request.target_branch %>
 
 
 :javascript
