@@ -129,4 +129,8 @@ module ApplicationHelper
       "ui_mars"
     end
   end
+
+  def string_to_utf8 str
+    Gitlabhq::Encode.utf8 str
+  end
 end
