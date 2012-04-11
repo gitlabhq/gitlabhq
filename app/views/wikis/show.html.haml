@@ -8,7 +8,8 @@
         Edit
 %hr
 .wiki_content
-  = markdown_to_html @wiki.content
+  = preserve do
+    = markdown_to_html @wiki.content
 
 %p.time Last edited by #{@wiki.user.name}, in #{time_ago_in_words @wiki.created_at}
 - if can? current_user, :admin_wiki, @project

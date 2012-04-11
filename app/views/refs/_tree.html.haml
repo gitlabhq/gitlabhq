@@ -41,7 +41,8 @@
         %h3= content.name
         .readme
           - if content.name =~ /\.(md|markdown)$/i
-            = markdown(content.data)
+            = preserve do
+              = markdown(content.data)
           - else
             = simple_format(content.data)
 
