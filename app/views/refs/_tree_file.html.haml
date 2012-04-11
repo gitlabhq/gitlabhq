@@ -12,8 +12,8 @@
     .view_file_content
       - unless file.empty?
         %div{:class => current_user.dark_scheme ? "black" : "white"} 
-          :erb
-            <%= raw file.colorize %>
+          = preserve do 
+            = raw file.colorize
       - else 
         %h3
           %center Empty file
