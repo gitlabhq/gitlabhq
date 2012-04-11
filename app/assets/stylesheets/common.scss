@@ -881,6 +881,14 @@ li.note {
 
 .remember_me { 
   text-align:left;
+
+  input { 
+    margin:0;
+  }
+
+  span { 
+    padding-left:5px;
+  }
 }
 
 

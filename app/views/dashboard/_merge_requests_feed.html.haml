@@ -3,7 +3,7 @@
     = link_to [merge_request.project, merge_request] do 
       %p
         %strong
-          %span.pretty_label= merge_request.project.name
+          %strong= merge_request.project.name
           &ndash;
           = t('dashboard.merge_requests.merge_request_no')
           #{merge_request.id}
