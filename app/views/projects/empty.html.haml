@@ -15,7 +15,8 @@
   %h3 Git global setup:
   - setup_str = ["git config --global user.name \"#{current_user.name}\"", 
     "git config --global user.email  \"#{current_user.email}\""].join("\n")
-  = raw bash_lexer.highlight(setup_str, :lexer => 'bash', :options => {:encoding => 'utf-8'})
+  = preserve do
+    = raw bash_lexer.highlight(setup_str, :lexer => 'bash', :options => {:encoding => 'utf-8'})
 
   %br
   %br
@@ -29,7 +30,8 @@
     "git remote add origin #{@project.url_to_repo}",
     "git push -u origin master"].join("\n")
 
-  = raw bash_lexer.highlight(repo_setup_str)
+  = preserve do
+    = raw bash_lexer.highlight(repo_setup_str)
 
   %br
   %br
@@ -37,7 +39,8 @@
   - exist_repo_setup_str = ["cd existing_git_repo",
     "git remote add origin #{@project.url_to_repo}",
     "git push -u origin master"].join("\n")
-  = raw bash_lexer.highlight(exist_repo_setup_str)
+  = preserve do
+    = raw bash_lexer.highlight(exist_repo_setup_str)
 
   - if can? current_user, :admin_project, @project
     .alert-message.block-message.error.prepend-top-20
