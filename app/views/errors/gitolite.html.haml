@@ -14,5 +14,6 @@
       %p
         Try:
       %pre
-        sudo chmod -R 770 /home/git/repositories/
-        sudo chown -R git:git /home/git/repositories/
+        = preserve do
+          sudo chmod -R 770 /home/git/repositories/
+          sudo chown -R git:git /home/git/repositories/
