@@ -1,5 +1,6 @@
 class Commit
   include ActiveModel::Conversion
+  include Gitlabhq::Encode
   extend ActiveModel::Naming
 
   attr_accessor :commit
@@ -90,7 +91,7 @@ class Commit
   end
 
   def safe_message
-    message
+    utf8 message
   end
 
   def created_at
@@ -102,11 +103,11 @@ class Commit
   end
 
   def author_name
-    author.name.force_encoding("UTF-8")
+    utf8 author.name
   end
 
   def committer_name
-    committer.name
+    utf8 committer.name
   end
 
   def committer_email

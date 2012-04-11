@@ -17,16 +17,16 @@
 - unless @suppress_diff
   - diffs.each_with_index do |diff, i|
     - next if diff.diff.empty?
-    - file = (@commit.tree / diff.b_path)
-    - file = (@commit.prev_commit.tree / diff.a_path) unless file
+    - file = (@commit.tree / diff.new_path)
+    - file = (@commit.prev_commit.tree / diff.old_path) unless file
     - next unless file
     .diff_file
       .diff_file_header
         - if diff.deleted_file
-          %strong{:id => "#{diff.a_path}"}= diff.a_path
+          %strong{:id => "#{diff.old_path}"}= diff.old_path
         - else
-          = link_to tree_file_project_ref_path(@project, @commit.id, diff.b_path) do
-            %strong{:id => "#{diff.b_path}"}= diff.b_path
+          = link_to tree_file_project_ref_path(@project, @commit.id, diff.new_path) do
+            %strong{:id => "#{diff.new_path}"}= diff.new_path
         %br/
       .diff_file_content
         - if file.text?
