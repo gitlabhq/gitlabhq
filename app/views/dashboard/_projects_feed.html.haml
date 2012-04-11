@@ -4,6 +4,7 @@
       = link_to project, :class => "project_link" do 
         %span.ico.project
         = truncate project.name, :length => 24
+      &nbsp;
       %small
         last activity at 
         = project.last_activity_date.stamp("Aug 25, 2011")
