@@ -9,41 +9,6 @@
  *
  */
 .ui_mars {
-  background:#eee;
-
-  .container { 
-    border: 1px solid rgba(0,0,0,.22); 
-    box-shadow: 0 0 0px 4px rgba(0,0,0,.04);
-    background:white;
-    margin-top:20px;
-    min-height:500px;
-
-    nav.main_menu { 
-      margin:0;
-      margin-bottom: 20px;
-      border:none;
-      border-bottom: 1px solid #bbb;
-      border-radius:0;
-
-      a { 
-        border-radius:0;
-      }
-    }
-  }
-
-
-  /*
-   * Common styles
-   *
-   */
-  a {
-    color: $link_color;
-    &:hover { 
-      text-decoration:none; 
-      color: $style_color;
-    }
-  }
-
 
   /*
    *  Application Header
@@ -55,10 +20,7 @@
     margin:0;
     top:1px;
     left:0;
-
-
     background: #474D57 url('bg-header.png') repeat-x bottom;
-
     z-index:10;
     height:60px;
 
@@ -99,31 +61,19 @@
         float:left;
 
         h1 { 
-          background: url('logo_wh.png') no-repeat -3px -4px;
+          background: url('logo_mars.png') no-repeat -3px -4px;
           float:left;
           margin-left:5px;
           font-size:20px;
           line-height:36px;
-          font-weight:bold;
-          color:#ccc;
+          font-weight:normal;
+          color:#a1a8ae;
           text-shadow: 0 1px 1px #111;
           padding-left:50px;
           padding-top:5px;
         }
       }
     }
-    .wrapper { 
-      margin:auto;
-      min-width:$min_app_width;
-      max-width:$max_app_width;
-      position:relative;
-      padding:15px 0;
-
-      .account-box img { 
-        right:0;
-      }
-    }
-
     .project_name {
       float:left;
       width:360px;
@@ -134,6 +84,14 @@
       font-weight:bold;
       color:#fff;
       text-shadow: 0 1px 1px #111;
+    }
+
+    .container { 
+      .top_panel_content { 
+        margin:auto;
+        position:relative;
+        padding:15px 0;
+      }
     }
 
     .admin_link { 
