@@ -111,6 +111,7 @@ Setup:
     sudo -u git -i -H /home/git/gitolite/src/gl-system-install
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 777 /home/git/gitlab.pub
+    sudo chmod 777 /home/git/.gitolite.rc
 
     sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
