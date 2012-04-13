@@ -32,6 +32,7 @@ The installation consists of 6 steps:
 4. Install and configure Gitlab.
 5. Start the web front-end
 6. Start a Resque worker (for background processing)
+7. Go 'production ready'
 
 ### IMPORTANT
 
@@ -204,9 +205,9 @@ Application can be started with next command:
 **Ok - we have a working application now. **
 **But keep going - there are some thing that should be done **
 
-# Nginx && Unicorn
+#  7. Go 'production ready'
 
-### Install Nginx
+## Nginx
 
     sudo apt-get install nginx
 
