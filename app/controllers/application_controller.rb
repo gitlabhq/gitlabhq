@@ -16,6 +16,16 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def after_sign_in_path_for resource
+    if resource.is_a?(User) && resource.respond_to?(:blocked) && resource.blocked
+      sign_out resource
+      flash[:alert] = "Your account was blocked"
+      new_user_session_path
+    else
+      super
+    end
+  end
+
   def layout_by_resource
     if devise_controller?
       "devise"

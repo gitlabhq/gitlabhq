@@ -13,3 +13,5 @@
         = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, :class => "medium project-access-select", :disabled => !allow_admin
       - if @project.owner == user
         %span.label Project Owner
+      - if user.blocked
+        %span.label Blocked
