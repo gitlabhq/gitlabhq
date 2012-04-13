@@ -1,27 +1,33 @@
-.main_box
-  .top_box_content
-    .right
-      - unless @notes_count.zero?
-        %span.btn.small.disabled.padded= pluralize @notes_count, t('.note'), t('.notes')
-
-      = link_to tree_project_ref_path(@project, @commit.id), :class => "btn small" do 
-        = t 'commits.commit.browse'
-    = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
-    %code= @commit.id.to_s
-    %h5
+.commit-head{class: @commit.parents.count > 1 ? "merge-commit" : ""}
+  = link_to t('commits.commit.browse'), tree_project_ref_path(@project, @commit.id), :class => "browse-button"
+  %h3.commit-title
+    = commit_msg_with_link_to_issues(@project, @commit.title)
+  - if @commit.description.present?
+    %pre.commit-description
+      = commit_msg_with_link_to_issues(@project, @commit.description)
+  %span.sha-block
+    = t '.commit' 
+    %code= @commit.id
+  %span.sha-block
+    = pluralize(@commit.parents.count, t('.parent'), t('.parents'))
+    - @commit.parents.each do |parent|
+      %code= link_to parent.id, project_commit_path(@project, parent)
+  .commit-info
+    .author
+      = image_tag gravatar_icon(@commit.author_email, 24), :class => "avatar", :height => 24, :width => 24
       = @commit.author_name
-      %small= @commit.created_at.stamp(t('global.full_timestamp'))
-      - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
-        &ndash;
-        %cite
-          = t '.committed_by'
+      = t '.authored'
+      %time{title: @commit.authored_date.stamp(t('global.full_timestamp'))}
+        = time_ago_in_words(@commit.authored_date)
+        = t 'global.ago'
+    - if @commit.different_committer?
+      .committer
         = @commit.committer_name
-        %small= @commit.committed_date.stamp(t('global.full_timestamp'))
+        = t '.committed'
+        %time{title: @commit.committed_date.stamp(t('global.full_timestamp'))}
+          = time_ago_in_words(@commit.committed_date)
+          = 'global.ago'
 
-  .middle_box_content
-    %pre.commit_message
-      = commit_msg_with_link_to_issues(@project, @commit.safe_message)
-%br
 = render "commits/diffs", :diffs => @commit.diffs
 = render "notes/notes", :tid => @commit.id, :tt => "commit"
 = render "notes/per_line_form"

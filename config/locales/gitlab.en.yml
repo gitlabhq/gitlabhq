@@ -180,9 +180,11 @@ en:
       commits: "Commits (%{count})"
       diff: "Diff"
     show:
-      committed_by: "committed by"
-      note: "note"
-      notes: "notes"
+      commit: "commit"
+      authored: "authored"
+      committed: "committed"
+      parent: "parent"
+      parents: "parents"
   #
   # Deploy Keys
   #

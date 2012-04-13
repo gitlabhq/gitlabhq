@@ -181,9 +181,12 @@ de:
       commits: "%{count} Commit(s)"
       diff: "Kompletter Diff"
     show:
-      committed_by: "Commit von"
-      note: "Kommentar"
-      notes: "Kommentare"
+      commit: "Commit"
+      authored: "Erstellt:"
+      committed: "Committed:"
+      parent: "parent"
+      parents: "parents"
+
   #
   # Deploy Keys
   #
