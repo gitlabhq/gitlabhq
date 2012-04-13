@@ -32,10 +32,15 @@
     .clearfix
       = f.label :twitter
       .input= f.text_field :twitter
+    %hr
     .clearfix
       = f.label :admin do 
         = f.check_box :admin
         = t 'activerecord.attributes.user.admin'
+    .clearfix
+      = f.label :blocked do 
+        = f.check_box :blocked
+        %span= t 'activerecord.attributes.user.blocked'
     .actions
       = f.submit t('global.save'), :class => "btn primary"
       - if @admin_user.new_record? 

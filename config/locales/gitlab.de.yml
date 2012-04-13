@@ -147,6 +147,7 @@ de:
         name: "Name"
         email: "eMail"
         projects: "Projekte"
+        blocked: "Gesperrt?"
   #
   # Commits
   #
@@ -582,6 +583,7 @@ de:
       select: "Nutzer auswählen"
     show:
       owner: "Eigentümer"
+      blocked: "Gesperrt"
       back_to_list: "Zurück zur Teamauflistung"
       member_since: "Registriert seit"
   #
@@ -649,6 +651,7 @@ de:
         linkedin: "LinkedIn"
         twitter: "Twitter"
         admin: "Administratorrechte?"
+        blocked: "Gesperrt?"
         bio: "Über mich"
       users_project:
         access_roles:

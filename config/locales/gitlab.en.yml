@@ -146,6 +146,7 @@ en:
         name: "Name"
         email: "Email"
         projects: "Projects"
+        blocked: "Blocked"
   #
   # Commits
   #
@@ -587,6 +588,7 @@ en:
       select: "Select user"
     show:
       owner: "Project Owner"
+      blocked: "Blocked"
       back_to_list: "To team list"
       member_since: "Member since"
   #
@@ -657,6 +659,7 @@ en:
         linkedin: "LinkedIn"
         twitter: "Twitter"
         admin: "Administrator"
+        blocked: "Blocked"
         bio: "Bio"
       users_project:
         access_roles:

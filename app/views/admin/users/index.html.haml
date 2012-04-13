@@ -1,17 +1,14 @@
-%h3 
+%h3
   = t '.title'
   = link_to t('.new'), new_admin_user_path, :class => "btn small right"
 %hr
-%table.zebra-striped
+%table.zebra-striped.table-bordered
   %thead
-    %th 
-      = t '.admin'
-    %th
-      = t '.name'
-    %th
-      = t '.email'
-    %th
-      = t '.projects'
+    %th= t '.admin'
+    %th= t '.name'
+    %th= t '.email'
+    %th= t '.projects'
+    %th= t '.blocked'
     %th
     %th
 
@@ -21,6 +18,7 @@
       %td= link_to user.name, [:admin, user]
       %td= user.email
       %td= user.users_projects.count
+      %td= check_box_tag "blocked", 1, user.blocked, :disabled => :disabled
       %td= link_to t('global.edit'), edit_admin_user_path(user), :id => "edit_#{dom_id(user)}", :class => "btn small"
       %td= link_to t('global.destroy'), [:admin, user], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn small danger"
 

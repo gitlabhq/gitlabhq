@@ -40,9 +40,11 @@ class Admin::UsersController < ApplicationController
 
   def create
     admin = params[:user].delete("admin")
+    blocked = params[:user].delete("blocked")
 
     @admin_user = User.new(params[:user])
     @admin_user.admin = (admin && admin.to_i > 0)
+    @admin_user.blocked = blocked
 
     respond_to do |format|
       if @admin_user.save
@@ -57,6 +59,8 @@ class Admin::UsersController < ApplicationController
 
   def update
     admin = params[:user].delete("admin")
+    blocked = params[:user].delete("blocked")
+
     if params[:user][:password].blank?
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
@@ -64,6 +68,7 @@ class Admin::UsersController < ApplicationController
 
     @admin_user = User.find(params[:id])
     @admin_user.admin = (admin && admin.to_i > 0)
+    @admin_user.blocked = blocked
 
     respond_to do |format|
       if @admin_user.update_attributes(params[:user])

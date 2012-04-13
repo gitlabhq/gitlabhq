@@ -19,6 +19,11 @@
   %tr
     %td
       %b
+        = t 'activerecord.attributes.user.blocked'
+        %td= check_box_tag "blocked", 1, @admin_user.blocked, :disabled => :disabled
+  %tr
+    %td
+      %b
         = t 'activerecord.attributes.user.projects_limit'
     %td
       = @admin_user.projects_limit
