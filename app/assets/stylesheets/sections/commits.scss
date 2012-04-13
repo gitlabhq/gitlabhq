@@ -1,8 +1,10 @@
 .commit-head {
   @extend .well;
+  @extend .clearfix;
 
   padding: 14px;
   padding-bottom: 8px;
+  line-height: 24px;
 
   .browse-button {
     @extend .btn;
@@ -21,6 +23,10 @@
   .sha-block {
     float: right;
     margin-left: 10px
+  }
+
+  &.merge-commit .sha-block {
+    clear: right;
   }
 
   .committer {
