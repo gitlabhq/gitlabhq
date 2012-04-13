@@ -1,0 +1,33 @@
+.commit-head {
+  @extend .well;
+
+  padding: 14px;
+  padding-bottom: 8px;
+
+  .browse-button {
+    @extend .btn;
+    @extend .btn-small;
+    float: right;
+  }
+
+  .commit-title {
+    line-height: 26px;
+  }
+
+  .commit-description {
+    background-color: white;
+  }
+
+  .sha-block {
+    float: right;
+    margin-left: 10px
+  }
+
+  .committer {
+    padding-left: 32px;
+  }
+
+  .avatar {
+    margin-right: 4px;
+  }
+}

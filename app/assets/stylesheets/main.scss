@@ -94,7 +94,12 @@ $hover: #FDF5D9;
 @import "common.scss";
 
 /**
- * This scss file redefine chozen selectbox styles for 
+ * Styles related to displaying commits
+ */
+@import "sections/commits.scss";
+
+/**
+ * This scss file redefine chozen selectbox styles for
  * project Branch/Tag select element
  */
 @import "ref_select.scss";

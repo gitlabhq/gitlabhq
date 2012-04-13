@@ -1,26 +1,31 @@
-.main_box
-  .top_box_content
-    .right
-      - unless @notes_count.zero?
-        %span.btn.small.disabled.padded= pluralize @notes_count, 'note'
-
-      = link_to tree_project_ref_path(@project, @commit.id), :class => "btn small" do 
-        Browse Code »
-    = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
-    %code= @commit.id.to_s
-    %h5
+.commit-head{class: @commit.parents.count > 1 ? "merge-commit" : ""}
+  = link_to "Browse Code »", tree_project_ref_path(@project, @commit.id), :class => "browse-button"
+  %h3.commit-title
+    = commit_msg_with_link_to_issues(@project, @commit.title)
+  - if @commit.description.present?
+    %pre.commit-description
+      = commit_msg_with_link_to_issues(@project, @commit.description)
+  %span.sha-block
+    commit
+    %code= @commit.id
+  %span.sha-block
+    = pluralize(@commit.parents.count, "parent")
+    - @commit.parents.each do |parent|
+      %code= link_to parent.id, project_commit_path(@project, parent)
+  .commit-info
+    .author
+      = image_tag gravatar_icon(@commit.author_email, 24), :class => "avatar", :height => 24, :width => 24
       = @commit.author_name
-      %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
-      - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
-        &ndash;
-        %cite committed by
+      authored
+      %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
+        #{time_ago_in_words(@commit.authored_date)} ago
+    - if @commit.different_committer?
+      .committer
         = @commit.committer_name
-        %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
+        committed
+        %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
+          #{time_ago_in_words(@commit.committed_date)} ago
 
-  .middle_box_content
-    %pre.commit_message
-      = commit_msg_with_link_to_issues(@project, @commit.safe_message)
-%br
 = render "commits/diffs", :diffs => @commit.diffs
 = render "notes/notes", :tid => @commit.id, :tt => "commit"
 = render "notes/per_line_form"
