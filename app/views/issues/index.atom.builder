@@ -1,6 +1,6 @@
 xml.instruct!
 xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://search.yahoo.com/mrss/" do
-  xml.title   "#{@project.name} issues"
+  xml.title   t('issues.xml_title', :project => @project.name)
   xml.link    :href => project_issues_url(@project, :atom), :rel => "self", :type => "application/atom+xml"
   xml.link    :href => project_issues_url(@project), :rel => "alternate", :type => "text/html"
   xml.id      project_issues_url(@project)

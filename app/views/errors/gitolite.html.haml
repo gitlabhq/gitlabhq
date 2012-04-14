@@ -1,18 +1,21 @@
 .alert-message.block-message.error
-  %h3 Gitolite Error
+  %h3
+    = t '.title'
   %hr
-  %h4 Application cant get access to your gitolite system.
+  %h4
+    = t '.desc'
   %ol
     %li
       %p
-        Check 'config/gitlab.yml' for correct settings.
+        = t '.suggestions.first'
     %li
       %p
-        Make sure web server user has access to gitolite.
-        %a{:href => "https://github.com/gitlabhq/gitlabhq/wiki/Gitolite"} Setup tutorial
+        = t '.suggestions.second.desc'
+        %a{:href => "https://github.com/gitlabhq/gitlabhq/wiki/Gitolite"}
+          = t '.suggestions.second.href'
     %li
       %p
-        Try:
+        = t '.suggestions.third'
       %pre
         = preserve do
           sudo chmod -R 770 /home/git/repositories/

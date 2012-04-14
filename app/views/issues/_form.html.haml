@@ -1,6 +1,10 @@
 %div.issue-form-holder
   = form_for [@project, @issue], :remote => request.xhr? do |f|
-    %h3= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
+    %h3
+      - if @issue.new_record?
+        = t 'issues.index.new'
+      - else
+        = t 'issues.edit.title', :id => @issue.id
     %hr
     -if @issue.errors.any?
       .alert-message.block-message.error
@@ -9,28 +13,29 @@
             %li= msg
 
     .clearfix
-      = f.label :title, "Issue Subject *"
+      = f.label :title
       .input
         = f.text_field :title, :maxlength => 255, :class => "xxlarge"
 
     .clearfix
-      = f.label :assignee_id, "Assign to *"
-      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
+      = f.label :assignee_id
+      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => t('.assignee_desc') })
 
     .clearfix
-      = f.label :description, "Issue Details"
+      = f.label :description
       .input
         = f.text_area :description, :maxlength => 2000, :class => "xxlarge", :rows => 10
-        %p.hint Markdown is enabled.
+        %p.hint
+          = t 'global.markdown'
 
 
     .clearfix
       = f.label :milestone_id
-      .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { :include_blank => "Select milestone" })
+      .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { :include_blank => t('.milestone_desc') })
 
 
     .clearfix
-      = f.label :critical, "Critical"
+      = f.label :critical
       .input= f.check_box :critical
     
     - unless @issue.new_record?
@@ -40,14 +45,14 @@
 
     .actions
       - if @issue.new_record?
-        = f.submit 'Submit new issue', :class => "primary btn"
+      = f.submit t('.submit'), :class => "primary btn"
       -else
-        = f.submit 'Save changes', :class => "primary btn"
+        = f.submit t('global.save'), :class => "primary btn"
 
       - if request.xhr?
-        = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
+      = link_to t('global.reset'), "#back", :onclick => "backToIssues();", :class => "btn" 
       - else 
         - if @issue.new_record?
-          = link_to "Cancel", project_issues_path(@project), :class => "btn"
+        = link_to t('global.reset'), project_issues_path(@project), :class => "btn"
         - else    
-          = link_to "Cancel", project_issue_path(@project, @issue), :class => "btn"
+          = link_to t('global.reset'), project_issue_path(@project, @issue), :class => "btn"

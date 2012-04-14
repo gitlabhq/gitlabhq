@@ -1,13 +1,17 @@
 %h3 
-  Users
-  = link_to 'New User', new_admin_user_path, :class => "btn small right"
+  = t '.title'
+  = link_to t('.new'), new_admin_user_path, :class => "btn small right"
 %hr
 %table.zebra-striped
   %thead
-    %th Admin
-    %th Name
-    %th Email
-    %th Projects
+    %th 
+      = t '.admin'
+    %th
+      = t '.name'
+    %th
+      = t '.email'
+    %th
+      = t '.projects'
     %th
     %th
 
@@ -17,7 +21,7 @@
       %td= link_to user.name, [:admin, user]
       %td= user.email
       %td= user.users_projects.count
-      %td= link_to 'Edit', edit_admin_user_path(user), :id => "edit_#{dom_id(user)}", :class => "btn small"
-      %td= link_to 'Destroy', [:admin, user], :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
+      %td= link_to t('global.edit'), edit_admin_user_path(user), :id => "edit_#{dom_id(user)}", :class => "btn small"
+      %td= link_to t('global.destroy'), [:admin, user], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn small danger"
 
 = paginate @admin_users, :theme => "admin"

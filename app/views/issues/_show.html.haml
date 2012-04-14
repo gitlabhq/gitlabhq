@@ -1,21 +1,25 @@
 %li.wll{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
   .right
     - if issue.notes.any?
-      %span.btn.small.disabled.padded= pluralize issue.notes.count, 'note'
+      %span.btn.small.disabled.padded= pluralize issue.notes.count, t('.note'), t('.notes')
     - if can? current_user, :modify_issue, issue
       - if issue.closed
-        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small padded", :remote => true
+        = link_to t('.reopen'), project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small padded", :remote => true
       - else
-        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small padded", :remote => true
-      = link_to 'Edit', edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true
+        = link_to t('.resolve'), project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small padded", :remote => true
+      = link_to t('global.edit'), edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true
   = image_tag gravatar_icon(issue.assignee_email), :class => "avatar"
   %span.update-author
-    assigned to
+    = t '.assigned_to'
     %strong= issue.assignee_name
     - if issue.critical
-      %span.label.important critical
+      %span.label.important
+        = t '.critical'
+      &nbsp;
     - if issue.today?
-      %span.label.success today
+      %span.label.success
+        = t '.today'
+      &nbsp;
     - if issue.upvotes > 0
       %span.label.success= "+#{issue.upvotes}"
 

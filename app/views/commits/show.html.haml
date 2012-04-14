@@ -5,17 +5,18 @@
         %span.btn.small.disabled.padded= pluralize @notes_count, 'note'
 
       = link_to tree_project_ref_path(@project, @commit.id), :class => "btn small" do 
-        Browse Code »
+        = t 'commits.commit.browse'
     = image_tag gravatar_icon(@commit.author_email), :class => "avatar"
     %code= @commit.id.to_s
     %h5
       = @commit.author_name
-      %small= @commit.created_at.stamp("Aug 21, 2011 9:23pm")
+      %small= @commit.created_at.stamp(t('global.full_timestamp'))
       - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
         &ndash;
-        %cite committed by
+        %cite
+          = t '.commited_by'
         = @commit.committer_name
-        %small= @commit.committed_date.stamp("Aug 21, 2011 9:23pm")
+        %small= @commit.committed_date.stamp(t('global.full_timestamp'))
 
   .middle_box_content
     %pre.commit_message

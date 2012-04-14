@@ -6,6 +6,7 @@ en:
     ago: " ago"
     never: "Never"
     timestamp: "Aug 21, 2011"
+    full_timestamp: "Aug 21, 2011 9:23pm"
     html_lang: "en"
     more: "More"
     save: "Save"
@@ -14,6 +15,7 @@ en:
     destroy_confirm: "Are you sure?"
     edit: "Edit"
     back: "Back"
+    markdown: "Markdown is enabled."
   
   #
   # Dashboard
@@ -133,9 +135,157 @@ en:
             edit_access: "Edit Access"
             remove: "Remove from team"
             add: "Add"
-        
-    
-    
+    users:
+      index:
+        title: "Users"
+        new: "New User"
+        admin: "Admin"
+        name: "Name"
+        email: "Email"
+        projects: "Projects"
+  #
+  # Commits
+  #
+  commits:
+    commit:
+      browse: "Browse Code »"
+    diffs:
+      warning:
+        title: "Warning! Large commit with more then 200 files changed."
+        reason: "To prevent performance issue we rejected diff information."
+        continue: "But if you still want to see diff "
+        continue_href: "click this link"
+      title:
+        showing: "Showing"
+        changes: "changed file"
+        changes_plural: "changed files"
+      no_preview: "No preview for this file type"
+    head:
+      commits: "Commits"
+      compare: "Compare"
+      branches: "Branches"
+      tags: "Tags"
+      feed: "feed"
+    text_file:
+      suppressed: "Diff suppressed. Click to show"
+      add_note: "Add note for this line"
+    compare:
+      title: "Compare View"
+      desc: "Fill input field with commit id like '4eedf23' or branch/tag name like master & press compare button for commits list, code diff."
+      submit: "Compare"
+      commits: "Commits (%{count})"
+      diff: "Diff"
+    show:
+      committed_by: "committed by"
+  #
+  # Deploy Keys
+  #
+  deploy_keys:
+    title: "Deploy Keys"
+    index:
+      desc: "Deploy keys allow read-only access to repository."
+      new: "Add Deploy Key"
+    show:
+      added: "Added"
+  #
+  # Errors
+  #
+  errors:
+    access_denied:
+      title: "Access Denied"
+      desc: "You're not allowed to access this page"
+      further_info: "Read more about project permissions"
+      further_info_href: "here"
+    git_not_found:
+      title: "Git Resource not found"
+      desc: "Gitlab can't get access to a branch or commit in your repository. Maybe it was moved"
+    gitolite:
+      title: "Gitolite Error"
+      desc: "Gitlab can't get access to your gitolite system."
+      suggestions:
+        first: "Check 'config/gitlab.yml' for correct settings."
+        second:
+          desc: "Make sure web server user has access to gitolite."
+          href: "Setup tutorial"
+        third: "Try:"
+    not_found:
+      title: "Not found"
+      desc: "Resource you were looking for doesn't exist."
+      further_info: "You may have mistyped the address or it was removed."
+  #
+  # Events
+  #
+  events:
+    at: "at"
+    event_issue:
+      issue: "issue"
+    event_merge_request:
+      merge_request: "merge request"
+    event_push:
+      more: "... and %{count} more commits"
+  #
+  # Help
+  #
+  help:
+    title: "Help"
+    index:
+      title: "Gitlabhq"
+      shortdesc: "Self Hosted Git Management"
+      desc: "Fast, secure and stable solution based on Ruby on Rails & Gitolite."
+    workflow:
+      title: "Workflow"
+    permissions:
+      title: "Permissions"
+  #
+  # Hooks
+  #
+  hooks:
+    index:
+      desc: "Post receive hooks for binding events when someone push to repository."
+      new: "Add Post Receive Hook"
+      further_info: "Read more about web hooks"
+      further_info_href: "here"
+    show:
+      test: "Test Hook"
+  #
+  # Issues
+  #
+  issues:
+    xml_title: "%{project} issues"
+    head:
+      browse: "Browse Issues"
+      milestones: "Milestones"
+    issues:
+      matching_issues: "%{count} issue/s for this filter"
+      empty: "Nothing to show here"
+    show:
+      title: "Issue #%{id}"
+      created_at: "created at"
+      upvote: "+1 upvote"
+      upvotes: "+%{votes} upvotes"
+      issues_list: "To issues list"
+      created_by: "Created by"
+      currently_assigned_to: "and currently assigned to"
+      note: "note"
+      notes: "notes"
+      reopen: "Reopen"
+      resolve: "Resolve"
+      assigned_to: "assigned to"
+      critical: "critical"
+      today: "today"
+    index:
+      new: "New Issue"
+      title: "Issues"
+      open: "Open"
+      closed: "Closed"
+      to_me: "To Me"
+      all: "All"
+    edit:
+      title:  "Edit Issue #%{id}"
+    form:
+      submit: "Submit new issue"
+      assignee_desc: "Assign to user"
+      milestone_desc: "Select milestone"
 
 
 
@@ -155,6 +305,37 @@ en:
         issues_enabled: "Issues"
         merge_requests_enabled: "Merge Requests"
         wall_enabled: "Wall"
+      user:
+        name: "Name"
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        projects_limit: "Projects limit"
+        skype: "Skype"
+        linkedin: "LinkedIn"
+        twitter: "Twitter"
+        admin: "Administrator"
+      users_project:
+        access_roles:
+          guest: "Guest"
+          reporter: "Reporter"
+          developer: "Developer"
+          master: "Master"
+      key:
+        title: "Title"
+        key: "Key"
+      event:
+        opened: "opened"
+        closed: "closed"
+        merged: "merged"
+      web_hook:
+        url: "URL"
+      issue:
+        title: "Issue Subject *"
+        assignee_id: "Assign to *"
+        description: "Issue Details"
+        milestone_id: "Milestone"
+        critical: "Critical"
 
 
 

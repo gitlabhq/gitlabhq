@@ -35,10 +35,10 @@
     .clearfix
       = f.label :admin do 
         = f.check_box :admin
-        %span Administrator
+        = t 'activerecord.attributes.user.admin'
     .actions
-      = f.submit 'Save', :class => "btn primary"
+      = f.submit t('global.save'), :class => "btn primary"
       - if @admin_user.new_record? 
-        = link_to 'Cancel', admin_users_path, :class => "btn"
+        = link_to t('global.reset'), admin_users_path, :class => "btn"
       - else 
-        = link_to 'Cancel', admin_user_path(@admin_user), :class => "btn"
+        = link_to t('global.reset'), admin_user_path(@admin_user), :class => "btn"

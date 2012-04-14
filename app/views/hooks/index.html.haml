@@ -2,11 +2,13 @@
 
 - if can? current_user, :admin_project, @project
   .alert-message.block-message
-    Post receive hooks for binding events when someone push to repository.
-    = link_to new_project_hook_path(@project), :class => "btn small", :title => "New Web Hook" do 
-      Add Post Receive Hook
+    = t '.desc'
+    = link_to new_project_hook_path(@project), :class => "btn small", :title => t('.new') do 
+      = t '.new'
 
-    %p Read more about web hooks #{link_to "here", help_web_hooks_path, :class => "vlink"}
+    %p
+      = t '.further_info'
+      = link_to t('.further_info_href'), help_web_hooks_path, :class => "vlink"
 
 -if @hooks.any?
   %table
@@ -16,4 +18,4 @@
           = link_to project_hook_path(@project, hook) do
             = hook.url
         %td
-          = link_to 'Remove', project_hook_path(@project, hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small right"
+          = link_to t('global.destroy'), project_hook_path(@project, hook), :confirm => t('global.destroy_confirm'), :method => :delete, :class => "danger btn small right"

@@ -9,7 +9,9 @@
     .row
       .span7= paginate @issues, :remote => true, :theme => "gitlab"
       .span3.right
-        %span.cgray.right #{@issues.total_count} issues for this filter
+        %span.cgray.right
+          = t '.matching_issues', :count => @issues.total_count
 - else
   %li
-    %p.padded Nothing to show here
+    %p.padded
+      = t '.empty'

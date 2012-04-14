@@ -5,7 +5,8 @@ de:
   global:
     ago: " her"
     never: "Nie"
-    timestamp: "21. August 2011"
+    timestamp: "21. März 2011"
+    full_timestamp: "21. März 2011, 18:51 Uhr"
     html_lang: "de"
     more: "Mehr"
     save: "Speichern"
@@ -14,6 +15,7 @@ de:
     destroy_confirm: "Wirklich löschen? Dieser Vorgang kann nicht wieder rückgängig gemacht werden!"
     edit: "Ändern"
     back: "Zurück"
+    markdown: "Hier kann Markdown verwendet werden."
 
     
   #
@@ -134,6 +136,160 @@ de:
             edit_access: "Zugriff bearbeiten"
             remove: "Aus dem Team entfernen"
             add: "Hinzufügen"
+    users:
+      index:
+        title: "Nutzerliste"
+        new: "Neuen Nutzer anlegen"
+        admin: "Administrator?"
+        name: "Name"
+        email: "eMail"
+        projects: "Projekte"
+  #
+  # Commits
+  #
+  commits:
+    commit:
+      browse: "Quelltext anzeigen »"
+    diffs:
+      warning:
+        title: "Achtung! Großer Commit mit > 200 modifizierten Dateien."
+        reason: "Aus Performancegründen wurde das Diff nicht generiert."
+        continue: "Möchtest Du es trotzdem betrachten, so "
+        continue_href: "klicke hier"
+      title:
+        showing: "Zeige"
+        changes: "geänderte Datei"
+        changes_plural: "geänderte Dateien"
+      no_preview: "Keine Vorschau für diesen Dateityp."
+    head:
+      commits: "Commits"
+      compare: "Vergleich"
+      branches: "Branches"
+      tags: "Tags"
+      feed: "atom"
+    text_file:
+      suppressed: "Diff 1.000+ Zeilen lang. Hier klicken, um ihn dennoch anzuzeigen."
+      add_note: "Neue Notiz für diese Zeile"
+    compare:
+      title: "Commits vergleichen"
+      desc: "Eingabefelder mit eindeutigen Refs(zB. 4eedf23) oder Branch-/Tagnamen(zB. master) füllen und Formular abschicken"
+      submit: "Vergleich starten"
+      commits: "%{count} Commit(s)"
+      diff: "Kompletter Diff"
+    show:
+      committed_by: "Commit von"
+  #
+  # Deploy Keys
+  #
+  deploy_keys:
+    title: "Deploymentschlüssel"
+    index:
+      desc: "Deploymentschlüssel ermöglichen Lesezugriff auf ein Repository."
+      new: "Einen Deplyomentschlüssel hinzufügen"
+    show:
+      added: ""
+  #
+  # Errors
+  #
+  errors:
+    access_denied:
+      title: "Zugriff verweigert"
+      desc: "Du bist nicht befugt, diese Seite aufzurufen."
+      further_info: "Erhalte weitere Informationen zu Zugriffsrechten"
+      further_info_href: "hier"
+    git_not_found:
+      title: "Git Resource nicht gefunden"
+      desc: "Gitlab kann keinen Zugriff auf eine Branch oder einen Commit erlangen. Wurde das Repository verschoben?"
+    gitolite:
+      title: "Gitolite Fehler"
+      desc: "Gitlab besitzt keinen Zugriff auf das Gitolite-System."
+      suggestions:
+        first: "Überprüfe die Angaben in 'config/gitlab.yml' auf Korrektheit."
+        second:
+          desc: "Stelle sicher, dass der Webservernutzer(zB. www-data) Zugriff auf Gitolite besitzt."
+          href: "Gitolite Setup"
+        third: "Korrigiere die Zugriffsrechte: (ggf. Pfade anpassen)"
+    not_found:
+      title: "Nicht gefunden"
+      desc: "Die angeforderte Seite existiert nicht."
+      further_info: "Vielleicht hast Du Dich vertippt oder die Seite wurde zwischenzeitlich entfernt."
+  #
+  # Events
+  #
+  events:
+    at: "in"
+    event_issue:
+      issue: "Ticket"
+    event_merge_request:
+      merge_request: "Merge Request"
+    event_push:
+      more: "... und %{count} Weitere(r)"
+  #
+  # Help
+  #
+  help:
+    title: "Hilfethemen"
+    index:
+      title: "Gitlabhq"
+      shortdesc: "Self Hosted Git Management"
+      desc: "Schnelle und sichere Repositoryverwaltung mit Ruby on Rails und Gitolite."
+    workflow:
+      title: "Workflow"
+    permissions:
+      title: "Zugriffsrechte"
+  #
+  # Hooks
+  #
+  hooks:
+    index:
+      desc: "'Post-Receive Hooks' werden ausgeführt, sobald jemand in Dein Repository pusht."
+      new: "Neuen Post-Receive Hook hinzufügen"
+      further_info: "Erfahre mehr über Web-Hooks und deren Verwendung"
+      further_info_href: "hier"
+    show:
+      test: "Hook testen"
+  #
+  # Issues
+  #
+  issues:
+    xml_title: "Tickets von %{project}"
+    head:
+      browse: "Tickets"
+      milestones: "Meilensteine"
+    issues:
+      matching_issues: "%{count} Tickets für diese Einstellung"
+      empty: "Keine Tickets vorhanden."
+    show:
+      title: "Ticket #%{id}"
+      created_at: "erstellt am"
+      upvote: "+1 Stimme"
+      upvotes: "+%{votes} Stimmen"
+      issues_list: "Zurück zur Auflistung"
+      created_by: "Erstelt von"
+      currently_assigned_to: "und aktuell zugeordnet zu"
+      note: "Kommentar"
+      notes: "Kommentare"
+      reopen: "Erneut öffnen"
+      resolve: "Schließen"
+      assigned_to: "zugeordnet zu"
+      critical: "priorisiert"
+      today: "heute"
+    index:
+      new: "Ein neues Ticket erstellen"
+      title: "Tickets"
+      open: "offen"
+      closed: "geschlossen"
+      to_me: "mir zugeordnet"
+      all: "alle"
+    edit:
+      title:  "Ticket #%{id} bearbeiten"
+    form:
+      submit: "Ticket erstellen"
+      assignee_desc: "Einem Nutzer zuordnen"
+      milestone_desc: "Meilenstein auswählen"
+
+
+
 
         
 
@@ -153,8 +309,39 @@ de:
         issues_enabled: "Tickets"
         merge_requests_enabled: "Merge Requests"
         wall_enabled: "Wall"
+      user:
+        name: "Voller Name"
+        email: "eMail"
+        password: "Passwort"
+        password_confirmation: "Passwort (Bestätigung)"
+        projects_limit: "Maximale Projektzahl"
+        skype: "Skype"
+        linkedin: "LinkedIn"
+        twitter: "Twitter"
+        admin: "Administratorrechte?"
+      users_project:
+        access_roles:
+          guest: "Gast"
+          reporter: "Tester"
+          developer: "Entwickler"
+          master: "Eigentümer"
+      key:
+        title: "Bezeichnung"
+        key: "SSH Pubkey"
+      event:
+        opened: "öffnete"
+        closed: "schloss"
+        merged: "mergte"
+      web_hook:
+        url: "URL"
+      issue:
+        title: "Thema des Tickets *"
+        assignee_id: "Zuordnen zu *"
+        description: "Weitere Informationen"
+        milestone_id: "Meilenstein"
+        critical: "Priosisiert"
 
- 
+
 
 
         
