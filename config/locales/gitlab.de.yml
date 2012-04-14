@@ -267,6 +267,7 @@ de:
     show:
       title: "Ticket #%{id}"
       created_at: "erstellt am"
+      updated_at: "aktualisiert am"
       upvote: "+1 Stimme"
       upvotes: "+%{votes} Stimmen"
       issues_list: "Zurück zur Auflistung"
@@ -550,6 +551,9 @@ de:
       submit: "Suchen!"
       results: "Suchergebnisse"
       no_result: "Nichts gefunden :("
+      projects: "Projekte"
+      issues: "Tickets"
+      merge_requests: "Merge Requests"
   #
   # Snippets
   #

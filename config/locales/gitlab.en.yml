@@ -266,6 +266,7 @@ en:
     show:
       title: "Issue #%{id}"
       created_at: "created at"
+      updated_at: "updated at"
       upvote: "+1 upvote"
       upvotes: "+%{votes} upvotes"
       issues_list: "To issues list"
@@ -555,6 +556,9 @@ en:
       submit: "Search"
       results: "Search results"
       no_result: "Nothing here"
+      projects: "Projects"
+      issues: "Issues"
+      merge_requests: "Merge Requests"
   #
   # Snippets
   #

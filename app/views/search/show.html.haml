@@ -14,25 +14,42 @@
         %small='.no_result'
     - else 
       - if @projects.any?
-        - @projects.each do |project|
-          = link_to project do 
-            %h4
-              %span.ico.project
-              = project.name
-              %small
-                = t 'dashboard.projects_feed.last_active'
-                = project.last_activity_date.stamp(t('global.timestamp'))
+        %h4=t '.projects'
+        .padded
+          - @projects.each do |project|
+            = link_to project do 
+              %h4
+                %span.ico.project
+                = project.name
+                %small
+                  = t 'dashboard.projects_feed.last_active'
+                  = project.last_activity_date.stamp(t('global.timestamp'))
       - if @merge_requests.any?
-        - @merge_requests.each do |merge_request|
-          = link_to [merge_request.project, merge_request] do 
-            %h5
-              =t 'merge_requests.show.title', :id => merge_request.id
-              = truncate merge_request.title, :length => 50
-              %small
-                = t 'merge_requests.merge_request.authored'
-                = merge_request.updated_at.stamp(t('global.timestamp'))
-              %strong
-                %span.label= merge_request.project.name
+        %h4=t '.merge_requests'
+        .padded
+          - @merge_requests.each do |merge_request|
+            = link_to [merge_request.project, merge_request] do 
+              %h5
+                =t 'merge_requests.show.title', :id => merge_request.id
+                = truncate merge_request.title, :length => 50
+                %small
+                  = t 'merge_requests.merge_request.authored'
+                  = merge_request.updated_at.stamp(t('global.timestamp'))
+                %strong
+                  %span.label= merge_request.project.name
+      - if @issues.any?
+        %h4=t '.issues'
+        .padded
+          - @issues.each do |issue|
+            = link_to [issue.project, issue] do 
+              %h5
+                =t 'issues.show.title', :id => issue.id
+                = truncate issue.title, :length => 50
+                %small
+                  = t 'issues.show.updated_at'
+                  = issue.updated_at.stamp(t('global.timestamp'))
+                %strong
+                  %span.label= issue.project.name
   :javascript
     $(function() {
       $(".search_results").highlight("#{params[:search]}");
