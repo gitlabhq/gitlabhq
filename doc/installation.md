@@ -41,18 +41,6 @@ Only create a Github Issue if you want a specific part of this installation guid
 
 Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
 
-> - - -
-> First 3 steps can be easily skipped with simply install script:
-> 
->     # Install curl and sudo 
->     apt-get install curl sudo
->     
->     # 3 steps in 1 command :)
->     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
-> 
-> Now you can go to step 4"
-> - - -
-
 # 1. Install packages
 
 *Keep in mind that `sudo` is not installed for debian by default. You should install it with as root:*     **apt-get update && apt-get upgrade && apt-get install sudo**
