@@ -1,7 +1,19 @@
 - if @projects.any?
   .row
     .span8
-      = render @events
+      - if current_user.require_ssh_key?
+        .alert.alert-error.padded
+          %span
+            You wont be able to pull/push project code unless you  
+            %strong
+              = link_to new_key_path, :class => "vlink" do 
+                add new key
+            to your profile
+      - if @events.any?
+        = render @events
+      - else
+        .padded
+          %strong.cgray Projects activity will be displayed here
     .span4.right
       %div.leftbar.ui-box
         %h5
