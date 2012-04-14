@@ -42,6 +42,10 @@ class Issue < ActiveRecord::Base
     opened.assigned(user)
   end
 
+  def self.search query
+    where("title like :query", :query => "%#{query}%")
+  end
+
   def today?
     Date.today == created_at.to_date
   end

@@ -97,6 +97,10 @@ class User < ActiveRecord::Base
   def cared_merge_requests
     MergeRequest.where("author_id = :id or assignee_id = :id", :id => self.id).opened
   end
+
+  def project_ids
+    projects.map(&:id)
+  end
 end
 # == Schema Information
 #
