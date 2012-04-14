@@ -1,6 +1,5 @@
 .commit-head {
-  @extend .well;
-  @extend .clearfix;
+  @extend .main_box;
 
   padding: 14px;
   padding-bottom: 8px;
@@ -17,7 +16,27 @@
   }
 
   .commit-description {
+    font-size: 14px;
+    padding: 0px;
+    padding-bottom: 4px;
+    border: none;
     background-color: white;
+  }
+
+  .commit-info {
+    @extend .middle_box_content;
+    @extend .clearfix;
+
+    padding-bottom: 8px;
+    padding-top: 8px;
+
+    margin-left: -14px;
+    margin-right: -14px;
+    margin-bottom: -8px;
+
+    .author .name, .committer .name {
+      font-weight: bold;
+    }
   }
 
   .sha-block {
