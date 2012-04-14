@@ -5,23 +5,23 @@
   - if @commit.description.present?
     %pre.commit-description
       = commit_msg_with_link_to_issues(@project, @commit.description)
-  %span.sha-block
-    commit
-    %code= @commit.id
-  %span.sha-block
-    = pluralize(@commit.parents.count, "parent")
-    - @commit.parents.each do |parent|
-      %code= link_to parent.id, project_commit_path(@project, parent)
   .commit-info
+    %span.sha-block
+      commit
+      %code= @commit.id
+    %span.sha-block
+      = pluralize(@commit.parents.count, "parent")
+      - @commit.parents.each do |parent|
+        %code= link_to parent.id, project_commit_path(@project, parent)
     .author
       = image_tag gravatar_icon(@commit.author_email, 24), :class => "avatar", :height => 24, :width => 24
-      = @commit.author_name
+      %span.name= @commit.author_name
       authored
       %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
         #{time_ago_in_words(@commit.authored_date)} ago
     - if @commit.different_committer?
       .committer
-        = @commit.committer_name
+        %span.name= @commit.committer_name
         committed
         %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
           #{time_ago_in_words(@commit.committed_date)} ago
