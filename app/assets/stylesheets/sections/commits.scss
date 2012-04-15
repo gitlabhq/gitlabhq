@@ -1,58 +1,54 @@
-.commit-head {
+.commit-box {
   @extend .main_box;
 
-  padding: 14px;
-  padding-bottom: 8px;
-  line-height: 24px;
+  .commit-head { 
+    @extend .top_box_content;
 
-  .browse-button {
-    @extend .btn;
-    @extend .btn-small;
-    float: right;
-  }
+    .commit-title {
+      line-height: 26px;
+      margin:0;
+    }
 
-  .commit-title {
-    line-height: 26px;
-  }
+    .commit-description {
+      font-size: 14px;
+      border: none;
+      background-color: white;
+      padding-top:10px;
+    }
 
-  .commit-description {
-    font-size: 14px;
-    padding: 0px;
-    padding-bottom: 4px;
-    border: none;
-    background-color: white;
+    .browse-button {
+      @extend .btn;
+      @extend .btn-small;
+      float: right;
+    }
   }
 
   .commit-info {
     @extend .middle_box_content;
     @extend .clearfix;
 
-    padding-bottom: 8px;
-    padding-top: 8px;
+    .sha-block {
+      text-align:right;
+      &:first-child { 
+        padding-bottom:6px;
+      }
 
-    margin-left: -14px;
-    margin-right: -14px;
-    margin-bottom: -8px;
-
-    .author .name, .committer .name {
-      font-weight: bold;
+      a { 
+        border-bottom: 1px solid #aaa;
+        margin-left: 9px;
+      }
     }
-  }
 
-  .sha-block {
-    float: right;
-    margin-left: 10px
-  }
+    &.merge-commit .sha-block {
+      clear: right;
+    }
 
-  &.merge-commit .sha-block {
-    clear: right;
-  }
+    .committer {
+      padding-left: 32px;
+    }
 
-  .committer {
-    padding-left: 32px;
-  }
-
-  .avatar {
-    margin-right: 4px;
+    .avatar {
+      margin-right: 10px;
+    }
   }
 }
