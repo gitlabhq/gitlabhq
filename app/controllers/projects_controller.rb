@@ -13,6 +13,7 @@ class ProjectsController < ApplicationController
   def index
     @projects = current_user.projects
     @projects = @projects.select(&:last_activity_date).sort_by(&:last_activity_date).reverse
+    @public_projects = Project.find_all_by_private_flag(false) - @projects
     @events = Event.where(:project_id => @projects.map(&:id)).recent.limit(20)
   end
 
