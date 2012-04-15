@@ -29,6 +29,8 @@ class CommitsController < ApplicationController
 
     git_not_found! and return unless @commit
 
+    @commit = CommitDecorator.decorate(@commit)
+
     @note = @project.build_commit_note(@commit)
     @comments_allowed = true
     @line_notes = project.commit_line_notes(@commit)

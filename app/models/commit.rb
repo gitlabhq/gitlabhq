@@ -106,36 +106,6 @@ class Commit
     utf8 author.name
   end
 
-  # Returns the commits title.
-  #
-  # Usually, the commit title is the first line of the commit message.
-  # In case this first line is longer than 80 characters, it is cut off
-  # after 70 characters and ellipses (`&hellp;`) are appended.
-  #
-  # @todo This might be better placed in a view helper.
-  def title
-    title_end = safe_message.index(/\n/)
-    if (!title_end && safe_message.length > 80) || (title_end && title_end > 80)
-      safe_message[0..69] << "&hellip;".html_safe
-    else
-      safe_message.split(/\n/, 2).first
-    end
-  end
-
-  # Returns the commits description
-  #
-  # cut off, ellipses (`&hellp;`) are prepended to the commit message.
-  #
-  # @todo This might be better placed in a view helper.
-  def description
-    title_end = safe_message.index(/\n/)
-    if (!title_end && safe_message.length > 80) || (title_end && title_end > 80)
-      "&hellip;".html_safe << safe_message[70..-1]
-    else
-      safe_message.split(/\n/, 2)[1].try(:chomp)
-    end
-  end
-
   # Was this commit committed by a different person than the original author?
   def different_committer?
     author_name != committer_name || author_email != committer_email
