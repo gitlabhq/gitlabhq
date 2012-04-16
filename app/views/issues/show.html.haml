@@ -7,11 +7,11 @@
   %span.right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       - if @issue.closed
-        = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn"
+        = link_to 'Reopen', project_issue_path(@project, @issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small"
       - else
-        = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "btn", :title => "Close Issue"
+        = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "btn small", :title => "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
-      = link_to edit_project_issue_path(@project, @issue), :class => "btn" do 
+      = link_to edit_project_issue_path(@project, @issue), :class => "btn small" do 
         Edit
 
     %br
@@ -39,7 +39,14 @@
     %cite.cgray and currently assigned to 
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_assignee(@issue)
-      
+
+    - if @issue.milestone 
+      - milestone = @issue.milestone
+      %cite.cgray and attached to milestone 
+      = link_to project_milestone_path(milestone.project, milestone) do
+        %strong
+          = truncate(milestone.title, :length => 20)
+    
   - if @issue.description.present?
     .bottom_box_content
       = preserve do

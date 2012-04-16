@@ -1,42 +1,45 @@
 %div.issue-form-holder
+  %h3= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
+  - unless request.xhr?
+    .back_link
+      = link_to project_issue_path(@project, @issue) do 
+        &larr; back to show page
   = form_for [@project, @issue], :remote => request.xhr? do |f|
-    %h3= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
-    %hr
     -if @issue.errors.any?
       .alert-message.block-message.error
         %ul
           - @issue.errors.full_messages.each do |msg|
             %li= msg
+    .issue_form_box
+      .issue_title
+        .clearfix
+          = f.label :title, "Issue Subject *"
+          .input
+            = f.text_field :title, :maxlength => 255, :class => "xxlarge"
+      .issue_middle_block
+        .issue_assignee
+          = f.label :assignee_id, "Assign to *"
+          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
+        .issue_milestone
+          = f.label :milestone_id
+          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { :include_blank => "Select milestone" })
 
-    .clearfix
-      = f.label :title, "Issue Subject *"
-      .input
-        = f.text_field :title, :maxlength => 255, :class => "xxlarge"
-
-    .clearfix
-      = f.label :assignee_id, "Assign to *"
-      .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
-
-    .clearfix
-      = f.label :description, "Issue Details"
-      .input
-        = f.text_area :description, :maxlength => 2000, :class => "xxlarge", :rows => 10
-        %p.hint Markdown is enabled.
-
-
-    .clearfix
-      = f.label :milestone_id
-      .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { :include_blank => "Select milestone" })
+      .issue_description
+        .clearfix
+          = f.label :critical, "Critical"
+          .input= f.check_box :critical
+        
+        - unless @issue.new_record?
+          .clearfix
+            = f.label :closed
+            .input= f.check_box :closed
+        .clearfix
+          = f.label :description, "Issue Details"
+          .input
+            = f.text_area :description, :maxlength => 2000, :class => "xxlarge", :rows => 14
+            %p.hint Markdown is enabled.
 
 
-    .clearfix
-      = f.label :critical, "Critical"
-      .input= f.check_box :critical
-    
-    - unless @issue.new_record?
-      .clearfix
-        = f.label :closed
-        .input= f.check_box :closed
 
     .actions
       - if @issue.new_record?
