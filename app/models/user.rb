@@ -48,7 +48,25 @@ class User < ActiveRecord::Base
 
   before_create :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
+
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
+  scope :admins, where(:admin =>  true)
+  scope :blocked, where(:blocked =>  true)
+  scope :active, where(:blocked =>  false)
+
+  def self.filter filter_name
+    case filter_name
+    when "admins"; self.admins
+    when "blocked"; self.blocked
+    when "wop"; self.without_projects
+    else
+      self.active
+    end
+  end
+
+  def self.without_projects
+    where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
+  end
 
   def identifier
     email.gsub /[@.]/, "_"
@@ -57,6 +75,7 @@ class User < ActiveRecord::Base
   def is_admin?
     admin
   end
+
 
   def require_ssh_key?
     keys.count == 0
@@ -100,6 +119,17 @@ class User < ActiveRecord::Base
 
   def project_ids
     projects.map(&:id)
+  end
+
+  # Remove user from all projects and
+  # set blocked attribute to true
+  def block 
+    users_projects.all.each do |membership| 
+      return false unless membership.destroy
+    end
+
+    self.blocked = true
+    save
   end
 end
 # == Schema Information

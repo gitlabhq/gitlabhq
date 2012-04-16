@@ -4,7 +4,9 @@ class Admin::UsersController < ApplicationController
   before_filter :authenticate_admin!
 
   def index
-    @admin_users = User.page(params[:page])
+    @admin_users = User.scoped
+    @admin_users = @admin_users.filter(params[:filter])
+    @admin_users = @admin_users.order("updated_at DESC").page(params[:page])
   end
 
   def show
@@ -38,13 +40,31 @@ class Admin::UsersController < ApplicationController
     @admin_user = User.find(params[:id])
   end
 
+  def block 
+    @admin_user = User.find(params[:id])
+
+    if @admin_user.block
+      redirect_to :back, alert: "Successfully blocked"
+    else 
+      redirect_to :back, alert: "Error occured. User was not blocked"
+    end
+  end
+
+  def unblock 
+    @admin_user = User.find(params[:id])
+
+    if @admin_user.update_attribute(:blocked, false)
+      redirect_to :back, alert: "Successfully unblocked"
+    else 
+      redirect_to :back, alert: "Error occured. User was not unblocked"
+    end
+  end
+
   def create
     admin = params[:user].delete("admin")
-    blocked = params[:user].delete("blocked")
 
     @admin_user = User.new(params[:user])
     @admin_user.admin = (admin && admin.to_i > 0)
-    @admin_user.blocked = blocked
 
     respond_to do |format|
       if @admin_user.save
@@ -59,7 +79,6 @@ class Admin::UsersController < ApplicationController
 
   def update
     admin = params[:user].delete("admin")
-    blocked = params[:user].delete("blocked")
 
     if params[:user][:password].blank?
       params[:user].delete(:password)
@@ -68,7 +87,6 @@ class Admin::UsersController < ApplicationController
 
     @admin_user = User.find(params[:id])
     @admin_user.admin = (admin && admin.to_i > 0)
-    @admin_user.blocked = blocked
 
     respond_to do |format|
       if @admin_user.update_attributes(params[:user])

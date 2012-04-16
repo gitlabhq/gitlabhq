@@ -132,6 +132,7 @@ de:
       show:
         team:
           title: "Teammitglieder"
+          add_title: "Teammitglieder hinzufügen"
           member:
             name: "Nutzer"
             project_access: "Projektzugriff"
@@ -148,6 +149,10 @@ de:
         email: "eMail"
         projects: "Projekte"
         blocked: "Gesperrt?"
+        active: "Aktive"
+        admins: "Administratoren"
+        blocked_filter: "Gesperrte"
+        wo_project: "Ohne Projekte"
   #
   # Commits
   #

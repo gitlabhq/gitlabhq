@@ -6,41 +6,54 @@
           - @admin_user.errors.full_messages.each do |msg|
             %li= msg
 
-    .clearfix
-      = f.label :name
-      .input= f.text_field :name
-    .clearfix
-      = f.label :email
-      .input= f.text_field :email
-    .clearfix
-      = f.label :password
-      .input= f.password_field :password
-    .clearfix
-      = f.label :password_confirmation
-      .input= f.password_field :password_confirmation
+    .row
+      .span6
+        .clearfix
+          = f.label :name
+          .input
+            = f.text_field :name
+            %span.help-inline * requried
+        .clearfix
+          = f.label :email
+          .input
+            = f.text_field :email
+            %span.help-inline * requried
+        .clearfix
+          = f.label :password
+          .input= f.password_field :password
+        .clearfix
+          = f.label :password_confirmation
+          .input= f.password_field :password_confirmation
+        %hr
+        .clearfix
+          = f.label :skype
+          .input= f.text_field :skype
+        .clearfix
+          = f.label :linkedin
+          .input= f.text_field :linkedin
+        .clearfix
+          = f.label :twitter
+          .input= f.text_field :twitter
+      .span6
+        .clearfix
+          = f.label :projects_limit
+          .input= f.text_field :projects_limit, :class => "small_input"
 
-    .clearfix
-      = f.label :projects_limit
-      .input= f.text_field :projects_limit, :class => "small_input"
-
-    .clearfix
-      = f.label :skype
-      .input= f.text_field :skype
-    .clearfix
-      = f.label :linkedin
-      .input= f.text_field :linkedin
-    .clearfix
-      = f.label :twitter
-      .input= f.text_field :twitter
-    %hr
-    .clearfix
-      = f.label :admin do 
-        = f.check_box :admin
-        = t 'activerecord.attributes.user.admin'
-    .clearfix
-      = f.label :blocked do 
-        = f.check_box :blocked
-        %span= t 'activerecord.attributes.user.blocked'
+        .alert
+          .clearfix
+            %p=t '.admin_desc'
+            = f.label :admin, :class => "checkbox" do 
+              = f.check_box :admin
+              %span=t 'activerecord.attributes.user.admin'
+          .alert.alert-error
+            - if @admin_user.blocked
+              %span
+                = link_to t('admin.users.index.btn_unblock'), unblock_admin_user_path(@admin_user), :method => :put, :class => "btn small"
+                = t '.unblock_desc'
+            - else
+              %span
+                = link_to t('admin.users.index.btn_block'), block_admin_user_path(@admin_user), :confirm => t('global.destroy_confirm'), :method => :put, :class => "btn small danger"
+                = t '.block_desc'
     .actions
       = f.submit t('global.save'), :class => "btn primary"
       - if @admin_user.new_record? 

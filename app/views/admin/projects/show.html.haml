@@ -2,80 +2,65 @@
   = @admin_project.name
   = link_to t("global.edit"), edit_admin_project_path(@admin_project), :class => "btn right small"
 
-%hr
-
-%table.zebra-striped
+%br
+%table.zebra-striped.table-bordered
   %tr
     %td
-      %b
-        = t 'activerecord.attributes.project.name'
-    %td
-      = @admin_project.name    
+      %b= t 'activerecord.attributes.project.name'
+    %td= @admin_project.name    
   %tr
     %td
-      %b
-        = t 'activerecord.attributes.project.code'
-    %td
-      = @admin_project.code
+      %b= t 'activerecord.attributes.project.code'
+    %td= @admin_project.code
   %tr
     %td
-      %b
-        = t 'activerecord.attributes.project.path'
-    %td
-      = @admin_project.path
+      %b= t 'activerecord.attributes.project.path'
+    %td= @admin_project.path
   %tr
     %td
-      %b
-        = t 'activerecord.attributes.project.description'
-    %td
-      = @admin_project.description
+      %b= t 'activerecord.attributes.project.description'
+    %td= @admin_project.description
+%br
+%h3
+  = t '.team.title'
+  %small
+    (#{@admin_project.users_projects.count})
+%br
+%table.zebra-striped.table-bordered
+  %thead
+    %tr
+      %th= t '.team.member.name'
+      %th= t '.team.member.project_access'
+      %th= t '.team.member.repo_access'
+      %th
 
+  - @admin_project.users_projects.each do |tm|
+    %tr
+      %td
+        = link_to tm.user_name, admin_user_path(tm.user)
+      %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "medium project-access-select", :disabled => :disabled
+      %td= link_to t('.team.member.edit_access'), edit_admin_team_member_path(tm), :class => "btn small"
+      %td= link_to t('.team.member.remove'), admin_team_member_path(tm), :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger small"
 
-.span12
-
-  %h3
-    = t '.team.title'
-    %small
-      (#{@admin_project.users_projects.count})
-
-  %hr
-
-  %table.zebra-striped
+%br
+%h3=t '.team.add_title'
+%br
+= form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do 
+  %table.zebra-striped.table-bordered
     %thead
       %tr
-        %th 
-          = t '.team.member.name'
-        %th
-          = t '.team.member.project_access'
-        %th
-          = t '.team.member.repo_access'
-        %th
+        %th= t '.team.member.name'
+        %th= t '.team.member.project_access'
 
-    - @admin_project.users_projects.each do |tm|
-      %tr
-        %td
-          = link_to tm.user_name, admin_user_path(tm.user)
-        %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "medium project-access-select", :disabled => :disabled
-        %td= link_to t('.team.member.edit_access'), edit_admin_team_member_path(tm), :class => "btn small"
-        %td= link_to t('.team.member.remove'), admin_team_member_path(tm), :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger small"
+    %tr
+      %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name),  :multiple => true
+      %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
 
-  = form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do 
-    %table
-      %thead
-        %tr
-          %th 
-            = t '.team.member.name'
-          %th
-            = t '.team.member.project_access'
-          %th
-            = t '.team.member.repo_access'
-
-      %tr
-        %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name),  :multiple => true
-        %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
-
-    .actions
-      = submit_tag t('.team.member.add'), :class => "btn primary"
+    %tr
+      %td= submit_tag t('.team.member.add'), :class => "btn primary"
+      %td
+        = t 'errors.access_denied.further_info'
+        %strong= link_to t('errors.access_denied.further_info_href'), help_permissions_path, :class => "vlink"
 
 :css 
   form select { 

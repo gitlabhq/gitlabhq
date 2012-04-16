@@ -14,6 +14,8 @@ Gitlab::Application.routes.draw do
     resources :users do 
       member do 
         put :team_update
+        put :block
+        put :unblock
       end
     end
     resources :projects, :constraints => { :id => /[^\/]+/ } do 

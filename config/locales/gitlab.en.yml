@@ -131,6 +131,7 @@ en:
       show:
         team:
           title: "Team"
+          add_title: "Add new team member"
           member:
             name: "Name"
             project_access: "Project Access"
@@ -147,6 +148,16 @@ en:
         email: "Email"
         projects: "Projects"
         blocked: "Blocked"
+        active: "Active"
+        admins: "Admins"
+        blocked_filter: "Blocked"
+        wo_project: "Without projects"
+        btn_block: "Block"
+        btn_unblock: "Unblock"
+      form:
+        admin_desc: "Give user ability to manage application."
+        unblock_desc: "This user is blocked and is not able to login GitLab"
+        block_desc: "Blocked user will removed from all projects &amp; will not be able to login to GitLab."
   #
   # Commits
   #
