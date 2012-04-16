@@ -7,8 +7,8 @@
     .container
       %nav.main_menu
         = render "layouts/const_menu_links"
-        = link_to "Users", admin_users_path, :class => controller.controller_name == "users" ? "current" : nil
         = link_to "Projects", admin_projects_path, :class => controller.controller_name == "projects" ? "current" : nil
+        = link_to "Users", admin_users_path, :class => controller.controller_name == "users" ? "current" : nil
         = link_to "Emails", admin_emails_path, :class => controller.controller_name == "mailer" ? "current" : nil
         = link_to "Resque", "/info/resque"
 

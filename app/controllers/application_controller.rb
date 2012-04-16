@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
+  before_filter :reject_blocked!
   before_filter :set_current_user_for_mailer
   protect_from_forgery
   helper_method :abilities, :can?
@@ -15,6 +16,14 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
   protected
+
+  def reject_blocked!
+    if current_user && current_user.blocked
+      sign_out current_user 
+      flash[:alert] = "Your account was blocked"
+      redirect_to new_user_session_path
+    end
+  end
 
   def after_sign_in_path_for resource
     if resource.is_a?(User) && resource.respond_to?(:blocked) && resource.blocked
