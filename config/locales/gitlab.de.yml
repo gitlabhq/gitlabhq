@@ -153,6 +153,12 @@ de:
         admins: "Administratoren"
         blocked_filter: "Gesperrte"
         wo_project: "Ohne Projekte"
+        btn_block: "Sperren"
+        btn_unblock: "Entsperren"
+      form:
+        admin_desc: "Dem Nutzer die Möglichkeit geben, GitLab zu administrieren."
+        unblock_desc: "Dieser Nutzer ist gesperrt und kann sich nicht mehr anmelden."
+        block_desc: "Geblockte Nutzer werden von allen Projekten entfernt und können sich nicht mehr anmelden."
   #
   # Commits
   #

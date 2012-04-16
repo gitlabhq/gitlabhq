@@ -1,0 +1,27 @@
+.issue_form_box { 
+  @extend .main_box;
+  .issue_title { 
+    @extend .top_box_content;
+    .clearfix { 
+      margin-bottom:0px; 
+      input { 
+        @extend .span8;
+      }
+    }
+  }
+  .issue_middle_block { 
+    @extend .middle_box_content;
+    height:30px;
+    .issue_assignee { 
+      @extend .span6;
+      float:left;
+    }
+    .issue_milestone { 
+      @extend .span4;
+      float:left;
+    }
+  }
+  .issue_description { 
+    @extend .bottom_box_content;
+  }
+}
