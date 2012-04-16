@@ -7,7 +7,7 @@ var MergeRequest = {
     function(opts) {
       this.opts = opts;
 
-      if($(".automerge_widget").lenght){
+      if($(".automerge_widget").length){
         $.get(opts.url_to_automerge_check, function(data){
           $(".automerge_widget").hide();
           $(".automerge_widget." + data.state).show();
@@ -48,5 +48,11 @@ var MergeRequest = {
           $('.status').removeClass("loading");
         },
         dataType: "script"});
+    },
+
+  already_cannot_be_merged:
+    function(){
+        $(".automerge_widget").hide();
+        $(".automerge_widget.already_cannot_be_merged").show();
     }
 }
