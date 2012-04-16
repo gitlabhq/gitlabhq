@@ -28,14 +28,19 @@ class GitlabMerge
   end
 
   def pull
-    self.project.repo.git.clone({:branch => merge_request.target_branch}, project.url_to_repo, merge_path)
-    #TODO When user do not have permissions then raise exception
-    Dir.chdir(merge_path) do
-      merge_repo = Grit::Repo.new('.')
-      merge_repo.git.sh "git config user.name \"#{user.name}\""
-      merge_repo.git.sh "git config user.email \"#{user.email}\""
-      output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
-      yield(merge_repo, output)
+    File.open(File.join(Rails.root, "tmp", "merge_repo", "#{project.path}.lock"), "w+") do |f|
+      f.flock(File::LOCK_EX)
+      
+      self.project.repo.git.clone({:branch => merge_request.target_branch}, project.url_to_repo, merge_path)
+      #TODO When user do not have permissions then raise exception
+      Dir.chdir(merge_path) do
+        merge_repo = Grit::Repo.new('.')
+        merge_repo.git.sh "git config user.name \"#{user.name}\""
+        merge_repo.git.sh "git config user.email \"#{user.email}\""
+        output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
+        yield(merge_repo, output)
+      end
+
     end
   end
 end
