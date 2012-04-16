@@ -32,7 +32,9 @@ class GitlabMerge
       f.flock(File::LOCK_EX)
       
       self.project.repo.git.clone({:branch => merge_request.target_branch}, project.url_to_repo, merge_path)
-      #TODO When user do not have permissions then raise exception
+      unless File.exist?(self.merge_path)
+        raise "Gitlab user do not have access to repo. You should run: rake gitlab_enable_automerge"
+      end
       Dir.chdir(merge_path) do
         merge_repo = Grit::Repo.new('.')
         merge_repo.git.sh "git config user.name \"#{user.name}\""
