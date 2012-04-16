@@ -2,7 +2,7 @@ class MergeRequestsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
-  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs, :automerge]
+  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check]
   layout "project"
 
   # Authorize
@@ -44,10 +44,6 @@ class MergeRequestsController < ApplicationController
     # Get commits from repository 
     # or from cache if already merged
     @commits = @merge_request.commits
-
-    if @merge_request.unchecked? 
-      @merge_request.check_if_can_be_merged
-    end
 
     respond_to do |format|
       format.html
@@ -98,6 +94,13 @@ class MergeRequestsController < ApplicationController
         format.json { render json: @merge_request.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def automerge_check
+    if @merge_request.unchecked? 
+      @merge_request.check_if_can_be_merged
+    end
+    render :json => {:state => @merge_request.human_state}
   end
 
   def automerge

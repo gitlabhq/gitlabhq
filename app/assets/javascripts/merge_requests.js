@@ -1,9 +1,19 @@
 var MergeRequest = { 
   diffs_loaded: false,
   commits_loaded: false,
+  opts: false,
 
   init:
-    function() { 
+    function(opts) {
+      this.opts = opts;
+
+      if($(".automerge_widget").lenght){
+        $.get(opts.url_to_automerge_check, function(data){
+          $(".automerge_widget").hide();
+          $(".automerge_widget." + data.state).show();
+        }, "json");
+      }
+
       $(".tabs a").live("click", function() { 
         $(".tabs a").parent().removeClass("active");
         $(this).parent().addClass("active");

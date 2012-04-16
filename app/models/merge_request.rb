@@ -49,6 +49,15 @@ class MergeRequest < ActiveRecord::Base
     where("source_branch like :branch or target_branch like :branch", :branch => branch_name)
   end
 
+  def human_state
+    states = {
+      CAN_BE_MERGED =>  "can_be_merged",
+      CANNOT_BE_MERGED => "cannot_be_merged",
+      UNCHECKED => "unchecked"
+    }
+    states[self.state]
+  end
+
   def validate_branches
     if target_branch == source_branch
       errors.add :base, "You can not use same branch for source and target branches"
