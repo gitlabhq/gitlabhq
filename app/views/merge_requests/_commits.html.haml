@@ -2,10 +2,24 @@
   .ui-box
     %h5
       = t '.title'
+      (#{@commits.count})
     .merge-request-commits
-      %ul.unstyled
-        - @commits.each do |commit| 
-          = render "commits/commit", :commit => commit
+      - if @commits.count > 8
+        %ul.first_mr_commits.unstyled
+          - @commits.first(8).each do |commit| 
+            = render "commits/commit", :commit => commit
+          %li.bottom 
+            = t '.view_limited', :total => @commits.count
+            %strong 
+              = link_to_function t('.show_all'), "MergeRequest.showAllCommits()"
+        %ul.all_mr_commits.hide.unstyled
+          - @commits.each do |commit| 
+            = render "commits/commit", :commit => commit
+
+      - else 
+        %ul.unstyled
+          - @commits.each do |commit| 
+            = render "commits/commit", :commit => commit
 
 - else 
   %h5

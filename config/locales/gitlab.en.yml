@@ -337,6 +337,8 @@ en:
     commits:
       title: "Commits"
       no_commits: "Nothing to merge"
+      view_limited: "8 of %{total} commits displayed."
+      show_all: "Click here to show all"
     head:
       title: "Merge Requests"
     how_to_merge:

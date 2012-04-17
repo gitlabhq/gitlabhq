@@ -338,7 +338,9 @@ de:
   merge_requests:
     commits:
       title: "Commits"
-      no_commits: "Nicht zu mergen"
+      no_commits: "Nichts zu mergen"
+      view_limited: "8 von %{total} Commits insgesamt."
+      show_all: "Hier klicken, um alle Commits anzuzeigen."
     head:
       title: "Merge Requests"
     how_to_merge:

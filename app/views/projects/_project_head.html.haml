@@ -1,10 +1,12 @@
 %ul.nav.nav-tabs
   %li{ :class => "#{'active' if current_page?(project_path(@project)) }" }
     = link_to project_path(@project), :class => "activities-tab tab" do 
+      %i.icon-home
       = t '.show'
   %li{ :class => " #{'active' if (controller.controller_name == "team_members") || current_page?(team_project_path(@project)) }" }
     = link_to team_project_path(@project), :class => "team-tab tab" do 
       = t '.team'
+      %i.icon-user
   %li{ :class => "#{'active' if current_page?(files_project_path(@project)) }" }
     = link_to files_project_path(@project), :class => "files-tab tab " do 
       = t '.attachments'
@@ -23,5 +25,6 @@
         = t '.hooks'
     %li.right{ :class => "#{'active' if current_page?(edit_project_path(@project)) }" }
       = link_to edit_project_path(@project), :class => "stat-tab tab " do 
+        %i.icon-edit
         = t 'global.edit'
  
