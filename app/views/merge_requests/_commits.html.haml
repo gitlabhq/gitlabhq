@@ -1,10 +1,23 @@
 - unless @commits.empty? 
   .ui-box
-    %h5 Commits
+    %h5 Commits (#{@commits.count})
     .merge-request-commits
-      %ul.unstyled
-        - @commits.each do |commit| 
-          = render "commits/commit", :commit => commit
+      - if @commits.count > 8
+        %ul.first_mr_commits.unstyled
+          - @commits.first(8).each do |commit| 
+            = render "commits/commit", :commit => commit
+          %li.bottom 
+            8 of #{@commits.count} commits displayed.
+            %strong 
+              = link_to_function "Click here to show all", "MergeRequest.showAllCommits()"
+        %ul.all_mr_commits.hide.unstyled
+          - @commits.each do |commit| 
+            = render "commits/commit", :commit => commit
+
+      - else 
+        %ul.unstyled
+          - @commits.each do |commit| 
+            = render "commits/commit", :commit => commit
 
 - else 
   %h5

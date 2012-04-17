@@ -38,5 +38,11 @@ var MergeRequest = {
           $('.status').removeClass("loading");
         },
         dataType: "script"});
+    }, 
+
+  showAllCommits: 
+    function() { 
+      $(".first_mr_commits").remove();
+      $(".all_mr_commits").removeClass("hide");
     }
 }
