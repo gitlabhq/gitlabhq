@@ -23,21 +23,22 @@
         .span6
           %ul.nav.nav-pills.left
             %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-              = link_to project_issues_path(@project, :f => 0) do 
+              = link_to project_issues_path(@project, :f => 0, :milestone_id => params[:milestone_id]) do 
                 = t '.open'
             %li{:class => ("active" if params[:f] == "2")}
-              = link_to project_issues_path(@project, :f => 2) do 
+              = link_to project_issues_path(@project, :f => 2, :milestone_id => params[:milestone_id]) do 
                 = t '.closed'
             %li{:class => ("active" if params[:f] == "3")}
-              = link_to project_issues_path(@project, :f => 3) do 
+              = link_to project_issues_path(@project, :f => 3, :milestone_id => params[:milestone_id]) do 
                 = t '.to_me'
             %li{:class => ("active" if params[:f] == "1")}
-              = link_to project_issues_path(@project, :f => 1) do 
+              = link_to project_issues_path(@project, :f => 1, :milestone_id => params[:milestone_id]) do 
                 = t '.all'
 
         .span4.right
           = form_tag project_issues_path(@project), :method => :get, :class => :right  do
-            = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => t('issues.form.milestone_desc'))
+            = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Select milestone")
+            = hidden_field_tag :f, params[:f]
 
     %ul#issues-table.unstyled
       = render "issues"
