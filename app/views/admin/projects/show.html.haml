@@ -28,6 +28,12 @@
         Description:
     %td
       = @admin_project.description
+  %tr
+    %td
+      %b
+        Post Receive File:
+    %td
+      = check_box_tag :post_receive_file, 1, @admin_project.has_post_receive_file?, :disabled => true
 %br
 %h3
   Team

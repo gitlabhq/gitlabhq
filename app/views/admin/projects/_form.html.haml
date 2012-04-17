@@ -56,11 +56,11 @@
   .actions
     = f.submit 'Save', :class => "btn primary"
     = link_to 'Cancel', [:admin, @admin_project], :class => "btn"
-    = link_to 'Destroy', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
+    - unless @admin_project.new_record?
+      = link_to 'Destroy', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
 
 :javascript
   $(function(){
-    taggifyForm();
     $('#project_owner_id').chosen();
-    $('#project_default_branch').chosen();
+    new Projects();
   })
