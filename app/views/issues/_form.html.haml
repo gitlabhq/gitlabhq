@@ -1,11 +1,5 @@
 %div.issue-form-holder
   %h3= @issue.new_record? ? t('issues.index.new') : t('issues.edit.title', :id => @issue.id)
-  - unless request.xhr?
-    .back_link
-      = link_to project_issue_path(@project, @issue) do 
-        &larr;
-        = t 'issues.show.issues_list'
-
   = form_for [@project, @issue], :remote => request.xhr? do |f|
     -if @issue.errors.any?
       .alert-message.block-message.error
