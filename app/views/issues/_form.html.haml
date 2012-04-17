@@ -1,9 +1,5 @@
 %div.issue-form-holder
   %h3= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
-  - unless request.xhr?
-    .back_link
-      = link_to project_issue_path(@project, @issue) do 
-        &larr; back to show page
   = form_for [@project, @issue], :remote => request.xhr? do |f|
     -if @issue.errors.any?
       .alert-message.block-message.error
