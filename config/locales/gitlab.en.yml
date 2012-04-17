@@ -126,6 +126,7 @@ en:
         path: "Path"
         team_count: "Team Members"
         last_commit: "Last Commit"
+        post_receive: "Post Receive"
       new:
         title: "Create a new project"
       show:
@@ -662,6 +663,7 @@ en:
         merge_requests_enabled: "Merge Requests"
         wall_enabled: "Wall"
         wiki_enabled: "Wiki"
+        post_receive_file: "Post Receive File"
       user:
         name: "Name"
         email: "Email"

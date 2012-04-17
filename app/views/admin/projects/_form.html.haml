@@ -54,11 +54,11 @@
   .actions
     = f.submit t('global.save'), :class => "btn primary"
     = link_to t('global.reset'), [:admin, @admin_project], :class => "btn"
-    = link_to t('global.destroy'), [:admin, @admin_project], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger right"
+    - unless @admin_project.new_record?
+      = link_to t('global.destroy'), [:admin, @admin_project], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger right"
 
 :javascript
   $(function(){
-    taggifyForm();
     $('#project_owner_id').chosen();
-    $('#project_default_branch').chosen();
+    new Projects();
   })

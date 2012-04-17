@@ -47,6 +47,11 @@ module Project::RepositoryTrait
       File.chmod(0775, hook_file)
     end
 
+    def has_post_receive_file?
+      hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
+      File.exists?(hook_file) 
+    end
+
     def tags
       repo.tags.map(&:name).sort.reverse
     end

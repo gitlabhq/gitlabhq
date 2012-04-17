@@ -127,6 +127,7 @@ de:
         path: "Pfad"
         team_count: "Teammitglieder"
         last_commit: "Letzter Commit"
+        post_receive: "Hooks"
       new:
         title: "Ein neues Projekt erstellen"
       show:
@@ -655,6 +656,7 @@ de:
         merge_requests_enabled: "Merge Requests"
         wall_enabled: "Pinnwand"
         wiki_enabled: "Wiki"
+        post_receive_file: "Hook"
       user:
         name: "Voller Name"
         email: "eMail"

@@ -20,6 +20,11 @@
     %td
       %b= t 'activerecord.attributes.project.description'
     %td= @admin_project.description
+  %tr
+    %td
+      %b= t 'activerecord.attributes.project.post_receive_file'
+    %td
+      = check_box_tag :post_receive_file, 1, @admin_project.has_post_receive_file?, :disabled => true
 %br
 %h3
   = t '.team.title'

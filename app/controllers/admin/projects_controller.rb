@@ -34,6 +34,8 @@ class Admin::ProjectsController < ApplicationController
       params[:project_access]
     )
 
+    @admin_project.update_repository
+
     redirect_to [:admin, @admin_project], notice: 'Project was successfully updated.'
   end
 
