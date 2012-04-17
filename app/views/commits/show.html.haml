@@ -2,7 +2,7 @@
   .top_box_content
     .right
       - unless @notes_count.zero?
-        %span.btn.small.disabled.padded= pluralize @notes_count, 'note'
+        %span.btn.small.disabled.padded= pluralize @notes_count, t('.note'), t('.notes')
 
       = link_to tree_project_ref_path(@project, @commit.id), :class => "btn small" do 
         = t 'commits.commit.browse'
@@ -14,7 +14,7 @@
       - if @commit.author_name != @commit.committer_name or @commit.author_email != @commit.committer_email or @commit.authored_date != @commit.committed_date 
         &ndash;
         %cite
-          = t '.commited_by'
+          = t '.committed_by'
         = @commit.committer_name
         %small= @commit.committed_date.stamp(t('global.full_timestamp'))
 

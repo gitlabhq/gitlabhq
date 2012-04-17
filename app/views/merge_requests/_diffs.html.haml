@@ -1,3 +1,4 @@
 = render "commits/diffs", :diffs => @diffs
 - if @diffs.empty? 
-  %p.cgray Nothing to merge
+  %p.cgray
+    = t 'merge_requests.commits.no_commit'

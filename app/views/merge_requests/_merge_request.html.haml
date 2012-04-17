@@ -2,7 +2,7 @@
   .right
     .left
       - if merge_request.notes.any?
-        %span.btn.small.disabled.padded= pluralize merge_request.notes.count, 'note'
+        %span.btn.small.disabled.padded= pluralize merge_request.notes.count, t('.note'), t('.notes')
       %span.btn.small.disabled.padded
         = merge_request.source_branch
         &rarr;
@@ -10,9 +10,9 @@
   = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
   %span.update-author
     %strong= merge_request.author_name
-    authored
+    = t '.authored'
     = time_ago_in_words(merge_request.created_at)
-    ago
+    = t 'global.ago'
     - if merge_request.upvotes > 0
       %span.label.success= "+#{merge_request.upvotes}"
   = link_to project_merge_request_path(merge_request.project, merge_request) do

@@ -16,6 +16,7 @@ en:
     edit: "Edit"
     back: "Back"
     markdown: "Markdown is enabled."
+    created_at: "created at"
   
   #
   # Dashboard
@@ -177,6 +178,8 @@ en:
       diff: "Diff"
     show:
       committed_by: "committed by"
+      note: "note"
+      notes: "notes"
   #
   # Deploy Keys
   #
@@ -286,8 +289,109 @@ en:
       submit: "Submit new issue"
       assignee_desc: "Assign to user"
       milestone_desc: "Select milestone"
-
-
+  #
+  # Kaminari
+  #
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "..."
+  #
+  # Keys
+  #
+  keys:
+    index:
+      title: "SSH Keys"
+      new: "Add a new SSH Key"
+    show:
+      added: "Added"
+      pubkey: "Public key:"
+      back_to_list: "To keys list"
+    edit:
+      title: "Edit key"
+  #
+  # Merge Requests
+  #
+  merge_requests:
+    commits:
+      title: "Commits"
+      no_commits: "Nothing to merge"
+    head:
+      title: "Merge Requests"
+    how_to_merge:
+      title: "How To Merge"
+    new:
+      title: "New Merge Request"
+    index:
+      open: "Open"
+      closed: "Closed"
+      to_me: "To Me"
+      all: "All"
+      no_requests: "Nothing to show here"
+      matching_requests: "%{count} merge requests for this filter"
+    merge_request:
+      note: "note"
+      notes: "notes"
+      authored: "authored"
+    edit:
+      title: "Edit merge request #%{id}"
+    form:
+      select_branch: "Select Branch"
+      select_user: "Select User"
+    show:
+      title: "Merge Request #%{id}:"
+      resolve: "Close"
+      upvote: "+1 upvote"
+      upvotes: "+%{votes} upvotes"
+      back_to_list: "To merge request list"
+      closed: "Closed"
+      open: "Open"
+      created_at: "Created at %{date} by"
+      assigned_to: "and currently assigned to"
+      merged_by: "Merged by"
+      closed_by: "Closed by"
+      notes: "Notes"
+      diff: "Diff"
+  #
+  # Milestones
+  #
+  milestones:
+    index:
+      title: "Milestones"
+      new: "New Milestone"
+      active: "Active"
+      all: "All"
+      no_milestones: "Nothing to show here"
+    form:
+      edit: "Edit Milestone #%{id}"
+      back_to_list: "To milestones"
+    milestone:
+      browse: "Browse Issues"
+      expires: "expires at %{date}"
+    show:
+      title: "Milestone #%{id}"
+      closed: "Closed"
+      open: "Open"
+      open_issues: "%{count} open"
+      closed_issues: "%{count} closed"
+  #
+  # Notes
+  #
+  notes:
+    form:
+      title: "Leave a Comment"
+      notify: "Notify via email:"
+      team: "Project team"
+      author: "Commit author"
+      attachment: "Attachment:"
+      filename: "File name..."
+      upload: "Upload File"
+      restriction: "Any file less then 10 MB"
+      reply: "Reply"
+      
 
 
   #
@@ -336,6 +440,15 @@ en:
         description: "Issue Details"
         milestone_id: "Milestone"
         critical: "Critical"
+      merge_request:
+        title: "Title"
+        source_branch: "From"
+        target_branch: "To"
+        assignee_id: "Assign to"
+      milestone:
+        title: "Title *"
+        description: "Description"
+        due_date: "Due Date"
 
 
 

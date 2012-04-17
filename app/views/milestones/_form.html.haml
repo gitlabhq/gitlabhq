@@ -1,7 +1,8 @@
-%h3= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
+%h3= @milestone.new_record? ? t('milestones.index.new') : t('.edit', :id => @milestone.id)
 .back_link
   = link_to project_milestones_path(@project) do 
-    &larr; To milestones
+    &larr;
+    = t '.back_to_list'
 
 %hr
 
@@ -14,36 +15,32 @@
   .row
     .span6
       .control-group
-        = f.label :title, "Title", :class => "control-label"
+        = f.label :title, :class => "control-label"
         .controls
           = f.text_field :title, :maxlength => 255, :class => "input-xlarge"
-          %p.help-block Required
       .control-group
-        = f.label :description, "Description", :class => "control-label"
+        = f.label :description, :class => "control-label"
         .controls
           = f.text_area :description, :maxlength => 2000, :class => "input-xlarge", :rows => 10
-          %p.help-block Markdown is enabled.
+          %p.help-block=t 'global.markdown'
     .span6
       .control-group
-        = f.label :due_date, "Due Date", :class => "control-label"
+        = f.label :due_date, :class => "control-label"
         .input= f.hidden_field :due_date
         .controls
           .datepicker
 
 
   .form-actions
-    - if @milestone.new_record?
-      = f.submit 'Create milestone', :class => "primary btn"
-    -else
-      = f.submit 'Save changes', :class => "primary btn"
+    = f.submit t('global.save'), :class => "primary btn"
 
     - if request.xhr?
-      = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
+      = link_to t('global.reset'), "#back", :onclick => "backToIssues();", :class => "btn" 
     - else 
       - if @milestone.new_record?
-        = link_to "Cancel", project_milestones_path(@project), :class => "btn"
+        = link_to t('global.reset'), project_milestones_path(@project), :class => "btn"
       - else    
-        = link_to "Cancel", project_milestone_path(@project, @milestone), :class => "btn"
+        = link_to t('global.reset'), project_milestone_path(@project, @milestone), :class => "btn"
 
 :javascript
   $(function() {

@@ -24,6 +24,6 @@ class Milestone < ActiveRecord::Base
   end
 
   def expires_at
-    "expires at #{due_date.stamp("Aug 21, 2011")}" if due_date
+    I18n.t("milestones.milestone.expires", :date => due_date.stamp(I18n.t("global.timestamp"))) if due_date
   end
 end

@@ -1,30 +1,31 @@
 %h3
-  Milestone ##{@milestone.id}
+  = t '.title', :id => @milestone.id
   %small
     = @milestone.expires_at
 
   %span.right
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), :class => "btn" do 
-        Edit
+        = t 'global.edit'
 
 .back_link
   = link_to project_milestones_path(@project) do 
-    &larr; To milestones list
+    &larr;
+    = t 'milestones.form.back_to_list'
 
 .main_box
   .top_box_content
     %h5
       - if @milestone.closed
-        .alert-message.error.status_info Closed
+        .alert-message.error.status_info=t '.closed'
       - else 
-        .alert-message.success.status_info Open
+        .alert-message.success.status_info=t '.open'
       = @milestone.title
 
   .middle_box_content
     .row
       .span2
-        = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn small edit-milestone-link"
+        = link_to t('milestones.milestone.browse'), project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn small edit-milestone-link"
       .span4
         %span
           = @milestone.expires_at
@@ -33,9 +34,9 @@
         .progress
         %br
         %span
-          #{@milestone.issues.opened.count} open
+          = t '.open_issues', :count => @milestone.issues.opened.count
           &ndash;
-          #{@milestone.issues.closed.count} closed
+          = t '.closed_issues', :count => @milestone.issues.closed.count
 
   - if @milestone.description.present?
     .bottom_box_content

@@ -16,6 +16,7 @@ de:
     edit: "Ändern"
     back: "Zurück"
     markdown: "Hier kann Markdown verwendet werden."
+    created_at: "erstellt am"
 
     
   #
@@ -178,6 +179,8 @@ de:
       diff: "Kompletter Diff"
     show:
       committed_by: "Commit von"
+      note: "Kommentar"
+      notes: "Kommentare"
   #
   # Deploy Keys
   #
@@ -287,6 +290,111 @@ de:
       submit: "Ticket erstellen"
       assignee_desc: "Einem Nutzer zuordnen"
       milestone_desc: "Meilenstein auswählen"
+  #
+  # Kaminari
+  #
+  views:
+    pagination:
+      first: "&laquo; Erste"
+      last: "Letzte &raquo;"
+      previous: "&lsaquo; Vorherige"
+      next: "Nächste &rsaquo;"
+      truncate: "..."
+  #
+  # Keys
+  #
+  keys:
+    index:
+      title: "SSH Schlüssel"
+      new: "Einen Schlüssel hinzufügen"
+    show:
+      added: ""
+      pubkey: "Schlüssel:"
+      back_to_list: "Zurück zur Auflistung"
+    edit:
+      title: "SSH Schlüssel bearbeiten"
+  #
+  # Merge Requests
+  #
+  merge_requests:
+    commits:
+      title: "Commits"
+      no_commits: "Nicht zu mergen"
+    head:
+      title: "Merge Requests"
+    how_to_merge:
+      title: "Merge HowTo"
+    new:
+      title: "Einen neuen Merge Request erstellen"
+    index:
+      open: "Offen"
+      closed: "Geschlossen"
+      to_me: "Meine"
+      all: "Alle"
+      no_requests: "Keine Requests für diesen Filter vorhanden."
+      matching_requests: "%{count} Merge Requests für diesen Filter."
+    merge_request:
+      note: "Kommentar"
+      notes: "Kommentare"
+      authored: ""
+    edit:
+      title: "Merge Request #%{id} bearbeiten"
+    form:
+      select_branch: "Branch auswählen"
+      select_user: "Nutzer auswählen"
+    show:
+      title: "Merge Request #%{id}:"
+      resolve: "Schließen"
+      upvote: "+1 Stimme"
+      upvotes: "+%{votes} Stimmen"
+      back_to_list: "Zurück zur Auflistung"
+      closed: "Geschlosssen"
+      open: "Offen"
+      created_at: "Erstellt am %{date} von"
+      assigned_to: "und aktuell zugeordnet zu"
+      merged_by: "Gemerged von"
+      closed_by: "Geschlossen von"
+      notes: "Kommentare"
+      diff: "Diff"
+  #
+  # Milestones
+  #
+  milestones:
+    index:
+      title: "Meilensteine"
+      new: "Einen neuen Meilenstein erstellen"
+      active: "Aktiv"
+      all: "Alle"
+      no_milestones: "Keine Meilensteile für diesen Filter vorhanden."
+    form:
+      edit: "Meilenstein #%{id} bearbeiten"
+      back_to_list: "Zurück zur Auflistung"
+    milestone:
+      browse: "Tickets ansehen"
+      expires: "läuft am %{date} aus"
+    show:
+      title: "Meilenstein #%{id}"
+      closed: "Geschlossen"
+      open: "Offen"
+      open_issues: "%{count} offene Tickets"
+      closed_issues: "%{count} geschlossene Tickets"
+  #
+  # Notes
+  #
+  notes:
+    form:
+      title: "Einen Kommentar hinterlassen"
+      notify: "Per eMail benachrichtigen"
+      team: "Team des Projektes"
+      author: "Autor des Commits"
+      attachment: "Dateianhang"
+      filename: "Dateiname..."
+      upload: "Upload starten"
+      restriction: "Dateigröße muss kleiner als 10MB sein"
+      reply: "Antworten"
+
+
+
 
 
 
@@ -340,6 +448,15 @@ de:
         description: "Weitere Informationen"
         milestone_id: "Meilenstein"
         critical: "Priosisiert"
+      merge_request:
+        title: "Titel"
+        source_branch: "Von"
+        target_branch: "Nach"
+        assignee_id: "Zuordnen zu"
+      milestone:
+        title: "Titel *"
+        description: "Beschreibung"
+        due_date: "Fertigstellung bis"
 
 
 

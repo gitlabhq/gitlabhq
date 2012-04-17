@@ -13,6 +13,6 @@
       = f.label :key
       .input= f.text_area :key, :class => [:xxlarge, :thin_area]
     .actions
-      = f.submit 'Save', :class => "primary btn"
-      = link_to "Cancel", keys_path, :class => "btn"
+      = f.submit t('global.save'), :class => "primary btn"
+      = link_to t('global.reset'), keys_path, :class => "btn"
 

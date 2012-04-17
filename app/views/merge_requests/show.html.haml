@@ -1,5 +1,5 @@
 %h3
-  = "Merge Request ##{@merge_request.id}:"
+  = t '.title', :id => @merge_request.id
   &nbsp;
   %span.pretty_label.branch= @merge_request.source_branch
   &rarr;
@@ -8,36 +8,39 @@
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
+        = link_to t('merge_requests.how_to_merge.title'), "#", :class => "how_to_merge_link btn small padded", :title => t('merge_requests.how_to_merge.title')
+        = link_to t('.resolve'), project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
         = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do 
-          Edit
+          = t 'global.edit'
 
     %br
     - if @merge_request.upvotes > 0
-      .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
+      .upvotes#upvotes=pluralize(@issue.upvotes, t('.upvote'), t('.upvotes', :votes => @merge_request.upvotes))
 
 = render "merge_requests/how_to_merge"
 .back_link
   = link_to project_merge_requests_path(@project) do 
-    &larr; To merge requests
+    &larr;
+    = t '.back_to_list'
 
 .main_box
   .top_box_content
     %h4
       - if @merge_request.closed
-        .alert-message.error.status_info Closed
+        .alert-message.error.status_info=t '.closed'
       - else 
-        .alert-message.success.status_info Open
+        .alert-message.success.status_info=t '.open'
       = @merge_request.title
 
   .middle_box_content
     %div
-      %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by 
+      %cite.cgray
+      = t '.created_at', :date => @merge_request.created_at.stamp(t('global.timestamp'))
       = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_merge_request_author(@merge_request)
 
-      %cite.cgray and currently assigned to 
+      %cite.cgray
+      = t '.assigned_to'
       = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_merge_request_assignee(@merge_request)
 
@@ -46,12 +49,18 @@
     .bottom_box_content
       - if @merge_request.merged?
         %span
-          Merged by #{@merge_request.merge_event.author_name} 
-          %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+          = t '.merged_by'
+          = @merge_request.merge_event.author_name
+          %small
+            = time_ago_in_words(@merge_request.merge_event.created_at)
+            = t 'global.ago'
       - elsif @merge_request.closed_event
         %span
-          Closed by #{@merge_request.closed_event.author_name} 
-          %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+          = t '.closed_by'
+          = @merge_request.closed_event.author_name
+          %small 
+            = time_ago_in_words(@merge_request.closed_event.created_at)
+            = t '.ago'
 
 = render "merge_requests/commits"
 
@@ -59,10 +68,10 @@
   .nav.nav-tabs
     %li.active
       = link_to "#notes", :class => "merge-notes-tab tab" do 
-        Notes
+        = t '.notes'
     %li
       = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
-        Diff
+        = t '.diff'
 
 
 .merge_request_notes#notes= render "notes/notes", :tid => @merge_request.id, :tt => "merge_request"

@@ -1,6 +1,7 @@
 - unless @commits.empty? 
   .ui-box
-    %h5 Commits
+    %h5
+      = t '.title'
     .merge-request-commits
       %ul.unstyled
         - @commits.each do |commit| 
@@ -8,8 +9,5 @@
 
 - else 
   %h5
-    Nothing to merge from 
-    %span.label #{@merge_request.source_branch} 
-    to 
-    %span.label #{@merge_request.target_branch}
+    = t '.no_commits'
   %br

@@ -1,16 +1,17 @@
 %h3
-  Public key: 
+  = t '.pubkey' 
   = @key.title
   %small
-    created at 
-    = @key.created_at.stamp("Aug 21, 2011")
+    = t 'global.created_at'
+    = @key.created_at.stamp(t('global.timestamp'))
 .back_link
   = link_to keys_path do 
-    &larr; To keys list
+    &larr; 
+    = t('.back_to_list')
 %hr
 
 %pre= @key.key
 .actions
-  = link_to 'Remove', @key, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger delete-key"
+  = link_to t('global.destroy'), @key, :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger delete-key"
 
 
