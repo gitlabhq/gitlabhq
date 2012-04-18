@@ -1,12 +1,14 @@
 = render "repositories/branches_head"
 
 .alert
-  %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, :class => "vlink"}. 
-  %p This ability allows: 
+  %p=t '.desc'
+  %p=t '.features.desc'
   %ul
-    %li keep stable branches secured
-    %li forced code review before merge to protected branches
-  %p Read more about project permissions #{link_to "here", help_permissions_path, :class => "vlink"}
+    %li=t '.features.keep_secure'
+    %li=t '.features.forced_review'
+  %p
+    = t 'errors.access_denied.further_info'
+    = link_to t('errors.access_denied.further_info_href'), help_permissions_path, :class => "vlink"
 
 
 
@@ -14,8 +16,8 @@
   %table.table-striped
     %thead
       %tr
-        %th Name
-        %th Last commit
+        %th=t '.name'
+        %th=t '.commit'
         %th
     %tbody
       - @branches.each do |branch|
@@ -24,15 +26,15 @@
             = link_to project_commits_path(@project, :ref => branch.name) do
               %strong= branch.name
               - if branch.name == @project.root_ref
-                %span.label default
+                %span.label=t '.default'
           %td
             = link_to project_commits_path(@project, branch.commit.id) do
               = truncate branch.commit.id.to_s, :length => 10
             = time_ago_in_words(branch.commit.committed_date)
-            ago
+            = t 'global.ago'
           %td
             - if can? current_user, :admin_project, @project
-              = link_to 'Unprotect', [@project, branch], :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small"
+              = link_to t('.unprotect'), [@project, branch], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "danger btn small"
 
 
 
@@ -46,9 +48,9 @@
 
     .clearfix
       = f.label :name
-      .input= f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , { :include_blank => "Select branch" }, { :style => "width:300px" })
+      .input= f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , { :include_blank => t('merge_requests.form.select_branch') }, { :style => "width:300px" })
     .actions
-      = f.submit 'Add', :class => "primary btn"
+      = f.submit t('global.save'), :class => "primary btn"
 
 
 :javascript

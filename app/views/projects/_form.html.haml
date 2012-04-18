@@ -6,57 +6,55 @@
           %li= msg
   .clearfix
     = f.label :name
-    .input= f.text_field :name, :placeholder => "Example Project"
+    .input= f.text_field :name, :placeholder => t('admin.projects.form.example_title')
   .clearfix
-    = f.label :path do 
-      Path
+    = f.label :path
     .input
       .input-prepend
         %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
-        = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+        = f.text_field :path, :placeholder => t('admin.projects.form.example_project'), :disabled => !@project.new_record?
   .clearfix
-    = f.label :code do 
-      Code
+    = f.label :code
     .input
       .input-prepend
         %span.add-on= web_app_url
-        = f.text_field :code, :placeholder => "example"
+        = f.text_field :code, :placeholder => t('admin.projects.form.example')
 
   - unless @project.new_record? || @project.heads.empty?  
     .clearfix
-      = f.label :default_branch, "Default Branch"
+      = f.label :default_branch
       .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
 
     .alert-message.block-message.warning
-      %h5 Features
+      %h5=t '.features'
 
       .clearfix
-        = f.label :issues_enabled, "Issues"
+        = f.label :issues_enabled
         .input= f.check_box :issues_enabled
 
       .clearfix
-        = f.label :merge_requests_enabled, "Merge Requests"
+        = f.label :merge_requests_enabled
         .input= f.check_box :merge_requests_enabled
 
       .clearfix
-        = f.label :wall_enabled, "Wall"
+        = f.label :wall_enabled
         .input= f.check_box :wall_enabled
       
       .clearfix
-        = f.label :wiki_enabled, "Wiki"
+        = f.label :wiki_enabled
         .input= f.check_box :wiki_enabled
     
   .clearfix
     = f.label :description
     .input
-      = f.text_area :description, :placeholder => "project description", :class => "xxlarge", :rows => 5
-      %p.hint Markdown is enabled.
+      = f.text_area :description, :class => "xxlarge", :rows => 5
+      %p.hint=t 'global.markdown'
 
   %br
   
   .actions
-    = f.submit 'Save', :class => "btn primary"
-    = link_to 'Cancel', @project, :class => "btn"
+    = f.submit t('global.save'), :class => "btn primary"
+    = link_to t('global.reset'), @project, :class => "btn"
     - unless @project.new_record?
       .right
-        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
+        = link_to t('global.destroy'), @project, :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger"

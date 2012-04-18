@@ -1,17 +1,17 @@
 = form_for @user, :url => profile_update_path, :remote => true, :method => :put do |f|
   %div
-    %h3 Application theme
+    %h3=t '.app'
     %hr
     .clearfix
       = label_tag do 
         = f.radio_button :theme_id, 1
-        Default
+        = t '.default'
 
       = label_tag do 
         = f.radio_button :theme_id, 2
-        Classic
+        = t '.classic'
     %br
-  %h3 Code review
+  %h3=t '.code'
   %hr
   .row
     %label.span3{:for => "user_dark_scheme_false"}
@@ -20,14 +20,14 @@
         .caption
           %h5
             = f.radio_button :dark_scheme, false
-            White code preview
+            = t '.white'
     %label.span3{:for => "user_dark_scheme_true"}
       .thumbnail
         = image_tag "dark.png", :width => 260, :class => "styled_image"
         .caption
           %h5
             = f.radio_button :dark_scheme, true
-            Dark code preview
+            = t '.dark'
 
 :javascript 
   $(function(){ 

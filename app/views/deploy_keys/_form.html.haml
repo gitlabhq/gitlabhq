@@ -8,11 +8,11 @@
 
     .clearfix
       = f.label :title
-      .input= f.text_field :title
+      .input= f.text_field :title, :class => "xlarge"
     .clearfix
       = f.label :key
       .input= f.text_area :key, :class => "xlarge"
     .actions
-      = f.submit 'Save', :class => "primary btn"
-      = link_to "Cancel", project_deploy_keys_path(@project), :class => "btn"
+      = f.submit t('global.save'), :class => "primary btn"
+      = link_to t('global.reset'), project_deploy_keys_path(@project), :class => "btn"
 

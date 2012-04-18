@@ -47,12 +47,12 @@ module ApplicationHelper
 
   def last_commit(project)
     if project.repo_exists?
-      time_ago_in_words(project.commit.committed_date) + " ago"
+      time_ago_in_words(project.commit.committed_date) + t("global.ago")
     else
-      "Never"
+      t "global.never"
     end
   rescue
-    "Never"
+    t "global.never"
   end
 
   def grouped_options_refs(destination = :tree)

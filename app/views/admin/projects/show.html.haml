@@ -1,51 +1,42 @@
 %h3
   = @admin_project.name
-  = link_to 'Edit', edit_admin_project_path(@admin_project), :class => "btn right small"
+  = link_to t("global.edit"), edit_admin_project_path(@admin_project), :class => "btn right small"
 
 %br
 %table.zebra-striped.table-bordered
   %tr
     %td
-      %b
-        Name:
-    %td
-      = @admin_project.name    
+      %b= t 'activerecord.attributes.project.name'
+    %td= @admin_project.name    
   %tr
     %td
-      %b
-        Code:
-    %td
-      = @admin_project.code
+      %b= t 'activerecord.attributes.project.code'
+    %td= @admin_project.code
   %tr
     %td
-      %b
-        Path:
-    %td
-      = @admin_project.path
+      %b= t 'activerecord.attributes.project.path'
+    %td= @admin_project.path
   %tr
     %td
-      %b
-        Description:
-    %td
-      = @admin_project.description
+      %b= t 'activerecord.attributes.project.description'
+    %td= @admin_project.description
   %tr
     %td
-      %b
-        Post Receive File:
+      %b= t 'activerecord.attributes.project.post_receive_file'
     %td
       = check_box_tag :post_receive_file, 1, @admin_project.has_post_receive_file?, :disabled => true
 %br
 %h3
-  Team
+  = t '.team.title'
   %small
     (#{@admin_project.users_projects.count})
 %br
 %table.zebra-striped.table-bordered
   %thead
     %tr
-      %th Name
-      %th Project Access
-      %th Repository Access
+      %th= t '.team.member.name'
+      %th= t '.team.member.project_access'
+      %th= t '.team.member.repo_access'
       %th
 
   - @admin_project.users_projects.each do |tm|
@@ -53,28 +44,28 @@
       %td
         = link_to tm.user_name, admin_user_path(tm.user)
       %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "medium project-access-select", :disabled => :disabled
-      %td= link_to 'Edit Access', edit_admin_team_member_path(tm), :class => "btn small"
-      %td= link_to 'Remove from team', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete, :class => "btn danger small"
+      %td= link_to t('.team.member.edit_access'), edit_admin_team_member_path(tm), :class => "btn small"
+      %td= link_to t('.team.member.remove'), admin_team_member_path(tm), :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger small"
 
 %br
-%h3 Add new team member
+%h3=t '.team.add_title'
 %br
 = form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do 
   %table.zebra-striped.table-bordered
     %thead
       %tr
-        %th Users
-        %th Project Access:
+        %th= t '.team.member.name'
+        %th= t '.team.member.project_access'
 
     %tr
       %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name),  :multiple => true
       %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
 
     %tr
-      %td= submit_tag 'Add', :class => "btn primary"
+      %td= submit_tag t('.team.member.add'), :class => "btn primary"
       %td
-        Read more about project permissions 
-        %strong= link_to "here", help_permissions_path, :class => "vlink"
+        = t 'errors.access_denied.further_info'
+        %strong= link_to t('errors.access_denied.further_info_href'), help_permissions_path, :class => "vlink"
 
 :css 
   form select { 

@@ -3,7 +3,7 @@
     = link_to project_commits_path(@project, :ref => branch.name) do
       %strong= branch.name
       - if branch.name == @project.root_ref
-        %span.label default
+        %span.label=t '.default'
   %td
     = link_to project_commit_path(@project, :id => branch.commit.id) do
       %code= branch.commit.id.to_s[0..10]
@@ -13,8 +13,8 @@
   %td
     %span.update-author.right
       = time_ago_in_words(branch.commit.committed_date)
-      ago
+      = t 'global.ago'
   %td
     - if can? current_user, :download_code, @project
-      = link_to "Download", archive_project_repository_path(@project, :ref => branch.name), :class => "visible_link download_repo_link"
+      = link_to t('.download'), archive_project_repository_path(@project, :ref => branch.name), :class => "visible_link download_repo_link"
 

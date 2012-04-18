@@ -1,6 +1,7 @@
 %h3
-  Issues
-  %small (assigned to you)
+  = t '.title'
+  %small
+    = t '.assigned_to_you'
 
 %br
 %div#issues-table-holder.ui-box
@@ -17,8 +18,11 @@
         .row
           .span7= paginate @issues, :theme => "gitlab"
           .span4.right
-            %span.cgray.right #{@issues.total_count} issues
+            %span.cgray.right
+              #{@issues.total_count}
+              = t '.total'
 
     - else
       %li
-        %p.padded Nothing to show here
+        %p.padded
+          = t '.no_issues'

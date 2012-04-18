@@ -1,18 +1,18 @@
 - if current_user.require_ssh_key?
   .alert-message.block-message.error
-    %ul
-      %li You have no ssh keys added to your profile.
-      %li You wont be able to pull/push repository. 
-      %li Visit profile &rarr; keys and add public key of every machine you want to use for work with gitlabhq. 
+    %p  
+      = t('dashboard.index.require_key.before')  
+      = link_to new_key_path, :class => "vlink" do 
+        = t('dashboard.index.require_key.href')
+      = t('dashboard.index.require_key.after')
 
 .alert-message.block-message.error
-  %ul.unstyled.alert_holder
-    %li You should push repository to proceed.
-    %li After push you will be able to browse code, commits etc. 
+  %p
+    = t '.empty'
 
 - bash_lexer = Pygments::Lexer[:bash]
 %div.git-empty
-  %h3 Git global setup:
+  %h3=t '.git_global'
   - setup_str = ["git config --global user.name \"#{current_user.name}\"", 
     "git config --global user.email  \"#{current_user.email}\""].join("\n")
   = preserve do
@@ -20,7 +20,7 @@
 
   %br
   %br
-  %h3 Create Repository
+  %h3=t '.create'
   - repo_setup_str = ["mkdir #{@project.path}",
     "cd #{@project.path}",
     "git init", 
@@ -35,7 +35,7 @@
 
   %br
   %br
-  %h3 Existing Git Repo?
+  %h3= t '.existing'
   - exist_repo_setup_str = ["cd existing_git_repo",
     "git remote add origin #{@project.url_to_repo}",
     "git push -u origin master"].join("\n")
@@ -44,4 +44,4 @@
 
   - if can? current_user, :admin_project, @project
     .alert-message.block-message.error.prepend-top-20
-      = link_to 'Remove project', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
+      = link_to t('.remove'), @project, :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn danger"

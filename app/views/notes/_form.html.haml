@@ -1,5 +1,5 @@
 = form_for [@project, @note], :remote => "true", :multipart => true do |f|
-  %h3 Leave a comment
+  %h3=t '.title'
   -if @note.errors.any?
     .alert-message.block-message.error
       - @note.errors.full_messages.each do |msg|
@@ -8,28 +8,28 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
   = f.text_area :note,  :size => 255
-  %p.hint Markdown is enabled.
+  %p.hint=t 'global.markdown'
 
   .row
     .span4
-      %h5 Notify via email:
+      %h5=t '.notify'
       .clearfix
         = label_tag :notify do 
           = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-          %span Project team
+          %span=t '.team'
 
         - if @note.notify_only_author?(current_user)
           = label_tag :notify_author do 
             = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-            %span Commit author
+            %span=t '.author'
     .span8
-      %h5 Attachment:
+      %h5=t '.attachment'
       .clearfix
         .attachments
-          %div.file_name File name...
-          %button.file_upload.btn.small Upload File
+          %div.file_name=t '.filename'
+          %button.file_upload.btn.small=t '.upload'
           .input= f.file_field :attachment, :class => "input-file"
-        %span Any file less then 10 MB
+        %span=t '.restriction'
 
 
-  = f.submit 'Add Comment', :class => "btn primary", :id => "submit_note"
+  = f.submit t('global.save'), :class => "btn primary", :id => "submit_note"

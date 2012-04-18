@@ -10,7 +10,7 @@ module CommitsHelper
   def more_commits_link
     offset = params[:offset] || 0
     limit = params[:limit] || 100
-    link_to "More", project_commits_path(@project, :offset =>  offset.to_i + limit.to_i, :limit => limit),
+    link_to t("global.more"), project_commits_path(@project, :offset =>  offset.to_i + limit.to_i, :limit => limit),
       :remote => true, :class => "lite_button vm", :style => "text-align:center; width:930px; ", :id => "more-commits-link"
   end
 

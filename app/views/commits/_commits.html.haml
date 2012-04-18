@@ -1,4 +1,4 @@
 - @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
   %div.ui-box
-    %h5= day.stamp("28 Aug, 2010")
+    %h5= day.stamp(t('global.timestamp'))
     %ul.unstyled= render commits
