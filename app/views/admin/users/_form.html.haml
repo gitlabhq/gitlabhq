@@ -12,12 +12,12 @@
           = f.label :name
           .input
             = f.text_field :name
-            %span.help-inline * requried
+            %span.help-inline * required
         .clearfix
           = f.label :email
           .input
             = f.text_field :email
-            %span.help-inline * requried
+            %span.help-inline * required
         .clearfix
           = f.label :password
           .input= f.password_field :password
@@ -42,10 +42,10 @@
         .alert
           .clearfix
             %p Give user ability to manage application.
-            = f.label :admin, :class => "checkbox" do 
+            = f.label :admin, :class => "checkbox" do
               = f.check_box :admin
               %span Administrator
-        - unless @admin_user.new_record? 
+        - unless @admin_user.new_record?
           .alert.alert-error
             - if @admin_user.blocked
               %span
@@ -57,7 +57,7 @@
                 Blocked user will removed from all projects &amp; will not be able to login to GitLab.
     .actions
       = f.submit 'Save', :class => "btn primary"
-      - if @admin_user.new_record? 
+      - if @admin_user.new_record?
         = link_to 'Cancel', admin_users_path, :class => "btn"
-      - else 
+      - else
         = link_to 'Cancel', admin_user_path(@admin_user), :class => "btn"
