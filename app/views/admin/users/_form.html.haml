@@ -12,12 +12,12 @@
           = f.label :name
           .input
             = f.text_field :name
-            %span.help-inline * requried
+            %span.help-inline * required
         .clearfix
           = f.label :email
           .input
             = f.text_field :email
-            %span.help-inline * requried
+            %span.help-inline * required
         .clearfix
           = f.label :password
           .input= f.password_field :password
@@ -45,6 +45,7 @@
             = f.label :admin, :class => "checkbox" do 
               = f.check_box :admin
               %span=t 'activerecord.attributes.user.admin'
+        - unless @admin_user.new_record?
           .alert.alert-error
             - if @admin_user.blocked
               %span
