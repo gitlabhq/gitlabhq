@@ -23,7 +23,7 @@ class ProfileController < ApplicationController
     @user = current_user
 
     if @user.update_attributes(params[:user])
-      flash[:notice] = "Password was successfully updated. Please login with it"
+      flash[:notice] = I18n.t("notice.profile.password")
       redirect_to new_user_session_path
     else
       render :action => "password"

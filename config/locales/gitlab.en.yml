@@ -17,6 +17,7 @@ en:
     back: "Back"
     markdown: "Markdown is enabled."
     created_at: "created at"
+    added: "Added"
   
   #
   # Dashboard
@@ -115,6 +116,7 @@ en:
         wall_note: "Wall note"
     projects:
       form:
+        example_title: "Example Project"
         example_project: "example_project"
         example: "example"
       index:
@@ -391,6 +393,237 @@ en:
       upload: "Upload File"
       restriction: "Any file less then 10 MB"
       reply: "Reply"
+  #
+  # Notifications
+  #
+  notify:
+    new_user_email:
+      hi: "Hi %{user}!"
+      creation: "Administrator created account for you. Now you are a member of company gitlab application."
+      login: "login"
+      password: "password"
+      login_href: "Click here to login"
+    new_issue_email:
+      title: "New Issue was created and assigned to you."
+      issue_href: "Issue #%{id}: '%{title}'"
+    new_merge_request_email:
+      title: "New Merge Request"
+      branches: "Branches: %{old} &rarr; %{new}"
+      assignee: "Asignee: %{old} &rarr; %{new}"
+    changed_merge_request_email:
+      title: "Reassigned Merge Request"
+      assignee: "Assignee changed from %{old} to %{new}"
+    changed_issue_email:
+      title: "Reassigned Issue"
+    note_commit_email:
+      title: "New comment for commit"
+      left_message: "left next message:"
+    note_issue_email:
+      title: "New comment -"
+      title_href: "Issue #%{id}: '%{topic}'"
+    note_merge_request_email:
+      title: "New comment for Merge Request"
+    note_wall_email:
+      title: "New message on"
+      title_href: "Project Wall"
+  #
+  # Profile
+  #
+  profile:
+    show:
+      projects: "Personal projects:"
+      of: "of"
+      pubkeys: "SSH public keys:"
+      name_help: "Enter your name so people you know can recognize you."
+      mail_help: "We also use email for avatar detection"
+      bio_help: "About yourself in fewer than 250 characters."
+      tip: "Tip:"
+      gravatar: "You can change your avatar at gravatar.com"
+    password:
+      password: "Password"
+      password_hint: "After successfull password update you will be redirected to login page where you should login with new password"
+      token: "Private token"
+      classified: "keep it in secret!"
+      token_hint: "Private token used to access application resources without authentication (eg. rss feed)."
+      reset: "Reset"
+      reset_confirm: "Are you sure?"
+      generate: "Generate"
+      nyi: "You don`t have one yet. Click generate to fix it."
+    index:
+      title: "Profile"
+    design:
+      app: "Application theme"
+      default: "Default"
+      classic: "Classic"
+      code: "Code review"
+      white: "White code preview"
+      dark: "Dark code preview"
+  #
+  # Projects
+  #
+  projects:
+    projects: "Projects"
+    index:
+      none: "Nothing here"
+      wait_for_add: "If you will be added to project - it will be displayed here"
+      success: "Project was successfully created"
+      updated: "Project was successfully updated."
+    form:
+      features: "Features"
+    project_head:
+      show: "Show"
+      team: "Team"
+      attachments: "Attachments"
+      snippets: "Snippets"
+      hooks: "Hooks"
+      deploy: "Deploy Keys"
+    show:
+      switch: "Switch to project"
+      download: "Download"
+      merge_request: "New Merge Request"
+      issue: "New Issue"
+      activity: "Recent Activity"
+    team:
+      title: "Team Members"
+      new: "New Team Member"
+      profile: "To open team member profile - click on avatar."
+    edit:
+      title: "Edit Project"
+      processing: "Saving project &amp; repository. Please wait..."
+    new:
+      title: "New Project"
+      processing: "Creating project &amp; repository. Please wait for few minutes."
+    empty:
+      empty: "You should push repository to proceed. After push you will be able to browse code, commits etc."
+      git_global: "Git global setup:"
+      create: "Create Repository"
+      existing: "Existing Git Repo?"
+      remove: "Remove project"
+    files:
+      empty: "All files attached to project wall, issues etc will be displayed here"
+    graph:
+      title: "Network Graph"
+  #
+  # Protected Branches
+  #
+  protected_branches:
+    index:
+      desc: "Protected branches designed to prevent push for all except masters. "
+      features:
+        desc: "This ability allows"
+        keep_secure: "keep stable branches secured"
+        forced_review: "forced code review before merge to protected branches"
+      name: "Name"
+      commit: "Last Commit"
+      unprotect: "Unprotect"
+      default: "default"
+  #
+  # Refs
+  #
+  refs:
+    tree:
+      code: "Code"
+      name: "Name"
+      update: "Last Update"
+      commit: "Last Commit"
+      history: "History"
+    tree_file:
+      raw: "raw"
+      history: "history"
+      empty: "Empty file"
+      download: "Download"
+  #
+  # Repositories
+  #
+  repositories:
+    branch:
+      default: "default"
+      download: "Download"
+    branches_head:
+      recent: "Recent"
+      protected: "Protected"
+      all: "All"
+    tags:
+      none: "No Tags"
+  #
+  # Search
+  #
+  search:
+    show:
+      label: "Looking for"
+      placeholder: "issue 143"
+      submit: "Search"
+      results: "Search results"
+      no_result: "Nothing here"
+  #
+  # Snippets
+  #
+  snippets:
+    index:
+      desc: "Share code pastes with others if it can't be in a git repository"
+      new: "Add a new snippet"
+    form:
+      edit: "Edit Snippet #%{id}"
+      ex:
+        title: "Example Snippet"
+        file: "example.rb"
+    lifetime:
+      forever: "forever"
+      day: "1 day"
+      week: "1 week"
+      month: "1 month"
+  #
+  # Team members
+  #
+  team_members:
+    form:
+      title: "New Team Member"
+      user: "Name"
+      project_access: "Project Access"
+      select: "Select user"
+    show:
+      owner: "Project Owner"
+      back_to_list: "To team list"
+      member_since: "Member since"
+  #
+  # Wikis
+  #
+  wikis:
+    form:
+      md: "Wiki content is parsed with"
+      link: "To add link to new page you can just type"
+    edit:
+      title: "Editing page"
+    show:
+      history: "History"
+      last_edit: "Last edited by %{editor} in %{date}"
+      destroy: "Delete this page"
+    history:
+      title: "Versions"
+      id: "#"
+      last_edit: "last edit"
+      created_by: "created by"
+
+
+
+  #
+  # Notices
+  #  
+  notice:
+    merge_requests:
+      new: "Merge request was successfully created."
+      edit: "Merge request was successfully updated."
+    projects:
+      new: "Project was successfully created."
+      edit: "Project was successfully updated."
+    profile:
+      password: "Password was successfully updated. Please login with it"
+    team_members:
+      invalid: "User should have at least one role"
+    wikis:
+      new: "Page was successfully updated."
+      destroy: "Page was successfully deleted."
+    
       
 
 
@@ -409,6 +642,7 @@ en:
         issues_enabled: "Issues"
         merge_requests_enabled: "Merge Requests"
         wall_enabled: "Wall"
+        wiki_enabled: "Wiki"
       user:
         name: "Name"
         email: "Email"
@@ -419,6 +653,7 @@ en:
         linkedin: "LinkedIn"
         twitter: "Twitter"
         admin: "Administrator"
+        bio: "Bio"
       users_project:
         access_roles:
           guest: "Guest"
@@ -449,6 +684,16 @@ en:
         title: "Title *"
         description: "Description"
         due_date: "Due Date"
+      protected_branch:
+        name: "Name"
+      snippet:
+        title: "Title"
+        file_name: "Filename"
+        expires_at: "Lifetime"
+        content: "Code"
+      wiki:
+        title: "Title"
+        content: "Content"
 
 
 

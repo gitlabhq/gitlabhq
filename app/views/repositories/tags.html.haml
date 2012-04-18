@@ -13,11 +13,11 @@
         %td
           %span.update-author.right
             = time_ago_in_words(tag.commit.committed_date)
-            ago
+            = t 'global.ago'
             &nbsp;
         %td
           - if can? current_user, :download_code, @project
-            = link_to "Download", archive_project_repository_path(@project, :ref => tag.name), :class => "visible_link download_repo_link"
+            = link_to t('repositories.branch.download'), archive_project_repository_path(@project, :ref => tag.name), :class => "visible_link download_repo_link"
 
 - else 
-  %h3 No tags
+  %h3=t '.none'

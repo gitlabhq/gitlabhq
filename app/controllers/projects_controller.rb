@@ -38,7 +38,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.valid?
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.html { redirect_to @project, notice: I18n.t('notice.projects.new') }
         format.js
       else
         format.html { render action: "new" }
@@ -58,7 +58,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if project.update_attributes(params[:project])
-        format.html { redirect_to edit_project_path(project), :notice => 'Project was successfully updated.' }
+        format.html { redirect_to edit_project_path(project), :notice => I18n.t('notice.projects.edit') }
         format.js
       else
         format.html { render action: "edit" }

@@ -73,7 +73,7 @@ class MergeRequestsController < ApplicationController
     respond_to do |format|
       if @merge_request.save
         @merge_request.reload_code
-        format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.' }
+        format.html { redirect_to [@project, @merge_request], notice: I18n.t("notice.merge_requests.new") }
         format.json { render json: @merge_request, status: :created, location: @merge_request }
       else
         format.html { render action: "new" }
@@ -86,7 +86,7 @@ class MergeRequestsController < ApplicationController
     respond_to do |format|
       if @merge_request.update_attributes(params[:merge_request].merge(:author_id_of_changes => current_user.id))
         @merge_request.reload_code
-        format.html { redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.' }
+        format.html { redirect_to [@project, @merge_request], notice: I18n.t("notice.merge_requests.edit") }
         format.json { head :ok }
       else
         format.html { render action: "edit" }

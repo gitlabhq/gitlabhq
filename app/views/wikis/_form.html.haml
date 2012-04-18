@@ -1,16 +1,16 @@
 = form_for [@project, @wiki] do |f|
   -if @wiki.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@wiki.errors.count, "error")} prohibited this wiki from being saved:"
+    .alert-message.block-message.error
       %ul
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
   .alert-message.block-message.warning
     %p 
-      Wiki content is parsed with #{link_to "Markdown", "http://en.wikipedia.org/wiki/Markdown"}. 
+      = t '.md'
+      = link_to "Markdown", "http://en.wikipedia.org/wiki/Markdown"
       %br
-      To add link to new page you can just type 
+      = t '.link'
       %code [Link Title](page-slug)
   .clearfix
     = f.label :title
@@ -20,5 +20,5 @@
     = f.label :content
     .input= f.text_area :content, :class => :xxlarge
   .actions
-    = f.submit 'Save', :class => "primary btn"
-    = link_to "Cancel", project_wiki_path(@project, :index), :class => "btn"
+    = f.submit t('global.save'), :class => "primary btn"
+    = link_to t('global.reset'), project_wiki_path(@project, :index), :class => "btn"

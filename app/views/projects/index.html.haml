@@ -5,13 +5,13 @@
     .span4.right
       %div.leftbar.ui-box
         %h5
-          Projects
+          = t 'projects.projects'
           %small
             (#{@projects.count})
           - if current_user.can_create_project?
             %span.right
               = link_to new_project_path, :class => "btn very_small info" do 
-                New Project
+                = t 'dashboard.index.projects.new'
         .content_list
           - @projects.each do |project|
             = link_to project_path(project), :class => dom_class(project) do
@@ -22,15 +22,14 @@
                   &rarr;
 
 - else 
-  %h3 Nothing here
+  %h3
+    = t '.none'
   %br
   - if current_user.can_create_project?
     .alert-message.block-message.warning
-      You can create up to
-      = current_user.projects_limit
-      projects. Click on link below to add a new one
+      = t 'dashboard.index.projects.maximum', :limit => current_user.projects_limit
       .link_holder
         = link_to new_project_path, :class => "" do 
-          New Project » 
+          = t 'dashboard.index.projects.new'
   - else 
-    If you will be added to project - it will be displayed here
+    = t '.wait_for_add'

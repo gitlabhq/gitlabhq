@@ -6,8 +6,8 @@
       .span2.mode_text= file.mode
       .span5.file_name= name
       .span3.right
-        = link_to "raw", blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "right", :target => "_blank"
-        = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right", :style => "margin-right:10px;"
+        = link_to t('.raw'), blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "right", :target => "_blank"
+        = link_to t('.history'), project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right", :style => "margin-right:10px;"
   - if file.text?
     .view_file_content
       - unless file.empty?
@@ -16,7 +16,7 @@
             = raw file.colorize
       - else 
         %h3
-          %center Empty file
+          %center=t '.empty'
   - elsif file.image?
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
@@ -27,4 +27,5 @@
           %br
           = image_tag "download.png", :width => 64
           %h3 
-            Download (#{file.mb_size})
+            =t '.download'
+            (#{file.mb_size})

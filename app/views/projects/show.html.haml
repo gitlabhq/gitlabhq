@@ -5,7 +5,8 @@
     -#.span2
       .back_link
         = link_to projects_path do 
-          &larr; To projects list
+          &larr;
+          = t '.switch'
     .span7
       .form-horizontal
         .input-prepend
@@ -14,19 +15,17 @@
     .span4.right
       .right
         - if can? current_user, :download_code, @project
-          = link_to "Download", archive_project_repository_path(@project), :class => "btn small padded"
+          = link_to t('.download'), archive_project_repository_path(@project), :class => "btn small padded"
         - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
-          = link_to new_project_merge_request_path(@project), :title => "New Merge Request", :class => "btn small padded" do 
-            Merge Request
+          = link_to t('.merge_request'), new_project_merge_request_path(@project), :title => "New Merge Request", :class => "btn small padded"
         - if @project.issues_enabled && can?(current_user, :write_issue, @project)
-          = link_to new_project_issue_path(@project), :title => "New Issue", :class => "btn small" do 
-            Issue
+          = link_to t('.issue'), new_project_issue_path(@project), :title => "New Issue", :class => "btn small"
 
 - unless @events.blank?
   %br
   %h5.cgray
     %span.ico.activities
-    Recent Activity
+    = t '.activity'
   %hr
   .content_list= render @events
 

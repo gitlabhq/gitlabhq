@@ -1,4 +1,4 @@
-%h3= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
+%h3= @snippet.new_record? ? t('snippets.index.new') : t('.edit', :id => @snippet.id)
 %hr
 = form_for [@project, @snippet] do |f|
   %table.no-borders
@@ -10,22 +10,22 @@
 
     .clearfix
       = f.label :title
-      .input= f.text_field :title, :placeholder => "Example Snippet"
+      .input= f.text_field :title, :placeholder => t('.ex.title')
     .clearfix
       = f.label :file_name
-      .input= f.text_field :file_name, :placeholder => "example.rb"
+      .input= f.text_field :file_name, :placeholder => t('.ex.file')
     .clearfix
-      = f.label "Lifetime"
+      = f.label :expires_at
       .input= f.select :expires_at, lifetime_select_options, {}, :style => "width:200px;"
     .clearfix
-      = f.label :content, "Code"
+      = f.label :content
       = f.text_area :content, :class => "xxlarge"
 
   .actions
-    = f.submit 'Save', :class => "primary btn"
-    = link_to "Cancel", project_snippets_path(@project), :class => " btn"
+    = f.submit t('global.save'), :class => "primary btn"
+    = link_to t('global.reset'), project_snippets_path(@project), :class => " btn"
     - unless @snippet.new_record?
-      .right= link_to 'Destroy', [@project, @snippet], :confirm => 'Are you sure?', :method => :delete, :class => "btn right danger delete-snippet", :id => "destroy_snippet_#{@snippet.id}"
+      .right= link_to t('global.destroy'), [@project, @snippet], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn right danger delete-snippet", :id => "destroy_snippet_#{@snippet.id}"
 
 
 

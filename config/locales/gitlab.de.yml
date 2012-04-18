@@ -17,6 +17,7 @@ de:
     back: "Zurück"
     markdown: "Hier kann Markdown verwendet werden."
     created_at: "erstellt am"
+    added: ""
 
     
   #
@@ -100,7 +101,7 @@ de:
       title: "Mein Account"
       security: "Passwort & Token"
       design: "Design"
-      keys: "SSH Keys"
+      keys: "SSH Schlüssel"
   #
   # Admin Area
   #
@@ -116,6 +117,7 @@ de:
         wall_note: "Bei Neuigkeiten auf einer Wall"
     projects:
       form:
+        example_title: "Beispielprojekt"
         example_project: "mich_kann_man_clonen"
         example: "beispielurl"
       index:
@@ -392,14 +394,229 @@ de:
       upload: "Upload starten"
       restriction: "Dateigröße muss kleiner als 10MB sein"
       reply: "Antworten"
+  #
+  # Notifications
+  #
+  notify:
+    new_user_email:
+      hi: "Hey %{user}!"
+      creation: "Ein Administrator hat einen Account für Dich angelegt."
+      login: "email"
+      password: "kennwort"
+      login_href: "Klicke hier, um Dich anzumelden"
+    new_issue_email:
+      title: "Ein neues Ticket wurde erstellt und Dir zugeteilt."
+      issue_href: "Ticket #%{id}: '%{title}'"
+    new_merge_request_email:
+      title: "Neuer Merge Request: "
+      branches: "Branches: %{old} &rarr; %{new}"
+      assignee: "Zugeordnet: %{old} &rarr; %{new}"
+    changed_merge_request_email:
+      title: "Neue Zuständigkeit des Merge Requests:"
+      assignee: "Zuständigkeit wurde verändert von %{old} zu %{new}"
+    changed_issue_email:
+      title: "Neue Zuständigkeit des Tickets"
+    note_commit_email:
+      title: "Neuer Kommentar des Commits "
+      left_message: "hinterließ folgenden Kommentar:"
+    note_issue_email:
+      title: "Neuer Kommentar des"
+      title_href: "Tickets #%{id}: '%{topic}'"
+    note_merge_request_email:
+      title: "Neuer Kommentar des Merge Requests:"
+    note_wall_email:
+      title: "Neue Nachricht auf der"
+      title_href: "Projekt Pinnwand"
+  #
+  # Profile
+  #
+  profile:
+    show:
+      projects: "Projekte:"
+      of: "von"
+      pubkeys: "SSH Schlüssel:"
+      name_help: "Gib Deinen vollen Namen an, damit Dich Deine Freunde erkennen können."
+      mail_help: "Anhand dieser Adresse wir Dein Avatar gezeigt."
+      bio_help: "In weniger als 250 Zeichen."
+      tip: "Tipp:"
+      gravatar: "Du kannst Deinen Avatar auf gravatar.com ändern."
+    password:
+      password: "Kennwort"
+      password_hint: "Nach einer erfolgreichen Aktualisirung musst Du Dich mit Deinem neuen Kennwort erneut einloggen."
+      token: "API Token"
+      classified: "halte diesen geheim!"
+      token_hint: "Der API Token wird verwendet, um innerhalb diverser Applikationen ohne ständige Authentifizierung auf GitLab Ressourcen zuzugreifen (zB. RSS Feed)."
+      reset: "Token zurücksetzen"
+      reset_confirm: "Bist Du Dir sicher?"
+      generate: "Erzeugen"
+      nyi: "Du besitzt noch keinen API Token. Klicke auf 'Erzeugen' um einen zu erhalten."
+    index:
+      title: "Profil"
+    design:
+      app: "Globales Design"
+      default: "Standard"
+      classic: "Klassisch"
+      code: "Quelltext"
+      white: "Helle Darstellung"
+      dark: "Dunkle Darstellung"
+  #
+  # Projects
+  #
+  projects:
+    projects: "Projekte"
+    index:
+      none: "Keine Projeke"
+      wait_for_add: "Wenn Du einem Projekt hinzugefügt wirst, wird es hier angezeigt"
+      success: "Projekt wurde erfolgreich erstellt."
+      updated: "Projekt wurde erfolgreich aktualisiert."
+    form:
+      features: "Komponenten"
+    project_head:
+      show: "Zeige"
+      team: "Team"
+      attachments: "Anhänge"
+      snippets: "Codeschnipsel"
+      hooks: "Hooks"
+      deploy: "Deploymentschlüssel"
+    show:
+      switch: "Zum Projekt"
+      download: "Snapshot herunteladen"
+      merge_request: "Neuer Merge Request"
+      issue: "Neues Ticket"
+      activity: "Letzte Aktivitäten"
+    team:
+      title: "Teammitglieder"
+      new: "Neues Teammitglied"
+      profile: "Um das Profil eines Mitglieds anzuzeigen, klicke auf dessen Avatar."
+    empty:
+      empty: "Du musst zuerst in Dein Repository pushen!"
+      git_global: "Globale Einstellung von Git:"
+      create: "Neues Repository?"
+      existing: "Bereits existierende Repositories"
+      remove: "Projekt entfernen"
+    files:
+      empty: "Alle Dateien, welche auf der Pinnwand, in Tickets, etc. hochgeladen werden, finden sich hier."
+    graph:
+      title: "Graph"
+  #
+  # Protected Branches
+  #
+  protected_branches:
+    index:
+      desc: "Nur Eigentümer des Projektes dürfen in geschützte Branches pushen."
+      features:
+        desc: "Geschützte Branches"
+        keep_secure: "ermöglichen es, Branches zu sichern und stabil zu halten"
+        forced_review: "erzwingen einen Code Review, bevor gemerged wird"
+      name: "Branch"
+      commit: "Letzter Commit"
+      unprotect: "Nicht mehr schützen"
+      default: "standard"
+  #
+  # Refs
+  #
+  refs:
+    tree:
+      code: "Quelltext"
+      name: "Datei"
+      update: "Letzte Aktualisierung"
+      commit: "Letzter Commit"
+      history: "Versionsgeschichte"
+    tree_file:
+      raw: "raw"
+      history: "history"
+      empty: "Leere Datei"
+      download: "Datei herunterladen"
+  #
+  # Repositories
+  #
+  repositories:
+    branch:
+      default: "standard"
+      download: "Snapshot"
+    branches_head:
+      recent: "Aktuell"
+      protected: "Geschützt"
+      all: "Alle"
+    tags:
+      none: "Keine Tags vorhanden"   
+  #
+  # Search
+  #
+  search:
+    show:
+      label: "Suche nach"
+      placeholder: "merge request 143"
+      submit: "Suchen!"
+      results: "Suchergebnisse"
+      no_result: "Nichts gefunden :("
+  #
+  # Snippets
+  #
+  snippets:
+    index:
+      desc: "Teile Codeschnipsel mit Teammitgliedern, um das Repository sauber zu halten."
+      new: "Neuen Schnipsel erstellen"
+    form:
+      edit: "Schnipsel #%{id} bearbeiten"
+      ex:
+        title: "Beispielschnipsel"
+        file: "beispiel.rb"
+    lifetime:
+      forever: "ewig"
+      day: "1 Tag"
+      week: "1 Woche"
+      month: "1 Monat"
+  #
+  # Team members
+  #
+  team_members:
+    form:
+      title: "Neues Teammitglied"
+      user: "Nutzername"
+      project_access: "Projektzugriff"
+      select: "Nutzer auswählen"
+    show:
+      owner: "Eigentümer"
+      back_to_list: "Zurück zur Teamauflistung"
+      member_since: "Registriert seit"
+  #
+  # Wikis
+  #
+  wikis:
+    form:
+      md: "Der Seiteninhalt wird geparst mittels: "
+      link: "Um einen Link zu einer neuen Seite zu erstellen, schreibe einfach"
+    edit:
+      title: "Seite bearbeiten"
+    show:
+      history: "Versionen"
+      last_edit: "Zuletzt bearbeitet von %{editor} vor %{date}"
+      destroy: "Diese Seite löschen"
+    history:
+      title: "Versionen"
+      id: "#"
+      last_edit: "Erstellt"
+      created_by: "Autor"
 
 
-
-
-
-
-
-        
+  #
+  # Notices
+  #  
+  notice:
+    merge_requests:
+      new: "Merge Request wurde erfolgreich erstellt."
+      edit: "Merge Request wurde erfolgreich aktualisiert."
+    projects:
+      new: "Projekt wurde erfolgreich erstellt."
+      edit: "Projekt wurde erfolgreich aktualisiert."
+    profile:
+      password: "Kennwort wurde erfolgreich geändert. Melde Dich jetzt mit diesem an."
+    team_members:
+      invalid: "Der Nutzer sollte mindestens eine Rolle besitzen."
+    wikis:
+      new: "Seite wurde erfolgreich aktualisiert."
+      destroy: "Seite wurde erfolgreich entfernt."
 
 
 #
@@ -416,7 +633,8 @@ de:
         default_branch: "Standard Branch"
         issues_enabled: "Tickets"
         merge_requests_enabled: "Merge Requests"
-        wall_enabled: "Wall"
+        wall_enabled: "Pinnwand"
+        wiki_enabled: "Wiki"
       user:
         name: "Voller Name"
         email: "eMail"
@@ -427,6 +645,7 @@ de:
         linkedin: "LinkedIn"
         twitter: "Twitter"
         admin: "Administratorrechte?"
+        bio: "Über mich"
       users_project:
         access_roles:
           guest: "Gast"
@@ -457,6 +676,17 @@ de:
         title: "Titel *"
         description: "Beschreibung"
         due_date: "Fertigstellung bis"
+      protected_branch:
+        name: "Zu schützende Branch"
+      snippet:
+        title: "Titel"
+        file_name: "Dateiname"
+        expires_at: "Lebensdauer"
+        content: "Quelltext"
+      wiki:
+        title: "Seitentitel"
+        content: "Inhalt"
+
 
 
 

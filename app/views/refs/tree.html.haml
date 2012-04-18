@@ -5,8 +5,7 @@
       = hidden_field_tag :destination, "tree"
       = hidden_field_tag :path, params[:path]
   %li{:class => "#{'active' if (controller.controller_name == "refs") }"}
-    = link_to tree_project_ref_path(@project, @ref) do 
-      Code
+    = link_to t('.code'), tree_project_ref_path(@project, @ref)
 
 #tree-holder= render :partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @tree}
 

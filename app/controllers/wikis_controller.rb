@@ -38,7 +38,7 @@ class WikisController < ApplicationController
 
     respond_to do |format|
       if @wiki.save
-        format.html { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
+        format.html { redirect_to [@project, @wiki], notice: I18n.t('notice.wikis.new') }
       else
         format.html { render action: "edit" }
       end
@@ -53,7 +53,7 @@ class WikisController < ApplicationController
     @wikis = @project.wikis.where(:slug => params[:id]).delete_all
 
     respond_to do |format|
-      format.html { redirect_to project_wiki_path(@project, :index), notice: "Page was successfully deleted" }
+      format.html { redirect_to project_wiki_path(@project, :index), notice: I18n.t('notice.wikis.destroy') }
     end
   end
 end

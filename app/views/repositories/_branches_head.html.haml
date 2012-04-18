@@ -2,11 +2,11 @@
 %ul.nav.nav-pills
   %li{:class => ("active" if current_page?(project_repository_path(@project)))}
     = link_to project_repository_path(@project) do 
-      Recent
+      = t '.recent'
   %li{:class => ("active" if current_page?(project_protected_branches_path(@project)))}
     = link_to project_protected_branches_path(@project) do 
-      Protected
+      = t '.protected'
   %li{:class => ("active" if current_page?(branches_project_repository_path(@project)))}
     = link_to branches_project_repository_path(@project) do 
-      All
+      = t '.all'
 %hr

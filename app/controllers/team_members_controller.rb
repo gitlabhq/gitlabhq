@@ -30,7 +30,7 @@ class TeamMembersController < ApplicationController
     @team_member.update_attributes(params[:team_member])
 
     unless @team_member.valid?
-      flash[:alert] = "User should have at least one role"
+      flash[:alert] = I18n.t('notice.team_members.invalid')
     end
     redirect_to team_project_path(@project)
   end

@@ -9,11 +9,11 @@
             &nbsp;
             = note.attachment_identifier
         %td  
-          Added
+          = t 'global.added'
           = time_ago_in_words(note.created_at)
-          ago
+          = t 'global.ago'
 - else 
   .alert-message.block-message
-    %p All files attached to project wall, issues etc will be displayed here
+    %p=t '.empty'
 
 
