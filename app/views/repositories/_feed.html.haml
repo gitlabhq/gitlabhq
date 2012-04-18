@@ -5,7 +5,7 @@
       %strong
         = commit.head.name
       - if commit.head.name == @project.root_ref
-        %span.label default
+        %span.label= t 'repositories.branch.default'
 
   %td
     %div
@@ -16,4 +16,4 @@
   %td
     %span.right.cgray
       = time_ago_in_words(commit.committed_date)
-      ago
+      = t 'global.ago'

@@ -4,20 +4,22 @@
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
       %td{:align => "left", :style => "padding: 20px 0 0;"}
         %h2{:style => "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
-          Hi #{@user.name}!
+          = t 'notify.new_user_email.hi', :user => @user.name
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
-          Administrator created account for you. Now you are a member of company gitlab application.
+          = t 'notify.new_user_email.creation'
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
     %tr
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
       %td{:style => "padding: 15px 0 15px;", :valign => "top"}
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 16px;font-family: Helvetica, Arial, sans-serif; "}
-          login..........................................
+          = t 'notify.new_user_email.login'
+          ..........................................
           %code= @user.email
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 16px;font-family: Helvetica, Arial, sans-serif; "}
-          password..................................
+          = t 'notify.new_user_email.password'
+          ..................................
           %code= @password
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
-          = link_to "Click here to login", root_url
+          = link_to t('notify.new_user_email.login_href'), root_url
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
 

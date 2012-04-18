@@ -10,8 +10,8 @@
   -# Atom feed
   - if @project && !@project.new_record?
     - if current_page?(tree_project_ref_path(@project, @project.root_ref)) || current_page?(project_commits_path(@project))
-      = auto_discovery_link_tag(:atom, project_commits_url(@project, :atom, :ref => @ref, :private_token => current_user.private_token), :title => "Recent commits to #{@project.name}:#{@ref}")
+      = auto_discovery_link_tag(:atom, project_commits_url(@project, :atom, :ref => @ref, :private_token => current_user.private_token), :title => t('.atom.recent_commits', :project => @project.name, :ref => @ref))
     - if request.path == project_issues_path(@project)
-      = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, :private_token => current_user.private_token), :title => "#{@project.name} issues")
+      = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, :private_token => current_user.private_token), :title => t('.atom.issues', :project => @project.name))
   = csrf_meta_tags
 

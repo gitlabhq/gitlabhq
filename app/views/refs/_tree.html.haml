@@ -15,11 +15,11 @@
     - contents = tree.contents
     %table#tree-slider.bordered-table.table
       %thead
-        %th Name
-        %th Last Update
+        %th=t '.name'
+        %th=t '.update'
         %th
-          Last commit
-          = link_to "History", tree.history_path, :class => "right"
+          = t '.commit'
+          = link_to t('.history'), tree.history_path, :class => "right"
 
       - if tree.up_dir?
         %tr{ :class => "tree-item", :url => tree.up_dir_path }

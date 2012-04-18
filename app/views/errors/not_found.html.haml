@@ -1,5 +1,8 @@
 .alert-message.block-message.error
-  %h3 Not found
+  %h3
+    = t '.title'
   %hr
-  %p Resource you were looking for doesn't exist.
-  %P You may have mistyped the address or it was removed.
+  %p
+    = t '.desc'
+  %p
+    = t '.further_info'

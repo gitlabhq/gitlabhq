@@ -1,6 +1,8 @@
 .ui-box
   %h5
-    .cgray Team Members (#{@project.users_projects.count})
+    .cgray
+      = t '.title'
+      (#{@project.users_projects.count})
   %ul.unstyled
     - @project.users_projects.each do |up|
       = render(:partial => 'team_members/show', :locals => {:member => up})

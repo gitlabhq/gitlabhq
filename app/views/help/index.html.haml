@@ -1,17 +1,20 @@
-%h3 
-  Gitlabhq
+%h3
+  = t '.title'
   %span.right v2.4
 %hr
-%h4 Self Hosted Git Management
-%h4 Fast, secure and stable solution based on Ruby on Rails & Gitolite. 
+%h4
+  = t '.shortdesc'
+%h4
+  = t '.desc'
 
 %hr
 
-%h3 Help
+%h3
+  = t 'help.title'
 
 %ol
   %li
-    %h5= link_to "Workflow", help_workflow_path
+    %h5= link_to t('help.workflow.title'), help_workflow_path
 
   %li
-    %h5= link_to "Permissions", help_permissions_path
+    %h5= link_to t('help.permissions.title'), help_permissions_path

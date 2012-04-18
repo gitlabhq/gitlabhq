@@ -46,10 +46,10 @@ class UsersProject < ActiveRecord::Base
 
   def self.access_roles
     {
-      "Guest"   => GUEST,
-      "Reporter"   => REPORTER,
-      "Developer" => DEVELOPER,
-      "Master"  => MASTER
+      I18n.t('activerecord.attributes.users_project.access_roles.guest') => GUEST,
+      I18n.t('activerecord.attributes.users_project.access_roles.reporter') => REPORTER,
+      I18n.t('activerecord.attributes.users_project.access_roles.developer') => DEVELOPER,
+      I18n.t('activerecord.attributes.users_project.access_roles.master') => MASTER
     }
   end
 

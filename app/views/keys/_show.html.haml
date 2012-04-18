@@ -5,9 +5,9 @@
         %strong= key.title
   %td
     %span.right.cgray
-      Added
+      = t '.added'
       = time_ago_in_words(key.created_at)
-      ago
+      = t 'global.ago'
   %td
-    = link_to 'Remove', key, :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger delete-key right"
+    = link_to t('global.destroy'), key, :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn small danger delete-key right"
 

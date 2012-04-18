@@ -2,7 +2,7 @@
   %tr.per_line_form
     %td{:colspan => 3 }
       = form_for [@project, @note], :remote => "true", :multipart => true do |f|
-        %h3 Leave a note
+        %h3=t 'notes.form.title'
         %div.span10
           -if @note.errors.any?
             .alert-message.block-message.error
@@ -13,19 +13,19 @@
           = f.hidden_field :noteable_type
           = f.hidden_field :line_code
           = f.text_area :note,  :size => 255
-          %h5 Notify via email:
+          %h5=t 'notes.form.notify'
           .clearfix
             = label_tag :notify do 
               = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-              %span Project team
+              %span=t 'notes.form.team'
 
             - if @note.notify_only_author?(current_user)
               = label_tag :notify_author do 
                 = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-                %span Commit author
+                %span=t 'notes.form.author'
           .actions
-            = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
-            = link_to "Close", "#", :class => "btn hide-button"
+            = f.submit t('global.save'), :class => "btn primary", :id => "submit_note"
+            = link_to t('global.reset'), "#", :class => "btn hide-button"
 
 :javascript 
   $(function(){

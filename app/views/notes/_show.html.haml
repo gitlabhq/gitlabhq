@@ -4,9 +4,9 @@
     %strong= note.author_name
     %cite.cgray
       = time_ago_in_words(note.updated_at)
-      ago
+      = t 'global.ago'
     - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
-      %strong= link_to "Remove", [@project, note], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-note btn small"
+      %strong= link_to t('global.destroy'), [@project, note], :confirm => t('global.destroy_confirm'), :method => :delete, :remote => true, :class => "cred delete-note btn small"
 
   %div.note-title
     = preserve do

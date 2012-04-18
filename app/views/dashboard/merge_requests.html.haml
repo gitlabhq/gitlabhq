@@ -1,6 +1,7 @@
 %h3
-  Merge Requests
-  %small (authored or assigned to you)
+  = t '.title'
+  %small
+    = t '.authored_assigned_to_you'
 
 %br
 %div#merge_requests-table-holder.ui-box
@@ -17,8 +18,11 @@
         .row
           .span7= paginate @merge_requests, :theme => "gitlab"
           .span4.right
-            %span.cgray.right #{@merge_requests.total_count} merge requests
+            %span.cgray.right
+              #{@merge_requests.total_count}
+              = t '.total'
 
     - else
       %li
-        %p.padded Nothing to show here
+        %p.padded
+          = t '.no_requests'

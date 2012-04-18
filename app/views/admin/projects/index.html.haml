@@ -1,14 +1,14 @@
 %h3 
-  Projects
-  = link_to 'New Project', new_admin_project_path, :class => "btn small right"
+  = t '.title'
+  = link_to t('.new'), new_admin_project_path, :class => "btn small right"
 %br
 %table.admin-table
   %thead
-    %th Name
-    %th Path
-    %th Team Members
-    %th Post Receive
-    %th Last Commit
+    %th= t '.name'
+    %th= t '.path'
+    %th= t '.team_count'
+    %th= t '.post_receive'
+    %th= t '.last_commit'
     %th
     %th
 
@@ -19,6 +19,6 @@
       %td= project.users_projects.count
       %td= check_box_tag :post_receive_file, 1, project.has_post_receive_file?, :disabled => true
       %td= last_commit(project)
-      %td= link_to 'Edit', edit_admin_project_path(project), :id => "edit_#{dom_id(project)}", :class => "btn small"
-      %td= link_to 'Destroy', [:admin, project], :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
+      %td= link_to t('global.edit'), edit_admin_project_path(project), :id => "edit_#{dom_id(project)}", :class => "btn small"
+      %td= link_to t('global.destroy'), [:admin, project], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn small danger"
 = paginate @admin_projects, :theme => "admin"

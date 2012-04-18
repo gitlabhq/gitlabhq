@@ -1,0 +1,755 @@
+en:
+  #
+  # Global l18n
+  #
+  global:
+    ago: " ago"
+    never: "Never"
+    timestamp: "Aug 21, 2011"
+    full_timestamp: "Aug 21, 2011 9:23pm"
+    html_lang: "en"
+    more: "More"
+    save: "Save"
+    reset: "Cancel"
+    destroy: "Destroy"
+    destroy_confirm: "Are you sure?"
+    edit: "Edit"
+    back: "Back"
+    markdown: "Markdown is enabled."
+    created_at: "created at"
+    added: "Added"
+    required: " * required"
+  
+  #
+  # Dashboard
+  #
+  dashboard:
+    issues:
+      title: "Issues"
+      assigned_to_you: "(assigned to you)"
+      list: "Visit issues page"
+      issue_no: "Issue #"
+      total: "issues"
+      no_issues: "Nothing to show here"
+    merge_requests:
+      title: "Merge Requests"
+      authored_assigned_to_you: "(authored or assigned to you)"
+      list: "Visit merge requests page"
+      merge_request_no: "Merge Request #"
+      total: "merge requests"
+      no_requests: "Nothing to show here"
+    projects_feed:
+      last_active: "last activity at"
+      browse_code: "Browse Code »"
+      commits: "Commits »"
+    index:
+      require_key:
+        before: "You wont be able to pull/push project code unless you"
+        href: "add new key"
+        after: "to your profile"
+      projects:
+        title: "Projects"
+        recent: "(most recent)"
+        list: "Projects list" 
+        singular: "project"
+        plural: "projects"
+        maximum: "You can create up to %{limit} projects. Click on button below to add a new one"
+        new: "New Project »"
+        limit_reached: "You've reached project limit for your account. You cannot create new projects."
+        my_profile: "Your Profile »"
+      latest_push: "Latest push was to the %{ref_name} %{ref_type} of %{project}:"
+      activities: "Activities"
+  #
+  # Layouts
+  #
+  layouts:
+    application:
+      dashboard: "Dashboard"
+    head:
+      atom:
+        recent_commits: "Recent commits to %{project}:%{ref}"
+        issues: "%{project} issues"
+    head_panel:
+      home: "Home"
+      search: "Search"
+      admin_area: "Admin area"
+      profile: "My profile"
+      logout: "Logout"
+    const_menu_links:
+      home: "Home"
+    app_menu:
+      projects: "Projects"
+      issues: "Issues"
+      requests: "Requests"
+      search: "Search"
+      help: "Help"
+    project_menu:
+      project: "Project"
+      files: "Files"
+      commits: "Commits"
+      network: "Network"
+      wall: "Wall"
+      wiki: "Wiki"
+    admin:
+      users: "Users"
+      projects: "Projects"
+      emails: "Emails"
+      resque: "Resque"
+    notify:
+      reason: "You're receiving this newsletter because you are in project team."
+    profile:
+      title: "Profile"
+      security: "Password & Token"
+      design: "Design"
+      keys: "SSH Keys"
+  #
+  # Admin Area
+  #
+  admin:
+    mailer:
+      preview:
+        desc: "This is a page with previews for all system emails which are sent to users"
+        availability_hint: "Email previews are built based on existing Projects/Commits/Issues - so some previews maybe unavailable"
+        new_user: "New user"
+        new_issue: "New issue"
+        commit_note: "Commit note"
+        issue_note: "Issue note"
+        wall_note: "Wall note"
+    projects:
+      form:
+        example_title: "Example Project"
+        example_project: "example_project"
+        example: "example"
+      index:
+        title: "Projects"
+        new: "New Project »"
+        name: "Name"
+        path: "Path"
+        team_count: "Team Members"
+        last_commit: "Last Commit"
+        post_receive: "Post Receive"
+      new:
+        title: "Create a new project"
+      show:
+        team:
+          title: "Team"
+          add_title: "Add new team member"
+          member:
+            name: "Name"
+            project_access: "Project Access"
+            repo_access: "Repository Access"
+            edit_access: "Edit Access"
+            remove: "Remove from team"
+            add: "Add"
+    users:
+      index:
+        title: "Users"
+        new: "New User"
+        admin: "Admin"
+        name: "Name"
+        email: "Email"
+        projects: "Projects"
+        blocked: "Blocked"
+        active: "Active"
+        admins: "Admins"
+        blocked_filter: "Blocked"
+        wo_project: "Without projects"
+        btn_block: "Block"
+        btn_unblock: "Unblock"
+      form:
+        admin_desc: "Give user ability to manage application."
+        unblock_desc: "This user is blocked and is not able to login GitLab"
+        block_desc: "Blocked user will removed from all projects &amp; will not be able to login to GitLab."
+  #
+  # Commits
+  #
+  commits:
+    commit:
+      browse: "Browse Code »"
+    diffs:
+      warning:
+        title: "Warning! Large commit with more then 200 files changed."
+        reason: "To prevent performance issue we rejected diff information."
+        continue: "But if you still want to see diff "
+        continue_href: "click this link"
+      title:
+        showing: "Showing"
+        changes: "changed file"
+        changes_plural: "changed files"
+      no_preview: "No preview for this file type"
+    head:
+      commits: "Commits"
+      compare: "Compare"
+      branches: "Branches"
+      tags: "Tags"
+      feed: "feed"
+    text_file:
+      suppressed: "Diff suppressed. Click to show"
+      add_note: "Add note for this line"
+    compare:
+      title: "Compare View"
+      desc: "Fill input field with commit id like '4eedf23' or branch/tag name like master & press compare button for commits list, code diff."
+      submit: "Compare"
+      commits: "Commits (%{count})"
+      diff: "Diff"
+    show:
+      commit: "commit"
+      authored: "authored"
+      committed: "committed"
+      parent: "parent"
+      parents: "parents"
+  #
+  # Deploy Keys
+  #
+  deploy_keys:
+    title: "Deploy Keys"
+    index:
+      desc: "Deploy keys allow read-only access to repository."
+      new: "Add Deploy Key"
+    show:
+      added: "Added"
+  #
+  # Errors
+  #
+  errors:
+    access_denied:
+      title: "Access Denied"
+      desc: "You're not allowed to access this page"
+      further_info: "Read more about project permissions"
+      further_info_href: "here"
+    git_not_found:
+      title: "Git Resource not found"
+      desc: "Gitlab can't get access to a branch or commit in your repository. Maybe it was moved"
+    gitolite:
+      title: "Gitolite Error"
+      desc: "Gitlab can't get access to your gitolite system."
+      suggestions:
+        first: "Check 'config/gitlab.yml' for correct settings."
+        second:
+          desc: "Make sure web server user has access to gitolite."
+          href: "Setup tutorial"
+        third: "Try:"
+    not_found:
+      title: "Not found"
+      desc: "Resource you were looking for doesn't exist."
+      further_info: "You may have mistyped the address or it was removed."
+  #
+  # Events
+  #
+  events:
+    at: "at"
+    event_issue:
+      issue: "issue"
+    event_merge_request:
+      merge_request: "merge request"
+    event_push:
+      more: "... and %{count} more commits"
+  #
+  # Help
+  #
+  help:
+    title: "Help"
+    index:
+      title: "Gitlabhq"
+      shortdesc: "Self Hosted Git Management"
+      desc: "Fast, secure and stable solution based on Ruby on Rails & Gitolite."
+    workflow:
+      title: "Workflow"
+    permissions:
+      title: "Permissions"
+  #
+  # Hooks
+  #
+  hooks:
+    index:
+      desc: "Post receive hooks for binding events when someone push to repository."
+      new: "Add Post Receive Hook"
+      further_info: "Read more about web hooks"
+      further_info_href: "here"
+    show:
+      test: "Test Hook"
+  #
+  # Issues
+  #
+  issues:
+    xml_title: "%{project} issues"
+    head:
+      browse: "Browse Issues"
+      milestones: "Milestones"
+    issues:
+      matching_issues: "%{count} issue/s for this filter"
+      empty: "Nothing to show here"
+    show:
+      title: "Issue #%{id}"
+      created_at: "created at"
+      updated_at: "updated at"
+      upvote: "+1 upvote"
+      upvotes: "+%{votes} upvotes"
+      issues_list: "To issues list"
+      created_by: "Created by"
+      currently_assigned_to: "and currently assigned to"
+      note: "note"
+      notes: "notes"
+      reopen: "Reopen"
+      resolve: "Resolve"
+      assigned_to: "assigned to"
+      critical: "critical"
+      today: "today"
+    index:
+      new: "New Issue"
+      title: "Issues"
+      open: "Open"
+      closed: "Closed"
+      to_me: "To Me"
+      all: "All"
+    edit:
+      title:  "Edit Issue #%{id}"
+    form:
+      submit: "Submit new issue"
+      assignee_desc: "Assign to user"
+      milestone_desc: "Select milestone"
+  #
+  # Kaminari
+  #
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "..."
+  #
+  # Keys
+  #
+  keys:
+    index:
+      title: "SSH Keys"
+      new: "Add a new SSH Key"
+    show:
+      added: "Added"
+      pubkey: "Public key:"
+      back_to_list: "To keys list"
+    edit:
+      title: "Edit key"
+  #
+  # Merge Requests
+  #
+  merge_requests:
+    commits:
+      title: "Commits"
+      no_commits: "Nothing to merge"
+      view_limited: "8 of %{total} commits displayed."
+      show_all: "Click here to show all"
+    head:
+      title: "Merge Requests"
+    how_to_merge:
+      title: "How To Merge"
+    new:
+      title: "New Merge Request"
+    index:
+      open: "Open"
+      closed: "Closed"
+      to_me: "To Me"
+      all: "All"
+      no_requests: "Nothing to show here"
+      matching_requests: "%{count} merge requests for this filter"
+    merge_request:
+      note: "note"
+      notes: "notes"
+      authored: "authored"
+    edit:
+      title: "Edit merge request #%{id}"
+    form:
+      select_branch: "Select Branch"
+      select_user: "Select User"
+    show:
+      title: "Merge Request #%{id}:"
+      resolve: "Close"
+      upvote: "+1 upvote"
+      upvotes: "+%{votes} upvotes"
+      back_to_list: "To merge request list"
+      closed: "Closed"
+      open: "Open"
+      created_at: "Created at %{date} by"
+      assigned_to: "and currently assigned to"
+      merged_by: "Merged by"
+      closed_by: "Closed by"
+      notes: "Notes"
+      diff: "Diff"
+  #
+  # Milestones
+  #
+  milestones:
+    index:
+      title: "Milestones"
+      new: "New Milestone"
+      active: "Active"
+      all: "All"
+      no_milestones: "Nothing to show here"
+    form:
+      edit: "Edit Milestone #%{id}"
+      back_to_list: "To milestones"
+    milestone:
+      browse: "Browse Issues"
+      expires: "expires at %{date}"
+    show:
+      title: "Milestone #%{id}"
+      closed: "Closed"
+      open: "Open"
+      open_issues: "%{count} open"
+      closed_issues: "%{count} closed"
+  #
+  # Notes
+  #
+  notes:
+    form:
+      title: "Leave a Comment"
+      notify: "Notify via email:"
+      team: "Project team"
+      author: "Commit author"
+      attachment: "Attachment:"
+      filename: "File name..."
+      upload: "Upload File"
+      restriction: "Any file less then 10 MB"
+      reply: "Reply"
+  #
+  # Notifications
+  #
+  notify:
+    new_user_email:
+      hi: "Hi %{user}!"
+      creation: "Administrator created account for you. Now you are a member of company gitlab application."
+      login: "login"
+      password: "password"
+      login_href: "Click here to login"
+    new_issue_email:
+      title: "New Issue was created and assigned to you."
+      issue_href: "Issue #%{id}: '%{title}'"
+    new_merge_request_email:
+      title: "New Merge Request"
+      branches: "Branches: %{old} &rarr; %{new}"
+      assignee: "Asignee: %{old} &rarr; %{new}"
+    changed_merge_request_email:
+      title: "Reassigned Merge Request"
+      assignee: "Assignee changed from %{old} to %{new}"
+    changed_issue_email:
+      title: "Reassigned Issue"
+    note_commit_email:
+      title: "New comment for commit"
+      left_message: "left next message:"
+    note_issue_email:
+      title: "New comment -"
+      title_href: "Issue #%{id}: '%{topic}'"
+    note_merge_request_email:
+      title: "New comment for Merge Request"
+    note_wall_email:
+      title: "New message on"
+      title_href: "Project Wall"
+  #
+  # Profile
+  #
+  profile:
+    show:
+      projects: "Personal projects:"
+      of: "of"
+      pubkeys: "SSH public keys:"
+      name_help: "Enter your name so people you know can recognize you."
+      mail_help: "We also use email for avatar detection"
+      bio_help: "About yourself in fewer than 250 characters."
+      tip: "Tip:"
+      gravatar: "You can change your avatar at gravatar.com"
+    password:
+      password: "Password"
+      password_hint: "After successfull password update you will be redirected to login page where you should login with new password"
+      token: "Private token"
+      classified: "keep it in secret!"
+      token_hint: "Private token used to access application resources without authentication (eg. rss feed)."
+      reset: "Reset"
+      reset_confirm: "Are you sure?"
+      generate: "Generate"
+      nyi: "You don`t have one yet. Click generate to fix it."
+    index:
+      title: "Profile"
+    design:
+      app: "Application theme"
+      default: "Default"
+      classic: "Classic"
+      code: "Code review"
+      white: "White code preview"
+      dark: "Dark code preview"
+  #
+  # Projects
+  #
+  projects:
+    projects: "Projects"
+    index:
+      none: "Nothing here"
+      wait_for_add: "If you will be added to project - it will be displayed here"
+      success: "Project was successfully created"
+      updated: "Project was successfully updated."
+    form:
+      features: "Features"
+    project_head:
+      show: "Show"
+      team: "Team"
+      attachments: "Attachments"
+      snippets: "Snippets"
+      hooks: "Hooks"
+      deploy: "Deploy Keys"
+    show:
+      switch: "Switch to project"
+      download: "Download"
+      merge_request: "New Merge Request"
+      issue: "New Issue"
+      activity: "Recent Activity"
+    team:
+      title: "Team Members"
+      new: "New Team Member"
+      profile: "To open team member profile - click on avatar."
+    edit:
+      title: "Edit Project"
+      processing: "Saving project &amp; repository. Please wait..."
+    new:
+      title: "New Project"
+      processing: "Creating project &amp; repository. Please wait for few minutes."
+    empty:
+      empty: "You should push repository to proceed. After push you will be able to browse code, commits etc."
+      git_global: "Git global setup:"
+      create: "Create Repository"
+      existing: "Existing Git Repo?"
+      remove: "Remove project"
+    files:
+      empty: "All files attached to project wall, issues etc will be displayed here"
+    graph:
+      title: "Network Graph"
+  #
+  # Protected Branches
+  #
+  protected_branches:
+    index:
+      desc: "Protected branches designed to prevent push for all except masters. "
+      features:
+        desc: "This ability allows"
+        keep_secure: "keep stable branches secured"
+        forced_review: "forced code review before merge to protected branches"
+      name: "Name"
+      commit: "Last Commit"
+      unprotect: "Unprotect"
+      default: "default"
+  #
+  # Refs
+  #
+  refs:
+    tree:
+      code: "Code"
+      name: "Name"
+      update: "Last Update"
+      commit: "Last Commit"
+      history: "History"
+    tree_file:
+      raw: "raw"
+      history: "history"
+      empty: "Empty file"
+      download: "Download"
+  #
+  # Repositories
+  #
+  repositories:
+    branch:
+      default: "default"
+      download: "Download"
+    branches_head:
+      recent: "Recent"
+      protected: "Protected"
+      all: "All"
+    tags:
+      none: "No Tags"
+  #
+  # Search
+  #
+  search:
+    show:
+      label: "Looking for"
+      placeholder: "issue 143"
+      submit: "Search"
+      results: "Search results"
+      no_result: "Nothing here"
+      projects: "Projects"
+      issues: "Issues"
+      merge_requests: "Merge Requests"
+  #
+  # Snippets
+  #
+  snippets:
+    index:
+      desc: "Share code pastes with others if it can't be in a git repository"
+      new: "Add a new snippet"
+    form:
+      edit: "Edit Snippet #%{id}"
+      ex:
+        title: "Example Snippet"
+        file: "example.rb"
+    lifetime:
+      forever: "forever"
+      day: "1 day"
+      week: "1 week"
+      month: "1 month"
+  #
+  # Team members
+  #
+  team_members:
+    form:
+      title: "New Team Member"
+      user: "Name"
+      project_access: "Project Access"
+      select: "Select user"
+    show:
+      owner: "Project Owner"
+      blocked: "Blocked"
+      back_to_list: "To team list"
+      member_since: "Member since"
+  #
+  # Wikis
+  #
+  wikis:
+    form:
+      md: "Wiki content is parsed with"
+      link: "To add link to new page you can just type"
+    edit:
+      title: "Editing page"
+    show:
+      history: "History"
+      last_edit: "Last edited by %{editor} in %{date}"
+      destroy: "Delete this page"
+    history:
+      title: "Versions"
+      id: "#"
+      last_edit: "last edit"
+      created_by: "created by"
+
+
+
+  #
+  # Notices
+  #  
+  notice:
+    merge_requests:
+      new: "Merge request was successfully created."
+      edit: "Merge request was successfully updated."
+    projects:
+      new: "Project was successfully created."
+      edit: "Project was successfully updated."
+    profile:
+      password: "Password was successfully updated. Please login with it"
+    team_members:
+      invalid: "User should have at least one role"
+    wikis:
+      new: "Page was successfully updated."
+      destroy: "Page was successfully deleted."
+    
+      
+
+
+  #
+  # ActiveRecord: Translations for Models
+  #
+  activerecord:
+    attributes:
+      project:
+        name: "Title"
+        path: "Path"
+        code: "Code"
+        description: "Description"
+        owner_id: "Owner"
+        default_branch: "Default Branch"
+        issues_enabled: "Issues"
+        merge_requests_enabled: "Merge Requests"
+        wall_enabled: "Wall"
+        wiki_enabled: "Wiki"
+        post_receive_file: "Post Receive File"
+      user:
+        name: "Name"
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        projects_limit: "Projects limit"
+        skype: "Skype"
+        linkedin: "LinkedIn"
+        twitter: "Twitter"
+        admin: "Administrator"
+        blocked: "Blocked"
+        bio: "Bio"
+      users_project:
+        access_roles:
+          guest: "Guest"
+          reporter: "Reporter"
+          developer: "Developer"
+          master: "Master"
+      key:
+        title: "Title"
+        key: "Key"
+      event:
+        opened: "opened"
+        closed: "closed"
+        merged: "merged"
+      web_hook:
+        url: "URL"
+      issue:
+        title: "Issue Subject *"
+        assignee_id: "Assign to *"
+        description: "Issue Details"
+        milestone_id: "Milestone"
+        critical: "Critical"
+      merge_request:
+        title: "Title"
+        source_branch: "From"
+        target_branch: "To"
+        assignee_id: "Assign to"
+      milestone:
+        title: "Title *"
+        description: "Description"
+        due_date: "Due Date"
+      protected_branch:
+        name: "Name"
+      snippet:
+        title: "Title"
+        file_name: "Filename"
+        expires_at: "Lifetime"
+        content: "Code"
+      wiki:
+        title: "Title"
+        content: "Content"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

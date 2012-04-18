@@ -1,0 +1,39 @@
+- bash_lexer = Pygments::Lexer[:bash]
+%h3
+  = t 'help.workflow.title'
+%hr
+
+%ol.help
+  %li
+    %p Projekte Klonen
+    .bash
+      %pre 
+        git clone git@example.com:project-name.git
+
+  %li
+    %p Branches auschecken (zB. master oder "bug-471")
+    .bash
+      %pre 
+        git checkout -b $feature_name
+
+  %li
+    %p Code schreiben, Commits erstellen
+    .bash
+      %pre 
+        git commit -am "My feature is ready"
+
+  %li
+    %p Commits pushen
+    .bash
+      %pre 
+        git push origin $feature_name
+
+  %li 
+    %p Deinen Code in der Commitauflistung überprüfen
+
+  %li 
+    %p Einen Merge Request erstellen
+
+  %li 
+    %p Deine Teamleitung wird Deinen Code überprüfen und ggf. in master, etc. mergen.
+

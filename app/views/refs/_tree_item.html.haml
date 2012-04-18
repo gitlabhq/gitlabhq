@@ -15,7 +15,7 @@
     = link_to truncate(content.name, :length => 40), tree_file_project_ref_path(@project, @ref || @commit.id, file), :remote => :true
   %td.cgray
     = time_ago_in_words(content_commit.committed_date)
-    ago
+    = t 'global.ago'
   %td.commit
     - tm = @project.team_member_by_name_or_email(content_commit.author_email, content_commit.author_name)
     - if tm

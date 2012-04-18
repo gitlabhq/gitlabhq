@@ -1,6 +1,6 @@
 - if @project.valid?
   :plain
-    location.href = "#{project_path(@project, :notice => 'Project was successfully created.')}";
+    location.href = "#{project_path(@project, :notice => t('projects.index.success'))}";
 - else
   :plain
     $('.project_new_holder').show();

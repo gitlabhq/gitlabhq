@@ -12,6 +12,6 @@
       = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
         = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, :class => "medium project-access-select", :disabled => !allow_admin
       - if @project.owner == user
-        %span.label Project Owner
+        %span.label=t '.owner'
       - if user.blocked
-        %span.label Blocked
+        %span.label= t '.blocked'

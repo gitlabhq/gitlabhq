@@ -12,12 +12,12 @@
           = f.label :name
           .input
             = f.text_field :name
-            %span.help-inline * required
+            %span.help-inline=t 'global.required'
         .clearfix
           = f.label :email
           .input
             = f.text_field :email
-            %span.help-inline * required
+            %span.help-inline=t 'global.required'
         .clearfix
           = f.label :password
           .input= f.password_field :password
@@ -41,23 +41,23 @@
 
         .alert
           .clearfix
-            %p Give user ability to manage application.
-            = f.label :admin, :class => "checkbox" do
+            %p=t '.admin_desc'
+            = f.label :admin, :class => "checkbox" do 
               = f.check_box :admin
-              %span Administrator
+              %span=t 'activerecord.attributes.user.admin'
         - unless @admin_user.new_record?
           .alert.alert-error
             - if @admin_user.blocked
               %span
-                = link_to 'Unblock', unblock_admin_user_path(@admin_user), :method => :put, :class => "btn small"
-                This user is blocked and is not able to login GitLab
+                = link_to t('admin.users.index.btn_unblock'), unblock_admin_user_path(@admin_user), :method => :put, :class => "btn small"
+                = t '.unblock_desc'
             - else
               %span
-                = link_to 'Block', block_admin_user_path(@admin_user), :confirm => 'USER WILL BE BLOCKED! Are you sure?', :method => :put, :class => "btn small danger"
-                Blocked user will removed from all projects &amp; will not be able to login to GitLab.
+                = link_to t('admin.users.index.btn_block'), block_admin_user_path(@admin_user), :confirm => t('global.destroy_confirm'), :method => :put, :class => "btn small danger"
+                = t '.block_desc'
     .actions
-      = f.submit 'Save', :class => "btn primary"
-      - if @admin_user.new_record?
-        = link_to 'Cancel', admin_users_path, :class => "btn"
-      - else
-        = link_to 'Cancel', admin_user_path(@admin_user), :class => "btn"
+      = f.submit t('global.save'), :class => "btn primary"
+      - if @admin_user.new_record? 
+        = link_to t('global.reset'), admin_users_path, :class => "btn"
+      - else 
+        = link_to t('global.reset'), admin_user_path(@admin_user), :class => "btn"

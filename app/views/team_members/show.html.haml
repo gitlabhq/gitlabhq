@@ -12,38 +12,39 @@
   .back_link
     %br
     = link_to team_project_path(@project), :class => "" do 
-      &larr; To team list
+      &larr;
+      =t '.back_to_list'
   %br
   .row
     .span6
       %table.no-borders
         %tr
-          %td Email
+          %td=t 'activerecord.attributes.user.email'
           %td= mail_to user.email
         %tr
-          %td Skype
+          %td=t 'activerecord.attributes.user.skype'
           %td= user.skype
         - unless user.linkedin.blank?
           %tr
-            %td LinkedIn
+            %td=t 'activerecord.attributes.user.linkedin'
             %td= user.linkedin
         - unless user.twitter.blank?
           %tr
-            %td Twitter
+            %td=t 'activerecord.attributes.user.twitter'
             %td= user.twitter
         - unless user.bio.blank?
           %tr
-            %td Bio
+            %td=t 'activerecord.attributes.user.bio'
             %td= user.bio
     .span6
       %table.no-borders
         %tr
-          %td Member since
-          %td= @team_member.created_at.stamp("Aug 21, 2011")
+          %td= t '.member_since'
+          %td= @team_member.created_at.stamp(t('global.timestamp'))
         %tr
           %td
-            Project Access:
-            %small (#{link_to "read more", help_permissions_path, :class => "vlink"})
+            = t 'team_members.form.project_access'
+            %small (#{link_to t('global.more').downcase, help_permissions_path, :class => "vlink"})
           %td
             = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
               = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
@@ -52,7 +53,7 @@
   - if can? current_user, :admin_project, @project
     .form-horizontal
       .form-actions
-        = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "btn btn-danger"
+        = link_to t('admin.projects.show.team.member.remove'), project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn btn-danger"
 
 :javascript
   $(function(){

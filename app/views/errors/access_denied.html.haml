@@ -1,5 +1,9 @@
 .alert-message.block-message.error
-  %h3 Access Denied
+  %h3
+    = t '.title'
   %hr
-  %p Youre not allowed to access this page
-  %p Read more about project permissions #{link_to "here", help_permissions_path, :class => "vlink"}
+  %p
+    = t '.desc'
+  %p
+    = t '.further_info'
+    = link_to t('.further_info_href'), help_permissions_path, :class => "vlink"

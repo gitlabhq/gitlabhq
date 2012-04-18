@@ -98,7 +98,7 @@ class Event < ActiveRecord::Base
     elsif merged?
       "merged"
     else 
-      "opened"
+      I18n.t('activerecord.attributes.event.opened')
     end
   end
 

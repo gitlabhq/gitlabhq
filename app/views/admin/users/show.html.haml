@@ -1,10 +1,14 @@
 %h3
   = @admin_user.name
+<<<<<<< HEAD
+  = link_to t('global.edit'), edit_admin_user_path(@admin_user), :class => "btn small right"
+=======
   - if @admin_user.blocked
     %small Blocked
   - if @admin_user.admin
     %small Administrator
   = link_to 'Edit', edit_admin_user_path(@admin_user), :class => "btn small right"
+>>>>>>> c9def94... User blocking improved. Admin area styled
 
 %br
 
@@ -12,47 +16,73 @@
   %tr
     %td
       %b
-        Email:
+        = t 'activerecord.attributes.user.email'
     %td
       = @admin_user.email
   %tr
     %td
       %b
-        Admin:
+        = t 'activerecord.attributes.user.admin'
         %td= check_box_tag "admin", 1, @admin_user.admin, :disabled => :disabled
   %tr
     %td
       %b
-        Blocked:
+        = t 'activerecord.attributes.user.blocked'
         %td= check_box_tag "blocked", 1, @admin_user.blocked, :disabled => :disabled
   %tr
     %td
       %b
-        Projects limit:
+        = t 'activerecord.attributes.user.projects_limit'
     %td
       = @admin_user.projects_limit
   - unless @admin_user.skype.empty?
     %tr
       %td
         %b
-          Skype:
+          = t 'activerecord.attributes.user.skype'
       %td
         = @admin_user.skype
   - unless @admin_user.linkedin.empty?
     %tr
       %td
         %b
-          Linkedin:
+          = t 'activerecord.attributes.user.linkedin'
       %td
         = @admin_user.linkedin
   - unless @admin_user.twitter.empty?
     %tr
       %td
         %b
-          Twitter:
+          = t 'activerecord.attributes.user.twitter'
       %td
         = @admin_user.twitter
 
+<<<<<<< HEAD
+%h3
+  = t 'admin.users.index.projects'
+%hr
+
+%table.zebra-striped
+  %tr
+    %thead
+      %th
+        = t 'admin.projects.index.name'
+      %th
+        = t 'admin.projects.show.team.member.project_access'
+      %th
+        = t 'admin.projects.show.team.member.repo_access'
+      %th
+      %th
+
+  - @admin_user.users_projects.each do |tm|
+    - project = tm.project
+    %tr
+      %td= link_to project.name, admin_project_path(project)
+      %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), :class => "medium project-access-select", :disabled => :disabled
+      %td= link_to t('admin.projects.show.team.member.edit_access'), edit_admin_team_member_path(tm), :class => "btn small"
+      %td= link_to t('admin.projects.show.team.member.remove'), admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
+=======
+>>>>>>> c9def94... User blocking improved. Admin area styled
 
 %br
 %h3 Add User to Projects
@@ -61,13 +91,27 @@
   %table.table-bordered
     %thead
       %tr
+<<<<<<< HEAD
+        %th
+          = t 'admin.projects.index.name'
+        %th
+          = t 'admin.projects.show.team.member.project_access'
+        %th
+          = t 'admin.projects.show.team.member.repo_access'
+
+=======
         %th Projects
         %th Project Access:
+>>>>>>> c9def94... User blocking improved. Admin area styled
 
     %tr
       %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name),  :multiple => true
       %td= select_tag :project_access, options_for_select(Project.access_options), :class => "project-access-select"
 
+<<<<<<< HEAD
+  .actions
+    = submit_tag t('admin.projects.show.team.member.add'), :class => "btn primary"
+=======
     %tr
       %td= submit_tag 'Add', :class => "btn primary"
       %td
@@ -78,6 +122,7 @@
 - if @admin_user.projects.present?
   %h3 Projects
   %br
+>>>>>>> c9def94... User blocking improved. Admin area styled
 
   %table.zebra-striped.table-bordered
     %tr

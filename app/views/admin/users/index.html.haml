@@ -1,29 +1,29 @@
-%h3 
-  Users
-  = link_to 'New User', new_admin_user_path, :class => "btn small right"
+%h3
+  = t '.title'
+  = link_to t('.new'), new_admin_user_path, :class => "btn small right"
 %br
 
 %ul.nav.nav-pills
   %li{:class => "#{'active' unless params[:filter]}"}
-    = link_to "Active", admin_users_path 
+    = link_to t('.active'), admin_users_path 
   %li{:class => "#{'active' if params[:filter] == "admins"}"}
     = link_to admin_users_path(:filter => "admins") do
-      Admins
+      = t '.admins'
   %li{:class => "#{'active' if params[:filter] == "blocked"}"}
     = link_to admin_users_path(:filter => "blocked") do
-      Blocked
+      = t '.blocked_filter'
   %li{:class => "#{'active' if params[:filter] == "wop"}"}
     = link_to admin_users_path(:filter => "wop") do
-      Without projects
+      = t '.wo_project'
 
 %table.admin-table
   %thead
-    %th Admin
-    %th Name
-    %th Email
-    %th Projects
-    %th Edit
-    %th Blocked
+    %th= t '.admin'
+    %th= t '.name'
+    %th= t '.email'
+    %th= t '.projects'
+    %th= t '.blocked'
+    %th
     %th
 
   - @admin_users.each do |user|
@@ -32,12 +32,12 @@
       %td= link_to user.name, [:admin, user]
       %td= user.email
       %td= user.users_projects.count
-      %td= link_to 'Edit', edit_admin_user_path(user), :id => "edit_#{dom_id(user)}", :class => "btn small"
       %td
         - if user.blocked 
-          = link_to 'Unblock', unblock_admin_user_path(user), :method => :put, :class => "btn small success"
+          = link_to t('.btn_unblock'), unblock_admin_user_path(user), :method => :put, :class => "btn small success"
         - else 
-          = link_to 'Block', block_admin_user_path(user), :confirm => 'USER WILL BE BLOCKED! Are you sure?', :method => :put, :class => "btn small danger"
-      %td= link_to 'Destroy', [:admin, user], :confirm => 'USER WILL BE REMOVED! Are you sure?', :method => :delete, :class => "btn small danger"
+          = link_to t('.btn_block'), block_admin_user_path(user), :confirm => t('global.destroy_confirm'), :method => :put, :class => "btn small danger"
+      %td= link_to t('global.edit'), edit_admin_user_path(user), :id => "edit_#{dom_id(user)}", :class => "btn small"
+      %td= link_to t('global.destroy'), [:admin, user], :confirm => t('global.destroy_confirm'), :method => :delete, :class => "btn small danger"
 
 = paginate @admin_users, :theme => "admin"

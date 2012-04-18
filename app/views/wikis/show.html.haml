@@ -3,15 +3,15 @@
   %span.right
     - if can? current_user, :write_wiki, @project
       = link_to history_project_wiki_path(@project, @wiki), :class => "btn small padded" do
-        History
+        = t '.history'
       = link_to edit_project_wiki_path(@project, @wiki), :class => "btn small" do
-        Edit
+        = t 'global.edit'
 %hr
 .wiki_content
   = preserve do
     = markdown_to_html @wiki.content
 
-%p.time Last edited by #{@wiki.user.name}, in #{time_ago_in_words @wiki.created_at}
+%p.time=t '.last_edit', :editor => @wiki.user.name, :date => time_ago_in_words(@wiki.created_at)
 - if can? current_user, :admin_wiki, @project
-  = link_to project_wiki_path(@project, @wiki), :confirm => "Are you sure you want to delete this page?", :method => :delete do
-    Delete this page
+  = link_to project_wiki_path(@project, @wiki), :confirm => t('global.destroy_confirm'), :method => :delete do
+    = t '.destroy'

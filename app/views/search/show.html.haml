@@ -1,21 +1,20 @@
 = form_tag search_path, :method => :get do |f|
   .padded
-    = label_tag :search do 
-      %strong Looking for
+    = label_tag :search, t('.label')
     .input
-      = text_field_tag :search, params[:search],:placeholder => "issue 143", :class => "input-xxlarge"
-      = submit_tag 'Search', :class => "btn btn-primary"
+      = text_field_tag :search, params[:search], :placeholder => t('.placeholder'), :class => "input-xxlarge"
+      = submit_tag t('.submit'), :class => "btn btn-primary"
 - if params[:search].present?
   %br
-  %h3 Search results
+  %h3=t '.results'
   %hr
   .search_results
     - if @projects.empty? && @merge_requests.empty?
       %h3
-        %small Nothing here
+        %small='.no_result'
     - else 
       - if @projects.any?
-        %h4 Projects
+        %h4=t '.projects'
         .padded
           - @projects.each do |project|
             = link_to project do 
@@ -23,36 +22,32 @@
                 %span.ico.project
                 = project.name
                 %small
-                  last activity at 
-                  = project.last_activity_date.stamp("Aug 25, 2011")
+                  = t 'dashboard.projects_feed.last_active'
+                  = project.last_activity_date.stamp(t('global.timestamp'))
       - if @merge_requests.any?
-        %h4 Merge Requests
+        %h4=t '.merge_requests'
         .padded
           - @merge_requests.each do |merge_request|
             = link_to [merge_request.project, merge_request] do 
               %h5
-                Merge Request #
-                = merge_request.id
-                &ndash;
+                =t 'merge_requests.show.title', :id => merge_request.id
                 = truncate merge_request.title, :length => 50
                 %small
-                  updated at 
-                  = merge_request.updated_at.stamp("Aug 25, 2011")
+                  = t 'merge_requests.merge_request.authored'
+                  = merge_request.updated_at.stamp(t('global.timestamp'))
                 %strong
                   %span.label= merge_request.project.name
       - if @issues.any?
-        %h4 Issues
+        %h4=t '.issues'
         .padded
           - @issues.each do |issue|
             = link_to [issue.project, issue] do 
               %h5
-                Issue #
-                = issue.id
-                &ndash;
+                =t 'issues.show.title', :id => issue.id
                 = truncate issue.title, :length => 50
                 %small
-                  updated at 
-                  = issue.updated_at.stamp("Aug 25, 2011")
+                  = t 'issues.show.updated_at'
+                  = issue.updated_at.stamp(t('global.timestamp'))
                 %strong
                   %span.label= issue.project.name
   :javascript

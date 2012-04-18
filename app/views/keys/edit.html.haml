@@ -1,7 +1,8 @@
-%h1 Editing key
+%h1
+  = t '.title'
 
 = render 'form'
 
-= link_to 'Show', @key
+= link_to t('global.more'), @key
 \|
-= link_to 'Back', keys_path
+= link_to t('global.back'), keys_path

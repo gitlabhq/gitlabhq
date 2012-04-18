@@ -12,13 +12,13 @@
     %div
       %div
         %h5.cgray
-          Personal projects: 
+          = t '.projects'
           %span.right
             %span= current_user.my_own_projects.count
-            of 
+            = t '.of'
             %span= current_user.projects_limit
         %h5.cgray
-          SSH public keys:
+          = t '.pubkeys'
           %span.right
             %span= current_user.keys.count
 %hr
@@ -35,12 +35,12 @@
         = f.label :name, :class => "control-label"
         .controls
           = f.text_field :name, :class => "input-xlarge"
-          %span.help-block Enter youre name, so people you know can recognize you.
+          %span.help-block=t '.name_help'
       .control-group
         = f.label :email, :class => "control-label"
         .controls
           = f.text_field :email, :class => "input-xlarge"
-          %span.help-block We also use email for avatar detection
+          %span.help-block=t '.mail_help'
       .control-group
         = f.label :skype, :class => "control-label"
         .controls= f.text_field :skype, :class => "input-xlarge"
@@ -54,14 +54,14 @@
         = f.label :bio, :class => "control-label"
         .controls
           = f.text_area :bio, :rows => 6, :class => "input-xlarge", :maxlength => 250
-          %span.help-block About yourself in fewer than 250 characters.
+          %span.help-block=t '.bio_help'
     .span5.right
       %p.alert-message.block-message 
-        %strong Tip:
-        You can change your avatar at gravatar.com
+        %strong=t '.tip'
+        =t '.gravatar'
 
   .form-actions
-    = f.submit 'Save', :class => "btn-primary btn"
+    = f.submit t('global.save'), :class => "btn-primary btn"
 
 -#= link_to "New project", new_project_path, :class => "btn small padded"
 -#= link_to "New public key", new_key_path, :class => "btn small"

@@ -1,8 +1,8 @@
 %h3
-  Merge Requests
+  = t 'merge_requests.head.title'
   - if can? current_user, :write_issue, @project
-    = link_to new_project_merge_request_path(@project), :class => "right btn small", :title => "New Merge Request" do 
-      New Merge Request
+    = link_to new_project_merge_request_path(@project), :class => "right btn small", :title => t('merge_requests.new.title') do 
+      = t 'merge_requests.new.title'
 
 %br
 
@@ -11,26 +11,28 @@
     %ul.nav.nav-pills
       %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
         = link_to project_merge_requests_path(@project, :f => 0) do 
-          Open
+          = t '.open'
       %li{:class => ("active" if params[:f] == "2")}
         = link_to project_merge_requests_path(@project, :f => 2) do 
-          Closed
+          = t '.closed'
       %li{:class => ("active" if params[:f] == "3")}
         = link_to project_merge_requests_path(@project, :f => 3) do 
-          To Me
+          = t '.to_me'
       %li{:class => ("active" if params[:f] == "1")}
         = link_to project_merge_requests_path(@project, :f => 1) do 
-          All
+          = t '.all'
 
   %ul.unstyled
     = render @merge_requests
     - if @merge_requests.blank?
       %li
-        %p.padded Nothing to show here
+        %p.padded
+          = t '.no_requests'
     - if @merge_requests.present?
       %li.bottom
         .row
           .span7= paginate @merge_requests, :theme => "gitlab"
           .span4.right
-            %span.cgray.right #{@merge_requests.total_count} merge requests for this filter
+            %span.cgray.right
+              = t '.matching_requests', :count => @merge_requests.total_count
 
