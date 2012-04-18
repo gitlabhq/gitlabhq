@@ -221,7 +221,7 @@ Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 
     server {
         listen YOUR_SERVER_IP:80;
-        server_name gitlab.YOUR_SUBDOMAIN.com;
+        server_name gitlab.YOUR_DOMAIN.com;
         root /home/gitlab/gitlab/public;
         
         # individual nginx logs for this gitlab vhost
@@ -248,7 +248,7 @@ Edit /etc/nginx/nginx.conf. Add next code to **http** section:
 
     }
 
-mygitlab.com - change to your domain.
+gitlab.YOUR_DOMAIN.com - change to your domain.
 
 Restart nginx:
 
