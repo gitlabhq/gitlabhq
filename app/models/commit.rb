@@ -120,10 +120,10 @@ class Commit
   end
 
   def prev_commit
-    parents.first
+    parents.try :first
   end
 
   def prev_commit_id
-    prev_commit.id
+    prev_commit.try :id
   end
 end
