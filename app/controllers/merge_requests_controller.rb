@@ -34,11 +34,14 @@ class MergeRequestsController < ApplicationController
   end
 
   def show
-    unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch) && 
-      @project.repo.heads.map(&:name).include?(@merge_request.source_branch)
-      git_not_found! and return 
-    end
+    # Show git not found page if target branch doesnt exist
+    return git_not_found! unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch) 
 
+    # Show git not found page if source branch doesnt exist
+    # and there is no saved commits between source & target branch
+    return git_not_found! if !@project.repo.heads.map(&:name).include?(@merge_request.source_branch) && @merge_request.commits.blank?
+    
+    # Build a note object for comment form
     @note = @project.notes.new(:noteable => @merge_request)
 
     # Get commits from repository 
