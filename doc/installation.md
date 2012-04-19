@@ -1,6 +1,6 @@
 ## Platform requirements: 
 
-**The project is designed for the Linux operating system. **
+**The project is designed for the Linux operating system.**
 
 It may work on FreeBSD and Mac OS, but we don't test our application for these systems and can't guarantee stability and full functionality.
 
@@ -12,22 +12,22 @@ We officially support next Linux Distributions:
 It should work on:
 
 - Fedora
-- CentOs
+- CentOS
 - Red Hat
 
 It can work on:
 
- - Mac Os
+ - Mac OS X
  - FreeBSD
 
-It 100% **wont** work on  Windows
+It 100% **wont** work on  Windows.
 
 
 ## This installation guide created for Debian/Ubuntu and properly tested. 
 
 The installation consists of 6 steps:
 
-1. install packeges.
+1. install packages.
 2. install ruby
 3. install gitolite
 4. install gitlab and configuration. Check status configuration.
@@ -59,9 +59,9 @@ The installation consists of 6 steps:
 
 # 2. Install ruby
 
-    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
-    tar xfv ruby-1.9.2-p290.tar.gz
-    cd ruby-1.9.2-p290
+    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz
+    tar xfv ruby-1.9.3-p125.tar.gz
+    cd ruby-1.9.3-p125
     ./configure
     make
     sudo make install
@@ -78,8 +78,6 @@ Create user for git:
       --disabled-password \
       --home /home/git \
       git
-
-    
 
 Create user for gitlab:
 
@@ -136,6 +134,8 @@ Permissions:
 
     # Rename config files
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
+    # Edit your email configuration
+    vi config/initializers/devise.rb
 
 #### Select db you want to use
 
@@ -158,7 +158,7 @@ Permissions:
     
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab_status
+    sudo -u gitlab bundle exec rake gitlab_status RAILS_ENV=production
 
 
     # OUTPUT EXAMPLE
