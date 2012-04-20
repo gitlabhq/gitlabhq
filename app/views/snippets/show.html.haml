@@ -13,8 +13,7 @@
       .view_file_header
         %strong= @snippet.file_name
       .view_file_content
-        %div{:class => current_user.dark_scheme ? "black" : ""} 
-          :erb
-            <%= raw @snippet.colorize %>
+        %div{:class => current_user.dark_scheme ? "black" : ""}
+          = raw @snippet.colorize(options: { linenos: 'True'})
 
 = render "notes/notes", :tid => @snippet.id, :tt => "snippet"

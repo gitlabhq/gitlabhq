@@ -5,6 +5,16 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
+  remote: https://github.com/github/linguist.git
+  revision: c444c25b27131cd2aca6017f2a9ce5eae60dfcd3
+  specs:
+    linguist (1.0.0)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.2.3)
+      mime-types (~> 1.18)
+      pygments.rb (~> 0.2.11)
+
+GIT
   remote: https://github.com/gitlabhq/gitolite-client.git
   revision: 36dabd226caa40ff052677719adaacbfe667b36c
   specs:
@@ -104,6 +114,7 @@ GEM
     diff-lcs (1.1.3)
     drapper (0.8.4)
     erubis (2.7.0)
+    escape_utils (0.2.4)
     eventmachine (0.12.10)
     execjs (1.3.0)
       multi_json (~> 1.0)
@@ -326,6 +337,7 @@ DEPENDENCIES
   kaminari
   launchy
   letter_opener
+  linguist (~> 1.0.0)!
   modularity
   mysql2
   omniauth-ldap

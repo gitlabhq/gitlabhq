@@ -1,10 +1,7 @@
 require 'grit'
-require 'pygments'
-require "utils"
 
 Grit::Blob.class_eval do
-  include Utils::FileHelper
-  include Utils::Colorize
+  include Linguist::BlobHelper
 end
 
 #monkey patch raw_object from string
@@ -15,7 +12,7 @@ Grit::GitRuby::Internal::RawObject.class_eval do
 end
 
 
-Grit::Diff.class_eval do 
+Grit::Diff.class_eval do
   def old_path
     Gitlabhq::Encode.utf8 a_path
   end
