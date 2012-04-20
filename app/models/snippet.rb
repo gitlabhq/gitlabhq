@@ -1,5 +1,5 @@
 class Snippet < ActiveRecord::Base
-  include Utils::Colorize
+  include Linguist::BlobHelper
 
   belongs_to :project
   belongs_to :author, :class_name => "User"
@@ -38,8 +38,20 @@ class Snippet < ActiveRecord::Base
     ]
   end
 
-  def colorize
-    system_colorize(content, file_name)
+  def data
+    content
+  end
+
+  def size
+    0
+  end
+
+  def name 
+    file_name
+  end
+
+  def mode 
+    nil
   end
 
   def expired?

@@ -1,5 +1,5 @@
 class Tree
-  include Utils::FileHelper
+   include Linguist::BlobHelper
   attr_accessor :path, :tree, :project, :ref
 
   delegate :contents,
