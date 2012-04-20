@@ -57,6 +57,7 @@ module Project::RepositoryTrait
     end
 
     def repo
+      Grit::Git.with_timeout(20)
       @repo ||= Grit::Repo.new(path_to_repo)
     end
 
