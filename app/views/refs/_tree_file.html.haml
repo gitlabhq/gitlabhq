@@ -11,10 +11,10 @@
   - if file.text?
     .view_file_content
       - unless file.empty?
-        %div{:class => current_user.dark_scheme ? "black" : "white"} 
-          = preserve do 
-            = raw file.colorize
-      - else 
+        %div{:class => current_user.dark_scheme ? "black" : "white"}
+          = preserve do
+            = raw file.colorize(options: { linenos: 'True'})
+      - else
         %h3
           %center Empty file
   - elsif file.image?
