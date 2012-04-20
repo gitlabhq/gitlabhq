@@ -104,6 +104,11 @@ $hover: #FDF5D9;
 @import "sections/issues.scss";
 
 /**
+ * Styles related to projects
+ */
+@import "sections/projects.scss";
+
+/**
  * This scss file redefine chozen selectbox styles for
  * project Branch/Tag select element
  */

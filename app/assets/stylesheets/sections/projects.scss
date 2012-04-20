@@ -1,0 +1,15 @@
+.projects { 
+  @extend .row;
+  .activities {
+  }
+
+  .side { 
+    @extend .span4;
+    @extend .right;
+
+    .projects_box { 
+      @extend .leftbar;
+      @extend .ui-box;
+    }
+  }
+}

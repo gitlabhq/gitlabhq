@@ -43,8 +43,8 @@ class CommitsController < ApplicationController
   end
 
   def compare
-    first = project.commit(params[:to])
-    last = project.commit(params[:from])
+    first = project.commit(params[:to].try(:strip))
+    last = project.commit(params[:from].try(:strip))
 
     @diffs = []
     @commits = []

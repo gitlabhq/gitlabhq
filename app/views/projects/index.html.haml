@@ -1,6 +1,6 @@
 - if @projects.any?
-  .row
-    .span8
+  .projects
+    .activities.span8
       - if current_user.require_ssh_key?
         .alert.alert-error.padded
           %span
@@ -14,24 +14,24 @@
       - else
         .padded
           %strong.cgray Projects activity will be displayed here
-    .span4.right
-      %div.leftbar.ui-box
+    .side
+      .projects_box
         %h5
           Projects
           %small
-            (#{@projects.count})
+            (#{@projects.total_count})
           - if current_user.can_create_project?
             %span.right
               = link_to new_project_path, :class => "btn very_small info" do 
                 New Project
-        .content_list
-          - @projects.each do |project|
-            = link_to project_path(project), :class => dom_class(project) do
-              %h4
-                %span.ico.project
-                = truncate(project.name, :length => 25)
-                %span.right
-                  &rarr;
+        - @projects.each do |project|
+          = link_to project_path(project), :class => dom_class(project) do
+            %h4
+              %span.ico.project
+              = truncate(project.name, :length => 25)
+              %span.right
+                &rarr;
+        .bottom= paginate @projects, :theme => "gitlab"
 
 - else 
   %h3 Nothing here
