@@ -72,7 +72,18 @@ module ApplicationHelper
   end
 
   def markdown(text)
-    RDiscount.new(text, :autolink, :no_pseudo_protocols, :safelink, :smart, :filter_html).to_html.html_safe
+    @__renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::GitlabHTML.new(filter_html: true), {
+      no_intra_emphasis: true,
+      tables: true,
+      fenced_code_blocks: true,
+      autolink: true,
+      strikethrough: true,
+      lax_html_blocks: true,
+      space_after_headers: true,
+      superscript: true
+    })
+
+    @__renderer.render(text).html_safe
   end
 
   def search_autocomplete_source

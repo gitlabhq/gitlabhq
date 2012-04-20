@@ -169,7 +169,7 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.7)
       slop (>= 2.4.4, < 3)
-    pygments.rb (0.2.7)
+    pygments.rb (0.2.11)
       rubypython (~> 0.5.3)
     pyu-ruby-sasl (0.0.3.3)
     rack (1.4.1)
@@ -200,9 +200,9 @@ GEM
       thor (~> 0.14.6)
     raindrops (0.8.0)
     rake (0.9.2.2)
-    rdiscount (1.6.8)
     rdoc (3.12)
       json (~> 1.4)
+    redcarpet (2.1.1)
     redis (2.2.2)
     redis-namespace (1.0.3)
       redis (< 3.0.0)
@@ -330,11 +330,11 @@ DEPENDENCIES
   mysql2
   omniauth-ldap
   pry
-  pygments.rb (= 0.2.7)
+  pygments.rb (~> 0.2.11)
   rails (= 3.2.1)
   rails-footnotes
   rake
-  rdiscount
+  redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
   rspec-rails
   sass-rails (= 3.2.3)
