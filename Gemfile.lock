@@ -5,16 +5,6 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: https://github.com/github/linguist.git
-  revision: c444c25b27131cd2aca6017f2a9ce5eae60dfcd3
-  specs:
-    linguist (1.0.0)
-      charlock_holmes (~> 0.6.6)
-      escape_utils (~> 0.2.3)
-      mime-types (~> 1.18)
-      pygments.rb (~> 0.2.11)
-
-GIT
   remote: https://github.com/gitlabhq/gitolite-client.git
   revision: 36dabd226caa40ff052677719adaacbfe667b36c
   specs:
@@ -30,6 +20,16 @@ GIT
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
+
+GIT
+  remote: https://github.com/gitlabhq/linguist.git
+  revision: c3d6fc5af8cf9d67afa572bba363bf0db256a900
+  specs:
+    linguist (1.0.0)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.2.3)
+      mime-types (~> 1.18)
+      pygments.rb (~> 0.2.11)
 
 GIT
   remote: https://github.com/gitlabhq/yaml_db.git
