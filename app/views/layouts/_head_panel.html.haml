@@ -11,7 +11,7 @@
         = form_tag search_path, :method => :get do |f|
           = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
       - if current_user.is_admin?
-        = link_to admin_projects_path, :class => "admin_link", :title => "Admin area" do 
+        = link_to admin_root_path, :class => "admin_link", :title => "Admin area" do 
           = image_tag "admin.PNG", :width => 16
       .account-box
         = link_to profile_path, :class => "pic" do
