@@ -903,3 +903,20 @@ li.note {
 .milestone { 
   @extend .wll;
 }
+
+/**
+ * Admin area
+ *
+ */
+.admin_dash { 
+  .data { 
+    a { 
+      h1 { 
+        line-height:48px;
+        font-size:48px;
+        padding:20px;
+        text-align:center;
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+.admin_dash.row
+  .span4
+    .ui-box
+      %h5
+        Resque Workers
+      .data.padded
+        = link_to "/info/resque" do 
+          %h1{:class => @workers.present? ? "cgreen" : "cred"}
+            = @workers.count
+        %hr
+        %p
+          %strong{:class => @pending_jobs > 0 ? "cred" : "cgreen"}
+            #{@pending_jobs} post receive jobs waiting
+
+  .span4
+    .ui-box
+      %h5 Projects
+      .data.padded
+        = link_to admin_projects_path do 
+          %h1= Project.count
+        %hr
+        = link_to 'New Project', new_admin_project_path, :class => "btn small"
+  .span4
+    .ui-box
+      %h5 Users
+      .data.padded
+        = link_to admin_users_path do 
+          %h1= User.count
+        %hr
+        = link_to 'New User', new_admin_user_path, :class => "btn small"
+
+
+.row
+  .span6
+    %h3 Latest projects
+    %hr
+    - @projects.each do |project|
+      %h5
+        = link_to project.name, [:admin, project]
+  .span6
+    %h3 Latest users
+    %hr
+    - @users.each do |user|
+      %h5
+        = link_to user.name, [:admin, user]

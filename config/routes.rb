@@ -29,7 +29,7 @@ Gitlab::Application.routes.draw do
     get 'mailer/preview_note'
     get 'mailer/preview_user_new'
     get 'mailer/preview_issue_new'
-    root :to => "users#index"
+    root :to => "dashboard#index"
   end
 
   get "errors/githost"
