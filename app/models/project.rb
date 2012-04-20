@@ -21,7 +21,7 @@ class Project < ActiveRecord::Base
   has_many :wikis,          :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
 
-  attr_protected :private_flag, :owner_id
+  attr_protected :owner_id
 
   scope :public_only, where(:private_flag => false)
   scope :without_user, lambda { |user|  where("id not in (:ids)", :ids => user.projects.map(&:id) ) }

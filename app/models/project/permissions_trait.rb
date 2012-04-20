@@ -22,7 +22,7 @@ module Project::PermissionsTrait
     def repository_readers
       keys = Key.joins({:user => :users_projects}).
         where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::REPORTER)
-      keys.map(&:identifier) + deploy_keys.map(&:identifier)
+      keys.map(&:identifier) + deploy_keys.map(&:identifier) + (public? ? ['@all'] : [])
     end
 
     def repository_writers
