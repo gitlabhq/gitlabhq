@@ -28,21 +28,25 @@ class GitlabMerge
   end
 
   def pull
-    File.open(File.join(Rails.root, "tmp", "merge_repo", "#{project.path}.lock"), "w+") do |f|
-      f.flock(File::LOCK_EX)
-      
-      self.project.repo.git.clone({:branch => merge_request.target_branch}, project.url_to_repo, merge_path)
-      unless File.exist?(self.merge_path)
-        raise "Gitlab user do not have access to repo. You should run: rake gitlab_enable_automerge"
+    Grit::Git.with_timeout(30.seconds) do 
+      File.open(File.join(Rails.root, "tmp", "merge_repo", "#{project.path}.lock"), "w+") do |f|
+        f.flock(File::LOCK_EX)
+        
+        self.project.repo.git.clone({:branch => merge_request.target_branch}, project.url_to_repo, merge_path)
+        unless File.exist?(self.merge_path)
+          raise "Gitlab user do not have access to repo. You should run: rake gitlab_enable_automerge"
+        end
+        Dir.chdir(merge_path) do
+          merge_repo = Grit::Repo.new('.')
+          merge_repo.git.sh "git config user.name \"#{user.name}\""
+          merge_repo.git.sh "git config user.email \"#{user.email}\""
+          output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
+          yield(merge_repo, output)
+        end
       end
-      Dir.chdir(merge_path) do
-        merge_repo = Grit::Repo.new('.')
-        merge_repo.git.sh "git config user.name \"#{user.name}\""
-        merge_repo.git.sh "git config user.email \"#{user.email}\""
-        output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
-        yield(merge_repo, output)
-      end
-
     end
+
+  rescue Grit::Git::GitTimeout
+    return false
   end
 end
