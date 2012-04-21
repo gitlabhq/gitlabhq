@@ -1,8 +1,8 @@
 v 2.4.0
+  - Admin area stats page
   - Ability to block user
   - Simplified dashboard area
   - Improved admin area
-  - Accept merge request
   - Bootstrap 2.0
   - Responsive layout
   - Big commits handling
