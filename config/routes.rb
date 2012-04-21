@@ -100,6 +100,8 @@ Gitlab::Application.routes.draw do
     resources :merge_requests do 
       member do 
         get :diffs
+        get :automerge
+        get :automerge_check
       end
 
       collection do 

@@ -1,6 +1,10 @@
 require File.join(Rails.root, "app/models/commit")
 
 class MergeRequest < ActiveRecord::Base
+  UNCHECKED = 1
+  CAN_BE_MERGED = 2
+  CANNOT_BE_MERGED = 3
+
   belongs_to :project
   belongs_to :author, :class_name => "User"
   belongs_to :assignee, :class_name => "User"
@@ -45,6 +49,15 @@ class MergeRequest < ActiveRecord::Base
     where("source_branch like :branch or target_branch like :branch", :branch => branch_name)
   end
 
+  def human_state
+    states = {
+      CAN_BE_MERGED =>  "can_be_merged",
+      CANNOT_BE_MERGED => "cannot_be_merged",
+      UNCHECKED => "unchecked"
+    }
+    states[self.state]
+  end
+
   def validate_branches
     if target_branch == source_branch
       errors.add :base, "You can not use same branch for source and target branches"
@@ -54,6 +67,27 @@ class MergeRequest < ActiveRecord::Base
   def reload_code
     self.reloaded_commits
     self.reloaded_diffs
+  end
+
+  def unchecked?
+    state == UNCHECKED
+  end
+
+  def mark_as_unchecked
+    self.update_attributes(:state => UNCHECKED)
+  end
+
+  def can_be_merged?
+    state == CAN_BE_MERGED
+  end
+
+  def check_if_can_be_merged
+    self.state = if GitlabMerge.new(self, self.author).can_be_merged?
+                   CAN_BE_MERGED
+                 else
+                   CANNOT_BE_MERGED
+                 end
+    self.save
   end
 
   def new?
@@ -118,6 +152,10 @@ class MergeRequest < ActiveRecord::Base
     save
   end
 
+  def mark_as_unmergable
+    self.update_attributes :state => CANNOT_BE_MERGED
+  end
+
   def reloaded_commits 
     if open? && unmerged_commits.any? 
       self.st_commits = unmerged_commits
@@ -143,6 +181,16 @@ class MergeRequest < ActiveRecord::Base
       :target_type => "MergeRequest",
       :author_id => user_id
     )
+  end
+
+  def automerge!(current_user)
+    if GitlabMerge.new(self, current_user).merge
+      self.merge!(current_user.id)
+      true
+    end
+  rescue 
+    self.mark_as_unmergable
+    false
   end
 end
 # == Schema Information

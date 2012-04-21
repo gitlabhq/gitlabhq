@@ -8,7 +8,6 @@
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
         = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do 
           Edit
@@ -53,6 +52,34 @@
           Closed by #{@merge_request.closed_event.author_name} 
           %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
 
+
+- if @merge_request.open? && @commits.any? && can?(current_user, :accept_mr, @project)
+  .automerge_widget.can_be_merged{:style => "display:none"}
+    .ui-box.padded
+      %p 
+        You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"} for instructions
+      = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info accept_merge_request", :remote => true
+      &nbsp;
+      
+  .automerge_widget.cannot_be_merged{:style => "display:none"}
+    .alert-message
+      %p
+        %strong This request cant be merged with GitLab. You should do it manually &nbsp;
+        = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
+  
+  .automerge_widget.unchecked
+    .alert-message
+      %p
+        %strong Checking for ability to automatically merge… 
+  
+  .automerge_widget.already_cannot_be_merged{:style => "display:none"}
+    .alert-message
+      %p
+        %strong This merge request already can not be merged
+
+
+
+
 = render "merge_requests/commits"
 
 - unless @commits.empty?
@@ -72,7 +99,13 @@
 
 :javascript
   $(function(){
-    MergeRequest.init();
+    MergeRequest.init({
+      url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
+    });
+
+    $(".accept_merge_request").live("ajax:beforeSend", function() {
+      $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+    })
   })
 
 = render "notes/per_line_form"

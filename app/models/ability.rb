@@ -48,6 +48,7 @@ class Ability
       :admin_team_member,
       :admin_merge_request,
       :admin_note,
+      :accept_mr,
       :admin_wiki
     ] if project.master_access_for?(user) || project.owner == user
 
