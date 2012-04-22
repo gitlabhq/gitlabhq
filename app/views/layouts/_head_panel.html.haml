@@ -6,6 +6,7 @@
         = link_to root_path, :class => "home", :title => "Home" do 
           %h1 
             GITLAB
+        %span.separator
       %h1.project_name= title
       .search
         = form_tag search_path, :method => :get do |f|

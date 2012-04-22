@@ -50,7 +50,9 @@
         float:left;
 
         h1 { 
-          background: url('logo_basic.png') no-repeat -3px -4px;
+          text-indent:-9999px;
+          width:102px;
+          background: url('logo_text.png') no-repeat 0px -3px;
           float:left;
           margin-left:5px;
           font-size:20px;
@@ -59,8 +61,16 @@
           color:#aaa;
           text-shadow: 0 1px 1px #FFF;
           padding-left:50px;
-          padding-top:5px;
         }
+      }
+      .separator {
+        margin-left:20px;
+        float: left;
+        height: 60px;
+        width: 1px;
+        background: white;
+        border-left: 1px solid #DDD;
+        margin-top: -10px;
       }
     }
     .container { 
