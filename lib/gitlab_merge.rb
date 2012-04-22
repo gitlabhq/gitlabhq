@@ -30,7 +30,7 @@ class GitlabMerge
         f.flock(File::LOCK_EX)
         
         unless project.satellite.exists?
-          raise "You should run: rake gitlab_enable_automerge"
+          raise "You should run: rake gitlab:app:enable_automerge"
         end
 
         project.satellite.clear
