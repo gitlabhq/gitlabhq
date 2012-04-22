@@ -37,6 +37,10 @@ module Project::RepositoryTrait
       end
     end
 
+    def satellite
+      @satellite ||= Gitlabhq::Satellite.new(self)
+    end
+
     def write_hook(name, content)
       hook_file = File.join(path_to_repo, 'hooks', name)
 
