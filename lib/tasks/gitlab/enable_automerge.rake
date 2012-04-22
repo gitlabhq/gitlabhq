@@ -6,6 +6,13 @@ namespace :gitlab do
         git.admin_all_repo
       end
 
+      Project.find_each do |project|
+        if project.repo_exists? && !project.satellite_exists?
+          puts "Creating satellite for #{project.name}...".green
+          project.create_repo_satellite
+        end
+      end
+
       puts "Done!".green
     end
   end

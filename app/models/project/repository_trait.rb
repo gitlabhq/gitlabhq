@@ -37,6 +37,23 @@ module Project::RepositoryTrait
       end
     end
 
+    def path_to_repo_satellite
+      File.join(Rails.root, "tmp", "repo_satellites", self.path)
+    end
+
+    def satellite_exists?
+      File.exist? path_to_repo_satellite
+    end
+
+    def create_repo_satellite
+      `git clone #{url_to_repo} #{path_to_repo_satellite}`
+      Dir.chdir(path_to_repo_satellite) do
+        primary_branch = Grit::Repo.new(".").heads.first.name #usually it`s master
+        `git checkout -b __parking_branch`
+        `git branch -D #{primary_branch}`
+      end
+    end
+
     def write_hook(name, content)
       hook_file = File.join(path_to_repo, 'hooks', name)
 
