@@ -102,8 +102,8 @@ module Project::HooksTrait
       # Execute web hooks
       self.execute_web_hooks(oldrev, newrev, ref, user)
 
-      # Create repo satellite
-      self.create_repo_satellite unless self.satellite_exists?
+      # Create satellite
+      self.satellite.create unless self.satellite.exists?
     end
   end
 end

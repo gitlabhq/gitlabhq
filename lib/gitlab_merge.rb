@@ -29,10 +29,13 @@ class GitlabMerge
       File.open(File.join(Rails.root, "tmp", "merge_repo", "#{project.path}.lock"), "w+") do |f|
         f.flock(File::LOCK_EX)
         
-        unless project.satellite_exists?
+        unless project.satellite.exists?
           raise "You should run: rake gitlab_enable_automerge"
         end
-        Dir.chdir(project.path_to_repo_satellite) do
+
+        project.satellite.clear
+
+        Dir.chdir(project.satellite.path) do
           merge_repo = Grit::Repo.new('.')
           merge_repo.git.sh "git fetch origin"
           merge_repo.git.sh "git config user.name \"#{user.name}\""
