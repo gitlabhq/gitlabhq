@@ -25,8 +25,12 @@ class GitlabMerge
   end
 
   def process
-    Grit::Git.with_timeout(30.seconds) do 
-      File.open(File.join(Rails.root, "tmp", "merge_repo", "#{project.path}.lock"), "w+") do |f|
+    Grit::Git.with_timeout(30.seconds) do
+      # Make sure tmp/merge_repo exists
+      lock_path = File.join(Rails.root, "tmp", "merge_repo")
+      FileUtils.mkdir_p(lock_path) unless File.exists?(File.join(Rails.root, "tmp", "merge_repo"))
+
+      File.open(File.join(lock_path, "#{project.path}.lock"), "w+") do |f|
         f.flock(File::LOCK_EX)
         
         unless project.satellite.exists?
