@@ -20,6 +20,6 @@
             %tr
               %td{:valign => "top"}
                 %div{ :style => "background:#f5f5f5; padding:20px;border:1px solid #ddd" }
-                  = RDiscount.new(@note.note, :autolink, :no_pseudo_protocols, :safelink, :smart, :filter_html).to_html.html_safe
+                  = markdown(@note.note)
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
 

@@ -12,6 +12,10 @@ class Project
   def path_to_repo
     File.join(Rails.root, "tmp", "tests", path)
   end
+
+  def satellite
+    @satellite ||= FakeSatellite.new
+  end
 end
 
 class Key
@@ -29,3 +33,15 @@ class UsersProject
     true
   end
 end
+
+class FakeSatellite
+  def exists? 
+    true
+  end
+
+  def create
+    true
+  end
+end
+
+
