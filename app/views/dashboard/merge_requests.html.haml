@@ -1,24 +1,19 @@
 %h3
   Merge Requests
   %small (authored or assigned to you)
+  %small.right #{@merge_requests.total_count} merge requests
 
 %br
-%div#merge_requests-table-holder.ui-box
-  %title
-  %ul#merge_requests-table.unstyled
-    - if @merge_requests.any?
-      - @merge_requests.group_by(&:project).each do |group|
-        %li.wll.smoke
-          - project = group[0]
-          = project.name
-        - group[1].each do |merge_request|
-          = render(:partial => 'merge_requests/merge_request', :locals => {:merge_request => merge_request})
-      %li.bottom
-        .row
-          .span7= paginate @merge_requests, :theme => "gitlab"
-          .span4.right
-            %span.cgray.right #{@merge_requests.total_count} merge requests
+- if @merge_requests.any?
+  - @merge_requests.group_by(&:project).each do |group|
+    %ul.unstyled.ui-box
+      - project = group[0]
+      %h5= project.name
+      - group[1].each do |merge_request|
+        = render(:partial => 'merge_requests/merge_request', :locals => {:merge_request => merge_request})
+  %hr
+  = paginate @merge_requests, :theme => "gitlab"
 
-    - else
-      %li
-        %p.padded Nothing to show here
+- else
+  %li
+    %p.padded Nothing to show here

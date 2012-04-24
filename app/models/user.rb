@@ -131,6 +131,11 @@ class User < ActiveRecord::Base
     self.blocked = true
     save
   end
+
+  def projects_limit_percent
+    return 100 if projects_limit.zero? 
+    (my_own_projects.count.to_f / projects_limit) * 100
+  end
 end
 # == Schema Information
 #

@@ -36,6 +36,9 @@ class MilestonesController < ApplicationController
   end
 
   def show
+    @issues = @milestone.issues.opened.page(params[:page]).per(40)
+    @users = @milestone.participants
+
     respond_to do |format|
       format.html
       format.js

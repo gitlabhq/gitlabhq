@@ -42,6 +42,30 @@
       = preserve do
         = markdown @milestone.description
 
+.row
+  .span6
+    %h4 Open Issues:
+    - @issues.each do |issue|
+      = link_to [@project, issue] do 
+        %h5
+          = image_tag gravatar_icon(issue.assignee_email, 16), :width => "16"
+          &nbsp;
+          Issue ##{issue.id}
+          &ndash;
+          = truncate issue.title, :length => 50
+          %small
+            updated at 
+            = issue.updated_at.stamp("Aug 25, 2011")
+    %br
+    = paginate @issues, :theme => "gitlab"
+
+  .span6
+    %h4 Participants:
+    - @users.each do |user|
+      %h5
+        = image_tag gravatar_icon(user.email, 16), :width => "16"
+        &nbsp;
+        = user.name
 
 :javascript
   $(function() {

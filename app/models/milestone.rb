@@ -9,6 +9,10 @@ class Milestone < ActiveRecord::Base
     where("due_date > ? OR due_date IS NULL", Date.today)
   end
 
+  def participants
+    User.where(:id => issues.map(&:assignee_id))
+  end
+
   def percent_complete
     @percent_complete ||= begin
                             total_i = self.issues.count

@@ -13,3 +13,28 @@
     }
   }
 }
+
+.new_project, 
+.edit_project { 
+  .project_name_holder { 
+    input,
+    label { 
+      font-size:16px;
+      line-height:20px;
+      padding:8px;
+    }
+    label { 
+      color:#888;
+    }
+    .btn { 
+      padding:6px;
+      margin-left:10px;
+    }
+  }
+}
+
+.new_project { 
+  .field_with_errors { 
+    display:inline;
+  }
+}

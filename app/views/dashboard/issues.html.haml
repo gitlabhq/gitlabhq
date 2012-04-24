@@ -1,24 +1,19 @@
 %h3
   Issues
   %small (assigned to you)
+  %small.right #{@issues.total_count} issues
 
 %br
-%div#issues-table-holder.ui-box
-  %title
-  %ul#issues-table.unstyled
-    - if @issues.any?
-      - @issues.group_by(&:project).each do |group|
-        %li.wll.smoke
-          - project = group[0]
-          = project.name
+- if @issues.any?
+  - @issues.group_by(&:project).each do |group|
+    %div.ui-box
+      - project = group[0]
+      %h5= project.name
+      %ul.unstyled
         - group[1].each do |issue|
           = render(:partial => 'issues/show', :locals => {:issue => issue})
-      %li.bottom
-        .row
-          .span7= paginate @issues, :theme => "gitlab"
-          .span4.right
-            %span.cgray.right #{@issues.total_count} issues
-
-    - else
-      %li
-        %p.padded Nothing to show here
+  %hr
+  = paginate @issues, :theme => "gitlab"
+- else
+  %h4.padded
+    %center Nothing to show here

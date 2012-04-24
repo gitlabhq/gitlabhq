@@ -4,31 +4,39 @@
       %ul
         - @project.errors.full_messages.each do |msg|
           %li= msg
-  .clearfix
-    = f.label :name
-    .input= f.text_field :name, :placeholder => "Example Project"
-  .clearfix
-    = f.label :path do 
-      Path
+  .clearfix.project_name_holder
+    = f.label :name do
+      Project name is
     .input
-      .input-prepend
-        %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
-        = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
-  .clearfix
-    = f.label :code do 
-      Code
-    .input
-      .input-prepend
-        %span.add-on= web_app_url
-        = f.text_field :code, :placeholder => "example"
+      = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
 
-  - unless @project.new_record? || @project.heads.empty?  
+  %hr
+  .alert.alert-info
+    %h5 Advanced settings:
     .clearfix
-      = f.label :default_branch, "Default Branch"
-      .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
+      = f.label :path do 
+        Git Clone
+      .input
+        .input-prepend
+          %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
+          = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+          %span.add-on= ".git"
+    .clearfix
+      = f.label :code do 
+        URL
+      .input
+        .input-prepend
+          %span.add-on= web_app_url
+          = f.text_field :code, :placeholder => "example"
 
-    .alert-message.block-message.warning
-      %h5 Features
+    - unless @project.new_record? || @project.heads.empty?  
+      .clearfix
+        = f.label :default_branch, "Default Branch"
+        .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
+
+  - unless @project.new_record?  
+    .alert.alert-info
+      %h5 Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"
@@ -46,12 +54,6 @@
         = f.label :wiki_enabled, "Wiki"
         .input= f.check_box :wiki_enabled
     
-  .clearfix
-    = f.label :description
-    .input
-      = f.text_area :description, :placeholder => "project description", :class => "xxlarge", :rows => 5
-      %p.hint Markdown is enabled.
-
   %br
   
   .actions

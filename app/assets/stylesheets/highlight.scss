@@ -64,12 +64,8 @@ table.highlighttable pre{
 }
 
 .git-empty .highlight {
-  @include round-borders-all(4px);
-  background:#eee;
-  padding:5px;
-  //overflow-x:scroll;
   pre{
-    padding:0;
+    padding:15px;
     line-height:2.0;
     margin:0;
     font-family: 'Menlo', 'Courier New', 'andale mono','lucida console',monospace;

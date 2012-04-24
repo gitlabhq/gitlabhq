@@ -1,0 +1,29 @@
+= form_for(@project, :remote => true) do |f|
+  - if @project.errors.any?
+    .alert-message.block-message.error
+      %span= @project.errors.full_messages.first
+  .clearfix.project_name_holder
+    = f.label :name do
+      Project name is
+    .input
+      = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
+      = f.submit 'Create project', :class => "btn primary"
+
+  %hr
+  .alert.alert-info
+    %h5 Advanced settings:
+    .clearfix
+      = f.label :path do 
+        Git Clone
+      .input
+        .input-prepend
+          %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
+          = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+          %span.add-on= ".git"
+    .clearfix
+      = f.label :code do 
+        URL
+      .input
+        .input-prepend
+          %span.add-on= web_app_url
+          = f.text_field :code, :placeholder => "example"

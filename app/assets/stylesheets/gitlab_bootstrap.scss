@@ -111,6 +111,7 @@ table {
 
   &.btn-primary { 
     background:$link_color;
+    border-color: #2A79A3;
     &:hover { 
       background:$blue_link;
     }
