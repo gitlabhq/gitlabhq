@@ -6,8 +6,7 @@
     = render "layouts/head_panel", :title => "Profile"
     .container
       %nav.main_menu
-        = render "layouts/const_menu_links"
-        = link_to "Profile", profile_path, :class => current_page?(:controller => "profile", :action => :show) ? "current" : nil
+        = link_to "Profile", profile_path, :class => "home #{current_page?(:controller => "profile", :action => :show) ? "current" : nil}"
         = link_to "Password & token", profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
         = link_to "Design", profile_design_path, :class => current_page?(:controller => "profile", :action => :design) ? "current" : nil
         = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do

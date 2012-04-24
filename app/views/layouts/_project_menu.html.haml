@@ -1,8 +1,5 @@
 %nav.main_menu
-  = render "layouts/const_menu_links"
-  = link_to project_path(@project), :class => "#{project_tab_class}", :title => "Project" do 
-    Project
-
+  = link_to @project.code, project_path(@project), :class => "home #{project_tab_class}", :title => "Project"
   - if @project.repo_exists?
     - if can? current_user, :download_code, @project
       = link_to "Files", tree_project_ref_path(@project, @project.root_ref), :class => tree_tab_class
