@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_many :my_own_projects, :class_name => "Project", :foreign_key => :owner_id
   has_many :keys, :dependent => :destroy
 
-  has_many :recent_events, 
+  has_many :recent_events,
     :class_name => "Event",
     :foreign_key => :author_id,
     :order => "id DESC"
@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   validates :projects_limit,
             :presence => true,
             :numericality => {:greater_than_or_equal_to => 0}
-            
+
   validates :bio, :length => { :within => 0..255 }
 
   before_create :ensure_authentication_token
@@ -93,14 +93,14 @@ class User < ActiveRecord::Base
     (0...8).map{ ('a'..'z').to_a[rand(26)] }.join
   end
 
-  def first_name 
+  def first_name
     name.split(" ").first unless name.blank?
   end
 
   def self.find_for_ldap_auth(omniauth_info)
-    name = omniauth_info.name
+    name = omniauth_info.name.force_encoding("utf-8")
     email = omniauth_info.email.downcase
-    
+
     if @user = User.find_by_email(email)
       @user
     else
@@ -123,8 +123,8 @@ class User < ActiveRecord::Base
 
   # Remove user from all projects and
   # set blocked attribute to true
-  def block 
-    users_projects.all.each do |membership| 
+  def block
+    users_projects.all.each do |membership|
       return false unless membership.destroy
     end
 
