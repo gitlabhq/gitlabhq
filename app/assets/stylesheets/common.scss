@@ -157,20 +157,8 @@ nav.main_menu {
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
   @include shade;
   .count { 
-	position: relative;
-	top: -1px;
-	display: inline-block;
-	height: 15px;
-	margin: 0 0 0 5px;
-	padding: 0 8px 1px 8px;
-	height: auto;
-	font-size: 0.82em;
-	line-height: 14px;
-	text-align: center;
-	color: #777;
-	background: white;
-	border-top: 1px solid #CCC;
-	border-radius: 8px;
+    margin-left:3px;
+	color: #aaa;
   }
   .label { 
     background:$hover;
