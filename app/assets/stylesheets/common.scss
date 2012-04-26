@@ -168,9 +168,10 @@ nav.main_menu {
 	line-height: 14px;
 	text-align: center;
 	color: #777;
-	background: white;
+	background: #f2f2f2;
 	border-top: 1px solid #CCC;
 	border-radius: 8px;
+	-moz-border-radius: 8px;
   }
   .label { 
     background:$hover;
