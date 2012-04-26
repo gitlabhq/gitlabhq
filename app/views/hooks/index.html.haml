@@ -1,19 +1,43 @@
 = render "projects/project_head"
 
 - if can? current_user, :admin_project, @project
-  .alert-message.block-message
-    Post receive hooks for binding events when someone push to repository.
-    = link_to new_project_hook_path(@project), :class => "btn small", :title => "New Web Hook" do 
-      Add Post Receive Hook
+  .alert.alert-info
+    %span
+      Post receive hooks for binding events when someone push to repository.
+      %br
+      Read more about web hooks 
+      %strong #{link_to "here", help_web_hooks_path, :class => "vlink"}
 
-    %p Read more about web hooks #{link_to "here", help_web_hooks_path, :class => "vlink"}
+= form_for [@project, @hook], :as => :hook, :url => project_hooks_path(@project) do |f|
+  -if @hook.errors.any?
+    .alert-message.block-message.error
+      - @hook.errors.full_messages.each do |msg|
+        %p= msg
+  .clearfix
+    = f.label :url, "URL:"
+    .input
+      = f.text_field :url, :class => "text_field xxlarge"
+      &nbsp;
+      = f.submit "Add Web Hook", :class => "btn primary"
+%hr
 
 -if @hooks.any?
-  %table
+  %h3
+    Hooks
+    %small (#{@hooks.count})
+  %br
+  %table.admin-table
+    %tr
+      %th URL
+      %th Method
+      %th 
     - @hooks.each do |hook|
       %tr
         %td
           = link_to project_hook_path(@project, hook) do
-            = hook.url
+            %strong= hook.url
+          = link_to 'Test Hook', test_project_hook_path(@project, hook), :class => "btn small right"
+        %td POST
         %td
           = link_to 'Remove', project_hook_path(@project, hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small right"
+
