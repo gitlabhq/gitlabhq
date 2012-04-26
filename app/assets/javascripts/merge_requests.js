@@ -5,12 +5,13 @@ var MergeRequest = {
 
   init:
     function(opts) {
-      this.opts = opts;
+      var self = this;
+      self.opts = opts;
 
-      if($(".automerge_widget").length){
+      self.showState(self.opts.current_state);
+      if($(".automerge_widget").length && self.opts.check_enable){
         $.get(opts.url_to_automerge_check, function(data){
-          $(".automerge_widget").hide();
-          $(".automerge_widget." + data.state).show();
+          self.showState(data.state);
         }, "json");
       }
 
@@ -34,6 +35,13 @@ var MergeRequest = {
         e.preventDefault();
       });
     },
+
+  showState:
+    function(state){
+      $(".automerge_widget").hide();
+      $(".automerge_widget." + state).show();
+    },
+
 
   loadDiff:
     function() { 

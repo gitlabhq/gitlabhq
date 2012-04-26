@@ -101,6 +101,8 @@
   $(function(){
     MergeRequest.init({
       url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
+      check_enable: #{@merge_request.state == MergeRequest::UNCHECKED ? "true" : "false"},
+      current_state: "#{@merge_request.human_state}"
     });
 
     $(".accept_merge_request").live("ajax:beforeSend", function() {
