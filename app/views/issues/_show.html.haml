@@ -1,4 +1,4 @@
-%li.wll{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""}", :url => project_issue_path(issue.project, issue) }
+%li.wll{ :id => dom_id(issue), :class => "issue #{issue.critical ? "critical" : ""} #{issue.closed ? "closed" : ""}", :url => project_issue_path(issue.project, issue) }
   .right
     - if issue.notes.any?
       %span.btn.small.disabled.padded= pluralize issue.notes.count, 'note'
