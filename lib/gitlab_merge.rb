@@ -8,14 +8,16 @@ class GitlabMerge
   end
 
   def can_be_merged?
+    result = false
     process do |repo, output|
-      !(output =~ /Automatic merge failed/)
+      result = !(output =~ /CONFLICT/)
     end
+    result
   end
 
   def merge
     process do |repo, output|
-      if output =~ /Automatic merge failed/
+      if output =~ /CONFLICT/
         false  
       else 
         repo.git.push({}, "origin", merge_request.target_branch)
@@ -39,6 +41,7 @@ class GitlabMerge
 
         Dir.chdir(project.satellite.path) do
           merge_repo = Grit::Repo.new('.')
+          merge_repo.git.sh "git reset --hard"
           merge_repo.git.sh "git fetch origin"
           merge_repo.git.sh "git config user.name \"#{user.name}\""
           merge_repo.git.sh "git config user.email \"#{user.email}\""
