@@ -20,7 +20,7 @@ module Project::ValidationsTrait
               :uniqueness => true,
               :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
                            :message => "only letters, digits & '_' '-' '.' allowed"  },
-              :length   => { :within => 3..255 }
+              :length   => { :within => 1..255 }
 
     validates :owner, :presence => true
     validate :check_limit
