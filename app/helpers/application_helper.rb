@@ -1,7 +1,7 @@
 require 'digest/md5'
 module ApplicationHelper
 
-  def gravatar_icon(user_email, size = 40)
+  def gravatar_icon(user_email = '', size = 40)
     gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
     user_email.strip!
     "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
