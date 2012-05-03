@@ -10,3 +10,19 @@ do
   reponame=`basename "$pwd" | cut -d. -f1`
   env -i redis-cli rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
 done
+
+[ -d hooks/post-receive.secondary.d ] || exit 0
+for i in hooks/post-receive.secondary.d/*
+do
+    [ -x "$i" ] || continue
+    # call the hooklet with the same arguments we got
+    "$i" "$@"   || {
+        # hooklet failed; we need to log it...
+        echo hooklet $i failed
+        perl -I$GL_BINDIR -Mgitolite -e "log_it('hooklet $i failed')"
+        # ...and send back some non-zero exit code ;-)
+        exit 1
+    }
+done
+
+exit 0
