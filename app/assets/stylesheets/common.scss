@@ -724,8 +724,6 @@ p.time {
   font-weight: bold;
   color: #468847;
   text-align: right;
-  padding: 4px;
-  margin: 2px;
 }
 
 /* Fix for readme code (stopped it from being yellow) */
@@ -759,7 +757,6 @@ p.time {
   }
 
   .top_box_content, 
-  .middle_box_content, 
   .bottom_box_content { 
     padding:15px;
 
@@ -778,6 +775,7 @@ p.time {
     background-color:#f5f5f5;
     border:none;
     border-top:1px solid #eee;
+    padding: 10px 15px;
   }
 
   .bottom_box_content { 
