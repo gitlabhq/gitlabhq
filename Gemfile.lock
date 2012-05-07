@@ -71,7 +71,7 @@ GEM
     acts-as-taggable-on (2.1.1)
       rails
     acts_as_list (0.1.4)
-    addressable (2.2.6)
+    addressable (2.2.8)
     ansi (1.4.2)
     arel (3.0.2)
     autotest (4.4.6)
@@ -148,7 +148,7 @@ GEM
       activesupport (>= 3.0.0)
       railties (>= 3.0.0)
     kgio (2.7.2)
-    launchy (2.0.5)
+    launchy (2.1.0)
       addressable (~> 2.2.6)
     letter_opener (0.0.2)
       launchy
