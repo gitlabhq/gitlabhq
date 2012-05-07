@@ -4,7 +4,6 @@ branches:
     - 'master'
 rvm:
   - 1.9.2
-  - 1.9.3
 before_script:
   - "cp config/database.yml.sqlite config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
