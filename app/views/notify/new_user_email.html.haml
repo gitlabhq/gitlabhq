@@ -4,7 +4,7 @@
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
       %td{:align => "left", :style => "padding: 20px 0 0;"}
         %h2{:style => "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
-          Hi #{@user.name}!
+          Hi #{@user['name']}!
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
           Administrator created account for you. Now you are a member of company gitlab application.
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
@@ -13,7 +13,7 @@
       %td{:style => "padding: 15px 0 15px;", :valign => "top"}
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 16px;font-family: Helvetica, Arial, sans-serif; "}
           login..........................................
-          %code= @user.email
+          %code= @user['email']
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 16px;font-family: Helvetica, Arial, sans-serif; "}
           password..................................
           %code= @password

@@ -36,6 +36,7 @@ gem 'bootstrap-sass', "2.0.2"
 gem "colored"
 gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'modularity'
+gem 'resque_mailer'
 
 group :assets do
   gem "sass-rails",   "3.2.3"
