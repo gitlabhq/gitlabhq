@@ -194,6 +194,12 @@
   #tree-readme-holder .readme { 
     @include shade;
     margin-bottom:20px;
+    h1, h2 {  
+      line-height: 56px;  
+ 	  }  
+    h3, h4 {  
+ 	    line-height: 46px;  
+ 	  }  
   }
 
   a.tree-commit-link { 
