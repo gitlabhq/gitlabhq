@@ -41,4 +41,4 @@ sudo chmod -R g+rwX /home/git/repositories/
 sudo chown -R git:git /home/git/repositories/
 
 sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin
-rm -rf /tmp/gitolite-admin
+sudo rm -rf /tmp/gitolite-admin
