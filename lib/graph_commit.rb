@@ -1,3 +1,4 @@
+require 'charlock_holmes/string'
 require "grit"
 
 class GraphCommit
@@ -96,13 +97,14 @@ class GraphCommit
     h[:parents] = self.parents.collect do |p|
       [p.id,0,0]
     end
-    h[:author]  = author.name.force_encoding("UTF-8")
+    h[:author]  = author.name
     h[:time]    = time
     h[:space]   = space
     h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
     h[:id]      = sha
     h[:date]    = date
-    h[:message] = message.force_encoding("UTF-8")
+    detection = CharlockHolmes::EncodingDetector.detect(message)
+    h[:message] = CharlockHolmes::Converter.convert message, detection[:encoding], 'UTF-8'
     h[:login]   = author.email
     h
   end
