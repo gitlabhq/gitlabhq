@@ -114,6 +114,9 @@ GEM
       warden (~> 1.1)
     diff-lcs (1.1.3)
     drapper (0.8.4)
+    email_spec (1.2.1)
+      mail (~> 2.2)
+      rspec (~> 2.0)
     erubis (2.7.0)
     escape_utils (0.2.4)
     eventmachine (0.12.10)
@@ -330,6 +333,7 @@ DEPENDENCIES
   database_cleaner
   devise (~> 1.5)
   drapper
+  email_spec
   faker
   foreman
   git
