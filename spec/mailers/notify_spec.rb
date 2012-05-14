@@ -8,12 +8,18 @@ describe Notify do
     default_url_options[:host] = 'example.com'
   end
 
-  let(:example_email) { 'user@example.com' }
+  let(:recipient) { Factory.create(:user, :email => 'recipient@example.com') }
+  let(:project) { Factory.create(:project) }
 
-  describe 'new user email' do
-    let(:example_password) { 'thisismypassword' }
+  shared_examples 'a multiple recipients email' do
+    it 'is sent to the given recipient' do
+      should deliver_to recipient.email
+    end
+  end
+
+  describe 'for new users, the email' do
     let(:example_site_url) { root_url }
-    let(:new_user) { Factory.new(:user, :email => example_email, :password => example_password) }
+    let(:new_user) { Factory.new(:user, :email => 'newguy@example.com', :password => 'new_password') }
 
     subject { Notify.new_user_email(new_user, new_user.password) }
 
@@ -38,45 +44,200 @@ describe Notify do
     end
   end
 
-  describe 'new issue email' do
-    let(:project) { Factory.create(:project) }
-    let(:assignee) { Factory.create(:user, :email => example_email) }
-    let(:issue) { Factory.create(:issue, :assignee => assignee, :project => project ) }
+  context 'for a project' do
+    describe 'items that are assignable, the email' do
+      let(:assignee) { Factory.create(:user, :email => 'assignee@example.com') }
+      let(:old_assignee) { Factory.create(:user, :name => 'Old Assignee Guy') }
 
-    subject { Notify.new_issue_email(issue) }
+      shared_examples 'an assignee email' do
+        it 'is sent to the assignee' do
+          should deliver_to assignee.email
+        end
+      end
 
-    it 'is sent to the assignee' do
-      should deliver_to assignee.email
+      context 'for issues' do
+        let(:issue) { Factory.create(:issue, :assignee => assignee, :project => project ) }
+
+        describe 'that are new' do
+          subject { Notify.new_issue_email(issue) }
+
+          it_behaves_like 'an assignee email'
+
+          it 'has the correct subject' do
+            should have_subject /New Issue was created/
+          end
+
+          it 'contains a link to the new issue' do
+            should have_body_text /#{project_issue_url project, issue}/
+          end
+        end
+
+        describe 'that have been reassigned' do
+          before(:each) { issue.stub(:assignee_id_was).and_return(old_assignee.id) }
+
+          subject { Notify.changed_issue_email(recipient, issue) }
+
+          it_behaves_like 'a multiple recipients email'
+
+          it 'has the correct subject' do
+            should have_subject /changed issue/
+          end
+
+          it 'contains the name of the previous assignee' do
+            should have_body_text /#{old_assignee.name}/
+          end
+
+          it 'contains the name of the new assignee' do
+            should have_body_text /#{assignee.name}/
+          end
+
+          it 'contains a link to the issue' do
+            should have_body_text /#{project_issue_url project, issue}/
+          end
+        end
+      end
+
+      context 'for merge requests' do
+        let(:merge_request) { Factory.create(:merge_request, :assignee => assignee, :project => project) }
+
+        describe 'that are new' do
+          subject { Notify.new_merge_request_email(merge_request) }
+
+          it_behaves_like 'an assignee email'
+
+          it 'has the correct subject' do
+            should have_subject /new merge request/
+          end
+
+          it 'contains a link to the new merge request' do
+            should have_body_text /#{project_merge_request_url(project, merge_request)}/
+          end
+
+          it 'contains the source branch for the merge request' do
+            should have_body_text /#{merge_request.source_branch}/
+          end
+
+          it 'contains the target branch for the merge request' do
+            should have_body_text /#{merge_request.target_branch}/
+          end
+        end
+
+        describe 'that are reassigned' do
+          before(:each) { merge_request.stub(:assignee_id_was).and_return(old_assignee.id) }
+
+          subject { Notify.changed_merge_request_email(recipient, merge_request) }
+
+          it_behaves_like 'a multiple recipients email'
+
+          it 'has the correct subject' do
+            should have_subject /merge request changed/
+          end
+
+          it 'contains the name of the previous assignee' do
+            should have_body_text /#{old_assignee.name}/
+          end
+
+          it 'contains the name of the new assignee' do
+            should have_body_text /#{assignee.name}/
+          end
+
+          it 'contains a link to the merge request' do
+            should have_body_text /#{project_merge_request_url project, merge_request}/
+          end
+
+        end
+      end
     end
 
-    it 'has the correct subject' do
-      should have_subject /New Issue was created/
-    end
+    context 'items that are noteable, the email for a note' do
+      let(:note_author) { Factory.create(:user, :name => 'author_name') }
+      let(:note) { Factory.create(:note, :project => project, :author => note_author) }
 
-    it 'contains a link to the new issue' do
-      should have_body_text /#{project_issue_url project, issue}/
-    end
-  end
+      shared_examples 'a note email' do
+        it 'is sent to the given recipient' do
+          should deliver_to recipient.email
+        end
 
-  describe 'note wall email' do
-    let(:project) { Factory.create(:project) }
-    let(:recipient) { Factory.create(:user, :email => example_email) }
-    let(:author) { Factory.create(:user) }
-    let(:note) { Factory.create(:note, :project => project, :author => author) }
-    let(:note_url) { wall_project_url(project, :anchor => "note_#{note.id}") }
+        it 'contains the name of the note\'s author' do
+          should have_body_text /#{note_author.name}/
+        end
 
-    subject { Notify.note_wall_email(recipient, note) }
+        it 'contains the message from the note' do
+          should have_body_text /#{note.note}/
+        end
+      end
 
-    it 'is sent to the given recipient' do
-      should deliver_to recipient.email
-    end
+      describe 'on a project wall' do
+        let(:note_on_the_wall_url) { wall_project_url(project, :anchor => "note_#{note.id}") }
 
-    it 'has the correct subject' do
-      should have_subject /#{project.name}/
-    end
+        subject { Notify.note_wall_email(recipient, note) }
 
-    it 'contains a link to the wall note' do
-      should have_body_text /#{note_url}/
+        it_behaves_like 'a note email'
+
+        it 'has the correct subject' do
+          should have_subject /#{project.name}/
+        end
+
+        it 'contains a link to the wall note' do
+          should have_body_text /#{note_on_the_wall_url}/
+        end
+      end
+
+      describe 'on a commit' do
+        let(:commit) do
+          mock(:commit).tap do |commit|
+            commit.stub(:id).and_return('faux_sha_1')
+          end
+        end
+        before(:each) { note.stub(:target).and_return(commit) }
+
+        subject { Notify.note_commit_email(recipient, note) }
+
+        it_behaves_like 'a note email'
+
+        it 'has the correct subject' do
+          should have_subject /note for commit/
+        end
+
+        it 'contains a link to the commit' do
+          should have_body_text /faux_sha_1/
+        end
+      end
+
+      describe 'on a merge request' do
+        let(:merge_request) { Factory.create(:merge_request, :project => project) }
+        let(:note_on_merge_request_url) { project_merge_request_url(project, merge_request, :anchor => "note_#{note.id}") }
+        before(:each) { note.stub(:noteable).and_return(merge_request) }
+
+        subject { Notify.note_merge_request_email(recipient, note) }
+
+        it_behaves_like 'a note email'
+
+        it 'has the correct subject' do
+          should have_subject /note for merge request/
+        end
+
+        it 'contains a link to the merge request note' do
+          should have_body_text /#{note_on_merge_request_url}/
+        end
+      end
+
+      describe 'on an issue' do
+        let(:issue) { Factory.create(:issue, :project => project) }
+        let(:note_on_issue_url) { project_issue_url(project, issue, :anchor => "note_#{note.id}") }
+        before(:each) { note.stub(:noteable).and_return(issue) }
+        subject { Notify.note_issue_email(recipient, note) }
+
+        it_behaves_like 'a note email'
+
+        it 'has the correct subject' do
+          should have_subject /note for issue #{issue.id}/
+        end
+
+        it 'contains a link to the issue note' do
+          should have_body_text /#{note_on_issue_url}/
+        end
+      end
     end
   end
 end
