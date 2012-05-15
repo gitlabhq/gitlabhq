@@ -61,7 +61,7 @@ class Notify < ActionMailer::Base
   
   def changed_merge_request_email(user, merge_request)
     @user = user
-    @merge_request = MergeRequest(merge_request.id)
+    @merge_request = MergeRequest.find(merge_request.id)
     @assignee_was ||= User.find(@merge_request.assignee_id_was)
     @project = @merge_request.project
     mail(:to => @user['email'], :subject => "gitlab | merge request changed | #{@merge_request.title} ")
