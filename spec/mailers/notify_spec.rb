@@ -123,9 +123,9 @@ describe Notify do
         end
 
         describe 'that are reassigned' do
-          before(:each) { merge_request.stub(:assignee_id_was).and_return(old_assignee.id) }
+          before(:each) { merge_request.stub(:assignee_id_was).and_return(previous_assignee.id) }
 
-          subject { Notify.changed_merge_request_email(recipient, merge_request) }
+          subject { Notify.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id) }
 
           it_behaves_like 'a multiple recipients email'
 
@@ -134,7 +134,7 @@ describe Notify do
           end
 
           it 'contains the name of the previous assignee' do
-            should have_body_text /#{old_assignee.name}/
+            should have_body_text /#{previous_assignee.name}/
           end
 
           it 'contains the name of the new assignee' do
