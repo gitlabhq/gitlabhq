@@ -174,7 +174,7 @@ describe Notify do
       describe 'on a project wall' do
         let(:note_on_the_wall_url) { wall_project_url(project, :anchor => "note_#{note.id}") }
 
-        subject { Notify.note_wall_email(recipient, note) }
+        subject { Notify.note_wall_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
 
