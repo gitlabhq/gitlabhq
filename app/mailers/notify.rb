@@ -13,12 +13,9 @@ class Notify < ActionMailer::Base
     mail(:to => @user.email, :subject => "gitlab | Account was created for you")
   end
 
-  def new_issue_email(issue)
-    @issue = Issue.find(issue['id'])
-    @user = @issue.assignee
-    @project = @issue.project
-
-    mail(:to => @user.email, :subject => "gitlab | New Issue was created")
+  def new_issue_email(issue_id)
+    @issue = Issue.find(issue_id)
+    mail(:to => @issue.assignee_email, :subject => "gitlab | New Issue was created")
   end
 
   def note_wall_email(recipient_id, note_id)

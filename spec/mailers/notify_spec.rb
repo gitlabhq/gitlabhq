@@ -59,7 +59,7 @@ describe Notify do
         let(:issue) { Factory.create(:issue, :assignee => assignee, :project => project ) }
 
         describe 'that are new' do
-          subject { Notify.new_issue_email(issue) }
+          subject { Notify.new_issue_email(issue.id) }
 
           it_behaves_like 'an assignee email'
 
