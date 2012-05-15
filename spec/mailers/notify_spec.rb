@@ -153,6 +153,10 @@ describe Notify do
       let(:note_author) { Factory.create(:user, :name => 'author_name') }
       let(:note) { Factory.create(:note, :project => project, :author => note_author) }
 
+      before :each do
+          Note.stub(:find).with(note.id).and_return(note)
+      end
+
       shared_examples 'a note email' do
         it 'is sent to the given recipient' do
           should deliver_to recipient.email
@@ -191,7 +195,7 @@ describe Notify do
         end
         before(:each) { note.stub(:target).and_return(commit) }
 
-        subject { Notify.note_commit_email(recipient, note) }
+        subject { Notify.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
 
@@ -209,7 +213,7 @@ describe Notify do
         let(:note_on_merge_request_url) { project_merge_request_url(project, merge_request, :anchor => "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(merge_request) }
 
-        subject { Notify.note_merge_request_email(recipient, note) }
+        subject { Notify.note_merge_request_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
 
