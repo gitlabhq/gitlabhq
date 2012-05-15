@@ -66,12 +66,11 @@ class Notify < ActionMailer::Base
     @project = @merge_request.project
     mail(:to => @user['email'], :subject => "gitlab | merge request changed | #{@merge_request.title} ")
   end
-  
-  def changed_issue_email(user, issue)
-    @issue = Issue.find(issue['id'])
-    @user = user
-    @assignee_was ||= User.find(@issue.assignee_id_was)
-    @project = @issue.project
-    mail(:to => @user['email'], :subject => "gitlab | changed issue | #{@issue.title} ")
+
+  def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
+    recipient = User.find(recipient_id)
+    @issue = Issue.find(issue_id)
+    @previous_assignee ||= User.find(previous_assignee_id)
+    mail(:to => recipient.email, :subject => "gitlab | changed issue | #{@issue.title} ")
   end
 end

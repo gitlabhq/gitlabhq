@@ -47,7 +47,7 @@ describe Notify do
   context 'for a project' do
     describe 'items that are assignable, the email' do
       let(:assignee) { Factory.create(:user, :email => 'assignee@example.com') }
-      let(:old_assignee) { Factory.create(:user, :name => 'Old Assignee Guy') }
+      let(:previous_assignee) { Factory.create(:user, :name => 'Previous Assignee') }
 
       shared_examples 'an assignee email' do
         it 'is sent to the assignee' do
@@ -73,9 +73,9 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-          before(:each) { issue.stub(:assignee_id_was).and_return(old_assignee.id) }
+          before(:each) { issue.stub(:assignee_id_was).and_return(previous_assignee.id) }
 
-          subject { Notify.changed_issue_email(recipient, issue) }
+          subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id) }
 
           it_behaves_like 'a multiple recipients email'
 
@@ -84,7 +84,7 @@ describe Notify do
           end
 
           it 'contains the name of the previous assignee' do
-            should have_body_text /#{old_assignee.name}/
+            should have_body_text /#{previous_assignee.name}/
           end
 
           it 'contains the name of the new assignee' do

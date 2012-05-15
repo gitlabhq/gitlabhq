@@ -78,8 +78,8 @@ class MailerObserver < ActiveRecord::Observer
       recipients_ids = issue.assignee_id_was, issue.assignee_id
       recipients_ids.delete current_user.id
 
-      User.find(recipients_ids).each do |user|
-        Notify.changed_issue_email(user, issue).deliver
+      recipients_ids.each do |recipient_id|
+        Notify.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was).deliver
       end
     end
 
