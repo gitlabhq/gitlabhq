@@ -8,6 +8,10 @@ class Note < ActiveRecord::Base
     :class_name => "User"
 
   delegate :name,
+           :to => :project,
+           :prefix => true
+
+  delegate :name,
            :email,
            :to => :author,
            :prefix => true

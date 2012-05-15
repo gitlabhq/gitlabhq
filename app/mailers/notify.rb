@@ -24,28 +24,28 @@ class Notify < ActionMailer::Base
   def note_wall_email(recipient_id, note_id)
     recipient = User.find(recipient_id)
     @note = Note.find(note_id)
-    mail(:to => recipient.email, :subject => "gitlab | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | #{@note.project_name} ")
   end
 
   def note_commit_email(recipient_id, note_id)
     recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @commit = @note.target
-    mail(:to => recipient.email, :subject => "gitlab | note for commit | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for commit | #{@note.project_name} ")
   end
 
   def note_merge_request_email(recipient_id, note_id)
     recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @merge_request = @note.noteable
-    mail(:to => recipient.email, :subject => "gitlab | note for merge request | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for merge request | #{@note.project_name} ")
   end
 
   def note_issue_email(recipient_id, note_id)
     recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @issue = @note.noteable
-    mail(:to => recipient.email, :subject => "gitlab | note for issue #{@issue.id} | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for issue #{@issue.id} | #{@note.project_name} ")
   end
 
   def new_merge_request_email(merge_request)
