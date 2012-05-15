@@ -7,10 +7,10 @@ class Notify < ActionMailer::Base
 
   default from: EMAIL_OPTS["from"]
 
-  def new_user_email(user, password)
-    @user = user
+  def new_user_email(user_id, password)
+    @user = User.find(user_id)
     @password = password
-    mail(:to => @user['email'], :subject => "gitlab | Account was created for you")
+    mail(:to => @user.email, :subject => "gitlab | Account was created for you")
   end
 
   def new_issue_email(issue)

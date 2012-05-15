@@ -23,7 +23,7 @@ class MailerObserver < ActiveRecord::Observer
   end
 
   def new_user(user)
-    Notify.new_user_email(user, user.password).deliver
+    Notify.new_user_email(user.id, user.password).deliver
   end
 
   def new_note(note)

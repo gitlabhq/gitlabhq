@@ -19,9 +19,9 @@ describe Notify do
 
   describe 'for new users, the email' do
     let(:example_site_url) { root_url }
-    let(:new_user) { Factory.new(:user, :email => 'newguy@example.com', :password => 'new_password') }
+    let(:new_user) { Factory.create(:user, :email => 'newguy@example.com') }
 
-    subject { Notify.new_user_email(new_user, new_user.password) }
+    subject { Notify.new_user_email(new_user.id, new_user.password) }
 
     it 'is sent to the new user' do
       should deliver_to new_user.email
