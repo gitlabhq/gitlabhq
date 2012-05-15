@@ -9,14 +9,20 @@
         = link_to "raw", blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "right", :target => "_blank"
         = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right", :style => "margin-right:10px;"
   - if file.text?
-    .view_file_content
-      - unless file.empty?
-        %div{:class => current_user.dark_scheme ? "black" : "white"}
+    - if name =~ /\.(md|markdown)$/i
+      #tree-readme-holder
+        .readme
           = preserve do
-            = raw file.colorize(options: { linenos: 'True'})
-      - else
-        %h3
-          %center Empty file
+            = markdown(file.data)
+    - else
+      .view_file_content
+        - unless file.empty?
+          %div{:class => current_user.dark_scheme ? "black" : "white"}
+            = preserve do
+              = raw file.colorize(options: { linenos: 'True'})
+        - else
+          %h3
+            %center Empty file
   - elsif file.image?
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
