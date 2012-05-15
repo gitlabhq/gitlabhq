@@ -566,7 +566,12 @@ li.commit {
   }
 
   code { 
-    padding:0px;
+    padding: 2px 2px 0;
+    margin-top: -2px;
+    &:hover {
+      color: black;
+      border: 1px solid #ccc;
+    }
   }
 }
 p.time {
