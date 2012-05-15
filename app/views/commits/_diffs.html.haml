@@ -23,10 +23,12 @@
     .diff_file
       .diff_file_header
         - if diff.deleted_file
-          %strong{:id => "#{diff.old_path}"}= diff.old_path
+          %i.icon-file
+          %span{:id => "#{diff.old_path}"}= diff.old_path
         - else
           = link_to tree_file_project_ref_path(@project, @commit.id, diff.new_path) do
-            %strong{:id => "#{diff.new_path}"}= diff.new_path
+            %i.icon-file
+            %span{:id => "#{diff.new_path}"}= diff.new_path
         %br/
       .diff_file_content
         - if file.text?

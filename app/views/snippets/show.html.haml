@@ -11,6 +11,7 @@
   #tree-content-holder
     .view_file
       .view_file_header
+        %i.icon-file
         %strong= @snippet.file_name
       .view_file_content
         %div{:class => current_user.dark_scheme ? "black" : ""}

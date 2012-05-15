@@ -2,7 +2,8 @@
   = link_to @project.code, project_path(@project), :class => "home #{project_tab_class}", :title => "Project"
   - if @project.repo_exists?
     - if can? current_user, :download_code, @project
-      = link_to "Files", tree_project_ref_path(@project, @project.root_ref), :class => tree_tab_class
+      = link_to tree_project_ref_path(@project, @project.root_ref), :class => tree_tab_class do 
+        Files
       = link_to "Commits", project_commits_path(@project), :class => commit_tab_class
 
     = link_to "Network", graph_project_path(@project), :class => current_page?(:controller => "projects", :action => "graph", :id => @project) ? "current" : nil

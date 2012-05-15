@@ -6,5 +6,6 @@
   = link_to dashboard_merge_requests_path, :class => "#{"current" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide" do
     Requests
     %span.count= current_user.cared_merge_requests.count
-  = link_to "Search", search_path, :class => "#{"current" if current_page?(search_path)}"
+  = link_to search_path, :class => "#{"current" if current_page?(search_path)}" do 
+    Search
   = link_to "Help", help_path, :class => "#{"current" if controller.controller_name == "help"}"

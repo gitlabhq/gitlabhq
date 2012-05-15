@@ -458,9 +458,17 @@ input.git_clone_url {
   margin-bottom:1em;
 
   .diff_file_header {
-    padding:5px 5px;
+    padding:7px 5px;
     border-bottom:1px solid #CCC;
     background: #eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+
+    span { 
+      font-size:14px;
+    }
   }
   .diff_file_content {
     overflow:auto;
@@ -495,8 +503,8 @@ input.git_clone_url {
     margin:0px;
     padding:0px;
     border:none;
-    background:#F7F7F7;
-    color:#aaa;
+    background:#EEE;
+    color:#666;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
     text-align:right;
@@ -510,7 +518,7 @@ input.git_clone_url {
       float:left;
       width:35px;
       font-weight:normal;
-      color:#aaa;
+      color:#666;
       &:hover { 
         text-decoration:underline;
       }
