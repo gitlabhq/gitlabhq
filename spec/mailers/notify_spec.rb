@@ -190,7 +190,8 @@ describe Notify do
       describe 'on a commit' do
         let(:commit) do
           mock(:commit).tap do |commit|
-            commit.stub(:id).and_return('faux_sha_1')
+            commit.stub(:id).and_return('fauxsha1')
+            commit.stub(:project).and_return(project)
           end
         end
         before(:each) { note.stub(:target).and_return(commit) }
@@ -204,7 +205,7 @@ describe Notify do
         end
 
         it 'contains a link to the commit' do
-          should have_body_text /faux_sha_1/
+          should have_body_text /fauxsha1/
         end
       end
 

@@ -28,12 +28,11 @@ class Notify < ActionMailer::Base
     mail(:to => @user['email'], :subject => "gitlab | #{@note.project.name} ")
   end
 
-  def note_commit_email(user, note)
-    @user = user
-    @note = Note.find(note['id'])
-    @project = @note.project
+  def note_commit_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
     @commit = @note.target
-    mail(:to => @user['email'], :subject => "gitlab | note for commit | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for commit | #{@note.project.name} ")
   end
 
   def note_merge_request_email(recipient_id, note_id)
