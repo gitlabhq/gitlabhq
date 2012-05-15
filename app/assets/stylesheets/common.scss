@@ -195,6 +195,7 @@ nav.main_menu {
       -moz-border-radius-bottomleft: 4px;
       border-top-left-radius: 4px;
       border-bottom-left-radius: 4px;
+      border-left: 0;
     }
     padding: 10px 25px;
     display: inline-block;
@@ -203,6 +204,9 @@ nav.main_menu {
     margin: 0;
     float:left;
     text-shadow:0 1px 1px white;
+    border-right: 1px solid #DDD;
+    border-left: 1px solid #EEE;
+
     &.home { 
       background: url(home_icon.PNG) no-repeat center center;
       text-indent:-9999px;
@@ -215,6 +219,9 @@ nav.main_menu {
     &.current { 
       background-color:#D5D5D5;
       border-bottom: 2px solid #474D57;
+      border-right: 1px solid #BBB;
+      border-left: 1px solid #BBB;
+      border-radius: 0 0 1px 1px;
       &:first-child{ 
         border-bottom:none;
       }
