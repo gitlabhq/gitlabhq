@@ -230,7 +230,8 @@ describe Notify do
         let(:issue) { Factory.create(:issue, :project => project) }
         let(:note_on_issue_url) { project_issue_url(project, issue, :anchor => "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(issue) }
-        subject { Notify.note_issue_email(recipient, note) }
+
+        subject { Notify.note_issue_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
 

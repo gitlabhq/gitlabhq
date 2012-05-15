@@ -43,14 +43,13 @@ class Notify < ActionMailer::Base
     mail(:to => recipient.email, :subject => "gitlab | note for merge request | #{@note.project.name} ")
   end
 
-  def note_issue_email(user, note)
-    @user = user
-    @note = Note.find(note['id'])
-    @project = @note.project
+  def note_issue_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
     @issue = @note.noteable
-    mail(:to => @user['email'], :subject => "gitlab | note for issue #{@issue.id} | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for issue #{@issue.id} | #{@note.project.name} ")
   end
-  
+
   def new_merge_request_email(merge_request)
     @merge_request = MergeRequest.find(merge_request['id'])
     @user = @merge_request.assignee
