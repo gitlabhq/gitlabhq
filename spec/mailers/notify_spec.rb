@@ -101,7 +101,7 @@ describe Notify do
         let(:merge_request) { Factory.create(:merge_request, :assignee => assignee, :project => project) }
 
         describe 'that are new' do
-          subject { Notify.new_merge_request_email(merge_request) }
+          subject { Notify.new_merge_request_email(merge_request.id) }
 
           it_behaves_like 'an assignee email'
 
