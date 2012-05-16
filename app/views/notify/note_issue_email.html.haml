@@ -5,7 +5,7 @@
       %td{:align => "left", :style => "padding: 20px 0 0;"}
         %h2{:style => "color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
           New comment -
-          = link_to project_issue_url(@project, @issue, :anchor => "note_#{@note.id}") do
+          = link_to project_issue_url(@issue.project, @issue, :anchor => "note_#{@note.id}") do
             = "Issue ##{@issue.id.to_s}"
             = truncate(@issue.title, :length => 35)
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
@@ -13,7 +13,7 @@
       %td{:style => "font-size: 1px; line-height: 1px;", :width => "21"}
       %td{:style => "padding: 15px 0 15px;", :valign => "top"}
         %p{:style => "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
-          %a{:href => "#", :style => "color: #0eb6ce; text-decoration: none;"} #{@note.author.name}
+          %a{:href => "#", :style => "color: #0eb6ce; text-decoration: none;"} #{@note.author_name}
           left next message:
         %br
           %table{:border => "0", :cellpadding => "0", :cellspacing => "0", :width => "558"}

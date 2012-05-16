@@ -66,4 +66,5 @@ group :test do
   gem "turn", :require => false
   gem "simplecov", :require => false
   gem "shoulda", "3.0.1"
+  gem 'email_spec'
 end

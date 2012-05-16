@@ -7,71 +7,60 @@ class Notify < ActionMailer::Base
 
   default from: EMAIL_OPTS["from"]
 
-  def new_user_email(user, password)
-    @user = user
+  def new_user_email(user_id, password)
+    @user = User.find(user_id)
     @password = password
-    mail(:to => @user['email'], :subject => "gitlab | Account was created for you")
+    mail(:to => @user.email, :subject => "gitlab | Account was created for you")
   end
 
-  def new_issue_email(issue)
-    @issue = Issue.find(issue['id'])
-    @user = @issue.assignee
-    @project = @issue.project
-
-    mail(:to => @user.email, :subject => "gitlab | New Issue was created")
+  def new_issue_email(issue_id)
+    @issue = Issue.find(issue_id)
+    mail(:to => @issue.assignee_email, :subject => "gitlab | New Issue was created")
   end
 
-  def note_wall_email(user, note)
-    @user = user
-    @note = Note.find(note['id'])
-    @project = @note.project
-    mail(:to => @user['email'], :subject => "gitlab | #{@note.project.name} ")
+  def note_wall_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
+    mail(:to => recipient.email, :subject => "gitlab | #{@note.project_name} ")
   end
 
-  def note_commit_email(user, note)
-    @user = user
-    @note = Note.find(note['id'])
-    @project = @note.project
+  def note_commit_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
     @commit = @note.target
-    mail(:to => @user['email'], :subject => "gitlab | note for commit | #{@note.project.name} ")
-  end
-  
-  def note_merge_request_email(user, note)
-    @user = user
-    @note = Note.find(note['id'])
-    @project = @note.project
-    @merge_request = @note.noteable
-    mail(:to => @user['email'], :subject => "gitlab | note for merge request | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for commit | #{@note.project_name} ")
   end
 
-  def note_issue_email(user, note)
-    @user = user
-    @note = Note.find(note['id'])
-    @project = @note.project
+  def note_merge_request_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
+    @merge_request = @note.noteable
+    mail(:to => recipient.email, :subject => "gitlab | note for merge request | #{@note.project_name} ")
+  end
+
+  def note_issue_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
     @issue = @note.noteable
-    mail(:to => @user['email'], :subject => "gitlab | note for issue #{@issue.id} | #{@note.project.name} ")
+    mail(:to => recipient.email, :subject => "gitlab | note for issue #{@issue.id} | #{@note.project_name} ")
   end
-  
-  def new_merge_request_email(merge_request)
-    @merge_request = MergeRequest.find(merge_request['id'])
-    @user = @merge_request.assignee
-    @project = @merge_request.project
-    mail(:to => @user.email, :subject => "gitlab | new merge request | #{@merge_request.title} ")
+
+  def new_merge_request_email(merge_request_id)
+    @merge_request = MergeRequest.find(merge_request_id)
+    mail(:to => @merge_request.assignee_email, :subject => "gitlab | new merge request | #{@merge_request.title} ")
   end
-  
-  def changed_merge_request_email(user, merge_request)
-    @user = user
-    @merge_request = MergeRequest.find(merge_request.id)
-    @assignee_was ||= User.find(@merge_request.assignee_id_was)
-    @project = @merge_request.project
-    mail(:to => @user['email'], :subject => "gitlab | merge request changed | #{@merge_request.title} ")
+
+  def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id)
+    recipient = User.find(recipient_id)
+    @merge_request = MergeRequest.find(merge_request_id)
+    @previous_assignee ||= User.find(previous_assignee_id)
+    mail(:to => recipient.email, :subject => "gitlab | merge request changed | #{@merge_request.title} ")
   end
-  
-  def changed_issue_email(user, issue)
-    @issue = Issue.find(issue['id'])
-    @user = user
-    @assignee_was ||= User.find(@issue.assignee_id_was)
-    @project = @issue.project
-    mail(:to => @user['email'], :subject => "gitlab | changed issue | #{@issue.title} ")
+
+  def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
+    recipient = User.find(recipient_id)
+    @issue = Issue.find(issue_id)
+    @previous_assignee ||= User.find(previous_assignee_id)
+    mail(:to => recipient.email, :subject => "gitlab | changed issue | #{@issue.title} ")
   end
 end
