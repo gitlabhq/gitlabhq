@@ -106,9 +106,12 @@ class MergeRequest < ActiveRecord::Base
     diffs
   end
 
+  def merge_base
+    project.repo.git.native(:merge_base, {}, [target_branch, source_branch]).strip
+  end
+
   def unmerged_diffs
-    commits = project.repo.commits_between(target_branch, source_branch).map {|c| Commit.new(c)}
-    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id) rescue []
+    project.repo.diff(merge_base, source_branch)
   end
 
   def last_commit
