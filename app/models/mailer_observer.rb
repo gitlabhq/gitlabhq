@@ -18,12 +18,12 @@ class MailerObserver < ActiveRecord::Observer
 
   def new_issue(issue)
     if issue.assignee != current_user
-      Notify.new_issue_email(issue).deliver
+      Notify.new_issue_email(issue.id).deliver
     end
   end
 
   def new_user(user)
-    Notify.new_user_email(user, user.password).deliver
+    Notify.new_user_email(user.id, user.password).deliver
   end
 
   def new_note(note)
@@ -32,26 +32,26 @@ class MailerObserver < ActiveRecord::Observer
       note.project.users.reject { |u| u.id == current_user.id } .each do |u|
         case note.noteable_type
         when "Commit" then
-          Notify.note_commit_email(u, note).deliver
+          Notify.note_commit_email(u.id, note.id).deliver
         when "Issue" then
-          Notify.note_issue_email(u, note).deliver
+          Notify.note_issue_email(u.id, note.id).deliver
         when "MergeRequest" then
-          Notify.note_merge_request_email(u, note).deliver
+          Notify.note_merge_request_email(u.id, note.id).deliver
         when "Snippet"
           true
         else
-          Notify.note_wall_email(u, note).deliver
+          Notify.note_wall_email(u.id, note.id).deliver
         end
       end
     # Notify only author of resource
     elsif note.notify_author
-      Notify.note_commit_email(note.commit_author, note).deliver
+      Notify.note_commit_email(note.commit_author.id, note.id).deliver
     end
   end
 
   def new_merge_request(merge_request)
     if merge_request.assignee != current_user
-      Notify.new_merge_request_email(merge_request).deliver
+      Notify.new_merge_request_email(merge_request.id).deliver
     end
   end
 
@@ -61,7 +61,7 @@ class MailerObserver < ActiveRecord::Observer
       recipients_ids.delete current_user.id
 
       User.find(recipients_ids).each do |user|
-        Notify.changed_merge_request_email(user, merge_request).deliver
+        Notify.reassigned_merge_request_email(user.id, merge_request.id, merge_request.assignee_id_was).deliver
       end
     end
 
@@ -78,8 +78,8 @@ class MailerObserver < ActiveRecord::Observer
       recipients_ids = issue.assignee_id_was, issue.assignee_id
       recipients_ids.delete current_user.id
 
-      User.find(recipients_ids).each do |user|
-        Notify.changed_issue_email(user, issue).deliver
+      recipients_ids.each do |recipient_id|
+        Notify.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was).deliver
       end
     end
 
