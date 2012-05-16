@@ -8,7 +8,7 @@ module Project::RepositoryTrait
     end
 
     def commit(commit_id = nil)
-      Commit.find_or_first(repo, commit_id)
+      Commit.find_or_first(repo, commit_id, root_ref)
     end
 
     def fresh_commits(n = 10)
