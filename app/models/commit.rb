@@ -23,11 +23,11 @@ class Commit
 
 
   class << self 
-    def find_or_first(repo, commit_id = nil)
+    def find_or_first(repo, commit_id = nil, root_ref)
       commit = if commit_id
                  repo.commit(commit_id)
                else
-                 repo.commits.first
+                 repo.commits(root_ref).first
                end
       Commit.new(commit) if commit
     end
