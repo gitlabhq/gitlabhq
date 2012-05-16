@@ -5,7 +5,7 @@ describe Notify do
   include EmailSpec::Matchers
 
   before :all do
-    default_url_options[:host] = 'example.com'
+    default_url_options[:host] = EMAIL_OPTS['host']
   end
 
   let(:recipient) { Factory.create(:user, :email => 'recipient@example.com') }
