@@ -8,7 +8,7 @@ class RefsController < ApplicationController
   before_filter :require_non_empty_project
 
   before_filter :ref
-  before_filter :define_tree_vars, :only => [:tree, :blob]
+  before_filter :define_tree_vars, :only => [:tree, :blob, :blame]
   before_filter :render_full_content
 
   layout "project"
@@ -60,6 +60,10 @@ class RefsController < ApplicationController
     end
   rescue
     return render_404
+  end
+
+  def blame
+    @blame = Grit::Blob.blame(@repo, @commit.id, params[:path])
   end
 
   protected

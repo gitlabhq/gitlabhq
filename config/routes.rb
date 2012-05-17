@@ -94,6 +94,14 @@ Gitlab::Application.routes.draw do
             :id => /[a-zA-Z.0-9\/_\-]+/,
             :path => /.*/
           }
+
+        # blame
+        get "blame/:path" => "refs#blame",
+          :as => :blame_file,
+          :constraints => {
+            :id => /[a-zA-Z.0-9\/_\-]+/,
+            :path => /.*/
+          }
       end
     end
 

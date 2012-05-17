@@ -53,6 +53,11 @@
     padding: 9px 10px;
     height:18px;
 
+    .options { 
+      float:right;
+      margin-top: -5px;
+    }
+
     .file_name { 
       color:$style_color;
       font-size:14px;
@@ -218,5 +223,29 @@
     left: -10px;
     padding:0;
     margin:0;
+  }
+}
+
+.blame_file { 
+  .view_file_content {
+    tr { 
+      border-bottom: 1px solid #eee;
+    }
+    td { 
+      padding:5px;
+    }
+    .author, 
+    .commit { 
+      background:#f5f5f5;
+      vertical-align:top;
+    }
+    .lines { 
+      pre { 
+        padding:0;
+        margin:0;
+        background:none;
+        border:none;
+      }
+    }
   }
 }

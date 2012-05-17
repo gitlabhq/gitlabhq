@@ -1,13 +1,13 @@
-:css
 .view_file
   .view_file_header
     %i.icon-file
     %span.file_name
       = name
       %small #{file.mode}
-    %span.right
-      = link_to "raw", blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "right", :target => "_blank"
-      = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "right", :style => "margin-right:10px;"
+    %span.options
+      = link_to "raw", blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "btn very_small", :target => "_blank"
+      = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "btn very_small"
+      = link_to "blame", blame_file_project_ref_path(@project, @ref, :path => params[:path]), :class => "btn very_small"
   - if file.text?
     - if name =~ /\.(md|markdown)$/i
       #tree-readme-holder

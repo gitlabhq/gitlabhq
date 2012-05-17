@@ -1,0 +1,46 @@
+= render "head"
+
+#tree-holder
+  %ul.breadcrumb
+    %li
+      %span.arrow
+      = link_to tree_project_ref_path(@project, @ref, :path => nil) do
+        = @project.name
+    - @tree.breadcrumbs(6) do |link|
+      \/
+      %li= link
+  .clear
+
+  .view_file.blame_file
+    .view_file_header
+      %i.icon-file
+      %span.file_name
+        = @tree.name
+        %small blame
+      %span.options
+        = link_to "raw", blob_project_ref_path(@project, @ref, :path => params[:path]), :class => "btn very_small", :target => "_blank"
+        = link_to "history", project_commits_path(@project, :path => params[:path], :ref => @ref), :class => "btn very_small"
+        = link_to "source", tree_file_project_ref_path(@project, @ref, :path => params[:path]), :class => "btn very_small"
+    .view_file_content
+      %table
+        - @blame.each do |commit, lines|
+          - commit = Commit.new(commit)
+          %tr
+            %td.author
+              = image_tag gravatar_icon(commit.author_email, 16)
+              = commit.author_name
+            %td.commit
+              &nbsp;
+              = link_to project_commit_path(@project, :id => commit.id) do
+                %code= commit.id.to_s[0..10]
+                %span.row_title= truncate(commit.safe_message, :length => 30) rescue "--broken encoding"
+            %td.lines
+              = preserve do
+                %pre
+                  - lines.each do |line|
+                    = line
+
+:javascript
+  $(function(){
+    $('.project-refs-select').chosen();
+  });

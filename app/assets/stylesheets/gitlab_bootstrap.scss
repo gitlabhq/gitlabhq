@@ -268,6 +268,13 @@ img.avatar {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+
+  &.s16 { 
+    width:16px;
+  }
+  &.s24 { 
+    width:24px;
+  }
 }
 
 img.lil_av { 
