@@ -6,7 +6,7 @@
       = link_to project_team_member_path(@project, member), :title => user.name, :class => "dark" do 
         = image_tag gravatar_icon(user.email, 40), :class => "avatar"
         %strong= truncate(user.name, :lenght => 40)
-      .prepend-top-10= user.email
+      %div.cgray= user.email
 
     .span3
       = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|

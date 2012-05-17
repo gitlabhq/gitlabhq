@@ -87,6 +87,12 @@
       padding: 5px;
       margin-right:10px;
       float:right;
+      background: #EEE;
+      @include border-radius(5px);
+      border: 1px solid #DDD;
+      img { 
+        vertical-align:top;
+      }
     }
 
     .project_name {

@@ -1,6 +1,13 @@
 = render "repositories/branches_head"
 - unless @branches.empty?
-  %table.table-striped.borders
+  %table.admin-table
+    %thead
+      %tr
+        %th Name
+        %th Last commit
+        %th Updated at
+        %th
+
     %tbody
       - @branches.each do |branch|
         = render "repositories/branch", :branch => branch

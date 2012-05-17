@@ -6,5 +6,5 @@
       = hidden_field_tag :path, params[:path]
   %li{:class => "#{'active' if (controller.controller_name == "refs") }"}
     = link_to tree_project_ref_path(@project, @ref) do 
-      Code
+      Source
 

@@ -1,3 +1,6 @@
+body { 
+  margin-bottom:20px;
+}
 a {
   outline: none;
   color: $link_color;
@@ -65,6 +68,10 @@ a {
 
 h3, h4, h5, h6 {
   line-height: 36px;
+}
+
+h5 { 
+  font-size:14px;
 }
 
 code { 

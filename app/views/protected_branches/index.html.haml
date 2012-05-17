@@ -8,10 +8,24 @@
     %li forced code review before merge to protected branches
   %p Read more about project permissions #{link_to "here", help_permissions_path, :class => "vlink"}
 
+- if can? current_user, :admin_project, @project
+  = form_for [@project, @protected_branch] do |f|
+    -if @protected_branch.errors.any?
+      .alert-message.block-message.error
+        %ul
+          - @protected_branch.errors.full_messages.each do |msg|
+            %li= msg
+
+    .entry.clearfix
+      = f.label :name, "Branch"
+      .span3
+        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , { :include_blank => "-- Select branch" }, { :class => "span3" })
+      &nbsp;
+      = f.submit 'Protect', :class => "primary btn"
 
 
 - unless @branches.empty?
-  %table.table-striped
+  %table.admin-table
     %thead
       %tr
         %th Name
@@ -36,19 +50,6 @@
 
 
 
-- if can? current_user, :admin_project, @project
-  = form_for [@project, @protected_branch] do |f|
-    -if @protected_branch.errors.any?
-      .alert-message.block-message.error
-        %ul
-          - @protected_branch.errors.full_messages.each do |msg|
-            %li= msg
-
-    .clearfix
-      = f.label :name
-      .input= f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , { :include_blank => "Select branch" }, { :style => "width:300px" })
-    .actions
-      = f.submit 'Add', :class => "primary btn"
 
 
 :javascript

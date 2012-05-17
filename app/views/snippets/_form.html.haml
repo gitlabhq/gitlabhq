@@ -19,7 +19,7 @@
       .input= f.select :expires_at, lifetime_select_options, {}, :style => "width:200px;"
     .clearfix
       = f.label :content, "Code"
-      = f.text_area :content, :class => "xxlarge"
+      .input= f.text_area :content, :class => "span8"
 
   .actions
     = f.submit 'Save', :class => "primary btn"
