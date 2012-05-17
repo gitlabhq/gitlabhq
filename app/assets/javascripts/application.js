@@ -79,3 +79,13 @@ function showDiff(link) {
   $(link).next('table').show();
   $(link).remove();
 }
+
+(function($){
+    var _chosen = $.fn.chosen;
+    $.fn.extend({
+        chosen: function(options) {
+            var default_options = {'search_contains' : 'true'};
+            $.extend(default_options, options);
+            return _chosen.apply(this, [default_options]);
+    }})
+})(jQuery);
