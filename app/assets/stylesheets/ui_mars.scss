@@ -24,6 +24,29 @@
     z-index:10;
     height:60px;
 
+    .fbtn { 
+      float: right;
+      margin-right:10px;
+      .btn { 
+        margin-left:8px;
+        background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#31363E));
+        background-image: -webkit-linear-gradient(#595D63 6.6%, #31363E);
+        background-image: -moz-linear-gradient(#595D63 6.6%, #31363E);
+        background-image: -o-linear-gradient(#595D63 6.6%, #31363E);
+        font-size: 12px;
+        &:hover { 
+          background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#2C2F35));
+          background-image: -webkit-linear-gradient(#595D63 6.6%, #2C2F35);
+          background-image: -moz-linear-gradient(#595D63 6.6%, #202227);
+          background-image: -o-linear-gradient(#595D63 6.6%, #202227);
+          background-position:0 0;
+        }
+
+        border: 1px solid #31363E;
+        color:#D6DADF;
+        text-shadow: 0 -1px 0 #000000;
+      }
+    }
     .search { 
       float: right;
       margin-right: 55px;
@@ -61,16 +84,14 @@
         float:left;
 
         h1 { 
-          background: url('logo_mars.png') no-repeat -3px -4px;
+          background: url('images.png') no-repeat -3px -6px;
+          width: 65px;
+          height: 26px;
+          margin: 6px 0;
+          padding: 0;
+          float: left;
+          text-indent: -1000em;
           float:left;
-          margin-left:5px;
-          font-size:20px;
-          line-height:36px;
-          font-weight:normal;
-          color:#a1a8ae;
-          text-shadow: 0 1px 1px #111;
-          padding-left:50px;
-          padding-top:5px;
         }
       }
     }
@@ -92,14 +113,6 @@
         position:relative;
         padding:15px 0;
       }
-    }
-
-    .top_panel_ico { 
-      width: 16px;
-      height: 16px;
-      padding: 5px;
-      margin-right:10px;
-      float:right;
     }
   }
   /*

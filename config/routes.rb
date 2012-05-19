@@ -35,6 +35,7 @@ Gitlab::Application.routes.draw do
   get "errors/githost"
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
+  get "profile/token", :to => "profile#token"
   put "profile/reset_private_token", :to => "profile#reset_private_token"
   get "profile", :to => "profile#show"
   get "profile/design", :to => "profile#design"

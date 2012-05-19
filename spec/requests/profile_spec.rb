@@ -30,7 +30,7 @@ describe "Profile" do
 
   describe "Reset private token" do
     before do
-      visit profile_password_path
+      visit profile_token_path
     end
 
     it "should reset private token" do

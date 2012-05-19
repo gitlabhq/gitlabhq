@@ -11,12 +11,15 @@
       .search
         = form_tag search_path, :method => :get do |f|
           = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
-      - if current_user.can_create_project?
-        = link_to new_project_path, :class => "top_panel_ico", :title => "Create New Project" do 
-          = image_tag "new_project.png", :width => 16
-      - if current_user.is_admin?
-        = link_to admin_root_path, :class => "top_panel_ico", :title => "Admin area" do 
-          = image_tag "admin.PNG", :width => 16
+      .fbtn
+        - if current_user.is_admin?
+          = link_to admin_root_path, :class => "btn small", :title => "Admin area" do 
+            %i.icon-cog
+            Admin
+        - if current_user.can_create_project?
+          = link_to new_project_path, :class => "btn small", :title => "Create New Project" do 
+            %i.icon-plus
+            Project
       .account-box
         = link_to profile_path, :class => "pic" do
           = image_tag gravatar_icon(current_user.email)

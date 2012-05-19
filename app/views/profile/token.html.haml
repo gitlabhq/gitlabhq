@@ -1,0 +1,22 @@
+%h3 
+  Private token
+  %span.cred.right
+    keep it in secret!
+%hr
+= form_for @user, :url => profile_reset_private_token_path, :method => :put do |f|
+  .data
+    .alert.alert-info
+      %p Private token used to access application resources without authentication.
+      %p * required for rss feed
+    %p.cgray
+      - if current_user.private_token
+        = text_field_tag "token", current_user.private_token
+      - else
+        You don`t have one yet. Click generate to fix it.
+  .actions
+    - if current_user.private_token
+      = f.submit 'Reset', :confirm => "Are you sure?", :class => "btn"
+    - else
+      = f.submit 'Generate', :class => "btn primary"
+
+

@@ -14,6 +14,10 @@ class ProfileController < ApplicationController
     redirect_to :back
   end
 
+  def token
+    @user = current_user
+  end
+
   def password
     @user = current_user
   end
@@ -32,6 +36,6 @@ class ProfileController < ApplicationController
 
   def reset_private_token
     current_user.reset_authentication_token!
-    redirect_to profile_password_path
+    redirect_to profile_token_path
   end
 end

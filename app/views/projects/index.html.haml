@@ -23,6 +23,7 @@
           - if current_user.can_create_project?
             %span.right
               = link_to new_project_path, :class => "btn very_small info" do 
+                %i.icon-plus
                 New Project
         - @projects.each do |project|
           = link_to project_path(project), :class => dom_class(project) do

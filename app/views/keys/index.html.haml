@@ -4,6 +4,11 @@
   
 %br
 
-%table#keys-table.table
+%table#keys-table.admin-table
+  %thead
+    %tr
+      %th Name
+      %th Added
+      %th
   - @keys.each do |key|
     = render(:partial => 'show', :locals => {:key => key})

@@ -81,20 +81,6 @@
       }
     }
 
-    .top_panel_ico { 
-      width: 16px;
-      height: 16px;
-      padding: 5px;
-      margin-right:10px;
-      float:right;
-      background: #EEE;
-      @include border-radius(5px);
-      border: 1px solid #DDD;
-      img { 
-        vertical-align:top;
-      }
-    }
-
     .project_name {
       float:left;
       width:360px;
@@ -107,6 +93,14 @@
       text-shadow: 0 1px 1px #FFF;
     }
 
+    .fbtn { 
+      float: right;
+      margin-right:10px;
+      .btn { 
+        margin-left:8px;
+      }
+    }
+
     .search { 
       float: right;
       margin-right: 55px;
@@ -117,6 +111,8 @@
         background-repeat: no-repeat;
         background-position: 10px;
         padding-left:25px;
+        @include border-radius(5px);
+        border:1px solid #ccc;
       }
     }
   }
