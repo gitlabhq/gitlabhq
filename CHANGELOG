@@ -1,3 +1,10 @@
+v 2.5.0
+  - UI polished
+  - Git blame for file
+  - Bugfix
+  - Email in resque
+  - Better test coverage
+
 v 2.4.0
   - Admin area stats page
   - Ability to block user
