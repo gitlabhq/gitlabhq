@@ -42,9 +42,9 @@
         .readme
           - if content.name =~ /\.(md|markdown)$/i
             = preserve do
-              = markdown(content.data)
+              = markdown(content.data.force_encoding('UTF-8'))
           - else
-            = simple_format(content.data)
+            = simple_format(content.data.force_encoding('UTF-8'))
 
 - if params[:path]
   - history_path = tree_file_project_ref_path(@project, @ref, params[:path])
