@@ -32,6 +32,13 @@ GIT
       pygments.rb (~> 0.2.11)
 
 GIT
+  remote: https://github.com/gitlabhq/pygments.rb.git
+  revision: dfa0d936da40f25e249a7d20f895e6d4cab72b50
+  specs:
+    pygments.rb (0.2.12)
+      rubypython (~> 0.6.1)
+
+GIT
   remote: https://github.com/gitlabhq/yaml_db.git
   revision: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
   specs:
@@ -185,8 +192,6 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
       slop (>= 2.4.4, < 3)
-    pygments.rb (0.2.11)
-      rubypython (~> 0.5.3)
     pyu-ruby-sasl (0.0.3.3)
     rack (1.4.1)
     rack-cache (1.2)
@@ -244,7 +249,7 @@ GEM
       railties (>= 3.0)
       rspec (~> 2.10.0)
     rubyntlm (0.1.1)
-    rubypython (0.5.3)
+    rubypython (0.6.1)
       blankslate (>= 2.1.2.3)
       ffi (~> 1.0.7)
     rubyzip (0.9.8)
@@ -351,7 +356,7 @@ DEPENDENCIES
   mysql2
   omniauth-ldap
   pry
-  pygments.rb (= 0.2.11)
+  pygments.rb (= 0.2.12)!
   rails (= 3.2.3)
   rails-footnotes
   rake
