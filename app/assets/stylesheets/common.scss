@@ -645,6 +645,13 @@ p.time {
   .avatar { 
     width:32px;
   }
+  .event_icon { 
+    float:right;
+    margin-right:2px;
+    img { 
+      width:20px;
+    }
+  }
   ul { 
     margin-left:50px;
     margin-bottom:5px;
