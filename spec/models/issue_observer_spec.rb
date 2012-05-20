@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe IssueObserver do
-  let(:some_user) { Factory.new(:user, :id => 1) }
-  let(:assignee) { Factory.new(:user, :id => 2) }
-  let(:issue)    { Factory.new(:issue, :id => 42, :assignee => assignee) }
+  let(:some_user) { double(:user, :id => 1) }
+  let(:assignee) { double(:user, :id => 2) }
+  let(:issue)    { double(:issue, :id => 42, :assignee => assignee) }
 
   before(:each) { subject.stub(:current_user).and_return(some_user) }
 
@@ -25,42 +25,49 @@ describe IssueObserver do
     end
   end
 
-  context 'when an issue is modified' do
-    it 'but not reassigned, does not send a reassigned email' do
-      issue.stub(:assignee_id_changed?).and_return(false)
-      Notify.should_not_receive(:reassigned_issue_email)
+  context 'when an issue is changed' do
+    it 'sends a reassigned email, if the issue is being reassigned' do
+      issue.should_receive(:is_being_reassigned?).and_return(true)
+      subject.should_receive(:send_reassigned_email).with(issue)
 
       subject.after_change(issue)
     end
 
-    context 'and is reassigned' do
-      let(:previous_assignee) { Factory.new(:user, :id => 3) }
+    it 'does not send a reassigned email, if the issue was not reassigned' do
+      issue.should_receive(:is_being_reassigned?).and_return(false)
+      subject.should_not_receive(:send_reassigned_email)
 
-      before(:each) do
-        issue.stub(:assignee_id_changed?).and_return(true)
-        issue.stub(:assignee_id_was).and_return(previous_assignee.id)
+      subject.after_change(issue)
+    end
+  end
+
+  describe '#send_reassigned_email' do
+    let(:previous_assignee) { double(:user, :id => 3) }
+
+    before(:each) do
+      issue.stub(:assignee_id).and_return(assignee.id)
+      issue.stub(:assignee_id_was).and_return(previous_assignee.id)
+    end
+
+    it 'sends a reassigned email to the previous and current assignees' do
+      Notify.should_receive(:reassigned_issue_email).with(assignee.id, issue.id, previous_assignee.id)
+      Notify.should_receive(:reassigned_issue_email).with(previous_assignee.id, issue.id, previous_assignee.id)
+
+      subject.send_reassigned_email(issue)
+    end
+
+    context 'does not send an email to the user who made the reassignment' do
+      it 'if the user is the assignee' do
+        subject.stub(:current_user).and_return(assignee)
+        Notify.should_not_receive(:reassigned_issue_email).with(assignee.id, issue.id, previous_assignee.id)
+
+        subject.send_reassigned_email(issue)
       end
+      it 'if the user is the previous assignee' do
+        subject.stub(:current_user).and_return(previous_assignee)
+        Notify.should_not_receive(:reassigned_issue_email).with(previous_assignee.id, issue.id, previous_assignee.id)
 
-      it 'sends a reassigned email to the previous and current assignees' do
-        Notify.should_receive(:reassigned_issue_email).with(assignee.id, issue.id, previous_assignee.id)
-        Notify.should_receive(:reassigned_issue_email).with(previous_assignee.id, issue.id, previous_assignee.id)
-
-        subject.after_change(issue)
-      end
-
-      context 'does not send an email to the user who made the reassignment' do
-        it 'if the user is the assignee' do
-          subject.stub(:current_user).and_return(assignee)
-          Notify.should_not_receive(:reassigned_issue_email).with(assignee.id, issue.id, previous_assignee.id)
-
-          subject.after_change(issue)
-        end
-        it 'if the user is the previous assignee' do
-          subject.stub(:current_user).and_return(previous_assignee)
-          Notify.should_not_receive(:reassigned_issue_email).with(previous_assignee.id, issue.id, previous_assignee.id)
-
-          subject.after_change(issue)
-        end
+        subject.send_reassigned_email(issue)
       end
     end
   end

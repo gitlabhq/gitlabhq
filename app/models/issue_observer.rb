@@ -6,12 +6,15 @@ class IssueObserver < ActiveRecord::Observer
   end
 
   def after_change(issue)
-    if issue.assignee_id_changed?
-      recipient_ids = [issue.assignee_id, issue.assignee_id_was].keep_if {|id| id != current_user.id }
+    send_reassigned_email(issue) if issue.is_being_reassigned?
+  end
 
-      recipient_ids.each do |recipient_id|
-        Notify.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was)
-      end
+  def send_reassigned_email(issue)
+    recipient_ids = [issue.assignee_id, issue.assignee_id_was].keep_if {|id| id != current_user.id }
+
+    recipient_ids.each do |recipient_id|
+      Notify.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was)
     end
   end
+
 end
