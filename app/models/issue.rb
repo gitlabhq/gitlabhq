@@ -64,6 +64,10 @@ class Issue < ActiveRecord::Base
   def is_being_reassigned?
     assignee_id_changed?
   end
+
+  def is_being_closed?
+    closed_changed? && closed
+  end
 end
 # == Schema Information
 #

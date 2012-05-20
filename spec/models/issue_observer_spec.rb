@@ -26,18 +26,41 @@ describe IssueObserver do
   end
 
   context 'when an issue is changed' do
-    it 'sends a reassigned email, if the issue is being reassigned' do
-      issue.should_receive(:is_being_reassigned?).and_return(true)
-      subject.should_receive(:send_reassigned_email).with(issue)
-
-      subject.after_change(issue)
+    before(:each) do
+      issue.stub(:is_being_reassigned?).and_return(false)
+      issue.stub(:is_being_closed?).and_return(false)
     end
 
-    it 'does not send a reassigned email, if the issue was not reassigned' do
-      issue.should_receive(:is_being_reassigned?).and_return(false)
-      subject.should_not_receive(:send_reassigned_email)
+    context 'a reassigned email' do
+      it 'is sent if the issue is being reassigned' do
+        issue.should_receive(:is_being_reassigned?).and_return(true)
+        subject.should_receive(:send_reassigned_email).with(issue)
 
-      subject.after_change(issue)
+        subject.after_change(issue)
+      end
+
+      it 'is not sent if the issue is not being reassigned' do
+        issue.should_receive(:is_being_reassigned?).and_return(false)
+        subject.should_not_receive(:send_reassigned_email)
+
+        subject.after_change(issue)
+      end
+    end
+
+    context 'a status "closed" note' do
+      it 'is created if the issue is being closed' do
+        issue.should_receive(:is_being_closed?).and_return(true)
+        Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
+
+        subject.after_change(issue)
+      end
+
+      it 'is not created if the issue is not being closed' do
+        issue.should_receive(:is_being_closed?).and_return(false)
+        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'closed')
+
+        subject.after_change(issue)
+      end
     end
   end
 
