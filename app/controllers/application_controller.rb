@@ -97,12 +97,12 @@ class ApplicationController < ActionController::Base
   end
 
   def load_refs
-    unless params[:ref].blank?
-      @ref = params[:ref]
-    else
+    if params[:ref].blank?
       @branch = params[:branch].blank? ? nil : params[:branch]
       @tag = params[:tag].blank? ? nil : params[:tag]
       @ref = @branch || @tag || @project.try(:default_branch) || Repository.default_ref
+    else
+      @ref = params[:ref]
     end
   end
 
