@@ -9,7 +9,12 @@ describe IssueObserver do
 
   subject { IssueObserver.instance }
 
-  context 'when an issue is created' do
+  describe '#after_create' do
+
+    it 'is called when an issue is created' do
+      subject.should_receive(:after_create)
+      Factory.create(:issue, :project => Factory.create(:project))
+    end
 
     it 'sends an email to the assignee' do
       Notify.should_receive(:new_issue_email).with(issue.id)
@@ -25,10 +30,18 @@ describe IssueObserver do
     end
   end
 
-  context 'when an issue is changed' do
+  context '#after_update' do
     before(:each) do
       issue.stub(:is_being_reassigned?).and_return(false)
       issue.stub(:is_being_closed?).and_return(false)
+      issue.stub(:is_being_reopened?).and_return(false)
+    end
+
+    it 'is called when an issue is changed' do
+      changed = Factory.create(:issue, :project => Factory.create(:project))
+      subject.should_receive(:after_update)
+      changed.description = 'I changed'
+      changed.save
     end
 
     context 'a reassigned email' do
@@ -36,14 +49,14 @@ describe IssueObserver do
         issue.should_receive(:is_being_reassigned?).and_return(true)
         subject.should_receive(:send_reassigned_email).with(issue)
 
-        subject.after_change(issue)
+        subject.after_update(issue)
       end
 
       it 'is not sent if the issue is not being reassigned' do
         issue.should_receive(:is_being_reassigned?).and_return(false)
         subject.should_not_receive(:send_reassigned_email)
 
-        subject.after_change(issue)
+        subject.after_update(issue)
       end
     end
 
@@ -52,14 +65,30 @@ describe IssueObserver do
         issue.should_receive(:is_being_closed?).and_return(true)
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
-        subject.after_change(issue)
+        subject.after_update(issue)
       end
 
       it 'is not created if the issue is not being closed' do
         issue.should_receive(:is_being_closed?).and_return(false)
         Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
-        subject.after_change(issue)
+        subject.after_update(issue)
+      end
+    end
+
+    context 'a status "reopened" note' do
+      it 'is created if the issue is being reopened' do
+        issue.should_receive(:is_being_reopened?).and_return(true)
+        Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
+
+        subject.after_update(issue)
+      end
+
+      it 'is not created if the issue is not being reopened' do
+        issue.should_receive(:is_being_reopened?).and_return(false)
+        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'reopened')
+
+        subject.after_update(issue)
       end
     end
   end

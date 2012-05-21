@@ -5,9 +5,10 @@ class IssueObserver < ActiveRecord::Observer
     Notify.new_issue_email(issue.id) if issue.assignee != current_user
   end
 
-  def after_change(issue)
+  def after_update(issue)
     send_reassigned_email(issue) if issue.is_being_reassigned?
     Note.create_status_change_note(issue, current_user, 'closed') if issue.is_being_closed?
+    Note.create_status_change_note(issue, current_user, 'reopened') if issue.is_being_reopened?
   end
 
   def send_reassigned_email(issue)

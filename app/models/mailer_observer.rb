@@ -3,7 +3,6 @@ class MailerObserver < ActiveRecord::Observer
   cattr_accessor :current_user
 
   def after_create(model)
-    new_issue(model) if model.kind_of?(Issue)
     new_user(model) if model.kind_of?(User)
     new_note(model) if model.kind_of?(Note)
     new_merge_request(model) if model.kind_of?(MergeRequest)
@@ -11,16 +10,9 @@ class MailerObserver < ActiveRecord::Observer
 
   def after_update(model)
     changed_merge_request(model) if model.kind_of?(MergeRequest)
-    changed_issue(model) if model.kind_of?(Issue)
   end
 
   protected
-
-  def new_issue(issue)
-    if issue.assignee != current_user
-      Notify.new_issue_email(issue.id).deliver
-    end
-  end
 
   def new_user(user)
     Notify.new_user_email(user.id, user.password).deliver
@@ -65,12 +57,8 @@ class MailerObserver < ActiveRecord::Observer
     status_notify_and_comment merge_request, :reassigned_merge_request_email
   end
 
-  def changed_issue(issue)
-    status_notify_and_comment issue, :reassigned_issue_email
-  end
-
   # This method used for Issues & Merge Requests
-  # 
+  #
   # It create a comment for Issue or MR if someone close/reopen.
   # It also notify via email if assignee was changed 
   #
