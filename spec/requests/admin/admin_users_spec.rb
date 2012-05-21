@@ -45,7 +45,9 @@ describe "Admin::Users" do
     end
 
     it "should send valid email to user with email & password" do
-      click_button "Save"
+      with_resque do
+        click_button "Save"
+      end
       user = User.last
       email = ActionMailer::Base.deliveries.last
       email.subject.should have_content("Account was created")

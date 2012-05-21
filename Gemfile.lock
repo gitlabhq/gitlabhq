@@ -263,6 +263,9 @@ GEM
     resque_mailer (2.0.3)
       actionmailer (>= 3.0.0)
       resque (>= 1.2.3)
+    resque_spec (0.11.0)
+      resque (>= 1.19.0)
+      rspec (>= 2.5.0)
     rspec (2.10.0)
       rspec-core (~> 2.10.0)
       rspec-expectations (~> 2.10.0)
@@ -391,6 +394,7 @@ DEPENDENCIES
   redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
   resque_mailer
+  resque_spec
   rspec-rails
   sass-rails (= 3.2.5)
   seed-fu

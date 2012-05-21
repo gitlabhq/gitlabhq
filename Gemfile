@@ -77,4 +77,5 @@ group :test do
   gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
+  gem 'resque_spec'
 end

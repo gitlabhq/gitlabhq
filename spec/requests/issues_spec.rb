@@ -133,7 +133,9 @@ describe "Issues" do
         end
 
         it "should send valid email to user" do
-          click_button "Submit new issue"
+          with_resque do
+            click_button "Submit new issue"
+          end
           issue = Issue.last
           email = ActionMailer::Base.deliveries.last
           email.subject.should have_content("New Issue was created")
