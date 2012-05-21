@@ -6,17 +6,19 @@ GIT
 
 GIT
   remote: https://github.com/gitlabhq/gitolite-client.git
-  revision: 36dabd226caa40ff052677719adaacbfe667b36c
+  revision: 9b715ca8bab6529f6c92204a25f84d12f25a6eb0
+  ref: 9b715ca8bab6529f6c92204a25f84d12f25a6eb0
   specs:
-    gitolite (0.0.3.alpha)
-      grit (~> 2.4.1)
+    gitolite (0.0.4.alpha)
+      grit (>= 2.4.1)
       hashery (~> 1.4.0)
 
 GIT
   remote: https://github.com/gitlabhq/grit.git
-  revision: 3fc864f3c637e06e2fa7a81f6b48a5df58a9bc5b
+  revision: 810e3c11787e9d84c5925a7edc3264db0f04bb49
+  ref: 810e3c11787e9d84c5925a7edc3264db0f04bb49
   specs:
-    grit (2.4.1)
+    grit (2.5.0)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)

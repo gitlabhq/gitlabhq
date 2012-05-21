@@ -73,7 +73,7 @@ class Commit
         repo.commits(ref, limit, offset)
       else
         repo.commits(ref)
-      end.map{ |c| Commit.new(c) } 
+      end.map{ |c| Commit.new(c) }
     end
 
     def commits_between(repo, from, to)

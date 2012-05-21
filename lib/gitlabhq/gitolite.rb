@@ -46,6 +46,7 @@ module Gitlabhq
         end
       end
     rescue Exception => ex
+      Gitlabhq::Logger.error(ex.message)
       raise Gitolite::AccessDenied.new("gitolite timeout")
     end
 

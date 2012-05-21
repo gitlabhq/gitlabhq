@@ -3,6 +3,8 @@ module Gitlabhq
     extend self
 
     def utf8 message
+      return nil unless message
+
       hash = CharlockHolmes::EncodingDetector.detect(message) rescue {}
       if hash[:encoding]
         CharlockHolmes::Converter.convert(message, hash[:encoding], 'UTF-8')
