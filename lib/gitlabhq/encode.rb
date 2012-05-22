@@ -11,6 +11,10 @@ module Gitlabhq
       else
         message
       end.force_encoding("utf-8")
+    # Prevent app from crash cause of 
+    # encoding errors
+    rescue
+      ""
     end
   end
 end
