@@ -96,13 +96,13 @@ class GraphCommit
     h[:parents] = self.parents.collect do |p|
       [p.id,0,0]
     end
-    h[:author]  = author.name.force_encoding("UTF-8")
+    h[:author]  = author.name.force_encoding("UTF-8").encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
     h[:time]    = time
     h[:space]   = space
     h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
     h[:id]      = sha
     h[:date]    = date
-    h[:message] = message.force_encoding("UTF-8")
+    h[:message] = message.force_encoding("UTF-8").encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
     h[:login]   = author.email
     h
   end
