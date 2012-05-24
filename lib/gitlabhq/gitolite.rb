@@ -134,7 +134,7 @@ module Gitlabhq
       #
       begin 
         repo = conf.get_repo("gitolite-admin")
-        owner_name = repo.permissions[0]["RW+"][""][0]
+        owner_name = repo.permissions[0]["RW+"][""].select { |x| x == 'gitlab' }.first
         raise StandardError if owner_name.blank?
       rescue => ex
         puts "Cant determine gitolite-admin owner".red
