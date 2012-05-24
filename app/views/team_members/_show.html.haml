@@ -1,17 +1,20 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%li{:id => dom_id(member), :class => "team_member_row wll"}
-  .row
-    .span8
-      = link_to project_team_member_path(@project, member), :title => user.name, :class => "dark" do 
-        = image_tag gravatar_icon(user.email, 40), :class => "avatar"
-        %strong= truncate(user.name, :lenght => 40)
-      %div.cgray= user.email
-
-    .span3
-      = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
-        = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, :class => "medium project-access-select", :disabled => !allow_admin
+%tr{:id => dom_id(member), :class => "team_member_row"}
+  %td
+    .right
       - if @project.owner == user
         %span.label Project Owner
       - if user.blocked
         %span.label Blocked
+
+    = link_to project_team_member_path(@project, member), :title => user.name, :class => "dark" do 
+      = image_tag gravatar_icon(user.email, 40), :class => "avatar"
+    = link_to project_team_member_path(@project, member), :title => user.name, :class => "dark" do 
+      %strong= truncate(user.name, :lenght => 40)
+    %br
+    %div.cgray= user.email
+
+  %td
+    = form_for(member, :as => :team_member, :url => project_team_member_path(@project, member)) do |f|
+      = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, :class => "medium project-access-select", :disabled => !allow_admin

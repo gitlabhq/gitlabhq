@@ -1,4 +1,7 @@
 = render "project_head"
+%h3 
+  Team Members
+  %small (#{@project.users_projects.count})
 
 - if can? current_user, :admin_team_member, @project
   .alert.alert-info

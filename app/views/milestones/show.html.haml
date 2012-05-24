@@ -4,8 +4,10 @@
     = @milestone.expires_at
 
   %span.right
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn edit-milestone-link small"
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn" do 
+      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn small" do 
+        %i.icon-edit
         Edit
 
 .back_link
@@ -20,22 +22,16 @@
       - else 
         .alert-message.success.status_info Open
       = @milestone.title
+      %small.right= @milestone.expires_at
 
   .middle_box_content
-    .row
-      .span2
-        = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn small edit-milestone-link"
-      .span4
-        %span
-          = @milestone.expires_at
-
-      .span4.right
-        .progress
-        %br
-        %span
-          #{@milestone.issues.opened.count} open
-          &ndash;
-          #{@milestone.issues.closed.count} closed
+    %h5
+      Progress:
+      %small
+        #{@milestone.issues.opened.count} open
+        &ndash;
+        #{@milestone.issues.closed.count} closed
+    .progress
 
   - if @milestone.description.present?
     .bottom_box_content
@@ -44,28 +40,31 @@
 
 .row
   .span6
-    %h4 Open Issues:
-    - @issues.each do |issue|
-      = link_to [@project, issue] do 
-        %h5
-          = image_tag gravatar_icon(issue.assignee_email, 16), :width => "16"
-          &nbsp;
-          Issue ##{issue.id}
-          &ndash;
-          = truncate issue.title, :length => 50
-          %small
-            updated at 
-            = issue.updated_at.stamp("Aug 25, 2011")
+    %table.admin-table
+      %thead
+        %th Open Issues
+      - @issues.each do |issue|
+        %tr
+          %td
+            = link_to [@project, issue] do 
+              = image_tag gravatar_icon(issue.assignee_email, 16), :width => "16"
+              &nbsp;
+              %span.badge.badge-info ##{issue.id}
+              &ndash;
+              = truncate issue.title, :length => 60
     %br
     = paginate @issues, :theme => "gitlab"
 
   .span6
-    %h4 Participants:
-    - @users.each do |user|
-      %h5
-        = image_tag gravatar_icon(user.email, 16), :width => "16"
-        &nbsp;
-        = user.name
+    %table.admin-table
+      %thead
+        %th Participants
+      - @users.each do |user|
+        %tr
+          %td
+            = image_tag gravatar_icon(user.email, 24), :width => "24"
+            &nbsp;
+            = user.name
 
 :javascript
   $(function() {

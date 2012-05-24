@@ -10,6 +10,7 @@
       - if @merge_request.open?
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
         = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do 
+          %i.icon-edit
           Edit
 
     %br
