@@ -1,3 +1,6 @@
+env:
+  - DB=mysql
+  - DB=sqlite
 before_install: sudo apt-get install libicu-dev -y
 branches:
   only:
@@ -5,7 +8,7 @@ branches:
 rvm:
   - 1.9.2
 before_script:
-  - "cp config/database.yml.sqlite config/database.yml"
+  - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:migrate RAILS_ENV=test"
