@@ -44,8 +44,6 @@ class RefsController < ApplicationController
         no_cache_headers
       end
     end
-  rescue
-    return render_404
   end
 
   def blob
@@ -66,8 +64,6 @@ class RefsController < ApplicationController
     else
       head(404)
     end
-  rescue
-    return render_404
   end
 
   def blame
