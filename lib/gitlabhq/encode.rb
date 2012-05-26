@@ -1,3 +1,6 @@
+# Patch Strings to enable detect_encoding! on views
+require 'charlock_holmes/string'
+
 module Gitlabhq
   module Encode 
     extend self
