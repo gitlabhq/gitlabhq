@@ -1,6 +1,6 @@
 class Commit
   include ActiveModel::Conversion
-  include Gitlabhq::Encode
+  include Gitlab::Encode
   extend ActiveModel::Naming
 
   attr_accessor :commit

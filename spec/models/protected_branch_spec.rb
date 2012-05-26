@@ -43,7 +43,7 @@ describe ProtectedBranch do
     subject { ProtectedBranch.new(:project => project) }
 
     it "updates the branch's project repo permissions" do
-      Gitlabhq::GitHost.should_receive(:system).and_return(gitolite)
+      Gitlab::GitHost.should_receive(:system).and_return(gitolite)
       gitolite.should_receive(:update_project).with(project.path, project)
 
       subject.update_repository

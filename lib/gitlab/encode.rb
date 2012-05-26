@@ -1,4 +1,4 @@
-module Gitlabhq
+module Gitlab
   module Encode 
     extend self
 

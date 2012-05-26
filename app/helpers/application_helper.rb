@@ -143,6 +143,6 @@ module ApplicationHelper
   end
 
   def string_to_utf8 str
-    Gitlabhq::Encode.utf8 str
+    Gitlab::Encode.utf8 str
   end
 end

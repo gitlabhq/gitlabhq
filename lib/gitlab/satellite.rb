@@ -1,4 +1,4 @@
-module Gitlabhq
+module Gitlab
   class Satellite
     
     PARKING_BRANCH = "__parking_branch"

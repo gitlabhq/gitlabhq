@@ -15,11 +15,11 @@ end
 
 Grit::Diff.class_eval do
   def old_path
-    Gitlabhq::Encode.utf8 a_path
+    Gitlab::Encode.utf8 a_path
   end
 
   def new_path
-    Gitlabhq::Encode.utf8 b_path
+    Gitlab::Encode.utf8 b_path
   end
 end
 
