@@ -8,16 +8,19 @@ module Gitlabhq
     def utf8 message
       return nil unless message
 
-      encoding = detect_encoding(message)
-      if encoding
+      detect = CharlockHolmes::EncodingDetector.detect(message) rescue {}
+
+      # It's better to default to UTF-8 as sometimes it's wrongly detected as another charset
+      if detect[:encoding] && detect[:confidence] == 100
         CharlockHolmes::Converter.convert(message, encoding, 'UTF-8')
       else
         message
       end.force_encoding("utf-8")
+
     # Prevent app from crash cause of 
     # encoding errors
     rescue
-      ""
+      "--broken encoding: #{encoding}"
     end
 
     def detect_encoding message
