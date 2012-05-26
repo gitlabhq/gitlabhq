@@ -1,4 +1,5 @@
 class RefsController < ApplicationController
+  include Gitlabhq::Encode
   before_filter :project
 
   # Authorize
@@ -49,9 +50,16 @@ class RefsController < ApplicationController
 
   def blob
     if @tree.is_blob?
+      if @tree.text?
+        encoding = detect_encoding(@tree.data)
+        mime_type = encoding ? "text/plain; charset=#{encoding}" : "text/plain"
+      else
+        mime_type = @tree.mime_type
+      end
+
       send_data(
         @tree.data,
-        :type => @tree.text? ? "text/plain" : @tree.mime_type,
+        :type => mime_type,
         :disposition => 'inline',
         :filename => @tree.name
       )
