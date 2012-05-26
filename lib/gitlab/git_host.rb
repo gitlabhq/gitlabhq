@@ -1,9 +1,9 @@
-require File.join(Rails.root, "lib", "gitlabhq", "gitolite")
+require File.join(Rails.root, "lib", "gitlab", "gitolite")
 
-module Gitlabhq
+module Gitlab
   class GitHost
     def self.system
-      Gitlabhq::Gitolite
+      Gitlab::Gitolite
     end
 
     def self.admin_uri

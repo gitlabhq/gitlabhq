@@ -2,7 +2,7 @@ require 'gitolite'
 require 'timeout'
 require 'fileutils'
 
-module Gitlabhq
+module Gitlab
   class Gitolite
     class AccessDenied < StandardError; end
 
@@ -46,7 +46,7 @@ module Gitlabhq
         end
       end
     rescue Exception => ex
-      Gitlabhq::Logger.error(ex.message)
+      Gitlab::Logger.error(ex.message)
       raise Gitolite::AccessDenied.new("gitolite timeout")
     end
 

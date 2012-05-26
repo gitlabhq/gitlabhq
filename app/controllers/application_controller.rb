@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :abilities, :can?
 
-  rescue_from Gitlabhq::Gitolite::AccessDenied do |exception|
+  rescue_from Gitlab::Gitolite::AccessDenied do |exception|
     render "errors/gitolite", :layout => "error"
   end
 

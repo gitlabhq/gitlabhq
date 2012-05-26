@@ -38,7 +38,7 @@ module Project::RepositoryTrait
     end
 
     def satellite
-      @satellite ||= Gitlabhq::Satellite.new(self)
+      @satellite ||= Gitlab::Satellite.new(self)
     end
 
     def write_hook(name, content)
@@ -65,7 +65,7 @@ module Project::RepositoryTrait
     end
 
     def url_to_repo
-      Gitlabhq::GitHost.url_to_repo(path)
+      Gitlab::GitHost.url_to_repo(path)
     end
 
     def path_to_repo
@@ -73,13 +73,13 @@ module Project::RepositoryTrait
     end
 
     def update_repository
-      Gitlabhq::GitHost.system.update_project(path, self)
+      Gitlab::GitHost.system.update_project(path, self)
 
       write_hooks if File.exists?(path_to_repo)
     end
 
     def destroy_repository
-      Gitlabhq::GitHost.system.destroy_project(self)
+      Gitlab::GitHost.system.destroy_project(self)
     end
 
     def repo_exists?

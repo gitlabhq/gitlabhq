@@ -1,4 +1,4 @@
-module Gitlabhq
+module Gitlab
   class Logger
     def self.error(message)
       @@logger ||= ::Logger.new(File.join(Rails.root, "log/githost.log"))
