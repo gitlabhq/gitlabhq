@@ -2,10 +2,7 @@
 .issues_content
   %h3
     Issues
-    %span.rss-icon
-      = link_to project_issues_path(@project, :atom, { :private_token => current_user.private_token }) do 
-        = image_tag "Rss-UI.PNG", :width => 16, :title => "feed"
-
+    %small (#{@issues.total_count})
     .right
       .span5
         - if can? current_user, :write_issue, @project

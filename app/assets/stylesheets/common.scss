@@ -420,6 +420,8 @@ a.project-update.titled {
   cursor: move;
   height: 70%;
   overflow: hidden;
+  background:white;
+  border: 1px solid $style_color;
 }
 
 
@@ -958,5 +960,12 @@ li.note {
         text-align:center;
       }
     }
+  }
+}
+
+.rss-icon {
+  img {
+    width:24px;
+    vertical-align:top;
   }
 }

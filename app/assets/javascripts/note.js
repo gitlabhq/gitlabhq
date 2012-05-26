@@ -32,9 +32,9 @@ init:
       $("#submit_note").removeAttr("disabled");
     })
 
-    $("#note_note").live("click", function(){
+    $("#note_note").live("focus", function(){
       $(this).css("height", "100px");
-      $('.attach_holder').show();
+      $('.note_advanced_opts').show();
     });
 
     $("#note_attachment").change(function(e){
