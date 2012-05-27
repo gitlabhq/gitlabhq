@@ -12,7 +12,7 @@ module Gitlabhq
 
       # It's better to default to UTF-8 as sometimes it's wrongly detected as another charset
       if detect[:encoding] && detect[:confidence] == 100
-        CharlockHolmes::Converter.convert(message, encoding, 'UTF-8')
+        CharlockHolmes::Converter.convert(message, detect[:encoding], 'UTF-8')
       else
         message
       end.force_encoding("utf-8")
