@@ -79,7 +79,7 @@ describe "Projects" do
 
   describe "GET /projects/graph" do
     before do
-      @project = Factory :project, :path => "gitlab_remove"
+      @project = Factory :project
       @project.add_access(@user, :read)
 
       visit graph_project_path(@project)
