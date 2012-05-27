@@ -8,7 +8,7 @@
       %strong.cgray= commit.author_name
       &ndash;
       = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16
-      %span.row_title= truncate(commit.safe_message, :length => 50) rescue "--broken encoding"
+      %span.row_title= truncate(commit.safe_message, :length => 50)
 
       %span.right.cgray
         = time_ago_in_words(commit.committed_date)
