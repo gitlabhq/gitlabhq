@@ -75,15 +75,23 @@ describe "Projects" do
     it "should be correct path" do
       current_path.should == project_path(@project)
     end
+  end
 
-    # TODO: replace with real one
-    #it "should beahave like activities page" do
-      #within ".project-update"  do
-        #page.should have_content("master")
-        #page.should have_content(@project.commit.author.name)
-        #page.should have_content(@project.commit.safe_message)
-      #end
-    #end
+  describe "GET /projects/graph" do
+    before do
+      @project = Factory :project, :path => "gitlab_remove"
+      @project.add_access(@user, :read)
+
+      visit graph_project_path(@project)
+    end
+
+    it "should be correct path" do
+      current_path.should == graph_project_path(@project)
+    end
+
+    it "should have as as team member" do
+      page.should have_content("master")
+    end
   end
 
   describe "GET /projects/team" do
@@ -146,15 +154,15 @@ describe "Projects" do
     end
   end
 
-  #describe "DELETE /projects/:id", :js => true do
-    #before do
-      #@project = Factory :project
-      #@project.add_access(@user, :read, :admin)
-      #visit projects_path
-    #end
+  describe "DELETE /projects/:id" do
+    before do
+      @project = Factory :project
+      @project.add_access(@user, :read, :admin)
+      visit edit_project_path(@project)
+    end
 
-    #it "should be correct path" do
-      #expect { click_link "Destroy" }.to change {Project.count}.by(1)
-    #end
-  #end
+    it "should be correct path" do
+      expect { click_link "Remove" }.to change {Project.count}.by(-1)
+    end
+  end
 end

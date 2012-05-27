@@ -5,7 +5,7 @@ class Project
     true
   end
 
-  def update_repository
+  def destroy_repository
     true
   end
 
