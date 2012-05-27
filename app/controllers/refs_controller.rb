@@ -1,5 +1,5 @@
 class RefsController < ApplicationController
-  include Gitlabhq::Encode
+  include Gitlab::Encode
   before_filter :project
 
   # Authorize
