@@ -7,6 +7,16 @@ describe "TeamMembers" do
     @project.add_access(@user, :read, :admin)
   end
 
+  describe "Update profile", :js => true do
+    it "should update user role" do
+      @project.master_access_for?(@user).should be_true
+      visit team_project_path(@project)
+      select "Developer", :from => "team_member_project_access"
+      @project.master_access_for?(@user).should be_false
+      @project.dev_access_for?(@user).should be_true
+    end
+  end
+
   describe "View profile" do
     it "should be available" do
       visit(team_project_path(@project))
