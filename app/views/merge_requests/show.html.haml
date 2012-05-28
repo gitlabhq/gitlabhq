@@ -53,30 +53,35 @@
           Closed by #{@merge_request.closed_event.author_name} 
           %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
 
+- unless can?(current_user, :accept_mr, @project)
+  .alert-message
+    %strong Only masters can accept MR
+
 
 - if @merge_request.open? && @commits.any? && can?(current_user, :accept_mr, @project)
   .automerge_widget.can_be_merged{:style => "display:none"}
-    .ui-box.padded
-      %p 
+    .alert.alert-success
+      %span 
+        = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info accept_merge_request", :remote => true
+        &nbsp;
         You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"} for instructions
-      = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info accept_merge_request", :remote => true
-      &nbsp;
       
   .automerge_widget.cannot_be_merged{:style => "display:none"}
-    .alert-message
-      %p
-        %strong This request cant be merged with GitLab. You should do it manually &nbsp;
+    .alert.alert-info
+      %span
         = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
+        &nbsp;
+        %strong This request cant be merged with GitLab. You should do it manually
   
   .automerge_widget.unchecked
     .alert-message
-      %p
-        %strong Checking for ability to automatically merge… 
+      %strong 
+        %i.icon-refresh
+        Checking for ability to automatically merge… 
   
   .automerge_widget.already_cannot_be_merged{:style => "display:none"}
-    .alert-message
-      %p
-        %strong This merge request already can not be merged
+    .alert.alert-info
+      %strong This merge request already can not be merged. Try to reload page.
 
 
 

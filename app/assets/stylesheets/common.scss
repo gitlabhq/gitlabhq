@@ -969,3 +969,23 @@ li.note {
     vertical-align:top;
   }
 }
+
+.automerge_widget { 
+
+  &.can_be_merged { 
+    background: #DFF0D8;
+  }
+
+  .accept_merge_request { 
+    color: #fff;
+    text-shadow: 0 1px 1px #222;
+    background: #5bb75b;;
+    &:hover { 
+      background-color: #51a351;
+      color: #fff;
+    }
+  }
+  .how_to_merge_link { 
+    @extend .primary;
+  }
+}
