@@ -4,19 +4,16 @@ gem "rails", "3.2.3"
 
 gem "sqlite3"
 gem "mysql2"
-gem "rake"
 gem "devise", "~> 1.5"
 gem "stamp"
 gem "kaminari"
-gem "haml", "3.1.4"
 gem "haml-rails"
 gem "jquery-rails"
 gem "grit", :git => "https://github.com/gitlabhq/grit.git", :ref => "810e3c11787e9d84c5925a7edc3264db0f04bb49"
 gem "gitolite", :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
 gem "carrierwave"
 gem "six"
-gem "therubyracer"
-gem "faker"
+gem "ffaker"
 gem "seed-fu"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 gem "pygments.rb", "0.2.12", :git => "https://github.com/gitlabhq/pygments.rb.git"
@@ -37,11 +34,16 @@ gem "colored"
 gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'modularity'
 gem 'resque_mailer'
+gem 'chosen-rails'
+gem 'modernizr'
+gem 'graphael-rails'
+gem 'jquery-ui-rails'
 
 group :assets do
   gem "sass-rails",   "3.2.3"
   gem "coffee-rails", "3.2.2"
   gem "uglifier",     "1.0.3"
+  gem "therubyracer"
 end
 
 group :development do

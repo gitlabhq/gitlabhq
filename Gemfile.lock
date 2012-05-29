@@ -105,6 +105,9 @@ GEM
     charlock_holmes (0.6.8)
     childprocess (0.3.2)
       ffi (~> 1.0.6)
+    chosen-rails (0.9.8)
+      railties (~> 3.0)
+      thor (~> 0.14)
     coderay (1.0.6)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -131,12 +134,13 @@ GEM
     eventmachine (0.12.10)
     execjs (1.3.2)
       multi_json (~> 1.0)
-    faker (1.0.1)
-      i18n (~> 0.4)
+    ffaker (1.14.0)
     ffi (1.0.11)
     foreman (0.46.0)
       thor (>= 0.13.6)
     git (1.2.5)
+    graphael-rails (0.1.4)
+      jeweler
     haml (3.1.4)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -150,10 +154,18 @@ GEM
       multi_json (~> 1.0)
       multi_xml
     i18n (0.6.0)
+    jeweler (1.8.3)
+      bundler (~> 1.0)
+      git (>= 1.2.5)
+      rake
+      rdoc
     journey (1.0.3)
     jquery-rails (2.0.2)
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
+    jquery-ui-rails (0.4.0)
+      jquery-rails
+      railties (>= 3.1.0)
     json (1.7.1)
     kaminari (0.13.0)
       actionpack (>= 3.0.0)
@@ -173,6 +185,8 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.7.1)
     mime-types (1.18)
+    modernizr (2.5.3)
+      sprockets (~> 2.0)
     modularity (0.6.1)
     multi_json (1.3.4)
     multi_xml (0.5.1)
@@ -331,25 +345,28 @@ DEPENDENCIES
   capybara
   carrierwave
   charlock_holmes
+  chosen-rails
   coffee-rails (= 3.2.2)
   colored
   database_cleaner
   devise (~> 1.5)
   drapper
   email_spec
-  faker
+  ffaker
   foreman
   git
   gitolite!
+  graphael-rails
   grit!
-  haml (= 3.1.4)
   haml-rails
   httparty
   jquery-rails
+  jquery-ui-rails
   kaminari
   launchy
   letter_opener
   linguist (~> 1.0.0)!
+  modernizr
   modularity
   mysql2
   omniauth-ldap
@@ -357,7 +374,6 @@ DEPENDENCIES
   pygments.rb (= 0.2.12)!
   rails (= 3.2.3)
   rails-footnotes
-  rake
   redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
   resque_mailer

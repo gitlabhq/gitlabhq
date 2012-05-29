@@ -5,7 +5,7 @@
 // the compiled file.
 //
 //= require jquery
-//= require jquery-ui
+//= require jquery.ui.all
 //= require jquery_ujs
 //= require jquery.ui.selectmenu
 //= require jquery.tagify
@@ -14,8 +14,8 @@
 //= require jquery.highlight
 //= require bootstrap-modal
 //= require modernizr
-//= require chosen
-//= require raphael
+//= require chosen-jquery
+//= require raphael/raphael
 //= require branch-graph
 //= require_tree .
 
@@ -75,7 +75,7 @@ function slugify(text) {
   return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
 }
 
-function showDiff(link) { 
+function showDiff(link) {
   $(link).next('table').show();
   $(link).remove();
 }

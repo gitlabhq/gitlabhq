@@ -14,12 +14,12 @@ class Admin::MailerController < ApplicationController
     case params[:type]
     when "Commit" then
       @commit = @project.commit
-      render :file => 'notify/note_commit_email.html.haml', :layout => 'notify'
+      render :file => 'notify/note_commit_email', :layout => 'notify'
     when "Issue" then
       @issue = Issue.first
-      render :file => 'notify/note_issue_email.html.haml', :layout => 'notify'
+      render :file => 'notify/note_issue_email', :layout => 'notify'
     else
-      render :file => 'notify/note_wall_email.html.haml', :layout => 'notify'
+      render :file => 'notify/note_wall_email', :layout => 'notify'
     end
   rescue
     render :text => "Preview not avaialble"
@@ -29,7 +29,7 @@ class Admin::MailerController < ApplicationController
     @user = User.first
     @password = "DHasJKDHAS!"
 
-    render :file => 'notify/new_user_email.html.haml', :layout => 'notify'
+    render :file => 'notify/new_user_email', :layout => 'notify'
   rescue
     render :text => "Preview not avaialble"
   end
@@ -38,7 +38,7 @@ class Admin::MailerController < ApplicationController
     @issue = Issue.first
     @user = @issue.assignee
     @project = @issue.project
-    render :file => 'notify/new_issue_email.html.haml', :layout => 'notify'
+    render :file => 'notify/new_issue_email', :layout => 'notify'
   rescue
     render :text => "Preview not avaialble"
   end

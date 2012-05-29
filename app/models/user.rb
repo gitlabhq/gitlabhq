@@ -1,10 +1,7 @@
 class User < ActiveRecord::Base
-  # Include default devise modules. Others available are:
-  # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :token_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
-  # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
                   :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, :theme_id
 
@@ -46,7 +43,7 @@ class User < ActiveRecord::Base
 
   validates :bio, :length => { :within => 0..255 }
 
-  before_create :ensure_authentication_token
+  before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
 
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
@@ -76,7 +73,6 @@ class User < ActiveRecord::Base
     admin
   end
 
-
   def require_ssh_key?
     keys.count == 0
   end
@@ -89,12 +85,8 @@ class User < ActiveRecord::Base
     projects.first
   end
 
-  def self.generate_random_password
-    (0...8).map{ ('a'..'z').to_a[rand(26)] }.join
-  end
-
   def first_name
-    name.split(" ").first unless name.blank?
+    name.split.first unless name.blank?
   end
 
   def self.find_for_ldap_auth(omniauth_info)
@@ -104,8 +96,9 @@ class User < ActiveRecord::Base
     if @user = User.find_by_email(email)
       @user
     else
-      password = generate_random_password
-      @user = User.create(:name => name,
+      password = Devise.friendly_token[0, 8].downcase
+      @user = User.create(
+        :name => name,
         :email => email,
         :password => password,
         :password_confirmation => password
@@ -133,7 +126,7 @@ class User < ActiveRecord::Base
   end
 
   def projects_limit_percent
-    return 100 if projects_limit.zero? 
+    return 100 if projects_limit.zero?
     (my_own_projects.count.to_f / projects_limit) * 100
   end
 end
@@ -163,4 +156,3 @@ end
 #  authentication_token   :string(255)
 #  dark_scheme            :boolean         default(FALSE), not null
 #
-
