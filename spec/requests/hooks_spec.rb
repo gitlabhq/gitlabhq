@@ -18,7 +18,7 @@ describe "Hooks" do
 
   describe "New Hook" do
     before do
-      @url = Faker::Internet.url
+      @url = Faker::Internet.uri("http")
       visit project_hooks_path(@project)
       fill_in "hook_url", :with => @url
       expect { click_button "Add Web Hook" }.to change(WebHook, :count).by(1)
@@ -30,8 +30,8 @@ describe "Hooks" do
     end
   end
 
-  describe "Test" do 
-    before do 
+  describe "Test" do
+    before do
       @hook = Factory :web_hook, :project => @project
       visit project_hooks_path(@project)
       click_link "Test Hook"

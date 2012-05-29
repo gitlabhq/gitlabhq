@@ -14,6 +14,7 @@ describe User do
     it { should respond_to(:is_admin?) }
     it { should respond_to(:identifier) }
     it { should respond_to(:name) }
+    it { should respond_to(:private_token) }
   end
 
   it "should return valid identifier" do
@@ -67,4 +68,3 @@ end
 #  authentication_token   :string(255)
 #  dark_scheme            :boolean         default(FALSE), not null
 #
-

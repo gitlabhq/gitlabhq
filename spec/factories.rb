@@ -61,7 +61,7 @@ Factory.add(:key, Key) do |obj|
 end
 
 Factory.add(:web_hook, WebHook) do |obj|
-  obj.url = Faker::Internet.url
+  obj.url = Faker::Internet.uri("http")
 end
 
 Factory.add(:wiki, Wiki) do |obj|
