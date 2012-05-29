@@ -5,7 +5,7 @@
 // the compiled file.
 //
 //= require jquery
-//= require jquery-ui
+//= require jquery.ui.all
 //= require jquery_ujs
 //= require jquery.ui.selectmenu
 //= require jquery.tagify
@@ -15,7 +15,7 @@
 //= require bootstrap-modal
 //= require modernizr
 //= require chosen-jquery
-//= require raphael
+//= require raphael/raphael
 //= require branch-graph
 //= require_tree .
 

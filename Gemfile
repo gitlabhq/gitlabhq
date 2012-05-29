@@ -35,6 +35,9 @@ gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'modularity'
 gem 'resque_mailer'
 gem 'chosen-rails'
+gem 'modernizr'
+gem 'graphael-rails'
+gem 'jquery-ui-rails'
 
 group :assets do
   gem "sass-rails",   "3.2.3"
