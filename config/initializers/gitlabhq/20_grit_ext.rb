@@ -1,27 +1,34 @@
 require 'grit'
 require 'pygments'
 
+Grit::Git.git_timeout = GIT_OPTS["git_timeout"]
+Grit::Git.git_max_size = GIT_OPTS["git_max_size"]
+
 Grit::Blob.class_eval do
   include Linguist::BlobHelper
-end
 
-#monkey patch raw_object from string
-Grit::GitRuby::Internal::RawObject.class_eval do
-  def content
-    @content
+  def data
+    @data ||= @repo.git.cat_file({:p => true}, id)
+    Gitlab::Encode.utf8 @data
   end
 end
 
+Grit::Commit.class_eval do
+  def message
+    Gitlab::Encode.utf8 @message
+  end
+end
 
 Grit::Diff.class_eval do
   def old_path
-    Gitlab::Encode.utf8 a_path
+    Gitlab::Encode.utf8 @a_path
   end
 
   def new_path
-    Gitlab::Encode.utf8 b_path
+    Gitlab::Encode.utf8 @b_path
+  end
+
+  def diff
+    Gitlab::Encode.utf8 @diff
   end
 end
-
-Grit::Git.git_timeout = GIT_OPTS["git_timeout"]
-Grit::Git.git_max_size = GIT_OPTS["git_max_size"]
