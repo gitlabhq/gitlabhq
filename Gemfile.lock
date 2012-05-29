@@ -342,7 +342,6 @@ DEPENDENCIES
   git
   gitolite!
   grit!
-  haml (= 3.1.4)
   haml-rails
   httparty
   jquery-rails
@@ -357,7 +356,6 @@ DEPENDENCIES
   pygments.rb (= 0.2.12)!
   rails (= 3.2.3)
   rails-footnotes
-  rake
   redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
   resque_mailer
