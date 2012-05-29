@@ -13,7 +13,7 @@ gem "grit", :git => "https://github.com/gitlabhq/grit.git", :ref => "810e3c11787
 gem "gitolite", :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
 gem "carrierwave"
 gem "six"
-gem "faker"
+gem "ffaker"
 gem "seed-fu"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 gem "pygments.rb", "0.2.12", :git => "https://github.com/gitlabhq/pygments.rb.git"

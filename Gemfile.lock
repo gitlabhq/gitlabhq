@@ -131,8 +131,7 @@ GEM
     eventmachine (0.12.10)
     execjs (1.3.2)
       multi_json (~> 1.0)
-    faker (1.0.1)
-      i18n (~> 0.4)
+    ffaker (1.14.0)
     ffi (1.0.11)
     foreman (0.46.0)
       thor (>= 0.13.6)
@@ -337,7 +336,7 @@ DEPENDENCIES
   devise (~> 1.5)
   drapper
   email_spec
-  faker
+  ffaker
   foreman
   git
   gitolite!
