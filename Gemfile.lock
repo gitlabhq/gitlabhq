@@ -105,6 +105,9 @@ GEM
     charlock_holmes (0.6.8)
     childprocess (0.3.2)
       ffi (~> 1.0.6)
+    chosen-rails (0.9.8)
+      railties (~> 3.0)
+      thor (~> 0.14)
     coderay (1.0.6)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -330,6 +333,7 @@ DEPENDENCIES
   capybara
   carrierwave
   charlock_holmes
+  chosen-rails
   coffee-rails (= 3.2.2)
   colored
   database_cleaner

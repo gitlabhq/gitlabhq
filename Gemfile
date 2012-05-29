@@ -34,6 +34,7 @@ gem "colored"
 gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'modularity'
 gem 'resque_mailer'
+gem 'chosen-rails'
 
 group :assets do
   gem "sass-rails",   "3.2.3"

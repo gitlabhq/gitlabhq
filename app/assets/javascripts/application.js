@@ -14,7 +14,7 @@
 //= require jquery.highlight
 //= require bootstrap-modal
 //= require modernizr
-//= require chosen
+//= require chosen-jquery
 //= require raphael
 //= require branch-graph
 //= require_tree .
@@ -75,7 +75,7 @@ function slugify(text) {
   return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
 }
 
-function showDiff(link) { 
+function showDiff(link) {
   $(link).next('table').show();
   $(link).remove();
 }
