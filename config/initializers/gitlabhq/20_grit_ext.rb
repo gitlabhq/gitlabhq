@@ -14,8 +14,23 @@ Grit::Blob.class_eval do
 end
 
 Grit::Commit.class_eval do
-  def message
-    Gitlab::Encode.utf8 @message
+  def to_hash
+    {
+      'id'       => id,
+      'parents'  => parents.map { |p| { 'id' => p.id } },
+      'tree'     => tree.id,
+      'message'  => Gitlab::Encode.utf8(message),
+      'author'   => {
+        'name'  => Gitlab::Encode.utf8(author.name),
+        'email' => author.email
+      },
+      'committer' => {
+        'name'  => Gitlab::Encode.utf8(committer.name),
+        'email' => committer.email
+      },
+      'authored_date'  => authored_date.xmlschema,
+      'committed_date' => committed_date.xmlschema,
+    }
   end
 end
 
