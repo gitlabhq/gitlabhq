@@ -13,7 +13,7 @@
       #tree-readme-holder
         .readme
           = preserve do
-            = markdown(file.data.detect_encoding!)
+            = markdown(file.data)
     - else
       .view_file_content
         - unless file.empty?
