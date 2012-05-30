@@ -8,17 +8,21 @@ module Gitlab
       # return nil if message is nil
       return nil unless message
 
+      # return message if message type is binary
+      detect = CharlockHolmes::EncodingDetector.detect(message)
+      return message if detect[:type] == :binary
+
       # if message is utf-8 encoding, just return it
       message.force_encoding("utf-8")
       return message if message.valid_encoding?
 
-      # if message is not utf-8 encoding, detect and convert it
-      detect = CharlockHolmes::EncodingDetector.detect(message)
-      if detect[:encoding] && detect[:confidence] > 60
+      # if message is not utf-8 encoding, convert it
+      if detect[:encoding]
         message.force_encoding(detect[:encoding])
         message.encode!("utf-8", detect[:encoding], :undef => :replace, :replace => "", :invalid => :replace)
       end
 
+      # ensure message encoding is utf8
       message.valid_encoding? ? message : raise
 
     # Prevent app from crash cause of encoding errors
