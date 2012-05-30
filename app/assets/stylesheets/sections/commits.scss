@@ -52,3 +52,117 @@
     }
   }
 }
+
+/**
+ * 
+ * COMMIT SHOw
+ *
+ */
+.diff_file {
+  border:1px solid #CCC;
+  margin-bottom:1em;
+
+  .diff_file_header {
+    padding:7px 5px;
+    border-bottom:1px solid #CCC;
+    background: #eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+
+    span { 
+      font-size:14px;
+    }
+  }
+  .diff_file_content {
+    overflow:auto;
+    overflow-y:hidden;
+    background:#fff;
+    color:#333;
+    font-size: 12px;
+    font-family: 'Menlo', 'Courier New', 'andale mono','lucida console',monospace;
+  }
+  .diff_file_content_image {
+    background:#eee;
+    text-align:center;
+    img {
+      margin:50px;
+      padding:1px;
+      max-width:400px;
+    }
+    &.diff_image_removed { 
+      img {
+        border: 1px solid #C00;
+      }
+    }
+
+    &.diff_image_added { 
+      img {
+        border: 1px solid #0C0;;
+      }
+    }
+  }
+}
+
+.diff_file_content{
+  table { 
+    border:none;
+    margin:0px;
+    padding:0px;
+    tr {
+      td { 
+        font-size:12px;
+      }
+    }
+  }
+  .old_line, .new_line {
+    margin:0px;
+    padding:0px;
+    border:none;
+    background:#EEE;
+    color:#666;
+    padding: 0px 5px;
+    border-right: 1px solid #ccc;
+    text-align:right;
+    min-width:35px;
+    max-width:35px;
+    width:35px;
+    moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    a { 
+      float:left;
+      width:35px;
+      font-weight:normal;
+      color:#666;
+      &:hover { 
+        text-decoration:underline;
+      }
+    }
+  }
+  .line_content { 
+    white-space:pre; 
+    height:14px;
+    margin:0px;
+    padding:0px;
+    border:none;
+    &.new { 
+      background: #CFD;
+    }
+    &.old { 
+      background: #FDD;
+    }
+    &.matched { 
+      color:#ccc;
+      background:#fafafa;
+    }
+  }
+}
+
+/** COMMIT BLOCK **/
+.commit-title{display: block;}
+.commit-title{margin-bottom: 10px}
+.commit-author, .commit-committer{display: block;color: #999; font-weight: normal; font-style: italic;}
+.commit-author strong, .commit-committer strong{font-weight: bold; font-style: normal;}
+
