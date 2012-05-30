@@ -58,14 +58,14 @@ module CommitsHelper
       next if line.match(/^\-\-\- a/)
       next if line.match(/^\+\+\+ b/)
 
-      full_line = html_escape(line.gsub(/\n/, '')).force_encoding("UTF-8")
+      full_line = html_escape(line.gsub(/\n/, ''))
 
       if line.match(/^@@ -/)
         type = "match"
 
         line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
         line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
-                
+
         next if line_old == 1 && line_new == 1
         yield(full_line, type, nil, nil, nil)
         next
