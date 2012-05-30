@@ -1,25 +1,33 @@
 # Patch Strings to enable detect_encoding! on views
 require 'charlock_holmes/string'
 module Gitlab
-  module Encode 
+  module Encode
     extend self
 
     def utf8 message
+      # return nil if message is nil
       return nil unless message
 
-      detect = CharlockHolmes::EncodingDetector.detect(message) rescue {}
+      message.force_encoding("utf-8")
+      # return message if message type is binary
+      detect = CharlockHolmes::EncodingDetector.detect(message)
+      return message if detect[:type] == :binary
 
-      # It's better to default to UTF-8 as sometimes it's wrongly detected as another charset
-      if detect[:encoding] && detect[:confidence] == 100
-        CharlockHolmes::Converter.convert(message, detect[:encoding], 'UTF-8')
-      else
-        message
-      end.force_encoding("utf-8")
+      # if message is utf-8 encoding, just return it
+      return message if message.valid_encoding?
 
-    # Prevent app from crash cause of 
-    # encoding errors
+      # if message is not utf-8 encoding, convert it
+      if detect[:encoding]
+        message.force_encoding(detect[:encoding])
+        message.encode!("utf-8", detect[:encoding], :undef => :replace, :replace => "", :invalid => :replace)
+      end
+
+      # ensure message encoding is utf8
+      message.valid_encoding? ? message : raise
+
+    # Prevent app from crash cause of encoding errors
     rescue
-      "--broken encoding: #{encoding}"
+      "--broken encoding: #{detect[:encoding]}"
     end
 
     def detect_encoding message
