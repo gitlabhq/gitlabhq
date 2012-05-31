@@ -1,10 +1,14 @@
-%h3 Network Graph
+%h3 Project Network Graph
 %br
-#holder.graph
+.graph_holder
+  %h4
+    %small You can move around the graph by using arrow keys.
+  #holder.graph
 :javascript
   var chunk1={commits:#{@commits_json}};
   var days=#{@days_json};
   initGraph();
   $(function(){
     branchGraph($("#holder")[0]);
+    initGraphNav();
   });

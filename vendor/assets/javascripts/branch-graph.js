@@ -37,17 +37,17 @@ function branchGraph(holder) {
         r = Raphael("holder", cw, ch),
         top = r.set();
     var cuday = 0, cumonth = "";
-    r.rect(0, 0, days.length * 20 + 80, 30).attr({fill: "#FFF"});
-    r.rect(0, 30, days.length * 20 + 80, 20).attr({fill: "#f1f1f1"});
+    r.rect(0, 0, days.length * 20 + 80, 30).attr({fill: "#222"});
+    r.rect(0, 30, days.length * 20 + 80, 20).attr({fill: "#444"});
 
     for (mm = 0; mm < days.length; mm++) {
         if(days[mm] != null){
             if(cuday != days[mm][0]){
-                r.text(10 + mm * 20, 40, days[mm][0]).attr({font: "14px Fontin-Sans, Arial", fill: "#444"});
+                r.text(10 + mm * 20, 40, days[mm][0]).attr({font: "14px Fontin-Sans, Arial", fill: "#DDD"});
                 cuday = days[mm][0]
             }
             if(cumonth != days[mm][1]){
-                r.text(10 + mm * 20, 15, days[mm][1]).attr({font: "14px Fontin-Sans, Arial", fill: "#474D57"});
+                r.text(10 + mm * 20, 15, days[mm][1]).attr({font: "14px Fontin-Sans, Arial", fill: "#EEE"});
                 cumonth = days[mm][1]
             }
 

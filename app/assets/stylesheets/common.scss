@@ -413,18 +413,6 @@ a.project-update.titled {
     top:0;
   }
 }
-/**
- * Project graph
- */
-#holder {
-  cursor: move;
-  height: 70%;
-  overflow: hidden;
-  background:white;
-  border: 1px solid $style_color;
-}
-
-
 
 input.git_clone_url { 
   width:325px;
@@ -888,4 +876,28 @@ li.note {
   .how_to_merge_link { 
     @extend .primary;
   }
+}
+
+.graph_holder { 
+  border: 1px solid #aaa;
+  padding:1px;
+
+
+  h4 { 
+    padding:0 10px;
+    border-bottom: 1px solid #bbb;
+    background:#eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+  }
+
+  .graph { 
+    background: #f1f1f1;
+    cursor: move;
+    height: 70%;
+    overflow: hidden;
+  }
+
 }
