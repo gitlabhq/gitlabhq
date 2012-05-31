@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This file was placed here by Gitlab. It makes sure that your pushed commits
 # will be processed properly.
