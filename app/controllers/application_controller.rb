@@ -9,6 +9,10 @@ class ApplicationController < ActionController::Base
     render "errors/gitolite", :layout => "error"
   end
 
+  rescue_from Encoding::CompatibilityError do |exception|
+    render "errors/encoding", :layout => "error", :status => 404
+  end
+
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render "errors/not_found", :layout => "error", :status => 404
   end
