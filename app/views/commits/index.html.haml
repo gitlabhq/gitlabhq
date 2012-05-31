@@ -3,8 +3,9 @@
 - if params[:path]
   %ul.breadcrumb
     %li
+      %span.arrow
       = link_to project_commits_path(@project) do
-        = @project.code
+        = @project.name
       %span.divider 
         \/
     %li

@@ -31,7 +31,9 @@
         #{@milestone.issues.opened.count} open
         &ndash;
         #{@milestone.issues.closed.count} closed
-    .progress
+    .progress.progress-success
+      .bar{:style => "width: #{@milestone.percent_complete}%;"}
+
 
   - if @milestone.description.present?
     .bottom_box_content
@@ -65,10 +67,3 @@
             = image_tag gravatar_icon(user.email, 24), :width => "24"
             &nbsp;
             = user.name
-
-:javascript
-  $(function() {
-    $( ".progress" ).progressbar({
-      value: #{@milestone.percent_complete}
-     });
-  });

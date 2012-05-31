@@ -9,14 +9,11 @@
   = link_to project_milestone_path(milestone.project, milestone) do
     %h4.row_title
       = truncate(milestone.title, :length => 100)
-      %small= milestone.expires_at
+      %small
+        = milestone.expires_at
       %br
-      .progress.span3
+      .progress.progress-success.span3
+        .bar{:style => "width: #{milestone.percent_complete}%;"}
+
 
   &nbsp;
-  :javascript
-    $(function() {
-      $( "##{dom_id(milestone)} .progress" ).progressbar({
-        value: #{milestone.percent_complete}
-       });
-    });
