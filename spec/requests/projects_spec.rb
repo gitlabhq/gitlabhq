@@ -28,6 +28,13 @@ describe "Projects" do
       visit projects_path(:atom, :private_token => @user.private_token)
       page.body.should have_selector("feed title")
     end
+
+    it "should not render projects page via private token" do
+      logout
+
+      visit projects_path(:private_token => @user.private_token)
+      current_path.should == new_user_session_path
+    end
   end
 
   describe "GET /projects/new" do
