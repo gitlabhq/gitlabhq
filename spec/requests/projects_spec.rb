@@ -18,8 +18,15 @@ describe "Projects" do
       page.should have_content("New Project")
     end
 
-    it "should have project" do 
+    it "should have project" do
       page.should have_content(@project.name)
+    end
+
+    it "should render projects atom feed via private token" do
+      logout
+
+      visit projects_path(:atom, :private_token => @user.private_token)
+      page.body.should have_selector("feed title")
     end
   end
 
