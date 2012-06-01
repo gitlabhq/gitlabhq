@@ -14,6 +14,11 @@ class ProjectsController < ApplicationController
     @projects = current_user.projects.includes(:events).order("events.created_at DESC")
     @projects = @projects.page(params[:page]).per(40)
     @events = Event.where(:project_id => current_user.projects.map(&:id)).recent.limit(20)
+
+    respond_to do |format|
+      format.html
+      format.atom { render :layout => false }
+    end
   end
 
   def new
@@ -31,7 +36,7 @@ class ProjectsController < ApplicationController
       @project.save!
       @project.users_projects.create!(:project_access => UsersProject::MASTER, :user => current_user)
 
-      # when project saved no team member exist so 
+      # when project saved no team member exist so
       # project repository should be updated after first user add
       @project.update_repository
     end
@@ -72,7 +77,7 @@ class ProjectsController < ApplicationController
     @events = @project.events.recent.limit(limit)
 
     respond_to do |format|
-      format.html do 
+      format.html do
          if @project.repo_exists? && @project.has_commits?
            render :show
          else
