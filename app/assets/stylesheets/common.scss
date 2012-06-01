@@ -901,3 +901,12 @@ li.note {
   }
 
 }
+
+/* CHZN reset few styles */
+.chzn-container-single .chzn-single { 
+  background:#eee;
+  border: 1px solid #ccc;
+}
+.chzn-container-active .chzn-single { 
+  background:#fff;
+}
