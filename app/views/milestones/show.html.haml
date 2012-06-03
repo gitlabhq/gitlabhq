@@ -6,12 +6,12 @@
   %span.right
     = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn edit-milestone-link small"
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn small" do 
+      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn small" do
         %i.icon-edit
         Edit
 
 .back_link
-  = link_to project_milestones_path(@project) do 
+  = link_to project_milestones_path(@project) do
     &larr; To milestones list
 
 .main_box
@@ -19,7 +19,7 @@
     %h5
       - if @milestone.closed
         .alert-message.error.status_info Closed
-      - else 
+      - else
         .alert-message.success.status_info Open
       = @milestone.title
       %small.right= @milestone.expires_at
@@ -48,7 +48,7 @@
       - @issues.each do |issue|
         %tr
           %td
-            = link_to [@project, issue] do 
+            = link_to [@project, issue] do
               = image_tag gravatar_icon(issue.assignee_email, 16), :width => "16"
               &nbsp;
               %span.badge.badge-info ##{issue.id}

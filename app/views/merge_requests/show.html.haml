@@ -9,7 +9,7 @@
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
-        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do 
+        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do
           %i.icon-edit
           Edit
 
@@ -19,7 +19,7 @@
 
 = render "merge_requests/how_to_merge"
 .back_link
-  = link_to project_merge_requests_path(@project) do 
+  = link_to project_merge_requests_path(@project) do
     &larr; To merge requests
 
 .main_box
@@ -27,17 +27,17 @@
     %h4
       - if @merge_request.closed
         .alert-message.error.status_info Closed
-      - else 
+      - else
         .alert-message.success.status_info Open
       = @merge_request.title
 
   .middle_box_content
     %div
-      %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by 
+      %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by
       = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_merge_request_author(@merge_request)
 
-      %cite.cgray and currently assigned to 
+      %cite.cgray and currently assigned to
       = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
       %strong.author= link_to_merge_request_assignee(@merge_request)
 
@@ -46,11 +46,11 @@
     .bottom_box_content
       - if @merge_request.merged?
         %span
-          Merged by #{@merge_request.merge_event.author_name} 
+          Merged by #{@merge_request.merge_event.author_name}
           %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
       - elsif @merge_request.closed_event
         %span
-          Closed by #{@merge_request.closed_event.author_name} 
+          Closed by #{@merge_request.closed_event.author_name}
           %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
 
 - unless can?(current_user, :accept_mr, @project)
@@ -61,37 +61,34 @@
 - if @merge_request.open? && @commits.any? && can?(current_user, :accept_mr, @project)
   .automerge_widget.can_be_merged{:style => "display:none"}
     .alert.alert-success
-      %span 
+      %span
         = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info accept_merge_request", :remote => true
         &nbsp;
         You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"} for instructions
-      
+
   .automerge_widget.cannot_be_merged{:style => "display:none"}
     .alert.alert-info
       %span
         = link_to "Show how to merge", "#", :class => "how_to_merge_link btn small padded", :title => "How To Merge"
         &nbsp;
         %strong This request cant be merged with GitLab. You should do it manually
-  
+
   .automerge_widget.unchecked
     .alert-message
-      %strong 
+      %strong
         %i.icon-refresh
-        Checking for ability to automatically merge… 
-  
+        Checking for ability to automatically merge…
+
   .automerge_widget.already_cannot_be_merged{:style => "display:none"}
     .alert.alert-info
       %strong This merge request already can not be merged. Try to reload page.
-
-
-
 
 = render "merge_requests/commits"
 
 - unless @commits.empty?
   .nav.nav-tabs
     %li.active
-      = link_to "#notes", :class => "merge-notes-tab tab" do 
+      = link_to "#notes", :class => "merge-notes-tab tab" do
         Notes
     %li
       = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
@@ -120,11 +117,11 @@
 
 :javascript
   $(document).ready(function(){
-    $(".line_note_link, .line_note_reply_link").live("click", function(e) { 
+    $(".line_note_link, .line_note_reply_link").live("click", function(e) {
       var form = $(".per_line_form");
       $(this).parent().parent().after(form);
       form.find("#note_line_code").val($(this).attr("line_code"));
-      form.show();  
+      form.show();
       return false;
     });
   });

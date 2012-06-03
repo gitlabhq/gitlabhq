@@ -3,11 +3,11 @@
     %h3 Application theme
     %hr
     .clearfix
-      = label_tag do 
+      = label_tag do
         = f.radio_button :theme_id, 1
         Default
 
-      = label_tag do 
+      = label_tag do
         = f.radio_button :theme_id, 2
         Classic
     %br
@@ -29,8 +29,8 @@
             = f.radio_button :dark_scheme, true
             Dark code preview
 
-:javascript 
-  $(function(){ 
+:javascript
+  $(function(){
     $(".edit_user input").bind("click", function() {
       $(".edit_user").submit();
     });

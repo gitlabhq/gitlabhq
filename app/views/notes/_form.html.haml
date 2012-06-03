@@ -14,12 +14,12 @@
     .span4
       %h5 Notify via email:
       .clearfix
-        = label_tag :notify do 
+        = label_tag :notify do
           = check_box_tag :notify, 1, @note.noteable_type != "Commit"
           %span Project team
 
         - if @note.notify_only_author?(current_user)
-          = label_tag :notify_author do 
+          = label_tag :notify_author do
             = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
             %span Commit author
     .span8

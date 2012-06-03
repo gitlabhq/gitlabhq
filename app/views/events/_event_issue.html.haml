@@ -1,10 +1,10 @@
 = image_tag gravatar_icon(event.author_email), :class => "avatar"
-%strong #{event.author_name} 
+%strong #{event.author_name}
 %span.event_label= event.action_name
-&nbsp;issue 
+&nbsp;issue
 = link_to project_issue_path(event.project, event.issue) do
   %strong= truncate event.issue_title
-at 
+at
 %strong= link_to event.project.name, event.project
 %span.cgray
   = time_ago_in_words(event.created_at)

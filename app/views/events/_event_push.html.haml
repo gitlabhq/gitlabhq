@@ -1,12 +1,12 @@
 %div
   .event_icon= image_tag "event_push.png"
   = image_tag gravatar_icon(event.author_email), :class => "avatar"
-  %strong #{event.author_name} 
+  %strong #{event.author_name}
   %span.event_label= event.push_action_name
   = event.ref_type
   = link_to project_commits_path(event.project, :ref => event.ref_name) do
     %strong= event.ref_name
-  at 
+  at
   %strong= link_to event.project.name, event.project
   %span.cgray
     = time_ago_in_words(event.created_at)
@@ -14,9 +14,9 @@
 
   - if event.push_with_commits?
     - if event.commits_count > 1
-      = link_to compare_project_commits_path(event.project, :from => event.parent_commit.id, :to => event.last_commit.id) do 
+      = link_to compare_project_commits_path(event.project, :from => event.parent_commit.id, :to => event.last_commit.id) do
         %strong #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
-    - project = event.project  
+    - project = event.project
     %ul.unstyled.event_commits
       - if event.commits_count > 3
         - event.commits[0...2].each do |commit|
@@ -24,7 +24,6 @@
         %li
           %br
           \... and #{event.commits_count - 2} more commits
-      - else 
+      - else
         - event.commits.each do |commit|
           = render "events/commit", :commit => commit, :project => project
-
