@@ -12,23 +12,17 @@ module TabHelper
       return "current" if current_page?(:controller => "projects", :action => action, :id => @project)
     end
 
-    if controller.controller_name == "snippets" || 
-     controller.controller_name == "hooks" ||
-     controller.controller_name == "deploy_keys" ||
-     controller.controller_name == "team_members"
+    if ['snippets', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
      "current"
     end
   end
 
   def tree_tab_class
-    controller.controller_name == "refs" ? 
-     "current" : nil
+    controller.controller_name == "refs" ? "current" : nil
   end
 
   def commit_tab_class
-    if controller.controller_name == "commits" || 
-      controller.controller_name == "repositories" ||
-      controller.controller_name == "protected_branches"
+    if ['commits', 'repositories', 'protected_branches'].include? controller.controller_name
       "current"
     end
   end
@@ -37,7 +31,7 @@ module TabHelper
     if current_page?(branches_project_repository_path(@project)) ||
       controller.controller_name == "protected_branches" ||
       current_page?(project_repository_path(@project))
-      'active' 
+      'active'
     end
   end
 end
