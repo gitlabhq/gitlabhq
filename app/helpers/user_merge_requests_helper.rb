@@ -1,3 +1,0 @@
-module UserMergeRequestsHelper
-end
-
