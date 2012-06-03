@@ -14,7 +14,8 @@ class MergeRequest < ActiveRecord::Base
   serialize :st_diffs
 
   attr_protected :author, :author_id, :project, :project_id
-  attr_accessor :author_id_of_changes
+  attr_accessor :author_id_of_changes,
+                :should_remove_source_branch
 
   validates_presence_of :project_id
   validates_presence_of :assignee_id
