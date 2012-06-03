@@ -110,27 +110,11 @@ module ApplicationHelper
     [projects, default_nav, project_nav].flatten.to_json
   end
 
-  def project_layout
-    layout == "project"
-  end
-
-  def admin_layout
-    layout == "admin"
-  end
-
-  def profile_layout
-    layout == "profile"
-  end
-
-  def help_layout
-    controller.controller_name == "help" 
-  end
-
   def ldap_enable?
     Devise.omniauth_providers.include?(:ldap)
   end
 
-  def layout 
+  def layout
     controller.send :_layout
   end
 
