@@ -8,42 +8,12 @@ module ApplicationHelper
     "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
   end
 
-  def fixed_mode?
-    true
-  end
-
   def request_protocol
     request.ssl? ? "https" : "http"
   end
 
   def web_app_url
     "#{request_protocol}://#{GIT_HOST["host"]}/"
-  end
-
-  def body_class(default_class = nil)
-    main = content_for(:body_class).blank? ?
-      default_class :
-      content_for(:body_class)
-
-    [main, "collapsed"].join(" ")
-  end
-
-  def commit_name(project, commit)
-    if project.commit.id == commit.id
-      "master"
-    else
-      commit.id
-    end
-  end
-
-  def admin_namespace?
-    controller.class.name.split("::").first=="Admin"
-  end
-
-  def projects_namespace?
-    !current_page?(root_url) &&
-      controller.controller_name != "keys" &&
-      !admin_namespace?
   end
 
   def last_commit(project)
@@ -62,7 +32,7 @@ module ApplicationHelper
       [ "Tag", @project.tags ]
     ]
 
-    # If reference is commit id - 
+    # If reference is commit id -
     # we should add it to branch/tag selectbox
     if(@ref && !options.flatten.include?(@ref) &&
        @ref =~ /^[0-9a-zA-Z]{6,52}$/)
@@ -114,10 +84,6 @@ module ApplicationHelper
     Devise.omniauth_providers.include?(:ldap)
   end
 
-  def layout
-    controller.send :_layout
-  end
-
   def app_theme
     if current_user && current_user.theme_id == 1
       "ui_basic"
@@ -126,7 +92,4 @@ module ApplicationHelper
     end
   end
 
-  def string_to_utf8 str
-    Gitlab::Encode.utf8 str
-  end
 end
