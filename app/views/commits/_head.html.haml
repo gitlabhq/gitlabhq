@@ -5,18 +5,18 @@
       = hidden_field_tag :destination, "commits"
 
   %li{:class => "#{'active' if current_page?(project_commits_path(@project)) }"}
-    = link_to project_commits_path(@project) do 
+    = link_to project_commits_path(@project) do
       Commits
   %li{:class => "#{'active' if current_page?(compare_project_commits_path(@project)) }"}
-    = link_to compare_project_commits_path(@project) do 
+    = link_to compare_project_commits_path(@project) do
       Compare
   %li{:class => "#{branches_tab_class}"}
-    = link_to project_repository_path(@project) do 
+    = link_to project_repository_path(@project) do
       Branches
       %span.number= @project.repo.branch_count
 
   %li{:class => "#{'active' if current_page?(tags_project_repository_path(@project)) }"}
-    = link_to tags_project_repository_path(@project) do 
+    = link_to tags_project_repository_path(@project) do
       Tags
       %span.number= @project.repo.tag_count
 
@@ -24,9 +24,8 @@
   - if current_page?(project_commits_path(@project)) && current_user.private_token
     %li.right
       %span.rss-icon
-        = link_to project_commits_path(@project, :atom, { :private_token => current_user.private_token, :ref => @ref }), :title  => "Feed" do 
+        = link_to project_commits_path(@project, :atom, { :private_token => current_user.private_token, :ref => @ref }), :title  => "Feed" do
           = image_tag "rss_ui.png", :title => "feed"
-
 
 :javascript
   $(function(){

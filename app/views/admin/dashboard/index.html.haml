@@ -4,7 +4,7 @@
       %h5
         Resque Workers
       .data.padded
-        = link_to "/info/resque" do 
+        = link_to "/info/resque" do
           %h1{:class => @workers.present? ? "cgreen" : "cred"}
             = @workers.count
         %hr
@@ -16,7 +16,7 @@
     .ui-box
       %h5 Projects
       .data.padded
-        = link_to admin_projects_path do 
+        = link_to admin_projects_path do
           %h1= Project.count
         %hr
         = link_to 'New Project', new_admin_project_path, :class => "btn small"
@@ -24,7 +24,7 @@
     .ui-box
       %h5 Users
       .data.padded
-        = link_to admin_users_path do 
+        = link_to admin_users_path do
           %h1= User.count
         %hr
         = link_to 'New User', new_admin_user_path, :class => "btn small"

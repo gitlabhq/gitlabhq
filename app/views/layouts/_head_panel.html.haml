@@ -3,8 +3,8 @@
   .container
     .top_panel_content
       %div.app_logo
-        = link_to root_path, :class => "home", :title => "Home" do 
-          %h1 
+        = link_to root_path, :class => "home", :title => "Home" do
+          %h1
             GITLAB
         %span.separator
       %h1.project_name= title
@@ -13,11 +13,11 @@
           = text_field_tag "search", nil, :placeholder => "Search", :class => "search-input"
       .fbtn
         - if current_user.is_admin?
-          = link_to admin_root_path, :class => "btn small", :title => "Admin area" do 
+          = link_to admin_root_path, :class => "btn small", :title => "Admin area" do
             %i.icon-cog
             Admin
         - if current_user.can_create_project?
-          = link_to new_project_path, :class => "btn small", :title => "Create New Project" do 
+          = link_to new_project_path, :class => "btn small", :title => "Create New Project" do
             %i.icon-plus
             Project
       .account-box
@@ -43,4 +43,3 @@
       }
     });
   });
-

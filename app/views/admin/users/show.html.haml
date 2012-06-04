@@ -53,11 +53,10 @@
       %td
         = @admin_user.twitter
 
-
 %br
 %h3 Add User to Projects
 %br
-= form_tag team_update_admin_user_path(@admin_user), :class => "bulk_import", :method => :put  do 
+= form_tag team_update_admin_user_path(@admin_user), :class => "bulk_import", :method => :put  do
   %table.table-bordered
     %thead
       %tr
@@ -71,7 +70,7 @@
     %tr
       %td= submit_tag 'Add', :class => "btn primary"
       %td
-        Read more about project permissions 
+        Read more about project permissions
         %strong= link_to "here", help_permissions_path, :class => "vlink"
 %br
 
@@ -95,8 +94,8 @@
         %td= link_to 'Edit Access', edit_admin_team_member_path(tm), :class => "btn small"
         %td= link_to 'Remove from team', admin_team_member_path(tm), :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
 
-:css 
-  form select { 
+:css
+  form select {
     width:150px;
   }
 
@@ -104,9 +103,7 @@
     width:300px;
   }
 
-  
-:javascript 
+:javascript
   $('select#project_ids').chosen();
   $('select#repo_access').chosen();
   $('select#project_access').chosen();
-

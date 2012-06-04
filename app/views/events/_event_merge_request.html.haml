@@ -1,12 +1,12 @@
 - if event.action_name == "merged"
   .event_icon= image_tag "event_mr_merged.png"
 = image_tag gravatar_icon(event.author_email), :class => "avatar"
-%strong #{event.author_name} 
+%strong #{event.author_name}
 %span.event_label= event.action_name
-&nbsp;merge request 
+&nbsp;merge request
 = link_to project_merge_request_path(event.project, event.merge_request) do
   %strong= truncate event.merge_request_title
-at 
+at
 %strong= link_to event.project.name, event.project
 %span.cgray
   = time_ago_in_words(event.created_at)

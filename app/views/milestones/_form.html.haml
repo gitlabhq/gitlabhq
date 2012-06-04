@@ -1,6 +1,6 @@
 %h3= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
 .back_link
-  = link_to project_milestones_path(@project) do 
+  = link_to project_milestones_path(@project) do
     &larr; To milestones
 
 %hr
@@ -30,7 +30,6 @@
         .controls
           .datepicker
 
-
   .form-actions
     - if @milestone.new_record?
       = f.submit 'Create milestone', :class => "primary btn"
@@ -38,11 +37,11 @@
       = f.submit 'Save changes', :class => "primary btn"
 
     - if request.xhr?
-      = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
-    - else 
+      = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn"
+    - else
       - if @milestone.new_record?
         = link_to "Cancel", project_milestones_path(@project), :class => "btn"
-      - else    
+      - else
         = link_to "Cancel", project_milestone_path(@project, @milestone), :class => "btn"
 
 :javascript

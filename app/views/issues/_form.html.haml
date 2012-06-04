@@ -24,7 +24,7 @@
         .clearfix
           = f.label :critical, "Critical"
           .input= f.check_box :critical
-        
+
         - unless @issue.new_record?
           .clearfix
             = f.label :closed
@@ -35,8 +35,6 @@
             = f.text_area :description, :maxlength => 2000, :class => "xxlarge", :rows => 14
             %p.hint Markdown is enabled.
 
-
-
     .actions
       - if @issue.new_record?
         = f.submit 'Submit new issue', :class => "primary btn"
@@ -44,9 +42,9 @@
         = f.submit 'Save changes', :class => "primary btn"
 
       - if request.xhr?
-        = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn" 
-      - else 
+        = link_to "Cancel", "#back", :onclick => "backToIssues();", :class => "btn"
+      - else
         - if @issue.new_record?
           = link_to "Cancel", project_issues_path(@project), :class => "btn"
-        - else    
+        - else
           = link_to "Cancel", project_issue_path(@project, @issue), :class => "btn"

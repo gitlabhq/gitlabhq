@@ -50,10 +50,10 @@
         You can change your avatar at gravatar.com
 
       %h4
-        Personal projects: 
+        Personal projects:
         %small.right
           %span= current_user.my_own_projects.count
-          of 
+          of
           %span= current_user.projects_limit
       .progress
         .bar{:style => "width: #{current_user.projects_limit_percent}%;"}
@@ -64,7 +64,6 @@
           %span= current_user.keys.count
 
       = link_to "Add Public Key", new_key_path, :class => "btn small right"
-
 
   .form-actions
     = f.submit 'Save', :class => "btn-primary btn"

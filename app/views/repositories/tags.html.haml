@@ -26,5 +26,5 @@
           - if can? current_user, :download_code, @project
             = link_to "Download", archive_project_repository_path(@project, :ref => tag.name), :class => "visible_link download_repo_link"
 
-- else 
+- else
   %h3 No tags
