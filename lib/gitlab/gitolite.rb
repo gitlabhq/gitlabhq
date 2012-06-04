@@ -16,7 +16,7 @@ module Gitlab
 
     def pull
       # create tmp dir
-      @local_dir = File.join(Dir.tmpdir,"gitlabhq-gitolite-#{Time.now.to_i}")
+      @local_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
       Dir.mkdir @local_dir
 
       `git clone #{GitHost.admin_uri} #{@local_dir}/gitolite`
@@ -33,8 +33,8 @@ module Gitlab
     end
 
     def configure
-      status = Timeout::timeout(20) do
-        File.open(File.join(Dir.tmpdir,"gitlabhq-gitolite.lock"), "w+") do |f|
+      Timeout::timeout(20) do
+        File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin 
             f.flock(File::LOCK_EX)
             pull
