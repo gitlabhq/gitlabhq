@@ -189,7 +189,7 @@ class MergeRequest < ActiveRecord::Base
       self.merge!(current_user.id)
       true
     end
-  rescue 
+  rescue
     self.mark_as_unmergable
     false
   end

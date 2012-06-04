@@ -50,7 +50,7 @@ module Gitlab
             output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
 
             #remove source-branch
-            if merge_request.should_remove_source_branch
+            if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch)
               merge_repo.git.sh "git push origin :#{merge_request.source_branch}"
             end
 

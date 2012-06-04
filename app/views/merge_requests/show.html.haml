@@ -65,8 +65,9 @@
         = form_for [:automerge, @project, @merge_request], :remote => true, :method => :get do |f|
           You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"} for instructions
           %br
-          = check_box_tag :should_remove_source_branch
-          = label_tag :should_remove_source_branch, "Remove source-branch"
+          -unless @project.root_ref? @merge_request.source_branch 
+            = check_box_tag :should_remove_source_branch
+            = label_tag :should_remove_source_branch, "Remove source-branch"
              
           = f.submit "Accept Merge Request", :class => "btn small info accept_merge_request"
 
