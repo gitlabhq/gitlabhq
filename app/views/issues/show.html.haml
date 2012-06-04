@@ -1,7 +1,7 @@
 %h3
   Issue ##{@issue.id}
   %small
-    created at 
+    created at
     = @issue.created_at.stamp("Aug 21, 2011")
 
   %span.right
@@ -11,7 +11,7 @@
       - else
         = link_to 'Close', project_issue_path(@project, @issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "btn small", :title => "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
-      = link_to edit_project_issue_path(@project, @issue), :class => "btn small" do 
+      = link_to edit_project_issue_path(@project, @issue), :class => "btn small" do
         %i.icon-edit
         Edit
 
@@ -20,7 +20,7 @@
       .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
 
 .back_link
-  = link_to project_issues_path(@project) do 
+  = link_to project_issues_path(@project) do
     &larr; To issues list
 
 .main_box
@@ -28,7 +28,7 @@
     %h4
       - if @issue.closed
         .alert-message.error.status_info Closed
-      - else 
+      - else
         .alert-message.success.status_info Open
       = @issue.title
 
@@ -37,17 +37,17 @@
     = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_author(@issue)
 
-    %cite.cgray and currently assigned to 
+    %cite.cgray and currently assigned to
     = image_tag gravatar_icon(@issue.assignee_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_assignee(@issue)
 
-    - if @issue.milestone 
+    - if @issue.milestone
       - milestone = @issue.milestone
-      %cite.cgray and attached to milestone 
+      %cite.cgray and attached to milestone
       = link_to project_milestone_path(milestone.project, milestone) do
         %strong
           = truncate(milestone.title, :length => 20)
-    
+
   - if @issue.description.present?
     .bottom_box_content
       = preserve do

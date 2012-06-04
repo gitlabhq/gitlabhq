@@ -9,7 +9,7 @@
       %b
         Name:
     %td
-      = @admin_project.name    
+      = @admin_project.name
   %tr
     %td
       %b
@@ -59,7 +59,7 @@
 %br
 %h3 Add new team member
 %br
-= form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do 
+= form_tag team_update_admin_project_path(@admin_project), :class => "bulk_import", :method => :put  do
   %table.zebra-striped.table-bordered
     %thead
       %tr
@@ -73,11 +73,11 @@
     %tr
       %td= submit_tag 'Add', :class => "btn primary"
       %td
-        Read more about project permissions 
+        Read more about project permissions
         %strong= link_to "here", help_permissions_path, :class => "vlink"
 
-:css 
-  form select { 
+:css
+  form select {
     width:150px;
   }
 
@@ -85,9 +85,7 @@
     width:300px;
   }
 
-  
-:javascript 
+:javascript
   $('select#user_ids').chosen();
   $('select#repo_access').chosen();
   $('select#project_access').chosen();
-

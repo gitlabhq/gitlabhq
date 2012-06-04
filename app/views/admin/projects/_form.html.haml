@@ -9,14 +9,14 @@
     = f.label :name
     .input= f.text_field :name
   .clearfix
-    = f.label :path do 
+    = f.label :path do
       Path
     .input
       .input-prepend
         %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
         = f.text_field :path, :placeholder => "example_project", :disabled => !@admin_project.new_record?
   .clearfix
-    = f.label :code do 
+    = f.label :code do
       Code
     .input
       .input-prepend
@@ -28,7 +28,7 @@
       = f.label :owner_id
       .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
 
-    - if @admin_project.repo_exists?  
+    - if @admin_project.repo_exists?
       .clearfix
         = f.label :default_branch, "Default Branch"
         .input= f.select(:default_branch, @admin_project.heads.map(&:name), {}, :style => "width:210px;")

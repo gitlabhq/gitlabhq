@@ -1,7 +1,7 @@
 %h3
   Merge Requests
   - if can? current_user, :write_issue, @project
-    = link_to new_project_merge_request_path(@project), :class => "right btn small", :title => "New Merge Request" do 
+    = link_to new_project_merge_request_path(@project), :class => "right btn small", :title => "New Merge Request" do
       New Merge Request
 
 %br
@@ -10,16 +10,16 @@
   .title
     %ul.nav.nav-pills
       %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-        = link_to project_merge_requests_path(@project, :f => 0) do 
+        = link_to project_merge_requests_path(@project, :f => 0) do
           Open
       %li{:class => ("active" if params[:f] == "2")}
-        = link_to project_merge_requests_path(@project, :f => 2) do 
+        = link_to project_merge_requests_path(@project, :f => 2) do
           Closed
       %li{:class => ("active" if params[:f] == "3")}
-        = link_to project_merge_requests_path(@project, :f => 3) do 
+        = link_to project_merge_requests_path(@project, :f => 3) do
           To Me
       %li{:class => ("active" if params[:f] == "1")}
-        = link_to project_merge_requests_path(@project, :f => 1) do 
+        = link_to project_merge_requests_path(@project, :f => 1) do
           All
 
   %ul.unstyled

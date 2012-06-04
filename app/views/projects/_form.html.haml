@@ -14,7 +14,7 @@
   .alert.alert-info
     %h5 Advanced settings:
     .clearfix
-      = f.label :path do 
+      = f.label :path do
         Git Clone
       .input
         .input-prepend
@@ -22,19 +22,19 @@
           = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
           %span.add-on= ".git"
     .clearfix
-      = f.label :code do 
+      = f.label :code do
         URL
       .input
         .input-prepend
           %span.add-on= web_app_url
           = f.text_field :code, :placeholder => "example"
 
-    - unless @project.new_record? || @project.heads.empty?  
+    - unless @project.new_record? || @project.heads.empty?
       .clearfix
         = f.label :default_branch, "Default Branch"
         .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
 
-  - unless @project.new_record?  
+  - unless @project.new_record?
     .alert.alert-info
       %h5 Features:
 
@@ -49,13 +49,13 @@
       .clearfix
         = f.label :wall_enabled, "Wall"
         .input= f.check_box :wall_enabled
-      
+
       .clearfix
         = f.label :wiki_enabled, "Wiki"
         .input= f.check_box :wiki_enabled
-    
+
   %br
-  
+
   .actions
     = f.submit 'Save', :class => "btn primary"
     = link_to 'Cancel', @project, :class => "btn"

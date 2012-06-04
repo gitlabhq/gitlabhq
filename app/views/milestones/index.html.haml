@@ -9,10 +9,10 @@
     .title
       %ul.nav.nav-pills
         %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-          = link_to project_milestones_path(@project, :f => 0) do 
+          = link_to project_milestones_path(@project, :f => 0) do
             Active
         %li{:class => ("active" if params[:f] == "1")}
-          = link_to project_milestones_path(@project, :f => 1) do 
+          = link_to project_milestones_path(@project, :f => 1) do
             All
 
     %ul.unstyled

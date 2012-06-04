@@ -11,7 +11,7 @@
   %hr
   .back_link
     %br
-    = link_to team_project_path(@project), :class => "" do 
+    = link_to team_project_path(@project), :class => "" do
       &larr; To team list
   %br
   .row
@@ -56,7 +56,7 @@
 
 :javascript
   $(function(){
-    $('.repo-access-select, .project-access-select').live("change", function() { 
+    $('.repo-access-select, .project-access-select').live("change", function() {
       $(this.form).submit();
     });
   })

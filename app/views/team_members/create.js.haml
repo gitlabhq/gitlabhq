@@ -1,7 +1,7 @@
 - if @team_member.valid?
   :plain
     $("#new_team_member").hide("slide", { direction: "right" }, 150, function(){
-      $("#team-table").show("slide", { direction: "left" }, 150, function() { 
+      $("#team-table").show("slide", { direction: "left" }, 150, function() {
         $("#new_team_member").remove();
         $("#team-table").replaceWith("#{escape_javascript(render('projects/team'))}");
         $(".add_new").show();

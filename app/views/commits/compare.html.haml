@@ -1,20 +1,20 @@
 = render "head"
 
-%h3 
+%h3
   Compare View
 %hr
 
 %div
-  %p 
-    Fill input field with commit id like 
+  %p
+    Fill input field with commit id like
     %code '4eedf23'
-    or branch/tag name like 
-    %code master 
+    or branch/tag name like
+    %code master
     &amp; press compare button for commits list, code diff.
 
   %br
 
-  = form_tag compare_project_commits_path(@project), :method => :get do 
+  = form_tag compare_project_commits_path(@project), :method => :get do
     .clearfix
       = text_field_tag :from, params[:from], :placeholder => "master", :class => "xlarge"
       = "..."
@@ -30,7 +30,6 @@
 - unless @diffs.empty?
   %h4 Diff
   = render "commits/diffs", :diffs => @diffs
-
 
 :javascript
   $(function() {

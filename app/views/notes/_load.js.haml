@@ -11,7 +11,7 @@
     :plain
       NoteList.setContent(#{@notes.last.id}, #{@notes.first.id}, "#{escape_javascript(render(:partial => 'notes/notes_list'))}");
 
-- else 
+- else
   - if params[:first_id]
     :plain
       NoteList.append(#{params[:first_id]}, "");

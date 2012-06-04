@@ -13,7 +13,7 @@
   .alert.alert-info
     %h5 Advanced settings:
     .clearfix
-      = f.label :path do 
+      = f.label :path do
         Git Clone
       .input
         .input-prepend
@@ -21,7 +21,7 @@
           = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
           %span.add-on= ".git"
     .clearfix
-      = f.label :code do 
+      = f.label :code do
         URL
       .input
         .input-prepend
