@@ -127,6 +127,18 @@ table {
     @extend .btn-primary;
   }
 
+  &.success { 
+    color: #fff;
+    text-shadow: 0 0 1px #111;
+    background: #5bb75b;;
+    font-weight: bold;
+
+    &:hover { 
+      background-color: #51a351;
+      color: #fff;
+    }
+  }
+
   &.danger,
   &.btn-danger { 
     color:#fff;
