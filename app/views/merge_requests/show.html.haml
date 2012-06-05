@@ -8,7 +8,7 @@
   %span.right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded", :title => "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded danger", :title => "Close merge request"
         = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do
           %i.icon-edit
           Edit
@@ -62,9 +62,21 @@
   .automerge_widget.can_be_merged{:style => "display:none"}
     .alert.alert-success
       %span
-        = link_to "Accept Merge Request", automerge_project_merge_request_path(@project, @merge_request), :class => "btn small info accept_merge_request", :remote => true
-        &nbsp;
-        You can accept this request automatically. If you still want to do it manually - #{link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"} for instructions
+        = form_for [:automerge, @project, @merge_request], :remote => true, :method => :get do |f|
+          %p
+            You can accept this request automatically. 
+            If you still want to do it manually - 
+            %strong= link_to "click here", "#", :class => "how_to_merge_link vlink", :title => "How To Merge"
+            for instructions
+          .accept_group
+            = f.submit "Accept Merge Request", :class => "btn small success accept_merge_request"
+            - unless @project.root_ref? @merge_request.source_branch 
+              .remove_branch_holder
+                = label_tag :should_remove_source_branch, :class => "checkbox" do 
+                  = check_box_tag :should_remove_source_branch
+                  Remove source-branch
+          .clearfix
+             
 
   .automerge_widget.cannot_be_merged{:style => "display:none"}
     .alert.alert-info
@@ -108,7 +120,7 @@
       current_state: "#{@merge_request.human_state}"
     });
 
-    $(".accept_merge_request").live("ajax:beforeSend", function() {
+    $(".edit_merge_request").live("ajax:beforeSend", function() {
       $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
     })
   })
