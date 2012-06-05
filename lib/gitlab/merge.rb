@@ -37,7 +37,7 @@ module Gitlab
           unless project.satellite.exists?
             raise "You should run: rake gitlab:app:enable_automerge"
           end
-
+          
           project.satellite.clear
 
           Dir.chdir(project.satellite.path) do
@@ -48,6 +48,12 @@ module Gitlab
             merge_repo.git.sh "git config user.email \"#{user.email}\""
             merge_repo.git.sh "git checkout -b #{merge_request.target_branch} origin/#{merge_request.target_branch}"
             output = merge_repo.git.pull({}, "--no-ff", "origin", merge_request.source_branch)
+
+            #remove source-branch
+            if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch)
+              merge_repo.git.sh "git push origin :#{merge_request.source_branch}"
+            end
+
             yield(merge_repo, output)
           end
         end

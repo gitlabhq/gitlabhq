@@ -114,5 +114,9 @@ module Project::RepositoryTrait
     def root_ref 
       default_branch || "master"
     end
+
+    def root_ref? branch
+      root_ref == branch
+    end
   end
 end
