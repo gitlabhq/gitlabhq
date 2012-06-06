@@ -5,9 +5,9 @@ sudo apt-get upgrade
 
 sudo apt-get install -y git git-core wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline-gplv2-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server python-dev python-pip
 
-wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
-tar xfvz ruby-1.9.2-p290.tar.gz
-cd ruby-1.9.2-p290
+wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
+tar xfvz ruby-1.9.3-p194.tar.gz
+cd ruby-1.9.3-p194
 ./configure
 make
 sudo make install
@@ -30,7 +30,7 @@ sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 cd /home/git
 sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite
 
-sudo -u git -H /home/git/gitolite/src/gl-system-install
+sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; /home/git/gitolite/src/gl-system-install"
 sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
 sudo chmod 777 /home/git/gitlab.pub
 
