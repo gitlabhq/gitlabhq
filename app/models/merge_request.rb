@@ -1,6 +1,8 @@
 require File.join(Rails.root, "app/models/commit")
 
 class MergeRequest < ActiveRecord::Base
+  include Upvote
+
   UNCHECKED = 1
   CAN_BE_MERGED = 2
   CANNOT_BE_MERGED = 3
@@ -126,12 +128,6 @@ class MergeRequest < ActiveRecord::Base
 
   def closed_event
     self.project.events.where(:target_id => self.id, :target_type => "MergeRequest", :action => Event::Closed).last
-  end
-
-
-  # Return the number of +1 comments (upvotes)
-  def upvotes
-    notes.select(&:upvote?).size
   end
 
   def commits

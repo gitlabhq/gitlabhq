@@ -1,4 +1,6 @@
 class Issue < ActiveRecord::Base
+  include Upvote
+
   belongs_to :project
   belongs_to :milestone
   belongs_to :author, :class_name => "User"
@@ -52,11 +54,6 @@ class Issue < ActiveRecord::Base
 
   def new?
     today? && created_at == updated_at
-  end
-
-  # Return the number of +1 comments (upvotes)
-  def upvotes
-    notes.select(&:upvote?).size
   end
 end
 # == Schema Information
