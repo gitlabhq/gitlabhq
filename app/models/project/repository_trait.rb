@@ -47,8 +47,11 @@ module Project::RepositoryTrait
       File.open(hook_file, 'w') do |f|
         f.write(content)
       end
-
-      File.chmod(0775, hook_file)
+      
+      begin #if gitolite and gitlab running under different users this can cause an 500 error
+        File.chmod(0775, hook_file) 
+      rescue 
+      end
     end
 
     def has_post_receive_file?
