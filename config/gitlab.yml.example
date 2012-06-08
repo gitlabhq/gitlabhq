@@ -10,7 +10,7 @@ email:
   # Value can be http or https
   protocol: http # or https
 
-# Git Hosting congiguration
+# Git Hosting configuration
 git_host:
   system: gitolite
   admin_uri: git@localhost:gitolite-admin
