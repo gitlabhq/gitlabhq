@@ -1,4 +1,4 @@
-var MergeRequest = { 
+var MergeRequest = {
   diffs_loaded: false,
   commits_loaded: false,
   opts: false,
@@ -15,24 +15,41 @@ var MergeRequest = {
         }, "json");
       }
 
-      $(".nav-tabs a").live("click", function() { 
+      $(".nav-tabs a").live("click", function() {
         $(".nav-tabs a").parent().removeClass("active");
         $(this).parent().addClass("active");
       });
 
-      $(".nav-tabs a.merge-notes-tab").live("click", function(e) { 
+      $(".nav-tabs a.merge-notes-tab").live("click", function(e) {
         $(".merge-request-diffs").hide();
         $(".merge_request_notes").show();
         e.preventDefault();
       });
 
-      $(".nav-tabs a.merge-diffs-tab").live("click", function(e) { 
-        if(!MergeRequest.diffs_loaded) { 
-          MergeRequest.loadDiff(); 
+      $(".nav-tabs a.merge-diffs-tab").live("click", function(e) {
+        if(!MergeRequest.diffs_loaded) {
+          MergeRequest.loadDiff();
         }
         $(".merge_request_notes").hide();
         $(".merge-request-diffs").show();
         e.preventDefault();
+      });
+
+      $(".line_note_link, .line_note_reply_link").live("click", function(e) {
+        var form = $(".per_line_form");
+        $(this).parent().parent().after(form);
+        form.find("#note_line_code").val($(this).attr("line_code"));
+        form.show();
+        return false;
+      });
+
+      $(".edit_merge_request").live("ajax:beforeSend", function() {
+        $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+      });
+
+      $(".mr_show_all_commits").live("click", function(e) {
+          MergeRequest.showAllCommits();
+          e.preventDefault();
       });
     },
 
@@ -44,22 +61,22 @@ var MergeRequest = {
 
 
   loadDiff:
-    function() { 
+    function() {
       $(".dashboard-loader").show();
       $.ajax({
         type: "GET",
         url: $(".merge-diffs-tab").attr("data-url"),
         beforeSend: function(){ $('.status').addClass("loading")},
-        complete: function(){ 
+        complete: function(){
           MergeRequest.diffs_loaded = true;
           $(".merge_request_notes").hide();
           $('.status').removeClass("loading");
         },
         dataType: "script"});
-    }, 
+    },
 
-  showAllCommits: 
-    function() { 
+  showAllCommits:
+    function() {
       $(".first_mr_commits").remove();
       $(".all_mr_commits").removeClass("hide");
     },
@@ -69,4 +86,4 @@ var MergeRequest = {
         $(".automerge_widget").hide();
         $(".automerge_widget.already_cannot_be_merged").show();
     }
-}
+};
