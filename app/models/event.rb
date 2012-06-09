@@ -1,4 +1,6 @@
 class Event < ActiveRecord::Base
+  include PushEvent
+
   default_scope where("author_id IS NOT NULL")
 
   Created   = 1
@@ -8,8 +10,6 @@ class Event < ActiveRecord::Base
   Pushed    = 5
   Commented = 6
   Merged    = 7
-
-  does "event/push"
 
   belongs_to :project
   belongs_to :target, :polymorphic => true

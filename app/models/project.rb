@@ -1,13 +1,15 @@
 require "grit"
 
 class Project < ActiveRecord::Base
+  include Repository
+  include GitPush
+  include Authority
+  include Team
+
+  #
+  # Relations
+  # 
   belongs_to :owner, :class_name => "User"
-
-  does "project/validations"
-  does "project/repository"
-  does "project/permissions"
-  does "project/hooks"
-
   has_many :users,          :through => :users_projects
   has_many :events,         :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
@@ -21,8 +23,14 @@ class Project < ActiveRecord::Base
   has_many :wikis,          :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
 
+  # 
+  # Protected attributes
+  #
   attr_protected :private_flag, :owner_id
 
+  # 
+  # Scopes
+  #
   scope :public_only, where(:private_flag => false)
   scope :without_user, lambda { |user|  where("id not in (:ids)", :ids => user.projects.map(&:id) ) }
 
@@ -30,12 +38,55 @@ class Project < ActiveRecord::Base
     joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
   end
 
-  def self.access_options
-    UsersProject.access_roles
-  end
-
   def self.search query
     where("name like :query or code like :query or path like :query", :query => "%#{query}%")
+  end
+
+  #
+  # Validations
+  #
+  validates :name,
+            :uniqueness => true,
+            :presence => true,
+            :length   => { :within => 0..255 }
+
+  validates :path,
+            :uniqueness => true,
+            :presence => true,
+            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed" },
+            :length   => { :within => 0..255 }
+
+  validates :description,
+            :length   => { :within => 0..2000 }
+
+  validates :code,
+            :presence => true,
+            :uniqueness => true,
+            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed"  },
+            :length   => { :within => 1..255 }
+
+  validates :owner, :presence => true
+  validate :check_limit
+  validate :repo_name
+
+  def check_limit
+    unless owner.can_create_project?
+      errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
+    end
+  rescue
+    errors[:base] << ("Cant check your ability to create project")
+  end
+
+  def repo_name
+    if path == "gitolite-admin"
+      errors.add(:path, " like 'gitolite-admin' is not allowed")
+    end
+  end
+  
+  def self.access_options
+    UsersProject.access_roles
   end
 
   def to_param
@@ -44,15 +95,6 @@ class Project < ActiveRecord::Base
 
   def web_url
     [GIT_HOST['host'], code].join("/")
-  end
-
-  def team_member_by_name_or_email(email = nil, name = nil)
-    user = users.where("email like ? or name like ?", email, name).first
-    users_projects.find_by_user_id(user.id) if user
-  end
-
-  def team_member_by_id(user_id)
-    users_projects.find_by_user_id(user_id)
   end
 
   def common_notes
