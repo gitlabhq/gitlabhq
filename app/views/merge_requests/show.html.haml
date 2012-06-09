@@ -119,4 +119,7 @@
       check_enable: #{@merge_request.state == MergeRequest::UNCHECKED ? "true" : "false"},
       current_state: "#{@merge_request.human_state}"
     });
+    $(".edit_merge_request").live("ajax:beforeSend", function() {
+      $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+    });
   })

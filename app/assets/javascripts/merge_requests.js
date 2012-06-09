@@ -43,10 +43,6 @@ var MergeRequest = {
         return false;
       });
 
-      $(".edit_merge_request").live("ajax:beforeSend", function() {
-        $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
-      });
-
       $(".mr_show_all_commits").live("click", function(e) {
           MergeRequest.showAllCommits();
           e.preventDefault();
