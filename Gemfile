@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem "rails", "3.2.3"
+gem "rails", "3.2.5"
 
 gem "sqlite3"
 gem "mysql2"
@@ -8,7 +8,6 @@ gem "devise", "~> 1.5"
 gem "stamp"
 gem "kaminari"
 gem "haml-rails"
-gem "jquery-rails"
 gem "grit", :git => "https://github.com/gitlabhq/grit.git", :ref => "9536f306645f2d6b1f993ae02d3a29893ba8881f"
 gem "gitolite", :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
 gem "carrierwave"
@@ -29,18 +28,20 @@ gem "httparty"
 gem "charlock_holmes"
 gem "foreman"
 gem "omniauth-ldap"
-gem 'bootstrap-sass', "2.0.3"
+gem 'bootstrap-sass', "2.0.3.1"
 gem "colored"
 gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'modularity'
 gem 'resque_mailer'
 gem 'chosen-rails'
-gem 'modernizr'
-gem 'graphael-rails'
-gem 'jquery-ui-rails'
+
+gem "jquery-rails",    "2.0.2"
+gem "jquery-ui-rails", "0.5.0"
+gem "modernizr",       "2.5.3"
+gem "graphael-rails",  "0.1.4"
 
 group :assets do
-  gem "sass-rails",   "3.2.3"
+  gem "sass-rails",   "3.2.5"
   gem "coffee-rails", "3.2.2"
   gem "uglifier",     "1.0.3"
   gem "therubyracer"
