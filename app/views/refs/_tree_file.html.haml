@@ -21,8 +21,7 @@
             = preserve do
               = raw file.colorize(options: { linenos: 'True'})
         - else
-          %h3
-            %center Empty file
+          %h4.nothing_here_message Empty file
   - elsif file.image?
     .view_file_content_image
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}

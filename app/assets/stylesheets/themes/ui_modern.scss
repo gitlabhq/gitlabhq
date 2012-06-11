@@ -1,0 +1,143 @@
+/**
+ * This file represent some UI that can be changed 
+ * during web app restyle or theme select. 
+ * 
+ * Next items should be placed there
+ * - link colors
+ * - header styles
+ * - main menu styles
+ *
+ */
+.ui_modern { 
+
+  background:#eee;
+
+  > .container { 
+    background:#FFF;
+    border: 1px solid #ccc;
+    padding:20px;
+    margin-top:30px;
+    -moz-box-shadow: 0 0 1px 1px #E3E3E3;
+    -webkit-box-shadow: 0 0 1px 1px #E3E3E3;
+    box-shadow: 0 0 1px 1px #E3E3E3;
+  }
+
+  nav.main_menu { 
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 35px;
+    @include border-radius(0px);
+
+    a.current { 
+      border-bottom:none;
+    }
+  }
+
+  .commit-box, .issue_form_box {
+    margin-top: 0px;
+  }
+
+  .ui-box { 
+    @include border-radius(0px);
+  }
+
+  /*
+   * Common styles
+   *
+   */
+  a {
+    color: $link_color;
+    &:hover { 
+      text-decoration:none; 
+      color: $blue_link;
+    }
+  }
+
+
+  /*
+   *  Application Header
+   *
+   */
+  header { 
+    width:100%;
+    padding:0;
+    margin:0;
+    top:1px;
+    left:0;
+    background: #FFF; /* for non-css3 browsers */
+    z-index:10;
+    height:100px;
+
+    .app_logo {
+      float:left;
+      position:relative;
+      top:-5px;
+
+      a { 
+        float:left;
+
+        h1 { 
+
+          left: -30px;
+          position: relative;
+          text-indent:-9999px;
+          width:112px;
+          background: url('logo_text_tr.png') no-repeat 0px 0;
+          float:left;
+          font-size:20px;
+          line-height:36px;
+          font-weight:bold;
+          color:#aaa;
+          text-shadow: 0 1px 1px #FFF;
+          padding-left:50px;
+        }
+      }
+    }
+    .container { 
+      .top_panel_content { 
+        margin:auto;
+        position:relative;
+        padding:15px 0;
+      }
+    }
+
+    .project_name {
+      float:left;
+      margin:0;
+      margin-right:30px;
+      font-size:20px;
+      line-height:36px;
+      font-weight:bold;
+      color:$style_color;
+      text-shadow: 0 1px 1px #FFF;
+    }
+
+    .fbtn { 
+      float: right;
+      margin-right:10px;
+      .btn { 
+        margin-left:8px;
+      }
+    }
+
+    .search { 
+      float: right;
+      margin-right: 55px;
+
+      .search-input { 
+        width:130px;
+        background-image: url("icon-search.png");
+        background-repeat: no-repeat;
+        background-position: 10px;
+        padding-left:25px;
+        @include border-radius(5px);
+        border:1px solid #ccc;
+      }
+    }
+  }
+  /*
+   *  End of Application Header
+   *
+   */
+}

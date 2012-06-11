@@ -74,12 +74,17 @@ $hover: #FDF5D9;
  * - main menu styles
  *
  */
-@import "ui_basic.scss";
+@import "themes/ui_basic.scss";
 
 /**
  * UI mars theme
  */
-@import "ui_mars.scss";
+@import "themes/ui_mars.scss";
+
+/**
+ * UI Modern theme
+ */
+@import "themes/ui_modern.scss";
 
 /**
  * Gitlab bootstrap.
