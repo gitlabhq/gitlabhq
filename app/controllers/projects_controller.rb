@@ -29,17 +29,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(params[:project])
-    @project.owner = current_user
-
-    Project.transaction do
-      @project.save!
-      @project.users_projects.create!(:project_access => UsersProject::MASTER, :user => current_user)
-
-      # when project saved no team member exist so
-      # project repository should be updated after first user add
-      @project.update_repository
-    end
+    @project = Project.create_by_user(params[:project], current_user)
 
     respond_to do |format|
       if @project.valid?

@@ -42,6 +42,25 @@ class Project < ActiveRecord::Base
     where("name like :query or code like :query or path like :query", :query => "%#{query}%")
   end
 
+  def self.create_by_user(params, user)
+    project = Project.new params
+
+    Project.transaction do
+      project.owner = user
+
+      project.save!
+
+      # Add user as project master
+      project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
+
+      # when project saved no team member exist so
+      # project repository should be updated after first user add
+      project.update_repository
+    end
+
+    project
+  end
+
   #
   # Validations
   #

@@ -31,7 +31,6 @@ gem "omniauth-ldap"
 gem 'bootstrap-sass', "2.0.3.1"
 gem "colored"
 gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
-gem 'modularity'
 gem 'resque_mailer'
 gem 'chosen-rails'
 

@@ -403,7 +403,7 @@ form {
   margin-bottom: 40px;
   @include round-borders-all(4px);
   @include shade;
-  border-color:#ddd;
+  border-color:#CCC;
 
   ul { 
     margin:0;
@@ -522,3 +522,8 @@ ul.breadcrumb {
   }
 }
 
+.nothing_here_message { 
+  text-align:center;
+  padding:20px;
+  color:#777;
+}

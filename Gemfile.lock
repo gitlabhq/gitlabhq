@@ -187,7 +187,6 @@ GEM
     mime-types (1.18)
     modernizr (2.5.3)
       sprockets (~> 2.0)
-    modularity (0.6.1)
     multi_json (1.3.6)
     multi_xml (0.5.1)
     mysql2 (0.3.11)
@@ -368,7 +367,6 @@ DEPENDENCIES
   letter_opener
   linguist (~> 1.0.0)!
   modernizr (= 2.5.3)
-  modularity
   mysql2
   omniauth-ldap
   pry

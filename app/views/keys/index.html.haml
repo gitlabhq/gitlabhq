@@ -12,3 +12,8 @@
       %th
   - @keys.each do |key|
     = render(:partial => 'show', :locals => {:key => key})
+  - if @keys.blank? 
+    %tr
+      %td{:colspan => 3}
+        %h3.nothing_here_message There are no SSH keys with access to your account.
+
