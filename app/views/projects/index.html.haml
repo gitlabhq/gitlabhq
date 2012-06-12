@@ -12,8 +12,7 @@
       - if @events.any?
         = render @events
       - else
-        .padded
-          %strong.cgray Projects activity will be displayed here
+        %h4.nothing_here_message Projects activity will be displayed here
     .side
       .projects_box
         %h5

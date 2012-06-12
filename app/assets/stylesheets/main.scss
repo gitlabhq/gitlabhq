@@ -64,14 +64,28 @@ $hover: #FDF5D9;
   border-radius: $radius;
 }
 
+
+
+/**
+ * Header of application. 
+ * Contain application logo, search panel, profile icon
+ */
+@import "header.scss";
+
+/**
+ * Navigation menu of application. 
+ * Panel with links to pages depends on project, profile or admin area
+ */
+@import "nav.scss";
+
 /**
  * This file represent some UI that can be changed 
  * during web app restyle or theme select. 
  * 
  * Next items should be placed there
- * - link colors
- * - header styles
- * - main menu styles
+ * - link, button colors
+ * - header restyles
+ * - main menu restyles
  *
  */
 @import "themes/ui_basic.scss";

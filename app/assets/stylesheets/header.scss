@@ -1,0 +1,226 @@
+/*
+ *  Application Header
+ *
+ */
+header { 
+  width:100%;
+  padding:0;
+  margin:0;
+  top:1px;
+  left:0;
+  background: #F1F1F1; /* for non-css3 browsers */
+  border-bottom: 1px solid #ccc; 
+  box-shadow: 0 -1px 0 white inset;
+  -moz-box-shadow: 0 -1px 0 white inset;
+  -webkit-box-shadow: 0 -1px 0 white inset;
+  z-index:10;
+  height:60px;
+
+  /**
+   * 
+   * Logo holder
+   *
+   */
+  .app_logo {
+    width:230px;
+    float:left;
+    position:relative;
+    top:-5px;
+
+    a { 
+      float:left;
+
+      h1 { 
+        text-indent:-9999px;
+        width:102px;
+        background: url('logo_text.png') no-repeat 0px -3px;
+        float:left;
+        margin-left:5px;
+        font-size:20px;
+        line-height:36px;
+        font-weight:bold;
+        color:#aaa;
+        text-shadow: 0 1px 1px #FFF;
+        padding-left:50px;
+      }
+    }
+    .separator {
+      margin-left:20px;
+      float: left;
+      height: 60px;
+      width: 1px;
+      background: white;
+      border-left: 1px solid #DDD;
+      margin-top: -10px;
+    }
+  }
+  .container { 
+    .top_panel_content { 
+      margin:auto;
+      position:relative;
+      padding:15px 0;
+    }
+  }
+
+  /**
+   * 
+   * Project / Area name
+   *
+   */
+  .project_name {
+    float:left;
+    margin:0;
+    margin-right:30px;
+    font-size:20px;
+    line-height:36px;
+    font-weight:bold;
+    color:$style_color;
+    text-shadow: 0 1px 1px #FFF;
+  }
+
+  .fbtn { 
+    float: right;
+    margin-right:10px;
+    .btn { 
+      margin-left:8px;
+    }
+  }
+
+
+  /**
+   * 
+   * Search box
+   *
+   */
+  .search { 
+    float: right;
+    margin-right: 55px;
+
+    .search-input { 
+      width:130px;
+      background-image: url("icon-search.png");
+      background-repeat: no-repeat;
+      background-position: 10px;
+      padding-left:25px;
+      @include border-radius(5px);
+      border:1px solid #ccc;
+    }
+  }
+
+  /**
+   * 
+   * Account box
+   *
+   */
+  .account-box {
+    position: absolute;
+    right: 0;
+    top: 13px;
+    z-index: 10000;
+    width: 128px;
+    font-size: 11px;
+    float: right;
+    display: block;
+    cursor: pointer;
+    img {
+      border-radius: 4px;
+      right: 0px;
+      position: absolute;
+      width: 33px;
+      height: 33px;
+      display: block;
+      top: 0;
+      &:after {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        float: right;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 0;
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.15)), to(rgba(0, 0, 0, 0.25))), -webkit-gradient(linear, left top, right bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.5, rgba(255, 255, 255, 0.1)), color-stop(0.501, rgba(255, 255, 255, 0)), color-stop(1, rgba(255, 255, 255, 0)));
+        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.25)), -moz-linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+        background: linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.25)), linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
+        -webkit-background-origin: border-box;
+        -moz-background-origin: border;
+  background-origin: border-box; } } }
+
+  .account-box {
+    &.hover {
+    height: 138px; }
+    &:hover > .account-links {
+  display: block; } }
+
+  .account-links {
+    background: #79C3E0;
+    display: none;
+    border-radius: 5px;
+    width: 100px;
+    margin-top: 0;
+    float: right;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    position: relative;
+    &:before {
+      content: ".";
+      width: 0;
+      height: 0;
+      position: absolute;
+      border: 5px solid transparent;
+      border-color: rgba(255, 255, 255, 0);
+      border-bottom-color: #333;
+      text-indent: -9999px;
+      top: -10px;
+      line-height: 0;
+      right: 10px;
+    z-index: 10; }
+    background: #333;
+    display: none;
+    z-index: 100000;
+    border-radius: 5px;
+    width: 100px;
+    position: absolute;
+    right: 10px;
+    top: 46px;
+    margin-top: 0;
+    float: right;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    a {
+      color: #EEE;
+      padding: 6px 10px;
+      display: block;
+      text-shadow: none;
+      border-bottom: 1px solid #555;
+      &:hover {
+        color:#eee;
+        background: #444;
+      }
+    }
+  }
+
+  .account-box.hover .arrow-up {
+    top: 41px;
+    right: 6px;
+    position: absolute; }
+
+  .account-links a {
+    &:first-child {
+      -webkit-border-top-left-radius: 5px;
+      -webkit-border-top-right-radius: 5px;
+      -moz-border-radius-topleft: 5px;
+      -moz-border-radius-topright: 5px;
+      border-top-left-radius: 5px;
+    border-top-right-radius: 5px; }
+    &:last-child {
+      -webkit-border-bottom-right-radius: 5px;
+      -webkit-border-bottom-left-radius: 5px;
+      -moz-border-radius-bottomright: 5px;
+      -moz-border-radius-bottomleft: 5px;
+      border-bottom-right-radius: 5px;
+      border-bottom-left-radius: 5px;
+  border-bottom: 0; } }
+}
+

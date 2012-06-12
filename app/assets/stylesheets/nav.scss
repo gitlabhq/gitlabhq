@@ -1,0 +1,93 @@
+/*
+ *  Main Menu of Application
+ *
+ */
+nav.main_menu { 
+  border-radius: 4px;
+  margin: auto;
+  margin:30px 0;
+  background:#eee;
+  border:1px solid #bbb;
+  height:38px;
+  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+  background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+  background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+  background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+  @include shade;
+  .count { 
+    position: relative;
+	  top: -1px;
+	  display: inline-block;
+	  height: 15px;
+	  margin: 0 0 0 5px;
+	  padding: 0 8px 1px 8px;
+	  height: auto;
+	  font-size: 0.82em;
+	  line-height: 14px;
+	  text-align: center;
+	  color: #777;
+	  background: #f2f2f2;
+	  border-top: 1px solid #CCC;
+	  border-radius: 8px;
+	 -moz-border-radius: 8px;
+  }
+  .label { 
+    background:$hover;
+    text-shadow:none;
+    color:$style_color;
+  }
+  a { 
+    // Landscape phone to portrait tablet
+    @media (max-width: 1080px) { min-width:35px; }
+    // Portrait tablet to landscape and desktop
+    @media (min-width: 1080px) and (max-width: 1200px) { min-width:40px; }
+    // Large desktop
+    @media (min-width: 1200px) { min-width:55px; }
+
+    text-align:center;
+    font-weight:bold;
+    &:first-child{ 
+      -webkit-border-top-left-radius: 4px;
+      -webkit-border-bottom-left-radius: 4px;
+      -moz-border-radius-topleft: 4px;
+      -moz-border-radius-bottomleft: 4px;
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+      border-left: 0;
+    }
+    padding: 10px 25px;
+    display: inline-block;
+    color: $style_color;
+    position: relative;
+    margin: 0;
+    float:left;
+    text-shadow:0 1px 1px white;
+    border-right: 1px solid #DDD;
+    border-left: 1px solid #EEE;
+
+    &.home { 
+      background: url(home_icon.PNG) no-repeat center center;
+      text-indent:-9999px;
+      //min-width:40px;
+      img { 
+        position:relative;
+        top:4px;
+      }
+    }
+    &.current { 
+      background-color:#D5D5D5;
+      border-bottom: 2px solid #474D57;
+      border-right: 1px solid #BBB;
+      border-left: 1px solid #BBB;
+      border-radius: 0 0 1px 1px;
+      &:first-child{ 
+        border-bottom:none;
+      }
+    }
+  }
+}
+/*
+ *  End of Main Menu
+ *
+ */
+

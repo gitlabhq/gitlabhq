@@ -9,37 +9,21 @@
  *
  */
 .ui_modern { 
-
-  background:#eee;
-
-  > .container { 
-    background:#FFF;
-    border: 1px solid #ccc;
-    padding:20px;
-    margin-top:30px;
-    -moz-box-shadow: 0 0 1px 1px #E3E3E3;
-    -webkit-box-shadow: 0 0 1px 1px #E3E3E3;
-    box-shadow: 0 0 1px 1px #E3E3E3;
-  }
-
   nav.main_menu { 
-    position: absolute;
-    width: 100%;
-    left: 0;
-    top: 35px;
+    background:none;
+    box-shadow:none;
     @include border-radius(0px);
+    border:none;
+    border-bottom:2px solid #456;
 
-    a.current { 
-      border-bottom:none;
+    a { 
+      border:none;
+
+      &.current {
+        border-bottom:2px solid #f90;
+        background-color:#fff;
+      }
     }
-  }
-
-  .commit-box, .issue_form_box {
-    margin-top: 0px;
-  }
-
-  .ui-box { 
-    @include border-radius(0px);
   }
 
   /*
@@ -47,97 +31,30 @@
    *
    */
   a {
-    color: $link_color;
+    color: #FA8B2A;
     &:hover { 
       text-decoration:none; 
-      color: $blue_link;
+      color: #f90;
     }
   }
 
+  .btn { 
+    &.primary, 
+    &.btn-primary { 
+      border-color:#C60;
+      background:#D70;
 
-  /*
-   *  Application Header
-   *
-   */
-  header { 
-    width:100%;
-    padding:0;
-    margin:0;
-    top:1px;
-    left:0;
-    background: #FFF; /* for non-css3 browsers */
-    z-index:10;
-    height:100px;
-
-    .app_logo {
-      float:left;
-      position:relative;
-      top:-5px;
-
-      a { 
-        float:left;
-
-        h1 { 
-
-          left: -30px;
-          position: relative;
-          text-indent:-9999px;
-          width:112px;
-          background: url('logo_text_tr.png') no-repeat 0px 0;
-          float:left;
-          font-size:20px;
-          line-height:36px;
-          font-weight:bold;
-          color:#aaa;
-          text-shadow: 0 1px 1px #FFF;
-          padding-left:50px;
-        }
-      }
-    }
-    .container { 
-      .top_panel_content { 
-        margin:auto;
-        position:relative;
-        padding:15px 0;
-      }
-    }
-
-    .project_name {
-      float:left;
-      margin:0;
-      margin-right:30px;
-      font-size:20px;
-      line-height:36px;
-      font-weight:bold;
-      color:$style_color;
-      text-shadow: 0 1px 1px #FFF;
-    }
-
-    .fbtn { 
-      float: right;
-      margin-right:10px;
-      .btn { 
-        margin-left:8px;
-      }
-    }
-
-    .search { 
-      float: right;
-      margin-right: 55px;
-
-      .search-input { 
-        width:130px;
-        background-image: url("icon-search.png");
-        background-repeat: no-repeat;
-        background-position: 10px;
-        padding-left:25px;
-        @include border-radius(5px);
-        border:1px solid #ccc;
+      &:hover { 
+        background:#F90;
       }
     }
   }
-  /*
-   *  End of Application Header
-   *
-   */
+
+  .alert { 
+    &.alert-info { 
+      border-color:#FDA;
+      background:#FED;
+      color:#D70;
+    }
+  }
 }
