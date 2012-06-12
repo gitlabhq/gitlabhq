@@ -402,8 +402,7 @@ form {
 .ui-box { 
   margin-bottom: 40px;
   @include round-borders-all(4px);
-  @include shade;
-  border-color:#DDD;
+  border-color: #CCC;
 
   ul { 
     margin:0;
@@ -411,10 +410,13 @@ form {
 
   h5, .title { 
     padding: 0 10px;
-    background:#f5f5f5;
-    border-bottom: 1px solid #eee;
     @include round-borders-top(4px);
-    border-top:none;
+    border-bottom: 1px solid #bbb;
+    background:#eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
     form { 
       padding:9px 0;
@@ -433,10 +435,13 @@ form {
   }
 
   .bottom { 
-    background:#f5f5f5;
-    border-top: 1px solid #eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
     @include round-borders-bottom(4px);
     border-bottom:none;
+    border-top: 1px solid #bbb;
   }
 
   &.padded { 
