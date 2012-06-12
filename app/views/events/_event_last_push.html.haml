@@ -1,4 +1,4 @@
-- if event && event.branch_name && event.project.merge_requests_enabled
+- if event && event.branch_name
   .event_lp
     %div
       = image_tag gravatar_icon(event.author_email), :class => "avatar"
@@ -12,5 +12,6 @@
         = time_ago_in_words(event.created_at)
         ago.
 
-    = link_to new_mr_path_from_push_event(event), :title => "New Merge Request", :class => "btn small padded primary" do
-      Merge Request
+      - if event.project.merge_requests_enabled
+        = link_to new_mr_path_from_push_event(event), :title => "New Merge Request", :class => "btn small padded primary" do
+          Create Merge Request
