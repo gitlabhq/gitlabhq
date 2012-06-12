@@ -7,7 +7,7 @@ describe "Last Push widget" do
     @project = Factory :project, :owner => @user
     @project.add_access(@user, :read)
     create_push_event
-    visit projects_path
+    visit dashboard_path
   end
 
   it "should display last push widget with link to merge request page" do 

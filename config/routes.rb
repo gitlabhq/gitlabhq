@@ -33,6 +33,10 @@ Gitlab::Application.routes.draw do
   end
 
   get "errors/githost"
+
+  #
+  # Profile Area
+  #
   get "profile/password", :to => "profile#password"
   put "profile/password", :to => "profile#password_update"
   get "profile/token", :to => "profile#token"
@@ -41,10 +45,14 @@ Gitlab::Application.routes.draw do
   get "profile/design", :to => "profile#design"
   put "profile/update", :to => "profile#update"
 
+  #
+  # Dashboard Area
+  #
+  get "dashboard", :to => "dashboard#index"
   get "dashboard/issues", :to => "dashboard#issues"
   get "dashboard/merge_requests", :to => "dashboard#merge_requests"
 
-  resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create, :index]
+  resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create]
   resources :keys
 
   devise_for :users, :controllers => { :omniauth_callbacks => :omniauth_callbacks }
@@ -145,5 +153,5 @@ Gitlab::Application.routes.draw do
     end
     resources :notes, :only => [:index, :create, :destroy]
   end
-  root :to => "projects#index"
+  root :to => "dashboard#index"
 end

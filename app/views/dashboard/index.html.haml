@@ -34,6 +34,13 @@
                 &rarr;
         .bottom= paginate @projects, :theme => "gitlab"
 
+      %hr
+      %div
+        %span.rss-icon
+          = link_to dashboard_path(:atom, { :private_token => current_user.private_token }) do
+            = image_tag "rss_ui.png", :title => "feed"
+            %strong News Feed
+
 - else
   %h3.nothing_here_message There are no projects you have access to.
   %br

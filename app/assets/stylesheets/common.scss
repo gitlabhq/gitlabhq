@@ -659,6 +659,10 @@ li.note {
     width:24px;
     vertical-align:top;
   }
+
+  strong { 
+    line-height:24px;
+  }
 }
 
 .automerge_widget { 
@@ -741,7 +745,7 @@ li.note {
  */
 .event_lp { 
   @extend .alert-info;
-  margin-bottom:15px;
+  margin-bottom:20px;
   padding:8px;
   border-style: solid;
   border-width: 1px;

@@ -3,43 +3,9 @@ require 'spec_helper'
 describe "Projects" do
   before { login_as :user }
 
-  describe "GET /projects" do
-    before do
-      @project = Factory :project, :owner => @user
-      @project.add_access(@user, :read)
-      visit projects_path
-    end
-
-    it "should be on projects page" do
-      current_path.should == projects_path
-    end
-
-    it "should have link to new project" do
-      page.should have_content("New Project")
-    end
-
-    it "should have project" do
-      page.should have_content(@project.name)
-    end
-
-    it "should render projects atom feed via private token" do
-      logout
-
-      visit projects_path(:atom, :private_token => @user.private_token)
-      page.body.should have_selector("feed title")
-    end
-
-    it "should not render projects page via private token" do
-      logout
-
-      visit projects_path(:private_token => @user.private_token)
-      current_path.should == new_user_session_path
-    end
-  end
-
   describe "GET /projects/new" do
     before do
-      visit projects_path
+      visit root_path
       click_link "New Project"
     end
 

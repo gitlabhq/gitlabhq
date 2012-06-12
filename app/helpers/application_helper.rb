@@ -60,8 +60,9 @@ module ApplicationHelper
   def search_autocomplete_source
     projects = current_user.projects.map{ |p| { :label => p.name, :url => project_path(p) } }
     default_nav = [
+      { :label => "Profile", :url => profile_path },
       { :label => "Keys", :url => keys_path },
-      { :label => "Projects", :url => projects_path },
+      { :label => "Dashboard", :url => root_path },
       { :label => "Admin", :url => admin_root_path }
     ]
 

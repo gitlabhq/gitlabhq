@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-describe "Projects" do
-  describe "GET /projects" do
-    it { projects_path.should be_allowed_for :admin }
-    it { projects_path.should be_allowed_for :user }
-    it { projects_path.should be_denied_for :visitor }
+describe "Projects Security" do
+  describe "GET /" do
+    it { root_path.should be_allowed_for :admin }
+    it { root_path.should be_allowed_for :user }
+    it { root_path.should be_denied_for :visitor }
   end
 
   describe "GET /projects/new" do
-    it { projects_path.should be_allowed_for :admin }
-    it { projects_path.should be_allowed_for :user }
-    it { projects_path.should be_denied_for :visitor }
+    it { new_project_path.should be_allowed_for :admin }
+    it { new_project_path.should be_allowed_for :user }
+    it { new_project_path.should be_denied_for :visitor }
   end
 
   describe "Project" do
