@@ -13,7 +13,10 @@ describe IssueObserver do
 
     it 'is called when an issue is created' do
       subject.should_receive(:after_create)
-      Factory.create(:issue, :project => Factory.create(:project))
+
+      Issue.observers.enable :issue_observer do
+        Factory.create(:issue, :project => Factory.create(:project))
+      end
     end
 
     it 'sends an email to the assignee' do
@@ -40,8 +43,11 @@ describe IssueObserver do
     it 'is called when an issue is changed' do
       changed = Factory.create(:issue, :project => Factory.create(:project))
       subject.should_receive(:after_update)
-      changed.description = 'I changed'
-      changed.save
+
+      Issue.observers.enable :issue_observer do
+        changed.description = 'I changed'
+        changed.save
+      end
     end
 
     context 'a reassigned email' do

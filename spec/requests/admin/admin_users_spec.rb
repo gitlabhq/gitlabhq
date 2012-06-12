@@ -40,19 +40,23 @@ describe "Admin::Users" do
     end
 
     it "should call send mail" do
-      Notify.should_receive(:new_user_email).and_return(stub(:deliver => true))
-      click_button "Save"
+      User.observers.enable :mailer_observer do
+        Notify.should_receive(:new_user_email).and_return(stub(:deliver => true))
+        click_button "Save"
+      end
     end
 
     it "should send valid email to user with email & password" do
-      with_resque do
-        click_button "Save"
+      User.observers.enable :mailer_observer do
+        with_resque do
+          click_button "Save"
+        end
+        user = User.last
+        email = ActionMailer::Base.deliveries.last
+        email.subject.should have_content("Account was created")
+        email.body.should have_content(user.email)
+        email.body.should have_content(@password)
       end
-      user = User.last
-      email = ActionMailer::Base.deliveries.last
-      email.subject.should have_content("Account was created")
-      email.body.should have_content(user.email)
-      email.body.should have_content(@password)
     end
   end
 
