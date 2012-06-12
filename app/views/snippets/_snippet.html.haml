@@ -1,6 +1,12 @@
 %tr
   %td
     %a{:href => project_snippet_path(snippet.project, snippet)}
-      = truncate(snippet.title, :length => 60)
-      %span.right.cgray
-        = snippet.file_name
+      %strong= truncate(snippet.title, :length => 60)
+  %td
+    = snippet.file_name
+  %td
+    %span.cgray
+      - if snippet.expires_at 
+        = snippet.expires_at.to_date.to_s(:short)
+      - else
+        Never

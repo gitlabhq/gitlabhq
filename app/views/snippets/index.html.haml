@@ -8,5 +8,14 @@
     %br
     To add new snippet - click on button.
 
-- unless @snippets.fresh.empty?
-  %table.zebra-striped.borders= render @snippets.fresh
+%table.admin-table
+  %thead
+    %tr
+      %th Title
+      %th File Name
+      %th Expires At
+  = render @snippets.fresh
+  - if @snippets.fresh.empty?
+    %tr
+      %td{:colspan => 3}
+        %h3.nothing_here_message Nothing here.

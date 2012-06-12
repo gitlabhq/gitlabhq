@@ -13,6 +13,8 @@
       .view_file_header
         %i.icon-file
         %strong= @snippet.file_name
+        %span.options
+          = link_to "raw", raw_project_snippet_path(@project, @snippet), :class => "btn very_small", :target => "_blank"
       .view_file_content
         %div{:class => current_user.dark_scheme ? "black" : ""}
           = raw @snippet.colorize(options: { linenos: 'True'})

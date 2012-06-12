@@ -119,7 +119,12 @@ Gitlab::Application.routes.draw do
       end
     end
     
-    resources :snippets
+    resources :snippets do 
+      member do 
+        get "raw"
+      end
+    end
+
     resources :hooks, :only => [:index, :create, :destroy] do 
       member do 
         get :test

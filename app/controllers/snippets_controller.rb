@@ -1,7 +1,7 @@
 class SnippetsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
-  before_filter :snippet, :only => [:show, :edit, :destroy, :update]
+  before_filter :snippet, :only => [:show, :edit, :destroy, :update, :raw]
   layout "project"
 
   # Authorize
@@ -67,7 +67,17 @@ class SnippetsController < ApplicationController
     redirect_to project_snippets_path(@project)
   end
 
+  def raw 
+    send_data(
+      @snippet.content,
+      :type => "text/plain",
+      :disposition => 'inline',
+      :filename => @snippet.file_name
+    )
+  end
+
   protected
+
   def snippet
     @snippet ||= @project.snippets.find(params[:id])
   end
