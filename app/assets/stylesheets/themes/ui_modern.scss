@@ -31,7 +31,7 @@
    *
    */
   a {
-    color: #FA8B2A;
+    color: #E28934;
     &:hover { 
       text-decoration:none; 
       color: #f90;
@@ -56,5 +56,13 @@
       background:#FED;
       color:#D70;
     }
+  }
+
+  .progress .bar { 
+    background:#D80;
+  }
+
+  .back_link { 
+    color:#D80;
   }
 }
