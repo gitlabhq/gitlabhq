@@ -20,4 +20,15 @@ module MergeRequestsHelper
       merge_request.author_name
     end
   end
+
+  def new_mr_path_from_push_event(event)
+    new_project_merge_request_path(
+      event.project,
+      :merge_request => { 
+        :source_branch => event.branch_name,
+        :target_branch => event.project.root_ref,
+        :title => event.branch_name.titleize
+      }
+    )
+  end
 end

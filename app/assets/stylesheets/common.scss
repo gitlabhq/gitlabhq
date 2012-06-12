@@ -733,3 +733,16 @@ li.note {
 .chzn-container-active .chzn-single { 
   background:#fff;
 }
+
+/**
+ * Push event widget
+ * 
+ */
+.event_lp { 
+  @extend .alert-info;
+  margin-bottom:15px;
+  padding:8px;
+  border-style: solid;
+  border-width: 1px;
+  @include border-radius(4px);
+}

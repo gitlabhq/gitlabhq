@@ -46,4 +46,13 @@ module Account
     return 100 if projects_limit.zero?
     (my_own_projects.count.to_f / projects_limit) * 100
   end
+
+  def recent_push project_id = nil
+    # Get push events not earlier than 6 hours ago
+    events = recent_events.code_push.where("created_at > ?", Time.now - 6.hours)
+    events = events.where(:project_id => project_id) if project_id
+
+    # Take only latest one
+    events = events.recent.limit(1).first
+  end
 end

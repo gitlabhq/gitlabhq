@@ -24,6 +24,7 @@
           = link_to new_project_issue_path(@project), :title => "New Issue", :class => "btn small" do
             Issue
 
+= render "events/event_last_push", :event => @last_push
 - unless @events.blank?
   %br
   %h5.cgray

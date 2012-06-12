@@ -63,7 +63,7 @@ class MergeRequestsController < ApplicationController
   end
 
   def new
-    @merge_request = @project.merge_requests.new
+    @merge_request = @project.merge_requests.new(params[:merge_request])
   end
 
   def edit

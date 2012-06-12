@@ -15,6 +15,8 @@ class ProjectsController < ApplicationController
     @projects = @projects.page(params[:page]).per(40)
     @events = Event.where(:project_id => current_user.projects.map(&:id)).recent.limit(20)
 
+    @last_push = current_user.recent_push
+
     respond_to do |format|
       format.html
       format.atom { render :layout => false }
@@ -69,6 +71,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html do
          if @project.repo_exists? && @project.has_commits?
+           @last_push = current_user.recent_push(@project.id)
            render :show
          else
            render "projects/empty"

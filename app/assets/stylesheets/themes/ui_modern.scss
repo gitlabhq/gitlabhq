@@ -50,13 +50,12 @@
     }
   }
 
-  .alert { 
-    &.alert-info { 
-      border-color:#FDA;
-      background:#FED;
-      color:#D70;
-    }
+  .alert-info { 
+    border-color:#FDA;
+    background:#FED;
+    color:#D70;
   }
+  
 
   .progress .bar { 
     background:#D80;
