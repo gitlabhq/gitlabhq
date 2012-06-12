@@ -23,13 +23,7 @@ class IssuesController < ApplicationController
   respond_to :js, :html
 
   def index
-    @issues = case params[:f].to_i
-              when 1 then @project.issues
-              when 2 then @project.issues.closed
-              when 3 then @project.issues.opened.assigned(current_user)
-              else @project.issues.opened
-              end
-
+    @issues = get_issues_from_params(params[:f])
     @issues = @issues.where(:milestone_id => params[:milestone_id]) if params[:milestone_id].present?
     @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project).order("critical, updated_at")
@@ -75,7 +69,7 @@ class IssuesController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         if @issue.valid?
           redirect_to [@project, @issue]
         else
@@ -112,13 +106,7 @@ class IssuesController < ApplicationController
     terms = params['terms']
 
     @project  = Project.find(params['project'])
-    @issues   = case params[:status].to_i
-                  when 1 then @project.issues
-                  when 2 then @project.issues.closed
-                  when 3 then @project.issues.opened.assigned(current_user)
-                  else @project.issues.opened
-                end.page(params[:page]).per(100)
-
+    @issues   = get_issues_from_params(params[:status]).page(params[:page]).per(100)
     @issues = @issues.where("title LIKE ?", "%#{terms}%") unless terms.blank?
 
     render :partial => 'issues'
@@ -128,6 +116,15 @@ class IssuesController < ApplicationController
 
   def issue
     @issue ||= @project.issues.find(params[:id])
+  end
+
+  def get_issues_from_params(params)
+    case params.to_i
+    when 1 then @project.issues
+    when 2 then @project.issues.closed
+    when 3 then @project.issues.opened.assigned(current_user)
+    else @project.issues.opened
+    end
   end
 
   def authorize_modify_issue!
