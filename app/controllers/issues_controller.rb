@@ -23,16 +23,9 @@ class IssuesController < ApplicationController
   respond_to :js, :html
 
   def index
-    @issues = case params[:f].to_i
-              when 1 then @project.issues
-              when 2 then @project.issues.closed
-              when 3 then @project.issues.opened.assigned(current_user)
-              else @project.issues.opened
-              end
+    @issues = issues_filtered
 
-    @issues = @issues.where(:milestone_id => params[:milestone_id]) if params[:milestone_id].present?
     @issues = @issues.page(params[:page]).per(20)
-    @issues = @issues.includes(:author, :project).order("critical, updated_at")
 
     respond_to do |format|
       format.html # index.html.erb
@@ -111,15 +104,9 @@ class IssuesController < ApplicationController
   def search
     terms = params['terms']
 
-    @project  = Project.find(params['project'])
-    @issues   = case params[:status].to_i
-                  when 1 then @project.issues
-                  when 2 then @project.issues.closed
-                  when 3 then @project.issues.opened.assigned(current_user)
-                  else @project.issues.opened
-                end.page(params[:page]).per(100)
-
+    @issues = issues_filtered
     @issues = @issues.where("title LIKE ?", "%#{terms}%") unless terms.blank?
+    @issues = @issues.page(params[:page]).per(100)
 
     render :partial => 'issues'
   end
@@ -140,5 +127,18 @@ class IssuesController < ApplicationController
 
   def module_enabled
     return render_404 unless @project.issues_enabled
+  end
+
+  def issues_filtered
+    @issues = case params[:f].to_i
+              when 1 then @project.issues
+              when 2 then @project.issues.closed
+              when 3 then @project.issues.opened.assigned(current_user)
+              else @project.issues.opened
+              end
+
+    @issues = @issues.where(:milestone_id => params[:milestone_id]) if params[:milestone_id].present?
+    @issues = @issues.includes(:author, :project).order("critical, updated_at")
+    @issues
   end
 end

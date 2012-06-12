@@ -35,3 +35,29 @@ function backToIssues(){
     });
   });
 }
+
+function initIssuesSearch() { 
+  var href       = $('.issue_search').parent().attr('action');
+  var last_terms = '';
+
+  $('.issue_search').keyup(function() {
+    var terms       = $(this).val();
+    var milestone_id  = $('#milestone_id').val();
+    var status      = $('#status').val();
+
+    if (terms != last_terms) {
+      last_terms = terms;
+
+      if (terms.length >= 2 || terms.length == 0) {
+        $.get(href, { 'f': status, 'terms': terms, 'milestone_id': milestone_id }, function(response) {
+          $('#issues-table').html(response);
+          setSortable();
+        });
+      }
+    }
+  });
+
+  $('.delete-issue').live('ajax:success', function() {
+    $(this).closest('tr').fadeOut(); updatePage();
+  });
+}
