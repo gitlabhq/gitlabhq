@@ -117,4 +117,28 @@ module Repository
   def root_ref? branch
     root_ref == branch
   end
+
+  # Archive Project to .tar.gz
+  #
+  # Already packed repo archives stored at 
+  # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
+  #
+  def archive_repo ref
+    ref = ref || self.root_ref
+    commit = self.commit(ref)
+    return nil unless commit
+
+    # Build file path
+    file_name = self.code + "-" + commit.id.to_s + ".tar.gz"
+    storage_path = File.join(Rails.root, "tmp", "repositories", self.code)
+    file_path = File.join(storage_path, file_name)
+
+    # Create file if not exists
+    unless File.exists?(file_path)
+      FileUtils.mkdir_p storage_path
+      file = self.repo.archive_to_file(ref, nil,  file_path)
+    end
+
+    file_path
+  end
 end

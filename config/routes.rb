@@ -1,15 +1,24 @@
 Gitlab::Application.routes.draw do
+  #
+  # Search
+  #
   get 'search' => "search#show"
 
   # Optionally, enable Resque here
   require 'resque/server'
   mount Resque::Server.new, at: '/info/resque'
 
+  #
+  # Help
+  #
   get 'help' => 'help#index'
   get 'help/permissions' => 'help#permissions'
   get 'help/workflow' => 'help#workflow'
   get 'help/web_hooks' => 'help#web_hooks'
 
+  #
+  # Admin Area
+  #
   namespace :admin do
     resources :users do 
       member do 
@@ -44,6 +53,7 @@ Gitlab::Application.routes.draw do
   get "profile", :to => "profile#show"
   get "profile/design", :to => "profile#design"
   put "profile/update", :to => "profile#update"
+  resources :keys
 
   #
   # Dashboard Area
@@ -53,10 +63,12 @@ Gitlab::Application.routes.draw do
   get "dashboard/merge_requests", :to => "dashboard#merge_requests"
 
   resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create]
-  resources :keys
 
   devise_for :users, :controllers => { :omniauth_callbacks => :omniauth_callbacks }
 
+  #
+  # Project Area
+  #
   resources :projects, :constraints => { :id => /[^\/]+/ }, :except => [:new, :create, :index], :path => "/" do
     member do
       get "team"
