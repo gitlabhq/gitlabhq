@@ -10,19 +10,6 @@ class ProjectsController < ApplicationController
   before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
   before_filter :require_non_empty_project, :only => [:blob, :tree, :graph]
 
-  def index
-    @projects = current_user.projects.includes(:events).order("events.created_at DESC")
-    @projects = @projects.page(params[:page]).per(40)
-    @events = Event.where(:project_id => current_user.projects.map(&:id)).recent.limit(20)
-
-    @last_push = current_user.recent_push
-
-    respond_to do |format|
-      format.html
-      format.atom { render :layout => false }
-    end
-  end
-
   def new
     @project = Project.new
   end

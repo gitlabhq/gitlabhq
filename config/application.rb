@@ -44,8 +44,5 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-
-    # Extend assets path
-    config.assets.paths << Rails.root.join('vendor', 'assets', 'images', 'jquery-ui')
   end
 end
