@@ -1,0 +1,74 @@
+/** 
+ * MR form
+ *
+ */
+
+.mr_branch_box { 
+  @extend .ui-box;
+  margin-bottom:20px;
+
+  .body { 
+    background:#f1f1f1;
+  }
+
+  .commit { 
+    margin:0;
+    padding:0;
+    padding: 5px;
+    margin-bottom: 5px;
+
+    .committed_ago { 
+      display:none;
+    }
+    .browse_code_link_holder { 
+      display:none;
+    }
+    list-style:none;
+    &:hover { 
+      background:none;
+    }
+  }
+}
+
+/**
+ * MR -> show: Automerge widget
+ *
+ */
+.automerge_widget { 
+  &.can_be_merged { 
+    background: #DFF0D8;
+  }
+
+  form { 
+    margin-bottom:0;
+    .clearfix { 
+      margin-bottom:0;
+    }
+  }
+
+  .accept_group { 
+    float:left;
+    border: 1px solid #ADA;
+    padding: 2px;
+    @include border-radius(5px);
+    border-radius: 5px;
+    background: #CEB;
+
+    .accept_merge_request { 
+      float:left;
+    }
+    .remove_branch_holder { 
+      margin-left:20px;
+      margin-right:10px;
+      float:left;
+    }
+    label { 
+      color:#444;
+    }
+  }
+
+
+  .how_to_merge_link { 
+    @extend .primary;
+  }
+}

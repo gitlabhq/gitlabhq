@@ -117,20 +117,15 @@ $hover: #FDF5D9;
  */
 @import "common.scss";
 
+
 /**
- * Styles related to displaying commits
+ * Styles related to specific part of app
  */
 @import "sections/commits.scss";
-
-/**
- * Styles related to displaying issues
- */
 @import "sections/issues.scss";
-
-/**
- * Styles related to projects
- */
 @import "sections/projects.scss";
+@import "sections/merge_requests.scss";
+@import "sections/graph.scss";
 
 /**
  * This scss file redefine chozen selectbox styles for

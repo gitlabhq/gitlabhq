@@ -1,5 +1,5 @@
-%li.wll.commit
-  .right.span2
+%li.commit
+  .browse_code_link_holder
     %p
       %strong= link_to "Browse Code »", tree_project_ref_path(@project, commit.id), :class => "right"
   = link_to project_commit_path(@project, :id => commit.id) do
@@ -10,7 +10,7 @@
       = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16
       %span.row_title= truncate(commit.safe_message, :length => 50)
 
-      %span.right.cgray
+      %span.committed_ago
         = time_ago_in_words(commit.committed_date)
         ago
         &nbsp;

@@ -166,3 +166,18 @@
 .commit-author, .commit-committer{display: block;color: #999; font-weight: normal; font-style: italic;}
 .commit-author strong, .commit-committer strong{font-weight: bold; font-style: normal;}
 
+
+/** COMMIT ROW **/
+.commit { 
+  @extend .wll;
+
+  .browse_code_link_holder { 
+    @extend .span2;
+    float:right;
+  }
+
+  .committed_ago { 
+    float:right;
+    @extend .cgray;
+  }
+}

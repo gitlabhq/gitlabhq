@@ -5,33 +5,30 @@
         - @merge_request.errors.full_messages.each do |msg|
           %li= msg
 
-
-
   %h3.padded.cgray 1. Select Branches
+
   .row
     .span6
-      .ui-box
+      .mr_branch_box
         %h5 From (Head Branch)
         .body 
           .padded
             = f.label :source_branch, "From", :class => "control-label"
             .controls
               = f.select(:source_branch, @project.heads.map(&:name), { :include_blank => "Select branch" }, :style => "width:250px")
-        %hr
-        .mr_source_commit
-        .clearfix
+        .bottom_commit
+          .mr_source_commit
 
     .span6
-      .ui-box
+      .mr_branch_box
         %h5 To (Base Branch)
         .body
           .padded
             = f.label :target_branch, "To", :class => "control-label"
             .controls
               = f.select(:target_branch, @project.heads.map(&:name), { :include_blank => "Select branch" }, :style => "width:250px")
-        %hr
-        .mr_target_commit
-        .clearfix
+        .bottom_commit
+          .mr_target_commit
 
   %h3.padded.cgray 2. Fill info
   .clearfix
