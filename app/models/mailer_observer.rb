@@ -62,7 +62,7 @@ class MailerObserver < ActiveRecord::Observer
   end
 
   def changed_merge_request(merge_request)
-    status_notify_and_comment issue, :reassigned_merge_request_email
+    status_notify_and_comment merge_request, :reassigned_merge_request_email
   end
 
   def changed_issue(issue)
