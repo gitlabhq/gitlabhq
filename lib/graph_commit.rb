@@ -50,10 +50,14 @@ class GraphCommit
       end
     end
 
-    j = 0
+    @_reserved = {}
+    days.each_index do |i|
+      @_reserved[i] = []
+    end
+
     heads.each do |h|
       if map.include? h.commit.id then
-        j = mark_chain(j+=1, map[h.commit.id], map)
+        place_chain(map[h.commit.id], map)
       end
     end
     days
@@ -61,23 +65,80 @@ class GraphCommit
 
   # Add space mark on commit and its parents
   #
-  # @param [Fixnum] space (row on the graph) to be set
+  # @param [GraphCommit] the commit object.
+  # @param [Hash<String,GraphCommit>] map of commits
+  def self.place_chain(commit, map, parent_time = nil)
+    leaves = take_left_leaves(commit, map)
+    if leaves.empty? then
+      return
+    end
+    space = find_free_space(leaves.last.time..leaves.first.time)
+    leaves.each{|l| l.space = space}
+    # and mark it as reserved
+    min_time = leaves.last.time
+    parents = leaves.last.parents.collect
+    parents.each do |p|
+      if map.include? p.id then
+        parent = map[p.id]
+        if parent.time < min_time then
+          min_time = parent.time
+        end
+      end
+    end
+    if parent_time.nil? then
+      max_time = leaves.first.time
+    else
+      max_time = parent_time - 1
+    end
+    mark_reserved(min_time..max_time, space)
+    # Visit branching chains
+    leaves.each do |l|
+      parents = l.parents.collect
+        .select{|p| map.include? p.id and map[p.id].space == 0}
+      for p in parents
+        place_chain(map[p.id], map, l.time)
+      end
+    end
+  end
+
+  def self.mark_reserved(time_range, space)
+    for day in time_range
+      @_reserved[day].push(space)
+    end
+  end
+
+  def self.find_free_space(time_range)
+    reserved = []
+    for day in time_range
+        reserved += @_reserved[day]
+    end
+    space = 1
+    while reserved.include? space do
+      space += 1
+    end
+    space
+  end
+
+  # Takes most left subtree branch of commits
+  # which don't have space mark yet.
+  #
   # @param [GraphCommit] the commit object.
   # @param [Hash<String,GraphCommit>] map of commits
   #
-  # @return [Fixnum] max space used.
-  def self.mark_chain(mark, commit, map)
-    commit.space = mark  if commit.space == 0
-    m1 = mark - 1
-    marks = commit.parents.collect do |p|
-      if map.include? p.id  and map[p.id].space == 0 then
-        mark_chain(m1 += 1, map[p.id],map)
+  # @return [Array<GraphCommit>] list of branch commits
+  def self.take_left_leaves(commit, map)
+    leaves = []
+    leaves.push(commit)  if commit.space == 0
+    while true
+      parent = commit.parents.collect
+        .select{|p| map.include? p.id and map[p.id].space == 0}
+      if parent.count == 0 then
+        return leaves
       else
-        m1 + 1
+        commit = map[parent.first.id]
+        leaves.push(commit)
       end
     end
-    marks << mark
-    marks.compact.max
   end
 
 
