@@ -2,9 +2,10 @@
   = image_tag gravatar_icon(note.author.email), :class => "left", :width => 40, :style => "padding-right:5px;"
   %div.note-author
     %strong= note.author_name
-    %cite.cgray
-      = time_ago_in_words(note.updated_at)
-      ago
+    = link_to "##{dom_id(note)}", name: dom_id(note) do
+      %cite.cgray
+        = time_ago_in_words(note.updated_at)
+        ago
     - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
       %strong= link_to "Remove", [@project, note], :confirm => 'Are you sure?', :method => :delete, :remote => true, :class => "cred delete-note btn small"
 
