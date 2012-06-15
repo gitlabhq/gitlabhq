@@ -11,7 +11,7 @@
   = preserve do
     = markdown @wiki.content
 
-%p.time Last edited by #{@wiki.user.name}, in #{time_ago_in_words @wiki.created_at}
+%p.time Last edited by #{@wiki.user.name}, #{time_ago_in_words @wiki.created_at} ago
 - if can? current_user, :admin_wiki, @project
   = link_to project_wiki_path(@project, @wiki), :confirm => "Are you sure you want to delete this page?", :method => :delete do
     Delete this page
