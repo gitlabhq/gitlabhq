@@ -1,5 +1,33 @@
+<% if ldap_enable? -%>
+  <%= form_for(resource, :as => resource_name, :url => user_omniauth_callback_path(:ldap), :html => { :class => "login-box", :id => 'new_ldap_user' }) do |f| %>
+    <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
+
+    <%= text_field_tag :username, nil, {:class => "text top", :placeholder => "LDAP Login"} %>
+    <%= password_field_tag :password, nil, {:class => "text bottom", :placeholder => "Password"} %>
+
+    <% if devise_mapping.rememberable? -%>
+      <div class="clearfix inputs-list"> <label class="checkbox remember_me" for="user_remember_me"><%= f.check_box :remember_me %><span>Remember me</span></label></div>
+    <% end -%>
+    <br/>
+    <%= f.submit "LDAP Sign in", :class => "primary btn" %>
+    <hr/>
+    <a href="#" id="admin_form_toggle" onclick="javascript:$('#new_user').toggle();">Admin Sign in</a>
+    <!-- inline right just to illustrate -->
+    <script type="text/javascript">
+      $(function() {
+        $('#new_user').toggle();
+      });
+    </script>
+  <% end %>
+<% end %>
+
 <%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f| %>
-  <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
+  <% unless ldap_enable? %>
+    <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
+  <% else %>
+    <!-- <a href="#" id="ldap_form_toggle" onclick="javascript:$('#new_ldap_user').toggle();">LDAP Sign in</a> -->
+  <% end %>
+
   <%= f.text_field :email, :class => "text top", :placeholder => "Email" %>
   <%= f.password_field :password, :class => "text bottom", :placeholder => "Password"  %>
 
@@ -16,7 +44,5 @@
       <%= link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider), :class => "btn primary" %><br />
     <% end -%>
   <% end -%>
-  <% if ldap_enable? -%>
-    <p><%= link_to "via LDAP", user_omniauth_authorize_path(:ldap)%></p>
-  <% end -%>
+
 <% end %>
