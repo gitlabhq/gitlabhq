@@ -20,7 +20,8 @@ describe IssueObserver do
     end
 
     it 'sends an email to the assignee' do
-      Notify.should_receive(:new_issue_email).with(issue.id)
+      Notify.should_receive(:new_issue_email).with(issue.id).
+        and_return(double(:deliver => true))
 
       subject.after_create(issue)
     end
@@ -107,9 +108,18 @@ describe IssueObserver do
       issue.stub(:assignee_id_was).and_return(previous_assignee.id)
     end
 
+    def it_sends_a_reassigned_email_to(recipient)
+      Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id).
+        and_return(double(:deliver => true))
+    end
+
+    def it_does_not_send_a_reassigned_email_to(recipient)
+      Notify.should_not_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id)
+    end
+
     it 'sends a reassigned email to the previous and current assignees' do
-      Notify.should_receive(:reassigned_issue_email).with(assignee.id, issue.id, previous_assignee.id)
-      Notify.should_receive(:reassigned_issue_email).with(previous_assignee.id, issue.id, previous_assignee.id)
+      it_sends_a_reassigned_email_to assignee.id
+      it_sends_a_reassigned_email_to previous_assignee.id
 
       subject.send_reassigned_email(issue)
     end
@@ -117,13 +127,15 @@ describe IssueObserver do
     context 'does not send an email to the user who made the reassignment' do
       it 'if the user is the assignee' do
         subject.stub(:current_user).and_return(assignee)
-        Notify.should_not_receive(:reassigned_issue_email).with(assignee.id, issue.id, previous_assignee.id)
+        it_sends_a_reassigned_email_to previous_assignee.id
+        it_does_not_send_a_reassigned_email_to assignee.id
 
         subject.send_reassigned_email(issue)
       end
       it 'if the user is the previous assignee' do
         subject.stub(:current_user).and_return(previous_assignee)
-        Notify.should_not_receive(:reassigned_issue_email).with(previous_assignee.id, issue.id, previous_assignee.id)
+        it_sends_a_reassigned_email_to assignee.id
+        it_does_not_send_a_reassigned_email_to previous_assignee.id
 
         subject.send_reassigned_email(issue)
       end
