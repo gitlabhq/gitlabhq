@@ -50,3 +50,19 @@ Given /^I write new comment "(.*?)"$/ do |arg1|
   click_button "Add Comment"
 end
 
+Given /^I visit project "(.*?)" network page$/ do |arg1|
+  project = Project.find_by_name(arg1)
+  visit graph_project_path(project)
+end
+
+Given /^show me page$/ do
+  save_and_open_page
+end
+
+Given /^page should have network graph$/ do
+  page.should have_content "Project Network Graph"
+  within ".graph" do
+    page.should have_content "stable"
+    page.should have_content "notes_refacto..."
+  end
+end
