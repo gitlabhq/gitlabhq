@@ -16,6 +16,5 @@ before_script:
   - "bundle exec rake db:create RAILS_ENV=test"
   - "bundle exec rake db:migrate RAILS_ENV=test"
   - "bundle exec rake db:seed_fu RAILS_ENV=test"
-  - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-script: "bundle exec rake gitlab:test"
+script: "bundle exec rake travis"
