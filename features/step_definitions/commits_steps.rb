@@ -48,3 +48,14 @@ Given /^I see compared refs$/ do
   page.should have_content "Showing 73 changed files"
 end
 
+Given /^I visit project branches page$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^I visit project commit page$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Given /^I visit project tags page$/ do
+  pending # express the regexp above with the code you wish you had
+end
