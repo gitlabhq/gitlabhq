@@ -60,7 +60,6 @@ Given /^show me page$/ do
 end
 
 Given /^page should have network graph$/ do
-  pending
   #page.should have_content "Project Network Graph"
   #within ".graph" do
     #page.should have_content "stable"

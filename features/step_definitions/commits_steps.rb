@@ -49,13 +49,13 @@ Given /^I see compared refs$/ do
 end
 
 Given /^I visit project branches page$/ do
-  pending # express the regexp above with the code you wish you had
+  visit branches_project_repository_path(@project)
 end
 
 Given /^I visit project commit page$/ do
-  pending # express the regexp above with the code you wish you had
+  visit project_commit_path(@project, ValidCommit::ID)
 end
 
 Given /^I visit project tags page$/ do
-  pending # express the regexp above with the code you wish you had
+  visit tags_project_repository_path(@project)
 end
