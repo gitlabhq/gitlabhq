@@ -17,7 +17,7 @@
   %div#issues-table-holder.ui-box
     .title
       .row
-        .span6
+        .span4
           %ul.nav.nav-pills.left
             %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
               = link_to project_issues_path(@project, :f => 0, :milestone_id => params[:milestone_id]) do
@@ -32,9 +32,10 @@
               = link_to project_issues_path(@project, :f => 1, :milestone_id => params[:milestone_id]) do
                 All
 
-        .span4.right
+        .span6.right
           = form_tag project_issues_path(@project), :method => :get, :class => :right  do
-            = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Select milestone")
+            = select_tag(:assignee_id, options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), :prompt => "Assignee")
+            = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Milestone")
             = hidden_field_tag :f, params[:f]
 
     %ul#issues-table.unstyled
@@ -44,8 +45,9 @@
   $(function(){
     initIssuesSearch();
     setSortable();
+    $("#assignee_id").chosen();
     $("#milestone_id").chosen();
-    $("#milestone_id").live("change", function(){
+    $("#milestone_id, #assignee_id").live("change", function(){
       $(this).closest("form").submit();
     });
   })

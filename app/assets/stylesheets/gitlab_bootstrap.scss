@@ -400,6 +400,7 @@ form {
  *
  */
 .ui-box { 
+  background:#F9F9F9;
   margin-bottom: 40px;
   @include round-borders-all(4px);
   border-color: #CCC;
