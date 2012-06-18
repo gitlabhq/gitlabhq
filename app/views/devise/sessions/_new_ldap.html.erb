@@ -1,4 +1,3 @@
-<%#= form_for(resource, :as => resource_name, :url => user_omniauth_callback_path(:ldap), :html => { :class => "login-box", :id => 'new_ldap_user' }) do |f| %>
 <%= form_tag(user_omniauth_callback_path(:ldap), :class => "login-box", :id => 'new_ldap_user' ) do %>
   <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
 
