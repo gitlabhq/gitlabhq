@@ -28,7 +28,7 @@ end
 
 Given /^I own project "(.*?)"$/ do |arg1|
   @project = Factory :project, :name => arg1
-  @project.add_access(@user, :read, :write)
+  @project.add_access(@user, :admin)
 end
 
 Given /^I visit project "(.*?)" wall page$/ do |arg1|
@@ -60,9 +60,9 @@ Given /^show me page$/ do
 end
 
 Given /^page should have network graph$/ do
-  #page.should have_content "Project Network Graph"
-  #within ".graph" do
-    #page.should have_content "stable"
-    #page.should have_content "notes_refacto..."
-  #end
+  page.should have_content "Project Network Graph"
+  within ".graph" do
+    page.should have_content "stable"
+    page.should have_content "notes_refacto..."
+  end
 end

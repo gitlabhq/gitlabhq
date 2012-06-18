@@ -47,7 +47,7 @@ Then /^I should see last push widget$/ do
 end
 
 Then /^I click "(.*?)" link$/ do |arg1|
-  click_link "Create Merge Request"
+  click_link arg1 #Create Merge Request"
 end
 
 Then /^I see prefilled new Merge Request page$/ do

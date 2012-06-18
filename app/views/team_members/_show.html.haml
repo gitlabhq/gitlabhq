@@ -1,6 +1,6 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%tr{:id => dom_id(member), :class => "team_member_row"}
+%tr{:id => dom_id(member), :class => "team_member_row user_#{user.id}"}
   %td
     .right
       - if @project.owner == user
