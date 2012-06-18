@@ -165,11 +165,11 @@ a:focus {
 }
 
 .nav-pills a:hover { 
-  background-color:#ccc;
+  background-color:#888;
 }
 
 .nav-pills .active a {
-  background-color: #aaa;
+  background-color: $style_color;
 }
 
 .label { 

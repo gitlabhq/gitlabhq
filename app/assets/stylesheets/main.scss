@@ -152,13 +152,13 @@ $hover: #FDF5D9;
  * CODE HIGHTLIGHT BASE
  *
  */
-@import "highlight.scss";
+@import "highlight/white.scss";
 
 /**
  * CODE HIGHTLIGHT DARK schema
  *
  */
-@import "highlight.black.scss";
+@import "highlight/dark.scss";
 
 /**
  * JQUERY UI ext
