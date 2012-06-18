@@ -1,4 +1,4 @@
-- unless @commits.empty?
+- if @commits.present?
   .ui-box
     %h5 Commits (#{@commits.count})
     .merge-request-commits
