@@ -5,14 +5,26 @@
 
 %br
 - if @issues.any?
-  - @issues.group_by(&:project).each do |group|
+  - @issues.group_by(&:milestone).sort{|a,b| a[0].nil? ? -1 : (b[0].nil? ? 1 : a[0].due_date <=> b[0].due_date)}.each do |group|
     %div.ui-box
-      - project = group[0]
-      %h5= project.name
-      %ul.unstyled
-        - group[1].each do |issue|
-          = render(:partial => 'issues/show', :locals => {:issue => issue})
+      - milestone = group[0]
+      - if milestone.nil?
+        %ul.unstyled
+          - group[1].group_by(&:project).sort{|a,b| a[0].name <=> b[0].name}.each do |project_group|
+            %h5
+              #{project_group[0].name}
+              %em(style="font-size: 75%")= "(no milestone)"
+            - project_group[1].each do |issue|
+              = render(:partial => 'issues/show', :locals => {:issue => issue})
+      - else
+        %h5
+          #{milestone.project.name}
+          %em(style="font-size: 75%")= "milestone #{milestone.title}, due #{milestone.due_date}"
+        %ul.unstyled
+          - group[1].each do |issue|
+            = render(:partial => 'issues/show', :locals => {:issue => issue})
   %hr
   = paginate @issues, :theme => "gitlab"
 - else
-  %h3.nothing_here_message Nothing to show here
+  %h4.padded
+    %center Nothing to show here
