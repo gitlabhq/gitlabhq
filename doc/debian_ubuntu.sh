@@ -28,7 +28,7 @@ sudo usermod -a -G git gitlab
 sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 
 cd /home/git
-sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite
+sudo -H -u git git clone https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; /home/git/gitolite/src/gl-system-install"
 sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub

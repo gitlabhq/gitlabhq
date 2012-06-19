@@ -103,7 +103,7 @@ Generate key:
 Get gitolite source code:
 
     cd /home/git
-    sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite    
+    sudo -H -u git git clone https://github.com/gitlabhq/gitolite.git /home/git/gitolite    
 
 Setup:
 
@@ -137,7 +137,7 @@ Permissions:
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
-    sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git ^^lab
     cd gitlab
 
     # Rename config files
