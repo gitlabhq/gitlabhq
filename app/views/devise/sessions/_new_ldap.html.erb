@@ -1,0 +1,39 @@
+<%= form_tag(user_omniauth_callback_path(:ldap), :class => "login-box", :id => 'new_ldap_user' ) do %>
+  <%= image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo" %>
+
+  <%= text_field_tag :username, nil, {:class => "text top", :placeholder => "LDAP Login"} %>
+  <%= password_field_tag :password, nil, {:class => "text bottom", :placeholder => "Password"} %>
+
+  <br/>
+  <%= submit_tag "LDAP Sign in", :class => "primary btn" %>
+
+  <%- if devise_mapping.omniauthable? %>
+    <%- (resource_class.omniauth_providers - [:ldap]).each do |provider| %>
+      <hr/>
+      <%= link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider), :class => "btn primary" %><br />
+    <% end -%>
+  <% end -%>
+
+  <hr/>
+  <a href="#" id="other_form_toggle" onclick="javascript:$('#new_user').toggle();">Other Sign in</a>
+  <!-- inline for right now just to illustrate -->
+  <script type="text/javascript">
+    $(function() {
+      $('#new_user').toggle();
+    });
+  </script>
+<% end %>
+
+
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f| %>
+  <%= f.text_field :email, :class => "text top", :placeholder => "Email" %>
+  <%= f.password_field :password, :class => "text bottom", :placeholder => "Password"  %>
+
+  <% if devise_mapping.rememberable? -%>
+    <div class="clearfix inputs-list"> <label class="checkbox remember_me" for="user_remember_me"><%= f.check_box :remember_me %><span>Remember me</span></label></div>
+  <% end -%>
+  <br/>
+  <%= f.submit "Sign in", :class => "primary btn" %>
+  <div class="right"> <%= render :partial => "devise/shared/links" %></div>
+
+<% end %>
