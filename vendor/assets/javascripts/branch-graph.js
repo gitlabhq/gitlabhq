@@ -83,7 +83,7 @@ function branchGraph(holder) {
                     .attr({stroke: colors[commits[i].space], "stroke-width": 2});
                 } else {
                     r.path(["M", x - 3, y + 4, "l-4,3,3,2,1,-4L", x - 10, y + 14, "L", x - 10, cy, cx, cy])
-                    .attr({stroke: colors[commits[i].space], "stroke-width": 2});
+                    .attr({stroke: colors[c.space], "stroke-width": 2});
                 }
             }
         }
