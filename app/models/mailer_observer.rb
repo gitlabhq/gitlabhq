@@ -1,5 +1,5 @@
 class MailerObserver < ActiveRecord::Observer
-  observe :issue, :note, :merge_request
+  observe :note, :merge_request
   cattr_accessor :current_user
 
   def after_create(model)
