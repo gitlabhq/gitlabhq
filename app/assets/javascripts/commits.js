@@ -57,3 +57,10 @@ var CommitsList = {
       });
     }
 }
+
+$(function () {
+  $('a.supp_diff_link').live('click', function() {
+    $(link).next('table').show();
+    $(link).remove();
+  });
+});
