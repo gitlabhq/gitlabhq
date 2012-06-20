@@ -61,7 +61,7 @@
       %h4
         SSH public keys:
         %small.right
-          %span= current_user.keys.count
+          %span= link_to current_user.keys.count, keys_path
 
       = link_to "Add Public Key", new_key_path, :class => "btn small right"
 
