@@ -40,14 +40,15 @@ describe "Admin::Users" do
     end
 
     it "should call send mail" do
-      User.observers.enable :mailer_observer do
-        Notify.should_receive(:new_user_email).and_return(stub(:deliver => true))
+      Notify.should_receive(:new_user_email).and_return(stub(:deliver => true))
+
+      User.observers.enable :user_observer do
         click_button "Save"
       end
     end
 
     it "should send valid email to user with email & password" do
-      User.observers.enable :mailer_observer do
+      User.observers.enable :user_observer do
         with_resque do
           click_button "Save"
         end
