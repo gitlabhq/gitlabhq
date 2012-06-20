@@ -75,6 +75,11 @@ function slugify(text) {
   return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
 }
 
+function showDiff(link) {
+  $(link).next('table').show();
+  $(link).remove();
+}
+
 (function($){
     var _chosen = $.fn.chosen;
     $.fn.extend({
