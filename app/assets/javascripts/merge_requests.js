@@ -34,6 +34,10 @@ var MergeRequest = {
         $(".merge-request-diffs").show();
         e.preventDefault();
       });
+
+      $(".mr_show_all_commits").bind("click", function() { 
+        MergeRequest.showAllCommits();
+      })
     },
 
   showState:
