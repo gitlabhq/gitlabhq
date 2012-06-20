@@ -56,11 +56,6 @@ class Issue < ActiveRecord::Base
     today? && created_at == updated_at
   end
 
-  # Return the number of +1 comments (upvotes)
-  def upvotes
-    notes.select(&:upvote?).size
-  end
-
   def is_being_reassigned?
     assignee_id_changed?
   end
