@@ -60,7 +60,7 @@ $(document).ready(function(){
    */
   $(".supp_diff_link").bind("click", function() {
     showDiff(this);
-  })
+  });
 });
 
 function focusSearch() {
