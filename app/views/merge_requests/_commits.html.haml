@@ -9,7 +9,7 @@
           %li.bottom
             8 of #{@commits.count} commits displayed.
             %strong
-              = link_to_function "Click here to show all", "MergeRequest.showAllCommits()"
+              %a.mr_show_all_commits{:href => "#"} "Click here to show all"
         %ul.all_mr_commits.hide.unstyled
           - @commits.each do |commit|
             = render "commits/commit", :commit => commit
