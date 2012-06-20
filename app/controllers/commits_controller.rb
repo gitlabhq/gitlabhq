@@ -41,6 +41,8 @@ class CommitsController < ApplicationController
     if @commit.diffs.size > 200 && !params[:force_show_diff]
       @suppress_diff = true 
     end
+  rescue Grit::Git::GitTimeout
+    render "huge_commit"
   end
 
   def compare

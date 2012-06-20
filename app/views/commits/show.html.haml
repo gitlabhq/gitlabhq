@@ -1,36 +1,4 @@
-.commit-box{class: @commit.parents.count > 1 ? "merge-commit" : ""}
-  .commit-head
-    = link_to "Browse Code »", tree_project_ref_path(@project, @commit.id), :class => "browse-button"
-    %h3.commit-title
-      = commit_msg_with_link_to_issues(@project, @commit.title)
-    - if @commit.description.present?
-      %pre.commit-description
-        = commit_msg_with_link_to_issues(@project, @commit.description)
-  .commit-info
-    .row
-      .span4
-        = image_tag gravatar_icon(@commit.author_email, 40), :class => "avatar"
-        .author
-          %strong= @commit.author_name
-          authored
-          %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
-            #{time_ago_in_words(@commit.authored_date)} ago
-        - if @commit.different_committer?
-          .committer
-            &rarr;
-            %strong= @commit.committer_name
-            committed
-            %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
-              #{time_ago_in_words(@commit.committed_date)} ago
-      .span7.right
-        .sha-block
-          %span.cgray commit
-          %code= @commit.id
-        .sha-block
-          %span.cgray= pluralize(@commit.parents.count, "parent")
-          - @commit.parents.each do |parent|
-            = link_to parent.id[0...10], project_commit_path(@project, parent)
-
+= render "commits/commit_box"
 = render "commits/diffs", :diffs => @commit.diffs
 = render "notes/notes", :tid => @commit.id, :tt => "commit"
 = render "notes/per_line_form"
