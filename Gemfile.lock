@@ -35,9 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/gitlabhq/pygments.rb.git
-  revision: dfa0d936da40f25e249a7d20f895e6d4cab72b50
+  revision: 2cada028da5054616634a1d9ca6941b65b3ce188
+  ref: 2cada028da5054616634a1d9ca6941b65b3ce188
   specs:
-    pygments.rb (0.2.12)
+    pygments.rb (0.2.13)
       rubypython (~> 0.6.1)
 
 GIT
@@ -384,7 +385,7 @@ DEPENDENCIES
   mysql2
   omniauth-ldap
   pry
-  pygments.rb (= 0.2.12)!
+  pygments.rb!
   rails (= 3.2.5)
   rails-footnotes
   redcarpet (~> 2.1.1)

@@ -2,20 +2,27 @@ source "http://rubygems.org"
 
 gem "rails", "3.2.5"
 
+# Supported DBs
 gem "sqlite3"
 gem "mysql2"
+
+# Auth
 gem "devise", "~> 1.5"
+
+# GITLAB patched libs
+gem "grit",        :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
+gem "gitolite",    :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
+gem "pygments.rb", :git => "https://github.com/gitlabhq/pygments.rb.git",     :ref => "2cada028da5054616634a1d9ca6941b65b3ce188"
+gem 'yaml_db',     :git => "https://github.com/gitlabhq/yaml_db.git"
+gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
+
 gem "stamp"
 gem "kaminari"
 gem "haml-rails"
-gem "grit", :git => "https://github.com/gitlabhq/grit.git", :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
-gem "gitolite", :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
 gem "carrierwave"
 gem "six"
 gem "ffaker"
 gem "seed-fu"
-gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
-gem "pygments.rb", "0.2.12", :git => "https://github.com/gitlabhq/pygments.rb.git"
 gem "redcarpet", "~> 2.1.1"
 gem "thin"
 gem "unicorn"
@@ -30,7 +37,6 @@ gem "foreman"
 gem "omniauth-ldap"
 gem 'bootstrap-sass', "2.0.3.1"
 gem "colored"
-gem 'yaml_db', :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'resque_mailer'
 gem 'chosen-rails'
 
