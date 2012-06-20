@@ -58,16 +58,15 @@ var MergeRequest = {
         dataType: "script"});
     }, 
 
+  showAllCommits: 
+    function() { 
+      $(".first_mr_commits").remove();
+      $(".all_mr_commits").removeClass("hide");
+    },
+
   already_cannot_be_merged:
     function(){
         $(".automerge_widget").hide();
         $(".automerge_widget.already_cannot_be_merged").show();
     }
 }
-
-$(function () {
-  $('.first_mr_commits a.show_all').live('click', function() {
-      $(".first_mr_commits").remove();
-      $(".all_mr_commits").removeClass("hide");
-    });
-});
