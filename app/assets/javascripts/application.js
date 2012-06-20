@@ -53,6 +53,14 @@ $(document).ready(function(){
         e.preventDefault();
     }
   });
+
+  /**
+   * Commit show suppressed diff
+   * 
+   */
+  $(".supp_diff_link").bind("click", function() {
+    showDiff(this);
+  });
 });
 
 function focusSearch() {
