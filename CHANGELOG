@@ -1,3 +1,15 @@
+v 2.6.0
+  - UI polished
+  - Improved network graph + keyboard nav
+  - Handle huge commits
+  - Last Push widget
+  - Bugfix
+  - Better perfomance
+  - Email in resque
+  - Increased test coverage
+  - Ability to remove branch with MR accept
+  - a lot of code refactored
+
 v 2.5.0
   - UI polished
   - Git blame for file
