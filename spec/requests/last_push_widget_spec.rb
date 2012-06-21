@@ -11,7 +11,7 @@ describe "Last Push widget" do
   end
 
   it "should display last push widget with link to merge request page" do
-    page.should have_content "Your last push was to branch new_design"
+    page.should have_content "Your pushed to branch new_design"
     page.should have_link "Create Merge Request"
   end
 

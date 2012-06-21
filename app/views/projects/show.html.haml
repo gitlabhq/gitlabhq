@@ -21,12 +21,6 @@
             Issue
 
 = render "events/event_last_push", :event => @last_push
-- unless @events.blank?
-  %br
-  %h5.cgray
-    %span.ico.activities
-    Recent Activity
-  %hr
-  .content_list= render @events
+.content_list= render @events
 
 

@@ -42,7 +42,7 @@ Given /^project "(.*?)" has push event$/ do |arg1|
 end
 
 Then /^I should see last push widget$/ do
-  page.should have_content "Your last push was to branch new_design"
+  page.should have_content "Your pushed to branch new_design"
   page.should have_link "Create Merge Request"
 end
 

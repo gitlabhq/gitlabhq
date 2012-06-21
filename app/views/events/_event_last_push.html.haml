@@ -1,8 +1,8 @@
-- if event && event.branch_name
+- if show_last_push_widget?(event)
   .event_lp
     %div
       = image_tag gravatar_icon(event.author_email), :class => "avatar"
-      %span Your last push was to 
+      %span Your pushed to 
       = event.ref_type
       = link_to project_commits_path(event.project, :ref => event.ref_name) do
         %strong= event.ref_name
@@ -12,6 +12,5 @@
         = time_ago_in_words(event.created_at)
         ago.
 
-      - if event.project.merge_requests_enabled
-        = link_to new_mr_path_from_push_event(event), :title => "New Merge Request", :class => "btn small padded primary" do
-          Create Merge Request
+      = link_to new_mr_path_from_push_event(event), :title => "New Merge Request", :class => "btn small padded primary" do
+        Create Merge Request

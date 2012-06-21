@@ -48,8 +48,8 @@ module Account
   end
 
   def recent_push project_id = nil
-    # Get push events not earlier than 6 hours ago
-    events = recent_events.code_push.where("created_at > ?", Time.now - 6.hours)
+    # Get push events not earlier than 2 hours ago
+    events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
     events = events.where(:project_id => project_id) if project_id
 
     # Take only latest one

@@ -9,6 +9,10 @@ module PushEvent
     data[:ref]["refs/tags"]
   end
 
+  def branch? 
+    data[:ref]["refs/heads"]
+  end
+
   def new_branch?
     commit_from =~ /^00000/
   end
@@ -86,5 +90,9 @@ module PushEvent
 
   def push_with_commits? 
     md_ref? && commits.any? && parent_commit && last_commit
+  end
+
+  def last_push_to_non_root?
+    branch? && project.default_branch != branch_name
   end
 end
