@@ -11,6 +11,8 @@ class IssueObserver < ActiveRecord::Observer
     Note.create_status_change_note(issue, current_user, 'reopened') if issue.is_being_reopened?
   end
 
+  protected
+
   def send_reassigned_email(issue)
     recipient_ids = [issue.assignee_id, issue.assignee_id_was].keep_if {|id| id != current_user.id }
 

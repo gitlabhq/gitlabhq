@@ -121,7 +121,7 @@ describe IssueObserver do
       it_sends_a_reassigned_email_to assignee.id
       it_sends_a_reassigned_email_to previous_assignee.id
 
-      subject.send_reassigned_email(issue)
+      subject.send(:send_reassigned_email, issue)
     end
 
     context 'does not send an email to the user who made the reassignment' do
@@ -130,14 +130,14 @@ describe IssueObserver do
         it_sends_a_reassigned_email_to previous_assignee.id
         it_does_not_send_a_reassigned_email_to assignee.id
 
-        subject.send_reassigned_email(issue)
+        subject.send(:send_reassigned_email, issue)
       end
       it 'if the user is the previous assignee' do
         subject.stub(:current_user).and_return(previous_assignee)
         it_sends_a_reassigned_email_to assignee.id
         it_does_not_send_a_reassigned_email_to previous_assignee.id
 
-        subject.send_reassigned_email(issue)
+        subject.send(:send_reassigned_email, issue)
       end
     end
   end
