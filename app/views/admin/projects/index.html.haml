@@ -2,6 +2,10 @@
   Projects
   = link_to 'New Project', new_admin_project_path, :class => "btn small right"
 %br
+= form_tag admin_projects_path, :method => :get do 
+  = text_field_tag :name, params[:name], :class => "xlarge"
+  = submit_tag "Search", :class => "btn submit primary"
+
 %table.admin-table
   %thead
     %th Name
