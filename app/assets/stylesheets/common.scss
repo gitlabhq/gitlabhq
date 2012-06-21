@@ -664,18 +664,23 @@ li.note {
   }
 
   &.critical { 
+    background: #FEE;
+    border-color:#ECC;
     .icon { 
       background: #EAA;
       border:1px solid #B88;
     }
   }
   &.today{ 
+    background: #EFE;
+    border-color:#CEC;
     .icon { 
       background: #ADA;
       border:1px solid #8B8;
     }
   }
   &.closed { 
+    background: #F9f9f9;
     .icon { 
       background: #DDD;
       border:1px solid  #BBB;
@@ -688,6 +693,8 @@ li.note {
     }
   }
   &.merged { 
+    background: #FEF;
+    border-color:#EDE;
     .icon { 
       background: #DAD;
       border:1px solid #B8B;
