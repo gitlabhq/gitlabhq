@@ -83,6 +83,10 @@ class User < ActiveRecord::Base
       )
     end
   end
+
+  def self.search query
+    where("name like :query or email like :query", :query => "%#{query}%")
+  end
 end
 # == Schema Information
 #

@@ -3,6 +3,9 @@
   = link_to 'New User', new_admin_user_path, :class => "btn small right"
 %br
 
+= form_tag admin_users_path, :method => :get do 
+  = text_field_tag :name, params[:name], :class => "xlarge"
+  = submit_tag "Search", :class => "btn submit primary"
 %ul.nav.nav-pills
   %li{:class => "#{'active' unless params[:filter]}"}
     = link_to "Active", admin_users_path

@@ -6,6 +6,7 @@ class Admin::UsersController < ApplicationController
   def index
     @admin_users = User.scoped
     @admin_users = @admin_users.filter(params[:filter])
+    @admin_users = @admin_users.search(params[:name]) if params[:name].present?
     @admin_users = @admin_users.order("updated_at DESC").page(params[:page])
   end
 
