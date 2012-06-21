@@ -14,6 +14,21 @@
           = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search span3 right neib' }
 
   %br
+
+  .issues_legend
+    .list_legend
+      .icon.critical
+      .text Critical
+
+    .list_legend
+      .icon.closed
+      .text Closed
+
+    .list_legend
+      .icon.today
+      .text Today
+  .clearfix
+
   %div#issues-table-holder.ui-box
     .title
       .row

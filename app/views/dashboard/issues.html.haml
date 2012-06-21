@@ -4,6 +4,15 @@
   %small.right #{@issues.total_count} issues
 
 %br
+.issues_legend
+  .list_legend
+    .icon.critical
+    .text Critical
+
+  .list_legend
+    .icon.today
+    .text Today
+.clearfix
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|
     %div.ui-box

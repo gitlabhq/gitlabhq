@@ -93,6 +93,10 @@ class MergeRequest < ActiveRecord::Base
     self.save
   end
 
+  def today?
+    Date.today == created_at.to_date
+  end
+
   def new?
     today? && created_at == updated_at
   end

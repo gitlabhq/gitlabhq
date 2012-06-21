@@ -606,3 +606,92 @@ li.note {
 .mr_show_all_commits { 
   cursor:pointer;
 }
+
+/**
+ *  Issues, MRs legend 
+ * 
+ */
+
+.list_legend {
+  float:left;
+  margin-right:20px;
+  .icon {
+    width:16px;
+    height:16px;
+    float:left;
+    margin-right:5px;
+    @include border-radius(4px);
+    &.critical { 
+      background: #EAA;
+      border:1px solid #B88;
+    }
+    &.today{ 
+      background: #ADA;
+      border:1px solid #8B8;
+    }
+    &.closed { 
+      background: #DDD;
+      border:1px solid  #BBB;
+    }
+    &.yours { 
+      background: #AAD;
+      border:1px solid #88B;
+    }
+    &.merged { 
+      background: #DAD;
+      border:1px solid #B8B;
+    }
+  }
+  .text { 
+    padding-bottom: 10px;
+    float:left;
+  }
+}
+
+.merge_request,
+.issue { 
+  .list_legend { 
+    margin-right: 5px;
+    margin-top: 10px;
+    .icon {
+      width:16px;
+      height:16px;
+      float:left;
+      margin-right:5px;
+      @include border-radius(4px);
+      border:1px solid #ddd;
+    }
+  }
+
+  &.critical { 
+    .icon { 
+      background: #EAA;
+      border:1px solid #B88;
+    }
+  }
+  &.today{ 
+    .icon { 
+      background: #ADA;
+      border:1px solid #8B8;
+    }
+  }
+  &.closed { 
+    .icon { 
+      background: #DDD;
+      border:1px solid  #BBB;
+    }
+  }
+  &.yours { 
+    .icon { 
+      background: #AAD;
+      border:1px solid #88B;
+    }
+  }
+  &.merged { 
+    .icon { 
+      background: #DAD;
+      border:1px solid #B8B;
+    }
+  }
+}
+
