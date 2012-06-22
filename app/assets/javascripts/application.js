@@ -15,7 +15,7 @@
 //= require bootstrap-modal
 //= require modernizr
 //= require chosen-jquery
-//= require raphael/raphael
+//= require raphael
 //= require branch-graph
 //= require_tree .
 
@@ -56,7 +56,7 @@ $(document).ready(function(){
 
   /**
    * Commit show suppressed diff
-   * 
+   *
    */
   $(".supp_diff_link").bind("click", function() {
     showDiff(this);

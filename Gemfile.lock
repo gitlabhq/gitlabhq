@@ -151,8 +151,6 @@ GEM
     gherkin (2.11.0)
       json (>= 1.4.6)
     git (1.2.5)
-    graphael-rails (0.1.4)
-      jeweler
     haml (3.1.6)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -166,11 +164,6 @@ GEM
       multi_json (~> 1.0)
       multi_xml
     i18n (0.6.0)
-    jeweler (1.8.3)
-      bundler (~> 1.0)
-      git (>= 1.2.5)
-      rake
-      rdoc
     journey (1.0.3)
     jquery-rails (2.0.2)
       railties (>= 3.2.0, < 5.0)
@@ -249,6 +242,7 @@ GEM
       thor (>= 0.14.6, < 2.0)
     raindrops (0.9.0)
     rake (0.9.2.2)
+    raphael-rails (1.5.2)
     rdoc (3.12)
       json (~> 1.4)
     redcarpet (2.1.1)
@@ -370,7 +364,6 @@ DEPENDENCIES
   foreman
   git
   gitolite!
-  graphael-rails (= 0.1.4)
   grit!
   haml-rails
   httparty
@@ -388,6 +381,7 @@ DEPENDENCIES
   pygments.rb!
   rails (= 3.2.5)
   rails-footnotes
+  raphael-rails (= 1.5.2)
   redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
   resque_mailer
