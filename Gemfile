@@ -35,21 +35,21 @@ gem "httparty"
 gem "charlock_holmes"
 gem "foreman"
 gem "omniauth-ldap"
-gem 'bootstrap-sass', "2.0.3.1"
 gem "colored"
 gem 'resque_mailer'
-gem 'chosen-rails'
-
-gem "jquery-rails",    "2.0.2"
-gem "jquery-ui-rails", "0.5.0"
-gem "modernizr",       "2.5.3"
-gem "graphael-rails",  "0.1.4"
 
 group :assets do
   gem "sass-rails",   "3.2.5"
   gem "coffee-rails", "3.2.2"
   gem "uglifier",     "1.0.3"
   gem "therubyracer"
+
+  gem 'chosen-rails'
+  gem "jquery-rails",     "2.0.2"
+  gem "jquery-ui-rails",  "0.5.0"
+  gem "modernizr",        "2.5.3"
+  gem "raphael-rails",    "1.5.2"
+  gem 'bootstrap-sass',   "2.0.3.1"
 end
 
 group :development do
