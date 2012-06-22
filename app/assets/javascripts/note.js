@@ -55,7 +55,7 @@ init:
 initRefresh:
   function() {
     // init timer
-    var intNew = setInterval("NoteList.getNew()", 10000);
+    setInterval(NoteList.getNew, 10000);
   },
 
 replace:
