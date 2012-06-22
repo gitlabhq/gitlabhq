@@ -96,7 +96,7 @@ class ProjectsController < ApplicationController
     UsersProject.set_callback(:destroy, :after, :update_repository)
 
     respond_to do |format|
-      format.html { redirect_to projects_url }
+      format.html { redirect_to root_path }
     end
   end
 
