@@ -216,7 +216,7 @@ Application can be started with next command:
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Edit /etc/nginx/nginx.conf. Add next code to **http** section:
+Edit /etc/nginx/nginx.conf. Add in **http** section:
 
     upstream gitlab {
         server unix:/home/gitlab/gitlab/tmp/sockets/gitlab.socket;
