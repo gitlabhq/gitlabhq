@@ -320,9 +320,9 @@ Adding permission:
 
     sudo chmod +x /etc/init.d/gitlab
 
-When server is rebooted then gitlab must starting:
+Gitlab autostart:
 
-    sudo insserv gitlab
+    sudo update-rc.d gitlab defaults
 
 Now you can start/restart/stop gitlab like:
 
