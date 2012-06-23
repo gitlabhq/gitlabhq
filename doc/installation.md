@@ -216,7 +216,7 @@ Application can be started with next command:
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Edit /etc/nginx/nginx.conf. Add next code to **http** section:
+Edit /etc/nginx/nginx.conf. Add in **http** section:
 
     upstream gitlab {
         server unix:/home/gitlab/gitlab/tmp/sockets/gitlab.socket;
@@ -323,6 +323,15 @@ Adding permission:
 Gitlab autostart:
 
     sudo update-rc.d gitlab defaults
+
+For Ubuntu/Debian servers, run the following to update the init links:
+
+    # Create the default system links
+    update-rc.d -f gitlab defaults
+    
+    # Enable the gitlab init script
+    update-rc.d gitlab enableupdate-rc.d gitlab enable
+
 
 Now you can start/restart/stop gitlab like:
 
