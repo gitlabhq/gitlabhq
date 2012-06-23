@@ -26,8 +26,4 @@ class CommitDecorator < ApplicationDecorator
       safe_message.split(/\n/, 2)[1].try(:chomp)
     end
   end
-
-  def breadcrumbs
-
-  end
 end
