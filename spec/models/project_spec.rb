@@ -72,16 +72,29 @@ describe Project do
   end
 
   describe "last_activity" do
-    let(:project) { Factory :project }
+    let(:project)    { Factory :project }
+    let(:last_event) { double }
 
     before do
-      @issue = Factory :issue, :project => project
+      project.stub(:events).and_return( [ double, double, last_event ] )
     end
 
-    it { project.last_activity.should == Event.last }
-    it { project.last_activity_date.to_s.should == Event.last.created_at.to_s }
+    it { project.last_activity.should == last_event }
   end
 
+  describe 'last_activity_date' do
+    let(:project)    { Factory :project }
+
+    it 'returns the creation date of the project\'s last event if present' do
+      last_event = double(:created_at => 'now')
+      project.stub(:events).and_return( [double, double, last_event] )
+      project.last_activity_date.should == last_event.created_at
+    end
+
+    it 'returns the project\'s last update date if it has no events' do
+      project.last_activity_date.should == project.updated_at
+    end
+  end
   describe "fresh commits" do
     let(:project) { Factory :project }
 

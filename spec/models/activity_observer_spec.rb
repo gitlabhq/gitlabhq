@@ -9,9 +9,11 @@ describe ActivityObserver do
   end
 
   describe "Merge Request created" do 
-    before do 
-      @merge_request = Factory :merge_request, :project => project
-      @event = Event.last
+    before do
+      MergeRequest.observers.enable :activity_observer do
+        @merge_request = Factory :merge_request, :project => project
+        @event = Event.last
+      end
     end
 
     it_should_be_valid_event
@@ -20,9 +22,11 @@ describe ActivityObserver do
   end
 
   describe "Issue created" do 
-    before do 
-      @issue = Factory :issue, :project => project
-      @event = Event.last
+    before do
+      Issue.observers.enable :activity_observer do
+        @issue = Factory :issue, :project => project
+        @event = Event.last
+      end
     end
 
     it_should_be_valid_event
