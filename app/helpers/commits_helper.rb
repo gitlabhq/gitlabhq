@@ -17,7 +17,7 @@ module CommitsHelper
     preserve out
   end
 
-  def diff_line_class(line)
+  def identification_type(line)
     if line[0] == "+"
       "new"
     elsif line[0] == "-"
@@ -27,7 +27,7 @@ module CommitsHelper
     end
   end
 
-  def build_line_code(line, index, line_new, line_old)
+  def build_line_anchor(index, line_new, line_old)
     "#{index}_#{line_old}_#{line_new}"
   end
 
@@ -51,12 +51,12 @@ module CommitsHelper
         line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
         line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
 
-        next if line_old == 1 && line_new == 1
+        next if line_old == 1 && line_new == 1 #top of file
         yield(full_line, type, nil, nil, nil)
         next
       else
-        type = diff_line_class(line)
-        line_code = build_line_code(line, index, line_new, line_old)
+        type = identification_type(line)
+        line_code = build_line_anchor(index, line_new, line_old)
         yield(full_line, type, line_code, line_new, line_old)
       end
 
