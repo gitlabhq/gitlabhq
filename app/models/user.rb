@@ -53,6 +53,14 @@ class User < ActiveRecord::Base
   scope :blocked, where(:blocked =>  true)
   scope :active, where(:blocked =>  false)
 
+  before_validation :generate_password, :on1 => :create
+
+  def generate_password
+    if self.password.blank? && self.password_confirmation.blank?
+      self.password = self.password_confirmation = Devise.friendly_token.first(8)
+    end
+  end
+
   def self.filter filter_name
     case filter_name
     when "admins"; self.admins
