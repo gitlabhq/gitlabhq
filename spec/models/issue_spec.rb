@@ -20,10 +20,60 @@ describe Issue do
     it { Issue.should respond_to :opened }
   end
 
-  it { Factory.create(:issue,
-                      :author => Factory(:user),
-                      :assignee => Factory(:user),
-                      :project => Factory.create(:project)).should be_valid }
+  subject { Factory.create(:issue,
+                           :author => Factory(:user),
+                           :assignee => Factory(:user),
+                           :project => Factory.create(:project)) }
+  it { should be_valid }
+
+  describe '#is_being_reassigned?' do
+    it 'returns true if the issue assignee has changed' do
+      subject.assignee = Factory(:user)
+      subject.is_being_reassigned?.should be_true
+    end
+    it 'returns false if the issue assignee has not changed' do
+      subject.is_being_reassigned?.should be_false
+    end
+  end
+
+  describe '#is_being_closed?' do
+    it 'returns true if the closed attribute has changed and is now true' do
+      subject.closed = true
+      subject.is_being_closed?.should be_true
+    end
+    it 'returns false if the closed attribute has changed and is now false' do
+      issue = Factory.create(:issue,
+                             :closed => true,
+                             :author => Factory(:user),
+                             :assignee => Factory(:user),
+                             :project => Factory.create(:project))
+      issue.closed = false
+      issue.is_being_closed?.should be_false
+    end
+    it 'returns false if the closed attribute has not changed' do
+      subject.is_being_closed?.should be_false
+    end
+  end
+
+
+  describe '#is_being_reopened?' do
+    it 'returns true if the closed attribute has changed and is now false' do
+      issue = Factory.create(:issue,
+                             :closed => true,
+                             :author => Factory(:user),
+                             :assignee => Factory(:user),
+                             :project => Factory.create(:project))
+      issue.closed = false
+      issue.is_being_reopened?.should be_true
+    end
+    it 'returns false if the closed attribute has changed and is now true' do
+      subject.closed = true
+      subject.is_being_reopened?.should be_false
+    end
+    it 'returns false if the closed attribute has not changed' do
+      subject.is_being_reopened?.should be_false
+    end
+  end
 
   describe "plus 1" do
     let(:project) { Factory(:project) }
@@ -56,6 +106,7 @@ describe Issue do
       subject.upvotes.should == 2
     end
   end
+
 end
 # == Schema Information
 #

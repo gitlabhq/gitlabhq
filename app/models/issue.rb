@@ -27,7 +27,7 @@ class Issue < ActiveRecord::Base
   validates :title,
             :presence => true,
             :length   => { :within => 0..255 }
-            
+
   validates :description,
             :length   => { :within => 0..2000 }
 
@@ -54,6 +54,18 @@ class Issue < ActiveRecord::Base
 
   def new?
     today? && created_at == updated_at
+  end
+
+  def is_being_reassigned?
+    assignee_id_changed?
+  end
+
+  def is_being_closed?
+    closed_changed? && closed
+  end
+
+  def is_being_reopened?
+    closed_changed? && !closed
   end
 end
 # == Schema Information

@@ -128,16 +128,22 @@ describe "Issues" do
         end
 
         it "should call send mail" do
-          Notify.should_receive(:new_issue_email).and_return(stub(:deliver => true))
-          click_button "Submit new issue"
+          Issue.observers.enable :issue_observer do
+            Notify.should_receive(:new_issue_email).and_return(stub(:deliver => true))
+            click_button "Submit new issue"
+          end
         end
 
         it "should send valid email to user" do
-          click_button "Submit new issue"
-          issue = Issue.last
-          email = ActionMailer::Base.deliveries.last
-          email.subject.should have_content("New Issue was created")
-          email.body.should have_content(issue.title)
+          Issue.observers.enable :issue_observer do
+            with_resque do
+              click_button "Submit new issue"
+            end
+            issue = Issue.last
+            email = ActionMailer::Base.deliveries.last
+            email.subject.should have_content("New Issue was created")
+            email.body.should have_content(issue.title)
+          end
         end
 
       end
