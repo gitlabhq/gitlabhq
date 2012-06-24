@@ -1,8 +1,12 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
-  before_filter :set_current_user_for_mailer, :check_token_auth
+  before_filter :set_current_user_for_mailer
+  before_filter :check_token_auth
+  before_filter :set_current_user_for_observers
+
   protect_from_forgery
+
   helper_method :abilities, :can?
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
@@ -56,6 +60,10 @@ class ApplicationController < ActionController::Base
 
   def set_current_user_for_mailer
     MailerObserver.current_user = current_user
+  end
+
+  def set_current_user_for_observers
+    IssueObserver.current_user = current_user
   end
 
   def abilities
