@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   scope :blocked, where(:blocked =>  true)
   scope :active, where(:blocked =>  false)
 
-  before_validation :generate_password, :on1 => :create
+  before_validation :generate_password, :on => :create
 
   def generate_password
     if self.password.blank? && self.password_confirmation.blank?
