@@ -22,6 +22,12 @@ describe User do
     user.identifier.should == "test_mail_com"
   end
 
+  it "should generate password when password is empty" do
+    user = User.create(:email => "test1@mail.com")
+    user.password.should eql(user.password_confirmation)
+    user.password.should_not be_empty
+  end
+
   it "should have authentication token" do
     user = Factory(:user)
     user.authentication_token.should_not == ""
