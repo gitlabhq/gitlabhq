@@ -18,12 +18,21 @@
           .input
             = f.text_field :email
             %span.help-inline * required
-        .clearfix
-          = f.label :password
-          .input= f.password_field :password
-        .clearfix
-          = f.label :password_confirmation
-          .input= f.password_field :password_confirmation
+        %hr
+
+        -if f.object.new_record?
+          .clearfix 
+            = f.label :admin, :class => "checkbox" do
+              = f.check_box :force_random_password, {}, true, nil
+            %span Generate random password
+        
+        %div.password-fields
+          .clearfix
+            = f.label :password
+            .input= f.password_field :password, :disabled => f.object.force_random_password 
+          .clearfix
+            = f.label :password_confirmation
+            .input= f.password_field :password_confirmation, :disabled => f.object.force_random_password
         %hr
         .clearfix
           = f.label :skype
