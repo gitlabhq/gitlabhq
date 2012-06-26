@@ -7,7 +7,9 @@
             %i.icon-ok
             = "MERGED"
       - if merge_request.notes.any?
-        %span.btn.small.disabled.padded= pluralize merge_request.notes.count, 'note'
+        %span.btn.small.disabled.padded
+          %i.icon-comment
+          = merge_request.notes.count
       %span.btn.small.disabled.padded
         = merge_request.source_branch
         &rarr;

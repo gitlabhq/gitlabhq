@@ -3,7 +3,9 @@
     .icon
   .right
     - if issue.notes.any?
-      %span.btn.small.disabled.padded= pluralize issue.notes.count, 'note'
+      %span.btn.small.disabled.padded
+        %i.icon-comment
+        = issue.notes.count
     - if can? current_user, :modify_issue, issue
       - if issue.closed
         = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small padded", :remote => true
