@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
   before_validation :generate_password, :on => :create
 
   def generate_password
-    if self.force_random_password == true
+    if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
   end

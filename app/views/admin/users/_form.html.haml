@@ -23,7 +23,7 @@
         -if f.object.new_record?
           .clearfix 
             = f.label :admin, :class => "checkbox" do
-              = f.check_box :force_random_password
+              = f.check_box :force_random_password, {}, true, nil
             %span Generate random password
         
         %div.password-fields
