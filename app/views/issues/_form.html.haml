@@ -14,7 +14,7 @@
             = f.text_field :title, :maxlength => 255, :class => "xxlarge"
       .issue_middle_block
         .issue_assignee
-          = f.label :assignee_id, "Assign to *"
+          = f.label :assignee_id, "Assign to"
           .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
         .issue_milestone
           = f.label :milestone_id

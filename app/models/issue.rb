@@ -11,7 +11,6 @@ class Issue < ActiveRecord::Base
   attr_accessor :author_id_of_changes
 
   validates_presence_of :project_id
-  validates_presence_of :assignee_id
   validates_presence_of :author_id
 
   delegate :name,
@@ -22,6 +21,7 @@ class Issue < ActiveRecord::Base
   delegate :name,
            :email,
            :to => :assignee,
+           :allow_nil => true,
            :prefix => true
 
   validates :title,
@@ -54,6 +54,10 @@ class Issue < ActiveRecord::Base
 
   def new?
     today? && created_at == updated_at
+  end
+
+  def is_assigned?
+    !!assignee_id
   end
 
   def is_being_reassigned?

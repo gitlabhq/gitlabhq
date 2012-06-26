@@ -49,8 +49,6 @@
         %tr
           %td
             = link_to [@project, issue] do
-              = image_tag gravatar_icon(issue.assignee_email, 16), :width => "16"
-              &nbsp;
               %span.badge.badge-info ##{issue.id}
               &ndash;
               = truncate issue.title, :length => 60
