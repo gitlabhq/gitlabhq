@@ -22,7 +22,7 @@ class Admin::MailerController < ApplicationController
       render :file => 'notify/note_wall_email', :layout => 'notify'
     end
   rescue
-    render :text => "Preview not avaialble"
+    render :text => "Preview not available"
   end
 
   def preview_user_new
@@ -31,7 +31,7 @@ class Admin::MailerController < ApplicationController
 
     render :file => 'notify/new_user_email', :layout => 'notify'
   rescue
-    render :text => "Preview not avaialble"
+    render :text => "Preview not available"
   end
 
   def preview_issue_new
@@ -40,6 +40,6 @@ class Admin::MailerController < ApplicationController
     @project = @issue.project
     render :file => 'notify/new_issue_email', :layout => 'notify'
   rescue
-    render :text => "Preview not avaialble"
+    render :text => "Preview not available"
   end
 end
