@@ -7,55 +7,66 @@
       = submit_tag 'Search', :class => "btn btn-primary"
 - if params[:search].present?
   %br
-  %h3 Search results
+  %h3
+    Search results
+    %small (#{@projects.count + @merge_requests.count + @issues.count})
   %hr
   .search_results
-    - if @projects.empty? && @merge_requests.empty?
-      %h3
-        %small Nothing here
-    - else
-      - if @projects.any?
-        %h4 Projects
-        .padded
-          - @projects.each do |project|
-            = link_to project do
-              %h4
-                %span.ico.project
-                = project.name
-                %small
-                  last activity at
-                  = project.last_activity_date.stamp("Aug 25, 2011")
-      - if @merge_requests.any?
-        %h4 Merge Requests
-        .padded
-          - @merge_requests.each do |merge_request|
-            = link_to [merge_request.project, merge_request] do
-              %h5
-                Merge Request #
-                = merge_request.id
-                &ndash;
-                = truncate merge_request.title, :length => 50
-                %small
-                  updated at
-                  = merge_request.updated_at.stamp("Aug 25, 2011")
-                %strong
-                  %span.label= merge_request.project.name
-      - if @issues.any?
-        %h4 Issues
-        .padded
-          - @issues.each do |issue|
-            = link_to [issue.project, issue] do
-              %h5
-                Issue #
-                = issue.id
-                &ndash;
-                = truncate issue.title, :length => 50
-                %small
-                  updated at
-                  = issue.updated_at.stamp("Aug 25, 2011")
-                %strong
-                  %span.label= issue.project.name
+    .row
+      .span6
+        %table.admin-table
+          %tr
+            %th Projects
+          %tbody
+            - @projects.each do |project|
+              %tr
+                %td
+                  = link_to project do
+                    %strong.term= project.name
+                    %small.cgray
+                      last activity at
+                      = project.last_activity_date.stamp("Aug 25, 2011")
+            - if @projects.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No Projects
+        %br
+        %table.admin-table
+          %tr
+            %th Merge Requests
+          %tbody
+            - @merge_requests.each do |merge_request|
+              %tr
+                %td
+                  = link_to [merge_request.project, merge_request] do
+                    %span.badge.badge-info ##{merge_request.id}
+                    &ndash;
+                    %strong.term= truncate merge_request.title, :length => 50
+                    %strong.right
+                      %span.label= merge_request.project.name
+            - if @merge_requests.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No Merge Requests
+      .span6
+        %table.admin-table
+          %tr
+            %th Issues
+          %tbody
+            - @issues.each do |issue|
+              %tr
+                %td
+                  = link_to [issue.project, issue] do
+                    %span.badge.badge-info ##{issue.id}
+                    &ndash;
+                    %strong.term= truncate issue.title, :length => 40
+                  %strong.right
+                    %span.label= issue.project.name
+            - if @issues.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No Issues
   :javascript
     $(function() {
-      $(".search_results").highlight("#{params[:search]}");
+      $(".search_results .term").highlight("#{params[:search]}");
     })
