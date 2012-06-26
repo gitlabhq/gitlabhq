@@ -22,10 +22,22 @@ describe User do
     user.identifier.should == "test_mail_com"
   end
 
-  it "should generate password when password is empty" do
-    user = User.create(:email => "test1@mail.com")
-    user.password.should eql(user.password_confirmation)
-    user.password.should_not be_empty
+  it "should execute callback when force_random_password specified" do
+    user = User.new(:email => "test@mail.com", :force_random_password => true)
+    user.should_receive(:generate_password)
+    user.save
+  end
+
+  it "should not generate password by default" do
+    user = Factory(:user, :password => 'abcdefg', :password_confirmation => 'abcdefg')
+    user.password.should == 'abcdefg'
+  end
+
+  it "should generate password when forcing random password" do
+    Devise.stub(:friendly_token).and_return('123456789')
+    user = User.create(:email => "test1@mail.com", :force_random_password => true)
+    user.password.should == user.password_confirmation
+    user.password.should == '12345678'
   end
 
   it "should have authentication token" do

@@ -5,7 +5,10 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
-                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, :theme_id
+                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, 
+                  :theme_id, :force_random_password
+
+  attr_accessor :force_random_password
 
   has_many :users_projects, :dependent => :destroy
   has_many :projects, :through => :users_projects
@@ -56,7 +59,7 @@ class User < ActiveRecord::Base
   before_validation :generate_password, :on => :create
 
   def generate_password
-    if self.password.blank? && self.password_confirmation.blank?
+    if self.force_random_password == true
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
   end
