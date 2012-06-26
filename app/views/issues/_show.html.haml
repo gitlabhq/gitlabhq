@@ -19,6 +19,6 @@
     %strong= issue.assignee_name
     - if issue.upvotes > 0
       %span.badge.badge-success= "+#{issue.upvotes}"
-
+  
   = link_to project_issue_path(issue.project, issue) do
     %p.row_title= truncate(issue.title, :length => 100)

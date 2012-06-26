@@ -36,7 +36,6 @@ module MergeRequestsHelper
     classes = "merge_request"
     classes << " closed" if mr.closed
     classes << " merged" if mr.merged?
-    classes << " today" if mr.today?
     classes
   end
 end

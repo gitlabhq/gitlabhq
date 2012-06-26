@@ -6,6 +6,11 @@
   %span.pretty_label.branch= @merge_request.target_branch
 
   %span.right
+    - if @merge_request.merged?
+      %span.btn.small.disabled.padded
+        %strong
+          %i.icon-ok
+          = "MERGED"
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
         = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded danger", :title => "Close merge request"

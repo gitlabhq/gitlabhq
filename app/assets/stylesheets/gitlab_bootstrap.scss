@@ -174,6 +174,9 @@ a:focus {
 
 .label { 
   background-color: #474D57;
+  &.label-important { 
+    background-color: #B94A48;
+  }
 }
 
 .nav-tabs > li > a, .nav-pills > li > a {

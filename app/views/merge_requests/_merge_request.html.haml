@@ -1,8 +1,11 @@
 %li.wll{ :class => mr_css_classes(merge_request) }
-  .list_legend
-    .icon
   .right
     .left
+      - if merge_request.merged?
+        %span.btn.small.disabled.padded
+          %strong
+            %i.icon-ok
+            = "MERGED"
       - if merge_request.notes.any?
         %span.btn.small.disabled.padded= pluralize merge_request.notes.count, 'note'
       %span.btn.small.disabled.padded
