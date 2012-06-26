@@ -2,15 +2,16 @@
 #
 # Table name: events
 #
-#  id          :integer         not null, primary key
+#  id          :integer(4)      not null, primary key
 #  target_type :string(255)
-#  target_id   :integer
+#  target_id   :integer(4)
 #  title       :string(255)
 #  data        :text
-#  project_id  :integer
+#  project_id  :integer(4)
 #  created_at  :datetime        not null
 #  updated_at  :datetime        not null
-#  action      :integer
+#  action      :integer(4)
+#  author_id   :integer(4)
 #
 
 require 'spec_helper'

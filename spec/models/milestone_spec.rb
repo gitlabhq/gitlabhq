@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: milestones
+#
+#  id          :integer(4)      not null, primary key
+#  title       :string(255)     not null
+#  project_id  :integer(4)      not null
+#  description :text
+#  due_date    :date
+#  closed      :boolean(1)      default(FALSE), not null
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
+#
+
 require 'spec_helper'
 
 describe Milestone do

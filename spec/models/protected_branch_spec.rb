@@ -2,8 +2,8 @@
 #
 # Table name: protected_branches
 #
-#  id         :integer         not null, primary key
-#  project_id :integer         not null
+#  id         :integer(4)      not null, primary key
+#  project_id :integer(4)      not null
 #  name       :string(255)     not null
 #  created_at :datetime        not null
 #  updated_at :datetime        not null

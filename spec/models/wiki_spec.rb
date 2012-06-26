@@ -16,16 +16,15 @@ describe Wiki do
 end
 # == Schema Information
 #
-# Table name: snippets
+# Table name: wikis
 #
-#  id         :integer         not null, primary key
+#  id         :integer(4)      not null, primary key
 #  title      :string(255)
 #  content    :text
-#  author_id  :integer         not null
-#  project_id :integer         not null
-#  created_at :datetime
-#  updated_at :datetime
-#  file_name  :string(255)
-#  expires_at :datetime
+#  project_id :integer(4)
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  slug       :string(255)
+#  user_id    :integer(4)
 #
 
