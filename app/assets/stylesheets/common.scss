@@ -616,10 +616,11 @@ li.note {
   float:left;
   margin-right:20px;
   .icon {
-    width:16px;
-    height:16px;
+    width:12px;
+    height:12px;
     float:left;
     margin-right:5px;
+    margin-top: 2px;
     @include border-radius(4px);
     &.critical { 
       background: #EAA;
@@ -652,10 +653,10 @@ li.note {
 .issue { 
   .list_legend { 
     margin-right: 5px;
-    margin-top: 10px;
+    margin-top: 14px;
     .icon {
-      width:16px;
-      height:16px;
+      width:8px;
+      height:8px;
       float:left;
       margin-right:5px;
       @include border-radius(4px);
