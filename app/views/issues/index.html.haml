@@ -53,7 +53,7 @@
             = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Milestone")
             = hidden_field_tag :f, params[:f]
 
-    %ul#issues-table.unstyled
+    %ul#issues-table.unstyled.issues_table
       = render "issues"
 
 :javascript
