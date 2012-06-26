@@ -34,6 +34,17 @@ GIT
       pygments.rb (~> 0.2.11)
 
 GIT
+  remote: https://github.com/gitlabhq/omniauth-ldap.git
+  revision: 7edf27d0281e09561838122982c16b7e62181f44
+  ref: 7edf27d0281e09561838122982c16b7e62181f44
+  specs:
+    omniauth-ldap (1.0.2)
+      net-ldap (~> 0.2.2)
+      omniauth (~> 1.0)
+      pyu-ruby-sasl (~> 0.0.3.1)
+      rubyntlm (~> 0.1.1)
+
+GIT
   remote: https://github.com/gitlabhq/pygments.rb.git
   revision: 2cada028da5054616634a1d9ca6941b65b3ce188
   ref: 2cada028da5054616634a1d9ca6941b65b3ce188
@@ -201,11 +212,6 @@ GEM
     omniauth (1.1.0)
       hashie (~> 1.2)
       rack
-    omniauth-ldap (1.0.2)
-      net-ldap (~> 0.2.2)
-      omniauth (~> 1.0)
-      pyu-ruby-sasl (~> 0.0.3.1)
-      rubyntlm (~> 0.1.1)
     orm_adapter (0.0.7)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
@@ -379,7 +385,7 @@ DEPENDENCIES
   minitest (>= 2.10)
   modernizr (= 2.5.3)
   mysql2
-  omniauth-ldap
+  omniauth-ldap!
   pry
   pygments.rb!
   rails (= 3.2.5)

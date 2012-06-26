@@ -10,10 +10,11 @@ gem "mysql2"
 gem "devise", "~> 1.5"
 
 # GITLAB patched libs
-gem "grit",        :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
-gem "gitolite",    :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
-gem "pygments.rb", :git => "https://github.com/gitlabhq/pygments.rb.git",     :ref => "2cada028da5054616634a1d9ca6941b65b3ce188"
-gem 'yaml_db',     :git => "https://github.com/gitlabhq/yaml_db.git"
+gem "grit",          :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
+gem "gitolite",      :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
+gem "pygments.rb",   :git => "https://github.com/gitlabhq/pygments.rb.git",     :ref => "2cada028da5054616634a1d9ca6941b65b3ce188"
+gem "omniauth-ldap", :git => "https://github.com/gitlabhq/omniauth-ldap.git",   :ref => "7edf27d0281e09561838122982c16b7e62181f44"
+gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 
 gem "stamp"
@@ -34,7 +35,6 @@ gem "resque", "~> 1.20.0"
 gem "httparty"
 gem "charlock_holmes"
 gem "foreman"
-gem "omniauth-ldap"
 gem "colored"
 gem 'resque_mailer'
 
