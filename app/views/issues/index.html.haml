@@ -13,22 +13,7 @@
           = hidden_field_tag :status, params[:f]
           = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search span3 right neib' }
 
-  %br
-
-  .issues_legend
-    .list_legend
-      .icon.today
-      .text Today
-
-    .list_legend
-      .icon.critical
-      .text Critical
-
-    .list_legend
-      .icon.closed
-      .text Closed
   .clearfix
-
   %div#issues-table-holder.ui-box
     .title
       .left

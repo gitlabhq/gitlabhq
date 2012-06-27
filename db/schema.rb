@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120413135904) do
+ActiveRecord::Schema.define(:version => 20120627145613) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -34,7 +34,6 @@ ActiveRecord::Schema.define(:version => 20120413135904) do
     t.datetime "updated_at",                      :null => false
     t.boolean  "closed",       :default => false, :null => false
     t.integer  "position",     :default => 0
-    t.boolean  "critical",     :default => false, :null => false
     t.string   "branch_name"
     t.text     "description"
     t.integer  "milestone_id"

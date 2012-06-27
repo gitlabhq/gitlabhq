@@ -30,7 +30,7 @@ class MergeRequestsController < ApplicationController
                       else @merge_requests.opened
                       end.page(params[:page]).per(20)
 
-    @merge_requests = @merge_requests.includes(:author, :project).order("created_at desc")
+    @merge_requests = @merge_requests.includes(:author, :project).order("closed, created_at desc")
   end
 
   def show

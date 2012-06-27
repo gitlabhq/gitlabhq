@@ -622,10 +622,6 @@ li.note {
     margin-right:5px;
     margin-top: 2px;
     @include border-radius(4px);
-    &.critical { 
-      background: #EAA;
-      border:1px solid #B88;
-    }
     &.today{ 
       background: #ADA;
       border:1px solid #8B8;
@@ -664,14 +660,6 @@ li.note {
     }
   }
 
-  &.critical { 
-    background: #FEE;
-    border-color:#ECC;
-    .icon { 
-      background: #EAA;
-      border:1px solid #B88;
-    }
-  }
   &.today{ 
     background: #EFE;
     border-color:#CEC;
