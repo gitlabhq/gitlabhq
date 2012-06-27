@@ -17,6 +17,7 @@ gem "omniauth-ldap", :git => "https://github.com/gitlabhq/omniauth-ldap.git",   
 gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 
+gem "grape"
 gem "stamp"
 gem "kaminari"
 gem "haml-rails"
