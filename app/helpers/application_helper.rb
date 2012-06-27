@@ -90,7 +90,10 @@ module ApplicationHelper
   end
 
   def show_last_push_widget?(event)
-    event && event.last_push_to_non_root? && 
-      event.project && event.project.merge_requests_enabled
+    event && 
+      event.last_push_to_non_root? &&
+      !event.rm_ref? &&
+      event.project && 
+      event.project.merge_requests_enabled
   end
 end
