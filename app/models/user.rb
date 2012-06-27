@@ -5,7 +5,10 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
-                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, :theme_id
+                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, 
+                  :theme_id, :force_random_password
+
+  attr_accessor :force_random_password
 
   has_many :users_projects, :dependent => :destroy
   has_many :projects, :through => :users_projects
@@ -52,6 +55,14 @@ class User < ActiveRecord::Base
   scope :admins, where(:admin =>  true)
   scope :blocked, where(:blocked =>  true)
   scope :active, where(:blocked =>  false)
+
+  before_validation :generate_password, :on => :create
+
+  def generate_password
+    if self.force_random_password
+      self.password = self.password_confirmation = Devise.friendly_token.first(8)
+    end
+  end
 
   def self.filter filter_name
     case filter_name
