@@ -177,6 +177,14 @@ a:focus {
   &.label-important { 
     background-color: #B94A48;
   }
+
+  &.label-issue { 
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding:4px 6px;
+    color:#444;
+    text-shadow:0 0 1px #fff;
+  }
 }
 
 .nav-tabs > li > a, .nav-pills > li > a {

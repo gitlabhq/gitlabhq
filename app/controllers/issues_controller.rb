@@ -139,6 +139,7 @@ class IssuesController < ApplicationController
 
     @issues = @issues.where(:assignee_id => params[:assignee_id]) if params[:assignee_id].present?
     @issues = @issues.where(:milestone_id => params[:milestone_id]) if params[:milestone_id].present?
+    @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?
     @issues = @issues.includes(:author, :project).order("critical, updated_at")
     @issues
   end

@@ -1,6 +1,8 @@
 class Issue < ActiveRecord::Base
   include Upvote
 
+  acts_as_taggable_on :labels
+
   belongs_to :project
   belongs_to :milestone
   belongs_to :author, :class_name => "User"

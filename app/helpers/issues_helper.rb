@@ -33,4 +33,8 @@ module IssuesHelper
     classes << " today" if issue.today?
     classes
   end
+
+  def issue_tags 
+    @project.issues.tag_counts_on(:labels).map(&:name)
+  end
 end
