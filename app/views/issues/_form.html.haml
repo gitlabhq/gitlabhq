@@ -9,31 +9,37 @@
     .issue_form_box
       .issue_title
         .clearfix
-          = f.label :title, "Issue Subject *"
+          = f.label :title do 
+            %strong= "Subject *"
           .input
             = f.text_field :title, :maxlength => 255, :class => "xxlarge"
       .issue_middle_block
         .issue_assignee
-          = f.label :assignee_id, "Assign to"
-          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Assign to user" })
+          = f.label :assignee_id do 
+            %i.icon-user
+            Assign to
+          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select a user" })
         .issue_milestone
-          = f.label :milestone_id
+          = f.label :milestone_id do 
+            %i.icon-time
+            Milestone
           .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { :include_blank => "Select milestone" })
 
       .issue_description
         .clearfix
-          = f.label :critical, "Critical"
-          .input= f.check_box :critical
+          = f.label :label_list do 
+            %i.icon-tag 
+            Labels
+          .input
+            = f.text_field :label_list, :maxlength => 2000, :class => "xxlarge"
+            %p.hint Separate with comma.
 
-        - unless @issue.new_record?
-          .clearfix
-            = f.label :closed
-            .input= f.check_box :closed
         .clearfix
-          = f.label :description, "Issue Details"
+          = f.label :description, "Details"
           .input
             = f.text_area :description, :maxlength => 2000, :class => "xxlarge", :rows => 14
             %p.hint Markdown is enabled.
+
 
     .actions
       - if @issue.new_record?

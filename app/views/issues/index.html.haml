@@ -13,58 +13,38 @@
           = hidden_field_tag :status, params[:f]
           = search_field_tag :issue_search, nil, { :placeholder => 'Search', :class => 'issue_search span3 right neib' }
 
-  %br
-
-  .issues_legend
-    .list_legend
-      .icon.today
-      .text Today
-
-    .list_legend
-      .icon.critical
-      .text Critical
-
-    .list_legend
-      .icon.closed
-      .text Closed
   .clearfix
-
   %div#issues-table-holder.ui-box
     .title
-      .row
-        .span4
-          %ul.nav.nav-pills.left
-            %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-              = link_to project_issues_path(@project, :f => 0, :milestone_id => params[:milestone_id]) do
-                Open
-            %li{:class => ("active" if params[:f] == "2")}
-              = link_to project_issues_path(@project, :f => 2, :milestone_id => params[:milestone_id]) do
-                Closed
-            %li{:class => ("active" if params[:f] == "3")}
-              = link_to project_issues_path(@project, :f => 3, :milestone_id => params[:milestone_id]) do
-                To Me
-            %li{:class => ("active" if params[:f] == "1")}
-              = link_to project_issues_path(@project, :f => 1, :milestone_id => params[:milestone_id]) do
-                All
+      .left
+        %ul.nav.nav-pills.left
+          %li{:class => ("active" if (params[:f] == issues_filter[:open] || !params[:f]))}
+            = link_to project_issues_path(@project, :f => issues_filter[:open], :milestone_id => params[:milestone_id]) do
+              Open
+          %li{:class => ("active" if params[:f] == issues_filter[:closed])}
+            = link_to project_issues_path(@project, :f => issues_filter[:closed], :milestone_id => params[:milestone_id]) do
+              Closed
+          %li{:class => ("active" if params[:f] == issues_filter[:to_me])}
+            = link_to project_issues_path(@project, :f => issues_filter[:to_me], :milestone_id => params[:milestone_id]) do
+              To Me
+          %li{:class => ("active" if params[:f] == issues_filter[:all])}
+            = link_to project_issues_path(@project, :f => issues_filter[:all], :milestone_id => params[:milestone_id]) do
+              All
 
-        .span6.right
-          = form_tag project_issues_path(@project), :method => :get, :class => :right  do
-            = select_tag(:assignee_id, options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), :prompt => "Assignee")
-            = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Milestone")
-            = hidden_field_tag :f, params[:f]
-
+      .right
+        = form_tag project_issues_path(@project), :method => :get, :class => :right  do
+          = select_tag(:label_name, options_for_select(issue_tags, params[:label_name]), :prompt => "Labels")
+          = select_tag(:assignee_id, options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), :prompt => "Assignee")
+          = select_tag(:milestone_id, options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Milestone")
+          = hidden_field_tag :f, params[:f]
+      .clearfix
+  
     %ul#issues-table.unstyled.issues_table
       = render "issues"
 
 :javascript
   $(function(){
-    initIssuesSearch();
-    setSortable();
-    $("#assignee_id").chosen();
-    $("#milestone_id").chosen();
-    $("#milestone_id, #assignee_id").live("change", function(){
-      $(this).closest("form").submit();
-    });
+    issuesPage();
   })
 
   function setSortable(){

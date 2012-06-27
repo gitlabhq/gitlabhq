@@ -3,6 +3,8 @@ class IssuesController < ApplicationController
   before_filter :project
   before_filter :module_enabled
   before_filter :issue, :only => [:edit, :update, :destroy, :show]
+  helper_method :issues_filter
+
   layout "project"
 
   # Authorize
@@ -130,16 +132,26 @@ class IssuesController < ApplicationController
   end
 
   def issues_filtered
-    @issues = case params[:f].to_i
-              when 1 then @project.issues
-              when 2 then @project.issues.closed
-              when 3 then @project.issues.opened.assigned(current_user)
+    @issues = case params[:f]
+              when issues_filter[:all] then @project.issues
+              when issues_filter[:closed] then @project.issues.closed
+              when issues_filter[:to_me] then @project.issues.opened.assigned(current_user)
               else @project.issues.opened
               end
 
     @issues = @issues.where(:assignee_id => params[:assignee_id]) if params[:assignee_id].present?
     @issues = @issues.where(:milestone_id => params[:milestone_id]) if params[:milestone_id].present?
-    @issues = @issues.includes(:author, :project).order("critical, updated_at")
+    @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?
+    @issues = @issues.includes(:author, :project).order("updated_at")
     @issues
+  end
+
+  def issues_filter
+    {
+      all: "1",
+      closed: "2",
+      to_me: "3",
+      open: "0" 
+    }
   end
 end

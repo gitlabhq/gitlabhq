@@ -1,7 +1,4 @@
-- @issues.select(&:critical).each do |issue|
-  = render(:partial => 'issues/show', :locals => {:issue => issue})
-
-- @issues.reject(&:critical).each do |issue|
+- @issues.each do |issue|
   = render(:partial => 'issues/show', :locals => {:issue => issue})
 
 - if @issues.present?

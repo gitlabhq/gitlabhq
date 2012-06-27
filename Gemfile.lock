@@ -89,8 +89,8 @@ GEM
     activesupport (3.2.5)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    acts-as-taggable-on (2.1.1)
-      rails
+    acts-as-taggable-on (2.3.1)
+      rails (~> 3.0)
     acts_as_list (0.1.6)
     addressable (2.2.8)
     ansi (1.4.2)
@@ -351,7 +351,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  acts-as-taggable-on (~> 2.1.0)
+  acts-as-taggable-on (= 2.3.1)
   acts_as_list
   annotate!
   autotest
