@@ -6,6 +6,7 @@ module Gitlab
     format :json
     helpers APIHelpers
 
+    # Users API
     resource :users do
       before { authenticate! }
 
@@ -26,6 +27,35 @@ module Gitlab
     get "/user" do
       authenticate!
       present @current_user, :with => Entities::User
+    end
+
+    # Projects API
+    resource :projects do
+      before { authenticate! }
+
+      # GET /projects
+      get do
+        @projects = current_user.projects
+        present @projects, :with => Entities::Project
+      end
+
+      # GET /projects/:id
+      get ":id" do
+        @project = Project.find_by_code(params[:id])
+        present @project, :with => Entities::Project
+      end
+
+      # GET /projects/:id/repository/branches
+      get ":id/repository/branches" do
+        @project = Project.find_by_code(params[:id])
+        present @project.repo.heads.sort_by(&:name), :with => Entities::ProjectRepositoryBranches
+      end
+
+      # GET /projects/:id/repository/tags
+      get ":id/repository/tags" do
+        @project = Project.find_by_code(params[:id])
+        present @project.repo.tags.sort_by(&:name).reverse, :with => Entities::ProjectRepositoryTags
+      end
     end
   end
 end
