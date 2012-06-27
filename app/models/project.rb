@@ -48,7 +48,7 @@ class Project < ActiveRecord::Base
     Project.transaction do
       project.owner = user
 
-      project.save!
+      return project unless project.save
 
       # Add user as project master
       project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
@@ -72,8 +72,8 @@ class Project < ActiveRecord::Base
   validates :path,
             :uniqueness => true,
             :presence => true,
-            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
-                         :message => "only letters, digits & '_' '-' '.' allowed" },
+            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed. Letter should be first" },
             :length   => { :within => 0..255 }
 
   validates :description,
@@ -82,8 +82,8 @@ class Project < ActiveRecord::Base
   validates :code,
             :presence => true,
             :uniqueness => true,
-            :format => { :with => /^[a-zA-Z0-9_\-\.]*$/,
-                         :message => "only letters, digits & '_' '-' '.' allowed"  },
+            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+                         :message => "only letters, digits & '_' '-' '.' allowed. Letter should be first"  },
             :length   => { :within => 1..255 }
 
   validates :owner, :presence => true
