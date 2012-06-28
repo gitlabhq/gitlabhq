@@ -137,7 +137,7 @@ Permissions:
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
-    sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -H -u gitlab git clone git://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
 
     # Rename config files
