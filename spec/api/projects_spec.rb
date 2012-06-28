@@ -3,10 +3,9 @@ require 'spec_helper'
 describe Gitlab::API do
   let(:user) { Factory :user }
   let!(:project) { Factory :project, :owner => user }
+  before { project.add_access(user, :read) }
 
   describe "GET /projects" do
-    before { project.add_access(user, :read) }
-
     it "should return authentication error" do
       get "/api/projects"
       response.status.should == 401

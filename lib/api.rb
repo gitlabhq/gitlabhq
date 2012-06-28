@@ -41,19 +41,19 @@ module Gitlab
 
       # GET /projects/:id
       get ":id" do
-        @project = Project.find_by_code(params[:id])
+        @project = current_user.projects.find_by_code(params[:id])
         present @project, :with => Entities::Project
       end
 
       # GET /projects/:id/repository/branches
       get ":id/repository/branches" do
-        @project = Project.find_by_code(params[:id])
+        @project = current_user.projects.find_by_code(params[:id])
         present @project.repo.heads.sort_by(&:name), :with => Entities::ProjectRepositoryBranches
       end
 
       # GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        @project = Project.find_by_code(params[:id])
+        @project = current_user.projects.find_by_code(params[:id])
         present @project.repo.tags.sort_by(&:name).reverse, :with => Entities::ProjectRepositoryTags
       end
     end
