@@ -19,6 +19,7 @@ class Commit
     :diffs,
     :tree,
     :id,
+    :to_patch,
     :to => :commit
 
 

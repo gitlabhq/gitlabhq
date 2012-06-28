@@ -1,6 +1,17 @@
 .commit-box{class: @commit.parents.count > 1 ? "merge-commit" : ""}
   .commit-head
-    = link_to "Browse Code »", tree_project_ref_path(@project, @commit.id), :class => "browse-button"
+    .right
+      = link_to tree_project_ref_path(@project, @commit.id), :class => "browse-button primary" do 
+        %strong Browse Code »
+      - if @notes_count > 0
+        %span.btn.disabled
+          %i.icon-comment
+          = @notes_count
+        &nbsp; 
+      = link_to patch_project_commit_path(@project, @commit.id), :class => "btn small" do 
+        %i.icon-download-alt
+        Get Patch  
+      &nbsp; 
     %h3.commit-title
       = commit_msg_with_link_to_issues(@project, @commit.title)
     - if @commit.description.present?
