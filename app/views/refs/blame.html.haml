@@ -38,7 +38,7 @@
               = preserve do
                 %pre
                   - lines.each do |line|
-                    = line
+                    = Gitlab::Encode.utf8(line)
 
 :javascript
   $(function(){
