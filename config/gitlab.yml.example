@@ -17,11 +17,15 @@ git_host:
   base_path: /home/git/repositories/
   host: localhost
   git_user: git
+  upload_pack: true
+  receive_pack: true
   # port: 22
+
 
 # Git settings
 # Use default values unless you understand it
 git:
+  path: /usr/bin/git
   # Max size of git object like commit, in bytes
   # This value can be increased if you have a very large commits
   git_max_size: 5242880 # 5.megabytes
