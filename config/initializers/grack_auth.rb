@@ -5,7 +5,10 @@ module Grack
       # Authentication with username and password
       email, password = @auth.credentials
       user = User.find_by_email(email)
-      return false unless user.valid_password?(password)
+      return false unless user.try(:valid_password?, password)
+
+      # Need this patch because the rails mount
+      @env['PATH_INFO'] = @env['REQUEST_PATH']
 
       # Find project by PATH_INFO from env
       if m = /^\/([\w-]+).git/.match(@env['PATH_INFO']).to_a
