@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/SaitoWu/grack.git
-  revision: dd990d231ac9189046b71a65d874638e55320e27
+  revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
   specs:
     grack (1.0.0)
       rack (~> 1.4.1)
