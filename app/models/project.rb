@@ -155,6 +155,72 @@ class Project < ActiveRecord::Base
   def project_id
     self.id
   end
+
+  def write_hooks
+    %w(post-receive).each do |hook|
+      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
+    end
+  end
+
+  def write_hook(name, content)
+    hook_file = File.join(path_to_repo, 'hooks', name)
+    cur_content = File.read(hook_file)
+
+    unless cur_content == content 
+      FileUtils.copy(hook_file, hook_file + '.' + Time.now.to_i.to_s)
+      File.open(hook_file, 'w') do |f|
+        f.write(content)
+      end  
+      cur_perm=sprintf("%o", File.stat(hook_file).mode)
+      unless cur_perm == "100775"
+        File.chmod(0775, hook_file)
+      end
+      return 0
+    end  
+
+  end
+
+  def repo
+    @repo ||= Grit::Repo.new(path_to_repo)
+  end
+
+  def url_to_repo
+    Gitlabhq::GitHost.url_to_repo(path)
+  end
+
+  def path_to_repo
+    File.join(GIT_HOST["base_path"], "#{path}.git")
+  end
+
+  def update_repository
+    Gitlabhq::GitHost.system.update_project(path, self)
+
+    write_hooks if File.exists?(path_to_repo)
+  end
+
+  def destroy_repository
+    Gitlabhq::GitHost.system.destroy_project(self)
+  end
+
+  def repo_exists?
+    @repo_exists ||= (repo && !repo.branches.empty?)
+  rescue 
+    @repo_exists = false
+  end
+
+  def tags
+    repo.tags.map(&:name).sort.reverse
+  end
+
+  def heads
+    @heads ||= repo.heads
+  end
+
+  def tree(fcommit, path = nil)
+    fcommit = commit if fcommit == :head
+    tree = fcommit.tree
+    path ? (tree / path) : tree
+  end
 end
 
 # == Schema Information
