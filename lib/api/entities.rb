@@ -19,5 +19,11 @@ module Gitlab
     class ProjectRepositoryTags < Grape::Entity
       expose :name, :commit
     end
+
+    class ProjectSnippet < Grape::Entity
+      expose :id, :title, :file_name
+      expose :author, :using => Entities::User
+      expose :expires_at, :updated_at, :created_at
+    end
   end
 end
