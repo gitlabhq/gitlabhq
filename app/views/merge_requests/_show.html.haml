@@ -1,0 +1,39 @@
+= render "merge_requests/show/mr_title"
+= render "merge_requests/show/how_to_merge"
+= render "merge_requests/show/mr_box"
+= render "merge_requests/show/mr_accept"
+= render "merge_requests/show/commits"
+
+- if @commits.present?
+  %ul.nav.nav-tabs.mr_nav_tabs
+    %li
+      = link_to "#notes", "data-url" => project_merge_request_path(@project, @merge_request), :class => "merge-notes-tab tab" do
+        %i.icon-comment
+        Comments
+    %li
+      = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
+        %i.icon-list-alt
+        Diff
+
+.merge_request_notes#notes{ :class => (controller.action_name == 'show') ? "" : "hide" }
+  = render("notes/notes", :tid => @merge_request.id, :tt => "merge_request")
+.merge-request-diffs
+  = render "merge_requests/show/diffs" if @diffs
+.status
+
+= render "notes/per_line_form"
+
+:javascript
+  $(function(){
+    MergeRequest.init({
+      url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
+      check_enable: #{@merge_request.state == MergeRequest::UNCHECKED ? "true" : "false"},
+      current_state: "#{@merge_request.human_state}",
+      action: "#{controller.action_name}"
+    });
+
+    $(".edit_merge_request").live("ajax:beforeSend", function() {
+      $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+    })
+  })
+

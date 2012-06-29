@@ -1,0 +1,28 @@
+%h3
+  = "Merge Request ##{@merge_request.id}:"
+  &nbsp;
+  %span.pretty_label.branch= @merge_request.source_branch
+  &rarr;
+  %span.pretty_label.branch= @merge_request.target_branch
+
+  %span.right
+    - if @merge_request.merged?
+      %span.btn.small.disabled.padded
+        %strong
+          %i.icon-ok
+          = "MERGED"
+    - if can?(current_user, :modify_merge_request, @merge_request)
+      - if @merge_request.open?
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded danger", :title => "Close merge request"
+        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do
+          %i.icon-edit
+          Edit
+
+    %br
+    - if @merge_request.upvotes > 0
+      .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
+
+
+.back_link
+  = link_to project_merge_requests_path(@project) do
+    &larr; To merge requests

@@ -39,6 +39,7 @@ gem "charlock_holmes"
 gem "foreman"
 gem "colored"
 gem 'resque_mailer'
+gem 'tabs_on_rails'
 
 group :assets do
   gem "sass-rails",   "3.2.5"

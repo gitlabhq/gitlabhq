@@ -61,8 +61,8 @@ ActiveRecord::Schema.define(:version => 20120627145613) do
     t.boolean  "closed",                              :default => false, :null => false
     t.datetime "created_at",                                             :null => false
     t.datetime "updated_at",                                             :null => false
-    t.text     "st_commits",    :limit => 4294967295
-    t.text     "st_diffs",      :limit => 4294967295
+    t.text     "st_commits",    :limit => 2147483647
+    t.text     "st_diffs",      :limit => 2147483647
     t.boolean  "merged",                              :default => false, :null => false
     t.integer  "state",                               :default => 1,     :null => false
   end

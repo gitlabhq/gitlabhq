@@ -72,3 +72,13 @@
     @extend .primary;
   }
 }
+
+.mr_nav_tabs { 
+  li { 
+    a { 
+      font-weight:bold;
+      padding:8px 20px;
+      text-align:center;
+    }
+  }
+}
