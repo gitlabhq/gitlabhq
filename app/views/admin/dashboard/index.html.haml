@@ -4,7 +4,7 @@
       %h5
         Resque Workers
       .data.padded
-        = link_to "/info/resque" do
+        = link_to admin_resque_path do
           %h1{:class => @workers.present? ? "cgreen" : "cred"}
             = @workers.count
         %hr
