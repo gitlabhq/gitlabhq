@@ -15,7 +15,7 @@ gem "gitolite",      :git => "https://github.com/gitlabhq/gitolite-client.git", 
 gem "pygments.rb",   :git => "https://github.com/gitlabhq/pygments.rb.git",     :ref => "2cada028da5054616634a1d9ca6941b65b3ce188"
 gem "omniauth-ldap", :git => "https://github.com/gitlabhq/omniauth-ldap.git",   :ref => "7edf27d0281e09561838122982c16b7e62181f44"
 gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
-gem 'grack',         :git => "https://github.com/SaitoWu/grack.git"
+gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 
 gem "stamp"

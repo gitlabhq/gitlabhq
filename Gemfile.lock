@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/SaitoWu/grack.git
-  revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
-  specs:
-    grack (1.0.0)
-      rack (~> 1.4.1)
-
-GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: 18cd39ad01829deba5aa34634b8540d6675ab978
   specs:
@@ -19,6 +12,13 @@ GIT
     gitolite (0.0.4.alpha)
       grit (>= 2.4.1)
       hashery (~> 1.4.0)
+
+GIT
+  remote: https://github.com/gitlabhq/grack.git
+  revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
+  specs:
+    grack (1.0.0)
+      rack (~> 1.4.1)
 
 GIT
   remote: https://github.com/gitlabhq/grit.git
