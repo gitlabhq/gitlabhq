@@ -14,6 +14,13 @@ GIT
       hashery (~> 1.4.0)
 
 GIT
+  remote: https://github.com/gitlabhq/grack.git
+  revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
+  specs:
+    grack (1.0.0)
+      rack (~> 1.4.1)
+
+GIT
   remote: https://github.com/gitlabhq/grit.git
   revision: 7f35cb98ff17d534a07e3ce6ec3d580f67402837
   ref: 7f35cb98ff17d534a07e3ce6ec3d580f67402837
@@ -373,6 +380,7 @@ DEPENDENCIES
   foreman
   git
   gitolite!
+  grack!
   grit!
   haml-rails
   httparty
