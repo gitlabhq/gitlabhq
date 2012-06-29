@@ -21,7 +21,7 @@ namespace :gitlab do
       end
 
       GIT_HOST = YAML.load_file("#{Rails.root}/config/gitlab.yml")["git_host"]
-      print "/home/git/repositories/............"
+      print "#{GIT_HOST['base_path']}............"
       if File.exists?(GIT_HOST['base_path'])  
         puts "exists".green 
       else 
@@ -29,7 +29,7 @@ namespace :gitlab do
         return
       end
 
-      print "/home/git/repositories/ is writable?............"
+      print "#{GIT_HOST['base_path']} is writable?............"
       if File.stat(GIT_HOST['base_path']).writable?
         puts "YES".green 
       else
