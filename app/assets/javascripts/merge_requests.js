@@ -30,7 +30,7 @@ var MergeRequest = {
       self.showState(self.opts.current_state);
 
       if($(".automerge_widget").length && self.opts.check_enable){
-        $.get(opts.url_to_automerge_check, function(data){
+        $.get(self.opts.url_to_automerge_check, function(data){
           self.showState(data.state);
         }, "json");
       }
