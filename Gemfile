@@ -18,6 +18,7 @@ gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 
+gem "grape"
 gem "stamp"
 gem "kaminari"
 gem "haml-rails"

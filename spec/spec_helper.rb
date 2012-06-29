@@ -58,4 +58,8 @@ RSpec.configure do |config|
   config.after do
     DatabaseCleaner.clean
   end
+
+  config.include RSpec::Rails::RequestExampleGroup, :type => :request, :example_group => {
+    :file_path => /spec\/api/
+  }
 end

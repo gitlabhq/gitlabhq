@@ -169,6 +169,12 @@ GEM
     gherkin (2.11.0)
       json (>= 1.4.6)
     git (1.2.5)
+    grape (0.2.0)
+      hashie (~> 1.2)
+      multi_json
+      multi_xml
+      rack
+      rack-mount
     haml (3.1.6)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -230,6 +236,8 @@ GEM
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
+    rack-mount (0.8.3)
+      rack (>= 1.0.0)
     rack-protection (1.2.0)
       rack
     rack-ssl (1.3.2)
@@ -381,6 +389,7 @@ DEPENDENCIES
   git
   gitolite!
   grack!
+  grape
   grit!
   haml-rails
   httparty

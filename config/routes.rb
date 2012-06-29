@@ -4,6 +4,10 @@ Gitlab::Application.routes.draw do
   #
   get 'search' => "search#show"
 
+  # API
+  require 'api'
+  mount Gitlab::API => '/api'
+
   # Optionally, enable Resque here
   require 'resque/server'
   mount Resque::Server.new, at: '/info/resque'
