@@ -13,6 +13,9 @@ nav.main_menu {
   background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+  display:table;
+  table-layout:fixed;
+  width:100%;
   @include shade;
   .count { 
     position: relative;
@@ -37,13 +40,7 @@ nav.main_menu {
     color:$style_color;
   }
   a { 
-    // Landscape phone to portrait tablet
-    @media (max-width: 1080px) { min-width:35px; }
-    // Portrait tablet to landscape and desktop
-    @media (min-width: 1080px) and (max-width: 1200px) { min-width:40px; }
-    // Large desktop
-    @media (min-width: 1200px) { min-width:55px; }
-
+    display:table-cell;
     text-align:center;
     font-weight:bold;
     &:first-child{ 
@@ -55,12 +52,10 @@ nav.main_menu {
       border-bottom-left-radius: 4px;
       border-left: 0;
     }
-    padding: 9px 25px;
-    display: inline-block;
+    padding: 9px 2px;
     color: $style_color;
     position: relative;
     margin: 0;
-    float:left;
     text-shadow:0 1px 1px white;
     border-right: 1px solid #DDD;
     border-left: 1px solid #EEE;
@@ -68,7 +63,6 @@ nav.main_menu {
     &.home { 
       background: url(home_icon.PNG) no-repeat center center;
       text-indent:-9999px;
-      //min-width:40px;
       img { 
         position:relative;
         top:4px;
@@ -82,6 +76,7 @@ nav.main_menu {
       border-radius: 0 0 1px 1px;
       &:first-child{ 
         border-bottom:none;
+        border-left:none;
       }
     }
   }
