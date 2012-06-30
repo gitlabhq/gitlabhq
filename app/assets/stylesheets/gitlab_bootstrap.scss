@@ -281,6 +281,7 @@ table.no-borders {
     font-size:13px;
     background: #474D57;
     color:#fff;
+    font-weight:bold;
     font-family: monospace;
   }
 }
@@ -589,4 +590,28 @@ ul.breadcrumb {
   .bottom_box_content { 
     border-top:1px solid #eee;
   }
+}
+
+input[type=text] { 
+  &.large_text { 
+    padding:6px;
+    font-size:16px;
+  }
+}
+
+p { 
+  &.slead { 
+    color:#456;
+    font-size:16px;
+    margin-bottom: 12px;
+    font-weight: 200;
+    line-height: 24px;
+  }
+}
+
+h3.page_title { 
+  color:#456;
+  font-size:20px;
+  font-weight: 600;
+  line-height: 28px;
 }

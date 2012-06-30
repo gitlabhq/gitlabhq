@@ -1,9 +1,13 @@
-%h3.cgray
+%h3.page_title
   GITLAB
-  %span.right v2.6
+  .right
+    %span= Gitlab::Version
+    %small= Gitlab::Revision
 %hr
-%h4 Self Hosted Git Management
-%h4 Fast, secure and stable solution based on Ruby on Rails & Gitolite.
+%p.lead
+  Self Hosted Git Management
+  %br
+  Fast, secure and stable solution based on Ruby on Rails & Gitolite.
 
 %hr
 
@@ -15,3 +19,6 @@
 
   %li
     %h5= link_to "Permissions", help_permissions_path
+
+  %li
+    %h5= link_to "Web Hooks", help_web_hooks_path

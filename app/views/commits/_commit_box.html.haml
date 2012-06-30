@@ -12,7 +12,7 @@
         %i.icon-download-alt
         Get Patch  
       &nbsp; 
-    %h3.commit-title
+    %h3.commit-title.page_title
       = commit_msg_with_link_to_issues(@project, @commit.title)
     - if @commit.description.present?
       %pre.commit-description
