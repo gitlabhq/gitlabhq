@@ -46,7 +46,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 > 
 >     # Install curl and sudo 
 >     apt-get install curl sudo
->     
+>	
 >     # 3 steps in 1 command :)
 >     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
 > 
@@ -61,7 +61,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     sudo apt-get upgrade
 
     sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline-gplv2-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev sendmail
-    
+
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
@@ -77,7 +77,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 # 3. Install gitolite
 
 Create user for git:
-    
+
     sudo adduser \
       --system \
       --shell /bin/sh \
@@ -90,7 +90,7 @@ Create user for git:
 Create user for gitlab:
 
     # ubuntu/debian
-    sudo adduser --disabled-login --gecos 'gitlab system' gitlab    
+    sudo adduser --disabled-login --gecos 'gitlab system' gitlab
 
 Add your user to git group:
 
@@ -103,7 +103,7 @@ Generate key:
 Get gitolite source code:
 
     cd /home/git
-    sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite    
+    sudo -H -u git git clone https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup:
 
@@ -114,17 +114,17 @@ Setup:
 
     sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
-    
+
 Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
 #### CHECK: Logout & login again to apply git group to your user
-    
+
     # clone admin repo to add localhost to known_hosts
     # & be sure your user has access to gitolite
-    sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin 
+    sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin
 
     # if succeed  you can remove it
     sudo rm -rf /tmp/gitolite-admin 
@@ -137,7 +137,7 @@ Permissions:
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
-    sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
 
     # Rename config files
@@ -161,10 +161,14 @@ Permissions:
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
     
+#### Change Hostname
+
+    sudo -u gitlab sed -i 's/localhost/<new hostname>/g' /home/gitlab/gitlab/config/gitlab.yml
+    # <new hostname> has to be replaced by the hostname the gitlabhq user uses to access the gitlqbhq installation.
+
 Checking status:
 
     sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
-
 
     # OUTPUT EXAMPLE
     Starting diagnostic
@@ -186,23 +190,27 @@ If you got all YES - congrats! You can go to next step.
 
 Application can be started with next command:
 
-    # For test purposes 
+    # For test purposes
+    cd /home/gitlab/gitlab
     sudo -u gitlab bundle exec rails s -e production
 
     # As daemon
+    cd /home/gitlab/gitlab
     sudo -u gitlab bundle exec rails s -e production -d
 
 #  6. Run resque process (for processing queue).
 
     # Manually
-    sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
+    cd /home/gitlab/gitlab
+    sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production
 
     # Gitlab start script
+    cd /home/gitlab/gitlab
     ./resque.sh
 
 
 **Ok - we have a working application now. **
-**But keep going - there are some thing that should be done **
+**But keep going - there are some things that should be done **
 
 # Nginx && Unicorn
 
