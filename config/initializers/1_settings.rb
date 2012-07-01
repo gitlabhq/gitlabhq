@@ -11,7 +11,7 @@ class Settings < Settingslogic
     end
 
     def email_from
-      self.email['from'] ||= "notify@" + web_host
+      self.email['from'] ||= ("notify@" + web_host)
     end
 
     def url 
@@ -49,18 +49,18 @@ class Settings < Settingslogic
     end
 
     def git_upload_pack
-      if git_host['upload_pack'] == false
-        false
-      else
+      if git_host['upload_pack'] != false
         true
+      else
+        false
       end
     end
 
     def git_receive_pack
-      if git_host['receive_pack'] == false
-        false
-      else
+      if git_host['receive_pack'] != false
         true
+      else
+        false
       end
     end
 
