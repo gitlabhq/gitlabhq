@@ -22,6 +22,7 @@ class Settings < Settingslogic
       raw_url = self.web_protocol
       raw_url << web.host
       raw_url << ":#{web.port}" if web.port.to_i != 80
+      raw_url
     end
 
     def ssh_port
