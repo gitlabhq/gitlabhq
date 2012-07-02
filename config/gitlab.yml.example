@@ -1,18 +1,20 @@
-# Gitlab application config file
+# # # # # # # # # # # # # # # # # # 
+# Gitlab application config file  #
+# # # # # # # # # # # # # # # # # #
+
+# Web application specific settings
+web:
+  host: localhost
+  port: 80
+  https: false
 
 # Email used for notification
 # about new issues, comments
 email:
-  from: notify@gitlabhq.com
-  host: gitlabhq.com
-
-  # Protocol used for links in email letters
-  # Value can be http or https
-  protocol: http # or https
+  from: notify@localhost
 
 # Git Hosting configuration
 git_host:
-  system: gitolite
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
   host: localhost

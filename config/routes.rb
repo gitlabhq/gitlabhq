@@ -14,10 +14,10 @@ Gitlab::Application.routes.draw do
 
   # Enable Grack support
   mount Grack::Bundle.new({
-    git_path: GIT_OPTS['path'],
-    project_root: GIT_HOST['base_path'],
-    upload_pack: GIT_HOST['upload_pack'],
-    receive_pack: GIT_HOST['receive_pack']
+    git_path:     Gitlab.config.git_bin_path,
+    project_root: Gitlab.config.git_base_path,
+    upload_pack:  Gitlab.config.git_upload_pack,
+    receive_pack: Gitlab.config.git_receive_pack
   }), at: '/:path', constraints: { path: /[\w-]+\.git/ }
 
   #

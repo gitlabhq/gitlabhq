@@ -56,7 +56,7 @@ describe Project do
 
   it "returns the full web URL for this repo" do
     project = Project.new(:code => "somewhere")
-    project.web_url.should == "#{GIT_HOST['host']}/somewhere"
+    project.web_url.should == "#{Gitlab.config.url}/somewhere"
   end
 
   describe :valid_repo? do

@@ -113,7 +113,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [GIT_HOST['host'], code].join("/")
+    [Gitlab.config.url, code].join("/")
   end
 
   def common_notes

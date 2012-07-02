@@ -13,7 +13,7 @@ module ApplicationHelper
   end
 
   def web_app_url
-    "#{request_protocol}://#{GIT_HOST["host"]}/"
+    "#{request_protocol}://#{Gitlab.config.web_host}/"
   end
 
   def last_commit(project)

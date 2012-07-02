@@ -3,6 +3,7 @@ namespace :gitlab do
     desc "GITLAB | Check gitlab installation status"
     task :status => :environment  do
       puts "Starting diagnostic"
+      git_base_path = Gitlab.config.git_base_path
 
       print "config/database.yml............"
       if File.exists?(File.join Rails.root, "config", "database.yml") 
@@ -21,16 +22,16 @@ namespace :gitlab do
       end
 
       GIT_HOST = YAML.load_file("#{Rails.root}/config/gitlab.yml")["git_host"]
-      print "#{GIT_HOST['base_path']}............"
-      if File.exists?(GIT_HOST['base_path'])  
+      print "#{git_base_path}............"
+      if File.exists?(git_base_path)  
         puts "exists".green 
       else 
         puts "missing".red
         return
       end
 
-      print "#{GIT_HOST['base_path']} is writable?............"
-      if File.stat(GIT_HOST['base_path']).writable?
+      print "#{git_base_path} is writable?............"
+      if File.stat(git_base_path).writable?
         puts "YES".green 
       else
         puts "NO".red
@@ -38,7 +39,7 @@ namespace :gitlab do
       end
 
       begin
-        `git clone #{GIT_HOST["admin_uri"]} /tmp/gitolite_gitlab_test`
+        `git clone #{Gitlab.config.gitolite_admin_uri} /tmp/gitolite_gitlab_test`
         FileUtils.rm_rf("/tmp/gitolite_gitlab_test")
         print "Can clone gitolite-admin?............"
         puts "YES".green 
@@ -49,7 +50,7 @@ namespace :gitlab do
       end
 
       print "UMASK for .gitolite.rc is 0007? ............"
-      unless open("#{GIT_HOST['base_path']}/../.gitolite.rc").grep(/REPO_UMASK = 0007/).empty?
+      unless open("#{git_base_path}/../.gitolite.rc").grep(/REPO_UMASK = 0007/).empty?
         puts "YES".green 
       else
         puts "NO".red
