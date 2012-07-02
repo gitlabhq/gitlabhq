@@ -79,6 +79,11 @@ nav.main_menu {
         border-left:none;
       }
     }
+
+    &.wide { 
+      width:185px;
+      @media (min-width: 1080px) and (max-width: 1200px) { width:160px; }
+    }
   }
 }
 /*

@@ -12,7 +12,7 @@
         Issues
         %span.count= @project.issues.opened.count
     - if @project.merge_requests_enabled
-      = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
+      = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current wide" : "wide" do
         Merge Requests
         %span.count= @project.merge_requests.opened.count
 
