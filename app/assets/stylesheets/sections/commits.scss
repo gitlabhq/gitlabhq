@@ -82,6 +82,17 @@
     color:#333;
     font-size: 12px;
     font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+    .old{
+      span.idiff{
+        background-color:#FAA;
+      }
+    }
+    .new{
+      span.idiff{
+        background-color:#AFA;
+      }
+    }
+
   }
   .diff_file_content_image {
     background:#eee;
