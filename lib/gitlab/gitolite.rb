@@ -33,7 +33,7 @@ module Gitlab
     end
 
     def configure
-      Timeout::timeout(20) do
+      Timeout::timeout(30) do
         File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin 
             f.flock(File::LOCK_EX)

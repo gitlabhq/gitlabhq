@@ -33,7 +33,7 @@ class Settings < Settingslogic
     end
 
     def ssh_host
-      git_host['host'] || 'localhost'
+      git_host['host'] || web_host || 'localhost'
     end
 
     def ssh_path
@@ -49,11 +49,19 @@ class Settings < Settingslogic
     end
 
     def git_upload_pack
-      git_host['upload_pack'] || true
+      if git_host['upload_pack'] == false
+        false
+      else
+        true
+      end
     end
 
     def git_receive_pack
-      git_host['receive_pack'] || true
+      if git_host['receive_pack'] == false
+        false
+      else
+        true
+      end
     end
 
     def git_bin_path
@@ -70,6 +78,10 @@ class Settings < Settingslogic
 
     def gitolite_admin_uri
       git['admin_uri'] || 'git@localhost:gitolite-admin'
+    end
+
+    def default_projects_limit
+      app['default_projects_limit'] || 10
     end
   end
 end

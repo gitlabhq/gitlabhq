@@ -21,7 +21,6 @@ namespace :gitlab do
         return
       end
 
-      GIT_HOST = YAML.load_file("#{Rails.root}/config/gitlab.yml")["git_host"]
       print "#{git_base_path}............"
       if File.exists?(git_base_path)  
         puts "exists".green 
