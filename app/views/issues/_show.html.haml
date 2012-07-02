@@ -29,6 +29,7 @@
     %p.row_title= truncate(issue.title, :length => 100)
 
   %span.update-author
+    %small.cdark= "##{issue.id}"
     - if issue.assignee
       assigned to #{issue.assignee_name}
     - else

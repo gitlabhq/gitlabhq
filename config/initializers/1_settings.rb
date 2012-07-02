@@ -3,7 +3,7 @@ class Settings < Settingslogic
 
   class << self
     def web_protocol
-      self.web['protocol'] ||= web.https ? "https://" : "http://"
+      self.web['protocol'] ||= web.https ? "https" : "http"
     end
 
     def web_host 
@@ -18,10 +18,15 @@ class Settings < Settingslogic
       self['url'] ||= build_url
     end 
 
+    def web_port 
+      web['port'] ||= 80
+    end
+
     def build_url
       raw_url = self.web_protocol
-      raw_url << web.host
-      raw_url << ":#{web.port}" if web.port.to_i != 80
+      raw_url << "://"
+      raw_url << web_host
+      raw_url << ":#{web_port}" if web_port.to_i != 80
       raw_url
     end
 

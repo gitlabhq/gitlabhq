@@ -51,7 +51,6 @@ function initIssuesSearch() {
       if (terms.length >= 2 || terms.length == 0) {
         $.get(href, { 'f': status, 'terms': terms, 'milestone_id': milestone_id }, function(response) {
           $('#issues-table').html(response);
-          setSortable();
         });
       }
     }
@@ -68,7 +67,6 @@ function initIssuesSearch() {
  */
 function issuesPage(){ 
   initIssuesSearch();
-  setSortable();
   $("#label_name").chosen();
   $("#assignee_id").chosen();
   $("#milestone_id").chosen();
