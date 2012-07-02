@@ -18,7 +18,7 @@ Gitlab::Application.routes.draw do
     project_root: GIT_HOST['base_path'],
     upload_pack: GIT_HOST['upload_pack'],
     receive_pack: GIT_HOST['receive_pack']
-  }), at: '/:path', constraints: { path: /[\w-]+.git*/ }
+  }), at: '/:path', constraints: { path: /[\w-]+\.git/ }
 
   #
   # Help

@@ -7,6 +7,11 @@ module Grack
       user = User.find_by_email(email)
       return false unless user.try(:valid_password?, password)
 
+      # Set GL_USER env variable
+      ENV['GL_USER'] = email
+      # Pass Gitolite update hook
+      ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
+
       # Need this patch because the rails mount
       @env['PATH_INFO'] = @env['REQUEST_PATH']
 
