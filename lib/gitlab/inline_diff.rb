@@ -36,7 +36,7 @@ module Gitlab
           last_token = first_line[last_the_same_symbols..-1]
 
           diff_arr[index+1].sub!(/#{last_token}$/, FINISH + last_token)
-            diff_arr[index+2].sub!(/#{last_token}$/, FINISH + last_token)
+          diff_arr[index+2].sub!(/#{last_token}$/, FINISH + last_token)
         end
         diff_arr
       end
