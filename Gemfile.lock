@@ -313,6 +313,7 @@ GEM
       libwebsocket (~> 0.1.3)
       multi_json (~> 1.0)
       rubyzip
+    settingslogic (2.0.8)
     shoulda-matchers (1.1.0)
       activesupport (>= 3.0.0)
     simplecov (0.6.4)
@@ -416,6 +417,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (= 3.2.5)
   seed-fu
+  settingslogic
   shoulda-matchers
   simplecov
   six

@@ -5,7 +5,7 @@ describe Notify do
   include EmailSpec::Matchers
 
   before :all do
-    default_url_options[:host] = EMAIL_OPTS['host']
+    default_url_options[:host] = Gitlab.config.web_host
   end
 
   let(:recipient) { Factory.create(:user, :email => 'recipient@example.com') }

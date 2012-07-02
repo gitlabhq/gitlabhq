@@ -17,7 +17,7 @@
         Git Clone
       .input
         .input-prepend
-          %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
+          %span.add-on= Gitlab.config.ssh_path
           = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
           %span.add-on= ".git"
     .clearfix
