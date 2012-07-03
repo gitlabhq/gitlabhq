@@ -19,7 +19,11 @@ class Settings < Settingslogic
     end 
 
     def web_port 
-      web['port'] ||= 80
+      if web.https
+        nil
+      else
+        web['port'] ||= 80
+      end
     end
 
     def build_url
