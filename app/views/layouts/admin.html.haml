@@ -5,11 +5,16 @@
     = render "layouts/flash"
     = render "layouts/head_panel", :title => "Admin area"
     .container
-      %nav.main_menu
-        = link_to "Stats", admin_root_path, :class => "home #{'current' if controller.controller_name == "dashboard"}"
-        = link_to "Projects", admin_projects_path, :class => ('current' if controller.controller_name == "projects")
-        = link_to "Users", admin_users_path, :class => ('current' if controller.controller_name == 'users')
-        = link_to "Emails", admin_emails_path, :class => ('current' if controller.controller_name == 'mailer')
-        = link_to "Resque", admin_resque_path, :class => ('current' if controller.controller_name == 'resque')
+      %ul.main_menu
+        %li.home{:class => tab_class(:admin_root)}
+          = link_to "Stats", admin_root_path
+        %li{:class => tab_class(:admin_projects)}
+          = link_to "Projects", admin_projects_path
+        %li{:class => tab_class(:admin_users)}
+          = link_to "Users", admin_users_path
+        %li{:class => tab_class(:admin_emails)}
+          = link_to "Emails", admin_emails_path
+        %li{:class => tab_class(:admin_resque)}
+          = link_to "Resque", admin_resque_path
 
       .content= yield

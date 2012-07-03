@@ -2,7 +2,7 @@
  *  Main Menu of Application
  *
  */
-nav.main_menu { 
+ul.main_menu { 
   border-radius: 4px;
   margin: auto;
   margin:30px 0;
@@ -13,9 +13,7 @@ nav.main_menu {
   background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
-  display:table;
-  table-layout:fixed;
-  width:100%;
+  position:relative;
   @include shade;
   .count { 
     position: relative;
@@ -39,10 +37,14 @@ nav.main_menu {
     text-shadow:none;
     color:$style_color;
   }
-  a { 
-    display:table-cell;
-    text-align:center;
-    font-weight:bold;
+  li { 
+    list-style-type: none;
+    margin: 0;
+    display: table-cell;
+    width: 1%;
+    border-right: 1px solid #DDD;
+    border-left: 1px solid #EEE;
+
     &:first-child{ 
       -webkit-border-top-left-radius: 4px;
       -webkit-border-bottom-left-radius: 4px;
@@ -52,22 +54,7 @@ nav.main_menu {
       border-bottom-left-radius: 4px;
       border-left: 0;
     }
-    padding: 9px 2px;
-    color: $style_color;
-    position: relative;
-    margin: 0;
-    text-shadow:0 1px 1px white;
-    border-right: 1px solid #DDD;
-    border-left: 1px solid #EEE;
 
-    &.home { 
-      background: url(home_icon.PNG) no-repeat center center;
-      text-indent:-9999px;
-      img { 
-        position:relative;
-        top:4px;
-      }
-    }
     &.current { 
       background-color:#D5D5D5;
       border-bottom: 1px solid #567;
@@ -80,10 +67,27 @@ nav.main_menu {
       }
     }
 
-    &.wide { 
-      width:185px;
-      @media (min-width: 1080px) and (max-width: 1200px) { width:160px; }
+    &.home { 
+      a { 
+        background: url(home_icon.PNG) no-repeat center center;
+        text-indent:-9999px;
+        min-width:20px;
+        img { 
+          position:relative;
+          top:4px;
+        }
+      }
     }
+  }
+  a { 
+    display: block;
+    text-align: center;
+    font-weight:bold;
+    height:35px;
+    line-height:36px;
+    color: $style_color;
+    text-shadow:0 1px 1px white;
+
   }
 }
 /*

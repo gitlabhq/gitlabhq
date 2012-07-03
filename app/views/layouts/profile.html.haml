@@ -5,12 +5,23 @@
     = render "layouts/flash"
     = render "layouts/head_panel", :title => "Profile"
     .container
-      %nav.main_menu
-        = link_to "Profile", profile_path, :class => "home #{current_page?(:controller => "profile", :action => :show) ? "current" : nil}"
-        = link_to "Password", profile_password_path,  :class => current_page?(:controller => "profile", :action => :password) ? "current" : nil
-        = link_to "Token", profile_token_path,  :class => current_page?(:controller => "profile", :action => :token) ? "current" : nil
-        = link_to "Design", profile_design_path, :class => current_page?(:controller => "profile", :action => :design) ? "current" : nil
-        = link_to keys_path,  :class => controller.controller_name == "keys" ? "current" : nil do
-          SSH Keys
+      %ul.main_menu
+        %li.home{:class => tab_class(:profile)}
+          = link_to "Profile", profile_path
+
+        %li{:class => tab_class(:password)}
+          = link_to "Password", profile_password_path
+
+        %li{:class => tab_class(:token)}
+          = link_to "Token", profile_token_path
+
+        %li{:class => tab_class(:design)}
+          = link_to "Design", profile_design_path
+
+        %li{:class => tab_class(:ssh_keys)}
+          = link_to keys_path do
+            SSH Keys
+            %span.count= current_user.keys.count
+
       .content
         = yield

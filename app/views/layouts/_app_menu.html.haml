@@ -1,11 +1,19 @@
-%nav.main_menu
-  = link_to "Home", root_path, :class => "home #{"current" if current_page?(dashboard_path) || current_page?(root_path)}", :title => "Home"
-  = link_to dashboard_issues_path, :class => "#{"current" if current_page?(dashboard_issues_path)}", :id => "issues_slide" do
-    Issues
-    %span.count= current_user.assigned_issues.opened.count
-  = link_to dashboard_merge_requests_path, :class => "#{"current" if current_page?(dashboard_merge_requests_path)}", :id => "merge_requests_slide" do
-    Requests
-    %span.count= current_user.cared_merge_requests.count
-  = link_to search_path, :class => "#{"current" if current_page?(search_path)}" do
-    Search
-  = link_to "Help", help_path, :class => "#{"current" if controller.controller_name == "help"}"
+%ul.main_menu
+  %li.home{:class => tab_class(:root)}
+    = link_to "Home", root_path, :title => "Home"
+
+  %li{:class => tab_class(:dash_issues)}
+    = link_to dashboard_issues_path do
+      Issues
+      %span.count= current_user.assigned_issues.opened.count
+
+  %li{:class => tab_class(:dash_mr)}
+    = link_to dashboard_merge_requests_path do
+      Merge Requests
+      %span.count= current_user.cared_merge_requests.count
+
+  %li{:class => tab_class(:search)}
+    = link_to "Search", search_path
+
+  %li{:class => tab_class(:help)}
+    = link_to "Help", help_path
