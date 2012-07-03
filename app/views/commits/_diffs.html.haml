@@ -29,10 +29,11 @@
             %span{:id => "#{diff.new_path}"}= diff.new_path
         %br/
       .diff_file_content
-        - if file.text?
-          = render "commits/text_file", :diff => diff, :index => i
-        - elsif file.image?
-          .diff_file_content_image{:class => image_diff_class(diff)}
-            %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+        - if file.respond_to?('text?') && file.respond_to?('image?')
+          - if file.text?
+            = render "commits/text_file", :diff => diff, :index => i
+          - elsif file.image?
+            .diff_file_content_image{:class => image_diff_class(diff)}
+              %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
         - else
           %p.nothing_here_message No preview for this file type
