@@ -20,17 +20,25 @@ class Settings < Settingslogic
 
     def web_port 
       if web.https
-        nil
+        web['port'] = 443
       else
         web['port'] ||= 80
-      end
+      end.to_i
+    end
+
+    def web_custom_port?
+      ![443, 80].include?(web_port)
     end
 
     def build_url
       raw_url = self.web_protocol
       raw_url << "://"
       raw_url << web_host
-      raw_url << ":#{web_port}" if web_port.to_i != 80
+
+      if web_custom_port?
+        raw_url << ":#{web_port}" 
+      end
+
       raw_url
     end
 
