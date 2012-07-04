@@ -35,8 +35,8 @@ module CommitsHelper
     line_old = 1
     line_new = 1
     type = nil
-
-    lines_arr = diff_arr
+    
+    lines_arr = ::Gitlab::InlineDiff.processing diff_arr
     lines_arr.each do |line|
       next if line.match(/^\-\-\- \/dev\/null/)
       next if line.match(/^\+\+\+ \/dev\/null/)
@@ -44,6 +44,7 @@ module CommitsHelper
       next if line.match(/^\+\+\+ b/)
 
       full_line = html_escape(line.gsub(/\n/, ''))
+      full_line = ::Gitlab::InlineDiff.replace_markers full_line
 
       if line.match(/^@@ -/)
         type = "match"
@@ -81,4 +82,5 @@ module CommitsHelper
       nil
     end
   end
+
 end
