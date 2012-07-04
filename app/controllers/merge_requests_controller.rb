@@ -2,8 +2,8 @@ class MergeRequestsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
-  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check]
-  before_filter :validates_merge_request, :only => [:show, :diffs]
+  before_filter :merge_request, :only => [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check, :raw]
+  before_filter :validates_merge_request, :only => [:show, :diffs, :raw]
   before_filter :define_show_vars, :only => [:show, :diffs]
   layout "project"
 
@@ -41,6 +41,10 @@ class MergeRequestsController < ApplicationController
       format.html
       format.js
     end
+  end
+
+  def raw
+    send_file @merge_request.to_raw
   end
 
   def diffs

@@ -8,7 +8,7 @@ ul.main_menu {
   margin:30px 0;
   background:#eee;
   border:1px solid #bbb;
-  height:36px;
+  height:37px;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
   background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -44,6 +44,7 @@ ul.main_menu {
     width: 1%;
     border-right: 1px solid #DDD;
     border-left: 1px solid #EEE;
+    border-bottom:2px solid #CFCFCF;
 
     &:first-child{ 
       -webkit-border-top-left-radius: 4px;
@@ -57,7 +58,7 @@ ul.main_menu {
 
     &.current { 
       background-color:#D5D5D5;
-      border-bottom: 1px solid #567;
+      border-bottom: 2px solid $style_color;
       border-right: 1px solid #BBB;
       border-left: 1px solid #BBB;
       border-radius: 0 0 1px 1px;

@@ -193,6 +193,18 @@ class MergeRequest < ActiveRecord::Base
     self.mark_as_unmergable
     false
   end
+
+  def to_raw
+    FileUtils.mkdir_p(Rails.root.join("tmp", "patches"))
+    patch_path = Rails.root.join("tmp", "patches", "merge_request_#{self.id}.patch")
+
+    from = commits.last.id
+    to = source_branch
+
+    project.repo.git.run('', "format-patch" , " > #{patch_path.to_s}", {}, ["#{from}..#{to}", "--stdout"])
+
+    patch_path
+  end
 end
 # == Schema Information
 #
