@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::API do
   let(:user) { Factory :user }
   let!(:project) { Factory :project, :owner => user }
-  let!(:snippet) { Factory :snippet, :author => user, :project => project }
+  let!(:snippet) { Factory :snippet, :author => user, :project => project, :title => 'example' }
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
@@ -67,11 +67,28 @@ describe Gitlab::API do
     end
   end
 
+  describe "PUT /projects/:id/snippets" do
+    it "should update an existing project snippet" do
+      put "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}?private_token=#{user.private_token}",
+        :code => 'updated code'
+      response.status.should == 200
+      json_response['title'].should == 'example'
+      snippet.reload.content.should == 'updated code'
+    end
+  end
+
   describe "DELETE /projects/:id/snippets/:snippet_id" do
     it "should create a new project snippet" do
       expect {
         delete "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}?private_token=#{user.private_token}"
       }.should change { Snippet.count }.by(-1)
+    end
+  end
+
+  describe "GET /projects/:id/snippets/:snippet_id/raw" do
+    it "should get a raw project snippet" do
+      get "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}/raw?private_token=#{user.private_token}"
+      response.status.should == 200
     end
   end
 end
