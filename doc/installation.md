@@ -223,7 +223,7 @@ Edit /etc/nginx/nginx.conf. Add in **http** section:
     }
 
     server {
-        listen YOUR_SERVER_IP:80;
+        listen 80;
         server_name gitlab.YOUR_DOMAIN.com;
         root /home/gitlab/gitlab/public;
         
