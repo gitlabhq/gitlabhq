@@ -13,24 +13,25 @@
       %li{:class => tab_class(:network)}
         = link_to "Network", graph_project_path(@project)
 
-    - if @project.issues_enabled
-      %li{:class => tab_class(:issues)}
-        = link_to  project_issues_filter_path(@project)  do
-          Issues
-          %span.count= @project.issues.opened.count
+  - if @project.issues_enabled
+    %li{:class => tab_class(:issues)}
+      = link_to  project_issues_filter_path(@project)  do
+        Issues
+        %span.count= @project.issues.opened.count
 
+  - if @project.repo_exists?
     - if @project.merge_requests_enabled
       %li{:class => tab_class(:merge_requests)}
         = link_to project_merge_requests_path(@project) do
           Merge Requests
           %span.count= @project.merge_requests.opened.count
 
-    - if @project.wall_enabled
-      %li{:class =>  tab_class(:wall)}
-        = link_to wall_project_path(@project) do
-          Wall
+  - if @project.wall_enabled
+    %li{:class =>  tab_class(:wall)}
+      = link_to wall_project_path(@project) do
+        Wall
 
-    - if @project.wiki_enabled
-      %li{:class =>  tab_class(:wiki)}
-        = link_to project_wiki_path(@project, :index) do
-          Wiki
+  - if @project.wiki_enabled
+    %li{:class =>  tab_class(:wiki)}
+      = link_to project_wiki_path(@project, :index) do
+        Wiki
