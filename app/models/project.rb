@@ -23,6 +23,8 @@ class Project < ActiveRecord::Base
   has_many :wikis,          :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
 
+  attr_accessor :error_code
+
   # 
   # Protected attributes
   #
@@ -48,7 +50,7 @@ class Project < ActiveRecord::Base
     Project.transaction do
       project.owner = user
 
-      return project unless project.save
+      project.save!
 
       # Add user as project master
       project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
@@ -59,6 +61,21 @@ class Project < ActiveRecord::Base
     end
 
     project
+  rescue Gitlab::Gitolite::AccessDenied => ex
+    project.error_code = :gitolite
+    project
+  rescue => ex
+    project.error_code = :db
+    project.errors.add(:base, "Cant save project. Please try again later")
+    project
+  end
+
+  def git_error?
+    error_code == :gitolite
+  end
+
+  def saved?
+    id && valid?
   end
 
   #

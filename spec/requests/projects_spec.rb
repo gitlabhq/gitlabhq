@@ -120,7 +120,7 @@ describe "Projects" do
       visit edit_project_path(@project)
 
       fill_in 'project_name', :with => 'Awesome'
-      fill_in 'project_path', :with => 'gitlabhq'
+      fill_in 'project_code', :with => 'gitlabhq'
       click_button "Save"
       @project = @project.reload
     end

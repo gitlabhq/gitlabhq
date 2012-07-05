@@ -127,6 +127,7 @@ module ApplicationHelper
              when :admin_projects; controller.controller_name == "projects"
              when :admin_emails;   controller.controller_name == 'mailer'
              when :admin_resque;   controller.controller_name == 'resque'
+             when :admin_logs;   controller.controller_name == 'logs'
 
              else
                false

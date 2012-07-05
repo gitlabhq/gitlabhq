@@ -50,6 +50,8 @@ Gitlab::Application.routes.draw do
     get 'mailer/preview_note'
     get 'mailer/preview_user_new'
     get 'mailer/preview_issue_new'
+
+    resource :logs
     resource :resque, :controller => 'resque'
     root :to => "dashboard#index"
   end
