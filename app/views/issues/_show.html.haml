@@ -3,19 +3,18 @@
     .icon
   .right
     - issue.labels.each do |label|
-      %span.label.label-issue
+      %span.label.label-issue.grouped
         %i.icon-tag
         = label.name
-      &nbsp;
     - if issue.notes.any?
-      %span.btn.small.disabled.padded
+      %span.btn.small.disabled.grouped
         %i.icon-comment
         = issue.notes.count
     - if can? current_user, :modify_issue, issue
       - if issue.closed
-        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small padded", :remote => true
+        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small grouped", :remote => true
       - else
-        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small padded", :remote => true
+        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small grouped", :remote => true
       = link_to edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true do
         %i.icon-edit
         Edit

@@ -189,6 +189,12 @@ a:focus {
     padding:4px 6px;
     color:#444;
     text-shadow:0 0 1px #fff;
+
+    &.grouped { 
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
   }
 }
 

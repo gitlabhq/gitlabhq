@@ -29,6 +29,9 @@
             %span{:id => "#{diff.new_path}"}= diff.new_path
         %br/
       .diff_file_content
+        -# Skipp all non non-supported blobs
+        - next unless file.respond_to?('text?')
+
         - if file.text?
           = render "commits/text_file", :diff => diff, :index => i
         - elsif file.image?
