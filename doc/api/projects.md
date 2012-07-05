@@ -256,7 +256,7 @@ Will return updated snippet with status `200 OK` on success, or `404 Not found` 
 
 ## Delete snippet
 
-Update an existing project snippet.
+Delete existing project snippet.
 
 ```
 DELETE /projects/:id/snippets/:snippet_id
