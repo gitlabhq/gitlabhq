@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
         :email => email,
         :password => password,
         :password_confirmation => password,
-        :projects_limit => GITLAB_OPTS["default_projects_limit"]
+        :projects_limit => Gitlab.config.default_projects_limit
       )
     end
   end
