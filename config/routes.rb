@@ -18,7 +18,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.git_base_path,
     upload_pack:  Gitlab.config.git_upload_pack,
     receive_pack: Gitlab.config.git_receive_pack
-  }), at: '/:path', constraints: { path: /[\w-]+\.git/ }
+  }), at: '/:path', constraints: { path: /[-\/\w]+\.git/ }
 
   #
   # Help
@@ -39,7 +39,7 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
-    resources :projects, :constraints => { :id => /[^\/]+/ } do
+    resources :projects, :id => /[a-zA-Z.\/0-9_\-]+/ do
       member do
         get :team
         put :team_update
@@ -75,14 +75,14 @@ Gitlab::Application.routes.draw do
   get "dashboard/issues", :to => "dashboard#issues"
   get "dashboard/merge_requests", :to => "dashboard#merge_requests"
 
-  resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create]
+  resources :projects, :only => [:new, :create], :id => /[a-zA-Z.\/0-9_\-]+/
 
   devise_for :users, :controllers => { :omniauth_callbacks => :omniauth_callbacks }
 
   #
   # Project Area
   #
-  resources :projects, :constraints => { :id => /[^\/]+/ }, :except => [:new, :create, :index], :path => "/" do
+  resources :projects, :except => [:new, :create, :index], :path => "/", :id => /[a-zA-Z.\/0-9_\-]+/ do
     member do
       get "team"
       get "wall"
