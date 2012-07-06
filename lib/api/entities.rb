@@ -16,11 +16,7 @@ module Gitlab
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
     end
 
-    class ProjectRepositoryBranches < Grape::Entity
-      expose :name, :commit
-    end
-
-    class ProjectRepositoryTags < Grape::Entity
+    class RepoObject < Grape::Entity
       expose :name, :commit
     end
 
