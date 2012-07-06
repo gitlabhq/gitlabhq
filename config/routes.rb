@@ -26,6 +26,7 @@ Gitlab::Application.routes.draw do
   get 'help' => 'help#index'
   get 'help/permissions' => 'help#permissions'
   get 'help/workflow' => 'help#workflow'
+  get 'help/api' => 'help#api'
   get 'help/web_hooks' => 'help#web_hooks'
 
   #

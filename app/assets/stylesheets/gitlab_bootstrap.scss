@@ -634,3 +634,37 @@ pre.logs {
     line-height:18px;
   }
 }
+
+/**
+ * File content holder 
+ *
+ */
+.file_holder { 
+  border:1px solid #CCC;
+  margin-bottom:1em;
+  -moz-box-shadow: 0 0 3px #ddd;
+  -webkit-box-shadow: 0 0 3px #ddd;
+  box-shadow: 0 0 3px #ddd;
+
+  .file_title { 
+    border-bottom: 1px solid #bbb;
+    background:#eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    margin: 0;
+    font-weight: normal;
+    font-weight: bold;
+    text-align: left;
+    color: #666;
+    padding: 9px 10px;
+    height:18px;
+
+  }
+  .file_content {
+     &.wiki { 
+       padding:20px;
+     }
+  }
+}
