@@ -1,11 +1,11 @@
 class User < ActiveRecord::Base
   include Account
 
-  devise :database_authenticatable, :token_authenticatable,
+  devise :database_authenticatable, :token_authenticatable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
-                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme, 
+                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme,
                   :theme_id, :force_random_password
 
   attr_accessor :force_random_password
