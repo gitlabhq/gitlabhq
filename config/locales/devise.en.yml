@@ -35,13 +35,11 @@ en:
       confirmed: 'Your account was successfully confirmed. You are now signed in.'
     registrations:
       signed_up: 'Welcome! You have signed up successfully.'
-      inactive_signed_up: 'You have signed up successfully. However, we could not sign you in because your account is %{reason}.'
       updated: 'You updated your account successfully.'
       destroyed: 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
-      reasons:
-        inactive: 'inactive'
-        unconfirmed: 'unconfirmed'
-        locked: 'locked'
+      signed_up_but_unconfirmed: 'A message with a confirmation link has been sent to your email address. Please open the link to activate your account.'
+      signed_up_but_inactive: 'You have signed up successfully. However, we could not sign you in because your account is not yet activated.'
+      signed_up_but_locked: 'You have signed up successfully. However, we could not sign you in because your account is locked.'
     unlocks:
       send_instructions: 'You will receive an email with instructions about how to unlock your account in a few minutes.'
       unlocked: 'Your account was successfully unlocked. You are now signed in.'
