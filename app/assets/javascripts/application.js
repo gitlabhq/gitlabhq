@@ -20,6 +20,9 @@
 //= require_tree .
 
 $(document).ready(function(){
+  $('<div id="ajaxActivityIndicator"/>').appendTo('body');
+  $(document).ajaxStart(function() { $('body').addClass('hasAjaxActivity'); }).ajaxStop(function() {  $('body').removeClass('hasAjaxActivity'); });
+
   $(".one_click_select").live("click", function(){
     $(this).select();
   });
