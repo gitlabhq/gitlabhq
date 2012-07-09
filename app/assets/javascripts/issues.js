@@ -76,10 +76,21 @@ function issuesPage(){
     $(this).closest("form").submit();
   });
 
-  $('.close_issue').live('ajax:complete', function(){
-    var totalIssues = parseInt( $('.issue_counter:first').html(), 10 );
-    if( totalIssues > 0 ){
-      $('.issue_counter').html( totalIssues-1 );
-    }
+  $('.close_issue, .reopen_issue').live('ajax:complete', function(){
+    var t = $(this),
+        totalIssues,
+        reopen = t.hasClass('reopen_issue');
+
+    $('.issue_counter').each(function(){
+      var issue = $(this);
+      totalIssues = parseInt( $(this).html(), 10 );
+
+      if( reopen && issue.closest('.main_menu').length ){
+        $(this).html( totalIssues+1 );
+      }else {
+        $(this).html( totalIssues-1 );
+      }
+    });
+
   });
 }
