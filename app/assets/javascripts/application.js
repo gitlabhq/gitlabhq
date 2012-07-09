@@ -20,15 +20,13 @@
 //= require_tree .
 
 $(document).ready(function(){
-  $('<div id="ajaxActivityIndicator"/>').appendTo('body');
-  $(document).ajaxStart(function() { $('body').addClass('hasAjaxActivity'); }).ajaxStop(function() {  $('body').removeClass('hasAjaxActivity'); });
 
   $(".one_click_select").live("click", function(){
     $(this).select();
   });
 
 
-  $('form').live('ajax:complete, ajax:beforeSend, submit', function(e){
+  $('body').on('ajax:complete, ajax:beforeSend, submit', 'form', function(e){
     var buttons = $('[type="submit"]', this);
     switch( e.type ){
       case 'ajax:beforeSend':
