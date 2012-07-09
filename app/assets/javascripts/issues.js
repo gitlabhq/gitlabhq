@@ -75,4 +75,11 @@ function issuesPage(){
   $("#milestone_id, #assignee_id, #label_name").on("change", function(){
     $(this).closest("form").submit();
   });
+
+  $('.close_issue').live('ajax:complete', function(){
+    var totalIssues = parseInt( $('.issue_counter:first').html(), 10 );
+    if( totalIssues > 0 ){
+      $('.issue_counter').html( totalIssues-1 );
+    }
+  });
 }

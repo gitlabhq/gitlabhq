@@ -10,11 +10,11 @@
     - if @project.issues_enabled
       = link_to  project_issues_filter_path(@project), :class => issues_tab? ? "current" : nil do
         Issues
-        %span.count= @project.issues.opened.count
+        %span.count.issue_counter= @project.issues.opened.count
     - if @project.merge_requests_enabled
       = link_to project_merge_requests_path(@project), :class => (controller.controller_name == "merge_requests") ? "current" : nil do
         Merge Requests
-        %span.count= @project.merge_requests.opened.count
+        %span.count.merge_counter= @project.merge_requests.opened.count
 
     - if @project.wall_enabled
       = link_to wall_project_path(@project), :class => wall_tab? ? "current" : nil do
