@@ -10,17 +10,16 @@
     .input
       = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
 
-  %hr
+  %h5.page_title 
   .alert.alert-info
     %h5 Advanced settings:
     .clearfix
       = f.label :path do
-        Git Clone
+        Path
       .input
         .input-prepend
-          %span.add-on= "#{GIT_HOST["git_user"]}@#{GIT_HOST["host"]}:"
-          = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
-          %span.add-on= ".git"
+          %strong
+            = text_field_tag :ppath, @project.path_to_repo, :class => "xlarge", :disabled => true
     .clearfix
       = f.label :code do
         URL

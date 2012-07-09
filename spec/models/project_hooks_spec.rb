@@ -106,7 +106,7 @@ describe Project, "Hooks" do
           it { should include(id: @commit.id) }
           it { should include(message: @commit.safe_message) }
           it { should include(timestamp: @commit.date.xmlschema) }
-          it { should include(url: "http://localhost/#{project.code}/commits/#{@commit.id}") }
+          it { should include(url: "#{Gitlab.config.url}/#{project.code}/commits/#{@commit.id}") }
 
           context "with a author" do
             subject { @data[:commits].first[:author] }

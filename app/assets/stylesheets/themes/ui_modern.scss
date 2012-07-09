@@ -9,19 +9,21 @@
  *
  */
 .ui_modern { 
-  nav.main_menu { 
+  ul.main_menu { 
     background:none;
     box-shadow:none;
     @include border-radius(0px);
     border:none;
     border-bottom:2px solid #456;
 
-    a { 
+    li { 
       border:none;
 
       &.current {
         border-bottom:2px solid #f90;
         background-color:#fff;
+        position:relative;
+        top:2px;
       }
     }
   }

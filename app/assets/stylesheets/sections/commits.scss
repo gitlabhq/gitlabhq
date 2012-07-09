@@ -82,6 +82,17 @@
     color:#333;
     font-size: 12px;
     font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+    .old{
+      span.idiff{
+        background-color:#FAA;
+      }
+    }
+    .new{
+      span.idiff{
+        background-color:#AFA;
+      }
+    }
+
   }
   .diff_file_content_image {
     background:#eee;
@@ -90,16 +101,19 @@
       margin:50px;
       padding:1px;
       max-width:400px;
-    }
-    &.diff_image_removed { 
-      img {
+
+      &.diff_image_removed {
         border: 1px solid #C00;
+      }
+
+      &.diff_image_added {
+        border: 1px solid #0C0;;
       }
     }
 
-    &.diff_image_added { 
-      img {
-        border: 1px solid #0C0;;
+    &.img_compared { 
+      img { 
+        max-width:300px;
       }
     }
   }

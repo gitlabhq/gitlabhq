@@ -86,6 +86,34 @@ module Gitlab
         end
       end
 
+      # Update an existing project snippet
+      #
+      # Parameters:
+      #   id (required) - The code name of a project
+      #   snippet_id (required) - The ID of a project snippet
+      #   title (optional) - The title of a snippet
+      #   file_name (optional) - The name of a snippet file
+      #   lifetime (optional) - The expiration date of a snippet
+      #   code (optional) - The content of a snippet
+      # Example Request:
+      #   PUT /projects/:id/snippets/:snippet_id
+      put ":id/snippets/:snippet_id" do
+        @project = current_user.projects.find_by_code(params[:id])
+        @snippet = @project.snippets.find(params[:snippet_id])
+        parameters = {
+          :title      => (params[:title] || @snippet.title),
+          :file_name  => (params[:file_name] || @snippet.file_name),
+          :expires_at => (params[:lifetime] || @snippet.expires_at),
+          :content    => (params[:code] || @snippet.content)
+        }
+
+        if @snippet.update_attributes(parameters)
+          present @snippet, :with => Entities::ProjectSnippet
+        else
+          error!({'message' => '404 Not found'}, 404)
+        end
+      end
+
       # Delete a project snippet
       #
       # Parameters:
@@ -97,6 +125,19 @@ module Gitlab
         @project = current_user.projects.find_by_code(params[:id])
         @snippet = @project.snippets.find(params[:snippet_id])
         @snippet.destroy
+      end
+
+      # Get a raw project snippet
+      #
+      # Parameters:
+      #   id (required) - The code of a project
+      #   snippet_id (required) - The ID of a project snippet
+      # Example Request:
+      #   GET /projects/:id/snippets/:snippet_id/raw
+      get ":id/snippets/:snippet_id/raw" do
+        @project = current_user.projects.find_by_code(params[:id])
+        @snippet = @project.snippets.find(params[:snippet_id])
+        present @snippet.content
       end
     end
   end

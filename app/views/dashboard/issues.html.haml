@@ -1,8 +1,9 @@
-%h3
+%h3.page_title
   Issues
   %small (assigned to you)
   %small.right #{@issues.total_count} issues
 
+%br
 .clearfix
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|

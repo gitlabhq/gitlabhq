@@ -1,21 +1,37 @@
-# Gitlab application config file
+# # # # # # # # # # # # # # # # # # 
+# Gitlab application config file  #
+# # # # # # # # # # # # # # # # # #
+
+#
+# 1. Common settings
+# ==========================
+
+# Web application specific settings
+web:
+  host: localhost
+  port: 80
+  https: false
 
 # Email used for notification
 # about new issues, comments
 email:
-  from: notify@gitlabhq.com
-  host: gitlabhq.com
+  from: notify@localhost
 
-  # Protocol used for links in email letters
-  # Value can be http or https
-  protocol: http # or https
+# Application specific settings
+# Like default project limit for user etc
+app: 
+  default_projects_limit: 10 
+
+
+# 
+# 2. Advanced settings: 
+# ==========================
 
 # Git Hosting configuration
 git_host:
-  system: gitolite
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
-  host: localhost
+  # host: localhost
   git_user: git
   upload_pack: true
   receive_pack: true
@@ -31,7 +47,3 @@ git:
   git_max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
   git_timeout: 10
-
-# Gitlab settings
-gitlab:
-  default_projects_limit: 10

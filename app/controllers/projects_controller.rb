@@ -21,20 +21,13 @@ class ProjectsController < ApplicationController
     @project = Project.create_by_user(params[:project], current_user)
 
     respond_to do |format|
-      if @project.valid?
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
-        format.js
-      else
-        format.html { render action: "new" }
-        format.js
+      format.html do
+        if @project.saved?
+          redirect_to(@project, notice: 'Project was successfully created.')
+        else
+          render action: "new"
+        end
       end
-    end
-  rescue Gitlab::Gitolite::AccessDenied
-    render :js => "location.href = '#{errors_githost_path}'" and return
-  rescue StandardError => ex
-    @project.errors.add(:base, "Cant save project. Please try again later")
-    respond_to do |format|
-      format.html { render action: "new" }
       format.js
     end
   end

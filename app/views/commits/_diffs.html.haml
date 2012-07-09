@@ -29,10 +29,19 @@
             %span{:id => "#{diff.new_path}"}= diff.new_path
         %br/
       .diff_file_content
+        -# Skipp all non non-supported blobs
+        - next unless file.respond_to?('text?')
+
         - if file.text?
           = render "commits/text_file", :diff => diff, :index => i
         - elsif file.image?
-          .diff_file_content_image{:class => image_diff_class(diff)}
-            %img{:src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+          - if diff.renamed_file || diff.new_file || diff.deleted_file 
+            .diff_file_content_image
+              %img{:class => image_diff_class(diff), :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+          - else 
+            - old_file = (@commit.prev_commit.tree / diff.old_path)
+            .diff_file_content_image.img_compared
+              %img{:class => "diff_image_removed", :src => "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+              %img{:class => "diff_image_added", :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
         - else
           %p.nothing_here_message No preview for this file type

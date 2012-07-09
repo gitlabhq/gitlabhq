@@ -13,7 +13,7 @@ class Project < ActiveRecord::Base
   has_many :users,          :through => :users_projects
   has_many :events,         :dependent => :destroy
   has_many :merge_requests, :dependent => :destroy
-  has_many :issues,         :dependent => :destroy, :order => "closed, position"
+  has_many :issues,         :dependent => :destroy, :order => "closed, created_at DESC"
   has_many :milestones,     :dependent => :destroy
   has_many :users_projects, :dependent => :destroy
   has_many :notes,          :dependent => :destroy
@@ -22,6 +22,8 @@ class Project < ActiveRecord::Base
   has_many :web_hooks,      :dependent => :destroy
   has_many :wikis,          :dependent => :destroy
   has_many :protected_branches, :dependent => :destroy
+
+  attr_accessor :error_code
 
   # 
   # Protected attributes
@@ -48,7 +50,7 @@ class Project < ActiveRecord::Base
     Project.transaction do
       project.owner = user
 
-      return project unless project.save
+      project.save!
 
       # Add user as project master
       project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
@@ -59,6 +61,21 @@ class Project < ActiveRecord::Base
     end
 
     project
+  rescue Gitlab::Gitolite::AccessDenied => ex
+    project.error_code = :gitolite
+    project
+  rescue => ex
+    project.error_code = :db
+    project.errors.add(:base, "Cant save project. Please try again later")
+    project
+  end
+
+  def git_error?
+    error_code == :gitolite
+  end
+
+  def saved?
+    id && valid?
   end
 
   #
@@ -113,7 +130,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [GIT_HOST['host'], code].join("/")
+    [Gitlab.config.url, code].join("/")
   end
 
   def common_notes

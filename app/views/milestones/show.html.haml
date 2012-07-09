@@ -4,9 +4,9 @@
     = @milestone.expires_at
 
   %span.right
-    = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn edit-milestone-link small"
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn edit-milestone-link small grouped"
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn small" do
+      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn small grouped" do
         %i.icon-edit
         Edit
 

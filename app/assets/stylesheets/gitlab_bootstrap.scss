@@ -158,6 +158,11 @@ table {
   &.small { 
     @extend .btn-small;
   }
+
+  &.active { 
+    border-color:#aaa;
+    background-color:#ccc;
+  }
 }
 
 a:focus { 
@@ -184,6 +189,12 @@ a:focus {
     padding:4px 6px;
     color:#444;
     text-shadow:0 0 1px #fff;
+
+    &.grouped { 
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
   }
 }
 
@@ -196,6 +207,7 @@ a:focus {
 .cred { color:#D12F19; }
 .cgreen { color:#44aa22; }
 .cblack { color:#111; }
+.cdark { color:#444 }
 .cwhite { color:#fff !important }
 
 /** COMMON STYLES **/
@@ -281,6 +293,7 @@ table.no-borders {
     font-size:13px;
     background: #474D57;
     color:#fff;
+    font-weight:bold;
     font-family: monospace;
   }
 }
@@ -588,5 +601,70 @@ ul.breadcrumb {
 
   .bottom_box_content { 
     border-top:1px solid #eee;
+  }
+}
+
+input[type=text] { 
+  &.large_text { 
+    padding:6px;
+    font-size:16px;
+  }
+}
+
+p { 
+  &.slead { 
+    color:#456;
+    font-size:16px;
+    margin-bottom: 12px;
+    font-weight: 200;
+    line-height: 24px;
+  }
+}
+
+h3.page_title { 
+  color:#456;
+  font-size:20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+pre.logs { 
+  .log { 
+    font-size:12px;
+    line-height:18px;
+  }
+}
+
+/**
+ * File content holder 
+ *
+ */
+.file_holder { 
+  border:1px solid #CCC;
+  margin-bottom:1em;
+  -moz-box-shadow: 0 0 3px #ddd;
+  -webkit-box-shadow: 0 0 3px #ddd;
+  box-shadow: 0 0 3px #ddd;
+
+  .file_title { 
+    border-bottom: 1px solid #bbb;
+    background:#eee;
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    margin: 0;
+    font-weight: normal;
+    font-weight: bold;
+    text-align: left;
+    color: #666;
+    padding: 9px 10px;
+    height:18px;
+
+  }
+  .file_content {
+     &.wiki { 
+       padding:20px;
+     }
   }
 }

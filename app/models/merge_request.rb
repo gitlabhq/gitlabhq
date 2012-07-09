@@ -3,6 +3,8 @@ require File.join(Rails.root, "app/models/commit")
 class MergeRequest < ActiveRecord::Base
   include Upvote
 
+  BROKEN_DIFF = "--broken-diff"
+
   UNCHECKED = 1
   CAN_BE_MERGED = 2
   CANNOT_BE_MERGED = 3
@@ -108,14 +110,25 @@ class MergeRequest < ActiveRecord::Base
   def reloaded_diffs
     if open? && unmerged_diffs.any?
       self.st_diffs = unmerged_diffs
-      save
+      self.save
     end
-    diffs
+
+  rescue Grit::Git::GitTimeout
+    self.st_diffs = [BROKEN_DIFF]
+    self.save
+  end
+
+  def broken_diffs?
+    diffs == [BROKEN_DIFF]
+  end
+
+  def valid_diffs?
+    !broken_diffs?
   end
 
   def unmerged_diffs
     commits = project.repo.commits_between(target_branch, source_branch).map {|c| Commit.new(c)}
-    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id) rescue []
+    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id)
   end
 
   def last_commit
@@ -192,6 +205,18 @@ class MergeRequest < ActiveRecord::Base
   rescue
     self.mark_as_unmergable
     false
+  end
+
+  def to_raw
+    FileUtils.mkdir_p(Rails.root.join("tmp", "patches"))
+    patch_path = Rails.root.join("tmp", "patches", "merge_request_#{self.id}.patch")
+
+    from = commits.last.id
+    to = source_branch
+
+    project.repo.git.run('', "format-patch" , " > #{patch_path.to_s}", {}, ["#{from}..#{to}", "--stdout"])
+
+    patch_path
   end
 end
 # == Schema Information

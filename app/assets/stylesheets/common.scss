@@ -108,11 +108,6 @@ table a code {
  margin-top: 5px;
 }
 
-.btn.padded { 
-  margin-right:3px;
-  padding:4px 10px 4px;
-}
-
 .loading { 
   margin:20px auto;
   background: url(ajax_loader.gif) no-repeat center center;
@@ -398,6 +393,16 @@ p.time {
     font-size:11px;
     padding:2px 6px;
     margin:2px;
+  }
+
+  &.grouped { 
+    margin-right:7px;
+    float:left;
+  }
+
+  &.padded { 
+    margin-right:3px;
+    padding:4px 10px 4px;
   }
 }
 

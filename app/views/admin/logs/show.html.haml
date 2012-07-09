@@ -1,0 +1,6 @@
+%h4
+  %i.icon-file
+  githost.log
+%pre.logs
+  - Gitlab::Logger.read_latest.each do |line|
+    %span.log= line

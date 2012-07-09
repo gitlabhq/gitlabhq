@@ -68,7 +68,7 @@ module Repository
   end
 
   def path_to_repo
-    File.join(GIT_HOST["base_path"], "#{path}.git")
+    File.join(Gitlab.config.git_base_path, "#{path}.git")
   end
 
   def update_repository
@@ -140,5 +140,13 @@ module Repository
     end
 
     file_path
+  end
+
+  def ssh_url_to_repo
+    url_to_repo
+  end
+
+  def http_url_to_repo
+    http_url = [Gitlab.config.url, "/", path, ".git"].join()
   end
 end

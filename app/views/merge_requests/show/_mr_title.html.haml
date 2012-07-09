@@ -1,4 +1,4 @@
-%h3
+%h3.page_title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
   %span.pretty_label.branch= @merge_request.source_branch
@@ -7,14 +7,19 @@
 
   %span.right
     - if @merge_request.merged?
-      %span.btn.small.disabled.padded
+      %span.btn.small.disabled.grouped
         %strong
           %i.icon-ok
           = "MERGED"
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn small padded danger", :title => "Close merge request"
-        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn small padded" do
+        = link_to raw_project_merge_request_path(@project, @merge_request), :class => "btn grouped" do 
+          %i.icon-download-alt
+          Get Patch  
+
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn grouped danger", :title => "Close merge request"
+
+        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn grouped" do
           %i.icon-edit
           Edit
 

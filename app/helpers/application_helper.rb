@@ -13,7 +13,7 @@ module ApplicationHelper
   end
 
   def web_app_url
-    "#{request_protocol}://#{GIT_HOST["host"]}/"
+    "#{request_protocol}://#{Gitlab.config.web_host}/"
   end
 
   def last_commit(project)
@@ -95,5 +95,43 @@ module ApplicationHelper
       !event.rm_ref? &&
       event.project && 
       event.project.merge_requests_enabled
+  end
+
+  def tab_class(tab_key)
+    active = case tab_key
+             
+             # Project Area
+             when :wall; wall_tab?
+             when :wiki; controller.controller_name == "wikis"
+             when :issues; issues_tab?
+             when :network; current_page?(:controller => "projects", :action => "graph", :id => @project)
+             when :merge_requests; controller.controller_name == "merge_requests"
+
+             # Dashboard Area
+             when :help; controller.controller_name == "help"
+             when :search; current_page?(search_path)
+             when :dash_issues; current_page?(dashboard_issues_path)
+             when :dash_mr; current_page?(dashboard_merge_requests_path)
+             when :root; current_page?(dashboard_path) || current_page?(root_path)
+
+             # Profile Area
+             when :profile;  current_page?(:controller => "profile", :action => :show)
+             when :password; current_page?(:controller => "profile", :action => :password)
+             when :token;    current_page?(:controller => "profile", :action => :token)
+             when :design;   current_page?(:controller => "profile", :action => :design)
+             when :ssh_keys; controller.controller_name == "keys"
+
+             # Admin Area
+             when :admin_root;     controller.controller_name == "dashboard"
+             when :admin_users;    controller.controller_name == 'users'
+             when :admin_projects; controller.controller_name == "projects"
+             when :admin_emails;   controller.controller_name == 'mailer'
+             when :admin_resque;   controller.controller_name == 'resque'
+             when :admin_logs;   controller.controller_name == 'logs'
+
+             else
+               false
+             end
+    active ? "current" : nil
   end
 end

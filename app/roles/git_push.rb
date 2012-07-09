@@ -21,7 +21,7 @@ module GitPush
 
     # Close merge requests
     mrs = self.merge_requests.opened.where(:target_branch => branch_name).all
-    mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) } 
+    mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
     mrs.each { |merge_request| merge_request.merge!(user.id) }
 
     true
@@ -65,7 +65,7 @@ module GitPush
       total_commits_count: push_commits_count
     }
 
-    # For perfomance purposes maximum 20 latest commits 
+    # For perfomance purposes maximum 20 latest commits
     # will be passed as post receive hook data.
     #
     push_commits_limited.each do |commit|
@@ -73,7 +73,7 @@ module GitPush
         id: commit.id,
         message: commit.safe_message,
         timestamp: commit.date.xmlschema,
-        url: "http://#{GIT_HOST['host']}/#{code}/commits/#{commit.id}",
+        url: "#{Gitlab.config.url}/#{code}/commits/#{commit.id}",
         author: {
           name: commit.author_name,
           email: commit.author_email
@@ -86,16 +86,14 @@ module GitPush
 
 
   # This method will be called after each post receive
-  # and only if autor_key_id present in gitlab. 
+  # and only if user present in gitlab.
   # All callbacks for post receive should be placed here
   #
-  def trigger_post_receive(oldrev, newrev, ref, author_key_id)
-    user = Key.find_by_identifier(author_key_id).user
-
+  def trigger_post_receive(oldrev, newrev, ref, user)
     # Create push event
     self.observe_push(oldrev, newrev, ref, user)
 
-    # Close merged MR 
+    # Close merged MR
     self.update_merge_requests(oldrev, newrev, ref, user)
 
     # Execute web hooks

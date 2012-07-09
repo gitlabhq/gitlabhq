@@ -14,11 +14,11 @@ Gitlab::Application.routes.draw do
 
   # Enable Grack support
   mount Grack::Bundle.new({
-    git_path: GIT_OPTS['path'],
-    project_root: GIT_HOST['base_path'],
-    upload_pack: GIT_HOST['upload_pack'],
-    receive_pack: GIT_HOST['receive_pack']
-  }), at: '/:path', constraints: { path: /[\w-]+.git*/ }
+    git_path:     Gitlab.config.git_bin_path,
+    project_root: Gitlab.config.git_base_path,
+    upload_pack:  Gitlab.config.git_upload_pack,
+    receive_pack: Gitlab.config.git_receive_pack
+  }), at: '/:path', constraints: { path: /[\w-]+\.git/ }
 
   #
   # Help
@@ -26,6 +26,7 @@ Gitlab::Application.routes.draw do
   get 'help' => 'help#index'
   get 'help/permissions' => 'help#permissions'
   get 'help/workflow' => 'help#workflow'
+  get 'help/api' => 'help#api'
   get 'help/web_hooks' => 'help#web_hooks'
 
   #
@@ -50,6 +51,8 @@ Gitlab::Application.routes.draw do
     get 'mailer/preview_note'
     get 'mailer/preview_user_new'
     get 'mailer/preview_issue_new'
+
+    resource :logs
     resource :resque, :controller => 'resque'
     root :to => "dashboard#index"
   end
@@ -144,6 +147,7 @@ Gitlab::Application.routes.draw do
         get :diffs
         get :automerge
         get :automerge_check
+        get :raw
       end
 
       collection do

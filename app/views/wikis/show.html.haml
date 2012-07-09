@@ -2,9 +2,9 @@
   = @wiki.title
   %span.right
     - if can? current_user, :write_wiki, @project
-      = link_to history_project_wiki_path(@project, @wiki), :class => "btn small padded" do
+      = link_to history_project_wiki_path(@project, @wiki), :class => "btn small grouped" do
         History
-      = link_to edit_project_wiki_path(@project, @wiki), :class => "btn small" do
+      = link_to edit_project_wiki_path(@project, @wiki), :class => "btn small grouped" do
         Edit
 %hr
 .wiki_content

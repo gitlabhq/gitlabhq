@@ -4,10 +4,6 @@ describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
 
-  before :all do
-    default_url_options[:host] = EMAIL_OPTS['host']
-  end
-
   let(:recipient) { Factory.create(:user, :email => 'recipient@example.com') }
   let(:project) { Factory.create(:project) }
 
@@ -18,7 +14,7 @@ describe Notify do
   end
 
   describe 'for new users, the email' do
-    let(:example_site_url) { root_url }
+    let(:example_site_path) { root_path }
     let(:new_user) { Factory.create(:user, :email => 'newguy@example.com') }
 
     subject { Notify.new_user_email(new_user.id, new_user.password) }
@@ -40,7 +36,7 @@ describe Notify do
     end
 
     it 'includes a link to the site' do
-      should have_body_text /#{example_site_url}/
+      should have_body_text /#{example_site_path}/
     end
   end
 
@@ -68,7 +64,7 @@ describe Notify do
           end
 
           it 'contains a link to the new issue' do
-            should have_body_text /#{project_issue_url project, issue}/
+            should have_body_text /#{project_issue_path project, issue}/
           end
         end
 
@@ -92,7 +88,7 @@ describe Notify do
           end
 
           it 'contains a link to the issue' do
-            should have_body_text /#{project_issue_url project, issue}/
+            should have_body_text /#{project_issue_path project, issue}/
           end
         end
       end
@@ -110,7 +106,7 @@ describe Notify do
           end
 
           it 'contains a link to the new merge request' do
-            should have_body_text /#{project_merge_request_url(project, merge_request)}/
+            should have_body_text /#{project_merge_request_path(project, merge_request)}/
           end
 
           it 'contains the source branch for the merge request' do
@@ -142,7 +138,7 @@ describe Notify do
           end
 
           it 'contains a link to the merge request' do
-            should have_body_text /#{project_merge_request_url project, merge_request}/
+            should have_body_text /#{project_merge_request_path project, merge_request}/
           end
 
         end
@@ -172,7 +168,7 @@ describe Notify do
       end
 
       describe 'on a project wall' do
-        let(:note_on_the_wall_url) { wall_project_url(project, :anchor => "note_#{note.id}") }
+        let(:note_on_the_wall_path) { wall_project_path(project, :anchor => "note_#{note.id}") }
 
         subject { Notify.note_wall_email(recipient.id, note.id) }
 
@@ -183,7 +179,7 @@ describe Notify do
         end
 
         it 'contains a link to the wall note' do
-          should have_body_text /#{note_on_the_wall_url}/
+          should have_body_text /#{note_on_the_wall_path}/
         end
       end
 
@@ -211,7 +207,7 @@ describe Notify do
 
       describe 'on a merge request' do
         let(:merge_request) { Factory.create(:merge_request, :project => project) }
-        let(:note_on_merge_request_url) { project_merge_request_url(project, merge_request, :anchor => "note_#{note.id}") }
+        let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, :anchor => "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(merge_request) }
 
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
@@ -223,13 +219,13 @@ describe Notify do
         end
 
         it 'contains a link to the merge request note' do
-          should have_body_text /#{note_on_merge_request_url}/
+          should have_body_text /#{note_on_merge_request_path}/
         end
       end
 
       describe 'on an issue' do
         let(:issue) { Factory.create(:issue, :project => project) }
-        let(:note_on_issue_url) { project_issue_url(project, issue, :anchor => "note_#{note.id}") }
+        let(:note_on_issue_path) { project_issue_path(project, issue, :anchor => "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(issue) }
 
         subject { Notify.note_issue_email(recipient.id, note.id) }
@@ -241,7 +237,7 @@ describe Notify do
         end
 
         it 'contains a link to the issue note' do
-          should have_body_text /#{note_on_issue_url}/
+          should have_body_text /#{note_on_issue_path}/
         end
       end
     end

@@ -8,17 +8,10 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
 
   @events.each do |event|
     if event.allowed?
+      event = EventDecorator.decorate(event)
       xml.entry do
-        if event.issue?
-          event_link  = project_issue_url(event.project, event.issue)
-          event_title = event.issue_title
-        elsif event.merge_request?
-          event_link  = project_merge_request_url(event.project, event.merge_request)
-          event_title = event.merge_request_title
-        elsif event.push?
-          event_link  = project_commits_url(event.project, :ref => event.ref_name)
-          event_title = event.ref_name
-        end
+        event_link = event.feed_url
+        event_title = event.feed_title
 
         xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
         xml.link    :href => event_link

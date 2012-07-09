@@ -1,6 +1,6 @@
 = render "issues/head"
 .issues_content
-  %h3
+  %h3.page_title
     Issues
     %small (<span class=issue_counter>#{@issues.total_count}</span>)
     .right
@@ -46,6 +46,7 @@
   $(function(){
     issuesPage();
   })
+<<<<<<< HEAD
 
   function setSortable(){
     $('#issues-table').sortable({
@@ -71,3 +72,5 @@
       }
     });
   }
+=======
+>>>>>>> origin/master
