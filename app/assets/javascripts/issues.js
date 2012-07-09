@@ -76,7 +76,7 @@ function issuesPage(){
     $(this).closest("form").submit();
   });
 
-  $('.close_issue, .reopen_issue').live('ajax:complete', function(){
+  $('.close_issue, .reopen_issue').live('ajax:success', function(){
     var t = $(this),
         totalIssues,
         reopen = t.hasClass('reopen_issue');
