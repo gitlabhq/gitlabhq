@@ -46,31 +46,3 @@
   $(function(){
     issuesPage();
   })
-<<<<<<< HEAD
-
-  function setSortable(){
-    $('#issues-table').sortable({
-      axis                : 'y',
-      dropOnEmpty         : false,
-      handle              : '.avatar',
-      items               : 'li',
-      opacity             : 0.4,
-      scroll              : true,
-      containment         : 'parent',
-      forcePlaceholderSize: true,
-      forceHelperSize     : true,
-      update: function(){
-        $.ajax({
-          type    : 'post',
-          data    : $('#issues-table').sortable('serialize'),
-          dataType: 'script',
-          url     : "#{sort_project_issues_path(@project)}",
-          complete: function(request){
-            $('#issues-table').effect('highlight');
-          }
-        });
-      }
-    });
-  }
-=======
->>>>>>> origin/master
