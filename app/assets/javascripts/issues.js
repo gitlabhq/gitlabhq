@@ -76,16 +76,19 @@ function issuesPage(){
     $(this).closest("form").submit();
   });
 
-  $('.close_issue, .reopen_issue').live('ajax:success', function(){
+  $('.close_issue, .reopen_issue, #new_issue').live('ajax:success', function(){
     var t = $(this),
         totalIssues,
-        reopen = t.hasClass('reopen_issue');
-
-    $('.issue_counter').each(function(){
+        reopen = t.hasClass('reopen_issue'),
+        newIssue = false;
+    if( this.id == 'new_issue' ){
+      newIssue = true;
+    }
+    $('.issue_counter, #new_issue').each(function(){
       var issue = $(this);
       totalIssues = parseInt( $(this).html(), 10 );
 
-      if( reopen && issue.closest('.main_menu').length ){
+      if( newIssue || ( reopen && issue.closest('.main_menu').length ) ){
         $(this).html( totalIssues+1 );
       }else {
         $(this).html( totalIssues-1 );
