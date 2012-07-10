@@ -604,7 +604,11 @@ li.note {
   border-style: solid;
   border-width: 1px;
   @include border-radius(4px);
-  min-height:42px;
+  min-height:22px;
+
+  .avatar { 
+    width:24px;
+  }
 }
 
 .supp_diff_link,
