@@ -1,19 +1,5 @@
 require 'active_record/fixtures'
 
-# load config
-GITLAB_OPTS = YAML.load_file("#{Rails.root}/config/gitlab.yml")['app']
-
-# backup path options
-backup_path = GITLAB_OPTS['backup_path'].nil? ? "backups/" : GITLAB_OPTS['backup_path']     # set default path if not specified in settings.
-backup_path = /^\//.match(backup_path) ? backup_path : File.join(Rails.root + backup_path)  # check for absolut or relative path.
-FileUtils.mkdir_p(backup_path) until Dir.exists?(backup_path)
-
-# keep last n backups
-backup_keep_time = GITLAB_OPTS['backup_keep_time'].nil? ? 0 : eval(GITLAB_OPTS['backup_keep_time'])
-
-backup_path_repo = File.join(backup_path, "repositories")
-backup_path_db   = File.join(backup_path, "db")
-
 namespace :gitlab do
   namespace :app do
 
@@ -21,10 +7,10 @@ namespace :gitlab do
     desc "GITLAB | Create a backup of the gitlab system"
     task :backup_create => :environment do
 
-      Dir.chdir(backup_path)
-
       Rake::Task["gitlab:app:db_dump"].invoke
       Rake::Task["gitlab:app:repo_dump"].invoke
+
+      Dir.chdir(Gitlab.config.backup_path)
 
       # saving additional informations
       s = Hash.new
@@ -33,7 +19,7 @@ namespace :gitlab do
       s["gitlab_version"]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
       s["tar_version"]        = %x{tar --version | head -1}.gsub(/\n/,"")
 
-      File.open("#{backup_path}/backup_information.yml", "w+") do |file|
+      File.open("#{Gitlab.config.backup_path}/backup_information.yml", "w+") do |file|
         file << s.to_yaml.gsub(/^---\n/,'')
       end
 
@@ -55,10 +41,10 @@ namespace :gitlab do
 
       # delete backups
       print "Deleting old backups... "
-      if backup_keep_time > 0
+      if Gitlab.config.backup_keep_time > 0
         file_list = Dir.glob("*_gitlab_backup.tar").map { |f| f.split(/_/).first.to_i }
         file_list.sort.each do |timestamp|
-          if Time.at(timestamp) < (Time.now - backup_keep_time)
+          if Time.at(timestamp) < (Time.now - Gitlab.config.backup_keep_time)
             %x{rm #{timestamp}_gitlab_backup.tar}
           end
         end
@@ -70,11 +56,13 @@ namespace :gitlab do
     end
 
 
+    # Restore backup of gitlab system
     desc "GITLAB | Restore a previously created backup"
     task :backup_restore => :environment do
 
-      Dir.chdir(backup_path)
+      Dir.chdir(Gitlab.config.backup_path)
 
+      # check for existing backups in the backup dir
       file_list = Dir.glob("*_gitlab_backup.tar").each.map { |f| f.split(/_/).first.to_i }
       puts "no backup found" if file_list.count == 0
       if file_list.count > 1 && ENV["BACKUP"].nil?
@@ -85,12 +73,13 @@ namespace :gitlab do
 
       tar_file = ENV["BACKUP"].nil? ? File.join(file_list.first.to_s + "_gitlab_backup.tar") : File.join(ENV["BACKUP"] + "_gitlab_backup.tar")
 
-      if ! File.exists?(tar_file)
+      unless File.exists?(tar_file)
         puts "The specified backup doesn't exist!"
+        exit 1;
       end
 
       print "Unpacking backup... "
-      if ! Kernel.system("tar -xf #{tar_file}")
+      unless Kernel.system("tar -xf #{tar_file}")
         puts "[FAILED]".red
         exit 1
       else
@@ -129,6 +118,7 @@ namespace :gitlab do
     ################################# REPOSITORIES #################################
 
     task :repo_dump => :environment do
+      backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
       FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
       puts "Dumping repositories:"
       project = Project.all.map { |n| [n.name,n.path_to_repo] }
@@ -144,6 +134,7 @@ namespace :gitlab do
     end
 
     task :repo_restore => :environment do
+      backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
       puts "Restoring repositories:"
       project = Project.all.map { |n| [n.name,n.path_to_repo] }
       project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
@@ -161,6 +152,7 @@ namespace :gitlab do
     ###################################### DB ######################################
 
     task :db_dump => :environment do
+      backup_path_db   = File.join(Gitlab.config.backup_path, "db")
       FileUtils.mkdir_p(backup_path_db) until Dir.exists?(backup_path_db)
       puts "Dumping database tables:"
       ActiveRecord::Base.connection.tables.each do |tbl|
@@ -179,6 +171,7 @@ namespace :gitlab do
     end
 
     task :db_restore=> :environment do
+      backup_path_db   = File.join(Gitlab.config.backup_path, "db")
       puts "Restoring database tables:"
       Rake::Task["db:reset"].invoke
       Dir.glob(File.join(backup_path_db, "*.yml") ).each do |dir|
