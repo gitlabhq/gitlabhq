@@ -642,9 +642,7 @@ pre.logs {
 .file_holder { 
   border:1px solid #CCC;
   margin-bottom:1em;
-  -moz-box-shadow: 0 0 3px #ddd;
-  -webkit-box-shadow: 0 0 3px #ddd;
-  box-shadow: 0 0 3px #ddd;
+  @include shade;
 
   .file_title { 
     border-bottom: 1px solid #bbb;
@@ -661,10 +659,111 @@ pre.logs {
     padding: 9px 10px;
     height:18px;
 
+    .options { 
+      float:right;
+      margin-top: -5px;
+    }
+
+    .file_name { 
+      color:$style_color;
+      font-size:14px;
+      text-shadow: 0 1px 1px #fff;
+      small { 
+        color:#999;
+        font-size:13px;
+      }
+    }
   }
   .file_content {
-     &.wiki { 
-       padding:20px;
-     }
+    background:#fff;
+    color:#514721;
+    font-size: 11px;
+
+    &.wiki { 
+      code { 
+        padding:0 4px;
+      }
+      padding:20px;
+      h1, h2 {  
+        line-height: 46px;  
+      }  
+      h3, h4 {  
+        line-height: 40px;  
+      }  
+    }
+
+    &.image_file { 
+      background:#eee;
+      text-align:center;
+      img {
+        padding:100px;
+        max-width:300px;
+      }
+    }
+
+    &.blob_file { 
+
+    }
+
+    /**
+     *  Blame file
+     */
+    &.blame { 
+      tr { 
+        border-bottom: 1px solid #eee;
+      }
+      td { 
+        padding:5px;
+      }
+      .author, 
+      .blame_commit { 
+        background:#f5f5f5;
+        vertical-align:top;
+      }
+      .lines { 
+        pre { 
+          padding:0;
+          margin:0;
+          background:none;
+          border:none;
+        }
+      }
+    }
+
+    /**
+     *  Code file
+     */
+    &.code { 
+      padding:0;
+      td.code {
+        width: 100%;
+        .highlight {
+          margin-left: 55px;
+          overflow:auto;
+          overflow-y:hidden;
+        }
+      }
+      .highlight pre {
+        white-space: pre;
+        word-wrap:normal;
+      }
+
+      table.highlighttable {
+        border: none;
+      }
+      body.project-page table.highlighttable td { border: none }
+      table.highlighttable tr:hover { background:none;}
+
+      table.highlighttable pre{
+        line-height:16px !important;
+        font-size:12px !important;
+      }
+
+      table.highlighttable .linenodiv pre {
+        text-align: right;
+        padding-right: 4px;
+        color:#666;
+      }
+    }
   }
 }

@@ -63,18 +63,22 @@ p.notify_controls span{
 
 tr.line_notes_row { 
   border-bottom:1px solid #DDD;
+  border-left: 7px solid #2A79A3;
+
   &.reply { 
     background:#eee;
-
+    border-left: 7px solid #2A79A3;
+    border-top:1px solid #ddd;
     td { 
       padding:7px 10px;
     }
     a.line_note_reply_link { 
       @include round-borders-all(4px);
-      border-color:#aaa;
-      background: #bbb;
-      padding: 3px 20px;
+      padding: 3px 10px;
+      margin-left:5px;
       color: white;
+      background: #2A79A3;
+      border-color: #2A79A3;
     }
   }
   ul { 
@@ -94,6 +98,9 @@ tr.line_notes_row {
   form {  margin: 0; }
   td { 
     border-bottom:1px solid #ddd;
+  }
+  .actions { 
+    margin:0;
   }
 }
 

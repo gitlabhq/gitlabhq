@@ -37,9 +37,11 @@
         = render :partial => "refs/submodule_item", :locals => { :content => content }
 
     - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
-      #tree-readme-holder
-        %h3= content.name
-        .readme
+      .file_holder#README
+        .file_title
+          %i.icon-file
+          = content.name
+        .file_content.wiki
           - if content.name =~ /\.(md|markdown)$/i
             = preserve do
               = markdown(content.data)
