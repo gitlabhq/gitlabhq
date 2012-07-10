@@ -37,8 +37,7 @@
             %td.lines
               = preserve do
                 %pre
-                  - lines.each do |line|
-                    = line
+                  = Gitlab::Encode.utf8 lines.join("\n")
 
 :javascript
   $(function(){
