@@ -12,6 +12,7 @@
 //= require jquery.cookie
 //= require jquery.endless-scroll
 //= require jquery.highlight
+//= require jquery.waitforimages
 //= require bootstrap-modal
 //= require modernizr
 //= require chosen-jquery

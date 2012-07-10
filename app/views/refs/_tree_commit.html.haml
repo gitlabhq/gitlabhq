@@ -1,0 +1,3 @@
+- if tm
+  %strong= link_to "[#{tm.user_name}]", project_team_member_path(@project, tm)
+= link_to truncate(content_commit.safe_message, :length => tm ? 30 : 50), project_commit_path(@project, content_commit.id), :class => "tree-commit-link"

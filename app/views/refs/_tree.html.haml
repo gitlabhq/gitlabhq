@@ -13,7 +13,7 @@
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.bordered-table.table
+    %table#tree-slider.bordered-table.table{:class  => "table_#{@hex_path}" }
       %thead
         %th Name
         %th Last Update
@@ -48,17 +48,18 @@
           - else
             = simple_format(content.data)
 
-- if params[:path]
-  - history_path = tree_file_project_ref_path(@project, @ref, params[:path])
-- else
-  - history_path = tree_project_ref_path(@project, @ref)
 :javascript
   $(function(){
     $('select#branch').selectmenu({style:'popup', width:200});
     $('select#tag').selectmenu({style:'popup', width:200});
     $('.project-refs-select').chosen();
 
-    history.pushState({ path: this.path }, '', "#{history_path}")
+    history.pushState({ path: this.path }, '', "#{@history_path}");
+
+  });
+
+  $(window).load(function(){
+    $.ajax({type: "GET", url: '#{@logs_path}', dataType: "script"}); 
   });
 
 

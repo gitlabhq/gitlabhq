@@ -2,3 +2,8 @@
   $("#tree-holder").html("#{escape_javascript(render(:partial => "tree", :locals => {:repo => @repo, :commit => @commit, :tree => @tree}))}");
   $("#tree-content-holder").show("slide", { direction: "right" }, 150);
   $('.project-refs-form #path').val("#{params[:path]}");
+
+
+  $('#tree-slider').waitForImages(function() {
+    $.ajax({type: "GET", url: '#{@logs_path}', dataType: "script"}); 
+  });
