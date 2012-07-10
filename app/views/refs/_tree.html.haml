@@ -29,12 +29,13 @@
           %td
           %td
 
+      - index = 0
       - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
-        = render :partial => "refs/tree_item", :locals => { :content => content }
+        = render :partial => "refs/tree_item", :locals => { :content => content, :index => (index += 1) }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
-        = render :partial => "refs/tree_item", :locals => { :content => content }
+        = render :partial => "refs/tree_item", :locals => { :content => content, :index => (index += 1) }
       - contents.select{ |i| i.is_a?(Grit::Submodule)}.each do |content|
-        = render :partial => "refs/submodule_item", :locals => { :content => content }
+        = render :partial => "refs/submodule_item", :locals => { :content => content, :index => (index += 1) }
 
     - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
       .file_holder#README
@@ -58,8 +59,9 @@
 
   });
 
+  // Load last commit log for each file in tree
   $(window).load(function(){
-    $.ajax({type: "GET", url: '#{@logs_path}', dataType: "script"}); 
+    ajaxGet('#{@logs_path}'); 
   });
 
 

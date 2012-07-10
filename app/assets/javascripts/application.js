@@ -114,3 +114,8 @@ function showDiff(link) {
             return _chosen.apply(this, [default_options]);
     }})
 })(jQuery);
+
+
+function ajaxGet(url) { 
+  $.ajax({type: "GET", url: url, dataType: "script"}); 
+}
