@@ -19,5 +19,5 @@ override_dh_prep:
 
 override_dh_install:
 	mkdir -p $(inst_dir)
-	cp -r `ls | grep -v git | grep -v debian` $(inst_dir)/
+	cp -r `ls | grep -v git | grep -v debian` .bundle $(inst_dir)/
 	dh_install

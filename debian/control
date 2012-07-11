@@ -4,12 +4,12 @@ Priority: extra
 Maintainer: root <root@squeezao>
 Build-Depends: debhelper, libicu-dev, ruby1.9.1-dev
 Standards-Version: 3.8.4
-Homepage: <insert the upstream URL, if relevant>
+Homepage: http://gitlabhq.com
 #Vcs-Git: git://git.debian.org/collab-maint/gitlabhq.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/gitlabhq.git;a=summary
 
 Package: gitlabhq
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient6, libsqlite3
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient16, libsqlite3-0, ruby1.9.1, gitolite, nginx | apache-mpm-worker
 Description: <insert up to 60 chars description>
  <insert long description, indented with spaces>
