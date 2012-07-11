@@ -21,6 +21,8 @@ email:
 # Like default project limit for user etc
 app: 
   default_projects_limit: 10 
+  # backup_path: "/vol/backups"   # default: Rails.root + backups/
+  # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
 
 
 # 

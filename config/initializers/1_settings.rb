@@ -101,5 +101,15 @@ class Settings < Settingslogic
     def default_projects_limit
       app['default_projects_limit'] || 10
     end
+
+    def backup_path
+      t = app['backup_path'] || "backups/"
+      t = /^\//.match(t) ? t : File.join(Rails.root + t)
+      t
+    end
+
+    def backup_keep_time
+      app['backup_keep_time'] || 0
+    end
   end
 end
