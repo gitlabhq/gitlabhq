@@ -95,7 +95,7 @@ class Settings < Settingslogic
     end
 
     def gitolite_admin_uri
-      git['admin_uri'] || 'git@localhost:gitolite-admin'
+      git_host['admin_uri'] || 'git@localhost:gitolite-admin'
     end
 
     def default_projects_limit
