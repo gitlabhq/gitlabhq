@@ -71,7 +71,6 @@ group :development, :test do
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
-  gem "webmock"
 end
 
 group :test do
@@ -82,4 +81,5 @@ group :test do
   gem "shoulda-matchers"
   gem 'email_spec'
   gem 'resque_spec'
+  gem "webmock"
 end

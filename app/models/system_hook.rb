@@ -1,0 +1,3 @@
+class SystemHook < WebHook
+
+end

@@ -4,8 +4,6 @@ class WebHook < ActiveRecord::Base
   # HTTParty timeout
   default_timeout 10
 
-  belongs_to :project
-
   validates :url,
             presence: true,
             format: {

@@ -11,24 +11,24 @@ class HooksController < ApplicationController
   respond_to :html
 
   def index
-    @hooks = @project.web_hooks.all
-    @hook = WebHook.new
+    @hooks = @project.hooks.all
+    @hook = ProjectHook.new
   end
 
   def create
-    @hook = @project.web_hooks.new(params[:hook])
+    @hook = @project.hooks.new(params[:hook])
     @hook.save
 
     if @hook.valid?
       redirect_to project_hooks_path(@project)
     else
-      @hooks = @project.web_hooks.all
+      @hooks = @project.hooks.all
       render :index
     end
   end
 
   def test
-    @hook = @project.web_hooks.find(params[:id])
+    @hook = @project.hooks.find(params[:id])
     commits = @project.commits(@project.default_branch, nil, 3)
     data = @project.post_receive_data(commits.last.id, commits.first.id, "refs/heads/#{@project.default_branch}", current_user)
     @hook.execute(data)
@@ -37,7 +37,7 @@ class HooksController < ApplicationController
   end
 
   def destroy
-    @hook = @project.web_hooks.find(params[:id])
+    @hook = @project.hooks.find(params[:id])
     @hook.destroy
 
     redirect_to project_hooks_path(@project)

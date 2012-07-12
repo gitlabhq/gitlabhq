@@ -35,7 +35,7 @@ module GitPush
 
     data = post_receive_data(oldrev, newrev, ref, user)
 
-    web_hooks.each { |web_hook| web_hook.execute(data) }
+    hooks.each { |web_hook| web_hook.execute(data) }
   end
 
   def post_receive_data(oldrev, newrev, ref, user)
