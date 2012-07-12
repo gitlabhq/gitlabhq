@@ -2,7 +2,7 @@ Source: gitlabhq
 Section: ruby
 Priority: extra
 Maintainer: root <root@squeezao>
-Build-Depends: debhelper, libicu-dev, ruby1.9.1-dev
+Build-Depends: debhelper, libicu-dev, ruby1.9.1-dev, libmysqlclient-dev, libsqlite3-dev
 Standards-Version: 3.8.4
 Homepage: http://gitlabhq.com
 #Vcs-Git: git://git.debian.org/collab-maint/gitlabhq.git
@@ -10,6 +10,6 @@ Homepage: http://gitlabhq.com
 
 Package: gitlabhq
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient16, libsqlite3-0, ruby1.9.1, gitolite, nginx | apache-mpm-worker
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient16, libsqlite3-0, ruby1.9.1, gitolite, nginx | apache-mpm-worker, redis-server
 Description: <insert up to 60 chars description>
  <insert long description, indented with spaces>
