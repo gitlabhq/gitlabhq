@@ -12,8 +12,6 @@ class WebHook < ActiveRecord::Base
 
   def execute(data)
     WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
-  rescue
-    # There was a problem calling this web hook, let's forget about it.
   end
 end
 # == Schema Information

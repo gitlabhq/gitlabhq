@@ -28,6 +28,7 @@ Gitlab::Application.routes.draw do
   get 'help/workflow' => 'help#workflow'
   get 'help/api' => 'help#api'
   get 'help/web_hooks' => 'help#web_hooks'
+  get 'help/system_hooks' => 'help#system_hooks'
 
   #
   # Admin Area
@@ -47,11 +48,13 @@ Gitlab::Application.routes.draw do
       end
     end
     resources :team_members, :only => [:edit, :update, :destroy]
-    get 'emails', :to => 'mailer#preview'
     get 'mailer/preview_note'
     get 'mailer/preview_user_new'
     get 'mailer/preview_issue_new'
 
+    resources :hooks, :only => [:index, :create, :destroy] do
+      get :test
+    end
     resource :logs
     resource :resque, :controller => 'resque'
     root :to => "dashboard#index"
