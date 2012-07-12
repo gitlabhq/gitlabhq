@@ -102,6 +102,10 @@ class Settings < Settingslogic
       app['default_projects_limit'] || 10
     end
 
+    def default_project_access
+      app['default_project_access'] || 'none'
+    end
+
     def backup_path
       t = app['backup_path'] || "backups/"
       t = /^\//.match(t) ? t : File.join(Rails.root + t)

@@ -15,9 +15,22 @@ When /^fill project form with valid data$/ do
   click_button "Create project"
 end
 
+When /^fill project form with valid data and change initial access$/ do
+  fill_in 'project_name',   :with => 'NewOpenProject'
+  fill_in 'project_code',   :with => 'NOPR'
+  fill_in 'project_path',   :with => 'newopenproject'
+  select  'Developer',      :from => 'project_access'
+  click_button "Create project"
+end
+
 Then /^I should see project page$/ do
   current_path.should == project_path(Project.last)
   page.should have_content('NewProject')
+end
+
+Then /^I should see project page for "(.*?)"$/ do |arg1|
+  current_path.should == project_path(Project.last)
+  page.should have_content(arg1)
 end
 
 Then /^I should see empty project instuctions$/ do

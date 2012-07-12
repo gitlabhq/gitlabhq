@@ -2,6 +2,10 @@ Given /^gitlab user "(.*?)"$/ do |arg1|
   Factory :user, :name => arg1
 end
 
+Given /^gitlab admin "(.*?)"$/ do |arg1|
+  Factory :admin, :name => arg1
+end
+
 Given /^"(.*?)" is "(.*?)" developer$/ do |arg1, arg2|
   user = User.find_by_name(arg1)
   project = Project.find_by_name(arg2)
@@ -40,6 +44,11 @@ Then /^I should see "(.*?)" in team list as "(.*?)"$/ do |arg1, arg2|
   user = User.find_by_name(arg1)
   role_id = find(".user_#{user.id} #team_member_project_access").value
   role_id.should == UsersProject.access_roles[arg2].to_s
+end
+
+Then /^I should see myself in team list as "(.*?)"$/ do |arg1|
+  role_id = find(".user_#{@user.id} #team_member_project_access").value
+  role_id.should == UsersProject.access_roles[arg1].to_s
 end
 
 Given /^I change "(.*?)" role to "(.*?)"$/ do |arg1, arg2|
