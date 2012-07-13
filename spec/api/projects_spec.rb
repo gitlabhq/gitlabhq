@@ -78,7 +78,7 @@ describe Gitlab::API do
   end
 
   describe "DELETE /projects/:id/snippets/:snippet_id" do
-    it "should create a new project snippet" do
+    it "should delete existing project snippet" do
       expect {
         delete "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}?private_token=#{user.private_token}"
       }.should change { Snippet.count }.by(-1)
