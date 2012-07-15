@@ -21,44 +21,44 @@ describe Project, "Hooks" do
     end
   end
 
-  describe "Web hooks" do
+  describe "Project hooks" do
     context "with no web hooks" do
       it "raises no errors" do
         lambda {
-          project.execute_web_hooks('oldrev', 'newrev', 'ref', @user)
+          project.execute_hooks('oldrev', 'newrev', 'ref', @user)
         }.should_not raise_error
       end
     end
 
     context "with web hooks" do
       before do
-        @webhook = Factory(:web_hook)
-        @webhook_2 = Factory(:web_hook)
-        project.web_hooks << [@webhook, @webhook_2]
+        @project_hook = Factory(:project_hook)
+        @project_hook_2 = Factory(:project_hook)
+        project.hooks << [@project_hook, @project_hook_2]
       end
 
       it "executes multiple web hook" do
-        @webhook.should_receive(:execute).once
-        @webhook_2.should_receive(:execute).once
+        @project_hook.should_receive(:execute).once
+        @project_hook_2.should_receive(:execute).once
 
-        project.execute_web_hooks('oldrev', 'newrev', 'refs/heads/master', @user)
+        project.execute_hooks('oldrev', 'newrev', 'refs/heads/master', @user)
       end
     end
 
     context "does not execute web hooks" do
       before do
-        @webhook = Factory(:web_hook)
-        project.web_hooks << [@webhook]
+        @project_hook = Factory(:project_hook)
+        project.hooks << [@project_hook]
       end
 
       it "when pushing a branch for the first time" do
-        @webhook.should_not_receive(:execute)
-        project.execute_web_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/master', @user)
+        @project_hook.should_not_receive(:execute)
+        project.execute_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/master', @user)
       end
 
       it "when pushing tags" do
-        @webhook.should_not_receive(:execute)
-        project.execute_web_hooks('oldrev', 'newrev', 'refs/tags/v1.0.0', @user)
+        @project_hook.should_not_receive(:execute)
+        project.execute_hooks('oldrev', 'newrev', 'refs/tags/v1.0.0', @user)
       end
     end
 

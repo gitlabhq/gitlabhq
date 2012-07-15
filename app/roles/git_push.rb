@@ -27,7 +27,7 @@ module GitPush
     true
   end
 
-  def execute_web_hooks(oldrev, newrev, ref, user)
+  def execute_hooks(oldrev, newrev, ref, user)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
@@ -35,7 +35,7 @@ module GitPush
 
     data = post_receive_data(oldrev, newrev, ref, user)
 
-    hooks.each { |web_hook| web_hook.execute(data) }
+    hooks.each { |hook| hook.execute(data) }
   end
 
   def post_receive_data(oldrev, newrev, ref, user)
@@ -97,7 +97,7 @@ module GitPush
     self.update_merge_requests(oldrev, newrev, ref, user)
 
     # Execute web hooks
-    self.execute_web_hooks(oldrev, newrev, ref, user)
+    self.execute_hooks(oldrev, newrev, ref, user)
 
     # Create satellite
     self.satellite.create unless self.satellite.exists?

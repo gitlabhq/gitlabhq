@@ -60,7 +60,7 @@ Factory.add(:key, Key) do |obj|
   obj.key = File.read(File.join(Rails.root, "db", "pkey.example"))
 end
 
-Factory.add(:web_hook, WebHook) do |obj|
+Factory.add(:project_hook, ProjectHook) do |obj|
   obj.url = Faker::Internet.uri("http")
 end
 

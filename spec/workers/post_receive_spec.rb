@@ -22,14 +22,14 @@ describe PostReceive do
       Key.stub(find_by_identifier: nil)
 
       project.should_not_receive(:observe_push)
-      project.should_not_receive(:execute_web_hooks)
+      project.should_not_receive(:execute_hooks)
 
       PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id).should be_false
     end
 
     it "asks the project to execute web hooks" do
       Project.stub(find_by_path: project)
-      project.should_receive(:execute_web_hooks).with('sha-old', 'sha-new', 'refs/heads/master', project.owner)
+      project.should_receive(:execute_hooks).with('sha-old', 'sha-new', 'refs/heads/master', project.owner)
 
       PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id)
     end
