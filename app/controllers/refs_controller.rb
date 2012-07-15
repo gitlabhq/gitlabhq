@@ -9,7 +9,7 @@ class RefsController < ApplicationController
   before_filter :require_non_empty_project
 
   before_filter :ref
-  before_filter :define_tree_vars, :only => [:tree, :blob, :blame]
+  before_filter :define_tree_vars, :only => [:tree, :blob, :blame, :logs_tree]
   before_filter :render_full_content
 
   layout "project"
@@ -46,6 +46,18 @@ class RefsController < ApplicationController
     end
   end
 
+  def logs_tree
+    contents = @tree.contents
+    @logs = contents.map do |content|
+      file = params[:path] ? File.join(params[:path], content.name) : content.name
+      last_commit = @project.commits(@commit.id, file, 1).last
+      { 
+        :file_name => content.name, 
+        :commit => last_commit
+      }
+    end
+  end
+
   def blob
     if @tree.is_blob?
       if @tree.text?
@@ -79,6 +91,15 @@ class RefsController < ApplicationController
     @commit = project.commit(@ref)
     @tree = Tree.new(@commit.tree, project, @ref, params[:path])
     @tree = TreeDecorator.new(@tree)
+    @hex_path = Digest::SHA1.hexdigest(params[:path] || "/")
+
+    if params[:path]
+      @history_path = tree_file_project_ref_path(@project, @ref, params[:path])
+      @logs_path = logs_file_project_ref_path(@project, @ref, params[:path]) 
+    else
+      @history_path = tree_project_ref_path(@project, @ref)
+      @logs_path = logs_tree_project_ref_path(@project, @ref) 
+    end
   rescue
     return render_404
   end

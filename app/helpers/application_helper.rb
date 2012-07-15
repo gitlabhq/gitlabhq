@@ -134,4 +134,8 @@ module ApplicationHelper
              end
     active ? "current" : nil
   end
+
+  def hexdigest(string)
+    Digest::SHA1.hexdigest string
+  end
 end
