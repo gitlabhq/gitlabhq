@@ -2,4 +2,4 @@ gitlabhq (0.0.1-1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 
- -- root <root@squeezao>  Wed, 11 Jul 2012 01:36:16 -0300
+ -- Rodrigo Sampaio Vaz <rodrigo.vaz@gmail.com>  Wed, 11 Jul 2012 01:36:16 -0300
