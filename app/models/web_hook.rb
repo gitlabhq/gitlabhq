@@ -13,6 +13,7 @@ class WebHook < ActiveRecord::Base
   def execute(data)
     WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
   end
+  
 end
 # == Schema Information
 #

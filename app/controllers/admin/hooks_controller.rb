@@ -11,12 +11,11 @@ class Admin::HooksController < ApplicationController
   def create
     @hook = SystemHook.new(params[:hook])
 
-    respond_to do |format|
-      if @hook.save
-        format.html { redirect_to admin_hooks_path, notice: 'Hook was successfully created.' }
-      else
-        format.html { render :index }
-      end
+    if @hook.save
+      redirect_to admin_hooks_path, notice: 'Hook was successfully created.'
+    else
+      @hooks = SystemHook.all
+      render :index 
     end
   end
 

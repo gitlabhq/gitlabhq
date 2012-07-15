@@ -11,12 +11,40 @@ class UsersProject < ActiveRecord::Base
 
   after_save :update_repository
   after_destroy :update_repository
+  after_create :add_to_team_hooks
+  after_destroy :remove_from_team_hooks
+
 
   validates_uniqueness_of :user_id, :scope => [:project_id]
   validates_presence_of :user_id
   validates_presence_of :project_id
 
   delegate :name, :email, :to => :user, :prefix => true
+
+  def add_to_team_hooks
+    SystemHook.all_hooks_fire({
+      event_name: "user_add_to_team",
+      project_name: self.project.name,
+      project_path: self.project.path,
+      project_id: self.project_id,
+      user_name: self.user.name,
+      user_email: self.user.email,
+      project_access: self.repo_access_human,
+      created_at: self.created_at
+    })
+  end
+  
+  def remove_from_team_hooks
+    SystemHook.all_hooks_fire({
+      event_name: "user_remove_from_team",
+      project_name: self.project.name,
+      project_path: self.project.path,
+      project_id: self.project_id,
+      user_name: self.user.name,
+      user_email: self.user.email,
+      project_access: self.repo_access_human
+    })
+  end
 
   def self.bulk_import(project, user_ids, project_access)
     UsersProject.transaction do
@@ -68,7 +96,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def repo_access_human
-    ""
+    self.class.access_roles.invert[self.project_access]
   end
 end
 # == Schema Information

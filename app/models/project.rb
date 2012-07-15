@@ -107,6 +107,32 @@ class Project < ActiveRecord::Base
   validate :check_limit
   validate :repo_name
 
+  after_create :create_hooks
+  after_destroy :destroy_hooks
+
+  def create_hooks
+    SystemHook.all_hooks_fire({
+      event_name: "project_create",
+      name: self.name,
+      path: self.path,
+      project_id: self.id,
+      owner_name: self.owner.name,
+      owner_email: self.owner.email,
+      created_at: self.created_at
+    })
+  end
+  
+  def destroy_hooks
+    SystemHook.all_hooks_fire({
+      event_name: "project_destroy",
+      name: self.name,
+      path: self.path,
+      project_id: self.id,
+      owner_name: self.owner.name,
+      owner_email: self.owner.email,
+    })
+  end
+
   def check_limit
     unless owner.can_create_project?
       errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
@@ -120,7 +146,7 @@ class Project < ActiveRecord::Base
       errors.add(:path, " like 'gitolite-admin' is not allowed")
     end
   end
-  
+
   def self.access_options
     UsersProject.access_roles
   end
