@@ -202,6 +202,10 @@ a:focus {
   color:$style_color;
 }
 
+.nav-tabs > .active > a { 
+  font-weight:bold;
+}
+
 /** COLORS **/
 .cgray { color:gray; }
 .cred { color:#D12F19; }
@@ -443,6 +447,13 @@ form {
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
+    &.small { 
+      line-height: 28px;
+      font-size: 14px;
+      line-height:28px;
+      text-shadow: 0 1px 1px white;
+    }
+
     form { 
       padding:9px 0;
       margin:0px;
@@ -628,13 +639,6 @@ h3.page_title {
   line-height: 28px;
 }
 
-pre.logs { 
-  .log { 
-    font-size:12px;
-    line-height:18px;
-  }
-}
-
 /**
  * File content holder 
  *
@@ -676,10 +680,10 @@ pre.logs {
   }
   .file_content {
     background:#fff;
-    color:#514721;
     font-size: 11px;
 
     &.wiki { 
+      font-size: 13px;
       code { 
         padding:0 4px;
       }
@@ -726,6 +730,33 @@ pre.logs {
           margin:0;
           background:none;
           border:none;
+        }
+      }
+    }
+
+    &.logs { 
+      background:#eee;
+      max-height: 700px;
+      overflow-y: auto;
+
+      ol { 
+        margin-left:40px;
+        padding: 10px 0;
+        border-left: 1px solid #CCC;
+        margin-bottom:0;
+        background: white;
+        li { 
+          color:#888;
+          p { 
+            margin:0;
+            color:#333;
+            line-height:24px;
+            padding-left: 10px;
+          }
+
+          &:hover { 
+            background:$hover;
+          }
         }
       }
     }
