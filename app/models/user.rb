@@ -80,7 +80,8 @@ class User < ActiveRecord::Base
 
   def self.find_for_ldap_auth(omniauth_info)
     name = omniauth_info.name.force_encoding("utf-8")
-    email = omniauth_info.email.downcase
+    email = omniauth_info.email.downcase unless omniauth_info.email.nil?
+    raise OmniAuth::Error, "LDAP accounts must provide an email address" if email.nil?
 
     if @user = User.find_by_email(email)
       @user
