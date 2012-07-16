@@ -72,6 +72,6 @@ class Admin::ProjectsController < ApplicationController
     @admin_project = Project.find_by_code(params[:id])
     @admin_project.destroy
 
-    redirect_to admin_projects_url
+    redirect_to admin_projects_url, notice: 'Project was successfully deleted.'
   end
 end
