@@ -139,6 +139,8 @@ Permissions:
     cd /home/gitlab
     sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
+    
+    sudo -u gitlab mkdir tmp
 
     # Rename config files
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
