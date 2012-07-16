@@ -218,15 +218,15 @@ Application can be started with next command:
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Edit /etc/nginx/nginx.conf. Add in **http** section:
+Edit /etc/nginx/nginx.conf. In the *http* section add:
 
     upstream gitlab {
         server unix:/home/gitlab/gitlab/tmp/sockets/gitlab.socket;
     }
 
     server {
-        listen YOUR_SERVER_IP:80;
-        server_name gitlab.YOUR_DOMAIN.com;
+        listen YOUR_SERVER_IP:80;         # e.g., listen 192.168.1.1:80;
+        server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
         root /home/gitlab/gitlab/public;
         
         # individual nginx logs for this gitlab vhost
@@ -234,26 +234,26 @@ Edit /etc/nginx/nginx.conf. Add in **http** section:
         error_log   /var/log/nginx/gitlab_error.log;
         
         location / {
-        # serve static files from defined root folder;.
-        # @gitlab is a named location for the upstream fallback, see below
-        try_files $uri $uri/index.html $uri.html @gitlab;
+            # serve static files from defined root folder;.
+            # @gitlab is a named location for the upstream fallback, see below
+            try_files $uri $uri/index.html $uri.html @gitlab;
         }
         
         # if a file, which is not found in the root folder is requested, 
         # then the proxy pass the request to the upsteam (gitlab unicorn)
         location @gitlab {
           proxy_redirect     off;
+          
           # you need to change this to "https", if you set "ssl" directive to "on"
           proxy_set_header   X-FORWARDED_PROTO http;
-          proxy_set_header   Host              gitlab.YOUR_SUBDOMAIN.com:80;
+          proxy_set_header   Host              $http_host;
           proxy_set_header   X-Real-IP         $remote_addr;
         
           proxy_pass http://gitlab;
         }
-
     }
 
-gitlab.YOUR_DOMAIN.com - change to your domain.
+Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN** to the IP address and fully-qualified domain name of the host serving GitLab.
 
 Restart nginx:
 
