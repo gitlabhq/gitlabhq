@@ -8,7 +8,7 @@ module Gitlab
 
     def self.read_latest
       path = Rails.root.join("log/githost.log")
-      logs = `tail -n 50 #{path}`.split("\n")
+      logs = File.read(path).split("\n")
     end
   end
 end
