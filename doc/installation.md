@@ -119,7 +119,7 @@ Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
-    find /home/git/repositories/ -maxdepth 3 -mindepth 3 -name "post-receive" | xargs chown gitlab:gitlab
+    find /home/git/repositories/ -maxdepth 3 -mindepth 3 -name "post-receive" -print0 | xargs -0 chown gitlab:gitlab
 
 #### CHECK: Logout & login again to apply git group to your user
     
