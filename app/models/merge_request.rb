@@ -128,7 +128,7 @@ class MergeRequest < ActiveRecord::Base
 
   def unmerged_diffs
     commits = project.repo.commits_between(target_branch, source_branch).map {|c| Commit.new(c)}
-    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id)
+    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id) rescue []
   end
 
   def last_commit
