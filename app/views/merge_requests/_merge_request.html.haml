@@ -15,12 +15,14 @@
         &rarr;
         = merge_request.target_branch
   = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
+
+  = link_to project_merge_request_path(merge_request.project, merge_request) do
+    %p.row_title= truncate(merge_request.title, :length => 80)
+
   %span.update-author
-    %strong= merge_request.author_name
-    authored
+    %small.cdark= "##{merge_request.id}"
+    authored by #{merge_request.author_name}
     = time_ago_in_words(merge_request.created_at)
     ago
     - if merge_request.upvotes > 0
       %span.badge.badge-success= "+#{merge_request.upvotes}"
-  = link_to project_merge_request_path(merge_request.project, merge_request) do
-    %p.row_title= truncate(merge_request.title, :length => 80)
