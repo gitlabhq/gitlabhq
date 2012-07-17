@@ -22,7 +22,6 @@ class MergeRequest < ActiveRecord::Base
                 :should_remove_source_branch
 
   validates_presence_of :project_id
-  validates_presence_of :assignee_id
   validates_presence_of :author_id
   validates_presence_of :source_branch
   validates_presence_of :target_branch
@@ -36,6 +35,7 @@ class MergeRequest < ActiveRecord::Base
   delegate :name,
            :email,
            :to => :assignee,
+           :allow_nil => true,
            :prefix => true
 
   validates :title,
