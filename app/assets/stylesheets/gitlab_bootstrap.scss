@@ -303,9 +303,20 @@ table.no-borders {
 }
 
 .event_label { 
-  background: #FCEEC1;
-  padding: 2px 2px 0;
-  font-family: monospace;
+  @extend .label;
+  background-color: #999;
+
+  &.pushed { 
+    background-color: #3A87AD;
+  }
+
+  &.opened { 
+    background-color: #468847;
+  }
+
+  &.closed { 
+    background-color: #B94A48;
+  }
 }
 
 img.avatar { 

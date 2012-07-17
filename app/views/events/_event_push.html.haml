@@ -2,7 +2,7 @@
   .event_icon= image_tag "event_push.png"
   = image_tag gravatar_icon(event.author_email), :class => "avatar"
   %strong #{event.author_name}
-  %span.event_label= event.push_action_name
+  %span.event_label.pushed= event.push_action_name
   = event.ref_type
   = link_to project_commits_path(event.project, :ref => event.ref_name) do
     %strong= event.ref_name
