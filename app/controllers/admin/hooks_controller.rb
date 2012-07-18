@@ -28,9 +28,15 @@ class Admin::HooksController < ApplicationController
 
 
   def test
-    @hook = @project.hooks.find(params[:id])
-    commits = @project.commits(@project.default_branch, nil, 3)
-    data = @project.post_receive_data(commits.last.id, commits.first.id, "refs/heads/#{@project.default_branch}", current_user)
+    @hook = SystemHook.find(params[:hook_id])
+    data = {
+      event_name: "project_create",
+      name: "Ruby",
+      path: "ruby",
+      project_id: 1,
+      owner_name: "Someone",
+      owner_email: "example@gitlabhq.com"
+    }
     @hook.execute(data)
 
     redirect_to :back
