@@ -96,7 +96,7 @@ header {
    */
   .search { 
     float: right;
-    margin-right: 55px;
+    margin-right: 50px;
 
     .search-input {
       @extend .span2;
@@ -125,11 +125,14 @@ header {
     display: block;
     cursor: pointer;
     img {
+      -moz-box-shadow: 0 0 5px #ccc;
+      -webkit-box-shadow: 0 0 5px #ccc;
+      box-shadow: 0 0 5px #ccc;
       border-radius: 4px;
-      right: 0px;
+      right: 5px;
       position: absolute;
-      width: 33px;
-      height: 33px;
+      width: 31px;
+      height: 31px;
       display: block;
       top: 0;
       &:after {

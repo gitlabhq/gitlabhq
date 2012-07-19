@@ -24,7 +24,7 @@
                 = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
                 %span Commit author
           .actions
-            = f.submit 'Add note', :class => "btn primary", :id => "submit_note"
+            = f.submit 'Add note', :class => "btn primary submit_note", :id => "submit_note"
             = link_to "Close", "#", :class => "btn hide-button"
 
 :javascript

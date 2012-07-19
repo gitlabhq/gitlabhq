@@ -25,11 +25,11 @@ init:
       $(this).closest('li').fadeOut(); });
 
     $("#new_note").live("ajax:before", function(){
-      $("#submit_note").attr("disabled", "disabled");
+      $(".submit_note").attr("disabled", "disabled");
     })
 
     $("#new_note").live("ajax:complete", function(){
-      $("#submit_note").removeAttr("disabled");
+      $(".submit_note").removeAttr("disabled");
     })
 
     $("#note_note").live("focus", function(){
