@@ -6,7 +6,7 @@ class Admin::ProjectsController < ApplicationController
   def index
     @admin_projects = Project.scoped
     @admin_projects = @admin_projects.search(params[:name]) if params[:name].present?
-    @admin_projects = @admin_projects.page(params[:page])
+    @admin_projects = @admin_projects.page(params[:page]).per(20)
   end
 
   def show

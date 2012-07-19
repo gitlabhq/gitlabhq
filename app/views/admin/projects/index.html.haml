@@ -13,8 +13,8 @@
     %th Team Members
     %th Post Receive
     %th Last Commit
-    %th
-    %th
+    %th Edit
+    %th.cred Danger Zone!
 
   - @admin_projects.each do |project|
     %tr
@@ -24,5 +24,5 @@
       %td= check_box_tag :post_receive_file, 1, project.has_post_receive_file?, :disabled => true
       %td= last_commit(project)
       %td= link_to 'Edit', edit_admin_project_path(project), :id => "edit_#{dom_id(project)}", :class => "btn small"
-      %td= link_to 'Destroy', [:admin, project], :confirm => 'Are you sure?', :method => :delete, :class => "btn small danger"
+      %td.bgred= link_to 'Destroy', [:admin, project], :confirm => "REMOVE #{project.name}? Are you sure?", :method => :delete, :class => "btn small danger"
 = paginate @admin_projects, :theme => "admin"

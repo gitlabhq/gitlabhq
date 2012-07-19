@@ -15,6 +15,11 @@ class User < ActiveRecord::Base
   has_many :my_own_projects, :class_name => "Project", :foreign_key => :owner_id
   has_many :keys, :dependent => :destroy
 
+  has_many :events,
+    :class_name => "Event",
+    :foreign_key => :author_id,
+    :dependent => :destroy
+
   has_many :recent_events,
     :class_name => "Event",
     :foreign_key => :author_id,

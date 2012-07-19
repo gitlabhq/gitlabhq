@@ -213,6 +213,7 @@ a:focus {
 .cblack { color:#111; }
 .cdark { color:#444 }
 .cwhite { color:#fff !important }
+.bgred { background: #F2DEDE !important}
 
 /** COMMON STYLES **/
 .left {
@@ -650,7 +651,7 @@ p {
 h3.page_title { 
   color:#456;
   font-size:20px;
-  font-weight: 600;
+  font-weight: normal;
   line-height: 28px;
 }
 
