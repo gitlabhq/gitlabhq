@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+
   include Account
 
   devise :database_authenticatable, :token_authenticatable, :lockable,
@@ -57,25 +58,6 @@ class User < ActiveRecord::Base
   scope :active, where(:blocked =>  false)
 
   before_validation :generate_password, :on => :create
-  after_create :create_hooks
-  after_destroy :destroy_hooks
-
-  def create_hooks
-    SystemHook.all_hooks_fire({
-      event_name: "user_create",
-      name: self.name,
-      email: self.email,
-      created_at: self.created_at
-    })
-  end
-  
-  def destroy_hooks
-    SystemHook.all_hooks_fire({
-      event_name: "user_destroy",
-      name: self.name,
-      email: self.email
-    })
-  end
 
   def generate_password
     if self.force_random_password
