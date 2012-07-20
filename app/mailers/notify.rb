@@ -46,6 +46,13 @@ class Notify < ActionMailer::Base
     mail(:to => recipient.email, :subject => "gitlab | note for issue #{@issue.id} | #{@note.project_name} ")
   end
 
+  def note_wiki_email(recipient_id, note_id)
+    recipient = User.find(recipient_id)
+    @note = Note.find(note_id)
+    @wiki = @note.noteable
+    mail(:to => recipient.email, :subject => "gitlab | note for wiki | #{@note.project_name}")
+  end
+
   def new_merge_request_email(merge_request_id)
     @merge_request = MergeRequest.find(merge_request_id)
     mail(:to => @merge_request.assignee_email, :subject => "gitlab | new merge request | #{@merge_request.title} ")
