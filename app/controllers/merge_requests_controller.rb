@@ -24,16 +24,7 @@ class MergeRequestsController < ApplicationController
 
 
   def index
-    @merge_requests = @project.merge_requests
-
-    @merge_requests = case params[:f].to_i
-                      when 1 then @merge_requests
-                      when 2 then @merge_requests.closed
-                      when 3 then @merge_requests.opened.assigned(current_user)
-                      else @merge_requests.opened
-                      end.page(params[:page]).per(20)
-
-    @merge_requests = @merge_requests.includes(:author, :project).order("closed, created_at desc")
+    @merge_requests = MergeRequestsLoad.new(project, current_user, params).execute
   end
 
   def show

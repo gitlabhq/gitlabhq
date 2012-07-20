@@ -26,43 +26,31 @@ class CommitsController < ApplicationController
   end
 
   def show
-    @commit = project.commit(params[:id])
+    result = CommitLoad.new(project, current_user, params).execute
 
-    git_not_found! and return unless @commit
+    @commit = result[:commit]
 
-    @commit = CommitDecorator.decorate(@commit)
-
-    @note = @project.build_commit_note(@commit)
-    @comments_allowed = true
-    @line_notes = project.commit_line_notes(@commit)
-
-    @notes_count = @line_notes.count + project.commit_notes(@commit).count
-
-    if @commit.diffs.size > 200 && !params[:force_show_diff]
-      @suppress_diff = true 
+    if @commit
+      @suppress_diff = result[:suppress_diff]
+      @note          = result[:note]
+      @line_notes    = result[:line_notes]
+      @notes_count   = result[:notes_count]
+      @comments_allowed = true
+    else
+      return git_not_found!
     end
+
   rescue Grit::Git::GitTimeout
     render "huge_commit"
   end
 
   def compare
-    first = project.commit(params[:to].try(:strip))
-    last = project.commit(params[:from].try(:strip))
+    result = Commit.compare(project, params[:from], params[:to])
 
-    @diffs = []
-    @commits = []
+    @commits = result[:commits]
+    @commit  = result[:commit]
+    @diffs   = result[:diffs]
     @line_notes = []
-
-    if first && last
-      commits = [first, last].sort_by(&:created_at)
-      younger = commits.first
-      older = commits.last
-
-
-      @commits = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
-      @diffs = project.repo.diff(younger.id, older.id) rescue []
-      @commit = Commit.new(older)
-    end
   end
 
   def patch
