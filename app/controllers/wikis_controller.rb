@@ -17,6 +17,8 @@ class WikisController < ApplicationController
       return render_404 unless can?(current_user, :write_wiki, @project)
     end
 
+    @note = @project.notes.new(:noteable => @wiki)
+
     respond_to do |format|
       if @wiki
         format.html
