@@ -31,6 +31,12 @@ $hover: #FDF5D9;
   box-shadow: 0 0 3px #ddd;
 }
 
+@mixin solid_shade { 
+  -moz-box-shadow: 0 0 0 3px #eee;
+  -webkit-box-shadow: 0 0 0 3px #eee;
+  box-shadow: 0 0 0 3px #eee;
+}
+
 @mixin border-radius($radius) {
   -moz-border-radius: $radius;
   -webkit-border-radius: $radius;

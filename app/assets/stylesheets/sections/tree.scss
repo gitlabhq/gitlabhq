@@ -55,7 +55,7 @@
 
 
   #tree-slider { 
-    @include shade;
+    @include solid_shade;
     width:100%;
 
     border-color:#ccc;

@@ -448,6 +448,7 @@ form {
   margin-bottom: 25px;
   @include round-borders-all(4px);
   border-color: #CCC;
+  @include solid_shade;
 
   ul { 
     margin:0;
@@ -538,6 +539,7 @@ form {
 table.admin-table {
   @extend .table-bordered; 
   @extend .zebra-striped;
+  @include solid_shade;
   th { 
     border-color: #CCC;
     border-bottom: 1px solid #bbb;
@@ -595,6 +597,8 @@ ul.breadcrumb {
   @extend .prepend-top-20;
   @extend .append-bottom-20;
   border-width:1px;
+  @include solid_shade;
+
 
   img { max-width: 100%; }
 
@@ -662,7 +666,7 @@ h3.page_title {
 .file_holder { 
   border:1px solid #CCC;
   margin-bottom:1em;
-  @include shade;
+  @include solid_shade;
 
   .file_title { 
     border-bottom: 1px solid #bbb;
