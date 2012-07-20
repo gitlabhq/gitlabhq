@@ -34,6 +34,7 @@ class MailerObserver < ActiveRecord::Observer
       case note.noteable_type
       when "Commit"; Notify.note_commit_email(u.id, note.id).deliver
       when "Issue";  Notify.note_issue_email(u.id, note.id).deliver
+      when "Wiki";  Notify.note_wiki_email(u.id, note.id).deliver
       when "MergeRequest"; Notify.note_merge_request_email(u.id, note.id).deliver
       when "Snippet"; true
       else
