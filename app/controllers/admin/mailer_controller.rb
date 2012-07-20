@@ -18,6 +18,8 @@ class Admin::MailerController < ApplicationController
     when "Issue" then
       @issue = Issue.first
       render :file => 'notify/note_issue_email', :layout => 'notify'
+    when "Wiki" then
+      render :file => 'notify/note_wiki_email', :layout => 'notify'
     else
       render :file => 'notify/note_wall_email', :layout => 'notify'
     end
