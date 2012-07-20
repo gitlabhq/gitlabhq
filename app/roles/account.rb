@@ -55,4 +55,8 @@ module Account
     # Take only latest one
     events = events.recent.limit(1).first
   end
+
+  def projects_with_events
+    projects.includes(:events).order("events.created_at DESC")
+  end
 end
