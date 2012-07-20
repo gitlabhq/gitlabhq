@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+
   include Account
 
   devise :database_authenticatable, :token_authenticatable, :lockable,

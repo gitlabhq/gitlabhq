@@ -68,7 +68,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def repo_access_human
-    ""
+    self.class.access_roles.invert[self.project_access]
   end
 end
 # == Schema Information

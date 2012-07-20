@@ -13,9 +13,9 @@ describe "Admin::Projects" do
     it { admin_users_path.should be_denied_for :visitor }
   end
 
-  describe "GET /admin/emails" do
-    it { admin_emails_path.should be_allowed_for :admin }
-    it { admin_emails_path.should be_denied_for :user }
-    it { admin_emails_path.should be_denied_for :visitor }
+  describe "GET /admin/hooks" do
+    it { admin_hooks_path.should be_allowed_for :admin }
+    it { admin_hooks_path.should be_denied_for :user }
+    it { admin_hooks_path.should be_denied_for :visitor }
   end
 end

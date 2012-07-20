@@ -11,7 +11,7 @@ describe Project do
     it { should have_many(:issues).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
     it { should have_many(:snippets).dependent(:destroy) }
-    it { should have_many(:web_hooks).dependent(:destroy) }
+    it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:deploy_keys).dependent(:destroy) }
   end
 
