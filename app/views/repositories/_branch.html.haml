@@ -1,3 +1,5 @@
+- commit = Commit.new(branch.commit)
+- commit = CommitDecorator.decorate(commit)
 %tr
   %td
     = link_to project_commits_path(@project, :ref => branch.name) do
@@ -5,14 +7,14 @@
       - if branch.name == @project.root_ref
         %span.label default
   %td
-    = link_to project_commit_path(@project, :id => branch.commit.id) do
-      %code= branch.commit.id.to_s[0..10]
+    = link_to project_commit_path(@project, :id => commit.id) do
+      %code= commit.short_id
 
-    = image_tag gravatar_icon(Commit.new(branch.commit).author_email), :class => "", :width => 16
-    = truncate(Commit.new(branch.commit).safe_message, :length => 40)
+    = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
+    = truncate(commit.title, :length => 40)
   %td
     %span.update-author.right
-      = time_ago_in_words(branch.commit.committed_date)
+      = time_ago_in_words(commit.committed_date)
       ago
   %td
     - if can? current_user, :download_code, @project

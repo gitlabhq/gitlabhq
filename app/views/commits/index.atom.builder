@@ -10,14 +10,14 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
     xml.entry do
       xml.id      project_commit_url(@project, :id => commit.id)
       xml.link    :href => project_commit_url(@project, :id => commit.id)
-      xml.title   truncate(commit.safe_message, :length => 80)
+      xml.title   truncate(commit.title, :length => 80)
       xml.updated commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")
       xml.media   :thumbnail, :width => "40", :height => "40", :url => gravatar_icon(commit.author_email)
       xml.author do |author|
         xml.name commit.author_name
         xml.email commit.author_email
       end
-      xml.summary commit.safe_message
+      xml.summary commit.description
     end
   end
 end

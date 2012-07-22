@@ -51,7 +51,8 @@ class RefsController < ApplicationController
     @logs = contents.map do |content|
       file = params[:path] ? File.join(params[:path], content.name) : content.name
       last_commit = @project.commits(@commit.id, file, 1).last
-      { 
+      last_commit = CommitDecorator.decorate(last_commit)
+      {
         :file_name => content.name, 
         :commit => last_commit
       }
