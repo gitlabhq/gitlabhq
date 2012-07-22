@@ -16,8 +16,7 @@
         = merge_request.target_branch
   = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
 
-  = link_to project_merge_request_path(merge_request.project, merge_request) do
-    %p.row_title= truncate(merge_request.title, :length => 80)
+  %p= link_to truncate(merge_request.title, :length => 80), project_merge_request_path(merge_request.project, merge_request), :class => "row_title"
 
   %span.update-author
     %small.cdark= "##{merge_request.id}"
