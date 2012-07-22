@@ -46,9 +46,7 @@
     - if @issue.milestone
       - milestone = @issue.milestone
       %cite.cgray and attached to milestone
-      = link_to project_milestone_path(milestone.project, milestone) do
-        %strong
-          = truncate(milestone.title, :length => 20)
+      %strong= link_to truncate(milestone.title, :length => 20), project_milestone_path(milestone.project, milestone)
 
     .right
       - @issue.labels.each do |label|
