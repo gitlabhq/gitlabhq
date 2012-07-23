@@ -20,39 +20,36 @@ set -e
 
 case "$1" in
     configure)
-	
-	id git 
-	if [ $? -ne 0 ]; then
-		adduser \
-		  --system \
-		  --shell /bin/sh \
-		  --gecos 'git version control' \
-		  --group \
-		  --disabled-password \
-		  --home /home/git \
-		  git
-	fi
-	
-	id gitlab
-	if [ $? -ne 0 ]; then	
-		adduser --disabled-login --gecos 'gitlab system' gitlab
-		
-		usermod -a -G git gitlab
-		
-		su - gitlab -c "ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa"
-		
-		cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
-		chmod 777 /home/git/gitlab.pub
-		
-		sed -i 's/0077/0007/g' /etc/gitolite/example.gitolite.rc
-		su - git -c 'sh -c "gl-setup /home/git/gitlab.pub"'
-		
-		sudo chmod -R g+rwX /home/git/repositories/
-		sudo chown -R git:git /home/git/repositories/
-		
-		su - gitlab -c "git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin"
-		rm -rf /tmp/gitolite-admin
-	fi
+
+        git_exists=$(grep -w git /etc/passwd | wc -l)
+        if [ $git_exists -eq 0 ]; then
+            adduser \
+                --system \
+                --shell /bin/sh \
+                --gecos 'git version control' \
+                --group \
+                --disabled-password \
+                --home /home/git \
+                git
+        fi
+
+        gitlab_exists=$(grep -w gitlab /etc/passwd | wc -l)
+        if [ $gitlab_exists -eq 0 ]; then
+            adduser --disabled-login --gecos 'gitlab system' gitlab
+
+            usermod -a -G git gitlab
+
+            su - gitlab -c "ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa"
+
+            cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
+            chmod 777 /home/git/gitlab.pub
+
+            sed -i 's/0077/0007/g' /etc/gitolite/example.gitolite.rc
+            su - git -c 'sh -c "gl-setup /home/git/gitlab.pub"'
+
+            chmod -R g+rwX /home/git/repositories/
+            chown -R git:git /home/git/repositories/
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
