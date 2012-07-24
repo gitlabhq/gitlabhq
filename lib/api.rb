@@ -15,5 +15,6 @@ module Gitlab
 
     mount Users
     mount Projects
+    mount Issues
   end
 end
