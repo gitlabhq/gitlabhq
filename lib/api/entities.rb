@@ -25,5 +25,17 @@ module Gitlab
       expose :author, :using => Entities::UserBasic
       expose :expires_at, :updated_at, :created_at
     end
+
+    class Milestone < Grape::Entity
+      expose :id, :title, :description, :due_date, :closed, :updated_at, :created_at
+    end
+
+    class Issue < Grape::Entity
+      expose :id, :title, :description
+      expose :label_list, :as => :labels
+      expose :milestone, :using => Entities::Milestone
+      expose :assignee, :author, :using => Entities::UserBasic
+      expose :closed, :updated_at, :created_at
+    end
   end
 end
