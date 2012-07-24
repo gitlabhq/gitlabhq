@@ -1,0 +1,96 @@
+#tree-holder { 
+  #tree-content-holder {
+    float:left;
+    width:100%;
+  }
+  #tree-readme-holder {
+    float:left;
+    width:100%;
+    .readme {
+      border:1px solid #ccc;
+      padding:12px;
+      background: #F7F7F7;
+
+      pre { 
+        overflow: auto;
+      }
+    }
+  }
+
+  .tree_progress { 
+    display:none;
+    margin:20px;
+    &.loading { 
+      display:block;
+    }
+  }
+
+  #tree-slider {
+    @include border-radius(0);
+    .tree-item { 
+      &:hover { 
+        td { background: $hover; }
+        cursor:pointer;
+      }
+    }
+  }
+
+  .tree-item { 
+    .tree-item-file-name { 
+      vertical-align:middle;
+      font-weight:bold;
+      a { 
+        color:$style_color;
+        &:hover { 
+          color:$blue_link;
+        }
+      }
+
+      img { 
+        position: relative;
+        top:-1px;
+      }
+    }
+  }
+
+
+  #tree-slider { 
+    @include solid_shade;
+    width:100%;
+
+    border-color:#ccc;
+
+    td { 
+      padding:8px;
+      border-color:#f1f1f1;
+      background:#fafafa;
+    }
+
+    tr:first-child td:first-child, 
+    tr:first-child td:last-child { 
+      border-radius:0;
+    }
+
+    th { 
+      border-color: #CCC;
+      border-bottom: 1px solid #bbb;
+      background:#eee;
+      background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+      background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+      background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+      background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    }
+  }
+
+  .tree-commit-link { 
+    color:#333;
+  }
+
+  a.tree-commit-link { 
+    color: #666;
+    &:hover { 
+      text-decoration: underline;
+    }
+  }
+
+}

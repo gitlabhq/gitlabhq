@@ -1,5 +1,5 @@
-.view_file
-  .view_file_header
+.file_holder
+  .file_title
     %i.icon-file
     %span.file_name
       = name
@@ -10,26 +10,28 @@
       = link_to "blame", blame_file_project_ref_path(@project, @ref, :path => params[:path]), :class => "btn very_small"
   - if file.text?
     - if name =~ /\.(md|markdown)$/i
-      #tree-readme-holder
-        .readme
-          = preserve do
-            = markdown(file.data)
+      .file_content.wiki
+        = preserve do
+          = markdown(file.data)
     - else
-      .view_file_content
+      .file_content.code
         - unless file.empty?
           %div{:class => current_user.dark_scheme ? "black" : "white"}
             = preserve do
               = raw file.colorize(options: { linenos: 'True'})
         - else
           %h4.nothing_here_message Empty file
+
   - elsif file.image?
-    .view_file_content_image
+    .file_content.image_file
       %img{ :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+
   - else
-    %center
-      = link_to blob_project_ref_path(@project, @ref, :path => params[:path]) do
-        %div.padded
-          %br
-          = image_tag "download.png", :width => 64
-          %h3
-            Download (#{file.mb_size})
+    .file_content.blob_file
+      %center
+        = link_to blob_project_ref_path(@project, @ref, :path => params[:path]) do
+          %div.padded
+            %br
+            = image_tag "download.png", :width => 64
+            %h3
+              Download (#{file.mb_size})

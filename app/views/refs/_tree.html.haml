@@ -13,7 +13,7 @@
     = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.bordered-table.table
+    %table#tree-slider.bordered-table.table{:class  => "table_#{@hex_path}" }
       %thead
         %th Name
         %th Last Update
@@ -29,34 +29,39 @@
           %td
           %td
 
+      - index = 0
       - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
-        = render :partial => "refs/tree_item", :locals => { :content => content }
+        = render :partial => "refs/tree_item", :locals => { :content => content, :index => (index += 1) }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
-        = render :partial => "refs/tree_item", :locals => { :content => content }
+        = render :partial => "refs/tree_item", :locals => { :content => content, :index => (index += 1) }
       - contents.select{ |i| i.is_a?(Grit::Submodule)}.each do |content|
-        = render :partial => "refs/submodule_item", :locals => { :content => content }
+        = render :partial => "refs/submodule_item", :locals => { :content => content, :index => (index += 1) }
 
     - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
-      #tree-readme-holder
-        %h3= content.name
-        .readme
+      .file_holder#README
+        .file_title
+          %i.icon-file
+          = content.name
+        .file_content.wiki
           - if content.name =~ /\.(md|markdown)$/i
             = preserve do
               = markdown(content.data)
           - else
             = simple_format(content.data)
 
-- if params[:path]
-  - history_path = tree_file_project_ref_path(@project, @ref, params[:path])
-- else
-  - history_path = tree_project_ref_path(@project, @ref)
 :javascript
   $(function(){
     $('select#branch').selectmenu({style:'popup', width:200});
     $('select#tag').selectmenu({style:'popup', width:200});
     $('.project-refs-select').chosen();
 
-    history.pushState({ path: this.path }, '', "#{history_path}")
+    history.pushState({ path: this.path }, '', "#{@history_path}");
+
+  });
+
+  // Load last commit log for each file in tree
+  $(window).load(function(){
+    ajaxGet('#{@logs_path}'); 
   });
 
 

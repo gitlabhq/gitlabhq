@@ -1,4 +1,17 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+
+  # Extend the standard message generation to accept our custom exception
+  def failure_message
+    exception = env["omniauth.error"]
+    if exception.class == OmniAuth::Error
+      error = exception.message
+    else
+      error   = exception.error_reason if exception.respond_to?(:error_reason)
+      error ||= exception.error        if exception.respond_to?(:error)
+      error ||= env["omniauth.error.type"].to_s
+    end
+    error.to_s.humanize if error
+  end
  
   def ldap
     # We only find ourselves here if the authentication to LDAP was successful.

@@ -50,7 +50,7 @@
 
         .alert
           .clearfix
-            %p Give user ability to manage application.
+            %p Make the user a GitLab administrator.
             = f.label :admin, :class => "checkbox" do
               = f.check_box :admin
               %span Administrator
@@ -59,11 +59,11 @@
             - if @admin_user.blocked
               %span
                 = link_to 'Unblock', unblock_admin_user_path(@admin_user), :method => :put, :class => "btn small"
-                This user is blocked and is not able to login GitLab
+                This user is blocked and is not able to login to GitLab
             - else
               %span
                 = link_to 'Block', block_admin_user_path(@admin_user), :confirm => 'USER WILL BE BLOCKED! Are you sure?', :method => :put, :class => "btn small danger"
-                Blocked user will removed from all projects &amp; will not be able to login to GitLab.
+                Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
     .actions
       = f.submit 'Save', :class => "btn primary"
       - if @admin_user.new_record?

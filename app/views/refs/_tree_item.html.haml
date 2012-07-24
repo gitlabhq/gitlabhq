@@ -1,23 +1,11 @@
-- file = params[:path] ? File.join(params[:path], content.name) : content.name
-- content_commit = @project.commits(@commit.id, file, 1).last
-- return unless content_commit
-%tr{ :class => "tree-item", :url => tree_file_project_ref_path(@project, @ref, file) }
+- file = tree_full_path(content)
+%tr{ :class => "tree-item #{tree_hex_class(content)}", :url => tree_file_project_ref_path(@project, @ref, file) }
   %td.tree-item-file-name
-    - if content.is_a?(Grit::Blob)
-      - if content.text?
-        = image_tag "file_txt.png"
-      - elsif content.image?
-        = image_tag "file_img.png"
-      - else
-        = image_tag "file_bin.png"
-    - else
-      = image_tag "file_dir.png"
+    = tree_icon(content)
     = link_to truncate(content.name, :length => 40), tree_file_project_ref_path(@project, @ref || @commit.id, file), :remote => :true
-  %td.cgray
-    = time_ago_in_words(content_commit.committed_date)
-    ago
-  %td.commit
-    - tm = @project.team_member_by_name_or_email(content_commit.author_email, content_commit.author_name)
-    - if tm
-      %strong= link_to "[#{tm.user_name}]", project_team_member_path(@project, tm)
-    = link_to truncate(content_commit.safe_message, :length => tm ? 30 : 50), project_commit_path(@project, content_commit.id), :class => "tree-commit-link"
+  %td.tree_time_ago.cgray
+    - if index == 1
+      %span.log_loading
+        Loading commit data..
+        = image_tag "ajax_loader_tree.gif", :width => 14
+  %td.tree_commit

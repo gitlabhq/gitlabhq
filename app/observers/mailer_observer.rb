@@ -43,7 +43,7 @@ class MailerObserver < ActiveRecord::Observer
   end
 
   def new_merge_request(merge_request)
-    if merge_request.assignee != current_user
+    if merge_request.assignee && merge_request.assignee != current_user
       Notify.new_merge_request_email(merge_request.id).deliver
     end
   end

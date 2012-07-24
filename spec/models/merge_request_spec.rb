@@ -13,7 +13,6 @@ describe MergeRequest do
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:author_id) }
     it { should validate_presence_of(:project_id) }
-    it { should validate_presence_of(:assignee_id) }
   end
 
   describe "Scope" do

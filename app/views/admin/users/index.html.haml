@@ -27,7 +27,7 @@
     %th Projects
     %th Edit
     %th Blocked
-    %th
+    %th.cred Danger Zone!
 
   - @admin_users.each do |user|
     %tr
@@ -41,6 +41,6 @@
           = link_to 'Unblock', unblock_admin_user_path(user), :method => :put, :class => "btn small success"
         - else
           = link_to 'Block', block_admin_user_path(user), :confirm => 'USER WILL BE BLOCKED! Are you sure?', :method => :put, :class => "btn small danger"
-      %td= link_to 'Destroy', [:admin, user], :confirm => 'USER WILL BE REMOVED! Are you sure?', :method => :delete, :class => "btn small danger"
+      %td.bgred= link_to 'Destroy', [:admin, user], :confirm => "USER #{user.name} WILL BE REMOVED! Are you sure?", :method => :delete, :class => "btn small danger"
 
 = paginate @admin_users, :theme => "admin"

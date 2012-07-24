@@ -28,6 +28,10 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def self.recent_for_user user
+    where(:project_id => user.projects.map(&:id)).recent
+  end
+
   # Next events currently enabled for system
   #  - push 
   #  - new issue

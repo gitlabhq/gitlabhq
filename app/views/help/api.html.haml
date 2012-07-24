@@ -1,0 +1,41 @@
+%h3 API
+.back_link
+  = link_to help_path do 
+    &larr; to index
+%hr
+
+%ol
+  %li 
+    %a{:href => "#README"} README
+  %li 
+    %a{:href => "#projects"} Projects
+  %li 
+    %a{:href => "#users"} Users
+
+.file_holder#README
+  .file_title
+    %i.icon-file
+    README
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "README.md"))
+
+%br
+
+.file_holder#projects
+  .file_title
+    %i.icon-file
+    Projects
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "projects.md"))
+
+%br
+
+.file_holder#users
+  .file_title
+    %i.icon-file
+    Users
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "users.md"))

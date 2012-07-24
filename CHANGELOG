@@ -1,5 +1,13 @@
 v 2.7.0
   - Issue Labels
+  - Inline diff
+  - Git HTTP
+  - API
+  - UI improved
+  - System hooks
+  - UI improved
+  - Dashboard events endless scroll
+  - Source perfomance increased
 
 v 2.6.0
   - UI polished

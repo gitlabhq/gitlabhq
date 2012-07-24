@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe WebHook do
+describe ProjectHook do
   describe "Associations" do
     it { should belong_to :project }
   end
@@ -23,32 +23,32 @@ describe WebHook do
 
   describe "execute" do
     before(:each) do
-      @webhook = Factory :web_hook
+      @project_hook = Factory :project_hook
       @project = Factory :project
-      @project.web_hooks << [@webhook]
+      @project.hooks << [@project_hook]
       @data = { before: 'oldrev', after: 'newrev', ref: 'ref'}
 
-      WebMock.stub_request(:post, @webhook.url)
+      WebMock.stub_request(:post, @project_hook.url)
     end
 
     it "POSTs to the web hook URL" do
-      @webhook.execute(@data)
-      WebMock.should have_requested(:post, @webhook.url).once
+      @project_hook.execute(@data)
+      WebMock.should have_requested(:post, @project_hook.url).once
     end
 
     it "POSTs the data as JSON" do
       json = @data.to_json
 
-      @webhook.execute(@data)
-      WebMock.should have_requested(:post, @webhook.url).with(body: json).once
+      @project_hook.execute(@data)
+      WebMock.should have_requested(:post, @project_hook.url).with(body: json).once
     end
 
     it "catches exceptions" do
       WebHook.should_receive(:post).and_raise("Some HTTP Post error")
 
       lambda {
-        @webhook.execute(@data)
-      }.should_not raise_error
+        @project_hook.execute(@data)
+      }.should raise_error
     end
   end
 end

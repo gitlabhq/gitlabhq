@@ -22,7 +22,6 @@ class MergeRequest < ActiveRecord::Base
                 :should_remove_source_branch
 
   validates_presence_of :project_id
-  validates_presence_of :assignee_id
   validates_presence_of :author_id
   validates_presence_of :source_branch
   validates_presence_of :target_branch
@@ -36,6 +35,7 @@ class MergeRequest < ActiveRecord::Base
   delegate :name,
            :email,
            :to => :assignee,
+           :allow_nil => true,
            :prefix => true
 
   validates :title,
@@ -128,7 +128,7 @@ class MergeRequest < ActiveRecord::Base
 
   def unmerged_diffs
     commits = project.repo.commits_between(target_branch, source_branch).map {|c| Commit.new(c)}
-    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id)
+    diffs = project.repo.diff(commits.first.prev_commit.id, commits.last.id) rescue []
   end
 
   def last_commit

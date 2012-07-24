@@ -6,7 +6,7 @@ class Admin::ProjectsController < ApplicationController
   def index
     @admin_projects = Project.scoped
     @admin_projects = @admin_projects.search(params[:name]) if params[:name].present?
-    @admin_projects = @admin_projects.page(params[:page])
+    @admin_projects = @admin_projects.page(params[:page]).per(20)
   end
 
   def show
@@ -72,6 +72,6 @@ class Admin::ProjectsController < ApplicationController
     @admin_project = Project.find_by_code(params[:id])
     @admin_project.destroy
 
-    redirect_to admin_projects_url
+    redirect_to admin_projects_url, notice: 'Project was successfully deleted.'
   end
 end

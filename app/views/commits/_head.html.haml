@@ -13,12 +13,12 @@
   %li{:class => "#{branches_tab_class}"}
     = link_to project_repository_path(@project) do
       Branches
-      %span.number= @project.repo.branch_count
+      %span.badge= @project.repo.branch_count
 
   %li{:class => "#{'active' if current_page?(tags_project_repository_path(@project)) }"}
     = link_to tags_project_repository_path(@project) do
       Tags
-      %span.number= @project.repo.tag_count
+      %span.badge= @project.repo.tag_count
 
 
   - if current_page?(project_commits_path(@project)) && current_user.private_token

@@ -7,7 +7,7 @@ gem "sqlite3"
 gem "mysql2"
 
 # Auth
-gem "devise", "~> 1.5"
+gem "devise", "~> 2.1.0"
 
 # GITLAB patched libs
 gem "grit",          :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
@@ -71,7 +71,6 @@ group :development, :test do
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
-  gem "webmock"
 end
 
 group :test do
@@ -82,4 +81,5 @@ group :test do
   gem "shoulda-matchers"
   gem 'email_spec'
   gem 'resque_spec'
+  gem "webmock"
 end

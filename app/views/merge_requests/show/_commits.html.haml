@@ -1,6 +1,8 @@
 - if @commits.present?
   .ui-box
-    %h5 Commits (#{@commits.count})
+    %h5
+      %i.icon-list
+      Commits (#{@commits.count})
     .merge-request-commits
       - if @commits.count > 8
         %ul.first_mr_commits.unstyled

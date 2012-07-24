@@ -26,7 +26,9 @@ Gitlab::Application.routes.draw do
   get 'help' => 'help#index'
   get 'help/permissions' => 'help#permissions'
   get 'help/workflow' => 'help#workflow'
+  get 'help/api' => 'help#api'
   get 'help/web_hooks' => 'help#web_hooks'
+  get 'help/system_hooks' => 'help#system_hooks'
 
   #
   # Admin Area
@@ -46,11 +48,13 @@ Gitlab::Application.routes.draw do
       end
     end
     resources :team_members, :only => [:edit, :update, :destroy]
-    get 'emails', :to => 'mailer#preview'
     get 'mailer/preview_note'
     get 'mailer/preview_user_new'
     get 'mailer/preview_issue_new'
 
+    resources :hooks, :only => [:index, :create, :destroy] do
+      get :test
+    end
     resource :logs
     resource :resque, :controller => 'resque'
     root :to => "dashboard#index"
@@ -116,6 +120,8 @@ Gitlab::Application.routes.draw do
 
       member do
         get "tree", :constraints => { :id => /[a-zA-Z.\/0-9_\-]+/ }
+        get "logs_tree", :constraints => { :id => /[a-zA-Z.\/0-9_\-]+/ }
+
         get "blob",
           :constraints => {
             :id => /[a-zA-Z.0-9\/_\-]+/,
@@ -126,6 +132,14 @@ Gitlab::Application.routes.draw do
         # tree viewer
         get "tree/:path" => "refs#tree",
           :as => :tree_file,
+          :constraints => {
+            :id => /[a-zA-Z.0-9\/_\-]+/,
+            :path => /.*/
+          }
+
+        # tree viewer
+        get "logs_tree/:path" => "refs#logs_tree",
+          :as => :logs_file,
           :constraints => {
             :id => /[a-zA-Z.0-9\/_\-]+/,
             :path => /.*/
