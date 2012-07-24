@@ -27,3 +27,4 @@ The API uses JSON to serialize data. You don't need to specify `.json` at the en
 
 + [Users](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/users.md)
 + [Projects](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/projects.md)
++ [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
