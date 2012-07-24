@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
 gem "rails", "3.2.5"
+gem "rake", "0.8.7"
 
 # Supported DBs
 gem "sqlite3"
