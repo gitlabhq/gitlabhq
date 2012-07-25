@@ -36,6 +36,12 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['name'].should == project.name
     end
+
+    it "should return a 404 error if not found" do
+      get "#{api_prefix}/projects/42?private_token=#{user.private_token}"
+      response.status.should == 404
+      json_response['message'].should == '404 Not found'
+    end
   end
 
   describe "GET /projects/:id/repository/branches" do
