@@ -31,7 +31,9 @@ module Gitlab
     end
 
     class Issue < Grape::Entity
-      expose :id, :title, :description
+      expose :id
+      expose (:project_id) {|issue| issue.project.id}
+      expose :title, :description
       expose :label_list, :as => :labels
       expose :milestone, :using => Entities::Milestone
       expose :assignee, :author, :using => Entities::UserBasic
