@@ -32,9 +32,8 @@
               = commit.author_name
             %td.blame_commit
               &nbsp;
-              = link_to project_commit_path(@project, :id => commit.id) do
-                %code= commit.short_id
-                %span.row_title= truncate(commit.title, :length => 30) rescue "--broken encoding"
+              %code= link_to commit.short_id, project_commit_path(@project, :id => commit.id)
+              = link_to truncate(commit.title, :length => 30), project_commit_path(@project, :id => commit.id), :class => "row_title" rescue "--broken encoding"
             %td.lines
               = preserve do
                 %pre
