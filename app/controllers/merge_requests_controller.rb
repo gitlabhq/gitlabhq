@@ -143,5 +143,6 @@ class MergeRequestsController < ApplicationController
     # Get commits from repository 
     # or from cache if already merged
     @commits = @merge_request.commits
+    @commits = CommitDecorator.decorate(@commits)
   end
 end
