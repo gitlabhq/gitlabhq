@@ -1,6 +1,6 @@
 ## List projects
 
-Get a list of authenticated users' projects.
+Get a list of authenticated user's projects.
 
 ```
 GET /projects
@@ -63,7 +63,7 @@ GET /projects/:id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 
 ```json
 {
@@ -91,7 +91,7 @@ Parameters:
 
 ## Project repository branches
 
-Get a list of project repository branches.
+Get a list of project repository branches sorted by name alphabetically.
 
 ```
 GET /projects/:id/repository/branches
@@ -99,7 +99,7 @@ GET /projects/:id/repository/branches
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 
 ```json
 [
@@ -131,7 +131,7 @@ Parameters:
 
 ## Project repository tags
 
-Get a list of project repository tags.
+Get a list of project repository tags sorted by name in reverse alphabetical order.
 
 ```
 GET /projects/:id/repository/tags
@@ -139,7 +139,7 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 
 ```json
 [
@@ -183,7 +183,7 @@ GET /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
 ```json
@@ -214,7 +214,7 @@ GET /projects/:id/snippets/:snippet_id/raw
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
 ## New snippet
@@ -227,7 +227,7 @@ POST /projects/:id/snippets
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `title` (required) - The title of a snippet
 + `file_name` (required) - The name of a snippet file
 + `lifetime` (optional) - The expiration date of a snippet
@@ -245,7 +245,7 @@ PUT /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `snippet_id` (required) - The ID of a project's snippet
 + `title` (optional) - The title of a snippet
 + `file_name` (optional) - The name of a snippet file
@@ -264,7 +264,7 @@ DELETE /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
 Status code `200` will be returned on success.

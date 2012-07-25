@@ -5,7 +5,13 @@ module Gitlab
     end
 
     def user_project
-      @project ||= current_user.projects.find_by_code(params[:id])
+      if @project ||= current_user.projects.find_by_id(params[:id]) ||
+                      current_user.projects.find_by_code(params[:id])
+      else
+        error!({'message' => '404 Not found'}, 404)
+      end
+
+      @project
     end
 
     def authenticate!

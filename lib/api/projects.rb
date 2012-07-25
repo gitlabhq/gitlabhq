@@ -16,7 +16,7 @@ module Gitlab
       # Get a single project
       #
       # Parameters:
-      #   id (required) - The code of a project
+      #   id (required) - The ID or code name of a project
       # Example Request:
       #   GET /projects/:id
       get ":id" do
@@ -26,7 +26,7 @@ module Gitlab
       # Get a project repository branches
       #
       # Parameters:
-      #   id (required) - The code of a project
+      #   id (required) - The ID or code name of a project
       # Example Request:
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
@@ -36,7 +36,7 @@ module Gitlab
       # Get a project repository tags
       #
       # Parameters:
-      #   id (required) - The code of a project
+      #   id (required) - The ID or code name of a project
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
@@ -46,7 +46,7 @@ module Gitlab
       # Get a project snippet
       #
       # Parameters:
-      #   id (required) - The code of a project
+      #   id (required) - The ID or code name of a project
       #   snippet_id (required) - The ID of a project snippet
       # Example Request:
       #   GET /projects/:id/snippets/:snippet_id
@@ -58,7 +58,7 @@ module Gitlab
       # Create a new project snippet
       #
       # Parameters:
-      #   id (required) - The code name of a project
+      #   id (required) - The ID or code name of a project
       #   title (required) - The title of a snippet
       #   file_name (required) - The name of a snippet file
       #   lifetime (optional) - The expiration date of a snippet
@@ -84,7 +84,7 @@ module Gitlab
       # Update an existing project snippet
       #
       # Parameters:
-      #   id (required) - The code name of a project
+      #   id (required) - The ID or code name of a project
       #   snippet_id (required) - The ID of a project snippet
       #   title (optional) - The title of a snippet
       #   file_name (optional) - The name of a snippet file
@@ -111,7 +111,7 @@ module Gitlab
       # Delete a project snippet
       #
       # Parameters:
-      #   id (required) - The code of a project
+      #   id (required) - The ID or code name of a project
       #   snippet_id (required) - The ID of a project snippet
       # Example Request:
       #   DELETE /projects/:id/snippets/:snippet_id
@@ -123,7 +123,7 @@ module Gitlab
       # Get a raw project snippet
       #
       # Parameters:
-      #   id (required) - The code of a project
+      #   id (required) - The ID or code name of a project
       #   snippet_id (required) - The ID of a project snippet
       # Example Request:
       #   GET /projects/:id/snippets/:snippet_id/raw
