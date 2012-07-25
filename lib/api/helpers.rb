@@ -5,7 +5,8 @@ module Gitlab
     end
 
     def user_project
-      @project ||= current_user.projects.find_by_code(params[:id])
+      @project ||=  current_user.projects.find_by_id(params[:id]) ||
+                    current_user.projects.find_by_code(params[:id])
     end
 
     def authenticate!
