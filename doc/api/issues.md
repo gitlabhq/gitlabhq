@@ -10,6 +10,7 @@ GET /issues
 [
   {
     "id": 43,
+    "project_id": 8,
     "title": "4xx/5xx pages",
     "description": "",
     "labels": [ ],
@@ -28,6 +29,7 @@ GET /issues
   },
   {
     "id": 42,
+    "project_id": 8,
     "title": "Add user settings",
     "description": "",
     "labels": [
@@ -73,7 +75,7 @@ GET /projects/:id/issues
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 
 ## Single issue
 
@@ -85,12 +87,13 @@ GET /projects/:id/issues/:issue_id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `issue_id` (required) - The ID of a project issue
 
 ```json
 {
   "id": 42,
+  "project_id": 8,
   "title": "Add user settings",
   "description": "",
   "labels": [
@@ -135,7 +138,7 @@ POST /projects/:id/issues
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `title` (required) - The title of an issue
 + `description` (optional) - The description of an issue
 + `assignee_id` (optional) - The ID of a user to assign issue
@@ -154,7 +157,7 @@ PUT /projects/:id/issues/:issue_id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `issue_id` (required) - The ID of a project's issue
 + `title` (optional) - The title of an issue
 + `description` (optional) - The description of an issue
@@ -175,7 +178,7 @@ DELETE /projects/:id/issues/:issue_id
 
 Parameters:
 
-+ `id` (required) - The code name of a project
++ `id` (required) - The ID or code name of a project
 + `issue_id` (required) - The ID of a project's issue
 
 Status code `200` will be returned on success.
