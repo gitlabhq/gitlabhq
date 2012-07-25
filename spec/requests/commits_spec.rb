@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Commits" do
   let(:project) { Factory :project }
-  let!(:commit) { project.commit }
+  let!(:commit) { CommitDecorator.decorate(project.commit) }
   before do
     login_as :user
     project.add_access(@user, :read)
@@ -22,8 +22,8 @@ describe "Commits" do
     end
 
     it "should list commits" do
-      page.should have_content(commit.message)
-      page.should have_content(commit.id.to_s[0..5])
+      page.should have_content(commit.description)
+      page.should have_content(commit.short_id)
     end
 
     it "should render atom feed" do
@@ -32,7 +32,7 @@ describe "Commits" do
       page.response_headers['Content-Type'].should have_content("application/atom+xml")
       page.body.should have_selector("title", :text => "Recent commits to #{project.name}")
       page.body.should have_selector("author email", :text => commit.author_email)
-      page.body.should have_selector("entry summary", :text => commit.message)
+      page.body.should have_selector("entry summary", :text => commit.description)
     end
 
     it "should render atom feed via private token" do
@@ -42,7 +42,7 @@ describe "Commits" do
       page.response_headers['Content-Type'].should have_content("application/atom+xml")
       page.body.should have_selector("title", :text => "Recent commits to #{project.name}")
       page.body.should have_selector("author email", :text => commit.author_email)
-      page.body.should have_selector("entry summary", :text => commit.message)
+      page.body.should have_selector("entry summary", :text => commit.description)
     end
   end
 

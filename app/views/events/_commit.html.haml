@@ -1,9 +1,10 @@
+- commit = CommitDecorator.decorate(commit)
 %li.wll.commit
   = link_to project_commit_path(project, :id => commit.id) do
     %p
-      %code.left= commit.id.to_s[0..10]
+      %code.left= commit.short_id
       %strong.cgray= commit.author_name
       &ndash;
       = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16
-      %span.row_title= truncate(commit.safe_message, :length => 50) rescue "--broken encoding"
+      %span.row_title= truncate(commit.title, :length => 50) rescue "--broken encoding"
 
