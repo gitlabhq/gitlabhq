@@ -52,6 +52,8 @@ class CommitsController < ApplicationController
     @commit  = result[:commit]
     @diffs   = result[:diffs]
     @line_notes = []
+
+    @commits = CommitDecorator.decorate(@commits)
   end
 
   def patch
