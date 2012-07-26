@@ -194,4 +194,9 @@
     float:right;
     @extend .cgray;
   }
+
+  code { 
+    background:#FCEEC1;
+    color:$style_color;
+  }
 }
