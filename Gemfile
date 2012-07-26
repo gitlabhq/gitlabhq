@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem "rails", "3.2.5"
-gem "rake", "0.8.7"
 
 # Supported DBs
 gem "sqlite3"
@@ -19,7 +18,7 @@ gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 
-gem "grape"
+gem "grape", "~> 0.2.1"
 gem "stamp"
 gem "kaminari"
 gem "haml-rails"

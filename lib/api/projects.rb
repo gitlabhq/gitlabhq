@@ -33,6 +33,18 @@ module Gitlab
         present user_project.repo.heads.sort_by(&:name), :with => Entities::RepoObject
       end
 
+      # Get a single branch
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   branch_id (required) - The name of the branch
+      # Example Request:
+      #   GET /projects/:id/repository/branches/:branch_id
+      get ":id/repository/branches/:branch_id" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch_id] }
+        present @branch, :with => Entities::RepoObject
+      end
+
       # Get a project repository tags
       #
       # Parameters:
@@ -131,6 +143,34 @@ module Gitlab
         @snippet = user_project.snippets.find(params[:snippet_id])
         present @snippet.content
       end
+
+      # Get a raw file contents
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   sha (required) - The commit or branch name 
+      #   filepath (required) - The path to the file to display
+      # Example Request:
+      #   GET /projects/:id/repository/commits/:sha/blob
+      get ":id/repository/commits/:sha/blob" do
+        ref = params[:sha]
+
+        commit = user_project.commit ref
+        error!('404 Commit Not Found', 404) unless commit
+        
+        tree = Tree.new commit.tree, user_project, ref, params[:filepath]
+        error!('404 File Not Found', 404) unless tree.try(:tree)
+        
+        if tree.text?
+          encoding = Gitlab::Encode.detect_encoding(tree.data)
+          content_type encoding ? "text/plain; charset=#{encoding}" : "text/plain"
+        else
+          content_type tree.mime_type
+        end
+
+        present tree.data
+      end
+
     end
   end
 end
