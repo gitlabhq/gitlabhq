@@ -1,10 +1,6 @@
 class CommitDecorator < ApplicationDecorator
   decorates :commit
 
-  def short_id(length = 10)
-    id.to_s[0..length]
-  end
-
   # Returns the commits title.
   #
   # Usually, the commit title is the first line of the commit message.

@@ -24,8 +24,8 @@
 
 /* Note textare */
 #note_note {
-  height:100px;
-  width:97%;
+  height:80px;
+  width:99%;
   font-size:14px;
 }
 
@@ -100,8 +100,25 @@ tr.line_notes_row {
   td { 
     border-bottom:1px solid #ddd;
   }
-  .actions { 
+  .note_actions { 
     margin:0;
+    padding-top: 10px;
+
+    .buttons { 
+      float:left;
+      width:300px;
+    }
+    .options { 
+      .labels { 
+        float:left;
+        padding-left:10px;
+        label { 
+          padding: 6px 0;
+          margin: 0;
+          width:120px;
+        }
+      }
+    }
   }
 }
 
