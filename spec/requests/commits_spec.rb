@@ -23,7 +23,7 @@ describe "Commits" do
 
     it "should list commits" do
       page.should have_content(commit.description)
-      page.should have_content(commit.short_id)
+      page.should have_content(commit.short_id(8))
     end
 
     it "should render atom feed" do
