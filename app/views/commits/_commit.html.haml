@@ -3,7 +3,7 @@
     %p
       %strong= link_to "Browse Code »", tree_project_ref_path(@project, commit.id), :class => "right"
   %p
-    %code.left= link_to commit.short_id, project_commit_path(@project, :id => commit.id)
+    = link_to commit.short_id(8), project_commit_path(@project, :id => commit.id), :class => "commit_short_id"
     %strong.cgray= commit.author_name
     &ndash;
     = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16

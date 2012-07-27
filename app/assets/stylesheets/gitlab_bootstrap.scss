@@ -18,7 +18,8 @@ a {
   }
 
   &.lined { 
-    text-decoration:underlined; 
+    text-decoration:underline; 
+    &:hover { text-decoration:underline; }
   }
 
   &.gray { 
