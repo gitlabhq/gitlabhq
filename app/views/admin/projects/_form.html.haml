@@ -1,40 +1,49 @@
-= form_for [:admin, @admin_project] do |f|
-  -if @admin_project.errors.any?
+= form_for [:admin, project] do |f|
+  -if project.errors.any?
     .alert-message.block-message.error
       %ul
-        - @admin_project.errors.full_messages.each do |msg|
+        - project.errors.full_messages.each do |msg|
           %li= msg
 
-  .clearfix
-    = f.label :name
-    .input= f.text_field :name
-  .clearfix
-    = f.label :path do
-      Path
+  .clearfix.project_name_holder
+    = f.label :name do
+      Project name is
     .input
-      .input-prepend
-        %span.add-on= Gitlab.config.ssh_path
-        = f.text_field :path, :placeholder => "example_project", :disabled => !@admin_project.new_record?
-  .clearfix
-    = f.label :code do
-      Code
-    .input
-      .input-prepend
-        %span.add-on= web_app_url
-        = f.text_field :code, :placeholder => "example"
+      = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
+      = f.submit project.new_record? ? 'Create project' : 'Save Project', :class => "btn primary"
 
-  - unless @admin_project.new_record?
+  %hr
+  .alert.alert-info
+    %h5 Advanced settings:
     .clearfix
-      = f.label :owner_id
-      .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
+      = f.label :path do
+        Git Clone
+      .input
+        .input-prepend
+          %span.add-on= Gitlab.config.ssh_path
+          = f.text_field :path, :placeholder => "example_project", :disabled => !!project.id
+          %span.add-on= ".git"
+    .clearfix
+      = f.label :code do
+        URL
+      .input
+        .input-prepend
+          %span.add-on= web_app_url
+          = f.text_field :code, :placeholder => "example"
 
-    - if @admin_project.repo_exists?
+    - unless project.new_record?
       .clearfix
-        = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, @admin_project.heads.map(&:name), {}, :style => "width:210px;")
+        = f.label :owner_id
+        .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
 
-    .well
-      %h5 Features
+      - if project.repo_exists?
+        .clearfix
+          = f.label :default_branch, "Default Branch"
+          .input= f.select(:default_branch, project.heads.map(&:name), {}, :style => "width:210px;")
+
+  - unless project.new_record?
+    .alert.alert-info
+      %h5 Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"
@@ -48,19 +57,19 @@
         = f.label :wall_enabled, "Wall"
         .input= f.check_box :wall_enabled
 
-  .clearfix
-    = f.label :description
-    .input= f.text_area :description, :class => "xxlarge"
-  .clear
-  %br
-  .actions
-    = f.submit 'Save', :class => "btn primary"
-    = link_to 'Cancel', [:admin, @admin_project], :class => "btn"
-    - unless @admin_project.new_record?
-      = link_to 'Destroy', [:admin, @admin_project], :confirm => 'Are you sure?', :method => :delete, :class => "btn danger right"
+      .clearfix
+        = f.label :wiki_enabled, "Wiki"
+        .input= f.check_box :wiki_enabled
+
+  - unless project.new_record?
+    .actions
+      = f.submit 'Save Project', :class => "btn primary"
+
+
 
 :javascript
   $(function(){
     $('#project_owner_id').chosen();
     new Projects();
   })
+
