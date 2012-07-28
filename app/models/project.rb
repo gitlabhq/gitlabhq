@@ -45,6 +45,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.create_by_user(params, user)
+    initial_access = params.delete("access")
     project = Project.new params
 
     Project.transaction do
@@ -54,6 +55,18 @@ class Project < ActiveRecord::Base
 
       # Add user as project master
       project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
+
+      # initial_access shouldn't ever be nil, but maybe through some means other than the _new_form partial.
+      # If it is nil, or 0, then no one else gets any access.
+      unless initial_access.nil? or initial_access == "0"
+        initial_access = initial_access.to_i
+        User.admins.each do |other_user|
+          next if other_user == user
+
+          # Add initial access for all admins
+          project.users_projects.create!(:project_access => initial_access, :user => other_user)
+        end
+      end
 
       # when project saved no team member exist so
       # project repository should be updated after first user add

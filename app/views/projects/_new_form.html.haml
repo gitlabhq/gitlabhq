@@ -27,3 +27,13 @@
         .input-prepend
           %span.add-on= web_app_url
           = f.text_field :code, :placeholder => "example"
+    .clearfix
+      = f.label :project_access do
+        Initial Access for Admins
+      .input
+        .input-prepend
+          - access_options_w_none = {"none"=>0}.merge(Project.access_options)
+          = select_tag :project_access, options_for_select(access_options_w_none, access_options_w_none[Gitlab.config.default_project_access]), :class => "project-access-select", :name => "project[access]"
+          %br
+          Read more about project permissions
+          %strong= link_to "here", help_permissions_path, :class => "vlink"
