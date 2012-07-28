@@ -76,13 +76,13 @@ $hover: #FDF5D9;
  * Header of application. 
  * Contain application logo, search panel, profile icon
  */
-@import "header.scss";
+@import "sections/header.scss";
 
 /**
  * Navigation menu of application. 
  * Panel with links to pages depends on project, profile or admin area
  */
-@import "nav.scss";
+@import "sections/nav.scss";
 
 /**
  * This file represent some UI that can be changed 
@@ -147,12 +147,12 @@ $hover: #FDF5D9;
 /**
  * This file represent notes(comments) styles 
  */
-@import "notes.scss";
+@import "sections/notes.scss";
 
 /**
  * Devise styles 
  */
-@import "login.scss";
+@import "sections/login.scss";
 
 /**
  * CODE HIGHTLIGHT BASE

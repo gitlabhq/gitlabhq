@@ -38,21 +38,31 @@
   }
 }
 
-.note .delete-note { 
-  display:none; 
-  float:right;
-}
-.note:hover .delete-note { display:block; }
-.note {padding: 10px 0; border-bottom: 1px solid #eee; overflow: hidden; display: block;}
-.note img{float: left; margin-right: 10px;}
-.note span.note-title{display: block;}
-.note span.note-title{margin-bottom: 10px}
-.note span.note-author{color: #999; font-weight: normal; font-style: italic;}
-.note span.note-author strong{font-weight: bold; font-style: normal;}
-.note p { color:$style_color; }
-.note .note-author { color: $style_color;}
+.note { 
+  padding: 8px 0; 
+  border-bottom: 1px solid #eee;
+  overflow: hidden;
+  display: block;
+  img {float: left; margin-right: 10px;}
+  .note-author cite{font-style: italic;}
+  p { color:$style_color; }
+  .note-author { color: $style_color;}
 
-.note .note-title { margin-left:55px; }
+  .note-title { margin-left:50px; padding-top: 5px;}
+  .avatar { 
+    margin-top:3px;
+  }
+
+  .delete-note { 
+    display:none; 
+    float:right;
+  }
+
+  &:hover { 
+    .delete-note { display:block; }
+  }
+}
+
 
 p.notify_controls input{
   margin: 5px;
