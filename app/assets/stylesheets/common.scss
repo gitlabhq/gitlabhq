@@ -663,6 +663,46 @@ li.note {
   }
 }
 
+.issue-labels-wrapper {
+  max-width:55%;
+
+  .issue-labels {
+    text-align:right;
+    margin-right:140px;
+    .label {
+      float:right;
+    }
+  }
+  .issue-actions {
+    float:right;
+  }
+
+  &.has-notes {
+    .issue-labels {
+      margin-right:180px;
+    }
+  }
+
+  &.has-many-issues {
+    // special situations need special fixes!
+    // if there are too many tags, we just move edit/resolve buttons one under each other
+    // with the cherry on top (in this case, the comments counter :) )
+    $issueActionWidth : 80px;
+   .issue-actions {
+      width:$issueActionWidth;
+      text-align:right;
+      > * {
+        float:none;
+        display:inline-block;
+        margin:0 0 5px;
+      }
+    }
+    .issue-labels {
+      margin-right:$issueActionWidth;
+    }
+  }
+}
+//has-many-issues has-notes issue-labels-wrapper right
 .merge_request,
 .issue { 
   .list_legend { 

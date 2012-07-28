@@ -1,23 +1,27 @@
-%li.wll{ :id => dom_id(issue), :class => issue_css_classes(issue), :url => project_issue_path(issue.project, issue) }
+%li.clearfix.wll{ :id => dom_id(issue), :class => issue_css_classes(issue), :url => project_issue_path(issue.project, issue) }
   .list_legend
     .icon
-  .right
-    - issue.labels.each do |label|
-      %span.label.label-issue.grouped
-        %i.icon-tag
-        = label.name
-    - if issue.notes.any?
-      %span.btn.small.disabled.grouped
-        %i.icon-comment
-        = issue.notes.count
-    - if can? current_user, :modify_issue, issue
-      - if issue.closed
-        = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small grouped reopen_issue", :remote => true
-      - else
-        = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small grouped close_issue", :remote => true
-      = link_to edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true do
-        %i.icon-edit
-        Edit
+  .right.issue-labels-wrapper{ :class => [ issue.notes.any? ? 'has-notes':'', issue.labels.count > 7 ? 'has-many-issues' : '' ] }
+    .issue-actions
+      - if issue.notes.any?
+        %span.btn.small.disabled.grouped
+          %i.icon-comment
+          = issue.notes.count
+      - if can? current_user, :modify_issue, issue
+        - if issue.closed
+          = link_to 'Reopen', project_issue_path(issue.project, issue, :issue => {:closed => false }, :status_only => true), :method => :put,  :class => "btn small grouped reopen_issue", :remote => true
+        - else
+          = link_to 'Resolve', project_issue_path(issue.project, issue, :issue => {:closed => true }, :status_only => true), :method => :put, :class => "success btn small grouped close_issue", :remote => true
+        = link_to edit_project_issue_path(issue.project, issue), :class => "btn small edit-issue-link", :remote => true do
+          %i.icon-edit
+          Edit
+
+    - if issue.labels
+      .issue-labels
+        - issue.labels.each do |label|
+          %span.label.label-issue.grouped
+            %i.icon-tag
+            = label.name
 
   - if issue.assignee
     = image_tag gravatar_icon(issue.assignee_email), :class => "avatar"
