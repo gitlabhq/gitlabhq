@@ -18,7 +18,8 @@ a {
   }
 
   &.lined { 
-    text-decoration:underlined; 
+    text-decoration:underline; 
+    &:hover { text-decoration:underline; }
   }
 
   &.gray { 
@@ -74,10 +75,6 @@ h5 {
   font-size:14px;
 }
 
-code { 
-  background:#FCEEC1;
-  color:$style_color;
-}
 
 table { 
   width:100%;
@@ -381,7 +378,6 @@ form {
   min-height: 20px;
   border-bottom: 1px solid #eee;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  cursor:pointer;
   &.smoke { 
     background-color:#f5f5f5;
   }
@@ -516,7 +512,8 @@ form {
   .row_title { 
     font-weight:bold;
     color:#444;
-    &:hover { 
+    &:hover {
+      color:#444;
       text-decoration:underline;
     }
   }

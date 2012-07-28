@@ -33,7 +33,7 @@ init:
     })
 
     $("#note_note").live("focus", function(){
-      $(this).css("height", "100px");
+      $(this).css("height", "80px");
       $('.note_advanced_opts').show();
     });
 

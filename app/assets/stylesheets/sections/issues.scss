@@ -30,13 +30,14 @@
   .issue { 
     padding:7px 10px;
 
+    p { 
+      padding-top:0;
+      padding-bottom:2px;
+    }
+
     img.avatar { 
       width:32px;
       margin-top:4px;
-    }
-    p.row_title { 
-      padding:0px;
-      padding-bottom:2px;
     }
   }
 }

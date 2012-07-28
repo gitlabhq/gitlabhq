@@ -17,6 +17,7 @@ class CommitsController < ApplicationController
     @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
 
     @commits = @project.commits(@ref, params[:path], @limit, @offset)
+    @commits = CommitDecorator.decorate(@commits)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -51,6 +52,8 @@ class CommitsController < ApplicationController
     @commit  = result[:commit]
     @diffs   = result[:diffs]
     @line_notes = []
+
+    @commits = CommitDecorator.decorate(@commits)
   end
 
   def patch

@@ -17,6 +17,8 @@ class NotesLoad < BaseContext
                then project.issues.find(target_id).notes.inc_author.order("created_at DESC").limit(20)
              when "merge_request"
                then project.merge_requests.find(target_id).notes.inc_author.order("created_at DESC").limit(20)
+             when "wiki"
+               then project.wikis.reverse.map {|w| w.notes.fresh }.flatten[0..20]
              end
 
     @notes = if last_id

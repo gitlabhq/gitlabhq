@@ -8,7 +8,6 @@ var Pager = {
       this.limit=limit;
       this.offset=limit;
       this.initLoadMore();
-      $('.loading').show();
     },
 
   getOld:

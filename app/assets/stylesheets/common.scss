@@ -337,6 +337,15 @@ p.time {
   padding: 15px 5px;
   &:last-child { border:none }
   .wll:hover { background:none }
+
+  .event_commits { 
+    margin-top: 5px;
+
+    li.commit { 
+      padding:5px;
+      border:none;
+    }
+  }
 }
 
 .ico { 

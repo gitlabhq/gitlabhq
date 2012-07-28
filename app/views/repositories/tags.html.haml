@@ -9,14 +9,15 @@
         %th
     - @tags.each do |tag|
       - commit = Commit.new(tag.commit)
+      - commit = CommitDecorator.decorate(commit)
       %tr
         %td
           %strong= link_to tag.name, project_commits_path(@project, :ref => tag.name), :class => ""
         %td
           = link_to project_commit_path(@project, commit.id) do
-            %code= commit.id.to_s[0..10]
+            %code= commit.short_id
           = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
-          = truncate(commit.safe_message, :length => 40)
+          = truncate(commit.title, :length => 40)
         %td
           %span.update-author.right
             = time_ago_in_words(commit.committed_date)

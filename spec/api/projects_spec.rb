@@ -25,10 +25,22 @@ describe Gitlab::API do
 
   describe "GET /projects/:id" do
     it "should return a project by id" do
-      get "#{api_prefix}/projects/#{project.code}?private_token=#{user.private_token}"
+      get "#{api_prefix}/projects/#{project.id}?private_token=#{user.private_token}"
       response.status.should == 200
       json_response['name'].should == project.name
       json_response['owner']['email'].should == user.email
+    end
+
+    it "should return a project by code name" do
+      get "#{api_prefix}/projects/#{project.code}?private_token=#{user.private_token}"
+      response.status.should == 200
+      json_response['name'].should == project.name
+    end
+
+    it "should return a 404 error if not found" do
+      get "#{api_prefix}/projects/42?private_token=#{user.private_token}"
+      response.status.should == 404
+      json_response['message'].should == '404 Not found'
     end
   end
 

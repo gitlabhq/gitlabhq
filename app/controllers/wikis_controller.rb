@@ -13,16 +13,16 @@ class WikisController < ApplicationController
       @wiki = @project.wikis.where(:slug => params[:id]).order("created_at").last
     end
 
-    unless @wiki
-      return render_404 unless can?(current_user, :write_wiki, @project)
-    end
+    @note = @project.notes.new(:noteable => @wiki)
 
-    respond_to do |format|
-      if @wiki
-        format.html
-      else
+    if @wiki
+      render 'show'
+    else
+      if can?(current_user, :write_wiki, @project)
         @wiki = @project.wikis.new(:slug => params[:id])
-        format.html { render "edit" }
+        render 'edit'
+      else
+        render 'empty'
       end
     end
   end

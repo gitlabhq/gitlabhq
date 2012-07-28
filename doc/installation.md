@@ -119,6 +119,7 @@ Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
+    sudo chown gitlab:gitlab /home/git/repositories/**/hooks/post-receive 
 
 #### CHECK: Logout & login again to apply git group to your user
     

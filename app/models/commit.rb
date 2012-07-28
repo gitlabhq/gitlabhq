@@ -114,6 +114,10 @@ class Commit
     @head = head
   end
 
+  def short_id(length = 10)
+    id.to_s[0..length]
+  end
+
   def safe_message
     utf8 message
   end
@@ -149,5 +153,9 @@ class Commit
 
   def prev_commit_id
     prev_commit.try :id
+  end
+
+  def parents_count 
+    parents && parents.count || 0
   end
 end

@@ -10,6 +10,7 @@ module Gitlab
 
     def self.read_latest
       path = Rails.root.join("log/githost.log")
+      self.build unless File.exist?(path)
       logs = File.read(path).split("\n")
     end
 
