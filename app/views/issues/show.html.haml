@@ -33,7 +33,7 @@
         .alert-message.success.status_info Open
       = @issue.title
 
-  .middle_box_content
+  .middle_box_content.clearfix
     %cite.cgray Created by
     = image_tag gravatar_icon(@issue.author_email), :width => 16, :class => "lil_av"
     %strong.author= link_to_issue_author(@issue)
@@ -48,7 +48,7 @@
       %cite.cgray and attached to milestone
       %strong= link_to truncate(milestone.title, :length => 20), project_milestone_path(milestone.project, milestone)
 
-    .right
+    .right.issue-labels-wrapper
       - @issue.labels.each do |label|
         %span.label.label-issue
           %i.icon-tag
