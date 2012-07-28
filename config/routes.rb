@@ -194,6 +194,7 @@ Gitlab::Application.routes.draw do
     resources :issues do
       collection do
         post  :sort
+        post  :bulk_update
         get   :search
       end
     end

@@ -113,6 +113,11 @@ class IssuesController < ApplicationController
     render :partial => 'issues'
   end
 
+  def bulk_update
+    result = IssuesBulkUpdateContext.new(project, current_user, params).execute
+    redirect_to :back, :notice => "#{result[:count]} issues updated"
+  end
+
   protected
 
   def issue

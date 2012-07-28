@@ -30,6 +30,13 @@
   .issue { 
     padding:7px 10px;
 
+    .issue_check { 
+      float:left;
+      padding: 8px 0;
+      padding-right: 8px;
+      min-width: 15px;
+    }
+
     p { 
       padding-top:0;
       padding-bottom:2px;
@@ -39,5 +46,30 @@
       width:32px;
       margin-top:4px;
     }
+  }
+}
+
+input.check_all_issues { 
+  float:left;
+  padding: 8px 0;
+  margin: 14px 0;
+  margin-right: 10px;
+}
+
+#issues-table-holder { 
+  .issues_bulk_update { 
+    padding: 0 5px;
+    margin: 0;
+    form { 
+      margin:0;
+      padding-bottom:5px;
+    }
+    .update_selected_issues { 
+      position:relative;
+      top:-2px;
+      margin-left:3px;
+    }
+
+    
   }
 }

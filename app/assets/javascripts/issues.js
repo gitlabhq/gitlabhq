@@ -67,6 +67,10 @@ function initIssuesSearch() {
  */
 function issuesPage(){ 
   initIssuesSearch();
+  $("#update_status").chosen();
+  $("#update_assignee_id").chosen();
+  $("#update_milestone_id").chosen();
+
   $("#label_name").chosen();
   $("#assignee_id").chosen();
   $("#milestone_id").chosen();
@@ -94,4 +98,29 @@ function issuesPage(){
     });
 
   });
+
+  $(".check_all_issues").click(function () {
+    $('.selected_issue').attr('checked', this.checked);
+    issuesCheckChanged();
+  });
+
+  $('.selected_issue').bind('change', issuesCheckChanged);
+}
+
+function issuesCheckChanged() { 
+  var checked_issues = $('.selected_issue:checked');
+
+  if(checked_issues.length > 0) { 
+    var ids = []
+    $.each(checked_issues, function(index, value) {
+      ids.push($(value).attr("data-id"));
+    })
+    $('#update_issues_ids').val(ids);
+    $('.issues_filters').hide();
+    $('.issues_bulk_update').show();
+  } else { 
+    $('#update_issues_ids').val([]);
+    $('.issues_bulk_update').hide();
+    $('.issues_filters').show();
+  }
 }
