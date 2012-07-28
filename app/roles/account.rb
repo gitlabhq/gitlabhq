@@ -1,6 +1,6 @@
 module Account 
   def identifier
-    email.gsub /[@.]/, "_"
+    email.gsub /[^[:alnum:]]/, "_"
   end
 
   def is_admin?
