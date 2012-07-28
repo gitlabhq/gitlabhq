@@ -15,13 +15,14 @@
 //= require jquery.waitforimages
 //= require bootstrap-modal
 //= require modernizr
-//= require chosen-jquery
+//= require select2
 //= require raphael
 //= require branch-graph
 //= require_tree .
 
-$(document).ready(function(){
 
+
+$(document).ready(function(){
   $(".one_click_select").live("click", function(){
     $(this).select();
   });
@@ -104,18 +105,58 @@ function showDiff(link) {
   $(link).next('table').show();
   $(link).remove();
 }
+//
+//(function($){
+//    var _chosen = $.fn.chosen;
+//    $.fn.extend({
+//        chosen: function(options) {
+//            var default_options = {'search_contains' : 'true'};
+//            $.extend(default_options, options);
+//            return _chosen.apply(this, [default_options]);
+//    }})
+//})(jQuery);
+//
 
-(function($){
-    var _chosen = $.fn.chosen;
-    $.fn.extend({
-        chosen: function(options) {
-            var default_options = {'search_contains' : 'true'};
-            $.extend(default_options, options);
-            return _chosen.apply(this, [default_options]);
-    }})
-})(jQuery);
+(function( $, document ){
 
+  if (!Object.create) {
+    Object.create = function (o) {
+      if (arguments.length > 1) {
+        throw new Error('Object.create implementation only accepts the first parameter.');
+      }
+      function F() {}
+      F.prototype = o;
+      return new F();
+    };
+  }
+
+  var chosen = {
+    init: function( el, o ){
+      $t = this;
+      // for some reason, the plugin ignore empty value attrs and we do a small trick
+      // to make it play nice
+      $(el).css({
+        minWidth:200
+      })
+      var placeholder = $('option:selected', el).filter(function(){
+        return this.value == '';
+      });
+      placeholder.val('^_^');
+      $(el).select2();
+
+      placeholder.val('');
+    } // init
+  };
+  $.fn.chosen = function( options ) {
+    return this.each(function(){
+      var obj = Object.create( chosen );
+      obj.init( this );
+    });
+  
+  };
+
+})( jQuery, document );
 
 function ajaxGet(url) { 
-  $.ajax({type: "GET", url: url, dataType: "script"}); 
+  $.ajax({type: "GET", url: url, dataType: "script"});
 }
