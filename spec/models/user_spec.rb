@@ -22,6 +22,11 @@ describe User do
     user.identifier.should == "test_mail_com"
   end
 
+  it "should return identifier without + sign" do
+    user = User.new(:email => "test+foo@mail.com")
+    user.identifier.should == "test_foo_mail_com"
+  end
+
   it "should execute callback when force_random_password specified" do
     user = User.new(:email => "test@mail.com", :force_random_password => true)
     user.should_receive(:generate_password)
