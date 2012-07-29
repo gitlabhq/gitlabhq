@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
                   :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme,
-                  :theme_id, :force_random_password
+                  :theme_id, :force_random_password, :extern_uid, :provider
 
   attr_accessor :force_random_password
 
@@ -54,6 +54,8 @@ class User < ActiveRecord::Base
 
   validates :bio, :length => { :within => 0..255 }
 
+  validates :extern_uid, :allow_blank => true, :uniqueness => {:scope => :provider}
+
   before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
 
@@ -84,16 +86,21 @@ class User < ActiveRecord::Base
     where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
   end
 
-  def self.find_for_ldap_auth(omniauth_info)
-    name = omniauth_info.name.force_encoding("utf-8")
-    email = omniauth_info.email.downcase unless omniauth_info.email.nil?
-    raise OmniAuth::Error, "LDAP accounts must provide an email address" if email.nil?
+  def self.find_for_ldap_auth(auth, signed_in_resource=nil)
+    uid = auth.info.uid
+    provider = auth.provider
+    name = auth.info.name.force_encoding("utf-8")
+    email = auth.info.email.downcase unless auth.info.email.nil?
+    raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? and email.nil?
 
-    if @user = User.find_by_email(email)
+    if @user = User.find_by_extern_uid_and_provider(uid, provider)
       @user
     else
+      logger.info "Creating user from LDAP login; uid = #{uid}, name = #{name}, email = #{email}"
       password = Devise.friendly_token[0, 8].downcase
       @user = User.create(
+        :extern_uid => uid,
+        :provider => provider,
         :name => name,
         :email => email,
         :password => password,
