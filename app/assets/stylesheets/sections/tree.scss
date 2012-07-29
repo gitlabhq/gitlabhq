@@ -38,9 +38,7 @@
   .tree-item { 
     .tree-item-file-name { 
       vertical-align:middle;
-      font-weight:bold;
       a { 
-        color:$style_color;
         &:hover { 
           color:$blue_link;
         }
