@@ -2,7 +2,7 @@ require "grit"
 
 class Project < ActiveRecord::Base
   include Repository
-  include GitPush
+  include ProjectPush
   include Authority
   include Team
 

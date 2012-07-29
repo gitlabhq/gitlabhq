@@ -1,4 +1,4 @@
-module GitPush
+module ProjectPush
   def observe_push(oldrev, newrev, ref, user)
     data = post_receive_data(oldrev, newrev, ref, user)
 
