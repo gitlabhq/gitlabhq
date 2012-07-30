@@ -215,8 +215,9 @@ Application can be started with next command:
     sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
 
     # Gitlab start script
-    ./resque.sh
-
+    sudo -u gitlab ./resque.sh
+    # if you run this as root /home/gitlab/gitlab/tmp/pids/resque_worker.pid will be owned by root
+    # causing the resque worker not to start via init script on next boot/service restart
 
 **Ok - we have a working application now. **
 **But keep going - there are some thing that should be done **
