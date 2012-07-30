@@ -1,14 +1,25 @@
 module Gitlab
-  class Logger
+  class Logger < ::Logger
     def self.error(message)
-      @@logger ||= ::Logger.new(File.join(Rails.root, "log/githost.log"))
-      message = Time.now.to_s(:long) + " -> " + message
-      @@logger.error(message)
+      build.error(message)
+    end
+
+    def self.info(message)
+      build.info(message)
     end
 
     def self.read_latest
       path = Rails.root.join("log/githost.log")
-      logs = `tail -n 50 #{path}`.split("\n")
+      self.build unless File.exist?(path)
+      logs = File.read(path).split("\n")
     end
+
+    def self.build
+      new(File.join(Rails.root, "log/githost.log"))
+    end
+
+    def format_message(severity, timestamp, progname, msg)
+      "#{timestamp.to_s(:long)} -> #{severity} -> #{msg}\n" 
+    end 
   end
 end

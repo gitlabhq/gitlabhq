@@ -1,6 +1,6 @@
 module Account 
   def identifier
-    email.gsub /[@.]/, "_"
+    email.gsub /[^[:alnum:]]/, "_"
   end
 
   def is_admin?
@@ -54,5 +54,9 @@ module Account
 
     # Take only latest one
     events = events.recent.limit(1).first
+  end
+
+  def projects_with_events
+    projects.includes(:events).order("events.created_at DESC")
   end
 end

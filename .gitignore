@@ -7,6 +7,7 @@ log/*.log
 tmp/
 .sass-cache/
 coverage/*
+backups/*
 *.swp
 public/uploads/
 .rvmrc

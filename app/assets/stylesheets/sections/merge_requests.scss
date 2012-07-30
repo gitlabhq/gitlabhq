@@ -82,3 +82,15 @@
     }
   }
 }
+
+li.merge_request { 
+  padding:7px 10px;
+  img.avatar { 
+    width: 32px;
+    margin-top: 4px;
+  }
+  p { 
+    padding: 0px;
+    padding-bottom: 2px;
+  }
+}

@@ -9,7 +9,7 @@ describe "Hooks" do
 
   describe "GET index" do
     it "should be available" do
-      @hook = Factory :web_hook, :project => @project
+      @hook = Factory :project_hook, :project => @project
       visit project_hooks_path(@project)
       page.should have_content "Hooks"
       page.should have_content @hook.url
@@ -21,7 +21,7 @@ describe "Hooks" do
       @url = Faker::Internet.uri("http")
       visit project_hooks_path(@project)
       fill_in "hook_url", :with => @url
-      expect { click_button "Add Web Hook" }.to change(WebHook, :count).by(1)
+      expect { click_button "Add Web Hook" }.to change(ProjectHook, :count).by(1)
     end
 
     it "should open new team member popup" do
@@ -32,7 +32,8 @@ describe "Hooks" do
 
   describe "Test" do
     before do
-      @hook = Factory :web_hook, :project => @project
+      @hook = Factory :project_hook, :project => @project
+      stub_request(:post, @hook.url)
       visit project_hooks_path(@project)
       click_link "Test Hook"
     end

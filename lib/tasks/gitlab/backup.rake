@@ -121,7 +121,7 @@ namespace :gitlab do
       backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
       FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
       puts "Dumping repositories:"
-      project = Project.all.map { |n| [n.name,n.path_to_repo] }
+      project = Project.all.map { |n| [n.path,n.path_to_repo] }
       project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
       project.each do |project|
         print "- Dumping repository #{project.first}... "
@@ -136,12 +136,18 @@ namespace :gitlab do
     task :repo_restore => :environment do
       backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
       puts "Restoring repositories:"
-      project = Project.all.map { |n| [n.name,n.path_to_repo] }
+      project = Project.all.map { |n| [n.path,n.path_to_repo] }
       project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
       project.each do |project|
         print "- Restoring repository #{project.first}... "
         FileUtils.rm_rf(project.second) if File.dirname(project.second) # delet old stuff
         if Kernel.system("cd #{File.dirname(project.second)} > /dev/null 2>&1 && git clone --bare #{backup_path_repo}/#{project.first}.bundle #{project.first}.git > /dev/null 2>&1")
+          permission_commands = [
+            "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
+            "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}",
+            "sudo chown gitlab:gitlab /home/git/repositories/**/hooks/post-receive"
+          ]
+          permission_commands.each { |command| Kernel.system(command) }
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -159,7 +165,7 @@ namespace :gitlab do
         print "- Dumping table #{tbl}... "
         count = 1
         File.open(File.join(backup_path_db, tbl + ".yml"), "w+") do |file|
-          ActiveRecord::Base.connection.select_all("SELECT * FROM #{tbl}").each do |line|
+          ActiveRecord::Base.connection.select_all("SELECT * FROM `#{tbl}`").each do |line|
             line.delete_if{|k,v| v.blank?}
             output = {tbl + '_' + count.to_s => line}
             file << output.to_yaml.gsub(/^---\n/,'') + "\n"

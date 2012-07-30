@@ -7,6 +7,12 @@ Factory.add(:project, Project) do |obj|
   obj.code = 'LGT'
 end
 
+Factory.add(:project_without_owner, Project) do |obj|
+  obj.name = Faker::Internet.user_name
+  obj.path = 'gitlabhq'
+  obj.code = 'LGT'
+end
+
 Factory.add(:public_project, Project) do |obj|
   obj.name = Faker::Internet.user_name
   obj.path = 'gitlabhq'
@@ -60,7 +66,11 @@ Factory.add(:key, Key) do |obj|
   obj.key = File.read(File.join(Rails.root, "db", "pkey.example"))
 end
 
-Factory.add(:web_hook, WebHook) do |obj|
+Factory.add(:project_hook, ProjectHook) do |obj|
+  obj.url = Faker::Internet.uri("http")
+end
+
+Factory.add(:system_hook, SystemHook) do |obj|
   obj.url = Faker::Internet.uri("http")
 end
 

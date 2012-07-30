@@ -80,6 +80,29 @@ class Commit
     def commits_between(repo, from, to)
       repo.commits_between(from, to).map { |c| Commit.new(c) }
     end
+
+    def compare(project, from, to)
+      first = project.commit(to.try(:strip))
+      last = project.commit(from.try(:strip))
+
+      result = { 
+        :commits => [],
+        :diffs => [],
+        :commit => nil
+      }
+
+      if first && last
+        commits = [first, last].sort_by(&:created_at)
+        younger = commits.first
+        older = commits.last
+
+        result[:commits] = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
+        result[:diffs] = project.repo.diff(younger.id, older.id) rescue []
+        result[:commit] = Commit.new(older)
+      end
+
+      result
+    end
   end
 
   def persisted?
@@ -89,6 +112,10 @@ class Commit
   def initialize(raw_commit, head = nil)
     @commit = raw_commit
     @head = head
+  end
+
+  def short_id(length = 10)
+    id.to_s[0..length]
   end
 
   def safe_message
@@ -126,5 +153,9 @@ class Commit
 
   def prev_commit_id
     prev_commit.try :id
+  end
+
+  def parents_count 
+    parents && parents.count || 0
   end
 end

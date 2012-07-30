@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+
   include Account
 
   devise :database_authenticatable, :token_authenticatable, :lockable,
@@ -14,6 +15,11 @@ class User < ActiveRecord::Base
   has_many :projects, :through => :users_projects
   has_many :my_own_projects, :class_name => "Project", :foreign_key => :owner_id
   has_many :keys, :dependent => :destroy
+
+  has_many :events,
+    :class_name => "Event",
+    :foreign_key => :author_id,
+    :dependent => :destroy
 
   has_many :recent_events,
     :class_name => "Event",
@@ -80,7 +86,8 @@ class User < ActiveRecord::Base
 
   def self.find_for_ldap_auth(omniauth_info)
     name = omniauth_info.name.force_encoding("utf-8")
-    email = omniauth_info.email.downcase
+    email = omniauth_info.email.downcase unless omniauth_info.email.nil?
+    raise OmniAuth::Error, "LDAP accounts must provide an email address" if email.nil?
 
     if @user = User.find_by_email(email)
       @user

@@ -194,4 +194,16 @@
     float:right;
     @extend .cgray;
   }
+
+  code { 
+    background:#FCEEC1;
+    color:$style_color;
+  }
+
+  .commit_short_id { 
+    float:left;
+    @extend .lined;
+    min-width:65px;
+    font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+  }
 }

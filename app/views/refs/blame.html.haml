@@ -25,15 +25,15 @@
       %table
         - @blame.each do |commit, lines|
           - commit = Commit.new(commit)
+          - commit = CommitDecorator.decorate(commit)
           %tr
             %td.author
               = image_tag gravatar_icon(commit.author_email, 16)
               = commit.author_name
             %td.blame_commit
               &nbsp;
-              = link_to project_commit_path(@project, :id => commit.id) do
-                %code= commit.id.to_s[0..10]
-                %span.row_title= truncate(commit.safe_message, :length => 30) rescue "--broken encoding"
+              %code= link_to commit.short_id, project_commit_path(@project, :id => commit.id)
+              = link_to truncate(commit.title, :length => 30), project_commit_path(@project, :id => commit.id), :class => "row_title" rescue "--broken encoding"
             %td.lines
               = preserve do
                 %pre

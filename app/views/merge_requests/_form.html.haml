@@ -5,7 +5,8 @@
         - @merge_request.errors.full_messages.each do |msg|
           %li= msg
 
-  %h3.padded.cgray 1. Select Branches
+  %h4.cdark 1. Select Branches
+  %br
 
   .row
     .span6
@@ -30,14 +31,21 @@
         .bottom_commit
           .mr_target_commit
 
-  %h3.padded.cgray 2. Fill info
+  %h4.cdark 2. Fill info
+
   .clearfix
-    = f.label :assignee_id, "Assign to", :class => "control-label"
-    .controls= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, :style => "width:250px")
+    .main_box
+      .top_box_content
+        = f.label :title do 
+          %strong= "Title *"
+        .input= f.text_field :title, :class => "input-xxlarge pad", :maxlength => 255, :rows => 5
+      .middle_box_content
+        = f.label :assignee_id do 
+          %i.icon-user 
+          Assign to
+        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, :style => "width:250px")
 
   .control-group
-    = f.label :title, :class => "control-label"
-    .controls= f.text_field :title, :class => "input-xxlarge pad", :maxlength => 255, :rows => 5
 
   .form-actions
     = f.submit 'Save', :class => "btn-primary btn"

@@ -38,9 +38,7 @@
   .tree-item { 
     .tree-item-file-name { 
       vertical-align:middle;
-      font-weight:bold;
       a { 
-        color:$style_color;
         &:hover { 
           color:$blue_link;
         }
@@ -55,7 +53,7 @@
 
 
   #tree-slider { 
-    @include shade;
+    @include solid_shade;
     width:100%;
 
     border-color:#ccc;

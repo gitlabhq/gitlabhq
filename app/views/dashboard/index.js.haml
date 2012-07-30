@@ -1,2 +1,2 @@
 :plain 
-  $(".projects .activities").append("#{escape_javascript(render(@events))}");
+  Pager.append(#{@events.count}, "#{escape_javascript(render(@events))}");

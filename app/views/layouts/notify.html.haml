@@ -33,4 +33,7 @@
               %td{:align => "center", :style => "padding: 5px 0 10px; font-size: 11px; color:#7d7a7a; margin: 0; line-height: 1.2;font-family: Helvetica, Arial, sans-serif;", :valign => "top"}
                 %br
                   %p{:style => "font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;"}
-                    You're receiving this newsletter because you are in project team.
+                    You're receiving this notification because you are a member of the
+                    - if @project
+                      #{@project.name} 
+                    project team.

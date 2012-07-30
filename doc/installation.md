@@ -60,7 +60,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     sudo apt-get update
     sudo apt-get upgrade
 
-    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline-gplv2-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev sendmail
+    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev sendmail
     
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
@@ -110,7 +110,7 @@ Setup:
     sudo -u git sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; /home/git/gitolite/src/gl-system-install"
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
-    sudo chmod 777 /home/git/gitlab.pub
+    sudo chmod 0444 /home/git/gitlab.pub
 
     sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
@@ -119,6 +119,7 @@ Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
+    sudo chown gitlab:gitlab /home/git/repositories/**/hooks/post-receive 
 
 #### CHECK: Logout & login again to apply git group to your user
     
@@ -139,6 +140,8 @@ Permissions:
     cd /home/gitlab
     sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
+    
+    sudo -u gitlab mkdir tmp
 
     # Rename config files
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
@@ -216,15 +219,15 @@ Application can be started with next command:
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Edit /etc/nginx/nginx.conf. Add in **http** section:
+Edit /etc/nginx/nginx.conf. In the *http* section add:
 
     upstream gitlab {
         server unix:/home/gitlab/gitlab/tmp/sockets/gitlab.socket;
     }
 
     server {
-        listen YOUR_SERVER_IP:80;
-        server_name gitlab.YOUR_DOMAIN.com;
+        listen YOUR_SERVER_IP:80;         # e.g., listen 192.168.1.1:80;
+        server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
         root /home/gitlab/gitlab/public;
         
         # individual nginx logs for this gitlab vhost
@@ -232,26 +235,26 @@ Edit /etc/nginx/nginx.conf. Add in **http** section:
         error_log   /var/log/nginx/gitlab_error.log;
         
         location / {
-        # serve static files from defined root folder;.
-        # @gitlab is a named location for the upstream fallback, see below
-        try_files $uri $uri/index.html $uri.html @gitlab;
+            # serve static files from defined root folder;.
+            # @gitlab is a named location for the upstream fallback, see below
+            try_files $uri $uri/index.html $uri.html @gitlab;
         }
         
         # if a file, which is not found in the root folder is requested, 
         # then the proxy pass the request to the upsteam (gitlab unicorn)
         location @gitlab {
           proxy_redirect     off;
+          
           # you need to change this to "https", if you set "ssl" directive to "on"
           proxy_set_header   X-FORWARDED_PROTO http;
-          proxy_set_header   Host              gitlab.YOUR_SUBDOMAIN.com:80;
+          proxy_set_header   Host              $http_host;
           proxy_set_header   X-Real-IP         $remote_addr;
         
           proxy_pass http://gitlab;
         }
-
     }
 
-gitlab.YOUR_DOMAIN.com - change to your domain.
+Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN** to the IP address and fully-qualified domain name of the host serving GitLab.
 
 Restart nginx:
 

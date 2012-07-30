@@ -6,19 +6,21 @@
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
-  .alert-message.block-message.warning
-    %p
-      Wiki content is parsed with #{link_to "Markdown", "http://en.wikipedia.org/wiki/Markdown"}.
-      %br
-      To add link to new page you can just type
-      %code [Link Title](page-slug)
-  .clearfix
-    = f.label :title
-    .input= f.text_field :title, :class => :xxlarge
-    = f.hidden_field :slug
-  .clearfix
-    = f.label :content
-    .input= f.text_area :content, :class => :xxlarge
+  .main_box
+    .top_box_content
+      = f.label :title
+      .input= f.text_field :title, :class => 'span8'
+      = f.hidden_field :slug
+    .middle_box_content
+      .input
+        %span.cgray
+          Wiki content is parsed with #{link_to "Markdown", "http://en.wikipedia.org/wiki/Markdown"}.
+          To add link to new page you can just type
+          %code [Link Title](page-slug)
+
+    .bottom_box_content
+      = f.label :content
+      .input= f.text_area :content, :class => 'span8'
   .actions
     = f.submit 'Save', :class => "primary btn"
     = link_to "Cancel", project_wiki_path(@project, :index), :class => "btn"
