@@ -14,6 +14,9 @@ function switchToEditIssue(form){
     $('select#issue_assignee_id').chosen();
     $('select#issue_milestone_id').chosen();
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
+    $('#issue_label_list').select2({
+      tags:available_issues_tags
+    })
     $('.add_new').hide();
   });
 }

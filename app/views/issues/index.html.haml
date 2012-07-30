@@ -42,7 +42,27 @@
     %ul#issues-table.unstyled.issues_table
       = render "issues"
 
+
 :javascript
   $(function(){
     issuesPage();
   })
+  Array.prototype.uniqueArrayElem = function(){
+    var r = new Array();
+    o:for(var i = 0; i < this.length; i++) {
+      for(var x = 0; x < r.length; x++) {
+        if(r[x]==this[i]) {
+          continue o; 
+        }
+      }
+      r[r.length] = this[i];
+    }
+    return r;
+  };
+
+  //usage
+
+  var default_issues_tags = ['low', 'medium', 'high', 'critical', 'in progress'],
+      available_issues_tags = #{issue_tags.to_json};
+  available_issues_tags = available_issues_tags.concat( default_issues_tags );
+
