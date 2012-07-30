@@ -153,8 +153,22 @@ Permissions:
 
     # Or 
     # Mysql
+    # Install MySQL as directed in Step #1
+    
+    # Login to MySQL
+    $ mysql -u root -p 
+    
+    # Create the gitlabhq production database
+    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+    
+    # Create the MySQL User change $password to a real password
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password'; 
+    
+    # Grant proper permissions to the MySQL User
+    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+    
+    # Exit MySQL Server and copy the example config, make sure to update username/password in config/database.yml
     sudo -u gitlab cp config/database.yml.example config/database.yml
-    # Change username/password of config/database.yml  to real one
 
 #### Install gems
 
