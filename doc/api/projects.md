@@ -318,6 +318,6 @@ Parameters:
 
 + `id` (required) - The ID or code name of a project
 + `sha` (required) - The commit or branch name
-+ `filepath` (required) - The path th the file 
++ `filepath` (required) - The path the file 
 
 Will return the raw file contents.
