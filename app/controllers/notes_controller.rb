@@ -15,11 +15,7 @@ class NotesController < ApplicationController
   end
 
   def create
-    @note = @project.notes.new(params[:note])
-    @note.author = current_user
-    @note.notify = true if params[:notify] == '1'
-    @note.notify_author = true if params[:notify_author] == '1'
-    @note.save
+    @note = Notes::CreateContext.new(project, current_user, params).execute
 
     respond_to do |format|
       format.html {redirect_to :back}
@@ -40,6 +36,6 @@ class NotesController < ApplicationController
   protected 
 
   def notes
-    @notes = NotesLoad.new(project, current_user, params).execute
+    @notes = Notes::LoadContext.new(project, current_user, params).execute
   end
 end

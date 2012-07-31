@@ -22,21 +22,56 @@ describe Project do
   end
 
   describe "Respond to" do
-    it { should respond_to(:repository_writers) }
-    it { should respond_to(:add_access) }
-    it { should respond_to(:reset_access) }
-    it { should respond_to(:update_repository) }
-    it { should respond_to(:destroy_repository) }
     it { should respond_to(:public?) }
     it { should respond_to(:private?) }
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:path_to_repo) }
     it { should respond_to(:valid_repo?) }
     it { should respond_to(:repo_exists?) }
+
+    # Repository Role
+    it { should respond_to(:tree) }
+    it { should respond_to(:root_ref) }
     it { should respond_to(:repo) }
     it { should respond_to(:tags) }
     it { should respond_to(:commit) }
+    it { should respond_to(:commits) }
     it { should respond_to(:commits_between) }
+    it { should respond_to(:commits_with_refs) }
+    it { should respond_to(:commits_since) }
+    it { should respond_to(:commits_between) }
+    it { should respond_to(:write_hooks) }
+    it { should respond_to(:satellite) }
+    it { should respond_to(:update_repository) }
+    it { should respond_to(:destroy_repository) }
+    it { should respond_to(:archive_repo) }
+
+    # Authority Role
+    it { should respond_to(:add_access) }
+    it { should respond_to(:reset_access) }
+    it { should respond_to(:repository_writers) }
+    it { should respond_to(:repository_masters) }
+    it { should respond_to(:repository_readers) }
+    it { should respond_to(:allow_read_for?) }
+    it { should respond_to(:guest_access_for?) }
+    it { should respond_to(:report_access_for?) }
+    it { should respond_to(:dev_access_for?) }
+    it { should respond_to(:master_access_for?) }
+
+    # Team Role
+    it { should respond_to(:team_member_by_name_or_email) }
+    it { should respond_to(:team_member_by_id) }
+    it { should respond_to(:add_user_to_team) }
+    it { should respond_to(:add_users_to_team) }
+    it { should respond_to(:add_user_id_to_team) }
+    it { should respond_to(:add_users_ids_to_team) }
+
+    # Project Push Role
+    it { should respond_to(:observe_push) }
+    it { should respond_to(:update_merge_requests) }
+    it { should respond_to(:execute_hooks) }
+    it { should respond_to(:post_receive_data) }
+    it { should respond_to(:trigger_post_receive) }
   end
 
   it "should not allow 'gitolite-admin' as repo name" do
