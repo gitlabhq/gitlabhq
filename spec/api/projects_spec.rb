@@ -53,6 +53,16 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /projects/:id/repository/branches/:branch" do
+    it "should return the branch information for a single branch" do
+      get "#{api_prefix}/projects/#{project.code}/repository/branches/new_design?private_token=#{user.private_token}"
+      response.status.should == 200
+
+      json_response['name'].should == 'new_design'
+      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+    end
+  end
+
   describe "GET /projects/:id/repository/tags" do
     it "should return an array of project tags" do
       get "#{api_prefix}/projects/#{project.code}/repository/tags?private_token=#{user.private_token}"
@@ -93,7 +103,7 @@ describe Gitlab::API do
     it "should delete existing project snippet" do
       expect {
         delete "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}?private_token=#{user.private_token}"
-      }.should change { Snippet.count }.by(-1)
+      }.to change { Snippet.count }.by(-1)
     end
   end
 
@@ -101,6 +111,26 @@ describe Gitlab::API do
     it "should get a raw project snippet" do
       get "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}/raw?private_token=#{user.private_token}"
       response.status.should == 200
+    end
+  end
+
+  describe "GET /projects/:id/:sha/blob" do
+    it "should get the raw file contents" do
+      get "#{api_prefix}/projects/#{project.code}/repository/commits/master/blob?filepath=README.md&private_token=#{user.private_token}"
+      
+      response.status.should == 200
+    end
+
+    it "should return 404 for invalid branch_name" do
+      get "#{api_prefix}/projects/#{project.code}/repository/commits/invalid_branch_name/blob?filepath=README.md&private_token=#{user.private_token}"
+      
+      response.status.should == 404
+    end
+
+    it "should return 404 for invalid file" do
+      get "#{api_prefix}/projects/#{project.code}/repository/commits/master/blob?filepath=README.invalid&private_token=#{user.private_token}"
+      
+      response.status.should == 404
     end
   end
 end
