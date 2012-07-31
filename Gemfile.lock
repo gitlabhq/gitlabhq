@@ -153,6 +153,9 @@ GEM
       orm_adapter (~> 0.1)
       railties (~> 3.1)
       warden (~> 1.2.1)
+    devise_cas_authenticatable (1.1.2)
+      devise (>= 1.0.6)
+      rubycas-client (>= 2.2.1)
     diff-lcs (1.1.3)
     drapper (0.8.4)
     email_spec (1.2.1)
@@ -295,6 +298,8 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.10.0)
+    rubycas-client (2.3.9)
+      activesupport
     rubyntlm (0.1.1)
     rubypython (0.6.2)
       blankslate (>= 2.1.2.3)
@@ -385,6 +390,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   devise (~> 2.1.0)
+  devise_cas_authenticatable
   drapper
   email_spec
   ffaker
