@@ -37,11 +37,11 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
-      #   branch_id (required) - The name of the branch
+      #   branch (required) - The name of the branch
       # Example Request:
-      #   GET /projects/:id/repository/branches/:branch_id
-      get ":id/repository/branches/:branch_id" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch_id] }
+      #   GET /projects/:id/repository/branches/:branch
+      get ":id/repository/branches/:branch" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
         present @branch, :with => Entities::RepoObject
       end
 
@@ -148,7 +148,7 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
-      #   sha (required) - The commit or branch name 
+      #   sha (required) - The commit or branch name
       #   filepath (required) - The path to the file to display
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha/blob
@@ -157,10 +157,10 @@ module Gitlab
 
         commit = user_project.commit ref
         error!('404 Commit Not Found', 404) unless commit
-        
+
         tree = Tree.new commit.tree, user_project, ref, params[:filepath]
         error!('404 File Not Found', 404) unless tree.try(:tree)
-        
+
         if tree.text?
           encoding = Gitlab::Encode.detect_encoding(tree.data)
           content_type encoding ? "text/plain; charset=#{encoding}" : "text/plain"
