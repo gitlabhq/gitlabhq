@@ -20,3 +20,6 @@ config/database.yml
 config/initializers/omniauth.rb
 config/unicorn.rb
 db/data.yml
+.idea
+.DS_Store
+
