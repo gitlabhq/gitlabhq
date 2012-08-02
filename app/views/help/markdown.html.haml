@@ -1,0 +1,25 @@
+- bash_lexer = Pygments::Lexer[:bash]
+%h3.page_title Gitlab Markdown
+.back_link
+  = link_to help_path do 
+    &larr; to index
+%hr
+
+%p.slead We extend Markdown with some GITLAB specific syntax. It allows you to link to:
+
+%ul
+  %li issues (#123)
+  %li merge request (!123)
+  %li commits (1234567)
+  %li team members (@foo)
+  %li snippets ($123)
+
+%p.slead in
+
+%ul
+  %li commit messages
+  %li notes/comments/wall posts
+  %li issues
+  %li merge requests
+  %li milestones
+  %li wiki pages

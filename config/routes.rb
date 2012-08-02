@@ -29,6 +29,7 @@ Gitlab::Application.routes.draw do
   get 'help/api' => 'help#api'
   get 'help/web_hooks' => 'help#web_hooks'
   get 'help/system_hooks' => 'help#system_hooks'
+  get 'help/markdown' => 'help#markdown'
 
   #
   # Admin Area

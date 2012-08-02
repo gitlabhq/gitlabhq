@@ -8,7 +8,9 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
   = f.text_area :note,  :size => 255
-  %p.hint Markdown is enabled.
+  %p.hint
+    = link_to "Gitlab Markdown", help_markdown_path, :target => '_blank'
+    is enabled.
 
   .row.note_advanced_opts.hide
     .span4
@@ -30,6 +32,5 @@
           %button.file_upload.btn.small Upload File
           .input= f.file_field :attachment, :class => "input-file"
         %span Any file less than 10 MB
-
 
   = f.submit 'Add Comment', :class => "btn primary submit_note", :id => "submit_note"
