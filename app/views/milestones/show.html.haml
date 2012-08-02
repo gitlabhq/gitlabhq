@@ -21,7 +21,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = @milestone.title
+      = gfm @milestone.title
       %small.right= @milestone.expires_at
 
   .middle_box_content
@@ -51,7 +51,7 @@
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
-            = link_to truncate(issue.title, :length => 60), [@project, issue]
+            = link_to_gfm truncate(issue.title, :length => 60), [@project, issue]
     %br
     = paginate @issues, :theme => "gitlab"
 

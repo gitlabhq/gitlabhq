@@ -24,7 +24,7 @@
   - else
     = image_tag "no_avatar.png", :class => "avatar"
 
-  %p= link_to truncate(issue.title, :length => 100), project_issue_path(issue.project, issue), :class => "row_title"
+  %p= link_to_gfm truncate(issue.title, :length => 100), project_issue_path(issue.project, issue), :class => "row_title"
 
   %span.update-author
     %small.cdark= "##{issue.id}"

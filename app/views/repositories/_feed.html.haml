@@ -13,7 +13,7 @@
       = link_to project_commits_path(@project, commit.id) do
         %code= commit.short_id
       = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
-      = truncate(commit.title, :length => 40)
+      = gfm truncate(commit.title, :length => 40)
   %td
     %span.right.cgray
       = time_ago_in_words(commit.committed_date)

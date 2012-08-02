@@ -31,7 +31,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = @issue.title
+      = gfm @issue.title
 
   .middle_box_content
     %cite.cgray Created by
@@ -46,7 +46,7 @@
     - if @issue.milestone
       - milestone = @issue.milestone
       %cite.cgray and attached to milestone
-      %strong= link_to truncate(milestone.title, :length => 20), project_milestone_path(milestone.project, milestone)
+      %strong= link_to_gfm truncate(milestone.title, :length => 20), project_milestone_path(milestone.project, milestone)
 
     .right
       - @issue.labels.each do |label|
