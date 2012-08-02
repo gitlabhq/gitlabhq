@@ -176,4 +176,51 @@ describe ApplicationHelper do
       link_to_gfm("This should finally fix ##{issue1.id} for real", project_commit_path(@project, :id => @commit.id), :class => "foo").should have_selector(".foo")
     end
   end
+
+  describe "#markdown" do
+    before do
+      @issue = Factory :issue, :assignee => @fake_user, :author => @fake_user, :project => @project
+      @merge_request = Factory :merge_request, :assignee => @fake_user, :author => @fake_user, :project => @project
+      @note = Factory.create(:note,
+                              :note => "Screenshot of the new feature",
+                              :project => @project,
+                              :noteable_id => @commit.id,
+                              :noteable_type => "Commit",
+                              :attachment => "screenshot123.jpg")
+      @snippet = Factory.create(:snippet,
+                                :title => "Render asset to string",
+                                :author => @fake_user,
+                                :project => @project)
+
+      @other_user = Factory :user, name: "bill"
+      @project.users << @other_user
+      @member = @project.users_projects.where(:user_id => @other_user).first
+    end
+
+    it "should handle references in paragraphs" do
+      markdown("\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. #{@commit.id} Nam pulvinar sapien eget odio adipiscing at faucibus orci vestibulum.\n").should == "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. #{link_to @commit.id, project_commit_path(@project, :id => @commit.id), :title => "Commit: #{@commit.author_name} - #{@commit.title}", :class => "gfm gfm-commit "} Nam pulvinar sapien eget odio adipiscing at faucibus orci vestibulum.</p>\n"
+    end
+
+    it "should handle references in headers" do
+      markdown("\n# Working around ##{@issue.id} for now\n## Apply !#{@merge_request.id}").should == "<h1>Working around #{link_to "##{@issue.id}", project_issue_path(@project, @issue), :title => "Issue: #{@issue.title}", :class => "gfm gfm-issue "} for now</h1>\n\n<h2>Apply #{link_to "!#{@merge_request.id}", project_merge_request_path(@project, @merge_request), :title => "Merge Request: #{@merge_request.title}", :class => "gfm gfm-merge_request "}</h2>\n"
+    end
+
+    it "should handle references in lists" do
+      markdown("\n* dark: ##{@issue.id}\n* light by @#{@other_user.name}\n").should == "<ul>\n<li>dark: #{link_to "##{@issue.id}", project_issue_path(@project, @issue), :title => "Issue: #{@issue.title}", :class => "gfm gfm-issue "}</li>\n<li>light by #{link_to "@#{@other_user.name}", project_team_member_path(@project, @member), :class => "gfm gfm-team_member "}</li>\n</ul>\n"
+    end
+
+    it "should handle references in <em>" do
+      markdown("Apply _!#{@merge_request.id}_ ASAP").should == "<p>Apply <em>#{link_to "!#{@merge_request.id}", project_merge_request_path(@project, @merge_request), :title => "Merge Request: #{@merge_request.title}", :class => "gfm gfm-merge_request "}</em> ASAP</p>\n"
+    end
+
+    it "should leave code blocks untouched" do
+      markdown("\n    some code from $#{@snippet.id}\n    here too\n").should == "<div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{@snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre>\n</div>\n"
+
+      markdown("\n```\nsome code from $#{@snippet.id}\nhere too\n```\n").should == "<div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{@snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre>\n</div>\n"
+    end
+
+    it "should leave inline code untouched" do
+      markdown("\nDon't use `$#{@snippet.id}` here.\n").should == "<p>Don&#39;t use <code>$#{@snippet.id}</code> here.</p>\n"
+    end
+  end
 end

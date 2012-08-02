@@ -16,4 +16,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
       Pygments.highlight(code, :options => {:encoding => 'utf-8'})
     end
   end
+
+  def postprocess(full_document)
+    h.gfm(full_document)
+  end
 end
