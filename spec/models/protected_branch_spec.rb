@@ -37,19 +37,6 @@ describe ProtectedBranch do
     end
   end
 
-  describe '#update_repository' do
-    let(:gitolite) { mock }
-
-    subject { ProtectedBranch.new(:project => project) }
-
-    it "updates the branch's project repo permissions" do
-      Gitlab::GitHost.should_receive(:system).and_return(gitolite)
-      gitolite.should_receive(:update_project).with(project.path, project)
-
-      subject.update_repository
-    end
-  end
-
   describe '#commit' do
     subject { ProtectedBranch.new(:project => project, :name => 'cant_touch_this') }
 
