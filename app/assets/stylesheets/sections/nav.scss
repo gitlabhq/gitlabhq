@@ -14,6 +14,7 @@ ul.main_menu {
   background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
   position:relative;
+  overflow:hidden;
   @include shade;
   .count { 
     position: relative;
