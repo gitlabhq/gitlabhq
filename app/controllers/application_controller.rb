@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user_for_mailer
   before_filter :check_token_auth
   before_filter :set_current_user_for_observers
+  before_filter :dev_tools if Rails.env == 'development'
 
   protect_from_forgery
 
@@ -141,5 +142,9 @@ class ApplicationController < ActionController::Base
 
   def render_full_content
     @full_content = true
+  end
+
+  def dev_tools
+    Rack::MiniProfiler.authorize_request
   end
 end
