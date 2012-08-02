@@ -163,4 +163,17 @@ describe ApplicationHelper do
       gfm("fixed in #{@commit.id}", :class => "foo").should have_selector("a.foo")
     end
   end
+
+  describe "#link_to_gfm" do
+    let(:issue1) { Factory :issue, :assignee => @fake_user, :author => @fake_user, :project => @project }
+    let(:issue2) { Factory :issue, :assignee => @fake_user, :author => @fake_user, :project => @project }
+
+    it "should handle references nested in links with all the text" do
+      link_to_gfm("This should finally fix ##{issue1.id} and ##{issue2.id} for real", project_commit_path(@project, :id => @commit.id)).should == "#{link_to "This should finally fix ", project_commit_path(@project, :id => @commit.id)}#{link_to "##{issue1.id}", project_issue_path(@project, issue1), :title => "Issue: #{issue1.title}", :class => "gfm gfm-issue "}#{link_to " and ", project_commit_path(@project, :id => @commit.id)}#{link_to "##{issue2.id}", project_issue_path(@project, issue2), :title => "Issue: #{issue2.title}", :class => "gfm gfm-issue "}#{link_to " for real", project_commit_path(@project, :id => @commit.id)}"
+    end
+
+    it "should forward HTML options" do
+      link_to_gfm("This should finally fix ##{issue1.id} for real", project_commit_path(@project, :id => @commit.id), :class => "foo").should have_selector(".foo")
+    end
+  end
 end

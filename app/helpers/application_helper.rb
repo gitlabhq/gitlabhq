@@ -110,6 +110,17 @@ module ApplicationHelper
     text.html_safe
   end
 
+  # circumvents nesting links, which will behave bad in browsers
+  def link_to_gfm(body, url, html_options = {})
+    gfm_body = gfm(body, html_options)
+
+    gfm_body.gsub!(%r{<a.*?>.*?</a>}m) do |match|
+      "</a>#{match}#{link_to("", url, html_options)[0..-5]}" # "</a>".length +1
+    end
+
+    link_to(gfm_body.html_safe, url, html_options)
+  end
+
   def markdown(text)
     @__renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::GitlabHTML.new(self, filter_html: true), {
       no_intra_emphasis: true,
