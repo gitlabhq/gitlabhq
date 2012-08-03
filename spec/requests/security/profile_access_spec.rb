@@ -7,9 +7,6 @@ describe "Users Security" do
     end
 
     describe "GET /login" do
-      #it { new_user_session_path.should be_denied_for @u1 }
-      #it { new_user_session_path.should be_denied_for :admin }
-      #it { new_user_session_path.should be_denied_for :user }
       it { new_user_session_path.should_not be_404_for :visitor }
     end
 

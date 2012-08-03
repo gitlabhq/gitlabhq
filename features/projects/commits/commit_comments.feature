@@ -4,4 +4,7 @@ Feature: Comment commit
     And I own project "Shop"
     Given I visit project commit page
 
-  Scenario: I leave a comment for commit
+  @javascript
+  Scenario: I comment commit
+    Given I leave a comment like "XML attached"
+    Then I should see comment "XML attached"

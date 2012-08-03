@@ -35,4 +35,4 @@ Feature: Issues
   Scenario: I comment issue
     Given I visit issue page "Release 0.4"
     And I leave a comment like "XML attached"
-    Then I should see commetn "XML attached"
+    Then I should see comment "XML attached"

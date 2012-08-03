@@ -32,15 +32,6 @@ Given /^I visit issue page "(.*?)"$/ do |arg1|
   visit project_issue_path(issue.project, issue)
 end
 
-Given /^I leave a comment like "(.*?)"$/ do |arg1|
-  fill_in "note_note", :with => arg1
-  click_button "Add Comment"
-end
-
-Then /^I should see commetn "(.*?)"$/ do |arg1|
-  page.should have_content(arg1)
-end
-
 Given /^I submit new issue "(.*?)"$/ do |arg1|
   fill_in "issue_title", :with => arg1
   click_button "Submit new issue"
