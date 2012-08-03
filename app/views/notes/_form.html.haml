@@ -13,24 +13,21 @@
     is enabled.
 
   .row.note_advanced_opts.hide
-    .span4
-      %h5 Notify via email:
-      .clearfix
-        = label_tag :notify do
-          = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-          %span Project team
+    .span4.notify_opts
+      %h6.left Notify via email:
+      = label_tag :notify do
+        = check_box_tag :notify, 1, @note.noteable_type != "Commit"
+        %span Project team
 
-        - if @note.notify_only_author?(current_user)
-          = label_tag :notify_author do
-            = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-            %span Commit author
-    .span8
-      %h5 Attachment:
-      .clearfix
-        .attachments
-          %div.file_name File name...
-          %button.file_upload.btn.small Upload File
-          .input= f.file_field :attachment, :class => "input-file"
-        %span Any file less than 10 MB
+      - if @note.notify_only_author?(current_user)
+        = label_tag :notify_author do
+          = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
+          %span Commit author
+    .span8.attachments
+      %h6.left Attachment:
+      %span.file_name File name...
+      %button.file_upload.btn.small Upload File
+      .input= f.file_field :attachment, :class => "input-file"
+      %span.hint Any file less than 10 MB
 
   = f.submit 'Add Comment', :class => "btn primary submit_note", :id => "submit_note"

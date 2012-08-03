@@ -175,10 +175,17 @@ td .line_note_link {
     top:7px;
   }
 
+  .note_advanced_opts { 
+    h6 { 
+      line-height: 32px;
+      margin-right: 12px;
+    }
+  }
+
   div.attachments {
     position:relative;
     width: 350px;
-    height: 36px;
+    height: 50px;
     overflow:hidden;
     margin:0 0 5px !important;
   }
