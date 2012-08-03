@@ -49,6 +49,13 @@
         %strong Tip:
         You can change your avatar at gravatar.com
 
+      - if Settings.omniauth.enabled && @user.provider?
+        %h4
+          Omniauth Providers:
+        = link_to "Change", profile_password_path, class: "btn small right"
+        You can login through #{@user.provider.titleize}!
+        = authbutton(@user.provider, 32)
+
       %h4
         Personal projects:
         %small.right

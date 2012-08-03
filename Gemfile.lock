@@ -166,6 +166,8 @@ GEM
     eventmachine (0.12.10)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    faraday (0.8.1)
+      multipart-post (~> 1.1)
     ffaker (1.14.0)
     ffi (1.0.11)
     foreman (0.47.0)
@@ -191,6 +193,7 @@ GEM
     httparty (0.8.3)
       multi_json (~> 1.0)
       multi_xml
+    httpauth (0.1)
     i18n (0.6.0)
     journey (1.0.4)
     jquery-rails (2.0.2)
@@ -200,6 +203,8 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.4)
+    jwt (0.1.5)
+      multi_json (>= 1.0)
     kaminari (0.13.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -223,12 +228,35 @@ GEM
       sprockets (~> 2.0)
     multi_json (1.3.6)
     multi_xml (0.5.1)
+    multipart-post (1.1.5)
     mysql2 (0.3.11)
     net-ldap (0.2.2)
     nokogiri (1.5.3)
+    oauth (0.4.6)
+    oauth2 (0.8.0)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
     omniauth (1.1.0)
       hashie (~> 1.2)
       rack
+    omniauth-github (1.0.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.0)
+    omniauth-google-oauth2 (0.1.13)
+      omniauth (~> 1.0)
+      omniauth-oauth2
+    omniauth-oauth (1.0.1)
+      oauth
+      omniauth (~> 1.0)
+    omniauth-oauth2 (1.1.0)
+      oauth2 (~> 0.8.0)
+      omniauth (~> 1.0)
+    omniauth-twitter (0.0.12)
+      multi_json (~> 1.3)
+      omniauth-oauth (~> 1.0)
     orm_adapter (0.3.0)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
@@ -411,7 +439,11 @@ DEPENDENCIES
   minitest (>= 2.10)
   modernizr (= 2.5.3)
   mysql2
+  omniauth
+  omniauth-github
+  omniauth-google-oauth2
   omniauth-ldap!
+  omniauth-twitter
   pry
   pygments.rb!
   rack-mini-profiler

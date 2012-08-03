@@ -1,4 +1,4 @@
-# # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # #
 # Gitlab application config file  #
 # # # # # # # # # # # # # # # # # #
 
@@ -19,14 +19,14 @@ email:
 
 # Application specific settings
 # Like default project limit for user etc
-app: 
-  default_projects_limit: 10 
+app:
+  default_projects_limit: 10
   # backup_path: "/vol/backups"   # default: Rails.root + backups/
   # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
 
 
-# 
-# 2. Advanced settings: 
+#
+# 2. Advanced settings:
 # ==========================
 
 # Git Hosting configuration
@@ -49,3 +49,15 @@ git:
   git_max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
   git_timeout: 10
+
+# Omniauth configuration
+# omniauth:
+#   enabled: true
+#   providers:
+#     - { name: 'google_oauth2', app_id: 'YOUR APP ID',
+#         app_secret: 'YOUR APP SECRET',
+#         args: { access_type: 'offline', approval_prompt: '' } }
+#     - { name: 'twitter', app_id: 'YOUR APP ID',
+#         app_secret: 'YOUR APP SECRET'}
+#     - { name: 'github', app_id: 'YOUR APP ID',
+#         app_secret: 'YOUR APP SECRET' }
