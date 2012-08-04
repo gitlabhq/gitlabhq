@@ -6,6 +6,11 @@ Feature: Profile
     Given I visit profile page
     Then I should see my profile info
 
+  Scenario: I edit profile
+    Given I visit profile page
+    Then I change my contact info
+    And I should see new contact info
+
   Scenario: I change my password
     Given I visit profile password page
     Then I change my password
@@ -15,4 +20,3 @@ Feature: Profile
     Given I visit profile token page
     Then I reset my token
     And I should see new token
-

@@ -50,6 +50,11 @@ Given /^I write new comment "(.*?)"$/ do |arg1|
   click_button "Add Comment"
 end
 
+Given /^I visit project "(.*?)" page$/ do |arg1|
+  project = Project.find_by_name(arg1)
+  visit project_path(project)
+end
+
 Given /^I visit project "(.*?)" network page$/ do |arg1|
   project = Project.find_by_name(arg1)
   visit graph_project_path(project)
@@ -65,4 +70,13 @@ Given /^page should have network graph$/ do
     page.should have_content "stable"
     page.should have_content "notes_refacto..."
   end
+end
+
+Given /^I leave a comment like "(.*?)"$/ do |arg1|
+  fill_in "note_note", :with => arg1
+  click_button "Add Comment"
+end
+
+Then /^I should see comment "(.*?)"$/ do |arg1|
+  page.should have_content(arg1)
 end

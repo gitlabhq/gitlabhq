@@ -44,4 +44,8 @@ class FakeSatellite
   end
 end
 
-
+class ProtectedBranch
+  def update_repository
+    true
+  end
+end
