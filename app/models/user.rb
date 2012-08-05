@@ -95,8 +95,13 @@ class User < ActiveRecord::Base
 
     if @user = User.find_by_extern_uid_and_provider(uid, provider)
       @user
+    # workaround for backward compatibility
+    elsif @user = User.find_by_email(email)
+      logger.info "Updating legacy LDAP user #{email} with extern_uid => #{uid}"
+      @user.update_attributes(:extern_uid => uid, :provider => provider)
+      @user
     else
-      logger.info "Creating user from LDAP login; uid = #{uid}, name = #{name}, email = #{email}"
+      logger.info "Creating user from LDAP login {uid => #{uid}, name => #{name}, email => #{email}}"
       password = Devise.friendly_token[0, 8].downcase
       @user = User.create(
         :extern_uid => uid,
