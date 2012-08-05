@@ -195,6 +195,11 @@ Application can be started with next command:
     # As daemon
     sudo -u gitlab bundle exec rails s -e production -d
 
+You can login via web using admin generated with setup:
+
+    admin@local.host
+    5iveL!fe
+
 #  6. Run resque process (for processing queue).
 
     # Manually

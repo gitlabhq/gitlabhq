@@ -51,25 +51,51 @@
 
 input.check_all_issues { 
   float:left;
-  padding: 8px 0;
-  margin: 14px 0;
+  padding: 0;
+  margin:0;
   margin-right: 10px;
+  position: relative;
+  top: 8px;
+  height: 22px;
+}
+
+.issues_content { 
+  .title { 
+    height: 40px;
+  }
 }
 
 #issues-table-holder { 
+  .issues_filters { 
+    form { 
+      padding:0;
+      margin:0;
+      margin-top:7px
+    }
+  } 
+
   .issues_bulk_update { 
-    padding: 0 5px;
     margin: 0;
     form { 
+      padding:0;
       margin:0;
-      padding-bottom:5px;
+      margin-top:7px
     }
     .update_selected_issues { 
       position:relative;
       top:-2px;
-      margin-left:3px;
+      margin-left:4px;
+      float:left;
     }
-
     
+    .update_issues_text { 
+      padding:3px;
+      line-height: 18px;
+      float:left;
+    }
   }
+}
+
+#update_status { 
+  width:100px;
 }

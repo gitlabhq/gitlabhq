@@ -59,3 +59,30 @@ end
 Given /^I visit project tags page$/ do
   visit tags_project_repository_path(@project)
 end
+
+Then /^I should see "(.*?)" recent branches list$/ do |arg1|
+  page.should have_content("Branches")
+  page.should have_content("master")
+end
+
+Then /^I should see "(.*?)" all branches list$/ do |arg1|
+  page.should have_content("Branches")
+  page.should have_content("master")
+end
+
+Then /^I should see "(.*?)" all tags list$/ do |arg1|
+  page.should have_content("Tags")
+  page.should have_content("v1.2.1")
+end
+
+Then /^I should see "(.*?)" protected branches list$/ do |arg1|
+  within "table" do 
+    page.should have_content "stable"
+    page.should_not have_content "master"
+  end
+end
+
+Given /^project "(.*?)" has protected branches$/ do |arg1|
+  project = Project.find_by_name(arg1)
+  project.protected_branches.create(:name => "stable")
+end

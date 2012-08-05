@@ -122,7 +122,7 @@ module ApplicationHelper
   end
 
   def markdown(text)
-    @__renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::GitlabHTML.new(self, filter_html: true), {
+    @__renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::GitlabHTML.new(self, filter_html: true, with_toc_data: true), {
       no_intra_emphasis: true,
       tables: true,
       fenced_code_blocks: true,

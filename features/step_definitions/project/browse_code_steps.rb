@@ -38,3 +38,13 @@ end
 Then /^I should see raw file content$/ do
   page.source.should == ValidCommit::BLOB_FILE
 end
+
+Given /^I click blame button$/ do
+  click_link "blame"
+end
+
+Then /^I should see git file blame$/ do
+  page.should have_content("rubygems.org")
+  page.should have_content("Dmitriy Zaporozhets")
+  page.should have_content("bc3735004cb Moving to rails 3.2")
+end

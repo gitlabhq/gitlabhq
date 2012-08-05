@@ -22,13 +22,13 @@
 
       .issues_bulk_update.hide
         = form_tag bulk_update_project_issues_path(@project), :method => :post  do 
-          %span Update selected issues with 
-          &nbsp;
-          = select_tag('update[status]', options_for_select(['open', 'closed']), :prompt => "Status")
-          = select_tag('update[assignee_id]', options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), :prompt => "Assignee")
-          = select_tag('update[milestone_id]', options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Milestone")
-          = hidden_field_tag 'update[issues_ids]', []
-          = hidden_field_tag :f, params[:f]
+          %span.update_issues_text Update selected issues with &nbsp;
+          .left
+            = select_tag('update[status]', options_for_select(['open', 'closed']), :prompt => "Status")
+            = select_tag('update[assignee_id]', options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), :prompt => "Assignee")
+            = select_tag('update[milestone_id]', options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), :prompt => "Milestone")
+            = hidden_field_tag 'update[issues_ids]', []
+            = hidden_field_tag :f, params[:f]
           = button_tag "Save", :class => "btn update_selected_issues"
       .issues_filters
         .left

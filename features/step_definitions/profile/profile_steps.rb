@@ -36,3 +36,16 @@ Then /^I should see new token$/ do
   find("#token").value.should == @user.reload.private_token
 end
 
+Then /^I change my contact info$/ do
+  fill_in "user_skype", :with => "testskype"
+  fill_in "user_linkedin", :with => "testlinkedin"
+  fill_in "user_twitter", :with => "testtwitter"
+  click_button "Save"
+  @user.reload
+end
+
+Then /^I should see new contact info$/ do
+  @user.skype.should == 'testskype'
+  @user.linkedin.should == 'testlinkedin'
+  @user.twitter.should == 'testtwitter'
+end

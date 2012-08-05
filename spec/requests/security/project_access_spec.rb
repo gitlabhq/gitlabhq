@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Projects Security" do
+describe "Application access" do
   describe "GET /" do
     it { root_path.should be_allowed_for :admin }
     it { root_path.should be_allowed_for :user }
