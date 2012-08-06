@@ -202,7 +202,7 @@ describe ApplicationHelper do
     end
 
     it "should handle references in headers" do
-      markdown("\n# Working around ##{@issue.id} for now\n## Apply !#{@merge_request.id}").should == "<h1>Working around #{link_to "##{@issue.id}", project_issue_path(@project, @issue), :title => "Issue: #{@issue.title}", :class => "gfm gfm-issue "} for now</h1>\n\n<h2>Apply #{link_to "!#{@merge_request.id}", project_merge_request_path(@project, @merge_request), :title => "Merge Request: #{@merge_request.title}", :class => "gfm gfm-merge_request "}</h2>\n"
+      markdown("\n# Working around ##{@issue.id} for now\n## Apply !#{@merge_request.id}").should == "<h1 id=\"toc_0\">Working around #{link_to "##{@issue.id}", project_issue_path(@project, @issue), :title => "Issue: #{@issue.title}", :class => "gfm gfm-issue "} for now</h1>\n\n<h2 id=\"toc_1\">Apply #{link_to "!#{@merge_request.id}", project_merge_request_path(@project, @merge_request), :title => "Merge Request: #{@merge_request.title}", :class => "gfm gfm-merge_request "}</h2>\n"
     end
 
     it "should handle references in lists" do
