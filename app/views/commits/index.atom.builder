@@ -17,7 +17,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
         xml.name commit.author_name
         xml.email commit.author_email
       end
-      xml.summary commit.description
+      xml.summary gfm(commit.description)
     end
   end
 end

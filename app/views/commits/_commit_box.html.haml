@@ -11,10 +11,10 @@
       = link_to tree_project_ref_path(@project, @commit.id), :class => "browse-button primary grouped" do 
         %strong Browse Code »
     %h3.commit-title.page_title
-      = commit_msg_with_link_to_issues(@project, @commit.title)
+      = gfm @commit.title
     - if @commit.description.present?
       %pre.commit-description
-        = commit_msg_with_link_to_issues(@project, @commit.description)
+        = gfm @commit.description
   .commit-info
     .row
       .span4

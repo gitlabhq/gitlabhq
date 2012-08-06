@@ -33,7 +33,7 @@
             %td.blame_commit
               &nbsp;
               %code= link_to commit.short_id, project_commit_path(@project, :id => commit.id)
-              = link_to truncate(commit.title, :length => 30), project_commit_path(@project, :id => commit.id), :class => "row_title" rescue "--broken encoding"
+              = link_to_gfm truncate(commit.title, :length => 30), project_commit_path(@project, :id => commit.id), :class => "row_title" rescue "--broken encoding"
             %td.lines
               = preserve do
                 %pre
