@@ -10,6 +10,12 @@ describe ApplicationHelper do
   end
 
   describe "#gfm" do
+    it "should raiase an error if @project is not set" do
+      @project = nil
+
+      expect { gfm("foo") }.to raise_error
+    end
+
     describe "referencing a commit" do
       it "should link using a full id" do
         gfm("Reverts changes from #{@commit.id}").should == "Reverts changes from #{link_to @commit.id, project_commit_path(@project, :id => @commit.id), :title => "Commit: #{@commit.author_name} - #{@commit.title}", :class => "gfm gfm-commit "}"

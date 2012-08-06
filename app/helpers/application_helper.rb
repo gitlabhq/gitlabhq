@@ -44,6 +44,7 @@ module ApplicationHelper
 
   def gfm(text, html_options = {})
     return text if text.nil?
+    raise "@project is not set" if @project.nil?
 
     # Extract pre blocks
     # from http://github.github.com/github-flavored-markdown/
