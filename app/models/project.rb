@@ -89,7 +89,7 @@ class Project < ActiveRecord::Base
   validates :path,
             :uniqueness => true,
             :presence => true,
-            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.\/]*$/,
                          :message => "only letters, digits & '_' '-' '.' allowed. Letter should be first" },
             :length   => { :within => 0..255 }
 
@@ -99,7 +99,7 @@ class Project < ActiveRecord::Base
   validates :code,
             :presence => true,
             :uniqueness => true,
-            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.\/]*$/,
                          :message => "only letters, digits & '_' '-' '.' allowed. Letter should be first"  },
             :length   => { :within => 1..255 }
 
