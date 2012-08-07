@@ -7,7 +7,7 @@ module Gitlab
     end
 
     def self.admin_uri
-      Gitlab.config.git_host.admin_uri
+      url_to_repo "gitolite-admin"
     end
 
     def self.url_to_repo(path)

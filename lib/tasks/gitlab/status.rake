@@ -38,7 +38,7 @@ namespace :gitlab do
       end
 
       begin
-        `git clone #{Gitlab.config.gitolite_admin_uri} /tmp/gitolite_gitlab_test`
+        `git clone #{Gitlab::GitHost.admin_uri} /tmp/gitolite_gitlab_test`
         FileUtils.rm_rf("/tmp/gitolite_gitlab_test")
         print "Can clone gitolite-admin?............"
         puts "YES".green 

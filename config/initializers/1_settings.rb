@@ -94,10 +94,6 @@ class Settings < Settingslogic
       git['git_timeout'] || 10
     end
 
-    def gitolite_admin_uri
-      git_host['admin_uri'] || 'git@localhost:gitolite-admin'
-    end
-
     def default_projects_limit
       app['default_projects_limit'] || 10
     end
