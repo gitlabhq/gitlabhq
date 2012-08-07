@@ -18,6 +18,7 @@
 //= require chosen-jquery
 //= require raphael
 //= require branch-graph
+//= require Markdown.Converter
 //= require_tree .
 
 $(document).ready(function(){
@@ -25,7 +26,6 @@ $(document).ready(function(){
   $(".one_click_select").live("click", function(){
     $(this).select();
   });
-
 
   $('body').on('ajax:complete, ajax:beforeSend, submit', 'form', function(e){
     var buttons = $('[type="submit"]', this);
@@ -70,6 +70,24 @@ $(document).ready(function(){
   $(".supp_diff_link").bind("click", function() {
     showDiff(this);
   });
+
+  /**
+   * Note markdown preview
+   *
+   */
+  $('#preview-link').on('click', function(e) {
+    var note = $('#note_note').val();
+    if (note.trim().length === 0) { note = 'Nothing to preview'; }
+    var converter = new Markdown.Converter();
+    var md_preview = converter.makeHtml(note);
+    $('#preview-note').html(md_preview);
+
+    var previewLinkText = ($(this).text() == 'Preview' ? 'Edit' : 'Preview');
+    $(this).text(previewLinkText);
+
+    $('#preview-note, #note_note').toggle();
+    e.preventDefault();
+  });
 });
 
 function focusSearch() {
@@ -108,6 +126,6 @@ function showDiff(link) {
 })(jQuery);
 
 
-function ajaxGet(url) { 
-  $.ajax({type: "GET", url: url, dataType: "script"}); 
+function ajaxGet(url) {
+  $.ajax({type: "GET", url: url, dataType: "script"});
 }
