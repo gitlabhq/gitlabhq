@@ -1,22 +1,4 @@
 module CommitsHelper
-  def commit_msg_with_link_to_issues(project, message)
-    return '' unless message
-    out = ''
-    message.split(/(#[0-9]+)/m).each do |m|
-      if m =~ /(#([0-9]+))/m
-        begin
-          issue = project.issues.find($2)
-          out += link_to($1, project_issue_path(project, $2))
-        rescue
-          out += $1
-        end
-      else
-        out += m
-      end
-    end
-    preserve out
-  end
-
   def identification_type(line)
     if line[0] == "+"
       "new"

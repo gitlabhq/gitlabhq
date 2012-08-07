@@ -7,7 +7,7 @@
     - if can? current_user, :admin_milestone, milestone.project
       = link_to 'Edit', edit_project_milestone_path(milestone.project, milestone), :class => "btn small edit-milestone-link grouped"
   %h4
-    = link_to truncate(milestone.title, :length => 100), project_milestone_path(milestone.project, milestone), :class => "row_title"
+    = link_to_gfm truncate(milestone.title, :length => 100), project_milestone_path(milestone.project, milestone), :class => "row_title"
     %small
       = milestone.expires_at
     %br

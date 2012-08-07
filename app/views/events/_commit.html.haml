@@ -5,5 +5,5 @@
     %strong.cdark= commit.author_name
     &ndash;
     = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16
-    = truncate(commit.title, :length => 50) rescue "--broken encoding"
+    = gfm truncate(commit.title, :length => 50), project_commit_path(project, :id => commit.id) rescue "--broken encoding"
 

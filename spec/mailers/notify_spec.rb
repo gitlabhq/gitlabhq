@@ -60,7 +60,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /New Issue was created/
+            should have_subject /new issue ##{issue.id}/
           end
 
           it 'contains a link to the new issue' do
@@ -102,7 +102,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /new merge request/
+            should have_subject /new merge request !#{merge_request.id}/
           end
 
           it 'contains a link to the new merge request' do
@@ -126,7 +126,7 @@ describe Notify do
           it_behaves_like 'a multiple recipients email'
 
           it 'has the correct subject' do
-            should have_subject /merge request changed/
+            should have_subject /changed merge request !#{merge_request.id}/
           end
 
           it 'contains the name of the previous assignee' do
@@ -188,6 +188,8 @@ describe Notify do
           mock(:commit).tap do |commit|
             commit.stub(:id).and_return('fauxsha1')
             commit.stub(:project).and_return(project)
+            commit.stub(:short_id).and_return('fauxsha1')
+            commit.stub(:safe_message).and_return('some message')
           end
         end
         before(:each) { note.stub(:target).and_return(commit) }
@@ -197,7 +199,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for commit/
+          should have_subject /note for commit #{commit.short_id}/
         end
 
         it 'contains a link to the commit' do
@@ -215,7 +217,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for merge request/
+          should have_subject /note for merge request !#{merge_request.id}/
         end
 
         it 'contains a link to the merge request note' do
@@ -233,7 +235,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for issue #{issue.id}/
+          should have_subject /note for issue ##{issue.id}/
         end
 
         it 'contains a link to the issue note' do
