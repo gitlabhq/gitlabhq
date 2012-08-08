@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ApplicationHelper do
+describe GitlabMarkdownHelper do
   before do
     @project = Project.find_by_path("gitlabhq") || Factory(:project)
     @commit = @project.repo.commits.first.parents.first
@@ -10,10 +10,10 @@ describe ApplicationHelper do
   end
 
   describe "#gfm" do
-    it "should raiase an error if @project is not set" do
+    it "should return text if @project is not set" do
       @project = nil
 
-      expect { gfm("foo") }.to raise_error
+      gfm("foo").should == "foo"
     end
 
     describe "referencing a commit" do
