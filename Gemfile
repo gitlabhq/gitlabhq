@@ -6,6 +6,8 @@ gem "rails", "3.2.5"
 gem "sqlite3"
 gem "mysql2"
 
+gem 'devise_cas_authenticatable'
+
 # Auth
 gem "devise", "~> 2.1.0"
 
