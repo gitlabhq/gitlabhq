@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
-inst_dir=debian/gitlabhq/var/www/gitlabhq
+inst_dir=debian/tmp/var/www/gitlabhq
 
 %:
 	dh $@ 
@@ -19,7 +19,7 @@ override_dh_prep:
 
 override_dh_install:
 	mkdir -p $(inst_dir)
-	mkdir -p debian/gitlabhq/etc/nginx/sites-available
+	mkdir -p debian/tmp/etc/nginx/sites-available
 	cp -r `ls | grep -v git | grep -v debian` .bundle $(inst_dir)/
-	cp config/gitlab.nginx debian/gitlabhq/etc/nginx/sites-available/gitlab
+	cp config/gitlab.nginx debian/tmp/etc/nginx/sites-available/gitlab
 	dh_install
