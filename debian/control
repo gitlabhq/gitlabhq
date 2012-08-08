@@ -10,6 +10,6 @@ Homepage: http://gitlabhq.com
 
 Package: gitlabhq
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmysqlclient16, libsqlite3-0, ruby1.9.1, gitolite, nginx | apache-mpm-worker, redis-server
+Depends: libmysqlclient16, libsqlite3-0, ruby1.9.1, gitolite, nginx | apache-mpm-worker, redis-server
 Description: <insert up to 60 chars description>
  <insert long description, indented with spaces>
