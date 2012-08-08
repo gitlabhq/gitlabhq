@@ -18,7 +18,6 @@
 //= require chosen-jquery
 //= require raphael
 //= require branch-graph
-//= require Markdown.Converter
 //= require_tree .
 
 $(document).ready(function(){
@@ -76,14 +75,16 @@ $(document).ready(function(){
    *
    */
   $('#preview-link').on('click', function(e) {
-    var note = $('#note_note').val();
-    if (note.trim().length === 0) { note = 'Nothing to preview'; }
-    var converter = new Markdown.Converter();
-    var md_preview = converter.makeHtml(note);
-    $('#preview-note').html(md_preview);
+    $('#preview-note').text('Loading...');
 
     var previewLinkText = ($(this).text() == 'Preview' ? 'Edit' : 'Preview');
     $(this).text(previewLinkText);
+
+    var note = $('#note_note').val();
+    if (note.trim().length === 0) { note = 'Nothing to preview'; }
+    $.post($(this).attr('href'), {note: note}, function(data) {
+      $('#preview-note').html(data);
+    });
 
     $('#preview-note, #note_note').toggle();
     e.preventDefault();
