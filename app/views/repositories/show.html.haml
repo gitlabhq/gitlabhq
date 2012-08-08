@@ -5,7 +5,6 @@
     %tr
       %th Name
       %th Last commit
-      %th Updated at
       %th
   - @activities.each do |update|
     = render "repositories/branch", :branch => update.head

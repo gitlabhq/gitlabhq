@@ -3,7 +3,7 @@
 %tr
   %td
     = link_to project_commits_path(@project, :ref => branch.name) do
-      %strong= branch.name
+      %strong= truncate(branch.name, :length => 60)
       - if branch.name == @project.root_ref
         %span.label default
   %td
@@ -12,7 +12,6 @@
 
     = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
     = gfm truncate(commit.title, :length => 40)
-  %td
     %span.update-author.right
       = time_ago_in_words(commit.committed_date)
       ago

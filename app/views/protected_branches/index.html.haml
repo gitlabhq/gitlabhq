@@ -39,7 +39,7 @@
               - if branch.name == @project.root_ref
                 %span.label default
           %td
-            = link_to project_commits_path(@project, branch.commit.id) do
+            = link_to project_commit_path(@project, branch.commit.id) do
               = truncate branch.commit.id.to_s, :length => 10
             = time_ago_in_words(branch.commit.committed_date)
             ago
