@@ -23,3 +23,6 @@ override_dh_install:
 	cp -r `ls | grep -v git | grep -v debian` .bundle $(inst_dir)/
 	cp config/gitlab.nginx debian/tmp/etc/nginx/sites-available/gitlab
 	dh_install
+
+override_dh_shlibdeps:
+	echo "Ignored, moving on"
