@@ -1,6 +1,7 @@
 class Notify < ActionMailer::Base
   include Resque::Mailer
   add_template_helper ApplicationHelper
+  add_template_helper GitlabMarkdownHelper
 
   default_url_options[:host]     = Gitlab.config.web_host
   default_url_options[:protocol] = Gitlab.config.web_protocol
