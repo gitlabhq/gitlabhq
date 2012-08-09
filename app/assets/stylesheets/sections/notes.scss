@@ -169,30 +169,38 @@ td .line_note_link {
     margin: 0;
   }
 
-  .file_upload {
-    position: absolute;
-    right:14px;
-    top:7px;
-  }
-
   .note_advanced_opts { 
     h6 { 
       line-height: 32px;
-      margin-right: 12px;
+      padding-right: 15px;
     }
   }
 
-  div.attachments {
+  .attachments {
     position:relative;
     width: 350px;
     height: 50px;
     overflow:hidden;
     margin:0 0 5px !important;
-  }
-  .file_name {
-    line-height:30px;
-    width:240px;
-    height:28px;
-    overflow:hidden;
+
+    .input_file { 
+      .file_upload {
+        position: absolute;
+        right:14px;
+        top:7px;
+      }
+
+      .file_name {
+        line-height:30px;
+        width:240px;
+        height:28px;
+        overflow:hidden;
+      }
+      .input-file { 
+        width: 260px;
+        height: 41px;
+        float: right;
+      }
+    }
   }
 }

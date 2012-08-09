@@ -13,6 +13,8 @@
     is enabled.
 
   .row.note_advanced_opts.hide
+    .span2
+      = f.submit 'Add Comment', :class => "btn primary submit_note", :id => "submit_note"
     .span4.notify_opts
       %h6.left Notify via email:
       = label_tag :notify do
@@ -23,11 +25,12 @@
         = label_tag :notify_author do
           = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
           %span Commit author
-    .span8.attachments
+    .span6.attachments
       %h6.left Attachment:
       %span.file_name File name...
-      %button.file_upload.btn.small Upload File
-      .input= f.file_field :attachment, :class => "input-file"
+      
+      .input.input_file
+        %a.file_upload.btn.small Upload File
+        = f.file_field :attachment, :class => "input-file"
       %span.hint Any file less than 10 MB
 
-  = f.submit 'Add Comment', :class => "btn primary submit_note", :id => "submit_note"
