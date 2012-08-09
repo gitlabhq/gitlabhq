@@ -1,20 +1,18 @@
-%h3.page_title
-  %span.cgray History for
-  = @wikis.last.title
+%h3.page_title All Pages
 %br
 %table.admin-table
   %thead
     %tr
-      %th #
-      %th last edit
+      %th Title
+      %th slug
       %th created by
   %tbody
     - @wikis.each_with_index do |wiki_page, i|
       %tr
-        %td= i + 1
         %td
-          = link_to wiki_page.created_at.to_s(:short), project_wiki_path(@project, wiki_page, :old_page_id => wiki_page.id)
+          = link_to wiki_page.title, project_wiki_path(@project, wiki_page, :old_page_id => wiki_page.id)
           (#{time_ago_in_words(wiki_page.created_at)}
           ago)
+        %td= wiki_page.slug
         %td= wiki_page.user.name
 

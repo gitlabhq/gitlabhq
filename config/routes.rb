@@ -98,6 +98,10 @@ Gitlab::Application.routes.draw do
     end
 
     resources :wikis, :only => [:show, :edit, :destroy, :create] do
+      collection do
+        get :pages
+      end
+
       member do
         get "history"
       end

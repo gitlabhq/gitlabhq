@@ -6,6 +6,10 @@ class WikisController < ApplicationController
   before_filter :authorize_admin_wiki!, :only => :destroy
   layout "project"
   
+  def pages
+    @wikis = @project.wikis.group(:slug).order("created_at")
+  end
+
   def show
     if params[:old_page_id]
       @wiki = @project.wikis.find(params[:old_page_id])
