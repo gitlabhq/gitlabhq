@@ -31,9 +31,13 @@
 }
 
 /**
- * MR -> show: Automerge widget
+ * MR -> show
  *
  */
+.main_box .merge-branches {
+  line-height: 36px;
+  margin: 15px;
+}
 .automerge_widget { 
   &.can_be_merged { 
     background: #DFF0D8;
@@ -97,5 +101,12 @@ li.merge_request {
   p { 
     padding: 0px;
     padding-bottom: 2px;
+  }
+  .notes-count {
+    margin-top: 4px;
+  }
+  .merge-branches {
+    display: inline-block;
+    line-height: 36px;
   }
 }

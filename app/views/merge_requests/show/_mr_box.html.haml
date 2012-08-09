@@ -1,4 +1,8 @@
 .main_box
+  .merge-branches.right
+    %span.pretty_label.branch= @merge_request.source_branch
+    &rarr;
+    %span.pretty_label.branch= @merge_request.target_branch
   .top_box_content
     %h4
       - if @merge_request.closed
