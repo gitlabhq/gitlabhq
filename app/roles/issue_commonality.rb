@@ -36,8 +36,10 @@ module IssueCommonality
     attr_accessor :author_id_of_changes
   end
 
-  def self.search query
-    where("title like :query", :query => "%#{query}%")
+  module ClassMethods
+    def search(query)
+      where("title like :query", :query => "%#{query}%")
+    end
   end
 
   def today?
