@@ -85,9 +85,14 @@
 
 li.merge_request { 
   padding:7px 10px;
-  img.avatar { 
-    width: 32px;
+  strong.gfm-id {
+    color: #999999;
+    font-size: 24px;
+    line-height: 36px;
+    float: left;
+    width: 64px;
     margin-top: 4px;
+    margin-right: 4px;
   }
   p { 
     padding: 0px;
