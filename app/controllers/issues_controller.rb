@@ -17,7 +17,7 @@ class IssuesController < ApplicationController
   before_filter :authorize_write_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_filter :authorize_modify_issue!, only: [:close, :edit, :update]
+  before_filter :authorize_modify_issue!, only: [:edit, :update]
 
   # Allow destroy issue
   before_filter :authorize_admin_issue!, only: [:destroy]
