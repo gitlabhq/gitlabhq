@@ -209,7 +209,7 @@ describe Project do
     end
   end
 
-  describe :update_merge_requests do 
+  describe :update_merge_requests do
     let(:project) { Factory :project }
 
     before do
@@ -229,7 +229,7 @@ describe Project do
       @merge_request.closed.should be_true
     end
 
-    it "should update merge request commits with new one if pushed to source branch" do 
+    it "should update merge request commits with new one if pushed to source branch" do
       @merge_request.last_commit.should == nil
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a", "refs/heads/master", @key.user)
       @merge_request.reload

@@ -35,10 +35,10 @@
         - if file.text?
           = render "commits/text_file", diff: diff, index: i
         - elsif file.image?
-          - if diff.renamed_file || diff.new_file || diff.deleted_file 
+          - if diff.renamed_file || diff.new_file || diff.deleted_file
             .diff_file_content_image
               %img{class: image_diff_class(diff), src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
-          - else 
+          - else
             - old_file = (@commit.prev_commit.tree / diff.old_path)
             .diff_file_content_image.img_compared
               %img{class: "diff_image_removed", src: "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}

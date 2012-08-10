@@ -56,7 +56,7 @@ class MailerObserver < ActiveRecord::Observer
   # This method used for Issues & Merge Requests
   #
   # It create a comment for Issue or MR if someone close/reopen.
-  # It also notify via email if assignee was changed 
+  # It also notify via email if assignee was changed
   #
   def status_notify_and_comment target, mail_method
     # If assigne changed - notify to recipients

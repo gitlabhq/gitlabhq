@@ -1,6 +1,6 @@
 module Gitlab
   class Satellite
-    
+
     PARKING_BRANCH = "__parking_branch"
 
     attr_accessor :project
@@ -36,6 +36,6 @@ module Gitlab
         end
       end
     end
-    
+
   end
 end

@@ -1,4 +1,4 @@
-module Account 
+module Account
   def identifier
     email.gsub /[^[:alnum:]]/, "_"
   end

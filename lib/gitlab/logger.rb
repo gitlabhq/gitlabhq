@@ -19,7 +19,7 @@ module Gitlab
     end
 
     def format_message(severity, timestamp, progname, msg)
-      "#{timestamp.to_s(:long)} -> #{severity} -> #{msg}\n" 
-    end 
+      "#{timestamp.to_s(:long)} -> #{severity} -> #{msg}\n"
+    end
   end
 end

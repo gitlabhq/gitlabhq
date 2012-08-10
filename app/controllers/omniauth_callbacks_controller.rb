@@ -9,7 +9,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error ||= env["omniauth.error.type"].to_s
     error.to_s.humanize if error
   end
- 
+
   def ldap
     # We only find ourselves here if the authentication to LDAP was successful.
     info = request.env["omniauth.auth"]["info"]

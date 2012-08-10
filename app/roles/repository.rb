@@ -52,7 +52,7 @@ module Repository
 
   def has_post_receive_file?
     hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
-    File.exists?(hook_file) 
+    File.exists?(hook_file)
   end
 
   def tags
@@ -83,7 +83,7 @@ module Repository
 
   def repo_exists?
     @repo_exists ||= (repo && !repo.branches.empty?)
-  rescue 
+  rescue
     @repo_exists = false
   end
 
@@ -110,7 +110,7 @@ module Repository
     !!commit
   end
 
-  def root_ref 
+  def root_ref
     default_branch || "master"
   end
 
@@ -120,7 +120,7 @@ module Repository
 
   # Archive Project to .tar.gz
   #
-  # Already packed repo archives stored at 
+  # Already packed repo archives stored at
   # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
   #
   def archive_repo ref

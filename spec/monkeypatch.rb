@@ -35,7 +35,7 @@ class UsersProject
 end
 
 class FakeSatellite
-  def exists? 
+  def exists?
     true
   end
 

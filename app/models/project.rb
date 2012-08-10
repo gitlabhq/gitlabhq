@@ -8,7 +8,7 @@ class Project < ActiveRecord::Base
 
   #
   # Relations
-  # 
+  #
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -25,12 +25,12 @@ class Project < ActiveRecord::Base
 
   attr_accessor :error_code
 
-  # 
+  #
   # Protected attributes
   #
   attr_protected :private_flag, :owner_id
 
-  # 
+  #
   # Scopes
   #
   scope :public_only, where(private_flag: false)

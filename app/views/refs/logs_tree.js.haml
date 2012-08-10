@@ -1,4 +1,4 @@
-- @logs.each do |content_data| 
+- @logs.each do |content_data|
   - file_name = content_data[:file_name]
   - content_commit = content_data[:commit]
   - tm = @project.team_member_by_name_or_email(content_commit.author_email, content_commit.author_name)

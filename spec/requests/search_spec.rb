@@ -10,7 +10,7 @@ describe "Search" do
     click_button "Search"
   end
 
-  it "should show project in search results" do 
+  it "should show project in search results" do
     page.should have_content @project.name
   end
 end

@@ -76,7 +76,7 @@ Then /^I should see "(.*?)" all tags list$/ do |arg1|
 end
 
 Then /^I should see "(.*?)" protected branches list$/ do |arg1|
-  within "table" do 
+  within "table" do
     page.should have_content "stable"
     page.should_not have_content "master"
   end

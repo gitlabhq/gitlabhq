@@ -5,11 +5,11 @@ module PushEvent
     false
   end
 
-  def tag? 
+  def tag?
     data[:ref]["refs/tags"]
   end
 
-  def branch? 
+  def branch?
     data[:ref]["refs/heads"]
   end
 
@@ -25,7 +25,7 @@ module PushEvent
     commit_to =~ /^00000/
   end
 
-  def md_ref? 
+  def md_ref?
     !(rm_ref? || new_ref?)
   end
 
@@ -37,7 +37,7 @@ module PushEvent
     data[:after]
   end
 
-  def ref_name 
+  def ref_name
     if tag?
       tag_name
     else
@@ -58,7 +58,7 @@ module PushEvent
     @commits ||= data[:commits].map { |commit| project.commit(commit[:id]) }.reverse
   end
 
-  def commits_count 
+  def commits_count
     data[:total_commits_count] || commits.count || 0
   end
 
@@ -88,7 +88,7 @@ module PushEvent
     nil
   end
 
-  def push_with_commits? 
+  def push_with_commits?
     md_ref? && commits.any? && parent_commit && last_commit
   end
 

@@ -24,7 +24,7 @@ class RepositoriesController < ApplicationController
 
   def archive
     unless can?(current_user, :download_code, @project)
-      render_404 and return 
+      render_404 and return
     end
 
 

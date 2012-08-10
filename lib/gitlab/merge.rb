@@ -19,8 +19,8 @@ module Gitlab
     def merge
       process do |repo, output|
         if output =~ /CONFLICT/
-          false  
-        else 
+          false
+        else
           repo.git.push({}, "origin", merge_request.target_branch)
           true
         end
@@ -37,7 +37,7 @@ module Gitlab
           unless project.satellite.exists?
             raise "You should run: rake gitlab:app:enable_automerge"
           end
-          
+
           project.satellite.clear
 
           Dir.chdir(project.satellite.path) do

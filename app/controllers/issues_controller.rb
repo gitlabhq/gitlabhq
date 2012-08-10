@@ -70,7 +70,7 @@ class IssuesController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         if @issue.valid?
           redirect_to [@project, @issue]
         else
@@ -156,7 +156,7 @@ class IssuesController < ApplicationController
       all: "1",
       closed: "2",
       to_me: "3",
-      open: "0" 
+      open: "0"
     }
   end
 end

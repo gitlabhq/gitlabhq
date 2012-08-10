@@ -6,7 +6,7 @@
     = snippet.file_name
   %td
     %span.cgray
-      - if snippet.expires_at 
+      - if snippet.expires_at
         = snippet.expires_at.to_date.to_s(:short)
       - else
         Never
