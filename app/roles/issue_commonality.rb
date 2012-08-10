@@ -6,39 +6,39 @@ module IssueCommonality
     attr_protected :author, :author_id, :project, :project_id
 
     belongs_to :project
-    belongs_to :author, :class_name => "User"
-    belongs_to :assignee, :class_name => "User"
-    has_many :notes, :as => :noteable, :dependent => :destroy
+    belongs_to :author, class_name: "User"
+    belongs_to :assignee, class_name: "User"
+    has_many :notes, as: :noteable, dependent: :destroy
 
     validates_presence_of :project_id
     validates_presence_of :author_id
 
     validates :title,
-              :presence => true,
-              :length   => { :within => 0..255 }
+              presence: true,
+              length: { within: 0..255 }
 
 
-    scope :opened, where(:closed => false)
-    scope :closed, where(:closed => true)
-    scope :assigned, lambda { |u| where(:assignee_id => u.id)}
-
-    delegate :name,
-             :email,
-             :to => :author,
-             :prefix => true
+    scope :opened, where(closed: false)
+    scope :closed, where(closed: true)
+    scope :assigned, lambda { |u| where(assignee_id: u.id)}
 
     delegate :name,
              :email,
-             :to => :assignee,
-             :allow_nil => true,
-             :prefix => true
+             to: :author,
+             prefix: true
+
+    delegate :name,
+             :email,
+             to: :assignee,
+             allow_nil: true,
+             prefix: true
 
     attr_accessor :author_id_of_changes
   end
 
   module ClassMethods
     def search(query)
-      where("title like :query", :query => "%#{query}%")
+      where("title like :query", query: "%#{query}%")
     end
   end
 

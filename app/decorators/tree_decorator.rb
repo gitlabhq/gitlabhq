@@ -8,14 +8,14 @@ class TreeDecorator < ApplicationDecorator
 
       #parts = parts[0...-1] if is_blob? 
 
-      yield(h.link_to("..", "#", :remote => :true)) if parts.count > max_links
+      yield(h.link_to("..", "#", remote: :true)) if parts.count > max_links
 
       parts.each do |part|
         part_path = File.join(part_path, part) unless part_path.empty?
         part_path = part if part_path.empty?
 
         next unless parts.last(2).include?(part) if parts.count > max_links
-        yield(h.link_to(h.truncate(part, :length => 40), h.tree_file_project_ref_path(project, ref, :path => part_path), :remote => :true))
+        yield(h.link_to(h.truncate(part, length: 40), h.tree_file_project_ref_path(project, ref, path: part_path), remote: :true))
       end
     end
   end
@@ -30,7 +30,7 @@ class TreeDecorator < ApplicationDecorator
   end
 
   def history_path
-    h.project_commits_path(project, :path => path, :ref => ref)
+    h.project_commits_path(project, path: path, ref: ref)
   end
 
   def mb_size

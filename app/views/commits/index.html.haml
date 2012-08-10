@@ -9,12 +9,12 @@
       %span.divider
         \/
     %li
-      %a{:href => "#"}= params[:path].split("/").join(" / ")
+      %a{href: "#"}= params[:path].split("/").join(" / ")
 
-%div{:id => dom_id(@project)}
+%div{id: dom_id(@project)}
   #commits_list= render "commits"
 .clear
-.loading{ :style => "display:none;"}
+.loading{ style: "display:none;"}
 
 - if @commits.count == @limit
   :javascript

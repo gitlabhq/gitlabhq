@@ -9,19 +9,19 @@ class Project < ActiveRecord::Base
   #
   # Relations
   # 
-  belongs_to :owner, :class_name => "User"
-  has_many :users,          :through => :users_projects
-  has_many :events,         :dependent => :destroy
-  has_many :merge_requests, :dependent => :destroy
-  has_many :issues,         :dependent => :destroy, :order => "closed, created_at DESC"
-  has_many :milestones,     :dependent => :destroy
-  has_many :users_projects, :dependent => :destroy
-  has_many :notes,          :dependent => :destroy
-  has_many :snippets,       :dependent => :destroy
-  has_many :deploy_keys,    :dependent => :destroy, :foreign_key => "project_id", :class_name => "Key"
-  has_many :hooks,          :dependent => :destroy, :class_name => "ProjectHook"
-  has_many :wikis,          :dependent => :destroy
-  has_many :protected_branches, :dependent => :destroy
+  belongs_to :owner, class_name: "User"
+  has_many :users,          through: :users_projects
+  has_many :events,         dependent: :destroy
+  has_many :merge_requests, dependent: :destroy
+  has_many :issues,         dependent: :destroy, order: "closed, created_at DESC"
+  has_many :milestones,     dependent: :destroy
+  has_many :users_projects, dependent: :destroy
+  has_many :notes,          dependent: :destroy
+  has_many :snippets,       dependent: :destroy
+  has_many :deploy_keys,    dependent: :destroy, foreign_key: "project_id", class_name: "Key"
+  has_many :hooks,          dependent: :destroy, class_name: "ProjectHook"
+  has_many :wikis,          dependent: :destroy
+  has_many :protected_branches, dependent: :destroy
 
   attr_accessor :error_code
 
@@ -33,15 +33,15 @@ class Project < ActiveRecord::Base
   # 
   # Scopes
   #
-  scope :public_only, where(:private_flag => false)
-  scope :without_user, lambda { |user|  where("id not in (:ids)", :ids => user.projects.map(&:id) ) }
+  scope :public_only, where(private_flag: false)
+  scope :without_user, lambda { |user|  where("id not in (:ids)", ids: user.projects.map(&:id) ) }
 
   def self.active
     joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
   end
 
   def self.search query
-    where("name like :query or code like :query or path like :query", :query => "%#{query}%")
+    where("name like :query or code like :query or path like :query", query: "%#{query}%")
   end
 
   def self.create_by_user(params, user)
@@ -53,7 +53,7 @@ class Project < ActiveRecord::Base
       project.save!
 
       # Add user as project master
-      project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
+      project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
 
       # when project saved no team member exist so
       # project repository should be updated after first user add
@@ -82,28 +82,28 @@ class Project < ActiveRecord::Base
   # Validations
   #
   validates :name,
-            :uniqueness => true,
-            :presence => true,
-            :length   => { :within => 0..255 }
+            uniqueness: true,
+            presence: true,
+            length: { within: 0..255 }
 
   validates :path,
-            :uniqueness => true,
-            :presence => true,
-            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
-                         :message => "only letters, digits & '_' '-' '.' allowed. Letter should be first" },
-            :length   => { :within => 0..255 }
+            uniqueness: true,
+            presence: true,
+            format: { with: /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+                         message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" },
+            length: { within: 0..255 }
 
   validates :description,
-            :length   => { :within => 0..2000 }
+            length: { within: 0..2000 }
 
   validates :code,
-            :presence => true,
-            :uniqueness => true,
-            :format => { :with => /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
-                         :message => "only letters, digits & '_' '-' '.' allowed. Letter should be first"  },
-            :length   => { :within => 1..255 }
+            presence: true,
+            uniqueness: true,
+            format: { with: /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+                         message: "only letters, digits & '_' '-' '.' allowed. Letter should be first"  },
+            length: { within: 1..255 }
 
-  validates :owner, :presence => true
+  validates :owner, presence: true
   validate :check_limit
   validate :repo_name
 
@@ -134,19 +134,19 @@ class Project < ActiveRecord::Base
   end
 
   def common_notes
-    notes.where(:noteable_type => ["", nil]).inc_author_project
+    notes.where(noteable_type: ["", nil]).inc_author_project
   end
 
   def build_commit_note(commit)
-    notes.new(:noteable_id => commit.id, :noteable_type => "Commit")
+    notes.new(noteable_id: commit.id, noteable_type: "Commit")
   end
 
   def commit_notes(commit)
-    notes.where(:noteable_id => commit.id, :noteable_type => "Commit", :line_code => nil)
+    notes.where(noteable_id: commit.id, noteable_type: "Commit", line_code: nil)
   end
 
   def commit_line_notes(commit)
-    notes.where(:noteable_id => commit.id, :noteable_type => "Commit").where("line_code is not null")
+    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code is not null")
   end
 
   def public?

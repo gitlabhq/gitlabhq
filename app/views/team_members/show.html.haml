@@ -3,9 +3,9 @@
 
 .team_member_show
   - if can? current_user, :admin_project, @project
-    = link_to 'Remove from team', project_team_member_path(:project_id => @project, :id => @team_member.id), :confirm => 'Are you sure?', :method => :delete, :class => "right btn btn-danger"
+    = link_to 'Remove from team', project_team_member_path(project_id: @project, id: @team_member.id), confirm: 'Are you sure?', method: :delete, class: "right btn btn-danger"
   .profile_avatar_holder
-    = image_tag gravatar_icon(user.email, 60), :class => "borders"
+    = image_tag gravatar_icon(user.email, 60), class: "borders"
   %h3
     = user.name
     %small
@@ -14,7 +14,7 @@
   %hr
   .back_link
     %br
-    = link_to team_project_path(@project), :class => "" do
+    = link_to team_project_path(@project), class: "" do
       &larr; To team list
   %br
   .row
@@ -46,10 +46,10 @@
         %tr
           %td
             Project Access:
-            %small (#{link_to "read more", help_permissions_path, :class => "vlink"})
+            %small (#{link_to "read more", help_permissions_path, class: "vlink"})
           %td
-            = form_for(@team_member, :as => :team_member, :url => project_team_member_path(@project, @team_member)) do |f|
-              = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select", :disabled => !allow_admin
+            = form_for(@team_member, as: :team_member, url: project_team_member_path(@project, @team_member)) do |f|
+              = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, class: "project-access-select", disabled: !allow_admin
   %hr
   = render user.recent_events.limit(5)
 :javascript

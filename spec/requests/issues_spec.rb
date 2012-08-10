@@ -11,12 +11,12 @@ describe "Issues" do
     project.add_access(@user2, :read, :write)
   end
 
-  describe "Edit issue", :js => true do
+  describe "Edit issue", js: true do
     before do
       @issue = Factory :issue,
-        :author => @user,
-        :assignee => @user,
-        :project => project
+        author: @user,
+        assignee: @user,
+        project: project
       visit project_issues_path(project)
       click_link "Edit"
     end
@@ -27,8 +27,8 @@ describe "Issues" do
 
     describe "fill in" do
       before do
-        fill_in "issue_title", :with => "bug 345"
-        fill_in "issue_description", :with => "bug description"
+        fill_in "issue_title", with: "bug 345"
+        fill_in "issue_description", with: "bug description"
       end
 
       it { expect { click_button "Save changes" }.to_not change {Issue.count} }
@@ -43,14 +43,14 @@ describe "Issues" do
     end
   end
 
-  describe "Search issue", :js => true do
+  describe "Search issue", js: true do
     before do
       ['foobar', 'foobar2', 'gitlab'].each do |title|
         @issue = Factory :issue,
-          :author   => @user,
-          :assignee => @user,
-          :project  => project,
-          :title    => title
+          author: @user,
+          assignee: @user,
+          project: project,
+          title: title
         @issue.save
       end
     end
@@ -62,7 +62,7 @@ describe "Issues" do
 
       visit project_issues_path(project)
       click_link 'Closed'
-      fill_in 'issue_search', :with => 'foobar'
+      fill_in 'issue_search', with: 'foobar'
 
       page.should have_content 'foobar'
       page.should_not have_content 'foobar2'
@@ -71,7 +71,7 @@ describe "Issues" do
 
     it "should search for term and return the correct results" do
       visit project_issues_path(project)
-      fill_in 'issue_search', :with => 'foobar'
+      fill_in 'issue_search', with: 'foobar'
 
       page.should have_content 'foobar'
       page.should have_content 'foobar2'
@@ -80,8 +80,8 @@ describe "Issues" do
 
     it "should return all results if term has been cleared" do
       visit project_issues_path(project)
-      fill_in "issue_search", :with => "foobar"
-      # Because fill_in, :with => "" triggers nothing we need to trigger a keyup event
+      fill_in "issue_search", with: "foobar"
+      # Because fill_in, with: "" triggers nothing we need to trigger a keyup event
       page.execute_script("$('.issue_search').val('').keyup();");
 
       page.should have_content 'foobar'

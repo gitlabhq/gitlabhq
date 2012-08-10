@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe IssueObserver do
-  let(:some_user) { double(:user, :id => 1) }
-  let(:assignee) { double(:user, :id => 2) }
-  let(:issue)    { double(:issue, :id => 42, :assignee => assignee) }
+  let(:some_user) { double(:user, id: 1) }
+  let(:assignee) { double(:user, id: 2) }
+  let(:issue)    { double(:issue, id: 42, assignee: assignee) }
 
   before(:each) { subject.stub(:current_user).and_return(some_user) }
 
@@ -15,13 +15,13 @@ describe IssueObserver do
       subject.should_receive(:after_create)
 
       Issue.observers.enable :issue_observer do
-        Factory.create(:issue, :project => Factory.create(:project))
+        Factory.create(:issue, project: Factory.create(:project))
       end
     end
 
     it 'sends an email to the assignee' do
       Notify.should_receive(:new_issue_email).with(issue.id).
-        and_return(double(:deliver => true))
+        and_return(double(deliver: true))
 
       subject.after_create(issue)
     end
@@ -42,7 +42,7 @@ describe IssueObserver do
     end
 
     it 'is called when an issue is changed' do
-      changed = Factory.create(:issue, :project => Factory.create(:project))
+      changed = Factory.create(:issue, project: Factory.create(:project))
       subject.should_receive(:after_update)
 
       Issue.observers.enable :issue_observer do
@@ -101,7 +101,7 @@ describe IssueObserver do
   end
 
   describe '#send_reassigned_email' do
-    let(:previous_assignee) { double(:user, :id => 3) }
+    let(:previous_assignee) { double(:user, id: 3) }
 
     before(:each) do
       issue.stub(:assignee_id).and_return(assignee.id)
@@ -110,7 +110,7 @@ describe IssueObserver do
 
     def it_sends_a_reassigned_email_to(recipient)
       Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id).
-        and_return(double(:deliver => true))
+        and_return(double(deliver: true))
     end
 
     def it_does_not_send_a_reassigned_email_to(recipient)

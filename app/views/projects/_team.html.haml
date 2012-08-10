@@ -5,7 +5,7 @@
       %th Permissions
   %tbody
     - @project.users_projects.each do |up|
-      = render(:partial => 'team_members/show', :locals => {:member => up})
+      = render(partial: 'team_members/show', locals: {member: up})
 
 
 :javascript

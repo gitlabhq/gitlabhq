@@ -7,7 +7,7 @@ class Issue < ActiveRecord::Base
   belongs_to :milestone
 
   validates :description,
-            :length   => { :within => 0..2000 }
+            length: { within: 0..2000 }
 
   acts_as_list
 

@@ -1,6 +1,6 @@
 %h3.page_title
   SSH Keys
-  = link_to "Add new", new_key_path, :class => "btn small right"
+  = link_to "Add new", new_key_path, class: "btn small right"
 
 %hr
 %p.slead 
@@ -14,9 +14,9 @@
       %th Added
       %th
   - @keys.each do |key|
-    = render(:partial => 'show', :locals => {:key => key})
+    = render(partial: 'show', locals: {key: key})
   - if @keys.blank? 
     %tr
-      %td{:colspan => 3}
+      %td{colspan: 3}
         %h3.nothing_here_message There are no SSH keys with access to your account.
 

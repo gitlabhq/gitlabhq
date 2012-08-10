@@ -6,4 +6,4 @@
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
 %li.next
-  = link_to_unless current_page.last?, raw(t 'views.pagination.next'), url, :rel => 'next', :remote => remote
+  = link_to_unless current_page.last?, raw(t 'views.pagination.next'), url, rel: 'next', remote: remote

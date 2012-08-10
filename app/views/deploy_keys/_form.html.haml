@@ -1,5 +1,5 @@
 %div
-  = form_for [@project, @key], :url => project_deploy_keys_path do |f|
+  = form_for [@project, @key], url: project_deploy_keys_path do |f|
     -if @key.errors.any?
       .alert-message.block-message.error
         %ul
@@ -11,8 +11,8 @@
       .input= f.text_field :title
     .clearfix
       = f.label :key
-      .input= f.text_area :key, :class => "xlarge"
+      .input= f.text_area :key, class: "xlarge"
     .actions
-      = f.submit 'Save', :class => "primary btn"
-      = link_to "Cancel", project_deploy_keys_path(@project), :class => "btn"
+      = f.submit 'Save', class: "primary btn"
+      = link_to "Cancel", project_deploy_keys_path(@project), class: "btn"
 

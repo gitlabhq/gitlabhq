@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::API do
   let(:user) { Factory :user }
-  let!(:project) { Factory :project, :owner => user }
-  let!(:snippet) { Factory :snippet, :author => user, :project => project, :title => 'example' }
+  let!(:project) { Factory :project, owner: user }
+  let!(:snippet) { Factory :snippet, author: user, project: project, title: 'example' }
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
@@ -83,7 +83,7 @@ describe Gitlab::API do
   describe "POST /projects/:id/snippets" do
     it "should create a new project snippet" do
       post "#{api_prefix}/projects/#{project.code}/snippets?private_token=#{user.private_token}",
-        :title => 'api test', :file_name => 'sample.rb', :code => 'test'
+        title: 'api test', file_name: 'sample.rb', code: 'test'
       response.status.should == 201
       json_response['title'].should == 'api test'
     end
@@ -92,7 +92,7 @@ describe Gitlab::API do
   describe "PUT /projects/:id/snippets" do
     it "should update an existing project snippet" do
       put "#{api_prefix}/projects/#{project.code}/snippets/#{snippet.id}?private_token=#{user.private_token}",
-        :code => 'updated code'
+        code: 'updated code'
       response.status.should == 200
       json_response['title'].should == 'example'
       snippet.reload.content.should == 'updated code'

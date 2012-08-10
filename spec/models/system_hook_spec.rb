@@ -12,7 +12,7 @@ describe SystemHook do
     it "project_create hook" do
       user = Factory :user
       with_resque do
-        project = Factory :project_without_owner, :owner => user
+        project = Factory :project_without_owner, owner: user
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_create/).once
     end

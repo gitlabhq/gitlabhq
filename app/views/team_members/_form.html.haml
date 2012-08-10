@@ -1,6 +1,6 @@
 %h3= "New Team member"
 %hr
-= form_for @team_member, :as => :team_member, :url => project_team_members_path(@project, @team_member) do |f|
+= form_for @team_member, as: :team_member, url: project_team_members_path(@project, @team_member) do |f|
   -if @team_member.errors.any?
     .alert-message.block-message.error
       %ul
@@ -9,17 +9,17 @@
 
   .clearfix
     = f.label :user_id, "Name"
-    .input= f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { :include_blank => "Select user" }, { :style => "width:300px" })
+    .input= f.select(:user_id, User.not_in_project(@project).all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, { style: "width:300px" })
 
 
   .clearfix
     = f.label :project_access, "Project Access"
-    .input= f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, :class => "project-access-select"
+    .input= f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, class: "project-access-select"
 
 
   .actions
-    = f.submit 'Save', :class => "btn primary"
-    = link_to "Cancel", team_project_path(@project), :class => "btn"
+    = f.submit 'Save', class: "btn primary"
+    = link_to "Cancel", team_project_path(@project), class: "btn"
 
 :css
   form select {

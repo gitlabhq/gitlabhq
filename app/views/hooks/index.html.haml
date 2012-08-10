@@ -6,9 +6,9 @@
       Post receive hooks for binding events when someone push to repository.
       %br
       Read more about web hooks
-      %strong #{link_to "here", help_web_hooks_path, :class => "vlink"}
+      %strong #{link_to "here", help_web_hooks_path, class: "vlink"}
 
-= form_for [@project, @hook], :as => :hook, :url => project_hooks_path(@project) do |f|
+= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project) do |f|
   -if @hook.errors.any?
     .alert-message.block-message.error
       - @hook.errors.full_messages.each do |msg|
@@ -16,9 +16,9 @@
   .clearfix
     = f.label :url, "URL:"
     .input
-      = f.text_field :url, :class => "text_field xxlarge"
+      = f.text_field :url, class: "text_field xxlarge"
       &nbsp;
-      = f.submit "Add Web Hook", :class => "btn primary"
+      = f.submit "Add Web Hook", class: "btn primary"
 %hr
 
 -if @hooks.any?
@@ -36,7 +36,7 @@
         %td
           = link_to project_hook_path(@project, hook) do
             %strong= hook.url
-          = link_to 'Test Hook', test_project_hook_path(@project, hook), :class => "btn small right"
+          = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn small right"
         %td POST
         %td
-          = link_to 'Remove', project_hook_path(@project, hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small right"
+          = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "danger btn small right"

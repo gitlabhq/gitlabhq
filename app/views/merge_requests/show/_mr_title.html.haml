@@ -13,13 +13,13 @@
           = "MERGED"
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to raw_project_merge_request_path(@project, @merge_request), :class => "btn grouped" do 
+        = link_to raw_project_merge_request_path(@project, @merge_request), class: "btn grouped" do 
           %i.icon-download-alt
           Get Patch  
 
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn grouped danger", :title => "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {closed: true }, status_only: true), method: :put, class: "btn grouped danger", title: "Close merge request"
 
-        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn grouped" do
+        = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn grouped" do
           %i.icon-edit
           Edit
 

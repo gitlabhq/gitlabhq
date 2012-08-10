@@ -24,7 +24,7 @@ describe ProtectedBranch do
   end
 
   describe 'Callbacks' do
-    subject { ProtectedBranch.new(:project => project, :name => 'branch_name') }
+    subject { ProtectedBranch.new(project: project, name: 'branch_name') }
 
     it 'call update_repository after save' do
       subject.should_receive(:update_repository)
@@ -38,7 +38,7 @@ describe ProtectedBranch do
   end
 
   describe '#commit' do
-    subject { ProtectedBranch.new(:project => project, :name => 'cant_touch_this') }
+    subject { ProtectedBranch.new(project: project, name: 'cant_touch_this') }
 
     it 'commits itself to its project' do
       project.should_receive(:commit).with('cant_touch_this')

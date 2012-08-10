@@ -9,8 +9,8 @@
     = f.label :name do
       Project name is
     .input
-      = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
-      = f.submit project.new_record? ? 'Create project' : 'Save Project', :class => "btn primary"
+      = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
+      = f.submit project.new_record? ? 'Create project' : 'Save Project', class: "btn primary"
 
   %hr
   .alert.alert-info
@@ -21,7 +21,7 @@
       .input
         .input-prepend
           %span.add-on= Gitlab.config.ssh_path
-          = f.text_field :path, :placeholder => "example_project", :disabled => !!project.id
+          = f.text_field :path, placeholder: "example_project", disabled: !!project.id
           %span.add-on= ".git"
     .clearfix
       = f.label :code do
@@ -29,7 +29,7 @@
       .input
         .input-prepend
           %span.add-on= web_app_url
-          = f.text_field :code, :placeholder => "example"
+          = f.text_field :code, placeholder: "example"
 
     - unless project.new_record?
       .clearfix
@@ -39,7 +39,7 @@
       - if project.repo_exists?
         .clearfix
           = f.label :default_branch, "Default Branch"
-          .input= f.select(:default_branch, project.heads.map(&:name), {}, :style => "width:210px;")
+          .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless project.new_record?
     .alert.alert-info
@@ -63,7 +63,7 @@
 
   - unless project.new_record?
     .actions
-      = f.submit 'Save Project', :class => "btn primary"
+      = f.submit 'Save Project', class: "btn primary"
 
 
 

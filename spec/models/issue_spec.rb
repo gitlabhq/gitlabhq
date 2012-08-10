@@ -20,9 +20,9 @@ describe Issue do
   end
 
   subject { Factory.create(:issue,
-                           :author => Factory(:user),
-                           :assignee => Factory(:user),
-                           :project => Factory.create(:project)) }
+                           author: Factory(:user),
+                           assignee: Factory(:user),
+                           project: Factory.create(:project)) }
   it { should be_valid }
 
   describe '#is_being_reassigned?' do
@@ -42,10 +42,10 @@ describe Issue do
     end
     it 'returns false if the closed attribute has changed and is now false' do
       issue = Factory.create(:issue,
-                             :closed => true,
-                             :author => Factory(:user),
-                             :assignee => Factory(:user),
-                             :project => Factory.create(:project))
+                             closed: true,
+                             author: Factory(:user),
+                             assignee: Factory(:user),
+                             project: Factory.create(:project))
       issue.closed = false
       issue.is_being_closed?.should be_false
     end
@@ -58,10 +58,10 @@ describe Issue do
   describe '#is_being_reopened?' do
     it 'returns true if the closed attribute has changed and is now false' do
       issue = Factory.create(:issue,
-                             :closed => true,
-                             :author => Factory(:user),
-                             :assignee => Factory(:user),
-                             :project => Factory.create(:project))
+                             closed: true,
+                             author: Factory(:user),
+                             assignee: Factory(:user),
+                             project: Factory.create(:project))
       issue.closed = false
       issue.is_being_reopened?.should be_true
     end
@@ -78,9 +78,9 @@ describe Issue do
     let(:project) { Factory(:project) }
     subject {
       Factory.create(:issue,
-                     :author => Factory(:user),
-                     :assignee => Factory(:user),
-                     :project => project)
+                     author: Factory(:user),
+                     assignee: Factory(:user),
+                     project: project)
     }
 
     it "with no notes has a 0/0 score" do
@@ -107,8 +107,8 @@ describe Issue do
   end
 
   describe ".search" do
-    let!(:issue) { Factory.create(:issue, :title => "Searchable issue",
-                                 :project => Factory.create(:project)) }
+    let!(:issue) { Factory.create(:issue, title: "Searchable issue",
+                                 project: Factory.create(:project)) }
 
     it "matches by title" do
       Issue.search('able').all.should == [issue]

@@ -1,10 +1,10 @@
 !!! 5
-%html{ :lang => "en"}
+%html{ lang: "en"}
   = render "layouts/head"
-  %body{:class => "#{app_theme} application"}
+  %body{class: "#{app_theme} application"}
     = render "layouts/flash"
-    = render "layouts/head_panel", :title => "Dashboard"
+    = render "layouts/head_panel", title: "Dashboard"
     .container
-      = render :partial => "layouts/app_menu"
+      = render partial: "layouts/app_menu"
       .content
         = yield

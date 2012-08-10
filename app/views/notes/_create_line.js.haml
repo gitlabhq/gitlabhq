@@ -4,5 +4,5 @@
     $('#new_note textarea').val("");
     $("a.line_note_reply_link[line_code='#{note.line_code}']").closest("tr").remove();
     var trEl = $(".#{note.line_code}").parent();
-    trEl.after("#{escape_javascript(render :partial => "notes/per_line_show", :locals => {:note => note})}");
-    trEl.after("#{escape_javascript(render :partial => "notes/reply_button", :locals => {:line_code => note.line_code})}");
+    trEl.after("#{escape_javascript(render partial: "notes/per_line_show", locals: {note: note})}");
+    trEl.after("#{escape_javascript(render partial: "notes/reply_button", locals: {line_code: note.line_code})}");

@@ -19,7 +19,7 @@ class EventDecorator < ApplicationDecorator
     elsif self.merge_request?
       h.project_merge_request_url(self.project, self.merge_request)
     elsif self.push?
-      h.project_commits_url(self.project, :ref => self.ref_name)
+      h.project_commits_url(self.project, ref: self.ref_name)
     end
   end
 end

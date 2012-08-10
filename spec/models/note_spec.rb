@@ -14,7 +14,7 @@ describe Note do
   end
 
   it { Factory.create(:note,
-                      :project => project).should be_valid }
+                      project: project).should be_valid }
   describe "Scopes" do
     it "should have a today named scope that returns ..." do
       Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
@@ -44,9 +44,9 @@ describe Note do
 
     before do
       @note = Factory :note,
-        :project => project,
-        :noteable_id => commit.id,
-        :noteable_type => "Commit"
+        project: project,
+        noteable_id: commit.id,
+        noteable_type: "Commit"
     end
 
     it "should save a valid note" do
@@ -58,10 +58,10 @@ describe Note do
   describe "Pre-line commit notes" do
     before do
       @note = Factory :note,
-        :project => project,
-        :noteable_id => commit.id,
-        :noteable_type => "Commit",
-        :line_code => "0_16_1"
+        project: project,
+        noteable_id: commit.id,
+        noteable_type: "Commit",
+        line_code: "0_16_1"
     end
 
     it "should save a valid note" do
@@ -72,7 +72,7 @@ describe Note do
 
   describe '#create_status_change_note' do
     let(:project)  { Factory.create(:project) }
-    let(:thing)    { Factory.create(:issue, :project => project) }
+    let(:thing)    { Factory.create(:issue, project: project) }
     let(:author)   { Factory(:user) }
     let(:status)   { 'new_status' }
 
@@ -92,7 +92,7 @@ describe Note do
   describe :authorization do
     before do
       @p1 = project
-      @p2 = Factory :project, :code => "alien", :path => "gitlabhq_1"
+      @p2 = Factory :project, code: "alien", path: "gitlabhq_1"
       @u1 = Factory :user
       @u2 = Factory :user
       @u3 = Factory :user
@@ -102,8 +102,8 @@ describe Note do
 
     describe :read do
       before do
-        @p1.users_projects.create(:user => @u2, :project_access => UsersProject::GUEST)
-        @p2.users_projects.create(:user => @u3, :project_access => UsersProject::GUEST)
+        @p1.users_projects.create(user: @u2, project_access: UsersProject::GUEST)
+        @p2.users_projects.create(user: @u3, project_access: UsersProject::GUEST)
       end
 
       it { @abilities.allowed?(@u1, :read_note, @p1).should be_false }
@@ -113,8 +113,8 @@ describe Note do
 
     describe :write do
       before do
-        @p1.users_projects.create(:user => @u2, :project_access => UsersProject::DEVELOPER)
-        @p2.users_projects.create(:user => @u3, :project_access => UsersProject::DEVELOPER)
+        @p1.users_projects.create(user: @u2, project_access: UsersProject::DEVELOPER)
+        @p2.users_projects.create(user: @u3, project_access: UsersProject::DEVELOPER)
       end
 
       it { @abilities.allowed?(@u1, :write_note, @p1).should be_false }
@@ -124,9 +124,9 @@ describe Note do
 
     describe :admin do
       before do
-        @p1.users_projects.create(:user => @u1, :project_access => UsersProject::REPORTER)
-        @p1.users_projects.create(:user => @u2, :project_access => UsersProject::MASTER)
-        @p2.users_projects.create(:user => @u3, :project_access => UsersProject::MASTER)
+        @p1.users_projects.create(user: @u1, project_access: UsersProject::REPORTER)
+        @p1.users_projects.create(user: @u2, project_access: UsersProject::MASTER)
+        @p2.users_projects.create(user: @u3, project_access: UsersProject::MASTER)
       end
 
       it { @abilities.allowed?(@u1, :admin_note, @p1).should be_false }

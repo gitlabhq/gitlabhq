@@ -1,7 +1,7 @@
 class SnippetsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
-  before_filter :snippet, :only => [:show, :edit, :destroy, :update, :raw]
+  before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
   layout "project"
 
   # Authorize
@@ -11,13 +11,13 @@ class SnippetsController < ApplicationController
   before_filter :authorize_read_snippet!
 
   # Allow write(create) snippet
-  before_filter :authorize_write_snippet!, :only => [:new, :create]
+  before_filter :authorize_write_snippet!, only: [:new, :create]
 
   # Allow modify snippet
-  before_filter :authorize_modify_snippet!, :only => [:edit, :update]
+  before_filter :authorize_modify_snippet!, only: [:edit, :update]
 
   # Allow destroy snippet
-  before_filter :authorize_admin_snippet!, :only => [:destroy]
+  before_filter :authorize_admin_snippet!, only: [:destroy]
 
   respond_to :html
 
@@ -55,7 +55,7 @@ class SnippetsController < ApplicationController
   end
 
   def show
-    @note = @project.notes.new(:noteable => @snippet)
+    @note = @project.notes.new(noteable: @snippet)
     render_full_content
   end
 
@@ -70,9 +70,9 @@ class SnippetsController < ApplicationController
   def raw 
     send_data(
       @snippet.content,
-      :type => "text/plain",
-      :disposition => 'inline',
-      :filename => @snippet.file_name
+      type: "text/plain",
+      disposition: 'inline',
+      filename: @snippet.file_name
     )
   end
 

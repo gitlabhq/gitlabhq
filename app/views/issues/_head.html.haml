@@ -1,11 +1,11 @@
 %ul.nav.nav-tabs
-  %li{:class => "#{'active' if current_page?(project_issues_path(@project))}"}
-    = link_to project_issues_path(@project), :class => "tab" do
+  %li{class: "#{'active' if current_page?(project_issues_path(@project))}"}
+    = link_to project_issues_path(@project), class: "tab" do
       Browse Issues
-  %li{:class => "#{'active' if current_page?(project_milestones_path(@project))}"}
-    = link_to project_milestones_path(@project), :class => "tab" do
+  %li{class: "#{'active' if current_page?(project_milestones_path(@project))}"}
+    = link_to project_milestones_path(@project), class: "tab" do
       Milestones
   %li.right
     %span.rss-icon
-      = link_to project_issues_path(@project, :atom, { :private_token => current_user.private_token }) do
-        = image_tag "rss_ui.png", :title => "feed"
+      = link_to project_issues_path(@project, :atom, { private_token: current_user.private_token }) do
+        = image_tag "rss_ui.png", title: "feed"

@@ -1,7 +1,7 @@
 %tr
   %td
-    %a{:href => project_snippet_path(snippet.project, snippet)}
-      %strong= truncate(snippet.title, :length => 60)
+    %a{href: project_snippet_path(snippet.project, snippet)}
+      %strong= truncate(snippet.title, length: 60)
   %td
     = snippet.file_name
   %td
