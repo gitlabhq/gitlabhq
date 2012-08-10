@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Admin::Hooks" do
   before do
     @project = Factory :project,
-      :name => "LeGiT",
-      :code => "LGT"
+      name: "LeGiT",
+      code: "LGT"
     login_as :admin
 
     @system_hook = Factory :system_hook
@@ -30,7 +30,7 @@ describe "Admin::Hooks" do
     before do
       @url = Faker::Internet.uri("http")
       visit admin_hooks_path
-      fill_in "hook_url", :with => @url
+      fill_in "hook_url", with: @url
       expect { click_button "Add System Hook" }.to change(SystemHook, :count).by(1)
     end
 

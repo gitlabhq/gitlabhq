@@ -26,8 +26,8 @@ describe Milestone do
   end
 
   let(:project) { Factory :project }
-  let(:milestone) { Factory :milestone, :project => project }
-  let(:issue) { Factory :issue, :project => project }
+  let(:milestone) { Factory :milestone, project: project }
+  let(:issue) { Factory :issue, project: project }
 
   it { milestone.should be_valid }
 
@@ -39,14 +39,14 @@ describe Milestone do
     it { milestone.percent_complete.should == 0 }
 
     it do 
-      issue.update_attributes :closed => true
+      issue.update_attributes closed: true
       milestone.percent_complete.should == 100
     end
   end
 
   describe :expires_at do 
     before do 
-      milestone.update_attributes :due_date => Date.today + 1.day
+      milestone.update_attributes due_date: Date.today + 1.day
     end
 
     it { milestone.expires_at.should_not be_nil }

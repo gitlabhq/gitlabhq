@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Project, "Hooks" do
   let(:project) { Factory :project }
   before do 
-    @key = Factory :key, :user => project.owner
+    @key = Factory :key, user: project.owner
     @user = @key.user
     @key_id = @key.identifier
   end

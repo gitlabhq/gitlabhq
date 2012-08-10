@@ -7,5 +7,5 @@
       %th Last commit
       %th
   - @activities.each do |update|
-    = render "repositories/branch", :branch => update.head
+    = render "repositories/branch", branch: update.head
 

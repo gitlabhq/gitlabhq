@@ -37,7 +37,7 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
-  config.before :each, :type => :integration do
+  config.before :each, type: :integration do
     DeviseSessionMock.disable
   end
 
@@ -59,7 +59,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
-  config.include RSpec::Rails::RequestExampleGroup, :type => :request, :example_group => {
-    :file_path => /spec\/api/
+  config.include RSpec::Rails::RequestExampleGroup, type: :request, example_group: {
+    file_path: /spec\/api/
   }
 end

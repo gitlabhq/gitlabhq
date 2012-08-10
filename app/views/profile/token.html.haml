@@ -3,7 +3,7 @@
   %span.cred.right
     keep it in secret!
 %hr
-= form_for @user, :url => profile_reset_private_token_path, :method => :put do |f|
+= form_for @user, url: profile_reset_private_token_path, method: :put do |f|
   .data
     %p.slead
       Private token used to access application resources without authentication.
@@ -11,13 +11,13 @@
       It can be used for atom feed or API
     %p.cgray
       - if current_user.private_token
-        = text_field_tag "token", current_user.private_token, :class => "xxlarge large_text"
+        = text_field_tag "token", current_user.private_token, class: "xxlarge large_text"
       - else
         You don`t have one yet. Click generate to fix it.
   .actions
     - if current_user.private_token
-      = f.submit 'Reset', :confirm => "Are you sure?", :class => "btn"
+      = f.submit 'Reset', confirm: "Are you sure?", class: "btn"
     - else
-      = f.submit 'Generate', :class => "btn primary"
+      = f.submit 'Generate', class: "btn primary"
 
 

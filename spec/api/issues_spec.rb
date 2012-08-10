@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::API do
   let(:user) { Factory :user }
-  let!(:project) { Factory :project, :owner => user }
-  let!(:issue) { Factory :issue, :author => user, :assignee => user, :project => project }
+  let!(:project) { Factory :project, owner: user }
+  let!(:issue) { Factory :issue, author: user, assignee: user, project: project }
   before { project.add_access(user, :read) }
 
   describe "GET /issues" do
@@ -42,7 +42,7 @@ describe Gitlab::API do
   describe "POST /projects/:id/issues" do
     it "should create a new project issue" do
       post "#{api_prefix}/projects/#{project.code}/issues?private_token=#{user.private_token}",
-        :title => 'new issue', :labels => 'label, label2'
+        title: 'new issue', labels: 'label, label2'
       response.status.should == 201
       json_response['title'].should == 'new issue'
       json_response['description'].should be_nil
@@ -53,7 +53,7 @@ describe Gitlab::API do
   describe "PUT /projects/:id/issues/:issue_id" do
     it "should update a project issue" do
       put "#{api_prefix}/projects/#{project.code}/issues/#{issue.id}?private_token=#{user.private_token}",
-        :title => 'updated title', :labels => 'label2', :closed => 1
+        title: 'updated title', labels: 'label2', closed: 1
       response.status.should == 200
       json_response['title'].should == 'updated title'
       json_response['labels'].should == ['label2']

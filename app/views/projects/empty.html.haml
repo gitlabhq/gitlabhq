@@ -16,7 +16,7 @@
   - setup_str = ["git config --global user.name \"#{current_user.name}\"",
     "git config --global user.email  \"#{current_user.email}\""].join("\n")
   = preserve do
-    = raw bash_lexer.highlight(setup_str, :lexer => 'bash', :options => {:encoding => 'utf-8'})
+    = raw bash_lexer.highlight(setup_str, lexer: 'bash', options: {encoding: 'utf-8'})
 
   %br
   %br
@@ -44,4 +44,4 @@
 
   - if can? current_user, :admin_project, @project
     .alert-message.block-message.error.prepend-top-20
-      = link_to 'Remove project', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
+      = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger"

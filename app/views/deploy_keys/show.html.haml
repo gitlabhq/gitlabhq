@@ -3,5 +3,5 @@
 %hr
 %pre= @key.key
 .actions
-  = link_to 'Remove', project_deploy_key_path(@key.project, @key), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn delete-key"
+  = link_to 'Remove', project_deploy_key_path(@key.project, @key), confirm: 'Are you sure?', method: :delete, class: "danger btn delete-key"
   .clear

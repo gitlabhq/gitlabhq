@@ -1,18 +1,18 @@
-%li{:class => "milestone", :id => dom_id(milestone) }
+%li{class: "milestone", id: dom_id(milestone) }
   .right
     - if milestone.issues.any?
       %span.btn.small.disabled.grouped= pluralize milestone.issues.count, 'issues'
     - if milestone.issues.count > 0
-      = link_to 'Browse Issues', project_issues_path(milestone.project, :milestone_id => milestone.id), :class => "btn small grouped"
+      = link_to 'Browse Issues', project_issues_path(milestone.project, milestone_id: milestone.id), class: "btn small grouped"
     - if can? current_user, :admin_milestone, milestone.project
-      = link_to 'Edit', edit_project_milestone_path(milestone.project, milestone), :class => "btn small edit-milestone-link grouped"
+      = link_to 'Edit', edit_project_milestone_path(milestone.project, milestone), class: "btn small edit-milestone-link grouped"
   %h4
-    = link_to_gfm truncate(milestone.title, :length => 100), project_milestone_path(milestone.project, milestone), :class => "row_title"
+    = link_to_gfm truncate(milestone.title, length: 100), project_milestone_path(milestone.project, milestone), class: "row_title"
     %small
       = milestone.expires_at
     %br
     .progress.progress-success.span3
-      .bar{:style => "width: #{milestone.percent_complete}%;"}
+      .bar{style: "width: #{milestone.percent_complete}%;"}
 
 
   &nbsp;

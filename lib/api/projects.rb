@@ -10,7 +10,7 @@ module Gitlab
       #   GET /projects
       get do
         @projects = current_user.projects
-        present @projects, :with => Entities::Project
+        present @projects, with: Entities::Project
       end
 
       # Get a single project
@@ -20,7 +20,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id
       get ":id" do
-        present user_project, :with => Entities::Project
+        present user_project, with: Entities::Project
       end
 
       # Get a project repository branches
@@ -30,7 +30,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
-        present user_project.repo.heads.sort_by(&:name), :with => Entities::RepoObject
+        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject
       end
 
       # Get a single branch
@@ -42,7 +42,7 @@ module Gitlab
       #   GET /projects/:id/repository/branches/:branch
       get ":id/repository/branches/:branch" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        present @branch, :with => Entities::RepoObject
+        present @branch, with: Entities::RepoObject
       end
 
       # Get a project repository tags
@@ -52,7 +52,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse, :with => Entities::RepoObject
+        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
       end
 
       # Get a project snippet
@@ -64,7 +64,7 @@ module Gitlab
       #   GET /projects/:id/snippets/:snippet_id
       get ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
-        present @snippet, :with => Entities::ProjectSnippet
+        present @snippet, with: Entities::ProjectSnippet
       end
 
       # Create a new project snippet
@@ -79,15 +79,15 @@ module Gitlab
       #   POST /projects/:id/snippets
       post ":id/snippets" do
         @snippet = user_project.snippets.new(
-          :title      => params[:title],
-          :file_name  => params[:file_name],
-          :expires_at => params[:lifetime],
-          :content    => params[:code]
+          title: params[:title],
+          file_name: params[:file_name],
+          expires_at: params[:lifetime],
+          content: params[:code]
         )
         @snippet.author = current_user
 
         if @snippet.save
-          present @snippet, :with => Entities::ProjectSnippet
+          present @snippet, with: Entities::ProjectSnippet
         else
           error!({'message' => '404 Not found'}, 404)
         end
@@ -107,14 +107,14 @@ module Gitlab
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
         parameters = {
-          :title      => (params[:title] || @snippet.title),
-          :file_name  => (params[:file_name] || @snippet.file_name),
-          :expires_at => (params[:lifetime] || @snippet.expires_at),
-          :content    => (params[:code] || @snippet.content)
+          title: (params[:title] || @snippet.title),
+          file_name: (params[:file_name] || @snippet.file_name),
+          expires_at: (params[:lifetime] || @snippet.expires_at),
+          content: (params[:code] || @snippet.content)
         }
 
         if @snippet.update_attributes(parameters)
-          present @snippet, :with => Entities::ProjectSnippet
+          present @snippet, with: Entities::ProjectSnippet
         else
           error!({'message' => '404 Not found'}, 404)
         end

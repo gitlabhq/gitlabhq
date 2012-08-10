@@ -1,11 +1,11 @@
 class CommitLoad < BaseContext
   def execute
     result = { 
-      :commit => nil,
-      :suppress_diff => false,
-      :line_notes => [],
-      :notes_count => 0,
-      :note => nil
+      commit: nil,
+      suppress_diff: false,
+      line_notes: [],
+      notes_count: 0,
+      note: nil
     }
 
     commit = project.commit(params[:id])

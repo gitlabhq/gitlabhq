@@ -5,12 +5,12 @@
     %p To prevent performance issue we rejected diff information.
     %p
       But if you still want to see diff
-      = link_to "click this link", project_commit_path(@project, @commit.id, :force_show_diff => true), :class => "dark"
+      = link_to "click this link", project_commit_path(@project, @commit.id, force_show_diff: true), class: "dark"
 
 %p.cgray
   Showing #{pluralize(diffs.count, "changed file")}
 .file_stats
-  = render "commits/diff_head", :diffs => diffs
+  = render "commits/diff_head", diffs: diffs
 
 - unless @suppress_diff
   - diffs.each_with_index do |diff, i|
@@ -22,26 +22,26 @@
       .diff_file_header
         - if diff.deleted_file
           %i.icon-file
-          %span{:id => "#{diff.old_path}"}= diff.old_path
+          %span{id: "#{diff.old_path}"}= diff.old_path
         - else
           = link_to tree_file_project_ref_path(@project, @commit.id, diff.new_path) do
             %i.icon-file
-            %span{:id => "#{diff.new_path}"}= diff.new_path
+            %span{id: "#{diff.new_path}"}= diff.new_path
         %br/
       .diff_file_content
         -# Skipp all non non-supported blobs
         - next unless file.respond_to?('text?')
 
         - if file.text?
-          = render "commits/text_file", :diff => diff, :index => i
+          = render "commits/text_file", diff: diff, index: i
         - elsif file.image?
           - if diff.renamed_file || diff.new_file || diff.deleted_file 
             .diff_file_content_image
-              %img{:class => image_diff_class(diff), :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+              %img{class: image_diff_class(diff), src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
           - else 
             - old_file = (@commit.prev_commit.tree / diff.old_path)
             .diff_file_content_image.img_compared
-              %img{:class => "diff_image_removed", :src => "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
-              %img{:class => "diff_image_added", :src => "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+              %img{class: "diff_image_removed", src: "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+              %img{class: "diff_image_added", src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
         - else
           %p.nothing_here_message No preview for this file type

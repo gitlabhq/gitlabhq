@@ -1,10 +1,10 @@
 %ul.nav.nav-tabs
   %li
-    = form_tag switch_project_refs_path(@project), :method => :get, :class => "project-refs-form", :remote => true do
-      = select_tag "ref", grouped_options_refs, :onchange => "$(this.form).trigger('submit');", :class => "project-refs-select"
+    = form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form", remote: true do
+      = select_tag "ref", grouped_options_refs, onchange: "$(this.form).trigger('submit');", class: "project-refs-select"
       = hidden_field_tag :destination, "tree"
       = hidden_field_tag :path, params[:path]
-  %li{:class => "#{'active' if (controller.controller_name == "refs") }"}
+  %li{class: "#{'active' if (controller.controller_name == "refs") }"}
     = link_to tree_project_ref_path(@project, @ref) do
       Source
 

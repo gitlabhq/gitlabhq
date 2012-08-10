@@ -5,7 +5,7 @@ describe "Projects" do
 
   describe "GET /projects/show" do
     before do
-      @project = Factory :project, :owner => @user
+      @project = Factory :project, owner: @user
       @project.add_access(@user, :read)
 
       visit project_path(@project)
@@ -37,13 +37,13 @@ describe "Projects" do
 
   describe "PUT /projects/:id" do
     before do
-      @project = Factory :project, :owner => @user
+      @project = Factory :project, owner: @user
       @project.add_access(@user, :admin, :read)
 
       visit edit_project_path(@project)
 
-      fill_in 'project_name', :with => 'Awesome'
-      fill_in 'project_code', :with => 'gitlabhq'
+      fill_in 'project_name', with: 'Awesome'
+      fill_in 'project_code', with: 'gitlabhq'
       click_button "Save"
       @project = @project.reload
     end

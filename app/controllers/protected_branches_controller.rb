@@ -6,7 +6,7 @@ class ProtectedBranchesController < ApplicationController
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project
 
-  before_filter :authorize_admin_project!, :only => [:destroy, :create]
+  before_filter :authorize_admin_project!, only: [:destroy, :create]
   before_filter :render_full_content
 
   layout "project"
@@ -26,7 +26,7 @@ class ProtectedBranchesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to project_protected_branches_path }
-      format.js { render :nothing => true }
+      format.js { render nothing: true }
     end
   end
 end

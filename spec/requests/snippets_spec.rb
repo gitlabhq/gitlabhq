@@ -11,8 +11,8 @@ describe "Snippets" do
   describe "GET /snippets" do
     before do
       @snippet = Factory :snippet,
-        :author => @user,
-        :project => project
+        author: @user,
+        project: project
 
       visit project_snippets_path(project)
     end
@@ -50,9 +50,9 @@ describe "Snippets" do
 
     describe "fill in" do
       before do
-        fill_in "snippet_title", :with => "login function"
-        fill_in "snippet_file_name", :with => "test.rb"
-        fill_in "snippet_content", :with => "def login; end"
+        fill_in "snippet_title", with: "login function"
+        fill_in "snippet_file_name", with: "test.rb"
+        fill_in "snippet_content", with: "def login; end"
       end
 
       it { expect { click_button "Save" }.to change {Snippet.count}.by(1) }
@@ -69,8 +69,8 @@ describe "Snippets" do
   describe "Edit snippet" do
     before do
       @snippet = Factory :snippet,
-        :author => @user,
-        :project => project
+        author: @user,
+        project: project
       visit project_snippet_path(project, @snippet)
       click_link "Edit"
     end
@@ -81,9 +81,9 @@ describe "Snippets" do
 
     describe "fill in" do
       before do
-        fill_in "snippet_title", :with => "login function"
-        fill_in "snippet_file_name", :with => "test.rb"
-        fill_in "snippet_content", :with => "def login; end"
+        fill_in "snippet_title", with: "login function"
+        fill_in "snippet_file_name", with: "test.rb"
+        fill_in "snippet_content", with: "def login; end"
       end
 
       it { expect { click_button "Save" }.to_not change {Snippet.count} }

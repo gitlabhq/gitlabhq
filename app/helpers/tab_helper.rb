@@ -4,12 +4,12 @@ module TabHelper
   end
 
   def wall_tab?
-    current_page?(:controller => "projects", :action => "wall", :id => @project)
+    current_page?(controller: "projects", action: "wall", id: @project)
   end
 
   def project_tab_class
     [:show, :files, :team, :edit, :update].each do |action|
-      return "current" if current_page?(:controller => "projects", :action => action, :id => @project)
+      return "current" if current_page?(controller: "projects", action: action, id: @project)
     end
 
     if ['snippets', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name

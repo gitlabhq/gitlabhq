@@ -2,7 +2,7 @@
   :plain
     $("#new_note .errors").remove();
     $('#new_note textarea').val("");
-    NoteList.prepend(#{note.id}, "#{escape_javascript(render :partial => "notes/show", :locals => {:note => note})}");
+    NoteList.prepend(#{note.id}, "#{escape_javascript(render partial: "notes/show", locals: {note: note})}");
 - else
   :plain
     $("#new_note").replaceWith("#{escape_javascript(render('form'))}");

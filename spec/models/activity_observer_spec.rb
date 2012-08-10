@@ -11,7 +11,7 @@ describe ActivityObserver do
   describe "Merge Request created" do 
     before do
       MergeRequest.observers.enable :activity_observer do
-        @merge_request = Factory :merge_request, :project => project
+        @merge_request = Factory :merge_request, project: project
         @event = Event.last
       end
     end
@@ -24,7 +24,7 @@ describe ActivityObserver do
   describe "Issue created" do 
     before do
       Issue.observers.enable :activity_observer do
-        @issue = Factory :issue, :project => project
+        @issue = Factory :issue, project: project
         @event = Event.last
       end
     end
@@ -36,8 +36,8 @@ describe ActivityObserver do
 
   #describe "Issue commented" do 
     #before do 
-      #@issue = Factory :issue, :project => project
-      #@note = Factory :note, :noteable => @issue, :project => project
+      #@issue = Factory :issue, project: project
+      #@note = Factory :note, noteable: @issue, project: project
       #@event = Event.last
     #end
 

@@ -3,23 +3,23 @@
   %h3.page_title
     Milestones
     - if can? current_user, :admin_milestone, @project
-      = link_to "New Milestone", new_project_milestone_path(@project), :class => "right btn small", :title => "New Milestone"
+      = link_to "New Milestone", new_project_milestone_path(@project), class: "right btn small", title: "New Milestone"
   %br
   %div.ui-box
     .title
       %ul.nav.nav-pills
-        %li{:class => ("active" if (params[:f] == "0" || !params[:f]))}
-          = link_to project_milestones_path(@project, :f => 0) do
+        %li{class: ("active" if (params[:f] == "0" || !params[:f]))}
+          = link_to project_milestones_path(@project, f: 0) do
             Active
-        %li{:class => ("active" if params[:f] == "1")}
-          = link_to project_milestones_path(@project, :f => 1) do
+        %li{class: ("active" if params[:f] == "1")}
+          = link_to project_milestones_path(@project, f: 1) do
             All
 
     %ul.unstyled
       = render @milestones
 
       - if @milestones.present?
-        %li.bottom= paginate @milestones, :remote => true, :theme => "gitlab"
+        %li.bottom= paginate @milestones, remote: true, theme: "gitlab"
       - else
         %li
           %h3.nothing_here_message Nothing to show here

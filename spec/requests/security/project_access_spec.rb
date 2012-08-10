@@ -20,9 +20,9 @@ describe "Application access" do
       @u2 = Factory :user
       @u3 = Factory :user
       # full access
-      @project.users_projects.create(:user => @u1, :project_access => UsersProject::MASTER)
+      @project.users_projects.create(user: @u1, project_access: UsersProject::MASTER)
       # readonly
-      @project.users_projects.create(:user => @u3, :project_access => UsersProject::REPORTER)
+      @project.users_projects.create(user: @u3, project_access: UsersProject::REPORTER)
     end
 
     describe "GET /project_code" do
@@ -83,7 +83,7 @@ describe "Application access" do
       before do
         @commit = @project.commit
         @path = @commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
-        @blob_path = blob_project_ref_path(@project, @commit.id, :path => @path)
+        @blob_path = blob_project_ref_path(@project, @commit.id, path: @path)
       end
 
       it { @blob_path.should be_allowed_for @u1 }

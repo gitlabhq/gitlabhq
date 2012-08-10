@@ -40,7 +40,7 @@ class DeployKeysController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to project_deploy_keys_url }
-      format.js { render :nothing => true }
+      format.js { render nothing: true }
     end
   end
 end

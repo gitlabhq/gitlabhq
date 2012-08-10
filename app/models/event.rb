@@ -12,13 +12,13 @@ class Event < ActiveRecord::Base
   Merged    = 7
 
   belongs_to :project
-  belongs_to :target, :polymorphic => true
+  belongs_to :target, polymorphic: true
 
   # For Hash only
   serialize :data
 
   scope :recent, order("created_at DESC")
-  scope :code_push, where(:action => Pushed)
+  scope :code_push, where(action: Pushed)
 
   def self.determine_action(record)
     if [Issue, MergeRequest].include? record.class
@@ -29,7 +29,7 @@ class Event < ActiveRecord::Base
   end
 
   def self.recent_for_user user
-    where(:project_id => user.projects.map(&:id)).recent
+    where(project_id: user.projects.map(&:id)).recent
   end
 
   # Next events currently enabled for system
@@ -106,9 +106,9 @@ class Event < ActiveRecord::Base
     end
   end
 
-  delegate :name, :email, :to => :author, :prefix => true, :allow_nil => true
-  delegate :title, :to => :issue, :prefix => true, :allow_nil => true
-  delegate :title, :to => :merge_request, :prefix => true, :allow_nil => true
+  delegate :name, :email, to: :author, prefix: true, allow_nil: true
+  delegate :title, to: :issue, prefix: true, allow_nil: true
+  delegate :title, to: :merge_request, prefix: true, allow_nil: true
 end
 # == Schema Information
 #

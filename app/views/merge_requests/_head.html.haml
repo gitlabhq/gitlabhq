@@ -1,5 +1,5 @@
 .top-tabs
-  = link_to project_merge_requests_path(@project), :class => "tab #{'active' if current_page?(project_merge_requests_path(@project)) }" do
+  = link_to project_merge_requests_path(@project), class: "tab #{'active' if current_page?(project_merge_requests_path(@project)) }" do
     %span
     Merge Requests
 

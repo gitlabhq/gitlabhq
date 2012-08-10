@@ -15,7 +15,7 @@ class ApplicationDecorator < Drapper::Base
   #
   #   def formatted_timestamp(time)
   #     h.content_tag :span, time.strftime("%a %m/%d/%y"), 
-  #                   :class => 'timestamp' 
+  #                   class: 'timestamp' 
   #   end
   # 
   #   def created_at

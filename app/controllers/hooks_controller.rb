@@ -6,7 +6,7 @@ class HooksController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, :only => [:new, :create, :destroy]
+  before_filter :authorize_admin_project!, only: [:new, :create, :destroy]
 
   respond_to :html
 

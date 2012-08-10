@@ -3,18 +3,18 @@ require 'file_size_validator'
 
 class Note < ActiveRecord::Base
   belongs_to :project
-  belongs_to :noteable, :polymorphic => true
+  belongs_to :noteable, polymorphic: true
   belongs_to :author,
-    :class_name => "User"
+    class_name: "User"
 
   delegate :name,
-           :to => :project,
-           :prefix => true
+           to: :project,
+           prefix: true
 
   delegate :name,
            :email,
-           :to => :author,
-           :prefix => true
+           to: :author,
+           prefix: true
 
   attr_protected :author, :author_id
   attr_accessor :notify
@@ -23,19 +23,19 @@ class Note < ActiveRecord::Base
   validates_presence_of :project
 
   validates :note,
-            :presence => true,
-            :length   => { :within => 0..5000 }
+            presence: true,
+            length: { within: 0..5000 }
 
   validates :attachment,
-            :file_size => {
-              :maximum => 10.megabytes.to_i
+            file_size: {
+              maximum: 10.megabytes.to_i
             }
 
-  scope :common, where(:noteable_id => nil)
+  scope :common, where(noteable_id: nil)
 
-  scope :today, where("created_at >= :date", :date => Date.today)
-  scope :last_week, where("created_at  >= :date", :date => (Date.today - 7.days))
-  scope :since, lambda { |day| where("created_at  >= :date", :date => (day)) }
+  scope :today, where("created_at >= :date", date: Date.today)
+  scope :last_week, where("created_at  >= :date", date: (Date.today - 7.days))
+  scope :since, lambda { |day| where("created_at  >= :date", date: (day)) }
   scope :fresh, order("created_at DESC")
   scope :inc_author_project, includes(:project, :author)
   scope :inc_author, includes(:author)
@@ -43,11 +43,11 @@ class Note < ActiveRecord::Base
   mount_uploader :attachment, AttachmentUploader
 
   def self.create_status_change_note(noteable, author, status)
-    create({ :noteable => noteable,
-             :project => noteable.project,
-             :author => author,
-             :note => "_Status changed to #{status}_" },
-          :without_protection => true)
+    create({ noteable: noteable,
+             project: noteable.project,
+             author: author,
+             note: "_Status changed to #{status}_" },
+          without_protection: true)
   end
 
   def notify

@@ -25,8 +25,8 @@ module Team
   # with passed access role by user id
   def add_user_id_to_team(user_id, access_role)
     users_projects.create(
-      :user_id => user_id,
-      :project_access => access_role
+      user_id: user_id,
+      project_access: access_role
     )
   end
 

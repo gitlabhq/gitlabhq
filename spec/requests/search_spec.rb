@@ -6,7 +6,7 @@ describe "Search" do
     @project = Factory :project
     @project.add_access(@user, :read)
     visit search_path
-    fill_in "search", :with => @project.name[0..3]
+    fill_in "search", with: @project.name[0..3]
     click_button "Search"
   end
 

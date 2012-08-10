@@ -1,4 +1,4 @@
-= form_for(@project, :remote => true) do |f|
+= form_for(@project, remote: true) do |f|
   - if @project.errors.any?
     .alert-message.block-message.error
       %span= @project.errors.full_messages.first
@@ -6,8 +6,8 @@
     = f.label :name do
       Project name is
     .input
-      = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
-      = f.submit 'Create project', :class => "btn primary"
+      = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
+      = f.submit 'Create project', class: "btn primary"
 
   %hr
   .alert.alert-info
@@ -18,7 +18,7 @@
       .input
         .input-prepend
           %span.add-on= Gitlab.config.ssh_path
-          = f.text_field :path, :placeholder => "example_project", :disabled => !@project.new_record?
+          = f.text_field :path, placeholder: "example_project", disabled: !@project.new_record?
           %span.add-on= ".git"
     .clearfix
       = f.label :code do
@@ -26,4 +26,4 @@
       .input
         .input-prepend
           %span.add-on= web_app_url
-          = f.text_field :code, :placeholder => "example"
+          = f.text_field :code, placeholder: "example"
