@@ -1,3 +1,9 @@
+v 2.8.0
+  - Gitlab Flavored Markdown
+  - Bulk issues update
+  - Issues API
+  - Cucumber coverage increased
+
 v 2.7.0
   - Issue Labels
   - Inline diff
