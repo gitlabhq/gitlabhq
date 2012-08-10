@@ -128,7 +128,16 @@ Permissions:
     sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin 
 
     # if succeed  you can remove it
-    sudo rm -rf /tmp/gitolite-admin 
+    sudo rm -rf /tmp/gitolite-admin
+    
+    # if failed and return like this
+    ssh: connect to host localhost port 22: Connection refused
+    # add follow line in /etc/ssh/sshd_config
+    ListenAddress 127.0.0.1
+    # and restart sshd
+    reload ssh
+    
+    
 
 **IMPORTANT! If you cant clone `gitolite-admin` repository - DONT PROCEED INSTALLATION**
 
