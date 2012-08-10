@@ -203,7 +203,11 @@ Gitlab::Application.routes.draw do
         get   :search
       end
     end
-    resources :notes, :only => [:index, :create, :destroy]
+    resources :notes, :only => [:index, :create, :destroy] do
+      collection do
+        post :preview
+      end
+    end
   end
   root :to => "dashboard#index"
 end

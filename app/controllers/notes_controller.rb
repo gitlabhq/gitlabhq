@@ -33,7 +33,11 @@ class NotesController < ApplicationController
     end
   end
 
-  protected 
+  def preview
+    render :text => view_context.markdown(params[:note])
+  end
+
+  protected
 
   def notes
     @notes = Notes::LoadContext.new(project, current_user, params).execute
