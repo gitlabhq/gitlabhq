@@ -307,13 +307,11 @@ Create init script in /etc/init.d/gitlab:
       restart)
             echo -n "Restarting $DESC: "
             kill -USR2 `cat $PID`
-            kill -USR2 `cat $RESQUE_PID`
             echo "$NAME."
             ;;
       reload)
             echo -n "Reloading $DESC configuration: "
             kill -HUP `cat $PID`
-            kill -HUP `cat $RESQUE_PID`
             echo "$NAME."
             ;;
       *)
