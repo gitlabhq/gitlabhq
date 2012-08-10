@@ -56,6 +56,15 @@ describe MergeRequest do
       subject.upvotes.should == 2
     end
   end
+
+  describe ".search" do
+    let!(:issue) { Factory.create(:issue, :title => "Searchable issue",
+                                 :project => Factory.create(:project)) }
+
+    it "matches by title" do
+      Issue.search('able').all.should == [issue]
+    end
+  end
 end
 # == Schema Information
 #
