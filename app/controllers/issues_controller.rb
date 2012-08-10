@@ -87,8 +87,6 @@ class IssuesController < ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_issue, @issue)
-
     @issue.destroy
 
     respond_to do |format|
