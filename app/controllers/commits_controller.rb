@@ -41,8 +41,9 @@ class CommitsController < ApplicationController
       return git_not_found!
     end
 
-  rescue Grit::Git::GitTimeout
-    render "huge_commit"
+    if result[:status] == :huge_commit
+      render "huge_commit" and return
+    end
   end
 
   def compare
