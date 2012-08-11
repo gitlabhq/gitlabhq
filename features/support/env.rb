@@ -65,3 +65,11 @@ end
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
+# We need this to fix the random timeout error that we were seeing in CI.
+Capybara.register_driver :selenium_with_long_timeout do |app|
+  client = Selenium::WebDriver::Remote::Http::Default.new
+  client.timeout = 120
+  Capybara::Selenium::Driver.new(app, :browser => :firefox, :http_client => client)
+end
+
+Capybara.javascript_driver = :selenium_with_long_timeout
