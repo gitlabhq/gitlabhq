@@ -60,7 +60,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     sudo apt-get update
     sudo apt-get upgrade
 
-    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev sendmail
+    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix
     
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
@@ -153,8 +153,22 @@ Permissions:
 
     # Or 
     # Mysql
+    # Install MySQL as directed in Step #1
+    
+    # Login to MySQL
+    $ mysql -u root -p 
+    
+    # Create the gitlabhq production database
+    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+    
+    # Create the MySQL User change $password to a real password
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password'; 
+    
+    # Grant proper permissions to the MySQL User
+    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+    
+    # Exit MySQL Server and copy the example config, make sure to update username/password in config/database.yml
     sudo -u gitlab cp config/database.yml.example config/database.yml
-    # Change username/password of config/database.yml  to real one
 
 #### Install gems
 
@@ -206,8 +220,9 @@ You can login via web using admin generated with setup:
     sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
 
     # Gitlab start script
-    ./resque.sh
-
+    sudo -u gitlab ./resque.sh
+    # if you run this as root /home/gitlab/gitlab/tmp/pids/resque_worker.pid will be owned by root
+    # causing the resque worker not to start via init script on next boot/service restart
 
 **Ok - we have a working application now. **
 **But keep going - there are some thing that should be done **
