@@ -118,6 +118,9 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
+    capybara-webkit (0.12.1)
+      capybara (>= 1.0.0, < 1.2)
+      json
     carrierwave (0.6.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -379,6 +382,7 @@ DEPENDENCIES
   awesome_print
   bootstrap-sass (= 2.0.3.1)
   capybara
+  capybara-webkit
   carrierwave
   charlock_holmes
   chosen-rails

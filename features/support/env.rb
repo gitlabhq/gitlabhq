@@ -4,7 +4,6 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-require "selenium-webdriver"
 require 'cucumber/rails'
 require 'webmock/cucumber'
 WebMock.allow_net_connect!
@@ -19,6 +18,7 @@ require Rails.root.join 'spec/support/valid_commit'
 # prefer to use XPath just remove this line and adjust any selectors in your
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
+Capybara.javascript_driver = :webkit
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how 
@@ -64,12 +64,3 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
-
-# We need this to fix the random timeout error that we were seeing in CI.
-Capybara.register_driver :selenium_with_long_timeout do |app|
-  client = Selenium::WebDriver::Remote::Http::Default.new
-  client.timeout = 120
-  Capybara::Selenium::Driver.new(app, :browser => :firefox, :http_client => client)
-end
-
-Capybara.javascript_driver = :selenium_with_long_timeout
