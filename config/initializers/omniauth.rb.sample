@@ -2,7 +2,7 @@
 # The wiki has further details on configuring each provider.
 
 Devise.setup do |config|
-  # config.omniauth :github 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
+  # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
 
   # config.omniauth :ldap, 
   #     :host => 'YOUR_LDAP_SERVER',
