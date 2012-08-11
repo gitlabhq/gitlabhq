@@ -18,29 +18,67 @@ gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
 
+# API
 gem "grape", "~> 0.2.1"
+
+# Format dates and times
+# based on human-friendly examples
 gem "stamp"
+
+# Pagination
 gem "kaminari"
+
+# HAML
 gem "haml-rails"
+
+# Files attachments
 gem "carrierwave"
+
+# Authorization
 gem "six"
+
+# Generate Fake data
 gem "ffaker"
+
+# Seed data
 gem "seed-fu"
+
+# Markdown to HTML
 gem "redcarpet", "~> 2.1.1"
+
+# Servers
 gem "thin"
 gem "unicorn"
-gem "git"
-gem "acts_as_list"
+
+# Issue tags
 gem "acts-as-taggable-on", "2.3.1"
+
+# Decorators
 gem "drapper"
+
+# Background jobs
 gem "resque", "~> 1.20.0"
-gem "httparty"
-gem "charlock_holmes"
-gem "foreman"
-gem "colored"
 gem 'resque_mailer'
-gem 'tabs_on_rails'
+
+# HTTP requests
+gem "httparty"
+
+# Handle encodings
+gem "charlock_holmes"
+
+# Colored output to console
+gem "colored"
+
+# GITLAB settings
 gem 'settingslogic'
+
+# Misc
+gem "foreman"
+gem "git"
+
+# Unused
+gem 'tabs_on_rails'
+gem "acts_as_list"
 
 group :assets do
   gem "sass-rails",   "3.2.5"
