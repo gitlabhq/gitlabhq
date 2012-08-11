@@ -1,6 +1,5 @@
 env:
   - DB=mysql
-  - DB=sqlite
 before_install:
   - sudo apt-get install libicu-dev -y
   - sudo apt-get install libqt4-dev libqtwebkit-dev -y
