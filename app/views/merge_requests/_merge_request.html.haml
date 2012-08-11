@@ -7,20 +7,21 @@
             %i.icon-ok
             = "MERGED"
       - if merge_request.notes.any?
-        %span.btn.small.disabled.grouped
+        .notes-count.btn.small.disabled.grouped
           %i.icon-comment
           = merge_request.notes.count
-      %span.btn.small.disabled.grouped
-        = merge_request.source_branch
+      .merge-branches
+        %span.pretty_label.branch= merge_request.source_branch
         &rarr;
-        = merge_request.target_branch
-  = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
+        %span.pretty_label.branch= merge_request.target_branch
+  %strong.gfm-id !#{merge_request.id}
 
   %p= link_to_gfm truncate(merge_request.title, :length => 80), project_merge_request_path(merge_request.project, merge_request), :class => "row_title"
 
   %span.update-author
-    %small.cdark= "##{merge_request.id}"
-    authored by #{merge_request.author_name}
+    by
+    = image_tag gravatar_icon(merge_request.author_email), :width => 16, :class => "lil_av"
+    %strong.author= link_to_merge_request_author(merge_request)
     = time_ago_in_words(merge_request.created_at)
     ago
     - if merge_request.upvotes > 0

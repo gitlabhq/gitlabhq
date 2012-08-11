@@ -31,9 +31,13 @@
 }
 
 /**
- * MR -> show: Automerge widget
+ * MR -> show
  *
  */
+.main_box .merge-branches {
+  line-height: 36px;
+  margin: 15px;
+}
 .automerge_widget { 
   &.can_be_merged { 
     background: #DFF0D8;
@@ -85,12 +89,24 @@
 
 li.merge_request { 
   padding:7px 10px;
-  img.avatar { 
-    width: 32px;
+  strong.gfm-id {
+    color: #999999;
+    font-size: 24px;
+    line-height: 36px;
+    float: left;
+    width: 64px;
     margin-top: 4px;
+    margin-right: 4px;
   }
   p { 
     padding: 0px;
     padding-bottom: 2px;
+  }
+  .notes-count {
+    margin-top: 4px;
+  }
+  .merge-branches {
+    display: inline-block;
+    line-height: 36px;
   }
 }
