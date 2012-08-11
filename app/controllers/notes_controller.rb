@@ -5,7 +5,7 @@ class NotesController < ApplicationController
   before_filter :add_project_abilities
 
   before_filter :authorize_read_note!
-  before_filter :authorize_write_note!, :only => [:create]
+  before_filter :authorize_write_note!, only: [:create]
 
   respond_to :js
 
@@ -29,12 +29,12 @@ class NotesController < ApplicationController
     @note.destroy
 
     respond_to do |format|
-      format.js { render :nothing => true }
+      format.js { render nothing: true }
     end
   end
 
   def preview
-    render :text => view_context.markdown(params[:note])
+    render text: view_context.markdown(params[:note])
   end
 
   protected

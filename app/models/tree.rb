@@ -11,7 +11,7 @@ class Tree
     :size,
     :text?,
     :colorize,
-    :to => :tree
+    to: :tree
 
   def initialize(raw_tree, project, ref = nil, path = nil)
     @project, @ref, @path = project, ref, path,

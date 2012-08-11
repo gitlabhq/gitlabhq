@@ -20,7 +20,7 @@ class MergeRequest < ActiveRecord::Base
   validate :validate_branches
 
   def self.find_all_by_branch(branch_name)
-    where("source_branch like :branch or target_branch like :branch", :branch => branch_name)
+    where("source_branch like :branch or target_branch like :branch", branch: branch_name)
   end
 
   def human_state
@@ -48,7 +48,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unchecked
-    self.update_attributes(:state => UNCHECKED)
+    self.update_attributes(state: UNCHECKED)
   end
 
   def can_be_merged?
@@ -101,11 +101,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_event
-    self.project.events.where(:target_id => self.id, :target_type => "MergeRequest", :action => Event::Merged).last
+    self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::Merged).last
   end
 
   def closed_event
-    self.project.events.where(:target_id => self.id, :target_type => "MergeRequest", :action => Event::Closed).last
+    self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::Closed).last
   end
 
   def commits
@@ -128,7 +128,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    self.update_attributes :state => CANNOT_BE_MERGED
+    self.update_attributes state: CANNOT_BE_MERGED
   end
 
   def reloaded_commits
@@ -150,11 +150,11 @@ class MergeRequest < ActiveRecord::Base
   def merge!(user_id)
     self.mark_as_merged!
     Event.create(
-      :project => self.project,
-      :action => Event::Merged,
-      :target_id => self.id,
-      :target_type => "MergeRequest",
-      :author_id => user_id
+      project: self.project,
+      action: Event::Merged,
+      target_id: self.id,
+      target_type: "MergeRequest",
+      author_id: user_id
     )
   end
 

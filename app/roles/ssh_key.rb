@@ -9,7 +9,7 @@ module SshKey
   def repository_delete_key
     Gitlab::GitHost.system.new.configure do |c|
       #delete key file is there is no identically deploy keys
-      if !is_deploy_key || Key.where(:identifier => identifier).count() == 0
+      if !is_deploy_key || Key.where(identifier: identifier).count() == 0
         c.delete_key(identifier)
       end
       c.update_projects(projects)

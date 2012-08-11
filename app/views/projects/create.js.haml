@@ -1,6 +1,6 @@
 - if @project.saved?
   :plain
-    location.href = "#{project_path(@project, :notice => 'Project was successfully created.')}";
+    location.href = "#{project_path(@project, notice: 'Project was successfully created.')}";
 - else
   - if @project.git_error?
     location.href = "#{errors_githost_path}";

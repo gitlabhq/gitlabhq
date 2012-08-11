@@ -3,10 +3,10 @@ module ProjectPush
     data = post_receive_data(oldrev, newrev, ref, user)
 
     Event.create(
-      :project => self,
-      :action => Event::Pushed,
-      :data => data,
-      :author_id => data[:user_id]
+      project: self,
+      action: Event::Pushed,
+      data: data,
+      author_id: data[:user_id]
     )
   end
 
@@ -20,7 +20,7 @@ module ProjectPush
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests
-    mrs = self.merge_requests.opened.where(:target_branch => branch_name).all
+    mrs = self.merge_requests.opened.where(target_branch: branch_name).all
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
     mrs.each { |merge_request| merge_request.merge!(user.id) }
 

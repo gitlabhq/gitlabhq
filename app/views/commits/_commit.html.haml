@@ -1,13 +1,13 @@
 %li.commit
   .browse_code_link_holder
     %p
-      %strong= link_to "Browse Code »", tree_project_ref_path(@project, commit.id), :class => "right"
+      %strong= link_to "Browse Code »", tree_project_ref_path(@project, commit.id), class: "right"
   %p
-    = link_to commit.short_id(8), project_commit_path(@project, :id => commit.id), :class => "commit_short_id"
+    = link_to commit.short_id(8), project_commit_path(@project, id: commit.id), class: "commit_short_id"
     %strong.cgray= commit.author_name
     &ndash;
-    = image_tag gravatar_icon(commit.author_email), :class => "avatar", :width => 16
-    = link_to_gfm truncate(commit.title, :length => 50), project_commit_path(@project, :id => commit.id), :class => "row_title"
+    = image_tag gravatar_icon(commit.author_email), class: "avatar", width: 16
+    = link_to_gfm truncate(commit.title, length: 50), project_commit_path(@project, id: commit.id), class: "row_title"
 
     %span.committed_ago
       = time_ago_in_words(commit.committed_date)

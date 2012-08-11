@@ -1,7 +1,7 @@
-%table{:style => "display:none;"}
+%table{style: "display:none;"}
   %tr.per_line_form
-    %td{:colspan => 3 }
-      = form_for [@project, @note], :remote => "true", :multipart => true do |f|
+    %td{colspan: 3 }
+      = form_for [@project, @note], remote: "true", multipart: true do |f|
         %h3.page_title Leave a note
         %div.span10
           -if @note.errors.any?
@@ -12,11 +12,11 @@
           = f.hidden_field :noteable_id
           = f.hidden_field :noteable_type
           = f.hidden_field :line_code
-          = f.text_area :note,  :size => 255
+          = f.text_area :note,  size: 255
           .note_actions
             .buttons
-              = f.submit 'Add note', :class => "btn primary submit_note", :id => "submit_note"
-              = link_to "Cancel", "#", :class => "btn hide-button"
+              = f.submit 'Add note', class: "btn primary submit_note", id: "submit_note"
+              = link_to "Cancel", "#", class: "btn hide-button"
             .options
               %h6.left Notify via email:
               .labels

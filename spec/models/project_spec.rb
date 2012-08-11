@@ -80,17 +80,17 @@ describe Project do
   end
 
   it "should return valid url to repo" do
-    project = Project.new(:path => "somewhere")
+    project = Project.new(path: "somewhere")
     project.url_to_repo.should == Gitlab.config.ssh_path + "somewhere.git"
   end
 
   it "should return path to repo" do
-    project = Project.new(:path => "somewhere")
+    project = Project.new(path: "somewhere")
     project.path_to_repo.should == File.join(Rails.root, "tmp", "tests", "somewhere")
   end
 
   it "returns the full web URL for this repo" do
-    project = Project.new(:code => "somewhere")
+    project = Project.new(code: "somewhere")
     project.web_url.should == "#{Gitlab.config.url}/somewhere"
   end
 
@@ -101,7 +101,7 @@ describe Project do
     end
 
     it "should be invalid repo" do
-      project = Project.new(:name => "ok_name", :path => "/INVALID_PATH/", :code => "NEOK")
+      project = Project.new(name: "ok_name", path: "/INVALID_PATH/", code: "NEOK")
       project.valid_repo?.should be_false
     end
   end
@@ -121,7 +121,7 @@ describe Project do
     let(:project)    { Factory :project }
 
     it 'returns the creation date of the project\'s last event if present' do
-      last_event = double(:created_at => 'now')
+      last_event = double(created_at: 'now')
       project.stub(:events).and_return( [double, double, last_event] )
       project.last_activity_date.should == last_event.created_at
     end
@@ -161,7 +161,7 @@ describe Project do
       end
 
       it "should return nil" do
-        lambda { Project.new(:path => "invalid").repo }.should raise_error(Grit::NoSuchPathError)
+        lambda { Project.new(path: "invalid").repo }.should raise_error(Grit::NoSuchPathError)
       end
 
       it "should return nil" do
@@ -214,10 +214,10 @@ describe Project do
 
     before do
       @merge_request = Factory :merge_request,
-        :project => project,
-        :merged => false,
-        :closed => false
-      @key = Factory :key, :user_id => project.owner.id
+        project: project,
+        merged: false,
+        closed: false
+      @key = Factory :key, user_id: project.owner.id
     end
 
     it "should close merge request if last commit from source branch was pushed to target branch" do

@@ -11,15 +11,15 @@ class ApplicationController < ActionController::Base
   helper_method :abilities, :can?
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
-    render "errors/gitolite", :layout => "error"
+    render "errors/gitolite", layout: "error"
   end
 
   rescue_from Encoding::CompatibilityError do |exception|
-    render "errors/encoding", :layout => "error", :status => 404
+    render "errors/encoding", layout: "error", status: 404
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
-    render "errors/not_found", :layout => "error", :status => 404
+    render "errors/not_found", layout: "error", status: 404
   end
 
   layout :layout_by_resource
@@ -97,15 +97,15 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!
-    render "errors/access_denied", :layout => "error", :status => 404
+    render "errors/access_denied", layout: "error", status: 404
   end
 
   def not_found!
-    render "errors/not_found", :layout => "error", :status => 404
+    render "errors/not_found", layout: "error", status: 404
   end
 
   def git_not_found!
-    render "errors/git_not_found", :layout => "error", :status => 404
+    render "errors/git_not_found", layout: "error", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -127,7 +127,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render :file => File.join(Rails.root, "public", "404"), :layout => false, :status => "404"
+    render file: File.join(Rails.root, "public", "404"), layout: false, status: "404"
   end
 
   def require_non_empty_project

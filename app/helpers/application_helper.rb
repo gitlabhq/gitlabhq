@@ -43,23 +43,23 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.projects.map{ |p| { :label => p.name, :url => project_path(p) } }
+    projects = current_user.projects.map{ |p| { label: p.name, url: project_path(p) } }
     default_nav = [
-      { :label => "Profile", :url => profile_path },
-      { :label => "Keys", :url => keys_path },
-      { :label => "Dashboard", :url => root_path },
-      { :label => "Admin", :url => admin_root_path }
+      { label: "Profile", url: profile_path },
+      { label: "Keys", url: keys_path },
+      { label: "Dashboard", url: root_path },
+      { label: "Admin", url: admin_root_path }
     ]
 
     project_nav = []
 
     if @project && !@project.new_record?
       project_nav = [
-        { :label => "#{@project.name} / Issues", :url => project_issues_path(@project) },
-        { :label => "#{@project.name} / Wall", :url => wall_project_path(@project) },
-        { :label => "#{@project.name} / Tree", :url => tree_project_ref_path(@project, @project.root_ref) },
-        { :label => "#{@project.name} / Commits", :url => project_commits_path(@project) },
-        { :label => "#{@project.name} / Team", :url => team_project_path(@project) }
+        { label: "#{@project.name} / Issues", url: project_issues_path(@project) },
+        { label: "#{@project.name} / Wall", url: wall_project_path(@project) },
+        { label: "#{@project.name} / Tree", url: tree_project_ref_path(@project, @project.root_ref) },
+        { label: "#{@project.name} / Commits", url: project_commits_path(@project) },
+        { label: "#{@project.name} / Team", url: team_project_path(@project) }
       ]
     end
 
@@ -89,7 +89,7 @@ module ApplicationHelper
              when :wall; wall_tab?
              when :wiki; controller.controller_name == "wikis"
              when :issues; issues_tab?
-             when :network; current_page?(:controller => "projects", :action => "graph", :id => @project)
+             when :network; current_page?(controller: "projects", action: "graph", id: @project)
              when :merge_requests; controller.controller_name == "merge_requests"
 
              # Dashboard Area
@@ -100,10 +100,10 @@ module ApplicationHelper
              when :root; current_page?(dashboard_path) || current_page?(root_path)
 
              # Profile Area
-             when :profile;  current_page?(:controller => "profile", :action => :show)
-             when :password; current_page?(:controller => "profile", :action => :password)
-             when :token;    current_page?(:controller => "profile", :action => :token)
-             when :design;   current_page?(:controller => "profile", :action => :design)
+             when :profile;  current_page?(controller: "profile", action: :show)
+             when :password; current_page?(controller: "profile", action: :password)
+             when :token;    current_page?(controller: "profile", action: :token)
+             when :design;   current_page?(controller: "profile", action: :design)
              when :ssh_keys; controller.controller_name == "keys"
 
              # Admin Area

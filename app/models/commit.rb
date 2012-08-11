@@ -20,7 +20,7 @@ class Commit
     :tree,
     :id,
     :to_patch,
-    :to => :commit
+    to: :commit
 
 
   class << self 
@@ -57,7 +57,7 @@ class Commit
 
     def commits_since(repo, date)
       commits = repo.heads.map do |h|
-        repo.log(h.name, nil, :since => date).each { |c| Commit.new(c, h) }
+        repo.log(h.name, nil, since: date).each { |c| Commit.new(c, h) }
       end.flatten.uniq { |c| c.id }
 
       commits.sort! do |x, y|
@@ -69,7 +69,7 @@ class Commit
 
     def commits(repo, ref, path = nil, limit = nil, offset = nil)
       if path
-        repo.log(ref, path, :max_count => limit, :skip => offset)
+        repo.log(ref, path, max_count: limit, skip: offset)
       elsif limit && offset
         repo.commits(ref, limit, offset)
       else
@@ -86,9 +86,9 @@ class Commit
       last = project.commit(from.try(:strip))
 
       result = { 
-        :commits => [],
-        :diffs => [],
-        :commit => nil
+        commits: [],
+        diffs: [],
+        commit: nil
       }
 
       if first && last

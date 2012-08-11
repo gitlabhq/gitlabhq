@@ -11,9 +11,9 @@ describe "Issues" do
   describe "GET /issues" do
     before do
       @issue = Factory :issue,
-        :author => @user,
-        :assignee => @user,
-        :project => project
+        author: @user,
+        assignee: @user,
+        project: project
 
       visit project_issues_path(project)
     end
@@ -22,19 +22,19 @@ describe "Issues" do
       visit project_issues_path(project, :atom)
 
       page.response_headers['Content-Type'].should have_content("application/atom+xml")
-      page.body.should have_selector("title", :text => "#{project.name} issues")
-      page.body.should have_selector("author email", :text => @issue.author_email)
-      page.body.should have_selector("entry summary", :text => @issue.title)
+      page.body.should have_selector("title", text: "#{project.name} issues")
+      page.body.should have_selector("author email", text: @issue.author_email)
+      page.body.should have_selector("entry summary", text: @issue.title)
     end
 
     it "should render atom feed via private token" do
       logout
-      visit project_issues_path(project, :atom, :private_token => @user.private_token)
+      visit project_issues_path(project, :atom, private_token: @user.private_token)
 
       page.response_headers['Content-Type'].should have_content("application/atom+xml")
-      page.body.should have_selector("title", :text => "#{project.name} issues")
-      page.body.should have_selector("author email", :text => @issue.author_email)
-      page.body.should have_selector("entry summary", :text => @issue.title)
+      page.body.should have_selector("title", text: "#{project.name} issues")
+      page.body.should have_selector("author email", text: @issue.author_email)
+      page.body.should have_selector("entry summary", text: @issue.title)
     end
   end
 end

@@ -10,7 +10,7 @@ module Gitlab
       #  GET /users
       get do
         @users = User.all
-        present @users, :with => Entities::User
+        present @users, with: Entities::User
       end
 
       # Get a single user
@@ -21,7 +21,7 @@ module Gitlab
       #   GET /users/:id
       get ":id" do
         @user = User.find(params[:id])
-        present @user, :with => Entities::User
+        present @user, with: Entities::User
       end
     end
 
@@ -30,7 +30,7 @@ module Gitlab
     # Example Request:
     #   GET /user
     get "/user" do
-      present @current_user, :with => Entities::User
+      present @current_user, with: Entities::User
     end
   end
 end

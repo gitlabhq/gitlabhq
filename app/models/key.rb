@@ -6,16 +6,16 @@ class Key < ActiveRecord::Base
   belongs_to :project
 
   validates :title,
-            :presence => true,
-            :length   => { :within => 0..255 }
+            presence: true,
+            length: { within: 0..255 }
 
   validates :key,
-            :presence => true,
-            :length   => { :within => 0..5000 }
+            presence: true,
+            length: { within: 0..5000 }
 
   before_save :set_identifier
   before_validation :strip_white_space
-  delegate :name, :email, :to => :user, :prefix => true
+  delegate :name, :email, to: :user, prefix: true
   validate :unique_key
 
   def strip_white_space
@@ -23,7 +23,7 @@ class Key < ActiveRecord::Base
   end
 
   def unique_key
-    query = Key.where(:key => key)
+    query = Key.where(key: key)
     query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
     if (query.count > 0)
       errors.add :key, 'already exist.'

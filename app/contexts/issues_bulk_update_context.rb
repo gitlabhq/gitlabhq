@@ -12,12 +12,12 @@ class IssuesBulkUpdateContext < BaseContext
     opts[:assignee_id] = assignee_id if assignee_id.present?
     opts[:closed] = (status == "closed") if status.present?
 
-    issues = Issue.where(:id => issues_ids).all
+    issues = Issue.where(id: issues_ids).all
     issues = issues.select { |issue| can?(current_user, :modify_issue, issue) }
     issues.each { |issue| issue.update_attributes(opts) }
     { 
-      :count => issues.count,
-      :success => !issues.count.zero?
+      count: issues.count,
+      success: !issues.count.zero?
     }
   end
 end

@@ -71,7 +71,7 @@ class MailerObserver < ActiveRecord::Observer
 
     # Create comment about status changed
     if target.closed_changed?
-      note = Note.new(:noteable => target, :project => target.project)
+      note = Note.new(noteable: target, project: target.project)
       note.author = current_user
       note.note = "_Status changed to #{target.closed ? 'closed' : 'reopened'}_"
       note.save()

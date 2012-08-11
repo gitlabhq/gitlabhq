@@ -18,29 +18,29 @@ describe User do
   end
 
   it "should return valid identifier" do
-    user = User.new(:email => "test@mail.com")
+    user = User.new(email: "test@mail.com")
     user.identifier.should == "test_mail_com"
   end
 
   it "should return identifier without + sign" do
-    user = User.new(:email => "test+foo@mail.com")
+    user = User.new(email: "test+foo@mail.com")
     user.identifier.should == "test_foo_mail_com"
   end
 
   it "should execute callback when force_random_password specified" do
-    user = User.new(:email => "test@mail.com", :force_random_password => true)
+    user = User.new(email: "test@mail.com", force_random_password: true)
     user.should_receive(:generate_password)
     user.save
   end
 
   it "should not generate password by default" do
-    user = Factory(:user, :password => 'abcdefg', :password_confirmation => 'abcdefg')
+    user = Factory(:user, password: 'abcdefg', password_confirmation: 'abcdefg')
     user.password.should == 'abcdefg'
   end
 
   it "should generate password when forcing random password" do
     Devise.stub(:friendly_token).and_return('123456789')
-    user = User.create(:email => "test1@mail.com", :force_random_password => true)
+    user = User.create(email: "test1@mail.com", force_random_password: true)
     user.password.should == user.password_confirmation
     user.password.should == '12345678'
   end
@@ -54,8 +54,8 @@ describe User do
     before do
       @user = Factory :user
       @note = Factory :note,
-        :author => @user,
-        :project => Factory(:project)
+        author: @user,
+        project: Factory(:project)
     end
 
     it "should destroy all notes with user" do

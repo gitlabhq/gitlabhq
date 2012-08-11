@@ -1,6 +1,6 @@
 !!! 5
-%html{ :lang => "en"}
+%html{ lang: "en"}
   = render "layouts/head"
   %body.ui_basic.login-page
-    = render :partial => "layouts/flash"
+    = render partial: "layouts/flash"
     .container= yield

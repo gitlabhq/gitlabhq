@@ -2,7 +2,7 @@ class Admin::ProjectsController < ApplicationController
   layout "admin"
   before_filter :authenticate_user!
   before_filter :authenticate_admin!
-  before_filter :admin_project, :only => [:edit, :show, :update, :destroy, :team_update]
+  before_filter :admin_project, only: [:edit, :show, :update, :destroy, :team_update]
 
   def index
     @admin_projects = Project.scoped
@@ -36,7 +36,7 @@ class Admin::ProjectsController < ApplicationController
     if @admin_project.save
       redirect_to [:admin, @admin_project], notice: 'Project was successfully created.'
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -50,7 +50,7 @@ class Admin::ProjectsController < ApplicationController
     if @admin_project.update_attributes(params[:project])
       redirect_to [:admin, @admin_project], notice: 'Project was successfully updated.'
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 

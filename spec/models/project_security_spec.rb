@@ -12,7 +12,7 @@ describe Project do
 
     describe "read access" do
       before do
-        @p1.users_projects.create(:project => @p1, :user => @u2, :project_access => UsersProject::REPORTER)
+        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::REPORTER)
       end
 
       it { @abilities.allowed?(@u1, :read_project, @p1).should be_false }
@@ -21,7 +21,7 @@ describe Project do
 
     describe "write access" do
       before do
-        @p1.users_projects.create(:project => @p1, :user => @u2, :project_access => UsersProject::DEVELOPER)
+        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::DEVELOPER)
       end
 
       it { @abilities.allowed?(@u1, :write_project, @p1).should be_false }
@@ -30,8 +30,8 @@ describe Project do
 
     describe "admin access" do
       before do
-        @p1.users_projects.create(:project => @p1, :user => @u1, :project_access => UsersProject::DEVELOPER)
-        @p1.users_projects.create(:project => @p1, :user => @u2, :project_access => UsersProject::MASTER)
+        @p1.users_projects.create(project: @p1, user: @u1, project_access: UsersProject::DEVELOPER)
+        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::MASTER)
       end
 
       it { @abilities.allowed?(@u1, :admin_project, @p1).should be_false }

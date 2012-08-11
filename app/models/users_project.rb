@@ -12,18 +12,18 @@ class UsersProject < ActiveRecord::Base
   after_save :update_repository
   after_destroy :update_repository
 
-  validates_uniqueness_of :user_id, :scope => [:project_id]
+  validates_uniqueness_of :user_id, scope: [:project_id]
   validates_presence_of :user_id
   validates_presence_of :project_id
 
-  delegate :name, :email, :to => :user, :prefix => true
+  delegate :name, :email, to: :user, prefix: true
 
   def self.bulk_import(project, user_ids, project_access)
     UsersProject.transaction do
       user_ids.each do |user_id|
         users_project = UsersProject.new(
-          :project_access => project_access,
-          :user_id => user_id
+          project_access: project_access,
+          user_id: user_id
         )
         users_project.project = project
         users_project.save
@@ -35,7 +35,7 @@ class UsersProject < ActiveRecord::Base
     UsersProject.transaction do
       project_ids.each do |project_id|
         users_project = UsersProject.new(
-          :project_access => project_access,
+          project_access: project_access,
         )
         users_project.project_id = project_id
         users_project.user_id = user.id

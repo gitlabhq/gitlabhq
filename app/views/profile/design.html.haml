@@ -1,4 +1,4 @@
-= form_for @user, :url => profile_update_path, :remote => true, :method => :put do |f|
+= form_for @user, url: profile_update_path, remote: true, method: :put do |f|
   %div
     %h3 Application theme
     %hr
@@ -18,16 +18,16 @@
   %h3 Code review
   %hr
   .row
-    %label.span3{:for => "user_dark_scheme_false"}
+    %label.span3{for: "user_dark_scheme_false"}
       .thumbnail
-        = image_tag "white.png", :width => 260, :class => "styled_image"
+        = image_tag "white.png", width: 260, class: "styled_image"
         .caption
           %h5
             = f.radio_button :dark_scheme, false
             White code preview
-    %label.span3{:for => "user_dark_scheme_true"}
+    %label.span3{for: "user_dark_scheme_true"}
       .thumbnail
-        = image_tag "dark.png", :width => 260, :class => "styled_image"
+        = image_tag "dark.png", width: 260, class: "styled_image"
         .caption
           %h5
             = f.radio_button :dark_scheme, true

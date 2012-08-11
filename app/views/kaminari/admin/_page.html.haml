@@ -6,5 +6,5 @@
 -#    num_pages:     total number of pages
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
-%li{:class => "page#{' active' if page.current?}"}
-  = link_to page, url, {:remote => remote, :rel => page.next? ? 'next' : page.prev? ? 'prev' : nil}
+%li{class: "page#{' active' if page.current?}"}
+  = link_to page, url, {remote: remote, rel: page.next? ? 'next' : page.prev? ? 'prev' : nil}

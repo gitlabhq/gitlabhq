@@ -1,6 +1,6 @@
 = render "commits/commit_box"
-= render "commits/diffs", :diffs => @commit.diffs
-= render "notes/notes", :tid => @commit.id, :tt => "commit"
+= render "commits/diffs", diffs: @commit.diffs
+= render "notes/notes", tid: @commit.id, tt: "commit"
 = render "notes/per_line_form"
 
 

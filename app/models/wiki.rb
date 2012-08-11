@@ -1,10 +1,10 @@
 class Wiki < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
-  has_many :notes, :as => :noteable, :dependent => :destroy
+  has_many :notes, as: :noteable, dependent: :destroy
 
-  validates :content, :title, :user_id, :presence => true
-  validates :title, :length => 1..250
+  validates :content, :title, :user_id, presence: true
+  validates :title, length: 1..250
 
   before_update :set_slug
 

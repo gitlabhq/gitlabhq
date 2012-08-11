@@ -2,7 +2,7 @@ class MilestonesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
-  before_filter :milestone, :only => [:edit, :update, :destroy, :show]
+  before_filter :milestone, only: [:edit, :update, :destroy, :show]
   layout "project"
 
   # Authorize
@@ -12,7 +12,7 @@ class MilestonesController < ApplicationController
   before_filter :authorize_read_milestone!
 
   # Allow admin milestone
-  before_filter :authorize_admin_milestone!, :except => [:index, :show]
+  before_filter :authorize_admin_milestone!, except: [:index, :show]
 
   respond_to :html
 
@@ -77,7 +77,7 @@ class MilestonesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to project_milestones_path }
-      format.js { render :nothing => true }
+      format.js { render nothing: true }
     end
   end
 

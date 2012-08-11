@@ -9,7 +9,7 @@ class CommitsController < ApplicationController
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
-  before_filter :load_refs, :only => :index # load @branch, @tag & @ref
+  before_filter :load_refs, only: :index # load @branch, @tag & @ref
   before_filter :render_full_content
 
   def index
@@ -22,7 +22,7 @@ class CommitsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.js
-      format.atom { render :layout => false }
+      format.atom { render layout: false }
     end
   end
 
@@ -61,9 +61,9 @@ class CommitsController < ApplicationController
     
     send_data(
       @commit.to_patch,
-      :type => "text/plain",
-      :disposition => 'attachment',
-      :filename => (@commit.id.to_s + ".patch")
+      type: "text/plain",
+      disposition: 'attachment',
+      filename: (@commit.id.to_s + ".patch")
     )
   end
 end

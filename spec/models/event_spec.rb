@@ -45,25 +45,25 @@ describe Event do
       @user = project.owner
 
       data = { 
-        :before => "0000000000000000000000000000000000000000",
-        :after => "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-        :ref => "refs/heads/master",
-        :user_id => @user.id,
-        :user_name => @user.name,
-        :repository => {
-          :name => project.name,
-          :url => "localhost/rubinius",
-          :description => "",
-          :homepage => "localhost/rubinius",
-          :private => true
+        before: "0000000000000000000000000000000000000000",
+        after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
+        ref: "refs/heads/master",
+        user_id: @user.id,
+        user_name: @user.name,
+        repository: {
+          name: project.name,
+          url: "localhost/rubinius",
+          description: "",
+          homepage: "localhost/rubinius",
+          private: true
         }
       }
 
       @event = Event.create(
-        :project => project,
-        :action => Event::Pushed,
-        :data => data,
-        :author_id => @user.id
+        project: project,
+        action: Event::Pushed,
+        data: data,
+        author_id: @user.id
       )
     end
 

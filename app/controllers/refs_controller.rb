@@ -9,7 +9,7 @@ class RefsController < ApplicationController
   before_filter :require_non_empty_project
 
   before_filter :ref
-  before_filter :define_tree_vars, :only => [:tree, :blob, :blame, :logs_tree]
+  before_filter :define_tree_vars, only: [:tree, :blob, :blame, :logs_tree]
   before_filter :render_full_content
 
   layout "project"
@@ -20,7 +20,7 @@ class RefsController < ApplicationController
         new_path = if params[:destination] == "tree"
                      tree_project_ref_path(@project, params[:ref]) 
                    else
-                     project_commits_path(@project, :ref => params[:ref])
+                     project_commits_path(@project, ref: params[:ref])
                    end
 
         redirect_to new_path 
@@ -53,8 +53,8 @@ class RefsController < ApplicationController
       last_commit = @project.commits(@commit.id, file, 1).last
       last_commit = CommitDecorator.decorate(last_commit)
       {
-        :file_name => content.name, 
-        :commit => last_commit
+        file_name: content.name, 
+        commit: last_commit
       }
     end
   end
@@ -70,9 +70,9 @@ class RefsController < ApplicationController
 
       send_data(
         @tree.data,
-        :type => mime_type,
-        :disposition => 'inline',
-        :filename => @tree.name
+        type: mime_type,
+        disposition: 'inline',
+        filename: @tree.name
       )
     else
       head(404)

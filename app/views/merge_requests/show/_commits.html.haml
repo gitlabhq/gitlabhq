@@ -7,19 +7,19 @@
       - if @commits.count > 8
         %ul.first_mr_commits.unstyled
           - @commits.first(8).each do |commit|
-            = render "commits/commit", :commit => commit
+            = render "commits/commit", commit: commit
           %li.bottom
             8 of #{@commits.count} commits displayed.
             %strong
               %a.mr_show_all_commits Click here to show all
         %ul.all_mr_commits.hide.unstyled
           - @commits.each do |commit|
-            = render "commits/commit", :commit => commit
+            = render "commits/commit", commit: commit
 
       - else
         %ul.unstyled
           - @commits.each do |commit|
-            = render "commits/commit", :commit => commit
+            = render "commits/commit", commit: commit
 
 - else
   %h5
