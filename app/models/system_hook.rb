@@ -1,5 +1,5 @@
 class SystemHook < WebHook
-  
+
   def async_execute(data)
     Resque.enqueue(SystemHookWorker, id, data)
   end
@@ -9,5 +9,5 @@ class SystemHook < WebHook
       sh.async_execute data
     end
   end
-  
+
 end

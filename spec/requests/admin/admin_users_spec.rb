@@ -107,13 +107,13 @@ describe "Admin::Users" do
     end
   end
 
-  describe "Add new project" do 
-    before do 
+  describe "Add new project" do
+    before do
       @new_project = Factory :project
       visit admin_user_path(@user)
     end
 
-    it "should create new user" do 
+    it "should create new user" do
       select @new_project.name, from: "project_ids"
       expect { click_button "Add" }.to change { UsersProject.count }.by(1)
       page.should have_content @new_project.name

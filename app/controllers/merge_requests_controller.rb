@@ -61,7 +61,7 @@ class MergeRequestsController < ApplicationController
       @merge_request.reload_code
       redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.'
     else
-      render action: "new" 
+      render action: "new"
     end
   end
 
@@ -76,7 +76,7 @@ class MergeRequestsController < ApplicationController
   end
 
   def automerge_check
-    if @merge_request.unchecked? 
+    if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
     render json: {state: @merge_request.human_state}
@@ -129,7 +129,7 @@ class MergeRequestsController < ApplicationController
 
   def validates_merge_request
     # Show git not found page if target branch doesnt exist
-    return git_not_found! unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch) 
+    return git_not_found! unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch)
 
     # Show git not found page if source branch doesnt exist
     # and there is no saved commits between source & target branch
@@ -140,7 +140,7 @@ class MergeRequestsController < ApplicationController
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
 
-    # Get commits from repository 
+    # Get commits from repository
     # or from cache if already merged
     @commits = @merge_request.commits
     @commits = CommitDecorator.decorate(@commits)

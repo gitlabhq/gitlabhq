@@ -13,11 +13,11 @@ Given /^I visit project "(.*?)" issues page$/ do |arg1|
 end
 
 Given /^I should see "(.*?)" in issues$/ do |arg1|
-  page.should have_content arg1 
+  page.should have_content arg1
 end
 
 Given /^I should not see "(.*?)" in issues$/ do |arg1|
-  page.should_not have_content arg1 
+  page.should_not have_content arg1
 end
 
 Then /^I should see issue "(.*?)"$/ do |arg1|

@@ -117,19 +117,19 @@ describe Gitlab::API do
   describe "GET /projects/:id/:sha/blob" do
     it "should get the raw file contents" do
       get "#{api_prefix}/projects/#{project.code}/repository/commits/master/blob?filepath=README.md&private_token=#{user.private_token}"
-      
+
       response.status.should == 200
     end
 
     it "should return 404 for invalid branch_name" do
       get "#{api_prefix}/projects/#{project.code}/repository/commits/invalid_branch_name/blob?filepath=README.md&private_token=#{user.private_token}"
-      
+
       response.status.should == 404
     end
 
     it "should return 404 for invalid file" do
       get "#{api_prefix}/projects/#{project.code}/repository/commits/master/blob?filepath=README.invalid&private_token=#{user.private_token}"
-      
+
       response.status.should == 404
     end
   end

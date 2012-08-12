@@ -59,7 +59,7 @@ class CommitsController < ApplicationController
 
   def patch
     @commit = project.commit(params[:id])
-    
+
     send_data(
       @commit.to_patch,
       type: "text/plain",

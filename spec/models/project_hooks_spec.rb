@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Project, "Hooks" do
   let(:project) { Factory :project }
-  before do 
+  before do
     @key = Factory :key, user: project.owner
     @user = @key.user
     @key_id = @key.identifier
   end
 
-  describe "Post Receive Event" do 
-    it "should create push event" do 
+  describe "Post Receive Event" do
+    it "should create push event" do
       oldrev, newrev, ref = '00000000000000000000000000000000', 'newrev', 'refs/heads/master'
       project.observe_push(oldrev, newrev, ref, @user)
       event = Event.last

@@ -12,7 +12,7 @@ class ActivityObserver < ActiveRecord::Observer
   end
 
   def after_save(record)
-    if record.changed.include?("closed") 
+    if record.changed.include?("closed")
       Event.create(
         project: record.project,
         target_id: record.id,

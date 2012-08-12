@@ -35,7 +35,7 @@ class ProfileController < ApplicationController
     redirect_to profile_token_path
   end
 
-  private 
+  private
 
   def user
     @user = current_user

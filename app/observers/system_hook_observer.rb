@@ -1,6 +1,6 @@
 class SystemHookObserver < ActiveRecord::Observer
   observe :user, :project, :users_project
-  
+
   def after_create(model)
     if model.kind_of? Project
       SystemHook.all_hooks_fire({
@@ -12,7 +12,7 @@ class SystemHookObserver < ActiveRecord::Observer
         owner_email: model.owner.email,
         created_at: model.created_at
       })
-    elsif model.kind_of? User 
+    elsif model.kind_of? User
       SystemHook.all_hooks_fire({
         event_name: "user_create",
         name: model.name,

@@ -4,7 +4,7 @@ module Gitlab
 
       START  = "#!idiff-start!#"
       FINISH = "#!idiff-finish!#"
-    
+
       def processing diff_arr
         indexes = _indexes_of_changed_lines diff_arr
 
@@ -61,7 +61,7 @@ module Gitlab
         line.gsub!(FINISH, "</span>")
         line
       end
-    
+
     end
 
   end

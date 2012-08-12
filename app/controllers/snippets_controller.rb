@@ -67,7 +67,7 @@ class SnippetsController < ApplicationController
     redirect_to project_snippets_path(@project)
   end
 
-  def raw 
+  def raw
     send_data(
       @snippet.content,
       type: "text/plain",

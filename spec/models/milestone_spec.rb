@@ -31,21 +31,21 @@ describe Milestone do
 
   it { milestone.should be_valid }
 
-  describe "Issues" do 
-    before do 
+  describe "Issues" do
+    before do
       milestone.issues << issue
     end
 
     it { milestone.percent_complete.should == 0 }
 
-    it do 
+    it do
       issue.update_attributes closed: true
       milestone.percent_complete.should == 100
     end
   end
 
-  describe :expires_at do 
-    before do 
+  describe :expires_at do
+    before do
       milestone.update_attributes due_date: Date.today + 1.day
     end
 

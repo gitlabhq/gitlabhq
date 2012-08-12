@@ -12,7 +12,7 @@
     .span6
       .mr_branch_box
         %h5 From (Head Branch)
-        .body 
+        .body
           .padded
             = f.label :source_branch, "From", class: "control-label"
             .controls
@@ -36,12 +36,12 @@
   .clearfix
     .main_box
       .top_box_content
-        = f.label :title do 
+        = f.label :title do
           %strong= "Title *"
         .input= f.text_field :title, class: "input-xxlarge pad", maxlength: 255, rows: 5
       .middle_box_content
-        = f.label :assignee_id do 
-          %i.icon-user 
+        = f.label :assignee_id do
+          %i.icon-user
           Assign to
         .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, style: "width:250px")
 
@@ -66,7 +66,7 @@
     var source_branch = $("#merge_request_source_branch");
     var target_branch = $("#merge_request_target_branch");
 
-    
+
     $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
     $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });
 

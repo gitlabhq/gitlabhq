@@ -13,16 +13,16 @@ Given /^I visit project "(.*?)" merge requests page$/ do |arg1|
 end
 
 Then /^I should see "(.*?)" in merge requests$/ do |arg1|
-  page.should have_content arg1 
+  page.should have_content arg1
 end
 
 Then /^I should not see "(.*?)" in merge requests$/ do |arg1|
-  page.should_not have_content arg1 
+  page.should_not have_content arg1
 end
 
 Then /^I should see merge request "(.*?)"$/ do |arg1|
   merge_request = MergeRequest.find_by_title(arg1)
-  page.should have_content(merge_request.title[0..10]) 
+  page.should have_content(merge_request.title[0..10])
   page.should have_content(merge_request.target_branch)
   page.should have_content(merge_request.source_branch)
 end

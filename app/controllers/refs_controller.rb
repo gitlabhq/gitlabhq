@@ -14,18 +14,18 @@ class RefsController < ApplicationController
 
   layout "project"
 
-  def switch 
-    respond_to do |format| 
-      format.html do 
+  def switch
+    respond_to do |format|
+      format.html do
         new_path = if params[:destination] == "tree"
-                     tree_project_ref_path(@project, params[:ref]) 
+                     tree_project_ref_path(@project, params[:ref])
                    else
                      project_commits_path(@project, ref: params[:ref])
                    end
 
-        redirect_to new_path 
+        redirect_to new_path
       end
-      format.js do 
+      format.js do
         @ref = params[:ref]
         define_tree_vars
         render "tree"
@@ -53,7 +53,7 @@ class RefsController < ApplicationController
       last_commit = @project.commits(@commit.id, file, 1).last
       last_commit = CommitDecorator.decorate(last_commit)
       {
-        file_name: content.name, 
+        file_name: content.name,
         commit: last_commit
       }
     end
@@ -97,15 +97,15 @@ class RefsController < ApplicationController
 
     if params[:path]
       @history_path = tree_file_project_ref_path(@project, @ref, params[:path])
-      @logs_path = logs_file_project_ref_path(@project, @ref, params[:path]) 
+      @logs_path = logs_file_project_ref_path(@project, @ref, params[:path])
     else
       @history_path = tree_project_ref_path(@project, @ref)
-      @logs_path = logs_tree_project_ref_path(@project, @ref) 
+      @logs_path = logs_tree_project_ref_path(@project, @ref)
     end
   rescue
     return render_404
   end
-    
+
   def ref
     @ref = params[:id]
   end

@@ -8,7 +8,7 @@ module Notes
 
 
       @notes = case target_type
-               when "commit" 
+               when "commit"
                  then project.commit_notes(project.commit(target_id)).fresh.limit(20)
                when "snippet"
                  then  project.snippets.find(target_id).notes
@@ -26,7 +26,7 @@ module Notes
                  @notes.where("id > ?", last_id)
                elsif first_id
                  @notes.where("id < ?", first_id)
-               else 
+               else
                  @notes
                end
     end

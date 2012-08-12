@@ -1,17 +1,17 @@
 class CommitLoad < BaseContext
   def execute
-    result = { 
+    result = {
       commit: nil,
       suppress_diff: false,
       line_notes: [],
       notes_count: 0,
-      note: nil, 
+      note: nil,
       status: :ok
     }
 
     commit = project.commit(params[:id])
 
-    if commit 
+    if commit
       commit = CommitDecorator.decorate(commit)
       line_notes = project.commit_line_notes(commit)
 

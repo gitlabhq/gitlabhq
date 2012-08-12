@@ -46,11 +46,11 @@ class Snippet < ActiveRecord::Base
     0
   end
 
-  def name 
+  def name
     file_name
   end
 
-  def mode 
+  def mode
     nil
   end
 

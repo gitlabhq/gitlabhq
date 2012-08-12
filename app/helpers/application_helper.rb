@@ -75,16 +75,16 @@ module ApplicationHelper
   end
 
   def show_last_push_widget?(event)
-    event && 
+    event &&
       event.last_push_to_non_root? &&
       !event.rm_ref? &&
-      event.project && 
+      event.project &&
       event.project.merge_requests_enabled
   end
 
   def tab_class(tab_key)
     active = case tab_key
-             
+
              # Project Area
              when :wall; wall_tab?
              when :wiki; controller.controller_name == "wikis"

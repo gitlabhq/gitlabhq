@@ -35,7 +35,7 @@ module Gitlab
     def configure
       Timeout::timeout(30) do
         File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
-          begin 
+          begin
             f.flock(File::LOCK_EX)
             pull
             yield(self)
@@ -75,7 +75,7 @@ module Gitlab
       conf = ga_repo.config
       repo = update_project_config(project, conf)
       conf.add_repo(repo, true)
-      
+
       ga_repo.save
     end
 
@@ -98,7 +98,7 @@ module Gitlab
 
       repo = if conf.has_repo?(repo_name)
                conf.get_repo(repo_name)
-             else 
+             else
                ::Gitolite::Config::Repo.new(repo_name)
              end
 
@@ -132,7 +132,7 @@ module Gitlab
 
       # Read gitolite-admin user
       #
-      begin 
+      begin
         repo = conf.get_repo("gitolite-admin")
         owner_name = repo.permissions[0]["RW+"][""][0]
         raise StandardError if owner_name.blank?
@@ -145,7 +145,7 @@ module Gitlab
       repo_name = "@all"
       repo = if conf.has_repo?(repo_name)
                conf.get_repo(repo_name)
-             else 
+             else
                ::Gitolite::Config::Repo.new(repo_name)
              end
 

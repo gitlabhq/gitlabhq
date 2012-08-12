@@ -30,21 +30,21 @@ describe Event do
   end
 
   describe "Creation" do
-    before do 
+    before do
       @event = Factory :event
     end
 
-    it "should create a valid event" do 
+    it "should create a valid event" do
       @event.should be_valid
     end
   end
 
-  describe "Push event" do 
-    before do 
+  describe "Push event" do
+    before do
       project = Factory :project
       @user = project.owner
 
-      data = { 
+      data = {
         before: "0000000000000000000000000000000000000000",
         after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
         ref: "refs/heads/master",

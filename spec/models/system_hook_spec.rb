@@ -16,7 +16,7 @@ describe SystemHook do
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_create/).once
     end
-    
+
     it "project_destroy hook" do
       project = Factory :project
       with_resque do
@@ -31,7 +31,7 @@ describe SystemHook do
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_create/).once
     end
-    
+
     it "user_destroy hook" do
       user = Factory :user
       with_resque do
@@ -39,7 +39,7 @@ describe SystemHook do
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_destroy/).once
     end
-    
+
     it "project_create hook" do
       user = Factory :user
       project = Factory :project
@@ -48,7 +48,7 @@ describe SystemHook do
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_add_to_team/).once
     end
-    
+
     it "project_destroy hook" do
       user = Factory :user
       project = Factory :project

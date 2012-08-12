@@ -3,7 +3,7 @@ class IssueObserver < ActiveRecord::Observer
 
   def after_create(issue)
     if issue.assignee && issue.assignee != current_user
-      Notify.new_issue_email(issue.id).deliver 
+      Notify.new_issue_email(issue.id).deliver
     end
   end
 
