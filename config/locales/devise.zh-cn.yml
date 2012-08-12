@@ -1,0 +1,56 @@
+# Additional translations at http://github.com/plataformatec/devise/wiki/I18n
+
+zh-cn:
+  errors:
+    messages:
+      expired: "已经过期，请重新请求"
+      not_found: "没有找到"
+      already_confirmed: "已经认证，请尝试重新登录"
+      not_locked: "未锁定"
+      not_saved:
+        one: "有错误发生，所以%{resource}无法保存:"
+        other: "有%{count}个错误，所以%{resource}无法保存:"
+
+  devise:
+    failure:
+      already_authenticated: '你已经登录过了'
+      unauthenticated: '你需要注册或者登录后才能使用此功能'
+      unconfirmed: '在继续使用此功能前，你需要认证您的账号'
+      locked: '你的账号已被锁定，暂时无法使用'
+      invalid: '账号或密码错误'
+      invalid_token: '无法'
+      timeout: '登录已过期，请尝试重新登录'
+      inactive: '账号尚未激活，暂时无法使用'
+    sessions:
+      signed_in: '登录成功'
+      signed_out: '登出成功'
+    passwords:
+      send_instructions: '您将很快收到一封邮件，它将引导您如何重置您的密码。'
+      updated: '您的新密码已设定，自动登录成功。'
+      updated_not_active: '您的密码已重新设定。'
+      send_paranoid_instructions: "如果我们系统中有您的邮箱地址记录，我们将会发给您一份邮件引导您重置密码。"
+    confirmations:
+      send_instructions: '您将很快收到一封邮件，它将引导您如何完成账号认证。'
+      send_paranoid_instructions: '如果我们系统中有您的邮箱地址记录，我们将会发给您一份邮件引导您完成账户认证。'
+      confirmed: '您的账户已完成认证，自动登录成功。'
+    registrations:
+      signed_up: '欢迎您注册，注册已成功。'
+      updated: '账户信息已更新.'
+      destroyed: '账户已被注销，如需使用，请重新注册，非常感谢。'
+      signed_up_but_unconfirmed: '账户注册成功，请登录您的邮箱完成激活账户。'
+      signed_up_but_inactive: '账户注册成功，但是账户激活前尚无法登录。'
+      signed_up_but_locked: '账户注册成功，但是账户当前正被锁定，暂时无法登录。'
+    unlocks:
+      send_instructions: '您将很快收到一封邮件，它引导您如何解锁您的密码。'
+      unlocked: '账户成功解锁，自动登录成功。'
+      send_paranoid_instructions: '如果您的账户的确存在，您将很快收到一份引导您解锁账户的邮件。'
+    omniauth_callbacks:
+      success: '从 %{kind} 认证账号成功。'
+      failure: '无法从 %{kind} 认证您的账户，错误信息："%{reason}"。'
+    mailer:
+      confirmation_instructions:
+        subject: '确认信息说明'
+      reset_password_instructions:
+        subject: '重置密码说明'
+      unlock_instructions:
+        subject: '解除锁定说明'
