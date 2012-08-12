@@ -1,4 +1,7 @@
 # Additional translations at http://github.com/plataformatec/devise/wiki/I18n
+# Simply Chinese (China) translations for Devise 2.0
+# by Zhu Zhe (https://github.com/zhuzhe1983)
+# forked from https://github.com/gitlabhq/gitlabhq
 
 zh-cn:
   errors:
