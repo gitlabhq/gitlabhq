@@ -6,28 +6,28 @@
 
 /** LAYOUT **/
 
-.container { 
+.container {
   padding-top:0;
   z-index:5;
 }
 
-.container .content { 
+.container .content {
   margin:0 0;
 }
 
-.container  .sidebar { 
+.container  .sidebar {
   width: 200px;
   height:100%;
   min-height:450px;
   float:right;
 }
 
-.profile_avatar_holder { 
+.profile_avatar_holder {
   float:left;
   width:60px;
   height:60px;
   margin-right:20px;
-  img { 
+  img {
     width:60px;
     height:60px;
     background:#eee;
@@ -36,11 +36,11 @@
 
 
 .visible_link,
-.author_link { 
+.author_link {
   color: $link_color;
 }
 
-.widget { 
+.widget {
   @include shade;
   padding:20px;
   margin-bottom:20px;
@@ -48,7 +48,7 @@
   border-radius: 5px;
   background:#fafafa;
 
-  .link_holder { 
+  .link_holder {
     background:#eee;
     position:relative;
     left:-20px;
@@ -57,16 +57,16 @@
     width:100%;
     border-top:1px solid #ccc;
 
-    a { 
+    a {
       font-size:14px;
       color:#666;
     }
   }
 }
 
-.help li { color:#111 } 
+.help li { color:#111 }
 
-.back_link { 
+.back_link {
   text-decoration:underline;
   font-size:14px;
   font-weight:bold;
@@ -74,31 +74,31 @@
   padding-bottom:0;
 }
 
-.info_link { 
+.info_link {
   margin-right:5px;
   float:left;
 
-  img { 
+  img {
     width:20px;
   }
 }
 
-.download_repo_link { 
+.download_repo_link {
   background: url("images.png") no-repeat 0 -48px;
   padding-left:20px;
 }
 
-.number { 
-  border-radius: 4px; 
-  text-shadow: none; 
-  background: rgba(0,0,0,.12); 
-  text-align: center; 
-  padding: 2px 4px; 
+.number {
+  border-radius: 4px;
+  text-shadow: none;
+  background: rgba(0,0,0,.12);
+  text-align: center;
+  padding: 2px 4px;
   line-height:18px;
   margin-left:2px;
 }
 
-table a code { 
+table a code {
   position: relative;
   top: -2px;
   margin-right: 3px;
@@ -108,7 +108,7 @@ table a code {
  margin-top: 5px;
 }
 
-.loading { 
+.loading {
   margin:20px auto;
   background: url(ajax_loader.gif) no-repeat center center;
   width:40px;
@@ -198,12 +198,12 @@ a.project-update.titled {
   }
 }
 
-input.git_clone_url { 
+input.git_clone_url {
   width:325px;
 }
 
 .merge-request-form-holder {
-  select { 
+  select {
     width:300px;
   }
 }
@@ -217,17 +217,17 @@ input.git_clone_url {
     height: 100px;
 }
 
-.project_list_url { 
+.project_list_url {
   width:250px;
   background:#fff !important;
 }
 
 
 /** bordered list **/
-ul.bordered-list { 
+ul.bordered-list {
   margin:5px 0px;
   padding:0px;
-  li { 
+  li {
     padding: 5px 0;
     border-bottom: 1px solid #EEE;
     overflow: hidden;
@@ -236,25 +236,25 @@ ul.bordered-list {
   }
 }
 
-ul.bordered-list li:last-child { border:none } 
+ul.bordered-list li:last-child { border:none }
 
-.line_holder { 
-  &:hover { 
-    td { 
+.line_holder {
+  &:hover {
+    td {
       background: #FFFFCF !important;
     }
   }
 }
 
-li.commit { 
-  .avatar { 
+li.commit {
+  .avatar {
     width:24px;
     top:-3px;
     margin-right:10px;
     margin-left:10px;
   }
 
-  code { 
+  code {
     padding: 2px 2px 0;
     margin-top: -2px;
     &:hover {
@@ -270,21 +270,21 @@ p.time {
 }
 
 
-/** 
+/**
  * Dashboard page
- * 
+ *
  */
-.dashboard_category { 
+.dashboard_category {
   margin-bottom:30px;
-  h3 a { 
+  h3 a {
     color:#474D57;
-    &:hover { 
+    &:hover {
       text-decoration:underline;
     }
   }
 
-  .dashboard_block { 
-    .dash_project_item { 
+  .dashboard_block {
+    .dash_project_item {
       margin-bottom:10px;
       border:none;
       padding:0px 5px;
@@ -292,7 +292,7 @@ p.time {
         color:#888;
         &:hover {
           color:#111;
-          .ico.project { 
+          .ico.project {
             background-position:-209px -21px;
           }
         }
@@ -304,7 +304,7 @@ p.time {
   }
 }
 
-.styled_image { 
+.styled_image {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -313,23 +313,23 @@ p.time {
   box-shadow: 0 0 5px #888;
 }
 
-.event_feed { 
+.event_feed {
   min-height:40px;
   border-bottom:1px solid #ddd;
-  .avatar { 
+  .avatar {
     width:32px;
   }
-  .event_icon { 
+  .event_icon {
     float:right;
     margin-right:2px;
-    img { 
+    img {
       width:20px;
     }
   }
-  ul { 
+  ul {
     margin-left:50px;
     margin-bottom:5px;
-    .avatar { 
+    .avatar {
       width:24px;
     }
   }
@@ -338,17 +338,18 @@ p.time {
   &:last-child { border:none }
   .wll:hover { background:none }
 
-  .event_commits { 
+  .event_commits {
     margin-top: 5px;
 
-    li.commit { 
+    li.commit {
+      background: transparent;
       padding:5px;
       border:none;
     }
   }
 }
 
-.ico { 
+.ico {
   background: url("images.png") no-repeat -85px -77px;
   width: 19px;
   height: 16px;
@@ -357,24 +358,24 @@ p.time {
   margin-right: 10px;
   top: 8px;
 
-  &.project { 
+  &.project {
     background-position:  -37px -77px;
   }
 
-  &.activities { 
+  &.activities {
     background-position:-162px -22px;
   }
-  &.projects { 
+  &.projects {
     background-position:-209px -21px;
   }
 }
 
-.leftbar { 
-  h5, .title { 
+.leftbar {
+  h5, .title {
     padding:5px 10px;
   }
 
-  h4 { 
+  h4 {
     font-size:14px;
     padding:2px 10px;
     color:#666;
@@ -382,41 +383,41 @@ p.time {
   }
   a:last-child h4 { border:none; }
 
-  a:hover { 
+  a:hover {
     h4 {
       color:#111;
       background:$hover;
       border-color:#CCC;
-      .ico.project { 
+      .ico.project {
         background-position:-209px -21px;
       }
     }
   }
-  .bottom { 
+  .bottom {
     padding:10px;
   }
 }
 
-.btn { 
-  &.very_small { 
+.btn {
+  &.very_small {
     font-size:11px;
     padding:2px 6px;
     margin:2px;
   }
 
-  &.grouped { 
+  &.grouped {
     margin-right:7px;
     float:left;
   }
 
-  &.padded { 
+  &.padded {
     margin-right:3px;
     padding:4px 10px 4px;
   }
 }
 
 
-.prettyprint { 
+.prettyprint {
   background-color: #fefbf3;
   padding: 9px;
   border: 1px solid rgba(0,0,0,.2);
@@ -443,7 +444,7 @@ p.time {
 .readme {
   pre {
     background: white !important;
-    
+
     code {
       background: none !important;
     }
@@ -451,11 +452,11 @@ p.time {
 }
 
 
-.highlight_word { 
+.highlight_word {
   background:#EEDC94;
 }
 
-.status_info { 
+.status_info {
   font-size:14px;
   padding:5px 15px;
   line-height:24px;
@@ -464,13 +465,13 @@ p.time {
   float:left;
   margin-right:20px;
 
-  &.success { 
+  &.success {
     background: #5BB75B;
     color: white;
     text-shadow: 0 1px #111;
     border-color: #9A9;
   }
-  &.error { 
+  &.error {
     background: #DA4E49;
     border-color: #BD362F;
     color: white;
@@ -478,7 +479,7 @@ p.time {
   }
 }
 
-.arrow{ 
+.arrow{
   background: #E3E5EA;
   padding: 5px;
   margin-top:5px;
@@ -493,12 +494,12 @@ p.time {
   height: 150px;
 }
 
-.gitlab_pagination { 
+.gitlab_pagination {
   span a { color:$link_color; }
-  .prev, .next, .current, .page a { 
+  .prev, .next, .current, .page a {
     padding:10px;
   }
-  .current { 
+  .current {
     border-bottom:2px solid $style_color;
   }
 }
@@ -524,8 +525,8 @@ li.note {
   }
 }
 
-.markdown { 
-  img { 
+.markdown {
+  img {
     max-width:100%;
   }
 }
@@ -534,20 +535,20 @@ li.note {
   background-color: inherit;
 }
 
-.team_member_show { 
-  td:first-child { 
+.team_member_show {
+  td:first-child {
     color:#aaa;
   }
 }
 
-.remember_me { 
+.remember_me {
   text-align:left;
 
-  input { 
+  input {
     margin:0;
   }
 
-  span { 
+  span {
     padding-left:5px;
   }
 }
@@ -558,7 +559,7 @@ li.note {
  *
  */
 
-.milestone { 
+.milestone {
   @extend .wll;
 }
 
@@ -566,10 +567,10 @@ li.note {
  * Admin area
  *
  */
-.admin_dash { 
-  .data { 
-    a { 
-      h1 { 
+.admin_dash {
+  .data {
+    a {
+      h1 {
         line-height:48px;
         font-size:48px;
         padding:20px;
@@ -585,7 +586,7 @@ li.note {
     vertical-align:top;
   }
 
-  strong { 
+  strong {
     line-height:24px;
   }
 }
@@ -593,20 +594,20 @@ li.note {
 
 
 /* CHZN reset few styles */
-.chzn-container-single .chzn-single { 
+.chzn-container-single .chzn-single {
   background:#FFF;
   border: 1px solid #bbb;
   box-shadow:none;
 }
-.chzn-container-active .chzn-single { 
+.chzn-container-active .chzn-single {
   background:#fff;
 }
 
 /**
  * Push event widget
- * 
+ *
  */
-.event_lp { 
+.event_lp {
   @extend .alert-info;
   margin-bottom:20px;
   padding:8px;
@@ -615,19 +616,19 @@ li.note {
   @include border-radius(4px);
   min-height:22px;
 
-  .avatar { 
+  .avatar {
     width:24px;
   }
 }
 
 .supp_diff_link,
-.mr_show_all_commits { 
+.mr_show_all_commits {
   cursor:pointer;
 }
 
 /**
- *  Issues, MRs legend 
- * 
+ *  Issues, MRs legend
+ *
  */
 
 .list_legend {
@@ -640,32 +641,32 @@ li.note {
     margin-right:5px;
     margin-top: 2px;
     @include border-radius(4px);
-    &.today{ 
+    &.today{
       background: #ADA;
       border:1px solid #8B8;
     }
-    &.closed { 
+    &.closed {
       background: #DDD;
       border:1px solid  #BBB;
     }
-    &.yours { 
+    &.yours {
       background: #AAD;
       border:1px solid #88B;
     }
-    &.merged { 
+    &.merged {
       background: #DAD;
       border:1px solid #B8B;
     }
   }
-  .text { 
+  .text {
     padding-bottom: 10px;
     float:left;
   }
 }
 
 .merge_request,
-.issue { 
-  .list_legend { 
+.issue {
+  .list_legend {
     margin-right: 5px;
     margin-top: 14px;
     .icon {
@@ -678,34 +679,53 @@ li.note {
     }
   }
 
-  &.today{ 
+  &.today{
     background: #EFE;
     border-color:#CEC;
-    .icon { 
+    .icon {
       background: #ADA;
       border:1px solid #8B8;
     }
   }
-  &.closed { 
+  &.closed {
     background: #F5f5f5;
     border-color:#E5E5E5;
-    .icon { 
+    .icon {
       background: #DDD;
       border:1px solid  #BBB;
     }
   }
-  &.yours { 
-    .icon { 
+  &.yours {
+    .icon {
       background: #AAD;
       border:1px solid #88B;
     }
   }
-  &.merged { 
+  &.merged {
     background: #F5f5f5;
     border-color:#E5E5E5;
-    .icon { 
+    .icon {
       background: #DAD;
       border:1px solid #B8B;
+    }
+  }
+}
+
+.themes_opts {
+  padding-left:20px;
+
+  label {
+    width:175px;
+    margin-right:40px;
+
+    .prev {
+      @extend .borders;
+      height:120px;
+      width:175px;
+      margin-bottom:10px;
+      img {
+        width:180px;
+      }
     }
   }
 }
