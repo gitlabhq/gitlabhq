@@ -36,4 +36,10 @@ module IssuesHelper
   def issue_tags 
     @project.issues.tag_counts_on(:labels).map(&:name)
   end
+
+  # Returns a fake Milestone-like object that can be used in a
+  # <tt>select_tag</tt> to allow filtering by issues with no assigned milestone
+  def unassigned_milestone
+    OpenStruct.new(id: 0, title: 'Unspecified')
+  end
 end

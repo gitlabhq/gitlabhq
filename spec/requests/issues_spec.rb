@@ -89,4 +89,36 @@ describe "Issues" do
       page.should have_content 'gitlab'
     end
   end
+
+  describe "Filter issue" do
+    before do
+      ['foobar', 'barbaz', 'gitlab'].each do |title|
+        @issue = Factory :issue,
+          author: @user,
+          assignee: @user,
+          project: project,
+          title: title
+      end
+
+      @issue = Issue.first
+      @issue.milestone = Factory(:milestone, project: project)
+      @issue.save
+    end
+
+    it "should allow filtering by issues with no specified milestone" do
+      visit project_issues_path(project, milestone_id: '0')
+
+      page.should_not have_content 'foobar'
+      page.should have_content 'barbaz'
+      page.should have_content 'gitlab'
+    end
+
+    it "should allow filtering by a specified milestone" do
+      visit project_issues_path(project, milestone_id: @issue.milestone.id)
+
+      page.should have_content 'foobar'
+      page.should_not have_content 'barbaz'
+      page.should_not have_content 'gitlab'
+    end
+  end
 end
