@@ -1,12 +1,12 @@
 module GitlabMarkdownHelper
   REFERENCE_PATTERN = %r{
-    (\W)?              # Prefix (1)
+    ([^\w&;])?         # Prefix (1)
     (                  # Reference (2)
       @([\w\._]+)    | # User name (3)
       [#!$](\d+)     | # Issue/MR/Snippet ID (4)
       [\h]{6,40}       # Commit ID (2)
     )
-    (\W)?              # Suffix (5)
+    ([^\w&;])?         # Suffix (5)
   }x.freeze
 
   def gfm(text, html_options = {})
@@ -86,11 +86,8 @@ module GitlabMarkdownHelper
 
     # issue: #123
     when /^#/
-      # avoid HTML entities
-      unless vals[:prefix].try(:end_with?, "&") && vals[:suffix].try(:start_with?, ";")
-        issue = @project.issues.where(id: vals[:reference_id]).first
-        link_to("##{issue.id}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}")) if issue
-      end
+      issue = @project.issues.where(id: vals[:reference_id]).first
+      link_to("##{issue.id}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}")) if issue
 
     # merge request: !123
     when /^!/
