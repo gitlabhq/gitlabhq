@@ -12,53 +12,10 @@ module GitlabMarkdownHelper
       "{gfm-extraction-#{md5}}"
     end
 
-    # match     1    2 3               4     5            6
-    text.gsub!(/(\W)?(@([\w\._]+)|[#!$](\d+)|([\h]{6,40}))(\W)?/) do |match|
-      prefix    = $1
-      reference = $2
-      user_name = $3
-      issue_id  = $4
-      merge_request_id = $4
-      snippet_id = $4
-      commit_id = $5
-      suffix    = $6
+    # TODO: add popups with additional information
 
-      # TODO: add popups with additional information
-      ref_link = case reference
-
-                  # team member: @foo
-                  when /^@/
-                    user = @project.users.where(name: user_name).first
-                    member = @project.users_projects.where(user_id: user).first if user
-                    link_to("@#{user_name}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
-
-                  # issue: #123
-                  when /^#/
-                    # avoid HTML entities
-                    unless prefix.try(:end_with?, "&") && suffix.try(:start_with?, ";")
-                      issue = @project.issues.where(id: issue_id).first
-                      link_to("##{issue_id}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}")) if issue
-                    end
-
-                  # merge request: !123
-                  when /^!/
-                    merge_request = @project.merge_requests.where(id: merge_request_id).first
-                    link_to("!#{merge_request_id}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}")) if merge_request
-
-                  # snippet: $123
-                  when /^\$/
-                    snippet = @project.snippets.where(id: snippet_id).first
-                    link_to("$#{snippet_id}", project_snippet_path(@project, snippet), html_options.merge(title: "Snippet: #{snippet.title}", class: "gfm gfm-snippet #{html_options[:class]}")) if snippet
-
-                  # commit: 123456...
-                  when /^\h/
-                    commit = @project.commit(commit_id)
-                    link_to(commit_id, project_commit_path(@project, id: commit.id), html_options.merge(title: "Commit: #{commit.author_name} - #{CommitDecorator.new(commit).title}", class: "gfm gfm-commit #{html_options[:class]}")) if commit
-
-                  end # case
-
-      ref_link.nil? ? match : "#{prefix}#{ref_link}#{suffix}"
-    end # gsub
+    parser = Gitlab::Markdown.new(@project, html_options)
+    text = parser.parse(text)
 
     # Insert pre block extractions
     text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
