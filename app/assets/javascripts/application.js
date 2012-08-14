@@ -74,7 +74,7 @@ $(document).ready(function(){
    * Note markdown preview
    *
    */
-  $('#preview-link').on('click', function(e) {
+  $(document).on('click', '#preview-link', function(e) {
     $('#preview-note').text('Loading...');
 
     var previewLinkText = ($(this).text() == 'Preview' ? 'Edit' : 'Preview');
