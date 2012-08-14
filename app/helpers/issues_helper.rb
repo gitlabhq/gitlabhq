@@ -42,4 +42,8 @@ module IssuesHelper
   def unassigned_milestone
     OpenStruct.new(id: 0, title: 'Unspecified')
   end
+
+  def unassigned_issue
+    OpenStruct.new(id: 0, name: 'Unassigned')
+  end
 end

@@ -102,6 +102,7 @@ describe "Issues" do
 
       @issue = Issue.first
       @issue.milestone = Factory(:milestone, project: project)
+      @issue.assignee = nil
       @issue.save
     end
 
@@ -119,6 +120,22 @@ describe "Issues" do
       page.should have_content 'foobar'
       page.should_not have_content 'barbaz'
       page.should_not have_content 'gitlab'
+    end
+
+    it "should allow filtering by issues with no specified assignee" do
+      visit project_issues_path(project, assignee_id: '0')
+
+      page.should have_content 'foobar'
+      page.should_not have_content 'barbaz'
+      page.should_not have_content 'gitlab'
+    end
+
+    it "should allow filtering by a specified assignee" do
+      visit project_issues_path(project, assignee_id: @user.id)
+
+      page.should_not have_content 'foobar'
+      page.should have_content 'barbaz'
+      page.should have_content 'gitlab'
     end
   end
 end
