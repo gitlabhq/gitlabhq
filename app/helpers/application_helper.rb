@@ -110,7 +110,7 @@ module ApplicationHelper
              when :admin_root;     controller.controller_name == "dashboard"
              when :admin_users;    controller.controller_name == 'users'
              when :admin_projects; controller.controller_name == "projects"
-             when :admin_emails;   controller.controller_name == 'mailer'
+             when :admin_hooks;    controller.controller_name == 'hooks'
              when :admin_resque;   controller.controller_name == 'resque'
              when :admin_logs;   controller.controller_name == 'logs'
 
