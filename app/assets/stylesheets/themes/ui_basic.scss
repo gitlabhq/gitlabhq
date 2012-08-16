@@ -1,17 +1,17 @@
 /**
- * This file represent some UI that can be changed 
- * during web app restyle or theme select. 
+ * This file represent some UI that can be changed
+ * during web app restyle or theme select.
  *
  */
-.ui_basic { 
+.ui_basic {
   /*
    * Common styles
    *
    */
   a {
     color: $link_color;
-    &:hover { 
-      text-decoration:none; 
+    &:hover {
+      text-decoration:none;
       color: $blue_link;
     }
   }
