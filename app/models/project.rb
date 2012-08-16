@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
     project
   rescue => ex
     project.error_code = :db
-    project.errors.add(:base, "Cant save project. Please try again later")
+    project.errors.add(:base, "Can't save project. Please try again later")
     project
   end
 
@@ -112,7 +112,7 @@ class Project < ActiveRecord::Base
       errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
     end
   rescue
-    errors[:base] << ("Cant check your ability to create project")
+    errors[:base] << ("Can't check your ability to create project")
   end
 
   def repo_name
