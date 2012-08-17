@@ -51,6 +51,10 @@ git:
   git_timeout: 10
 
 # Omniauth configuration
+omniauth:
+  enabled: false
+  providers:
+
 # omniauth:
 #   enabled: true
 #   providers:
