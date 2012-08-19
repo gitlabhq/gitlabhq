@@ -134,7 +134,7 @@ Permissions:
 
 # 4. Install gitlab and configuration. Check status configuration.
 
-    sudo gem install charlock_holmes
+    sudo gem install charlock_holmes --version '0.6.8'
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
