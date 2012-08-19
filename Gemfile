@@ -101,6 +101,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
+  gem "headless"
   gem "autotest"
   gem "autotest-rails"
   gem "pry"

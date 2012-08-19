@@ -186,6 +186,7 @@ GEM
       railties (~> 3.0)
     hashery (1.4.0)
     hashie (1.2.0)
+    headless (0.3.1)
     hike (1.2.1)
     httparty (0.8.3)
       multi_json (~> 1.0)
@@ -398,6 +399,7 @@ DEPENDENCIES
   grape (~> 0.2.1)
   grit!
   haml-rails
+  headless
   httparty
   jquery-rails (= 2.0.2)
   jquery-ui-rails (= 0.5.0)

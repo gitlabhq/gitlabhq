@@ -12,6 +12,7 @@ require 'webmock/rspec'
 require 'factories'
 require 'monkeypatch'
 require 'email_spec'
+require 'headless'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -29,6 +30,11 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = false
+
+  config.before :all do
+    headless = Headless.new
+    headless.start
+  end
 
   config.before :each, type: :integration do
     DeviseSessionMock.disable
