@@ -1,4 +1,4 @@
-require File.join(Rails.root, 'lib', 'graph_commit')
+require Rails.root.join('lib', 'gitlab', 'graph_commit')
 
 class ProjectsController < ApplicationController
   before_filter :project, except: [:index, :new, :create]
@@ -78,7 +78,7 @@ class ProjectsController < ApplicationController
   end
 
   def graph
-    @days_json, @commits_json = GraphCommit.to_graph(project)
+    @days_json, @commits_json = Gitlab::GraphCommit.to_graph(project)
   end
 
   def destroy
