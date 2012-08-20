@@ -6,7 +6,6 @@
   = favicon_link_tag 'favicon.ico'
   = stylesheet_link_tag    "application"
   = javascript_include_tag "application"
-
   -# Atom feed
   - if controller_name == 'projects' && action_name == 'index'
     = auto_discovery_link_tag :atom, projects_url(:atom, private_token: current_user.private_token), title: "Dashboard feed"

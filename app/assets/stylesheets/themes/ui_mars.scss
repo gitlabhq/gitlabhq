@@ -59,14 +59,9 @@
     .app_logo {
       a {
         h1 {
-          background: url('images.png') no-repeat -3px -6px;
-          width: 65px;
-          height: 26px;
-          margin: 6px 0;
-          padding: 0;
-          float: left;
-          text-indent: -1000em;
-          float:left;
+          background: url('logo_white.png') no-repeat 0px -3px;
+          color:#fff;
+          text-shadow: 0 1px 1px #111;
         }
       }
       .separator {
@@ -75,7 +70,6 @@
 
     }
     .project_name {
-      line-height:38px;
       color:#fff;
       text-shadow: 0 1px 1px #111;
     }

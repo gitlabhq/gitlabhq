@@ -26,23 +26,25 @@ header {
     float:left;
     position:relative;
     top:-5px;
-
     a {
       float:left;
 
       h1 {
-        text-indent:-9999px;
+        padding-top: 5px;
         width:102px;
-        background: url('logo_text.png') no-repeat 0px -3px;
+        background: url('logo_dark.png') no-repeat 0px -3px;
         float:left;
         margin-left:5px;
-        font-size:20px;
+        font-size:36px;
         line-height:36px;
-        font-weight:bold;
-        color:#aaa;
+        font-weight:normal;
+        color:$style_color;
         text-shadow: 0 1px 1px #FFF;
         padding-left:50px;
+        height:40px;
+        font-family: 'Korolev', sans-serif;
       }
+
     }
     .separator {
       margin-left:20px;
@@ -68,14 +70,16 @@ header {
    *
    */
   .project_name {
+    position:relative;
     float:left;
     margin:0;
     margin-right:30px;
-    font-size:24px;
+    font-size:36px;
     line-height:36px;
-    font-weight:500;
+    font-weight:normal;
     color:$style_color;
     text-shadow: 0 1px 1px #FFF;
+    font-family: 'Korolev', sans-serif;
   }
 
   .fbtn {
