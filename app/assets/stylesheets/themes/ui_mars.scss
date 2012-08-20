@@ -1,7 +1,7 @@
 /**
- * This file represent some UI that can be changed 
- * during web app restyle or theme select. 
- * 
+ * This file represent some UI that can be changed
+ * during web app restyle or theme select.
+ *
  * Next items should be placed there
  * - link colors
  * - header restyles
@@ -13,20 +13,20 @@
    *  Application Header
    *
    */
-  header { 
+  header {
     background: #474D57 url('bg-header.png') repeat-x bottom;
     box-shadow:none;
     border-bottom: 1px solid #444;
 
-    .fbtn { 
-      .btn { 
+    .fbtn {
+      .btn {
         margin-left:8px;
         background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#31363E));
         background-image: -webkit-linear-gradient(#595D63 6.6%, #31363E);
         background-image: -moz-linear-gradient(#595D63 6.6%, #31363E);
         background-image: -o-linear-gradient(#595D63 6.6%, #31363E);
         font-size: 12px;
-        &:hover { 
+        &:hover {
           background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#2C2F35));
           background-image: -webkit-linear-gradient(#595D63 6.6%, #2C2F35);
           background-image: -moz-linear-gradient(#595D63 6.6%, #202227);
@@ -39,10 +39,10 @@
         text-shadow: 0 -1px 0 #000000;
       }
     }
-    .search { 
+    .search {
       float: right;
-      margin-right: 55px;
-      .search-input { 
+      margin-right: 45px;
+      .search-input {
         border: 1px solid rgba(0, 0, 0, 0.7);
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 2px rgba(0, 0, 0, 0.4) inset;
         background-color: #D2D5DA;
@@ -57,16 +57,11 @@
       color: #666;
     }
     .app_logo {
-      a { 
-        h1 { 
-          background: url('images.png') no-repeat -3px -6px;
-          width: 65px;
-          height: 26px;
-          margin: 6px 0;
-          padding: 0;
-          float: left;
-          text-indent: -1000em;
-          float:left;
+      a {
+        h1 {
+          background: url('logo_white.png') no-repeat 0px -3px;
+          color:#fff;
+          text-shadow: 0 1px 1px #111;
         }
       }
       .separator {
@@ -75,7 +70,6 @@
 
     }
     .project_name {
-      line-height:38px;
       color:#fff;
       text-shadow: 0 1px 1px #111;
     }

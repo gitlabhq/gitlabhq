@@ -76,10 +76,6 @@ gem 'settingslogic'
 gem "foreman"
 gem "git"
 
-# Unused
-gem 'tabs_on_rails'
-gem "acts_as_list"
-
 group :assets do
   gem "sass-rails",   "3.2.5"
   gem "coffee-rails", "3.2.2"
@@ -91,7 +87,7 @@ group :assets do
   gem "jquery-ui-rails",  "0.5.0"
   gem "modernizr",        "2.5.3"
   gem "raphael-rails",    "1.5.2"
-  gem 'bootstrap-sass',   "2.0.3.1"
+  gem 'bootstrap-sass',   "2.0.4"
 end
 
 group :development do
@@ -105,6 +101,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
+  gem "headless"
   gem "autotest"
   gem "autotest-rails"
   gem "pry"

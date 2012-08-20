@@ -94,3 +94,8 @@ li.merge_request {
     padding-bottom: 2px;
   }
 }
+
+.merge_in_progress { 
+  @extend .padded;
+  @extend .append-bottom-10;
+}

@@ -3,8 +3,8 @@
 
 /** GITLAB colors **/
 $text_color:#222;
-$lite_text_color: #666; 
-$link_color:#2A79A3; 
+$lite_text_color: #666;
+$link_color:#2A79A3;
 $active_link_color:#2FA0BB;
 $active_bg_color:#79C3E0;
 $active_bd_color: #2FA0BB;
@@ -23,6 +23,8 @@ $blue_link: #2fa0bb;
 $style_color: #474D57;
 $hover: #FDF5D9;
 
+/** GITLAB Fonts **/
+@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); } 
 
 /** MIXINS **/
 @mixin shade {
@@ -31,7 +33,7 @@ $hover: #FDF5D9;
   box-shadow: 0 0 3px #ddd;
 }
 
-@mixin solid_shade { 
+@mixin solid_shade {
   -moz-box-shadow: 0 0 0 3px #eee;
   -webkit-box-shadow: 0 0 0 3px #eee;
   box-shadow: 0 0 0 3px #eee;
@@ -73,21 +75,21 @@ $hover: #FDF5D9;
 
 
 /**
- * Header of application. 
+ * Header of application.
  * Contain application logo, search panel, profile icon
  */
 @import "sections/header.scss";
 
 /**
- * Navigation menu of application. 
+ * Navigation menu of application.
  * Panel with links to pages depends on project, profile or admin area
  */
 @import "sections/nav.scss";
 
 /**
- * This file represent some UI that can be changed 
- * during web app restyle or theme select. 
- * 
+ * This file represent some UI that can be changed
+ * during web app restyle or theme select.
+ *
  * Next items should be placed there
  * - link, button colors
  * - header restyles
@@ -118,7 +120,7 @@ $hover: #FDF5D9;
  * Most of application styles placed here.
  * This file represent common UI that should not be changed between themes
  * or project restyling like form width or user avatar class or commit title
- * 
+ *
  * TODO: clean it
  */
 @import "common.scss";
@@ -140,17 +142,17 @@ $hover: #FDF5D9;
 @import "ref_select.scss";
 
 /**
- * Code (files list) styles. Browsing project files there 
+ * Code (files list) styles. Browsing project files there
  */
 @import "sections/tree.scss";
 
 /**
- * This file represent notes(comments) styles 
+ * This file represent notes(comments) styles
  */
 @import "sections/notes.scss";
 
 /**
- * Devise styles 
+ * Devise styles
  */
 @import "sections/login.scss";
 
@@ -165,9 +167,3 @@ $hover: #FDF5D9;
  *
  */
 @import "highlight/dark.scss";
-
-/**
- * JQUERY UI ext
- *
- */
-@import "jquery_ui.scss";

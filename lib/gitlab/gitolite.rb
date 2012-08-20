@@ -137,7 +137,7 @@ module Gitlab
         owner_name = repo.permissions[0]["RW+"][""][0]
         raise StandardError if owner_name.blank?
       rescue => ex
-        puts "Cant determine gitolite-admin owner".red
+        puts "Can't determine gitolite-admin owner".red
         raise StandardError
       end
 

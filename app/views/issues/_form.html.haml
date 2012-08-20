@@ -1,5 +1,5 @@
 %div.issue-form-holder
-  %h3= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
+  %h3.page_title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
   = form_for [@project, @issue], remote: request.xhr? do |f|
     -if @issue.errors.any?
       .alert-message.block-message.error
@@ -9,26 +9,26 @@
     .issue_form_box
       .issue_title
         .clearfix
-          = f.label :title do 
+          = f.label :title do
             %strong= "Subject *"
           .input
             = f.text_field :title, maxlength: 255, class: "xxlarge"
       .issue_middle_block
         .issue_assignee
-          = f.label :assignee_id do 
+          = f.label :assignee_id do
             %i.icon-user
             Assign to
           .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" })
         .issue_milestone
-          = f.label :milestone_id do 
+          = f.label :milestone_id do
             %i.icon-time
             Milestone
           .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" })
 
       .issue_description
         .clearfix
-          = f.label :label_list do 
-            %i.icon-tag 
+          = f.label :label_list do
+            %i.icon-tag
             Labels
           .input
             = f.text_field :label_list, maxlength: 2000, class: "xxlarge"

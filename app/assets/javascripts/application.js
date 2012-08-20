@@ -7,8 +7,6 @@
 //= require jquery
 //= require jquery.ui.all
 //= require jquery_ujs
-//= require jquery.ui.selectmenu
-//= require jquery.tagify
 //= require jquery.cookie
 //= require jquery.endless-scroll
 //= require jquery.highlight

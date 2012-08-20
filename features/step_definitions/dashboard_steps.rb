@@ -93,11 +93,11 @@ end
 Given /^I have assigned issues$/ do
   project1 = Factory :project,
    :path => "project1",
-   :code => "TEST1"
+   :code => "gitlabhq_1"
 
   project2 = Factory :project,
    :path => "project2",
-   :code => "TEST2"
+   :code => "gitlabhq_2"
 
   project1.add_access(@user, :read, :write)
   project2.add_access(@user, :read, :write)
@@ -116,11 +116,11 @@ end
 Given /^I have authored merge requests$/ do
   project1 = Factory :project,
    :path => "project1",
-   :code => "TEST1"
+   :code => "gitlabhq_1"
 
   project2 = Factory :project,
    :path => "project2",
-   :code => "TEST2"
+   :code => "gitlabhq_2"
 
   project1.add_access(@user, :read, :write)
   project2.add_access(@user, :read, :write)
