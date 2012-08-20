@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
     provider = auth.provider
     name = auth.info.name.force_encoding("utf-8")
     email = auth.info.email.downcase unless auth.info.email.nil?
-    raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? and email.nil?
+    raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? or email.nil?
 
     if @user = User.find_by_extern_uid_and_provider(uid, provider)
       @user
