@@ -1,17 +1,18 @@
-.projects { 
+.projects {
   @extend .row;
   .activities {
   }
 
-  .side { 
+  .side {
     @extend .span4;
     @extend .right;
 
-    .projects_box { 
-      h5 { 
+    .projects_box {
+      h5 {
         color:$style_color;
         font-size:16px;
         text-shadow: 0 1px 1px #fff;
+        padding: 2px 10px;
       }
       @extend .leftbar;
       @extend .ui-box;
@@ -19,19 +20,19 @@
   }
 }
 
-.new_project, 
-.edit_project { 
-  .project_name_holder { 
+.new_project,
+.edit_project {
+  .project_name_holder {
     input,
-    label { 
+    label {
       font-size:16px;
       line-height:20px;
       padding:8px;
     }
-    label { 
+    label {
       color:#888;
     }
-    .btn { 
+    .btn {
       padding:6px;
       margin-left:10px;
     }
