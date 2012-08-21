@@ -67,12 +67,6 @@ namespace :gitlab do
             next
           end
 
-
-          unless File.owned?(hook_file)
-            puts "post-receive file is not owner by gitlab".red 
-            next
-          end
-
           puts "post-reveice file ok".green
         end
       end
