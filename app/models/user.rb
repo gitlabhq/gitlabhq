@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
                   :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme,
-                  :theme_id, :force_random_password
+                  :theme_id, :force_random_password, :username
 
   attr_accessor :force_random_password
 
