@@ -40,7 +40,6 @@ describe Project do
     it { should respond_to(:commits_with_refs) }
     it { should respond_to(:commits_since) }
     it { should respond_to(:commits_between) }
-    it { should respond_to(:write_hooks) }
     it { should respond_to(:satellite) }
     it { should respond_to(:update_repository) }
     it { should respond_to(:destroy_repository) }
