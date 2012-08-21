@@ -1,6 +1,11 @@
 body {
   margin-bottom:20px;
 }
+
+pre {
+  font-family:'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+}
+
 a {
   outline: none;
   color: $link_color;
