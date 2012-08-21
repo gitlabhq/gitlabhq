@@ -3,6 +3,11 @@ v 2.8.0
   - Bulk issues update
   - Issues API
   - Cucumber coverage increased
+  - Post-receive files fixed
+  - UI improved
+  - Application cleanup
+  - more cucumber
+  - capybara-webkit + headless
 
 v 2.7.0
   - Issue Labels

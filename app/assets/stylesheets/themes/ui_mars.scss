@@ -20,6 +20,10 @@
 
     .fbtn {
       .btn {
+        i {
+          position: relative;
+          top: 1px;
+        }
         margin-left:8px;
         background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#31363E));
         background-image: -webkit-linear-gradient(#595D63 6.6%, #31363E);
@@ -32,6 +36,10 @@
           background-image: -moz-linear-gradient(#595D63 6.6%, #202227);
           background-image: -o-linear-gradient(#595D63 6.6%, #202227);
           background-position:0 0;
+          color:#fff;
+          i { 
+            @extend .icon-white;
+          }
         }
 
         border: 1px solid #31363E;
