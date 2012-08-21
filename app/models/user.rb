@@ -53,15 +53,15 @@ class User < ActiveRecord::Base
 
   validates :bio, length: { within: 0..255 }
 
-  before_save :ensure_authentication_token
-  alias_attribute :private_token, :authentication_token
+  # before_save :ensure_authentication_token
+  # alias_attribute :private_token, :authentication_token
 
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", ids: project.users.map(&:id) ) }
   scope :admins, where(admin:  true)
   scope :blocked, where(blocked:  true)
   scope :active, where(blocked:  false)
 
-  before_validation :generate_password, on: :create
+  # before_validation :generate_password, on: :create
 
   def generate_password
     if self.force_random_password
@@ -145,5 +145,6 @@ end
 #  theme_id               :integer(4)      default(1), not null
 #  bio                    :string(255)
 #  blocked                :boolean(1)      default(FALSE), not null
+#  username               :string(255)
 #
 
