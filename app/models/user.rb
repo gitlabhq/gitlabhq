@@ -2,8 +2,7 @@ class User < ActiveRecord::Base
 
   include Account
 
-  devise :database_authenticatable, :token_authenticatable, :lockable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable
+  devise :cas_authenticatable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
                   :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme,
@@ -105,6 +104,17 @@ class User < ActiveRecord::Base
 
   def self.search query
     where("name like :query or email like :query", query: "%#{query}%")
+  end
+
+  def cas_extra_attributes=(extra_attributes)
+    extra_attributes.each do |name, value|
+      case name.to_sym
+      when :name
+        self.name = value.first
+      when :mail
+        self.email = value.first
+      end
+    end
   end
 end
 # == Schema Information

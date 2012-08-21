@@ -6,6 +6,10 @@ Devise.setup do |config|
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
   config.mailer_sender = Gitlab.config.email_from
 
+  # CAS Single Sign On
+  config.cas_base_url = "https://sso.synapse.com"
+  config.cas_logout_url = "https://sso.synapse.com/logout"
+
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
 

@@ -155,6 +155,9 @@ GEM
       orm_adapter (~> 0.1)
       railties (~> 3.1)
       warden (~> 1.2.1)
+    devise_cas_authenticatable (1.1.2)
+      devise (>= 1.0.6)
+      rubycas-client (>= 2.2.1)
     diff-lcs (1.1.3)
     drapper (0.8.4)
     email_spec (1.2.1)
@@ -209,7 +212,6 @@ GEM
       addressable (~> 2.2.6)
     letter_opener (0.0.2)
       launchy
-    libv8 (3.3.10.4)
     libwebsocket (0.1.3)
       addressable
     mail (2.4.4)
@@ -276,6 +278,7 @@ GEM
     redis (2.2.2)
     redis-namespace (1.0.3)
       redis (< 3.0.0)
+    ref (1.0.0)
     resque (1.20.0)
       multi_json (~> 1.0)
       redis-namespace (~> 1.0.2)
@@ -300,6 +303,8 @@ GEM
       activesupport (>= 3.0)
       railties (>= 3.0)
       rspec (~> 2.10.0)
+    rubycas-client (2.3.9)
+      activesupport
     rubyntlm (0.1.1)
     rubypython (0.6.2)
       blankslate (>= 2.1.2.3)
@@ -338,8 +343,8 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     sqlite3 (1.3.6)
     stamp (0.1.6)
-    therubyracer (0.10.1)
-      libv8 (~> 3.3.10)
+    therubyracer (0.11.0beta8)
+      ref
     thin (1.3.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -389,6 +394,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   devise (~> 2.1.0)
+  devise_cas_authenticatable
   drapper
   email_spec
   ffaker
@@ -430,7 +436,7 @@ DEPENDENCIES
   six
   sqlite3
   stamp
-  therubyracer
+  therubyracer (~> 0.11.0beta5)
   thin
   turn
   uglifier (= 1.0.3)

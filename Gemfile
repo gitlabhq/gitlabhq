@@ -8,6 +8,7 @@ gem "mysql2"
 
 # Auth
 gem "devise", "~> 2.1.0"
+gem 'devise_cas_authenticatable'
 
 # GITLAB patched libs
 gem "grit",          :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
@@ -80,7 +81,7 @@ group :assets do
   gem "sass-rails",   "3.2.5"
   gem "coffee-rails", "3.2.2"
   gem "uglifier",     "1.0.3"
-  gem "therubyracer"
+  gem "therubyracer", "~> 0.11.0beta5"
 
   gem 'chosen-rails'
   gem "jquery-rails",     "2.0.2"
