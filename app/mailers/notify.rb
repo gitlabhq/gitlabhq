@@ -22,43 +22,38 @@ class Notify < ActionMailer::Base
   end
 
   def note_wall_email(recipient_id, note_id)
-    recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @project = @note.project
-    mail(to: recipient.email, subject: subject)
+    mail(to: recipient(recipient_id), subject: subject)
   end
 
   def note_commit_email(recipient_id, note_id)
-    recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @commit = @note.target
     @commit = CommitDecorator.decorate(@commit)
     @project = @note.project
-    mail(to: recipient.email, subject: subject("note for commit #{@commit.short_id}", @commit.title))
+    mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
   end
 
   def note_merge_request_email(recipient_id, note_id)
-    recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @merge_request = @note.noteable
     @project = @note.project
-    mail(to: recipient.email, subject: subject("note for merge request !#{@merge_request.id}"))
+    mail(to: recipient(recipient_id), subject: subject("note for merge request !#{@merge_request.id}"))
   end
 
   def note_issue_email(recipient_id, note_id)
-    recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @issue = @note.noteable
     @project = @note.project
-    mail(to: recipient.email, subject: subject("note for issue ##{@issue.id}"))
+    mail(to: recipient(recipient_id), subject: subject("note for issue ##{@issue.id}"))
   end
 
   def note_wiki_email(recipient_id, note_id)
-    recipient = User.find(recipient_id)
     @note = Note.find(note_id)
     @wiki = @note.noteable
     @project = @note.project
-    mail(to: recipient.email, subject: subject("note for wiki"))
+    mail(to: recipient(recipient_id), subject: subject("note for wiki"))
   end
 
   def new_merge_request_email(merge_request_id)
@@ -68,22 +63,31 @@ class Notify < ActionMailer::Base
   end
 
   def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id)
-    recipient = User.find(recipient_id)
     @merge_request = MergeRequest.find(merge_request_id)
     @previous_assignee ||= User.find(previous_assignee_id)
     @project = @merge_request.project
-    mail(to: recipient.email, subject: subject("changed merge request !#{@merge_request.id}", @merge_request.title))
+    mail(to: recipient(recipient_id), subject: subject("changed merge request !#{@merge_request.id}", @merge_request.title))
   end
 
   def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
-    recipient = User.find(recipient_id)
     @issue = Issue.find(issue_id)
     @previous_assignee ||= User.find(previous_assignee_id)
     @project = @issue.project
-    mail(to: recipient.email, subject: subject("changed issue ##{@issue.id}", @issue.title))
+    mail(to: recipient(recipient_id), subject: subject("changed issue ##{@issue.id}", @issue.title))
   end
 
   private
+
+  # Look up a User by their ID and return their email address
+  #
+  # recipient_id - User ID
+  #
+  # Returns a String containing the User's email address.
+  def recipient(recipient_id)
+    if recipient = User.find(recipient_id)
+      recipient.email
+    end
+  end
 
   # Formats arguments into a String suitable for use as an email subject
   #
