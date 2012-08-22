@@ -4,6 +4,11 @@ body {
 
 pre {
   font-family:'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+
+  &.dark {
+    background: #333;
+    color:#f5f5f5;
+  }
 }
 
 a {
