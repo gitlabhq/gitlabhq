@@ -73,7 +73,6 @@ Given /^page should have network graph$/ do
   page.should have_content "Project Network Graph"
   within ".graph" do
     page.should have_content "master"
-    page.should have_content "github"
     page.should have_content "scss_refactor..."
   end
 end
