@@ -111,5 +111,9 @@ class Settings < Settingslogic
     def backup_keep_time
       app['backup_keep_time'] || 0
     end
+
+    def disable_gravatar?
+      app['disable_gravatar'] || false
+    end
   end
 end
