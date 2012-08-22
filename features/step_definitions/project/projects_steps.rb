@@ -57,6 +57,11 @@ end
 
 Given /^I visit project "(.*?)" network page$/ do |arg1|
   project = Project.find_by_name(arg1)
+
+  # Stub out find_all to speed this up (10 commits vs. 650)
+  commits = Grit::Commit.find_all(project.repo, nil, {max_count: 10})
+  Grit::Commit.stub(:find_all).and_return(commits)
+
   visit graph_project_path(project)
 end
 
@@ -67,8 +72,9 @@ end
 Given /^page should have network graph$/ do
   page.should have_content "Project Network Graph"
   within ".graph" do
-    page.should have_content "stable"
-    page.should have_content "notes_refacto..."
+    page.should have_content "master"
+    page.should have_content "github"
+    page.should have_content "scss_refactor..."
   end
 end
 
