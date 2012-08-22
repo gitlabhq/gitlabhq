@@ -46,6 +46,9 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 > 
 >     # Install curl and sudo 
 >     apt-get install curl sudo
+>
+>     # Install git and build-essentials
+>     apt-get install git build-essential
 >     
 >     # 3 steps in 1 command :)
 >     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
