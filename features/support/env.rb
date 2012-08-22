@@ -44,3 +44,5 @@ require 'headless'
 
 headless = Headless.new
 headless.start
+
+require 'cucumber/rspec/doubles'
