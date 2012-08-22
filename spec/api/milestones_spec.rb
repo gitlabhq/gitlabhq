@@ -42,12 +42,4 @@ describe Gitlab::API do
       json_response['title'].should == 'updated title'
     end
   end
-
-  describe "DELETE /projects/:id/milestones/:milestone_id" do
-    it "should delete a project milestone" do
-      expect {
-        delete "#{api_prefix}/projects/#{project.code}/milestones/#{milestone.id}?private_token=#{user.private_token}"
-      }.to change { Milestone.count }.by(-1)
-    end
-  end
 end

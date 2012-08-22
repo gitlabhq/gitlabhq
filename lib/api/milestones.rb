@@ -76,18 +76,6 @@ module Gitlab
           error!({'message' => '404 Not found'}, 404)
         end
       end
-
-      # Delete a project milestone
-      #
-      # Parameters:
-      #   id (required) - The ID or code name of a project
-      #   milestone_id (required) - The ID of a project milestone
-      # Example Request:
-      #   DELETE /projects/:id/milestones/:milestone_id
-      delete ":id/milestones/:milestone_id" do
-        @milestone = user_project.milestones.find(params[:milestone_id])
-        @milestone.destroy
-      end
     end
   end
 end
