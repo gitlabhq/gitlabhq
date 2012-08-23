@@ -2,8 +2,8 @@
 %strong #{event.author_name}
 %span.event_label{class: event.action_name}= event.action_name
 issue
-= link_to project_issue_path(event.project, event.issue) do
-  %strong= truncate event.issue_title
+= link_to project_issue_path(event.project, event.target_id) do
+  %strong= truncate event.issue_title || "(deleted issue)"
 at
 %strong= link_to event.project.name, event.project
 %span.cgray
