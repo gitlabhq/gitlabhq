@@ -1,5 +1,7 @@
-require 'simplecov'
-SimpleCov.start 'rails'
+unless ENV['CI']
+  require 'simplecov'
+  SimpleCov.start 'rails'
+end
 
 require 'cucumber/rails'
 require 'webmock/cucumber'
