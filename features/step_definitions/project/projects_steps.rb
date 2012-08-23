@@ -1,4 +1,4 @@
-include LoginMacros
+include LoginHelpers
 
 Given /^I signin as a user$/ do
   login_as :user
