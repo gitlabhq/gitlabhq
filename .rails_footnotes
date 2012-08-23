@@ -1,3 +1,0 @@
-#this code temporarily disables notes for all controllers
-# Footnotes::Filter.notes = []
-

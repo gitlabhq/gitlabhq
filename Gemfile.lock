@@ -99,7 +99,6 @@ GEM
     acts-as-taggable-on (2.3.1)
       rails (~> 3.0)
     addressable (2.2.8)
-    ansi (1.4.2)
     arel (3.0.2)
     autotest (4.4.6)
       ZenTest (>= 4.4.1)
@@ -219,7 +218,6 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.7.1)
     mime-types (1.19)
-    minitest (3.1.0)
     modernizr (2.5.3)
       sprockets (~> 2.0)
     multi_json (1.3.6)
@@ -259,8 +257,6 @@ GEM
       activesupport (= 3.2.8)
       bundler (~> 1.0)
       railties (= 3.2.8)
-    rails-footnotes (3.7.8)
-      rails (>= 3.0.0)
     railties (3.2.8)
       actionpack (= 3.2.8)
       activesupport (= 3.2.8)
@@ -350,8 +346,6 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
-    turn (0.9.5)
-      ansi
     tzinfo (0.3.33)
     uglifier (1.0.3)
       execjs (>= 0.3.0)
@@ -409,7 +403,6 @@ DEPENDENCIES
   launchy
   letter_opener
   linguist (~> 1.0.0)!
-  minitest (>= 2.10)
   modernizr (= 2.5.3)
   mysql2
   omniauth-ldap!
@@ -417,7 +410,6 @@ DEPENDENCIES
   pygments.rb!
   rack-mini-profiler
   rails (= 3.2.8)
-  rails-footnotes
   raphael-rails (= 1.5.2)
   redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
@@ -434,7 +426,6 @@ DEPENDENCIES
   stamp
   therubyracer
   thin
-  turn
   uglifier (= 1.0.3)
   unicorn
   webmock
