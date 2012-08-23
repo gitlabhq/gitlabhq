@@ -75,7 +75,7 @@ gem 'settingslogic'
 # Misc
 gem "foreman"
 gem "git"
-gem "gitlab_meta"
+gem "gitlab_meta", '2.8'
 
 group :assets do
   gem "sass-rails",   "3.2.5"
