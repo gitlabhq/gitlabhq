@@ -111,8 +111,6 @@ end
 
 group :test do
   gem 'cucumber-rails', :require => false
-  gem 'minitest', ">= 2.10"
-  gem "turn", :require => false
   gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
