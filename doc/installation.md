@@ -22,6 +22,10 @@ You might have some luck using these, but no guarantees:
 
 Gitlab does **not** run on Windows and we have no plans of making Gitlab compatible.
 
+Minimal Requirements
+
+Gitlab necessite to have 1024 Ram in order to run
+
 ## This installation guide created for Debian/Ubuntu and properly tested. 
 
 The installation consists of 6 steps:
