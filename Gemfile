@@ -75,7 +75,6 @@ gem 'settingslogic'
 # Misc
 gem "foreman"
 gem "git"
-gem "gitlab_meta", '2.8'
 
 group :assets do
   gem "sass-rails",   "3.2.5"
@@ -119,4 +118,8 @@ group :test do
   gem 'email_spec'
   gem 'resque_spec'
   gem "webmock"
+end
+
+group :production do
+  gem "gitlab_meta", '2.8'
 end
