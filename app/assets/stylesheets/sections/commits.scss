@@ -205,5 +205,8 @@
     @extend .lined;
     min-width:65px;
     font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+    background-color: #F2F291;
+    padding: 2px 5px 1px 5px;
+    border-radius: 3px;
   }
 }
