@@ -93,7 +93,6 @@ end
 
 group :development do
   gem "letter_opener"
-  gem "rails-footnotes"
   gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
   gem 'rack-mini-profiler'
 end

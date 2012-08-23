@@ -259,8 +259,6 @@ GEM
       activesupport (= 3.2.8)
       bundler (~> 1.0)
       railties (= 3.2.8)
-    rails-footnotes (3.7.8)
-      rails (>= 3.0.0)
     railties (3.2.8)
       actionpack (= 3.2.8)
       activesupport (= 3.2.8)
@@ -417,7 +415,6 @@ DEPENDENCIES
   pygments.rb!
   rack-mini-profiler
   rails (= 3.2.8)
-  rails-footnotes
   raphael-rails (= 1.5.2)
   redcarpet (~> 2.1.1)
   resque (~> 1.20.0)
