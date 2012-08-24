@@ -75,7 +75,6 @@ gem 'settingslogic'
 # Misc
 gem "foreman"
 gem "git"
-gem "gitlab_meta", '2.8'
 
 group :assets do
   gem "sass-rails",   "3.2.5"
@@ -93,7 +92,6 @@ end
 
 group :development do
   gem "letter_opener"
-  gem "rails-footnotes"
   gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
   gem 'rack-mini-profiler'
 end
@@ -113,11 +111,13 @@ end
 
 group :test do
   gem 'cucumber-rails', :require => false
-  gem 'minitest', ">= 2.10"
-  gem "turn", :require => false
   gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
   gem 'resque_spec'
   gem "webmock"
+end
+
+group :production do
+  gem "gitlab_meta", '2.8'
 end
