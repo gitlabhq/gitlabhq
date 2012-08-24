@@ -33,6 +33,25 @@ Given /^I visit issue page "(.*?)"$/ do |arg1|
 end
 
 Given /^I submit new issue "(.*?)"$/ do |arg1|
-  fill_in "issue_title", :with => arg1
+  fill_in "issue_title", with: arg1
   click_button "Submit new issue"
+end
+
+Given /^project "(.*?)" have issues tags:$/ do |arg1, table|
+  project = Project.find_by_name(arg1)
+  table.hashes.each do |hash|
+    Factory :issue,
+      project: project,
+      label_list: [hash[:name]]
+  end
+end
+
+Given /^I visit project "(.*?)" labels page$/ do |arg1|
+  visit project_labels_path(Project.find_by_name(arg1))
+end
+
+Then /^I should see label "(.*?)"$/ do |arg1|
+  within ".labels-table" do 
+    page.should have_content arg1
+  end
 end
