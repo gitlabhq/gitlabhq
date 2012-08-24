@@ -91,26 +91,18 @@ Then /^I should see my merge requests$/ do
 end
 
 Given /^I have assigned issues$/ do
-  project1 = Factory :project,
-   :path => "project1",
-   :code => "gitlabhq_1"
-
-  project2 = Factory :project,
-   :path => "project2",
-   :code => "gitlabhq_2"
-
-  project1.add_access(@user, :read, :write)
-  project2.add_access(@user, :read, :write)
+  project = Factory :project
+  project.add_access(@user, :read, :write)
 
   issue1 = Factory :issue,
    :author => @user,
    :assignee => @user,
-   :project => project1
+   :project => project
 
   issue2 = Factory :issue,
    :author => @user,
    :assignee => @user,
-   :project => project2
+   :project => project
 end
 
 Given /^I have authored merge requests$/ do
