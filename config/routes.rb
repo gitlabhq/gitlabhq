@@ -197,7 +197,9 @@ Gitlab::Application.routes.draw do
     end
     resources :team_members
     resources :milestones
+    resources :labels, :only => [:index]
     resources :issues do
+
       collection do
         post  :sort
         post  :bulk_update
