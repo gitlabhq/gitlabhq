@@ -1,4 +1,4 @@
-- if @projects.any?
+- if @projects.any? || @public_projects.any?
   .projects
     .activities.span8
       = render "events/event_last_push", event: @last_push
@@ -18,7 +18,7 @@
     .side
       - if @groups.present?
         = render "groups", groups: @groups
-      = render "projects", projects: @projects
+      = render "projects", projects: @projects, public_projects: @public_projects
       %div
         %span.rss-icon
           = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do

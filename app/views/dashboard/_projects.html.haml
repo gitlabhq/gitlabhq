@@ -1,6 +1,6 @@
 .projects_box
   %h5
-    Projects
+    My Projects
     %small
       (#{projects.total_count})
     - if current_user.can_create_project?
@@ -19,3 +19,26 @@
             %strong Last activity:
             %span= project_last_activity(project)
   .bottom= paginate projects, theme: "gitlab"
+
+.projects_box
+  %h5
+    Public Projects
+    %small
+      (#{public_projects.count})
+  %ul.unstyled
+    - if public_projects.any?
+      - public_projects.each do |project|
+        %li.wll
+          = link_to project_path(project), class: dom_class(project) do
+            %strong.project_name= truncate(project.name, length: 25)
+            %span.arrow
+              &rarr;
+            %span.last_activity
+              %strong Last activity:
+              %span= project_last_activity(project)
+    - else
+      %h4
+        .project No Public Projects
+  .bottom= paginate projects, theme: "gitlab"
+
+%hr

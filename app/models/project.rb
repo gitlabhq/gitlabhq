@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :code, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled
+  attr_protected :owner_id
   attr_accessor :error_code
 
   # Relations
