@@ -107,11 +107,11 @@ end
 
 Given /^I have authored merge requests$/ do
   project1 = Factory :project,
-   :path => "project1",
+   :path => "gitlabhq_1",
    :code => "gitlabhq_1"
 
   project2 = Factory :project,
-   :path => "project2",
+   :path => "gitlabhq_2",
    :code => "gitlabhq_2"
 
   project1.add_access(@user, :read, :write)
