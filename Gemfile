@@ -54,7 +54,7 @@ gem "unicorn"
 gem "acts-as-taggable-on", "2.3.1"
 
 # Decorators
-gem "drapper"
+gem "draper"
 
 # Background jobs
 gem "resque", "~> 1.20.0"
