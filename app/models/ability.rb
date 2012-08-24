@@ -25,13 +25,13 @@ class Ability
       :write_project,
       :write_issue,
       :write_note
-    ] if project.guest_access_for?(user)
+    ] if project.guest_access_for?(user) || project.public?
 
     rules << [
       :download_code,
       :write_merge_request,
       :write_snippet
-    ] if project.report_access_for?(user)
+    ] if project.report_access_for?(user) || project.public?
 
     rules << [
       :write_wiki
