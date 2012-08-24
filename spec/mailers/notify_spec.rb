@@ -24,7 +24,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /Account was created for you/
+      should have_subject /^gitlab \| Account was created for you$/
     end
 
     it 'contains the new user\'s login name' do
@@ -60,7 +60,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /new issue ##{issue.id}/
+            should have_subject /new issue ##{issue.id} \| #{issue.title} \| #{project.name}/
           end
 
           it 'contains a link to the new issue' do
@@ -76,7 +76,7 @@ describe Notify do
           it_behaves_like 'a multiple recipients email'
 
           it 'has the correct subject' do
-            should have_subject /changed issue/
+            should have_subject /changed issue ##{issue.id} \| #{issue.title}/
           end
 
           it 'contains the name of the previous assignee' do

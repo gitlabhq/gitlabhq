@@ -37,26 +37,20 @@
      *
      */
     .app_logo {
+      width:160px;
       a {
         h1 {
-          opacity: 0.7;
-          background: url('images.png') no-repeat -3px -6px;
-          width: 65px;
-          height: 26px;
-          margin: 6px 0;
-          padding: 0;
-          float: left;
-          text-indent: -1000em;
-          float:left;
-          &:hover {
-            opacity: 1.0;
-          }
+          background: none;
+          color:#DDD;
+          font-size:30px;
+          text-shadow: 0 1px 1px #111;
+          padding-left: 0;
         }
       }
       .separator {
         width: 1px;
         height: 40px;
-        margin: 0 9px;
+        margin: 0 10px;
         overflow: hidden;
         background: #222;
         border-left: 1px solid #333;
@@ -66,7 +60,6 @@
     .fbtn {
       .btn {
         i {
-          @extend .icon-white;
           position: relative;
           top: 2px;
         }
@@ -77,10 +70,14 @@
         color:#ccc;
         &:hover {
           color:#fff;
+          i { 
+            @extend .icon-white;
+          }
         }
         border: none;
         box-shadow:none;
         text-shadow: 0 -1px 0 #000000;
+        border-left: 1px solid #333;
       }
     }
 
@@ -113,9 +110,9 @@
      *
      */
     .project_name {
-      line-height:34px;
-      font-size:22px;
-      color:#fff;
+      line-height:36px;
+      font-size:30px;
+      color:#DDD;
       text-shadow: 0 1px 1px #111;
     }
 

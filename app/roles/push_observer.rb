@@ -1,4 +1,4 @@
-module ProjectPush
+module PushObserver
   def observe_push(oldrev, newrev, ref, user)
     data = post_receive_data(oldrev, newrev, ref, user)
 

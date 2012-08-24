@@ -119,7 +119,6 @@ Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
-    sudo chown gitlab:gitlab /home/git/repositories/**/hooks/post-receive 
 
 #### CHECK: Logout & login again to apply git group to your user
     
@@ -134,7 +133,7 @@ Permissions:
 
 # 4. Install gitlab and configuration. Check status configuration.
 
-    sudo gem install charlock_holmes
+    sudo gem install charlock_holmes --version '0.6.8'
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
@@ -177,6 +176,11 @@ Permissions:
 #### Setup DB
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
+
+#### Setup gitlab hooks
+
+    sudo cp ./lib/hooks/post-receive /home/git/share/gitolite/hooks/common/post-receive
+    sudo chown git:git /home/git/share/gitolite/hooks/common/post-receive
     
 Checking status:
 
@@ -196,6 +200,7 @@ Checking status:
     Resolving deltas: 100% (174/174), done.
     Can clone gitolite-admin?............YES
     UMASK for .gitolite.rc is 0007? ............YES
+    /home/git/share/gitolite/hooks/common/post-receive exists? ............YES
 
 If you got all YES - congrats! You can go to next step.  
 

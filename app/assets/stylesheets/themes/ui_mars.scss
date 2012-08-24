@@ -20,6 +20,10 @@
 
     .fbtn {
       .btn {
+        i {
+          position: relative;
+          top: 1px;
+        }
         margin-left:8px;
         background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#31363E));
         background-image: -webkit-linear-gradient(#595D63 6.6%, #31363E);
@@ -32,6 +36,10 @@
           background-image: -moz-linear-gradient(#595D63 6.6%, #202227);
           background-image: -o-linear-gradient(#595D63 6.6%, #202227);
           background-position:0 0;
+          color:#fff;
+          i { 
+            @extend .icon-white;
+          }
         }
 
         border: 1px solid #31363E;
@@ -59,14 +67,9 @@
     .app_logo {
       a {
         h1 {
-          background: url('images.png') no-repeat -3px -6px;
-          width: 65px;
-          height: 26px;
-          margin: 6px 0;
-          padding: 0;
-          float: left;
-          text-indent: -1000em;
-          float:left;
+          background: url('logo_white.png') no-repeat 0px -3px;
+          color:#fff;
+          text-shadow: 0 1px 1px #111;
         }
       }
       .separator {
@@ -75,7 +78,6 @@
 
     }
     .project_name {
-      line-height:38px;
       color:#fff;
       text-shadow: 0 1px 1px #111;
     }

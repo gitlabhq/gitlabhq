@@ -12,8 +12,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def ldap
     # We only find ourselves here if the authentication to LDAP was successful.
-    info = request.env["omniauth.auth"]["info"]
-    @user = User.find_for_ldap_auth(info)
+    @user = User.find_for_ldap_auth(request.env["omniauth.auth"], current_user)
     if @user.persisted?
       @user.remember_me = true
     end
@@ -39,7 +38,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       current_user.save
       redirect_to profile_path
     else
-      @user = User.find_by_provider_and_uid(provider, uid)
+      @user = User.find_by_provider_and_extern_uid(provider, uid)
 
       if @user
         sign_in_and_redirect @user

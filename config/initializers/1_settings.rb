@@ -120,5 +120,8 @@ class Settings < Settingslogic
       omniauth['providers'] || []
     end
 
+    def disable_gravatar?
+      app['disable_gravatar'] || false
+    end
   end
 end

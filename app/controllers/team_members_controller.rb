@@ -9,6 +9,7 @@ class TeamMembersController < ApplicationController
 
   def show
     @team_member = project.users_projects.find(params[:id])
+    @events = @team_member.user.recent_events.where(:project_id => @project.id).limit(7)
   end
 
   def new

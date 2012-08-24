@@ -56,6 +56,20 @@ namespace :gitlab do
         return
       end
 
+      gitolite_hooks_path = File.join("/home", Gitlab.config.ssh_user, "share", "gitolite", "hooks", "common")
+      gitlab_hook_files = ['post-receive']
+      gitlab_hook_files.each do |file_name|
+        dest = File.join(gitolite_hooks_path, file_name)
+        print "#{dest} exists? ............"
+        if File.exists?(dest)
+          puts "YES".green
+        else
+          puts "NO".red
+          return
+        end
+      end
+
+
       if Project.count > 0 
         puts "Validating projects repositories:".yellow
         Project.find_each(:batch_size => 100) do |project|
@@ -64,12 +78,6 @@ namespace :gitlab do
 
           unless File.exists?(hook_file)
             puts "post-receive file missing".red 
-            next
-          end
-
-
-          unless File.owned?(hook_file)
-            puts "post-receive file is not owner by gitlab".red 
             next
           end
 

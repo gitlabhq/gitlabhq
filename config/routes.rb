@@ -30,6 +30,7 @@ Gitlab::Application.routes.draw do
   get 'help/web_hooks' => 'help#web_hooks'
   get 'help/system_hooks' => 'help#system_hooks'
   get 'help/markdown' => 'help#markdown'
+  get 'help/ssh' => 'help#ssh'
 
   #
   # Admin Area
@@ -196,7 +197,9 @@ Gitlab::Application.routes.draw do
     end
     resources :team_members
     resources :milestones
+    resources :labels, :only => [:index]
     resources :issues do
+
       collection do
         post  :sort
         post  :bulk_update

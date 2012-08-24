@@ -33,7 +33,8 @@
     });
 
     $(".edit_merge_request").live("ajax:beforeSend", function() {
-      $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+      $('.can_be_merged').hide();
+      $('.merge_in_progress').show();
     })
   })
 

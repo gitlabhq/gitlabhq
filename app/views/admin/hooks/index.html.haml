@@ -5,7 +5,7 @@
     Read more about system hooks
     %strong #{link_to "here", help_system_hooks_path, class: "vlink"}
 
-= form_for @hook, as: :hook, url: admin_hooks_path do |f|
+= form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-inline' } do |f|
   -if @hook.errors.any?
     .alert-message.block-message.error
       - @hook.errors.full_messages.each do |msg|

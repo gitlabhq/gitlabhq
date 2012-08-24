@@ -9,8 +9,6 @@ class Issue < ActiveRecord::Base
   validates :description,
             length: { within: 0..2000 }
 
-  acts_as_list
-
   def self.open_for(user)
     opened.assigned(user)
   end

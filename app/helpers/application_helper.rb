@@ -2,10 +2,13 @@ require 'digest/md5'
 module ApplicationHelper
 
   def gravatar_icon(user_email = '', size = 40)
-    return unless user_email
-    gravatar_host = request.ssl? ? "https://secure.gravatar.com" :  "http://www.gravatar.com"
-    user_email.strip!
-    "#{gravatar_host}/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
+    if Gitlab.config.disable_gravatar? || user_email.blank?
+      'no_avatar.png'
+    else
+      gravatar_prefix = request.ssl? ? "https://secure" : "http://www"
+      user_email.strip!
+      "#{gravatar_prefix}.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
+    end
   end
 
   def request_protocol

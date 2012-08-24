@@ -51,8 +51,6 @@
 
 :javascript
   $(function(){
-    $('select#branch').selectmenu({style:'popup', width:200});
-    $('select#tag').selectmenu({style:'popup', width:200});
     $('.project-refs-select').chosen();
 
     history.pushState({ path: this.path }, '', "#{@history_path}");

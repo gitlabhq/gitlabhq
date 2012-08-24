@@ -58,7 +58,7 @@ gem "unicorn"
 gem "acts-as-taggable-on", "2.3.1"
 
 # Decorators
-gem "drapper"
+gem "draper"
 
 # Background jobs
 gem "resque", "~> 1.20.0"
@@ -80,10 +80,6 @@ gem 'settingslogic'
 gem "foreman"
 gem "git"
 
-# Unused
-gem 'tabs_on_rails'
-gem "acts_as_list"
-
 group :assets do
   gem "sass-rails",   "3.2.5"
   gem "coffee-rails", "3.2.2"
@@ -95,12 +91,11 @@ group :assets do
   gem "jquery-ui-rails",  "0.5.0"
   gem "modernizr",        "2.5.3"
   gem "raphael-rails",    "1.5.2"
-  gem 'bootstrap-sass',   "2.0.3.1"
+  gem 'bootstrap-sass',   "2.0.4"
 end
 
 group :development do
   gem "letter_opener"
-  gem "rails-footnotes"
   gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
   gem 'rack-mini-profiler'
 end
@@ -109,6 +104,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
+  gem "headless"
   gem "autotest"
   gem "autotest-rails"
   gem "pry"
@@ -119,11 +115,13 @@ end
 
 group :test do
   gem 'cucumber-rails', :require => false
-  gem 'minitest', ">= 2.10"
-  gem "turn", :require => false
   gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
   gem 'resque_spec'
   gem "webmock"
+end
+
+group :production do
+  gem "gitlab_meta", '2.8'
 end

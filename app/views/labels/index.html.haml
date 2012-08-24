@@ -1,0 +1,14 @@
+= render "issues/head"
+
+%h3.page_title
+  Labels
+%br
+%div.ui-box
+  %ul.unstyled.labels-table
+    - @labels.each do |label|
+      = render 'label', label: label
+
+    - unless @labels.present?
+      %li
+        %h3.nothing_here_message Nothing to show here
+

@@ -30,24 +30,8 @@ module Repository
     Commit.commits_between(repo, from, to)
   end
 
-  def write_hooks
-    %w(post-receive).each do |hook|
-      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
-    end
-  end
-
   def satellite
     @satellite ||= Gitlab::Satellite.new(self)
-  end
-
-  def write_hook(name, content)
-    hook_file = File.join(path_to_repo, 'hooks', name)
-
-    File.open(hook_file, 'w') do |f|
-      f.write(content)
-    end
-
-    File.chmod(0775, hook_file)
   end
 
   def has_post_receive_file?
@@ -73,8 +57,6 @@ module Repository
 
   def update_repository
     Gitlab::GitHost.system.update_project(path, self)
-
-    write_hooks if File.exists?(path_to_repo)
   end
 
   def destroy_repository

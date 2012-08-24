@@ -1,7 +1,6 @@
-- bash_lexer = Pygments::Lexer[:bash]
-%h3 Workflow
+%h3.page_title Workflow
 .back_link
-  = link_to help_path do 
+  = link_to help_path do
     &larr; to index
 %hr
 
@@ -9,25 +8,25 @@
   %li
     %p Clone project
     .bash
-      %pre
+      %pre.dark
         git clone git@example.com:project-name.git
 
   %li
     %p Create branch with your feature
     .bash
-      %pre
+      %pre.dark
         git checkout -b $feature_name
 
   %li
     %p Write code. Commit changes
     .bash
-      %pre
+      %pre.dark
         git commit -am "My feature is ready"
 
   %li
     %p Push your branch to gitlabhq
     .bash
-      %pre
+      %pre.dark
         git push origin $feature_name
 
   %li

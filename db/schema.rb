@@ -171,11 +171,12 @@ ActiveRecord::Schema.define(:version => 20120803152018) do
     t.boolean  "blocked",                :default => false, :null => false
     t.integer  "failed_attempts",        :default => 0
     t.datetime "locked_at"
+    t.string   "extern_uid"
     t.string   "provider"
-    t.string   "uid"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["extern_uid", "provider"], :name => "index_users_on_extern_uid_and_provider", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "users_projects", :force => true do |t|

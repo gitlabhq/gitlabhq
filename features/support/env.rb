@@ -1,5 +1,7 @@
-require 'simplecov'
-SimpleCov.start 'rails'
+unless ENV['CI']
+  require 'simplecov'
+  SimpleCov.start 'rails'
+end
 
 require 'cucumber/rails'
 require 'webmock/cucumber'
@@ -39,3 +41,10 @@ rescue NameError
 end
 
 Cucumber::Rails::Database.javascript_strategy = :truncation
+
+require 'headless'
+
+headless = Headless.new
+headless.start
+
+require 'cucumber/rspec/doubles'

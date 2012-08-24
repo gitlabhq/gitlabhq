@@ -7,8 +7,6 @@
 //= require jquery
 //= require jquery.ui.all
 //= require jquery_ujs
-//= require jquery.ui.selectmenu
-//= require jquery.tagify
 //= require jquery.cookie
 //= require jquery.endless-scroll
 //= require jquery.highlight
@@ -74,7 +72,7 @@ $(document).ready(function(){
    * Note markdown preview
    *
    */
-  $('#preview-link').on('click', function(e) {
+  $(document).on('click', '#preview-link', function(e) {
     $('#preview-note').text('Loading...');
 
     var previewLinkText = ($(this).text() == 'Preview' ? 'Edit' : 'Preview');

@@ -1,6 +1,16 @@
 body {
   margin-bottom:20px;
 }
+
+pre {
+  font-family:'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+
+  &.dark {
+    background: #333;
+    color:#f5f5f5;
+  }
+}
+
 a {
   outline: none;
   color: $link_color;
@@ -325,16 +335,20 @@ img.avatar {
   float:left;
   margin-right:15px;
   width:40px;
-  border:2px solid #ddd;
+  border:1px solid #ddd;
+  padding:1px;
 
   &.s16 {
     width:16px;
+    height:16px;
   }
   &.s24 {
     width:24px;
+    height:24px;
   }
   &.s32 {
     width:32px;
+    height:32px;
   }
 }
 

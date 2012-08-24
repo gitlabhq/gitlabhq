@@ -23,6 +23,8 @@ $blue_link: #2fa0bb;
 $style_color: #474D57;
 $hover: #FDF5D9;
 
+/** GITLAB Fonts **/
+@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); } 
 
 /** MIXINS **/
 @mixin shade {
@@ -165,9 +167,3 @@ $hover: #FDF5D9;
  *
  */
 @import "highlight/dark.scss";
-
-/**
- * JQUERY UI ext
- *
- */
-@import "jquery_ui.scss";
