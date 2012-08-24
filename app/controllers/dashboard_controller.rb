@@ -4,7 +4,8 @@ class DashboardController < ApplicationController
   def index
     @projects = current_user.projects_with_events.page(params[:page]).per(40)
     @public_projects = Project.find_all_by_private_flag(false) - @projects
-    @events = Event.recent_for_user(current_user).limit(20).offset(params[:offset] || 0)
+    #@events = Event.recent_for_user(current_user).limit(20).offset(params[:offset] || 0)
+    @events = Event.recent_for_projects(@projects + @public_projects).limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push
 
     respond_to do |format|
