@@ -33,7 +33,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     if current_user
       # Change a logged-in user's authentication method:
-      current_user.uid = uid
+      current_user.extern_uid = uid
       current_user.provider = provider
       current_user.save
       redirect_to profile_path
