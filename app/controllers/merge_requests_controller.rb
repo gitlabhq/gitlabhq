@@ -103,10 +103,12 @@ class MergeRequestsController < ApplicationController
 
   def branch_from
     @commit = project.commit(params[:ref])
+    @commit = CommitDecorator.decorate(@commit)
   end
 
   def branch_to
     @commit = project.commit(params[:ref])
+    @commit = CommitDecorator.decorate(@commit)
   end
 
   protected
