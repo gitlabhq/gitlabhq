@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::API do
+  include ApiHelpers
+
   let(:user) { Factory :user }
   let!(:project) { Factory :project, owner: user }
   let!(:issue) { Factory :issue, author: user, assignee: user, project: project }
@@ -8,13 +10,13 @@ describe Gitlab::API do
 
   describe "GET /issues" do
     it "should return authentication error" do
-      get "#{api_prefix}/issues"
+      get api("/issues")
       response.status.should == 401
     end
 
     describe "authenticated GET /issues" do
       it "should return an array of issues" do
-        get "#{api_prefix}/issues?private_token=#{user.private_token}"
+        get api("/issues", user)
         response.status.should == 200
         json_response.should be_an Array
         json_response.first['title'].should == issue.title
@@ -24,7 +26,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/issues" do
     it "should return project issues" do
-      get "#{api_prefix}/projects/#{project.code}/issues?private_token=#{user.private_token}"
+      get api("/projects/#{project.code}/issues", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == issue.title
@@ -33,7 +35,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/issues/:issue_id" do
     it "should return a project issue by id" do
-      get "#{api_prefix}/projects/#{project.code}/issues/#{issue.id}?private_token=#{user.private_token}"
+      get api("/projects/#{project.code}/issues/#{issue.id}", user)
       response.status.should == 200
       json_response['title'].should == issue.title
     end
@@ -41,7 +43,7 @@ describe Gitlab::API do
 
   describe "POST /projects/:id/issues" do
     it "should create a new project issue" do
-      post "#{api_prefix}/projects/#{project.code}/issues?private_token=#{user.private_token}",
+      post api("/projects/#{project.code}/issues", user),
         title: 'new issue', labels: 'label, label2'
       response.status.should == 201
       json_response['title'].should == 'new issue'
@@ -52,7 +54,7 @@ describe Gitlab::API do
 
   describe "PUT /projects/:id/issues/:issue_id" do
     it "should update a project issue" do
-      put "#{api_prefix}/projects/#{project.code}/issues/#{issue.id}?private_token=#{user.private_token}",
+      put api("/projects/#{project.code}/issues/#{issue.id}", user),
         title: 'updated title', labels: 'label2', closed: 1
       response.status.should == 200
       json_response['title'].should == 'updated title'
@@ -64,7 +66,7 @@ describe Gitlab::API do
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "should delete a project issue" do
       expect {
-        delete "#{api_prefix}/projects/#{project.code}/issues/#{issue.id}?private_token=#{user.private_token}"
+        delete api("/projects/#{project.code}/issues/#{issue.id}", user)
       }.to change { Issue.count }.by(-1)
     end
   end

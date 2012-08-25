@@ -7,9 +7,9 @@ require 'cucumber/rails'
 require 'webmock/cucumber'
 WebMock.allow_net_connect!
 
-require Rails.root.join 'spec/monkeypatch'
 require Rails.root.join 'spec/factories'
-require Rails.root.join 'spec/support/login'
+require Rails.root.join 'spec/support/monkeypatch'
+require Rails.root.join 'spec/support/login_helpers'
 require Rails.root.join 'spec/support/valid_commit'
 
 Capybara.default_selector = :css
