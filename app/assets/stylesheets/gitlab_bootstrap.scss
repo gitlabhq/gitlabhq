@@ -468,12 +468,8 @@ form {
   h5, .title {
     padding: 0 10px;
     @include round-borders-top(4px);
+    @include bg-gray-gradient;
     border-bottom: 1px solid #bbb;
-    background:#eee;
-    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
     &.small {
       line-height: 28px;
@@ -499,10 +495,7 @@ form {
   }
 
   .bottom {
-    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    @include bg-gray-gradient;
     @include round-borders-bottom(4px);
     border-bottom:none;
     border-top: 1px solid #bbb;
@@ -555,11 +548,7 @@ table.admin-table {
   th {
     border-color: #CCC;
     border-bottom: 1px solid #bbb;
-    background:#eee;
-    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    @include bg-gray-gradient;
   }
 }
 
@@ -682,11 +671,7 @@ h3.page_title {
 
   .file_title {
     border-bottom: 1px solid #bbb;
-    background:#eee;
-    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    @include bg-gray-gradient;
     margin: 0;
     font-weight: normal;
     font-weight: bold;
