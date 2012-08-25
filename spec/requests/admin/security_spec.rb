@@ -2,20 +2,26 @@ require 'spec_helper'
 
 describe "Admin::Projects" do
   describe "GET /admin/projects" do
-    it { admin_projects_path.should be_allowed_for :admin }
-    it { admin_projects_path.should be_denied_for :user }
-    it { admin_projects_path.should be_denied_for :visitor }
+    subject { admin_projects_path }
+
+    it { should be_allowed_for :admin }
+    it { should be_denied_for :user }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /admin/users" do
-    it { admin_users_path.should be_allowed_for :admin }
-    it { admin_users_path.should be_denied_for :user }
-    it { admin_users_path.should be_denied_for :visitor }
+    subject { admin_users_path }
+
+    it { should be_allowed_for :admin }
+    it { should be_denied_for :user }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /admin/hooks" do
-    it { admin_hooks_path.should be_allowed_for :admin }
-    it { admin_hooks_path.should be_denied_for :user }
-    it { admin_hooks_path.should be_denied_for :visitor }
+    subject { admin_hooks_path }
+
+    it { should be_allowed_for :admin }
+    it { should be_denied_for :user }
+    it { should be_denied_for :visitor }
   end
 end
