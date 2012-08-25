@@ -42,14 +42,15 @@ Only create a Github Issue if you want a specific part of this installation guid
 Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
 
 > - - -
-> First 3 steps can be easily skipped with simply install script (for apt-get-based distributions):
-> 
+> First 3 steps can be easily skipped with simply install script (for apt-get- and yum-based distributions):
 >
 >     # Install curl and sudo
 >     apt-get install curl sudo
+>     # or
+>     yum install curl sudo
 >     
 >     # 3 steps in 1 command :)
->     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
+>     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/install_dependencies.sh | sh
 > 
 > Now you can go to step 4"
 > - - -
