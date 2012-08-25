@@ -42,13 +42,13 @@ module Grack
 
     def current_ref
       if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
-        input = Zlib::GzipReader.new(@request.body).string
+        input = Zlib::GzipReader.new(@request.body).read
       else
-        input = @request.body.string
+        input = @request.body.read
       end
-
-      oldrev, newrev, ref = input.split(' ')
-      /refs\/heads\/([\w-]+)/.match(ref).to_a.last
+      # Need to reset seek point
+      @request.body.rewind
+      /refs\/heads\/([\w-]+)/.match(input).to_a.first
     end
   end# Auth
 end# Grack
