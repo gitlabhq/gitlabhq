@@ -42,9 +42,10 @@ Only create a Github Issue if you want a specific part of this installation guid
 Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
 
 > - - -
-> First 3 steps can be easily skipped with simply install script:
+> First 3 steps can be easily skipped with simply install script (for apt-get-based distributions):
 > 
->     # Install curl and sudo 
+>
+>     # Install curl and sudo
 >     apt-get install curl sudo
 >     
 >     # 3 steps in 1 command :)
@@ -54,6 +55,8 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 > - - -
 
 # 1. Install packages
+
+## Debian/Ubuntu
 
 *Keep in mind that `sudo` is not installed for debian by default. You should install it with as root:*     **apt-get update && apt-get upgrade && apt-get install sudo**
 
@@ -65,6 +68,16 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
+## Fedora
+
+    # Optional
+    sudo yum upgrade -y
+    
+    sudo yum groupinstall -y 'Development Tools' && sudo yum install -y git git-core wget curl gcc libxml2-devel libxslt-devel sqlite sqlite-devel libcurl-devel readline-devel glibc-devel openssl-devel mysql++-devel make zlib-devel libicu-devel redis openssh-server python-devel python-pip libyaml-devel postfix
+
+    # If you want to use MySQL
+    sudo yum install -y mysql-server mysql mysql-devel
+
 # 2. Install ruby
 
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
@@ -73,11 +86,20 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     ./configure
     make
     sudo make install
+    
+## Fedora 17+
+
+Fedora 17 comes with Ruby 1.9.3 so you just need to execute
+
+    sudo yum install ruby ruby-devel
+
+to install it.
 
 # 3. Install gitolite
 
 Create user for git:
     
+    # Debian/Ubuntu
     sudo adduser \
       --system \
       --shell /bin/sh \
@@ -86,11 +108,22 @@ Create user for git:
       --disabled-password \
       --home /home/git \
       git
+      
+    # Fedora
+    sudo adduser \
+      --shell /bin/sh \
+      --comment 'git version control' \
+      --user-group \
+      --home /home/git \
+      git
 
 Create user for gitlab:
 
-    # ubuntu/debian
+    # Debian/Ubuntu
     sudo adduser --disabled-login --gecos 'gitlab system' gitlab    
+    
+    # Fedora
+    sudo adduser -s /sbin/nologin --comment 'gitlab system' gitlab
 
 Add your user to git group:
 
@@ -117,6 +150,7 @@ Setup:
     
 Permissions:
 
+    sudo chmod g+X /home/git/
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
@@ -171,11 +205,11 @@ Permissions:
 
 #### Install gems
 
-    sudo -u gitlab -H bundle install --without development test --deployment
+    sudo -u gitlab -H sh -c "PATH=\$PATH:/usr/local/bin; bundle install --without development test --deployment"
 
 #### Setup DB
 
-    sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; bundle exec rake gitlab:app:setup RAILS_ENV=production"
 
 #### Setup gitlab hooks
 
@@ -184,7 +218,7 @@ Permissions:
     
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; bundle exec rake gitlab:app:status RAILS_ENV=production"
 
 
     # OUTPUT EXAMPLE
@@ -209,10 +243,10 @@ If you got all YES - congrats! You can go to next step.
 Application can be started with next command:
 
     # For test purposes 
-    sudo -u gitlab bundle exec rails s -e production
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; bundle exec rails s -e production"
 
     # As daemon
-    sudo -u gitlab bundle exec rails s -e production -d
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; bundle exec rails s -e production -d"
 
 You can login via web using admin generated with setup:
 
@@ -222,10 +256,10 @@ You can login via web using admin generated with setup:
 #  6. Run resque process (for processing queue).
 
     # Manually
-    sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes"
 
     # Gitlab start script
-    sudo -u gitlab ./resque.sh
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; ./resque.sh"
     # if you run this as root /home/gitlab/gitlab/tmp/pids/resque_worker.pid will be owned by root
     # causing the resque worker not to start via init script on next boot/service restart
 
@@ -234,15 +268,21 @@ You can login via web using admin generated with setup:
 
 # Nginx && Unicorn
 
-### Install Nginx
+## Install Nginx
+
+### Debian/Ubuntu
 
     sudo apt-get install nginx
+
+### Fedora
+    
+    sudo yum install nginx
 
 ## Unicorn
 
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
-    sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
+    sudo -u gitlab sh -c "PATH=\$PATH:/usr/local/bin; bundle exec unicorn_rails -c config/unicorn.rb -E production -D"
 
 Edit /etc/nginx/nginx.conf. In the *http* section add:
 
@@ -303,7 +343,7 @@ Create init script in /etc/init.d/gitlab:
     DESC="Gitlab service"
     PID=/home/gitlab/gitlab/tmp/pids/unicorn.pid
     RESQUE_PID=/home/gitlab/gitlab/tmp/pids/resque_worker.pid
-
+    
     case "$1" in
       start)
             CD_TO_APP_DIR="cd /home/gitlab/gitlab"
@@ -312,9 +352,9 @@ Create init script in /etc/init.d/gitlab:
 
             echo -n "Starting $DESC: "
             if [ `whoami` = root ]; then
-              sudo -u gitlab sh -l -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
+              sudo -u gitlab sh -l -c "PATH=\$PATH:/usr/local/bin; $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
             else
-              $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
+              PATH=\$PATH:/usr/local/bin; $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
             fi
             echo "$NAME."
             ;;
