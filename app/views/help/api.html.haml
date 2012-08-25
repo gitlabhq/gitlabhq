@@ -10,6 +10,8 @@
   %li
     %a{href: "#projects"} Projects
   %li
+    %a{href: "#snippets"} Snippets
+  %li
     %a{href: "#users"} Users
   %li
     %a{href: "#issues"} Issues
@@ -31,6 +33,16 @@
   .file_content.wiki
     = preserve do
       = markdown File.read(Rails.root.join("doc", "api", "projects.md"))
+
+%br
+
+.file_holder#snippets
+  .file_title
+    %i.icon-file
+    Projects Snippets
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "snippets.md"))
 
 %br
 
