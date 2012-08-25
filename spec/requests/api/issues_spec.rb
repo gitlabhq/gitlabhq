@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::API do
+  include ApiHelpers
+
   let(:user) { Factory :user }
   let!(:project) { Factory :project, owner: user }
   let!(:issue) { Factory :issue, author: user, assignee: user, project: project }

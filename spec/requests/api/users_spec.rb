@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::API do
+  include ApiHelpers
+
   let(:user) { Factory :user }
 
   describe "GET /users" do
