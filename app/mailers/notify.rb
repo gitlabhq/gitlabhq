@@ -27,26 +27,26 @@ class Notify < ActionMailer::Base
     mail(to: recipient(recipient_id), subject: subject)
   end
 
-  def note_commit_email(recipient_id, note_id)
+  def note_commit_email(recipient_emails, cc_emails, note_id)
     @note = Note.find(note_id)
     @commit = @note.target
     @commit = CommitDecorator.decorate(@commit)
     @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
+    mail(to: recipient_emails, cc: cc_emails, subject: subject("note for commit #{@commit.short_id}", @commit.title))
   end
 
-  def note_merge_request_email(recipient_id, note_id)
+  def note_merge_request_email(recipient_ids, cc_ids, note_id)
     @note = Note.find(note_id)
     @merge_request = @note.noteable
     @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for merge request !#{@merge_request.id}"))
+    mail(to: recipient(recipient_ids), cc: recipient(cc_ids), subject: subject("note for merge request !#{@merge_request.id}"))
   end
 
-  def note_issue_email(recipient_id, note_id)
+  def note_issue_email(recipient_ids, cc_ids, note_id)
     @note = Note.find(note_id)
     @issue = @note.noteable
     @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for issue ##{@issue.id}"))
+    mail(to: recipient(recipient_ids), cc: recipient(cc_ids), subject: subject("note for issue ##{@issue.id}"))
   end
 
   def note_wiki_email(recipient_id, note_id)
@@ -83,9 +83,17 @@ class Notify < ActionMailer::Base
   # recipient_id - User ID
   #
   # Returns a String containing the User's email address.
-  def recipient(recipient_id)
-    if recipient = User.find(recipient_id)
-      recipient.email
+  def recipient(recipient_ids)
+    if recipient_ids.class == Array
+      recipient_ids.collect do |rid|
+        if ruser = User.find(rid)
+          ruser.email
+        end
+      end
+    else  
+      if recipient = User.find(recipient_ids)
+        recipient.email
+      end
     end
   end
 
