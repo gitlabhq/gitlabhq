@@ -6,8 +6,8 @@ describe UsersProjectObserver do
                                  code: "Fuu", 
                                  path: "Fuu" ) }
   let(:users_project) { Factory.create(:users_project,
-                                      project: project,
-                                      user: user )}
+                                        project: project,
+                                        user: user )}
   subject { UsersProjectObserver.instance }
 
   describe "#after_create" do
@@ -22,6 +22,19 @@ describe UsersProjectObserver do
     it "should send email to user" do
       Notify.should_receive(:project_access_granted_email).with(users_project.id).and_return(double(deliver: true))
       subject.after_create(users_project)
+    end
+  end
+
+  describe "#after_update" do
+    it "should called when UsersProject updated" do
+      subject.should_receive(:after_update)
+      UsersProject.observers.enable :users_project_observer do
+        users_project.update_attribute(:project_access, 40)
+      end
+    end
+    it "should send email to user" do
+      Notify.should_receive(:project_access_granted_email).with(users_project.id).and_return(double(deliver: true))
+      subject.after_update(users_project)
     end
   end
 end
