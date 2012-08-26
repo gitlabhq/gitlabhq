@@ -145,6 +145,26 @@ describe Notify do
       end
     end
 
+    describe 'project access changed' do
+      let(:project) { Factory.create(:project, 
+                                      path: "Fuu", 
+                                      code: "Fuu") }
+      let(:user) { Factory.create :user }
+      let(:users_project) { Factory.create(:users_project, 
+                                           project: project, 
+                                           user: user) }
+      subject { Notify.project_access_granted_email(users_project.id) }
+      it 'has the correct subject' do
+        should have_subject /access to project was granted/
+      end
+      it 'contains name of project' do
+        should have_body_text /#{project.name}/
+      end
+      it 'contains new user role' do
+        should have_body_text /#{users_project.project_access_human}/
+      end
+    end
+
     context 'items that are noteable, the email for a note' do
       let(:note_author) { Factory.create(:user, name: 'author_name') }
       let(:note) { Factory.create(:note, project: project, author: note_author) }
