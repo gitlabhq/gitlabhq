@@ -106,13 +106,13 @@ module Gitlab
       name_writers = project.repository_writers
       name_masters = project.repository_masters
 
-      pr_br = project.protected_branches.map(&:name).join(" ")
+      pr_br = project.protected_branches.map(&:name).join("$ ")
 
       repo.clean_permissions
 
       # Deny access to protected branches for writers
       unless name_writers.blank? || pr_br.blank?
-        repo.add_permission("-", pr_br, name_writers)
+        repo.add_permission("-", pr_br.strip + "$ ", name_writers)
       end
 
       # Add read permissions
