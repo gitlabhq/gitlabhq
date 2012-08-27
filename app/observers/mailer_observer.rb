@@ -28,18 +28,31 @@ class MailerObserver < ActiveRecord::Observer
 
   def notify_note note
     # reject author of note from mail list
-    users = note.project.users.reject { |u| u.id == current_user.id }
+    all_users = note.project.users.reject { |u| u.id == current_user.id }
+    all_users_ids = all_users.collect{ |u| u.id }
 
-    users.each do |u|
-      case note.noteable_type
-      when "Commit"; Notify.note_commit_email(u.id, note.id).deliver
-      when "Issue";  Notify.note_issue_email(u.id, note.id).deliver
-      when "Wiki";  Notify.note_wiki_email(u.id, note.id).deliver
-      when "MergeRequest"; Notify.note_merge_request_email(u.id, note.id).deliver
-      when "Snippet"; true
-      else
-        Notify.note_wall_email(u.id, note.id).deliver
-      end
+    case note.noteable_type
+    when "Commit"
+      ci = note.project.commit(noteable_id)
+      # author email may not belong to any user, so use email directly.
+      to_users_emails = [ci.author_email, ci.committer_email].uniq
+      all_users_emails = all_users.collect{ |u| u.email }
+      cc_users_emails = all_users_emails - to_users_emails
+      Notify.note_commit_email(to_users_emails, cc_users_emails, note.id).deliver
+    when "Issue"
+      to_users_ids = [note.noteable.assignee_id, note.noteable.author_id].uniq
+      cc_users_ids = all_users_ids - to_users_ids
+      Notify.note_issue_email(to_users_ids, cc_users_ids, note.id).deliver
+    when "Wiki"
+      Notify.note_wiki_email(u.id, note.id).deliver
+    when "MergeRequest"
+      to_users_ids = [note.noteable.assignee_id, note.noteable.author_id].uniq
+      cc_users_ids = all_users_ids - to_users_ids
+      Notify.note_merge_request_email(to_users_ids, cc_users_ids, note.id).deliver
+    when "Snippet"
+      true
+    else
+      Notify.note_wall_email(u.id, note.id).deliver
     end
   end
 
