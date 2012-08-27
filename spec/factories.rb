@@ -90,3 +90,8 @@ Factory.add(:milestone, Milestone) do |obj|
   obj.title = Faker::Lorem.sentence
   obj.due_date = Date.today + 1.month
 end
+
+Factory.add(:users_project, UsersProject) do |obj|
+  obj.user = Factory :user
+  obj.project = Factory :project
+end

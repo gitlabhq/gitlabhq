@@ -76,6 +76,13 @@ class Notify < ActionMailer::Base
     mail(to: recipient(recipient_id), subject: subject("changed issue ##{@issue.id}", @issue.title))
   end
 
+  def project_access_granted_email(user_project_id)
+    @users_project = UsersProject.find user_project_id
+    @project = @users_project.project
+    mail(to: @users_project.user.email, 
+         subject: subject("access to project was granted"))
+  end
+
   private
 
   # Look up a User by their ID and return their email address
