@@ -106,6 +106,18 @@ module Gitlab
       name_writers = project.repository_writers
       name_masters = project.repository_masters
 
+      # Add gitolite-admin owner so repo has at least one master
+      owner_name = ''
+      begin
+        ga_repo = conf.get_repo("gitolite-admin")
+        owner_name = ga_repo.permissions[0]["RW+"][""][0]
+        raise StandardError if owner_name.blank?
+      rescue => ex
+        puts "Can't determine gitolite-admin owner".red
+        raise StandardError
+      end
+      name_masters << owner_name
+
       pr_br = project.protected_branches.map(&:name).join(" ")
 
       repo.clean_permissions
@@ -123,35 +135,6 @@ module Gitlab
       repo.add_permission("RW+", "", name_masters) unless name_masters.blank?
 
       repo
-    end
-
-    def admin_all_repo
-      ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(@local_dir,'gitolite'))
-      conf = ga_repo.config
-      owner_name = ""
-
-      # Read gitolite-admin user
-      #
-      begin 
-        repo = conf.get_repo("gitolite-admin")
-        owner_name = repo.permissions[0]["RW+"][""][0]
-        raise StandardError if owner_name.blank?
-      rescue => ex
-        puts "Can't determine gitolite-admin owner".red
-        raise StandardError
-      end
-
-      # @ALL repos premission for gitolite owner
-      repo_name = "@all"
-      repo = if conf.has_repo?(repo_name)
-               conf.get_repo(repo_name)
-             else 
-               ::Gitolite::Config::Repo.new(repo_name)
-             end
-
-      repo.add_permission("RW+", "", owner_name)
-      conf.add_repo(repo, true)
-      ga_repo.save
     end
   end
 end
