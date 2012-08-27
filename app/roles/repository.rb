@@ -115,10 +115,13 @@ module Repository
     storage_path = File.join(Rails.root, "tmp", "repositories", self.code)
     file_path = File.join(storage_path, file_name)
 
+    # Put files into a directory before archiving
+    prefix = self.code + "/"
+
     # Create file if not exists
     unless File.exists?(file_path)
       FileUtils.mkdir_p storage_path
-      file = self.repo.archive_to_file(ref, nil,  file_path)
+      file = self.repo.archive_to_file(ref, prefix,  file_path)
     end
 
     file_path
