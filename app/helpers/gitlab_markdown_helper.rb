@@ -54,17 +54,24 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text)
-    @__renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::GitlabHTML.new(self, filter_html: true, with_toc_data: true), {
-      no_intra_emphasis: true,
-      tables: true,
-      fenced_code_blocks: true,
-      autolink: true,
-      strikethrough: true,
-      lax_html_blocks: true,
-      space_after_headers: true,
-      superscript: true
-    })
+    unless @markdown
+      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
+                          # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
+                          filter_html: true,
+                          with_toc_data: true,
+                          hard_wrap: true)
+      @markdown ||= Redcarpet::Markdown.new(gitlab_renderer,
+                      # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
+                      no_intra_emphasis: true,
+                      tables: true,
+                      fenced_code_blocks: true,
+                      autolink: true,
+                      strikethrough: true,
+                      lax_html_blocks: true,
+                      space_after_headers: true,
+                      superscript: true)
+    end
 
-    @__renderer.render(text).html_safe
+    @markdown.render(text).html_safe
   end
 end
