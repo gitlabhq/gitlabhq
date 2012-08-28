@@ -145,6 +145,7 @@ namespace :gitlab do
           permission_commands = [
             "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
             "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}",
+            "sudo chown gitlab:gitlab #{Gitlab.config.git_base_path}**/hooks/post-receive"
           ]
           permission_commands.each { |command| Kernel.system(command) }
           puts "[DONE]".green
