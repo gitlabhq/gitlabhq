@@ -27,6 +27,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
 
   config.include LoginHelpers, type: :request
+  config.include GitoliteStub
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -39,6 +40,8 @@ RSpec.configure do |config|
   end
 
   config.before do
+    stub_gitolite!
+
     # !!! Observers disabled by default in tests
     ActiveRecord::Base.observers.disable(:all)
     # ActiveRecord::Base.observers.enable(:all)
