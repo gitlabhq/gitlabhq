@@ -76,6 +76,14 @@ FactoryGirl.define do
   factory :key do
     title
     key { File.read(File.join(Rails.root, "db", "pkey.example")) }
+
+    factory :deploy_key do
+      project
+    end
+
+    factory :personal_key do
+      user
+    end
   end
 
   factory :milestone do

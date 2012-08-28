@@ -49,6 +49,14 @@ describe "Factories" do
     it "builds a valid instance" do
       build(:key).should be_valid
     end
+
+    it "builds a valid deploy key instance" do
+      build(:deploy_key).should be_valid
+    end
+
+    it "builds a valid personal key instance" do
+      build(:personal_key).should be_valid
+    end
   end
 
   describe 'Milestone' do
