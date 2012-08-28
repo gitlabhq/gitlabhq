@@ -1,8 +1,8 @@
 function switchToNewIssue(form){
   $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
     $(".issues_content").after(form);
-    $('select#issue_assignee_id').chosen();
-    $('select#issue_milestone_id').chosen();
+    $('select#issue_assignee_id').chosen({allow_single_deselect: true});
+    $('select#issue_milestone_id').chosen({allow_single_deselect: true});
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.top-tabs .add_new').hide();
   });
@@ -11,8 +11,8 @@ function switchToNewIssue(form){
 function switchToEditIssue(form){
   $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
     $(".issues_content").after(form);
-    $('select#issue_assignee_id').chosen();
-    $('select#issue_milestone_id').chosen();
+    $('select#issue_assignee_id').chosen({allow_single_deselect: true});
+    $('select#issue_milestone_id').chosen({allow_single_deselect: true});
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.add_new').hide();
   });
@@ -67,13 +67,13 @@ function initIssuesSearch() {
  */
 function issuesPage(){ 
   initIssuesSearch();
-  $("#update_status").chosen();
-  $("#update_assignee_id").chosen();
-  $("#update_milestone_id").chosen();
+  $("select#update_status").chosen({allow_single_deselect: true});
+  $("select#update_assignee_id").chosen({allow_single_deselect: true});
+  $("select#update_milestone_id").chosen({allow_single_deselect: true});
 
-  $("#label_name").chosen();
-  $("#assignee_id").chosen();
-  $("#milestone_id").chosen();
+  $("select#label_name").chosen({allow_single_deselect: true});
+  $("select#assignee_id").chosen({allow_single_deselect: true});
+  $("select#milestone_id").chosen({allow_single_deselect: true});
   $("#milestone_id, #assignee_id, #label_name").on("change", function(){
     $(this).closest("form").submit();
   });

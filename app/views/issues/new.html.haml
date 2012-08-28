@@ -1,8 +1,7 @@
 = render "form"
 
 :javascript
-  $(function(){
-    $('select#issue_assignee_id').chosen();
-    $('select#issue_milestone_id').chosen();
+  $(function() {
+    $('select#issue_assignee_id').chosen({allow_single_deselect: true});
+    $('select#issue_milestone_id').chosen({allow_single_deselect: true});
   });
-
