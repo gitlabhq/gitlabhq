@@ -2,24 +2,62 @@ require 'gitolite'
 require 'timeout'
 require 'fileutils'
 
+# TODO: refactor & cleanup 
 module Gitlab
   class Gitolite
     class AccessDenied < StandardError; end
 
-    def self.update_project(path, project)
-      self.new.configure { |git| git.update_project(path, project) }
+    def set_key key_id, key_content, projects
+      self.configure do |c|
+        c.update_keys(key_id, key_content)
+        c.update_project(project.path, projects)
+      end
     end
 
-    def self.destroy_project(project)
-      self.new.configure { |git| git.destroy_project(project) }
+    def remove_key key_id, projects
+      self.configure do |c|
+        c.delete_key(key_id)
+        c.update_project(project.path, projects)
+      end
     end
+
+    def update_repository project
+      self.configure do |c|
+        c.update_project(project.path, project)
+      end
+    end
+
+    alias_method :create_repository, :update_repository
+
+    def remove_repository project
+      self.configure do |c|
+        c.destroy_project(project)
+      end
+    end
+
+    def url_to_repo path
+      Gitlab.config.ssh_path + "#{path}.git"
+    end
+
+    def initialize
+      # create tmp dir
+      @local_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+    end
+
+    def enable_automerge
+      self.configure do |git|
+        git.admin_all_repo
+      end
+    end
+
+    private
 
     def pull
       # create tmp dir
       @local_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
       Dir.mkdir @local_dir
 
-      `git clone #{GitHost.admin_uri} #{@local_dir}/gitolite`
+      `git clone #{self.class.admin_uri} #{@local_dir}/gitolite`
     end
 
     def push

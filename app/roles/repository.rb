@@ -1,4 +1,6 @@
 module Repository
+  include GitHost
+
   def valid_repo?
     repo
   rescue
@@ -48,7 +50,7 @@ module Repository
   end
 
   def url_to_repo
-    Gitlab::GitHost.url_to_repo(path)
+    git_host.url_to_repo(path)
   end
 
   def path_to_repo
@@ -56,11 +58,11 @@ module Repository
   end
 
   def update_repository
-    Gitlab::GitHost.system.update_project(path, self)
+    git_host.update_repository(self)
   end
 
   def destroy_repository
-    Gitlab::GitHost.system.destroy_project(self)
+    git_host.remove_repository(self)
   end
 
   def repo_exists?

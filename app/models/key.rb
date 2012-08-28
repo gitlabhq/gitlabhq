@@ -1,7 +1,6 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
-  include SshKey
   belongs_to :user
   belongs_to :project
 
@@ -49,6 +48,10 @@ class Key < ActiveRecord::Base
     else
       user.projects
     end
+  end
+
+  def last_deploy?
+    Key.where(identifier: identifier).count == 0
   end
 end
 # == Schema Information
