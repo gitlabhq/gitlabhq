@@ -52,7 +52,7 @@
     %tr
       %td
         = link_to tm.user_name, admin_user_path(tm.user)
-      %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), class: "medium project-access-select", disabled: :disabled
+      %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), disabled: :disabled, class: 'tm_project_access', id: "tm_#{tm.id}_project_access"
       %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
       %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
 
@@ -86,6 +86,6 @@
   }
 
 :javascript
+  $('select.tm_project_access').chosen();
   $('select#user_ids').chosen();
-  $('select#repo_access').chosen();
   $('select#project_access').chosen();

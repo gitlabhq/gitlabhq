@@ -54,7 +54,8 @@
   = render @events
 :javascript
   $(function(){
-    $('.repo-access-select, .project-access-select').live("change", function() {
+    $('select.project-access-select').chosen();
+    $('select.project-access-select').on('change', function() {
       $(this.form).submit();
     });
   })

@@ -10,7 +10,8 @@
 
 :javascript
   $(function(){
-    $('.repo-access-select, .project-access-select').live("change", function() {
+    $('select.team_member_project_access').chosen();
+    $('select.team_member_project_access').on('change', function() {
       $(this.form).submit();
     });
   })
