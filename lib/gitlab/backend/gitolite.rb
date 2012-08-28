@@ -6,6 +6,7 @@ require 'fileutils'
 module Gitlab
   class Gitolite
     class AccessDenied < StandardError; end
+    class InvalidKey < StandardError; end
 
     def set_key key_id, key_content, projects
       configure do |c|
@@ -190,8 +191,12 @@ module Gitlab
         end
       end
     rescue Exception => ex
-      Gitlab::Logger.error(ex.message)
-      raise Gitolite::AccessDenied.new("gitolite timeout")
+      if ex.message =~ /is not a valid SSH key string/
+        raise Gitolite::InvalidKey.new("ssh key is not valid")
+      else
+        Gitlab::Logger.error(ex.message)
+        raise Gitolite::AccessDenied.new("gitolite timeout")
+      end
     end
   end
 end
