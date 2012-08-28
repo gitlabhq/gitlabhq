@@ -10,14 +10,14 @@ module Gitlab
     def set_key key_id, key_content, projects
       configure do |c|
         c.update_keys(key_id, key_content)
-        c.update_project(project.path, projects)
+        c.update_projects(projects)
       end
     end
 
     def remove_key key_id, projects
       configure do |c|
         c.delete_key(key_id)
-        c.update_project(project.path, projects)
+        c.update_projects(projects)
       end
     end
 
@@ -50,43 +50,7 @@ module Gitlab
       end
     end
 
-    private
-
-    def pull
-      # create tmp dir
-      @local_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
-      Dir.mkdir @local_dir
-
-      `git clone #{Gitlab.config.gitolite_admin_uri} #{@local_dir}/gitolite`
-    end
-
-    def push
-      Dir.chdir(File.join(@local_dir, "gitolite"))
-      `git add -A`
-      `git commit -am "Gitlab"`
-      `git push`
-      Dir.chdir(Rails.root)
-
-      FileUtils.rm_rf(@local_dir)
-    end
-
-    def configure
-      Timeout::timeout(30) do
-        File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
-          begin 
-            f.flock(File::LOCK_EX)
-            pull
-            yield(self)
-            push
-          ensure
-            f.flock(File::LOCK_UN)
-          end
-        end
-      end
-    rescue Exception => ex
-      Gitlab::Logger.error(ex.message)
-      raise Gitolite::AccessDenied.new("gitolite timeout")
-    end
+    protected
 
     def destroy_project(project)
       FileUtils.rm_rf(project.path_to_repo)
@@ -190,6 +154,44 @@ module Gitlab
       repo.add_permission("RW+", "", owner_name)
       conf.add_repo(repo, true)
       ga_repo.save
+    end
+
+    private
+
+    def pull
+      # create tmp dir
+      @local_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+      Dir.mkdir @local_dir
+
+      `git clone #{Gitlab.config.gitolite_admin_uri} #{@local_dir}/gitolite`
+    end
+
+    def push
+      Dir.chdir(File.join(@local_dir, "gitolite"))
+      `git add -A`
+      `git commit -am "Gitlab"`
+      `git push`
+      Dir.chdir(Rails.root)
+
+      FileUtils.rm_rf(@local_dir)
+    end
+
+    def configure
+      Timeout::timeout(30) do
+        File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
+          begin 
+            f.flock(File::LOCK_EX)
+            pull
+            yield(self)
+            push
+          ensure
+            f.flock(File::LOCK_UN)
+          end
+        end
+      end
+    rescue Exception => ex
+      Gitlab::Logger.error(ex.message)
+      raise Gitolite::AccessDenied.new("gitolite timeout")
     end
   end
 end
