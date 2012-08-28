@@ -113,17 +113,20 @@ Generate key:
 Clone GitLab's fork of the Gitolite source code:
 
     cd /home/git
-    sudo -H -u git git clone https://github.com/gitlabhq/gitolite.git /home/git/gitolite
+    sudo -H -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup:
 
+    cd /home/git
+    sudo -u git -H mkdir bin
     sudo -u git sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
-    sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; /home/git/gitolite/src/gl-system-install"
+    sudo -u git sh -c 'gitolite/install -ln /home/git/bin'
+
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 0444 /home/git/gitlab.pub
 
-    sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
-    sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
+    sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
+    sudo -u git -H sed -i 's/0077/0007/g' /home/git/.gitolite.rc
 
 Permissions:
 
@@ -189,8 +192,8 @@ and ensure you have followed all of the above steps carefully.
 
 #### Setup GitLab hooks
 
-    sudo cp ./lib/hooks/post-receive /home/git/share/gitolite/hooks/common/post-receive
-    sudo chown git:git /home/git/share/gitolite/hooks/common/post-receive
+    sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
+    sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
 
 #### Check application status
 
