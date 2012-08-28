@@ -8,21 +8,21 @@ module Gitlab
     class AccessDenied < StandardError; end
 
     def set_key key_id, key_content, projects
-      self.configure do |c|
+      configure do |c|
         c.update_keys(key_id, key_content)
         c.update_project(project.path, projects)
       end
     end
 
     def remove_key key_id, projects
-      self.configure do |c|
+      configure do |c|
         c.delete_key(key_id)
         c.update_project(project.path, projects)
       end
     end
 
     def update_repository project
-      self.configure do |c|
+      configure do |c|
         c.update_project(project.path, project)
       end
     end
@@ -30,7 +30,7 @@ module Gitlab
     alias_method :create_repository, :update_repository
 
     def remove_repository project
-      self.configure do |c|
+      configure do |c|
         c.destroy_project(project)
       end
     end
@@ -45,7 +45,7 @@ module Gitlab
     end
 
     def enable_automerge
-      self.configure do |git|
+      configure do |git|
         git.admin_all_repo
       end
     end
