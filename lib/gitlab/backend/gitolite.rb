@@ -57,7 +57,7 @@ module Gitlab
       @local_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
       Dir.mkdir @local_dir
 
-      `git clone #{self.class.admin_uri} #{@local_dir}/gitolite`
+      `git clone #{Gitlab.config.gitolite_admin_uri} #{@local_dir}/gitolite`
     end
 
     def push
