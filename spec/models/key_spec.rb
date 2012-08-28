@@ -17,20 +17,15 @@ describe Key do
   context "validation of uniqueness" do
 
     context "as a deploy key" do
-      let(:project) { Factory.create(:project, path: 'alpha', code: 'alpha') }
-      let(:another_project) { Factory.create(:project, path: 'beta', code: 'beta') }
-
-      before do
-        deploy_key = Factory.create(:key, project: project)
-      end
+      let!(:deploy_key) { create(:deploy_key) }
 
       it "does not accept the same key twice for a project" do
-        key = Factory.new(:key, project: project)
+        key = build(:key, project: deploy_key.project)
         key.should_not be_valid
       end
 
       it "does accept the same key for another project" do
-        key = Factory.new(:key, project: another_project)
+        key = build(:key, project_id: 0)
         key.should be_valid
       end
     end
@@ -39,12 +34,12 @@ describe Key do
       let(:user) { Factory.create(:user) }
 
       it "accepts the key once" do
-        Factory.new(:key, user: user).should be_valid
+        build(:key, user: user).should be_valid
       end
 
       it "does not accepts the key twice" do
-        Factory.create(:key, user: user)
-        Factory.new(:key, user: user).should_not be_valid
+        create(:key, user: user)
+        build(:key, user: user).should_not be_valid
       end
     end
   end
