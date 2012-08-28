@@ -10,7 +10,6 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
 require 'webmock/rspec'
-require 'factories'
 require 'email_spec'
 require 'headless'
 

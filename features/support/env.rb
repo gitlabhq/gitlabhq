@@ -8,7 +8,6 @@ require 'webmock/cucumber'
 
 WebMock.allow_net_connect!
 
-require Rails.root.join 'spec/factories'
 require Rails.root.join 'spec/support/monkeypatch'
 require Rails.root.join 'spec/support/gitolite_stub'
 require Rails.root.join 'spec/support/login_helpers'
