@@ -81,7 +81,7 @@ namespace :gitlab do
             next
           end
 
-          puts "post-reveice file ok".green
+          puts "post-receive file ok".green
         end
       end
 
