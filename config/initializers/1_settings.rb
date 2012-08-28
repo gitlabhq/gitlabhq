@@ -66,6 +66,10 @@ class Settings < Settingslogic
       git_host['base_path'] || '/home/git/repositories/'
     end
 
+    def git_hooks_path
+      git_host['hooks_path'] || '/home/git/share/gitolite/hooks/'
+    end
+
     def git_upload_pack
       if git_host['upload_pack'] != false
         true
