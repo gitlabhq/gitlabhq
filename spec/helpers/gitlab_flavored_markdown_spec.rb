@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe GitlabMarkdownHelper do
   before do
-    @project = Project.find_by_path("gitlabhq") || Factory(:project)
+    @project = Factory(:project)
     @commit = @project.repo.commits.first.parents.first
     @commit = CommitDecorator.decorate(Commit.new(@commit))
     @other_project = Factory :project, path: "OtherPath", code: "OtherCode"
@@ -157,7 +157,7 @@ describe GitlabMarkdownHelper do
       gfm("Let @#{user.name} fix the *mess* in #{@commit.id}").should == "Let #{link_to "@#{user.name}", project_team_member_path(@project, member), class: "gfm gfm-team_member "} fix the *mess* in #{link_to @commit.id, project_commit_path(@project, id: @commit.id), title: "Commit: #{@commit.author_name} - #{@commit.title}", class: "gfm gfm-commit "}"
     end
 
-    it "should not trip over other stuff", focus: true do
+    it "should not trip over other stuff" do
       gfm("_Please_ *stop* 'helping' and all the other b*$#%' you do.").should == "_Please_ *stop* 'helping' and all the other b*$#%' you do."
     end
 

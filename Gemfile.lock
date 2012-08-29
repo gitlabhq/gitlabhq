@@ -166,6 +166,11 @@ GEM
     eventmachine (0.12.10)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    factory_girl (4.0.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.0.0)
+      factory_girl (~> 4.0.0)
+      railties (>= 3.0.0)
     ffaker (1.14.0)
     ffi (1.0.11)
     foreman (0.47.0)
@@ -388,6 +393,7 @@ DEPENDENCIES
   devise (~> 2.1.0)
   draper
   email_spec
+  factory_girl_rails
   ffaker
   foreman
   git
