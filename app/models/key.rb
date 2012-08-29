@@ -4,13 +4,15 @@ class Key < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
+  attr_protected :user_id
+
   validates :title,
             presence: true,
             length: { within: 0..255 }
 
   validates :key,
             presence: true,
-            :format => { :with => /ssh-.{3} / },
+            format: { :with => /ssh-.{3} / },
             length: { within: 0..5000 }
 
   before_save :set_identifier
