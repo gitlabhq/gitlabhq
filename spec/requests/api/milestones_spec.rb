@@ -1,16 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::API do
+  include ApiHelpers
+
   let(:user) { Factory :user }
   let!(:project) { Factory :project, owner: user }
   let!(:milestone) { Factory :milestone, project: project }
 
   before { project.add_access(user, :read) }
-  before { return pending }
 
   describe "GET /projects/:id/milestones" do
     it "should return project milestones" do
-      get "#{api_prefix}/projects/#{project.code}/milestones?private_token=#{user.private_token}"
+      get api("/projects/#{project.code}/milestones", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == milestone.title
@@ -19,7 +20,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/milestones/:milestone_id" do
     it "should return a project milestone by id" do
-      get "#{api_prefix}/projects/#{project.code}/milestones/#{milestone.id}?private_token=#{user.private_token}"
+      get api("/projects/#{project.code}/milestones/#{milestone.id}", user)
       response.status.should == 200
       json_response['title'].should == milestone.title
     end
@@ -27,7 +28,7 @@ describe Gitlab::API do
 
   describe "POST /projects/:id/milestones" do
     it "should create a new project milestone" do
-      post "#{api_prefix}/projects/#{project.code}/milestones?private_token=#{user.private_token}",
+      post api("/projects/#{project.code}/milestones", user),
         title: 'new milestone'
       response.status.should == 201
       json_response['title'].should == 'new milestone'
@@ -37,7 +38,7 @@ describe Gitlab::API do
 
   describe "PUT /projects/:id/milestones/:milestone_id" do
     it "should update a project milestone" do
-      put "#{api_prefix}/projects/#{project.code}/milestones/#{milestone.id}?private_token=#{user.private_token}",
+      put api("/projects/#{project.code}/milestones/#{milestone.id}", user),
         title: 'updated title'
       response.status.should == 200
       json_response['title'].should == 'updated title'
