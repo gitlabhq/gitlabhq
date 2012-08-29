@@ -17,11 +17,11 @@ module StubbedRepository
     if new_record? || path == 'newproject'
       # There are a couple Project specs and features that expect the Project's
       # path to be in the returned path, so let's patronize them.
-      File.join(Rails.root, 'tmp', 'tests', path)
+      File.join(Rails.root, 'tmp', 'repositories', path)
     else
       # For everything else, just give it the path to one of our real seeded
       # repos.
-      File.join(Rails.root, 'tmp', 'tests', 'gitlabhq_0')
+      File.join(Rails.root, 'tmp', 'repositories', 'gitlabhq')
     end
   end
 
