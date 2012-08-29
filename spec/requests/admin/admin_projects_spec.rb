@@ -87,7 +87,7 @@ describe "Admin::Projects" do
       visit new_admin_project_path
       fill_in 'project_name', with: 'NewProject'
       fill_in 'project_code', with: 'NPR'
-      fill_in 'project_path', with: 'gitlabhq_1'
+      fill_in 'project_path', with: 'newproject'
       expect { click_button "Create project" }.to change { Project.count }.by(1)
       @project = Project.last
     end

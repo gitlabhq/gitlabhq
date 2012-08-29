@@ -25,11 +25,8 @@ describe Milestone do
     it { should validate_presence_of(:project_id) }
   end
 
-  let(:project) { Factory :project }
-  let(:milestone) { Factory :milestone, project: project }
-  let(:issue) { Factory :issue, project: project }
-
-  it { milestone.should be_valid }
+  let(:milestone) { Factory :milestone }
+  let(:issue) { Factory :issue }
 
   describe "#percent_complete" do
     it "should not count open issues" do

@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Note do
-  let(:project) { Factory :project }
-  let!(:commit) { project.commit }
-
   describe "Associations" do
     it { should belong_to(:project) }
   end
@@ -13,8 +10,6 @@ describe Note do
     it { should validate_presence_of(:project) }
   end
 
-  it { Factory.create(:note,
-                      project: project).should be_valid }
   describe "Scopes" do
     it "should have a today named scope that returns ..." do
       Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
@@ -25,26 +20,27 @@ describe Note do
     let(:project) { Factory(:project) }
 
     it "recognizes a neutral note" do
-      note = Factory(:note, project: project, note: "This is not a +1 note")
+      note = Factory(:note, note: "This is not a +1 note")
       note.should_not be_upvote
     end
 
     it "recognizes a +1 note" do
-      note = Factory(:note, project: project, note: "+1 for this")
+      note = Factory(:note, note: "+1 for this")
       note.should be_upvote
     end
 
     it "recognizes a -1 note as no vote" do
-      note = Factory(:note, project: project, note: "-1 for this")
+      note = Factory(:note, note: "-1 for this")
       note.should_not be_upvote
     end
   end
 
-  describe "Commit notes" do
+  let(:project) { create(:project) }
+  let(:commit) { project.commit }
 
+  describe "Commit notes" do
     before do
       @note = Factory :note,
-        project: project,
         noteable_id: commit.id,
         noteable_type: "Commit"
     end
@@ -58,7 +54,6 @@ describe Note do
   describe "Pre-line commit notes" do
     before do
       @note = Factory :note,
-        project: project,
         noteable_id: commit.id,
         noteable_type: "Commit",
         line_code: "0_16_1"
@@ -91,8 +86,8 @@ describe Note do
 
   describe :authorization do
     before do
-      @p1 = project
-      @p2 = Factory :project, code: "alien", path: "gitlabhq_1"
+      @p1 = create(:project)
+      @p2 = Factory :project
       @u1 = Factory :user
       @u2 = Factory :user
       @u3 = Factory :user

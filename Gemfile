@@ -107,6 +107,7 @@ group :development, :test do
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
+  gem 'factory_girl_rails'
 end
 
 group :test do

@@ -3,11 +3,12 @@ require 'spec_helper'
 describe User do
   describe "Associations" do
     it { should have_many(:projects) }
-    it { should have_many(:users_projects) }
-    it { should have_many(:issues) }
-    it { should have_many(:assigned_issues) }
-    it { should have_many(:merge_requests) }
-    it { should have_many(:assigned_merge_requests) }
+    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:issues).dependent(:destroy) }
+    it { should have_many(:assigned_issues).dependent(:destroy) }
+    it { should have_many(:merge_requests).dependent(:destroy) }
+    it { should have_many(:assigned_merge_requests).dependent(:destroy) }
+    it { should have_many(:notes).dependent(:destroy) }
   end
 
   describe "Respond to" do
@@ -48,21 +49,6 @@ describe User do
   it "should have authentication token" do
     user = Factory(:user)
     user.authentication_token.should_not == ""
-  end
-
-  describe "dependent" do
-    before do
-      @user = Factory :user
-      @note = Factory :note,
-        author: @user,
-        project: Factory(:project)
-    end
-
-    it "should destroy all notes with user" do
-      Note.find_by_id(@note.id).should_not be_nil
-      @user.destroy
-      Note.find_by_id(@note.id).should be_nil
-    end
   end
 end
 # == Schema Information
