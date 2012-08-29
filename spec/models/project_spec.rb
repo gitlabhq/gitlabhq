@@ -236,23 +236,3 @@ describe Project do
     end
   end
 end
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                     :integer(4)      not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime        not null
-#  updated_at             :datetime        not null
-#  private_flag           :boolean(1)      default(TRUE), not null
-#  code                   :string(255)
-#  owner_id               :integer(4)
-#  default_branch         :string(255)     default("master"), not null
-#  issues_enabled         :boolean(1)      default(TRUE), not null
-#  wall_enabled           :boolean(1)      default(TRUE), not null
-#  merge_requests_enabled :boolean(1)      default(TRUE), not null
-#  wiki_enabled           :boolean(1)      default(TRUE), not null
-#
-

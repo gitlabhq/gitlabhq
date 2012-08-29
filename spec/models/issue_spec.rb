@@ -67,22 +67,3 @@ describe Issue do
     end
   end
 end
-# == Schema Information
-#
-# Table name: issues
-#
-#  id           :integer(4)      not null, primary key
-#  title        :string(255)
-#  assignee_id  :integer(4)
-#  author_id    :integer(4)
-#  project_id   :integer(4)
-#  created_at   :datetime        not null
-#  updated_at   :datetime        not null
-#  closed       :boolean(1)      default(FALSE), not null
-#  position     :integer(4)      default(0)
-#  critical     :boolean(1)      default(FALSE), not null
-#  branch_name  :string(255)
-#  description  :text
-#  milestone_id :integer(4)
-#
-
