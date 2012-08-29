@@ -29,16 +29,6 @@ describe Event do
     it { should respond_to(:commits) }
   end
 
-  describe "Creation" do
-    before do 
-      @event = Factory :event
-    end
-
-    it "should create a valid event" do 
-      @event.should be_valid
-    end
-  end
-
   describe "Push event" do 
     before do 
       project = Factory :project

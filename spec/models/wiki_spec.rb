@@ -11,8 +11,6 @@ describe Wiki do
     it { should validate_presence_of(:content) }
     it { should validate_presence_of(:user_id) }
   end
-
-  it { Factory(:wiki).should be_valid }
 end
 # == Schema Information
 #
