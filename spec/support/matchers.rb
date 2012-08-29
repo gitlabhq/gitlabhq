@@ -67,3 +67,17 @@ module UrlAccess
     login_with(user) if user
   end
 end
+
+# Extend shoulda-matchers
+module Shoulda::Matchers::ActiveModel
+  class EnsureLengthOfMatcher
+    # Shortcut for is_at_least and is_at_most
+    def is_within(range)
+      if range.exclude_end?
+        is_at_least(range.first) && is_at_most(range.last - 1)
+      else
+        is_at_least(range.first) && is_at_most(range.last)
+      end
+    end
+  end
+end
