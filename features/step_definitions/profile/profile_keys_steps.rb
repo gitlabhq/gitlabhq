@@ -16,7 +16,7 @@ end
 
 Given /^I submit new ssh key "(.*?)"$/ do |arg1|
   fill_in "key_title", :with => arg1
-  fill_in "key_key", :with => "publickey234="
+  fill_in "key_key", :with => "ssh-rsa publickey234="
   click_button "Save"
 end
 
