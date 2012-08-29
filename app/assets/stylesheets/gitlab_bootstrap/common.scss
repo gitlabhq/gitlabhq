@@ -27,6 +27,7 @@
 .no-borders { border:none; }
 .vlink { color: $link_color !important; }
 .borders { border: 1px solid #ccc; @include shade; }
+.hint { font-style: italic; color: #999; }
 
 /** PILLS & TABS**/
 .nav-pills a:hover { background-color:#888; }
