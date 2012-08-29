@@ -1,10 +1,8 @@
-.diff_file_header a,
-.file_stats a {
-  color:$style_color;
-}
-
-
 /** LAYOUT **/
+
+body {
+  margin-bottom:20px;
+}
 
 .container {
   padding-top:0;
@@ -40,30 +38,6 @@
   color: $link_color;
 }
 
-.widget {
-  @include shade;
-  padding:20px;
-  margin-bottom:20px;
-  border: 1px solid #DDD;
-  border-radius: 5px;
-  background:#fafafa;
-
-  .link_holder {
-    background:#eee;
-    position:relative;
-    left:-20px;
-    top:20px;
-    padding:10px 20px;
-    width:100%;
-    border-top:1px solid #ccc;
-
-    a {
-      font-size:14px;
-      color:#666;
-    }
-  }
-}
-
 .help li { color:#111 }
 
 .back_link {
@@ -86,16 +60,6 @@
 .download_repo_link {
   background: url("images.png") no-repeat 0 -48px;
   padding-left:20px;
-}
-
-.number {
-  border-radius: 4px;
-  text-shadow: none;
-  background: rgba(0,0,0,.12);
-  text-align: center;
-  padding: 2px 4px;
-  line-height:18px;
-  margin-left:2px;
 }
 
 table a code {
@@ -174,10 +138,6 @@ span.update-author {
   display:block;
 }
 /** END UPDATE ITEM **/
-.ajax-tab-loading {
-  padding:40px;
-  display:none;
-}
 .dashboard-loader {
   float:left;
   margin:10px;
@@ -197,6 +157,117 @@ a.project-update.titled {
     position:absolute;
     left:0;
     top:0;
+  }
+}
+
+.neib {
+  margin-right:10px;
+}
+
+.label {
+  background-color: #474D57;
+
+  &.label-issue {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding:4px 6px;
+    color:#444;
+    text-shadow:0 0 1px #fff;
+
+    &.grouped {
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
+  }
+}
+
+.event_label {
+  @extend .label;
+  background-color: #999;
+
+  &.pushed {
+    background-color: #3A87AD;
+  }
+
+  &.opened {
+    background-color: #468847;
+  }
+
+  &.closed {
+    background-color: #B94A48;
+  }
+
+  &.merged {
+    background-color: #2A2;
+  }
+}
+
+form {
+  @extend .form-horizontal;
+
+  .actions {
+    @extend .form-actions;
+  }
+
+  .clearfix {
+    @extend .control-group;
+  }
+
+  .input {
+    @extend .controls;
+  }
+
+  label {
+    @extend .control-label;
+  }
+  .xlarge {
+    @extend .input-xlarge;
+  }
+  .xxlarge {
+    @extend .input-xxlarge;
+  }
+}
+
+
+
+
+
+
+.field_with_errors {
+  display:inline;
+}
+
+ul.breadcrumb {
+  background:white;
+  border:none;
+  li {
+    display: inline;
+    text-shadow: 0 1px 0 white
+  }
+
+  a {
+    color:#474D57;
+    font-weight:bold;
+    font-size:14px;
+  }
+
+  .arrow {
+    background: url("images.png") no-repeat -85px -77px;
+    width: 19px;
+    height: 16px;
+    float: left;
+    position: relative;
+    left: -10px;
+    padding:0;
+    margin:0;
+  }
+}
+
+input[type=text] {
+  &.large_text {
+    padding:6px;
+    font-size:16px;
   }
 }
 

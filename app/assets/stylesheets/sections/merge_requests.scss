@@ -99,3 +99,14 @@ li.merge_request {
   @extend .padded;
   @extend .append-bottom-10;
 }
+
+.label_branch {
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  border:none;
+  font-size:13px;
+  background: #474D57;
+  color:#fff;
+  font-weight:bold;
+  font-family: monospace;
+}

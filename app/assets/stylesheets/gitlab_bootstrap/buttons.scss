@@ -1,0 +1,72 @@
+.btn {
+  @include bg-dark-gray-gradient;
+  border-color:#aaa;
+  &:hover {
+    @include bg-gray-gradient;
+    border-color:#bbb;
+    color:#333;
+  }
+
+  &.btn-primary {
+    background:$link_color;
+    border-color: #2A79A3;
+    &:hover {
+      background:$blue_link;
+      color:#fff;
+    }
+  }
+  &.primary {
+    @extend .btn-primary;
+  }
+
+  &.success {
+    color: #fff;
+    text-shadow: 0 0 1px #111;
+    background: #5bb75b;;
+    font-weight: bold;
+
+    &:hover {
+      background-color: #51a351;
+      color: #fff;
+    }
+  }
+
+  &.save-btn { 
+    @extend .wide;
+    @extend .primary;
+  }
+
+  &.cancel-btn { 
+    float:right;
+  }
+
+  &.wide { 
+    padding-left:30px;
+    padding-right:30px;
+  }
+
+  &.danger,
+  &.btn-danger {
+    color:#fff;
+    background: #DA4E49;
+    border-color: #BD362F;
+
+    &:hover {
+      color:#fff;
+      background: #EE4E49;
+    }
+  }
+
+  &.danger {
+    @extend .btn-danger;
+  }
+
+  &.small {
+    @extend .btn-small;
+  }
+
+  &.active {
+    border-color:#aaa;
+    background-color:#ccc;
+  }
+}
