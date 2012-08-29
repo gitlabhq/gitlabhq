@@ -95,7 +95,7 @@ module Gitlab
         end
       end
 
-      # Delete a project issue
+      # Delete a project issue (deprecated)
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
@@ -103,8 +103,7 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        @issue = user_project.issues.find(params[:issue_id])
-        @issue.destroy
+        error!({'message' => 'method not allowed'}, 405)
       end
     end
   end
