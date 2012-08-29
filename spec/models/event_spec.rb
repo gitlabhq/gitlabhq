@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Event do
   describe "Associations" do
     it { should belong_to(:project) }
+    it { should belong_to(:target) }
   end
 
   describe "Respond to" do

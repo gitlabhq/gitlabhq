@@ -18,11 +18,15 @@ FactoryGirl.define do
     Faker::Lorem.sentence
   end
 
+  sequence :name, aliases: [:file_name] do
+    Faker::Name.name
+  end
+
   sequence(:url) { Faker::Internet.uri('http') }
 
   factory :user, aliases: [:author, :assignee, :owner] do
     email { Faker::Internet.email }
-    name  { Faker::Name.name }
+    name
     password "123456"
     password_confirmation "123456"
 
@@ -116,6 +120,11 @@ FactoryGirl.define do
     author
     title
     content
-    file_name { Faker::Lorem.sentence }
+    file_name
+  end
+
+  factory :protected_branch do
+    name
+    project
   end
 end

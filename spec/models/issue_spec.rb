@@ -2,21 +2,11 @@ require 'spec_helper'
 
 describe Issue do
   describe "Associations" do
-    it { should belong_to(:project) }
-    it { should belong_to(:author) }
-    it { should belong_to(:assignee) }
     it { should belong_to(:milestone) }
   end
 
   describe "Validation" do
-    it { should validate_presence_of(:title) }
-    it { should validate_presence_of(:author_id) }
-    it { should validate_presence_of(:project_id) }
-  end
-
-  describe "Scope" do
-    it { Issue.should respond_to :closed }
-    it { Issue.should respond_to :opened }
+    it { should ensure_length_of(:description).is_within(0..2000) }
   end
 
   describe 'modules' do

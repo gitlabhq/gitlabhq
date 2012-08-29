@@ -2,13 +2,26 @@ require 'spec_helper'
 
 describe User do
   describe "Associations" do
-    it { should have_many(:projects) }
     it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:projects) }
+    it { should have_many(:my_own_projects).class_name('Project') }
+    it { should have_many(:keys).dependent(:destroy) }
+    it { should have_many(:events).class_name('Event').dependent(:destroy) }
+    it { should have_many(:recent_events).class_name('Event') }
     it { should have_many(:issues).dependent(:destroy) }
+    it { should have_many(:notes).dependent(:destroy) }
     it { should have_many(:assigned_issues).dependent(:destroy) }
     it { should have_many(:merge_requests).dependent(:destroy) }
     it { should have_many(:assigned_merge_requests).dependent(:destroy) }
-    it { should have_many(:notes).dependent(:destroy) }
+  end
+
+  describe 'validations' do
+    it { should validate_presence_of(:projects_limit) }
+    it { should validate_numericality_of(:projects_limit) }
+    it { should allow_value(0).for(:projects_limit) }
+    it { should_not allow_value(-1).for(:projects_limit) }
+
+    it { should ensure_length_of(:bio).is_within(0..255) }
   end
 
   describe "Respond to" do

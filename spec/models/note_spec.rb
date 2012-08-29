@@ -3,6 +3,8 @@ require 'spec_helper'
 describe Note do
   describe "Associations" do
     it { should belong_to(:project) }
+    it { should belong_to(:noteable) }
+    it { should belong_to(:author).class_name('User') }
   end
 
   describe "Validation" do
