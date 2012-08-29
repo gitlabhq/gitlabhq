@@ -24,6 +24,16 @@ init:
     $('.delete-note').live('ajax:success', function() {
       $(this).closest('li').fadeOut(); });
 
+    $('#note_note').on('keyup', function(){
+      var field = $(this);
+      var closest_submit = field.closest("form").find(".submit_note");
+      if(field.val() == "") { 
+        closest_submit.attr("disabled", "disabled").addClass("disabled");
+      } else { 
+        closest_submit.removeAttr("disabled").removeClass("disabled");
+      }
+    })
+
     $("#new_note").live("ajax:before", function(){
       $(".submit_note").attr("disabled", "disabled");
     })
@@ -35,6 +45,7 @@ init:
     $("#note_note").live("focus", function(){
       $(this).css("height", "80px");
       $('.note_advanced_opts').show();
+      $(this).closest("form").find(".submit_note").attr("disabled", "disabled");
     });
 
     $("#note_attachment").change(function(e){
