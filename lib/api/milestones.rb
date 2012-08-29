@@ -33,15 +33,13 @@ module Gitlab
       #   title (required) - The title of the milestone
       #   description (optional) - The description of the milestone
       #   due_date (optional) - The due date of the milestone
-      #   closed (optional) - The status of the milestone
       # Example Request:
       #   POST /projects/:id/milestones
       post ":id/milestones" do
         @milestone = user_project.milestones.new(
           title: params[:title],
           description: params[:description],
-          due_date: params[:due_date],
-          closed: (params[:closed] || false)
+          due_date: params[:due_date]
         )
 
         if @milestone.save
@@ -55,6 +53,7 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
+      #   milestone_id (required) - The ID of a project milestone
       #   title (optional) - The title of a milestone
       #   description (optional) - The description of a milestone
       #   due_date (optional) - The due date of a milestone
