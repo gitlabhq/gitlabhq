@@ -1,19 +1,7 @@
 # Stubs out all Git repository access done by models so that specs can run
 # against fake repositories without Grit complaining that they don't exist.
 module StubbedRepository
-  extend ActiveSupport::Concern
-
-  included do
-    # If a class defines the method we want to stub directly, rather than
-    # inheriting it from a module (as is the case in UsersProject), that method
-    # will overwrite our stub, so use alias_method to ensure it's our stub
-    # getting called.
-
-    alias_method :path_to_repo, :fake_path_to_repo
-    alias_method :satellite,    :fake_satellite
-  end
-
-  def fake_path_to_repo
+  def path_to_repo
     if new_record? || path == 'newproject'
       # There are a couple Project specs and features that expect the Project's
       # path to be in the returned path, so let's patronize them.
@@ -25,7 +13,7 @@ module StubbedRepository
     end
   end
 
-  def fake_satellite
+  def satellite
     FakeSatellite.new
   end
 
@@ -40,6 +28,4 @@ module StubbedRepository
   end
 end
 
-[Project, ProtectedBranch, UsersProject].each do |c|
-  c.send(:include, StubbedRepository)
-end
+Project.send(:include, StubbedRepository)
