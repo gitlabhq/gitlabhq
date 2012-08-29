@@ -10,6 +10,7 @@ class Key < ActiveRecord::Base
 
   validates :key,
             presence: true,
+            :format => { :with => /ssh-.{3} / },
             length: { within: 0..5000 }
 
   before_save :set_identifier
