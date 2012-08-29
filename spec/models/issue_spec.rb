@@ -2,21 +2,16 @@ require 'spec_helper'
 
 describe Issue do
   describe "Associations" do
-    it { should belong_to(:project) }
-    it { should belong_to(:author) }
-    it { should belong_to(:assignee) }
     it { should belong_to(:milestone) }
   end
 
   describe "Validation" do
-    it { should validate_presence_of(:title) }
-    it { should validate_presence_of(:author_id) }
-    it { should validate_presence_of(:project_id) }
+    it { should ensure_length_of(:description).is_within(0..2000) }
   end
 
-  describe "Scope" do
-    it { Issue.should respond_to :closed }
-    it { Issue.should respond_to :opened }
+  describe 'modules' do
+    it { should include_module(IssueCommonality) }
+    it { should include_module(Upvote) }
   end
 
   subject { Factory.create(:issue) }
@@ -61,57 +56,4 @@ describe Issue do
       subject.is_being_reopened?.should be_false
     end
   end
-
-  describe "plus 1" do
-    subject { Factory.create(:issue) }
-
-    it "with no notes has a 0/0 score" do
-      subject.upvotes.should == 0
-    end
-
-    it "should recognize non-+1 notes" do
-      subject.notes << Factory(:note, note: "No +1 here")
-      subject.should have(1).note
-      subject.notes.first.upvote?.should be_false
-      subject.upvotes.should == 0
-    end
-
-    it "should recognize a single +1 note" do
-      subject.notes << Factory(:note, note: "+1 This is awesome")
-      subject.upvotes.should == 1
-    end
-
-    it "should recognize a multiple +1 notes" do
-      subject.notes << Factory(:note, note: "+1 This is awesome")
-      subject.notes << Factory(:note, note: "+1 I want this")
-      subject.upvotes.should == 2
-    end
-  end
-
-  describe ".search" do
-    let!(:issue) { Factory.create(:issue, title: "Searchable issue") }
-
-    it "matches by title" do
-      Issue.search('able').all.should == [issue]
-    end
-  end
 end
-# == Schema Information
-#
-# Table name: issues
-#
-#  id           :integer(4)      not null, primary key
-#  title        :string(255)
-#  assignee_id  :integer(4)
-#  author_id    :integer(4)
-#  project_id   :integer(4)
-#  created_at   :datetime        not null
-#  updated_at   :datetime        not null
-#  closed       :boolean(1)      default(FALSE), not null
-#  position     :integer(4)      default(0)
-#  critical     :boolean(1)      default(FALSE), not null
-#  branch_name  :string(255)
-#  description  :text
-#  milestone_id :integer(4)
-#
-
