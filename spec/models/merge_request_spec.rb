@@ -20,38 +20,9 @@ describe MergeRequest do
     it { MergeRequest.should respond_to :opened }
   end
 
-  describe "plus 1" do
-    subject { Factory.create(:merge_request) }
-
-    it "with no notes has a 0/0 score" do
-      subject.upvotes.should == 0
-    end
-
-    it "should recognize non-+1 notes" do
-      subject.notes << Factory(:note, note: "No +1 here")
-      subject.should have(1).note
-      subject.notes.first.upvote?.should be_false
-      subject.upvotes.should == 0
-    end
-
-    it "should recognize a single +1 note" do
-      subject.notes << Factory(:note, note: "+1 This is awesome")
-      subject.upvotes.should == 1
-    end
-
-    it "should recognize a multiple +1 notes" do
-      subject.notes << Factory(:note, note: "+1 This is awesome")
-      subject.notes << Factory(:note, note: "+1 I want this")
-      subject.upvotes.should == 2
-    end
-  end
-
-  describe ".search" do
-    let!(:issue) { Factory.create(:issue, title: "Searchable issue") }
-
-    it "matches by title" do
-      Issue.search('able').all.should == [issue]
-    end
+  describe 'modules' do
+    it { should include_module(IssueCommonality) }
+    it { should include_module(Upvote) }
   end
 end
 # == Schema Information

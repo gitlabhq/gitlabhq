@@ -19,6 +19,11 @@ describe Issue do
     it { Issue.should respond_to :opened }
   end
 
+  describe 'modules' do
+    it { should include_module(IssueCommonality) }
+    it { should include_module(Upvote) }
+  end
+
   subject { Factory.create(:issue) }
 
   describe '#is_being_reassigned?' do
@@ -59,40 +64,6 @@ describe Issue do
     end
     it 'returns false if the closed attribute has not changed' do
       subject.is_being_reopened?.should be_false
-    end
-  end
-
-  describe "plus 1" do
-    subject { Factory.create(:issue) }
-
-    it "with no notes has a 0/0 score" do
-      subject.upvotes.should == 0
-    end
-
-    it "should recognize non-+1 notes" do
-      subject.notes << Factory(:note, note: "No +1 here")
-      subject.should have(1).note
-      subject.notes.first.upvote?.should be_false
-      subject.upvotes.should == 0
-    end
-
-    it "should recognize a single +1 note" do
-      subject.notes << Factory(:note, note: "+1 This is awesome")
-      subject.upvotes.should == 1
-    end
-
-    it "should recognize a multiple +1 notes" do
-      subject.notes << Factory(:note, note: "+1 This is awesome")
-      subject.notes << Factory(:note, note: "+1 I want this")
-      subject.upvotes.should == 2
-    end
-  end
-
-  describe ".search" do
-    let!(:issue) { Factory.create(:issue, title: "Searchable issue") }
-
-    it "matches by title" do
-      Issue.search('able').all.should == [issue]
     end
   end
 end
