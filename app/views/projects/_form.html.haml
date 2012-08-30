@@ -10,9 +10,9 @@
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
 
-  %hr
-  .adv_settings
-    %h6 Advanced settings:
+  %h5.page_title 
+  .alert.alert-info
+    %h5 Advanced settings:
     .clearfix
       = f.label :path do
         Path
@@ -34,9 +34,8 @@
         .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless @project.new_record?
-    %hr
-    .adv_settings
-      %h6 Features:
+    .alert.alert-info
+      %h5 Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"
@@ -57,7 +56,7 @@
   %br
 
   .actions
-    = f.submit 'Save', class: "btn save-btn"
+    = f.submit 'Save', class: "btn primary"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
       .right

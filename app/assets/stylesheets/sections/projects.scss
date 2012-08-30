@@ -14,32 +14,6 @@
         text-shadow: 0 1px 1px #fff;
         padding: 2px 10px;
       }
-      ul {
-        li {
-          padding:0;
-          a {
-            display:block;
-            .project_name {
-              color:#4fa2bd;
-              font-size:14px;
-              line-height:18px;
-            }
-            .arrow {
-              float:right;
-              padding:10px;
-              margin:0;
-            }
-            .last_activity {
-              padding-top:5px;
-              display:block;
-              span, strong {
-                font-size:12px;
-                color:#666;
-              }
-            }
-          }
-        }
-      }
       @extend .leftbar;
       @extend .ui-box;
     }
@@ -59,13 +33,10 @@
       color:#888;
     }
     .btn {
-      padding:6px 10px;
+      padding:6px;
       margin-left:10px;
       margin-bottom:8px;
     }
-  }
-  .adv_settings {
-    h6 { margin-left:40px; }
   }
 }
 
