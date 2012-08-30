@@ -120,5 +120,5 @@ group :test do
 end
 
 group :production do
-  gem "gitlab_meta", '2.8'
+  gem "gitlab_meta", '2.9'
 end

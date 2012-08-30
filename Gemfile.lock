@@ -178,7 +178,7 @@ GEM
     gherkin (2.11.0)
       json (>= 1.4.6)
     git (1.2.5)
-    gitlab_meta (2.8)
+    gitlab_meta (2.9)
     grape (0.2.1)
       hashie (~> 1.2)
       multi_json
@@ -397,7 +397,7 @@ DEPENDENCIES
   ffaker
   foreman
   git
-  gitlab_meta (= 2.8)
+  gitlab_meta (= 2.9)
   gitolite!
   grack!
   grape (~> 0.2.1)
