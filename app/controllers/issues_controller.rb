@@ -168,10 +168,10 @@ class IssuesController < ApplicationController
 
   def issues_filter
     {
-      all: "1",
-      closed: "2",
-      to_me: "3",
-      open: "0" 
+      all: "all",
+      closed: "closed",
+      to_me: "assigned-to-me",
+      open: "open" 
     }
   end
 end

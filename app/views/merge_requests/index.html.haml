@@ -10,17 +10,17 @@
 .ui-box
   .title
     %ul.nav.nav-pills
-      %li{class: ("active" if (params[:f] == "0" || !params[:f]))}
-        = link_to project_merge_requests_path(@project, f: 0) do
+      %li{class: ("active" if (params[:f] == 'open' || !params[:f]))}
+        = link_to project_merge_requests_path(@project, f: 'open') do
           Open
-      %li{class: ("active" if params[:f] == "2")}
-        = link_to project_merge_requests_path(@project, f: 2) do
+      %li{class: ("active" if params[:f] == "closed")}
+        = link_to project_merge_requests_path(@project, f: "closed") do
           Closed
-      %li{class: ("active" if params[:f] == "3")}
-        = link_to project_merge_requests_path(@project, f: 3) do
+      %li{class: ("active" if params[:f] == 'assigned-to-me')}
+        = link_to project_merge_requests_path(@project, f: 'assigned-to-me') do
           To Me
-      %li{class: ("active" if params[:f] == "1")}
-        = link_to project_merge_requests_path(@project, f: 1) do
+      %li{class: ("active" if params[:f] == 'all')}
+        = link_to project_merge_requests_path(@project, f: 'all') do
           All
 
   %ul.unstyled

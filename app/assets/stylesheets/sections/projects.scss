@@ -79,3 +79,14 @@
     border: 1px solid #BBB;
   }
 }
+
+.save-project-loader { 
+  img { 
+    margin-top:50px;
+    margin-bottom:50px;
+  }
+  h3 { 
+    @extend .page_title;
+  }
+
+}

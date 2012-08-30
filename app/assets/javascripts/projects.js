@@ -7,8 +7,10 @@ function Projects() {
 
   $('.new_project, .edit_project').live('ajax:before', function() {
     $('.project_new_holder, .project_edit_holder').hide();
-    $('.ajax_loader').show();
+    $('.save-project-loader').show();
   });
 
   $('form #project_default_branch').chosen();
+
+  disableButtonIfEmtpyField("#project_name", ".project-submit")
 }

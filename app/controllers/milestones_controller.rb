@@ -17,8 +17,8 @@ class MilestonesController < ApplicationController
   respond_to :html
 
   def index
-    @milestones = case params[:f].to_i
-                  when 1; @project.milestones
+    @milestones = case params[:f]
+                  when 'all'; @project.milestones
                   else @project.milestones.active
                   end
 

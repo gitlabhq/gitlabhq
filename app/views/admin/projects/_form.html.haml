@@ -13,8 +13,8 @@
       = f.submit project.new_record? ? 'Create project' : 'Save Project', class: "btn primary"
 
   %hr
-  .alert.alert-info
-    %h5 Advanced settings:
+  .adv_settings
+    %h6 Advanced settings:
     .clearfix
       = f.label :path do
         Git Clone
@@ -42,8 +42,9 @@
           .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless project.new_record?
-    .alert.alert-info
-      %h5 Features:
+    %hr
+    .adv_settings
+      %h6 Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"
@@ -63,7 +64,8 @@
 
   - unless project.new_record?
     .actions
-      = f.submit 'Save Project', class: "btn primary"
+      = f.submit 'Save Project', class: "btn save-btn"
+      = link_to 'Cancel', admin_projects_path, class: "btn cancel-btn"
 
 
 

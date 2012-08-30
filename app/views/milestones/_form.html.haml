@@ -32,17 +32,12 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "primary btn"
+      = f.submit 'Create milestone', class: "save-btn btn"
+      = link_to "Cancel", project_milestones_path(@project), class: "btn cancel-btn"
     -else
-      = f.submit 'Save changes', class: "primary btn"
+      = f.submit 'Save changes', class: "save-btn btn"
+      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn cancel-btn"
 
-    - if request.xhr?
-      = link_to "Cancel", "#back", onclick: "backToIssues();", class: "btn"
-    - else
-      - if @milestone.new_record?
-        = link_to "Cancel", project_milestones_path(@project), class: "btn"
-      - else
-        = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn"
 
 :javascript
   $(function() {

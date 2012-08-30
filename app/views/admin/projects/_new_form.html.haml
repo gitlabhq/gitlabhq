@@ -1,7 +1,7 @@
-= form_for(@project, remote: true) do |f|
-  - if @project.errors.any?
+= form_for [:admin, @admin_project] do |f|
+  - if @admin_project.errors.any?
     .alert-message.block-message.error
-      %span= @project.errors.full_messages.first
+      %span= @admin_project.errors.full_messages.first
   .clearfix.project_name_holder
     = f.label :name do
       Project name is
@@ -18,7 +18,7 @@
       .input
         .input-prepend
           %span.add-on= Gitlab.config.ssh_path
-          = f.text_field :path, placeholder: "example_project", disabled: !@project.new_record?
+          = f.text_field :path, placeholder: "example_project", disabled: !@admin_project.new_record?
           %span.add-on= ".git"
     .clearfix
       = f.label :code do
