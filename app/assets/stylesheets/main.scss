@@ -2,13 +2,13 @@
 @import "bootstrap-responsive";
 
 /** GITLAB colors **/
-$link_color:#2A79A3;
+$link_color:#3A89A3;
 $blue_link: #2fa0bb;
-$style_color: #474D57;
-$hover: #FDF5D9;
+$style_color: #474d57;
+$hover: #fdf5d9;
 
 /** GITLAB Fonts **/
-@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); } 
+@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); }
 
 /** MIXINS **/
 @mixin shade {
@@ -56,7 +56,7 @@ $hover: #FDF5D9;
   border-radius: $radius;
 }
 
-@mixin bg-gray-gradient { 
+@mixin bg-gray-gradient {
   background:#eee;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
   background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -64,7 +64,7 @@ $hover: #FDF5D9;
   background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 }
 
-@mixin bg-dark-gray-gradient { 
+@mixin bg-dark-gray-gradient {
   background:#eee;
   background-image: -webkit-linear-gradient(#e9e9e9, #d7d7d7);
   background-image: -moz-linear-gradient(#e9e9e9, #d7d7d7);

@@ -1,10 +1,10 @@
-/** 
+/**
  * Headers
- * 
+ *
  */
 h3, h4, h5, h6 { line-height: 36px; }
 h5 { font-size:14px; }
-h3.page_title { 
+h3.page_title {
   color:#456;
   font-size:20px;
   font-weight: normal;
@@ -21,9 +21,9 @@ pre {
   }
 }
 
-/** 
+/**
  * Links
- * 
+ *
  */
 a {
   outline: none;
@@ -35,7 +35,7 @@ a {
 
   &.btn {
     color: $style_color;
-    &:hover { 
+    &:hover {
       color: $style_color;
     }
   }

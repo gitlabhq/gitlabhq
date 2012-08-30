@@ -8,7 +8,7 @@
   }
 
   &.btn-primary {
-    background:$link_color;
+    background:#2a79A3;
     border-color: #2A79A3;
     &:hover {
       background:$blue_link;
@@ -31,16 +31,16 @@
     }
   }
 
-  &.save-btn { 
+  &.save-btn {
     @extend .wide;
     @extend .primary;
   }
 
-  &.cancel-btn { 
+  &.cancel-btn {
     float:right;
   }
 
-  &.wide { 
+  &.wide {
     padding-left:30px;
     padding-right:30px;
   }
