@@ -78,16 +78,16 @@ module ApplicationHelper
   end
 
   def show_last_push_widget?(event)
-    event && 
+    event &&
       event.last_push_to_non_root? &&
       !event.rm_ref? &&
-      event.project && 
+      event.project &&
       event.project.merge_requests_enabled
   end
 
   def tab_class(tab_key)
     active = case tab_key
-             
+
              # Project Area
              when :wall; wall_tab?
              when :wiki; controller.controller_name == "wikis"
@@ -125,5 +125,14 @@ module ApplicationHelper
 
   def hexdigest(string)
     Digest::SHA1.hexdigest string
+  end
+
+  def project_last_activity project
+    activity = project.last_activity
+    if activity && activity.created_at
+      time_ago_in_words(activity.created_at) + " ago"
+    else
+      "Never"
+    end
   end
 end
