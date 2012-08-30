@@ -1,4 +1,12 @@
 = render 'shared/no_ssh'
+.project_clone_panel
+  .row
+    .span7
+      .form-horizontal
+        .input-prepend.project_clone_holder
+          = link_to "SSH", "#", class: "btn small active", :"data-clone" => @project.ssh_url_to_repo
+          = link_to "HTTP", "#", class: "btn small", :"data-clone" => @project.http_url_to_repo
+          = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span5"
 %div.git-empty
   %h4 Git global setup:
   %pre.dark
@@ -28,3 +36,16 @@
   - if can? current_user, :admin_project, @project
     .prepend-top-20
       = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger right"
+
+
+
+:javascript
+  $(function(){
+    var link_sel = ".project_clone_holder a";
+    $(link_sel).bind("click", function() {
+      $(link_sel).removeClass("active");
+      $(this).addClass("active");
+      $("#project_clone").val($(this).attr("data-clone"));
+    })
+  })
+

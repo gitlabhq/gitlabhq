@@ -45,7 +45,9 @@ init:
     $("#note_note").live("focus", function(){
       $(this).css("height", "80px");
       $('.note_advanced_opts').show();
-      $(this).closest("form").find(".submit_note").attr("disabled", "disabled");
+      if($(this).val() == "") { 
+        $(this).closest("form").find(".submit_note").attr("disabled", "disabled").addClass("disabled");
+      }
     });
 
     $("#note_attachment").change(function(e){
