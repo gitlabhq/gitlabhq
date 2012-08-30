@@ -43,15 +43,14 @@
 
     .actions
       - if @issue.new_record?
-        = f.submit 'Submit new issue', class: "btn save-btn"
+        = f.submit 'Submit new issue', class: "primary btn"
       -else
-        = f.submit 'Save changes', class: "save-btn btn"
+        = f.submit 'Save changes', class: "primary btn"
 
-      - cancel_class = 'btn cancel-btn'
       - if request.xhr?
-        = link_to "Cancel", "#back", onclick: "backToIssues();", class: cancel_class
+        = link_to "Cancel", "#back", onclick: "backToIssues();", class: "btn"
       - else
         - if @issue.new_record?
-          = link_to "Cancel", project_issues_path(@project), class: cancel_class
+          = link_to "Cancel", project_issues_path(@project), class: "btn"
         - else
-          = link_to "Cancel", project_issue_path(@project, @issue), class: cancel_class
+          = link_to "Cancel", project_issue_path(@project, @issue), class: "btn"
