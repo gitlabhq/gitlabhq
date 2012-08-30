@@ -246,12 +246,13 @@ You can login via web using admin generated with setup:
 
 Add gitlab to nginx sites & change with your host specific settings
 
-    cp /home/gitlab/gitlab/lib/support/nginx-gitlab /etc/nginx/sites-enabled/gitlab
+    sudo cp /home/gitlab/gitlab/lib/support/nginx-gitlab /etc/nginx/sites-available/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
     # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
     # to the IP address and fully-qualified domain name
     # of the host serving GitLab.
-    vim /etc/nginx/sites-enabled/nginx-gitlab
+    sudo vim /etc/nginx/sites-enabled/gitlab
 
 Restart nginx:
 
