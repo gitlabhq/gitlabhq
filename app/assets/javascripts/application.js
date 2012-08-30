@@ -128,3 +128,23 @@ function showDiff(link) {
 function ajaxGet(url) {
   $.ajax({type: "GET", url: url, dataType: "script"});
 }
+
+/**
+ * Disable button if text field is empty
+ */
+function disableButtonIfEmtpyField(field_selector, button_selector) { 
+  field = $(field_selector);
+  if(field.val() == "") { 
+    field.closest("form").find(button_selector).attr("disabled", "disabled").addClass("disabled");
+  }
+
+  field.on('keyup', function(){
+    var field = $(this);
+    var closest_submit = field.closest("form").find(button_selector);
+    if(field.val() == "") { 
+      closest_submit.attr("disabled", "disabled").addClass("disabled");
+    } else { 
+      closest_submit.removeAttr("disabled").removeClass("disabled");
+    }
+  })
+}
