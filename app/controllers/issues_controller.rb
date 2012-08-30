@@ -60,7 +60,13 @@ class IssuesController < ApplicationController
     @issue.save
 
     respond_to do |format|
-      format.html { redirect_to project_issue_path(@project, @issue) }
+      format.html do
+        if @issue.valid? 
+          redirect_to project_issue_path(@project, @issue)
+        else
+          render :new
+        end
+      end
       format.js
     end
   end

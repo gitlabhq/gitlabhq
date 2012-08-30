@@ -73,8 +73,8 @@
       .span6
       .span6
     .actions
-      = f.submit 'Save', class: "btn primary"
+      = f.submit 'Save', class: "btn save-btn"
       - if @admin_user.new_record?
-        = link_to 'Cancel', admin_users_path, class: "btn"
+        = link_to 'Cancel', admin_users_path, class: "btn cancel-btn"
       - else
-        = link_to 'Cancel', admin_user_path(@admin_user), class: "btn"
+        = link_to 'Cancel', admin_user_path(@admin_user), class: "btn cancel-btn"
