@@ -141,7 +141,7 @@ describe Project do
     let(:last_event) { double }
 
     before do
-      project.stub(:events).and_return( [ double, double, last_event ] )
+      project.stub_chain(:events, :order).and_return( [ double, double, last_event ] )
     end
 
     it { project.last_activity.should == last_event }

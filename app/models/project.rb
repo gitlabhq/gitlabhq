@@ -158,7 +158,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity
-    events.order("created_at DESC").first || nil
+    events.order("created_at ASC").last
   end
 
   def last_activity_date
