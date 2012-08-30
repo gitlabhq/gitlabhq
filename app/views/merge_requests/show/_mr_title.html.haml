@@ -1,9 +1,9 @@
 %h3.page_title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.pretty_label.branch= @merge_request.source_branch
+  %span.label_branch= @merge_request.source_branch
   &rarr;
-  %span.pretty_label.branch= @merge_request.target_branch
+  %span.label_branch= @merge_request.target_branch
 
   %span.right
     - if @merge_request.merged?
