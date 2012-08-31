@@ -3,7 +3,8 @@ require 'spec_helper'
 describe IssueObserver do
   let(:some_user) { double(:user, id: 1) }
   let(:assignee) { double(:user, id: 2) }
-  let(:issue)    { double(:issue, id: 42, assignee: assignee) }
+  let(:author) { double(:user, id: 3) }
+  let(:issue)    { double(:issue, id: 42, assignee: assignee, author: author) }
 
   before(:each) { subject.stub(:current_user).and_return(some_user) }
 
@@ -67,35 +68,89 @@ describe IssueObserver do
       end
     end
 
-    context 'a status "closed" note' do
-      it 'is created if the issue is being closed' do
+    context 'a status "closed"' do
+      it 'note is created if the issue is being closed' do
         issue.should_receive(:is_being_closed?).and_return(true)
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
         subject.after_update(issue)
       end
 
-      it 'is not created if the issue is not being closed' do
+      it 'note is not created if the issue is not being closed' do
         issue.should_receive(:is_being_closed?).and_return(false)
         Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
         subject.after_update(issue)
       end
+
+      it 'notification is delivered if the issue being closed' do
+        issue.stub(:is_being_closed?).and_return(true)
+        Notify.should_receive(:issue_status_changed_email).twice
+        Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
+
+        subject.after_update(issue)
+      end
+
+      it 'notification is not delivered if the issue not being closed' do
+        issue.stub(:is_being_closed?).and_return(false)
+        Notify.should_not_receive(:issue_status_changed_email)
+        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'closed')
+
+        subject.after_update(issue)
+      end
+
+      it 'notification is delivered only to author if the issue being closed' do
+        issue_without_assignee = double(:issue, id: 42, author: author, assignee: nil)
+        issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
+        issue_without_assignee.stub(:is_being_closed?).and_return(true)
+        issue_without_assignee.stub(:is_being_reopened?).and_return(false)
+        Notify.should_receive(:issue_status_changed_email).once
+        Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'closed')
+
+        subject.after_update(issue_without_assignee)
+      end
     end
 
-    context 'a status "reopened" note' do
-      it 'is created if the issue is being reopened' do
+    context 'a status "reopened"' do
+      it 'note is created if the issue is being reopened' do
         issue.should_receive(:is_being_reopened?).and_return(true)
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
 
         subject.after_update(issue)
       end
 
-      it 'is not created if the issue is not being reopened' do
+      it 'note is not created if the issue is not being reopened' do
         issue.should_receive(:is_being_reopened?).and_return(false)
         Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'reopened')
 
         subject.after_update(issue)
+      end
+
+      it 'notification is delivered if the issue being reopened' do
+        issue.stub(:is_being_reopened?).and_return(true)
+        Notify.should_receive(:issue_status_changed_email).twice
+        Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
+
+        subject.after_update(issue)
+      end
+
+      it 'notification is not delivered if the issue not being reopened' do
+        issue.stub(:is_being_reopened?).and_return(false)
+        Notify.should_not_receive(:issue_status_changed_email)
+        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'reopened')
+
+        subject.after_update(issue)
+      end
+
+      it 'notification is delivered only to author if the issue being reopened' do
+        issue_without_assignee = double(:issue, id: 42, author: author, assignee: nil)
+        issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
+        issue_without_assignee.stub(:is_being_closed?).and_return(false)
+        issue_without_assignee.stub(:is_being_reopened?).and_return(true)
+        Notify.should_receive(:issue_status_changed_email).once
+        Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'reopened')
+
+        subject.after_update(issue_without_assignee)
       end
     end
   end
