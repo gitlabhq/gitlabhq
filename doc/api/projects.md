@@ -106,29 +106,6 @@ Parameters:
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.
 
-```json
-{
-  "id": 5,
-  "code": "gitlab",
-  "name": "gitlab",
-  "description": null,
-  "path": "gitlab",
-  "default_branch": "api",
-  "owner": {
-    "id": 1,
-    "email": "john@example.com",
-    "name": "John Smith",
-    "blocked": false,
-    "created_at": "2012-05-23T08:00:58Z"
-  },
-  "private": true,
-  "issues_enabled": true,
-  "merge_requests_enabled": true,
-  "wall_enabled": true,
-  "wiki_enabled": true,
-  "created_at": "2012-05-30T12:49:20Z"
-}
-```
 
 ## Project repository branches
 
