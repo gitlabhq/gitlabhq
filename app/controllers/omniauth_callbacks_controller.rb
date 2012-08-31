@@ -38,7 +38,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       current_user.save
       redirect_to profile_path
     else
-      @user = User.find_by_provider_and_extern_uid(provider, uid)
+      @user = User.find_or_new_for_omniauth(oauth)
+      @user.save! if @user.try('new_record?')
 
       if @user
         sign_in_and_redirect @user
@@ -48,5 +49,4 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
     end
   end
-
 end

@@ -53,6 +53,8 @@ git:
 omniauth:
   enabled: false
   providers:
+  allow_single_sign_on: false
+  block_auto_created_users: true
 
 # omniauth:
 #   enabled: true

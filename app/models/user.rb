@@ -86,6 +86,39 @@ class User < ActiveRecord::Base
     where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
   end
 
+  def self.find_or_new_for_omniauth(oauth)
+    provider, uid = oauth['provider'], oauth['uid']
+
+    if @user = User.find_by_provider_and_extern_uid(provider, uid)
+      @user
+    else
+      if Gitlab.config.omniauth.allow_single_sign_on
+        # Ensure here that all required attributes were passed along with the
+        # oauth request:
+        %w(first_name last_name email).each do |attr|
+          unless oauth[:info][attr].present?
+            raise OmniAuth::Error,
+                  "#{provider} does not provide the required field #{attr}"
+          end
+        end
+
+        password = Devise.friendly_token[0, 8].downcase
+        @user = User.new(
+          extern_uid: uid,
+          provider: provider,
+          name: "#{oauth[:info][:first_name]} #{oauth[:info][:last_name]}",
+          email: oauth[:info][:email],
+          password: password,
+          password_confirmation: password,
+          projects_limit: Gitlab.config.default_projects_limit,
+        )
+
+        @user.blocked = true if Gitlab.config.omniauth.block_auto_created_users
+        @user
+      end
+    end
+  end
+
   def self.find_for_ldap_auth(auth, signed_in_resource=nil)
     uid = auth.info.uid
     provider = auth.provider
@@ -148,4 +181,3 @@ end
 #  bio                    :string(255)
 #  blocked                :boolean(1)      default(FALSE), not null
 #
-
