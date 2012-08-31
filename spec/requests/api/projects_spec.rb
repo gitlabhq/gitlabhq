@@ -25,6 +25,43 @@ describe Gitlab::API do
     end
   end
 
+  describe "POST /projects" do
+    it "should create new project without code and path" do
+      lambda {
+        name = "foo"
+        post api("/projects", user), {
+          name: name
+        }
+        response.status.should == 201
+        json_response["name"].should == name
+        json_response["code"].should == name
+        json_response["path"].should == name
+      }.should change{Project.count}.by(1)
+    end
+    it "should create new project" do
+      lambda {
+        name = "foo"
+        path = "bar"
+        code = "bazz"
+        post api("/projects", user), {
+          code: code,
+          path: path,
+          name: name
+        }
+        response.status.should == 201
+        json_response["name"].should == name
+        json_response["path"].should == path
+        json_response["code"].should == code
+      }.should change{Project.count}.by(1)
+    end
+    it "should not create project without name" do
+        lambda {
+          post api("/projects", user)
+          response.status.should == 404
+        }.should_not change{Project.count}
+    end
+  end
+
   describe "GET /projects/:id" do
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
