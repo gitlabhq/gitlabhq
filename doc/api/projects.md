@@ -100,8 +100,8 @@ POST /projects
 Parameters:
 
 + `name` (required) - new project name
-+ `code` (optional) - new project code, used project name if not set
-+ `path` (optional) - new project path, user project name if not set
++ `code` (optional) - new project code, uses project name if not set
++ `path` (optional) - new project path, uses project name if not set
 
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.

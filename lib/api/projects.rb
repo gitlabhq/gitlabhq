@@ -27,8 +27,8 @@ module Gitlab
       #
       # Parameters:
       #   name (required) - name for new project
-      #   code (optional) - code for new project, if not set used name
-      #   path (optional) - oath for new project, if not set used name
+      #   code (optional) - code for new project, uses project name if not set
+      #   path (optional) - path for new project, uses project name if not set
       # Example Request
       #   POST /projects
       post do
