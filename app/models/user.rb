@@ -114,6 +114,8 @@ class User < ActiveRecord::Base
         )
 
         @user.blocked = true if Gitlab.config.omniauth.block_auto_created_users
+        @user.save!
+
         @user
       end
     end
