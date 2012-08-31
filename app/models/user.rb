@@ -86,36 +86,42 @@ class User < ActiveRecord::Base
     where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
   end
 
-  def self.find_or_new_for_omniauth(oauth)
-    provider, uid = oauth['provider'], oauth['uid']
+  def self.create_from_omniauth(auth, ldap = false)
+    provider, uid = auth.provider, auth.uid
+    name = auth.info.name.force_encoding("utf-8")
+    email = auth.info.email.downcase unless auth.info.email.nil?
+
+    ldap_prefix = ldap ? '(LDAP) ' : ''
+    raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
+                           " address" if auth.info.email.blank?
+
+    logger.info "#{ldap_prefix}Creating user from #{provider} login"\
+                " {uid => #{uid}, name => #{name}, email => #{email}}"
+    password = Devise.friendly_token[0, 8].downcase
+    @user = User.new(
+      extern_uid: uid,
+      provider: provider,
+      name: name,
+      email: email,
+      password: password,
+      password_confirmation: password,
+      projects_limit: Gitlab.config.default_projects_limit,
+    )
+    if Gitlab.config.omniauth.block_auto_created_users && !ldap
+      @user.blocked = true
+    end
+    @user.save!
+    @user
+  end
+
+  def self.find_or_new_for_omniauth(auth)
+    provider, uid = auth.provider, auth.uid
 
     if @user = User.find_by_provider_and_extern_uid(provider, uid)
       @user
     else
       if Gitlab.config.omniauth.allow_single_sign_on
-        # Ensure here that all required attributes were passed along with the
-        # oauth request:
-        %w(first_name last_name email).each do |attr|
-          unless oauth[:info][attr].present?
-            raise OmniAuth::Error,
-                  "#{provider} does not provide the required field #{attr}"
-          end
-        end
-
-        password = Devise.friendly_token[0, 8].downcase
-        @user = User.new(
-          extern_uid: uid,
-          provider: provider,
-          name: "#{oauth[:info][:first_name]} #{oauth[:info][:last_name]}",
-          email: oauth[:info][:email],
-          password: password,
-          password_confirmation: password,
-          projects_limit: Gitlab.config.default_projects_limit,
-        )
-
-        @user.blocked = true if Gitlab.config.omniauth.block_auto_created_users
-        @user.save!
-
+        @user = User.create_from_omniauth(auth)
         @user
       end
     end
@@ -124,7 +130,6 @@ class User < ActiveRecord::Base
   def self.find_for_ldap_auth(auth, signed_in_resource=nil)
     uid = auth.info.uid
     provider = auth.provider
-    name = auth.info.name.force_encoding("utf-8")
     email = auth.info.email.downcase unless auth.info.email.nil?
     raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? or email.nil?
 
@@ -136,17 +141,7 @@ class User < ActiveRecord::Base
       @user.update_attributes(:extern_uid => uid, :provider => provider)
       @user
     else
-      logger.info "Creating user from LDAP login {uid => #{uid}, name => #{name}, email => #{email}}"
-      password = Devise.friendly_token[0, 8].downcase
-      @user = User.create(
-        :extern_uid => uid,
-        :provider => provider,
-        :name => name,
-        :email => email,
-        :password => password,
-        :password_confirmation => password,
-        :projects_limit => Gitlab.config.default_projects_limit
-      )
+      create_from_omniauth(auth)
     end
   end
 
