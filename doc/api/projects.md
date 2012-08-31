@@ -89,6 +89,44 @@ Parameters:
 }
 ```
 
+## Create project
+
+Create new project owned by user
+
+```
+POST /projects
+```
+
+Parameters:
+
++ `name` (required) - new project name
++ `code` (optional) - new project code, used project name if not set
++ `path` (optional) - new project path, user project name if not set
+
+```json
+{
+  "id": 5,
+  "code": "gitlab",
+  "name": "gitlab",
+  "description": null,
+  "path": "gitlab",
+  "default_branch": "api",
+  "owner": {
+    "id": 1,
+    "email": "john@example.com",
+    "name": "John Smith",
+    "blocked": false,
+    "created_at": "2012-05-23T08:00:58Z"
+  },
+  "private": true,
+  "issues_enabled": true,
+  "merge_requests_enabled": true,
+  "wall_enabled": true,
+  "wiki_enabled": true,
+  "created_at": "2012-05-30T12:49:20Z"
+}
+```
+
 ## Project repository branches
 
 Get a list of project repository branches sorted by name alphabetically.
