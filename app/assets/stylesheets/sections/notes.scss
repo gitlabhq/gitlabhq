@@ -31,7 +31,7 @@
 
 #new_note {
   .note-text {
-    height:25px;
+    height:40px;
   }
   .attach_holder {
     display:none;
@@ -211,4 +211,9 @@ td .line_note_link {
       }
     }
   }
+}
+
+.note-text { 
+  border: 1px solid #aaa;
+  box-shadow:none;
 }

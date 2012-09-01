@@ -16,7 +16,7 @@
             = f.text_area :note,  size: 255, class: 'line-note-text'
             .note_actions
               .buttons
-                = f.submit 'Add note', class: "btn primary submit_note submit_inline_note", id: "submit_note"
+                = f.submit 'Add note', class: "btn save-btn submit_note submit_inline_note", id: "submit_note"
                 = link_to "Cancel", "#", class: "btn hide-button"
               .options
                 %h6.left Notify via email:

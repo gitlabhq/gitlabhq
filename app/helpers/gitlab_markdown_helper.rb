@@ -31,7 +31,7 @@ module GitlabMarkdownHelper
       extractions[$1]
     end
 
-    text.html_safe
+    sanitize text.html_safe
   end
 
   # Use this in places where you would normally use link_to(gfm(...), ...).
