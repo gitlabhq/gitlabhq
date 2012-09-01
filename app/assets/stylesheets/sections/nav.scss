@@ -6,7 +6,7 @@ ul.main_menu {
   border-radius: 4px;
   margin: auto;
   margin:30px 0;
-  border:1px solid #bbb;
+  border:1px solid #AAA;
   height:37px;
   @include bg-gray-gradient;
   position:relative;
@@ -85,7 +85,7 @@ ul.main_menu {
     line-height:36px;
     color: $style_color;
     text-shadow:0 1px 1px white;
-
+    padding:0 10px;
   }
 }
 /*
