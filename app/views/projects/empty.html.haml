@@ -1,47 +1,51 @@
-- if current_user.require_ssh_key?
-  .alert-message.block-message.error
-    %ul
-      %li You have no ssh keys added to your profile.
-      %li You wont be able to pull/push repository.
-      %li Visit profile &rarr; keys and add public key of every machine you want to use for work with gitlabhq.
-
-.alert-message.block-message.error
-  %ul.unstyled.alert_holder
-    %li You should push repository to proceed.
-    %li After push you will be able to browse code, commits etc.
-
-- bash_lexer = Pygments::Lexer[:bash]
+= render 'shared/no_ssh'
+.project_clone_panel
+  .row
+    .span7
+      .form-horizontal
+        .input-prepend.project_clone_holder
+          = link_to "SSH", "#", class: "btn small active", :"data-clone" => @project.ssh_url_to_repo
+          = link_to "HTTP", "#", class: "btn small", :"data-clone" => @project.http_url_to_repo
+          = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span5"
 %div.git-empty
-  %h3 Git global setup:
-  - setup_str = ["git config --global user.name \"#{current_user.name}\"",
-    "git config --global user.email  \"#{current_user.email}\""].join("\n")
-  = preserve do
-    = raw bash_lexer.highlight(setup_str, lexer: 'bash', options: {encoding: 'utf-8'})
+  %h4 Git global setup:
+  %pre.dark
+    = preserve do
+      git config --global user.name "#{current_user.name}"
+      git config --global user.email "#{current_user.email}"
 
-  %br
-  %br
-  %h3 Create Repository
-  - repo_setup_str = ["mkdir #{@project.path}",
-    "cd #{@project.path}",
-    "git init",
-    "touch README",
-    "git add README",
-    "git commit -m 'first commit'",
-    "git remote add origin #{@project.url_to_repo}",
-    "git push -u origin master"].join("\n")
+  %h4.prepend-top-20 Create Repository
+  %pre.dark
+    = preserve do
+      mkdir #{@project.path}
+      cd #{@project.path}
+      git init
+      touch README
+      git add README
+      git commit -m 'first commit'
+      git remote add origin #{@project.url_to_repo}
+      git push -u origin master
 
-  = preserve do
-    = raw bash_lexer.highlight(repo_setup_str)
-
-  %br
-  %br
-  %h3 Existing Git Repo?
-  - exist_repo_setup_str = ["cd existing_git_repo",
-    "git remote add origin #{@project.url_to_repo}",
-    "git push -u origin master"].join("\n")
-  = preserve do
-    = raw bash_lexer.highlight(exist_repo_setup_str)
+  %h4.prepend-top-20 Existing Git Repo?
+  %pre.dark
+    = preserve do
+      cd existing_git_repo
+      git remote add origin #{@project.url_to_repo}
+      git push -u origin master
 
   - if can? current_user, :admin_project, @project
-    .alert-message.block-message.error.prepend-top-20
-      = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger"
+    .prepend-top-20
+      = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger right"
+
+
+
+:javascript
+  $(function(){
+    var link_sel = ".project_clone_holder a";
+    $(link_sel).bind("click", function() {
+      $(link_sel).removeClass("active");
+      $(this).addClass("active");
+      $("#project_clone").val($(this).attr("data-clone"));
+    })
+  })
+

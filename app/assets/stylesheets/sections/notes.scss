@@ -2,7 +2,7 @@
  * Notes
  *
  */
-#notes-list, 
+#notes-list,
 #new_notes_list {
   display:block;
   list-style:none;
@@ -10,7 +10,7 @@
   padding:0px;
 }
 
-#new_notes_list li:last-child{ 
+#new_notes_list li:last-child{
   border-bottom:1px solid #aaa;
 }
 
@@ -30,16 +30,24 @@
 }
 
 #new_note {
-  #note_note {
-    height:25px;
+  .note-text {
+    height:40px;
   }
   .attach_holder {
     display:none;
   }
 }
 
-.note { 
-  padding: 8px 0; 
+.preview_note {
+  margin: 2px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  min-height: 60px;
+  background:#f5f5f5;
+}
+
+.note {
+  padding: 8px 0;
   border-bottom: 1px solid #eee;
   overflow: hidden;
   display: block;
@@ -49,16 +57,16 @@
   .note-author { color: $style_color;}
 
   .note-title { margin-left:45px; padding-top: 5px;}
-  .avatar { 
+  .avatar {
     margin-top:3px;
   }
 
-  .delete-note { 
-    display:none; 
+  .delete-note {
+    display:none;
     float:right;
   }
 
-  &:hover { 
+  &:hover {
     .delete-note { display:block; }
   }
 }
@@ -72,18 +80,18 @@ p.notify_controls span{
   font-weight: 700;
 }
 
-tr.line_notes_row { 
+tr.line_notes_row {
   border-bottom:1px solid #DDD;
   border-left: 7px solid #2A79A3;
 
-  &.reply { 
+  &.reply {
     background:#eee;
     border-left: 7px solid #2A79A3;
     border-top:1px solid #ddd;
-    td { 
+    td {
       padding:7px 10px;
     }
-    a.line_note_reply_link { 
+    a.line_note_reply_link {
       @include round-borders-all(4px);
       padding: 3px 10px;
       margin-left:5px;
@@ -92,9 +100,9 @@ tr.line_notes_row {
       border-color: #2A79A3;
     }
   }
-  ul { 
+  ul {
     margin:0;
-    li { 
+    li {
       padding:0;
       border:none;
     }
@@ -103,26 +111,26 @@ tr.line_notes_row {
 
 .line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
-.per_line_form { 
+.per_line_form {
   background:#f5f5f5;
   border-top:1px solid #eee;
   form {  margin: 0; }
-  td { 
+  td {
     border-bottom:1px solid #ddd;
   }
-  .note_actions { 
+  .note_actions {
     margin:0;
     padding-top: 10px;
 
-    .buttons { 
+    .buttons {
       float:left;
       width:300px;
     }
-    .options { 
-      .labels { 
+    .options {
+      .labels {
         float:left;
         padding-left:10px;
-        label { 
+        label {
           padding: 6px 0;
           margin: 0;
           width:120px;
@@ -132,7 +140,7 @@ tr.line_notes_row {
   }
 }
 
-td .line_note_link { 
+td .line_note_link {
   position:absolute;
   margin-left:-70px;
   margin-top:-10px;
@@ -144,14 +152,14 @@ td .line_note_link {
   opacity: 0.0;
   filter: alpha(opacity=0);
 
-  &:hover { 
+  &:hover {
     opacity: 1.0;
     filter: alpha(opacity=100);
   }
 }
 
 .diff_file_content tr.line_holder:hover > td { background: $hover !important; }
-.diff_file_content tr.line_holder:hover > td .line_note_link { 
+.diff_file_content tr.line_holder:hover > td .line_note_link {
   opacity: 1.0;
   filter: alpha(opacity=100);
 }
@@ -169,8 +177,8 @@ td .line_note_link {
     margin: 0;
   }
 
-  .note_advanced_opts { 
-    h6 { 
+  .note_advanced_opts {
+    h6 {
       line-height: 32px;
       padding-right: 15px;
     }
@@ -183,7 +191,7 @@ td .line_note_link {
     overflow:hidden;
     margin:0 0 5px !important;
 
-    .input_file { 
+    .input_file {
       .file_upload {
         position: absolute;
         right:14px;
@@ -196,11 +204,16 @@ td .line_note_link {
         height:28px;
         overflow:hidden;
       }
-      .input-file { 
+      .input-file {
         width: 260px;
         height: 41px;
         float: right;
       }
     }
   }
+}
+
+.note-text { 
+  border: 1px solid #aaa;
+  box-shadow:none;
 }

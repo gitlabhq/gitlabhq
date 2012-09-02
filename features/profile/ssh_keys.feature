@@ -3,8 +3,8 @@ Feature: SSH Keys
     Given I signin as a user
     And I have ssh keys:
       | title | 
-      | Work |
-      | Home | 
+      | ssh-rsa Work |
+      | ssh-rsa Home |
     And I visit profile keys page
 
   Scenario: I should see SSH keys

@@ -1,9 +1,12 @@
 - if note.valid?
   :plain
-    $("#new_note .errors").remove();
-    $('#new_note textarea').val("");
+    $(".note-form-holder .error").remove();
+    $('.note-form-holder textarea').val("");
+    $('.note-form-holder #preview-link').text('Preview');
+    $('.note-form-holder #preview-note').hide();
+    $('.note-form-holder').show();
     NoteList.prepend(#{note.id}, "#{escape_javascript(render partial: "notes/show", locals: {note: note})}");
 - else
   :plain
-    $("#new_note").replaceWith("#{escape_javascript(render('form'))}");
+    $(".note-form-holder").replaceWith("#{escape_javascript(render('form'))}");
 

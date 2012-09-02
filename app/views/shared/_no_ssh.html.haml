@@ -1,0 +1,8 @@
+- if current_user.require_ssh_key?
+  %h6.error_message
+    %span
+      You wont be able to pull/push project code unless you
+      %strong
+        = link_to new_key_path, class: "vlink" do
+          add SSH key
+      to your profile

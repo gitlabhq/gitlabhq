@@ -1,5 +1,14 @@
 module Gitlab
-  # Custom parsing for Gitlab-flavored Markdown
+  # Custom parser for Gitlab-flavored Markdown
+  #
+  # It replaces references in the text with links to the appropriate items in Gitlab.
+  #
+  # Supported reference formats are:
+  #   * @foo for team members
+  #   * #123 for issues
+  #   * !123 for merge requests
+  #   * $123 for snippets
+  #   * 123456 for commits
   #
   # Examples
   #
@@ -67,25 +76,25 @@ module Gitlab
     def reference_user(identifier)
       if user = @project.users.where(name: identifier).first
         member = @project.users_projects.where(user_id: user).first
-        link_to("@#{user.name}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+        link_to("@#{identifier}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end
 
     def reference_issue(identifier)
       if issue = @project.issues.where(id: identifier).first
-        link_to("##{issue.id}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
+        link_to("##{identifier}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
       end
     end
 
     def reference_merge_request(identifier)
       if merge_request = @project.merge_requests.where(id: identifier).first
-        link_to("!#{merge_request.id}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
+        link_to("!#{identifier}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
       end
     end
 
     def reference_snippet(identifier)
       if snippet = @project.snippets.where(id: identifier).first
-        link_to("$#{snippet.id}", project_snippet_path(@project, snippet), html_options.merge(title: "Snippet: #{snippet.title}", class: "gfm gfm-snippet #{html_options[:class]}"))
+        link_to("$#{identifier}", project_snippet_path(@project, snippet), html_options.merge(title: "Snippet: #{snippet.title}", class: "gfm gfm-snippet #{html_options[:class]}"))
       end
     end
 

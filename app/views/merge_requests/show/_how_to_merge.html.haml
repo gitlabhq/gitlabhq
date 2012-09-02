@@ -3,13 +3,12 @@
     %a.close{href: "#"} ×
     %h3 How To Merge
   .modal-body
-    %pre
+    %pre.dark
       = preserve do
-        :erb
-          git checkout <%= @merge_request.target_branch %>
-          git fetch origin
-          git merge origin/<%= @merge_request.source_branch %>
-          git push origin <%= @merge_request.target_branch %>
+        git checkout #{@merge_request.target_branch}
+        git fetch origin
+        git merge origin/#{@merge_request.source_branch}
+        git push origin #{@merge_request.target_branch}
 
 
 :javascript

@@ -8,7 +8,7 @@
       Read more about web hooks
       %strong #{link_to "here", help_web_hooks_path, class: "vlink"}
 
-= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project) do |f|
+= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-inline' } do |f|
   -if @hook.errors.any?
     .alert-message.block-message.error
       - @hook.errors.full_messages.each do |msg|

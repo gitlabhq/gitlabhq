@@ -1,13 +1,16 @@
-require 'simplecov'
-SimpleCov.start 'rails'
+unless ENV['CI']
+  require 'simplecov'
+  SimpleCov.start 'rails'
+end
 
 require 'cucumber/rails'
 require 'webmock/cucumber'
+
 WebMock.allow_net_connect!
 
-require Rails.root.join 'spec/monkeypatch'
-require Rails.root.join 'spec/factories'
-require Rails.root.join 'spec/support/login'
+require Rails.root.join 'spec/support/gitolite_stub'
+require Rails.root.join 'spec/support/stubbed_repository'
+require Rails.root.join 'spec/support/login_helpers'
 require Rails.root.join 'spec/support/valid_commit'
 
 Capybara.default_selector = :css
@@ -44,3 +47,13 @@ require 'headless'
 
 headless = Headless.new
 headless.start
+
+require 'cucumber/rspec/doubles'
+
+include GitoliteStub
+
+Before do
+  stub_gitolite!
+end
+
+World(FactoryGirl::Syntax::Methods)

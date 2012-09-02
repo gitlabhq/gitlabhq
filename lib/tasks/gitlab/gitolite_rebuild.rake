@@ -16,7 +16,7 @@ namespace :gitlab do
     task :update_keys => :environment  do
       puts "Starting Key"
       Key.find_each(:batch_size => 100) do |key|
-        key.update_repository
+        Gitlab::Gitolite.new.set_key(key.identifier, key.key, key.projects)
         print '.'
       end
       puts "Done with keys"

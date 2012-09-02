@@ -2,29 +2,13 @@
 @import "bootstrap-responsive";
 
 /** GITLAB colors **/
-$text_color:#222;
-$lite_text_color: #666;
-$link_color:#2A79A3;
-$active_link_color:#2FA0BB;
-$active_bg_color:#79C3E0;
-$active_bd_color: #2FA0BB;
-$border_color:#CCC;
-$lite_border_color:#EEE;
-$min_app_width:980px;
-$max_app_width:980px;
-$app_padding:20px;
-$bg_color: #FFF;
-$styled_border_color: #2FA0BB;
-$color: "#4BB8D2";
+$link_color:#3A89A3;
 $blue_link: #2fa0bb;
-
-
-/** Style colors **/
-$style_color: #474D57;
-$hover: #FDF5D9;
+$style_color: #474d57;
+$hover: #fdf5d9;
 
 /** GITLAB Fonts **/
-@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); } 
+@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); }
 
 /** MIXINS **/
 @mixin shade {
@@ -72,7 +56,20 @@ $hover: #FDF5D9;
   border-radius: $radius;
 }
 
+@mixin bg-gray-gradient {
+  background:#eee;
+  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+  background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+  background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+  background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+}
 
+@mixin bg-dark-gray-gradient {
+  background:#eee;
+  background-image: -webkit-linear-gradient(#e9e9e9, #d7d7d7);
+  background-image: -moz-linear-gradient(#e9e9e9, #d7d7d7);
+  background-image: -o-linear-gradient(#e9e9e9, #d7d7d7);
+}
 
 /**
  * Header of application.
@@ -113,7 +110,13 @@ $hover: #FDF5D9;
  * Overrides some styles of twitter bootstrap.
  * Also give some common classes for gitlab app
  */
-@import "gitlab_bootstrap.scss";
+@import "gitlab_bootstrap/common.scss";
+@import "gitlab_bootstrap/typography.scss";
+@import "gitlab_bootstrap/buttons.scss";
+@import "gitlab_bootstrap/blocks.scss";
+@import "gitlab_bootstrap/files.scss";
+@import "gitlab_bootstrap/tables.scss";
+@import "gitlab_bootstrap/lists.scss";
 
 
 /**

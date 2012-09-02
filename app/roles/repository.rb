@@ -1,4 +1,6 @@
 module Repository
+  include GitHost
+
   def valid_repo?
     repo
   rescue
@@ -30,24 +32,8 @@ module Repository
     Commit.commits_between(repo, from, to)
   end
 
-  def write_hooks
-    %w(post-receive).each do |hook|
-      write_hook(hook, File.read(File.join(Rails.root, 'lib', "#{hook}-hook")))
-    end
-  end
-
   def satellite
     @satellite ||= Gitlab::Satellite.new(self)
-  end
-
-  def write_hook(name, content)
-    hook_file = File.join(path_to_repo, 'hooks', name)
-
-    File.open(hook_file, 'w') do |f|
-      f.write(content)
-    end
-
-    File.chmod(0775, hook_file)
   end
 
   def has_post_receive_file?
@@ -64,7 +50,7 @@ module Repository
   end
 
   def url_to_repo
-    Gitlab::GitHost.url_to_repo(path)
+    git_host.url_to_repo(path)
   end
 
   def path_to_repo
@@ -72,13 +58,11 @@ module Repository
   end
 
   def update_repository
-    Gitlab::GitHost.system.update_project(path, self)
-
-    write_hooks if File.exists?(path_to_repo)
+    git_host.update_repository(self)
   end
 
   def destroy_repository
-    Gitlab::GitHost.system.destroy_project(self)
+    git_host.remove_repository(self)
   end
 
   def repo_exists?
@@ -133,10 +117,13 @@ module Repository
     storage_path = File.join(Rails.root, "tmp", "repositories", self.code)
     file_path = File.join(storage_path, file_name)
 
+    # Put files into a directory before archiving
+    prefix = self.code + "/"
+
     # Create file if not exists
     unless File.exists?(file_path)
       FileUtils.mkdir_p storage_path
-      file = self.repo.archive_to_file(ref, nil,  file_path)
+      file = self.repo.archive_to_file(ref, prefix,  file_path)
     end
 
     file_path

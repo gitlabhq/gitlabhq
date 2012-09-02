@@ -51,7 +51,7 @@
             = form_for(@team_member, as: :team_member, url: project_team_member_path(@project, @team_member)) do |f|
               = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, class: "project-access-select", disabled: !allow_admin
   %hr
-  = render user.recent_events.limit(5)
+  = render @events
 :javascript
   $(function(){
     $('.repo-access-select, .project-access-select').live("change", function() {

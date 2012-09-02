@@ -45,9 +45,10 @@
           %span.help-block Tell us about yourself in fewer than 250 characters.
     .span5.right
 
-      %p.alert.alert-info
-        %strong Tip:
-        You can change your avatar at gravatar.com
+      -unless Gitlab.config.disable_gravatar?
+        %p.alert.alert-info
+          %strong Tip:
+          You can change your avatar at gravatar.com
 
       %h4
         Personal projects:
@@ -66,4 +67,4 @@
       = link_to "Add Public Key", new_key_path, class: "btn small right"
 
   .form-actions
-    = f.submit 'Save', class: "btn-primary btn"
+    = f.submit 'Save', class: "btn save-btn"

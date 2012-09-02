@@ -1,9 +1,9 @@
-%h3
+%h3.page_title
   Users
   = link_to 'New User', new_admin_user_path, class: "btn small right"
 %br
 
-= form_tag admin_users_path, method: :get do 
+= form_tag admin_users_path, method: :get, class: 'form-inline' do
   = text_field_tag :name, params[:name], class: "xlarge"
   = submit_tag "Search", class: "btn submit primary"
 %ul.nav.nav-pills

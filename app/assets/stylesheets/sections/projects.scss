@@ -1,17 +1,44 @@
-.projects { 
+.projects {
   @extend .row;
   .activities {
   }
 
-  .side { 
+  .side {
     @extend .span4;
     @extend .right;
 
-    .projects_box { 
-      h5 { 
+    .projects_box {
+      h5 {
         color:$style_color;
         font-size:16px;
         text-shadow: 0 1px 1px #fff;
+        padding: 2px 10px;
+      }
+      ul {
+        li {
+          padding:0;
+          a {
+            display:block;
+            .project_name {
+              color:#4fa2bd;
+              font-size:14px;
+              line-height:18px;
+            }
+            .arrow {
+              float:right;
+              padding:10px;
+              margin:0;
+            }
+            .last_activity {
+              padding-top:5px;
+              display:block;
+              span, strong {
+                font-size:12px;
+                color:#666;
+              }
+            }
+          }
+        }
       }
       @extend .leftbar;
       @extend .ui-box;
@@ -19,21 +46,47 @@
   }
 }
 
-.new_project, 
-.edit_project { 
-  .project_name_holder { 
+.new_project,
+.edit_project {
+  .project_name_holder {
     input,
-    label { 
+    label {
       font-size:16px;
       line-height:20px;
       padding:8px;
     }
-    label { 
+    label {
       color:#888;
     }
-    .btn { 
-      padding:6px;
+    .btn {
+      padding:6px 10px;
       margin-left:10px;
+      margin-bottom:8px;
     }
   }
+  .adv_settings {
+    h6 { margin-left:40px; }
+  }
+}
+
+.project_clone_panel {
+  @include border-radius(4px);
+  @include bg-gray-gradient;
+  padding: 4px 7px;
+  border: 1px solid #CCC;
+  margin-bottom:5px;
+  input[type=text] {
+    border: 1px solid #BBB;
+  }
+}
+
+.save-project-loader { 
+  img { 
+    margin-top:50px;
+    margin-bottom:50px;
+  }
+  h3 { 
+    @extend .page_title;
+  }
+
 }

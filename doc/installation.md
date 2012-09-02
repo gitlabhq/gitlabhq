@@ -119,7 +119,6 @@ Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
-    sudo chown gitlab:gitlab /home/git/repositories/**/hooks/post-receive
 
 #### CHECK: Logout & login again to apply git group to your user
 
@@ -178,6 +177,11 @@ Permissions:
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
 
+#### Setup gitlab hooks
+
+    sudo cp ./lib/hooks/post-receive /home/git/share/gitolite/hooks/common/post-receive
+    sudo chown git:git /home/git/share/gitolite/hooks/common/post-receive
+
 Checking status:
 
     sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
@@ -196,6 +200,7 @@ Checking status:
     Resolving deltas: 100% (174/174), done.
     Can clone gitolite-admin?............YES
     UMASK for .gitolite.rc is 0007? ............YES
+    /home/git/share/gitolite/hooks/common/post-receive exists? ............YES
 
 If you got all YES - congrats! You can go to next step.
 
@@ -239,42 +244,15 @@ You can login via web using admin generated with setup:
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Edit /etc/nginx/nginx.conf. In the *http* section add the following section of code or replace it completely with https://raw.github.com/dosire/gitlabhq/master/aws/nginx.conf
+Add gitlab to nginx sites & change with your host specific settings
 
-    upstream gitlab {
-        server unix:/home/gitlab/gitlab/tmp/sockets/gitlab.socket;
-    }
+    sudo cp /home/gitlab/gitlab/lib/support/nginx-gitlab /etc/nginx/sites-available/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
-    server {
-        listen YOUR_SERVER_IP:80;         # e.g., listen 192.168.1.1:80;
-        server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
-        root /home/gitlab/gitlab/public;
-
-        # individual nginx logs for this gitlab vhost
-        access_log  /var/log/nginx/gitlab_access.log;
-        error_log   /var/log/nginx/gitlab_error.log;
-
-        location / {
-            # serve static files from defined root folder;.
-            # @gitlab is a named location for the upstream fallback, see below
-            try_files $uri $uri/index.html $uri.html @gitlab;
-        }
-
-        # if a file, which is not found in the root folder is requested,
-        # then the proxy pass the request to the upsteam (gitlab unicorn)
-        location @gitlab {
-          proxy_redirect     off;
-
-          # you need to change this to "https", if you set "ssl" directive to "on"
-          proxy_set_header   X-FORWARDED_PROTO http;
-          proxy_set_header   Host              $http_host;
-          proxy_set_header   X-Real-IP         $remote_addr;
-
-          proxy_pass http://gitlab;
-        }
-    }
-
-Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN** to the IP address and fully-qualified domain name of the host serving GitLab.
+    # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
+    # to the IP address and fully-qualified domain name
+    # of the host serving GitLab.
+    sudo vim /etc/nginx/sites-enabled/gitlab
 
 Restart nginx:
 
@@ -282,60 +260,7 @@ Restart nginx:
 
 Create init script in /etc/init.d/gitlab:
 
-    #! /bin/bash
-    ### BEGIN INIT INFO
-    # Provides:          gitlab
-    # Required-Start:    $local_fs $remote_fs $network $syslog redis-server
-    # Required-Stop:     $local_fs $remote_fs $network $syslog
-    # Default-Start:     2 3 4 5
-    # Default-Stop:      0 1 6
-    # Short-Description: GitLab git repository management
-    # Description:       GitLab git repository management
-    ### END INIT INFO
-
-    DAEMON_OPTS="-c /home/gitlab/gitlab/config/unicorn.rb -E production -D"
-    NAME=unicorn
-    DESC="Gitlab service"
-    PID=/home/gitlab/gitlab/tmp/pids/unicorn.pid
-    RESQUE_PID=/home/gitlab/gitlab/tmp/pids/resque_worker.pid
-
-    case "$1" in
-      start)
-            CD_TO_APP_DIR="cd /home/gitlab/gitlab"
-            START_DAEMON_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
-            START_RESQUE_PROCESS="./resque.sh"
-
-            echo -n "Starting $DESC: "
-            if [ `whoami` = root ]; then
-              sudo -u gitlab sh -l -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
-            else
-              $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
-            fi
-            echo "$NAME."
-            ;;
-      stop)
-            echo -n "Stopping $DESC: "
-            kill -QUIT `cat $PID`
-            kill -QUIT `cat $RESQUE_PID`
-            echo "$NAME."
-            ;;
-      restart)
-            echo -n "Restarting $DESC: "
-            kill -USR2 `cat $PID`
-            echo "$NAME."
-            ;;
-      reload)
-            echo -n "Reloading $DESC configuration: "
-            kill -HUP `cat $PID`
-            echo "$NAME."
-            ;;
-      *)
-            echo "Usage: $NAME {start|stop|restart|reload}" >&2
-            exit 1
-            ;;
-    esac
-
-    exit 0
+    cp /home/gitlab/gitlab/lib/support/init-gitlab /etc/init.d/gitlab
 
 Adding permission:
 

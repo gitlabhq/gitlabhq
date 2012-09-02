@@ -1,0 +1,25 @@
+%h3.page_title SSH Keys
+.back_link
+  = link_to help_path do
+    &larr; to index
+%hr
+
+%p.slead
+  SSH key allows you to establish a secure connection between your computer and Gitlab
+
+%p.slead
+  To generate a new SSH key just open your terminal and use code below.
+
+%pre.dark
+  ssh-keygen -t rsa -C "#{current_user.email}"
+
+  \# Creates a new ssh key using the provided email
+  \# Generating public/private rsa key pair...
+
+%p.slead
+  Next just use code below to dump your public key and add to GITLAB SSH Keys
+
+%pre.dark
+  cat ~/.ssh/id_rsa.pub
+
+  \# ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6eNtGpNGwstc....
