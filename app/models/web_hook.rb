@@ -13,6 +13,7 @@ class WebHook < ActiveRecord::Base
   def execute(data)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
+      RestClient.post(url, { "payload" => data.to_json }, :content_type => :json)
       WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
     else
       post_url = url.gsub(parsed_url.userinfo+"@", "")
