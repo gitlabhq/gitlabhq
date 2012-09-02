@@ -10,7 +10,7 @@ Gitlab::Application.routes.draw do
 
   # Optionally, enable Resque here
   require 'resque/server'
-  mount Resque::Server.new, at: '/info/resque'
+  mount Resque::Server.new, at: '/info/resque', as: 'resque'
 
   # Enable Grack support
   mount Grack::Bundle.new({
