@@ -230,7 +230,7 @@ You can login via web using admin generated with setup:
     # causing the resque worker not to start via init script on next boot/service restart
 
 **Ok - we have a working application now. **
-**But keep going - there are some thing that should be done **
+**But keep going - there are some things that should be done **
 
 # Nginx && Unicorn
 
