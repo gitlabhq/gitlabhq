@@ -6,9 +6,6 @@
 # This script only works on Amazon Web Services (AWS).
 # The operating system used is Ubuntu 12.04 64bit.
 
-# TODO
-# @dosire will send a pull request after this is merged in to change dosire/gitlabhq/non-interactive-aws-install links to gitlabhq/gitlabhq/master and reference this script from installation.md
-
 # HOWTO
 # Signup for AWS, free tier are available at http://aws.amazon.com/free/
 # Go to EC2 tab in the AWS console EC2 https://console.aws.amazon.com/ec2/home
@@ -33,7 +30,7 @@
 # Give the following command in your local terminal while suptituting the UPPERCASE items
 # 'ssh -i LOCATION_OF_AWS_KEY_PAIR_PRIVATE_KEY PUBLIC_DNS_OF_THE_NEW_SERVER'
 # Execute the curl command below and when its ready follow the printed 'Log in instuctions'
-# curl https://raw.github.com/dosire/gitlabhq/non-interactive-aws-install/lib/support/aws/debian_ubuntu_aws.sh | sh
+# curl https://raw.github.com/gitlabhq/gitlabhq/master/lib/support/aws/debian_ubuntu_aws.sh | sh
 
 # Prevent fingerprint prompt for localhost in step 1 to 3.
 echo "Host localhost
@@ -41,7 +38,7 @@ echo "Host localhost
    UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
 
 # Existing script for Step 1 to 3
-curl https://raw.github.com/dosire/gitlabhq/non-interactive-aws-install/doc/debian_ubuntu.sh | sh
+curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
 
 # Install MySQL
 sudo apt-get install -y makepasswd # Needed to create a unique password non-interactively.

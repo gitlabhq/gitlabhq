@@ -51,6 +51,12 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 >     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
 >
 > Now you can go to step 4"
+>
+> Or if you are installing on  Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
+>
+>     curl https://raw.github.com/gitlabhq/gitlabhq/master/lib/support/aws/debian_ubuntu_aws.sh | sh
+>
+> for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlabhq/blob/master/lib/support/aws/debian_ubuntu_aws.sh)
 > - - -
 
 # 1. Install packages
