@@ -1,6 +1,7 @@
 class Commit
   include ActiveModel::Conversion
   include Gitlab::Encode
+  include StaticModel
   extend ActiveModel::Naming
 
   attr_accessor :commit
@@ -22,8 +23,7 @@ class Commit
     :to_patch,
     to: :commit
 
-
-  class << self 
+  class << self
     def find_or_first(repo, commit_id = nil, root_ref)
       commit = if commit_id
                  repo.commit(commit_id)
@@ -85,7 +85,7 @@ class Commit
       first = project.commit(to.try(:strip))
       last = project.commit(from.try(:strip))
 
-      result = { 
+      result = {
         commits: [],
         diffs: [],
         commit: nil
@@ -103,10 +103,6 @@ class Commit
 
       result
     end
-  end
-
-  def persisted?
-    false
   end
 
   def initialize(raw_commit, head = nil)
@@ -155,7 +151,7 @@ class Commit
     prev_commit.try :id
   end
 
-  def parents_count 
+  def parents_count
     parents && parents.count || 0
   end
 end
