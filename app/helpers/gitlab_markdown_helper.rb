@@ -31,7 +31,7 @@ module GitlabMarkdownHelper
       extractions[$1]
     end
 
-    sanitize text.html_safe
+    sanitize text.html_safe, attributes:  ActionView::Base.sanitized_allowed_attributes + %w(id class )
   end
 
   # Use this in places where you would normally use link_to(gfm(...), ...).
