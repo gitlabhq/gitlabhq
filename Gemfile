@@ -62,6 +62,7 @@ gem 'resque_mailer'
 
 # HTTP requests
 gem "httparty"
+gem "rest-client"
 
 # Handle encodings
 gem "charlock_holmes"
