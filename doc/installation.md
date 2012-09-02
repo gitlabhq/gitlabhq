@@ -1,4 +1,4 @@
-## Platform requirements: 
+## Platform requirements:
 
 **The project is designed for the Linux operating system.**
 
@@ -22,7 +22,7 @@ You might have some luck using these, but no guarantees:
 
 Gitlab does **not** run on Windows and we have no plans of making Gitlab compatible.
 
-## This installation guide created for Debian/Ubuntu and properly tested. 
+## This installation guide created for Debian/Ubuntu and properly tested.
 
 The installation consists of 6 steps:
 
@@ -43,13 +43,13 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 
 > - - -
 > First 3 steps can be easily skipped with simply install script:
-> 
->     # Install curl and sudo 
+>
+>     # Install curl and sudo
 >     apt-get install curl sudo
->     
+>
 >     # 3 steps in 1 command :)
 >     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
-> 
+>
 > Now you can go to step 4"
 > - - -
 
@@ -61,7 +61,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     sudo apt-get upgrade
 
     sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix
-    
+
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
@@ -77,7 +77,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 # 3. Install gitolite
 
 Create user for git:
-    
+
     sudo adduser \
       --system \
       --shell /bin/sh \
@@ -90,7 +90,7 @@ Create user for git:
 Create user for gitlab:
 
     # ubuntu/debian
-    sudo adduser --disabled-login --gecos 'gitlab system' gitlab    
+    sudo adduser --disabled-login --gecos 'gitlab system' gitlab
 
 Add your user to git group:
 
@@ -103,7 +103,7 @@ Generate key:
 Get gitolite source code:
 
     cd /home/git
-    sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite    
+    sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite
 
 Setup:
 
@@ -114,20 +114,20 @@ Setup:
 
     sudo -u git -H sed -i 's/0077/0007/g' /home/git/share/gitolite/conf/example.gitolite.rc
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gl-setup -q /home/git/gitlab.pub"
-    
+
 Permissions:
 
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
 #### CHECK: Logout & login again to apply git group to your user
-    
+
     # clone admin repo to add localhost to known_hosts
     # & be sure your user has access to gitolite
-    sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin 
+    sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin
 
     # if succeed  you can remove it
-    sudo rm -rf /tmp/gitolite-admin 
+    sudo rm -rf /tmp/gitolite-admin
 
 **IMPORTANT! If you cant clone `gitolite-admin` repository - DONT PROCEED INSTALLATION**
 
@@ -139,7 +139,7 @@ Permissions:
     cd /home/gitlab
     sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
-    
+
     sudo -u gitlab mkdir tmp
 
     # Rename config files
@@ -150,22 +150,22 @@ Permissions:
     # SQLite
     sudo -u gitlab cp config/database.yml.sqlite config/database.yml
 
-    # Or 
+    # Or
     # Mysql
     # Install MySQL as directed in Step #1
-    
+
     # Login to MySQL
-    $ mysql -u root -p 
-    
+    $ mysql -u root -p
+
     # Create the gitlabhq production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-    
+
     # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password'; 
-    
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+
     # Grant proper permissions to the MySQL User
     mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
-    
+
     # Exit MySQL Server and copy the example config, make sure to update username/password in config/database.yml
     sudo -u gitlab cp config/database.yml.example config/database.yml
 
@@ -181,7 +181,7 @@ Permissions:
 
     sudo cp ./lib/hooks/post-receive /home/git/share/gitolite/hooks/common/post-receive
     sudo chown git:git /home/git/share/gitolite/hooks/common/post-receive
-    
+
 Checking status:
 
     sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
@@ -202,13 +202,13 @@ Checking status:
     UMASK for .gitolite.rc is 0007? ............YES
     /home/git/share/gitolite/hooks/common/post-receive exists? ............YES
 
-If you got all YES - congrats! You can go to next step.  
+If you got all YES - congrats! You can go to next step.
 
 # 5. Server up
 
 Application can be started with next command:
 
-    # For test purposes 
+    # For test purposes
     sudo -u gitlab bundle exec rails s -e production
 
     # As daemon
