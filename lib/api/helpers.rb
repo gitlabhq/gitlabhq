@@ -14,6 +14,10 @@ module Gitlab
       @project
     end
 
+    def paginate(object)
+      object.page(params[:page]).per(params[:per_page].to_i)
+    end
+
     def authenticate!
       error!({'message' => '401 Unauthorized'}, 401) unless current_user
     end
