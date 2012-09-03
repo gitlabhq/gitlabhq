@@ -8,15 +8,13 @@ class Commit
   attr_accessor :head
   attr_accessor :refs
 
-  delegate :message,
-    :authored_date,
+  delegate :authored_date,
     :committed_date,
     :parents,
     :sha,
     :date,
     :committer,
     :author,
-    :message,
     :diffs,
     :tree,
     :id,
@@ -112,6 +110,16 @@ class Commit
 
   def short_id(length = 10)
     id.to_s[0..length]
+  end
+
+  def message=(val)
+    self.commit.message
+  end
+
+  def message
+    # If has no commit message then shows a warning
+    # Fix Nil Exception in link_to_gfm
+    self.commit.message.blank? ? '[NO COMMIT MESSAGE]' : self.commit.message
   end
 
   def safe_message
