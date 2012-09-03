@@ -10,9 +10,9 @@ describe UsersProjectObserver do
                                         user: user )}
   subject { UsersProjectObserver.instance }
 
-  describe "#after_create" do
+  describe "#after_commit" do
     it "should called when UsersProject created" do
-      subject.should_receive(:after_commit)
+      subject.should_receive(:after_commit).once
       UsersProject.observers.enable :users_project_observer do
         Factory.create(:users_project, 
                        project: project, 
@@ -23,11 +23,8 @@ describe UsersProjectObserver do
       Notify.should_receive(:project_access_granted_email).with(users_project.id).and_return(double(deliver: true))
       subject.after_commit(users_project)
     end
-  end
-
-  describe "#after_update" do
     it "should called when UsersProject updated" do
-      subject.should_receive(:after_commit)
+      subject.should_receive(:after_commit).once
       UsersProject.observers.enable :users_project_observer do
         users_project.update_attribute(:project_access, 40)
       end
@@ -35,6 +32,12 @@ describe UsersProjectObserver do
     it "should send email to user" do
       Notify.should_receive(:project_access_granted_email).with(users_project.id).and_return(double(deliver: true))
       subject.after_commit(users_project)
+    end
+    it "should not called after UsersProject destroyed" do
+      subject.should_not_receive(:after_commit)
+      UsersProject.observers.enable :users_project_observer do
+        users_project.destroy
+      end
     end
   end
 end
