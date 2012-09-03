@@ -16,6 +16,8 @@ class CommitDecorator < ApplicationDecorator
   # In case this first line is longer than 80 characters, it is cut off
   # after 70 characters and ellipses (`&hellp;`) are appended.
   def title
+    return no_commit_message unless safe_message
+
     title_end = safe_message.index(/\n/)
     if (!title_end && safe_message.length > 80) || (title_end && title_end > 80)
       safe_message[0..69] << "&hellip;".html_safe
@@ -34,5 +36,11 @@ class CommitDecorator < ApplicationDecorator
     else
       safe_message.split(/\n/, 2)[1].try(:chomp)
     end
+  end
+
+  protected
+
+  def no_commit_message
+    "--no commit message"
   end
 end
