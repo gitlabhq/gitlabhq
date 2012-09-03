@@ -29,14 +29,26 @@ module Gitlab
       #   name (required) - name for new project
       #   code (optional) - code for new project, uses project name if not set
       #   path (optional) - path for new project, uses project name if not set
+      #   description (optional) - short project description
+      #   default_branch (optional) - 'master' by default
+      #   issues_enabled (optional) - enabled by default
+      #   wall_enabled (optional) - enabled by default
+      #   merge_requests_enabled (optional) - enabled by default
+      #   wiki_enabled (optional) - enabled by default
       # Example Request
       #   POST /projects
       post do
-        project = {}
-        project[:name] = params[:name]
-        project[:code] = params[:code] || project[:name]
-        project[:path] = params[:path] || project[:name]
-        @project = Project.create_by_user(project, current_user)
+        @project = Project.create_by_user({
+          name: params[:name],
+          code: (params[:code] || params[:name]),
+          path: (params[:path] || params[:name]),
+          description: (params[:description] || Project.columns_hash["description"].default),
+          default_branch: (params[:default_branch] || Project.columns_hash["default_branch"].default),
+          issues_enabled: (params[:issues_enabled] || Project.columns_hash["issues_enabled"].default),
+          wall_enabled: (params[:wall_enabled] || Project.columns_hash["wall_enabled"].default),
+          merge_requests_enabled: (params[:merge_requests_enabled] || Project.columns_hash["merge_requests_enabled"].default),
+          wiki_enabled: (params[:wiki_enabled] || Project.columns_hash["wiki_enabled"].default)
+       }, current_user)
         if @project.saved?
           present @project, with: Entities::Project
         else

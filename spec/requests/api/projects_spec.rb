@@ -27,7 +27,7 @@ describe Gitlab::API do
 
   describe "POST /projects" do
     it "should create new project without code and path" do
-      lambda {
+      expect {
         name = "foo"
         post api("/projects", user), {
           name: name
@@ -39,7 +39,41 @@ describe Gitlab::API do
       }.should change{Project.count}.by(1)
     end
     it "should create new project" do
-      lambda {
+      expect {
+        name = "foo"
+        path = "bar"
+        code = "bazz"
+        description = "fuu project"
+        default_branch = "default_branch"
+        issues_enabled = false
+        wall_enabled = false
+        merge_requests_enabled = false
+        wiki_enabled = false
+        post api("/projects", user), {
+          code: code,
+          path: path,
+          name: name,
+          description: description,
+          default_branch: default_branch,
+          issues_enabled: issues_enabled,
+          wall_enabled: wall_enabled,
+          merge_requests_enabled: merge_requests_enabled,
+          wiki_enabled: wiki_enabled
+        }
+        response.status.should == 201
+        json_response["name"].should == name
+        json_response["path"].should == path
+        json_response["code"].should == code
+        json_response["description"].should == description
+        json_response["default_branch"].should == default_branch
+        json_response["issues_enabled"].should == issues_enabled
+        json_response["wall_enabled"].should == wall_enabled
+        json_response["merge_requests_enabled"].should == merge_requests_enabled
+        json_response["wiki_enabled"].should == wiki_enabled
+      }.should change{Project.count}.by(1)
+    end
+    it "should create new projects within all parameters" do
+      expect {
         name = "foo"
         path = "bar"
         code = "bazz"
@@ -53,9 +87,10 @@ describe Gitlab::API do
         json_response["path"].should == path
         json_response["code"].should == code
       }.should change{Project.count}.by(1)
+
     end
     it "should not create project without name" do
-        lambda {
+        expect {
           post api("/projects", user)
           response.status.should == 404
         }.should_not change{Project.count}
