@@ -9,7 +9,7 @@ module Gitlab
       # Example Request:
       #  GET /users
       get do
-        @users = User.all
+        @users = paginate User
         present @users, with: Entities::User
       end
 

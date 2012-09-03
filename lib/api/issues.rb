@@ -9,7 +9,7 @@ module Gitlab
       # Example Request:
       #   GET /issues
       get do
-        present current_user.issues, with: Entities::Issue
+        present paginate(current_user.issues), with: Entities::Issue
       end
     end
 
@@ -21,7 +21,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/issues
       get ":id/issues" do
-        present user_project.issues, with: Entities::Issue
+        present paginate(user_project.issues), with: Entities::Issue
       end
 
       # Get a single project issue

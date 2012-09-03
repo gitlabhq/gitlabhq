@@ -23,6 +23,13 @@ GET http://example.com/api/v2/projects?private_token=QVy1PB7sTxfy4pqfZM1U
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
 
+#### Pagination
+
+When listing resources you can pass the following parameters:
+
++ `page` (default: `1`) - page number
++ `per_page` (default: `20`, max: `100`) - how many items to list per page
+
 ## Contents
 
 + [Users](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/users.md)

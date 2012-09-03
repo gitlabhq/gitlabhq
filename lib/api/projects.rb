@@ -9,7 +9,7 @@ module Gitlab
       # Example Request:
       #   GET /projects
       get do
-        @projects = current_user.projects
+        @projects = paginate current_user.projects
         present @projects, with: Entities::Project
       end
 

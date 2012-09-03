@@ -11,7 +11,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/milestones
       get ":id/milestones" do
-        present user_project.milestones, with: Entities::Milestone
+        present paginate(user_project.milestones), with: Entities::Milestone
       end
 
       # Get a single project milestone
