@@ -9,23 +9,24 @@
 # Description:       GitLab git repository management
 ### END INIT INFO
 
-DAEMON_OPTS="-c /home/gitlab/gitlab/config/unicorn.rb -E production -D"
-NAME=unicorn
+APP_ROOT="/home/gitlab/gitlab"
+DAEMON_OPTS="-c $APP_ROOT/config/unicorn.rb -E production -D"
+NAME="unicorn"
 DESC="Gitlab service"
-PID=/home/gitlab/gitlab/tmp/pids/unicorn.pid
-RESQUE_PID=/home/gitlab/gitlab/tmp/pids/resque_worker.pid
+PID="$APP_ROOT/tmp/pids/unicorn.pid"
+RESQUE_PID="$APP_ROOT/tmp/pids/resque_worker.pid"
 
 case "$1" in
   start)
-        CD_TO_APP_DIR="cd /home/gitlab/gitlab"
+        CD_TO_APP_DIR="cd $APP_ROOT"
         START_DAEMON_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
         START_RESQUE_PROCESS="./resque.sh"
 
         echo -n "Starting $DESC: "
         if [ `whoami` = root ]; then
-          sudo -u gitlab sh -l -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
+          sudo -u gitlab sh -l -c "$CD_TO_APP_DIR && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"
         else
-          $CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
+          $CD_TO_APP_DIR && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS
         fi
         echo "$NAME."
         ;;
