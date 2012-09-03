@@ -42,7 +42,7 @@
 
 .row
   .span6
-    %table.admin-table
+    %table
       %thead
         %th Open Issues
       - @issues.each do |issue|
@@ -56,7 +56,7 @@
     = paginate @issues, theme: "gitlab"
 
   .span6
-    %table.admin-table
+    %table
       %thead
         %th Participants
       - @users.each do |user|
