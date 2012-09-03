@@ -14,3 +14,12 @@ function Projects() {
 
   disableButtonIfEmtpyField("#project_name", ".project-submit")
 }
+
+function initGitCloneSwitcher() {
+  var link_sel = ".project_clone_holder button";
+  $(link_sel).bind("click", function(e) {
+    $(link_sel).removeClass("active");
+    $(this).addClass("active");
+    $("#project_clone").val($(this).attr("data-clone"));
+  })
+}
