@@ -22,7 +22,7 @@ class CommitDecorator < ApplicationDecorator
     if (!title_end && safe_message.length > 80) || (title_end && title_end > 80)
       safe_message[0..69] << "&hellip;".html_safe
     else
-      safe_message.split(/\n/, 2).first
+      safe_message.split(/\n/, 2).first || ""
     end
   end
 
