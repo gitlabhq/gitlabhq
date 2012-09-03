@@ -23,6 +23,27 @@ module Gitlab
         present user_project, with: Entities::Project
       end
 
+      # Create new project
+      #
+      # Parameters:
+      #   name (required) - name for new project
+      #   code (optional) - code for new project, uses project name if not set
+      #   path (optional) - path for new project, uses project name if not set
+      # Example Request
+      #   POST /projects
+      post do
+        project = {}
+        project[:name] = params[:name]
+        project[:code] = params[:code] || project[:name]
+        project[:path] = params[:path] || project[:name]
+        @project = Project.create_by_user(project, current_user)
+        if @project.saved?
+          present @project, with: Entities::Project
+        else
+          error!({'message' => '404 Not found'}, 404)
+        end
+      end
+
       # Get a project repository branches
       #
       # Parameters:
