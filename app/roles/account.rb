@@ -1,6 +1,13 @@
-module Account 
+module Account
+  # Returns a string for use as a Gitolite user identifier
+  #
+  # Note that Gitolite 2.x requires the following pattern for users:
+  #
+  #   ^@?[0-9a-zA-Z][0-9a-zA-Z._\@+-]*$
   def identifier
-    email.gsub /[^[:alnum:]]/, "_"
+    # Replace non-word chars with underscores, then make sure it starts with
+    # valid chars
+    email.gsub(/\W/, '_').gsub(/\A([\W\_])+/, '')
   end
 
   def is_admin?
