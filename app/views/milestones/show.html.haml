@@ -45,18 +45,20 @@
 
 .row
   .span6
-    %table
+    %table.milestone-issue-filter
       %thead
-        %th Open Issues
+        %th
+          %ul.nav.nav-pills
+            %li.active.open= link_to('Open Issues', '#')
+            %li.all=link_to('All Issues', '#')
       - @issues.each do |issue|
         %tr
-          %td
+          %td{data: {closed: issue.closed}}
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
             = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
     %br
-    = paginate @issues, theme: "gitlab"
 
   .span6
     %table
