@@ -1,8 +1,9 @@
 IMPORT_DIRECTORY = 'import_projects'
-REPOSITORY_DIRECTORY = '/home/git/repositories'
 
 desc "Imports existing Git repos into new projects from the import_projects folder"
 task :import_projects, [:email] => :environment  do |t, args|
+  REPOSITORY_DIRECTORY = Gitlab.config.git_base_path
+
   user_email = args.email
   repos_to_import = Dir.glob("#{IMPORT_DIRECTORY}/*")
 
