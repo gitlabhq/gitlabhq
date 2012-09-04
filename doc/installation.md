@@ -246,18 +246,18 @@ You can login via web using admin generated with setup:
 
 # Nginx && Unicorn
 
-### Install Nginx
-
-    sudo apt-get install nginx
-
-## Unicorn
+## 1. Unicorn
 
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Add GitLab to nginx sites & change with your host specific settings
+## 2. Nginx
 
+    # Install first
+    sudo apt-get install nginx
+
+    # Add GitLab to nginx sites & change with your host specific settings
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P /etc/nginx/sites-available/
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
@@ -266,16 +266,15 @@ Add GitLab to nginx sites & change with your host specific settings
     # of the host serving GitLab.
     sudo vim /etc/nginx/sites-enabled/gitlab
 
-Restart nginx:
 
+    # Restart nginx:
     /etc/init.d/nginx restart
+
+## 3. Init script
 
 Create init script in /etc/init.d/gitlab:
 
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
-
-Adding permission:
-
     sudo chmod +x /etc/init.d/gitlab
 
 GitLab autostart:
