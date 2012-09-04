@@ -48,15 +48,15 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 >     apt-get install curl sudo
 >
 >     # 3 steps in 1 command :)
->     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
+>     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu.sh | sh
 >
 > Now you can go to [Step 4](#4-install-gitlab-and-configuration-check-status-configuration)
 >
 > Or if you are installing on Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
 >
->     curl https://raw.github.com/gitlabhq/gitlabhq/master/lib/support/aws/debian_ubuntu_aws.sh | sh
+>     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu_aws.sh | sh
 >
-> for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlabhq/blob/master/lib/support/aws/debian_ubuntu_aws.sh)
+> for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlab-recipes/blob/master/install/debian_ubuntu_aws.sh)
 > - - -
 
 # 1. Install packages
@@ -77,9 +77,9 @@ Now install the required packages:
 
 # 2. Install Ruby
 
-    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
-    tar xzfv ruby-1.9.2-p290.tar.gz
-    cd ruby-1.9.2-p290
+    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
+    tar xfvz ruby-1.9.3-p194.tar.gz
+    cd ruby-1.9.3-p194
     ./configure
     make
     sudo make install
@@ -258,7 +258,7 @@ You can login via web using admin generated with setup:
 
 Add GitLab to nginx sites & change with your host specific settings
 
-    sudo cp /home/gitlab/gitlab/lib/support/nginx-gitlab /etc/nginx/sites-available/gitlab
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P /etc/nginx/sites-available/
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
     # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
@@ -272,7 +272,7 @@ Restart nginx:
 
 Create init script in /etc/init.d/gitlab:
 
-    cp /home/gitlab/gitlab/lib/support/init-gitlab /etc/init.d/gitlab
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
 
 Adding permission:
 
