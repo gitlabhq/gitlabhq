@@ -1,12 +1,6 @@
 = render 'shared/no_ssh'
-.project_clone_panel
-  .row
-    .span7
-      .form-horizontal
-        .input-prepend.project_clone_holder
-          = link_to "SSH", "#", class: "btn small active", :"data-clone" => @project.ssh_url_to_repo
-          = link_to "HTTP", "#", class: "btn small", :"data-clone" => @project.http_url_to_repo
-          = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span5"
+= render 'clone_panel'
+
 %div.git-empty
   %h4 Git global setup:
   %pre.dark
