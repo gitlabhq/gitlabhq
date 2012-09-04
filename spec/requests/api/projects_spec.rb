@@ -27,37 +27,40 @@ describe Gitlab::API do
 
   describe "POST /projects" do
     it "should create new project without code and path" do
-      expect {
-        name = "foo"
-        post api("/projects", user), {
-          name: name
-        }
-        response.status.should == 201
-        json_response["name"].should == name
-        json_response["code"].should == name
-        json_response["path"].should == name
-      }.should change{Project.count}.by(1)
+      expect { post api("/projects", user), name: 'foo' }.to change {Project.count}.by(1)
     end
-    it "should create new project" do
-      attributes = Factory.attributes(:project, 
-                                      name: "foo",
-                                      path: "bar", 
-                                      code: "bazz", 
-                                      description: "foo project", 
-                                      default_branch: "default_branch",
-                                      issues_enabled: false, 
-                                      wall_enabled: false, 
-                                      merge_requests_enabled: false, 
-                                      wiki_enabled: false)
-      post api("/projects", user), attributes
+
+    it "should not create new project without name" do
+      expect { post api("/projects", user) }.to_not change {Project.count}
+    end
+
+    it "should respond with 201 on success" do
+      post api("/projects", user), name: 'foo'
       response.status.should == 201
-      response.body.should be_json_eql(attributes.to_json).excluding("owner", "private")
     end
-    it "should not create project without name" do
-        expect {
-          post api("/projects", user)
-          response.status.should == 404
-        }.should_not change{Project.count}
+
+    it "should repsond with 404 on failure" do
+      post api("/projects", user)
+      response.status.should == 404
+    end
+
+    it "should assign attributes to project" do
+      project = Factory.attributes(:project, {
+        path: 'path',
+        code: 'code',
+        description: Faker::Lorem.sentence,
+        default_branch: 'stable',
+        issues_enabled: false,
+        wall_enabled: false,
+        merge_requests_enabled: false,
+        wiki_enabled: false
+      })
+
+      post api("/projects", user), project
+
+      project.each_pair do |k,v|
+        json_response[k.to_s].should == v
+      end
     end
   end
 
