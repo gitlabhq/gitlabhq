@@ -135,7 +135,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_non_empty_project
-    redirect_to @project unless @project.repo_exists? && @project.has_commits?
+    redirect_to @project if @project.empty_repo?
   end
 
   def no_cache_headers
