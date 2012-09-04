@@ -276,6 +276,10 @@ Gitlab autostart:
 
     sudo update-rc.d gitlab defaults
 
+For Ubuntu 12.04:
+
+    sudo /usr/lib/insserv/insserv gitlab
+
 Now you can start/restart/stop gitlab like:
 
     sudo /etc/init.d/gitlab restart
