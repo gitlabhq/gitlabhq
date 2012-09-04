@@ -49,8 +49,8 @@
       %thead
         %th
           %ul.nav.nav-pills
-            %li.active.open= link_to('Open Issues', '#')
-            %li.all=link_to('All Issues', '#')
+            %li.active= link_to('Open Issues', '#')
+            %li=link_to('All Issues', '#')
       - @issues.each do |issue|
         %tr
           %td{data: {closed: issue.closed}}
