@@ -28,7 +28,7 @@ FactoryGirl.define do
     email { Faker::Internet.email }
     name
     password "123456"
-    password_confirmation "123456"
+    password_confirmation { password }
 
     trait :admin do
       admin true
