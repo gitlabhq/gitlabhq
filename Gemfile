@@ -117,6 +117,7 @@ group :test do
   gem 'email_spec'
   gem 'resque_spec'
   gem "webmock"
+  gem 'json_spec'
 end
 
 group :production do

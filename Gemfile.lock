@@ -207,6 +207,9 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.5)
+    json_spec (1.0.3)
+      multi_json (~> 1.0)
+      rspec (~> 2.0)
     kaminari (0.14.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -406,6 +409,7 @@ DEPENDENCIES
   httparty
   jquery-rails (= 2.0.2)
   jquery-ui-rails (= 0.5.0)
+  json_spec
   kaminari
   launchy
   letter_opener
