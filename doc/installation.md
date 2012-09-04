@@ -20,7 +20,7 @@ You might have some luck using these, but no guarantees:
  - MacOS X
  - FreeBSD
 
-Gitlab does **not** run on Windows and we have no plans of making Gitlab compatible.
+GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
 
 ## This installation guide created for Debian/Ubuntu and properly tested.
 
@@ -28,21 +28,21 @@ The installation consists of 6 steps:
 
 1. Install packages / dependencies
 2. Install ruby
-3. Install gitolite
-4. Install and configure Gitlab.
+3. Install Gitolite
+4. Install and configure GitLab.
 5. Start the web front-end
 6. Start a Resque worker (for background processing)
 
 ### IMPORTANT
 
-Please make sure you have followed all the steps below before posting to the mailinglist with installation and configuration questions.
+Please make sure you have followed all the steps below before posting to the mailing list with installation and configuration questions.
 
-Only create a Github Issue if you want a specific part of this installation guide updated.
+Only create a GitHub Issue if you want a specific part of this installation guide updated.
 
 Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
 
 > - - -
-> First 3 steps can be easily skipped with simply install script:
+> The first 3 steps of this guide can be easily skipped by executing an install script:
 >
 >     # Install curl and sudo
 >     apt-get install curl sudo
@@ -50,9 +50,9 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 >     # 3 steps in 1 command :)
 >     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
 >
-> Now you can go to step 4"
+> Now you can go to [Step 4](#4-install-gitlab-and-configuration-check-status-configuration)
 >
-> Or if you are installing on  Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
+> Or if you are installing on Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
 >
 >     curl https://raw.github.com/gitlabhq/gitlabhq/master/lib/support/aws/debian_ubuntu_aws.sh | sh
 >
@@ -61,7 +61,11 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 
 # 1. Install packages
 
-*Keep in mind that `sudo` is not installed for debian by default. You should install it with as root:*     **apt-get update && apt-get upgrade && apt-get install sudo**
+*Keep in mind that `sudo` is not installed on Debian by default. You should install it as root:*
+
+    apt-get update && apt-get upgrade && apt-get install sudo
+
+Now install the required packages:
 
     sudo apt-get update
     sudo apt-get upgrade
@@ -71,7 +75,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
-# 2. Install ruby
+# 2. Install Ruby
 
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
     tar xzfv ruby-1.9.2-p290.tar.gz
@@ -80,7 +84,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     make
     sudo make install
 
-# 3. Install gitolite
+# 3. Install Gitolite
 
 Create user for git:
 
@@ -93,12 +97,12 @@ Create user for git:
       --home /home/git \
       git
 
-Create user for gitlab:
+Create user for GitLab:
 
     # ubuntu/debian
     sudo adduser --disabled-login --gecos 'gitlab system' gitlab
 
-Add your user to git group:
+Add your user to the `git` group:
 
     sudo usermod -a -G git gitlab
 
@@ -106,10 +110,10 @@ Generate key:
 
     sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 
-Get gitolite source code:
+Clone GitLab's fork of the Gitolite source code:
 
     cd /home/git
-    sudo -H -u git git clone git://github.com/gitlabhq/gitolite /home/git/gitolite
+    sudo -H -u git git clone https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup:
 
@@ -135,23 +139,23 @@ Permissions:
     # if succeed  you can remove it
     sudo rm -rf /tmp/gitolite-admin
 
-**IMPORTANT! If you cant clone `gitolite-admin` repository - DONT PROCEED INSTALLATION**
+**IMPORTANT! If you can't clone `gitolite-admin` repository - DO NOT PROCEED WITH INSTALLATION**
+Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
+and ensure you have followed all of the above steps carefully.
 
-# 4. Install gitlab and configuration. Check status configuration.
+# 4. Clone GitLab source and install prerequisites
 
     sudo gem install charlock_holmes --version '0.6.8'
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
-    sudo -H -u gitlab git clone -b stable git://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
     cd gitlab
-
-    sudo -u gitlab mkdir tmp
 
     # Rename config files
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
 
-#### Select db you want to use
+#### Select the database you want to use
 
     # SQLite
     sudo -u gitlab cp config/database.yml.sqlite config/database.yml
@@ -179,14 +183,16 @@ Permissions:
 
     sudo -u gitlab -H bundle install --without development test --deployment
 
-#### Setup DB
+#### Setup database
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
 
-#### Setup gitlab hooks
+#### Setup GitLab hooks
 
     sudo cp ./lib/hooks/post-receive /home/git/share/gitolite/hooks/common/post-receive
     sudo chown git:git /home/git/share/gitolite/hooks/common/post-receive
+
+#### Check application status
 
 Checking status:
 
@@ -208,9 +214,9 @@ Checking status:
     UMASK for .gitolite.rc is 0007? ............YES
     /home/git/share/gitolite/hooks/common/post-receive exists? ............YES
 
-If you got all YES - congrats! You can go to next step.
+If you got all YES - congratulations! You can go to the next step.
 
-# 5. Server up
+# 5. Start the web server
 
 Application can be started with next command:
 
@@ -225,12 +231,12 @@ You can login via web using admin generated with setup:
     admin@local.host
     5iveL!fe
 
-#  6. Run resque process (for processing queue).
+#  6. Run Resque process (for processing job queue).
 
     # Manually
     sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
 
-    # Gitlab start script
+    # GitLab start script
     sudo -u gitlab ./resque.sh
     # if you run this as root /home/gitlab/gitlab/tmp/pids/resque_worker.pid will be owned by root
     # causing the resque worker not to start via init script on next boot/service restart
@@ -250,7 +256,7 @@ You can login via web using admin generated with setup:
     sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
-Add gitlab to nginx sites & change with your host specific settings
+Add GitLab to nginx sites & change with your host specific settings
 
     sudo cp /home/gitlab/gitlab/lib/support/nginx-gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
@@ -272,10 +278,10 @@ Adding permission:
 
     sudo chmod +x /etc/init.d/gitlab
 
-Gitlab autostart:
+GitLab autostart:
 
     sudo update-rc.d gitlab defaults
 
-Now you can start/restart/stop gitlab like:
+Now you can start/restart/stop GitLab like:
 
     sudo /etc/init.d/gitlab restart
