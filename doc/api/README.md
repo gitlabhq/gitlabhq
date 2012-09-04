@@ -1,10 +1,8 @@
 # Gitlab API
 
-All API requests require authentication. You need to pass `private_token` parameter to authenticate.
+All API requests require authentication. You need to pass a `private_token` parameter to authenticate. You can find or reset your private token in your profile.
 
-To get or reset your token visit your profile.
-
-If no or invalid `private_token` provided error message will be returned with status code 401:
+If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
 
 ```json
 {
@@ -12,10 +10,9 @@ If no or invalid `private_token` provided error message will be returned with st
 }
 ```
 
-API requests should be prefixed with `api` and the API version.
-API version is equal to Gitlab major version number and defined in `lib/api.rb`.
+API requests should be prefixed with `api` and the API version. The API version is equal to the Gitlab major version number, which is defined in `lib/api.rb`.
 
-Example of valid API request:
+Example of a valid API request:
 
 ```
 GET http://example.com/api/v2/projects?private_token=QVy1PB7sTxfy4pqfZM1U
