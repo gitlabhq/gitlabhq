@@ -53,7 +53,7 @@ module Gitlab
       # Example Request:
       #   PUT /projects/:id/add_users
       put ":id/add_users" do
-        user_project.add_users_ids_to_team(params[:user_ids], params[:project_access])
+        user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
       end
 
       # Get a project repository branches
