@@ -120,16 +120,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def load_refs
-    if params[:ref].blank?
-      @branch = params[:branch].blank? ? nil : params[:branch]
-      @tag = params[:tag].blank? ? nil : params[:tag]
-      @ref = @branch || @tag || @project.try(:default_branch) || 'master'
-    else
-      @ref = params[:ref]
-    end
-  end
-
   def render_404
     render file: File.join(Rails.root, "public", "404"), layout: false, status: "404"
   end
