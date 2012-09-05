@@ -48,7 +48,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 >     apt-get install curl sudo
 >     
 >     # 3 steps in 1 command :)
->     curl https://raw.github.com/gitlabhq/gitlabhq/master/doc/debian_ubuntu.sh | sh
+>     curl https://raw.github.com/gitlabhq/gitlabhq/stable/doc/debian_ubuntu.sh | sh
 > 
 > Now you can go to step 4"
 > - - -
