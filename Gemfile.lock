@@ -397,7 +397,7 @@ DEPENDENCIES
   ffaker
   foreman
   git
-  github-markup
+  github-markup (~> 0.7.4)
   gitlab_meta (= 2.9)
   gitolite!
   grack!
