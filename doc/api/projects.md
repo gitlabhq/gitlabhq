@@ -106,6 +106,21 @@ Parameters:
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.
 
+## Add project users
+
+Add users to exiting project
+
+```
+PUT /projects/:id/add_users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - new project name
++ `project_access` (required) - new project name
+
+Will return updated project with status `200 OK` on success, or `404 Not found` on fail.
 
 ## Project repository branches
 

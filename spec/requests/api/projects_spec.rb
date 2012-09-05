@@ -62,6 +62,18 @@ describe Gitlab::API do
     end
   end
 
+  describe "PUT /projects/:id/add_users" do
+    @user2 = Factory :user
+    @user3 = Factory :user
+
+    it "should add users to existing project" do
+      expect {
+        put api("/projects/#{project.code}/add_users", user),
+          user_ids: [@user2.id, @user3.id], project_access: UsersProject::DEVELOPER
+      }.to change {Project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(2)
+    end
+  end
+
   describe "GET /projects/:id" do
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)

@@ -44,6 +44,18 @@ module Gitlab
         end
       end
 
+      # Add users to project with specified access level
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to add
+      #   project_access (required) - Project access level
+      # Example Request:
+      #   PUT /projects/:id/add_users
+      put ":id/add_users" do
+        user_project.add_users_ids_to_team(params[:user_ids], params[:project_access])
+      end
+
       # Get a project repository branches
       #
       # Parameters:
