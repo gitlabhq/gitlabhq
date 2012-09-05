@@ -11,8 +11,13 @@
       .input= f.text_field :title
     .clearfix
       = f.label :key
-      .input= f.text_area :key, class: "xlarge"
+      .input
+        = f.text_area :key, class: [:xxlarge, :thin_area]
+        %p.hint
+          Paste a machine public key here. Read more about how generate it
+          = link_to "here", help_ssh_path
+
     .actions
-      = f.submit 'Save', class: "primary btn"
-      = link_to "Cancel", project_deploy_keys_path(@project), class: "btn"
+      = f.submit 'Save', class: "save-btn btn"
+      = link_to "Cancel", project_deploy_keys_path(@project), class: "btn cancel-btn"
 
