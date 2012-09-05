@@ -37,6 +37,10 @@ describe Project do
     # TODO: Formats
 
     it { should validate_presence_of(:owner) }
+    it { should ensure_inclusion_of(:issues_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
 
     it "should not allow new projects beyond user limits" do
       project.stub(:owner).and_return(double(can_create_project?: false, projects_limit: 1))
@@ -239,7 +243,7 @@ describe Project do
     end
   end
 
-  describe :update_merge_requests do 
+  describe :update_merge_requests do
     let(:project) { Factory :project }
 
     before do
@@ -259,7 +263,7 @@ describe Project do
       @merge_request.closed.should be_true
     end
 
-    it "should update merge request commits with new one if pushed to source branch" do 
+    it "should update merge request commits with new one if pushed to source branch" do
       @merge_request.last_commit.should == nil
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a", "refs/heads/master", @key.user)
       @merge_request.reload
