@@ -178,6 +178,7 @@ GEM
     gherkin (2.11.0)
       json (>= 1.4.6)
     git (1.2.5)
+    github-markup (0.7.4)
     gitlab_meta (2.9)
     grape (0.2.1)
       hashie (~> 1.2)
@@ -396,6 +397,7 @@ DEPENDENCIES
   ffaker
   foreman
   git
+  github-markup
   gitlab_meta (= 2.9)
   gitolite!
   grack!

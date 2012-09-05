@@ -45,6 +45,7 @@ gem "seed-fu"
 
 # Markdown to HTML
 gem "redcarpet", "~> 2.1.1"
+gem 'github-markup'
 
 # Servers
 gem "thin"
