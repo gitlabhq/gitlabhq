@@ -59,12 +59,24 @@ class CommitsController < ApplicationController
 
   def patch
     @commit = project.commit(params[:id])
-    
+
     send_data(
       @commit.to_patch,
       type: "text/plain",
       disposition: 'attachment',
       filename: (@commit.id.to_s + ".patch")
     )
+  end
+
+  protected
+
+  def load_refs
+    if params[:ref].blank?
+      @branch = params[:branch].blank? ? nil : params[:branch]
+      @tag = params[:tag].blank? ? nil : params[:tag]
+      @ref = @branch || @tag || @project.try(:default_branch) || 'master'
+    else
+      @ref = params[:ref]
+    end
   end
 end
