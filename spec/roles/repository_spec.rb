@@ -19,4 +19,54 @@ describe Project, "Repository" do
       project.should_not be_empty_repo
     end
   end
+
+  describe "#discover_default_branch" do
+    let(:master) { double(name: 'master') }
+    let(:stable) { double(name: 'stable') }
+
+    it "returns 'master' when master exists" do
+      project.should_receive(:heads).and_return([stable, master])
+      project.discover_default_branch.should == 'master'
+    end
+
+    it "returns non-master when master exists but default branch is set to something else" do
+      project.default_branch = 'stable'
+      project.should_receive(:heads).and_return([stable, master])
+      project.discover_default_branch.should == 'stable'
+    end
+
+    it "returns a non-master branch when only one exists" do
+      project.should_receive(:heads).and_return([stable])
+      project.discover_default_branch.should == 'stable'
+    end
+
+    it "returns nil when no branch exists" do
+      project.should_receive(:heads).and_return([])
+      project.discover_default_branch.should be_nil
+    end
+  end
+
+  describe "#root_ref" do
+    it "returns default_branch when set" do
+      project.default_branch = 'stable'
+      project.root_ref.should == 'stable'
+    end
+
+    it "returns 'master' when default_branch is nil" do
+      project.default_branch = nil
+      project.root_ref.should == 'master'
+    end
+  end
+
+  describe "#root_ref?" do
+    it "returns true when branch is root_ref" do
+      project.default_branch = 'stable'
+      project.root_ref?('stable').should be_true
+    end
+
+    it "returns false when branch is not root_ref" do
+      project.default_branch = nil
+      project.root_ref?('stable').should be_false
+    end
+  end
 end
