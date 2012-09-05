@@ -94,6 +94,24 @@ module Repository
     end.sort_by(&:name)
   end
 
+  # Discovers the default branch based on the repository's available branches
+  #
+  # - If no branches are present, returns nil
+  # - If one branch is present, returns its name
+  # - If two or more branches are present, returns the one that has a name
+  #   matching root_ref (default_branch or 'master' if default_branch is nil)
+  def discover_default_branch
+    branches = heads.collect(&:name)
+
+    if branches.length == 0
+      nil
+    elsif branches.length == 1
+      branches.first
+    else
+      branches.select { |v| v == root_ref }.first
+    end
+  end
+
   def has_commits?
     !!commit
   end
@@ -102,7 +120,7 @@ module Repository
     default_branch || "master"
   end
 
-  def root_ref? branch
+  def root_ref?(branch)
     root_ref == branch
   end
 
@@ -111,7 +129,7 @@ module Repository
   # Already packed repo archives stored at
   # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
   #
-  def archive_repo ref
+  def archive_repo(ref)
     ref = ref || self.root_ref
     commit = self.commit(ref)
     return nil unless commit
@@ -138,6 +156,6 @@ module Repository
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.url, "/", path, ".git"].join()
+    http_url = [Gitlab.config.url, "/", path, ".git"].join('')
   end
 end
