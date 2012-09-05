@@ -234,6 +234,12 @@ describe GitlabMarkdownHelper do
         gfm(":+1:").should match('class="emoji"')
       end
 
+      it "sets height and width" do
+        actual = gfm(":+1:")
+        actual.should match(/width="20"/)
+        actual.should match(/height="20"/)
+      end
+
       it "keeps whitespace intact" do
         gfm("This deserves a :+1: big time.").should match(/deserves a <img.+\/> big time/)
       end
