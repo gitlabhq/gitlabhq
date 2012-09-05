@@ -187,7 +187,7 @@ end
 #  private_flag           :boolean(1)      default(TRUE), not null
 #  code                   :string(255)
 #  owner_id               :integer(4)
-#  default_branch         :string(255)     default("master"), not null
+#  default_branch         :string(255)
 #  issues_enabled         :boolean(1)      default(TRUE), not null
 #  wall_enabled           :boolean(1)      default(TRUE), not null
 #  merge_requests_enabled :boolean(1)      default(TRUE), not null
