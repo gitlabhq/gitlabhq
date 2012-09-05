@@ -38,17 +38,15 @@ module Gitlab
       # Example Request
       #   POST /projects
       post do
-        @project = Project.create_by_user({
-          name: params[:name],
-          code: (params[:code] || params[:name]),
-          path: (params[:path] || params[:name]),
-          description: (params[:description] || Project.columns_hash["description"].default),
-          default_branch: (params[:default_branch] || Project.columns_hash["default_branch"].default),
-          issues_enabled: (params[:issues_enabled] || Project.columns_hash["issues_enabled"].default),
-          wall_enabled: (params[:wall_enabled] || Project.columns_hash["wall_enabled"].default),
-          merge_requests_enabled: (params[:merge_requests_enabled] || Project.columns_hash["merge_requests_enabled"].default),
-          wiki_enabled: (params[:wiki_enabled] || Project.columns_hash["wiki_enabled"].default)
-       }, current_user)
+        params[:code] ||= params[:name]
+        params[:path] ||= params[:name]
+        project_attrs = {}
+        params.each_pair do |k ,v|
+          if Project.attribute_names.include? k
+            project_attrs[k] = v
+          end
+        end
+        @project = Project.create_by_user(project_attrs, current_user)
         if @project.saved?
           present @project, with: Entities::Project
         else
