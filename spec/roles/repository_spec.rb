@@ -45,4 +45,28 @@ describe Project, "Repository" do
       project.discover_default_branch.should be_nil
     end
   end
+
+  describe "#root_ref" do
+    it "returns default_branch when set" do
+      project.default_branch = 'stable'
+      project.root_ref.should == 'stable'
+    end
+
+    it "returns 'master' when default_branch is nil" do
+      project.default_branch = nil
+      project.root_ref.should == 'master'
+    end
+  end
+
+  describe "#root_ref?" do
+    it "returns true when branch is root_ref" do
+      project.default_branch = 'stable'
+      project.root_ref?('stable').should be_true
+    end
+
+    it "returns false when branch is not root_ref" do
+      project.default_branch = nil
+      project.root_ref?('stable').should be_false
+    end
+  end
 end
