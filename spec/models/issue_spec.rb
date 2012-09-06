@@ -7,6 +7,7 @@ describe Issue do
 
   describe "Validation" do
     it { should ensure_length_of(:description).is_within(0..2000) }
+    it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 
   describe 'modules' do

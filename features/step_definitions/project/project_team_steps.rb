@@ -8,10 +8,6 @@ Given /^"(.*?)" is "(.*?)" developer$/ do |arg1, arg2|
   project.add_access(user, :write)
 end
 
-Given /^I visit project "(.*?)" team page$/ do |arg1|
-  visit team_project_path(Project.find_by_name(arg1))
-end
-
 Then /^I should be able to see myself in team$/ do
   page.should have_content(@user.name)
   page.should have_content(@user.email)
@@ -23,13 +19,9 @@ Then /^I should see "(.*?)" in team list$/ do |arg1|
   page.should have_content(user.email)
 end
 
-Given /^I click link "(.*?)"$/ do |arg1|
-  click_link arg1
-end
-
 Given /^I select "(.*?)" as "(.*?)"$/ do |arg1, arg2|
   user = User.find_by_name(arg1)
-  within "#new_team_member" do 
+  within "#new_team_member" do
     select user.name, :from => "team_member_user_id"
     select arg2, :from => "team_member_project_access"
   end
@@ -44,7 +36,7 @@ end
 
 Given /^I change "(.*?)" role to "(.*?)"$/ do |arg1, arg2|
   user = User.find_by_name(arg1)
-  within ".user_#{user.id}" do 
+  within ".user_#{user.id}" do
     select arg2, :from => "team_member_project_access"
   end
 end

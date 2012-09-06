@@ -1,15 +1,7 @@
-Given /^I visit project source page$/ do
-  visit tree_project_ref_path(@project, @project.root_ref)
-end
-
 Then /^I should see files from repository$/ do
   page.should have_content("app")
   page.should have_content("History")
   page.should have_content("Gemfile")
-end
-
-Given /^I visit project source page for "(.*?)"$/ do |arg1|
-  visit tree_project_ref_path(@project, arg1)
 end
 
 Then /^I should see files from repository for "(.*?)"$/ do |arg1|
@@ -29,10 +21,6 @@ end
 
 Given /^I click on raw button$/ do
   click_link "raw"
-end
-
-Given /^I visit blob file from repo$/ do
-  visit tree_project_ref_path(@project, ValidCommit::ID, :path => ValidCommit::BLOB_FILE_PATH)
 end
 
 Then /^I should see raw file content$/ do

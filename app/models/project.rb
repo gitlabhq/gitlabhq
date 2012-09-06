@@ -104,6 +104,8 @@ class Project < ActiveRecord::Base
             length: { within: 1..255 }
 
   validates :owner, presence: true
+  validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
+            :wiki_enabled, inclusion: { in: [true, false] }
   validate :check_limit
   validate :repo_name
 
