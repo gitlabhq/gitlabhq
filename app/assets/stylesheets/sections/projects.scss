@@ -75,17 +75,21 @@
   padding: 4px 7px;
   border: 1px solid #CCC;
   margin-bottom:5px;
-  input[type=text] {
+}
+
+.project_clone_holder {
+  input[type="text"] {
     border: 1px solid #BBB;
+    box-shadow: none;
   }
 }
 
-.save-project-loader { 
-  img { 
+.save-project-loader {
+  img {
     margin-top:50px;
     margin-bottom:50px;
   }
-  h3 { 
+  h3 {
     @extend .page_title;
   }
 

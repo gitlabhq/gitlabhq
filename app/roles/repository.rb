@@ -8,6 +8,10 @@ module Repository
     false
   end
 
+  def empty_repo?
+    !repo_exists? || !has_commits?
+  end
+
   def commit(commit_id = nil)
     Commit.find_or_first(repo, commit_id, root_ref)
   end
@@ -38,7 +42,7 @@ module Repository
 
   def has_post_receive_file?
     hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
-    File.exists?(hook_file) 
+    File.exists?(hook_file)
   end
 
   def tags
@@ -67,7 +71,7 @@ module Repository
 
   def repo_exists?
     @repo_exists ||= (repo && !repo.branches.empty?)
-  rescue 
+  rescue
     @repo_exists = false
   end
 
@@ -90,24 +94,42 @@ module Repository
     end.sort_by(&:name)
   end
 
+  # Discovers the default branch based on the repository's available branches
+  #
+  # - If no branches are present, returns nil
+  # - If one branch is present, returns its name
+  # - If two or more branches are present, returns the one that has a name
+  #   matching root_ref (default_branch or 'master' if default_branch is nil)
+  def discover_default_branch
+    branches = heads.collect(&:name)
+
+    if branches.length == 0
+      nil
+    elsif branches.length == 1
+      branches.first
+    else
+      branches.select { |v| v == root_ref }.first
+    end
+  end
+
   def has_commits?
     !!commit
   end
 
-  def root_ref 
+  def root_ref
     default_branch || "master"
   end
 
-  def root_ref? branch
+  def root_ref?(branch)
     root_ref == branch
   end
 
   # Archive Project to .tar.gz
   #
-  # Already packed repo archives stored at 
+  # Already packed repo archives stored at
   # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
   #
-  def archive_repo ref
+  def archive_repo(ref)
     ref = ref || self.root_ref
     commit = self.commit(ref)
     return nil unless commit
@@ -134,6 +156,6 @@ module Repository
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.url, "/", path, ".git"].join()
+    http_url = [Gitlab.config.url, "/", path, ".git"].join('')
   end
 end

@@ -2,13 +2,3 @@
 = render 'clone_panel'
 = render "events/event_last_push", event: @last_push
 .content_list= render @events
-
-:javascript
-  $(function(){
-    var link_sel = ".project_clone_holder a";
-    $(link_sel).bind("click", function() {
-      $(link_sel).removeClass("active");
-      $(this).addClass("active");
-      $("#project_clone").val($(this).attr("data-clone"));
-    })
-  })

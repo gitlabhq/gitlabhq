@@ -3,7 +3,11 @@
   = link_to 'Edit', edit_admin_project_path(@admin_project), class: "btn right small"
 
 %br
-%table.zebra-striped.table-bordered
+%table.zebra-striped
+  %thead
+    %tr
+      %th Project
+      %th
   %tr
     %td
       %b
@@ -40,7 +44,7 @@
   %small
     (#{@admin_project.users_projects.count})
 %br
-%table.zebra-striped.table-bordered
+%table.zebra-striped
   %thead
     %tr
       %th Name
@@ -60,7 +64,7 @@
 %h3 Add new team member
 %br
 = form_tag team_update_admin_project_path(@admin_project), class: "bulk_import", method: :put  do
-  %table.zebra-striped.table-bordered
+  %table.zebra-striped
     %thead
       %tr
         %th Users
