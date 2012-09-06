@@ -167,7 +167,7 @@ and ensure you have followed all of the above steps carefully.
     # Login to MySQL
     $ mysql -u root -p
 
-    # Create the gitlabhq production database
+    # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
     # Create the MySQL User change $password to a real password
