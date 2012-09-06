@@ -88,9 +88,9 @@
         for commits
 
     -# this example will only be shown if the user has a project with at least one issue
-    - if project = current_user.projects.first
-      - if issue = project.issues.first
-        %p For example in your #{link_to project.name, project_path(project)} project something like
+    - if @project = current_user.projects.first
+      - if issue = @project.issues.first
+        %p For example in your #{link_to @project.name, project_path(@project)} project something like
         %pre= "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
         %p becomes
         = markdown "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
