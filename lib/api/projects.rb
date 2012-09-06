@@ -44,6 +44,17 @@ module Gitlab
         end
       end
 
+      # Get project users
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/users
+      get ":id/users" do
+        @users_projects = paginate user_project.users_projects
+        present @users_projects, with: Entities::UsersProject
+      end
+
       # Add users to project with specified access level
       #
       # Parameters:
@@ -51,9 +62,32 @@ module Gitlab
       #   user_ids (required) - The ID list of users to add
       #   project_access (required) - Project access level
       # Example Request:
-      #   PUT /projects/:id/add_users
-      put ":id/add_users" do
+      #   POST /projects/:id/users
+      post ":id/users" do
         user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
+      end
+
+      # Update users to specified access level
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to add
+      #   project_access (required) - New project access level to
+      # Example Request:
+      #   PUT /projects/:id/add_users
+      put ":id/users" do
+        user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
+      end
+
+      # Delete project users
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to delete
+      # Example Request:
+      #   DELETE /projects/:id/users
+      delete ":id/users" do
+        user_project.delete_users_ids_from_team(params[:user_ids].values)
       end
 
       # Get a project repository branches
