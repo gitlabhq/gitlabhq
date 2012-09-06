@@ -1,5 +1,5 @@
 module Gitlab
-  # Custom parser for Gitlab-flavored Markdown
+  # Custom parser for GitLab-flavored Markdown
   #
   # It replaces references in the text with links to the appropriate items in Gitlab.
   #
