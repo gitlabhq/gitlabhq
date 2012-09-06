@@ -1,13 +1,13 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
 
-/** GITLAB colors **/
+/** GitLab colors **/
 $link_color:#3A89A3;
 $blue_link: #2fa0bb;
 $style_color: #474d57;
 $hover: #fdf5d9;
 
-/** GITLAB Fonts **/
+/** GitLab Fonts **/
 @font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); }
 
 /** MIXINS **/
@@ -106,9 +106,9 @@ $hover: #fdf5d9;
 @import "themes/ui_modern.scss";
 
 /**
- * Gitlab bootstrap.
+ * GitLab bootstrap.
  * Overrides some styles of twitter bootstrap.
- * Also give some common classes for gitlab app
+ * Also give some common classes for GitLab app
  */
 @import "gitlab_bootstrap/common.scss";
 @import "gitlab_bootstrap/typography.scss";

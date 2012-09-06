@@ -1,6 +1,6 @@
 namespace :gitlab do
   namespace :gitolite do
-    desc "GITLAB | Write GITLAB hook for gitolite"
+    desc "GITLAB | Write GitLab hook for gitolite"
     task :write_hooks => :environment  do
       gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
       gitlab_hooks_path = Rails.root.join("lib", "hooks")
