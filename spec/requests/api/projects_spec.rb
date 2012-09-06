@@ -68,7 +68,7 @@ describe Gitlab::API do
     it "should add users to existing project" do
       expect {
         put api("/projects/#{project.code}/add_users", user),
-          user_ids: [user2.id, user3.id], project_access: UsersProject::DEVELOPER
+          user_ids: {"0" => user2.id, "1" => user3.id}, project_access: UsersProject::DEVELOPER
       }.to change {Project.last.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(2)
     end
   end
