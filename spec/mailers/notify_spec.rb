@@ -24,7 +24,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| Account was created for you$/
+      should have_subject /^gitlab \| Account was created for you$/i
     end
 
     it 'contains the new user\'s login name' do
