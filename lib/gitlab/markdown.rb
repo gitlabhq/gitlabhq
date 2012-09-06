@@ -35,7 +35,7 @@ module Gitlab
       ([^\w&;])?      # Suffix (6)
     }x.freeze
 
-    EMOJI_PATTERN = %r{(:([\w\-\+]+):)}.freeze
+    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
 
     attr_reader :html_options
 
