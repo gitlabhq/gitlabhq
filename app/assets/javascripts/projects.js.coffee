@@ -1,7 +1,7 @@
 window.Projects = ->
   $('#project_name').on 'change', ->
     slug = slugify $(@).val()
-    $('#project_code').val slug
+    $('#project_code, #project_path').val slug
 
   $('.new_project, .edit_project').on 'ajax:before', ->
     $('.project_new_holder, .project_edit_holder').hide()
