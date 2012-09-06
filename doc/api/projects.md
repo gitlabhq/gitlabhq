@@ -117,8 +117,8 @@ PUT /projects/:id/add_users
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `user_ids` (required) - new project name
-+ `project_access` (required) - new project name
++ `user_ids` (required) - The ID list of users to add
++ `project_access` (required) - Project access level
 
 Will return updated project with status `200 OK` on success, or `404 Not found` on fail.
 
