@@ -4,6 +4,8 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user) { Factory :user }
+  let(:user2) { Factory.create(:user) }
+  let(:user3) { Factory.create(:user) }
   let!(:project) { Factory :project, owner: user }
   let!(:snippet) { Factory :snippet, author: user, project: project, title: 'example' }
   before { project.add_access(user, :read) }
@@ -63,13 +65,10 @@ describe Gitlab::API do
   end
 
   describe "PUT /projects/:id/add_users" do
-    @user2 = Factory :user
-    @user3 = Factory :user
-
     it "should add users to existing project" do
       expect {
         put api("/projects/#{project.code}/add_users", user),
-          user_ids: [@user2.id, @user3.id], project_access: UsersProject::DEVELOPER
+          user_ids: [user2.id, user3.id], project_access: UsersProject::DEVELOPER
       }.to change {Project.last.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(2)
     end
   end
