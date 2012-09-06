@@ -1,6 +1,6 @@
 ## List projects
 
-Get a list of authenticated user's projects.
+Get a list of projects owned by the authenticated user.
 
 ```
 GET /projects
@@ -55,7 +55,7 @@ GET /projects
 
 ## Single project
 
-Get an authenticated user's project.
+Get a specific project, identified by project ID, which is owned by the authentication user.
 
 ```
 GET /projects/:id
@@ -89,9 +89,27 @@ Parameters:
 }
 ```
 
+## Create project
+
+Create new project owned by user
+
+```
+POST /projects
+```
+
+Parameters:
+
++ `name` (required) - new project name
++ `code` (optional) - new project code, uses project name if not set
++ `path` (optional) - new project path, uses project name if not set
+
+Will return created project with status `201 Created` on success, or `404 Not
+found` on fail.
+
+
 ## Project repository branches
 
-Get a list of project repository branches sorted by name alphabetically.
+Get a list of repository branches from a project, sorted by name alphabetically.
 
 ```
 GET /projects/:id/repository/branches
@@ -168,7 +186,7 @@ Parameters:
 
 ## Project repository tags
 
-Get a list of project repository tags sorted by name in reverse alphabetical order.
+Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
 
 ```
 GET /projects/:id/repository/tags
@@ -219,3 +237,4 @@ Parameters:
 + `filepath` (required) - The path the file 
 
 Will return the raw file contents.
+

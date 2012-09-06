@@ -107,6 +107,7 @@ group :development, :test do
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
+  gem 'factory_girl_rails'
 end
 
 group :test do
@@ -119,5 +120,5 @@ group :test do
 end
 
 group :production do
-  gem "gitlab_meta", '2.8'
+  gem "gitlab_meta", '2.9'
 end

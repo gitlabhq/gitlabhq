@@ -12,11 +12,6 @@ Given /^project "(.*?)" has milestone "(.*?)"$/ do |arg1, arg2|
   end
 end
 
-Given /^I visit project "(.*?)" milestones page$/ do |arg1|
-  @project = Project.find_by_name(arg1)
-  visit project_milestones_path(@project)
-end
-
 Then /^I should see active milestones$/ do
   milestone = @project.milestones.first
   page.should have_content(milestone.title[0..10])

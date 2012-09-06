@@ -1,7 +1,3 @@
-Given /^I visit dashboard page$/ do
-  visit dashboard_path
-end
-
 Then /^I should see "(.*?)" link$/ do |arg1|
   page.should have_link(arg1)
 end
@@ -51,10 +47,10 @@ Then /^I click "(.*?)" link$/ do |arg1|
 end
 
 Then /^I see prefilled new Merge Request page$/ do
-  current_path.should == new_project_merge_request_path(@project) 
-  find("#merge_request_source_branch").value.should == "new_design" 
-  find("#merge_request_target_branch").value.should == "master" 
-  find("#merge_request_title").value.should == "New Design" 
+  current_path.should == new_project_merge_request_path(@project)
+  find("#merge_request_source_branch").value.should == "new_design"
+  find("#merge_request_target_branch").value.should == "master"
+  find("#merge_request_title").value.should == "New Design"
 end
 
 Given /^I visit dashboard search page$/ do
@@ -66,20 +62,12 @@ Given /^I search for "(.*?)"$/ do |arg1|
   click_button "Search"
 end
 
-Given /^I visit dashboard issues page$/ do
-  visit dashboard_issues_path
-end
-
 Then /^I should see issues assigned to me$/ do
   issues = @user.issues
   issues.each do |issue|
     page.should have_content(issue.title[0..10])
     page.should have_content(issue.project.name)
   end
-end
-
-Given /^I visit dashboard merge requests page$/ do
-  visit dashboard_merge_requests_path
 end
 
 Then /^I should see my merge requests$/ do
@@ -106,13 +94,9 @@ Given /^I have assigned issues$/ do
 end
 
 Given /^I have authored merge requests$/ do
-  project1 = Factory :project,
-   :path => "gitlabhq_1",
-   :code => "gitlabhq_1"
+  project1 = Factory :project
 
-  project2 = Factory :project,
-   :path => "gitlabhq_2",
-   :code => "gitlabhq_2"
+  project2 = Factory :project
 
   project1.add_access(@user, :read, :write)
   project2.add_access(@user, :read, :write)

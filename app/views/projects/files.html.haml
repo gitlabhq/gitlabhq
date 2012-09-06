@@ -1,6 +1,11 @@
 = render "project_head"
 - unless @notes.empty?
-  %table.zebra-striped.borders
+  %table
+    %thead
+      %tr
+        %th File name
+        %th 
+
     - @notes.each do |note|
       %tr
         %td

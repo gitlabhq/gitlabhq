@@ -8,7 +8,11 @@
 
 %br
 
-%table.zebra-striped.table-bordered
+%table.zebra-striped
+  %thead
+    %tr
+      %th Profile
+      %th
   %tr
     %td
       %b
@@ -57,7 +61,7 @@
 %h3 Add User to Projects
 %br
 = form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
-  %table.table-bordered
+  %table
     %thead
       %tr
         %th Projects
@@ -78,9 +82,9 @@
   %h3 Projects
   %br
 
-  %table.zebra-striped.table-bordered
-    %tr
-      %thead
+  %table.zebra-striped
+    %thead
+      %tr
         %th Name
         %th Project Access
         %th

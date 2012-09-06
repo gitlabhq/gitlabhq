@@ -206,4 +206,24 @@
     min-width:65px;
     font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
   }
+  
+  .commit-author-name { 
+    color: #777;
+  }
+}
+
+.diff_file_header a,
+.file_stats a {
+  color:$style_color;
+}
+
+.file_stats {
+  span {
+    img {
+      width:14px;
+      float:left;
+      margin-right:6px;
+      padding:2px 0;
+    }
+  }
 }

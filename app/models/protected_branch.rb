@@ -1,4 +1,6 @@
 class ProtectedBranch < ActiveRecord::Base
+  include GitHost
+
   belongs_to :project
   validates_presence_of :project_id
   validates_presence_of :name
@@ -7,7 +9,7 @@ class ProtectedBranch < ActiveRecord::Base
   after_destroy :update_repository
 
   def update_repository
-    Gitlab::GitHost.system.update_project(project.path, project)
+    git_host.update_repository(project)
   end
 
   def commit

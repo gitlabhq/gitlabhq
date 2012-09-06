@@ -65,9 +65,8 @@ describe Gitlab::API do
 
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "should delete a project issue" do
-      expect {
-        delete api("/projects/#{project.code}/issues/#{issue.id}", user)
-      }.to change { Issue.count }.by(-1)
+      delete api("/projects/#{project.code}/issues/#{issue.id}", user)
+      response.status.should == 405
     end
   end
 end

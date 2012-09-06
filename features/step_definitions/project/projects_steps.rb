@@ -1,9 +1,3 @@
-include LoginHelpers
-
-Given /^I signin as a user$/ do
-  login_as :user
-end
-
 When /^I visit new project page$/ do
   visit new_project_path
 end
@@ -63,10 +57,6 @@ Given /^I visit project "(.*?)" network page$/ do |arg1|
   Grit::Commit.stub(:find_all).and_return(commits)
 
   visit graph_project_path(project)
-end
-
-Given /^show me page$/ do
-  save_and_open_page
 end
 
 Given /^page should have network graph$/ do

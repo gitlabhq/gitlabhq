@@ -24,7 +24,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| Account was created for you$/
+      should have_subject /^gitlab \| Account was created for you$/i
     end
 
     it 'contains the new user\'s login name' do
@@ -91,6 +91,29 @@ describe Notify do
             should have_body_text /#{project_issue_path project, issue}/
           end
         end
+
+        describe 'status changed' do
+          let(:current_user) { Factory.create :user, email: "current@email.com" }
+          let(:status) { 'closed' }
+          subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
+        
+          it 'has the correct subject' do
+            should have_subject /changed issue ##{issue.id} \| #{issue.title}/i
+          end
+
+          it 'contains the new status' do
+            should have_body_text /#{status}/i
+          end
+
+          it 'contains the user name' do
+            should have_body_text /#{current_user.name}/i
+          end
+
+          it 'contains a link to the issue' do
+            should have_body_text /#{project_issue_path project, issue}/
+          end
+        end
+
       end
 
       context 'for merge requests' do

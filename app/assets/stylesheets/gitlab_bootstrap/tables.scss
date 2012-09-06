@@ -1,0 +1,45 @@
+table {
+  @extend .table;
+  @extend .table-striped;
+  @include solid_shade;
+  border:1px solid #bbb;
+  width:100%;
+
+  th {
+    font-weight: bold;
+    vertical-align: middle;
+    border-bottom: 1px solid #bbb;
+    text-shadow: 0 1px 1px #fff;
+    @include bg-dark-gray-gradient;
+  }
+
+  th, td {
+    padding: 8px;
+    line-height: 18px;
+    text-align: left;
+  }
+
+  td {
+    border-color:#f1f1f1;
+    &:first-child {
+      border-left:1px solid #bbb;
+    }
+
+    &:last-child {
+      border-right:1px solid #bbb;
+    }
+  }
+
+  &.bordered {
+    @extend .table-bordered;
+  }
+
+  &.lite {
+    border:none;
+    box-shadow:none;
+    tr, td {
+      border:none;
+      background:none !important;
+    }
+  }
+}

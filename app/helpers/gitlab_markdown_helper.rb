@@ -1,6 +1,6 @@
 module GitlabMarkdownHelper
   # Replaces references (i.e. @abc, #123, !456, ...) in the text with links to
-  # the appropriate items in Gitlab.
+  # the appropriate items in GitLab.
   #
   # text          - the source text
   # html_options  - extra options for the reference links as given to link_to
@@ -31,7 +31,7 @@ module GitlabMarkdownHelper
       extractions[$1]
     end
 
-    text.html_safe
+    sanitize text.html_safe, attributes:  ActionView::Base.sanitized_allowed_attributes + %w(id class )
   end
 
   # Use this in places where you would normally use link_to(gfm(...), ...).

@@ -1,0 +1,93 @@
+.btn {
+  @include bg-gradient(#f7f7f7, #d5d5d5);
+  border-color:#aaa;
+  &:hover {
+    @include bg-gray-gradient;
+    border-color:#bbb;
+    color:#333;
+  }
+
+  &.primary {
+    background:#2a79A3;
+    @include bg-gradient(#47A7b7, #2585b5);
+    border-color: #2A79A3;
+    color:#fff;
+    text-shadow: 0 1px 1px #268;
+    &:hover {
+      background:$blue_link;
+      color:#fff;
+    }
+
+    &.disabled {
+      color:#fff;
+      background:#29B;
+    }
+  }
+
+  &.success {
+    @extend .btn-success;
+
+    &:hover {
+      @extend .btn-success;
+      background: #51a351;
+    }
+
+    &.disabled {
+      color:#fff;
+      background:#2b2;
+    }
+  }
+
+  &.save-btn {
+    @extend .wide;
+    @extend .primary;
+  }
+
+  &.cancel-btn {
+    float:right;
+  }
+
+  &.wide {
+    padding-left:30px;
+    padding-right:30px;
+  }
+
+  &.danger {
+    @extend .btn-danger;
+    border-color: #BD362F;
+
+    &:hover {
+      color:#fff;
+      background: #EE4E49;
+    }
+  }
+
+  &.danger {
+    @extend .btn-danger;
+  }
+
+  &.small {
+    @extend .btn-small;
+  }
+
+  &.active {
+    border-color:#aaa;
+    background-color:#ccc;
+  }
+
+  &.very_small {
+    font-size:11px;
+    padding:2px 6px;
+    margin:2px;
+  }
+
+  &.grouped {
+    margin-right:7px;
+    float:left;
+  }
+
+  &.padded {
+    margin-right:3px;
+    padding:4px 10px 4px;
+  }
+}

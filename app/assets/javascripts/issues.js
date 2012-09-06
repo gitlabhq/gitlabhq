@@ -5,6 +5,7 @@ function switchToNewIssue(form){
     $('select#issue_milestone_id').chosen({allow_single_deselect: true});
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.top-tabs .add_new').hide();
+    disableButtonIfEmtpyField("#issue_title", ".save-btn");
   });
 }
 
@@ -15,6 +16,7 @@ function switchToEditIssue(form){
     $('select#issue_milestone_id').chosen({allow_single_deselect: true});
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.add_new').hide();
+    disableButtonIfEmtpyField("#issue_title", ".save-btn");
   });
 }
 

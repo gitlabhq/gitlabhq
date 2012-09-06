@@ -6,13 +6,9 @@ describe "User Issues Dashboard" do
 
       login_as :user
 
-      @project1 = Factory :project,
-        path: "gitlabhq_0",
-        code: "TEST1"
+      @project1 = Factory :project
 
-      @project2 = Factory :project,
-        path: "gitlabhq_1",
-        code: "TEST2"
+      @project2 = Factory :project
 
       @project1.add_access(@user, :read, :write)
       @project2.add_access(@user, :read, :write)

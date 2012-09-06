@@ -1,5 +1,5 @@
 module Gitlab
-  # Custom parser for Gitlab-flavored Markdown
+  # Custom parser for GitLab-flavored Markdown
   #
   # It replaces references in the text with links to the appropriate items in Gitlab.
   #
@@ -100,7 +100,7 @@ module Gitlab
 
     def reference_commit(identifier)
       if commit = @project.commit(identifier)
-        link_to(identifier, project_commit_path(@project, id: commit.id), html_options.merge(title: "Commit: #{commit.author_name} - #{CommitDecorator.new(commit).title}", class: "gfm gfm-commit #{html_options[:class]}"))
+        link_to(identifier, project_commit_path(@project, id: commit.id), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
     end
   end

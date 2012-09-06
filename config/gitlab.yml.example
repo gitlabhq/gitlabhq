@@ -33,6 +33,7 @@ app:
 git_host:
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
+  # hooks_path: /var/lib/gitolite/.gitolite/hooks/ # only needed when gitolite is not installed according the manual
   # host: localhost
   git_user: git
   upload_pack: true

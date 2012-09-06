@@ -26,11 +26,12 @@
     Hooks
     %small (#{@hooks.count})
   %br
-  %table.admin-table
-    %tr
-      %th URL
-      %th Method
-      %th
+  %table
+    %thead
+      %tr
+        %th URL
+        %th Method
+        %th
     - @hooks.each do |hook|
       %tr
         %td

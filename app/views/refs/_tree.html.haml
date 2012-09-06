@@ -13,7 +13,7 @@
     = render partial: "refs/tree_file", locals: { name: tree.name, content: tree.data, file: tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.bordered-table.table{class: "table_#{@hex_path}" }
+    %table#tree-slider{class: "table_#{@hex_path}" }
       %thead
         %th Name
         %th Last Update
