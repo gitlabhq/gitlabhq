@@ -64,19 +64,14 @@ class CommitsController < ApplicationController
       @commit.to_patch,
       type: "text/plain",
       disposition: 'attachment',
-      filename: (@commit.id.to_s + ".patch")
+      filename: "#{@commit.id.patch}"
     )
   end
 
   protected
 
   def load_refs
-    if params[:ref].blank?
-      @branch = params[:branch].blank? ? nil : params[:branch]
-      @tag = params[:tag].blank? ? nil : params[:tag]
-      @ref = @branch || @tag || @project.try(:default_branch) || 'master'
-    else
-      @ref = params[:ref]
-    end
+    @ref ||= params[:ref].presence || params[:branch].presence || params[:tag].presence
+    @ref ||= @ref || @project.try(:default_branch) || 'master'
   end
 end
