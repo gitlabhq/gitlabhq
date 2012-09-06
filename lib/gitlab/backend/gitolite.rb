@@ -170,7 +170,7 @@ module Gitlab
     def push
       Dir.chdir(File.join(@local_dir, "gitolite"))
       `git add -A`
-      `git commit -am "Gitlab"`
+      `git commit -am "GitLab"`
       `git push`
       Dir.chdir(Rails.root)
 
