@@ -4,39 +4,64 @@ require 'fileutils'
 
 module Gitlab
   class GitoliteConfig
-    attr_reader :config_tmp_dir
+    attr_reader :config_tmp_dir, :ga_repo, :conf
 
-    def reset_config_tmp_dir
-      @config_tmp_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+    def config_tmp_dir
+      @config_tmp_dir ||= File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+    end
+
+    def ga_repo
+      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
     end
 
     def apply
       Timeout::timeout(30) do
         File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
+            # Set exclusive lock
+            # to prevent race condition
             f.flock(File::LOCK_EX)
-            reset_config_tmp_dir
-            pull
+
+            # Pull gitolite-admin repo
+            # in tmp dir before do any changes
+            pull(config_tmp_dir)
+
+            # Build ga_repo object and @conf
+            # to access gitolite-admin configuration
+            @conf = ga_repo.config
+
+            # Do any changes
+            # in gitolite-admin
+            # config here
             yield(self)
-            push
+
+            # Save changes in
+            # gitolite-admin repo
+            # before pusht it
+            ga_repo.save
+
+            # Push gitolite-admin repo
+            # to apply all changes
+            push(config_tmp_dir)
+
+            # Remove tmp dir
+            # wiith gitolite-admin
             FileUtils.rm_rf(config_tmp_dir)
           ensure
+            # unlock so other task cann access
+            # gitolite configuration
             f.flock(File::LOCK_UN)
           end
         end
       end
     rescue Exception => ex
-      Gitlab::Logger.error(ex.message)
+      Gitlab::Logger.error(ex.class.name + " " + ex.message)
       raise Gitolite::AccessDenied.new("gitolite timeout")
     end
 
     def destroy_project(project)
       FileUtils.rm_rf(project.path_to_repo)
-
-      ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
-      conf = ga_repo.config
       conf.rm_repo(project.path)
-      ga_repo.save
     end
 
     def destroy_project!(project)
@@ -58,12 +83,8 @@ module Gitlab
 
     # update or create
     def update_project(repo_name, project)
-      ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
-      conf = ga_repo.config
       repo = update_project_config(project, conf)
       conf.add_repo(repo, true)
-
-      ga_repo.save
     end
 
     def update_project!(repo_name, project)
@@ -75,15 +96,10 @@ module Gitlab
     # Updates many projects and uses project.path as the repo path
     # An order of magnitude faster than update_project
     def update_projects(projects)
-      ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
-      conf = ga_repo.config
-
       projects.each do |project|
         repo = update_project_config(project, conf)
         conf.add_repo(repo, true)
       end
-
-      ga_repo.save
     end
 
     def update_project_config(project, conf)
@@ -118,9 +134,9 @@ module Gitlab
       repo
     end
 
+    # Enable access to all repos for gitolite admin.
+    # We use it for accept merge request feature
     def admin_all_repo
-      ga_repo = ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
-      conf = ga_repo.config
       owner_name = ""
 
       # Read gitolite-admin user
@@ -144,7 +160,6 @@ module Gitlab
 
       repo.add_permission("RW+", "", owner_name)
       conf.add_repo(repo, true)
-      ga_repo.save
     end
 
     def admin_all_repo!
@@ -153,13 +168,13 @@ module Gitlab
 
     private
 
-    def pull
-      Dir.mkdir config_tmp_dir
-      `git clone #{Gitlab.config.gitolite_admin_uri} #{config_tmp_dir}/gitolite`
+    def pull tmp_dir
+      Dir.mkdir tmp_dir
+      `git clone #{Gitlab.config.gitolite_admin_uri} #{tmp_dir}/gitolite`
     end
 
-    def push
-      Dir.chdir(File.join(config_tmp_dir, "gitolite"))
+    def push tmp_dir
+      Dir.chdir(File.join(tmp_dir, "gitolite"))
       `git add -A`
       `git commit -am "GitLab"`
       `git push`
