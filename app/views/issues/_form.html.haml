@@ -18,12 +18,12 @@
           = f.label :assignee_id do
             %i.icon-user
             Assign to
-          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" })
+          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: true }, data: { placeholder: 'Select a user' })
         .issue_milestone
           = f.label :milestone_id do
             %i.icon-time
             Milestone
-          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" })
+          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: true }, data: { placeholder: 'Select milestone' })
 
       .issue_description
         .clearfix
