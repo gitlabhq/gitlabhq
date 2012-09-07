@@ -1,38 +1,5 @@
 module GitlabMarkdownHelper
-  # Replaces references (i.e. @abc, #123, !456, ...) in the text with links to
-  # the appropriate items in GitLab.
-  #
-  # text          - the source text
-  # html_options  - extra options for the reference links as given to link_to
-  #
-  # note: reference links will only be generated if @project is set
-  #
-  # see Gitlab::Markdown for details on the supported syntax
-  def gfm(text, html_options = {})
-    return text if text.nil?
-    return text if @project.nil?
-
-    # Extract pre blocks so they are not altered
-    # from http://github.github.com/github-flavored-markdown/
-    extractions = {}
-    text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) do |match|
-      md5 = Digest::MD5.hexdigest(match)
-      extractions[md5] = match
-      "{gfm-extraction-#{md5}}"
-    end
-
-    # TODO: add popups with additional information
-
-    parser = Gitlab::Markdown.new(@project, html_options)
-    text = parser.parse(text)
-
-    # Insert pre block extractions
-    text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
-      extractions[$1]
-    end
-
-    sanitize text.html_safe, attributes:  ActionView::Base.sanitized_allowed_attributes + %w(id class )
-  end
+  include Gitlab::Markdown
 
   # Use this in places where you would normally use link_to(gfm(...), ...).
   #

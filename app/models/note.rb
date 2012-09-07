@@ -103,7 +103,7 @@ class Note < ActiveRecord::Base
   # Returns true if this is an upvote note,
   # otherwise false is returned
   def upvote?
-    note =~ /^\+1/ ? true : false
+    note.start_with?('+1') || note.start_with?(':+1:')
   end
 end
 # == Schema Information

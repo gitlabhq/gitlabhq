@@ -35,6 +35,16 @@ describe Note do
       note = Factory(:note, note: "-1 for this")
       note.should_not be_upvote
     end
+
+    it "recognizes a +1 emoji as a vote" do
+      note = build(:note, note: ":+1: for this")
+      note.should be_upvote
+    end
+
+    it "recognizes a neutral emoji note" do
+      note = build(:note, note: "I would :+1: this, but I don't want to")
+      note.should_not be_upvote
+    end
   end
 
   let(:project) { create(:project) }
