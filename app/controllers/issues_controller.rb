@@ -37,9 +37,7 @@ class IssuesController < ApplicationController
   end
 
   def new
-    @issue = @project.issues.new
-    @issue.milestone_id = params[:milestone_id] if params[:milestone_id].present?
-    @issue.assignee_id = params[:assignee_id] if params[:assignee_id].present?
+    @issue = @project.issues.new(params[:issue])
     respond_with(@issue)
   end
 

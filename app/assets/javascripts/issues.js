@@ -137,10 +137,10 @@ function updateNewIssueURL(){
   var assignee_id = $("#assignee_id").val();
   var new_href = "";
   if(milestone_id){
-    new_href = "milestone_id=" + milestone_id + "&";
+    new_href = "issue[milestone_id]=" + milestone_id + "&";
   }
   if(assignee_id){
-    new_href = new_href + "assignee_id=" + assignee_id;
+    new_href = new_href + "issue[assignee_id]=" + assignee_id;
   }
   if(new_href.length){
     new_href = new_issue_link.attr("href") + "?" + new_href;
