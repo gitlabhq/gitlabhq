@@ -48,6 +48,9 @@ module Gitlab
     def gfm(text, html_options = {})
       return text if text.nil?
 
+      # prevents the string supplied through the _text_ argument to be altered
+      text = text.dup
+
       @html_options = html_options
 
       # Extract pre blocks so they are not altered
