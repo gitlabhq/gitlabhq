@@ -5,7 +5,7 @@ module Gitlab
     class AccessDenied < StandardError; end
 
     def config
-      @config ||= Gitlab::GitoliteConfig.new
+      Gitlab::GitoliteConfig.new
     end
 
     def set_key key_id, key_content, projects

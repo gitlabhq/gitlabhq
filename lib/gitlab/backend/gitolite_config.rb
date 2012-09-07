@@ -4,8 +4,10 @@ require 'fileutils'
 
 module Gitlab
   class GitoliteConfig
-    def config_tmp_dir
-      @config_tmp_dir ||= File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+    attr_reader :config_tmp_dir
+
+    def reset_config_tmp_dir
+      @config_tmp_dir = File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
     end
 
     def apply
@@ -13,9 +15,11 @@ module Gitlab
         File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
             f.flock(File::LOCK_EX)
+            reset_config_tmp_dir
             pull
             yield(self)
             push
+            FileUtils.rm_rf(config_tmp_dir)
           ensure
             f.flock(File::LOCK_UN)
           end
@@ -160,8 +164,6 @@ module Gitlab
       `git commit -am "GitLab"`
       `git push`
       Dir.chdir(Rails.root)
-
-      FileUtils.rm_rf(config_tmp_dir)
     end
   end
 end
