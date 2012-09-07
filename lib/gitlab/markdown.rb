@@ -80,7 +80,7 @@ module Gitlab
     #
     # Returns parsed text
     def parse(text)
-      text = text.gsub(REFERENCE_PATTERN) do |match|
+      text.gsub!(REFERENCE_PATTERN) do |match|
         prefix     = $1 || ''
         reference  = $2
         identifier = $3 || $4 || $5
@@ -93,7 +93,7 @@ module Gitlab
         end
       end
 
-      text = text.gsub(EMOJI_PATTERN) do |match|
+      text.gsub!(EMOJI_PATTERN) do |match|
         if valid_emoji?($2)
           image_tag("emoji/#{$2}.png", size: "20x20", class: 'emoji', title: $1, alt: $1)
         else
