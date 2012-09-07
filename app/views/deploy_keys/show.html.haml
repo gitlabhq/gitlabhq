@@ -1,7 +1,14 @@
 = render "repositories/head"
-%h3= @key.title
+%h3.page_title
+  Deploy key:
+  = @key.title
+  %small
+    created at
+    = @key.created_at.stamp("Aug 21, 2011")
+.back_link
+  = link_to project_deploy_keys_path(@project) do
+    &larr; To keys list
 %hr
 %pre= @key.key
-.actions
+.right
   = link_to 'Remove', project_deploy_key_path(@key.project, @key), confirm: 'Are you sure?', method: :delete, class: "danger btn delete-key"
-  .clear

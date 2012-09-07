@@ -104,6 +104,8 @@ class Project < ActiveRecord::Base
             length: { within: 1..255 }
 
   validates :owner, presence: true
+  validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
+            :wiki_enabled, inclusion: { in: [true, false] }
   validate :check_limit
   validate :repo_name
 
@@ -187,7 +189,7 @@ end
 #  private_flag           :boolean(1)      default(TRUE), not null
 #  code                   :string(255)
 #  owner_id               :integer(4)
-#  default_branch         :string(255)     default("master"), not null
+#  default_branch         :string(255)
 #  issues_enabled         :boolean(1)      default(TRUE), not null
 #  wall_enabled           :boolean(1)      default(TRUE), not null
 #  merge_requests_enabled :boolean(1)      default(TRUE), not null

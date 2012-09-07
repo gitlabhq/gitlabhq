@@ -11,6 +11,9 @@ module Factory
   def self.new(type, *args)
     FactoryGirl.build(type, *args)
   end
+  def self.attributes(type, *args)
+    FactoryGirl.attributes_for(type, *args)
+  end
 end
 
 FactoryGirl.define do
@@ -28,7 +31,7 @@ FactoryGirl.define do
     email { Faker::Internet.email }
     name
     password "123456"
-    password_confirmation "123456"
+    password_confirmation { password }
 
     trait :admin do
       admin true

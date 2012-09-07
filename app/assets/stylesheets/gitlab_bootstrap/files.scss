@@ -3,13 +3,13 @@
  *
  */
 .file_holder {
-  border:1px solid #CCC;
+  border:1px solid #BBB;
   margin-bottom:1em;
   @include solid_shade;
 
   .file_title {
     border-bottom: 1px solid #bbb;
-    @include bg-gray-gradient;
+    @include bg-dark-gray-gradient;
     margin: 0;
     font-weight: normal;
     font-weight: bold;

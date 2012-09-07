@@ -50,10 +50,6 @@ Gitlab::Application.routes.draw do
       end
     end
     resources :team_members, :only => [:edit, :update, :destroy]
-    get 'mailer/preview_note'
-    get 'mailer/preview_user_new'
-    get 'mailer/preview_issue_new'
-
     resources :hooks, :only => [:index, :create, :destroy] do
       get :test
     end
