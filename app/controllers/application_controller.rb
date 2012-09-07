@@ -14,10 +14,6 @@ class ApplicationController < ActionController::Base
     render "errors/gitolite", layout: "error"
   end
 
-  rescue_from Gitlab::Gitolite::InvalidKey do |exception|
-    render "errors/invalid_ssh_key", layout: "error"
-  end
-
   rescue_from Encoding::CompatibilityError do |exception|
     render "errors/encoding", layout: "error", status: 404
   end
