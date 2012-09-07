@@ -64,3 +64,13 @@ Feature: Issues
     And I fill in issue search with ""
     Then I should see "Release 0.4" in issues
     And I should see "Release 0.3" in issues
+
+  @javascript
+  @current
+  Scenario: I create Issue with pre-selected milestone
+    Given project "Shop" has milestone "v2.2"
+    And project "Shop" has milestone "v3.0"
+    And I visit project "Shop" issues page
+    When I select milestone "v3.0"
+    And I click link "New Issue"
+    Then I should see selected milestone with title "v3.0"

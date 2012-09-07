@@ -55,3 +55,15 @@ Given /^I fill in issue search with "(.*?)"$/ do |arg1|
   end
   fill_in 'issue_search', with: arg1
 end
+
+When /^I select milestone "(.*?)"$/ do |milestone_title|
+  select milestone_title, from: "milestone_id"
+end
+
+Then /^I should see selected milestone with title "(.*?)"$/ do |milestone_title|
+  issues_milestone_selector = "#issue_milestone_id_chzn/a"
+  wait_until{
+    page.has_content?("Details") 
+  }
+  page.find(issues_milestone_selector).should have_content(milestone_title)
+end
