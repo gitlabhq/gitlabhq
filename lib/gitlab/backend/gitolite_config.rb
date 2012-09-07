@@ -4,6 +4,9 @@ require 'fileutils'
 
 module Gitlab
   class GitoliteConfig
+    class PullError < StandardError; end
+    class PushError < StandardError; end
+
     attr_reader :config_tmp_dir, :ga_repo, :conf
 
     def config_tmp_dir
@@ -54,6 +57,14 @@ module Gitlab
           end
         end
       end
+    rescue PullError => ex
+      Gitlab::Logger.error("Pull error ->  " + ex.message)
+      raise Gitolite::AccessDenied, ex.message
+
+    rescue PushError => ex
+      Gitlab::Logger.error("Push error ->  " + " " + ex.message)
+      raise Gitolite::AccessDenied, ex.message
+
     rescue Exception => ex
       Gitlab::Logger.error(ex.class.name + " " + ex.message)
       raise Gitolite::AccessDenied.new("gitolite timeout")
@@ -171,14 +182,21 @@ module Gitlab
     def pull tmp_dir
       Dir.mkdir tmp_dir
       `git clone #{Gitlab.config.gitolite_admin_uri} #{tmp_dir}/gitolite`
+
+      unless File.exists?(File.join(tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
+        raise PullError, "unable to clone gitolite-admin repo"
+      end
     end
 
     def push tmp_dir
       Dir.chdir(File.join(tmp_dir, "gitolite"))
-      `git add -A`
-      `git commit -am "GitLab"`
-      `git push`
-      Dir.chdir(Rails.root)
+      system('git add -A')
+      system('git commit -am "GitLab"')
+      if system('git push')
+        Dir.chdir(Rails.root)
+      else
+        raise PushError, "unable to push gitolite-admin repo"
+      end
     end
   end
 end
