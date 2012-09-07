@@ -71,6 +71,29 @@
     %p becomes
     = markdown %Q{```ruby\nrequire 'redcarpet'\nmarkdown = Redcarpet.new("Hello World!")\nputs markdown.to_html\n```}
 
+    %h4 Emoji
+
+.row
+  .span8
+    :ruby
+      puts markdown %Q{Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
+
+        :exclamation: You can use emoji anywhere GFM is supported. :sunglasses:
+
+        You can use it to point out a :bug: or warn about :monkey:patches. And if someone improves your really :snail: code, send them a :bouquet: or some :candy:. People will :heart: you for that.
+
+        If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
+        }
+
+  .span4
+    .alert.alert-info
+      %p
+        Consult the
+        %strong= link_to "Emoji Cheat Sheet", "http://www.emoji-cheat-sheet.com/"
+        for a list of all supported emoji codes.
+
+.row
+  .span8
     %h4 Special GitLab references
 
     %p
