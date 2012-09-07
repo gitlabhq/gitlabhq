@@ -20,6 +20,15 @@
       %li milestones
       %li wiki pages
 
+  .span4
+    .alert.alert-info
+      %p
+        If you're not already familiar with Markdown, you should spend 15 minutes and go over the excellent
+        %strong= link_to "Markdown Syntax Guide", "http://daringfireball.net/projects/markdown/syntax"
+        at Daring Fireball.
+
+.row
+  .span8
     %h3 Differences from traditional Markdown
 
     %h4 Newlines
@@ -93,12 +102,5 @@
         %p For example in your #{link_to @project.name, project_path(@project)} project, writing:
         %pre= "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
         %p becomes:
-        %pre= gfm "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
+        = markdown "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
       - @project = nil # Prevent this from bubbling up to page title
-
-  .span4.right
-    .alert.alert-info
-      %p
-        If you're not already familiar with Markdown, you should spend 15 minutes and go over the excellent
-        %strong= link_to "Markdown Syntax Guide", "http://daringfireball.net/projects/markdown/syntax"
-        at Daring Fireball.
