@@ -1,7 +1,8 @@
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
   #
-  # It replaces references in the text with links to the appropriate items in Gitlab.
+  # It replaces references in the text with links to the appropriate items in
+  # GitLab.
   #
   # Supported reference formats are:
   #   * @foo for team members
@@ -10,19 +11,20 @@ module Gitlab
   #   * $123 for snippets
   #   * 123456 for commits
   #
+  # It also parses Emoji codes to insert images. See
+  # http://www.emoji-cheat-sheet.com/ for a list of the supported icons.
+  #
   # Examples
   #
-  #   >> m = Markdown.new(...)
-  #
-  #   >> m.parse("Hey @david, can you fix this?")
+  #   >> gfm("Hey @david, can you fix this?")
   #   => "Hey <a href="/gitlab/team_members/1">@david</a>, can you fix this?"
   #
-  #   >> m.parse("Commit 35d5f7c closes #1234")
+  #   >> gfm("Commit 35d5f7c closes #1234")
   #   => "Commit <a href="/gitlab/commits/35d5f7c">35d5f7c</a> closes <a href="/gitlab/issues/1234">#1234</a>"
-  class Markdown
-    include Rails.application.routes.url_helpers
-    include ActionView::Helpers
-
+  #
+  #   >> gfm(":trollface:")
+  #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
+  module Markdown
     REFERENCE_PATTERN = %r{
       ([^\w&;])?      # Prefix (1)
       (               # Reference (2)
@@ -33,15 +35,52 @@ module Gitlab
       ([^\w&;])?      # Suffix (6)
     }x.freeze
 
+    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
+
     attr_reader :html_options
 
-    def initialize(project, html_options = {})
-      @project      = project
+    # Public: Parse the provided text with GitLab-Flavored Markdown
+    #
+    # text         - the source text
+    # html_options - extra options for the reference links as given to link_to
+    #
+    # Note: reference links will only be generated if @project is set
+    def gfm(text, html_options = {})
+      return text if text.nil?
+      return text if @project.nil?
+
       @html_options = html_options
+
+      # Extract pre blocks so they are not altered
+      # from http://github.github.com/github-flavored-markdown/
+      extractions = {}
+      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) do |match|
+        md5 = Digest::MD5.hexdigest(match)
+        extractions[md5] = match
+        "{gfm-extraction-#{md5}}"
+      end
+
+      # TODO: add popups with additional information
+
+      text = parse(text)
+
+      # Insert pre block extractions
+      text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
+        extractions[$1]
+      end
+
+      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
     end
 
+    private
+
+    # Private: Parses text for references and emoji
+    #
+    # text - Text to parse
+    #
+    # Returns parsed text
     def parse(text)
-      text.gsub(REFERENCE_PATTERN) do |match|
+      text = text.gsub(REFERENCE_PATTERN) do |match|
         prefix     = $1 || ''
         reference  = $2
         identifier = $3 || $4 || $5
@@ -53,9 +92,26 @@ module Gitlab
           match
         end
       end
+
+      text = text.gsub(EMOJI_PATTERN) do |match|
+        if valid_emoji?($2)
+          helper.image_tag("#{$2}.png", size: "20x20", class: 'emoji', title: $1, alt: $1)
+        else
+          match
+        end
+      end
+
+      text
     end
 
-    private
+    # Private: Checks if an emoji icon exists in the image asset directory
+    #
+    # emoji - Identifier of the emoji as a string (e.g., "+1", "heart")
+    #
+    # Returns boolean
+    def valid_emoji?(emoji)
+      File.exists?(Rails.root.join('app', 'assets', 'images', 'emoji', "#{emoji}.png"))
+    end
 
     # Private: Dispatches to a dedicated processing method based on reference
     #
