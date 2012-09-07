@@ -1,8 +1,9 @@
-- @project.users_projects.group_by(&:project_access).each do |access, members|
+- grouper_project_members(@project).each do |access, members|
   %table
     %thead
       %tr
-        %th.span7= Project.access_options.key(access).pluralize
+        %th.span7
+          = Project.access_options.key(access).pluralize
         %th
     %tbody
       - members.each do |up|
