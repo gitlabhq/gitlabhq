@@ -47,7 +47,6 @@ module Gitlab
     # Note: reference links will only be generated if @project is set
     def gfm(text, html_options = {})
       return text if text.nil?
-      return text if @project.nil?
 
       @html_options = html_options
 
@@ -78,8 +77,11 @@ module Gitlab
     #
     # text - Text to parse
     #
+    # Note: reference links will only be generated if @project is set
+    #
     # Returns parsed text
     def parse(text)
+      # parse reference links
       text.gsub!(REFERENCE_PATTERN) do |match|
         prefix     = $1 || ''
         reference  = $2
@@ -91,8 +93,9 @@ module Gitlab
         else
           match
         end
-      end
+      end if @project
 
+      # parse emoji
       text.gsub!(EMOJI_PATTERN) do |match|
         if valid_emoji?($2)
           image_tag("emoji/#{$2}.png", size: "20x20", class: 'emoji', title: $1, alt: $1)
