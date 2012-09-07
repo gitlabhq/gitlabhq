@@ -57,6 +57,7 @@ Given /^I fill in issue search with "(.*?)"$/ do |arg1|
 end
 
 When /^I select milestone "(.*?)"$/ do |milestone_title|
+  #puts page.body
   select milestone_title, from: "milestone_id"
 end
 

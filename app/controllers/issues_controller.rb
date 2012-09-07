@@ -38,6 +38,7 @@ class IssuesController < ApplicationController
 
   def new
     @issue = @project.issues.new
+    @issue.milestone_id = params[:milestone_id] if params[:milestone_id].present?
     respond_with(@issue)
   end
 
