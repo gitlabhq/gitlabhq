@@ -75,7 +75,6 @@ Feature: Issues
     Then I should see selected milestone with title "v3.0"
 
   @javascript
-  @current
   Scenario: I create Issue with pre-selected assignee
     When I select first assignee from "Shop" project
     And I click link "New Issue"
