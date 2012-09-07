@@ -29,14 +29,24 @@ module Gitlab
       #   name (required) - name for new project
       #   code (optional) - code for new project, uses project name if not set
       #   path (optional) - path for new project, uses project name if not set
+      #   description (optional) - short project description
+      #   default_branch (optional) - 'master' by default
+      #   issues_enabled (optional) - enabled by default
+      #   wall_enabled (optional) - enabled by default
+      #   merge_requests_enabled (optional) - enabled by default
+      #   wiki_enabled (optional) - enabled by default
       # Example Request
       #   POST /projects
       post do
-        project = {}
-        project[:name] = params[:name]
-        project[:code] = params[:code] || project[:name]
-        project[:path] = params[:path] || project[:name]
-        @project = Project.create_by_user(project, current_user)
+        params[:code] ||= params[:name]
+        params[:path] ||= params[:name]
+        project_attrs = {}
+        params.each_pair do |k ,v|
+          if Project.attribute_names.include? k
+            project_attrs[k] = v
+          end
+        end
+        @project = Project.create_by_user(project_attrs, current_user)
         if @project.saved?
           present @project, with: Entities::Project
         else
