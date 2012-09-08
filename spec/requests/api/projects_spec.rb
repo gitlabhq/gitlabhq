@@ -67,33 +67,6 @@ describe Gitlab::API do
     end
   end
 
-  describe "POST /projects/:id/users" do
-    it "should add users to project" do
-      expect {
-        post api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user2.id, "1" => user3.id}, project_access: UsersProject::DEVELOPER
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(2)
-    end
-  end
-
-  describe "PUT /projects/:id/users" do
-    it "should update users to new access role" do
-      expect {
-        put api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user}, project_access: UsersProject::DEVELOPER
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(1)
-    end
-  end
-
-  describe "DELETE /projects/:id/users" do
-    it "should delete users from project" do
-      expect {
-        delete api("/projects/#{project.code}/delete", user),
-          user_ids: {"0" => users_project.id}
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(-1)
-    end
-  end
-
   describe "GET /projects/:id" do
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
@@ -131,6 +104,33 @@ describe Gitlab::API do
 
       json_response['name'].should == 'new_design'
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+    end
+  end
+
+  describe "POST /projects/:id/users" do
+    it "should add users to project" do
+      expect {
+        post api("/projects/#{project.code}/users", user),
+          user_ids: {"0" => user2.id, "1" => user3.id}, project_access: UsersProject::DEVELOPER
+      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(2)
+    end
+  end
+
+  describe "PUT /projects/:id/users" do
+    it "should update users to new access role" do
+      expect {
+        put api("/projects/#{project.code}/users", user),
+          user_ids: {"0" => user}, project_access: UsersProject::DEVELOPER
+      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(1)
+    end
+  end
+
+  describe "DELETE /projects/:id/users" do
+    it "should delete users from project" do
+      expect {
+        delete api("/projects/#{project.code}/users", user),
+          user_ids: {"0" => users_project.id}
+      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(-1)
     end
   end
 
