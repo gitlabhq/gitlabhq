@@ -34,7 +34,12 @@
     - else
       &nbsp;
 
-    - if issue.upvotes > 0
-      %span.badge.badge-success= "+#{issue.upvotes}"
-    - if issue.downvotes > 0
-      %span.badge.badge-important= "-#{issue.downvotes}"
+    - if issue.votes_count > 0
+      .votes.votes-inline
+        .upvotes= issue.upvotes
+        .progress
+          - up_percent = 100.0/issue.votes_count*issue.upvotes
+          - down_percent = 100.0-up_percent
+          .bar.bar-success{style: "width: #{up_percent}%;"}
+          .bar.bar-danger{style: "width: #{down_percent}%;"}
+        .downvotes= issue.downvotes

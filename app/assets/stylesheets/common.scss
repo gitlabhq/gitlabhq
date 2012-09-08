@@ -407,21 +407,46 @@ p.time {
 }
 
 .votes {
-  font-size: 14px;
-  font-weight: bold;
-  padding: 4px 0;
-  margin: 2px 0;
+  font-size: 13px;
+  line-height: 15px;
+  .progress {
+    height: 4px;
+    margin: 0;
+    .bar {
+      float: left;
+      height: 100%;
+    }
+    .bar-success {
+      background-color: #468847;
+      @include bg-gradient(#62C462, #51A351);
+    }
+    .bar-danger {
+      background-color: #B94A48;
+      @include bg-gradient(#EE5F5B, #BD362F);
+    }
+  }
   .upvotes {
     display: inline-block;
     color: #468847;
-    padding: 0 4px;
-    margin: 0 2px;
   }
   .downvotes {
     display: inline-block;
     color: #B94A48;
-    padding: 0 4px;
-    margin: 0 2px;
+  }
+}
+.votes-block {
+  margin: 14px 6px 6px 0;
+  .downvotes {
+    float: right;
+  }
+}
+.votes-inline {
+  display: inline-block;
+  margin: 0 8px;
+  .progress {
+    display: inline-block;
+    padding: 0 0 2px;
+    width: 45px;
   }
 }
 

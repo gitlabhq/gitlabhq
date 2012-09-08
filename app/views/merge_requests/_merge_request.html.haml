@@ -23,7 +23,12 @@
     authored by #{merge_request.author_name}
     = time_ago_in_words(merge_request.created_at)
     ago
-    - if merge_request.upvotes > 0
-      %span.badge.badge-success= "+#{merge_request.upvotes}"
-    - if merge_request.downvotes > 0
-      %span.badge.badge-important= "-#{merge_request.downvotes}"
+    - if merge_request.votes_count > 0
+      .votes.votes-inline
+        .upvotes= merge_request.upvotes
+        .progress
+          - up_percent = 100.0/merge_request.votes_count*merge_request.upvotes
+          - down_percent = 100.0-up_percent
+          .bar.bar-success{style: "width: #{up_percent}%;"}
+          .bar.bar-danger{style: "width: #{down_percent}%;"}
+        .downvotes= merge_request.downvotes

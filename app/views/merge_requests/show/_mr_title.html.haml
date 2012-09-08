@@ -23,12 +23,15 @@
           %i.icon-edit
           Edit
 
-    %br
-      .votes#votes
-        Votes:
-        .upvotes#upvotes= "#{@merge_request.upvotes} up"
-        .downvotes#downvotes= "#{@merge_request.downvotes} down"
-
+.right
+  .span3.votes.votes-block#votes
+    .progress
+      - up_percent = 100.0/@merge_request.votes_count*@merge_request.upvotes
+      - down_percent = 100.0-up_percent
+      .bar.bar-success{style: "width: #{up_percent}%;"}
+      .bar.bar-danger{style: "width: #{down_percent}%;"}
+    .upvotes= "#{@merge_request.upvotes} up"
+    .downvotes= "#{@merge_request.downvotes} down"
 
 .back_link
   = link_to project_merge_requests_path(@project) do
