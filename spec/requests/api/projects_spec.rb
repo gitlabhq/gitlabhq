@@ -107,6 +107,18 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /projects/:id/users" do
+    it "should return project users" do
+      get api("/projects/#{project.code}/users", user)
+
+      response.status.should == 200
+
+      json_response.should be_an Array
+      json_response.count.should == 1
+      json_response.first['user']['id'].should == user.id
+    end
+  end
+
   describe "POST /projects/:id/users" do
     it "should add users to project" do
       expect {
