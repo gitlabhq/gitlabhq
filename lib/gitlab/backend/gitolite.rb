@@ -35,7 +35,7 @@ module Gitlab
     end
 
     def enable_automerge
-      config.admin_all_repo!(project)
+      config.admin_all_repo!
     end
 
     alias_method :create_repository, :update_repository
