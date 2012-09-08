@@ -3,6 +3,16 @@ require 'spec_helper'
 describe "Projects" do
   before { login_as :user }
 
+  describe 'GET /project/new' do
+    it "should work autocomplete", :js => true do
+      visit new_project_path
+      
+      fill_in 'project_name', with: 'Awesome'
+      find("#project_path").value.should == 'awesome'
+      find("#project_code").value.should == 'awesome'
+    end
+  end
+
   describe "GET /projects/show" do
     before do
       @project = Factory :project, owner: @user
