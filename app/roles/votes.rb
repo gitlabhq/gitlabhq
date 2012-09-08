@@ -8,4 +8,9 @@ module Votes
   def downvotes
     notes.select(&:downvote?).size
   end
+
+  # Return the total number of votes
+  def votes_count
+    upvotes + downvotes
+  end
 end

@@ -50,4 +50,33 @@ describe Issue do
       issue.downvotes.should == 2
     end
   end
+
+  describe "#votes_count" do
+    it "with no notes has a 0/0 score" do
+      issue.votes_count.should == 0
+    end
+
+    it "should recognize non notes" do
+      issue.notes << create(:note, note: "No +1 here")
+      issue.should have(1).note
+      issue.votes_count.should == 0
+    end
+
+    it "should recognize a single +1 note" do
+      issue.notes << create(:note, note: "+1 This is awesome")
+      issue.votes_count.should == 1
+    end
+
+    it "should recognize a single -1 note" do
+      issue.notes << create(:note, note: "-1 This is bad")
+      issue.votes_count.should == 1
+    end
+
+    it "should recognize multiple notes" do
+      issue.notes << create(:note, note: "+1 This is awesome")
+      issue.notes << create(:note, note: "-1 This is bad")
+      issue.notes << create(:note, note: "+1 I want this")
+      issue.votes_count.should == 3
+    end
+  end
 end
