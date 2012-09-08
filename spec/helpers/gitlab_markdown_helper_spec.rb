@@ -208,6 +208,51 @@ describe GitlabMarkdownHelper do
         gfm(actual).should match(expected)
       end
     end
+
+    describe "emoji" do
+      it "matches at the start of a string" do
+        gfm(":+1:").should match(/<img/)
+      end
+
+      it "matches at the end of a string" do
+        gfm("This gets a :-1:").should match(/<img/)
+      end
+
+      it "matches with adjacent text" do
+        gfm("+1 (:+1:)").should match(/<img/)
+      end
+
+      it "has a title attribute" do
+        gfm(":-1:").should match(/title=":-1:"/)
+      end
+
+      it "has an alt attribute" do
+        gfm(":-1:").should match(/alt=":-1:"/)
+      end
+
+      it "has an emoji class" do
+        gfm(":+1:").should match('class="emoji"')
+      end
+
+      it "sets height and width" do
+        actual = gfm(":+1:")
+        actual.should match(/width="20"/)
+        actual.should match(/height="20"/)
+      end
+
+      it "keeps whitespace intact" do
+        gfm("This deserves a :+1: big time.").should match(/deserves a <img.+\/> big time/)
+      end
+
+      it "ignores invalid emoji" do
+        gfm(":invalid-emoji:").should_not match(/<img/)
+      end
+
+      it "should work independet of reference links (i.e. without @project being set)" do
+        @project = nil
+        gfm(":+1:").should match(/<img/)
+      end
+    end
   end
 
   describe "#link_to_gfm" do

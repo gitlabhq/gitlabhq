@@ -14,7 +14,7 @@ class UsersProject < ActiveRecord::Base
   after_save :update_repository
   after_destroy :update_repository
 
-  validates_uniqueness_of :user_id, scope: [:project_id]
+  validates_uniqueness_of :user_id, scope: [:project_id], message: "already exists in project"
   validates_presence_of :user_id
   validates_presence_of :project_id
 
@@ -65,10 +65,10 @@ class UsersProject < ActiveRecord::Base
 
   def self.access_roles
     {
-      "Guest"   => GUEST,
-      "Reporter"   => REPORTER,
+      "Guest"     => GUEST,
+      "Reporter"  => REPORTER,
       "Developer" => DEVELOPER,
-      "Master"  => MASTER
+      "Master"    => MASTER
     }
   end
 

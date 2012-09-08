@@ -11,15 +11,11 @@ class ApplicationController < ActionController::Base
   helper_method :abilities, :can?
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
-    render "errors/gitolite", layout: "error"
-  end
-
-  rescue_from Gitlab::Gitolite::InvalidKey do |exception|
-    render "errors/invalid_ssh_key", layout: "error"
+    render "errors/gitolite", layout: "error", status: 500
   end
 
   rescue_from Encoding::CompatibilityError do |exception|
-    render "errors/encoding", layout: "error", status: 404
+    render "errors/encoding", layout: "error", status: 500
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|

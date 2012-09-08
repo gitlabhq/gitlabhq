@@ -1,7 +1,3 @@
-Given /^I visit project wiki page$/ do
-  visit project_wiki_path(@project, :index)
-end
-
 Given /^I create Wiki page$/ do
   fill_in "Title", :with => 'Test title'
   fill_in "Content", :with => '[link test](test)'

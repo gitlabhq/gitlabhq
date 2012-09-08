@@ -1,7 +1,3 @@
-Given /^I visit project commits page$/ do
-  visit project_commits_path(@project)
-end
-
 Then /^I see project commits$/ do
   current_path.should == project_commits_path(@project)
 
@@ -23,17 +19,9 @@ Then /^I see commits atom feed$/ do
   page.body.should have_selector("entry summary", :text => commit.description)
 end
 
-Given /^I click on commit link$/ do
-  visit project_commit_path(@project, ValidCommit::ID)
-end
-
 Then /^I see commit info$/ do
   page.should have_content ValidCommit::MESSAGE
   page.should have_content "Showing 1 changed file"
-end
-
-Given /^I visit compare refs page$/ do
-  visit compare_project_commits_path(@project)
 end
 
 Given /^I fill compare fields with refs$/ do
@@ -46,18 +34,6 @@ Given /^I see compared refs$/ do
   page.should have_content "Commits (27)"
   page.should have_content "Compare View"
   page.should have_content "Showing 73 changed files"
-end
-
-Given /^I visit project branches page$/ do
-  visit branches_project_repository_path(@project)
-end
-
-Given /^I visit project commit page$/ do
-  visit project_commit_path(@project, ValidCommit::ID)
-end
-
-Given /^I visit project tags page$/ do
-  visit tags_project_repository_path(@project)
 end
 
 Then /^I should see "(.*?)" recent branches list$/ do |arg1|
@@ -76,7 +52,7 @@ Then /^I should see "(.*?)" all tags list$/ do |arg1|
 end
 
 Then /^I should see "(.*?)" protected branches list$/ do |arg1|
-  within "table" do 
+  within "table" do
     page.should have_content "stable"
     page.should_not have_content "master"
   end

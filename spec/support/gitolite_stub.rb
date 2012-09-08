@@ -17,7 +17,7 @@ module GitoliteStub
     )
 
     gitolite_admin = double(
-      'Gitolite::GitoliteAdmin', 
+      'Gitolite::GitoliteAdmin',
       config: gitolite_config,
       save: true,
     )
@@ -27,9 +27,21 @@ module GitoliteStub
   end
 
   def stub_gitlab_gitolite
-    gitlab_gitolite = Gitlab::Gitolite.new
-    Gitlab::Gitolite.stub(new: gitlab_gitolite)
-    gitlab_gitolite.stub(configure: ->() { yield(self) })
-    gitlab_gitolite.stub(update_keys: true)
+    gitolite_config = double('Gitlab::GitoliteConfig')
+    gitolite_config.stub(
+      apply: ->() { yield(self) },
+      write_key: true,
+      rm_key: true,
+      update_projects: true,
+      update_project: true,
+      update_project!: true,
+      destroy_project: true,
+      destroy_project!: true,
+      admin_all_repo: true,
+      admin_all_repo!: true,
+
+    )
+
+    Gitlab::GitoliteConfig.stub(new: gitolite_config)
   end
 end

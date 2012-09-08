@@ -37,7 +37,7 @@ class IssuesController < ApplicationController
   end
 
   def new
-    @issue = @project.issues.new
+    @issue = @project.issues.new(params[:issue])
     respond_with(@issue)
   end
 
