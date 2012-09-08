@@ -18,7 +18,7 @@ gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
 
 # Language detection
-gem "github-linguist", "~> 2.3.3"
+gem "github-linguist", "~> 2.3.3" , :require => "linguist"
 
 # API
 gem "grape", "~> 0.2.1"
