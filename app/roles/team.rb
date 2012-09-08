@@ -45,7 +45,7 @@ module Team
   end
 
   # Delete multiple users from project by user ids
-  def delete_users_by_ids(users_ids)
+  def delete_users_ids_from_team(users_ids)
     UsersProject.bulk_delete(self, users_ids)
     self.update_repository
   end
