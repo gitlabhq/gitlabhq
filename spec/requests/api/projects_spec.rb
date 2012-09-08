@@ -8,7 +8,8 @@ describe Gitlab::API do
   let(:user3) { Factory.create(:user) }
   let!(:project) { Factory :project, owner: user }
   let!(:snippet) { Factory :snippet, author: user, project: project, title: 'example' }
-  let!(:users_project) { Factory :users_project, user: user, project: project }
+  let!(:users_project) { Factory :users_project, user: user, project: project, project_access: UsersProject::MASTER  }
+  let!(:users_project2) { Factory :users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER  }
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
@@ -114,7 +115,7 @@ describe Gitlab::API do
       response.status.should == 200
 
       json_response.should be_an Array
-      json_response.count.should == 1
+      json_response.count.should == 2
       json_response.first['user']['id'].should == user.id
     end
   end
@@ -123,8 +124,8 @@ describe Gitlab::API do
     it "should add users to project" do
       expect {
         post api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user2.id, "1" => user3.id}, project_access: UsersProject::DEVELOPER
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(2)
+          user_ids: {"0" => user2.id}, project_access: UsersProject::DEVELOPER
+      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(1)
     end
   end
 
@@ -132,8 +133,8 @@ describe Gitlab::API do
     it "should update users to new access role" do
       expect {
         put api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user}, project_access: UsersProject::DEVELOPER
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(1)
+          user_ids: {"0" => user3.id}, project_access: UsersProject::MASTER
+      }.to change {project.users_projects.where(:project_access => UsersProject::MASTER).count}.by(1)
     end
   end
 
@@ -141,8 +142,8 @@ describe Gitlab::API do
     it "should delete users from project" do
       expect {
         delete api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => users_project.id}
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(-1)
+          user_ids: {"0" => user3.id}
+      }.to change {project.users_projects.count}.by(-1)
     end
   end
 
