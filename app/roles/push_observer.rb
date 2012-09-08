@@ -109,5 +109,9 @@ module PushObserver
     if default_branch.nil?
       update_attributes(default_branch: discover_default_branch)
     end
+
+    # Update project's language field
+    update_attributes(language: detect_repo_language)
+
   end
 end
