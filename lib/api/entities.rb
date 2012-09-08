@@ -9,6 +9,10 @@ module Gitlab
       expose :id, :email, :name, :blocked, :created_at
     end
 
+    class Hook < Grape::Entity
+      expose :id, :url
+    end
+
     class Project < Grape::Entity
       expose :id, :code, :name, :description, :path, :default_branch
       expose :owner, using: Entities::UserBasic
