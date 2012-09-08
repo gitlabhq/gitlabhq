@@ -9,4 +9,8 @@ do
   pwd=`pwd`
   reponame=`basename "$pwd" | cut -d. -f1`
   env -i redis-cli rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
+  # export GIT_WORK_TREE variable for Language detection
+  export GIT_WORK_TREE="`dirname $pwd`/$reponame"
+  mkdir -p $GIT_WORK_TREE
+  git checkout -f
 done
