@@ -17,8 +17,10 @@
         Edit
 
     %br
-    - if @issue.upvotes > 0
-      .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
+      .votes#votes
+        Votes:
+        .upvotes#upvotes= "#{@issue.upvotes} up"
+        .downvotes#downvotes= "#{@issue.downvotes} down"
 
 .back_link
   = link_to project_issues_path(@project) do

@@ -25,3 +25,5 @@
     ago
     - if merge_request.upvotes > 0
       %span.badge.badge-success= "+#{merge_request.upvotes}"
+    - if merge_request.downvotes > 0
+      %span.badge.badge-important= "-#{merge_request.downvotes}"

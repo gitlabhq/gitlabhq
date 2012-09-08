@@ -36,3 +36,5 @@
 
     - if issue.upvotes > 0
       %span.badge.badge-success= "+#{issue.upvotes}"
+    - if issue.downvotes > 0
+      %span.badge.badge-important= "-#{issue.downvotes}"

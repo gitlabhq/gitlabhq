@@ -406,13 +406,23 @@ p.time {
   }
 }
 
-.upvotes {
+.votes {
   font-size: 14px;
   font-weight: bold;
-  color: #468847;
-  text-align: right;
-  padding: 4px;
-  margin: 2px;
+  padding: 4px 0;
+  margin: 2px 0;
+  .upvotes {
+    display: inline-block;
+    color: #468847;
+    padding: 0 4px;
+    margin: 0 2px;
+  }
+  .downvotes {
+    display: inline-block;
+    color: #B94A48;
+    padding: 0 4px;
+    margin: 0 2px;
+  }
 }
 
 /* Fix for readme code (stopped it from being yellow) */

@@ -24,8 +24,10 @@
           Edit
 
     %br
-    - if @merge_request.upvotes > 0
-      .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
+      .votes#votes
+        Votes:
+        .upvotes#upvotes= "#{@merge_request.upvotes} up"
+        .downvotes#downvotes= "#{@merge_request.downvotes} down"
 
 
 .back_link
