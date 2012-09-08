@@ -75,6 +75,7 @@ module Gitlab
       #   POST /projects/:id/users
       post ":id/users" do
         user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
+        nil
       end
 
       # Update users to specified access level
@@ -87,6 +88,7 @@ module Gitlab
       #   PUT /projects/:id/add_users
       put ":id/users" do
         user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
+        nil
       end
 
       # Delete project users
@@ -98,6 +100,7 @@ module Gitlab
       #   DELETE /projects/:id/users
       delete ":id/users" do
         user_project.delete_users_ids_from_team(params[:user_ids].values)
+        nil
       end
 
       # Get a project repository branches
