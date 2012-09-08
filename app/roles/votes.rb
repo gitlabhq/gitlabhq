@@ -1,4 +1,4 @@
-module Upvote
+module Votes
   # Return the number of +1 comments (upvotes)
   def upvotes
     notes.select(&:upvote?).size

@@ -1,6 +1,6 @@
 class Issue < ActiveRecord::Base
   include IssueCommonality
-  include Upvote
+  include Votes
 
   acts_as_taggable_on :labels
 
