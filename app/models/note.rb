@@ -105,6 +105,12 @@ class Note < ActiveRecord::Base
   def upvote?
     note.start_with?('+1') || note.start_with?(':+1:')
   end
+
+  # Returns true if this is a downvote note,
+  # otherwise false is returned
+  def downvote?
+    note.start_with?('-1') || note.start_with?(':-1:')
+  end
 end
 # == Schema Information
 #
