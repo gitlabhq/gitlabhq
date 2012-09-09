@@ -24,6 +24,7 @@
             %li.wll
               = link_to project_path(project), class: dom_class(project) do
                 %strong.project_name= truncate(project.name, length: 25)
+                %strong.language_name= project.language || "Plain Text"
                 %span.arrow
                   &rarr;
                 %span.last_activity

@@ -20,9 +20,19 @@
           a {
             display:block;
             .project_name {
+              float:left;
+              width:50%;
               color:#4fa2bd;
               font-size:14px;
               line-height:18px;
+            }
+            .language_name {
+              float: left;
+              width:35%;
+              color:black;
+              text-align:right;
+              font-size:12px;
+              line-height:20px;
             }
             .arrow {
               float:right;

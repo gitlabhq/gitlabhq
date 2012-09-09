@@ -61,6 +61,10 @@ module Repository
     File.join(Gitlab.config.git_base_path, "#{path}.git")
   end
 
+  def path_to_work_tree
+    File.join(Gitlab.config.git_base_path, path)
+  end
+
   def update_repository
     git_host.update_repository(self)
   end
@@ -149,6 +153,12 @@ module Repository
     end
 
     file_path
+  end
+
+  def detect_repo_language
+    if File.exist?(path_to_work_tree)
+      Linguist::Repository.from_directory(path_to_work_tree).language.try(:name)
+    end
   end
 
   def ssh_url_to_repo

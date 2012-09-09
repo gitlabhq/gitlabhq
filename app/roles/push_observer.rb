@@ -107,7 +107,11 @@ module PushObserver
     # Discover the default branch, but only if it hasn't already been set to
     # something else
     if default_branch.nil?
-      update_attributes(default_branch: discover_default_branch)
+      self.default_branch = discover_default_branch
     end
+
+    # Update project's language field
+    self.language = detect_repo_language
+    save
   end
 end

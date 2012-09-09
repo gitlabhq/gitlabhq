@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120905043334) do
+ActiveRecord::Schema.define(:version => 20120908101117) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20120905043334) do
     t.boolean  "wall_enabled",           :default => true, :null => false
     t.boolean  "merge_requests_enabled", :default => true, :null => false
     t.boolean  "wiki_enabled",           :default => true, :null => false
+    t.string   "language"
   end
 
   create_table "protected_branches", :force => true do |t|
