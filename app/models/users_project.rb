@@ -23,7 +23,7 @@ class UsersProject < ActiveRecord::Base
   def self.bulk_delete(project, user_ids)
     UsersProject.transaction do
       UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
-        users_project.delete
+        users_project.destroy
       end
     end
   end
