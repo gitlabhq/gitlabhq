@@ -41,7 +41,7 @@
 
 :javascript
   $(function() {
-    disableButtonIfEmtpyField("#milestone_title", ".save-btn");
+    disableButtonIfEmptyField("#milestone_title", ".save-btn");
     $( ".datepicker" ).datepicker({
       dateFormat: "yy-mm-dd",
       onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
