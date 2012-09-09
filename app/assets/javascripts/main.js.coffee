@@ -21,8 +21,8 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
       closest_submit.enable()
 
 $ ->
-  $(".one_click_select").live 'click', ->
-    $(this).select()
+  # Click a .one_click_select field, select the contents
+  $(".one_click_select").live 'click', -> $(this).select()
 
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
@@ -66,10 +66,12 @@ $ ->
     $(this).text(previewLinkText)
 
     note = $('#note_note').val()
-    note = 'Nothing to preview' if note.trim().length is 0
-    $.post($(this).attr('href'), {note: note}, (data) ->
-      $('#preview-note').html(data)
-    )
+
+    if note.trim().length == 0
+      $('#preview-note').text("Nothing to preview.")
+    else
+      $.post $(this).attr('href'), {note: note}, (data) ->
+        $('#preview-note').html(data)
 
     $('#preview-note, #note_note').toggle()
     e.preventDefault()
