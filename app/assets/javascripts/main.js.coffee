@@ -12,26 +12,27 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
   closest_submit = field.closest("form").find(button_selector)
 
-  closest_submit.attr("disabled", "disabled").addClass("disabled") if field.val() is ""
+  closest_submit.disable() if field.val() is ""
 
   field.on "keyup", ->
     if $(this).val() is ""
-      closest_submit.attr("disabled", "disabled").addClass "disabled"
+      closest_submit.disable()
     else
-      closest_submit.removeAttr("disabled").removeClass "disabled"
+      closest_submit.enable()
 
 $ ->
   $(".one_click_select").live 'click', ->
     $(this).select()
 
+  # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
     buttons = $('[type="submit"]', this)
 
     switch e.type
       when 'ajax:beforeSend', 'submit'
-        buttons.attr('disabled', 'disabled')
+        buttons.disable()
       else
-        buttons.removeAttr('disabled')
+        buttons.enable()
 
   # Show/Hide the profile menu when hovering the account box
   $('.account-box').hover -> $(this).toggleClass('hover')
@@ -80,5 +81,13 @@ $ ->
     default_options = search_contains: "true"
     $.extend default_options, options
     _chosen.apply this, [default_options]
+
+  # Disable an element and add the 'disabled' Bootstrap class
+  $.fn.extend disable: ->
+    $(this).attr('disabled', 'disabled').addClass('disabled')
+
+  # Enable an element and remove the 'disabled' Bootstrap class
+  $.fn.extend enable: ->
+    $(this).removeAttr('disabled').removeClass('disabled')
 
 )(jQuery)

@@ -25,11 +25,11 @@ var NoteList = {
         $(this).closest('li').fadeOut(); });
 
       $(".note-form-holder").live("ajax:before", function(){
-        $(".submit_note").attr("disabled", "disabled");
+        $(".submit_note").disable()
       })
 
       $(".note-form-holder").live("ajax:complete", function(){
-        $(".submit_note").removeAttr("disabled");
+        $(".submit_note").enable()
       })
 
       disableButtonIfEmptyField(".note-text", ".submit_note");
