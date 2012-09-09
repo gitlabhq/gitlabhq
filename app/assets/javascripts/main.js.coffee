@@ -37,12 +37,6 @@ $ ->
   # Show/Hide the profile menu when hovering the account box
   $('.account-box').hover -> $(this).toggleClass('hover')
 
-  $("#projects-list .project").live 'click', (e) ->
-    if e.target.nodeName isnt "A" and e.target.nodeName isnt "INPUT"
-      location.href = $(this).attr("url")
-      e.stopPropagation()
-      false
-
   # Focus search field by pressing 's' key
   $(document).keypress (e) ->
     # Don't do anything if typing in an input
