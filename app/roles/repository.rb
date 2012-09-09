@@ -156,7 +156,7 @@ module Repository
   end
 
   def detect_repo_language
-    if(File.exist?(path_to_work_tree))
+    if File.exist?(path_to_work_tree)
       Linguist::Repository.from_directory(path_to_work_tree).language.try(:name)
     end
   end
