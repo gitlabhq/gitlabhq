@@ -23,6 +23,14 @@ describe UsersProjectObserver do
       Notify.should_receive(:project_access_granted_email).with(users_project.id).and_return(double(deliver: true))
       subject.after_create(users_project)
     end
+    it "should create new event" do
+      Event.should_receive(:create).with(
+        project_id: users_project.project.id, 
+        action: Event::Joined, 
+        author_id: users_project.user.id
+      )
+      subject.after_create(users_project)
+    end
   end
 
   describe "#after_update" do
