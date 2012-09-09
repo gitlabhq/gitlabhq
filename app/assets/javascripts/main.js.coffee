@@ -1,130 +1,84 @@
-$(document).ready(function(){
+window.updatePage = (data) ->
+  $.ajax({type: "GET", url: location.href, data: data, dataType: "script"})
 
-  $(".one_click_select").live("click", function(){
-    $(this).select();
-  });
+window.slugify = (text) ->
+  text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
 
-  $('body').on('ajax:complete, ajax:beforeSend, submit', 'form', function(e){
-    var buttons = $('[type="submit"]', this);
-    switch( e.type ){
-      case 'ajax:beforeSend':
-      case 'submit':
-        buttons.attr('disabled', 'disabled');
-      break;
-      case ' ajax:complete':
-      default:
-        buttons.removeAttr('disabled');
-      break;
-    }
-  })
+window.ajaxGet = (url) ->
+  $.ajax({type: "GET", url: url, dataType: "script"})
 
-  $(".account-box").mouseenter(showMenu);
-  $(".account-box").mouseleave(resetMenu);
+ # Disable button if text field is empty
+window.disableButtonIfEmptyField = (field_selector, button_selector) ->
+  field = $(field_selector)
+  closest_submit = field.closest("form").find(button_selector)
 
-  $("#projects-list .project").live('click', function(e){
-    if(e.target.nodeName != "A" && e.target.nodeName != "INPUT") {
-      location.href = $(this).attr("url");
-      e.stopPropagation();
-      return false;
-    }
-  });
+  closest_submit.attr("disabled", "disabled").addClass("disabled") if field.val() is ""
 
-  /**
-   * Focus search field by pressing 's' key
-   */
-  $(document).keypress(function(e) {
-    if( $(e.target).is(":input") ) return;
-    switch(e.which)  {
-      case 115:  focusSearch();
-        e.preventDefault();
-    }
-  });
+  field.on "keyup", ->
+    if $(this).val() is ""
+      closest_submit.attr("disabled", "disabled").addClass "disabled"
+    else
+      closest_submit.removeAttr("disabled").removeClass "disabled"
 
-  /**
-   * Commit show suppressed diff
-   *
-   */
-  $(".supp_diff_link").bind("click", function() {
-    showDiff(this);
-  });
+$ ->
+  $(".one_click_select").live 'click', ->
+    $(this).select()
 
-  /**
-   * Note markdown preview
-   *
-   */
-  $(document).on('click', '#preview-link', function(e) {
-    $('#preview-note').text('Loading...');
+  $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
+    buttons = $('[type="submit"]', this)
 
-    var previewLinkText = ($(this).text() == 'Preview' ? 'Edit' : 'Preview');
-    $(this).text(previewLinkText);
+    switch e.type
+      when 'ajax:beforeSend', 'submit'
+        buttons.attr('disabled', 'disabled')
+      else
+        buttons.removeAttr('disabled')
 
-    var note = $('#note_note').val();
-    if (note.trim().length === 0) { note = 'Nothing to preview'; }
-    $.post($(this).attr('href'), {note: note}, function(data) {
-      $('#preview-note').html(data);
-    });
+  # Show/Hide the profile menu when hovering the account box
+  $('.account-box').hover -> $(this).toggleClass('hover')
 
-    $('#preview-note, #note_note').toggle();
-    e.preventDefault();
-  });
-});
+  $("#projects-list .project").live 'click', (e) ->
+    if e.target.nodeName isnt "A" and e.target.nodeName isnt "INPUT"
+      location.href = $(this).attr("url")
+      e.stopPropagation()
+      false
 
-function focusSearch() {
-  $("#search").focus();
-}
+  # Focus search field by pressing 's' key
+  $(document).keypress (e) ->
+    # Don't do anything if typing in an input
+    return if $(e.target).is(":input")
 
-function updatePage(data){
-  $.ajax({type: "GET", url: location.href, data: data, dataType: "script"});
-}
+    switch e.which
+      when 115
+        $("#search").focus()
+        e.preventDefault()
 
-function showMenu() {
-  $(this).toggleClass('hover');
-}
+  # Commit show suppressed diff
+  $(".supp_diff_link").bind "click", ->
+    $(this).next('table').show()
+    $(this).remove()
 
-function resetMenu() {
-  $(this).removeClass("hover");
-}
+  # Note markdown preview
+  $(document).on 'click', '#preview-link', (e) ->
+    $('#preview-note').text('Loading...')
 
-function slugify(text) {
-  return text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase();
-}
+    previewLinkText = if $(this).text() == 'Preview' then 'Edit' else 'Preview'
+    $(this).text(previewLinkText)
 
-function showDiff(link) {
-  $(link).next('table').show();
-  $(link).remove();
-}
+    note = $('#note_note').val()
+    note = 'Nothing to preview' if note.trim().length is 0
+    $.post($(this).attr('href'), {note: note}, (data) ->
+      $('#preview-note').html(data)
+    )
 
-(function($){
-    var _chosen = $.fn.chosen;
-    $.fn.extend({
-        chosen: function(options) {
-            var default_options = {'search_contains' : 'true'};
-            $.extend(default_options, options);
-            return _chosen.apply(this, [default_options]);
-    }})
-})(jQuery);
+    $('#preview-note, #note_note').toggle()
+    e.preventDefault()
+    false
 
+(($) ->
+  _chosen = $.fn.chosen
+  $.fn.extend chosen: (options) ->
+    default_options = search_contains: "true"
+    $.extend default_options, options
+    _chosen.apply this, [default_options]
 
-function ajaxGet(url) {
-  $.ajax({type: "GET", url: url, dataType: "script"});
-}
-
-/**
- * Disable button if text field is empty
- */
-function disableButtonIfEmtpyField(field_selector, button_selector) {
-  field = $(field_selector);
-  if(field.val() == "") {
-    field.closest("form").find(button_selector).attr("disabled", "disabled").addClass("disabled");
-  }
-
-  field.on('keyup', function(){
-    var field = $(this);
-    var closest_submit = field.closest("form").find(button_selector);
-    if(field.val() == "") {
-      closest_submit.attr("disabled", "disabled").addClass("disabled");
-    } else {
-      closest_submit.removeAttr("disabled").removeClass("disabled");
-    }
-  })
-}
+)(jQuery)
