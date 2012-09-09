@@ -32,7 +32,7 @@ var NoteList = {
         $(".submit_note").removeAttr("disabled");
       })
 
-      disableButtonIfEmtpyField(".note-text", ".submit_note");
+      disableButtonIfEmptyField(".note-text", ".submit_note");
 
       $(".note-text").live("focus", function(){
         $(this).css("height", "80px");
@@ -177,6 +177,6 @@ var PerLineNotes = {
         form.show();
         return false;
       });
-      disableButtonIfEmtpyField(".line-note-text", ".submit_inline_note");
+      disableButtonIfEmptyField(".line-note-text", ".submit_inline_note");
     }
 }
