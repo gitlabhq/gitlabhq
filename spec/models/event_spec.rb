@@ -50,13 +50,24 @@ describe Event do
     it { @event.author.should == @user }
   end
 
-  describe "New team mamber" do
+  describe "Joined project team" do
     let(:project) {Factory.create :project}
     let(:new_user) {Factory.create :user}
     it "should create event" do
       UsersProject.observers.enable :users_project_observer
       expect{
         UsersProject.bulk_import(project, [new_user.id], UsersProject::DEVELOPER)
+      }.to change{Event.count}.by(1)
+    end
+  end
+  describe "Left project team" do
+    let(:project) {Factory.create :project}
+    let(:new_user) {Factory.create :user}
+    it "should create event" do
+      UsersProject.bulk_import(project, [new_user.id], UsersProject::DEVELOPER)
+      UsersProject.observers.enable :users_project_observer
+      expect{
+        UsersProject.bulk_delete(project, [new_user.id])
       }.to change{Event.count}.by(1)
     end
   end

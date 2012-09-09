@@ -120,6 +120,16 @@ Given /^user with name "(.*?)" joined project "(.*?)"$/ do |user_name, project_n
   )
 end
 
+Given /^user with name "(.*?)" left project "(.*?)"$/ do |user_name, project_name|
+  user = User.find_by_name user_name
+  project = Project.find_by_name project_name
+  Event.create(
+    project: project,
+    author_id: user.id,
+    action: Event::Left
+  )
+end
+
 Then /^I should see "(.*?)" event$/ do |event_text|
   page.should have_content(event_text)
 end
