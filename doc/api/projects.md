@@ -112,6 +112,66 @@ Parameters:
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.
 
+## Get project users
+
+Get users and access roles for existing project
+
+```
+GET /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
+
+Will return users and their access roles with status `200 OK` on success, or `404 Not found` on fail.
+
+## Add project users
+
+Add users to exiting project
+
+```
+POST /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - The ID list of users to add
++ `project_access` (required) - Project access level
+
+Will return status `201 Created` on success, or `404 Not found` on fail.
+
+## Update project users access level
+
+Update existing users to specified access level
+
+```
+PUT /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - The ID list of users to add
++ `project_access` (required) - Project access level
+
+Will return status `200 OK` on success, or `404 Not found` on fail.
+
+## Delete project users
+
+Delete users from exiting project
+
+```
+DELETE /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - The ID list of users to add
+
+Will return status `200 OK` on success, or `404 Not found` on fail.
 
 ## Project repository branches
 

@@ -4,8 +4,12 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user) { Factory :user }
+  let(:user2) { Factory.create(:user) }
+  let(:user3) { Factory.create(:user) }
   let!(:project) { Factory :project, owner: user }
   let!(:snippet) { Factory :snippet, author: user, project: project, title: 'example' }
+  let!(:users_project) { Factory :users_project, user: user, project: project, project_access: UsersProject::MASTER  }
+  let!(:users_project2) { Factory :users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER  }
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
@@ -101,6 +105,45 @@ describe Gitlab::API do
 
       json_response['name'].should == 'new_design'
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+    end
+  end
+
+  describe "GET /projects/:id/users" do
+    it "should return project users" do
+      get api("/projects/#{project.code}/users", user)
+
+      response.status.should == 200
+
+      json_response.should be_an Array
+      json_response.count.should == 2
+      json_response.first['user']['id'].should == user.id
+    end
+  end
+
+  describe "POST /projects/:id/users" do
+    it "should add users to project" do
+      expect {
+        post api("/projects/#{project.code}/users", user),
+          user_ids: {"0" => user2.id}, project_access: UsersProject::DEVELOPER
+      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(1)
+    end
+  end
+
+  describe "PUT /projects/:id/users" do
+    it "should update users to new access role" do
+      expect {
+        put api("/projects/#{project.code}/users", user),
+          user_ids: {"0" => user3.id}, project_access: UsersProject::MASTER
+      }.to change {project.users_projects.where(:project_access => UsersProject::MASTER).count}.by(1)
+    end
+  end
+
+  describe "DELETE /projects/:id/users" do
+    it "should delete users from project" do
+      expect {
+        delete api("/projects/#{project.code}/users", user),
+          user_ids: {"0" => user3.id}
+      }.to change {project.users_projects.count}.by(-1)
     end
   end
 
