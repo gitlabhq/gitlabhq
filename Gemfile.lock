@@ -132,6 +132,7 @@ GEM
       execjs
     coffee-script-source (1.3.3)
     colored (1.2)
+    colorize (0.5.8)
     crack (0.3.1)
     cucumber (1.2.1)
       builder (>= 2.1.2)
@@ -172,6 +173,7 @@ GEM
       thor (>= 0.13.6)
     gherkin (2.11.0)
       json (>= 1.4.6)
+    gherkin-ruby (0.2.1)
     git (1.2.5)
     github-markup (0.7.4)
     gitlab_meta (2.9)
@@ -344,6 +346,13 @@ GEM
       tilt (~> 1.3, >= 1.3.3)
     six (0.2.0)
     slop (2.4.4)
+    spinach (0.5.2)
+      colorize
+      gherkin-ruby (~> 0.2.0)
+    spinach-rails (0.1.8)
+      capybara (~> 1)
+      railties (>= 3)
+      spinach (>= 0.4)
     sprockets (2.1.3)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -442,6 +451,7 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   six
+  spinach-rails
   sqlite3
   stamp
   therubyracer

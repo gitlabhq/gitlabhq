@@ -106,6 +106,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
