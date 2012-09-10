@@ -106,6 +106,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
@@ -118,7 +119,7 @@ group :development, :test do
 
   # Guard
   gem 'guard-rspec'
-  gem 'guard-cucumber'
+  gem 'guard-spinach'
 
   # Notification
   gem 'rb-fsevent', :require => darwin_only('rb-fsevent')
@@ -127,7 +128,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'cucumber-rails', :require => false
   gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
