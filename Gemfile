@@ -1,5 +1,13 @@
 source "http://rubygems.org"
 
+def darwin_only(require_as)
+  RUBY_PLATFORM.include?('darwin') && require_as
+end
+
+def linux_only(require_as)
+  RUBY_PLATFORM.include?('linux') && require_as
+end
+
 gem "rails", "3.2.8"
 
 # Supported DBs
@@ -102,16 +110,20 @@ group :development, :test do
   gem "capybara"
   gem "capybara-webkit"
   gem "headless"
-  gem "autotest"
-  gem "autotest-rails"
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
 
+  # Guard
   gem 'guard-rspec'
   gem 'guard-cucumber'
+
+  # Notification
+  gem 'rb-fsevent', :require => darwin_only('growl')
+  gem 'growl',      :require => darwin_only('growl')
+  gem 'rb-inotify', :require => linux_only('rb-fsevent')
 end
 
 group :test do
