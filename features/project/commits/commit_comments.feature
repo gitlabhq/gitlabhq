@@ -1,6 +1,6 @@
-Feature: Comment commit
-  Background: 
-    Given I signin as a user
+Feature: Project Comment commit
+  Background:
+    Given I sign in as a user
     And I own project "Shop"
     Given I visit project commit page
 

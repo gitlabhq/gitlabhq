@@ -1,6 +1,6 @@
-Feature: Browse branches
-  Background: 
-    Given I signin as a user
+Feature: Project Browse branches
+  Background:
+    Given I sign in as a user
     And I own project "Shop"
     And project "Shop" has protected branches
     Given I visit project branches page
@@ -16,8 +16,11 @@ Feature: Browse branches
     Given I click link "Protected"
     Then I should see "Shop" protected branches list
 
-  Scenario: I can download project by branch
+  # @wip
+  # Scenario: I can download project by branch
 
-  Scenario: I can view protected branches
+  # @wip
+  # Scenario: I can view protected branches
 
-  Scenario: I can manage protected branches
+  # @wip
+  # Scenario: I can manage protected branches
