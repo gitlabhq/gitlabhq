@@ -8,20 +8,9 @@
   .clearfix
     %label Project Access:
     .input
-      = f.select :project_access, options_for_select(Project.access_options, @admin_team_member.project_access), {}, class: "project-access-select"
+      = f.select :project_access, options_for_select(Project.access_options, @admin_team_member.project_access), {}, class: "project-access-select chosen span3"
 
   %br
   .actions
     = f.submit 'Save', class: "btn primary"
     = link_to 'Cancel', :back, class: "btn"
-
-:css
-  form select {
-    width:300px;
-  }
-
-:javascript
-  $('select#team_member_user_id').chosen();
-  $('select#team_member_project_id').chosen();
-  $('select#team_member_repo_access').chosen();
-  $('select#team_member_project_access').chosen();

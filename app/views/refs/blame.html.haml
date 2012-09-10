@@ -38,8 +38,3 @@
               = preserve do
                 %pre
                   = Gitlab::Encode.utf8 lines.join("\n")
-
-:javascript
-  $(function(){
-    $('.project-refs-select').chosen();
-  });
