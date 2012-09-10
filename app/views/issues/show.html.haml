@@ -17,14 +17,7 @@
         Edit
 
 .right
-  .span3.votes.votes-block#votes
-    .progress
-      - up_percent = 100.0/@issue.votes_count*@issue.upvotes
-      - down_percent = 100.0-up_percent
-      .bar.bar-success{style: "width: #{up_percent}%;"}
-      .bar.bar-danger{style: "width: #{down_percent}%;"}
-    .upvotes= "#{@issue.upvotes} up"
-    .downvotes= "#{@issue.downvotes} down"
+  .span3#votes= render 'votes/votes_block', votable: @issue
 
 .back_link
   = link_to project_issues_path(@project) do
