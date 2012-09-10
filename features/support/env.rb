@@ -3,6 +3,7 @@ require './config/environment'
 
 require 'rspec'
 require 'database_cleaner'
+require 'spinach/capybara'
 
 %w(gitolite_stub login_helpers stubbed_repository valid_commit).each do |f|
   require Rails.root.join('spec', 'support', f)
@@ -12,6 +13,7 @@ include LoginHelpers
 include GitoliteStub
 
 WebMock.allow_net_connect!
+Capybara.javascript_driver = :webkit
 
 DatabaseCleaner.strategy = :truncation
 Spinach.hooks.before_scenario { DatabaseCleaner.start }

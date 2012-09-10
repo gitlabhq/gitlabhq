@@ -1,9 +1,9 @@
-Feature: Milestones
+Feature: Project Milestones
   Background:
-    Given I signin as a user
+    Given I sign in as a user
     And I own project "Shop"
     And project "Shop" has milestone "v2.2"
-    Given I visit project "Shop" milestones page 
+    Given I visit project "Shop" milestones page
 
   Scenario: I should see active milestones
     Then I should see milestone "v2.2"

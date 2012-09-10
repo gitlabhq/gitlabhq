@@ -1,6 +1,6 @@
-Feature: Issues
+Feature: Project Issues
   Background:
-    Given I signin as a user
+    Given I sign in as a user
     And I own project "Shop"
     And project "Shop" have "Release 0.4" open issue
     And project "Shop" have "Release 0.3" closed issue
@@ -79,4 +79,3 @@ Feature: Issues
     When I select first assignee from "Shop" project
     And I click link "New Issue"
     Then I should see first assignee from "Shop" as selected assignee
-
