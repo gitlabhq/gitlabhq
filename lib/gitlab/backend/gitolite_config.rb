@@ -148,7 +148,7 @@ module Gitlab
     # Enable access to all repos for gitolite admin.
     # We use it for accept merge request feature
     def admin_all_repo
-      owner_name = Gitlab.settings.gitolite_admin_key
+      owner_name = Gitlab.config.gitolite_admin_key
 
       # @ALL repos premission for gitolite owner
       repo_name = "@all"
