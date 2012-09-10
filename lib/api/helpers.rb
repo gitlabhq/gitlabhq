@@ -21,5 +21,21 @@ module Gitlab
     def authenticate!
       error!({'message' => '401 Unauthorized'}, 401) unless current_user
     end
+
+    def authorize! action, subject
+      unless abilities.allowed?(current_user, action, subject)
+        error!({'message' => '403 Forbidden'}, 403)
+      end
+    end
+
+    private 
+
+    def abilities
+      @abilities ||= begin
+                       abilities = Six.new
+                       abilities << Ability
+                       abilities
+                     end
+    end
   end
 end

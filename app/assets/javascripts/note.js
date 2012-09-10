@@ -25,14 +25,14 @@ var NoteList = {
         $(this).closest('li').fadeOut(); });
 
       $(".note-form-holder").live("ajax:before", function(){
-        $(".submit_note").attr("disabled", "disabled");
+        $(".submit_note").disable()
       })
 
       $(".note-form-holder").live("ajax:complete", function(){
-        $(".submit_note").removeAttr("disabled");
+        $(".submit_note").enable()
       })
 
-      disableButtonIfEmtpyField(".note-text", ".submit_note");
+      disableButtonIfEmptyField(".note-text", ".submit_note");
 
       $(".note-text").live("focus", function(){
         $(this).css("height", "80px");
@@ -177,6 +177,6 @@ var PerLineNotes = {
         form.show();
         return false;
       });
-      disableButtonIfEmtpyField(".line-note-text", ".submit_inline_note");
+      disableButtonIfEmptyField(".line-note-text", ".submit_inline_note");
     }
 }

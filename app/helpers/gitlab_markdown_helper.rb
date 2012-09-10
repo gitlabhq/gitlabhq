@@ -27,7 +27,7 @@ module GitlabMarkdownHelper
                           filter_html: true,
                           with_toc_data: true,
                           hard_wrap: true)
-      @markdown ||= Redcarpet::Markdown.new(gitlab_renderer,
+      @markdown = Redcarpet::Markdown.new(gitlab_renderer,
                       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
                       no_intra_emphasis: true,
                       tables: true,

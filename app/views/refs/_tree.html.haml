@@ -43,11 +43,7 @@
           %i.icon-file
           = content.name
         .file_content.wiki
-          - if content.name =~ /\.(md|markdown)$/i
-            = preserve do
-              = markdown(content.data)
-          - else
-            = simple_format(content.data)
+          = raw GitHub::Markup.render(content.name, content.data)
 
 :javascript
   $(function(){

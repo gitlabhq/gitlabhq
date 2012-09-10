@@ -22,8 +22,8 @@ end
 Given /^I select "(.*?)" as "(.*?)"$/ do |arg1, arg2|
   user = User.find_by_name(arg1)
   within "#new_team_member" do
-    select user.name, :from => "team_member_user_id"
-    select arg2, :from => "team_member_project_access"
+    select user.name, :from => "user_ids"
+    select arg2, :from => "project_access"
   end
   click_button "Save"
 end

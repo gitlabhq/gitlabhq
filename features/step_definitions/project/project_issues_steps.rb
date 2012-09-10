@@ -55,3 +55,27 @@ Given /^I fill in issue search with "(.*?)"$/ do |arg1|
   end
   fill_in 'issue_search', with: arg1
 end
+
+When /^I select milestone "(.*?)"$/ do |milestone_title|
+  select milestone_title, from: "milestone_id"
+end
+
+Then /^I should see selected milestone with title "(.*?)"$/ do |milestone_title|
+  issues_milestone_selector = "#issue_milestone_id_chzn/a"
+  wait_until{ page.has_content?("Details") }
+  page.find(issues_milestone_selector).should have_content(milestone_title)
+end
+
+When /^I select first assignee from "(.*?)" project$/ do |project_name|
+  project = Project.find_by_name project_name
+  first_assignee = project.users.first
+  select first_assignee.name, from: "assignee_id"
+end
+
+Then /^I should see first assignee from "(.*?)" as selected assignee$/ do |project_name|
+  issues_assignee_selector = "#issue_assignee_id_chzn/a"
+  wait_until{ page.has_content?("Details") }
+  project = Project.find_by_name project_name
+  assignee_name = project.users.first.name
+  page.find(issues_assignee_selector).should have_content(assignee_name)
+end

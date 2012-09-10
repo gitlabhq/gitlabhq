@@ -61,6 +61,8 @@ module Gitlab
       # Example Request:
       #   PUT /projects/:id/milestones/:milestone_id
       put ":id/milestones/:milestone_id" do
+        authorize! :admin_milestone, user_project
+
         @milestone = user_project.milestones.find(params[:milestone_id])
         parameters = {
           title: (params[:title] || @milestone.title),

@@ -24,4 +24,14 @@ module TreeHelper
       content.name
     end
   end
+
+  # Public: Determines if a given filename is compatible with GitHub::Markup.
+  #
+  # filename - Filename string to check
+  #
+  # Returns boolean
+  def markup?(filename)
+    filename.end_with?(*%w(.mdown .md .markdown .textile .rdoc .org .creole
+                          .mediawiki .rst .asciidoc .pod))
+  end
 end

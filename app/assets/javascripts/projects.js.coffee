@@ -8,7 +8,7 @@ window.Projects = ->
     $('.save-project-loader').show()
 
   $('form #project_default_branch').chosen()
-  disableButtonIfEmtpyField '#project_name', '.project-submit'
+  disableButtonIfEmptyField '#project_name', '.project-submit'
 
 # Git clone panel switcher
 $ ->

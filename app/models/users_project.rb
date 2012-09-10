@@ -20,6 +20,23 @@ class UsersProject < ActiveRecord::Base
 
   delegate :name, :email, to: :user, prefix: true
 
+  def self.bulk_delete(project, user_ids)
+    UsersProject.transaction do
+      UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        users_project.destroy
+      end
+    end
+  end
+
+  def self.bulk_update(project, user_ids, project_access)
+    UsersProject.transaction do
+      UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        users_project.project_access = project_access
+        users_project.save
+      end
+    end
+  end
+
   def self.bulk_import(project, user_ids, project_access)
     UsersProject.transaction do
       user_ids.each do |user_id|

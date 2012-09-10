@@ -20,6 +20,15 @@
       %li milestones
       %li wiki pages
 
+  .span4
+    .alert.alert-info
+      %p
+        If you're not already familiar with Markdown, you should spend 15 minutes and go over the excellent
+        %strong= link_to "Markdown Syntax Guide", "http://daringfireball.net/projects/markdown/syntax"
+        at Daring Fireball.
+
+.row
+  .span8
     %h3 Differences from traditional Markdown
 
     %h4 Newlines
@@ -62,6 +71,29 @@
     %p becomes
     = markdown %Q{```ruby\nrequire 'redcarpet'\nmarkdown = Redcarpet.new("Hello World!")\nputs markdown.to_html\n```}
 
+    %h4 Emoji
+
+.row
+  .span8
+    :ruby
+      puts markdown %Q{Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
+
+        :exclamation: You can use emoji anywhere GFM is supported. :sunglasses:
+
+        You can use it to point out a :bug: or warn about :monkey:patches. And if someone improves your really :snail: code, send them a :bouquet: or some :candy:. People will :heart: you for that.
+
+        If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
+        }
+
+  .span4
+    .alert.alert-info
+      %p
+        Consult the
+        %strong= link_to "Emoji Cheat Sheet", "http://www.emoji-cheat-sheet.com/"
+        for a list of all supported emoji codes.
+
+.row
+  .span8
     %h4 Special GitLab references
 
     %p
@@ -93,12 +125,5 @@
         %p For example in your #{link_to @project.name, project_path(@project)} project, writing:
         %pre= "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
         %p becomes:
-        %pre= gfm "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
+        = markdown "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
       - @project = nil # Prevent this from bubbling up to page title
-
-  .span4.right
-    .alert.alert-info
-      %p
-        If you're not already familiar with Markdown, you should spend 15 minutes and go over the excellent
-        %strong= link_to "Markdown Syntax Guide", "http://daringfireball.net/projects/markdown/syntax"
-        at Daring Fireball.

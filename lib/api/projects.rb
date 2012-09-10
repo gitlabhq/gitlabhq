@@ -54,6 +54,58 @@ module Gitlab
         end
       end
 
+      # Get project users
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/users
+      get ":id/users" do
+        @users_projects = paginate user_project.users_projects
+        present @users_projects, with: Entities::UsersProject
+      end
+
+      # Add users to project with specified access level
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to add
+      #   project_access (required) - Project access level
+      # Example Request:
+      #   POST /projects/:id/users
+      post ":id/users" do
+        authorize! :admin_project, user_project
+        user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
+        nil
+      end
+
+      # Update users to specified access level
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to add
+      #   project_access (required) - New project access level to
+      # Example Request:
+      #   PUT /projects/:id/add_users
+      put ":id/users" do
+        authorize! :admin_project, user_project
+        user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
+        nil
+      end
+
+      # Delete project users
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to delete
+      # Example Request:
+      #   DELETE /projects/:id/users
+      delete ":id/users" do
+        authorize! :admin_project, user_project
+        user_project.delete_users_ids_from_team(params[:user_ids].values)
+        nil
+      end
+
       # Get a project repository branches
       #
       # Parameters:
@@ -137,6 +189,8 @@ module Gitlab
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         parameters = {
           title: (params[:title] || @snippet.title),
           file_name: (params[:file_name] || @snippet.file_name),
@@ -160,6 +214,8 @@ module Gitlab
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         @snippet.destroy
       end
 
