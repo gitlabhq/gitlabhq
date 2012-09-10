@@ -11,7 +11,7 @@ module GitlabMarkdownHelper
   # explicitly produce the correct linking behavior (i.e.
   # "<a>outer text </a><a>gfm ref</a><a> more outer text</a>").
   def link_to_gfm(body, url, html_options = {})
-    return "" unless body && !body.strip.empty?
+    return "" if body.blank?
     
     gfm_body = gfm(body, html_options)
 
