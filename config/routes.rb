@@ -10,7 +10,7 @@ Gitlab::Application.routes.draw do
 
   # Optionally, enable Resque here
   require 'resque/server'
-  mount Resque::Server.new, at: '/info/resque'
+  mount Resque::Server.new, at: '/info/resque', as: 'resque'
 
   # Enable Grack support
   mount Grack::Bundle.new({
@@ -50,10 +50,6 @@ Gitlab::Application.routes.draw do
       end
     end
     resources :team_members, :only => [:edit, :update, :destroy]
-    get 'mailer/preview_note'
-    get 'mailer/preview_user_new'
-    get 'mailer/preview_issue_new'
-
     resources :hooks, :only => [:index, :create, :destroy] do
       get :test
     end
@@ -197,7 +193,9 @@ Gitlab::Application.routes.draw do
     end
     resources :team_members
     resources :milestones
+    resources :labels, :only => [:index]
     resources :issues do
+
       collection do
         post  :sort
         post  :bulk_update

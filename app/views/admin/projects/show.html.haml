@@ -3,7 +3,11 @@
   = link_to 'Edit', edit_admin_project_path(@admin_project), class: "btn right small"
 
 %br
-%table.zebra-striped.table-bordered
+%table.zebra-striped
+  %thead
+    %tr
+      %th Project
+      %th
   %tr
     %td
       %b
@@ -40,7 +44,7 @@
   %small
     (#{@admin_project.users_projects.count})
 %br
-%table.zebra-striped.table-bordered
+%table.zebra-striped
   %thead
     %tr
       %th Name
@@ -60,32 +64,18 @@
 %h3 Add new team member
 %br
 = form_tag team_update_admin_project_path(@admin_project), class: "bulk_import", method: :put  do
-  %table.zebra-striped.table-bordered
+  %table.zebra-striped
     %thead
       %tr
         %th Users
         %th Project Access:
 
     %tr
-      %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name),  multiple: true
-      %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select"
+      %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
+      %td= select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3"}
 
     %tr
       %td= submit_tag 'Add', class: "btn primary"
       %td
         Read more about project permissions
         %strong= link_to "here", help_permissions_path, class: "vlink"
-
-:css
-  form select {
-    width:150px;
-  }
-
-  #user_ids {
-    width:300px;
-  }
-
-:javascript
-  $('select#user_ids').chosen();
-  $('select#repo_access').chosen();
-  $('select#project_access').chosen();

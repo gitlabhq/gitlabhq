@@ -1,10 +1,8 @@
-.diff_file_header a,
-.file_stats a {
-  color:$style_color;
-}
-
-
 /** LAYOUT **/
+
+body {
+  margin-bottom:20px;
+}
 
 .container {
   padding-top:0;
@@ -40,30 +38,6 @@
   color: $link_color;
 }
 
-.widget {
-  @include shade;
-  padding:20px;
-  margin-bottom:20px;
-  border: 1px solid #DDD;
-  border-radius: 5px;
-  background:#fafafa;
-
-  .link_holder {
-    background:#eee;
-    position:relative;
-    left:-20px;
-    top:20px;
-    padding:10px 20px;
-    width:100%;
-    border-top:1px solid #ccc;
-
-    a {
-      font-size:14px;
-      color:#666;
-    }
-  }
-}
-
 .help li { color:#111 }
 
 .back_link {
@@ -86,16 +60,6 @@
 .download_repo_link {
   background: url("images.png") no-repeat 0 -48px;
   padding-left:20px;
-}
-
-.number {
-  border-radius: 4px;
-  text-shadow: none;
-  background: rgba(0,0,0,.12);
-  text-align: center;
-  padding: 2px 4px;
-  line-height:18px;
-  margin-left:2px;
 }
 
 table a code {
@@ -129,25 +93,17 @@ table a code {
   border-bottom:1px solid #ccc;
 
   h4 {
-    color:#444;
-    font-size:22px;
+    color:#666;
+    font-size:18px;
+    line-height:38px;
     padding-top:5px;
     margin:2px;
+    font-weight:normal;
   }
 }
 
 .git_url_wrapper {
   margin-right:50px
-}
-.file_stats {
-  span {
-    img {
-      width:14px;
-      float:left;
-      margin-right:6px;
-      padding:2px 0;
-    }
-  }
 }
 
 .handle:hover {
@@ -172,10 +128,6 @@ span.update-author {
   display:block;
 }
 /** END UPDATE ITEM **/
-.ajax-tab-loading {
-  padding:40px;
-  display:none;
-}
 .dashboard-loader {
   float:left;
   margin:10px;
@@ -186,15 +138,119 @@ span.update-author {
   font-weight:bold;
 }
 
-a.project-update.titled {
-  position:relative;
-  padding-left:35% !important;
-  .title-block {
-    padding:10px;
-    width:35%;
-    position:absolute;
-    left:0;
-    top:0;
+.neib {
+  margin-right:10px;
+}
+
+.label {
+  background-color: #474D57;
+
+  &.label-issue {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding:4px 6px;
+    color:#444;
+    text-shadow:0 0 1px #fff;
+
+    &.grouped {
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
+  }
+}
+
+.event_label {
+  @extend .label;
+  background-color: #999;
+
+  &.pushed {
+    background-color: #4A97BD;
+  }
+
+  &.opened {
+    background-color: #469847;
+  }
+
+  &.closed {
+    background-color: #B94A48;
+  }
+
+  &.merged {
+    background-color: #2A2;
+  }
+
+  &.joined {
+    background-color: #1ca9dd;
+  }
+
+  &.left {
+    background-color: #888;
+    float:none;
+  }
+}
+
+form {
+  @extend .form-horizontal;
+
+  .actions {
+    @extend .form-actions;
+  }
+
+  .clearfix {
+    @extend .control-group;
+  }
+
+  .input {
+    @extend .controls;
+  }
+
+  label {
+    @extend .control-label;
+  }
+  .xlarge {
+    @extend .input-xlarge;
+  }
+  .xxlarge {
+    @extend .input-xxlarge;
+  }
+}
+
+
+.field_with_errors {
+  display:inline;
+}
+
+ul.breadcrumb {
+  background:white;
+  border:none;
+  li {
+    display: inline;
+    text-shadow: 0 1px 0 white
+  }
+
+  a {
+    color:#474D57;
+    font-weight:bold;
+    font-size:14px;
+  }
+
+  .arrow {
+    background: url("images.png") no-repeat -85px -77px;
+    width: 19px;
+    height: 16px;
+    float: left;
+    position: relative;
+    left: -10px;
+    padding:0;
+    margin:0;
+  }
+}
+
+input[type=text] {
+  &.large_text {
+    padding:6px;
+    font-size:16px;
   }
 }
 
@@ -269,40 +325,6 @@ p.time {
   margin: 30px 3px 3px 2px;
 }
 
-
-/**
- * Dashboard page
- *
- */
-.dashboard_category {
-  margin-bottom:30px;
-  h3 a {
-    color:#474D57;
-    &:hover {
-      text-decoration:underline;
-    }
-  }
-
-  .dashboard_block {
-    .dash_project_item {
-      margin-bottom:10px;
-      border:none;
-      padding:0px 5px;
-      .project_link {
-        color:#888;
-        &:hover {
-          color:#111;
-          .ico.project {
-            background-position:-209px -21px;
-          }
-        }
-      }
-      h4 {
-        color:#666;
-      }
-    }
-  }
-}
 
 .styled_image {
   border:2px solid #ddd;
@@ -391,39 +413,6 @@ p.time {
   .bottom {
     padding:10px;
   }
-}
-
-.btn {
-  &.very_small {
-    font-size:11px;
-    padding:2px 6px;
-    margin:2px;
-  }
-
-  &.grouped {
-    margin-right:7px;
-    float:left;
-  }
-
-  &.padded {
-    margin-right:3px;
-    padding:4px 10px 4px;
-  }
-}
-
-
-.prettyprint {
-  background-color: #fefbf3;
-  padding: 9px;
-  border: 1px solid rgba(0,0,0,.2);
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  box-shadow: 0 1px 2px rgba(0,0,0,.1);
-}
-
-.hint {
-  font-style: italic;
-  color: #999;
 }
 
 .upvotes {
@@ -549,14 +538,6 @@ li.note {
 }
 
 
-/**
- * Milestones list
- *
- */
-
-.milestone {
-  @extend .wll;
-}
 
 /**
  * Admin area
@@ -603,11 +584,10 @@ li.note {
  *
  */
 .event_lp {
-  @extend .alert-info;
+  @extend .ui-box;
+  color:#777;
   margin-bottom:20px;
   padding:8px;
-  border-style: solid;
-  border-width: 1px;
   @include border-radius(4px);
   min-height:22px;
 
@@ -621,88 +601,19 @@ li.note {
   cursor:pointer;
 }
 
-/**
- *  Issues, MRs legend
- *
- */
-
-.list_legend {
-  float:left;
-  margin-right:20px;
-  .icon {
-    width:12px;
-    height:12px;
-    float:left;
-    margin-right:5px;
-    margin-top: 2px;
-    @include border-radius(4px);
-    &.today{
-      background: #ADA;
-      border:1px solid #8B8;
-    }
-    &.closed {
-      background: #DDD;
-      border:1px solid  #BBB;
-    }
-    &.yours {
-      background: #AAD;
-      border:1px solid #88B;
-    }
-    &.merged {
-      background: #DAD;
-      border:1px solid #B8B;
-    }
-  }
-  .text {
-    padding-bottom: 10px;
-    float:left;
-  }
-}
-
 .merge_request,
 .issue {
-  .list_legend {
-    margin-right: 5px;
-    margin-top: 14px;
-    .icon {
-      width:8px;
-      height:8px;
-      float:left;
-      margin-right:5px;
-      @include border-radius(4px);
-      border:1px solid #ddd;
-    }
-  }
-
   &.today{
     background: #EFE;
     border-color:#CEC;
-    .icon {
-      background: #ADA;
-      border:1px solid #8B8;
-    }
   }
   &.closed {
     background: #F5f5f5;
     border-color:#E5E5E5;
-    .icon {
-      background: #DDD;
-      border:1px solid  #BBB;
-    }
-  }
-  &.yours {
-    .icon {
-      background: #AAD;
-      border:1px solid #88B;
-    }
   }
   &.merged {
     background: #F5f5f5;
     border-color:#E5E5E5;
-    .icon {
-      background: #DAD;
-      border:1px solid #B8B;
-    }
   }
 }
 

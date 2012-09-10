@@ -3,7 +3,7 @@
 
 .team_member_show
   - if can? current_user, :admin_project, @project
-    = link_to 'Remove from team', project_team_member_path(project_id: @project, id: @team_member.id), confirm: 'Are you sure?', method: :delete, class: "right btn btn-danger"
+    = link_to 'Remove from team', project_team_member_path(project_id: @project, id: @team_member.id), confirm: 'Are you sure?', method: :delete, class: "right btn danger"
   .profile_avatar_holder
     = image_tag gravatar_icon(user.email, 60), class: "borders"
   %h3
@@ -19,7 +19,7 @@
   %br
   .row
     .span6
-      %table.no-borders
+      %table.lite
         %tr
           %td Email
           %td= mail_to user.email
@@ -39,7 +39,7 @@
             %td Bio
             %td= user.bio
     .span6
-      %table.no-borders
+      %table.lite
         %tr
           %td Member since
           %td= @team_member.created_at.stamp("Aug 21, 2011")

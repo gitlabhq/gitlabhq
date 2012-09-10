@@ -11,3 +11,7 @@
     .event_feed
       = render "events/event_push", event: event
 
+  - elsif event.membership_changed?
+    .event_feed
+      = render "events/event_membership_changed", event: event
+

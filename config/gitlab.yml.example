@@ -33,10 +33,12 @@ app:
 git_host:
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
-  # host: localhost
+  hooks_path: /home/git/.gitolite/hooks/
+  gitolite_admin_key: gitlab 
   git_user: git
   upload_pack: true
   receive_pack: true
+  # host: localhost
   # port: 22
 
 # Git settings

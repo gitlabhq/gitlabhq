@@ -1,9 +1,15 @@
 module Repository
+  include GitHost
+
   def valid_repo?
     repo
   rescue
     errors.add(:path, "Invalid repository path")
     false
+  end
+
+  def empty_repo?
+    !repo_exists? || !has_commits?
   end
 
   def commit(commit_id = nil)
@@ -36,7 +42,7 @@ module Repository
 
   def has_post_receive_file?
     hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
-    File.exists?(hook_file) 
+    File.exists?(hook_file)
   end
 
   def tags
@@ -48,7 +54,7 @@ module Repository
   end
 
   def url_to_repo
-    Gitlab::GitHost.url_to_repo(path)
+    git_host.url_to_repo(path)
   end
 
   def path_to_repo
@@ -56,16 +62,16 @@ module Repository
   end
 
   def update_repository
-    Gitlab::GitHost.system.update_project(path, self)
+    git_host.update_repository(self)
   end
 
   def destroy_repository
-    Gitlab::GitHost.system.destroy_project(self)
+    git_host.remove_repository(self)
   end
 
   def repo_exists?
     @repo_exists ||= (repo && !repo.branches.empty?)
-  rescue 
+  rescue
     @repo_exists = false
   end
 
@@ -88,24 +94,42 @@ module Repository
     end.sort_by(&:name)
   end
 
+  # Discovers the default branch based on the repository's available branches
+  #
+  # - If no branches are present, returns nil
+  # - If one branch is present, returns its name
+  # - If two or more branches are present, returns the one that has a name
+  #   matching root_ref (default_branch or 'master' if default_branch is nil)
+  def discover_default_branch
+    branches = heads.collect(&:name)
+
+    if branches.length == 0
+      nil
+    elsif branches.length == 1
+      branches.first
+    else
+      branches.select { |v| v == root_ref }.first
+    end
+  end
+
   def has_commits?
     !!commit
   end
 
-  def root_ref 
+  def root_ref
     default_branch || "master"
   end
 
-  def root_ref? branch
+  def root_ref?(branch)
     root_ref == branch
   end
 
   # Archive Project to .tar.gz
   #
-  # Already packed repo archives stored at 
+  # Already packed repo archives stored at
   # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
   #
-  def archive_repo ref
+  def archive_repo(ref)
     ref = ref || self.root_ref
     commit = self.commit(ref)
     return nil unless commit
@@ -115,10 +139,13 @@ module Repository
     storage_path = File.join(Rails.root, "tmp", "repositories", self.code)
     file_path = File.join(storage_path, file_name)
 
+    # Put files into a directory before archiving
+    prefix = self.code + "/"
+
     # Create file if not exists
     unless File.exists?(file_path)
       FileUtils.mkdir_p storage_path
-      file = self.repo.archive_to_file(ref, nil,  file_path)
+      file = self.repo.archive_to_file(ref, prefix,  file_path)
     end
 
     file_path
@@ -129,6 +156,6 @@ module Repository
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.url, "/", path, ".git"].join()
+    http_url = [Gitlab.config.url, "/", path, ".git"].join('')
   end
 end

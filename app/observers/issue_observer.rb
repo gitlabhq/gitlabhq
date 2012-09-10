@@ -9,8 +9,16 @@ class IssueObserver < ActiveRecord::Observer
 
   def after_update(issue)
     send_reassigned_email(issue) if issue.is_being_reassigned?
-    Note.create_status_change_note(issue, current_user, 'closed') if issue.is_being_closed?
-    Note.create_status_change_note(issue, current_user, 'reopened') if issue.is_being_reopened?
+
+    status = nil
+    status = 'closed' if issue.is_being_closed?
+    status = 'reopened' if issue.is_being_reopened?
+    if status
+      Note.create_status_change_note(issue, current_user, status) 
+      [issue.author, issue.assignee].compact.each do |recipient| 
+        Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user)
+      end
+    end
   end
 
   protected

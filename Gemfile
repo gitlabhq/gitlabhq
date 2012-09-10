@@ -1,5 +1,13 @@
 source "http://rubygems.org"
 
+def darwin_only(require_as)
+  RUBY_PLATFORM.include?('darwin') && require_as
+end
+
+def linux_only(require_as)
+  RUBY_PLATFORM.include?('linux') && require_as
+end
+
 gem "rails", "3.2.8"
 
 # Supported DBs
@@ -44,7 +52,8 @@ gem "ffaker"
 gem "seed-fu"
 
 # Markdown to HTML
-gem "redcarpet", "~> 2.1.1"
+gem "redcarpet",     "~> 2.1.1"
+gem "github-markup", "~> 0.7.4"
 
 # Servers
 gem "thin"
@@ -97,20 +106,28 @@ group :development do
 end
 
 group :development, :test do
+  gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
   gem "headless"
-  gem "autotest"
-  gem "autotest-rails"
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
+  gem 'factory_girl_rails'
+
+  # Guard
+  gem 'guard-rspec'
+  gem 'guard-spinach'
+
+  # Notification
+  gem 'rb-fsevent', :require => darwin_only('rb-fsevent')
+  gem 'growl',      :require => darwin_only('growl')
+  gem 'rb-inotify', :require => linux_only('rb-inotify')
 end
 
 group :test do
-  gem 'cucumber-rails', :require => false
   gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
@@ -119,5 +136,5 @@ group :test do
 end
 
 group :production do
-  gem "gitlab_meta", '2.8'
+  gem "gitlab_meta", '2.9'
 end

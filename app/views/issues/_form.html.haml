@@ -18,12 +18,12 @@
           = f.label :assignee_id do
             %i.icon-user
             Assign to
-          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" })
+          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
         .issue_milestone
           = f.label :milestone_id do
             %i.icon-time
             Milestone
-          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" })
+          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
       .issue_description
         .clearfix
@@ -38,19 +38,20 @@
           = f.label :description, "Details"
           .input
             = f.text_area :description, maxlength: 2000, class: "xxlarge", rows: 14
-            %p.hint Markdown is enabled.
+            %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
 
 
     .actions
       - if @issue.new_record?
-        = f.submit 'Submit new issue', class: "primary btn"
+        = f.submit 'Submit new issue', class: "btn save-btn"
       -else
-        = f.submit 'Save changes', class: "primary btn"
+        = f.submit 'Save changes', class: "save-btn btn"
 
+      - cancel_class = 'btn cancel-btn'
       - if request.xhr?
-        = link_to "Cancel", "#back", onclick: "backToIssues();", class: "btn"
+        = link_to "Cancel", "#back", onclick: "backToIssues();", class: cancel_class
       - else
         - if @issue.new_record?
-          = link_to "Cancel", project_issues_path(@project), class: "btn"
+          = link_to "Cancel", project_issues_path(@project), class: cancel_class
         - else
-          = link_to "Cancel", project_issue_path(@project, @issue), class: "btn"
+          = link_to "Cancel", project_issue_path(@project, @issue), class: cancel_class

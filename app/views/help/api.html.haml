@@ -10,9 +10,13 @@
   %li
     %a{href: "#projects"} Projects
   %li
+    %a{href: "#snippets"} Snippets
+  %li
     %a{href: "#users"} Users
   %li
     %a{href: "#issues"} Issues
+  %li
+    %a{href: "#milestones"} Milestones
 
 .file_holder#README
   .file_title
@@ -34,6 +38,16 @@
 
 %br
 
+.file_holder#snippets
+  .file_title
+    %i.icon-file
+    Projects Snippets
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "snippets.md"))
+
+%br
+
 .file_holder#users
   .file_title
     %i.icon-file
@@ -51,3 +65,13 @@
   .file_content.wiki
     = preserve do
       = markdown File.read(Rails.root.join("doc", "api", "issues.md"))
+
+%br
+
+.file_holder#milestones
+  .file_title
+    %i.icon-file
+    Milestones
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "milestones.md"))

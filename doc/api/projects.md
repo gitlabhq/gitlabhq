@@ -1,6 +1,6 @@
 ## List projects
 
-Get a list of authenticated user's projects.
+Get a list of projects owned by the authenticated user.
 
 ```
 GET /projects
@@ -55,7 +55,7 @@ GET /projects
 
 ## Single project
 
-Get an authenticated user's project.
+Get a specific project, identified by project ID, which is owned by the authentication user.
 
 ```
 GET /projects/:id
@@ -89,9 +89,93 @@ Parameters:
 }
 ```
 
+## Create project
+
+Create new project owned by user
+
+```
+POST /projects
+```
+
+Parameters:
+
++ `name` (required) - new project name
++ `code` (optional) - new project code, uses project name if not set
++ `path` (optional) - new project path, uses project name if not set
++ `description (optional) - short project description
++ `default_branch` (optional) - 'master' by default
++ `issues_enabled` (optional) - enabled by default
++ `wall_enabled` (optional) - enabled by default
++ `merge_requests_enabled` (optional) - enabled by default
++ `wiki_enabled` (optional) - enabled by default
+
+Will return created project with status `201 Created` on success, or `404 Not
+found` on fail.
+
+## Get project users
+
+Get users and access roles for existing project
+
+```
+GET /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
+
+Will return users and their access roles with status `200 OK` on success, or `404 Not found` on fail.
+
+## Add project users
+
+Add users to exiting project
+
+```
+POST /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - The ID list of users to add
++ `project_access` (required) - Project access level
+
+Will return status `201 Created` on success, or `404 Not found` on fail.
+
+## Update project users access level
+
+Update existing users to specified access level
+
+```
+PUT /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - The ID list of users to add
++ `project_access` (required) - Project access level
+
+Will return status `200 OK` on success, or `404 Not found` on fail.
+
+## Delete project users
+
+Delete users from exiting project
+
+```
+DELETE /projects/:id/users
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_ids` (required) - The ID list of users to add
+
+Will return status `200 OK` on success, or `404 Not found` on fail.
+
 ## Project repository branches
 
-Get a list of project repository branches sorted by name alphabetically.
+Get a list of repository branches from a project, sorted by name alphabetically.
 
 ```
 GET /projects/:id/repository/branches
@@ -168,7 +252,7 @@ Parameters:
 
 ## Project repository tags
 
-Get a list of project repository tags sorted by name in reverse alphabetical order.
+Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
 
 ```
 GET /projects/:id/repository/tags
@@ -204,108 +288,6 @@ Parameters:
 ]
 ```
 
-# Project Snippets
-
-## List snippets
-
-Not implemented.
-
-## Single snippet
-
-Get a project snippet.
-
-```
-GET /projects/:id/snippets/:snippet_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-
-```json
-{
-  "id": 1,
-  "title": "test",
-  "file_name": "add.rb",
-  "author": {
-    "id": 1,
-    "email": "john@example.com",
-    "name": "John Smith",
-    "blocked": false,
-    "created_at": "2012-05-23T08:00:58Z"
-  },
-  "expires_at": null,
-  "updated_at": "2012-06-28T10:52:04Z",
-  "created_at": "2012-06-28T10:52:04Z"
-}
-```
-
-## Snippet content
-
-Get a raw project snippet.
-
-```
-GET /projects/:id/snippets/:snippet_id/raw
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-
-## New snippet
-
-Create a new project snippet.
-
-```
-POST /projects/:id/snippets
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `title` (required) - The title of a snippet
-+ `file_name` (required) - The name of a snippet file
-+ `lifetime` (optional) - The expiration date of a snippet
-+ `code` (required) - The content of a snippet
-
-Will return created snippet with status `201 Created` on success, or `404 Not found` on fail.
-
-## Edit snippet
-
-Update an existing project snippet.
-
-```
-PUT /projects/:id/snippets/:snippet_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-+ `title` (optional) - The title of a snippet
-+ `file_name` (optional) - The name of a snippet file
-+ `lifetime` (optional) - The expiration date of a snippet
-+ `code` (optional) - The content of a snippet
-
-Will return updated snippet with status `200 OK` on success, or `404 Not found` on fail.
-
-## Delete snippet
-
-Delete existing project snippet.
-
-```
-DELETE /projects/:id/snippets/:snippet_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-
-Status code `200` will be returned on success.
-
 ## Raw blob content
 
 Get the raw file contents for a file.
@@ -321,3 +303,4 @@ Parameters:
 + `filepath` (required) - The path the file 
 
 Will return the raw file contents.
+

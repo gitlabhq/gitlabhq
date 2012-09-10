@@ -16,7 +16,7 @@
       .input= f.text_field :file_name, placeholder: "example.rb"
     .clearfix
       = f.label "Lifetime"
-      .input= f.select :expires_at, lifetime_select_options, {}, style: "width:200px;"
+      .input= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
     .clearfix
       = f.label :content, "Code"
       .input= f.text_area :content, class: "span8"
@@ -26,11 +26,3 @@
     = link_to "Cancel", project_snippets_path(@project), class: " btn"
     - unless @snippet.new_record?
       .right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
-
-
-
-:javascript
-  $(function(){
-    $('select#snippet_expires_at').chosen();
-  });
-

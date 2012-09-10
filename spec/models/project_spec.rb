@@ -2,23 +2,56 @@ require 'spec_helper'
 
 describe Project do
   describe "Associations" do
+    it { should belong_to(:owner).class_name('User') }
     it { should have_many(:users) }
-    it { should have_many(:protected_branches).dependent(:destroy) }
     it { should have_many(:events).dependent(:destroy) }
-    it { should have_many(:wikis).dependent(:destroy) }
     it { should have_many(:merge_requests).dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:issues).dependent(:destroy) }
+    it { should have_many(:milestones).dependent(:destroy) }
+    it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
     it { should have_many(:snippets).dependent(:destroy) }
-    it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:deploy_keys).dependent(:destroy) }
+    it { should have_many(:hooks).dependent(:destroy) }
+    it { should have_many(:wikis).dependent(:destroy) }
+    it { should have_many(:protected_branches).dependent(:destroy) }
   end
 
   describe "Validation" do
+    let!(:project) { create(:project) }
+
     it { should validate_presence_of(:name) }
+    it { should validate_uniqueness_of(:name) }
+    it { should ensure_length_of(:name).is_within(0..255) }
+
     it { should validate_presence_of(:path) }
+    it { should validate_uniqueness_of(:path) }
+    it { should ensure_length_of(:path).is_within(0..255) }
+    # TODO: Formats
+
+    it { should ensure_length_of(:description).is_within(0..2000) }
+
     it { should validate_presence_of(:code) }
+    it { should validate_uniqueness_of(:code) }
+    it { should ensure_length_of(:code).is_within(1..255) }
+    # TODO: Formats
+
+    it { should validate_presence_of(:owner) }
+    it { should ensure_inclusion_of(:issues_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
+
+    it "should not allow new projects beyond user limits" do
+      project.stub(:owner).and_return(double(can_create_project?: false, projects_limit: 1))
+      project.should_not be_valid
+      project.errors[:base].first.should match(/Your own projects limit is 1/)
+    end
+
+    it "should not allow 'gitolite-admin' as repo name" do
+      should allow_value("blah").for(:path)
+      should_not allow_value("gitolite-admin").for(:path)
+    end
   end
 
   describe "Respond to" do
@@ -73,9 +106,11 @@ describe Project do
     it { should respond_to(:trigger_post_receive) }
   end
 
-  it "should not allow 'gitolite-admin' as repo name" do
-    should allow_value("blah").for(:path)
-    should_not allow_value("gitolite-admin").for(:path)
+  describe 'modules' do
+    it { should include_module(Repository) }
+    it { should include_module(PushObserver) }
+    it { should include_module(Authority) }
+    it { should include_module(Team) }
   end
 
   it "should return valid url to repo" do
@@ -85,7 +120,7 @@ describe Project do
 
   it "should return path to repo" do
     project = Project.new(path: "somewhere")
-    project.path_to_repo.should == File.join(Rails.root, "tmp", "tests", "somewhere")
+    project.path_to_repo.should == File.join(Rails.root, "tmp", "repositories", "somewhere")
   end
 
   it "returns the full web URL for this repo" do
@@ -110,7 +145,7 @@ describe Project do
     let(:last_event) { double }
 
     before do
-      project.stub(:events).and_return( [ double, double, last_event ] )
+      project.stub_chain(:events, :order).and_return( [ double, double, last_event ] )
     end
 
     it { project.last_activity.should == last_event }
@@ -208,7 +243,7 @@ describe Project do
     end
   end
 
-  describe :update_merge_requests do 
+  describe :update_merge_requests do
     let(:project) { Factory :project }
 
     before do
@@ -228,7 +263,7 @@ describe Project do
       @merge_request.closed.should be_true
     end
 
-    it "should update merge request commits with new one if pushed to source branch" do 
+    it "should update merge request commits with new one if pushed to source branch" do
       @merge_request.last_commit.should == nil
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a", "refs/heads/master", @key.user)
       @merge_request.reload
@@ -236,23 +271,3 @@ describe Project do
     end
   end
 end
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                     :integer(4)      not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime        not null
-#  updated_at             :datetime        not null
-#  private_flag           :boolean(1)      default(TRUE), not null
-#  code                   :string(255)
-#  owner_id               :integer(4)
-#  default_branch         :string(255)     default("master"), not null
-#  issues_enabled         :boolean(1)      default(TRUE), not null
-#  wall_enabled           :boolean(1)      default(TRUE), not null
-#  merge_requests_enabled :boolean(1)      default(TRUE), not null
-#  wiki_enabled           :boolean(1)      default(TRUE), not null
-#
-

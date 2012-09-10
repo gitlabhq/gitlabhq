@@ -1,38 +1,5 @@
 module GitlabMarkdownHelper
-  # Replaces references (i.e. @abc, #123, !456, ...) in the text with links to
-  # the appropriate items in Gitlab.
-  #
-  # text          - the source text
-  # html_options  - extra options for the reference links as given to link_to
-  #
-  # note: reference links will only be generated if @project is set
-  #
-  # see Gitlab::Markdown for details on the supported syntax
-  def gfm(text, html_options = {})
-    return text if text.nil?
-    return text if @project.nil?
-
-    # Extract pre blocks so they are not altered
-    # from http://github.github.com/github-flavored-markdown/
-    extractions = {}
-    text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) do |match|
-      md5 = Digest::MD5.hexdigest(match)
-      extractions[md5] = match
-      "{gfm-extraction-#{md5}}"
-    end
-
-    # TODO: add popups with additional information
-
-    parser = Gitlab::Markdown.new(@project, html_options)
-    text = parser.parse(text)
-
-    # Insert pre block extractions
-    text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
-      extractions[$1]
-    end
-
-    text.html_safe
-  end
+  include Gitlab::Markdown
 
   # Use this in places where you would normally use link_to(gfm(...), ...).
   #
@@ -54,17 +21,24 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text)
-    @__renderer ||= Redcarpet::Markdown.new(Redcarpet::Render::GitlabHTML.new(self, filter_html: true, with_toc_data: true), {
-      no_intra_emphasis: true,
-      tables: true,
-      fenced_code_blocks: true,
-      autolink: true,
-      strikethrough: true,
-      lax_html_blocks: true,
-      space_after_headers: true,
-      superscript: true
-    })
+    unless @markdown
+      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
+                          # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
+                          filter_html: true,
+                          with_toc_data: true,
+                          hard_wrap: true)
+      @markdown = Redcarpet::Markdown.new(gitlab_renderer,
+                      # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
+                      no_intra_emphasis: true,
+                      tables: true,
+                      fenced_code_blocks: true,
+                      autolink: true,
+                      strikethrough: true,
+                      lax_html_blocks: true,
+                      space_after_headers: true,
+                      superscript: true)
+    end
 
-    @__renderer.render(text).html_safe
+    @markdown.render(text).html_safe
   end
 end

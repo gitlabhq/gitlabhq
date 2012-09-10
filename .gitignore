@@ -22,4 +22,4 @@ config/unicorn.rb
 db/data.yml
 .idea
 .DS_Store
-
+.chef

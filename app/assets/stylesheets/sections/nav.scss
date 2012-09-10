@@ -2,21 +2,17 @@
  *  Main Menu of Application
  *
  */
-ul.main_menu { 
+ul.main_menu {
   border-radius: 4px;
   margin: auto;
   margin:30px 0;
-  background:#eee;
-  border:1px solid #bbb;
+  border:1px solid #AAA;
   height:37px;
-  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-  background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-  background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-  background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+  @include bg-gray-gradient;
   position:relative;
   overflow:hidden;
   @include shade;
-  .count { 
+  .count {
     position: relative;
 	  top: -1px;
 	  display: inline-block;
@@ -33,12 +29,12 @@ ul.main_menu {
 	  border-radius: 8px;
 	 -moz-border-radius: 8px;
   }
-  .label { 
+  .label {
     background:$hover;
     text-shadow:none;
     color:$style_color;
   }
-  li { 
+  li {
     list-style-type: none;
     margin: 0;
     display: table-cell;
@@ -47,7 +43,7 @@ ul.main_menu {
     border-left: 1px solid #EEE;
     border-bottom:2px solid #CFCFCF;
 
-    &:first-child{ 
+    &:first-child{
       -webkit-border-top-left-radius: 4px;
       -webkit-border-bottom-left-radius: 4px;
       -moz-border-radius-topleft: 4px;
@@ -57,31 +53,31 @@ ul.main_menu {
       border-left: 0;
     }
 
-    &.current { 
+    &.current {
       background-color:#D5D5D5;
-      border-bottom: 2px solid $style_color;
+      border-bottom: 1px solid #AAA;
       border-right: 1px solid #BBB;
       border-left: 1px solid #BBB;
       border-radius: 0 0 1px 1px;
-      &:first-child{ 
+      &:first-child{
         border-bottom:none;
         border-left:none;
       }
     }
 
-    &.home { 
-      a { 
+    &.home {
+      a {
         background: url(home_icon.PNG) no-repeat center center;
         text-indent:-9999px;
         min-width:20px;
-        img { 
+        img {
           position:relative;
           top:4px;
         }
       }
     }
   }
-  a { 
+  a {
     display: block;
     text-align: center;
     font-weight:bold;
@@ -89,7 +85,7 @@ ul.main_menu {
     line-height:36px;
     color: $style_color;
     text-shadow:0 1px 1px white;
-
+    padding:0 10px;
   }
 }
 /*

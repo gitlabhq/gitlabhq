@@ -11,11 +11,11 @@ class ApplicationController < ActionController::Base
   helper_method :abilities, :can?
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
-    render "errors/gitolite", layout: "error"
+    render "errors/gitolite", layout: "error", status: 500
   end
 
   rescue_from Encoding::CompatibilityError do |exception|
-    render "errors/encoding", layout: "error", status: 404
+    render "errors/encoding", layout: "error", status: 500
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -116,22 +116,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def load_refs
-    if params[:ref].blank?
-      @branch = params[:branch].blank? ? nil : params[:branch]
-      @tag = params[:tag].blank? ? nil : params[:tag]
-      @ref = @branch || @tag || @project.try(:default_branch) || Repository.default_ref
-    else
-      @ref = params[:ref]
-    end
-  end
-
   def render_404
     render file: File.join(Rails.root, "public", "404"), layout: false, status: "404"
   end
 
   def require_non_empty_project
-    redirect_to @project unless @project.repo_exists? && @project.has_commits?
+    redirect_to @project if @project.empty_repo?
   end
 
   def no_cache_headers

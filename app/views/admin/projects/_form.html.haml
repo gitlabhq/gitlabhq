@@ -10,19 +10,17 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-      = f.submit project.new_record? ? 'Create project' : 'Save Project', class: "btn primary"
 
   %hr
-  .alert.alert-info
-    %h5 Advanced settings:
+  .adv_settings
+    %h6 Advanced settings:
     .clearfix
       = f.label :path do
-        Git Clone
+        Path
       .input
         .input-prepend
-          %span.add-on= Gitlab.config.ssh_path
-          = f.text_field :path, placeholder: "example_project", disabled: !!project.id
-          %span.add-on= ".git"
+          %strong
+            = text_field_tag :ppath, @admin_project.path_to_repo, class: "xlarge", disabled: true
     .clearfix
       = f.label :code do
         URL
@@ -34,7 +32,7 @@
     - unless project.new_record?
       .clearfix
         = f.label :owner_id
-        .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
+        .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
 
       - if project.repo_exists?
         .clearfix
@@ -42,8 +40,9 @@
           .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless project.new_record?
-    .alert.alert-info
-      %h5 Features:
+    %hr
+    .adv_settings
+      %h6 Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"
@@ -63,13 +62,13 @@
 
   - unless project.new_record?
     .actions
-      = f.submit 'Save Project', class: "btn primary"
+      = f.submit 'Save Project', class: "btn save-btn"
+      = link_to 'Cancel', admin_projects_path, class: "btn cancel-btn"
 
 
 
 :javascript
   $(function(){
-    $('#project_owner_id').chosen();
     new Projects();
   })
 

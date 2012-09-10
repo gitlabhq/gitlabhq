@@ -37,7 +37,7 @@ class IssuesController < ApplicationController
   end
 
   def new
-    @issue = @project.issues.new
+    @issue = @project.issues.new(params[:issue])
     respond_with(@issue)
   end
 
@@ -60,7 +60,13 @@ class IssuesController < ApplicationController
     @issue.save
 
     respond_to do |format|
-      format.html { redirect_to project_issue_path(@project, @issue) }
+      format.html do
+        if @issue.valid? 
+          redirect_to project_issue_path(@project, @issue)
+        else
+          render :new
+        end
+      end
       format.js
     end
   end
@@ -162,10 +168,10 @@ class IssuesController < ApplicationController
 
   def issues_filter
     {
-      all: "1",
-      closed: "2",
-      to_me: "3",
-      open: "0" 
+      all: "all",
+      closed: "closed",
+      to_me: "assigned-to-me",
+      open: "open" 
     }
   end
 end

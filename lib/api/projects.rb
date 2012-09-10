@@ -9,7 +9,7 @@ module Gitlab
       # Example Request:
       #   GET /projects
       get do
-        @projects = current_user.projects
+        @projects = paginate current_user.projects
         present @projects, with: Entities::Project
       end
 
@@ -21,6 +21,89 @@ module Gitlab
       #   GET /projects/:id
       get ":id" do
         present user_project, with: Entities::Project
+      end
+
+      # Create new project
+      #
+      # Parameters:
+      #   name (required) - name for new project
+      #   code (optional) - code for new project, uses project name if not set
+      #   path (optional) - path for new project, uses project name if not set
+      #   description (optional) - short project description
+      #   default_branch (optional) - 'master' by default
+      #   issues_enabled (optional) - enabled by default
+      #   wall_enabled (optional) - enabled by default
+      #   merge_requests_enabled (optional) - enabled by default
+      #   wiki_enabled (optional) - enabled by default
+      # Example Request
+      #   POST /projects
+      post do
+        params[:code] ||= params[:name]
+        params[:path] ||= params[:name]
+        project_attrs = {}
+        params.each_pair do |k ,v|
+          if Project.attribute_names.include? k
+            project_attrs[k] = v
+          end
+        end
+        @project = Project.create_by_user(project_attrs, current_user)
+        if @project.saved?
+          present @project, with: Entities::Project
+        else
+          not_found!
+        end
+      end
+
+      # Get project users
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/users
+      get ":id/users" do
+        @users_projects = paginate user_project.users_projects
+        present @users_projects, with: Entities::UsersProject
+      end
+
+      # Add users to project with specified access level
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to add
+      #   project_access (required) - Project access level
+      # Example Request:
+      #   POST /projects/:id/users
+      post ":id/users" do
+        authorize! :admin_project, user_project
+        user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
+        nil
+      end
+
+      # Update users to specified access level
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to add
+      #   project_access (required) - New project access level to
+      # Example Request:
+      #   PUT /projects/:id/add_users
+      put ":id/users" do
+        authorize! :admin_project, user_project
+        user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
+        nil
+      end
+
+      # Delete project users
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_ids (required) - The ID list of users to delete
+      # Example Request:
+      #   DELETE /projects/:id/users
+      delete ":id/users" do
+        authorize! :admin_project, user_project
+        user_project.delete_users_ids_from_team(params[:user_ids].values)
+        nil
       end
 
       # Get a project repository branches
@@ -89,7 +172,7 @@ module Gitlab
         if @snippet.save
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -106,6 +189,8 @@ module Gitlab
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         parameters = {
           title: (params[:title] || @snippet.title),
           file_name: (params[:file_name] || @snippet.file_name),
@@ -116,7 +201,7 @@ module Gitlab
         if @snippet.update_attributes(parameters)
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -129,6 +214,8 @@ module Gitlab
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         @snippet.destroy
       end
 
@@ -157,10 +244,10 @@ module Gitlab
         ref = params[:sha]
 
         commit = user_project.commit ref
-        error!('404 Commit Not Found', 404) unless commit
+        not_found! "Commit" unless commit
 
         tree = Tree.new commit.tree, user_project, ref, params[:filepath]
-        error!('404 File Not Found', 404) unless tree.try(:tree)
+        not_found! "File" unless tree.try(:tree)
 
         if tree.text?
           encoding = Gitlab::Encode.detect_encoding(tree.data)

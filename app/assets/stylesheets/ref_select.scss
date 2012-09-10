@@ -33,9 +33,7 @@
   }
 
   .chzn-single { 
-    background:#ddd;
-    //border:none;
-    //box-shadow:none;
+    @include bg-gray-gradient;
 
     div { 
       background:transparent;

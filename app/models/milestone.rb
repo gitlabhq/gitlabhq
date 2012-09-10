@@ -28,17 +28,9 @@ class Milestone < ActiveRecord::Base
   end
 
   def percent_complete
-    @percent_complete ||= begin
-                            total_i = self.issues.count
-                            closed_i = self.issues.closed.count
-                            if total_i > 0
-                              (closed_i * 100) / total_i
-                            else
-                              100
-                            end
-                          rescue => ex
-                            0
-                          end
+    ((self.issues.closed.count * 100) / self.issues.count).abs
+  rescue ZeroDivisionError
+    100
   end
 
   def expires_at

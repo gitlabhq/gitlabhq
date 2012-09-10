@@ -65,6 +65,11 @@ input.check_all_issues {
   }
 }
 
+@media (min-width: 800px) { .issues_filters select { width:160px; }  }
+@media (min-width: 1000px) { .issues_filters select { width:200px; }  }
+@media (min-width: 1200px) { .issues_filters select { width:220px; }  }
+
+
 #issues-table-holder { 
   .issues_filters { 
     form { 
@@ -98,4 +103,12 @@ input.check_all_issues {
 
 #update_status { 
   width:100px;
+}
+
+/**
+ * Milestones list
+ *
+ */
+.milestone {
+  @extend .wll;
 }

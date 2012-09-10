@@ -7,11 +7,11 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-      = f.submit 'Create project', class: "btn primary"
+      = f.submit 'Create project', class: "btn primary project-submit"
 
   %hr
-  .alert.alert-info
-    %h5 Advanced settings:
+  %div.adv_settings
+    %h6 Advanced settings:
     .clearfix
       = f.label :path do
         Git Clone

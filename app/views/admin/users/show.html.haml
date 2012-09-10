@@ -8,7 +8,11 @@
 
 %br
 
-%table.zebra-striped.table-bordered
+%table.zebra-striped
+  %thead
+    %tr
+      %th Profile
+      %th
   %tr
     %td
       %b
@@ -57,15 +61,15 @@
 %h3 Add User to Projects
 %br
 = form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
-  %table.table-bordered
+  %table
     %thead
       %tr
         %th Projects
         %th Project Access:
 
     %tr
-      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name),  multiple: true
-      %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select"
+      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+      %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
 
     %tr
       %td= submit_tag 'Add', class: "btn primary"
@@ -78,9 +82,9 @@
   %h3 Projects
   %br
 
-  %table.zebra-striped.table-bordered
-    %tr
-      %thead
+  %table.zebra-striped
+    %thead
+      %tr
         %th Name
         %th Project Access
         %th
@@ -93,17 +97,3 @@
         %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), class: "medium project-access-select", disabled: :disabled
         %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
         %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn small danger"
-
-:css
-  form select {
-    width:150px;
-  }
-
-  #project_ids {
-    width:300px;
-  }
-
-:javascript
-  $('select#project_ids').chosen();
-  $('select#repo_access').chosen();
-  $('select#project_access').chosen();

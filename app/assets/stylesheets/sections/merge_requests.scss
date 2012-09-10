@@ -11,23 +11,6 @@
     background:#f1f1f1;
   }
 
-  .commit { 
-    margin:0;
-    padding:0;
-    padding: 5px;
-    margin-bottom: 5px;
-
-    .committed_ago { 
-      display:none;
-    }
-    .browse_code_link_holder { 
-      display:none;
-    }
-    list-style:none;
-    &:hover { 
-      background:none;
-    }
-  }
 }
 
 /**
@@ -55,6 +38,7 @@
     background: #CEB;
 
     .accept_merge_request { 
+      font-size:13px;
       float:left;
     }
     .remove_branch_holder { 
@@ -98,4 +82,43 @@ li.merge_request {
 .merge_in_progress { 
   @extend .padded;
   @extend .append-bottom-10;
+}
+
+.label_branch {
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  border:none;
+  font-size:13px;
+  background: #474D57;
+  color:#fff;
+  font-weight:bold;
+  font-family: monospace;
+}
+
+.mr_source_commit, 
+.mr_target_commit { 
+  .commit { 
+    margin:0;
+    padding:0;
+    padding: 5px;
+    margin-bottom: 5px;
+    .avatar { position:relative }
+    .row_title { 
+      color:#444;
+    }
+    .commit-author-name,
+    .dash,
+    .committed_ago,
+    .browse_code_link_holder {
+      display:none;
+    }
+    list-style:none;
+    &:hover { 
+      background:none;
+    }
+  }
+}
+
+.mr_direction_tip { 
+  margin-top:40px
 }

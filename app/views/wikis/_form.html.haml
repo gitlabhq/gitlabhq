@@ -14,13 +14,14 @@
     .middle_box_content
       .input
         %span.cgray
-          Wiki content is parsed with #{link_to "Markdown", "http://en.wikipedia.org/wiki/Markdown"}.
-          To add link to new page you can just type
+          Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+          To link to a (new) page you can just type
           %code [Link Title](page-slug)
+          \.
 
     .bottom_box_content
       = f.label :content
       .input= f.text_area :content, class: 'span8'
   .actions
-    = f.submit 'Save', class: "primary btn"
-    = link_to "Cancel", project_wiki_path(@project, :index), class: "btn"
+    = f.submit 'Save', class: "save-btn btn"
+    = link_to "Cancel", project_wiki_path(@project, :index), class: "btn cancel-btn"

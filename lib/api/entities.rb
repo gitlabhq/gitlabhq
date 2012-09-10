@@ -16,6 +16,11 @@ module Gitlab
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
     end
 
+    class UsersProject < Grape::Entity
+      expose :user, using: Entities::UserBasic
+      expose :project_access
+    end
+
     class RepoObject < Grape::Entity
       expose :name, :commit
     end

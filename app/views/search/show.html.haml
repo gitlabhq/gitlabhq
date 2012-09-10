@@ -4,7 +4,7 @@
       %strong Looking for
     .input
       = text_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge", id: "dashboard_search"
-      = submit_tag 'Search', class: "btn btn-primary"
+      = submit_tag 'Search', class: "btn primary"
 - if params[:search].present?
   %br
   %h3
@@ -14,7 +14,7 @@
   .search_results
     .row
       .span6
-        %table.admin-table
+        %table
           %tr
             %th Projects
           %tbody
@@ -31,7 +31,7 @@
                 %td
                   %h4.nothing_here_message No Projects
         %br
-        %table.admin-table
+        %table
           %tr
             %th Merge Requests
           %tbody
@@ -49,7 +49,7 @@
                 %td
                   %h4.nothing_here_message No Merge Requests
       .span6
-        %table.admin-table
+        %table
           %tr
             %th Issues
           %tbody

@@ -1,24 +1,9 @@
-# == Schema Information
-#
-# Table name: events
-#
-#  id          :integer(4)      not null, primary key
-#  target_type :string(255)
-#  target_id   :integer(4)
-#  title       :string(255)
-#  data        :text
-#  project_id  :integer(4)
-#  created_at  :datetime        not null
-#  updated_at  :datetime        not null
-#  action      :integer(4)
-#  author_id   :integer(4)
-#
-
 require 'spec_helper'
 
 describe Event do
   describe "Associations" do
     it { should belong_to(:project) }
+    it { should belong_to(:target) }
   end
 
   describe "Respond to" do
@@ -27,16 +12,6 @@ describe Event do
     it { should respond_to(:issue_title) }
     it { should respond_to(:merge_request_title) }
     it { should respond_to(:commits) }
-  end
-
-  describe "Creation" do
-    before do 
-      @event = Factory :event
-    end
-
-    it "should create a valid event" do 
-      @event.should be_valid
-    end
   end
 
   describe "Push event" do 
@@ -73,5 +48,27 @@ describe Event do
     it { @event.tag?.should be_false }
     it { @event.branch_name.should == "master" }
     it { @event.author.should == @user }
+  end
+
+  describe "Joined project team" do
+    let(:project) {Factory.create :project}
+    let(:new_user) {Factory.create :user}
+    it "should create event" do
+      UsersProject.observers.enable :users_project_observer
+      expect{
+        UsersProject.bulk_import(project, [new_user.id], UsersProject::DEVELOPER)
+      }.to change{Event.count}.by(1)
+    end
+  end
+  describe "Left project team" do
+    let(:project) {Factory.create :project}
+    let(:new_user) {Factory.create :user}
+    it "should create event" do
+      UsersProject.bulk_import(project, [new_user.id], UsersProject::DEVELOPER)
+      UsersProject.observers.enable :users_project_observer
+      expect{
+        UsersProject.bulk_delete(project, [new_user.id])
+      }.to change{Event.count}.by(1)
+    end
   end
 end

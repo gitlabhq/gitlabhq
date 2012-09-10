@@ -1,11 +1,13 @@
-%table.admin-table
-  %thead
-    %tr
-      %th User
-      %th Permissions
-  %tbody
-    - @project.users_projects.each do |up|
-      = render(partial: 'team_members/show', locals: {member: up})
+- grouper_project_members(@project).each do |access, members|
+  %table
+    %thead
+      %tr
+        %th.span7
+          = Project.access_options.key(access).pluralize
+        %th
+    %tbody
+      - members.each do |up|
+        = render(partial: 'team_members/show', locals: {member: up})
 
 
 :javascript

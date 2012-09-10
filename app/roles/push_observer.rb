@@ -1,3 +1,6 @@
+# Includes methods for handling Git Push events
+#
+# Triggered by PostReceive job
 module PushObserver
   def observe_push(oldrev, newrev, ref, user)
     data = post_receive_data(oldrev, newrev, ref, user)
@@ -84,11 +87,10 @@ module PushObserver
     data
   end
 
-
-  # This method will be called after each post receive
-  # and only if user present in gitlab.
-  # All callbacks for post receive should be placed here
+  # This method will be called after each post receive and only if the provided
+  # user is present in GitLab.
   #
+  # All callbacks for post receive should be placed here.
   def trigger_post_receive(oldrev, newrev, ref, user)
     # Create push event
     self.observe_push(oldrev, newrev, ref, user)
@@ -101,5 +103,11 @@ module PushObserver
 
     # Create satellite
     self.satellite.create unless self.satellite.exists?
+
+    # Discover the default branch, but only if it hasn't already been set to
+    # something else
+    if default_branch.nil?
+      update_attributes(default_branch: discover_default_branch)
+    end
   end
 end
