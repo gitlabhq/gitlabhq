@@ -45,7 +45,7 @@ module Gitlab
         if @milestone.save
           present @milestone, with: Entities::Milestone
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -74,7 +74,7 @@ module Gitlab
         if @milestone.update_attributes(parameters)
           present @milestone, with: Entities::Milestone
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
     end

@@ -50,7 +50,7 @@ module Gitlab
         if @project.saved?
           present @project, with: Entities::Project
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -172,7 +172,7 @@ module Gitlab
         if @snippet.save
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -201,7 +201,7 @@ module Gitlab
         if @snippet.update_attributes(parameters)
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -244,10 +244,10 @@ module Gitlab
         ref = params[:sha]
 
         commit = user_project.commit ref
-        error!('404 Commit Not Found', 404) unless commit
+        not_found! "Commit" unless commit
 
         tree = Tree.new commit.tree, user_project, ref, params[:filepath]
-        error!('404 File Not Found', 404) unless tree.try(:tree)
+        not_found! "File" unless tree.try(:tree)
 
         if tree.text?
           encoding = Gitlab::Encode.detect_encoding(tree.data)
