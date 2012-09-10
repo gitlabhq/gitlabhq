@@ -1,11 +1,11 @@
 Feature: Project Team management
-  Background: 
-    Given I signin as a user
+  Background:
+    Given I sign in as a user
     And I own project "Shop"
-    And gitlab user "Mike" 
-    And gitlab user "Sam" 
+    And gitlab user "Mike"
+    And gitlab user "Sam"
     And "Sam" is "Shop" developer
-    And I visit project "Shop" team page 
+    And I visit project "Shop" team page
 
   Scenario: See all team members
     Then I should be able to see myself in team
@@ -20,7 +20,7 @@ Feature: Project Team management
   Scenario: Update user access
     Given I should see "Sam" in team list as "Developer"
     And I change "Sam" role to "Reporter"
-    Then I visit project "Shop" team page 
+    Then I visit project "Shop" team page
     And I should see "Sam" in team list as "Reporter"
 
   Scenario: View team member profile
@@ -30,6 +30,5 @@ Feature: Project Team management
   Scenario: Cancel team member
     Given I click link "Sam"
     And I click link "Remove from team"
-    Then I visit project "Shop" team page 
+    Then I visit project "Shop" team page
     And I should not see "Sam" in team list
-

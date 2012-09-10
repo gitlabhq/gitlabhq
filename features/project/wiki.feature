@@ -1,6 +1,6 @@
-Feature: Wiki
-  Background: 
-    Given I signin as a user
+Feature: Project Wiki
+  Background:
+    Given I sign in as a user
     And I own project "Shop"
     Given I visit project wiki page
 

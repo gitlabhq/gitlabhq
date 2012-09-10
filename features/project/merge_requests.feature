@@ -1,10 +1,10 @@
-Feature: Merge Requests
+Feature: Project Merge Requests
   Background:
-    Given I signin as a user
+    Given I sign in as a user
     And I own project "Shop"
     And project "Shop" have "Bug NS-04" open merge request
     And project "Shop" have "Feature NS-03" closed merge request
-    And I visit project "Shop" merge requests page 
+    And I visit project "Shop" merge requests page
 
   Scenario: I should see open merge requests
     Then I should see "Bug NS-04" in merge requests
