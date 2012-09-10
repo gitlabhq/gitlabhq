@@ -1,4 +1,7 @@
 class DashboardIssues < Spinach::FeatureSteps
+  include SharedAuthentication
+  include SharedPaths
+
   Then 'I should see issues assigned to me' do
     issues = @user.issues
     issues.each do |issue|
@@ -7,26 +10,10 @@ class DashboardIssues < Spinach::FeatureSteps
     end
   end
 
-  Given 'I sign in as a user' do
-    login_as :user
-  end
-
   And 'I have assigned issues' do
     project = Factory :project
     project.add_access(@user, :read, :write)
 
-    issue1 = Factory :issue,
-      :author => @user,
-      :assignee => @user,
-      :project => project
-
-    issue2 = Factory :issue,
-      :author => @user,
-      :assignee => @user,
-      :project => project
-  end
-
-  And 'I visit dashboard issues page' do
-    visit dashboard_issues_path
+    2.times { Factory :issue, :author => @user, :assignee => @user, :project => project }
   end
 end

@@ -1,4 +1,7 @@
 class Dashboard < Spinach::FeatureSteps
+  include SharedAuthentication
+  include SharedPaths
+
   Then 'I should see "New Project" link' do
     page.should have_link "New Project"
   end
@@ -38,10 +41,6 @@ class Dashboard < Spinach::FeatureSteps
     )
   end
 
-  When 'I visit dashboard page' do
-    visit dashboard_path
-  end
-
   Then 'I should see "John Doe joined project Shop" event' do
     page.should have_content "John Doe joined project Shop"
   end
@@ -58,10 +57,6 @@ class Dashboard < Spinach::FeatureSteps
 
   Then 'I should see "John Doe left project Shop" event' do
     page.should have_content "John Doe left project Shop"
-  end
-
-  Given 'I sign in as a user' do
-    login_as :user
   end
 
   And 'I own project "Shop"' do

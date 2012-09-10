@@ -1,7 +1,6 @@
 class Profile < Spinach::FeatureSteps
-  Given 'I visit profile page' do
-    visit profile_path
-  end
+  include SharedAuthentication
+  include SharedPaths
 
   Then 'I should see my profile info' do
     page.should have_content "Profile"
@@ -23,10 +22,6 @@ class Profile < Spinach::FeatureSteps
     @user.twitter.should == 'testtwitter'
   end
 
-  Given 'I visit profile password page' do
-    visit profile_password_path
-  end
-
   Then 'I change my password' do
     fill_in "user_password", :with => "222333"
     fill_in "user_password_confirmation", :with => "222333"
@@ -37,10 +32,6 @@ class Profile < Spinach::FeatureSteps
     current_path.should == new_user_session_path
   end
 
-  Given 'I visit profile token page' do
-    visit profile_token_path
-  end
-
   Then 'I reset my token' do
     @old_token = @user.private_token
     click_button "Reset"
@@ -49,9 +40,5 @@ class Profile < Spinach::FeatureSteps
   And 'I should see new token' do
     find("#token").value.should_not == @old_token
     find("#token").value.should == @user.reload.private_token
-  end
-
-  Given 'I sign in as a user' do
-    login_as :user
   end
 end

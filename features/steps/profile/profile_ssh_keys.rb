@@ -1,4 +1,6 @@
 class ProfileSshKeys < Spinach::FeatureSteps
+  include SharedAuthentication
+
   Then 'I should see my ssh keys' do
     @user.keys.each do |key|
       page.should have_content(key.title)
@@ -38,10 +40,6 @@ class ProfileSshKeys < Spinach::FeatureSteps
     within "#keys-table" do
       page.should_not have_content "Work"
     end
-  end
-
-  Given 'I sign in as a user' do
-    login_as :user
   end
 
   And 'I have ssh key "ssh-rsa Work"' do

@@ -4,7 +4,7 @@ Feature: Create Project
   Should be able to create a new one
 
   Scenario: User create a project
-    Given I signin as a user
+    Given I sign in as a user
     When I visit new project page
     And fill project form with valid data
     Then I should see project page

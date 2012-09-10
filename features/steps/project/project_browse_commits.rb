@@ -1,4 +1,8 @@
 class ProjectBrowseCommits < Spinach::FeatureSteps
+  include SharedAuthentication
+  include SharedProject
+  include SharedPaths
+
   Then 'I see project commits' do
     current_path.should == project_commits_path(@project)
 
@@ -29,10 +33,6 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     page.should have_content "Showing 1 changed file"
   end
 
-  Given 'I visit compare refs page' do
-    visit compare_project_commits_path(@project)
-  end
-
   And 'I fill compare fields with refs' do
     fill_in "from", :with => "master"
     fill_in "to", :with => "stable"
@@ -43,18 +43,5 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     page.should have_content "Commits (27)"
     page.should have_content "Compare View"
     page.should have_content "Showing 73 changed files"
-  end
-
-  Given 'I sign in as a user' do
-    login_as :user
-  end
-
-  And 'I own project "Shop"' do
-    @project = Factory :project, :name => "Shop"
-    @project.add_access(@user, :admin)
-  end
-
-  Given 'I visit project commits page' do
-    visit project_commits_path(@project)
   end
 end

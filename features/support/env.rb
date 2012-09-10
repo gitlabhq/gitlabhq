@@ -5,11 +5,12 @@ require 'rspec'
 require 'database_cleaner'
 require 'spinach/capybara'
 
-%w(gitolite_stub login_helpers stubbed_repository valid_commit).each do |f|
+%w(gitolite_stub stubbed_repository valid_commit).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
-include LoginHelpers
+Dir["#{Rails.root}/features/steps/shared/*.rb"].each {|file| require file}
+
 include GitoliteStub
 
 WebMock.allow_net_connect!

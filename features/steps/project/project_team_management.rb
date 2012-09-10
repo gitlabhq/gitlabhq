@@ -1,4 +1,8 @@
 class ProjectTeamManagement < Spinach::FeatureSteps
+  include SharedAuthentication
+  include SharedProject
+  include SharedPaths
+
   Then 'I should be able to see myself in team' do
     page.should have_content(@user.name)
     page.should have_content(@user.email)
@@ -42,10 +46,6 @@ class ProjectTeamManagement < Spinach::FeatureSteps
     end
   end
 
-  Then 'I visit project "Shop" team page' do
-    visit team_project_path(Project.find_by_name("Shop"))
-  end
-
   And 'I should see "Sam" in team list as "Reporter"' do
     user = User.find_by_name("Sam")
     role_id = find(".user_#{user.id} #team_member_project_access").value
@@ -71,15 +71,6 @@ class ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by_name("Sam")
     page.should_not have_content(user.name)
     page.should_not have_content(user.email)
-  end
-
-  Given 'I sign in as a user' do
-    login_as :user
-  end
-
-  And 'I own project "Shop"' do
-    @project = Factory :project, :name => "Shop"
-    @project.add_access(@user, :admin)
   end
 
   And 'gitlab user "Mike"' do

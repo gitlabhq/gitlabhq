@@ -1,19 +1,13 @@
 class ProjectNetworkGraph < Spinach::FeatureSteps
+  include SharedAuthentication
+  include SharedProject
+
   Then 'page should have network graph' do
     page.should have_content "Project Network Graph"
     within ".graph" do
       page.should have_content "master"
       page.should have_content "scss_refactor..."
     end
-  end
-
-  Given 'I sign in as a user' do
-    login_as :user
-  end
-
-  And 'I own project "Shop"' do
-    @project = Factory :project, :name => "Shop"
-    @project.add_access(@user, :admin)
   end
 
   And 'I visit project "Shop" network page' do

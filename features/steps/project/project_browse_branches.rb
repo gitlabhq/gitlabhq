@@ -1,4 +1,8 @@
 class ProjectBrowseBranches < Spinach::FeatureSteps
+  include SharedAuthentication
+  include SharedProject
+  include SharedPaths
+
   Then 'I should see "Shop" recent branches list' do
     page.should have_content "Branches"
     page.should have_content "master"
@@ -24,21 +28,8 @@ class ProjectBrowseBranches < Spinach::FeatureSteps
     end
   end
 
-  Given 'I sign in as a user' do
-    login_as :user
-  end
-
-  And 'I own project "Shop"' do
-    @project = Factory :project, :name => "Shop"
-    @project.add_access(@user, :admin)
-  end
-
   And 'project "Shop" has protected branches' do
     project = Project.find_by_name("Shop")
     project.protected_branches.create(:name => "stable")
-  end
-
-  Given 'I visit project branches page' do
-    visit branches_project_repository_path(@project)
   end
 end

@@ -1,11 +1,9 @@
-@javascript
 Feature: Project Wall
   In order to use Project Wall
-  A user
-  Should be able to read & write messages
+  A user should be able to read and write messages
 
   Background:
-    Given I signin as a user
+    Given I sign in as a user
     And I own project "Shop"
     And I visit project "Shop" wall page
 

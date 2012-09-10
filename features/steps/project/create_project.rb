@@ -1,11 +1,6 @@
 class CreateProject < Spinach::FeatureSteps
-  Given 'I signin as a user' do
-    login_as :user
-  end
-
-  When 'I visit new project page' do
-    visit new_project_path
-  end
+  include SharedAuthentication
+  include SharedPaths
 
   And 'fill project form with valid data' do
     fill_in 'project_name', :with => 'NewProject'
@@ -16,7 +11,7 @@ class CreateProject < Spinach::FeatureSteps
 
   Then 'I should see project page' do
     current_path.should == project_path(Project.last)
-    page.should have_content('NewProject')
+    page.should have_content "NewProject"
   end
 
   And 'I should see empty project instuctions' do
