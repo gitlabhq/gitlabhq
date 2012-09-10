@@ -113,6 +113,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/hooks
       get ":id/hooks" do
+        authorize! :admin_project, user_project
         @hooks = paginate user_project.hooks
         present @hooks, with: Entities::Hook
       end
@@ -125,6 +126,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/hooks
       post ":id/hooks" do
+        authorize! :admin_project, user_project
         @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
           present @hook, with: Entities::Hook
@@ -141,6 +143,7 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/hooks
       delete ":id/hooks" do
+        authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         @hook.destroy
         nil
