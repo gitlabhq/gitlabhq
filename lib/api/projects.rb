@@ -50,7 +50,7 @@ module Gitlab
         if @project.saved?
           present @project, with: Entities::Project
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -74,6 +74,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/users
       post ":id/users" do
+        authorize! :admin_project, user_project
         user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
         nil
       end
@@ -87,6 +88,7 @@ module Gitlab
       # Example Request:
       #   PUT /projects/:id/add_users
       put ":id/users" do
+        authorize! :admin_project, user_project
         user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
         nil
       end
@@ -99,6 +101,7 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/users
       delete ":id/users" do
+        authorize! :admin_project, user_project
         user_project.delete_users_ids_from_team(params[:user_ids].values)
         nil
       end
@@ -209,7 +212,7 @@ module Gitlab
         if @snippet.save
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -226,6 +229,8 @@ module Gitlab
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         parameters = {
           title: (params[:title] || @snippet.title),
           file_name: (params[:file_name] || @snippet.file_name),
@@ -236,7 +241,7 @@ module Gitlab
         if @snippet.update_attributes(parameters)
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -249,6 +254,8 @@ module Gitlab
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         @snippet.destroy
       end
 
@@ -277,10 +284,10 @@ module Gitlab
         ref = params[:sha]
 
         commit = user_project.commit ref
-        error!('404 Commit Not Found', 404) unless commit
+        not_found! "Commit" unless commit
 
         tree = Tree.new commit.tree, user_project, ref, params[:filepath]
-        error!('404 File Not Found', 404) unless tree.try(:tree)
+        not_found! "File" unless tree.try(:tree)
 
         if tree.text?
           encoding = Gitlab::Encode.detect_encoding(tree.data)

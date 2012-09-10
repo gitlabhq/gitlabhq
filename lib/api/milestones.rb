@@ -45,7 +45,7 @@ module Gitlab
         if @milestone.save
           present @milestone, with: Entities::Milestone
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -61,6 +61,8 @@ module Gitlab
       # Example Request:
       #   PUT /projects/:id/milestones/:milestone_id
       put ":id/milestones/:milestone_id" do
+        authorize! :admin_milestone, user_project
+
         @milestone = user_project.milestones.find(params[:milestone_id])
         parameters = {
           title: (params[:title] || @milestone.title),
@@ -72,7 +74,7 @@ module Gitlab
         if @milestone.update_attributes(parameters)
           present @milestone, with: Entities::Milestone
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
     end

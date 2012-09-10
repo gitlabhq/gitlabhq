@@ -90,6 +90,8 @@ module PushEvent
 
   def push_with_commits? 
     md_ref? && commits.any? && parent_commit && last_commit
+  rescue Grit::NoSuchPathError
+    false
   end
 
   def last_push_to_non_root?

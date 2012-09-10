@@ -102,6 +102,10 @@ class Settings < Settingslogic
       git_host['admin_uri'] || 'git@localhost:gitolite-admin'
     end
 
+    def gitolite_admin_key
+      git_host['gitolite_admin_key'] || 'gitlab'
+    end
+
     def default_projects_limit
       app['default_projects_limit'] || 10
     end

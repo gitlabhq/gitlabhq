@@ -179,6 +179,15 @@ span.update-author {
   &.merged {
     background-color: #2A2;
   }
+
+  &.joined {
+    background-color: #1ca9dd;
+  }
+
+  &.left {
+    background-color: #888;
+    float:none;
+  }
 }
 
 form {

@@ -9,10 +9,9 @@
       = link_to "history", project_commits_path(@project, path: params[:path], ref: @ref), class: "btn very_small"
       = link_to "blame", blame_file_project_ref_path(@project, @ref, path: params[:path]), class: "btn very_small"
   - if file.text?
-    - if name =~ /\.(md|markdown)$/i
+    - if markup?(name)
       .file_content.wiki
-        = preserve do
-          = markdown(file.data)
+        = raw GitHub::Markup.render(name, file.data)
     - else
       .file_content.code
         - unless file.empty?

@@ -16,7 +16,7 @@
           .padded
             = f.label :source_branch, "From", class: "control-label"
             .controls
-              = f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, style: "width:250px")
+              = f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span3'})
       .mr_source_commit
 
     .span2
@@ -28,7 +28,7 @@
           .padded
             = f.label :target_branch, "To", class: "control-label"
             .controls
-              = f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, style: "width:250px")
+              = f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span3'})
       .mr_target_commit
 
   %h4.cdark 2. Fill info
@@ -43,7 +43,7 @@
         = f.label :assignee_id do 
           %i.icon-user 
           Assign to
-        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, style: "width:250px")
+        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
 
   .control-group
 
@@ -56,18 +56,12 @@
       = link_to project_merge_request_path(@project, @merge_request), class: "btn cancel-btn" do
         Cancel
 
-
-
 :javascript
   $(function(){
-    disableButtonIfEmtpyField("#merge_request_title", ".save-btn");
-    $('select#merge_request_assignee_id').chosen();
-    $('select#merge_request_source_branch').chosen();
-    $('select#merge_request_target_branch').chosen();
+    disableButtonIfEmptyField("#merge_request_title", ".save-btn");
     var source_branch = $("#merge_request_source_branch");
     var target_branch = $("#merge_request_target_branch");
 
-    
     $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
     $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });
 
@@ -79,4 +73,3 @@
       $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: $(this).val() });
     });
   });
-

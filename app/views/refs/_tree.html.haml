@@ -43,18 +43,11 @@
           %i.icon-file
           = content.name
         .file_content.wiki
-          - if content.name =~ /\.(md|markdown)$/i
-            = preserve do
-              = markdown(content.data)
-          - else
-            = simple_format(content.data)
+          = raw GitHub::Markup.render(content.name, content.data)
 
 :javascript
   $(function(){
-    $('.project-refs-select').chosen();
-
     history.pushState({ path: this.path }, '', "#{@history_path}");
-
   });
 
   // Load last commit log for each file in tree

@@ -34,12 +34,4 @@
       source: #{raw search_autocomplete_source},
       select: function(event, ui) { location.href = ui.item.url }
     });
-
-    $(document).keypress(function(e) {
-      if($(e.target).is(":input")) return;
-        switch(e.which)  {
-        case 115:  focusSearch();
-        e.preventDefault();
-      }
-    });
   });
