@@ -8,7 +8,7 @@ module Gitlab
       if @project ||= current_user.projects.find_by_id(params[:id]) ||
                       current_user.projects.find_by_code(params[:id])
       else
-        error!({'message' => '404 Not found'}, 404)
+        not_found!
       end
 
       @project
@@ -19,13 +19,34 @@ module Gitlab
     end
 
     def authenticate!
-      error!({'message' => '401 Unauthorized'}, 401) unless current_user
+      unauthorized! unless current_user
     end
 
     def authorize! action, subject
       unless abilities.allowed?(current_user, action, subject)
-        error!({'message' => '403 Forbidden'}, 403)
+        forbidden!
       end
+    end
+
+    # error helpers
+
+    def forbidden!
+      error!({'message' => '403 Forbidden'}, 403)
+    end
+
+    def not_found!(resource = nil)
+      message = ["404"]
+      message << resource if resource
+      message << "Not Found"
+      error!({'message' => message.join(' ')}, 404)
+    end
+
+    def unauthorized!
+      error!({'message' => '401 Unauthorized'}, 401)
+    end
+
+    def not_allowed!
+        error!({'message' => 'method not allowed'}, 405)
     end
 
     private 
