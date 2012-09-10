@@ -121,9 +121,9 @@ group :development, :test do
   gem 'guard-cucumber'
 
   # Notification
-  gem 'rb-fsevent', :require => darwin_only('growl')
+  gem 'rb-fsevent', :require => darwin_only('rb-fsevent')
   gem 'growl',      :require => darwin_only('growl')
-  gem 'rb-inotify', :require => linux_only('rb-fsevent')
+  gem 'rb-inotify', :require => linux_only('rb-inotify')
 end
 
 group :test do
