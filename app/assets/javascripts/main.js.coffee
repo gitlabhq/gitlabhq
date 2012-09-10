@@ -24,6 +24,9 @@ $ ->
   # Click a .one_click_select field, select the contents
   $(".one_click_select").live 'click', -> $(this).select()
 
+  # Initialize chosen selects
+  $('select.chosen').chosen()
+
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
     buttons = $('[type="submit"]', this)

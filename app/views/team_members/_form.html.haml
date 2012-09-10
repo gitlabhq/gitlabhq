@@ -10,21 +10,14 @@
 
   %h6 1. Choose people you want in the team
   .clearfix
-    = f.label :user_ids, "Peolpe"
-    .input= select_tag(:user_ids, options_from_collection_for_select(User.not_in_project(@project).all, :id, :name), { class: "xxlarge", multiple: true  })
-
+    = f.label :user_ids, "People"
+    .input= select_tag(:user_ids, options_from_collection_for_select(User.not_in_project(@project).all, :id, :name), {data: {placeholder: "Select users"}, class: "chosen xxlarge", multiple: true})
 
   %h6 2. Set access level for them
   .clearfix
     = f.label :project_access, "Project Access"
-    .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select"
-
+    .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select chosen"
 
   .actions
     = f.submit 'Save', class: "btn save-btn"
     = link_to "Cancel", team_project_path(@project), class: "btn cancel-btn"
-
-
-:javascript
-  $('select#user_ids').chosen();
-  $('select#project_access').chosen();
