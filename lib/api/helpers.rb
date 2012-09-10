@@ -31,22 +31,26 @@ module Gitlab
     # error helpers
 
     def forbidden!
-      error!({'message' => '403 Forbidden'}, 403)
+      render_api_error!('403 Forbidden', 403)
     end
 
     def not_found!(resource = nil)
       message = ["404"]
       message << resource if resource
       message << "Not Found"
-      error!({'message' => message.join(' ')}, 404)
+      render_api_error!(message.join(' '), 404)
     end
 
     def unauthorized!
-      error!({'message' => '401 Unauthorized'}, 401)
+      render_api_error!('401 Unauthorized', 401)
     end
 
     def not_allowed!
-        error!({'message' => 'method not allowed'}, 405)
+      render_api_error!('Method Not Allowed', 405)
+    end
+
+    def render_api_error!(message, status)
+      error!({'message' => message}, status)
     end
 
     private 
