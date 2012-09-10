@@ -181,11 +181,12 @@ span.update-author {
   }
 
   &.joined {
-    background-color: #1cb9ff;
+    background-color: #1ca9dd;
   }
 
   &.left {
-    background-color: #ff5057;
+    background-color: #888;
+    float:none;
   }
 }
 
