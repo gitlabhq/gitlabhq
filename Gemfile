@@ -119,6 +119,7 @@ group :development, :test do
 
   # Guard
   gem 'guard-rspec'
+  gem 'guard-spinach'
 
   # Notification
   gem 'rb-fsevent', :require => darwin_only('rb-fsevent')

@@ -178,6 +178,9 @@ GEM
       thor (>= 0.14.6)
     guard-rspec (1.2.1)
       guard (>= 1.1)
+    guard-spinach (0.0.2)
+      guard (>= 1.1)
+      spinach
     haml (3.1.6)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -405,6 +408,7 @@ DEPENDENCIES
   grit!
   growl
   guard-rspec
+  guard-spinach
   haml-rails
   headless
   httparty
