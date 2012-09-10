@@ -1,6 +1,6 @@
 Feature: Profile
-  Background: 
-    Given I signin as a user
+  Background:
+    Given I sign in as a user
 
   Scenario: I look at my profile
     Given I visit profile page
