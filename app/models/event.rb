@@ -10,6 +10,8 @@ class Event < ActiveRecord::Base
   Pushed    = 5
   Commented = 6
   Merged    = 7
+  Joined    = 8 # User joined project
+  Left      = 9 # User left project
 
   belongs_to :project
   belongs_to :target, polymorphic: true
@@ -37,7 +39,7 @@ class Event < ActiveRecord::Base
   #  - new issue
   #  - merge request
   def allowed?
-    push? || issue? || merge_request?
+    push? || issue? || merge_request? || membership_changed?
   end
 
   def push?
@@ -84,6 +86,18 @@ class Event < ActiveRecord::Base
       [Closed, Reopened].include?(action)
   end
 
+  def joined?
+    action == Joined
+  end
+
+  def left?
+    action == Left
+  end
+
+  def membership_changed?
+    joined? || left?
+  end
+
   def issue 
     target if target_type == "Issue"
   end
@@ -101,6 +115,10 @@ class Event < ActiveRecord::Base
       "closed"
     elsif merged?
       "merged"
+    elsif joined?
+      'joined'
+    elsif left?
+      'left'
     else 
       "opened"
     end
