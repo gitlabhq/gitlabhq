@@ -60,7 +60,7 @@ module Gitlab
         if @issue.save
           present @issue, with: Entities::Issue
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -93,7 +93,7 @@ module Gitlab
         if @issue.update_attributes(parameters)
           present @issue, with: Entities::Issue
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -105,7 +105,7 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        error!({'message' => 'method not allowed'}, 405)
+        not_allowed!
       end
     end
   end
