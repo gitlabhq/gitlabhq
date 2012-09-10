@@ -79,6 +79,8 @@ module Gitlab
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         @issue = user_project.issues.find(params[:issue_id])
+        authorize! :modify_issue, @issue
+
         parameters = {
           title: (params[:title] || @issue.title),
           description: (params[:description] || @issue.description),

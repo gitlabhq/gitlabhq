@@ -74,6 +74,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/users
       post ":id/users" do
+        authorize! :admin_project, user_project
         user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
         nil
       end
@@ -87,6 +88,7 @@ module Gitlab
       # Example Request:
       #   PUT /projects/:id/add_users
       put ":id/users" do
+        authorize! :admin_project, user_project
         user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
         nil
       end
@@ -99,6 +101,7 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/users
       delete ":id/users" do
+        authorize! :admin_project, user_project
         user_project.delete_users_ids_from_team(params[:user_ids].values)
         nil
       end
@@ -186,6 +189,8 @@ module Gitlab
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         parameters = {
           title: (params[:title] || @snippet.title),
           file_name: (params[:file_name] || @snippet.file_name),
@@ -209,6 +214,8 @@ module Gitlab
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+        authorize! :modify_snippet, @snippet
+
         @snippet.destroy
       end
 
