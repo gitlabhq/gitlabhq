@@ -6,3 +6,7 @@ $ ->
       elems.val('').attr 'disabled', true
     else
       elems.removeAttr 'disabled'
+
+  $('.log-tabs a').click (e) ->
+    e.preventDefault()
+    $(this).tab('show')
