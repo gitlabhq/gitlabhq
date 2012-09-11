@@ -1,4 +1,4 @@
-- if @projects.any?
+- if @projects.any? || @public_projects.any?
   .projects
     .activities.span8
       = render 'shared/no_ssh'
@@ -11,7 +11,7 @@
       = render "events/event_last_push", event: @last_push
       .projects_box
         %h5
-          Projects
+          My Projects
           %small
             (#{@projects.total_count})
           - if current_user.can_create_project?
@@ -30,6 +30,25 @@
                   %strong Last activity:
                   %span= project_last_activity(project)
         .bottom= paginate @projects, theme: "gitlab"
+
+      = render "events/event_last_push", event: @last_push
+      .projects_box
+        %h5
+          Public Projects
+          %small
+            (#{@public_projects.count})
+        - if @public_projects.any?
+          - @public_projects.each do |project|
+            = link_to project_path(project), class: dom_class(project) do
+              %h4
+                %span.ico.project
+                = truncate(project.name, length: 25)
+                %span.right
+                  &rarr;
+        - else
+          %h4
+            .project No Public Projects
+        .bottom
 
       %hr
       %div

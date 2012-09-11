@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
   #
   # Protected attributes
   #
-  attr_protected :private_flag, :owner_id
+  attr_protected :owner_id
 
   #
   # Scopes
