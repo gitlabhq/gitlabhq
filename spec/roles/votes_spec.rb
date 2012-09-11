@@ -79,4 +79,54 @@ describe Issue do
       issue.votes_count.should == 3
     end
   end
+
+  describe "#upvotes_in_percent" do
+    it "with no notes has a 0% score" do
+      issue.upvotes_in_percent.should == 0
+    end
+
+    it "should count a single 1 note as 100%" do
+      issue.notes << create(:note, note: "+1 This is awesome")
+      issue.upvotes_in_percent.should == 100
+    end
+
+    it "should count multiple +1 notes as 100%" do
+      issue.notes << create(:note, note: "+1 This is awesome")
+      issue.notes << create(:note, note: "+1 I want this")
+      issue.upvotes_in_percent.should == 100
+    end
+
+    it "should count fractions for multiple +1 and -1 notes correctly" do
+      issue.notes << create(:note, note: "+1 This is awesome")
+      issue.notes << create(:note, note: "+1 I want this")
+      issue.notes << create(:note, note: "-1 This is bad")
+      issue.notes << create(:note, note: "+1 me too")
+      issue.upvotes_in_percent.should == 75
+    end
+  end
+
+  describe "#downvotes_in_percent" do
+    it "with no notes has a 0% score" do
+      issue.downvotes_in_percent.should == 0
+    end
+
+    it "should count a single -1 note as 100%" do
+      issue.notes << create(:note, note: "-1 This is bad")
+      issue.downvotes_in_percent.should == 100
+    end
+
+    it "should count multiple -1 notes as 100%" do
+      issue.notes << create(:note, note: "-1 This is bad")
+      issue.notes << create(:note, note: "-1 Away with this")
+      issue.downvotes_in_percent.should == 100
+    end
+
+    it "should count fractions for multiple +1 and -1 notes correctly" do
+      issue.notes << create(:note, note: "+1 This is awesome")
+      issue.notes << create(:note, note: "+1 I want this")
+      issue.notes << create(:note, note: "-1 This is bad")
+      issue.notes << create(:note, note: "+1 me too")
+      issue.downvotes_in_percent.should == 25
+    end
+  end
 end
