@@ -18,7 +18,8 @@ module TreeHelper
   end
 
   def tree_full_path(content)
-    if params[:path] 
+    content.name.force_encoding('utf-8')
+    if params[:path]
       File.join(params[:path], content.name)
     else
       content.name
