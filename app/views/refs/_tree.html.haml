@@ -50,11 +50,12 @@
     history.pushState({ path: this.path }, '', "#{@history_path}");
   });
 
-  // Load last commit log for each file in tree
-  $(window).load(function(){
-    ajaxGet('#{@logs_path}'); 
-  });
-
+- unless tree.is_blob?
+  :javascript
+    // Load last commit log for each file in tree
+    $(window).load(function(){
+      ajaxGet('#{@logs_path}');
+    });
 
 - if params[:path] && request.xhr?
   :javascript
