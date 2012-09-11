@@ -78,7 +78,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
     cd ruby-1.9.3-p194
     ./configure
     make
-    sudo make install
+    sudo checkinstall make install
 
 # 3. Install gitolite
 
