@@ -2,7 +2,7 @@ require File.join(Rails.root, "app/models/commit")
 
 class MergeRequest < ActiveRecord::Base
   include IssueCommonality
-  include Upvote
+  include Votes
 
   BROKEN_DIFF = "--broken-diff"
 
