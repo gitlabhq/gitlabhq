@@ -9,12 +9,14 @@ describe Gitlab::API do
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
-    it "should return authentication error" do
-      get api("/projects")
-      response.status.should == 401
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/projects")
+        response.status.should == 401
+      end
     end
 
-    describe "authenticated GET /projects" do
+    context "when authenticated" do
       it "should return an array of projects" do
         get api("/projects", user)
         response.status.should == 200
