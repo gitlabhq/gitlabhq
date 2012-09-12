@@ -6,12 +6,14 @@ describe Gitlab::API do
   let(:user) { Factory :user }
 
   describe "GET /users" do
-    it "should return authentication error" do
-      get api("/users")
-      response.status.should == 401
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/users")
+        response.status.should == 401
+      end
     end
 
-    describe "authenticated GET /users" do
+    context "when authenticated" do
       it "should return an array of users" do
         get api("/users", user)
         response.status.should == 200
