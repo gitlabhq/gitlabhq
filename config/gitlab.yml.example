@@ -25,8 +25,38 @@ app:
   # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
   # disable_gravatar: true        # default: false - Disable user avatars from Gravatar.com
 
+
+
+
 #
-# 2. Advanced settings:
+# 2. Auth settings
+# ==========================
+ldap: 
+  enabled: false
+  host: '_your_ldap_server'
+  base: '_the_base_where_you_search_for_users'
+  port: 636
+  uid: 'sAMAccountName'
+  method: 'ssl' # plain
+  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+  password: '_the_password_of_the_bind_user'
+
+omniauth:
+  enabled: false
+  allow_single_sign_on: false
+  block_auto_created_users: true
+  providers:
+    # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
+    #     app_secret: 'YOUR APP SECRET',
+    #     args: { access_type: 'offline', approval_prompt: '' } }
+    # - { name: 'twitter', app_id: 'YOUR APP ID',
+    #     app_secret: 'YOUR APP SECRET'}
+    # - { name: 'github', app_id: 'YOUR APP ID',
+    #     app_secret: 'YOUR APP SECRET' }
+
+
+#
+# 3. Advanced settings:
 # ==========================
 
 # Git Hosting configuration
@@ -50,21 +80,3 @@ git:
   git_max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
   git_timeout: 10
-
-# Omniauth configuration
-omniauth:
-  enabled: false
-  providers:
-  allow_single_sign_on: false
-  block_auto_created_users: true
-
-# omniauth:
-#   enabled: true
-#   providers:
-#     - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-#         app_secret: 'YOUR APP SECRET',
-#         args: { access_type: 'offline', approval_prompt: '' } }
-#     - { name: 'twitter', app_id: 'YOUR APP ID',
-#         app_secret: 'YOUR APP SECRET'}
-#     - { name: 'github', app_id: 'YOUR APP ID',
-#         app_secret: 'YOUR APP SECRET' }
