@@ -16,6 +16,10 @@ gem "mysql2"
 
 # Auth
 gem "devise", "~> 2.1.0"
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-twitter'
+gem 'omniauth-github'
 
 # GITLAB patched libs
 gem "grit",          :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"

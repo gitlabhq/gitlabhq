@@ -135,4 +135,10 @@ module ApplicationHelper
       "Never"
     end
   end
+
+  def authbutton(provider, size = 64)
+    file_name = "#{provider.to_s.split('_').first}_#{size}.png"
+    image_tag("authbuttons/#{file_name}",
+              alt: "Sign in with #{provider.to_s.titleize}")
+  end
 end
