@@ -50,3 +50,21 @@ git:
   git_max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
   git_timeout: 10
+
+# Omniauth configuration
+omniauth:
+  enabled: false
+  providers:
+  allow_single_sign_on: false
+  block_auto_created_users: true
+
+# omniauth:
+#   enabled: true
+#   providers:
+#     - { name: 'google_oauth2', app_id: 'YOUR APP ID',
+#         app_secret: 'YOUR APP SECRET',
+#         args: { access_type: 'offline', approval_prompt: '' } }
+#     - { name: 'twitter', app_id: 'YOUR APP ID',
+#         app_secret: 'YOUR APP SECRET'}
+#     - { name: 'github', app_id: 'YOUR APP ID',
+#         app_secret: 'YOUR APP SECRET' }

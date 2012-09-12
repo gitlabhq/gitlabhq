@@ -6,7 +6,7 @@ class Settings < Settingslogic
       self.web['protocol'] ||= web.https ? "https" : "http"
     end
 
-    def web_host 
+    def web_host
       self.web['host'] ||= 'localhost'
     end
 
@@ -14,11 +14,11 @@ class Settings < Settingslogic
       self.email['from'] ||= ("notify@" + web_host)
     end
 
-    def url 
+    def url
       self['url'] ||= build_url
-    end 
+    end
 
-    def web_port 
+    def web_port
       if web.https
         web['port'] = 443
       else
@@ -36,7 +36,7 @@ class Settings < Settingslogic
       raw_url << web_host
 
       if web_custom_port?
-        raw_url << ":#{web_port}" 
+        raw_url << ":#{web_port}"
       end
 
       raw_url
@@ -118,6 +118,14 @@ class Settings < Settingslogic
 
     def backup_keep_time
       app['backup_keep_time'] || 0
+    end
+
+    def omniauth_enabled?
+      omniauth['enabled'] || false
+    end
+
+    def omniauth_providers
+      omniauth['providers'] || []
     end
 
     def disable_gravatar?

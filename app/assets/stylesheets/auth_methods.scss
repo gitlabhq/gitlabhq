@@ -1,0 +1,10 @@
+.auth_methods {
+  &ul {
+    margin: 0;
+    text-align:center;
+    padding: 5px;
+    &li {
+      display: inline;
+    }
+  }
+}
