@@ -6,7 +6,6 @@
   %small
     = @user.email
 
-
 %hr
 
 = form_for @user, url: profile_update_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
@@ -28,7 +27,23 @@
           = f.text_field :email, class: "input-xlarge"
           %span.help-block We also use email for avatar detection.
 
-      %hr
+    .span5.right
+      %div.tips
+        %h6 Tips:
+        %ul
+          -unless Gitlab.config.disable_gravatar?
+            %li
+              %p.hint You can change your avatar at gravatar.com
+
+          - if Gitlab.config.omniauth_enabled? && @user.provider?
+            %li
+              %p.hint
+                You can login through #{@user.provider.titleize}!
+                = link_to "click here to change", profile_password_path
+
+  %hr
+  .row
+    .span7
       .control-group
         = f.label :skype, class: "control-label"
         .controls= f.text_field :skype, class: "input-xlarge"
@@ -44,23 +59,7 @@
           = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
     .span5.right
-
-      -unless Gitlab.config.disable_gravatar?
-        %p.alert.alert-info
-          %strong Tip:
-          You can change your avatar at gravatar.com
-
-      - @user.provider = 'twitter'
-      - if Gitlab.config.omniauth_enabled? && @user.provider?
-        .ui-box
-          .ui-box-body
-            %h4
-              Omniauth Providers:
-            = link_to "Change", profile_password_path, class: "btn small right"
-            You can login through #{@user.provider.titleize}!
-            = authbutton(@user.provider, 32)
-
-      .ui-box
+      .ui-box.white
         .ui-box-body
           %h4
             Personal projects:
@@ -71,7 +70,7 @@
           .progress
             .bar{style: "width: #{current_user.projects_limit_percent}%;"}
 
-      .ui-box
+      .ui-box.white
         .ui-box-body
           %h4
             SSH public keys:

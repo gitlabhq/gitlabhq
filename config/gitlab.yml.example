@@ -26,8 +26,6 @@ app:
   # disable_gravatar: true        # default: false - Disable user avatars from Gravatar.com
 
 
-
-
 #
 # 2. Auth settings
 # ==========================
@@ -44,7 +42,7 @@ ldap:
 omniauth:
   # Enable ability for users
   # to login via twitter, google ..
-  enabled: true
+  enabled: false
 
   # IMPORTANT! 
   # It allows user to login without having user account

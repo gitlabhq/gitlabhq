@@ -689,3 +689,17 @@ li.note {
   text-align:center;
   margin-bottom:10px;
 }
+
+.oauth_select_holder {
+  padding:20px;
+  img {
+    padding:5px;
+    margin-right:10px;
+  }
+  .active {
+    img {
+      border:1px solid #ccc;
+      @include border-radius(5px);
+    }
+  }
+}
