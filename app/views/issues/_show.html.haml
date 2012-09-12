@@ -34,5 +34,5 @@
     - else
       &nbsp;
 
-    - if issue.upvotes > 0
-      %span.badge.badge-success= "+#{issue.upvotes}"
+    - if issue.votes_count > 0
+      = render 'votes/votes_inline', votable: issue

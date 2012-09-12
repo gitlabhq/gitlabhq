@@ -12,7 +12,7 @@ describe Issue do
 
   describe 'modules' do
     it { should include_module(IssueCommonality) }
-    it { should include_module(Upvote) }
+    it { should include_module(Votes) }
   end
 
   subject { Factory.create(:issue) }
