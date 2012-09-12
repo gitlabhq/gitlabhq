@@ -106,6 +106,49 @@ module Gitlab
         nil
       end
 
+      # Get project hooks
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/hooks
+      get ":id/hooks" do
+        authorize! :admin_project, user_project
+        @hooks = paginate user_project.hooks
+        present @hooks, with: Entities::Hook
+      end
+
+      # Add hook to project
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   url (required) - The hook URL
+      # Example Request:
+      #   POST /projects/:id/hooks
+      post ":id/hooks" do
+        authorize! :admin_project, user_project
+        @hook = user_project.hooks.new({"url" => params[:url]})
+        if @hook.save
+          present @hook, with: Entities::Hook
+        else
+          error!({'message' => '404 Not found'}, 404)
+        end
+      end
+
+      # Delete project hook
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   hook_id (required) - The ID of hook to delete
+      # Example Request:
+      #   DELETE /projects/:id/hooks
+      delete ":id/hooks" do
+        authorize! :admin_project, user_project
+        @hook = user_project.hooks.find(params[:hook_id])
+        @hook.destroy
+        nil
+      end
+
       # Get a project repository branches
       #
       # Parameters:

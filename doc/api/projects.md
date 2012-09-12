@@ -173,6 +173,50 @@ Parameters:
 
 Will return status `200 OK` on success, or `404 Not found` on fail.
 
+## Get project hooks
+
+Get hooks for project
+
+```
+GET /projects/:id/hooks
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
+
+Will return hooks with status `200 OK` on success, or `404 Not found` on fail.
+
+## Add project hook
+
+Add hook to project
+
+```
+POST /projects/:id/hooks
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `url` (required) - The hook URL
+
+Will return status `201 Created` on success, or `404 Not found` on fail.
+
+## Delete project hook
+
+Delete hook from project
+
+```
+DELETE /projects/:id/hooks
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `hook_id` (required) - The ID of hook to delete
+
+Will return status `200 OK` on success, or `404 Not found` on fail.
+
 ## Project repository branches
 
 Get a list of repository branches from a project, sorted by name alphabetically.
