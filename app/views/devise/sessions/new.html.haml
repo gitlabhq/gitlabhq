@@ -16,7 +16,6 @@
       = render :partial => "devise/shared/links"
     - if devise_mapping.omniauthable?
       %hr/
-      %ul.unstyled
-        - resource_class.omniauth_providers.each do |provider|
-          %li
-            = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
+      - resource_class.omniauth_providers.each do |provider|
+        %span
+          = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
