@@ -87,62 +87,19 @@ class User < ActiveRecord::Base
   end
 
   def self.create_from_omniauth(auth, ldap = false)
-    provider, uid = auth.provider, auth.uid
-    name = auth.info.name.force_encoding("utf-8")
-    email = auth.info.email.downcase unless auth.info.email.nil?
-
-    ldap_prefix = ldap ? '(LDAP) ' : ''
-    raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
-                           " address" if auth.info.email.blank?
-
-    logger.info "#{ldap_prefix}Creating user from #{provider} login"\
-                " {uid => #{uid}, name => #{name}, email => #{email}}"
-    password = Devise.friendly_token[0, 8].downcase
-    @user = User.new(
-      extern_uid: uid,
-      provider: provider,
-      name: name,
-      email: email,
-      password: password,
-      password_confirmation: password,
-      projects_limit: Gitlab.config.default_projects_limit,
-    )
-    if Gitlab.config.omniauth.block_auto_created_users && !ldap
-      @user.blocked = true
-    end
-    @user.save!
-    @user
+    gitlab_auth.create_from_omniauth(auth, ldap)
   end
 
   def self.find_or_new_for_omniauth(auth)
-    provider, uid = auth.provider, auth.uid
-
-    if @user = User.find_by_provider_and_extern_uid(provider, uid)
-      @user
-    else
-      if Gitlab.config.omniauth.allow_single_sign_on
-        @user = User.create_from_omniauth(auth)
-        @user
-      end
-    end
+    gitlab_auth.find_or_new_for_omniauth(auth)
   end
 
-  def self.find_for_ldap_auth(auth, signed_in_resource=nil)
-    uid = auth.info.uid
-    provider = auth.provider
-    email = auth.info.email.downcase unless auth.info.email.nil?
-    raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? or email.nil?
+  def self.find_for_ldap_auth(auth, signed_in_resource = nil)
+    gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
+  end
 
-    if @user = User.find_by_extern_uid_and_provider(uid, provider)
-      @user
-    # workaround for backward compatibility
-    elsif @user = User.find_by_email(email)
-      logger.info "Updating legacy LDAP user #{email} with extern_uid => #{uid}"
-      @user.update_attributes(:extern_uid => uid, :provider => provider)
-      @user
-    else
-      create_from_omniauth(auth)
-    end
+  def self.gitlab_auth
+    Gitlab::Auth.new
   end
 
   def self.search query
