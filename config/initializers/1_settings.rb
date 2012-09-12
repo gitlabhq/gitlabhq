@@ -121,19 +121,19 @@ class Settings < Settingslogic
     end
 
     def ldap_enabled?
-      ldap['enabled']
-    rescue
+      ldap && ldap['enabled']
+    rescue Settingslogic::MissingSetting
       false
     end
 
     def omniauth_enabled?
       omniauth && omniauth['enabled']
-    rescue
+    rescue Settingslogic::MissingSetting
       false
     end
 
     def omniauth_providers
-      omniauth['providers'] || []
+      (omniauth_enabled? && omniauth['providers']) || []
     end
 
     def disable_gravatar?
