@@ -137,7 +137,8 @@ module ApplicationHelper
   end
 
   def authbutton(provider, size = 64)
-    image_tag("authbuttons/#{provider.to_s.split('_').first}_#{size}.png",
-               alt: "Sign in with #{provider.to_s.titleize}" )
+    file_name = "#{provider.to_s.split('_').first}_#{size}.png"
+    image_tag("authbuttons/#{file_name}",
+              alt: "Sign in with #{provider.to_s.titleize}")
   end
 end

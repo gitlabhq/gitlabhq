@@ -1,4 +1,9 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  Gitlab.config.omniauth_providers.each do |provider|
+    define_method provider['name'] do
+      handle_omniauth
+    end
+  end
 
   # Extend the standard message generation to accept our custom exception
   def failure_message
@@ -17,12 +22,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       @user.remember_me = true
     end
     sign_in_and_redirect @user
-  end
-
-   Settings.omniauth_providers.each do |provider|
-    define_method provider['name'] do
-      handle_omniauth
-    end
   end
 
   private

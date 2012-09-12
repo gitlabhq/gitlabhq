@@ -50,28 +50,34 @@
           %strong Tip:
           You can change your avatar at gravatar.com
 
-      - if Settings.omniauth.enabled && @user.provider?
-        %h4
-          Omniauth Providers:
-        = link_to "Change", profile_password_path, class: "btn small right"
-        You can login through #{@user.provider.titleize}!
-        = authbutton(@user.provider, 32)
+      - @user.provider = 'twitter'
+      - if Gitlab.config.omniauth_enabled? && @user.provider?
+        .ui-box
+          .ui-box-body
+            %h4
+              Omniauth Providers:
+            = link_to "Change", profile_password_path, class: "btn small right"
+            You can login through #{@user.provider.titleize}!
+            = authbutton(@user.provider, 32)
 
-      %h4
-        Personal projects:
-        %small.right
-          %span= current_user.my_own_projects.count
-          of
-          %span= current_user.projects_limit
-      .progress
-        .bar{style: "width: #{current_user.projects_limit_percent}%;"}
+      .ui-box
+        .ui-box-body
+          %h4
+            Personal projects:
+            %small.right
+              %span= current_user.my_own_projects.count
+              of
+              %span= current_user.projects_limit
+          .progress
+            .bar{style: "width: #{current_user.projects_limit_percent}%;"}
 
-      %h4
-        SSH public keys:
-        %small.right
-          %span= link_to current_user.keys.count, keys_path
+      .ui-box
+        .ui-box-body
+          %h4
+            SSH public keys:
+            %strong.right= link_to current_user.keys.count, keys_path
 
-      = link_to "Add Public Key", new_key_path, class: "btn small right"
+          = link_to "Add Public Key", new_key_path, class: "btn small"
 
   .form-actions
     = f.submit 'Save', class: "btn save-btn"

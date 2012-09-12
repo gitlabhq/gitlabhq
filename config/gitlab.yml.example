@@ -43,8 +43,6 @@ ldap:
 
 omniauth:
   enabled: false
-  allow_single_sign_on: false
-  block_auto_created_users: true
   providers:
     # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
     #     app_secret: 'YOUR APP SECRET',
@@ -53,6 +51,10 @@ omniauth:
     #     app_secret: 'YOUR APP SECRET'}
     # - { name: 'github', app_id: 'YOUR APP ID',
     #     app_secret: 'YOUR APP SECRET' }
+  # IMPORTANT! 
+  # It allows user to login without having user account
+  allow_single_sign_on: false
+  block_auto_created_users: true
 
 
 #
