@@ -660,7 +660,7 @@ li.note {
     margin-right:40px;
 
     .prev {
-      @extend .borders;
+      @extend .thumbnail;
       height:120px;
       width:175px;
       margin-bottom:10px;
