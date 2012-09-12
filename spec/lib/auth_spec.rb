@@ -4,6 +4,8 @@ describe Gitlab::Auth do
   let(:gl_auth) { Gitlab::Auth.new }
 
   before do
+    Gitlab.config.stub(omniauth: {})
+
     @info = mock(
       uid: '12djsak321',
       name: 'John',
@@ -64,7 +66,7 @@ describe Gitlab::Auth do
     end
 
     it "should create user if single_sing_on"do
-      Gitlab.config.omniauth.stub allow_single_sign_on: true
+      Gitlab.config.omniauth['allow_single_sign_on'] = true
       User.stub find_by_provider_and_extern_uid: nil
       gl_auth.should_receive :create_from_omniauth
       gl_auth.find_or_new_for_omniauth(@auth)

@@ -17,7 +17,7 @@ module Gitlab
       end
     end
 
-    def create_from_omniauth auth, ldap = false
+    def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
       name = auth.info.name.force_encoding("utf-8")
@@ -39,7 +39,7 @@ module Gitlab
         password_confirmation: password,
         projects_limit: Gitlab.config.default_projects_limit,
       )
-      if Gitlab.config.omniauth.block_auto_created_users && !ldap
+      if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
         @user.blocked = true
       end
       @user.save!
@@ -52,7 +52,7 @@ module Gitlab
       if @user = User.find_by_provider_and_extern_uid(provider, uid)
         @user
       else
-        if Gitlab.config.omniauth.allow_single_sign_on
+        if Gitlab.config.omniauth['allow_single_sign_on']
           @user = create_from_omniauth(auth)
           @user
         end
