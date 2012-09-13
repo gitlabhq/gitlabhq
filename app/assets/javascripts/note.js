@@ -17,8 +17,9 @@ var NoteList = {
       // get initial set of notes
       this.getContent();
 
-      $('.delete-note').live('ajax:success', function() {
-        $(this).closest('li').fadeOut(); });
+      $("#notes-list, #new-notes-list").on("ajax:success", ".delete-note", function() {
+        $(this).closest('li').fadeOut();
+      });
 
       $(".note-form-holder").on("ajax:before", function(){
         $(".submit_note").disable()
@@ -197,13 +198,41 @@ var NoteList = {
 var PerLineNotes = {
   init:
     function() {
-      $(".line_note_link, .line_note_reply_link").on("click", function(e) {
+      /**
+       * Called when clicking on the "add note" or "reply" button for a diff line.
+       *
+       * Shows the note form below the line.
+       * Sets some hidden fields in the form.
+       */
+      $(".diff_file_content").on("click", ".line_note_link, .line_note_reply_link", function(e) {
         var form = $(".per_line_form");
         $(this).closest("tr").after(form);
-        form.find("#note_line_code").val($(this).attr("line_code"));
+        form.find("#note_line_code").val($(this).data("lineCode"));
         form.show();
         return false;
       });
+
       disableButtonIfEmptyField(".line-note-text", ".submit_inline_note");
+
+      /**
+       * Called in response to successfully deleting a note on a diff line.
+       *
+       * Removes the actual note from view.
+       * Removes the reply button if the last note for that line has been removed.
+       */
+      $(".diff_file_content").on("ajax:success", ".delete-note", function() {
+        var trNote = $(this).closest("tr");
+        trNote.fadeOut(function() {
+          $(this).remove();
+        });
+
+        // check if this is the last note for this line
+        // elements must really be removed for this to work reliably
+        var trLine = trNote.prev();
+        var trRpl  = trNote.next();
+        if (trLine.hasClass("line_holder") && trRpl.hasClass("reply")) {
+          trRpl.fadeOut(function() { $(this).remove(); });
+        }
+      });
     }
 }
