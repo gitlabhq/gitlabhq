@@ -10,7 +10,7 @@
   padding:0px;
 }
 
-#new_notes_list li:last-child{
+#notes-list li:last-child {
   border-bottom:1px solid #aaa;
 }
 
@@ -69,6 +69,10 @@
   &:hover {
     .delete-note { display:block; }
   }
+}
+
+.notes-status {
+  margin: 18px;
 }
 
 

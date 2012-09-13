@@ -106,8 +106,8 @@ var NoteList = {
         type: "GET",
       url: this.notes_path,
       data: "?" + this.target_params,
-      complete: function(){ $('.status').removeClass("loading")},
-      beforeSend: function() { $('.status').addClass("loading") },
+      complete: function(){ $('.notes-status').removeClass("loading")},
+      beforeSend: function() { $('.notes-status').addClass("loading") },
       dataType: "script"});
     },
 
@@ -136,8 +136,8 @@ var NoteList = {
         type: "GET",
         url: this.notes_path,
         data: "first_id=" + this.first_id + this.target_params,
-        complete: function(){ $('.status').removeClass("loading")},
-        beforeSend: function() { $('.status').addClass("loading") },
+        complete: function(){ $('.notes-status').removeClass("loading")},
+        beforeSend: function() { $('.notes-status').addClass("loading") },
         dataType: "script"});
     },
 

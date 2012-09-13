@@ -1,10 +1,9 @@
+%ul#notes-list
+%ul#new_notes_list
+.notes-status
+
 - if can? current_user, :write_note, @project
   = render "notes/form"
-.clear
-%hr
-%ul#new_notes_list
-%ul#notes-list
-.status
 
 
 :javascript
