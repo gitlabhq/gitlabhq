@@ -218,6 +218,19 @@ Devise.setup do |config|
       :password => gl.ldap['password']
   end
 
+  if gl.shibboleth_enabled?
+    config.omniauth :shibboleth, {
+      :shib_session_id_var     => gl.shibboleth['shib_session_id_var'],
+      :shib_application_id_var => gl.shibboleth['shib_application_id_var'],
+      :fields => {
+        :uid    => gl.shibboleth['uid_var'],
+        :name   => gl.shibboleth['name_var'],
+        :email  => gl.shibboleth['email'],
+      },
+      :debug  => gl.shibboleth['debug']
+    }
+  end
+
   gl.omniauth_providers.each do |gl_provider|
     config.omniauth gl_provider['name'].to_sym, gl_provider['app_id'], gl_provider['app_secret']
   end

@@ -126,6 +126,12 @@ class Settings < Settingslogic
       false
     end
 
+    def shibboleth_enabled?
+      shibboleth && shibboleth['enabled']
+    rescue Settingslogic::MissingSetting
+      false
+    end
+
     def omniauth_enabled?
       omniauth && omniauth['enabled']
     rescue Settingslogic::MissingSetting
