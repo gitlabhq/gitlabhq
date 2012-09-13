@@ -18,9 +18,9 @@
         %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
 
         - if @comments_allowed
-          - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at).reverse
+          - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
           - unless comments.empty?
             - comments.each_with_index do |note, i|
-              = render "notes/reply_button", line_code: line_code if i.zero?
               = render "notes/per_line_show", note: note
               - @line_notes.reject!{ |n| n == note }
+            = render "notes/reply_button", line_code: line_code
