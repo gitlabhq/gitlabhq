@@ -31,6 +31,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should not touch HTML entities" do
+      @project.issues.stub(:where).with(id: '39').and_return([issue])
       actual = expected = "We&#39;ll accept good pull requests."
       gfm(actual).should == expected
     end
