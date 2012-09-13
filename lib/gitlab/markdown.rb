@@ -26,13 +26,13 @@ module Gitlab
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
     REFERENCE_PATTERN = %r{
-      ([^\w&;])?      # Prefix (1)
+      (\W)?           # Prefix (1)
       (               # Reference (2)
         @([\w\._]+)   # User name (3)
         |[#!$](\d+)   # Issue/MR/Snippet ID (4)
         |([\h]{6,40}) # Commit ID (5)
       )
-      ([^\w&;])?      # Suffix (6)
+      (\W)?           # Suffix (6)
     }x.freeze
 
     EMOJI_PATTERN = %r{(:(\S+):)}.freeze
@@ -84,6 +84,13 @@ module Gitlab
     #
     # Returns parsed text
     def parse(text)
+      parse_references(text) if @project
+      parse_emoji(text)
+
+      text
+    end
+
+    def parse_references(text)
       # parse reference links
       text.gsub!(REFERENCE_PATTERN) do |match|
         prefix     = $1 || ''
@@ -91,13 +98,18 @@ module Gitlab
         identifier = $3 || $4 || $5
         suffix     = $6 || ''
 
-        if ref_link = reference_link(reference, identifier)
+        # Avoid HTML entities
+        if prefix.ends_with?('&') || suffix.starts_with?(';')
+          match
+        elsif ref_link = reference_link(reference, identifier)
           prefix + ref_link + suffix
         else
           match
         end
-      end if @project
+      end
+    end
 
+    def parse_emoji(text)
       # parse emoji
       text.gsub!(EMOJI_PATTERN) do |match|
         if valid_emoji?($2)
@@ -106,8 +118,6 @@ module Gitlab
           match
         end
       end
-
-      text
     end
 
     # Private: Checks if an emoji icon exists in the image asset directory
