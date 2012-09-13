@@ -1,10 +1,9 @@
 %ul#notes-list
-%ul#new_notes_list
+%ul#new-notes-list
 .notes-status
 
 - if can? current_user, :write_note, @project
   = render "notes/form"
-
 
 :javascript
   $(function(){
