@@ -17,6 +17,6 @@ Feature: Profile
     And I should be redirected to sign in page
 
   Scenario: I reset my token
-    Given I visit profile token page
+    Given I visit profile account page
     Then I reset my token
     And I should see new token
