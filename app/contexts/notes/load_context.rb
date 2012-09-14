@@ -3,8 +3,7 @@ module Notes
     def execute
       target_type = params[:target_type]
       target_id   = params[:target_id]
-      first_id    = params[:first_id]
-      last_id     = params[:last_id]
+      after_id    = params[:after_id]
 
 
       @notes = case target_type
@@ -23,10 +22,8 @@ module Notes
                  project.wikis.reverse.map {|w| w.notes.fresh }.flatten[0..20]
                end
 
-      @notes = if last_id
-                 @notes.where("id < ?", last_id)
-               elsif first_id
-                 @notes.where("id > ?", first_id)
+      @notes = if after_id
+                 @notes.where("id > ?", after_id)
                else 
                  @notes
                end

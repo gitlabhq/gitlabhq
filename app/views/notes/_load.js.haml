@@ -1,17 +1,17 @@
 - unless @notes.blank?
-  - if params[:last_id]
+  - if loading_more_notes?
     :plain
-      NoteList.replace("#{escape_javascript(render(partial: 'notes/notes_list'))}");
+      NoteList.appendMoreNotes(#{@notes.last.id}, "#{escape_javascript(render 'notes/notes_list')}");
 
-  - elsif params[:first_id]
+  - elsif loading_new_notes?
     :plain
-      NoteList.append(#{@notes.last.id}, "#{escape_javascript(render(partial: 'notes/notes_list'))}");
+      NoteList.replaceNewNotes("#{escape_javascript(render 'notes/notes_list')}");
 
   - else
     :plain
-      NoteList.setContent(#{@notes.last.id}, #{@notes.first.id}, "#{escape_javascript(render(partial: 'notes/notes_list'))}");
+      NoteList.setContent(#{@notes.last.id}, "#{escape_javascript(render 'notes/notes_list')}");
 
 - else
-  - if params[:first_id]
+  - if loading_more_notes?
     :plain
-      NoteList.append(#{params[:first_id]}, "");
+      NoteList.finishedLoadingMore();

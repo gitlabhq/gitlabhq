@@ -5,7 +5,8 @@
     $('.note-form-holder #preview-link').text('Preview');
     $('.note-form-holder #preview-note').hide();
     $('.note-form-holder').show();
-    NoteList.prepend(#{note.id}, "#{escape_javascript(render partial: "notes/show", locals: {note: note})}");
+    NoteList.appendNewNote(#{note.id}, "#{escape_javascript(render "notes/show", note: note)}");
+
 - else
   :plain
     $(".note-form-holder").replaceWith("#{escape_javascript(render('form'))}");

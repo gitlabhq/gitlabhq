@@ -4,9 +4,8 @@ var NoteList = {
   target_params: null,
   target_id: 0,
   target_type: null,
-  first_id: 0,
-  last_id: 0,
-  disable:false,
+  bottom_id: 0,
+  loading_more_disabled: false,
 
   init:
     function(tid, tt, path) {
@@ -15,26 +14,23 @@ var NoteList = {
       this.target_type = tt;
       this.target_params = "&target_type=" + this.target_type + "&target_id=" + this.target_id;
 
-      // get notes
+      // get initial set of notes
       this.getContent();
-
-      // get new notes every n seconds
-      this.initRefresh();
 
       $('.delete-note').live('ajax:success', function() {
         $(this).closest('li').fadeOut(); });
 
-      $(".note-form-holder").live("ajax:before", function(){
+      $(".note-form-holder").on("ajax:before", function(){
         $(".submit_note").disable()
       })
 
-      $(".note-form-holder").live("ajax:complete", function(){
+      $(".note-form-holder").on("ajax:complete", function(){
         $(".submit_note").enable()
       })
 
       disableButtonIfEmptyField(".note-text", ".submit_note");
 
-      $(".note-text").live("focus", function(){
+      $(".note-text").on("focus", function(){
         $(this).css("height", "80px");
         $('.note_advanced_opts').show();
       });
@@ -44,64 +40,20 @@ var NoteList = {
         var filename = val.replace(/^.*[\\\/]/, '');
         $(".file_name").text(filename);
       });
-
     },
 
 
   /**
-   * Load new notes to fresh list called 'new_notes_list': 
-   * - Replace 'new_notes_list' with new list every n seconds
-   * - Append new notes to this list after submit
+   * Handle loading the initial set of notes.
+   * And set up loading more notes when scrolling to the bottom of the page.
    */
-
-  initRefresh:
-    function() {
-      // init timer
-      var intNew = setInterval("NoteList.getNew()", 10000);
-    },
-
-  replace:
-    function(html) {
-      $("#new_notes_list").html(html);
-    },
-
-  prepend:
-    function(id, html) {
-      if(id != this.last_id) {
-        $("#new_notes_list").prepend(html);
-      }
-    },
-
-  getNew:
-    function() {
-      // refersh notes list
-      $.ajax({
-        type: "GET",
-      url: this.notes_path,
-      data: "last_id=" + this.last_id + this.target_params,
-      dataType: "script"});
-    },
-
-  refresh:
-    function() {
-      // refersh notes list
-      $.ajax({
-        type: "GET",
-      url: this.notes_path,
-      data: "first_id=" + this.first_id + "&last_id=" + this.last_id + this.target_params,
-      dataType: "script"});
-    },
 
 
   /**
-   * Init load of notes: 
-   * 1. Get content with ajax call
-   * 2. Set content of notes list with loaded one
+   * Gets an inital set of notes.
    */
-
-
-  getContent: 
-    function() { 
+  getContent:
+    function() {
       $.ajax({
         type: "GET",
       url: this.notes_path,
@@ -111,10 +63,13 @@ var NoteList = {
       dataType: "script"});
     },
 
+  /**
+   * Called in response to getContent().
+   * Replaces the content of #notes-list with the given html.
+   */
   setContent:
-    function(fid, lid, html) {
-      this.last_id = lid;
-      this.first_id = fid;
+    function(last_id, html) {
+      this.bottom_id = last_id;
       $("#notes-list").html(html);
 
       // Init infinite scrolling
@@ -123,54 +78,126 @@ var NoteList = {
 
 
   /**
-   * Paging for old notes when scroll to bottom: 
-   * 1. Init scroll events with 'initLoadMore'
-   * 2. Load onlder notes with 'getOld' method
-   * 3. append old notes to bottom of list with 'append'
+   * Handle loading more notes when scrolling to the bottom of the page.
+   * The id of the last note in the list is in this.bottom_id.
    *
+   * Set up refreshing only new notes after all notes have been loaded.
    */
-  getOld:
+
+
+  /**
+   * Initializes loading more notes when scrolling to the bottom of the page.
+   */
+  initLoadMore:
     function() {
+      $(document).endlessScroll({
+        bottomPixels: 400,
+        fireDelay: 1000,
+        fireOnce:true,
+        ceaseFire: function() {
+          return NoteList.loading_more_disabled;
+        },
+        callback: function(i) {
+          NoteList.getMore();
+        }
+      });
+    },
+
+  /**
+   * Gets an additional set of notes.
+   */
+  getMore:
+    function() {
+      // only load more notes if there are no "new" notes
       $('.loading').show();
       $.ajax({
         type: "GET",
         url: this.notes_path,
-        data: "first_id=" + this.first_id + this.target_params,
+        data: "loading_more=1&after_id=" + this.bottom_id + this.target_params,
         complete: function(){ $('.notes-status').removeClass("loading")},
         beforeSend: function() { $('.notes-status').addClass("loading") },
         dataType: "script"});
     },
 
-  append:
+  /**
+   * Called in response to getMore().
+   * Append notes to #notes-list.
+   */
+  appendMoreNotes:
     function(id, html) {
-      if(this.first_id == id) { 
-        this.disable = true;
-      } else { 
-        this.first_id = id;
+      if(id != this.bottom_id) {
+        this.bottom_id = id;
         $("#notes-list").append(html);
       }
     },
 
-  initLoadMore:
+  /**
+   * Called in response to getMore().
+   * Disables loading more notes when scrolling to the bottom of the page.
+   * Initalizes refreshing new notes.
+   */
+  finishedLoadingMore:
     function() {
-      $(document).endlessScroll({
-        bottomPixels: 400,
-      fireDelay: 1000,
-      fireOnce:true,
-      ceaseFire: function() { 
-        return NoteList.disable;
-      },
-      callback: function(i) {
-        NoteList.getOld();
+      this.loading_more_disabled = true;
+
+      // from now on only get new notes
+      this.initRefreshNew();
+    },
+
+
+  /**
+   * Handle refreshing and adding of new notes.
+   *
+   * New notes are all notes that are created after the site has been loaded.
+   * The "old" notes are in #notes-list the "new" ones will be in #new-notes-list.
+   * The id of the last "old" note is in this.bottom_id.
+   */
+
+
+  /**
+   * Initializes getting new notes every n seconds.
+   */
+  initRefreshNew:
+    function() {
+      setInterval("NoteList.getNew()", 10000);
+    },
+
+  /**
+   * Gets the new set of notes (i.e. all notes after ).
+   */
+  getNew:
+    function() {
+      $.ajax({
+        type: "GET",
+      url: this.notes_path,
+      data: "loading_new=1&after_id=" + this.bottom_id + this.target_params,
+      dataType: "script"});
+    },
+
+  /**
+   * Called in response to getNew().
+   * Replaces the content of #new-notes-list with the given html.
+   */
+  replaceNewNotes:
+    function(html) {
+      $("#new-notes-list").html(html);
+    },
+
+  /**
+   * Adds a single note to #new-notes-list.
+   */
+  appendNewNote:
+    function(id, html) {
+      if(id != this.bottom_id) {
+        $("#new-notes-list").append(html);
       }
-      });
     }
 };
 
-var PerLineNotes = { 
+var PerLineNotes = {
   init:
     function() {
-      $(".line_note_link, .line_note_reply_link").live("click", function(e) {
+      $(".line_note_link, .line_note_reply_link").on("click", function(e) {
         var form = $(".per_line_form");
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).attr("line_code"));
