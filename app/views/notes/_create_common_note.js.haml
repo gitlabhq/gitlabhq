@@ -5,7 +5,7 @@
     $('.note-form-holder #preview-link').text('Preview');
     $('.note-form-holder #preview-note').hide();
     $('.note-form-holder').show();
-    NoteList.appendNewNote(#{note.id}, "#{escape_javascript(render "notes/show", note: note)}");
+    NoteList.appendNewNote(#{note.id}, "#{escape_javascript(render "notes/note", note: note)}");
 
 - else
   :plain
