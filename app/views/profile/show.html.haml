@@ -33,13 +33,13 @@
         %ul
           -unless Gitlab.config.disable_gravatar?
             %li
-              %p.hint You can change your avatar at gravatar.com
+              %p.hint You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
 
           - if Gitlab.config.omniauth_enabled? && @user.provider?
             %li
               %p.hint
                 You can login through #{@user.provider.titleize}!
-                = link_to "click here to change", profile_password_path
+                = link_to "click here to change", profile_account_path
 
   %hr
   .row

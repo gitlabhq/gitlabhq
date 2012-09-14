@@ -63,7 +63,8 @@ Gitlab::Application.routes.draw do
   #
   # Profile Area
   #
-  get "profile/password", :to => "profile#password"
+  get "profile/account", :to => "profile#account"
+  get "profile/history", :to => "profile#history"
   put "profile/password", :to => "profile#password_update"
   get "profile/token", :to => "profile#token"
   put "profile/reset_private_token", :to => "profile#reset_private_token"

@@ -12,7 +12,7 @@ Feature: Profile
     And I should see new contact info
 
   Scenario: I change my password
-    Given I visit profile password page
+    Given I visit profile account page
     Then I change my password
     And I should be redirected to sign in page
 

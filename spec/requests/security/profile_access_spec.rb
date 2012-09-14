@@ -28,8 +28,8 @@ describe "Users Security" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /profile/password" do
-      subject { profile_password_path }
+    describe "GET /profile/account" do
+      subject { profile_account_path }
 
       it { should be_allowed_for @u1 }
       it { should be_allowed_for :admin }
