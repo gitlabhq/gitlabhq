@@ -4,14 +4,17 @@ var NoteList = {
   target_params: null,
   target_id: 0,
   target_type: null,
+  top_id: 0,
   bottom_id: 0,
   loading_more_disabled: false,
+  reversed: false,
 
   init:
     function(tid, tt, path) {
       this.notes_path = path + ".js";
       this.target_id = tid;
       this.target_type = tt;
+      this.reversed = $("#notes-list").hasClass("reversed");
       this.target_params = "&target_type=" + this.target_type + "&target_id=" + this.target_id;
 
       // get initial set of notes
@@ -69,12 +72,18 @@ var NoteList = {
    * Replaces the content of #notes-list with the given html.
    */
   setContent:
-    function(last_id, html) {
+    function(first_id, last_id, html) {
+      this.top_id = first_id;
       this.bottom_id = last_id;
       $("#notes-list").html(html);
 
-      // Init infinite scrolling
+      // init infinite scrolling
       this.initLoadMore();
+
+      // init getting new notes
+      if (this.reversed) {
+        this.initRefreshNew();
+      }
     },
 
 
@@ -114,7 +123,7 @@ var NoteList = {
       $.ajax({
         type: "GET",
         url: this.notes_path,
-        data: "loading_more=1&after_id=" + this.bottom_id + this.target_params,
+        data: "loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id + this.target_params,
         complete: function(){ $('.notes-status').removeClass("loading")},
         beforeSend: function() { $('.notes-status').addClass("loading") },
         dataType: "script"});
@@ -142,7 +151,9 @@ var NoteList = {
       this.loading_more_disabled = true;
 
       // from now on only get new notes
-      this.initRefreshNew();
+      if (!this.reversed) {
+        this.initRefreshNew();
+      }
     },
 
 
@@ -164,14 +175,14 @@ var NoteList = {
     },
 
   /**
-   * Gets the new set of notes (i.e. all notes after ).
+   * Gets the new set of notes.
    */
   getNew:
     function() {
       $.ajax({
         type: "GET",
       url: this.notes_path,
-      data: "loading_new=1&after_id=" + this.bottom_id + this.target_params,
+      data: "loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id) + this.target_params,
       dataType: "script"});
     },
 
@@ -189,7 +200,9 @@ var NoteList = {
    */
   appendNewNote:
     function(id, html) {
-      if(id != this.bottom_id) {
+      if (this.reversed) {
+        $("#new-notes-list").prepend(html);
+      } else {
         $("#new-notes-list").append(html);
       }
     }

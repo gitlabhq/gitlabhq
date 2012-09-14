@@ -4,6 +4,7 @@ module Notes
       target_type = params[:target_type]
       target_id   = params[:target_id]
       after_id    = params[:after_id]
+      before_id   = params[:before_id]
 
 
       @notes = case target_type
@@ -17,14 +18,16 @@ module Notes
                  project.snippets.find(target_id).notes.fresh
                when "wall"
                  # this is the only case, where the order is DESC
-                 project.common_notes.order("created_at DESC").limit(50)
+                 project.common_notes.order("created_at DESC, id DESC").limit(50)
                when "wiki"
                  project.wikis.reverse.map {|w| w.notes.fresh }.flatten[0..20]
                end
 
       @notes = if after_id
                  @notes.where("id > ?", after_id)
-               else 
+               elsif before_id
+                 @notes.where("id < ?", before_id)
+               else
                  @notes
                end
     end

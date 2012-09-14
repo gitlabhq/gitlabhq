@@ -9,7 +9,7 @@
 
   - else
     :plain
-      NoteList.setContent(#{@notes.last.id}, "#{escape_javascript(render 'notes/notes')}");
+      NoteList.setContent(#{@notes.first.id}, #{@notes.last.id}, "#{escape_javascript(render 'notes/notes')}");
 
 - else
   - if loading_more_notes?
