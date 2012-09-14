@@ -274,7 +274,9 @@ Adding permission:
 
 Gitlab autostart:
 
-    sudo update-rc.d gitlab defaults
+    # 70 30 causes gitlab to start after redis-server
+    # leaving 70 30 off causes gitlab to not start (tested in Ubuntu Server 12.04 LTS)
+    sudo update-rc.d gitlab defaults 70 30
 
 Now you can start/restart/stop gitlab like:
 
