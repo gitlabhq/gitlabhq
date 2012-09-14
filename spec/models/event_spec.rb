@@ -14,12 +14,12 @@ describe Event do
     it { should respond_to(:commits) }
   end
 
-  describe "Push event" do 
-    before do 
+  describe "Push event" do
+    before do
       project = Factory :project
       @user = project.owner
 
-      data = { 
+      data = {
         before: "0000000000000000000000000000000000000000",
         after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
         ref: "refs/heads/master",
@@ -50,25 +50,24 @@ describe Event do
     it { @event.author.should == @user }
   end
 
-  describe "Joined project team" do
-    let(:project) {Factory.create :project}
-    let(:new_user) {Factory.create :user}
-    it "should create event" do
-      UsersProject.observers.enable :users_project_observer
-      expect{
-        UsersProject.bulk_import(project, [new_user.id], UsersProject::DEVELOPER)
-      }.to change{Event.count}.by(1)
+  describe 'Team events' do
+    let(:user_project) { stub.as_null_object }
+    let(:observer) { UsersProjectObserver.instance }
+
+    before {
+      Event.should_receive :create
+    }
+
+    describe "Joined project team" do
+      it "should create event" do
+        observer.after_create user_project
+      end
     end
-  end
-  describe "Left project team" do
-    let(:project) {Factory.create :project}
-    let(:new_user) {Factory.create :user}
-    it "should create event" do
-      UsersProject.bulk_import(project, [new_user.id], UsersProject::DEVELOPER)
-      UsersProject.observers.enable :users_project_observer
-      expect{
-        UsersProject.bulk_delete(project, [new_user.id])
-      }.to change{Event.count}.by(1)
+
+    describe "Left project team" do
+      it "should create event" do
+        observer.after_destroy user_project
+      end
     end
   end
 end
