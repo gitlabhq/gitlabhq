@@ -1,5 +1,6 @@
 gitlabhq (0.0.1-1) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release, first version of changelog, not really a real changelog
+    yet.
 
  -- Rodrigo Sampaio Vaz <rodrigo.vaz@gmail.com>  Wed, 11 Jul 2012 01:36:16 -0300
