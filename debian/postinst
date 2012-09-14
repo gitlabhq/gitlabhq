@@ -21,35 +21,33 @@ set -e
 case "$1" in
     configure)
 
-        git_exists=$(grep -w git /etc/passwd | wc -l)
-        if [ $git_exists -eq 0 ]; then
-            adduser \
-                --system \
-                --shell /bin/sh \
-                --gecos 'git version control' \
-                --group \
-                --disabled-password \
-                --home /home/git \
-                git
-        fi
+        makedir /tmp/gitlab root:root 700
 
-        gitlab_exists=$(grep -w gitlab /etc/passwd | wc -l)
-        if [ $gitlab_exists -eq 0 ]; then
-            adduser --disabled-login --gecos 'gitlab system' gitlab
+        chgrp git /tmp/gitlab 2>/dev/null ||
+              addgroup --system git
+        chown git /tmp/gitlab 2>/dev/null ||
+              adduser                           \
+                --system                        \
+                --home /home/git                \
+                --shell /bin/sh                 \
+                --gecos 'git version control'   \
+                --ingroup git                   \
+                --disabled-password git
 
-            usermod -a -G git gitlab
 
-            su - gitlab -c "ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa"
+        chown gitlab /tmp/gitlab 2>/dev/null ||
+            adduser --disabled-login --gecos 'gitlab system' --ingroup git gitlab
 
-            cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
-            chmod 777 /home/git/gitlab.pub
+        su - gitlab -c "ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa"
 
-            sed -i 's/0077/0007/g' /etc/gitolite/example.gitolite.rc
-            su - git -c 'sh -c "gl-setup /home/git/gitlab.pub"'
+        cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
+        chmod 777 /home/git/gitlab.pub
 
-            chmod -R g+rwX /home/git/repositories/
-            chown -R git:git /home/git/repositories/
-        fi
+        sed -i 's/0077/0007/g' /etc/gitolite/example.gitolite.rc
+        su - git -c 'sh -c "gl-setup /home/git/gitlab.pub"'
+
+        chmod -R g+rwX /home/git/repositories/
+        chown -R git:git /home/git/repositories/
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
