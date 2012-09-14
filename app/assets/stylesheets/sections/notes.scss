@@ -10,7 +10,10 @@
   padding:0px;
 }
 
-#notes-list li:last-child {
+#new-notes-list:not(.reversed) {
+  border-top:1px solid #aaa;
+}
+#new-notes-list.reversed {
   border-bottom:1px solid #aaa;
 }
 
@@ -48,7 +51,6 @@
 
 .note {
   padding: 8px 0;
-  border-bottom: 1px solid #eee;
   overflow: hidden;
   display: block;
   img {float: left; margin-right: 10px;}
@@ -69,6 +71,14 @@
   &:hover {
     .delete-note { display:block; }
   }
+}
+#notes-list:not(.reversed) .note,
+#new-notes-list:not(.reversed) .note {
+  border-bottom: 1px solid #eee;
+}
+#notes-list.reversed .note,
+#new-notes-list.reversed .note {
+  border-top: 1px solid #eee;
 }
 
 .notes-status {
