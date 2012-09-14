@@ -1,4 +1,6 @@
 class UsersProject < ActiveRecord::Base
+  include GitHost
+
   GUEST     = 10
   REPORTER  = 20
   DEVELOPER = 30
@@ -12,18 +14,35 @@ class UsersProject < ActiveRecord::Base
   after_save :update_repository
   after_destroy :update_repository
 
-  validates_uniqueness_of :user_id, :scope => [:project_id]
+  validates_uniqueness_of :user_id, scope: [:project_id], message: "already exists in project"
   validates_presence_of :user_id
   validates_presence_of :project_id
 
-  delegate :name, :email, :to => :user, :prefix => true
+  delegate :name, :email, to: :user, prefix: true
+
+  def self.bulk_delete(project, user_ids)
+    UsersProject.transaction do
+      UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        users_project.destroy
+      end
+    end
+  end
+
+  def self.bulk_update(project, user_ids, project_access)
+    UsersProject.transaction do
+      UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        users_project.project_access = project_access
+        users_project.save
+      end
+    end
+  end
 
   def self.bulk_import(project, user_ids, project_access)
     UsersProject.transaction do
       user_ids.each do |user_id|
         users_project = UsersProject.new(
-          :project_access => project_access,
-          :user_id => user_id
+          project_access: project_access,
+          user_id: user_id
         )
         users_project.project = project
         users_project.save
@@ -35,7 +54,7 @@ class UsersProject < ActiveRecord::Base
     UsersProject.transaction do
       project_ids.each do |project_id|
         users_project = UsersProject.new(
-          :project_access => project_access,
+          project_access: project_access,
         )
         users_project.project_id = project_id
         users_project.user_id = user.id
@@ -46,10 +65,10 @@ class UsersProject < ActiveRecord::Base
 
   def self.access_roles
     {
-      "Guest"   => GUEST,
-      "Reporter"   => REPORTER,
+      "Guest"     => GUEST,
+      "Reporter"  => REPORTER,
       "Developer" => DEVELOPER,
-      "Master"  => MASTER
+      "Master"    => MASTER
     }
   end
 
@@ -58,9 +77,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def update_repository
-    Gitlab::GitHost.system.new.configure do |c|
-      c.update_project(project.path, project)
-    end
+    git_host.update_repository(project)
   end
 
   def project_access_human

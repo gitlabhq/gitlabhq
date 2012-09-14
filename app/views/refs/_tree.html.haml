@@ -1,7 +1,7 @@
 %ul.breadcrumb
   %li
     %span.arrow
-    = link_to tree_project_ref_path(@project, @ref, :path => nil), :remote => true do
+    = link_to tree_project_ref_path(@project, @ref, path: nil), remote: true do
       = @project.name
   - tree.breadcrumbs(6) do |link|
     \/
@@ -10,32 +10,32 @@
 %div.tree_progress
 #tree-content-holder
   - if tree.is_blob?
-    = render :partial => "refs/tree_file", :locals => { :name => tree.name, :content => tree.data, :file => tree }
+    = render partial: "refs/tree_file", locals: { name: tree.name, content: tree.data, file: tree }
   - else
     - contents = tree.contents
-    %table#tree-slider.bordered-table.table{:class  => "table_#{@hex_path}" }
+    %table#tree-slider{class: "table_#{@hex_path}" }
       %thead
         %th Name
         %th Last Update
         %th
           Last commit
-          = link_to "History", tree.history_path, :class => "right"
+          = link_to "History", tree.history_path, class: "right"
 
       - if tree.up_dir?
-        %tr{ :class => "tree-item", :url => tree.up_dir_path }
+        %tr{ class: "tree-item", url: tree.up_dir_path }
           %td.tree-item-file-name
             = image_tag "file_empty.png"
-            = link_to "..", tree.up_dir_path, :remote => :true
+            = link_to "..", tree.up_dir_path, remote: :true
           %td
           %td
 
       - index = 0
       - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
-        = render :partial => "refs/tree_item", :locals => { :content => content, :index => (index += 1) }
+        = render partial: "refs/tree_item", locals: { content: content, index: (index += 1) }
       - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
-        = render :partial => "refs/tree_item", :locals => { :content => content, :index => (index += 1) }
+        = render partial: "refs/tree_item", locals: { content: content, index: (index += 1) }
       - contents.select{ |i| i.is_a?(Grit::Submodule)}.each do |content|
-        = render :partial => "refs/submodule_item", :locals => { :content => content, :index => (index += 1) }
+        = render partial: "refs/submodule_item", locals: { content: content, index: (index += 1) }
 
     - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
       .file_holder#README
@@ -43,27 +43,19 @@
           %i.icon-file
           = content.name
         .file_content.wiki
-          - if content.name =~ /\.(md|markdown)$/i
-            = preserve do
-              = markdown(content.data)
-          - else
-            = simple_format(content.data)
+          = raw GitHub::Markup.render(content.name, content.data)
 
 :javascript
   $(function(){
-    $('select#branch').selectmenu({style:'popup', width:200});
-    $('select#tag').selectmenu({style:'popup', width:200});
-    $('.project-refs-select').chosen();
-
     history.pushState({ path: this.path }, '', "#{@history_path}");
-
   });
 
-  // Load last commit log for each file in tree
-  $(window).load(function(){
-    ajaxGet('#{@logs_path}'); 
-  });
-
+- unless tree.is_blob?
+  :javascript
+    // Load last commit log for each file in tree
+    $(window).load(function(){
+      ajaxGet('#{@logs_path}');
+    });
 
 - if params[:path] && request.xhr?
   :javascript

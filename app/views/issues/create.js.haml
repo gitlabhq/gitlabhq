@@ -1,7 +1,7 @@
 - if @issue.valid?
   :plain
     switchFromNewIssue();
-    $("#issues-table").prepend("#{escape_javascript(render(:partial => 'show', :locals => {:issue => @issue}))}");
+    $("#issues-table").prepend("#{escape_javascript(render(partial: 'show', locals: {issue: @issue}))}");
     $.ajax({type: "GET", url: location.href, dataType: "script"});
 - else
   :plain

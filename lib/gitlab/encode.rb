@@ -19,7 +19,7 @@ module Gitlab
       # if message is not utf-8 encoding, convert it
       if detect[:encoding]
         message.force_encoding(detect[:encoding])
-        message.encode!("utf-8", detect[:encoding], :undef => :replace, :replace => "", :invalid => :replace)
+        message.encode!("utf-8", detect[:encoding], undef: :replace, replace: "", invalid: :replace)
       end
 
       # ensure message encoding is utf8

@@ -1,21 +1,14 @@
 - if @projects.any?
   .projects
     .activities.span8
-      - if current_user.require_ssh_key?
-        .alert.alert-error.padded
-          %span
-            You wont be able to pull/push project code unless you
-            %strong
-              = link_to new_key_path, :class => "vlink" do
-                add new key
-            to your profile
+      = render 'shared/no_ssh'
       - if @events.any?
         .content_list= render @events
       - else
         %h4.nothing_here_message Projects activity will be displayed here
       .loading.hide
     .side
-      = render "events/event_last_push", :event => @last_push
+      = render "events/event_last_push", event: @last_push
       .projects_box
         %h5
           Projects
@@ -23,23 +16,26 @@
             (#{@projects.total_count})
           - if current_user.can_create_project?
             %span.right
-              = link_to new_project_path, :class => "btn very_small info" do
+              = link_to new_project_path, class: "btn very_small info" do
                 %i.icon-plus
                 New Project
-        - @projects.each do |project|
-          = link_to project_path(project), :class => dom_class(project) do
-            %h4
-              %span.ico.project
-              = truncate(project.name, :length => 25)
-              %span.right
-                &rarr;
-        .bottom= paginate @projects, :theme => "gitlab"
+        %ul.unstyled
+          - @projects.each do |project|
+            %li.wll
+              = link_to project_path(project), class: dom_class(project) do
+                %strong.project_name= truncate(project.name, length: 25)
+                %span.arrow
+                  &rarr;
+                %span.last_activity
+                  %strong Last activity:
+                  %span= project_last_activity(project)
+        .bottom= paginate @projects, theme: "gitlab"
 
       %hr
       %div
         %span.rss-icon
-          = link_to dashboard_path(:atom, { :private_token => current_user.private_token }) do
-            = image_tag "rss_ui.png", :title => "feed"
+          = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
+            = image_tag "rss_ui.png", title: "feed"
             %strong News Feed
 
 - else
@@ -51,11 +47,11 @@
       = current_user.projects_limit
       projects. Click on button below to add a new one
       .link_holder
-        = link_to new_project_path, :class => "btn primary" do
+        = link_to new_project_path, class: "btn primary" do
           New Project »
     - else
       If you will be added to project - it will be displayed here
 
 
-:javascript 
+:javascript
   $(function(){ Pager.init(20); });

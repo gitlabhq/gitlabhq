@@ -1,21 +1,23 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
-  include SshKey
   belongs_to :user
   belongs_to :project
 
+  attr_protected :user_id
+
   validates :title,
-            :presence => true,
-            :length   => { :within => 0..255 }
+            presence: true,
+            length: { within: 0..255 }
 
   validates :key,
-            :presence => true,
-            :length   => { :within => 0..5000 }
+            presence: true,
+            format: { :with => /ssh-.{3} / },
+            length: { within: 0..5000 }
 
   before_save :set_identifier
   before_validation :strip_white_space
-  delegate :name, :email, :to => :user, :prefix => true
+  delegate :name, :email, to: :user, prefix: true
   validate :unique_key
 
   def strip_white_space
@@ -23,7 +25,7 @@ class Key < ActiveRecord::Base
   end
 
   def unique_key
-    query = Key.where(:key => key)
+    query = Key.where(key: key)
     query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
     if (query.count > 0)
       errors.add :key, 'already exist.'
@@ -49,6 +51,10 @@ class Key < ActiveRecord::Base
     else
       user.projects
     end
+  end
+
+  def last_deploy?
+    Key.where(identifier: identifier).count == 0
   end
 end
 # == Schema Information

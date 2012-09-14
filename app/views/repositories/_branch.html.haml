@@ -2,21 +2,20 @@
 - commit = CommitDecorator.decorate(commit)
 %tr
   %td
-    = link_to project_commits_path(@project, :ref => branch.name) do
-      %strong= branch.name
+    = link_to project_commits_path(@project, ref: branch.name) do
+      %strong= truncate(branch.name, length: 60)
       - if branch.name == @project.root_ref
         %span.label default
   %td
-    = link_to project_commit_path(@project, :id => commit.id) do
+    = link_to project_commit_path(@project, id: commit.id) do
       %code= commit.short_id
 
-    = image_tag gravatar_icon(commit.author_email), :class => "", :width => 16
-    = truncate(commit.title, :length => 40)
-  %td
+    = image_tag gravatar_icon(commit.author_email), class: "", width: 16
+    = gfm truncate(commit.title, length: 40)
     %span.update-author.right
       = time_ago_in_words(commit.committed_date)
       ago
   %td
     - if can? current_user, :download_code, @project
-      = link_to "Download", archive_project_repository_path(@project, :ref => branch.name), :class => "visible_link download_repo_link"
+      = link_to "Download", archive_project_repository_path(@project, ref: branch.name), class: "visible_link download_repo_link"
 

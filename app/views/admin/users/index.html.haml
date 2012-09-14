@@ -1,25 +1,25 @@
-%h3
+%h3.page_title
   Users
-  = link_to 'New User', new_admin_user_path, :class => "btn small right"
+  = link_to 'New User', new_admin_user_path, class: "btn small right"
 %br
 
-= form_tag admin_users_path, :method => :get do 
-  = text_field_tag :name, params[:name], :class => "xlarge"
-  = submit_tag "Search", :class => "btn submit primary"
+= form_tag admin_users_path, method: :get, class: 'form-inline' do
+  = text_field_tag :name, params[:name], class: "xlarge"
+  = submit_tag "Search", class: "btn submit primary"
 %ul.nav.nav-pills
-  %li{:class => "#{'active' unless params[:filter]}"}
+  %li{class: "#{'active' unless params[:filter]}"}
     = link_to "Active", admin_users_path
-  %li{:class => "#{'active' if params[:filter] == "admins"}"}
-    = link_to admin_users_path(:filter => "admins") do
+  %li{class: "#{'active' if params[:filter] == "admins"}"}
+    = link_to admin_users_path(filter: "admins") do
       Admins
-  %li{:class => "#{'active' if params[:filter] == "blocked"}"}
-    = link_to admin_users_path(:filter => "blocked") do
+  %li{class: "#{'active' if params[:filter] == "blocked"}"}
+    = link_to admin_users_path(filter: "blocked") do
       Blocked
-  %li{:class => "#{'active' if params[:filter] == "wop"}"}
-    = link_to admin_users_path(:filter => "wop") do
+  %li{class: "#{'active' if params[:filter] == "wop"}"}
+    = link_to admin_users_path(filter: "wop") do
       Without projects
 
-%table.admin-table
+%table
   %thead
     %th Admin
     %th Name
@@ -31,16 +31,16 @@
 
   - @admin_users.each do |user|
     %tr
-      %td= check_box_tag "admin",   1, user.admin, :disabled => :disabled
+      %td= check_box_tag "admin",   1, user.admin, disabled: :disabled
       %td= link_to user.name, [:admin, user]
       %td= user.email
       %td= user.users_projects.count
-      %td= link_to 'Edit', edit_admin_user_path(user), :id => "edit_#{dom_id(user)}", :class => "btn small"
+      %td= link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn small"
       %td
         - if user.blocked
-          = link_to 'Unblock', unblock_admin_user_path(user), :method => :put, :class => "btn small success"
+          = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn small success"
         - else
-          = link_to 'Block', block_admin_user_path(user), :confirm => 'USER WILL BE BLOCKED! Are you sure?', :method => :put, :class => "btn small danger"
-      %td.bgred= link_to 'Destroy', [:admin, user], :confirm => "USER #{user.name} WILL BE REMOVED! Are you sure?", :method => :delete, :class => "btn small danger"
+          = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small danger"
+      %td.bgred= link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn small danger"
 
-= paginate @admin_users, :theme => "admin"
+= paginate @admin_users, theme: "admin"

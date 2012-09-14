@@ -7,16 +7,16 @@
 - if @commits.present?
   %ul.nav.nav-tabs.mr_nav_tabs
     %li
-      = link_to "#notes", "data-url" => project_merge_request_path(@project, @merge_request), :class => "merge-notes-tab tab" do
+      = link_to "#notes", "data-url" => project_merge_request_path(@project, @merge_request), class: "merge-notes-tab tab" do
         %i.icon-comment
         Comments
     %li
-      = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), :class => "merge-diffs-tab tab" do
+      = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), class: "merge-diffs-tab tab" do
         %i.icon-list-alt
         Diff
 
-.merge_request_notes#notes{ :class => (controller.action_name == 'show') ? "" : "hide" }
-  = render("notes/notes", :tid => @merge_request.id, :tt => "merge_request")
+.merge_request_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+  = render("notes/notes", tid: @merge_request.id, tt: "merge_request")
 .merge-request-diffs
   = render "merge_requests/show/diffs" if @diffs
 .status
@@ -33,7 +33,8 @@
     });
 
     $(".edit_merge_request").live("ajax:beforeSend", function() {
-      $(this).replaceWith('#{image_tag "ajax_loader.gif"}');
+      $('.can_be_merged').hide();
+      $('.merge_in_progress').show();
     })
   })
 

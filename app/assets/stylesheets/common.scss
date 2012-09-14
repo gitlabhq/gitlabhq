@@ -1,33 +1,31 @@
-.diff_file_header a,
-.file_stats a {
-  color:$style_color;
-}
-
-
 /** LAYOUT **/
 
-.container { 
+body {
+  margin-bottom:20px;
+}
+
+.container {
   padding-top:0;
   z-index:5;
 }
 
-.container .content { 
+.container .content {
   margin:0 0;
 }
 
-.container  .sidebar { 
+.container  .sidebar {
   width: 200px;
   height:100%;
   min-height:450px;
   float:right;
 }
 
-.profile_avatar_holder { 
+.profile_avatar_holder {
   float:left;
   width:60px;
   height:60px;
   margin-right:20px;
-  img { 
+  img {
     width:60px;
     height:60px;
     background:#eee;
@@ -36,37 +34,13 @@
 
 
 .visible_link,
-.author_link { 
+.author_link {
   color: $link_color;
 }
 
-.widget { 
-  @include shade;
-  padding:20px;
-  margin-bottom:20px;
-  border: 1px solid #DDD;
-  border-radius: 5px;
-  background:#fafafa;
+.help li { color:#111 }
 
-  .link_holder { 
-    background:#eee;
-    position:relative;
-    left:-20px;
-    top:20px;
-    padding:10px 20px;
-    width:100%;
-    border-top:1px solid #ccc;
-
-    a { 
-      font-size:14px;
-      color:#666;
-    }
-  }
-}
-
-.help li { color:#111 } 
-
-.back_link { 
+.back_link {
   text-decoration:underline;
   font-size:14px;
   font-weight:bold;
@@ -74,31 +48,21 @@
   padding-bottom:0;
 }
 
-.info_link { 
+.info_link {
   margin-right:5px;
   float:left;
 
-  img { 
+  img {
     width:20px;
   }
 }
 
-.download_repo_link { 
+.download_repo_link {
   background: url("images.png") no-repeat 0 -48px;
   padding-left:20px;
 }
 
-.number { 
-  border-radius: 4px; 
-  text-shadow: none; 
-  background: rgba(0,0,0,.12); 
-  text-align: center; 
-  padding: 2px 4px; 
-  line-height:18px;
-  margin-left:2px;
-}
-
-table a code { 
+table a code {
   position: relative;
   top: -2px;
   margin-right: 3px;
@@ -108,7 +72,7 @@ table a code {
  margin-top: 5px;
 }
 
-.loading { 
+.loading {
   margin:20px auto;
   background: url(ajax_loader.gif) no-repeat center center;
   width:40px;
@@ -129,25 +93,17 @@ table a code {
   border-bottom:1px solid #ccc;
 
   h4 {
-    color:#444;
-    font-size:22px;
+    color:#666;
+    font-size:18px;
+    line-height:38px;
     padding-top:5px;
     margin:2px;
+    font-weight:normal;
   }
 }
 
 .git_url_wrapper {
   margin-right:50px
-}
-.file_stats {
-  span {
-    img {
-      width:14px;
-      float:left;
-      margin-right:6px;
-      padding:2px 0;
-    }
-  }
 }
 
 .handle:hover {
@@ -172,10 +128,6 @@ span.update-author {
   display:block;
 }
 /** END UPDATE ITEM **/
-.ajax-tab-loading {
-  padding:40px;
-  display:none;
-}
 .dashboard-loader {
   float:left;
   margin:10px;
@@ -186,24 +138,128 @@ span.update-author {
   font-weight:bold;
 }
 
-a.project-update.titled {
-  position:relative;
-  padding-left:35% !important;
-  .title-block {
-    padding:10px;
-    width:35%;
-    position:absolute;
-    left:0;
-    top:0;
+.neib {
+  margin-right:10px;
+}
+
+.label {
+  background-color: #474D57;
+
+  &.label-issue {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding:4px 6px;
+    color:#444;
+    text-shadow:0 0 1px #fff;
+
+    &.grouped {
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
   }
 }
 
-input.git_clone_url { 
+.event_label {
+  @extend .label;
+  background-color: #999;
+
+  &.pushed {
+    background-color: #4A97BD;
+  }
+
+  &.opened {
+    background-color: #469847;
+  }
+
+  &.closed {
+    background-color: #B94A48;
+  }
+
+  &.merged {
+    background-color: #2A2;
+  }
+
+  &.joined {
+    background-color: #1ca9dd;
+  }
+
+  &.left {
+    background-color: #888;
+    float:none;
+  }
+}
+
+form {
+  @extend .form-horizontal;
+
+  .actions {
+    @extend .form-actions;
+  }
+
+  .clearfix {
+    @extend .control-group;
+  }
+
+  .input {
+    @extend .controls;
+  }
+
+  label {
+    @extend .control-label;
+  }
+  .xlarge {
+    @extend .input-xlarge;
+  }
+  .xxlarge {
+    @extend .input-xxlarge;
+  }
+}
+
+
+.field_with_errors {
+  display:inline;
+}
+
+ul.breadcrumb {
+  background:white;
+  border:none;
+  li {
+    display: inline;
+    text-shadow: 0 1px 0 white
+  }
+
+  a {
+    color:#474D57;
+    font-weight:bold;
+    font-size:14px;
+  }
+
+  .arrow {
+    background: url("images.png") no-repeat -85px -77px;
+    width: 19px;
+    height: 16px;
+    float: left;
+    position: relative;
+    left: -10px;
+    padding:0;
+    margin:0;
+  }
+}
+
+input[type=text] {
+  &.large_text {
+    padding:6px;
+    font-size:16px;
+  }
+}
+
+input.git_clone_url {
   width:325px;
 }
 
 .merge-request-form-holder {
-  select { 
+  select {
     width:300px;
   }
 }
@@ -217,17 +273,17 @@ input.git_clone_url {
     height: 100px;
 }
 
-.project_list_url { 
+.project_list_url {
   width:250px;
   background:#fff !important;
 }
 
 
 /** bordered list **/
-ul.bordered-list { 
+ul.bordered-list {
   margin:5px 0px;
   padding:0px;
-  li { 
+  li {
     padding: 5px 0;
     border-bottom: 1px solid #EEE;
     overflow: hidden;
@@ -236,25 +292,25 @@ ul.bordered-list {
   }
 }
 
-ul.bordered-list li:last-child { border:none } 
+ul.bordered-list li:last-child { border:none }
 
-.line_holder { 
-  &:hover { 
-    td { 
+.line_holder {
+  &:hover {
+    td {
       background: #FFFFCF !important;
     }
   }
 }
 
-li.commit { 
-  .avatar { 
+li.commit {
+  .avatar {
     width:24px;
-    top:-3px;
+    top:-5px;
     margin-right:10px;
     margin-left:10px;
   }
 
-  code { 
+  code {
     padding: 2px 2px 0;
     margin-top: -2px;
     &:hover {
@@ -270,66 +326,27 @@ p.time {
 }
 
 
-/** 
- * Dashboard page
- * 
- */
-.dashboard_category { 
-  margin-bottom:30px;
-  h3 a { 
-    color:#474D57;
-    &:hover { 
-      text-decoration:underline;
-    }
-  }
-
-  .dashboard_block { 
-    .dash_project_item { 
-      margin-bottom:10px;
-      border:none;
-      padding:0px 5px;
-      .project_link {
-        color:#888;
-        &:hover {
-          color:#111;
-          .ico.project { 
-            background-position:-209px -21px;
-          }
-        }
-      }
-      h4 {
-        color:#666;
-      }
-    }
-  }
+.styled_image {
+  border:2px solid #ddd;
 }
 
-.styled_image { 
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  -moz-box-shadow: 0 0 5px #888;
-  -webkit-box-shadow: 0 0 5px#888;
-  box-shadow: 0 0 5px #888;
-}
-
-.event_feed { 
+.event_feed {
   min-height:40px;
   border-bottom:1px solid #ddd;
-  .avatar { 
+  .avatar {
     width:32px;
   }
-  .event_icon { 
+  .event_icon {
     float:right;
     margin-right:2px;
-    img { 
+    img {
       width:20px;
     }
   }
-  ul { 
+  ul {
     margin-left:50px;
     margin-bottom:5px;
-    .avatar { 
+    .avatar {
       width:24px;
     }
   }
@@ -338,17 +355,18 @@ p.time {
   &:last-child { border:none }
   .wll:hover { background:none }
 
-  .event_commits { 
+  .event_commits {
     margin-top: 5px;
 
-    li.commit { 
+    li.commit {
+      background: transparent;
       padding:5px;
       border:none;
     }
   }
 }
 
-.ico { 
+.ico {
   background: url("images.png") no-repeat -85px -77px;
   width: 19px;
   height: 16px;
@@ -357,24 +375,24 @@ p.time {
   margin-right: 10px;
   top: 8px;
 
-  &.project { 
+  &.project {
     background-position:  -37px -77px;
   }
 
-  &.activities { 
+  &.activities {
     background-position:-162px -22px;
   }
-  &.projects { 
+  &.projects {
     background-position:-209px -21px;
   }
 }
 
-.leftbar { 
-  h5, .title { 
+.leftbar {
+  h5, .title {
     padding:5px 10px;
   }
 
-  h4 { 
+  h4 {
     font-size:14px;
     padding:2px 10px;
     color:#666;
@@ -382,68 +400,70 @@ p.time {
   }
   a:last-child h4 { border:none; }
 
-  a:hover { 
+  a:hover {
     h4 {
       color:#111;
       background:$hover;
       border-color:#CCC;
-      .ico.project { 
+      .ico.project {
         background-position:-209px -21px;
       }
     }
   }
-  .bottom { 
+  .bottom {
     padding:10px;
   }
 }
 
-.btn { 
-  &.very_small { 
-    font-size:11px;
-    padding:2px 6px;
-    margin:2px;
+.votes {
+  font-size: 13px;
+  line-height: 15px;
+  .progress {
+    height: 4px;
+    margin: 0;
+    .bar {
+      float: left;
+      height: 100%;
+    }
+    .bar-success {
+      background-color: #468847;
+      @include bg-gradient(#62C462, #51A351);
+    }
+    .bar-danger {
+      background-color: #B94A48;
+      @include bg-gradient(#EE5F5B, #BD362F);
+    }
   }
-
-  &.grouped { 
-    margin-right:7px;
-    float:left;
+  .upvotes {
+    display: inline-block;
+    color: #468847;
   }
-
-  &.padded { 
-    margin-right:3px;
-    padding:4px 10px 4px;
+  .downvotes {
+    display: inline-block;
+    color: #B94A48;
   }
 }
-
-
-.prettyprint { 
-  background-color: #fefbf3;
-  padding: 9px;
-  border: 1px solid rgba(0,0,0,.2);
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+.votes-block {
+  margin: 14px 6px 6px 0;
+  .downvotes {
+    float: right;
+  }
 }
-
-.hint {
-  font-style: italic;
-  color: #999;
-}
-
-.upvotes {
-  font-size: 14px;
-  font-weight: bold;
-  color: #468847;
-  text-align: right;
-  padding: 4px;
-  margin: 2px;
+.votes-inline {
+  display: inline-block;
+  margin: 0 8px;
+  .progress {
+    display: inline-block;
+    padding: 0 0 2px;
+    width: 45px;
+  }
 }
 
 /* Fix for readme code (stopped it from being yellow) */
 .readme {
   pre {
     background: white !important;
-    
+
     code {
       background: none !important;
     }
@@ -451,11 +471,11 @@ p.time {
 }
 
 
-.highlight_word { 
+.highlight_word {
   background:#EEDC94;
 }
 
-.status_info { 
+.status_info {
   font-size:14px;
   padding:5px 15px;
   line-height:24px;
@@ -464,13 +484,13 @@ p.time {
   float:left;
   margin-right:20px;
 
-  &.success { 
+  &.success {
     background: #5BB75B;
     color: white;
     text-shadow: 0 1px #111;
     border-color: #9A9;
   }
-  &.error { 
+  &.error {
     background: #DA4E49;
     border-color: #BD362F;
     color: white;
@@ -478,7 +498,7 @@ p.time {
   }
 }
 
-.arrow{ 
+.arrow{
   background: #E3E5EA;
   padding: 5px;
   margin-top:5px;
@@ -493,12 +513,12 @@ p.time {
   height: 150px;
 }
 
-.gitlab_pagination { 
+.gitlab_pagination {
   span a { color:$link_color; }
-  .prev, .next, .current, .page a { 
+  .prev, .next, .current, .page a {
     padding:10px;
   }
-  .current { 
+  .current {
     border-bottom:2px solid $style_color;
   }
 }
@@ -524,8 +544,8 @@ li.note {
   }
 }
 
-.markdown { 
-  img { 
+.markdown {
+  img {
     max-width:100%;
   }
 }
@@ -534,42 +554,34 @@ li.note {
   background-color: inherit;
 }
 
-.team_member_show { 
-  td:first-child { 
+.team_member_show {
+  td:first-child {
     color:#aaa;
   }
 }
 
-.remember_me { 
+.remember_me {
   text-align:left;
 
-  input { 
+  input {
     margin:0;
   }
 
-  span { 
+  span {
     padding-left:5px;
   }
 }
 
 
-/**
- * Milestones list
- *
- */
-
-.milestone { 
-  @extend .wll;
-}
 
 /**
  * Admin area
  *
  */
-.admin_dash { 
-  .data { 
-    a { 
-      h1 { 
+.admin_dash {
+  .data {
+    a {
+      h1 {
         line-height:48px;
         font-size:48px;
         padding:20px;
@@ -585,7 +597,7 @@ li.note {
     vertical-align:top;
   }
 
-  strong { 
+  strong {
     line-height:24px;
   }
 }
@@ -593,119 +605,108 @@ li.note {
 
 
 /* CHZN reset few styles */
-.chzn-container-single .chzn-single { 
+.chzn-container-single .chzn-single {
   background:#FFF;
   border: 1px solid #bbb;
   box-shadow:none;
 }
-.chzn-container-active .chzn-single { 
+.chzn-container-active .chzn-single {
   background:#fff;
 }
 
 /**
  * Push event widget
- * 
+ *
  */
-.event_lp { 
-  @extend .alert-info;
+.event_lp {
+  @extend .ui-box;
+  color:#777;
   margin-bottom:20px;
   padding:8px;
-  border-style: solid;
-  border-width: 1px;
   @include border-radius(4px);
   min-height:22px;
 
-  .avatar { 
+  .avatar {
     width:24px;
   }
 }
 
 .supp_diff_link,
-.mr_show_all_commits { 
+.mr_show_all_commits {
   cursor:pointer;
 }
 
-/**
- *  Issues, MRs legend 
- * 
- */
-
-.list_legend {
-  float:left;
-  margin-right:20px;
-  .icon {
-    width:12px;
-    height:12px;
-    float:left;
-    margin-right:5px;
-    margin-top: 2px;
-    @include border-radius(4px);
-    &.today{ 
-      background: #ADA;
-      border:1px solid #8B8;
-    }
-    &.closed { 
-      background: #DDD;
-      border:1px solid  #BBB;
-    }
-    &.yours { 
-      background: #AAD;
-      border:1px solid #88B;
-    }
-    &.merged { 
-      background: #DAD;
-      border:1px solid #B8B;
-    }
+.merge_request,
+.issue {
+  &.today{
+    background: #EFE;
+    border-color:#CEC;
   }
-  .text { 
-    padding-bottom: 10px;
-    float:left;
+  &.closed {
+    background: #F5f5f5;
+    border-color:#E5E5E5;
+  }
+  &.merged {
+    background: #F5f5f5;
+    border-color:#E5E5E5;
   }
 }
 
-.merge_request,
-.issue { 
-  .list_legend { 
-    margin-right: 5px;
-    margin-top: 14px;
-    .icon {
-      width:8px;
-      height:8px;
-      float:left;
-      margin-right:5px;
-      @include border-radius(4px);
-      border:1px solid #ddd;
-    }
-  }
+.themes_opts {
+  padding-left:20px;
 
-  &.today{ 
-    background: #EFE;
-    border-color:#CEC;
-    .icon { 
-      background: #ADA;
-      border:1px solid #8B8;
+  label {
+    width:175px;
+    margin-right:40px;
+
+    .prev {
+      @extend .thumbnail;
+      height:120px;
+      width:175px;
+      margin-bottom:10px;
+      img {
+        width:180px;
+      }
     }
   }
-  &.closed { 
-    background: #F5f5f5;
-    border-color:#E5E5E5;
-    .icon { 
-      background: #DDD;
-      border:1px solid  #BBB;
+}
+
+.git_error_tips {
+  @extend .span6;
+  text-align:left;
+  margin-top:40px;
+  pre {
+    background:white;
+    border:none;
+    font-size: 12px;
+  }
+}
+
+.error_message {
+  @extend .cred;
+  border-bottom: 1px solid #D21;
+  padding-bottom:20px;
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.oauth_select_holder {
+  padding:20px;
+  img {
+    padding:5px;
+    margin-right:10px;
+  }
+  .active {
+    img {
+      border:1px solid #ccc;
+      background:$hover;
+      @include border-radius(5px);
     }
   }
-  &.yours { 
-    .icon { 
-      background: #AAD;
-      border:1px solid #88B;
-    }
-  }
-  &.merged { 
-    background: #F5f5f5;
-    border-color:#E5E5E5;
-    .icon { 
-      background: #DAD;
-      border:1px solid #B8B;
-    }
-  }
+}
+
+.btn-build-token {
+  float: left;
+  padding: 6px 20px;
+  margin-right: 12px;
 }

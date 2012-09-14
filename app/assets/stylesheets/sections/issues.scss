@@ -30,6 +30,13 @@
   .issue { 
     padding:7px 10px;
 
+    .issue_check { 
+      float:left;
+      padding: 8px 0;
+      padding-right: 8px;
+      min-width: 15px;
+    }
+
     p { 
       padding-top:0;
       padding-bottom:2px;
@@ -40,4 +47,68 @@
       margin-top:4px;
     }
   }
+}
+
+input.check_all_issues { 
+  float:left;
+  padding: 0;
+  margin:0;
+  margin-right: 10px;
+  position: relative;
+  top: 8px;
+  height: 22px;
+}
+
+.issues_content { 
+  .title { 
+    height: 40px;
+  }
+}
+
+@media (min-width: 800px) { .issues_filters select { width:160px; }  }
+@media (min-width: 1000px) { .issues_filters select { width:200px; }  }
+@media (min-width: 1200px) { .issues_filters select { width:220px; }  }
+
+
+#issues-table-holder { 
+  .issues_filters { 
+    form { 
+      padding:0;
+      margin:0;
+      margin-top:7px
+    }
+  } 
+
+  .issues_bulk_update { 
+    margin: 0;
+    form { 
+      padding:0;
+      margin:0;
+      margin-top:7px
+    }
+    .update_selected_issues { 
+      position:relative;
+      top:-2px;
+      margin-left:4px;
+      float:left;
+    }
+    
+    .update_issues_text { 
+      padding:3px;
+      line-height: 18px;
+      float:left;
+    }
+  }
+}
+
+#update_status { 
+  width:100px;
+}
+
+/**
+ * Milestones list
+ *
+ */
+.milestone {
+  @extend .wll;
 }

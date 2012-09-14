@@ -34,7 +34,7 @@ class Admin::UsersController < ApplicationController
 
 
   def new
-    @admin_user = User.new(:projects_limit => Gitlab.config.default_projects_limit)
+    @admin_user = User.new(projects_limit: Gitlab.config.default_projects_limit)
   end
 
   def edit

@@ -1,15 +1,16 @@
 env:
   - DB=mysql
-  - DB=sqlite
 before_install:
   - sudo apt-get install libicu-dev -y
+  - sudo apt-get install libqt4-dev libqtwebkit-dev -y
   - gem install charlock_holmes -v="0.6.8"
-  - echo "yes" | gem uninstall json ffi
 branches:
   only:
     - 'master'
 rvm:
   - 1.9.3
+services:
+  - mysql
 before_script:
   - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"

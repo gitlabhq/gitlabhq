@@ -1,0 +1,30 @@
+/** LISTS **/
+
+ul { 
+  /**
+   * List li block element #1
+   *
+   */
+  .wll {
+    background-color: #FFF;
+    padding: 10px 5px;
+    min-height: 20px;
+    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &.smoke { background-color:#f5f5f5; }
+    &:hover { background:$hover; }
+    &:last-child { border:none }
+    .author { color: #999; }
+
+    p {
+      padding-top:5px; 
+      margin:0;
+      color:#222;
+      img {
+        position:relative;
+        top:3px;
+      }
+    }
+  }
+}

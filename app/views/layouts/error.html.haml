@@ -1,10 +1,10 @@
 !!! 5
-%html{ :lang => "en"}
+%html{ lang: "en"}
   = render "layouts/head"
-  %body{:class => "#{app_theme} application"}
+  %body{class: "#{app_theme} application"}
     = render "layouts/flash"
-    = render "layouts/head_panel", :title => ""
+    = render "layouts/head_panel", title: ""
     .container
       .content
-        %br
-        %h3= yield
+        %center.padded.prepend-top-20
+          = yield

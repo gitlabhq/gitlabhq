@@ -1,11 +1,20 @@
-table.highlighttable
-{
+table.highlighttable {
   margin:0px;
   padding:0px;
   font-size:12px;
   table-layout:fixed;
   background: #EEE;
+  box-shadow: none;
+  border: none;
+  td.linenos {
+    background:#eee;
+    border-left:none;
+  }
+  td.code {
+    border-right:none;
+  }
 }
+
 
 td.code,
 td.linenos{

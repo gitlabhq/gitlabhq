@@ -3,8 +3,8 @@ require 'spec_helper'
 describe "Admin::Projects" do
   before do
     @project = Factory :project,
-      :name => "LeGiT",
-      :code => "LGT"
+      name: "LeGiT",
+      code: "LGT"
     login_as :admin
   end
 
@@ -47,8 +47,8 @@ describe "Admin::Projects" do
 
     describe "Update project" do
       before do
-        fill_in "project_name", :with => "Big Bang"
-        fill_in "project_code", :with => "BB1"
+        fill_in "project_name", with: "Big Bang"
+        fill_in "project_code", with: "BB1"
         click_button "Save Project"
         @project.reload
       end
@@ -85,9 +85,9 @@ describe "Admin::Projects" do
   describe "POST /admin/projects" do
     before do
       visit new_admin_project_path
-      fill_in 'project_name', :with => 'NewProject'
-      fill_in 'project_code', :with => 'NPR'
-      fill_in 'project_path', :with => 'gitlabhq_1'
+      fill_in 'project_name', with: 'NewProject'
+      fill_in 'project_code', with: 'NPR'
+      fill_in 'project_path', with: 'newproject'
       expect { click_button "Create project" }.to change { Project.count }.by(1)
       @project = Project.last
     end
@@ -109,7 +109,7 @@ describe "Admin::Projects" do
     end
 
     it "should create new user" do 
-      select @new_user.name, :from => "user_ids"
+      select @new_user.name, from: "user_ids"
       expect { click_button "Add" }.to change { UsersProject.count }.by(1)
       page.should have_content @new_user.name
       current_path.should == admin_project_path(@project)

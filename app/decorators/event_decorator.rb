@@ -8,7 +8,9 @@ class EventDecorator < ApplicationDecorator
       "#{self.author_name} #{self.action_name} MR ##{self.target_id}:" + self.merge_request_title
     elsif self.push?
       "#{self.author_name} #{self.push_action_name} #{self.ref_type} " + self.ref_name
-    else 
+    elsif self.membership_changed?
+      "#{self.author_name} #{self.action_name} #{self.project.name}"
+    else
       ""
     end
   end
@@ -19,7 +21,7 @@ class EventDecorator < ApplicationDecorator
     elsif self.merge_request?
       h.project_merge_request_url(self.project, self.merge_request)
     elsif self.push?
-      h.project_commits_url(self.project, :ref => self.ref_name)
+      h.project_commits_url(self.project, ref: self.ref_name)
     end
   end
 end

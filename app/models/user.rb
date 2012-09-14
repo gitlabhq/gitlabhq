@@ -10,58 +10,59 @@ class User < ActiveRecord::Base
 
   attr_accessor :force_random_password
 
-  has_many :users_projects, :dependent => :destroy
-  has_many :projects, :through => :users_projects
-  has_many :my_own_projects, :class_name => "Project", :foreign_key => :owner_id
-  has_many :keys, :dependent => :destroy
+  has_many :users_projects, dependent: :destroy
+  has_many :projects, through: :users_projects
+  has_many :my_own_projects, class_name: "Project", foreign_key: :owner_id
+  has_many :keys, dependent: :destroy
 
   has_many :events,
-    :class_name => "Event",
-    :foreign_key => :author_id,
-    :dependent => :destroy
+    class_name: "Event",
+    foreign_key: :author_id,
+    dependent: :destroy
 
   has_many :recent_events,
-    :class_name => "Event",
-    :foreign_key => :author_id,
-    :order => "id DESC"
+    class_name: "Event",
+    foreign_key: :author_id,
+    order: "id DESC"
 
   has_many :issues,
-    :foreign_key => :author_id,
-    :dependent => :destroy
+    foreign_key: :author_id,
+    dependent: :destroy
 
   has_many :notes,
-    :foreign_key => :author_id,
-    :dependent => :destroy
+    foreign_key: :author_id,
+    dependent: :destroy
 
   has_many :assigned_issues,
-    :class_name => "Issue",
-    :foreign_key => :assignee_id,
-    :dependent => :destroy
+    class_name: "Issue",
+    foreign_key: :assignee_id,
+    dependent: :destroy
 
   has_many :merge_requests,
-    :foreign_key => :author_id,
-    :dependent => :destroy
+    foreign_key: :author_id,
+    dependent: :destroy
 
   has_many :assigned_merge_requests,
-    :class_name => "MergeRequest",
-    :foreign_key => :assignee_id,
-    :dependent => :destroy
+    class_name: "MergeRequest",
+    foreign_key: :assignee_id,
+    dependent: :destroy
 
   validates :projects_limit,
-            :presence => true,
-            :numericality => {:greater_than_or_equal_to => 0}
+            presence: true,
+            numericality: {greater_than_or_equal_to: 0}
 
-  validates :bio, :length => { :within => 0..255 }
+  validates :bio, length: { within: 0..255 }
+
+  validates :extern_uid, :allow_blank => true, :uniqueness => {:scope => :provider}
 
   alias_attribute :private_token, :authentication_token
 
-  scope :not_in_project, lambda { |project|  where("id not in (:ids)", :ids => project.users.map(&:id) ) }
-  scope :admins, where(:admin =>  true)
-  scope :blocked, where(:blocked =>  true)
-  scope :active, where(:blocked =>  false)
+  scope :not_in_project, lambda { |project|  where("id not in (:ids)", ids: project.users.map(&:id) ) }
+  scope :admins, where(admin:  true)
+  scope :blocked, where(blocked:  true)
+  scope :active, where(blocked:  false)
 
   before_validation :generate_password, :on => :create
-  before_validation :generate_email, :on => :create
 
   def generate_password
     if self.force_random_password
@@ -87,27 +88,24 @@ class User < ActiveRecord::Base
     where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
   end
 
-  def self.find_for_ldap_auth(omniauth_info)
-    name = omniauth_info.name.force_encoding("utf-8")
-    email = omniauth_info.email.downcase unless omniauth_info.email.nil?
-    raise OmniAuth::Error, "LDAP accounts must provide an email address" if email.nil?
+  def self.create_from_omniauth(auth, ldap = false)
+    gitlab_auth.create_from_omniauth(auth, ldap)
+  end
 
-    if @user = User.find_by_email(email)
-      @user
-    else
-      password = Devise.friendly_token[0, 8].downcase
-      @user = User.create(
-        :name => name,
-        :email => email,
-        :password => password,
-        :password_confirmation => password,
-        :projects_limit => Gitlab.config.default_projects_limit
-      )
-    end
+  def self.find_or_new_for_omniauth(auth)
+    gitlab_auth.find_or_new_for_omniauth(auth)
+  end
+
+  def self.find_for_ldap_auth(auth, signed_in_resource = nil)
+    gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
+  end
+
+  def self.gitlab_auth
+    Gitlab::Auth.new
   end
 
   def self.search query
-    where("name like :query or email like :query", :query => "%#{query}%")
+    where("name like :query or email like :query", query: "%#{query}%")
   end
 end
 # == Schema Information
@@ -139,4 +137,3 @@ end
 #  bio                    :string(255)
 #  blocked                :boolean(1)      default(FALSE), not null
 #
-

@@ -4,9 +4,9 @@
     = @milestone.expires_at
 
   %span.right
-    = link_to 'Browse Issues', project_issues_path(@milestone.project, :milestone_id => @milestone.id), :class => "btn edit-milestone-link small grouped"
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), :class => "btn small grouped" do
+      = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do
         %i.icon-edit
         Edit
 
@@ -21,7 +21,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = @milestone.title
+      = gfm @milestone.title
       %small.right= @milestone.expires_at
 
   .middle_box_content
@@ -32,7 +32,7 @@
         &ndash;
         #{@milestone.issues.closed.count} closed
     .progress.progress-success
-      .bar{:style => "width: #{@milestone.percent_complete}%;"}
+      .bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
   - if @milestone.description.present?
@@ -42,7 +42,7 @@
 
 .row
   .span6
-    %table.admin-table
+    %table
       %thead
         %th Open Issues
       - @issues.each do |issue|
@@ -51,17 +51,17 @@
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
-            = link_to truncate(issue.title, :length => 60), [@project, issue]
+            = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
     %br
-    = paginate @issues, :theme => "gitlab"
+    = paginate @issues, theme: "gitlab"
 
   .span6
-    %table.admin-table
+    %table
       %thead
         %th Participants
       - @users.each do |user|
         %tr
           %td
-            = image_tag gravatar_icon(user.email, 24), :width => "24"
+            = image_tag gravatar_icon(user.email, 24), width: "24"
             &nbsp;
             = user.name

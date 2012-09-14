@@ -1,14 +1,14 @@
-require File.join(Rails.root, 'lib', 'graph_commit')
+require Rails.root.join('lib', 'gitlab', 'graph_commit')
 
 class ProjectsController < ApplicationController
-  before_filter :project, :except => [:index, :new, :create]
+  before_filter :project, except: [:index, :new, :create]
   layout :determine_layout
 
   # Authorize
   before_filter :add_project_abilities
-  before_filter :authorize_read_project!, :except => [:index, :new, :create]
-  before_filter :authorize_admin_project!, :only => [:edit, :update, :destroy]
-  before_filter :require_non_empty_project, :only => [:blob, :tree, :graph]
+  before_filter :authorize_read_project!, except: [:index, :new, :create]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy]
+  before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
   def new
     @project = Project.new
@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if project.update_attributes(params[:project])
-        format.html { redirect_to edit_project_path(project), :notice => 'Project was successfully updated.' }
+        format.html { redirect_to edit_project_path(project), notice: 'Project was successfully updated.' }
         format.js
       else
         format.html { render action: "edit" }
@@ -50,7 +50,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html do
-         if @project.repo_exists? && @project.has_commits?
+         unless @project.empty_repo?
            @last_push = current_user.recent_push(@project.id)
            render :show
          else
@@ -78,7 +78,7 @@ class ProjectsController < ApplicationController
   end
 
   def graph
-    @days_json, @commits_json = GraphCommit.to_graph(project)
+    @days_json, @commits_json = Gitlab::GraphCommit.to_graph(project)
   end
 
   def destroy

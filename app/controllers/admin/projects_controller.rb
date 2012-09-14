@@ -2,6 +2,7 @@ class Admin::ProjectsController < ApplicationController
   layout "admin"
   before_filter :authenticate_user!
   before_filter :authenticate_admin!
+  before_filter :admin_project, only: [:edit, :show, :update, :destroy, :team_update]
 
   def index
     @admin_projects = Project.scoped
@@ -10,13 +11,9 @@ class Admin::ProjectsController < ApplicationController
   end
 
   def show
-    @admin_project = Project.find_by_code(params[:id])
-
-    @users = if @admin_project.users.empty?
-               User
-             else
-               User.not_in_project(@admin_project)
-             end.all
+    @users = User.scoped
+    @users = @users.not_in_project(@admin_project) if @admin_project.users.present?
+    @users = @users.all
   end
 
   def new
@@ -24,19 +21,10 @@ class Admin::ProjectsController < ApplicationController
   end
 
   def edit
-    @admin_project = Project.find_by_code(params[:id])
   end
 
   def team_update
-    @admin_project = Project.find_by_code(params[:id])
-
-    UsersProject.bulk_import(
-      @admin_project, 
-      params[:user_ids],
-      params[:project_access]
-    )
-
-    @admin_project.update_repository
+    @admin_project.add_users_ids_to_team(params[:user_ids], params[:project_access])
 
     redirect_to [:admin, @admin_project], notice: 'Project was successfully updated.'
   end
@@ -48,13 +36,11 @@ class Admin::ProjectsController < ApplicationController
     if @admin_project.save
       redirect_to [:admin, @admin_project], notice: 'Project was successfully created.'
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
   def update
-    @admin_project = Project.find_by_code(params[:id])
-
     owner_id = params[:project].delete(:owner_id)
 
     if owner_id 
@@ -64,14 +50,19 @@ class Admin::ProjectsController < ApplicationController
     if @admin_project.update_attributes(params[:project])
       redirect_to [:admin, @admin_project], notice: 'Project was successfully updated.'
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 
   def destroy
-    @admin_project = Project.find_by_code(params[:id])
     @admin_project.destroy
 
     redirect_to admin_projects_url, notice: 'Project was successfully deleted.'
+  end
+
+  private 
+
+  def admin_project
+    @admin_project = Project.find_by_code(params[:id])
   end
 end

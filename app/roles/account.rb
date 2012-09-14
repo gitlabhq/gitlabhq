@@ -1,6 +1,13 @@
-module Account 
+module Account
+  # Returns a string for use as a Gitolite user identifier
+  #
+  # Note that Gitolite 2.x requires the following pattern for users:
+  #
+  #   ^@?[0-9a-zA-Z][0-9a-zA-Z._\@+-]*$
   def identifier
-    email.gsub /[^[:alnum:]]/, "_"
+    # Replace non-word chars with underscores, then make sure it starts with
+    # valid chars
+    email.gsub(/\W/, '_').gsub(/\A([\W\_])+/, '')
   end
 
   def is_admin?
@@ -24,7 +31,7 @@ module Account
   end
 
   def cared_merge_requests
-    MergeRequest.where("author_id = :id or assignee_id = :id", :id => self.id).opened
+    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id).opened
   end
 
   def project_ids
@@ -50,7 +57,7 @@ module Account
   def recent_push project_id = nil
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
-    events = events.where(:project_id => project_id) if project_id
+    events = events.where(project_id: project_id) if project_id
 
     # Take only latest one
     events = events.recent.limit(1).first

@@ -1,3 +1,33 @@
+v 2.9.0
+  - fixed inline notes bugs
+  - refactored rspecs
+  - refactored gitolite backend
+  - added factory_girl
+  - restyled projects list on dashboard
+  - ssh keys validation to prevent gitolite crash
+  - send notifications if changed premission in project
+  - scss refactoring. gitlab_bootstrap/ dir 
+  - fix git push http body bigger than 112k problem
+  - list of labels  page under issues tab
+  - API for milestones
+  - restyled buttons
+
+v 2.8.1
+  - ability to disable gravatars
+  - improved MR diff logic
+  - ssh key help page
+
+v 2.8.0
+  - Gitlab Flavored Markdown
+  - Bulk issues update
+  - Issues API
+  - Cucumber coverage increased
+  - Post-receive files fixed
+  - UI improved
+  - Application cleanup
+  - more cucumber
+  - capybara-webkit + headless
+
 v 2.7.0
   - Issue Labels
   - Inline diff

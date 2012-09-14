@@ -1,4 +1,4 @@
-= form_for(@project, :remote => true) do |f|
+= form_for(@project, remote: true) do |f|
   - if @project.errors.any?
     .alert-message.block-message.error
       %ul
@@ -8,34 +8,35 @@
     = f.label :name do
       Project name is
     .input
-      = f.text_field :name, :placeholder => "Example Project", :class => "xxlarge"
+      = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
 
-  %h5.page_title 
-  .alert.alert-info
-    %h5 Advanced settings:
+  %hr
+  .adv_settings
+    %h6 Advanced settings:
     .clearfix
       = f.label :path do
         Path
       .input
         .input-prepend
           %strong
-            = text_field_tag :ppath, @project.path_to_repo, :class => "xlarge", :disabled => true
+            = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
     .clearfix
       = f.label :code do
         URL
       .input
         .input-prepend
           %span.add-on= web_app_url
-          = f.text_field :code, :placeholder => "example"
+          = f.text_field :code, placeholder: "example"
 
     - unless @project.new_record? || @project.heads.empty?
       .clearfix
         = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, @project.heads.map(&:name), {}, :style => "width:210px;")
+        .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless @project.new_record?
-    .alert.alert-info
-      %h5 Features:
+    %hr
+    .adv_settings
+      %h6 Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"
@@ -56,8 +57,8 @@
   %br
 
   .actions
-    = f.submit 'Save', :class => "btn primary"
-    = link_to 'Cancel', @project, :class => "btn"
+    = f.submit 'Save', class: "btn save-btn"
+    = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
       .right
-        = link_to 'Remove', @project, :confirm => 'Are you sure?', :method => :delete, :class => "btn danger"
+        = link_to 'Remove', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger"

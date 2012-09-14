@@ -3,9 +3,9 @@
     Post receive hooks for binding events.
     %br
     Read more about system hooks
-    %strong #{link_to "here", help_system_hooks_path, :class => "vlink"}
+    %strong #{link_to "here", help_system_hooks_path, class: "vlink"}
 
-= form_for @hook, :as => :hook, :url => admin_hooks_path do |f|
+= form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-inline' } do |f|
   -if @hook.errors.any?
     .alert-message.block-message.error
       - @hook.errors.full_messages.each do |msg|
@@ -13,9 +13,9 @@
   .clearfix
     = f.label :url, "URL:"
     .input
-      = f.text_field :url, :class => "text_field xxlarge"
+      = f.text_field :url, class: "text_field xxlarge"
       &nbsp;
-      = f.submit "Add System Hook", :class => "btn primary"
+      = f.submit "Add System Hook", class: "btn primary"
 %hr
 
 -if @hooks.any?
@@ -23,7 +23,7 @@
     Hooks
     %small (#{@hooks.count})
   %br
-  %table.admin-table
+  %table
     %tr
       %th URL
       %th Method
@@ -33,7 +33,7 @@
         %td
           = link_to admin_hook_path(hook) do
             %strong= hook.url
-          = link_to 'Test Hook', admin_hook_test_path(hook), :class => "btn small right"
+          = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn small right"
         %td POST
         %td
-          = link_to 'Remove', admin_hook_path(hook), :confirm => 'Are you sure?', :method => :delete, :class => "danger btn small right"
+          = link_to 'Remove', admin_hook_path(hook), confirm: 'Are you sure?', method: :delete, class: "danger btn small right"

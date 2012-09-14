@@ -1,11 +1,16 @@
 = render "project_head"
 - unless @notes.empty?
-  %table.zebra-striped.borders
+  %table
+    %thead
+      %tr
+        %th File name
+        %th 
+
     - @notes.each do |note|
       %tr
         %td
-          %a{:href => note.attachment.url}
-            = image_tag gravatar_icon(note.author_email), :class => "left", :width => 16
+          %a{href: note.attachment.url}
+            = image_tag gravatar_icon(note.author_email), class: "left", width: 16
             &nbsp;
             = note.attachment_identifier
         %td

@@ -49,12 +49,26 @@ namespace :gitlab do
       end
 
       print "UMASK for .gitolite.rc is 0007? ............"
-      unless open("#{git_base_path}/../.gitolite.rc").grep(/REPO_UMASK = 0007/).empty?
+      unless open("#{git_base_path}/../.gitolite.rc").grep(/UMASK([ \t]*)=([ \t>]*)0007/).empty?
         puts "YES".green 
       else
         puts "NO".red
         return
       end
+
+      gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
+      gitlab_hook_files = ['post-receive']
+      gitlab_hook_files.each do |file_name|
+        dest = File.join(gitolite_hooks_path, file_name)
+        print "#{dest} exists? ............"
+        if File.exists?(dest)
+          puts "YES".green
+        else
+          puts "NO".red
+          return
+        end
+      end
+
 
       if Project.count > 0 
         puts "Validating projects repositories:".yellow
@@ -67,13 +81,7 @@ namespace :gitlab do
             next
           end
 
-
-          unless File.owned?(hook_file)
-            puts "post-receive file is not owner by gitlab".red 
-            next
-          end
-
-          puts "post-reveice file ok".green
+          puts "post-receive file ok".green
         end
       end
 

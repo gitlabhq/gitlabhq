@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
     respond_to do |format|
       format.html
       format.js
-      format.atom { render :layout => false }
+      format.atom { render layout: false }
     end
   end
 
@@ -28,7 +28,7 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render :layout => false }
+      format.atom { render layout: false }
     end
   end
 end

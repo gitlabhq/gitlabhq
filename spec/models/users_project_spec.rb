@@ -7,7 +7,11 @@ describe UsersProject do
   end
 
   describe "Validation" do
+    let!(:users_project) { create(:users_project) }
+
     it { should validate_presence_of(:user_id) }
+    it { should validate_uniqueness_of(:user_id).scoped_to(:project_id).with_message(/already exists/) }
+
     it { should validate_presence_of(:project_id) }
   end
 
@@ -16,15 +20,3 @@ describe UsersProject do
     it { should respond_to(:user_email) }
   end
 end
-# == Schema Information
-#
-# Table name: users_projects
-#
-#  id             :integer(4)      not null, primary key
-#  user_id        :integer(4)      not null
-#  project_id     :integer(4)      not null
-#  created_at     :datetime        not null
-#  updated_at     :datetime        not null
-#  project_access :integer(4)      default(0), not null
-#
-

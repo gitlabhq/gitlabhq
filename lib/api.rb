@@ -3,7 +3,7 @@ Dir["#{Rails.root}/lib/api/*.rb"].each {|file| require file}
 module Gitlab
   class API < Grape::API
     VERSION = 'v2'
-    version VERSION, :using => :path
+    version VERSION, using: :path
 
     rescue_from ActiveRecord::RecordNotFound do
       rack_response({'message' => '404 Not found'}.to_json, 404)
@@ -16,5 +16,6 @@ module Gitlab
     mount Users
     mount Projects
     mount Issues
+    mount Milestones
   end
 end

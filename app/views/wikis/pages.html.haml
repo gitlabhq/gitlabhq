@@ -1,0 +1,18 @@
+%h3.page_title All Pages
+%br
+%table
+  %thead
+    %tr
+      %th Title
+      %th slug
+      %th created by
+  %tbody
+    - @wikis.each_with_index do |wiki_page, i|
+      %tr
+        %td
+          = link_to wiki_page.title, project_wiki_path(@project, wiki_page, old_page_id: wiki_page.id)
+          (#{time_ago_in_words(wiki_page.created_at)}
+          ago)
+        %td= wiki_page.slug
+        %td= wiki_page.user.name
+

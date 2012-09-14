@@ -1,12 +1,11 @@
 = render "branches_head"
 
-%table.admin-table
+%table
   %thead
     %tr
       %th Name
       %th Last commit
-      %th Updated at
       %th
   - @activities.each do |update|
-    = render "repositories/branch", :branch => update.head
+    = render "repositories/branch", branch: update.head
 

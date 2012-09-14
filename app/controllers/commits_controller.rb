@@ -9,7 +9,7 @@ class CommitsController < ApplicationController
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
-  before_filter :load_refs, :only => :index # load @branch, @tag & @ref
+  before_filter :load_refs, only: :index # load @branch, @tag & @ref
   before_filter :render_full_content
 
   def index
@@ -22,7 +22,7 @@ class CommitsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.js
-      format.atom { render :layout => false }
+      format.atom { render layout: false }
     end
   end
 
@@ -41,8 +41,9 @@ class CommitsController < ApplicationController
       return git_not_found!
     end
 
-  rescue Grit::Git::GitTimeout
-    render "huge_commit"
+    if result[:status] == :huge_commit
+      render "huge_commit" and return
+    end
   end
 
   def compare
@@ -58,12 +59,19 @@ class CommitsController < ApplicationController
 
   def patch
     @commit = project.commit(params[:id])
-    
+
     send_data(
       @commit.to_patch,
-      :type => "text/plain",
-      :disposition => 'attachment',
-      :filename => (@commit.id.to_s + ".patch")
+      type: "text/plain",
+      disposition: 'attachment',
+      filename: "#{@commit.id}.patch"
     )
+  end
+
+  protected
+
+  def load_refs
+    @ref ||= params[:ref].presence || params[:branch].presence || params[:tag].presence
+    @ref ||= @ref || @project.try(:default_branch) || 'master'
   end
 end

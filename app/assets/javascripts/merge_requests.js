@@ -112,6 +112,7 @@ var MergeRequest = {
   already_cannot_be_merged:
     function(){
         $(".automerge_widget").hide();
+        $(".merge_in_progress").hide();
         $(".automerge_widget.already_cannot_be_merged").show();
     }
 }

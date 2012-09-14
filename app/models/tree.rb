@@ -11,12 +11,12 @@ class Tree
     :size,
     :text?,
     :colorize,
-    :to => :tree
+    to: :tree
 
   def initialize(raw_tree, project, ref = nil, path = nil)
     @project, @ref, @path = project, ref, path,
     @tree = if path
-              raw_tree / path
+              raw_tree / path.dup.force_encoding('ascii-8bit')
             else
               raw_tree
             end

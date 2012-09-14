@@ -1,9 +1,9 @@
 %h3.page_title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.pretty_label.branch= @merge_request.source_branch
+  %span.label_branch= @merge_request.source_branch
   &rarr;
-  %span.pretty_label.branch= @merge_request.target_branch
+  %span.label_branch= @merge_request.target_branch
 
   %span.right
     - if @merge_request.merged?
@@ -13,20 +13,18 @@
           = "MERGED"
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to raw_project_merge_request_path(@project, @merge_request), :class => "btn grouped" do 
+        = link_to raw_project_merge_request_path(@project, @merge_request), class: "btn grouped" do 
           %i.icon-download-alt
           Get Patch  
 
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, :merge_request => {:closed => true }, :status_only => true), :method => :put, :class => "btn grouped danger", :title => "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {closed: true }, status_only: true), method: :put, class: "btn grouped danger", title: "Close merge request"
 
-        = link_to edit_project_merge_request_path(@project, @merge_request), :class => "btn grouped" do
+        = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn grouped" do
           %i.icon-edit
           Edit
 
-    %br
-    - if @merge_request.upvotes > 0
-      .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
-
+.right
+  .span3#votes= render 'votes/votes_block', votable: @merge_request
 
 .back_link
   = link_to project_merge_requests_path(@project) do

@@ -11,167 +11,12 @@ describe "Issues" do
     project.add_access(@user2, :read, :write)
   end
 
-  describe "GET /issues" do
+  describe "Edit issue", js: true do
     before do
       @issue = Factory :issue,
-        :author => @user,
-        :assignee => @user,
-        :project => project
-
-      visit project_issues_path(project)
-    end
-
-    subject { page }
-
-    it { should have_content(@issue.title[0..20]) }
-    it { should have_content(@issue.project.name) }
-    it { should have_content(@issue.assignee.name) }
-
-    it "should render atom feed" do
-      visit project_issues_path(project, :atom)
-
-      page.response_headers['Content-Type'].should have_content("application/atom+xml")
-      page.body.should have_selector("title", :text => "#{project.name} issues")
-      page.body.should have_selector("author email", :text => @issue.author_email)
-      page.body.should have_selector("entry summary", :text => @issue.title)
-    end
-
-    it "should render atom feed via private token" do
-      logout
-      visit project_issues_path(project, :atom, :private_token => @user.private_token)
-
-      page.response_headers['Content-Type'].should have_content("application/atom+xml")
-      page.body.should have_selector("title", :text => "#{project.name} issues")
-      page.body.should have_selector("author email", :text => @issue.author_email)
-      page.body.should have_selector("entry summary", :text => @issue.title)
-    end
-
-    describe "statuses" do
-      before do
-        @closed_issue = Factory :issue,
-          :author => @user,
-          :assignee => @user,
-          :project => project,
-          :closed => true
-      end
-
-      it "should show only open" do
-        should have_content(@issue.title[0..25])
-        should have_no_content(@closed_issue.title)
-      end
-
-      it "should show only closed" do
-        click_link "Closed"
-        should have_no_content(@issue.title)
-        should have_content(@closed_issue.title[0..25])
-      end
-
-      it "should show all" do
-        click_link "All"
-        should have_content(@issue.title[0..25])
-        should have_content(@closed_issue.title[0..25])
-      end
-    end
-  end
-
-  describe "New issue", :js => true do
-    before do
-      visit project_issues_path(project)
-      click_link "New Issue"
-    end
-
-    it "should open new issue form" do
-      page.should have_content("New Issue")
-    end
-
-    describe "fill in" do
-      describe 'assign to me' do
-        before do
-          fill_in "issue_title", :with => "bug 345"
-          page.execute_script("$('#issue_assignee_id').show();")
-          select @user.name, :from => "issue_assignee_id" 
-        end
-
-        it { expect { click_button "Submit new issue" }.to change {Issue.count}.by(1) }
-
-        it "should add new issue to table" do
-          click_button "Submit new issue"
-
-          page.should_not have_content("Add new issue")
-          page.should have_content @user.name
-          page.should have_content "bug 345"
-          page.should have_content project.name
-        end
-
-        it "should call send mail" do
-          Notify.should_not_receive(:new_issue_email)
-          click_button "Submit new issue"
-        end
-      end
-
-      describe 'assign to other' do
-        before do
-          fill_in "issue_title", :with => "bug 345"
-          page.execute_script("$('#issue_assignee_id').show();")
-          select @user2.name, :from => "issue_assignee_id" 
-        end
-
-        it { expect { click_button "Submit new issue" }.to change {Issue.count}.by(1) }
-
-        it "should add new issue to table" do
-          click_button "Submit new issue"
-
-          page.should_not have_content("Add new issue")
-          page.should have_content @user2.name
-          page.should have_content "bug 345"
-          page.should have_content project.name
-        end
-
-        it "should call send mail" do
-          Issue.observers.enable :issue_observer do
-            Notify.should_receive(:new_issue_email).and_return(stub(:deliver => true))
-            click_button "Submit new issue"
-          end
-        end
-
-        it "should send valid email to user" do
-          Issue.observers.enable :issue_observer do
-            with_resque do
-              click_button "Submit new issue"
-            end
-            issue = Issue.last
-            email = ActionMailer::Base.deliveries.last
-            email.subject.should have_content("New Issue was created")
-            email.body.should have_content(issue.title)
-          end
-        end
-
-      end
-    end
-  end
-
-  describe "Show issue" do
-    before do
-      @issue = Factory :issue,
-        :author => @user,
-        :assignee => @user,
-        :project => project
-
-      visit project_issue_path(project, @issue)
-    end
-
-    it "should have valid show page for issue" do
-      page.should have_content @issue.title
-      page.should have_content @user.name
-    end
-  end
-
-  describe "Edit issue", :js => true do
-    before do
-      @issue = Factory :issue,
-        :author => @user,
-        :assignee => @user,
-        :project => project
+        author: @user,
+        assignee: @user,
+        project: project
       visit project_issues_path(project)
       click_link "Edit"
     end
@@ -182,8 +27,8 @@ describe "Issues" do
 
     describe "fill in" do
       before do
-        fill_in "issue_title", :with => "bug 345"
-        fill_in "issue_description", :with => "bug description"
+        fill_in "issue_title", with: "bug 345"
+        fill_in "issue_description", with: "bug description"
       end
 
       it { expect { click_button "Save changes" }.to_not change {Issue.count} }
@@ -198,14 +43,14 @@ describe "Issues" do
     end
   end
 
-  describe "Search issue", :js => true do
+  describe "Search issue", js: true do
     before do
       ['foobar', 'foobar2', 'gitlab'].each do |title|
         @issue = Factory :issue,
-          :author   => @user,
-          :assignee => @user,
-          :project  => project,
-          :title    => title
+          author: @user,
+          assignee: @user,
+          project: project,
+          title: title
         @issue.save
       end
     end
@@ -217,7 +62,7 @@ describe "Issues" do
 
       visit project_issues_path(project)
       click_link 'Closed'
-      fill_in 'issue_search', :with => 'foobar'
+      fill_in 'issue_search', with: 'foobar'
 
       page.should have_content 'foobar'
       page.should_not have_content 'foobar2'
@@ -226,7 +71,7 @@ describe "Issues" do
 
     it "should search for term and return the correct results" do
       visit project_issues_path(project)
-      fill_in 'issue_search', :with => 'foobar'
+      fill_in 'issue_search', with: 'foobar'
 
       page.should have_content 'foobar'
       page.should have_content 'foobar2'
@@ -235,12 +80,61 @@ describe "Issues" do
 
     it "should return all results if term has been cleared" do
       visit project_issues_path(project)
-      fill_in "issue_search", :with => "foobar"
-      # Because fill_in, :with => "" triggers nothing we need to trigger a keyup event
+      fill_in "issue_search", with: "foobar"
+      # Because fill_in, with: "" triggers nothing we need to trigger a keyup event
       page.execute_script("$('.issue_search').val('').keyup();");
 
       page.should have_content 'foobar'
       page.should have_content 'foobar2'
+      page.should have_content 'gitlab'
+    end
+  end
+
+  describe "Filter issue" do
+    before do
+      ['foobar', 'barbaz', 'gitlab'].each do |title|
+        @issue = Factory :issue,
+          author: @user,
+          assignee: @user,
+          project: project,
+          title: title
+      end
+
+      @issue = Issue.first
+      @issue.milestone = Factory(:milestone, project: project)
+      @issue.assignee = nil
+      @issue.save
+    end
+
+    it "should allow filtering by issues with no specified milestone" do
+      visit project_issues_path(project, milestone_id: '0')
+
+      page.should_not have_content 'foobar'
+      page.should have_content 'barbaz'
+      page.should have_content 'gitlab'
+    end
+
+    it "should allow filtering by a specified milestone" do
+      visit project_issues_path(project, milestone_id: @issue.milestone.id)
+
+      page.should have_content 'foobar'
+      page.should_not have_content 'barbaz'
+      page.should_not have_content 'gitlab'
+    end
+
+    it "should allow filtering by issues with no specified assignee" do
+      visit project_issues_path(project, assignee_id: '0')
+
+      page.should have_content 'foobar'
+      page.should_not have_content 'barbaz'
+      page.should_not have_content 'gitlab'
+    end
+
+    it "should allow filtering by a specified assignee" do
+      visit project_issues_path(project, assignee_id: @user.id)
+
+      page.should_not have_content 'foobar'
+      page.should have_content 'barbaz'
       page.should have_content 'gitlab'
     end
   end

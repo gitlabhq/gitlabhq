@@ -23,7 +23,7 @@ module Gitlab
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running.
-    config.active_record.observers = :mailer_observer, :activity_observer, :project_observer, :key_observer, :issue_observer, :user_observer, :system_hook_observer
+    config.active_record.observers = :mailer_observer, :activity_observer, :project_observer, :key_observer, :issue_observer, :user_observer, :system_hook_observer, :users_project_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -44,5 +44,8 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Add fonts
+    config.assets.paths << "#{Rails.root}/app/assets/fonts"
   end
 end

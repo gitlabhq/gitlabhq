@@ -1,9 +1,26 @@
-.file_holder#README
-  .file_title
-    %i.icon-file
-    githost.log
-  .file_content.logs
-    %ol
-      - Gitlab::Logger.read_latest.each do |line|
-        %li
-          %p= line
+%ul.nav.nav-tabs.log-tabs
+  %li.active
+    = link_to "githost.log", "#githost", 'data-toggle' => 'tab'
+  %li
+    = link_to "application.log", "#application", 'data-toggle' => 'tab'
+.tab-content
+  .tab-pane.active#githost
+    .file_holder#README
+      .file_title
+        %i.icon-file
+        githost.log
+      .file_content.logs
+        %ol
+          - Gitlab::GitLogger.read_latest.each do |line|
+            %li
+              %p= line
+  .tab-pane#application
+    .file_holder#README
+      .file_title
+        %i.icon-file
+        application.log
+      .file_content.logs
+        %ol
+          - Gitlab::AppLogger.read_latest.each do |line|
+            %li
+              %p= line

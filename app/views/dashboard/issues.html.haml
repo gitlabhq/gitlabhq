@@ -8,12 +8,12 @@
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|
     %div.ui-box
-      - project = group[0]
-      %h5= project.name
+      - @project = group[0]
+      %h5= @project.name
       %ul.unstyled.issues_table
         - group[1].each do |issue|
-          = render(:partial => 'issues/show', :locals => {:issue => issue})
+          = render(partial: 'issues/show', locals: {issue: issue})
   %hr
-  = paginate @issues, :theme => "gitlab"
+  = paginate @issues, theme: "gitlab"
 - else
   %h3.nothing_here_message Nothing to show here

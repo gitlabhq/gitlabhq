@@ -1,4 +1,4 @@
-%li.wll{ :class => mr_css_classes(merge_request) }
+%li.wll{ class: mr_css_classes(merge_request) }
   .right
     .left
       - if merge_request.merged?
@@ -14,14 +14,15 @@
         = merge_request.source_branch
         &rarr;
         = merge_request.target_branch
-  = image_tag gravatar_icon(merge_request.author_email), :class => "avatar"
+  = image_tag gravatar_icon(merge_request.author_email), class: "avatar"
 
-  %p= link_to truncate(merge_request.title, :length => 80), project_merge_request_path(merge_request.project, merge_request), :class => "row_title"
+  %p= link_to_gfm truncate(merge_request.title, length: 80), project_merge_request_path(merge_request.project, merge_request), class: "row_title"
 
   %span.update-author
     %small.cdark= "##{merge_request.id}"
     authored by #{merge_request.author_name}
     = time_ago_in_words(merge_request.created_at)
     ago
-    - if merge_request.upvotes > 0
-      %span.badge.badge-success= "+#{merge_request.upvotes}"
+
+    - if merge_request.votes_count > 0
+      = render 'votes/votes_inline', votable: merge_request

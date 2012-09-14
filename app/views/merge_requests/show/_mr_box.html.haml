@@ -5,17 +5,17 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = @merge_request.title
+      = gfm @merge_request.title
 
   .middle_box_content
     %div
       %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by
-      = image_tag gravatar_icon(@merge_request.author_email), :width => 16, :class => "lil_av"
+      = image_tag gravatar_icon(@merge_request.author_email), width: 16, class: "lil_av"
       %strong.author= link_to_merge_request_author(@merge_request)
 
       - if @merge_request.assignee
         %cite.cgray and currently assigned to
-        = image_tag gravatar_icon(@merge_request.assignee_email), :width => 16, :class => "lil_av"
+        = image_tag gravatar_icon(@merge_request.assignee_email), width: 16, class: "lil_av"
         %strong.author= link_to_merge_request_assignee(@merge_request)
 
 

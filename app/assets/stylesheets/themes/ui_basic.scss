@@ -1,18 +1,50 @@
 /**
- * This file represent some UI that can be changed 
- * during web app restyle or theme select. 
+ * This file represent some UI that can be changed
+ * during web app restyle or theme select.
  *
  */
-.ui_basic { 
+.ui_basic {
   /*
    * Common styles
    *
    */
   a {
     color: $link_color;
-    &:hover { 
-      text-decoration:none; 
+    &:hover {
+      text-decoration:none;
       color: $blue_link;
+    }
+  }
+
+  header { 
+    .fbtn {
+      .btn {
+        background-color: #F8F8F8;
+        background-image: -webkit-gradient(linear,left top,left bottom,from(#F8F8F8),to(#ECECEC));
+        background-image: -webkit-linear-gradient(top,#F8F8F8,#ECECEC);
+        background-image: -moz-linear-gradient(top,#F8F8F8,#ECECEC);
+        background-image: -ms-linear-gradient(top,#F8F8F8,#ECECEC);
+        background-image: -o-linear-gradient(top,#F8F8F8,#ECECEC);
+        background-image: linear-gradient(top,#F8F8F8,#ECECEC);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#f8f8f8',EndColorStr='#ececec');
+        border-color: #C6C6C6;
+        margin-left:7px;
+        @include border-radius(3px);
+        box-shadow:none;
+        color:#666;
+      }
+    }
+    .search {
+      .search-input {
+        @include border-radius(3px);
+        border-color: #C6C6C6;
+        box-shadow:none;
+      }
+    }
+    .pic { 
+      img { 
+        @include border-radius(3px);
+      }
     }
   }
 }

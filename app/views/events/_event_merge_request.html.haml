@@ -1,8 +1,8 @@
 - if event.action_name == "merged"
   .event_icon= image_tag "event_mr_merged.png"
-= image_tag gravatar_icon(event.author_email), :class => "avatar"
+= image_tag gravatar_icon(event.author_email), class: "avatar"
 %strong #{event.author_name}
-%span.event_label{:class => event.action_name}= event.action_name
+%span.event_label{class: event.action_name}= event.action_name
 merge request
 = link_to project_merge_request_path(event.project, event.merge_request) do
   %strong= truncate event.merge_request_title

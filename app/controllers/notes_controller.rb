@@ -5,7 +5,7 @@ class NotesController < ApplicationController
   before_filter :add_project_abilities
 
   before_filter :authorize_read_note!
-  before_filter :authorize_write_note!, :only => [:create]
+  before_filter :authorize_write_note!, only: [:create]
 
   respond_to :js
 
@@ -15,11 +15,7 @@ class NotesController < ApplicationController
   end
 
   def create
-    @note = @project.notes.new(params[:note])
-    @note.author = current_user
-    @note.notify = true if params[:notify] == '1'
-    @note.notify_author = true if params[:notify_author] == '1'
-    @note.save
+    @note = Notes::CreateContext.new(project, current_user, params).execute
 
     respond_to do |format|
       format.html {redirect_to :back}
@@ -33,13 +29,17 @@ class NotesController < ApplicationController
     @note.destroy
 
     respond_to do |format|
-      format.js { render :nothing => true }
+      format.js { render nothing: true }
     end
   end
 
-  protected 
+  def preview
+    render text: view_context.markdown(params[:note])
+  end
+
+  protected
 
   def notes
-    @notes = NotesLoad.new(project, current_user, params).execute
+    @notes = Notes::LoadContext.new(project, current_user, params).execute
   end
 end
