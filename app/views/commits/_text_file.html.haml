@@ -23,4 +23,4 @@
             - comments.each_with_index do |note, i|
               = render "notes/per_line_show", note: note
               - @line_notes.reject!{ |n| n == note }
-            = render "notes/reply_button", line_code: line_code
+            = render "notes/per_line_reply_button", line_code: line_code
