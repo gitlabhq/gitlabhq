@@ -21,6 +21,6 @@
           - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
           - unless comments.empty?
             - comments.each_with_index do |note, i|
-              = render "notes/per_line_show", note: note
+              = render "notes/per_line_note", note: note
               - @line_notes.reject!{ |n| n == note }
             = render "notes/per_line_reply_button", line_code: line_code

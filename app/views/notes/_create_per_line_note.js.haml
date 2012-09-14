@@ -12,8 +12,8 @@
       var trEl = $(".#{note.line_code}").parent();
       // ... and insert the note and the reply button after it
       trEl.after("#{escape_javascript(render "notes/per_line_reply_button", line_code: note.line_code)}");
-      trEl.after("#{escape_javascript(render "notes/per_line_show", note: note)}");
+      trEl.after("#{escape_javascript(render "notes/per_line_note", note: note)}");
     } else {
       // instert new note before reply button
-      trRpl.before("#{escape_javascript(render "notes/per_line_show", note: note)}");
+      trRpl.before("#{escape_javascript(render "notes/per_line_note", note: note)}");
     }
