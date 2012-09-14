@@ -17,4 +17,4 @@
     %div{class: current_user.dark_scheme ? "black" : ""}
       = raw @snippet.colorize(options: { linenos: 'True'})
 
-= render "notes/notes", tid: @snippet.id, tt: "snippet"
+= render "notes/notes_with_form", tid: @snippet.id, tt: "snippet"
