@@ -252,7 +252,7 @@ You can login via web using admin generated with setup:
 ## 1. Unicorn
 
     cd /home/gitlab/gitlab
-    sudo -u gitlab cp config/unicorn.rb.orig config/unicorn.rb
+    sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
     sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
 ## 2. Nginx
