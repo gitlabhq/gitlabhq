@@ -41,5 +41,5 @@
     # Rspec 
     bundle exec rake spec
     
-    # Cucumber 
-    bundle exec rake cucumber
+    # Spinach
+    bundle exec rake spinach
