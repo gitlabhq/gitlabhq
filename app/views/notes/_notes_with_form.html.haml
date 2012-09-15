@@ -1,0 +1,11 @@
+%ul#notes-list
+%ul#new-notes-list
+.notes-status
+
+- if can? current_user, :write_note, @project
+  = render "notes/common_form"
+
+:javascript
+  $(function(){
+    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
+  });

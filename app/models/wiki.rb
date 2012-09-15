@@ -28,7 +28,6 @@ class Wiki < ActiveRecord::Base
       end
       new_wiki
     end
-
   end
 end
 # == Schema Information
