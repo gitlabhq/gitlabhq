@@ -36,10 +36,10 @@
 ###  3. Run Tests
 
     # All in one
-    bundle exec gitlab:test
+    bundle exec rake gitlab:test
     
     # Rspec 
     bundle exec rake spec
     
-    # Cucumber 
-    bundle exec rake cucumber
+    # Spinach
+    bundle exec rake spinach
