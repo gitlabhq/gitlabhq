@@ -21,15 +21,18 @@ var NoteList = {
       this.getContent();
 
       $("#notes-list, #new-notes-list").on("ajax:success", ".delete-note", function() {
-        $(this).closest('li').fadeOut();
+        $(this).closest('li').fadeOut(function() {
+          $(this).remove();
+          NoteList.updateVotes();
+        });
       });
 
       $(".note-form-holder").on("ajax:before", function(){
-        $(".submit_note").disable()
+        $(".submit_note").disable();
       })
 
       $(".note-form-holder").on("ajax:complete", function(){
-        $(".submit_note").enable()
+        $(".submit_note").enable();
       })
 
       disableButtonIfEmptyField(".note-text", ".submit_note");
@@ -154,6 +157,8 @@ var NoteList = {
       if (!this.reversed) {
         this.initRefreshNew();
       }
+      // make sure we are up to date
+      this.updateVotes();
     },
 
 
@@ -193,6 +198,7 @@ var NoteList = {
   replaceNewNotes:
     function(html) {
       $("#new-notes-list").html(html);
+      this.updateVotes();
     },
 
   /**
@@ -204,6 +210,37 @@ var NoteList = {
         $("#new-notes-list").prepend(html);
       } else {
         $("#new-notes-list").append(html);
+      }
+      this.updateVotes();
+    },
+
+  /**
+   * Recalculates the votes and updates them (if they are displayed at all).
+   *
+   * Assumes all relevant notes are displayed (i.e. there are no more notes to
+   * load via getMore()).
+   * Might produce inaccurate results when not all notes have been loaded and a
+   * recalculation is triggered (e.g. when deleting a note).
+   */
+  updateVotes:
+    function() {
+      var votes = $("#votes .votes");
+      var notes = $("#notes-list, #new-notes-list").find(".note.vote");
+
+      // only update if there is a vote display
+      if (votes.size()) {
+        var upvotes = notes.filter(".upvote").size();
+        var downvotes = notes.filter(".downvote").size();
+        var votesCount = upvotes + downvotes;
+        var upvotesPercent = votesCount ? (100.0 / votesCount * upvotes) : 0;
+        var downvotesPercent = votesCount ? (100.0 - upvotesPercent) : 0;
+
+        // change vote bar lengths
+        votes.find(".bar-success").css("width", upvotesPercent+"%");
+        votes.find(".bar-danger").css("width", downvotesPercent+"%");
+        // replace vote numbers
+        votes.find(".upvotes").text(votes.find(".upvotes").text().replace(/\d+/, upvotes));
+        votes.find(".downvotes").text(votes.find(".downvotes").text().replace(/\d+/, downvotes));
       }
     }
 };
