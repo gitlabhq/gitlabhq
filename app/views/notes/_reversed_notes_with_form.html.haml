@@ -1,0 +1,11 @@
+- if can? current_user, :write_note, @project
+  = render "notes/common_form"
+
+%ul.reversed#new-notes-list
+%ul.reversed#notes-list
+.notes-status
+
+:javascript
+  $(function(){
+    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
+  });
