@@ -1,4 +1,4 @@
-%li{id: dom_id(note), class: "note"}
+%li{id: dom_id(note), class: "note #{note_vote_class(note)}"}
   = image_tag gravatar_icon(note.author.email), class: "avatar s32"
   %div.note-author
     %strong= note.author_name
