@@ -26,10 +26,8 @@ module Gitlab
       # Example Request:
       #   POST /keys
       post do
-        key = current_user.keys.new(
-          title: params[:title],
-          key: params[:key]
-        )
+        attrs = attributes_for_keys [:title, :key]
+        key = current_user.keys.new attrs
         if key.save
           present key, with: Entities::Key
         else
