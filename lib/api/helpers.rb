@@ -28,6 +28,14 @@ module Gitlab
       end
     end
 
+    def existed_attributes(keys)
+      attrs = {}
+      keys.each do |key|
+        attrs[key] = params[key] if params[key].present?
+      end
+      attrs
+    end
+
     # error helpers
 
     def forbidden!
