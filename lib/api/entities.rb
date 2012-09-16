@@ -48,5 +48,11 @@ module Gitlab
       expose :assignee, :author, using: Entities::UserBasic
       expose :closed, :updated_at, :created_at
     end
+
+    class Key < Grape::Entity
+      expose  :id, 
+              :title, 
+              :key
+    end
   end
 end
