@@ -10,6 +10,14 @@ module Gitlab
       get do
         present current_user.keys, with: Entities::Key
       end
+      # Get single key owned by currently authenticated user
+      #
+      # Example Request:
+      #   GET /keys/:id
+      get "/:id" do
+        key = current_user.keys.find params[:id]
+        present key, with: Entities::Key
+      end
       # Add new ssh key to currently authenticated user
       # 
       # Parameters:

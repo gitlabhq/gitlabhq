@@ -28,6 +28,20 @@ describe Gitlab::Keys do
     end
   end
 
+  describe "GET /keys/:id" do
+    it "should returm single key" do
+      user.keys << key
+      user.save
+      get api("/keys/#{key.id}", user)
+      response.status.should == 200
+      json_response["title"].should == key.title
+    end
+    it "should return 404 Not Found within invalid ID" do
+      get api("/keys/42", user)
+      response.status.should == 404
+    end
+  end
+
   describe "POST /keys" do
     it "should not create invalid ssh key" do
       post api("/keys", user), { title: "invalid key" }
@@ -48,6 +62,10 @@ describe Gitlab::Keys do
       expect {
         delete api("/keys/#{key.id}", user)
       }.to change{user.keys.count}.by(-1)
+    end
+    it "should return 404 Not Found within invalid ID" do
+      delete api("/keys/42", user)
+      response.status.should == 404
     end
   end
 
