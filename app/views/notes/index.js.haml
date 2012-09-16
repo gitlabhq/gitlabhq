@@ -1,1 +1,17 @@
-= render "notes/load"
+- unless @notes.blank?
+  - if loading_more_notes?
+    :plain
+      NoteList.appendMoreNotes(#{@notes.last.id}, "#{escape_javascript(render 'notes/notes')}");
+
+  - elsif loading_new_notes?
+    :plain
+      NoteList.replaceNewNotes("#{escape_javascript(render 'notes/notes')}");
+
+  - else
+    :plain
+      NoteList.setContent(#{@notes.first.id}, #{@notes.last.id}, "#{escape_javascript(render 'notes/notes')}");
+
+- else
+  - if loading_more_notes?
+    :plain
+      NoteList.finishedLoadingMore();

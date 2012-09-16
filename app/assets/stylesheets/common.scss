@@ -699,7 +699,14 @@ li.note {
   .active {
     img {
       border:1px solid #ccc;
+      background:$hover;
       @include border-radius(5px);
     }
   }
+}
+
+.btn-build-token {
+  float: left;
+  padding: 6px 20px;
+  margin-right: 12px;
 }

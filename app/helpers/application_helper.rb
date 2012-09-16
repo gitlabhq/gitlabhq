@@ -104,7 +104,8 @@ module ApplicationHelper
 
              # Profile Area
              when :profile;  current_page?(controller: "profile", action: :show)
-             when :password; current_page?(controller: "profile", action: :password)
+             when :history;  current_page?(controller: "profile", action: :history)
+             when :account;  current_page?(controller: "profile", action: :account)
              when :token;    current_page?(controller: "profile", action: :token)
              when :design;   current_page?(controller: "profile", action: :design)
              when :ssh_keys; controller.controller_name == "keys"

@@ -1,0 +1,3 @@
+- notes.each do |note|
+  = render "notes/per_line_note", note: note
+= render "notes/per_line_reply_button", line_code: notes.first.line_code

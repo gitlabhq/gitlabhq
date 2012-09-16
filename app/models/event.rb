@@ -35,11 +35,19 @@ class Event < ActiveRecord::Base
   end
 
   # Next events currently enabled for system
-  #  - push 
+  #  - push
   #  - new issue
   #  - merge request
   def allowed?
     push? || issue? || merge_request? || membership_changed?
+  end
+
+  def project_name
+    if project
+      project.name
+    else
+      "(deleted)"
+    end
   end
 
   def push?
@@ -58,31 +66,31 @@ class Event < ActiveRecord::Base
     action == self.class::Reopened
   end
 
-  def issue? 
+  def issue?
     target_type == "Issue"
   end
 
-  def merge_request? 
+  def merge_request?
     target_type == "MergeRequest"
   end
 
-  def new_issue? 
-    target_type == "Issue" && 
+  def new_issue?
+    target_type == "Issue" &&
       action == Created
   end
 
-  def new_merge_request? 
-    target_type == "MergeRequest" && 
+  def new_merge_request?
+    target_type == "MergeRequest" &&
       action == Created
   end
 
-  def changed_merge_request? 
-    target_type == "MergeRequest" && 
+  def changed_merge_request?
+    target_type == "MergeRequest" &&
       [Closed, Reopened].include?(action)
   end
 
-  def changed_issue? 
-    target_type == "Issue" && 
+  def changed_issue?
+    target_type == "Issue" &&
       [Closed, Reopened].include?(action)
   end
 
@@ -98,7 +106,7 @@ class Event < ActiveRecord::Base
     joined? || left?
   end
 
-  def issue 
+  def issue
     target if target_type == "Issue"
   end
 
@@ -106,7 +114,7 @@ class Event < ActiveRecord::Base
     target if target_type == "MergeRequest"
   end
 
-  def author 
+  def author
     @author ||= User.find(author_id)
   end
 
@@ -119,7 +127,7 @@ class Event < ActiveRecord::Base
       'joined'
     elsif left?
       'left'
-    else 
+    else
       "opened"
     end
   end

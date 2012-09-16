@@ -21,8 +21,8 @@ module SharedPaths
     visit profile_path
   end
 
-  Given 'I visit profile password page' do
-    visit profile_password_path
+  Given 'I visit profile account page' do
+    visit profile_account_path
   end
 
   Given 'I visit profile token page' do
