@@ -5,7 +5,10 @@ class TeamMembersController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, except: [:show]
+  before_filter :authorize_admin_project!, except: [:index, :show]
+
+  def index
+  end
 
   def show
     @team_member = project.users_projects.find(params[:id])
