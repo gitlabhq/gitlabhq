@@ -53,8 +53,8 @@ Gitlab::Application.routes.draw do
     resources :hooks, :only => [:index, :create, :destroy] do
       get :test
     end
-    resource :logs
-    resource :resque, :controller => 'resque'
+    resource :logs, only: [:show]
+    resource :resque, :controller => 'resque', only: [:show]
     root :to => "dashboard#index"
   end
 
