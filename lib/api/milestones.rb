@@ -36,7 +36,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/milestones
       post ":id/milestones" do
-        attrs = existed_attributes [:title, :description, :due_date]
+        attrs = attributes_for_keys [:title, :description, :due_date]
         @milestone = user_project.milestones.new attrs
         if @milestone.save
           present @milestone, with: Entities::Milestone
@@ -60,7 +60,7 @@ module Gitlab
         authorize! :admin_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        attrs = existed_attributes [:title, :description, :due_date, :closed]
+        attrs = attributes_for_keys [:title, :description, :due_date, :closed]
         if @milestone.update_attributes attrs
           present @milestone, with: Entities::Milestone
         else

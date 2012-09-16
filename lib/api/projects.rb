@@ -40,7 +40,7 @@ module Gitlab
       post do
         params[:code] ||= params[:name]
         params[:path] ||= params[:name]
-        attrs = existed_attributes [:code, 
+        attrs = attributes_for_keys [:code, 
                                     :path, 
                                     :name, 
                                     :description, 
@@ -207,7 +207,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
-        attrs = existed_attributes [:title, :file_name]
+        attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
         attrs[:content] = params[:code] if params[:code].present?
         @snippet = user_project.snippets.new attrs
@@ -235,7 +235,7 @@ module Gitlab
         @snippet = user_project.snippets.find(params[:snippet_id])
         authorize! :modify_snippet, @snippet
 
-        attrs = existed_attributes [:title, :file_name]
+        attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
         attrs[:content] = params[:code] if params[:code].present?
 

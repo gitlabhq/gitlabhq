@@ -28,7 +28,7 @@ module Gitlab
       end
     end
 
-    def existed_attributes(keys)
+    def attributes_for_keys(keys)
       attrs = {}
       keys.each do |key|
         attrs[key] = params[key] if params[key].present?

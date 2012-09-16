@@ -48,7 +48,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
-        attrs = existed_attributes [:title, :description, :assignee_id, :milestone_id]
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
         attrs[:label_list] = params[:labels] if params[:labels].present?
         @issue = user_project.issues.new attrs
         @issue.author = current_user
@@ -76,7 +76,7 @@ module Gitlab
         @issue = user_project.issues.find(params[:issue_id])
         authorize! :modify_issue, @issue
 
-        attrs = existed_attributes [:title, :description, :assignee_id, :milestone_id, :closed]
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :closed]
         attrs[:label_list] = params[:labels] if params[:labels].present?
         if @issue.update_attributes attrs
           present @issue, with: Entities::Issue
