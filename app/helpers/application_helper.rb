@@ -62,7 +62,7 @@ module ApplicationHelper
         { label: "#{@project.name} / Wall", url: wall_project_path(@project) },
         { label: "#{@project.name} / Tree", url: tree_project_ref_path(@project, @project.root_ref) },
         { label: "#{@project.name} / Commits", url: project_commits_path(@project) },
-        { label: "#{@project.name} / Team", url: team_project_path(@project) }
+        { label: "#{@project.name} / Team", url: project_team_index_path(@project) }
       ]
     end
 

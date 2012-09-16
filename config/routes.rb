@@ -90,7 +90,6 @@ Gitlab::Application.routes.draw do
   #
   resources :projects, constraints: { id: /[^\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
-      get "team"
       get "wall"
       get "graph"
       get "files"
@@ -192,6 +191,7 @@ Gitlab::Application.routes.draw do
         get :patch
       end
     end
+    resources :team, controller: 'team_members', only: [:index]
     resources :team_members
     resources :milestones
     resources :labels, only: [:index]

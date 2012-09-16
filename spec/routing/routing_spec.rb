@@ -227,7 +227,6 @@ end
 
 #      projects POST   /projects(.:format)     projects#create
 #   new_project GET    /projects/new(.:format) projects#new
-#  team_project GET    /:id/team(.:format)     projects#team
 #  wall_project GET    /:id/wall(.:format)     projects#wall
 # graph_project GET    /:id/graph(.:format)    projects#graph
 # files_project GET    /:id/files(.:format)    projects#files
@@ -242,10 +241,6 @@ describe ProjectsController, "routing" do
 
   it "to #new" do
     get("/projects/new").should route_to('projects#new')
-  end
-
-  it "to #team" do
-    get("/gitlabhq/team").should route_to('projects#team', id: 'gitlabhq')
   end
 
   it "to #wall" do
