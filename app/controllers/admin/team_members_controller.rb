@@ -1,8 +1,4 @@
-class Admin::TeamMembersController < ApplicationController
-  layout "admin"
-  before_filter :authenticate_user!
-  before_filter :authenticate_admin!
-
+class Admin::TeamMembersController < AdminController
   def edit
     @admin_team_member = UsersProject.find(params[:id])
   end

@@ -1,8 +1,4 @@
-class Admin::DashboardController < ApplicationController
-  layout "admin"
-  before_filter :authenticate_user!
-  before_filter :authenticate_admin!
-
+class Admin::DashboardController < AdminController
   def index
     @workers = Resque.workers
     @pending_jobs = Resque.size(:post_receive)

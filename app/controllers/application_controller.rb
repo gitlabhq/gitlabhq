@@ -84,10 +84,6 @@ class ApplicationController < ActionController::Base
     abilities << Ability
   end
 
-  def authenticate_admin!
-    return render_404 unless current_user.is_admin?
-  end
-
   def authorize_project!(action)
     return access_denied! unless can?(current_user, action, project)
   end
