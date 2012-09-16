@@ -7,7 +7,7 @@ class WikisController < ApplicationController
   layout "project"
   
   def pages
-    @wikis = @project.wikis.group(:slug).order("created_at")
+    @wikis = @project.wikis.last_revisions.order("created_at")
   end
 
   def show
