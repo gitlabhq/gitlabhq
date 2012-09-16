@@ -34,3 +34,4 @@ When listing resources you can pass the following parameters:
 + [Snippets](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/snippets.md)
 + [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
 + [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
++ [SSH Keys](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/keys.md)
