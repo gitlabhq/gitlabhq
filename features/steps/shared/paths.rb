@@ -98,7 +98,7 @@ module SharedPaths
   end
 
   Then 'I visit project "Shop" team page' do
-    visit team_project_path(Project.find_by_name("Shop"))
+    visit project_team_index_path(Project.find_by_name("Shop"))
   end
 
   Then 'I visit project "Shop" wall page' do

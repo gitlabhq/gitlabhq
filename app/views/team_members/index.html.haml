@@ -1,4 +1,4 @@
-= render "project_head"
+= render "projects/project_head"
 %h3.page_title
   Team Members
   %small (#{@project.users_projects.count})
@@ -10,6 +10,4 @@
     Read more about project permissions
     %strong= link_to "here", help_permissions_path, class: "vlink"
 
-
-= render partial: "team", locals: {project: @project}
-
+= render partial: "team_members/team", locals: {project: @project}
