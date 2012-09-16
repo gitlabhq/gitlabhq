@@ -1,5 +1,4 @@
-class Admin::ResqueController < ApplicationController
-  layout 'admin'
+class Admin::ResqueController < AdminController
   def show
   end
 end

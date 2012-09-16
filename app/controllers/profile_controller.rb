@@ -16,9 +16,6 @@ class ProfileController < ApplicationController
   def token
   end
 
-  def password
-  end
-
   def password_update
     params[:user].reject!{ |k, v| k != "password" && k != "password_confirmation"}
 

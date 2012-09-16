@@ -70,7 +70,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/team" do
-      subject { team_project_path(@project) }
+      subject { project_team_index_path(@project) }
 
       it { should be_allowed_for @u1 }
       it { should be_allowed_for @u3 }

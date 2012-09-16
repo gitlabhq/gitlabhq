@@ -10,7 +10,7 @@ Gitlab::Application.routes.draw do
 
   # Optionally, enable Resque here
   require 'resque/server'
-  mount Resque::Server.new, at: '/info/resque', as: 'resque'
+  mount Resque::Server => '/info/resque', as: 'resque'
 
   # Enable Grack support
   mount Grack::Bundle.new({
@@ -23,14 +23,14 @@ Gitlab::Application.routes.draw do
   #
   # Help
   #
-  get 'help' => 'help#index'
-  get 'help/permissions' => 'help#permissions'
-  get 'help/workflow' => 'help#workflow'
-  get 'help/api' => 'help#api'
-  get 'help/web_hooks' => 'help#web_hooks'
+  get 'help'              => 'help#index'
+  get 'help/permissions'  => 'help#permissions'
+  get 'help/workflow'     => 'help#workflow'
+  get 'help/api'          => 'help#api'
+  get 'help/web_hooks'    => 'help#web_hooks'
   get 'help/system_hooks' => 'help#system_hooks'
-  get 'help/markdown' => 'help#markdown'
-  get 'help/ssh' => 'help#ssh'
+  get 'help/markdown'     => 'help#markdown'
+  get 'help/ssh'          => 'help#ssh'
 
   #
   # Admin Area
@@ -43,19 +43,19 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
-    resources :projects, :constraints => { :id => /[^\/]+/ } do
+    resources :projects, constraints: { id: /[^\/]+/ } do
       member do
         get :team
         put :team_update
       end
     end
-    resources :team_members, :only => [:edit, :update, :destroy]
-    resources :hooks, :only => [:index, :create, :destroy] do
+    resources :team_members, only: [:edit, :update, :destroy]
+    resources :hooks, only: [:index, :create, :destroy] do
       get :test
     end
-    resource :logs
-    resource :resque, :controller => 'resque'
-    root :to => "dashboard#index"
+    resource :logs, only: [:show]
+    resource :resque, controller: 'resque', only: [:show]
+    root to: "dashboard#index"
   end
 
   get "errors/githost"
@@ -63,39 +63,39 @@ Gitlab::Application.routes.draw do
   #
   # Profile Area
   #
-  get "profile/account", :to => "profile#account"
-  get "profile/history", :to => "profile#history"
-  put "profile/password", :to => "profile#password_update"
-  get "profile/token", :to => "profile#token"
-  put "profile/reset_private_token", :to => "profile#reset_private_token"
-  get "profile", :to => "profile#show"
-  get "profile/design", :to => "profile#design"
-  put "profile/update", :to => "profile#update"
+  get "profile/account"             => "profile#account"
+  get "profile/history"             => "profile#history"
+  put "profile/password"            => "profile#password_update"
+  get "profile/token"               => "profile#token"
+  put "profile/reset_private_token" => "profile#reset_private_token"
+  get "profile"                     => "profile#show"
+  get "profile/design"              => "profile#design"
+  put "profile/update"              => "profile#update"
+
   resources :keys
 
   #
   # Dashboard Area
   #
-  get "dashboard", :to => "dashboard#index"
-  get "dashboard/issues", :to => "dashboard#issues"
-  get "dashboard/merge_requests", :to => "dashboard#merge_requests"
+  get "dashboard"                => "dashboard#index"
+  get "dashboard/issues"         => "dashboard#issues"
+  get "dashboard/merge_requests" => "dashboard#merge_requests"
 
-  resources :projects, :constraints => { :id => /[^\/]+/ }, :only => [:new, :create]
+  resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
-  devise_for :users, :controllers => { :omniauth_callbacks => :omniauth_callbacks }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks }
 
   #
   # Project Area
   #
-  resources :projects, :constraints => { :id => /[^\/]+/ }, :except => [:new, :create, :index], :path => "/" do
+  resources :projects, constraints: { id: /[^\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
-      get "team"
       get "wall"
       get "graph"
       get "files"
     end
 
-    resources :wikis, :only => [:show, :edit, :destroy, :create] do
+    resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
         get :pages
       end
@@ -114,46 +114,45 @@ Gitlab::Application.routes.draw do
     end
 
     resources :deploy_keys
-    resources :protected_branches, :only => [:index, :create, :destroy]
+    resources :protected_branches, only: [:index, :create, :destroy]
 
-    resources :refs, :only => [], :path => "/" do
+    resources :refs, only: [], path: "/" do
       collection do
         get "switch"
       end
 
       member do
-        get "tree", :constraints => { :id => /[a-zA-Z.\/0-9_\-]+/ }
-        get "logs_tree", :constraints => { :id => /[a-zA-Z.\/0-9_\-]+/ }
+        get "tree",      constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
+        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
 
         get "blob",
-          :constraints => {
-            :id => /[a-zA-Z.0-9\/_\-]+/,
-            :path => /.*/
+          constraints: {
+            id:   /[a-zA-Z.0-9\/_\-]+/,
+            path: /.*/
           }
-
 
         # tree viewer
         get "tree/:path" => "refs#tree",
-          :as => :tree_file,
-          :constraints => {
-            :id => /[a-zA-Z.0-9\/_\-]+/,
-            :path => /.*/
+          as: :tree_file,
+          constraints: {
+            id:   /[a-zA-Z.0-9\/_\-]+/,
+            path: /.*/
           }
 
         # tree viewer
         get "logs_tree/:path" => "refs#logs_tree",
-          :as => :logs_file,
-          :constraints => {
-            :id => /[a-zA-Z.0-9\/_\-]+/,
-            :path => /.*/
+          as: :logs_file,
+          constraints: {
+            id:   /[a-zA-Z.0-9\/_\-]+/,
+            path: /.*/
           }
 
         # blame
         get "blame/:path" => "refs#blame",
-          :as => :blame_file,
-          :constraints => {
-            :id => /[a-zA-Z.0-9\/_\-]+/,
-            :path => /.*/
+          as: :blame_file,
+          constraints: {
+            id:   /[a-zA-Z.0-9\/_\-]+/,
+            path: /.*/
           }
       end
     end
@@ -178,7 +177,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :hooks, :only => [:index, :create, :destroy] do
+    resources :hooks, only: [:index, :create, :destroy] do
       member do
         get :test
       end
@@ -192,9 +191,10 @@ Gitlab::Application.routes.draw do
         get :patch
       end
     end
+    resources :team, controller: 'team_members', only: [:index]
     resources :team_members
     resources :milestones
-    resources :labels, :only => [:index]
+    resources :labels, only: [:index]
     resources :issues do
 
       collection do
@@ -203,11 +203,12 @@ Gitlab::Application.routes.draw do
         get   :search
       end
     end
-    resources :notes, :only => [:index, :create, :destroy] do
+    resources :notes, only: [:index, :create, :destroy] do
       collection do
         post :preview
       end
     end
   end
-  root :to => "dashboard#index"
+
+  root to: "dashboard#index"
 end
