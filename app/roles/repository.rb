@@ -45,8 +45,16 @@ module Repository
     File.exists?(hook_file)
   end
 
+  def branches
+    repo.branches.collect(&:name).sort
+  end
+
   def tags
-    repo.tags.map(&:name).sort.reverse
+    repo.tags.collect(&:name).sort.reverse
+  end
+
+  def ref_names
+    [branches + tags].flatten
   end
 
   def repo
@@ -79,14 +87,6 @@ module Repository
     @heads ||= repo.heads
   end
 
-  def branches_names
-    heads.map(&:name)
-  end
-
-  def ref_names
-    [branches_names + tags].flatten
-  end
-
   def tree(fcommit, path = nil)
     fcommit = commit if fcommit == :head
     tree = fcommit.tree
@@ -109,8 +109,6 @@ module Repository
   # - If two or more branches are present, returns the one that has a name
   #   matching root_ref (default_branch or 'master' if default_branch is nil)
   def discover_default_branch
-    branches = heads.collect(&:name)
-
     if branches.length == 0
       nil
     elsif branches.length == 1
