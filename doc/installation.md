@@ -152,7 +152,14 @@ and ensure you have followed all of the above steps carefully.
     sudo pip install pygments
     sudo gem install bundler
     cd /home/gitlab
+
+    # Get gitlab code. Use this for stable setup
     sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
+
+    # Skip this for stable setup.
+    # Master branch (recent changes, less stable)
+    sudo -H -u gitlab git clone -b master https://github.com/gitlabhq/gitlabhq.git gitlab
+
     cd gitlab
 
     # Rename config files
