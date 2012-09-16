@@ -5,7 +5,10 @@ class TeamMembersController < ApplicationController
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, except: [:show]
+  before_filter :authorize_admin_project!, except: [:index, :show]
+
+  def index
+  end
 
   def show
     @team_member = project.users_projects.find(params[:id])
@@ -22,7 +25,7 @@ class TeamMembersController < ApplicationController
       params[:project_access]
     )
 
-    redirect_to team_project_path(@project)
+    redirect_to project_team_index_path(@project)
   end
 
   def update
@@ -32,7 +35,7 @@ class TeamMembersController < ApplicationController
     unless @team_member.valid?
       flash[:alert] = "User should have at least one role"
     end
-    redirect_to team_project_path(@project)
+    redirect_to project_team_index_path(@project)
   end
 
   def destroy
@@ -40,7 +43,7 @@ class TeamMembersController < ApplicationController
     @team_member.destroy
 
     respond_to do |format|
-      format.html { redirect_to team_project_path(@project) }
+      format.html { redirect_to project_team_index_path(@project) }
       format.js { render nothing: true }
     end
   end

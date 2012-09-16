@@ -1,8 +1,4 @@
-class Admin::HooksController < ApplicationController
-  layout "admin"
-  before_filter :authenticate_user!
-  before_filter :authenticate_admin!
-  
+class Admin::HooksController < AdminController
   def index
     @hooks = SystemHook.all
     @hook = SystemHook.new
@@ -15,7 +11,7 @@ class Admin::HooksController < ApplicationController
       redirect_to admin_hooks_path, notice: 'Hook was successfully created.'
     else
       @hooks = SystemHook.all
-      render :index 
+      render :index
     end
   end
 

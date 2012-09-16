@@ -40,13 +40,16 @@ module Gitlab
       post do
         params[:code] ||= params[:name]
         params[:path] ||= params[:name]
-        project_attrs = {}
-        params.each_pair do |k ,v|
-          if Project.attribute_names.include? k
-            project_attrs[k] = v
-          end
-        end
-        @project = Project.create_by_user(project_attrs, current_user)
+        attrs = attributes_for_keys [:code, 
+                                    :path, 
+                                    :name, 
+                                    :description, 
+                                    :default_branch, 
+                                    :issues_enabled, 
+                                    :wall_enabled, 
+                                    :merge_requests_enabled, 
+                                    :wiki_enabled]
+        @project = Project.create_by_user(attrs, current_user)
         if @project.saved?
           present @project, with: Entities::Project
         else
@@ -204,12 +207,10 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
-        @snippet = user_project.snippets.new(
-          title: params[:title],
-          file_name: params[:file_name],
-          expires_at: params[:lifetime],
-          content: params[:code]
-        )
+        attrs = attributes_for_keys [:title, :file_name]
+        attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
+        attrs[:content] = params[:code] if params[:code].present?
+        @snippet = user_project.snippets.new attrs
         @snippet.author = current_user
 
         if @snippet.save
@@ -234,14 +235,11 @@ module Gitlab
         @snippet = user_project.snippets.find(params[:snippet_id])
         authorize! :modify_snippet, @snippet
 
-        parameters = {
-          title: (params[:title] || @snippet.title),
-          file_name: (params[:file_name] || @snippet.file_name),
-          expires_at: (params[:lifetime] || @snippet.expires_at),
-          content: (params[:code] || @snippet.content)
-        }
+        attrs = attributes_for_keys [:title, :file_name]
+        attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
+        attrs[:content] = params[:code] if params[:code].present?
 
-        if @snippet.update_attributes(parameters)
+        if @snippet.update_attributes attrs
           present @snippet, with: Entities::ProjectSnippet
         else
           not_found!

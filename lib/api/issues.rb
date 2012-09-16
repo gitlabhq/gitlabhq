@@ -48,15 +48,10 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
-        @issue = user_project.issues.new(
-          title: params[:title],
-          description: params[:description],
-          assignee_id: params[:assignee_id],
-          milestone_id: params[:milestone_id],
-          label_list: params[:labels]
-        )
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
+        @issue = user_project.issues.new attrs
         @issue.author = current_user
-
         if @issue.save
           present @issue, with: Entities::Issue
         else
@@ -81,16 +76,9 @@ module Gitlab
         @issue = user_project.issues.find(params[:issue_id])
         authorize! :modify_issue, @issue
 
-        parameters = {
-          title: (params[:title] || @issue.title),
-          description: (params[:description] || @issue.description),
-          assignee_id: (params[:assignee_id] || @issue.assignee_id),
-          milestone_id: (params[:milestone_id] || @issue.milestone_id),
-          label_list: (params[:labels] || @issue.label_list),
-          closed: (params[:closed] || @issue.closed)
-        }
-
-        if @issue.update_attributes(parameters)
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :closed]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
+        if @issue.update_attributes attrs
           present @issue, with: Entities::Issue
         else
           not_found!
