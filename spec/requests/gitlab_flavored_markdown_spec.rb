@@ -69,7 +69,7 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should render title in refs#blame" do
-      visit blame_file_project_ref_path(project, id: @branch_name, path: @test_file)
+      visit blame_file_project_ref_path(project, File.join(@branch_name, @test_file))
 
       within(".blame_commit") do
         page.should have_link("##{issue.id}")

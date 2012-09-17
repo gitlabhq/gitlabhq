@@ -136,14 +136,6 @@ Gitlab::Application.routes.draw do
             id:   /[a-zA-Z.0-9\/_\-]+/,
             path: /.*/
           }
-
-        # blame
-        get "blame/:path" => "refs#blame",
-          as: :blame_file,
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
-            path: /.*/
-          }
       end
     end
 
@@ -204,7 +196,7 @@ Gitlab::Application.routes.draw do
     end
 
     # XXX: WIP
-    # resources :blame,  only: [:show], constraints: {id: /.+/}
+    resources :blame,  only: [:show], constraints: {id: /.+/}
     # resources :blob,   only: [:show], constraints: {id: /.+/}
     # resources :raw,    only: [:show], constraints: {id: /.+/}
     resources :tree,   only: [:show], constraints: {id: /.+/}

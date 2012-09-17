@@ -9,7 +9,7 @@ class RefsController < ApplicationController
   before_filter :require_non_empty_project
 
   before_filter :ref
-  before_filter :define_tree_vars, only: [:tree, :blob, :blame, :logs_tree]
+  before_filter :define_tree_vars, only: [:blob, :logs_tree]
   before_filter :render_full_content
 
   layout "project"
@@ -77,10 +77,6 @@ class RefsController < ApplicationController
     else
       head(404)
     end
-  end
-
-  def blame
-    @blame = Grit::Blob.blame(@repo, @commit.id, params[:path])
   end
 
   protected
