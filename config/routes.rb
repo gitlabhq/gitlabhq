@@ -122,24 +122,14 @@ Gitlab::Application.routes.draw do
       end
 
       member do
-        get "tree",      constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
-        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
-
         get "blob",
           constraints: {
             id:   /[a-zA-Z.0-9\/_\-]+/,
             path: /.*/
           }
 
-        # tree viewer
-        get "tree/:path" => "refs#tree",
-          as: :tree_file,
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
-            path: /.*/
-          }
-
-        # tree viewer
+        # tree viewer logs
+        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
         get "logs_tree/:path" => "refs#logs_tree",
           as: :logs_file,
           constraints: {
@@ -217,7 +207,7 @@ Gitlab::Application.routes.draw do
     # resources :blame,  only: [:show], constraints: {id: /.+/}
     # resources :blob,   only: [:show], constraints: {id: /.+/}
     # resources :raw,    only: [:show], constraints: {id: /.+/}
-    # resources :tree,   only: [:show], constraints: {id: /.+/}
+    resources :tree,   only: [:show], constraints: {id: /.+/}
   end
 
   root to: "dashboard#index"

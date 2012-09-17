@@ -192,20 +192,13 @@ describe ProtectedBranchesController, "routing" do
 end
 
 #    switch_project_refs GET    /:project_id/switch(.:format)              refs#switch
-#       tree_project_ref GET    /:project_id/:id/tree(.:format)            refs#tree
-#  logs_tree_project_ref GET    /:project_id/:id/logs_tree(.:format)       refs#logs_tree
 #       blob_project_ref GET    /:project_id/:id/blob(.:format)            refs#blob
-#  tree_file_project_ref GET    /:project_id/:id/tree/:path(.:format)      refs#tree
+#  logs_tree_project_ref GET    /:project_id/:id/logs_tree(.:format)       refs#logs_tree
 #  logs_file_project_ref GET    /:project_id/:id/logs_tree/:path(.:format) refs#logs_tree
 # blame_file_project_ref GET    /:project_id/:id/blame/:path(.:format)     refs#blame
 describe RefsController, "routing" do
   it "to #switch" do
     get("/gitlabhq/switch").should route_to('refs#switch', project_id: 'gitlabhq')
-  end
-
-  it "to #tree" do
-    get("/gitlabhq/stable/tree").should             route_to('refs#tree', project_id: 'gitlabhq', id: 'stable')
-    get("/gitlabhq/stable/tree/foo/bar/baz").should route_to('refs#tree', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
   end
 
   it "to #logs_tree" do
@@ -406,6 +399,12 @@ describe NotesController, "routing" do
   end
 end
 
+describe TreeController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+  end
+end
+
 # TODO: Pending
 #
 # /:project_id/blame/*path
@@ -455,12 +454,6 @@ describe "pending routing" do
   describe "/:project_id/raw/:id" do
     it "routes to a ref with a path" do
       get("/gitlabhq/raw/master/app/models/project.rb").should route_to('raw#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-    end
-  end
-
-  describe "/:project_id/tree/:id" do
-    it "routes to a ref with a path" do
-      get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 end
