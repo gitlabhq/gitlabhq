@@ -396,3 +396,62 @@ describe NotesController, "routing" do
     let(:controller) { 'notes' }
   end
 end
+
+# TODO: Pending
+#
+# /:project_id/blame/*path
+#   /gitlabhq/blame/master/app/contexts/base_context.rb
+#   /gitlabhq/blame/test/branch/name/app/contexts/base_context.rb
+#
+# /:project_id/blob/*path
+#   /gitlabhq/blob/master/app/contexts/base_context.rb
+#   /gitlabhq/blob/test/branch/name/app/contexts/base_context.rb
+#
+# /:project_id/commit/:id
+#   /gitlabhq/commit/caef9ed1121a16ca0cc78715695daaa974271bfd
+#
+# /:project_id/commits
+#
+# /:project_id/commits/*path
+#   /gitlabhq/commits/master/app/contexts/base_context.rb
+#   /gitlabhq/commits/test/branch/name/app/contexts/base_context.rb
+#
+# /:project_id/raw/*path
+#   /gitlabhq/raw/master/app/contexts/base_context.rb
+#   /gitlabhq/raw/test/branch/name/app/contexts/base_context.rb
+#
+# /:project_id/tree/*path
+#   /gitlabhq/tree/master/app
+#   /gitlabhq/tree/test/branch/name/app
+describe "pending routing" do
+  describe "/:project_id/blame/:id" do
+    it "routes to a ref with a path" do
+      get("/gitlabhq/blame/master/app/models/project.rb").should route_to('blame#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
+  end
+
+  describe "/:project_id/blob/:id" do
+    it "routes to a ref with a path" do
+      get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
+  end
+
+  describe "/:project_id/commit/:id" do
+    it "routes to a specific commit" do
+      get("/gitlabhq/commit/f4b1449").should route_to('commit#show', project_id: 'gitlabhq', id: 'f4b1449')
+      get("/gitlabhq/commit/f4b14494ef6abf3d144c28e4af0c20143383e062").should route_to('commit#show', project_id: 'gitlabhq', id: 'f4b14494ef6abf3d144c28e4af0c20143383e062')
+    end
+  end
+
+  describe "/:project_id/raw/:id" do
+    it "routes to a ref with a path" do
+      get("/gitlabhq/raw/master/app/models/project.rb").should route_to('raw#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
+  end
+
+  describe "/:project_id/tree/:id" do
+    it "routes to a ref with a path" do
+      get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
+  end
+end
