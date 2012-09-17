@@ -1,9 +1,5 @@
 %ul.nav.nav-tabs
-  %li
-    = form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
-      = select_tag "ref", grouped_options_refs, onchange: "$(this.form).trigger('submit');", class: "project-refs-select chosen"
-      = hidden_field_tag :destination, "commits"
-
+  %li= render partial: 'shared/ref_switcher', locals: {destination: 'commits'}
   %li{class: "#{'active' if current_page?(project_commits_path(@project)) }"}
     = link_to project_commits_path(@project) do
       Commits
@@ -19,7 +15,6 @@
     = link_to tags_project_repository_path(@project) do
       Tags
       %span.badge= @project.repo.tag_count
-
 
   - if current_page?(project_commits_path(@project)) && current_user.private_token
     %li.right
