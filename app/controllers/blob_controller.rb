@@ -16,7 +16,7 @@ class BlobController < ApplicationController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :define_tree_vars
+  before_filter :assign_ref_vars
 
   def show
     if @tree.is_blob?
@@ -36,27 +36,5 @@ class BlobController < ApplicationController
     else
       not_found!
     end
-  end
-
-  private
-
-  def define_tree_vars
-    @ref, @path = extract_ref(params[:id])
-
-    @id     = File.join(@ref, @path)
-    @repo   = @project.repo
-    @commit = CommitDecorator.decorate(@project.commit(@ref))
-
-    @tree = Tree.new(@commit.tree, @project, @ref, @path)
-    @tree = TreeDecorator.new(@tree)
-
-    raise InvalidPathError if @tree.invalid?
-
-    @hex_path = Digest::SHA1.hexdigest(@path)
-
-    @history_path = project_tree_path(@project, @id)
-    @logs_path    = logs_file_project_ref_path(@project, @ref, @path)
-  rescue NoMethodError, InvalidPathError
-    not_found!
   end
 end

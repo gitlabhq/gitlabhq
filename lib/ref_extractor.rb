@@ -67,4 +67,31 @@ module RefExtractor
 
     pair
   end
+
+  # Assigns common instance variables for views working with Git tree-ish objects
+  #
+  # Assignments are:
+  #
+  # - @id     - A string representing the joined ref and path
+  # - @ref    - A string representing the ref (e.g., the branch, tag, or commit SHA)
+  # - @path   - A string representing the filesystem path
+  # - @commit - A CommitDecorator representing the commit from the given ref
+  # - @tree   - A TreeDecorator representing the tree at the given ref/path
+  #
+  # Automatically renders `not_found!` if a valid tree could not be resolved
+  # (e.g., when a user inserts an invalid path or ref).
+  def assign_ref_vars
+    @ref, @path = extract_ref(params[:id])
+
+    @id = File.join(@ref, @path)
+
+    @commit = CommitDecorator.decorate(@project.commit(@ref))
+
+    @tree = Tree.new(@commit.tree, @project, @ref, @path)
+    @tree = TreeDecorator.new(@tree)
+
+    raise InvalidPathError if @tree.invalid?
+  rescue NoMethodError, InvalidPathError
+    not_found!
+  end
 end
