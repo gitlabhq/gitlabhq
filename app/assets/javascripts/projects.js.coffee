@@ -10,11 +10,15 @@ window.Projects = ->
   $('form #project_default_branch').chosen()
   disableButtonIfEmptyField '#project_name', '.project-submit'
 
-# Git clone panel switcher
 $ ->
+  # Git clone panel switcher
   scope = $ '.project_clone_holder'
   if scope.length > 0
     $('a, button', scope).click ->
       $('a, button', scope).removeClass 'active'
       $(@).addClass 'active'
       $('#project_clone', scope).val $(@).data 'clone'
+
+  # Ref switcher
+  $('.project-refs-select').on 'change', ->
+    $(@).parents('form').submit()
