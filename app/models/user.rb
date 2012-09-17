@@ -2,12 +2,11 @@ class User < ActiveRecord::Base
 
   include Account
 
-  devise :database_authenticatable, :token_authenticatable, :lockable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable
+  devise :cas_authenticatable, :trackable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
                   :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme,
-                  :theme_id, :force_random_password, :extern_uid, :provider
+                  :theme_id, :force_random_password, :username
 
   attr_accessor :force_random_password
 
@@ -56,7 +55,6 @@ class User < ActiveRecord::Base
 
   validates :extern_uid, :allow_blank => true, :uniqueness => {:scope => :provider}
 
-  before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
 
   scope :not_in_project, lambda { |project|  where("id not in (:ids)", ids: project.users.map(&:id) ) }
@@ -64,12 +62,16 @@ class User < ActiveRecord::Base
   scope :blocked, where(blocked:  true)
   scope :active, where(blocked:  false)
 
-  before_validation :generate_password, on: :create
+  before_validation :generate_password, :on => :create
 
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
+  end
+
+  def generate_email
+    self.email = "#{self.username}@locaweb.com.br"
   end
 
   def self.filter filter_name

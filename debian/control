@@ -1,0 +1,16 @@
+Source: gitlabhq
+Section: ruby
+Priority: extra
+Maintainer: Rodrigo Sampaio Vaz <rodrigo.vaz@gmail.com>
+Build-Depends: debhelper, libicu-dev, ruby1.9.1-dev, libmysqlclient-dev, libsqlite3-dev
+Standards-Version: 3.8.4
+Homepage: http://gitlabhq.com
+#Vcs-Git: git://git.debian.org/collab-maint/gitlabhq.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/gitlabhq.git;a=summary
+
+Package: gitlabhq
+Architecture: any
+Depends: libmysqlclient16, libsqlite3-0, ruby1.9.1, gitolite, nginx | apache-mpm-worker, redis-server
+Recommends: libbundler-ruby
+Description: Self Hosted Git Management
+ Fast, secure and stable solution based on Ruby on Rails & Gitolite. Distributed under the MIT License.

@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+inst_dir=debian/tmp/var/www/gitlabhq
+
+%:
+	dh $@ 
+
+override_dh_prep:
+	bundle install --without=test:development --deployment
+
+override_dh_install:
+	mkdir -p $(inst_dir)
+	mkdir -p debian/tmp/etc/nginx/sites-available
+	cp -r `ls | grep -v git | grep -v debian` .bundle $(inst_dir)/
+	cp config/gitlab.nginx debian/tmp/etc/nginx/sites-available/gitlab
+	dh_install
+
+override_dh_shlibdeps:
+	echo "Ignored, moving on"
