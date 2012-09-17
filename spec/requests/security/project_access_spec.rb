@@ -37,7 +37,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/master/tree" do
-      subject { tree_project_ref_path(@project, @project.root_ref) }
+      subject { project_tree_path(@project, @project.root_ref) }
 
       it { should be_allowed_for @u1 }
       it { should be_allowed_for @u3 }

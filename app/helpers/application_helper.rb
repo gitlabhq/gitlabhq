@@ -58,11 +58,11 @@ module ApplicationHelper
 
     if @project && !@project.new_record?
       project_nav = [
-        { label: "#{@project.name} / Issues", url: project_issues_path(@project) },
-        { label: "#{@project.name} / Wall", url: wall_project_path(@project) },
-        { label: "#{@project.name} / Tree", url: tree_project_ref_path(@project, @project.root_ref) },
-        { label: "#{@project.name} / Commits", url: project_commits_path(@project) },
-        { label: "#{@project.name} / Team", url: project_team_index_path(@project) }
+        { label: "#{@project.name} / Issues",  url: project_issues_path(@project) },
+        { label: "#{@project.name} / Wall",    url: wall_project_path(@project) },
+        { label: "#{@project.name} / Tree",    url: project_tree_path(@project, @ref || @project.root_ref) },
+        { label: "#{@project.name} / Commits", url: project_commits_path(@project, @ref || @project.root_ref) },
+        { label: "#{@project.name} / Team",    url: project_team_index_path(@project) }
       ]
     end
 

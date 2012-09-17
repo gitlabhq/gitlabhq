@@ -5,7 +5,7 @@
   - if @project.repo_exists?
     - if can? current_user, :download_code, @project
       %li{class: tree_tab_class}
-        = link_to tree_project_ref_path(@project, @project.root_ref) do
+        = link_to project_tree_path(@project, @project.root_ref) do
           Files
       %li{class: commit_tab_class}
         = link_to "Commits", project_commits_path(@project)

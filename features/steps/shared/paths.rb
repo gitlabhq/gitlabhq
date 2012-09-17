@@ -51,15 +51,15 @@ module SharedPaths
   end
 
   Given 'I visit project source page' do
-    visit tree_project_ref_path(@project, @project.root_ref)
+    visit project_tree_path(@project, @project.root_ref)
   end
 
   Given 'I visit blob file from repo' do
-    visit tree_project_ref_path(@project, ValidCommit::ID, :path => ValidCommit::BLOB_FILE_PATH)
+    visit project_tree_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
   end
 
   Given 'I visit project source page for "8470d70"' do
-    visit tree_project_ref_path(@project, "8470d70")
+    visit project_tree_path(@project, "8470d70")
   end
 
   Given 'I visit project tags page' do

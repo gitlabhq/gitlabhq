@@ -1,7 +1,7 @@
 %li.commit
   .browse_code_link_holder
     %p
-      %strong= link_to "Browse Code »", tree_project_ref_path(@project, commit), class: "right"
+      %strong= link_to "Browse Code »", project_tree_path(@project, commit), class: "right"
   %p
     = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
     %strong.commit-author-name= commit.author_name

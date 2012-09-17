@@ -2,7 +2,7 @@
   %li
     = render partial: 'shared/ref_switcher', locals: {destination: 'tree', path: params[:path]}
   %li{class: "#{'active' if (controller.controller_name == "refs") }"}
-    = link_to tree_project_ref_path(@project, @ref) do
+    = link_to project_tree_path(@project, @ref) do
       Source
   %li.right
     .input-prepend.project_clone_holder

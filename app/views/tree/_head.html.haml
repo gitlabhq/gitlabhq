@@ -1,8 +1,8 @@
 %ul.nav.nav-tabs
   %li
     = render partial: 'shared/ref_switcher', locals: {destination: 'tree', path: params[:path]}
-  %li{class: "#{'active' if (controller.controller_name == "refs") }"}
-    = link_to tree_project_ref_path(@project, @ref) do
+  %li{class: "#{'active' if (controller.controller_name == "tree") }"}
+    = link_to project_tree_path(@project, @ref) do
       Source
   %li.right
     .input-prepend.project_clone_holder

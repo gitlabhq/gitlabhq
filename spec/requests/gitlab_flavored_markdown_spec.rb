@@ -61,7 +61,7 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should render title in refs#tree", js: true do
-      visit tree_project_ref_path(project, id: @branch_name)
+      visit project_tree_path(project, @branch_name)
 
       within(".tree_commit") do
         page.should have_link("##{issue.id}")

@@ -18,7 +18,7 @@ class RefsController < ApplicationController
     respond_to do |format| 
       format.html do 
         new_path = if params[:destination] == "tree"
-                     tree_project_ref_path(@project, params[:ref]) 
+                     project_tree_path(@project, params[:ref])
                    else
                      project_commits_path(@project, ref: params[:ref])
                    end
@@ -96,10 +96,10 @@ class RefsController < ApplicationController
     @hex_path = Digest::SHA1.hexdigest(params[:path] || "/")
 
     if params[:path]
-      @history_path = tree_file_project_ref_path(@project, @ref, params[:path])
+      @history_path = project_tree_path(@project, File.join(@ref, params[:path]))
       @logs_path = logs_file_project_ref_path(@project, @ref, params[:path]) 
     else
-      @history_path = tree_project_ref_path(@project, @ref)
+      @history_path = project_tree_path(@project, @ref)
       @logs_path = logs_tree_project_ref_path(@project, @ref) 
     end
   rescue
