@@ -49,13 +49,13 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should render title in commits#show" do
-      visit project_commit_path(project, id: commit.id)
+      visit project_commit_path(project, commit)
 
       page.should have_link("##{issue.id}")
     end
 
     it "should render description in commits#show" do
-      visit project_commit_path(project, id: commit.id)
+      visit project_commit_path(project, commit)
 
       page.should have_link("@#{fred.name}")
     end
@@ -175,7 +175,7 @@ describe "Gitlab Flavored Markdown" do
 
   describe "for notes" do
     it "should render in commits#show", js: true do
-      visit project_commit_path(project, id: commit.id)
+      visit project_commit_path(project, commit)
       fill_in "note_note", with: "see ##{issue.id}"
       click_button "Add Comment"
 

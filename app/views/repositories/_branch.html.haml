@@ -7,7 +7,7 @@
       - if branch.name == @project.root_ref
         %span.label default
   %td
-    = link_to project_commit_path(@project, id: commit.id) do
+    = link_to project_commit_path(@project, commit) do
       %code= commit.short_id
 
     = image_tag gravatar_icon(commit.author_email), class: "", width: 16

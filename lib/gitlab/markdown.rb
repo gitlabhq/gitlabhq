@@ -174,7 +174,7 @@ module Gitlab
 
     def reference_commit(identifier)
       if commit = @project.commit(identifier)
-        link_to(identifier, project_commit_path(@project, id: commit.id), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
+        link_to(identifier, project_commit_path(@project, commit), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
     end
   end

@@ -298,6 +298,14 @@ describe HooksController, "routing" do
   end
 end
 
+# project_commit GET    /:project_id/commit/:id(.:format) commit#show {:id=>/[[:alnum:]]{6,40}/, :project_id=>/[^\/]+/}
+describe CommitController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/commit/4246fb").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb')
+    get("/gitlabhq/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
+  end
+end
+
 # compare_project_commits GET    /:project_id/commits/compare(.:format)   commits#compare
 #    patch_project_commit GET    /:project_id/commits/:id/patch(.:format) commits#patch
 #         project_commits GET    /:project_id/commits(.:format)           commits#index
@@ -317,6 +325,7 @@ describe CommitsController, "routing" do
   end
 
   it_behaves_like "RESTful project resources" do
+    let(:actions)    { [:index, :show] }
     let(:controller) { 'commits' }
   end
 end

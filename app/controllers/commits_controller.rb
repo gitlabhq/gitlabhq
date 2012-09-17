@@ -26,25 +26,25 @@ class CommitsController < ApplicationController
     end
   end
 
-  def show
-    result = CommitLoad.new(project, current_user, params).execute
+  # def show
+  #   result = CommitLoad.new(project, current_user, params).execute
 
-    @commit = result[:commit]
+  #   @commit = result[:commit]
 
-    if @commit
-      @suppress_diff = result[:suppress_diff]
-      @note          = result[:note]
-      @line_notes    = result[:line_notes]
-      @notes_count   = result[:notes_count]
-      @comments_allowed = true
-    else
-      return git_not_found!
-    end
+  #   if @commit
+  #     @suppress_diff = result[:suppress_diff]
+  #     @note          = result[:note]
+  #     @line_notes    = result[:line_notes]
+  #     @notes_count   = result[:notes_count]
+  #     @comments_allowed = true
+  #   else
+  #     return git_not_found!
+  #   end
 
-    if result[:status] == :huge_commit
-      render "huge_commit" and return
-    end
-  end
+  #   if result[:status] == :huge_commit
+  #     render "huge_commit" and return
+  #   end
+  # end
 
   def compare
     result = Commit.compare(project, params[:from], params[:to])
