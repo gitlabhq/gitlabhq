@@ -1,5 +1,3 @@
-require 'github/markup'
-
 class RefsController < ApplicationController
   include Gitlab::Encode
   before_filter :project
