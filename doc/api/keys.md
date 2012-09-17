@@ -44,7 +44,7 @@ Parameters:
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
       596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
       soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
-  }
+}
 ```
 ## Add key
 
@@ -56,8 +56,8 @@ POST /keys
 
 Parameters:
 
-+ `title` (required) - new SSH Key
-+ `key` (optional) - new SSH key's title
++ `title` (required) - new SSH Key's title
++ `key` (required) - new SSH key
 
 Will return created key with status `201 Created` on success, or `404 Not
 found` on fail.
