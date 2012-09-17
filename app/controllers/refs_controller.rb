@@ -18,30 +18,17 @@ class RefsController < ApplicationController
     respond_to do |format| 
       format.html do 
         new_path = if params[:destination] == "tree"
-                     project_tree_path(@project, params[:ref])
+                     project_tree_path(@project, @ref)
                    else
-                     project_commits_path(@project, ref: params[:ref])
+                     project_commits_path(@project, ref: @ref)
                    end
 
-        redirect_to new_path 
+        redirect_to new_path
       end
-      format.js do 
+      format.js do
         @ref = params[:ref]
         define_tree_vars
         render "tree"
-      end
-    end
-  end
-
-  #
-  # Repository preview
-  #
-  def tree
-    respond_to do |format|
-      format.html
-      format.js do
-        # disable cache to allow back button works
-        no_cache_headers
       end
     end
   end
@@ -53,29 +40,9 @@ class RefsController < ApplicationController
       last_commit = @project.commits(@commit.id, file, 1).last
       last_commit = CommitDecorator.decorate(last_commit)
       {
-        file_name: content.name, 
+        file_name: content.name,
         commit: last_commit
       }
-    end
-  end
-
-  def blob
-    if @tree.is_blob?
-      if @tree.text?
-        encoding = detect_encoding(@tree.data)
-        mime_type = encoding ? "text/plain; charset=#{encoding}" : "text/plain"
-      else
-        mime_type = @tree.mime_type
-      end
-
-      send_data(
-        @tree.data,
-        type: mime_type,
-        disposition: 'inline',
-        filename: @tree.name
-      )
-    else
-      head(404)
     end
   end
 
@@ -93,15 +60,15 @@ class RefsController < ApplicationController
 
     if params[:path]
       @history_path = project_tree_path(@project, File.join(@ref, params[:path]))
-      @logs_path = logs_file_project_ref_path(@project, @ref, params[:path]) 
+      @logs_path = logs_file_project_ref_path(@project, @ref, params[:path])
     else
       @history_path = project_tree_path(@project, @ref)
-      @logs_path = logs_tree_project_ref_path(@project, @ref) 
+      @logs_path = logs_tree_project_ref_path(@project, @ref)
     end
   rescue
     return render_404
   end
-    
+
   def ref
     @ref = params[:id]
   end

@@ -192,7 +192,6 @@ describe ProtectedBranchesController, "routing" do
 end
 
 #    switch_project_refs GET    /:project_id/switch(.:format)              refs#switch
-#       blob_project_ref GET    /:project_id/:id/blob(.:format)            refs#blob
 #  logs_tree_project_ref GET    /:project_id/:id/logs_tree(.:format)       refs#logs_tree
 #  logs_file_project_ref GET    /:project_id/:id/logs_tree/:path(.:format) refs#logs_tree
 describe RefsController, "routing" do
@@ -203,10 +202,6 @@ describe RefsController, "routing" do
   it "to #logs_tree" do
     get("/gitlabhq/stable/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable')
     get("/gitlabhq/stable/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
-  end
-
-  it "to #blob" do
-    get("/gitlabhq/stable/blob").should route_to('refs#blob', project_id: 'gitlabhq', id: 'stable')
   end
 end
 
@@ -400,6 +395,12 @@ describe BlameController, "routing" do
   end
 end
 
+describe BlobController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+  end
+end
+
 describe TreeController, "routing" do
   it "to #show" do
     get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
@@ -434,12 +435,6 @@ end
 #   /gitlabhq/tree/test/branch/name/app
 describe "pending routing" do
   before { pending }
-
-  describe "/:project_id/blob/:id" do
-    it "routes to a ref with a path" do
-      get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-    end
-  end
 
   describe "/:project_id/commit/:id" do
     it "routes to a specific commit" do

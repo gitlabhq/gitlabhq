@@ -24,7 +24,7 @@
           %i.icon-file
           %span{id: "#{diff.old_path}"}= diff.old_path
         - else
-          = link_to project_tree_path(@project, @commit, diff.new_path) do
+          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)) do
             %i.icon-file
             %span{id: "#{diff.new_path}"}= diff.new_path
         %br/

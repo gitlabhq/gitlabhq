@@ -95,7 +95,7 @@ describe "Application access" do
       before do
         commit = @project.commit
         path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
-        @blob_path = blob_project_ref_path(@project, commit.id, path: path)
+        @blob_path = project_blob_path(@project, File.join(commit.id, path))
       end
 
       it { @blob_path.should be_allowed_for @u1 }

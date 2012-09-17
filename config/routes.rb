@@ -122,12 +122,6 @@ Gitlab::Application.routes.draw do
       end
 
       member do
-        get "blob",
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
-            path: /.*/
-          }
-
         # tree viewer logs
         get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
         get "logs_tree/:path" => "refs#logs_tree",
@@ -197,7 +191,7 @@ Gitlab::Application.routes.draw do
 
     # XXX: WIP
     resources :blame,  only: [:show], constraints: {id: /.+/}
-    # resources :blob,   only: [:show], constraints: {id: /.+/}
+    resources :blob,   only: [:show], constraints: {id: /.+/}
     # resources :raw,    only: [:show], constraints: {id: /.+/}
     resources :tree,   only: [:show], constraints: {id: /.+/}
   end
