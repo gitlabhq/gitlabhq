@@ -1,6 +1,6 @@
-## Contribute to Gitlab 
+## Contribute to GitLab 
 
-If you want to contribute to Gitlab, follow this process:
+If you want to contribute to GitLab, follow this process:
 
 1. Fork the project
 2. Create a feature branch
@@ -19,7 +19,7 @@ We only accept pull requests if:
 
 ## Running tests
 
-To run the specs for Gitlab, you need to run seeds for test db.
+To run the specs for GitLab, you need to run seeds for test db.
 
     cd gitlabhq
     rake db:seed_fu RAILS_ENV=test
