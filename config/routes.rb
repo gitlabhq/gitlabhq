@@ -182,7 +182,10 @@ Gitlab::Application.routes.draw do
         get :test
       end
     end
-    resources :commits do
+
+    resources :commit, only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+
+    resources :commits, only: [:index, :show] do
       collection do
         get :compare
       end
@@ -191,6 +194,7 @@ Gitlab::Application.routes.draw do
         get :patch
       end
     end
+
     resources :team, controller: 'team_members', only: [:index]
     resources :team_members
     resources :milestones
@@ -208,6 +212,12 @@ Gitlab::Application.routes.draw do
         post :preview
       end
     end
+
+    # XXX: WIP
+    # resources :blame,  only: [:show], constraints: {id: /.+/}
+    # resources :blob,   only: [:show], constraints: {id: /.+/}
+    # resources :raw,    only: [:show], constraints: {id: /.+/}
+    # resources :tree,   only: [:show], constraints: {id: /.+/}
   end
 
   root to: "dashboard#index"
