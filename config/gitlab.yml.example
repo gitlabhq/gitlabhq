@@ -70,12 +70,11 @@ omniauth:
       password: '_the_password_of_the_bind_user'
 
     shibboleth:
-      shib_session_id_var:     'HTTP_SHIB_SESSION_ID'
-      shib_application_id_var: 'HTTP_SHIB_APPLICATION_ID'
-      fields:
-        uid:   'HTTP_SSOUNIXNAME'
-        name:  'HTTP_SSONAME'
-        email: 'HTTP_SSOCONTACTMAIL'
+      shib_session_id_field:     'HTTP_SHIB_SESSION_ID'
+      shib_application_id_field: 'HTTP_SHIB_APPLICATION_ID'
+      uid_field:   'HTTP_SSOUNIXNAME'
+      name_field:  'HTTP_SSONAME'
+      email_field: 'HTTP_SSOCONTACTMAIL'
       debug: false
 
 #

@@ -53,8 +53,8 @@ GIT
 
 GIT
   remote: https://github.com/TiagoTT/omniauth-shibboleth.git
-  revision: 6c9ad5e8f4f9ab9f5e56d0926c571a0174617f4f
-  ref: 6c9ad5e8f4f9ab9f5e56d0926c571a0174617f4f
+  revision: c7a8e9a1cac4e64607cc73aaaca2b532988adfcf
+  ref: c7a8e9a1cac4e64607cc73aaaca2b532988adfcf
   specs:
     omniauth-shibboleth (1.0.6)
 

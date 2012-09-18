@@ -127,7 +127,7 @@ class Settings < Settingslogic
     end
 
     def omniauth_providers
-      (omniauth_enabled? && omniauth['providers']) || []
+      (omniauth_enabled? && omniauth['providers']) || {}
     end
 
     def disable_gravatar?
