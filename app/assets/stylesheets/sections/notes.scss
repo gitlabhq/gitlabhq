@@ -71,6 +71,19 @@
   border-top: 1px solid #eee;
 }
 
+/* mark vote notes */
+.voting_notes .note {
+  padding: 8px 0 8px 12px;
+  &.upvote {
+    padding-left: 8px;
+    border-left: 4px solid #468847;
+  }
+  &.downvote {
+    padding-left: 8px;
+    border-left: 4px solid #B94A48;
+  }
+}
+
 .notes-status {
   margin: 18px;
 }
