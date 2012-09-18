@@ -207,31 +207,13 @@ Devise.setup do |config|
 
   gl = Gitlab.config
 
-  if gl.ldap_enabled?
-    config.omniauth :ldap,
-      :host     => gl.ldap['host'],
-      :base     => gl.ldap['base'],
-      :uid      => gl.ldap['uid'],
-      :port     => gl.ldap['port'],
-      :method   => gl.ldap['method'],
-      :bind_dn  => gl.ldap['bind_dn'],
-      :password => gl.ldap['password']
-  end
-
-  if gl.shibboleth_enabled?
-    config.omniauth :shibboleth, {
-      :shib_session_id_var     => gl.shibboleth['shib_session_id_var'],
-      :shib_application_id_var => gl.shibboleth['shib_application_id_var'],
-      :fields => {
-        :uid    => gl.shibboleth['uid_var'],
-        :name   => gl.shibboleth['name_var'],
-        :email  => gl.shibboleth['email'],
-      },
-      :debug  => gl.shibboleth['debug']
-    }
-  end
-
-  gl.omniauth_providers.each do |gl_provider|
-    config.omniauth gl_provider['name'].to_sym, gl_provider['app_id'], gl_provider['app_secret']
+  gl.omniauth_providers.each_pair do |provider,args|
+    if Array == args.class
+      # An Array from the configuration will be expanded.
+      config.omniauth provider.to_sym, *args
+    elsif Hash == args.class
+      # A Hash from the configuration will be passed as is.
+      config.omniauth provider.to_sym, args
+    end
   end
 end
