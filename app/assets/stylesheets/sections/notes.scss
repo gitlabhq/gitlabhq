@@ -10,13 +10,6 @@
   padding:0px;
 }
 
-#new-notes-list:not(.reversed) {
-  border-top:1px solid #aaa;
-}
-#new-notes-list.reversed {
-  border-bottom:1px solid #ccc;
-}
-
 .issue_notes,
 .wiki_notes {
   .note_content {
@@ -33,9 +26,6 @@
 }
 
 #new_note {
-  .note-text {
-    height:40px;
-  }
   .attach_holder {
     display:none;
   }

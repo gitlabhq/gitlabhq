@@ -34,16 +34,21 @@ var NoteList = {
 
       disableButtonIfEmptyField(".note-text", ".submit_note");
 
-      $(".note-text").on("focus", function(){
-        $(this).css("height", "80px");
-        $('.note_advanced_opts').show();
-      });
-
       $("#note_attachment").change(function(e){
         var val = $('.input-file').val();
         var filename = val.replace(/^.*[\\\/]/, '');
         $(".file_name").text(filename);
       });
+
+      if(this.reversed) {
+        var textarea = $(".note-text");
+        $('.note_advanced_opts').hide();
+        textarea.css("height", "40px");
+        textarea.on("focus", function(){
+          $(this).css("height", "80px");
+          $('.note_advanced_opts').show();
+        });
+      }
     },
 
 
