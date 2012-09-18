@@ -158,6 +158,18 @@ span.update-author {
       padding: 6px;
     }
   }
+
+  &.label-success {
+    background-color: #8D8;
+    color: #333;
+    text-shadow: 0 1px 1px white;
+  }
+
+  &.label-error {
+    background-color: #D88;
+    color: #333;
+    text-shadow: 0 1px 1px white;
+  }
 }
 
 .event_label {
