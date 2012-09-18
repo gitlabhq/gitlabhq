@@ -120,12 +120,6 @@ class Settings < Settingslogic
       app['backup_keep_time'] || 0
     end
 
-    def ldap_enabled?
-      ldap && ldap['enabled']
-    rescue Settingslogic::MissingSetting
-      false
-    end
-
     def omniauth_enabled?
       omniauth && omniauth['enabled']
     rescue Settingslogic::MissingSetting

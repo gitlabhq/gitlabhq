@@ -1,6 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  Gitlab.config.omniauth_providers.each do |provider|
-    define_method provider['name'] do
+  Gitlab.config.omniauth_providers.each_pair do |provider,args|
+    define_method provider do
       handle_omniauth
     end
   end
@@ -13,15 +13,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error ||= exception.message      if exception.respond_to?(:message)
     error ||= env["omniauth.error.type"].to_s
     error.to_s.humanize if error
-  end
-
-  def ldap
-    # We only find ourselves here if the authentication to LDAP was successful.
-    @user = User.find_for_ldap_auth(request.env["omniauth.auth"], current_user)
-    if @user.persisted?
-      @user.remember_me = true
-    end
-    sign_in_and_redirect @user
   end
 
   private
@@ -38,6 +29,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to profile_path
     else
       @user = User.find_or_new_for_omniauth(oauth)
+      # From old ldap callback, if persisted then remember_me.
+      if @user.persisted?
+        @user.remember_me = true
+      end
 
       if @user
         sign_in_and_redirect @user

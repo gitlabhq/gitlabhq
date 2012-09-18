@@ -86,16 +86,8 @@ class User < ActiveRecord::Base
     where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
   end
 
-  def self.create_from_omniauth(auth, ldap = false)
-    gitlab_auth.create_from_omniauth(auth, ldap)
-  end
-
   def self.find_or_new_for_omniauth(auth)
     gitlab_auth.find_or_new_for_omniauth(auth)
-  end
-
-  def self.find_for_ldap_auth(auth, signed_in_resource = nil)
-    gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
   end
 
   def self.gitlab_auth
