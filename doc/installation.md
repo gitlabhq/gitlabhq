@@ -251,6 +251,14 @@ You can login via web using admin generated with setup:
     # if you run this as root /home/gitlab/gitlab/tmp/pids/resque_worker.pid will be owned by root
     # causing the resque worker not to start via init script on next boot/service restart
 
+## Customizing Resque's Redis connection
+
+If you'd like Resque to connect to a Redis server on a non-standard port or on
+a different host, you can configure its connection string in the
+**config/resque.yml** file:
+
+    production: redis.example.com:6379
+
 **Ok - we have a working application now. **
 **But keep going - there are some things that should be done **
 
@@ -275,7 +283,6 @@ You can login via web using admin generated with setup:
     # to the IP address and fully-qualified domain name
     # of the host serving GitLab.
     sudo vim /etc/nginx/sites-enabled/gitlab
-
 
     # Restart nginx:
     /etc/init.d/nginx restart
