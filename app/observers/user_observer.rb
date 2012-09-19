@@ -1,8 +1,9 @@
 class UserObserver < ActiveRecord::Observer
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
-
-    Notify.new_user_email(user.id, user.password).deliver
+    unless user.extern_uid?
+      Notify.new_user_email(user.id, user.password).deliver
+    end
   end
 
   def after_destroy user

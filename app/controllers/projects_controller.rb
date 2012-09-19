@@ -89,7 +89,7 @@ class ProjectsController < ApplicationController
     UsersProject.set_callback(:destroy, :after, :update_repository)
 
     respond_to do |format|
-      format.html { redirect_to root_path }
+      format.html { redirect_to dashboard_path }
     end
   end
 
