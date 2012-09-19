@@ -454,7 +454,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-ldap!
-  omniauth-shibboleth
+  omniauth-shibboleth (~> 1.0.7)
   omniauth-twitter
   pry
   pygments.rb!
