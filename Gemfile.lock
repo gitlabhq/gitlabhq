@@ -52,13 +52,6 @@ GIT
       rubyntlm (~> 0.1.1)
 
 GIT
-  remote: https://github.com/TiagoTT/omniauth-shibboleth.git
-  revision: c7a8e9a1cac4e64607cc73aaaca2b532988adfcf
-  ref: c7a8e9a1cac4e64607cc73aaaca2b532988adfcf
-  specs:
-    omniauth-shibboleth (1.0.6)
-
-GIT
   remote: https://github.com/gitlabhq/pygments.rb.git
   revision: 2cada028da5054616634a1d9ca6941b65b3ce188
   ref: 2cada028da5054616634a1d9ca6941b65b3ce188
@@ -263,6 +256,8 @@ GEM
     omniauth-oauth2 (1.1.0)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    omniauth-shibboleth (1.0.7)
+      omniauth-oauth (~> 1.0)
     omniauth-twitter (0.0.13)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
@@ -459,7 +454,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-ldap!
-  omniauth-shibboleth!
+  omniauth-shibboleth
   omniauth-twitter
   pry
   pygments.rb!

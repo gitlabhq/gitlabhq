@@ -74,7 +74,8 @@ omniauth:
       shib_application_id_field: 'HTTP_SHIB_APPLICATION_ID'
       uid_field:   'HTTP_SSOUNIXNAME'
       name_field:  'HTTP_SSONAME'
-      email_field: 'HTTP_SSOCONTACTMAIL'
+      info_fields:
+        email: 'HTTP_SSOCONTACTMAIL'
       debug: false
 
 #
