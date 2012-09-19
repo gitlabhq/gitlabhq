@@ -103,36 +103,38 @@ group :assets do
   gem 'bootstrap-sass',   "2.0.4"
 end
 
-group :development do
-  gem "letter_opener"
-  gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
-  gem 'rack-mini-profiler'
-end
-
 group :development, :test do
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
   gem "capybara-webkit"
   gem "headless"
-  gem "pry"
-  gem "awesome_print"
   gem "database_cleaner"
-  gem "launchy"
   gem 'factory_girl_rails'
 
-  # Guard
-  gem 'guard-rspec'
-  gem 'guard-spinach'
+  # These gems are non-essential to development/testing and can be excluded on Travis
+  unless ENV['CI']
+    gem "letter_opener"
+    gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
+    gem 'rack-mini-profiler'
 
-  # Notification
-  gem 'rb-fsevent', :require => darwin_only('rb-fsevent')
-  gem 'growl',      :require => darwin_only('growl')
-  gem 'rb-inotify', :require => linux_only('rb-inotify')
+    gem "pry"
+    gem "awesome_print"
+    gem "launchy"
+    gem "simplecov", :require => false
+
+    # Guard
+    gem 'guard-rspec'
+    gem 'guard-spinach'
+
+    # Notification
+    gem 'rb-fsevent', :require => darwin_only('rb-fsevent')
+    gem 'growl',      :require => darwin_only('growl')
+    gem 'rb-inotify', :require => linux_only('rb-inotify')
+  end
 end
 
 group :test do
-  gem "simplecov", :require => false
   gem "shoulda-matchers"
   gem 'email_spec'
   gem 'resque_spec'
