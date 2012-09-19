@@ -11,6 +11,7 @@ rvm:
   - 1.9.3
 services:
   - mysql
+bundler_args: --without production
 before_script:
   - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
