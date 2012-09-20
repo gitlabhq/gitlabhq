@@ -1,14 +1,22 @@
-# Module providing an extract_ref method for controllers working with Git
-# tree-ish + path params
-module RefExtractor
-  # Raised when given an invalid path
+# Module providing methods for dealing with separating a tree-ish string and a
+# file path string when combined in a request parameter
+module ExtractsPath
+  extend ActiveSupport::Concern
+
+  # Raised when given an invalid file path
   class InvalidPathError < StandardError; end
 
-  # Given a string containing both a Git ref - such as a branch or tag - and a
-  # filesystem path joined by forward slashes, attempts to separate the two.
+  included do
+    if respond_to?(:before_filter)
+      before_filter :assign_ref_vars
+    end
+  end
+
+  # Given a string containing both a Git tree-ish, such as a branch or tag, and
+  # a filesystem path joined by forward slashes, attempts to separate the two.
   #
-  # Expects a @project instance variable to contain the active project. Used to
-  # check the input against a list of valid repository refs.
+  # Expects a @project instance variable to contain the active project. This is
+  # used to check the input against a list of valid repository refs.
   #
   # Examples
   #
@@ -78,8 +86,11 @@ module RefExtractor
   # - @commit - A CommitDecorator representing the commit from the given ref
   # - @tree   - A TreeDecorator representing the tree at the given ref/path
   #
-  # Automatically renders `not_found!` if a valid tree could not be resolved
-  # (e.g., when a user inserts an invalid path or ref).
+  # If the :id parameter appears to be requesting a specific response format,
+  # that will be handled as well.
+  #
+  # Automatically renders `not_found!` if a valid tree path could not be
+  # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
     # Handle formats embedded in the id
     if params[:id].ends_with?('.atom')

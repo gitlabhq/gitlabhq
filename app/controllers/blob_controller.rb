@@ -1,9 +1,6 @@
 # Controller for viewing a file's blame
 class BlobController < ApplicationController
-  # Thrown when given an invalid path
-  class InvalidPathError < StandardError; end
-
-  include RefExtractor
+  include ExtractsPath
   include Gitlab::Encode
 
   layout "project"

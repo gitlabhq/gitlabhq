@@ -1,6 +1,6 @@
 # Controller for viewing a repository's file structure
 class TreeController < ApplicationController
-  include RefExtractor
+  include ExtractsPath
 
   layout "project"
 

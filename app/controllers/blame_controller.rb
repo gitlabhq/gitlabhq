@@ -1,7 +1,6 @@
 # Controller for viewing a file's blame
 class BlameController < ApplicationController
-
-  include RefExtractor
+  include ExtractsPath
 
   layout "project"
 
