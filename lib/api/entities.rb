@@ -36,7 +36,9 @@ module Gitlab
     end
 
     class Milestone < Grape::Entity
-      expose :id, :title, :description, :due_date, :closed, :updated_at, :created_at
+      expose :id
+      expose (:project_id) {|milestone| milestone.project.id}
+      expose :title, :description, :due_date, :closed, :updated_at, :created_at
     end
 
     class Issue < Grape::Entity
