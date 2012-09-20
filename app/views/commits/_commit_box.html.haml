@@ -11,10 +11,10 @@
       = link_to tree_project_ref_path(@project, @commit.id), class: "browse-button primary grouped" do
         %strong Browse Code »
     %h3.commit-title.page_title
-      = gfm @commit.title
+      = gfm escape_once(@commit.title)
     - if @commit.description.present?
       %pre.commit-description
-        = gfm @commit.description
+        = gfm escape_once(@commit.description)
   .commit-info
     .row
       .span4
