@@ -2,7 +2,6 @@ class SnippetsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
-  layout "project"
 
   # Authorize
   before_filter :add_project_abilities

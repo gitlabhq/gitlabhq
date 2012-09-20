@@ -5,7 +5,6 @@ class MergeRequestsController < ApplicationController
   before_filter :merge_request, only: [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check, :raw]
   before_filter :validates_merge_request, only: [:show, :diffs, :raw]
   before_filter :define_show_vars, only: [:show, :diffs]
-  layout "project"
 
   # Authorize
   before_filter :add_project_abilities

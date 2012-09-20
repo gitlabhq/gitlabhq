@@ -1,7 +1,6 @@
 class HooksController < ApplicationController
   before_filter :authenticate_user!
   before_filter :project
-  layout "project"
 
   # Authorize
   before_filter :add_project_abilities

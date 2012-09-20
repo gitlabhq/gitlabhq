@@ -3,7 +3,6 @@ class MilestonesController < ApplicationController
   before_filter :project
   before_filter :module_enabled
   before_filter :milestone, only: [:edit, :update, :destroy, :show]
-  layout "project"
 
   # Authorize
   before_filter :add_project_abilities

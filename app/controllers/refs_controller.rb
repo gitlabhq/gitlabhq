@@ -14,11 +14,9 @@ class RefsController < ApplicationController
   before_filter :define_tree_vars, only: [:tree, :blob, :blame, :logs_tree]
   before_filter :render_full_content
 
-  layout "project"
-
-  def switch 
-    respond_to do |format| 
-      format.html do 
+  def switch
+    respond_to do |format|
+      format.html do
         new_path = if params[:destination] == "tree"
                      tree_project_ref_path(@project, params[:ref]) 
                    else

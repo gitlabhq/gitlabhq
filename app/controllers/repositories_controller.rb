@@ -8,8 +8,6 @@ class RepositoriesController < ApplicationController
   before_filter :require_non_empty_project
   before_filter :render_full_content
 
-  layout "project"
-
   def show
     @activities = @project.commits_with_refs(20)
   end

@@ -101,10 +101,6 @@ class ProjectsController < ApplicationController
   end
 
   def determine_layout
-    if @project && !@project.new_record?
-      "project"
-    else
-      "application"
-    end
+    "application"
   end
 end

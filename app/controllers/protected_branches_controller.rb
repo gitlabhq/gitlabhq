@@ -9,8 +9,6 @@ class ProtectedBranchesController < ApplicationController
   before_filter :authorize_admin_project!, only: [:destroy, :create]
   before_filter :render_full_content
 
-  layout "project"
-
   def index
     @branches = @project.protected_branches.all
     @protected_branch = @project.protected_branches.new
