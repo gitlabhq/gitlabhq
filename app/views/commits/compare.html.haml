@@ -22,6 +22,9 @@
     .actions
       = submit_tag "Compare", class: "btn primary"
 
+- if @hasresult.eql?(true) && @same.eql?(true)
+  %div.ui-box
+    %h5.small Refs are the same
 
 - unless @commits.empty?
   %div.ui-box

@@ -85,7 +85,9 @@ class Commit
       first = project.commit(to.try(:strip))
       last = project.commit(from.try(:strip))
 
+
       result = {
+        same: false,
         commits: [],
         diffs: [],
         commit: nil
@@ -95,6 +97,10 @@ class Commit
         commits = [first, last].sort_by(&:created_at)
         younger = commits.first
         older = commits.last
+
+        if younger.id == older.id
+          result[:same] = true
+        end
 
         result[:commits] = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
         result[:diffs] = project.repo.diff(younger.id, older.id) rescue []
