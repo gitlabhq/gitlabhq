@@ -14,6 +14,8 @@
   %li
     %a{href: "#users"} Users
   %li
+    %a{href: "#session"} Session
+  %li
     %a{href: "#issues"} Issues
   %li
     %a{href: "#milestones"} Milestones
@@ -55,6 +57,16 @@
   .file_content.wiki
     = preserve do
       = markdown File.read(Rails.root.join("doc", "api", "users.md"))
+
+%br
+
+.file_holder#session
+  .file_title
+    %i.icon-file
+    Session
+  .file_content.wiki
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "api", "session.md"))
 
 %br
 
