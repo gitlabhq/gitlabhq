@@ -10,7 +10,6 @@ class CommitsController < ApplicationController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
   before_filter :load_refs, only: :index # load @branch, @tag & @ref
-  before_filter :render_full_content
 
   def index
     @repo = project.repo

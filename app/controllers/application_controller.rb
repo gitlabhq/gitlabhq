@@ -126,10 +126,6 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def render_full_content
-    @full_content = true
-  end
-
   def dev_tools
     Rack::MiniProfiler.authorize_request
   end

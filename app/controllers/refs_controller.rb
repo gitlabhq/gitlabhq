@@ -10,7 +10,6 @@ class RefsController < ApplicationController
 
   before_filter :ref
   before_filter :define_tree_vars, only: [:blob, :logs_tree]
-  before_filter :render_full_content
 
   layout "project"
 
