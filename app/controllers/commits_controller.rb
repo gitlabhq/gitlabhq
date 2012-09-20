@@ -50,7 +50,7 @@ class CommitsController < ApplicationController
     result = Commit.compare(project, params[:from], params[:to])
     @hasresult = nil
     
-    if params[:from].nil? && params[:from].nil?
+    if params[:from].nil? && params[:to].nil?
       @hasresult = false
     else
       @hasresult = true
