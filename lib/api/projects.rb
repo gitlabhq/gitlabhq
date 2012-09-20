@@ -40,17 +40,20 @@ module Gitlab
       post do
         params[:code] ||= params[:name]
         params[:path] ||= params[:name]
-        project_attrs = {}
-        params.each_pair do |k ,v|
-          if Project.attribute_names.include? k
-            project_attrs[k] = v
-          end
-        end
-        @project = Project.create_by_user(project_attrs, current_user)
+        attrs = attributes_for_keys [:code, 
+                                    :path, 
+                                    :name, 
+                                    :description, 
+                                    :default_branch, 
+                                    :issues_enabled, 
+                                    :wall_enabled, 
+                                    :merge_requests_enabled, 
+                                    :wiki_enabled]
+        @project = Project.create_by_user(attrs, current_user)
         if @project.saved?
           present @project, with: Entities::Project
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -103,6 +106,49 @@ module Gitlab
       delete ":id/users" do
         authorize! :admin_project, user_project
         user_project.delete_users_ids_from_team(params[:user_ids].values)
+        nil
+      end
+
+      # Get project hooks
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/hooks
+      get ":id/hooks" do
+        authorize! :admin_project, user_project
+        @hooks = paginate user_project.hooks
+        present @hooks, with: Entities::Hook
+      end
+
+      # Add hook to project
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   url (required) - The hook URL
+      # Example Request:
+      #   POST /projects/:id/hooks
+      post ":id/hooks" do
+        authorize! :admin_project, user_project
+        @hook = user_project.hooks.new({"url" => params[:url]})
+        if @hook.save
+          present @hook, with: Entities::Hook
+        else
+          error!({'message' => '404 Not found'}, 404)
+        end
+      end
+
+      # Delete project hook
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   hook_id (required) - The ID of hook to delete
+      # Example Request:
+      #   DELETE /projects/:id/hooks
+      delete ":id/hooks" do
+        authorize! :admin_project, user_project
+        @hook = user_project.hooks.find(params[:hook_id])
+        @hook.destroy
         nil
       end
 
@@ -161,18 +207,16 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
-        @snippet = user_project.snippets.new(
-          title: params[:title],
-          file_name: params[:file_name],
-          expires_at: params[:lifetime],
-          content: params[:code]
-        )
+        attrs = attributes_for_keys [:title, :file_name]
+        attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
+        attrs[:content] = params[:code] if params[:code].present?
+        @snippet = user_project.snippets.new attrs
         @snippet.author = current_user
 
         if @snippet.save
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -191,17 +235,14 @@ module Gitlab
         @snippet = user_project.snippets.find(params[:snippet_id])
         authorize! :modify_snippet, @snippet
 
-        parameters = {
-          title: (params[:title] || @snippet.title),
-          file_name: (params[:file_name] || @snippet.file_name),
-          expires_at: (params[:lifetime] || @snippet.expires_at),
-          content: (params[:code] || @snippet.content)
-        }
+        attrs = attributes_for_keys [:title, :file_name]
+        attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
+        attrs[:content] = params[:code] if params[:code].present?
 
-        if @snippet.update_attributes(parameters)
+        if @snippet.update_attributes attrs
           present @snippet, with: Entities::ProjectSnippet
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -244,10 +285,10 @@ module Gitlab
         ref = params[:sha]
 
         commit = user_project.commit ref
-        error!('404 Commit Not Found', 404) unless commit
+        not_found! "Commit" unless commit
 
         tree = Tree.new commit.tree, user_project, ref, params[:filepath]
-        error!('404 File Not Found', 404) unless tree.try(:tree)
+        not_found! "File" unless tree.try(:tree)
 
         if tree.text?
           encoding = Gitlab::Encode.detect_encoding(tree.data)

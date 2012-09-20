@@ -14,8 +14,8 @@ class UsersProjectObserver < ActiveRecord::Observer
 
   def after_destroy(users_project)
     Event.create(
-      project_id: users_project.project.id, 
-      action: Event::Left, 
+      project_id: users_project.project.id,
+      action: Event::Left,
       author_id: users_project.user.id
     )
   end

@@ -32,7 +32,7 @@
     - unless project.new_record?
       .clearfix
         = f.label :owner_id
-        .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }
+        .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
 
       - if project.repo_exists?
         .clearfix
@@ -69,7 +69,6 @@
 
 :javascript
   $(function(){
-    $('#project_owner_id').chosen();
     new Projects();
   })
 

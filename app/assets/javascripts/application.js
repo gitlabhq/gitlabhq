@@ -11,7 +11,7 @@
 //= require jquery.endless-scroll
 //= require jquery.highlight
 //= require jquery.waitforimages
-//= require bootstrap-modal
+//= require bootstrap
 //= require modernizr
 //= require chosen-jquery
 //= require raphael

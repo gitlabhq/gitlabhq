@@ -1,13 +1,4 @@
-- if can? current_user, :write_note, @project
-  = render "notes/form"
-.clear
-%hr
-%ul#new_notes_list
-%ul#notes-list
-.status
+- @notes.each do |note|
+  - next unless note.author
+  = render "note", note: note
 
-
-:javascript
-  $(function(){
-    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
-  });

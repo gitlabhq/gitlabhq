@@ -3,8 +3,8 @@
     = link_to project_path(@project), class: "activities-tab tab" do
       %i.icon-home
       Show
-  %li{ class: " #{'active' if (controller.controller_name == "team_members") || current_page?(team_project_path(@project)) }" }
-    = link_to team_project_path(@project), class: "team-tab tab" do
+  %li{ class: " #{'active' if (controller.controller_name == "team_members") || current_page?(project_team_index_path(@project)) }" }
+    = link_to project_team_index_path(@project), class: "team-tab tab" do
       %i.icon-user
       Team
   %li{ class: "#{'active' if current_page?(files_project_path(@project)) }" }

@@ -6,6 +6,7 @@ describe Gitlab::API do
   let(:user) { Factory :user }
   let(:user2) { Factory.create(:user) }
   let(:user3) { Factory.create(:user) }
+  let!(:hook) { Factory :project_hook, project: project, url: "http://example.com" }
   let!(:project) { Factory :project, owner: user }
   let!(:snippet) { Factory :snippet, author: user, project: project, title: 'example' }
   let!(:users_project) { Factory :users_project, user: user, project: project, project_access: UsersProject::MASTER  }
@@ -13,12 +14,14 @@ describe Gitlab::API do
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
-    it "should return authentication error" do
-      get api("/projects")
-      response.status.should == 401
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/projects")
+        response.status.should == 401
+      end
     end
 
-    describe "authenticated GET /projects" do
+    context "when authenticated" do
       it "should return an array of projects" do
         get api("/projects", user)
         response.status.should == 200
@@ -85,7 +88,7 @@ describe Gitlab::API do
     it "should return a 404 error if not found" do
       get api("/projects/42", user)
       response.status.should == 404
-      json_response['message'].should == '404 Not found'
+      json_response['message'].should == '404 Not Found'
     end
   end
 
@@ -144,6 +147,36 @@ describe Gitlab::API do
         delete api("/projects/#{project.code}/users", user),
           user_ids: {"0" => user3.id}
       }.to change {project.users_projects.count}.by(-1)
+    end
+  end
+
+  describe "GET /projects/:id/hooks" do
+    it "should return project hooks" do
+      get api("/projects/#{project.code}/hooks", user)
+
+      response.status.should == 200
+
+      json_response.should be_an Array
+      json_response.count.should == 1
+      json_response.first['url'].should == "http://example.com"
+    end
+  end
+
+  describe "POST /projects/:id/users" do
+    it "should add hook to project" do
+      expect {
+        post api("/projects/#{project.code}/hooks", user),
+          "url" => "http://example.com"
+      }.to change {project.hooks.count}.by(1)
+    end
+  end
+
+  describe "DELETE /projects/:id/hooks" do
+    it "should delete hook from project" do
+      expect {
+        delete api("/projects/#{project.code}/hooks", user),
+          hook_id: hook.id
+      }.to change {project.hooks.count}.by(-1)
     end
   end
 

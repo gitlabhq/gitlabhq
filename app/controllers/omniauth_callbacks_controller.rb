@@ -1,4 +1,9 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  Gitlab.config.omniauth_providers.each do |provider|
+    define_method provider['name'] do
+      handle_omniauth
+    end
+  end
 
   # Extend the standard message generation to accept our custom exception
   def failure_message
@@ -9,7 +14,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error ||= env["omniauth.error.type"].to_s
     error.to_s.humanize if error
   end
- 
+
   def ldap
     # We only find ourselves here if the authentication to LDAP was successful.
     @user = User.find_for_ldap_auth(request.env["omniauth.auth"], current_user)
@@ -19,4 +24,27 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     sign_in_and_redirect @user
   end
 
+  private
+
+  def handle_omniauth
+    oauth = request.env['omniauth.auth']
+    provider, uid = oauth['provider'], oauth['uid']
+
+    if current_user
+      # Change a logged-in user's authentication method:
+      current_user.extern_uid = uid
+      current_user.provider = provider
+      current_user.save
+      redirect_to profile_path
+    else
+      @user = User.find_or_new_for_omniauth(oauth)
+
+      if @user
+        sign_in_and_redirect @user
+      else
+        flash[:notice] = "There's no such user!"
+        redirect_to new_user_session_path
+      end
+    end
+  end
 end

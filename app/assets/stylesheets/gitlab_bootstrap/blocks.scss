@@ -65,6 +65,10 @@
   border-color: #CCC;
   @include solid_shade;
 
+  &.white {
+    background:#fff;
+  }
+
   ul {
     margin:0;
   }
@@ -141,5 +145,9 @@
       @include round-borders-bottom(4px);
       border:none;
     }
+  }
+
+  .ui-box-body {
+    padding:10px;
   }
 }

@@ -2,7 +2,7 @@
   .file_title
     %i.icon-file
     %span.file_name
-      = name
+      = name.force_encoding('utf-8')
       %small #{file.mode}
     %span.options
       = link_to "raw", blob_project_ref_path(@project, @ref, path: params[:path]), class: "btn very_small", target: "_blank"

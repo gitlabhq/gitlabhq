@@ -25,6 +25,7 @@ describe "Gitlab Flavored Markdown" do
     @tag_name = "gfm-test-tag"
     r.git.native(:tag, {}, @tag_name, commit.id)
   end
+
   after do
     # delete test branch and tag
     project.repo.git.native(:branch, {D: true}, @branch_name)

@@ -135,7 +135,6 @@ $hover: #fdf5d9;
  */
 @import "common.scss";
 
-
 /**
  * Styles related to specific part of app
  */
@@ -160,6 +159,11 @@ $hover: #fdf5d9;
  * This file represent notes(comments) styles
  */
 @import "sections/notes.scss";
+
+/**
+ * This file represent profile styles
+ */
+@import "sections/profile.scss";
 
 /**
  * Devise styles

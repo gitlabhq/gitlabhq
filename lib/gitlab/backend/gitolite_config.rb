@@ -58,16 +58,20 @@ module Gitlab
         end
       end
     rescue PullError => ex
-      Gitlab::Logger.error("Pull error ->  " + ex.message)
+      log("Pull error ->  " + ex.message)
       raise Gitolite::AccessDenied, ex.message
 
     rescue PushError => ex
-      Gitlab::Logger.error("Push error ->  " + " " + ex.message)
+      log("Push error ->  " + " " + ex.message)
       raise Gitolite::AccessDenied, ex.message
 
     rescue Exception => ex
-      Gitlab::Logger.error(ex.class.name + " " + ex.message)
+      log(ex.class.name + " " + ex.message)
       raise Gitolite::AccessDenied.new("gitolite timeout")
+    end
+
+    def log message
+      Gitlab::GitLogger.error(message)
     end
 
     def destroy_project(project)
@@ -148,7 +152,7 @@ module Gitlab
     # Enable access to all repos for gitolite admin.
     # We use it for accept merge request feature
     def admin_all_repo
-      owner_name = Gitlab.settings.gitolite_admin_key
+      owner_name = Gitlab.config.gitolite_admin_key
 
       # @ALL repos premission for gitolite owner
       repo_name = "@all"

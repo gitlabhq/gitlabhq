@@ -15,8 +15,8 @@
         %i.icon-list-alt
         Diff
 
-.merge_request_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
-  = render("notes/notes", tid: @merge_request.id, tt: "merge_request")
+.merge_request_notes.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+  = render("notes/notes_with_form", tid: @merge_request.id, tt: "merge_request")
 .merge-request-diffs
   = render "merge_requests/show/diffs" if @diffs
 .status

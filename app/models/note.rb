@@ -36,7 +36,7 @@ class Note < ActiveRecord::Base
   scope :today, where("created_at >= :date", date: Date.today)
   scope :last_week, where("created_at  >= :date", date: (Date.today - 7.days))
   scope :since, lambda { |day| where("created_at  >= :date", date: (day)) }
-  scope :fresh, order("created_at DESC")
+  scope :fresh, order("created_at ASC, id ASC")
   scope :inc_author_project, includes(:project, :author)
   scope :inc_author, includes(:author)
 
@@ -104,6 +104,12 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def upvote?
     note.start_with?('+1') || note.start_with?(':+1:')
+  end
+
+  # Returns true if this is a downvote note,
+  # otherwise false is returned
+  def downvote?
+    note.start_with?('-1') || note.start_with?(':-1:')
   end
 end
 # == Schema Information

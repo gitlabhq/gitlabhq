@@ -1,5 +1,4 @@
 namespace :gitlab do
-  desc "GITLAB | Run both cucumber & rspec"
-  task :test => ['cucumber', 'spec']
+  desc "GITLAB | Run both spinach and rspec"
+  task :test => ['spinach', 'spec']
 end
-

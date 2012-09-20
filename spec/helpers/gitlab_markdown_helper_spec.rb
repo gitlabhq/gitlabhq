@@ -31,6 +31,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should not touch HTML entities" do
+      @project.issues.stub(:where).with(id: '39').and_return([issue])
       actual = expected = "We&#39;ll accept good pull requests."
       gfm(actual).should == expected
     end
@@ -291,11 +292,18 @@ describe GitlabMarkdownHelper do
       actual = link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
       actual.should have_selector 'a.gfm.gfm-commit.foo'
     end
+
+    it "escapes HTML passed in as the body" do
+      actual = "This is a <h1>test</h1> - see ##{issues[0].id}"
+      link_to_gfm(actual, commit_path).should match('&lt;h1&gt;test&lt;/h1&gt;')
+    end
   end
 
   describe "#markdown" do
     it "should handle references in paragraphs" do
-      markdown("\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. #{commit.id} Nam pulvinar sapien eget odio adipiscing at faucibus orci vestibulum.\n").should == "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. #{link_to commit.id, project_commit_path(project, commit), title: commit.link_title, class: "gfm gfm-commit "} Nam pulvinar sapien eget odio adipiscing at faucibus orci vestibulum.</p>\n"
+      actual = "\n\nLorem ipsum dolor sit amet. #{commit.id} Nam pulvinar sapien eget.\n"
+      expected = project_commit_path(project, commit)
+      markdown(actual).should match(expected)
     end
 
     it "should handle references in headers" do

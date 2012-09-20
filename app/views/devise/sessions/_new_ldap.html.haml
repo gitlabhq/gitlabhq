@@ -15,7 +15,7 @@
     $(function() {
       $('#new_user').toggle();
     });
-  = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f|
+= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f|
   = f.text_field :email, :class => "text top", :placeholder => "Email"
   = f.password_field :password, :class => "text bottom", :placeholder => "Password"
   - if devise_mapping.rememberable?

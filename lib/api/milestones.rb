@@ -36,16 +36,12 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/milestones
       post ":id/milestones" do
-        @milestone = user_project.milestones.new(
-          title: params[:title],
-          description: params[:description],
-          due_date: params[:due_date]
-        )
-
+        attrs = attributes_for_keys [:title, :description, :due_date]
+        @milestone = user_project.milestones.new attrs
         if @milestone.save
           present @milestone, with: Entities::Milestone
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -64,17 +60,11 @@ module Gitlab
         authorize! :admin_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        parameters = {
-          title: (params[:title] || @milestone.title),
-          description: (params[:description] || @milestone.description),
-          due_date: (params[:due_date] || @milestone.due_date),
-          closed: (params[:closed] || @milestone.closed)
-        }
-
-        if @milestone.update_attributes(parameters)
+        attrs = attributes_for_keys [:title, :description, :due_date, :closed]
+        if @milestone.update_attributes attrs
           present @milestone, with: Entities::Milestone
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
     end

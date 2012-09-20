@@ -1,8 +1,0 @@
-= form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
-  = select_tag "ref", grouped_options_refs, onchange: "this.form.submit();", class: "project-refs-select"
-  = hidden_field_tag :destination, destination
-
-:javascript
-  $(function(){
-    $('.project-refs-select').chosen();
-  })

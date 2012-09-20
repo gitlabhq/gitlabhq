@@ -2,7 +2,7 @@
 %strong #{event.author_name}
 %span.event_label{class: event.action_name}= event.action_name
 project
-%strong= link_to event.project.name, event.project
+%strong= link_to event.project_name, event.project
 %span.cgray
   = time_ago_in_words(event.created_at)
   ago.

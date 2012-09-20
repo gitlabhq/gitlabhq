@@ -9,17 +9,13 @@ module Gitlab
     end
 
     def self.read_latest
-      path = Rails.root.join("log/githost.log")
+      path = Rails.root.join("log", file_name)
       self.build unless File.exist?(path)
       logs = File.read(path).split("\n")
     end
 
     def self.build
-      new(File.join(Rails.root, "log/githost.log"))
+      new(File.join(Rails.root, "log", file_name))
     end
-
-    def format_message(severity, timestamp, progname, msg)
-      "#{timestamp.to_s(:long)} -> #{severity} -> #{msg}\n" 
-    end 
   end
 end

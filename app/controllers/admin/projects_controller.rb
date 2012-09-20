@@ -1,7 +1,4 @@
-class Admin::ProjectsController < ApplicationController
-  layout "admin"
-  before_filter :authenticate_user!
-  before_filter :authenticate_admin!
+class Admin::ProjectsController < AdminController
   before_filter :admin_project, only: [:edit, :show, :update, :destroy, :team_update]
 
   def index
@@ -43,7 +40,7 @@ class Admin::ProjectsController < ApplicationController
   def update
     owner_id = params[:project].delete(:owner_id)
 
-    if owner_id 
+    if owner_id
       @admin_project.owner = User.find(owner_id)
     end
 
@@ -60,7 +57,7 @@ class Admin::ProjectsController < ApplicationController
     redirect_to admin_projects_url, notice: 'Project was successfully deleted.'
   end
 
-  private 
+  private
 
   def admin_project
     @admin_project = Project.find_by_code(params[:id])

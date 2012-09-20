@@ -1,8 +1,4 @@
-class Admin::UsersController < ApplicationController
-  layout "admin"
-  before_filter :authenticate_user!
-  before_filter :authenticate_admin!
-
+class Admin::UsersController < AdminController
   def index
     @admin_users = User.scoped
     @admin_users = @admin_users.filter(params[:filter])
@@ -24,7 +20,7 @@ class Admin::UsersController < ApplicationController
     @admin_user = User.find(params[:id])
 
     UsersProject.user_bulk_import(
-      @admin_user, 
+      @admin_user,
       params[:project_ids],
       params[:project_access]
     )
@@ -41,22 +37,22 @@ class Admin::UsersController < ApplicationController
     @admin_user = User.find(params[:id])
   end
 
-  def block 
+  def block
     @admin_user = User.find(params[:id])
 
     if @admin_user.block
       redirect_to :back, alert: "Successfully blocked"
-    else 
+    else
       redirect_to :back, alert: "Error occured. User was not blocked"
     end
   end
 
-  def unblock 
+  def unblock
     @admin_user = User.find(params[:id])
 
     if @admin_user.update_attribute(:blocked, false)
       redirect_to :back, alert: "Successfully unblocked"
-    else 
+    else
       redirect_to :back, alert: "Error occured. User was not unblocked"
     end
   end

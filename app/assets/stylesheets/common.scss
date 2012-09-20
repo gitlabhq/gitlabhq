@@ -145,6 +145,19 @@ span.update-author {
 .label {
   background-color: #474D57;
 
+  &.label-tag {
+    background: none;
+    border: none;
+    padding:4px 6px;
+    color:#444;
+    text-shadow:0 0 1px #fff;
+
+    &.grouped {
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
+  }
   &.label-issue {
     background-color: #eee;
     border: 1px solid #ccc;
@@ -157,6 +170,18 @@ span.update-author {
       margin-right: 6px;
       padding: 6px;
     }
+  }
+
+  &.label-success {
+    background-color: #8D8;
+    color: #333;
+    text-shadow: 0 1px 1px white;
+  }
+
+  &.label-error {
+    background-color: #D88;
+    color: #333;
+    text-shadow: 0 1px 1px white;
   }
 }
 
@@ -181,11 +206,12 @@ span.update-author {
   }
 
   &.joined {
-    background-color: #1cb9ff;
+    background-color: #1ca9dd;
   }
 
   &.left {
-    background-color: #ff5057;
+    background-color: #888;
+    float:none;
   }
 }
 
@@ -414,13 +440,48 @@ p.time {
   }
 }
 
-.upvotes {
-  font-size: 14px;
-  font-weight: bold;
-  color: #468847;
-  text-align: right;
-  padding: 4px;
-  margin: 2px;
+.votes {
+  font-size: 13px;
+  line-height: 15px;
+  .progress {
+    height: 4px;
+    margin: 0;
+    .bar {
+      float: left;
+      height: 100%;
+    }
+    .bar-success {
+      background-color: #468847;
+      @include bg-gradient(#62C462, #51A351);
+    }
+    .bar-danger {
+      background-color: #B94A48;
+      @include bg-gradient(#EE5F5B, #BD362F);
+    }
+  }
+  .upvotes {
+    display: inline-block;
+    color: #468847;
+  }
+  .downvotes {
+    display: inline-block;
+    color: #B94A48;
+  }
+}
+.votes-block {
+  margin: 14px 6px 6px 0;
+  .downvotes {
+    float: right;
+  }
+}
+.votes-inline {
+  display: inline-block;
+  margin: 0 8px;
+  .progress {
+    display: inline-block;
+    padding: 0 0 2px;
+    width: 45px;
+  }
 }
 
 /* Fix for readme code (stopped it from being yellow) */
@@ -624,7 +685,7 @@ li.note {
     margin-right:40px;
 
     .prev {
-      @extend .borders;
+      @extend .thumbnail;
       height:120px;
       width:175px;
       margin-bottom:10px;
@@ -652,4 +713,32 @@ li.note {
   padding-bottom:20px;
   text-align:center;
   margin-bottom:10px;
+}
+
+.oauth_select_holder {
+  padding:20px;
+  img {
+    padding:5px;
+    margin-right:10px;
+  }
+  .active {
+    img {
+      border:1px solid #ccc;
+      background:$hover;
+      @include border-radius(5px);
+    }
+  }
+}
+
+.btn-build-token {
+  float: left;
+  padding: 6px 20px;
+  margin-right: 12px;
+}
+
+.gitlab-promo {
+  a {
+    color:#aaa;
+    margin-right: 30px;
+  }
 }

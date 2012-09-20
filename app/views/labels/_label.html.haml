@@ -1,4 +1,9 @@
 %li.wll
-  %strong= label.name
+  %strong
+    %i.icon-tag
+    = label.name
   .right
-    %span= pluralize label.count, 'issue'
+    = link_to project_issues_path(label_name: label.name) do
+      %strong
+        = pluralize(label.count, 'issue')
+        = "»"

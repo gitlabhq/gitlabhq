@@ -23,5 +23,6 @@
     authored by #{merge_request.author_name}
     = time_ago_in_words(merge_request.created_at)
     ago
-    - if merge_request.upvotes > 0
-      %span.badge.badge-success= "+#{merge_request.upvotes}"
+
+    - if merge_request.votes_count > 0
+      = render 'votes/votes_inline', votable: merge_request

@@ -73,11 +73,7 @@ module Shoulda::Matchers::ActiveModel
   class EnsureLengthOfMatcher
     # Shortcut for is_at_least and is_at_most
     def is_within(range)
-      if range.exclude_end?
-        is_at_least(range.first) && is_at_most(range.last - 1)
-      else
-        is_at_least(range.first) && is_at_most(range.last)
-      end
+      is_at_least(range.min) && is_at_most(range.max)
     end
   end
 end
