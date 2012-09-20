@@ -4,18 +4,19 @@ class CommitsController < ApplicationController
   before_filter :project
   layout "project"
 
+  include ExtractsPath
+
   # Authorize
   before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
-  before_filter :load_refs, only: :index # load @branch, @tag & @ref
 
-  def index
-    @repo = project.repo
+  def show
+    @repo = @project.repo
     @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
 
-    @commits = @project.commits(@ref, params[:path], @limit, @offset)
+    @commits = @project.commits(@ref, @path, @limit, @offset)
     @commits = CommitDecorator.decorate(@commits)
 
     respond_to do |format|
@@ -24,26 +25,6 @@ class CommitsController < ApplicationController
       format.atom { render layout: false }
     end
   end
-
-  # def show
-  #   result = CommitLoad.new(project, current_user, params).execute
-
-  #   @commit = result[:commit]
-
-  #   if @commit
-  #     @suppress_diff = result[:suppress_diff]
-  #     @note          = result[:note]
-  #     @line_notes    = result[:line_notes]
-  #     @notes_count   = result[:notes_count]
-  #     @comments_allowed = true
-  #   else
-  #     return git_not_found!
-  #   end
-
-  #   if result[:status] == :huge_commit
-  #     render "huge_commit" and return
-  #   end
-  # end
 
   def patch
     @commit = project.commit(params[:id])
@@ -54,12 +35,5 @@ class CommitsController < ApplicationController
       disposition: 'attachment',
       filename: "#{@commit.id}.patch"
     )
-  end
-
-  protected
-
-  def load_refs
-    @ref ||= params[:ref].presence || params[:branch].presence || params[:tag].presence
-    @ref ||= @ref || @project.try(:default_branch) || 'master'
   end
 end

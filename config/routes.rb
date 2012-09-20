@@ -159,13 +159,20 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :commit, only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+    # XXX: WIP
+    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+    resources :commits, only: [:show], constraints: {id: /.+/}, as: 'history'
+    resources :blame,   only: [:show], constraints: {id: /.+/}
+    resources :blob,    only: [:show], constraints: {id: /.+/}
+    # resources :raw,    only: [:show], constraints: {id: /.+/}
+    resources :tree,   only: [:show], constraints: {id: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare", constraints: {from: /.+/, to: /.+/}
 
-    resources :commits, only: [:index, :show] do
-      member do
-        get :patch
-      end
-    end
+    # resources :commits, only: [:show], as: 'history' do
+    #   member do
+    #     get :patch
+    #   end
+    # end
 
     resources :team, controller: 'team_members', only: [:index]
     resources :team_members
@@ -184,13 +191,6 @@ Gitlab::Application.routes.draw do
         post :preview
       end
     end
-
-    # XXX: WIP
-    resources :blame,  only: [:show], constraints: {id: /.+/}
-    resources :blob,   only: [:show], constraints: {id: /.+/}
-    # resources :raw,    only: [:show], constraints: {id: /.+/}
-    resources :tree,   only: [:show], constraints: {id: /.+/}
-    match "/compare/:from...:to" => "compare#show", as: "compare", constraints: {from: /.+/, to: /.+/}
   end
 
   root to: "dashboard#index"
