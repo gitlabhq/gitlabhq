@@ -289,16 +289,11 @@ describe CommitController, "routing" do
   end
 end
 
-# compare_project_commits GET    /:project_id/commits/compare(.:format)   commits#compare
 #    patch_project_commit GET    /:project_id/commits/:id/patch(.:format) commits#patch
 #         project_commits GET    /:project_id/commits(.:format)           commits#index
 #                         POST   /:project_id/commits(.:format)           commits#create
 #          project_commit GET    /:project_id/commits/:id(.:format)       commits#show
 describe CommitsController, "routing" do
-  it "to #compare" do
-    get("/gitlabhq/commits/compare").should route_to('commits#compare', project_id: 'gitlabhq')
-  end
-
   it "to #patch" do
     get("/gitlabhq/commits/1/patch").should route_to('commits#patch', project_id: 'gitlabhq', id: '1')
   end
@@ -404,6 +399,13 @@ end
 describe TreeController, "routing" do
   it "to #show" do
     get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+  end
+end
+
+describe CompareController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/compare/master...stable").should     route_to('compare#show', project_id: 'gitlabhq', from: 'master', to: 'stable')
+    get("/gitlabhq/compare/issue/1234...stable").should route_to('compare#show', project_id: 'gitlabhq', from: 'issue/1234', to: 'stable')
   end
 end
 

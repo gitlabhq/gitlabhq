@@ -45,18 +45,6 @@ class CommitsController < ApplicationController
   #   end
   # end
 
-  def compare
-    result = Commit.compare(project, params[:from], params[:to])
-
-    @commits = result[:commits]
-    @commit  = result[:commit]
-    @diffs   = result[:diffs]
-    @refs_are_same = result[:same]
-    @line_notes = []
-
-    @commits = CommitDecorator.decorate(@commits)
-  end
-
   def patch
     @commit = project.commit(params[:id])
 

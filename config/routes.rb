@@ -162,10 +162,6 @@ Gitlab::Application.routes.draw do
     resources :commit, only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
 
     resources :commits, only: [:index, :show] do
-      collection do
-        get :compare
-      end
-
       member do
         get :patch
       end
@@ -194,6 +190,7 @@ Gitlab::Application.routes.draw do
     resources :blob,   only: [:show], constraints: {id: /.+/}
     # resources :raw,    only: [:show], constraints: {id: /.+/}
     resources :tree,   only: [:show], constraints: {id: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare", constraints: {from: /.+/, to: /.+/}
   end
 
   root to: "dashboard#index"
