@@ -9,6 +9,10 @@ module Gitlab
       expose :id, :email, :name, :blocked, :created_at
     end
 
+    class UserLogin < Grape::Entity
+      expose :id, :email, :name, :private_token, :blocked, :created_at
+    end
+
     class Hook < Grape::Entity
       expose :id, :url
     end
@@ -52,8 +56,8 @@ module Gitlab
     end
 
     class Key < Grape::Entity
-      expose  :id, 
-              :title, 
+      expose  :id,
+              :title,
               :key
     end
   end
