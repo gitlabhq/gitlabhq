@@ -5,7 +5,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = gfm @merge_request.title
+      = gfm escape_once(@merge_request.title)
 
   .middle_box_content
     %div
