@@ -145,6 +145,19 @@ span.update-author {
 .label {
   background-color: #474D57;
 
+  &.label-tag {
+    background: none;
+    border: none;
+    padding:4px 6px;
+    color:#444;
+    text-shadow:0 0 1px #fff;
+
+    &.grouped {
+      float: left;
+      margin-right: 6px;
+      padding: 6px;
+    }
+  }
   &.label-issue {
     background-color: #eee;
     border: 1px solid #ccc;
@@ -721,4 +734,11 @@ li.note {
   float: left;
   padding: 6px 20px;
   margin-right: 12px;
+}
+
+.gitlab-promo {
+  a {
+    color:#aaa;
+    margin-right: 30px;
+  }
 }

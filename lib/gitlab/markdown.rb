@@ -48,8 +48,10 @@ module Gitlab
     def gfm(text, html_options = {})
       return text if text.nil?
 
-      # prevents the string supplied through the _text_ argument to be altered
-      text = text.dup
+      # Duplicate the string so we don't alter the original, then call to_str
+      # to cast it back to a String instead of a SafeBuffer. This is required
+      # for gsub calls to work as we need them to.
+      text = text.dup.to_str
 
       @html_options = html_options
 

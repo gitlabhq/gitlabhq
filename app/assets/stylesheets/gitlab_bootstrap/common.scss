@@ -72,3 +72,13 @@ img.lil_av { padding-left: 4px; padding-right:3px; }
 /** HELPERS **/
 .nothing_here_message { text-align:center; padding:20px; color:#777; }
 p.slead { color:#456; font-size:16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
+
+/** FORMS **/
+input[type='search'].search-text-input {
+  background-image: url("icon-search.png");
+  background-repeat: no-repeat;
+  background-position: 10px;
+  padding-left:25px;
+  @include border-radius(4px);
+  border:1px solid #ccc;
+}

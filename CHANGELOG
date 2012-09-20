@@ -9,8 +9,10 @@ v 2.9.0
   - scss refactoring. gitlab_bootstrap/ dir 
   - fix git push http body bigger than 112k problem
   - list of labels  page under issues tab
-  - API for milestones
+  - API for milestones, keys
   - restyled buttons
+  - OAuth
+  - Comment order changed
 
 v 2.8.1
   - ability to disable gravatars

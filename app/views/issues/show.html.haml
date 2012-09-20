@@ -31,7 +31,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = gfm @issue.title
+      = gfm escape_once(@issue.title)
 
   .middle_box_content
     %cite.cgray Created by
