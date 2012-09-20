@@ -19,7 +19,7 @@ describe Gitlab::API do
     context "when invalid password" do
       it "should return authentication error" do
         post api("/session"), email: user.email, password: '123'
-        response.status.should == 403
+        response.status.should == 401
 
         json_response['email'].should be_nil
         json_response['private_token'].should be_nil
@@ -29,7 +29,7 @@ describe Gitlab::API do
     context "when empty password" do
       it "should return authentication error" do
         post api("/session"), email: user.email
-        response.status.should == 403
+        response.status.should == 401
 
         json_response['email'].should be_nil
         json_response['private_token'].should be_nil

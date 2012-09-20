@@ -8,14 +8,13 @@ module Gitlab
     post "/session" do
       resource = User.find_for_database_authentication(email: params[:email])
 
-      return forbidden! unless resource
+      return unauthorized! unless resource
 
       if resource.valid_password?(params[:password])
         present resource, with: Entities::UserLogin
       else
-        forbidden!
+        unauthorized!
       end
     end
   end
 end
-
