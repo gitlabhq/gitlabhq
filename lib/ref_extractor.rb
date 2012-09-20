@@ -1,7 +1,7 @@
 # Module providing an extract_ref method for controllers working with Git
 # tree-ish + path params
 module RefExtractor
-  # Thrown when given an invalid path
+  # Raised when given an invalid path
   class InvalidPathError < StandardError; end
 
   # Given a string containing both a Git ref - such as a branch or tag - and a
@@ -81,6 +81,12 @@ module RefExtractor
   # Automatically renders `not_found!` if a valid tree could not be resolved
   # (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
+    # Handle formats embedded in the id
+    if params[:id].ends_with?('.atom')
+      params[:id].gsub!(/\.atom$/, '')
+      request.format = :atom
+    end
+
     @ref, @path = extract_ref(params[:id])
 
     @id = File.join(@ref, @path)

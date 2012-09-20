@@ -293,11 +293,7 @@ end
 #    patch_project_commit GET    /:project_id/commits/:id/patch(.:format) commits#patch
 #         project_commits GET    /:project_id/commits(.:format)           commits#index
 #                         POST   /:project_id/commits(.:format)           commits#create
-#      new_project_commit GET    /:project_id/commits/new(.:format)       commits#new
-#     edit_project_commit GET    /:project_id/commits/:id/edit(.:format)  commits#edit
 #          project_commit GET    /:project_id/commits/:id(.:format)       commits#show
-#                         PUT    /:project_id/commits/:id(.:format)       commits#update
-#                         DELETE /:project_id/commits/:id(.:format)       commits#destroy
 describe CommitsController, "routing" do
   it "to #compare" do
     get("/gitlabhq/commits/compare").should route_to('commits#compare', project_id: 'gitlabhq')
@@ -305,6 +301,10 @@ describe CommitsController, "routing" do
 
   it "to #patch" do
     get("/gitlabhq/commits/1/patch").should route_to('commits#patch', project_id: 'gitlabhq', id: '1')
+  end
+
+  it "does something with atom feeds" do
+    get("/gitlabhq/commits/master.atom").should route_to('commits#show', project_id: 'gitlabhq', id: 'master.atom')
   end
 
   it_behaves_like "RESTful project resources" do
@@ -425,6 +425,7 @@ end
 # /:project_id/commits/*path
 #   /gitlabhq/commits/master/app/contexts/base_context.rb
 #   /gitlabhq/commits/test/branch/name/app/contexts/base_context.rb
+#   /gitlabhq/commits/master.atom
 #
 # /:project_id/raw/*path
 #   /gitlabhq/raw/master/app/contexts/base_context.rb
@@ -435,13 +436,6 @@ end
 #   /gitlabhq/tree/test/branch/name/app
 describe "pending routing" do
   before { pending }
-
-  describe "/:project_id/commit/:id" do
-    it "routes to a specific commit" do
-      get("/gitlabhq/commit/f4b1449").should route_to('commit#show', project_id: 'gitlabhq', id: 'f4b1449')
-      get("/gitlabhq/commit/f4b14494ef6abf3d144c28e4af0c20143383e062").should route_to('commit#show', project_id: 'gitlabhq', id: 'f4b14494ef6abf3d144c28e4af0c20143383e062')
-    end
-  end
 
   describe "/:project_id/raw/:id" do
     it "routes to a ref with a path" do

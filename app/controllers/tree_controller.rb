@@ -1,8 +1,5 @@
 # Controller for viewing a repository's file structure
 class TreeController < ApplicationController
-  # Thrown when given an invalid path
-  class InvalidPathError < StandardError; end
-
   include RefExtractor
 
   layout "project"
