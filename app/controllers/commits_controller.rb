@@ -52,6 +52,7 @@ class CommitsController < ApplicationController
     @commits = result[:commits]
     @commit  = result[:commit]
     @diffs   = result[:diffs]
+    @refs_are_same = result[:same]
     @line_notes = []
 
     @commits = CommitDecorator.decorate(@commits)
