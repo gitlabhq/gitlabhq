@@ -12,6 +12,8 @@
   %li
     = link_to "Snippets", "#snippets", 'data-toggle' => 'tab'
   %li
+    = link_to "Repositories", "#repositories", 'data-toggle' => 'tab'
+  %li
     = link_to "Users", "#users", 'data-toggle' => 'tab'
   %li
     = link_to "Session", "#session", 'data-toggle' => 'tab'
@@ -47,6 +49,15 @@
       .file_content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "snippets.md"))
+
+  .tab-pane#repositories
+    .file_holder
+      .file_title
+        %i.icon-file
+        Projects
+      .file_content.wiki
+        = preserve do
+          = markdown File.read(Rails.root.join("doc", "api", "repositories.md"))
 
   .tab-pane#users
     .file_holder
