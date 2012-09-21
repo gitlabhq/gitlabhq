@@ -60,8 +60,8 @@ module Gitlab
       expose :closed, :updated_at, :created_at
     end
 
-    class Key < Grape::Entity
-      expose  :id, :title, :key
+    class SSHKey < Grape::Entity
+      expose :id, :title, :key
     end
   end
 end
