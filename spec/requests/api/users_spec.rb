@@ -47,6 +47,7 @@ describe Gitlab::API do
         response.status.should == 401
       end
     end
+
     context "when authenticated" do
       it "should return array of ssh keys" do
         user.keys << key
@@ -67,6 +68,7 @@ describe Gitlab::API do
       response.status.should == 200
       json_response["title"].should == key.title
     end
+
     it "should return 404 Not Found within invalid ID" do
       get api("/user/keys/42", user)
       response.status.should == 404
@@ -78,6 +80,7 @@ describe Gitlab::API do
       post api("/user/keys", user), { title: "invalid key" }
       response.status.should == 404
     end
+
     it "should create ssh key" do
       key_attrs = Factory.attributes :key
       expect {
@@ -94,6 +97,7 @@ describe Gitlab::API do
         delete api("/user/keys/#{key.id}", user)
       }.to change{user.keys.count}.by(-1)
     end
+
     it "should return 404 Not Found within invalid ID" do
       delete api("/user/keys/42", user)
       response.status.should == 404
