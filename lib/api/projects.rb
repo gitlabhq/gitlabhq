@@ -211,6 +211,24 @@ module Gitlab
         present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
       end
 
+      # Get a project repository commits
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   ref_name (optional) - The name of a repository branch or tag
+      # Example Request:
+      #   GET /projects/:id/repository/commits
+      get ":id/repository/commits" do
+        authorize! :download_code, user_project
+
+        page = params[:page] || 0
+        per_page = params[:per_page] || 20
+        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+
+        commits = user_project.commits(ref, nil, per_page, page * per_page)
+        present CommitDecorator.decorate(commits), with: Entities::RepoCommit
+      end
+
       # Get a project snippet
       #
       # Parameters:
