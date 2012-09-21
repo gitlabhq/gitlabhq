@@ -199,6 +199,27 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /projects/:id/repository/commits" do
+    context "authorized user" do
+      before { project.add_access(user2, :read) }
+
+      it "should return project commits" do
+        get api("/projects/#{project.code}/repository/commits", user)
+        response.status.should == 200
+
+        json_response.should be_an Array
+        json_response.first['id'].should == project.commit.id
+      end
+    end
+
+    context "unauthorized user" do
+      it "should not return project commits" do
+        get api("/projects/#{project.code}/repository/commits")
+        response.status.should == 401
+      end
+    end
+  end
+
   describe "GET /projects/:id/snippets/:snippet_id" do
     it "should return a project snippet" do
       get api("/projects/#{project.code}/snippets/#{snippet.id}", user)

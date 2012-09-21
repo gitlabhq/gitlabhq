@@ -17,11 +17,6 @@ module Gitlab
       expose :id, :url
     end
 
-    class Commit < Grape::Entity
-      expose :id, :short_id, :title,
-        :author_name, :author_email, :created_at
-    end
-
     class Project < Grape::Entity
       expose :id, :code, :name, :description, :path, :default_branch
       expose :owner, using: Entities::UserBasic
@@ -37,6 +32,10 @@ module Gitlab
 
     class RepoObject < Grape::Entity
       expose :name, :commit
+    end
+
+    class RepoCommit < Grape::Entity
+      expose :id, :short_id, :title, :author_name, :author_email, :created_at
     end
 
     class ProjectSnippet < Grape::Entity
