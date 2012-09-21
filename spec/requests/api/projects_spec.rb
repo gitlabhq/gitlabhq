@@ -111,42 +111,52 @@ describe Gitlab::API do
     end
   end
 
-  describe "GET /projects/:id/users" do
-    it "should return project users" do
-      get api("/projects/#{project.code}/users", user)
-
+  describe "GET /projects/:id/members" do
+    it "should return project team members" do
+      get api("/projects/#{project.code}/members", user)
       response.status.should == 200
-
       json_response.should be_an Array
       json_response.count.should == 2
-      json_response.first['user']['id'].should == user.id
+      json_response.first['email'].should == user.email
     end
   end
 
-  describe "POST /projects/:id/users" do
-    it "should add users to project" do
-      expect {
-        post api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user2.id}, project_access: UsersProject::DEVELOPER
-      }.to change {project.users_projects.where(:project_access => UsersProject::DEVELOPER).count}.by(1)
+  describe "GET /projects/:id/members/:user_id" do
+    it "should return project team member" do
+      get api("/projects/#{project.code}/members/#{user.id}", user)
+      response.status.should == 200
+      json_response['email'].should == user.email
+      json_response['access_level'].should == UsersProject::MASTER
     end
   end
 
-  describe "PUT /projects/:id/users" do
-    it "should update users to new access role" do
+  describe "POST /projects/:id/members" do
+    it "should add user to project team" do
       expect {
-        put api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user3.id}, project_access: UsersProject::MASTER
-      }.to change {project.users_projects.where(:project_access => UsersProject::MASTER).count}.by(1)
+        post api("/projects/#{project.code}/members", user), user_id: user2.id,
+          access_level: UsersProject::DEVELOPER
+      }.to change { UsersProject.count }.by(1)
+
+      response.status.should == 201
+      json_response['email'].should == user2.email
+      json_response['access_level'].should == UsersProject::DEVELOPER
     end
   end
 
-  describe "DELETE /projects/:id/users" do
-    it "should delete users from project" do
+  describe "PUT /projects/:id/members/:user_id" do
+    it "should update project team member" do
+      put api("/projects/#{project.code}/members/#{user3.id}", user), access_level: UsersProject::MASTER
+      response.status.should == 200
+      json_response['email'].should == user3.email
+      json_response['access_level'].should == UsersProject::MASTER
+    end
+  end
+
+  describe "DELETE /projects/:id/members/:user_id" do
+    it "should remove user from project team" do
       expect {
-        delete api("/projects/#{project.code}/users", user),
-          user_ids: {"0" => user3.id}
-      }.to change {project.users_projects.count}.by(-1)
+        delete api("/projects/#{project.code}/members/#{user3.id}", user)
+      }.to change { UsersProject.count }.by(-1)
     end
   end
 

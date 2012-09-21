@@ -24,9 +24,10 @@ module Gitlab
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
     end
 
-    class UsersProject < Grape::Entity
-      expose :user, using: Entities::UserBasic
-      expose :project_access
+    class ProjectMember < UserBasic
+      expose :project_access, :as => :access_level do |user, options|
+        options[:project].users_projects.find_by_user_id(user.id).project_access
+      end
     end
 
     class RepoObject < Grape::Entity
