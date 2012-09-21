@@ -40,14 +40,14 @@ module Gitlab
       post do
         params[:code] ||= params[:name]
         params[:path] ||= params[:name]
-        attrs = attributes_for_keys [:code, 
-                                    :path, 
-                                    :name, 
-                                    :description, 
-                                    :default_branch, 
-                                    :issues_enabled, 
-                                    :wall_enabled, 
-                                    :merge_requests_enabled, 
+        attrs = attributes_for_keys [:code,
+                                    :path,
+                                    :name,
+                                    :description,
+                                    :default_branch,
+                                    :issues_enabled,
+                                    :wall_enabled,
+                                    :merge_requests_enabled,
                                     :wiki_enabled]
         @project = Project.create_by_user(attrs, current_user)
         if @project.saved?
@@ -207,6 +207,8 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
+        authorize! :write_snippet, user_project
+
         attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
         attrs[:content] = params[:code] if params[:code].present?
@@ -282,6 +284,8 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha/blob
       get ":id/repository/commits/:sha/blob" do
+        authorize! :download_code, user_project
+
         ref = params[:sha]
 
         commit = user_project.commit ref

@@ -61,7 +61,7 @@ module Gitlab
       error!({'message' => message}, status)
     end
 
-    private 
+    private
 
     def abilities
       @abilities ||= begin
