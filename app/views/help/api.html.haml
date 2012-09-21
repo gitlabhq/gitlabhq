@@ -19,8 +19,6 @@
     = link_to "Issues", "#issues", 'data-toggle' => 'tab'
   %li
     = link_to "Milestones", "#milestones", 'data-toggle' => 'tab'
-  %li
-    = link_to "Commits", "#commits", 'data-toggle' => 'tab'
 
 .tab-content
   .tab-pane.active#README
@@ -85,12 +83,3 @@
       .file_content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "milestones.md"))
-
-  .tab-pane#commits
-    .file_holder
-      .file_title
-        %i.icon-file
-        Commits
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "commits.md"))
