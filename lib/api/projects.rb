@@ -57,56 +57,83 @@ module Gitlab
         end
       end
 
-      # Get project users
+      # Get a project team members
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
       # Example Request:
-      #   GET /projects/:id/users
-      get ":id/users" do
-        @users_projects = paginate user_project.users_projects
-        present @users_projects, with: Entities::UsersProject
+      #   GET /projects/:id/members
+      get ":id/members" do
+        @members = paginate user_project.users
+        present @members, with: Entities::ProjectMember, project: user_project
       end
 
-      # Add users to project with specified access level
+      # Get a project team members
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
-      #   user_ids (required) - The ID list of users to add
-      #   project_access (required) - Project access level
+      #   user_id (required) - The ID of a user
       # Example Request:
-      #   POST /projects/:id/users
-      post ":id/users" do
-        authorize! :admin_project, user_project
-        user_project.add_users_ids_to_team(params[:user_ids].values, params[:project_access])
-        nil
+      #   GET /projects/:id/members/:user_id
+      get ":id/members/:user_id" do
+        @member = user_project.users.find params[:user_id]
+        present @member, with: Entities::ProjectMember, project: user_project
       end
 
-      # Update users to specified access level
+      # Add a new project team member
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
-      #   user_ids (required) - The ID list of users to add
-      #   project_access (required) - New project access level to
+      #   user_id (required) - The ID of a user
+      #   access_level (required) - Project access level
       # Example Request:
-      #   PUT /projects/:id/add_users
-      put ":id/users" do
+      #   POST /projects/:id/members
+      post ":id/members" do
         authorize! :admin_project, user_project
-        user_project.update_users_ids_to_role(params[:user_ids].values, params[:project_access])
-        nil
+        users_project = user_project.users_projects.new(
+          user_id: params[:user_id],
+          project_access: params[:access_level]
+        )
+
+        if users_project.save
+          @member = users_project.user
+          present @member, with: Entities::ProjectMember, project: user_project
+        else
+          not_found!
+        end
       end
 
-      # Delete project users
+      # Update project team member
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
-      #   user_ids (required) - The ID list of users to delete
+      #   user_id (required) - The ID of a team member
+      #   access_level (required) - Project access level
       # Example Request:
-      #   DELETE /projects/:id/users
-      delete ":id/users" do
+      #   PUT /projects/:id/members/:user_id
+      put ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        user_project.delete_users_ids_from_team(params[:user_ids].values)
-        nil
+        users_project = user_project.users_projects.find_by_user_id params[:user_id]
+
+        if users_project.update_attributes(project_access: params[:access_level])
+          @member = users_project.user
+          present @member, with: Entities::ProjectMember, project: user_project
+        else
+          not_found!
+        end
+      end
+
+      # Remove a team member from project
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   user_id (required) - The ID of a team member
+      # Example Request:
+      #   DELETE /projects/:id/members/:user_id
+      delete ":id/members/:user_id" do
+        authorize! :admin_project, user_project
+        users_project = user_project.users_projects.find_by_user_id params[:user_id]
+        users_project.destroy
       end
 
       # Get project hooks
