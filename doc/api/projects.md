@@ -112,66 +112,89 @@ Parameters:
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.
 
-## Get project users
+## List project team members
 
-Get users and access roles for existing project
-
-```
-GET /projects/:id/users
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-
-Will return users and their access roles with status `200 OK` on success, or `404 Not found` on fail.
-
-## Add project users
-
-Add users to exiting project
+Get a list of project team members.
 
 ```
-POST /projects/:id/users
+GET /projects/:id/members
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `user_ids` (required) - The ID list of users to add
-+ `project_access` (required) - Project access level
+
+## Get project team member
+
+Get a project team member.
+
+```
+GET /projects/:id/members/:user_id
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_id` (required) - The ID of a user
+
+```json
+{
+
+  "id": 1,
+  "email": "john@example.com",
+  "name": "John Smith",
+  "blocked": false,
+  "created_at": "2012-05-23T08:00:58Z",
+  "access_level": 40
+}
+```
+
+## Add project team member
+
+Add a user to a project team.
+
+```
+POST /projects/:id/members
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_id` (required) - The ID of a user to add
++ `access_level` (required) - Project access level
 
 Will return status `201 Created` on success, or `404 Not found` on fail.
 
-## Update project users access level
+## Edit project team member
 
-Update existing users to specified access level
-
-```
-PUT /projects/:id/users
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `user_ids` (required) - The ID list of users to add
-+ `project_access` (required) - Project access level
-
-Will return status `200 OK` on success, or `404 Not found` on fail.
-
-## Delete project users
-
-Delete users from exiting project
+Update project team member to specified access level.
 
 ```
-DELETE /projects/:id/users
+PUT /projects/:id/members/:user_id
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `user_ids` (required) - The ID list of users to add
++ `user_id` (required) - The ID of a team member
++ `access_level` (required) - Project access level
 
 Will return status `200 OK` on success, or `404 Not found` on fail.
+
+## Remove project team member
+
+Removes user from project team.
+
+```
+DELETE /projects/:id/members/:user_id
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `user_id` (required) - The ID of a team member
+
+Status code `200` will be returned on success.
 
 ## Get project hooks
 
@@ -344,7 +367,7 @@ Parameters:
 
 + `id` (required) - The ID or code name of a project
 + `sha` (required) - The commit or branch name
-+ `filepath` (required) - The path the file 
++ `filepath` (required) - The path the file
 
 Will return the raw file contents.
 
