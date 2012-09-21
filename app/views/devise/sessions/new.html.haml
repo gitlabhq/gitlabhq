@@ -1,0 +1,21 @@
+- if ldap_enable?
+  = render :partial => 'devise/sessions/new_ldap'
+- else
+  = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f|
+    = image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo"
+    = f.text_field :email, :class => "text top", :placeholder => "Email"
+    = f.password_field :password, :class => "text bottom", :placeholder => "Password"
+    - if devise_mapping.rememberable?
+      .clearfix.inputs-list
+        %label.checkbox.remember_me{:for => "user_remember_me"}
+          = f.check_box :remember_me
+          %span Remember me
+    %br/
+    = f.submit "Sign in", :class => "primary btn wide"
+    .right
+      = render :partial => "devise/shared/links"
+    - if devise_mapping.omniauthable?
+      %hr/
+      - resource_class.omniauth_providers.each do |provider|
+        %span
+          = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)

@@ -56,7 +56,7 @@ namespace :gitlab do
         return
       end
 
-      gitolite_hooks_path = File.join("/home", Gitlab.config.ssh_user, "share", "gitolite", "hooks", "common")
+      gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
       gitlab_hook_files = ['post-receive']
       gitlab_hook_files.each do |file_name|
         dest = File.join(gitolite_hooks_path, file_name)
@@ -81,7 +81,7 @@ namespace :gitlab do
             next
           end
 
-          puts "post-reveice file ok".green
+          puts "post-receive file ok".green
         end
       end
 

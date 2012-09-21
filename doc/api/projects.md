@@ -1,6 +1,6 @@
 ## List projects
 
-Get a list of authenticated user's projects.
+Get a list of projects owned by the authenticated user.
 
 ```
 GET /projects
@@ -55,7 +55,7 @@ GET /projects
 
 ## Single project
 
-Get an authenticated user's project.
+Get a specific project, identified by project ID, which is owned by the authentication user.
 
 ```
 GET /projects/:id
@@ -89,235 +89,153 @@ Parameters:
 }
 ```
 
-## Project repository branches
+## Create project
 
-Get a list of project repository branches sorted by name alphabetically.
+Create new project owned by user
 
 ```
-GET /projects/:id/repository/branches
+POST /projects
+```
+
+Parameters:
+
++ `name` (required) - new project name
++ `code` (optional) - new project code, uses project name if not set
++ `path` (optional) - new project path, uses project name if not set
++ `description` (optional) - short project description
++ `default_branch` (optional) - 'master' by default
++ `issues_enabled` (optional) - enabled by default
++ `wall_enabled` (optional) - enabled by default
++ `merge_requests_enabled` (optional) - enabled by default
++ `wiki_enabled` (optional) - enabled by default
+
+Will return created project with status `201 Created` on success, or `404 Not
+found` on fail.
+
+## List project team members
+
+Get a list of project team members.
+
+```
+GET /projects/:id/members
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
 
-```json
-[
-  {
-    "name": "master",
-    "commit": {
-      "id": "7b5c3cc8be40ee161ae89a06bba6229da1032a0c",
-      "parents": [
-        {
-          "id": "4ad91d3c1144c406e50c7b33bae684bd6837faf8"
-        }
-      ],
-      "tree": "46e82de44b1061621357f24c05515327f2795a95",
-      "message": "add projects API",
-      "author": {
-        "name": "John Smith",
-        "email": "john@example.com"
-      },
-      "committer": {
-        "name": "John Smith",
-        "email": "john@example.com"
-      },
-      "authored_date": "2012-06-27T05:51:39-07:00",
-      "committed_date": "2012-06-28T03:44:20-07:00"
-    }
-  }
-]
-```
+## Get project team member
 
-Get a single project repository branch.
+Get a project team member.
 
 ```
-GET /projects/:id/repository/branches/:branch
+GET /projects/:id/members/:user_id
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `branch` (required) - The name of the branch
++ `user_id` (required) - The ID of a user
 
 ```json
 {
-  "name": "master",
-  "commit": {
-    "id": "7b5c3cc8be40ee161ae89a06bba6229da1032a0c",
-    "parents": [
-      {
-        "id": "4ad91d3c1144c406e50c7b33bae684bd6837faf8"
-      }
-    ],
-    "tree": "46e82de44b1061621357f24c05515327f2795a95",
-    "message": "add projects API",
-    "author": {
-      "name": "John Smith",
-      "email": "john@example.com"
-    },
-    "committer": {
-      "name": "John Smith",
-      "email": "john@example.com"
-    },
-    "authored_date": "2012-06-27T05:51:39-07:00",
-    "committed_date": "2012-06-28T03:44:20-07:00"
-  }
-}
-```
 
-## Project repository tags
-
-Get a list of project repository tags sorted by name in reverse alphabetical order.
-
-```
-GET /projects/:id/repository/tags
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-
-```json
-[
-  {
-    "name": "v1.0.0",
-    "commit": {
-      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
-      "parents": [
-
-      ],
-      "tree": "38017f2f189336fe4497e9d230c5bb1bf873f08d",
-      "message": "Initial commit",
-      "author": {
-        "name": "John Smith",
-        "email": "john@example.com"
-      },
-      "committer": {
-        "name": "Jack Smith",
-        "email": "jack@example.com"
-      },
-      "authored_date": "2012-05-28T04:42:42-07:00",
-      "committed_date": "2012-05-28T04:42:42-07:00"
-    }
-  }
-]
-```
-
-# Project Snippets
-
-## List snippets
-
-Not implemented.
-
-## Single snippet
-
-Get a project snippet.
-
-```
-GET /projects/:id/snippets/:snippet_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-
-```json
-{
   "id": 1,
-  "title": "test",
-  "file_name": "add.rb",
-  "author": {
-    "id": 1,
-    "email": "john@example.com",
-    "name": "John Smith",
-    "blocked": false,
-    "created_at": "2012-05-23T08:00:58Z"
-  },
-  "expires_at": null,
-  "updated_at": "2012-06-28T10:52:04Z",
-  "created_at": "2012-06-28T10:52:04Z"
+  "email": "john@example.com",
+  "name": "John Smith",
+  "blocked": false,
+  "created_at": "2012-05-23T08:00:58Z",
+  "access_level": 40
 }
 ```
 
-## Snippet content
+## Add project team member
 
-Get a raw project snippet.
-
-```
-GET /projects/:id/snippets/:snippet_id/raw
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-
-## New snippet
-
-Create a new project snippet.
+Add a user to a project team.
 
 ```
-POST /projects/:id/snippets
+POST /projects/:id/members
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `title` (required) - The title of a snippet
-+ `file_name` (required) - The name of a snippet file
-+ `lifetime` (optional) - The expiration date of a snippet
-+ `code` (required) - The content of a snippet
++ `user_id` (required) - The ID of a user to add
++ `access_level` (required) - Project access level
 
-Will return created snippet with status `201 Created` on success, or `404 Not found` on fail.
+Will return status `201 Created` on success, or `404 Not found` on fail.
 
-## Edit snippet
+## Edit project team member
 
-Update an existing project snippet.
+Update project team member to specified access level.
 
 ```
-PUT /projects/:id/snippets/:snippet_id
+PUT /projects/:id/members/:user_id
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-+ `title` (optional) - The title of a snippet
-+ `file_name` (optional) - The name of a snippet file
-+ `lifetime` (optional) - The expiration date of a snippet
-+ `code` (optional) - The content of a snippet
++ `user_id` (required) - The ID of a team member
++ `access_level` (required) - Project access level
 
-Will return updated snippet with status `200 OK` on success, or `404 Not found` on fail.
+Will return status `200 OK` on success, or `404 Not found` on fail.
 
-## Delete snippet
+## Remove project team member
 
-Delete existing project snippet.
+Removes user from project team.
 
 ```
-DELETE /projects/:id/snippets/:snippet_id
+DELETE /projects/:id/members/:user_id
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `snippet_id` (required) - The ID of a project's snippet
++ `user_id` (required) - The ID of a team member
 
 Status code `200` will be returned on success.
 
-## Raw blob content
+## Get project hooks
 
-Get the raw file contents for a file.
+Get hooks for project
 
 ```
-GET /projects/:id/repository/commits/:sha/blob
+GET /projects/:id/hooks
 ```
 
 Parameters:
 
 + `id` (required) - The ID or code name of a project
-+ `sha` (required) - The commit or branch name
-+ `filepath` (required) - The path the file 
 
-Will return the raw file contents.
+Will return hooks with status `200 OK` on success, or `404 Not found` on fail.
+
+## Add project hook
+
+Add hook to project
+
+```
+POST /projects/:id/hooks
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `url` (required) - The hook URL
+
+Will return status `201 Created` on success, or `404 Not found` on fail.
+
+## Delete project hook
+
+Delete hook from project
+
+```
+DELETE /projects/:id/hooks
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `hook_id` (required) - The ID of hook to delete
+
+Will return status `200 OK` on success, or `404 Not found` on fail.

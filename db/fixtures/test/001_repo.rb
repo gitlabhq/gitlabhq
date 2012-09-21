@@ -1,15 +1,23 @@
-# create tmp dir if not exist
-tmp_dir = File.join(Rails.root, "tmp")
-Dir.mkdir(tmp_dir) unless File.exists?(tmp_dir)
+require 'fileutils'
 
-# Create dir for test repo
-repo_dir = File.join(Rails.root, "tmp", "tests")
-Dir.mkdir(repo_dir) unless File.exists?(repo_dir)
+print "Unpacking seed repository..."
 
-`cp spec/seed_project.tar.gz tmp/tests/`
-Dir.chdir(repo_dir)
-`tar -xf seed_project.tar.gz`
-3.times do |i|
-`cp -r gitlabhq/ gitlabhq_#{i}/`
-puts "Unpacked seed repo - tmp/tests/gitlabhq_#{i}"
+SEED_REPO = 'seed_project.tar.gz'
+REPO_PATH = File.join(Rails.root, 'tmp', 'repositories')
+
+# Make whatever directories we need to make
+FileUtils.mkdir_p(REPO_PATH)
+
+# Copy the archive to the repo path
+FileUtils.cp(File.join(Rails.root, 'spec', SEED_REPO), REPO_PATH)
+
+# chdir to the repo path
+FileUtils.cd(REPO_PATH) do
+  # Extract the archive
+  `tar -xf #{SEED_REPO}`
+
+  # Remove the copy
+  FileUtils.rm(SEED_REPO)
 end
+
+puts ' done.'

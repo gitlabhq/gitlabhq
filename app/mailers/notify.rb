@@ -76,6 +76,21 @@ class Notify < ActionMailer::Base
     mail(to: recipient(recipient_id), subject: subject("changed issue ##{@issue.id}", @issue.title))
   end
 
+  def project_access_granted_email(user_project_id)
+    @users_project = UsersProject.find user_project_id
+    @project = @users_project.project
+    mail(to: @users_project.user.email, 
+         subject: subject("access to project was granted"))
+  end
+
+  def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id)
+    @issue = Issue.find issue_id
+    @issue_status = status
+    @updated_by = User.find updated_by_user_id
+    mail(to: recipient(recipient_id),
+        subject: subject("changed issue ##{@issue.id}", @issue.title))
+  end
+
   private
 
   # Look up a User by their ID and return their email address
@@ -96,18 +111,18 @@ class Notify < ActionMailer::Base
   # Examples
   #
   #   >> subject('Lorem ipsum')
-  #   => "gitlab | Lorem ipsum"
+  #   => "GitLab | Lorem ipsum"
   #
   #   # Automatically inserts Project name when @project is set
   #   >> @project = Project.last
   #   => #<Project id: 1, name: "Ruby on Rails", path: "ruby_on_rails", ...>
   #   >> subject('Lorem ipsum')
-  #   => "gitlab | Lorem ipsum | Ruby on Rails"
+  #   => "GitLab | Lorem ipsum | Ruby on Rails"
   #
   #   # Accepts multiple arguments
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
-  #   => "gitlab | Lorem ipsum | Dolor sit amet"
+  #   => "GitLab | Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    "gitlab | " << extra.join(' | ') << (@project ? " | #{@project.name}" : "")
+    "GitLab | " << extra.join(' | ') << (@project ? " | #{@project.name}" : "")
   end
 end

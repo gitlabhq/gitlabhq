@@ -1,37 +1,4 @@
 = render "project_head"
-
-.entry
-  .row
-    .span7
-      .form-horizontal
-        .input-prepend.project_clone_holder
-
-          %span.add-on git clone
-          = link_to "SSH", "#", class: "btn small active", :"data-clone" => @project.ssh_url_to_repo
-          = link_to "HTTP", "#", class: "btn small", :"data-clone" => @project.http_url_to_repo
-          = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span5"
-    .span4.right
-      .right
-        - if can? current_user, :download_code, @project
-          = link_to archive_project_repository_path(@project), class: "btn small grouped" do
-            %i.icon-download-alt
-            Download
-        - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
-          = link_to new_project_merge_request_path(@project), title: "New Merge Request", class: "btn small grouped" do
-            Merge Request
-        - if @project.issues_enabled && can?(current_user, :write_issue, @project)
-          = link_to new_project_issue_path(@project), title: "New Issue", class: "btn small grouped" do
-            Issue
-
+= render 'clone_panel'
 = render "events/event_last_push", event: @last_push
 .content_list= render @events
-
-:javascript 
-  $(function(){
-    var link_sel = ".project_clone_holder a";
-    $(link_sel).bind("click", function() { 
-      $(link_sel).removeClass("active");
-      $(this).addClass("active");
-      $("#project_clone").val($(this).attr("data-clone"));
-    })
-  })

@@ -9,27 +9,27 @@
   %br
 
   .row
-    .span6
+    .span5
       .mr_branch_box
         %h5 From (Head Branch)
         .body 
           .padded
             = f.label :source_branch, "From", class: "control-label"
             .controls
-              = f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, style: "width:250px")
-        .bottom_commit
-          .mr_source_commit
+              = f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span3'})
+      .mr_source_commit
 
-    .span6
+    .span2
+      %center= image_tag "merge.png", class: 'mr_direction_tip'
+    .span5
       .mr_branch_box
         %h5 To (Base Branch)
         .body
           .padded
             = f.label :target_branch, "To", class: "control-label"
             .controls
-              = f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, style: "width:250px")
-        .bottom_commit
-          .mr_target_commit
+              = f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span3'})
+      .mr_target_commit
 
   %h4.cdark 2. Fill info
 
@@ -43,30 +43,25 @@
         = f.label :assignee_id do 
           %i.icon-user 
           Assign to
-        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, style: "width:250px")
+        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
 
   .control-group
 
   .form-actions
-    = f.submit 'Save', class: "btn-primary btn"
+    = f.submit 'Save', class: "btn save-btn"
     - if @merge_request.new_record?
-      = link_to project_merge_requests_path(@project), class: "btn" do
+      = link_to project_merge_requests_path(@project), class: "btn cancel-btn" do
         Cancel
     - else
-      = link_to project_merge_request_path(@project, @merge_request), class: "btn" do
+      = link_to project_merge_request_path(@project, @merge_request), class: "btn cancel-btn" do
         Cancel
-
-
 
 :javascript
   $(function(){
-    $('select#merge_request_assignee_id').chosen();
-    $('select#merge_request_source_branch').chosen();
-    $('select#merge_request_target_branch').chosen();
+    disableButtonIfEmptyField("#merge_request_title", ".save-btn");
     var source_branch = $("#merge_request_source_branch");
     var target_branch = $("#merge_request_target_branch");
 
-    
     $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
     $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });
 
@@ -78,4 +73,3 @@
       $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: $(this).val() });
     });
   });
-

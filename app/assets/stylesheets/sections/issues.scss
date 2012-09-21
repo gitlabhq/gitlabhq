@@ -1,55 +1,55 @@
-.issue_form_box { 
+.issue_form_box {
   @extend .main_box;
-  .issue_title { 
+  .issue_title {
     @extend .top_box_content;
-    .clearfix { 
-      margin-bottom:0px; 
-      input { 
+    .clearfix {
+      margin-bottom:0px;
+      input {
         @extend .span8;
       }
     }
   }
-  .issue_middle_block { 
+  .issue_middle_block {
     @extend .middle_box_content;
     height:30px;
-    .issue_assignee { 
+    .issue_assignee {
       @extend .span6;
       float:left;
     }
-    .issue_milestone { 
+    .issue_milestone {
       @extend .span4;
       float:left;
     }
   }
-  .issue_description { 
+  .issue_description {
     @extend .bottom_box_content;
   }
 }
 
-.issues_table { 
-  .issue { 
+.issues_table {
+  .issue {
     padding:7px 10px;
 
-    .issue_check { 
+    .issue_check {
       float:left;
       padding: 8px 0;
       padding-right: 8px;
       min-width: 15px;
     }
 
-    p { 
+    p {
       padding-top:0;
       padding-bottom:2px;
     }
 
-    img.avatar { 
+    img.avatar {
       width:32px;
       margin-top:4px;
     }
   }
 }
 
-input.check_all_issues { 
+input.check_all_issues {
   float:left;
   padding: 0;
   margin:0;
@@ -59,36 +59,41 @@ input.check_all_issues {
   height: 22px;
 }
 
-.issues_content { 
-  .title { 
+.issues_content {
+  .title {
     height: 40px;
   }
 }
 
-#issues-table-holder { 
-  .issues_filters { 
-    form { 
-      padding:0;
-      margin:0;
-      margin-top:7px
-    }
-  } 
+@media (min-width: 800px) { .issues_filters select { width:160px; }  }
+@media (min-width: 1000px) { .issues_filters select { width:200px; }  }
+@media (min-width: 1200px) { .issues_filters select { width:220px; }  }
 
-  .issues_bulk_update { 
-    margin: 0;
-    form { 
+
+#issues-table-holder {
+  .issues_filters {
+    form {
       padding:0;
       margin:0;
       margin-top:7px
     }
-    .update_selected_issues { 
+  }
+
+  .issues_bulk_update {
+    margin: 0;
+    form {
+      padding:0;
+      margin:0;
+      margin-top:7px
+    }
+    .update_selected_issues {
       position:relative;
       top:-2px;
       margin-left:4px;
       float:left;
     }
-    
-    .update_issues_text { 
+
+    .update_issues_text {
       padding:3px;
       line-height: 18px;
       float:left;
@@ -96,6 +101,15 @@ input.check_all_issues {
   }
 }
 
-#update_status { 
+#update_status {
   width:100px;
+}
+
+
+/**
+ * Milestones list
+ *
+ */
+.milestone {
+  @extend .wll;
 }

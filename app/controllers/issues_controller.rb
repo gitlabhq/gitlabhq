@@ -17,7 +17,7 @@ class IssuesController < ApplicationController
   before_filter :authorize_write_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_filter :authorize_modify_issue!, only: [:close, :edit, :update]
+  before_filter :authorize_modify_issue!, only: [:edit, :update]
 
   # Allow destroy issue
   before_filter :authorize_admin_issue!, only: [:destroy]
@@ -37,7 +37,7 @@ class IssuesController < ApplicationController
   end
 
   def new
-    @issue = @project.issues.new
+    @issue = @project.issues.new(params[:issue])
     respond_with(@issue)
   end
 
@@ -60,7 +60,13 @@ class IssuesController < ApplicationController
     @issue.save
 
     respond_to do |format|
-      format.html { redirect_to project_issue_path(@project, @issue) }
+      format.html do
+        if @issue.valid? 
+          redirect_to project_issue_path(@project, @issue)
+        else
+          render :new
+        end
+      end
       format.js
     end
   end
@@ -81,8 +87,6 @@ class IssuesController < ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_issue, @issue)
-
     @issue.destroy
 
     respond_to do |format|
@@ -162,10 +166,10 @@ class IssuesController < ApplicationController
 
   def issues_filter
     {
-      all: "1",
-      closed: "2",
-      to_me: "3",
-      open: "0" 
+      all: "all",
+      closed: "closed",
+      to_me: "assigned-to-me",
+      open: "open" 
     }
   end
 end

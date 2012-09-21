@@ -24,7 +24,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| Account was created for you$/
+      should have_subject /^gitlab \| Account was created for you$/i
     end
 
     it 'contains the new user\'s login name' do
@@ -91,6 +91,29 @@ describe Notify do
             should have_body_text /#{project_issue_path project, issue}/
           end
         end
+
+        describe 'status changed' do
+          let(:current_user) { Factory.create :user, email: "current@email.com" }
+          let(:status) { 'closed' }
+          subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
+        
+          it 'has the correct subject' do
+            should have_subject /changed issue ##{issue.id} \| #{issue.title}/i
+          end
+
+          it 'contains the new status' do
+            should have_body_text /#{status}/i
+          end
+
+          it 'contains the user name' do
+            should have_body_text /#{current_user.name}/i
+          end
+
+          it 'contains a link to the issue' do
+            should have_body_text /#{project_issue_path project, issue}/
+          end
+        end
+
       end
 
       context 'for merge requests' do
@@ -142,6 +165,26 @@ describe Notify do
           end
 
         end
+      end
+    end
+
+    describe 'project access changed' do
+      let(:project) { Factory.create(:project, 
+                                      path: "Fuu", 
+                                      code: "Fuu") }
+      let(:user) { Factory.create :user }
+      let(:users_project) { Factory.create(:users_project, 
+                                           project: project, 
+                                           user: user) }
+      subject { Notify.project_access_granted_email(users_project.id) }
+      it 'has the correct subject' do
+        should have_subject /access to project was granted/
+      end
+      it 'contains name of project' do
+        should have_body_text /#{project.name}/
+      end
+      it 'contains new user role' do
+        should have_body_text /#{users_project.project_access_human}/
       end
     end
 

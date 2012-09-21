@@ -1,24 +1,9 @@
-# == Schema Information
-#
-# Table name: events
-#
-#  id          :integer(4)      not null, primary key
-#  target_type :string(255)
-#  target_id   :integer(4)
-#  title       :string(255)
-#  data        :text
-#  project_id  :integer(4)
-#  created_at  :datetime        not null
-#  updated_at  :datetime        not null
-#  action      :integer(4)
-#  author_id   :integer(4)
-#
-
 require 'spec_helper'
 
 describe Event do
   describe "Associations" do
     it { should belong_to(:project) }
+    it { should belong_to(:target) }
   end
 
   describe "Respond to" do
@@ -29,22 +14,12 @@ describe Event do
     it { should respond_to(:commits) }
   end
 
-  describe "Creation" do
-    before do 
-      @event = Factory :event
-    end
-
-    it "should create a valid event" do 
-      @event.should be_valid
-    end
-  end
-
-  describe "Push event" do 
-    before do 
+  describe "Push event" do
+    before do
       project = Factory :project
       @user = project.owner
 
-      data = { 
+      data = {
         before: "0000000000000000000000000000000000000000",
         after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
         ref: "refs/heads/master",
@@ -73,5 +48,26 @@ describe Event do
     it { @event.tag?.should be_false }
     it { @event.branch_name.should == "master" }
     it { @event.author.should == @user }
+  end
+
+  describe 'Team events' do
+    let(:user_project) { stub.as_null_object }
+    let(:observer) { UsersProjectObserver.instance }
+
+    before {
+      Event.should_receive :create
+    }
+
+    describe "Joined project team" do
+      it "should create event" do
+        observer.after_create user_project
+      end
+    end
+
+    describe "Left project team" do
+      it "should create event" do
+        observer.after_destroy user_project
+      end
+    end
   end
 end

@@ -9,7 +9,7 @@ module Gitlab
       # Example Request:
       #   GET /issues
       get do
-        present current_user.issues, with: Entities::Issue
+        present paginate(current_user.issues), with: Entities::Issue
       end
     end
 
@@ -21,7 +21,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/issues
       get ":id/issues" do
-        present user_project.issues, with: Entities::Issue
+        present paginate(user_project.issues), with: Entities::Issue
       end
 
       # Get a single project issue
@@ -48,19 +48,14 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
-        @issue = user_project.issues.new(
-          title: params[:title],
-          description: params[:description],
-          assignee_id: params[:assignee_id],
-          milestone_id: params[:milestone_id],
-          label_list: params[:labels]
-        )
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
+        @issue = user_project.issues.new attrs
         @issue.author = current_user
-
         if @issue.save
           present @issue, with: Entities::Issue
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -79,23 +74,18 @@ module Gitlab
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
         @issue = user_project.issues.find(params[:issue_id])
-        parameters = {
-          title: (params[:title] || @issue.title),
-          description: (params[:description] || @issue.description),
-          assignee_id: (params[:assignee_id] || @issue.assignee_id),
-          milestone_id: (params[:milestone_id] || @issue.milestone_id),
-          label_list: (params[:labels] || @issue.label_list),
-          closed: (params[:closed] || @issue.closed)
-        }
+        authorize! :modify_issue, @issue
 
-        if @issue.update_attributes(parameters)
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :closed]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
+        if @issue.update_attributes attrs
           present @issue, with: Entities::Issue
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
-      # Delete a project issue
+      # Delete a project issue (deprecated)
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
@@ -103,8 +93,7 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        @issue = user_project.issues.find(params[:issue_id])
-        @issue.destroy
+        not_allowed!
       end
     end
   end

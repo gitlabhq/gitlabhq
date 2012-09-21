@@ -8,7 +8,7 @@ class Project < ActiveRecord::Base
 
   #
   # Relations
-  # 
+  #
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -25,12 +25,12 @@ class Project < ActiveRecord::Base
 
   attr_accessor :error_code
 
-  # 
+  #
   # Protected attributes
   #
   attr_protected :private_flag, :owner_id
 
-  # 
+  #
   # Scopes
   #
   scope :public_only, where(private_flag: false)
@@ -104,6 +104,8 @@ class Project < ActiveRecord::Base
             length: { within: 1..255 }
 
   validates :owner, presence: true
+  validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
+            :wiki_enabled, inclusion: { in: [true, false] }
   validate :check_limit
   validate :repo_name
 
@@ -158,7 +160,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity
-    events.last || nil
+    events.order("created_at ASC").last
   end
 
   def last_activity_date
@@ -167,6 +169,10 @@ class Project < ActiveRecord::Base
     else
       updated_at
     end
+  end
+
+  def wiki_notes
+    Note.where(noteable_id: wikis.map(&:id), noteable_type: 'Wiki', project_id: self.id)
   end
 
   def project_id
@@ -187,7 +193,7 @@ end
 #  private_flag           :boolean(1)      default(TRUE), not null
 #  code                   :string(255)
 #  owner_id               :integer(4)
-#  default_branch         :string(255)     default("master"), not null
+#  default_branch         :string(255)
 #  issues_enabled         :boolean(1)      default(TRUE), not null
 #  wall_enabled           :boolean(1)      default(TRUE), not null
 #  merge_requests_enabled :boolean(1)      default(TRUE), not null

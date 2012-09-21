@@ -1,16 +1,10 @@
 = render "commits/commit_box"
 = render "commits/diffs", diffs: @commit.diffs
-= render "notes/notes", tid: @commit.id, tt: "commit"
+= render "notes/notes_with_form", tid: @commit.id, tt: "commit"
 = render "notes/per_line_form"
 
 
 :javascript
-  $(document).ready(function(){
-    $(".line_note_link, .line_note_reply_link").live("click", function(e) {
-      var form = $(".per_line_form");
-      $(this).parent().parent().after(form);
-      form.find("#note_line_code").val($(this).attr("line_code"));
-      form.show();
-      return false;
-    });
+  $(function(){
+    PerLineNotes.init();
   });

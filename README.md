@@ -39,5 +39,6 @@ Email
 
 ## Contribute
 
+[Development Tips](https://github.com/gitlabhq/gitlabhq/blob/master/doc/development.md)
 Want to help - send a pull request.
 We'll accept good pull requests.

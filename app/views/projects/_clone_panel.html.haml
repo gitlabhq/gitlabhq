@@ -1,0 +1,21 @@
+.project_clone_panel
+  .row
+    .span7
+      .form-horizontal
+        .input-prepend.project_clone_holder
+          %button{class: "btn small active", :"data-clone" => @project.ssh_url_to_repo} SSH
+          %button{class: "btn small", :"data-clone" => @project.http_url_to_repo} HTTP
+          = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span5"
+    .span4.right
+      .right
+        - unless @project.empty_repo?
+          - if can? current_user, :download_code, @project
+            = link_to archive_project_repository_path(@project), class: "btn small grouped" do
+              %i.icon-download-alt
+              Download
+          - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+            = link_to new_project_merge_request_path(@project), title: "New Merge Request", class: "btn small grouped" do
+              Merge Request
+          - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+            = link_to new_project_issue_path(@project), title: "New Issue", class: "btn small grouped" do
+              Issue

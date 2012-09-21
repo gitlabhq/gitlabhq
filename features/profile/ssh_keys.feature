@@ -1,13 +1,10 @@
-Feature: SSH Keys
-  Background: 
-    Given I signin as a user
-    And I have ssh keys:
-      | title | 
-      | Work |
-      | Home | 
+Feature: Profile SSH Keys
+  Background:
+    Given I sign in as a user
+    And I have ssh key "ssh-rsa Work"
     And I visit profile keys page
 
-  Scenario: I should see SSH keys
+  Scenario: I should see ssh keys
     Then I should see my ssh keys
 
   Scenario: Add new ssh key

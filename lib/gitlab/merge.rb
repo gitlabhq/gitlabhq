@@ -21,8 +21,7 @@ module Gitlab
         if output =~ /CONFLICT/
           false  
         else 
-          repo.git.push({}, "origin", merge_request.target_branch)
-          true
+          !!repo.git.push({}, "origin", merge_request.target_branch)
         end
       end
     end

@@ -62,7 +62,7 @@ module ApplicationHelper
         { label: "#{@project.name} / Wall", url: wall_project_path(@project) },
         { label: "#{@project.name} / Tree", url: tree_project_ref_path(@project, @project.root_ref) },
         { label: "#{@project.name} / Commits", url: project_commits_path(@project) },
-        { label: "#{@project.name} / Team", url: team_project_path(@project) }
+        { label: "#{@project.name} / Team", url: project_team_index_path(@project) }
       ]
     end
 
@@ -78,16 +78,16 @@ module ApplicationHelper
   end
 
   def show_last_push_widget?(event)
-    event && 
+    event &&
       event.last_push_to_non_root? &&
       !event.rm_ref? &&
-      event.project && 
+      event.project &&
       event.project.merge_requests_enabled
   end
 
   def tab_class(tab_key)
     active = case tab_key
-             
+
              # Project Area
              when :wall; wall_tab?
              when :wiki; controller.controller_name == "wikis"
@@ -104,7 +104,8 @@ module ApplicationHelper
 
              # Profile Area
              when :profile;  current_page?(controller: "profile", action: :show)
-             when :password; current_page?(controller: "profile", action: :password)
+             when :history;  current_page?(controller: "profile", action: :history)
+             when :account;  current_page?(controller: "profile", action: :account)
              when :token;    current_page?(controller: "profile", action: :token)
              when :design;   current_page?(controller: "profile", action: :design)
              when :ssh_keys; controller.controller_name == "keys"
@@ -125,5 +126,20 @@ module ApplicationHelper
 
   def hexdigest(string)
     Digest::SHA1.hexdigest string
+  end
+
+  def project_last_activity project
+    activity = project.last_activity
+    if activity && activity.created_at
+      time_ago_in_words(activity.created_at) + " ago"
+    else
+      "Never"
+    end
+  end
+
+  def authbutton(provider, size = 64)
+    file_name = "#{provider.to_s.split('_').first}_#{size}.png"
+    image_tag("authbuttons/#{file_name}",
+              alt: "Sign in with #{provider.to_s.titleize}")
   end
 end

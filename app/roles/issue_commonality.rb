@@ -16,7 +16,7 @@ module IssueCommonality
     validates :title,
               presence: true,
               length: { within: 0..255 }
-
+    validates :closed, inclusion: { in: [true, false] }
 
     scope :opened, where(closed: false)
     scope :closed, where(closed: true)

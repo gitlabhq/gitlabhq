@@ -6,13 +6,13 @@
     .right
       .span5
         - if can? current_user, :write_issue, @project
-          = link_to new_project_issue_path(@project), class: "right btn small", title: "New Issue", remote: true do
+          = link_to new_project_issue_path(@project), class: "right btn", title: "New Issue", remote: true, id: "new_issue_link" do
             %i.icon-plus
             New Issue
         = form_tag search_project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: :right  do
           = hidden_field_tag :project_id, @project.id, { id: 'project_id' }
           = hidden_field_tag :status, params[:f]
-          = search_field_tag :issue_search, nil, { placeholder: 'Search', class: 'issue_search span3 right neib' }
+          = search_field_tag :issue_search, nil, { placeholder: 'Search', class: 'issue_search span3 right neib search-text-input' }
 
   .clearfix
 

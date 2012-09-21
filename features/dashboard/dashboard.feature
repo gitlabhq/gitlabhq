@@ -1,9 +1,9 @@
 Feature: Dashboard
-  Background: 
-    Given I signin as a user
+  Background:
+    Given I sign in as a user
     And I own project "Shop"
     And project "Shop" has push event
-    And I visit dashboard page 
+    And I visit dashboard page
 
   Scenario: I should see projects list
     Then I should see "New Project" link
@@ -15,4 +15,13 @@ Feature: Dashboard
     And I click "Create Merge Request" link
     Then I see prefilled new Merge Request page
 
+  Scenario: I should see User joined Project event
+    Given user with name "John Doe" joined project "Shop"
+    When I visit dashboard page
+    Then I should see "John Doe joined project Shop" event
 
+  Scenario: I should see User left Project event
+    Given user with name "John Doe" joined project "Shop"
+    And user with name "John Doe" left project "Shop"
+    When I visit dashboard page
+    Then I should see "John Doe left project Shop" event

@@ -8,7 +8,9 @@ class EventDecorator < ApplicationDecorator
       "#{self.author_name} #{self.action_name} MR ##{self.target_id}:" + self.merge_request_title
     elsif self.push?
       "#{self.author_name} #{self.push_action_name} #{self.ref_type} " + self.ref_name
-    else 
+    elsif self.membership_changed?
+      "#{self.author_name} #{self.action_name} #{self.project.name}"
+    else
       ""
     end
   end

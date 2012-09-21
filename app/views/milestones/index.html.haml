@@ -8,11 +8,11 @@
   %div.ui-box
     .title
       %ul.nav.nav-pills
-        %li{class: ("active" if (params[:f] == "0" || !params[:f]))}
-          = link_to project_milestones_path(@project, f: 0) do
+        %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
+          = link_to project_milestones_path(@project, f: "active") do
             Active
-        %li{class: ("active" if params[:f] == "1")}
-          = link_to project_milestones_path(@project, f: 1) do
+        %li{class: ("active" if params[:f] == "all")}
+          = link_to project_milestones_path(@project, f: "all") do
             All
 
     %ul.unstyled

@@ -22,7 +22,7 @@
         = f.label :description, "Description", class: "control-label"
         .controls
           = f.text_area :description, maxlength: 2000, class: "input-xlarge", rows: 10
-          %p.hint Markdown is enabled.
+          %p.hint Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
     .span6
       .control-group
         = f.label :due_date, "Due Date", class: "control-label"
@@ -32,20 +32,16 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "primary btn"
+      = f.submit 'Create milestone', class: "save-btn btn"
+      = link_to "Cancel", project_milestones_path(@project), class: "btn cancel-btn"
     -else
-      = f.submit 'Save changes', class: "primary btn"
+      = f.submit 'Save changes', class: "save-btn btn"
+      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn cancel-btn"
 
-    - if request.xhr?
-      = link_to "Cancel", "#back", onclick: "backToIssues();", class: "btn"
-    - else
-      - if @milestone.new_record?
-        = link_to "Cancel", project_milestones_path(@project), class: "btn"
-      - else
-        = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn"
 
 :javascript
   $(function() {
+    disableButtonIfEmptyField("#milestone_title", ".save-btn");
     $( ".datepicker" ).datepicker({
       dateFormat: "yy-mm-dd",
       onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }

@@ -19,21 +19,30 @@
               = link_to new_project_path, class: "btn very_small info" do
                 %i.icon-plus
                 New Project
-        - @projects.each do |project|
-          = link_to project_path(project), class: dom_class(project) do
-            %h4
-              %span.ico.project
-              = truncate(project.name, length: 25)
-              %span.right
-                &rarr;
+        %ul.unstyled
+          - @projects.each do |project|
+            %li.wll
+              = link_to project_path(project), class: dom_class(project) do
+                %strong.project_name= truncate(project.name, length: 25)
+                %span.arrow
+                  &rarr;
+                %span.last_activity
+                  %strong Last activity:
+                  %span= project_last_activity(project)
         .bottom= paginate @projects, theme: "gitlab"
 
-      %hr
       %div
         %span.rss-icon
           = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
             = image_tag "rss_ui.png", title: "feed"
             %strong News Feed
+
+      %hr
+      .gitlab-promo
+        = link_to "Homepage", "http://gitlabhq.com"
+        = link_to "Blog", "http://blog.gitlabhq.com"
+        = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+
 
 - else
   %h3.nothing_here_message There are no projects you have access to.

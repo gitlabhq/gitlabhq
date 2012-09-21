@@ -1,11 +1,10 @@
-IMPORT_DIRECTORY = 'import_projects'
-REPOSITORY_DIRECTORY = '/home/git/repositories'
 
-desc "Imports existing Git repos into new projects from the import_projects folder"
-task :import_projects, [:email] => :environment  do |t, args|
+desc "Imports existing Git repos from a directory into new projects in git_base_path"
+task :import_projects, [:directory,:email] => :environment  do |t, args|
   user_email = args.email
-  repos_to_import = Dir.glob("#{IMPORT_DIRECTORY}/*")
-
+  import_directory = args.directory
+  repos_to_import = Dir.glob("#{import_directory}/*")
+  git_base_path = Gitlab.config.git_base_path
   puts "Found #{repos_to_import.length} repos to import"
 
   imported_count = 0
@@ -13,11 +12,9 @@ task :import_projects, [:email] => :environment  do |t, args|
   failed_count = 0
   repos_to_import.each do |repo_path|
     repo_name = File.basename repo_path
-    repo_full_path = File.join(Rails.root, repo_path)
 
     puts "  Processing #{repo_name}"
-
-    clone_path = "#{REPOSITORY_DIRECTORY}/#{repo_name}.git"
+    clone_path = "#{git_base_path}#{repo_name}.git"
 
     if Dir.exists? clone_path
       if Project.find_by_code(repo_name)
@@ -29,7 +26,7 @@ task :import_projects, [:email] => :environment  do |t, args|
       end
     else
       # Clone the repo
-      unless clone_bare_repo_as_git(repo_full_path, clone_path)
+      unless clone_bare_repo_as_git(repo_path, clone_path)
         failed_count += 1
         next
       end
@@ -47,14 +44,17 @@ task :import_projects, [:email] => :environment  do |t, args|
   puts "Finished importing #{imported_count} projects (skipped #{skipped_count}, failed #{failed_count})."
 end
 
-# Clones a repo as bare git repo using the git user
+# Clones a repo as bare git repo using the git_user
 def clone_bare_repo_as_git(existing_path, new_path)
+  git_user = Gitlab.config.ssh_user
   begin
-    sh "sudo -u git -i git clone --bare '#{existing_path}' #{new_path}"
+    sh "sudo -u #{git_user} -i git clone --bare '#{existing_path}' #{new_path}"
     true
-  rescue
+  rescue Exception=> msg
     puts "  ERROR: Faild to clone #{existing_path} to #{new_path}"
-    false
+	puts "	Make sure #{git_user} can reach #{existing_path}"
+	puts "	Exception-MSG: #{msg}"
+	false
   end
 end
 

@@ -3,8 +3,8 @@
     = label_tag :search do
       %strong Looking for
     .input
-      = text_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge", id: "dashboard_search"
-      = submit_tag 'Search', class: "btn btn-primary"
+      = search_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge search-text-input", id: "dashboard_search"
+      = submit_tag 'Search', class: "btn primary wide"
 - if params[:search].present?
   %br
   %h3
@@ -14,9 +14,10 @@
   .search_results
     .row
       .span6
-        %table.admin-table
-          %tr
-            %th Projects
+        %table
+          %thead
+            %tr
+              %th Projects
           %tbody
             - @projects.each do |project|
               %tr
@@ -31,9 +32,10 @@
                 %td
                   %h4.nothing_here_message No Projects
         %br
-        %table.admin-table
-          %tr
-            %th Merge Requests
+        %table
+          %thead
+            %tr
+              %th Merge Requests
           %tbody
             - @merge_requests.each do |merge_request|
               %tr
@@ -49,9 +51,10 @@
                 %td
                   %h4.nothing_here_message No Merge Requests
       .span6
-        %table.admin-table
-          %tr
-            %th Issues
+        %table
+          %thead
+            %tr
+              %th Issues
           %tbody
             - @issues.each do |issue|
               %tr

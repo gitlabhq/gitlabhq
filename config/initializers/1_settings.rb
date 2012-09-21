@@ -6,7 +6,7 @@ class Settings < Settingslogic
       self.web['protocol'] ||= web.https ? "https" : "http"
     end
 
-    def web_host 
+    def web_host
       self.web['host'] ||= 'localhost'
     end
 
@@ -14,11 +14,11 @@ class Settings < Settingslogic
       self.email['from'] ||= ("notify@" + web_host)
     end
 
-    def url 
+    def url
       self['url'] ||= build_url
-    end 
+    end
 
-    def web_port 
+    def web_port
       if web.https
         web['port'] = 443
       else
@@ -36,7 +36,7 @@ class Settings < Settingslogic
       raw_url << web_host
 
       if web_custom_port?
-        raw_url << ":#{web_port}" 
+        raw_url << ":#{web_port}"
       end
 
       raw_url
@@ -64,6 +64,10 @@ class Settings < Settingslogic
 
     def git_base_path
       git_host['base_path'] || '/home/git/repositories/'
+    end
+
+    def git_hooks_path
+      git_host['hooks_path'] || '/home/git/share/gitolite/hooks/'
     end
 
     def git_upload_pack
@@ -98,6 +102,10 @@ class Settings < Settingslogic
       git_host['admin_uri'] || 'git@localhost:gitolite-admin'
     end
 
+    def gitolite_admin_key
+      git_host['gitolite_admin_key'] || 'gitlab'
+    end
+
     def default_projects_limit
       app['default_projects_limit'] || 10
     end
@@ -110,6 +118,22 @@ class Settings < Settingslogic
 
     def backup_keep_time
       app['backup_keep_time'] || 0
+    end
+
+    def ldap_enabled?
+      ldap && ldap['enabled']
+    rescue Settingslogic::MissingSetting
+      false
+    end
+
+    def omniauth_enabled?
+      omniauth && omniauth['enabled']
+    rescue Settingslogic::MissingSetting
+      false
+    end
+
+    def omniauth_providers
+      (omniauth_enabled? && omniauth['providers']) || []
     end
 
     def disable_gravatar?

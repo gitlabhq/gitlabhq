@@ -52,14 +52,3 @@ describe ProjectHook do
     end
   end
 end
-# == Schema Information
-#
-# Table name: web_hooks
-#
-#  id         :integer(4)      not null, primary key
-#  url        :string(255)
-#  project_id :integer(4)
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#
-

@@ -4,7 +4,7 @@
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
   .right
     - issue.labels.each do |label|
-      %span.label.label-issue.grouped
+      %span.label.label-tag.grouped
         %i.icon-tag
         = label.name
     - if issue.notes.any?
@@ -34,5 +34,5 @@
     - else
       &nbsp;
 
-    - if issue.upvotes > 0
-      %span.badge.badge-success= "+#{issue.upvotes}"
+    - if issue.votes_count > 0
+      = render 'votes/votes_inline', votable: issue

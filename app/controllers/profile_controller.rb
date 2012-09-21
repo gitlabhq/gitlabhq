@@ -16,9 +16,6 @@ class ProfileController < ApplicationController
   def token
   end
 
-  def password
-  end
-
   def password_update
     params[:user].reject!{ |k, v| k != "password" && k != "password_confirmation"}
 
@@ -32,10 +29,14 @@ class ProfileController < ApplicationController
 
   def reset_private_token
     current_user.reset_authentication_token!
-    redirect_to profile_token_path
+    redirect_to profile_account_path
   end
 
-  private 
+  def history
+    @events = current_user.recent_events.page(params[:page]).per(20)
+  end
+
+  private
 
   def user
     @user = current_user

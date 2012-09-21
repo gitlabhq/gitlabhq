@@ -1,9 +1,9 @@
 %h3.page_title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.pretty_label.branch= @merge_request.source_branch
+  %span.label_branch= @merge_request.source_branch
   &rarr;
-  %span.pretty_label.branch= @merge_request.target_branch
+  %span.label_branch= @merge_request.target_branch
 
   %span.right
     - if @merge_request.merged?
@@ -23,10 +23,8 @@
           %i.icon-edit
           Edit
 
-    %br
-    - if @merge_request.upvotes > 0
-      .upvotes#upvotes= "+#{pluralize @merge_request.upvotes, 'upvote'}"
-
+.right
+  .span3#votes= render 'votes/votes_block', votable: @merge_request
 
 .back_link
   = link_to project_merge_requests_path(@project) do

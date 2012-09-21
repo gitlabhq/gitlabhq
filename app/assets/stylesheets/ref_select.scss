@@ -12,37 +12,45 @@
   width:120px;
 }
 
-.project-refs-form .chzn-container { 
+.project-refs-form .chzn-container {
   position: relative;
   top: 0;
   left: 0;
   margin-right: 10px;
 
-  .chzn-drop { 
+  .chzn-drop {
     margin:7px 0;
-    border: 1px solid #CCC;
-    min-width: 300px;
+    min-width: 400px;
+    border: 2px solid $blue_link;
+    @include border-radius(4px);
 
-    .chzn-results { 
+    .chzn-results {
       max-height:300px;
+
+      .group-result {
+        color: $blue_link;
+      }
+      .active-result {
+        &.highlighted {
+          background: $blue_link;
+        }
+      }
     }
 
     .chzn-search input {
-      min-width:200px;
+      min-width:365px;
     }
   }
 
-  .chzn-single { 
-    background:#ddd;
-    //border:none;
-    //box-shadow:none;
+  .chzn-single {
+    @include bg-gray-gradient;
 
-    div { 
+    div {
       background:transparent;
       border-left:none;
     }
 
-    span { 
+    span {
       font-weight: normal;
     }
   }

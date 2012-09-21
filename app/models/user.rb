@@ -86,33 +86,20 @@ class User < ActiveRecord::Base
     where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
   end
 
-  def self.find_for_ldap_auth(auth, signed_in_resource=nil)
-    uid = auth.info.uid
-    provider = auth.provider
-    name = auth.info.name.force_encoding("utf-8")
-    email = auth.info.email.downcase unless auth.info.email.nil?
-    raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? or email.nil?
+  def self.create_from_omniauth(auth, ldap = false)
+    gitlab_auth.create_from_omniauth(auth, ldap)
+  end
 
-    if @user = User.find_by_extern_uid_and_provider(uid, provider)
-      @user
-    # workaround for backward compatibility
-    elsif @user = User.find_by_email(email)
-      logger.info "Updating legacy LDAP user #{email} with extern_uid => #{uid}"
-      @user.update_attributes(:extern_uid => uid, :provider => provider)
-      @user
-    else
-      logger.info "Creating user from LDAP login {uid => #{uid}, name => #{name}, email => #{email}}"
-      password = Devise.friendly_token[0, 8].downcase
-      @user = User.create(
-        :extern_uid => uid,
-        :provider => provider,
-        :name => name,
-        :email => email,
-        :password => password,
-        :password_confirmation => password,
-        :projects_limit => Gitlab.config.default_projects_limit
-      )
-    end
+  def self.find_or_new_for_omniauth(auth)
+    gitlab_auth.find_or_new_for_omniauth(auth)
+  end
+
+  def self.find_for_ldap_auth(auth, signed_in_resource = nil)
+    gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
+  end
+
+  def self.gitlab_auth
+    Gitlab::Auth.new
   end
 
   def self.search query
@@ -148,4 +135,3 @@ end
 #  bio                    :string(255)
 #  blocked                :boolean(1)      default(FALSE), not null
 #
-

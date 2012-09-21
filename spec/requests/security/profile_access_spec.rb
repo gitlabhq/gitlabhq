@@ -11,24 +11,30 @@ describe "Users Security" do
     end
 
     describe "GET /keys" do
-      it { keys_path.should be_allowed_for @u1 }
-      it { keys_path.should be_allowed_for :admin }
-      it { keys_path.should be_allowed_for :user }
-      it { keys_path.should be_denied_for :visitor }
+      subject { keys_path }
+
+      it { should be_allowed_for @u1 }
+      it { should be_allowed_for :admin }
+      it { should be_allowed_for :user }
+      it { should be_denied_for :visitor }
     end
 
     describe "GET /profile" do
-      it { profile_path.should be_allowed_for @u1 }
-      it { profile_path.should be_allowed_for :admin }
-      it { profile_path.should be_allowed_for :user }
-      it { profile_path.should be_denied_for :visitor }
+      subject { profile_path }
+
+      it { should be_allowed_for @u1 }
+      it { should be_allowed_for :admin }
+      it { should be_allowed_for :user }
+      it { should be_denied_for :visitor }
     end
 
-    describe "GET /profile/password" do
-      it { profile_password_path.should be_allowed_for @u1 }
-      it { profile_password_path.should be_allowed_for :admin }
-      it { profile_password_path.should be_allowed_for :user }
-      it { profile_password_path.should be_denied_for :visitor }
+    describe "GET /profile/account" do
+      subject { profile_account_path }
+
+      it { should be_allowed_for @u1 }
+      it { should be_allowed_for :admin }
+      it { should be_allowed_for :user }
+      it { should be_denied_for :visitor }
     end
   end
 end

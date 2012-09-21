@@ -19,12 +19,12 @@
     .entry.clearfix
       = f.label :name, "Branch"
       .span3
-        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , { include_blank: "-- Select branch" }, { class: "span3" })
+        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
       &nbsp;
       = f.submit 'Protect', class: "primary btn"
 
 - unless @branches.empty?
-  %table.admin-table
+  %table
     %thead
       %tr
         %th Name
@@ -46,6 +46,3 @@
           %td
             - if can? current_user, :admin_project, @project
               = link_to 'Unprotect', [@project, branch], confirm: 'Are you sure?', method: :delete, class: "danger btn small"
-
-:javascript
-  $('select#protected_branch_name').chosen();

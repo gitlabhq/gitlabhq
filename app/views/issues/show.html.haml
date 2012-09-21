@@ -8,21 +8,21 @@
   %span.right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       - if @issue.closed
-        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn small"
+        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped success"
       - else
-        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn small", title: "Close Issue"
+        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn grouped danger", title: "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
-      = link_to edit_project_issue_path(@project, @issue), class: "btn small" do
+      = link_to edit_project_issue_path(@project, @issue), class: "btn grouped" do
         %i.icon-edit
         Edit
 
-    %br
-    - if @issue.upvotes > 0
-      .upvotes#upvotes= "+#{pluralize @issue.upvotes, 'upvote'}"
+.right
+  .span3#votes= render 'votes/votes_block', votable: @issue
 
 .back_link
   = link_to project_issues_path(@project) do
     &larr; To issues list
+
 
 .main_box
   .top_box_content
@@ -31,7 +31,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = gfm @issue.title
+      = gfm escape_once(@issue.title)
 
   .middle_box_content
     %cite.cgray Created by
@@ -61,4 +61,4 @@
         = markdown @issue.description
 
 
-.issue_notes#notes= render "notes/notes", tid: @issue.id, tt: "issue"
+.issue_notes.voting_notes#notes= render "notes/notes_with_form", tid: @issue.id, tt: "issue"

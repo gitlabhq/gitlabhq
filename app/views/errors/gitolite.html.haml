@@ -1,6 +1,6 @@
 %h1 Git Error
 %hr
-%h2 Gitlab was unable to access your Gitolite system.
+%h2 GitLab was unable to access your Gitolite system.
 
 .git_error_tips
   %h4 Tips for Administrator:
@@ -21,5 +21,5 @@
         Permissions:
       %pre
         = preserve do
-          sudo chmod -R 770 /home/git/repositories/
-          sudo chown -R git:git /home/git/repositories/
+          sudo chmod -R 770 #{Gitlab.config.git_base_path}
+          sudo chown -R git:git #{Gitlab.config.git_base_path}

@@ -1,19 +1,6 @@
-# == Schema Information
-#
-# Table name: protected_branches
-#
-#  id         :integer(4)      not null, primary key
-#  project_id :integer(4)      not null
-#  name       :string(255)     not null
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#
-
 require 'spec_helper'
 
 describe ProtectedBranch do
-  let(:project) { Factory(:project) }
-
   describe 'Associations' do
     it { should belong_to(:project) }
   end
@@ -24,26 +11,26 @@ describe ProtectedBranch do
   end
 
   describe 'Callbacks' do
-    subject { ProtectedBranch.new(project: project, name: 'branch_name') }
+    let(:branch) { build(:protected_branch) }
 
     it 'call update_repository after save' do
-      subject.should_receive(:update_repository)
-      subject.save
+      branch.should_receive(:update_repository)
+      branch.save
     end
 
     it 'call update_repository after destroy' do
-      subject.should_receive(:update_repository)
-      subject.destroy
+      branch.save
+      branch.should_receive(:update_repository)
+      branch.destroy
     end
   end
 
   describe '#commit' do
-    subject { ProtectedBranch.new(project: project, name: 'cant_touch_this') }
+    let(:branch) { create(:protected_branch) }
 
     it 'commits itself to its project' do
-      project.should_receive(:commit).with('cant_touch_this')
-
-      subject.commit
+      branch.project.should_receive(:commit).with(branch.name)
+      branch.commit
     end
   end
 end

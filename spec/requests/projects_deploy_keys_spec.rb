@@ -42,7 +42,7 @@ describe "Projects", "DeployKeys" do
     describe "fill in" do
       before do
         fill_in "key_title", with: "laptop"
-        fill_in "key_key", with: "publickey234="
+        fill_in "key_key", with: "ssh-rsa publickey234="
       end
 
       it { expect { click_button "Save" }.to change {Key.count}.by(1) }
@@ -55,12 +55,12 @@ describe "Projects", "DeployKeys" do
     end
   end
 
-  describe "Show page" do 
+  describe "Show page" do
     before do
       @key = Factory :key, project: project
-      visit project_deploy_key_path(project, @key) 
+      visit project_deploy_key_path(project, @key)
     end
-    
+
     it { page.should have_content @key.title }
     it { page.should have_content @key.key[0..10] }
   end

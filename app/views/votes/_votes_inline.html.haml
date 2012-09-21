@@ -1,0 +1,6 @@
+.votes.votes-inline
+  .upvotes= votable.upvotes
+  .progress
+    .bar.bar-success{style: "width: #{votable.upvotes_in_percent}%;"}
+    .bar.bar-danger{style: "width: #{votable.downvotes_in_percent}%;"}
+  .downvotes= votable.downvotes

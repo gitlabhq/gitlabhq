@@ -204,4 +204,21 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
+
+  gl = Gitlab.config
+
+  if gl.ldap_enabled?
+    config.omniauth :ldap,
+      :host     => gl.ldap['host'],
+      :base     => gl.ldap['base'],
+      :uid      => gl.ldap['uid'],
+      :port     => gl.ldap['port'],
+      :method   => gl.ldap['method'],
+      :bind_dn  => gl.ldap['bind_dn'],
+      :password => gl.ldap['password']
+  end
+
+  gl.omniauth_providers.each do |gl_provider|
+    config.omniauth gl_provider['name'].to_sym, gl_provider['app_id'], gl_provider['app_secret']
+  end
 end

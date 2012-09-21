@@ -1,6 +1,7 @@
 class Commit
   include ActiveModel::Conversion
   include Gitlab::Encode
+  include StaticModel
   extend ActiveModel::Naming
 
   attr_accessor :commit
@@ -22,8 +23,7 @@ class Commit
     :to_patch,
     to: :commit
 
-
-  class << self 
+  class << self
     def find_or_first(repo, commit_id = nil, root_ref)
       commit = if commit_id
                  repo.commit(commit_id)
@@ -82,20 +82,24 @@ class Commit
     end
 
     def compare(project, from, to)
-      first = project.commit(to.try(:strip))
-      last = project.commit(from.try(:strip))
-
-      result = { 
+      result = {
         commits: [],
         diffs: [],
-        commit: nil
+        commit: nil,
+        same: false
       }
+
+      return result unless from && to
+
+      first = project.commit(to.try(:strip))
+      last = project.commit(from.try(:strip))
 
       if first && last
         commits = [first, last].sort_by(&:created_at)
         younger = commits.first
         older = commits.last
 
+        result[:same] = (younger.id == older.id)
         result[:commits] = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
         result[:diffs] = project.repo.diff(younger.id, older.id) rescue []
         result[:commit] = Commit.new(older)
@@ -103,10 +107,6 @@ class Commit
 
       result
     end
-  end
-
-  def persisted?
-    false
   end
 
   def initialize(raw_commit, head = nil)
@@ -155,7 +155,7 @@ class Commit
     prev_commit.try :id
   end
 
-  def parents_count 
+  def parents_count
     parents && parents.count || 0
   end
 end

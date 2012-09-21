@@ -52,6 +52,7 @@ class CommitsController < ApplicationController
     @commits = result[:commits]
     @commit  = result[:commit]
     @diffs   = result[:diffs]
+    @refs_are_same = result[:same]
     @line_notes = []
 
     @commits = CommitDecorator.decorate(@commits)
@@ -59,12 +60,19 @@ class CommitsController < ApplicationController
 
   def patch
     @commit = project.commit(params[:id])
-    
+
     send_data(
       @commit.to_patch,
       type: "text/plain",
       disposition: 'attachment',
-      filename: (@commit.id.to_s + ".patch")
+      filename: "#{@commit.id}.patch"
     )
+  end
+
+  protected
+
+  def load_refs
+    @ref ||= params[:ref].presence || params[:branch].presence || params[:tag].presence
+    @ref ||= @ref || @project.try(:default_branch) || 'master'
   end
 end

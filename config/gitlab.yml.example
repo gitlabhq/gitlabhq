@@ -25,18 +25,55 @@ app:
   # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
   # disable_gravatar: true        # default: false - Disable user avatars from Gravatar.com
 
+
 #
-# 2. Advanced settings:
+# 2. Auth settings
+# ==========================
+ldap: 
+  enabled: false
+  host: '_your_ldap_server'
+  base: '_the_base_where_you_search_for_users'
+  port: 636
+  uid: 'sAMAccountName'
+  method: 'ssl' # plain
+  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+  password: '_the_password_of_the_bind_user'
+
+omniauth:
+  # Enable ability for users
+  # to login via twitter, google ..
+  enabled: false
+
+  # IMPORTANT! 
+  # It allows user to login without having user account
+  allow_single_sign_on: false
+  block_auto_created_users: true
+
+  # Auth providers 
+  providers:
+    # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
+    #     app_secret: 'YOUR APP SECRET',
+    #     args: { access_type: 'offline', approval_prompt: '' } }
+    # - { name: 'twitter', app_id: 'YOUR APP ID',
+    #     app_secret: 'YOUR APP SECRET'}
+    # - { name: 'github', app_id: 'YOUR APP ID',
+    #     app_secret: 'YOUR APP SECRET' }
+
+
+#
+# 3. Advanced settings:
 # ==========================
 
 # Git Hosting configuration
 git_host:
   admin_uri: git@localhost:gitolite-admin
   base_path: /home/git/repositories/
-  # host: localhost
+  hooks_path: /home/git/.gitolite/hooks/
+  gitolite_admin_key: gitlab 
   git_user: git
   upload_pack: true
   receive_pack: true
+  # host: localhost
   # port: 22
 
 # Git settings

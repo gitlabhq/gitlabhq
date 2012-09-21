@@ -21,7 +21,7 @@
         .alert-message.error.status_info Closed
       - else
         .alert-message.success.status_info Open
-      = gfm @milestone.title
+      = gfm escape_once(@milestone.title)
       %small.right= @milestone.expires_at
 
   .middle_box_content
@@ -42,7 +42,7 @@
 
 .row
   .span6
-    %table.admin-table
+    %table
       %thead
         %th Open Issues
       - @issues.each do |issue|
@@ -56,7 +56,7 @@
     = paginate @issues, theme: "gitlab"
 
   .span6
-    %table.admin-table
+    %table
       %thead
         %th Participants
       - @users.each do |user|
