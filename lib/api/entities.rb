@@ -24,13 +24,18 @@ module Gitlab
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
     end
 
-    class UsersProject < Grape::Entity
-      expose :user, using: Entities::UserBasic
-      expose :project_access
+    class ProjectMember < UserBasic
+      expose :project_access, :as => :access_level do |user, options|
+        options[:project].users_projects.find_by_user_id(user.id).project_access
+      end
     end
 
     class RepoObject < Grape::Entity
       expose :name, :commit
+    end
+
+    class RepoCommit < Grape::Entity
+      expose :id, :short_id, :title, :author_name, :author_email, :created_at
     end
 
     class ProjectSnippet < Grape::Entity
@@ -55,8 +60,8 @@ module Gitlab
       expose :closed, :updated_at, :created_at
     end
 
-    class Key < Grape::Entity
-      expose  :id, :title, :key
+    class SSHKey < Grape::Entity
+      expose :id, :title, :key
     end
   end
 end

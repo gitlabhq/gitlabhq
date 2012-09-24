@@ -79,6 +79,14 @@ module Repository
     @heads ||= repo.heads
   end
 
+  def branches_names
+    heads.map(&:name)
+  end
+
+  def ref_names
+    [branches_names + tags].flatten
+  end
+
   def tree(fcommit, path = nil)
     fcommit = commit if fcommit == :head
     tree = fcommit.tree
