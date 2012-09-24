@@ -37,3 +37,8 @@
           = f.file_field :attachment, class: "input-file"
         %span.hint Any file less than 10 MB
 
+:javascript
+  $(function(){
+    var names = #{@project.users.pluck(:name)};
+    $('.note-text').atWho('@', { data: names });
+  });
