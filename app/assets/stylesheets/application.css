@@ -4,6 +4,7 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require jquery.ui.all
  *= require jquery.ui.aristo
+ *= require jquery.atwho
  *= require chosen
  *= require_self
  *= require main
