@@ -3,33 +3,35 @@
  *
  */
 .event_label {
-  /*@extend .label;*/
-  /*background-color: #999;*/
+  &.pushed {
+    padding:0 2px;
+    @extend .alert;
+    @extend .alert-info;
+  }
 
-  /*&.pushed {*/
-    /*background-color: #4A97BD;*/
-  /*}*/
+  &.opened {
+    padding:0 2px;
+    @extend .alert;
+    @extend .alert-success;
+  }
 
-  /*&.opened {*/
-    /*background-color: #469847;*/
-  /*}*/
+  &.closed {
+    padding:0 2px;
+    @extend .alert;
+    @extend .alert-error;
+  }
 
-  /*&.closed {*/
-    /*background-color: #B94A48;*/
-  /*}*/
+  &.merged {
+    padding:0 2px;
+    @extend .alert;
+    @extend .alert-success;
+  }
 
-  /*&.merged {*/
-    /*background-color: #2A2;*/
-  /*}*/
-
-  /*&.joined {*/
-    /*background-color: #1ca9dd;*/
-  /*}*/
-
-  /*&.left {*/
-    /*background-color: #888;*/
-    /*float:none;*/
-  /*}*/
+  &.left,
+  &.joined {
+    padding:0 2px;
+    @extend .alert;
+  }
 }
 
 /**
@@ -43,11 +45,14 @@
     color:#333;
     font-weight: bold;
     .author_name {
-      color:#777;
+      color:#333;
     }
   }
   .event-body {
     p {
+      color:#666;
+    }
+    .event-info {
       color:#666;
     }
   }

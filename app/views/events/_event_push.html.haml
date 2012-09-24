@@ -4,8 +4,7 @@
 
   .event-title
     %strong.author_name #{event.author_name}
-    %span.event_label.pushed= event.push_action_name
-    = event.ref_type
+    %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
     = link_to project_commits_path(event.project, ref: event.ref_name) do
       %strong= event.ref_name
     at
