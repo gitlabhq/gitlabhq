@@ -1,0 +1,53 @@
+%RC = (
+    UMASK                       =>  <%= @gitolite_umask -%>,
+    GIT_CONFIG_KEYS             =>  '',
+    LOG_EXTRA                   =>  1,
+    ROLES                       =>
+        {
+            READERS             =>  1,
+            WRITERS             =>  1,
+        },
+    COMMANDS                    =>
+        {
+            'help'              =>  1,
+            'desc'              =>  1,
+            'info'              =>  1,
+            'perms'             =>  1,
+            'writable'          =>  1,
+        },
+    SYNTACTIC_SUGAR             =>
+        [
+        ],
+    INPUT                       =>
+        [
+        ],
+    ACCESS_1                    =>
+        [
+        ],
+    PRE_GIT                     =>
+        [
+        ],
+    ACCESS_2                    =>
+        [
+        ],
+    POST_GIT                    =>
+        [
+        ],
+    PRE_CREATE                  =>
+        [
+        ],
+    POST_CREATE                 =>
+        [
+            'post-compile/update-git-configs',
+            'post-compile/update-gitweb-access-list',
+            'post-compile/update-git-daemon-access-list',
+        ],
+    POST_COMPILE                =>
+        [
+            'post-compile/ssh-authkeys',
+            'post-compile/update-git-configs',
+            'post-compile/update-gitweb-access-list',
+            'post-compile/update-git-daemon-access-list',
+        ],
+);
+1;
