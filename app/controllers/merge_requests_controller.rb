@@ -1,5 +1,4 @@
 class MergeRequestsController < ApplicationController
-  before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
   before_filter :merge_request, only: [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check, :raw]
