@@ -8,7 +8,7 @@ module ExtractsPath
 
   included do
     if respond_to?(:before_filter)
-      before_filter :assign_ref_vars
+      before_filter :assign_ref_vars, only: [:show]
     end
   end
 
