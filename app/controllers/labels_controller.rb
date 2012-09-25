@@ -1,5 +1,4 @@
 class LabelsController < ApplicationController
-  before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
 

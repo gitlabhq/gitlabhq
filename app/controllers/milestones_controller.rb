@@ -1,5 +1,4 @@
 class MilestonesController < ApplicationController
-  before_filter :authenticate_user!
   before_filter :project
   before_filter :module_enabled
   before_filter :milestone, only: [:edit, :update, :destroy, :show]
