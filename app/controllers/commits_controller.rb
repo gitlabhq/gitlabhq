@@ -25,15 +25,4 @@ class CommitsController < ApplicationController
       format.atom { render layout: false }
     end
   end
-
-  def patch
-    @commit = project.commit(params[:id])
-
-    send_data(
-      @commit.to_patch,
-      type: "text/plain",
-      disposition: 'attachment',
-      filename: "#{@commit.id}.patch"
-    )
-  end
 end
