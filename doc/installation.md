@@ -276,8 +276,7 @@ a different host, you can configure its connection string in the
     sudo apt-get install nginx
 
     # Add GitLab to nginx sites & change with your host specific settings
-    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P /etc/nginx/sites-available/
-    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P /etc/nginx/conf.d/gitlab.conf
 
     # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
     # to the IP address and fully-qualified domain name
