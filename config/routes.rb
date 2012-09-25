@@ -161,31 +161,25 @@ Gitlab::Application.routes.draw do
 
     # XXX: WIP
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-    resources :commits, only: [:show], constraints: {id: /.+/}, as: 'history'
+    resources :commits, only: [:show], constraints: {id: /.+/}
+    resources :compare, only: [:index]
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :blob,    only: [:show], constraints: {id: /.+/}
-    # resources :raw,    only: [:show], constraints: {id: /.+/}
-    resources :tree,   only: [:show], constraints: {id: /.+/}
+    resources :tree,    only: [:show], constraints: {id: /.+/}
     match "/compare/:from...:to" => "compare#show", as: "compare", constraints: {from: /.+/, to: /.+/}
-
-    # resources :commits, only: [:show], as: 'history' do
-    #   member do
-    #     get :patch
-    #   end
-    # end
 
     resources :team, controller: 'team_members', only: [:index]
     resources :team_members
     resources :milestones
     resources :labels, only: [:index]
     resources :issues do
-
       collection do
         post  :sort
         post  :bulk_update
         get   :search
       end
     end
+
     resources :notes, only: [:index, :create, :destroy] do
       collection do
         post :preview
