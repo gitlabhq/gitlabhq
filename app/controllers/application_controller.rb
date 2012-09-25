@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :set_current_user_for_mailer
-  before_filter :check_token_auth
   before_filter :set_current_user_for_observers
   before_filter :dev_tools if Rails.env == 'development'
 
@@ -25,13 +24,6 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
   protected
-
-  def check_token_auth
-    # Redirect to login page if not atom feed
-    if params[:private_token].present? && params[:format] != 'atom'
-      redirect_to new_user_session_path
-    end
-  end
 
   def reject_blocked!
     if current_user && current_user.blocked
