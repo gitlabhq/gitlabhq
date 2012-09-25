@@ -1,6 +1,17 @@
 require 'digest/md5'
 module ApplicationHelper
 
+  # Check if a particular controller is the current one
+  #
+  # Examples
+  #
+  #   # On TreeController
+  #   current_controller?(:tree)    # => true
+  #   current_controller?(:commits) # => false
+  def current_controller?(name)
+    controller.controller_name == name.to_s.downcase
+  end
+
   def gravatar_icon(user_email = '', size = 40)
     if Gitlab.config.disable_gravatar? || user_email.blank?
       'no_avatar.png'

@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 describe ApplicationHelper do
+  describe 'current_controller?' do
+    before do
+      controller.stub!(:controller_name).and_return('foo')
+    end
+
+    it "returns true when controller matches argument" do
+      current_controller?(:foo).should be_true
+    end
+
+    it "returns false when controller does not match argument" do
+      current_controller?(:bar).should_not be_true
+    end
+  end
+
   describe "gravatar_icon" do
     let(:user_email) { 'user@email.com' }
 
