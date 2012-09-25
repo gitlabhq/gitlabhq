@@ -19,5 +19,5 @@
   - if current_page?(project_commits_path(@project)) && current_user.private_token
     %li.right
       %span.rss-icon
-        = link_to project_commits_path(@project, :atom, { private_token: current_user.private_token, ref: @ref }), title: "Feed" do
+        = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
           = image_tag "rss_ui.png", title: "feed"
