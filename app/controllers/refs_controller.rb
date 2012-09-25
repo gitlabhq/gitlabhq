@@ -1,11 +1,9 @@
 require 'github/markup'
 
-class RefsController < ApplicationController
+class RefsController < ProjectController
   include Gitlab::Encode
-  before_filter :project
 
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
@@ -13,8 +11,6 @@ class RefsController < ApplicationController
   before_filter :ref
   before_filter :define_tree_vars, only: [:tree, :blob, :blame, :logs_tree]
   before_filter :render_full_content
-
-  layout "project"
 
   def switch 
     respond_to do |format| 

@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    @project ||= current_user.projects.find_by_code(params[:project_id])
+    @project ||= current_user.projects.find_by_code(params[:project_id] || params[:id])
     @project || render_404
   end
 

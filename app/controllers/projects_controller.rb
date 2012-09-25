@@ -1,11 +1,9 @@
 require Rails.root.join('lib', 'gitlab', 'graph_commit')
 
-class ProjectsController < ApplicationController
-  before_filter :project, except: [:index, :new, :create]
-  layout :determine_layout
+class ProjectsController < ProjectController
+  skip_before_filter :project, only: [:new, :create]
 
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!, except: [:index, :new, :create]
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
@@ -91,21 +89,6 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to root_path }
-    end
-  end
-
-  protected
-
-  def project
-    @project ||= Project.find_by_code(params[:id])
-    @project || render_404
-  end
-
-  def determine_layout
-    if @project && !@project.new_record?
-      "project"
-    else
-      "application"
     end
   end
 end

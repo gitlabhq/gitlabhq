@@ -1,11 +1,7 @@
 require "base64"
 
-class CommitsController < ApplicationController
-  before_filter :project
-  layout "project"
-
+class CommitsController < ProjectController
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
