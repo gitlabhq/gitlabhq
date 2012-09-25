@@ -43,7 +43,9 @@
   padding: 8px 0;
   overflow: hidden;
   display: block;
+  position:relative;
   img {float: left; margin-right: 10px;}
+  img.emoji {float:none;margin:0;}
   .note-author cite{font-style: italic;}
   p { color:$style_color; }
   .note-author { color: $style_color;}
@@ -55,7 +57,9 @@
 
   .delete-note {
     display:none;
-    float:right;
+    position:absolute;
+    right:0;
+    top:0;
   }
 
   &:hover {
