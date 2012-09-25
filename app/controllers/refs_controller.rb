@@ -19,7 +19,7 @@ class RefsController < ApplicationController
         new_path = if params[:destination] == "tree"
                      project_tree_path(@project, @ref)
                    else
-                     project_commits_path(@project, ref: @ref)
+                     project_commits_path(@project, @ref)
                    end
 
         redirect_to new_path

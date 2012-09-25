@@ -30,7 +30,7 @@ class TreeDecorator < ApplicationDecorator
   end
 
   def history_path
-    h.project_commits_path(project, path: path, ref: ref)
+    h.project_commits_path(project, h.tree_join(ref, path))
   end
 
   def mb_size

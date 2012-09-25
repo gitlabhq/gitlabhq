@@ -8,7 +8,7 @@
         = link_to project_tree_path(@project, @project.root_ref) do
           Files
       %li{class: commit_tab_class}
-        = link_to "Commits", project_history_path(@project, @project.root_ref)
+        = link_to "Commits", project_commits_path(@project, @project.root_ref)
 
       %li{class: tab_class(:network)}
         = link_to "Network", graph_project_path(@project)

@@ -47,7 +47,7 @@ module SharedPaths
   end
 
   Given 'I visit project commits page' do
-    visit project_commits_path(@project)
+    visit project_commits_path(@project, @project.root_ref)
   end
 
   Given 'I visit project source page' do
