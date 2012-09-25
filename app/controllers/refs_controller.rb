@@ -13,9 +13,9 @@ class RefsController < ApplicationController
 
   layout "project"
 
-  def switch 
-    respond_to do |format| 
-      format.html do 
+  def switch
+    respond_to do |format|
+      format.html do
         new_path = if params[:destination] == "tree"
                      project_tree_path(@project, @ref)
                    else
@@ -69,6 +69,6 @@ class RefsController < ApplicationController
   end
 
   def ref
-    @ref = params[:id]
+    @ref = params[:ref]
   end
 end
