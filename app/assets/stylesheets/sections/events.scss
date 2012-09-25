@@ -50,7 +50,7 @@
   }
   .event-body {
     p {
-      color:#666;
+      color:#555;
     }
     .event-info {
       color:#666;
@@ -73,7 +73,8 @@
     margin-left:50px;
     margin-bottom:5px;
     .avatar {
-      width:22px;
+      width:18px;
+      margin-top:3px;
     }
   }
 
@@ -84,10 +85,17 @@
   .event_commits {
     margin-top: 5px;
 
-    li.commit {
-      background: transparent;
-      padding:5px;
-      border:none;
+    li {
+      &.commit {
+        background: transparent;
+        padding:3px;
+        border:none;
+        font-size:12px;
+      }
+      &.commits-stat {
+        display: block;
+        margin-top: 5px;
+      }
     }
   }
 }

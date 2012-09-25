@@ -9,22 +9,18 @@
       %strong= event.ref_name
     at
     %strong= link_to event.project.name, event.project
-    - if event.push_with_commits?
-      - if event.commits_count > 1
-        = link_to compare_project_commits_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
-          %strong #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
 
   - if event.push_with_commits?
     - project = event.project
     .event-body
       %ul.unstyled.event_commits
-        - if event.commits_count > 3
-          - event.commits[0...2].each do |commit|
-            = render "events/commit", commit: commit, project: project
-          %li
-            %br
-            \... and #{event.commits_count - 2} more commits
-        - else
-          - event.commits.each do |commit|
-            = render "events/commit", commit: commit, project: project
+        - few_commits = event.commits[0...2]
+        - few_commits.each do |commit|
+          = render "events/commit", commit: commit, project: project
+
+        %li.commits-stat
+          - if event.commits_count > 2
+            %span ... and #{event.commits_count - 2} more commits.
+          = link_to compare_project_commits_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
+            %strong Compare &rarr; #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
   .clearfix
