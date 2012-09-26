@@ -23,5 +23,7 @@ Spinach.hooks.after_scenario  { DatabaseCleaner.clean }
 Spinach.hooks.before_run do
   RSpec::Mocks::setup self
 
+  include FactoryGirl::Syntax::Methods
+
   stub_gitolite!
 end

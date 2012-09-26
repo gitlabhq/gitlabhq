@@ -1,6 +1,10 @@
 module SharedPaths
   include Spinach::DSL
 
+  When 'I visit new project page' do
+    visit new_project_path
+  end
+
   # ----------------------------------------
   # Dashboard
   # ----------------------------------------
@@ -81,9 +85,49 @@ module SharedPaths
     visit admin_resque_path
   end
 
-  When 'I visit new project page' do
-    visit new_project_path
+  # ----------------------------------------
+  # Generic Project
+  # ----------------------------------------
+
+  Given "I visit my project's home page" do
+    visit project_path(@project)
   end
+
+  Given "I visit my project's files page" do
+    visit project_tree_path(@project, @project.root_ref)
+  end
+
+  Given "I visit my project's commits page" do
+    visit project_commits_path(@project, @project.root_ref, {limit: 5})
+  end
+
+  Given "I visit my project's network page" do
+    # Stub out find_all to speed this up (10 commits vs. 650)
+    commits = Grit::Commit.find_all(@project.repo, nil, {max_count: 10})
+    Grit::Commit.stub(:find_all).and_return(commits)
+
+    visit graph_project_path(@project)
+  end
+
+  Given "I visit my project's issues page" do
+    visit project_issues_path(@project)
+  end
+
+  Given "I visit my project's merge requests page" do
+    visit project_merge_requests_path(@project)
+  end
+
+  Given "I visit my project's wall page" do
+    visit wall_project_path(@project)
+  end
+
+  Given "I visit my project's wiki page" do
+    visit project_wiki_path(@project, :index)
+  end
+
+  # ----------------------------------------
+  # "Shop" Project
+  # ----------------------------------------
 
   And 'I visit project "Shop" page' do
     project = Project.find_by_name("Shop")
