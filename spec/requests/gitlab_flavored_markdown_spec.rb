@@ -40,28 +40,27 @@ describe "Gitlab Flavored Markdown" do
     project.add_access(@user, :read, :write)
   end
 
-
   describe "for commits" do
     it "should render title in commits#index" do
-      visit project_commits_path(project, ref: @branch_name)
+      visit project_commits_path(project, @branch_name, limit: 1)
 
       page.should have_link("##{issue.id}")
     end
 
     it "should render title in commits#show" do
-      visit project_commit_path(project, id: commit.id)
+      visit project_commit_path(project, commit)
 
       page.should have_link("##{issue.id}")
     end
 
     it "should render description in commits#show" do
-      visit project_commit_path(project, id: commit.id)
+      visit project_commit_path(project, commit)
 
       page.should have_link("@#{fred.name}")
     end
 
     it "should render title in refs#tree", js: true do
-      visit tree_project_ref_path(project, id: @branch_name)
+      visit project_tree_path(project, @branch_name)
 
       within(".tree_commit") do
         page.should have_link("##{issue.id}")
@@ -69,7 +68,7 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should render title in refs#blame" do
-      visit blame_file_project_ref_path(project, id: @branch_name, path: @test_file)
+      visit project_blame_path(project, File.join(@branch_name, @test_file))
 
       within(".blame_commit") do
         page.should have_link("##{issue.id}")
@@ -88,7 +87,6 @@ describe "Gitlab Flavored Markdown" do
       page.should have_link("##{issue.id}")
     end
   end
-
 
   describe "for issues" do
     before do
@@ -175,7 +173,7 @@ describe "Gitlab Flavored Markdown" do
 
   describe "for notes" do
     it "should render in commits#show", js: true do
-      visit project_commit_path(project, id: commit.id)
+      visit project_commit_path(project, commit)
       fill_in "note_note", with: "see ##{issue.id}"
       click_button "Add Comment"
 

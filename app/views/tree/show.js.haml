@@ -1,8 +1,8 @@
 :plain
   // Load Files list
-  $("#tree-holder").html("#{escape_javascript(render(partial: "tree", locals: {repo: @repo, commit: @commit, tree: @tree}))}");
+  $("#tree-holder").html("#{escape_javascript(render(partial: "tree", locals: {commit: @commit, tree: @tree}))}");
   $("#tree-content-holder").show("slide", { direction: "right" }, 150);
-  $('.project-refs-form #path').val("#{params[:path]}");
+  $('.project-refs-form #path').val("#{@path}");
 
   //  Load last commit log for each file in tree
   $('#tree-slider').waitForImages(function() {

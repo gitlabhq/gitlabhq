@@ -5,9 +5,9 @@
       = name.force_encoding('utf-8')
       %small #{file.mode}
     %span.options
-      = link_to "raw", blob_project_ref_path(@project, @ref, path: params[:path]), class: "btn very_small", target: "_blank"
-      = link_to "history", project_commits_path(@project, path: params[:path], ref: @ref), class: "btn very_small"
-      = link_to "blame", blame_file_project_ref_path(@project, @ref, path: params[:path]), class: "btn very_small"
+      = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
+      = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
+      = link_to "blame", project_blame_path(@project, @id), class: "btn very_small"
   - if file.text?
     - if gitlab_markdown?(name)
       .file_content.wiki
@@ -32,7 +32,7 @@
   - else
     .file_content.blob_file
       %center
-        = link_to blob_project_ref_path(@project, @ref, path: params[:path]) do
+        = link_to project_blob_path(@project, @id) do
           %div.padded
             %br
             = image_tag "download.png", width: 64

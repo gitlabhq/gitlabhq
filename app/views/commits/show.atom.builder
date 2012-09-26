@@ -1,8 +1,8 @@
 xml.instruct!
 xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://search.yahoo.com/mrss/" do
   xml.title   "Recent commits to #{@project.name}:#{@ref}"
-  xml.link    :href => project_commits_url(@project, :atom, :ref => @ref), :rel => "self", :type => "application/atom+xml"
-  xml.link    :href => project_commits_url(@project), :rel => "alternate", :type => "text/html"
+  xml.link    :href => project_commits_url(@project, @ref, format: :atom), :rel => "self", :type => "application/atom+xml"
+  xml.link    :href => project_commits_url(@project, @ref), :rel => "alternate", :type => "text/html"
   xml.id      project_commits_url(@project)
   xml.updated @commits.first.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ") if @commits.any?
 

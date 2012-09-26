@@ -39,4 +39,9 @@ module TreeHelper
   def gitlab_markdown?(filename)
     filename.end_with?(*%w(.mdown .md .markdown))
   end
+
+  # Simple shortcut to File.join
+  def tree_join(*args)
+    File.join(*args)
+  end
 end

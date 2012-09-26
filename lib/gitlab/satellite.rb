@@ -1,6 +1,6 @@
 module Gitlab
   class Satellite
-    
+
     PARKING_BRANCH = "__parking_branch"
 
     attr_accessor :project
@@ -14,7 +14,7 @@ module Gitlab
     end
 
     def path
-      File.join(Rails.root, "tmp", "repo_satellites", project.path)
+      Rails.root.join("tmp", "repo_satellites", project.path)
     end
 
     def exists?
@@ -36,6 +36,6 @@ module Gitlab
         end
       end
     end
-    
+
   end
 end

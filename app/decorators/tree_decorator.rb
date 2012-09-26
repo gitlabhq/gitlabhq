@@ -15,7 +15,7 @@ class TreeDecorator < ApplicationDecorator
         part_path = part if part_path.empty?
 
         next unless parts.last(2).include?(part) if parts.count > max_links
-        yield(h.link_to(h.truncate(part, length: 40), h.tree_file_project_ref_path(project, ref, path: part_path), remote: :true))
+        yield(h.link_to(h.truncate(part, length: 40), h.project_tree_path(project, h.tree_join(ref, part_path)), remote: :true))
       end
     end
   end
@@ -26,11 +26,11 @@ class TreeDecorator < ApplicationDecorator
 
   def up_dir_path
     file = File.join(path, "..")
-    h.tree_file_project_ref_path(project, ref, file)
+    h.project_tree_path(project, h.tree_join(ref, file))
   end
 
   def history_path
-    h.project_commits_path(project, path: path, ref: ref)
+    h.project_commits_path(project, h.tree_join(ref, path))
   end
 
   def mb_size

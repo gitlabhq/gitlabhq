@@ -7,4 +7,8 @@ module SharedAuthentication
   Given 'I sign in as a user' do
     login_as :user
   end
+
+  Given 'I sign in as an admin' do
+    login_as :admin
+  end
 end

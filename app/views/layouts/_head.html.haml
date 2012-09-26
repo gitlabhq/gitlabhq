@@ -10,8 +10,8 @@
   - if controller_name == 'projects' && action_name == 'index'
     = auto_discovery_link_tag :atom, projects_url(:atom, private_token: current_user.private_token), title: "Dashboard feed"
   - if @project && !@project.new_record?
-    - if current_page?(tree_project_ref_path(@project, @project.root_ref)) || current_page?(project_commits_path(@project))
-      = auto_discovery_link_tag(:atom, project_commits_url(@project, :atom, ref: @ref, private_token: current_user.private_token), title: "Recent commits to #{@project.name}:#{@ref}")
-    - if request.path == project_issues_path(@project)
+    - if current_controller?(:tree, :commits)
+      = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, format: :atom, private_token: current_user.private_token), title: "Recent commits to #{@project.name}:#{@ref}")
+    - if current_controller?(:issues)
       = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
   = csrf_meta_tags

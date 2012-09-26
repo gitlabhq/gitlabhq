@@ -1,7 +1,0 @@
-= render "head"
-#tree-holder= render partial: "tree", locals: {repo: @repo, commit: @commit, tree: @tree}
-
-:javascript
-  $(function() {
-    Tree.init();
-  });

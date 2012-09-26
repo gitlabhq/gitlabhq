@@ -45,8 +45,29 @@ module Repository
     File.exists?(hook_file)
   end
 
+  # Returns an Array of branch names
+  def branch_names
+    repo.branches.collect(&:name).sort
+  end
+
+  # Returns an Array of Branches
+  def branches
+    repo.branches.sort_by(&:name)
+  end
+
+  # Returns an Array of tag names
+  def tag_names
+    repo.tags.collect(&:name).sort.reverse
+  end
+
+  # Returns an Array of Tags
   def tags
-    repo.tags.map(&:name).sort.reverse
+    repo.tags.sort_by(&:name).reverse
+  end
+
+  # Returns an Array of branch and tag names
+  def ref_names
+    [branch_names + tag_names].flatten
   end
 
   def repo
@@ -79,14 +100,6 @@ module Repository
     @heads ||= repo.heads
   end
 
-  def branches_names
-    heads.map(&:name)
-  end
-
-  def ref_names
-    [branches_names + tags].flatten
-  end
-
   def tree(fcommit, path = nil)
     fcommit = commit if fcommit == :head
     tree = fcommit.tree
@@ -109,14 +122,12 @@ module Repository
   # - If two or more branches are present, returns the one that has a name
   #   matching root_ref (default_branch or 'master' if default_branch is nil)
   def discover_default_branch
-    branches = heads.collect(&:name)
-
-    if branches.length == 0
+    if branch_names.length == 0
       nil
-    elsif branches.length == 1
-      branches.first
+    elsif branch_names.length == 1
+      branch_names.first
     else
-      branches.select { |v| v == root_ref }.first
+      branch_names.select { |v| v == root_ref }.first
     end
   end
 
@@ -144,7 +155,7 @@ module Repository
 
     # Build file path
     file_name = self.code + "-" + commit.id.to_s + ".tar.gz"
-    storage_path = File.join(Rails.root, "tmp", "repositories", self.code)
+    storage_path = Rails.root.join("tmp", "repositories", self.code)
     file_path = File.join(storage_path, file_name)
 
     # Put files into a directory before archiving
