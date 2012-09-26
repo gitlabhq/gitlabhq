@@ -138,6 +138,7 @@ group :test do
   gem 'email_spec'
   gem 'resque_spec'
   gem "webmock"
+  gem 'test_after_commit'
 end
 
 group :production do

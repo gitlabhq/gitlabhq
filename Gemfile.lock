@@ -377,6 +377,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     sqlite3 (1.3.6)
     stamp (0.1.6)
+    test_after_commit (0.0.1)
     therubyracer (0.10.1)
       libv8 (~> 3.3.10)
     thin (1.3.1)
@@ -476,6 +477,7 @@ DEPENDENCIES
   spinach-rails
   sqlite3
   stamp
+  test_after_commit
   therubyracer
   thin
   uglifier (= 1.0.3)
