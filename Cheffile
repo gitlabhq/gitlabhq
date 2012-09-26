@@ -1,0 +1,19 @@
+site "http://community.opscode.com/api/v1"
+
+cookbook 'ruby_build'
+cookbook 'git'
+cookbook 'redisio'
+cookbook 'build-essential'
+cookbook 'python'
+cookbook 'readline'
+cookbook 'sudo'
+cookbook 'openssh'
+cookbook 'perl'
+cookbook 'xml'
+cookbook 'zlib'
+cookbook 'mysql'
+cookbook 'database'
+
+cookbook 'rvm',
+  :git => 'git://github.com/fnichol/chef-rvm.git', 
+  :ref => 'v0.9.0'

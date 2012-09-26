@@ -1,0 +1,23 @@
+base: &base
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  pool: 5
+  username: vagrant
+  password: vagrant
+
+production:
+  <<: *base
+  database: gitlabhq_production
+
+
+development:
+  <<: *base
+  database: gitlabhq_development
+
+test: &test
+  <<: *base
+  database: gitlabhq_test
+
+cucumber:
+  <<: *test

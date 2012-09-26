@@ -13,7 +13,6 @@ public/uploads/
 .rbenv-version
 .directory
 nohup.out
-Vagrantfile
 .vagrant
 config/gitlab.yml
 config/database.yml
@@ -23,3 +22,4 @@ db/data.yml
 .idea
 .DS_Store
 .chef
+cookbooks/
