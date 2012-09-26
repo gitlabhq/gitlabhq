@@ -51,12 +51,6 @@ module TabHelper
     end
   end
 
-  def commit_tab_class
-    if ['commits', 'repositories', 'protected_branches'].include? controller.controller_name
-      "active"
-    end
-  end
-
   def branches_tab_class
     if current_page?(branches_project_repository_path(@project)) ||
       controller.controller_name == "protected_branches" ||
