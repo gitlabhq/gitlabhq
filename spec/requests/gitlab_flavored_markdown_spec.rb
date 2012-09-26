@@ -40,10 +40,9 @@ describe "Gitlab Flavored Markdown" do
     project.add_access(@user, :read, :write)
   end
 
-
   describe "for commits" do
     it "should render title in commits#index" do
-      visit project_commits_path(project, @branch_name)
+      visit project_commits_path(project, @branch_name, limit: 1)
 
       page.should have_link("##{issue.id}")
     end
@@ -88,7 +87,6 @@ describe "Gitlab Flavored Markdown" do
       page.should have_link("##{issue.id}")
     end
   end
-
 
   describe "for issues" do
     before do

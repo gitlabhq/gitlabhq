@@ -51,7 +51,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/commits/master" do
-      subject { project_commits_path(project, project.root_ref) }
+      subject { project_commits_path(project, project.root_ref, limit: 1) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -189,6 +189,11 @@ describe "Application access" do
     describe "GET /project_code/repository/branches" do
       subject { branches_project_repository_path(project) }
 
+      before do
+        # Speed increase
+        Project.any_instance.stub(:branches).and_return([])
+      end
+
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
       it { should be_denied_for :admin }
@@ -199,6 +204,11 @@ describe "Application access" do
 
     describe "GET /project_code/repository/tags" do
       subject { tags_project_repository_path(project) }
+
+      before do
+        # Speed increase
+        Project.any_instance.stub(:tags).and_return([])
+      end
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
