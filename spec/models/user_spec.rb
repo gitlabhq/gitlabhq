@@ -73,4 +73,30 @@ describe User do
       user.authentication_token.should_not be_blank
     end
   end
+
+  describe "attributes can be changed by a regular user" do
+    before do
+      @user = Factory :user
+      @user.update_attributes(skype: "testskype", linkedin: "testlinkedin")
+    end
+    it { @user.skype.should == 'testskype' }
+    it { @user.linkedin.should == 'testlinkedin' }
+  end
+
+  describe "attributes that shouldn't be changed by a regular user" do
+    before do
+      @user = Factory :user
+      @user.update_attributes(projects_limit: 50)
+    end
+    it { @user.projects_limit.should_not == 50 }
+  end
+
+  describe "attributes can be changed by an admin user" do
+    before do
+      @admin_user = Factory :admin
+      @admin_user.update_attributes({ skype: "testskype", projects_limit: 50 }, as: :admin)
+    end
+    it { @admin_user.skype.should == 'testskype' }
+    it { @admin_user.projects_limit.should == 50 }
+  end
 end
