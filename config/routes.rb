@@ -159,7 +159,6 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    # XXX: WIP
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
     resources :commits, only: [:show], constraints: {id: /.+/}
     resources :compare, only: [:index, :create]
