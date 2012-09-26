@@ -61,8 +61,8 @@ ActiveRecord::Schema.define(:version => 20120905043334) do
     t.boolean  "closed",                              :default => false, :null => false
     t.datetime "created_at",                                             :null => false
     t.datetime "updated_at",                                             :null => false
-    t.text     "st_commits",    :limit => 2147483647
-    t.text     "st_diffs",      :limit => 2147483647
+    t.text     "st_commits",    :limit => 4294967295
+    t.text     "st_diffs",      :limit => 4294967295
     t.boolean  "merged",                              :default => false, :null => false
     t.integer  "state",                               :default => 1,     :null => false
   end
@@ -80,12 +80,12 @@ ActiveRecord::Schema.define(:version => 20120905043334) do
   end
 
   create_table "notes", :force => true do |t|
-    t.text     "note"
+    t.text     "note",          :limit => 255
     t.string   "noteable_id"
     t.string   "noteable_type"
     t.integer  "author_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
@@ -146,30 +146,30 @@ ActiveRecord::Schema.define(:version => 20120905043334) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "",    :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "",    :null => false
+    t.string   "email",                  :default => "",    :null => false
+    t.string   "encrypted_password",     :default => "",    :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                               :null => false
-    t.datetime "updated_at",                                               :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.string   "name"
-    t.boolean  "admin",                                 :default => false, :null => false
-    t.integer  "projects_limit",                        :default => 10
-    t.string   "skype",                                 :default => "",    :null => false
-    t.string   "linkedin",                              :default => "",    :null => false
-    t.string   "twitter",                               :default => "",    :null => false
+    t.boolean  "admin",                  :default => false, :null => false
+    t.integer  "projects_limit",         :default => 10
+    t.string   "skype",                  :default => "",    :null => false
+    t.string   "linkedin",               :default => "",    :null => false
+    t.string   "twitter",                :default => "",    :null => false
     t.string   "authentication_token"
-    t.boolean  "dark_scheme",                           :default => false, :null => false
-    t.integer  "theme_id",                              :default => 1,     :null => false
+    t.boolean  "dark_scheme",            :default => false, :null => false
+    t.integer  "theme_id",               :default => 1,     :null => false
     t.string   "bio"
-    t.boolean  "blocked",                               :default => false, :null => false
-    t.integer  "failed_attempts",                       :default => 0
+    t.boolean  "blocked",                :default => false, :null => false
+    t.integer  "failed_attempts",        :default => 0
     t.datetime "locked_at"
     t.string   "extern_uid"
     t.string   "provider"
