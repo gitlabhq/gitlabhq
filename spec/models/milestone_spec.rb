@@ -6,6 +6,10 @@ describe Milestone do
     it { should have_many(:issues) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:project_id) }
+  end
+
   describe "Validation" do
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:project_id) }

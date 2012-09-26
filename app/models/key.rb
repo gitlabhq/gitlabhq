@@ -4,7 +4,7 @@ class Key < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  attr_protected :user_id
+  attr_accessible :key, :title
 
   validates :title,
             presence: true,

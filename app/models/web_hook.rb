@@ -1,6 +1,8 @@
 class WebHook < ActiveRecord::Base
   include HTTParty
 
+  attr_accessible :url
+
   # HTTParty timeout
   default_timeout 10
 
@@ -18,11 +20,11 @@ class WebHook < ActiveRecord::Base
       post_url = url.gsub(parsed_url.userinfo+"@", "")
       WebHook.post(post_url,
                    body: data.to_json,
-                   headers: { "Content-Type" => "application/json" }, 
+                   headers: { "Content-Type" => "application/json" },
                    basic_auth: {username: parsed_url.user, password: parsed_url.password})
     end
   end
-  
+
 end
 # == Schema Information
 #
