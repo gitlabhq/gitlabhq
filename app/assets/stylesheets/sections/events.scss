@@ -31,6 +31,7 @@
   &.joined {
     padding:0 2px;
     @extend .alert;
+    float:none;
   }
 }
 
