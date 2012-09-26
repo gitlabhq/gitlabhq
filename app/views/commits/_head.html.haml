@@ -1,17 +1,17 @@
 %ul.nav.nav-tabs
   %li= render partial: 'shared/ref_switcher', locals: {destination: 'commits'}
-  %li{class: "#{'active' if current_controller?(:commit, :commits)}"}
-    = link_to project_commits_path(@project, @project.root_ref) do
-      Commits
-  %li{class: "#{'active' if current_controller?(:compare)}"}
-    = link_to project_compare_index_path(@project) do
-      Compare
-  %li{class: "#{branches_tab_class}"}
+
+  = nav_link(controller: [:commit, :commits]) do
+    = link_to 'Commits', project_commits_path(@project, @project.root_ref)
+  = nav_link(controller: :compare) do
+    = link_to 'Compare', project_compare_index_path(@project)
+
+  = nav_link(html_options: {class: branches_tab_class}) do
     = link_to project_repository_path(@project) do
       Branches
       %span.badge= @project.repo.branch_count
 
-  %li{class: "#{'active' if current_page?(tags_project_repository_path(@project)) }"}
+  = nav_link(controller: :repositories, action: :tags) do
     = link_to tags_project_repository_path(@project) do
       Tags
       %span.badge= @project.repo.tag_count

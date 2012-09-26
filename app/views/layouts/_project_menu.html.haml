@@ -1,35 +1,33 @@
 %ul.main_menu
-  %li.home{class: project_tab_class}
+  = nav_link(html_options: {class: "home #{project_tab_class}"}) do
     = link_to @project.code, project_path(@project), title: "Project"
 
   - if @project.repo_exists?
     - if can? current_user, :download_code, @project
-      %li{class: current_controller?(:tree, :blob, :blame) ? 'active' : ''}
+      = nav_link(controller: %w(tree blob blame)) do
         = link_to 'Files', project_tree_path(@project, @ref || @project.root_ref)
-      %li{class: current_controller?(:commit, :commits, :compare, :repositories, :protected_branches) ? 'active' : ''}
+      = nav_link(controller: %w(commit commits compare repositories protected_branches)) do
         = link_to "Commits", project_commits_path(@project, @ref || @project.root_ref)
-      %li{class: tab_class(:network)}
+      = nav_link(path: 'projects#graph') do
         = link_to "Network", graph_project_path(@project)
 
   - if @project.issues_enabled
-    %li{class: current_controller?(:issues, :milestones, :labels) ? 'active' : ''}
+    = nav_link(controller: %w(issues milestones labels)) do
       = link_to  project_issues_filter_path(@project)  do
         Issues
         %span.count.issue_counter= @project.issues.opened.count
 
   - if @project.repo_exists?
     - if @project.merge_requests_enabled
-      %li{class: tab_class(:merge_requests)}
+      = nav_link(controller: :merge_requests) do
         = link_to project_merge_requests_path(@project) do
           Merge Requests
           %span.count.merge_counter= @project.merge_requests.opened.count
 
   - if @project.wall_enabled
-    %li{class:  tab_class(:wall)}
-      = link_to wall_project_path(@project) do
-        Wall
+    = nav_link(path: 'projects#wall') do
+      = link_to 'Wall', wall_project_path(@project)
 
   - if @project.wiki_enabled
-    %li{class:  tab_class(:wiki)}
-      = link_to project_wiki_path(@project, :index) do
-        Wiki
+    = nav_link(controller: :wikis) do
+      = link_to 'Wiki', project_wiki_path(@project, :index)

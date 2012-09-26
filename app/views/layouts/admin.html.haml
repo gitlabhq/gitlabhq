@@ -6,17 +6,17 @@
     = render "layouts/head_panel", title: "Admin area"
     .container
       %ul.main_menu
-        %li.home{class: tab_class(:admin_root)}
+        = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
           = link_to "Stats", admin_root_path
-        %li{class: tab_class(:admin_projects)}
+        = nav_link(controller: :projects) do
           = link_to "Projects", admin_projects_path
-        %li{class: tab_class(:admin_users)}
+        = nav_link(controller: :users) do
           = link_to "Users", admin_users_path
-        %li{class: tab_class(:admin_logs)}
+        = nav_link(controller: :logs) do
           = link_to "Logs", admin_logs_path
-        %li{class: tab_class(:admin_hooks)}
+        = nav_link(controller: :hooks) do
           = link_to "Hooks", admin_hooks_path
-        %li{class: tab_class(:admin_resque)}
+        = nav_link(controller: :resque) do
           = link_to "Resque", admin_resque_path
 
       .content= yield
