@@ -4,17 +4,15 @@
 
   - if @project.repo_exists?
     - if can? current_user, :download_code, @project
-      %li{class: tree_tab_class}
-        = link_to project_tree_path(@project, @project.root_ref) do
-          Files
+      %li{class: current_controller?(:tree, :blob, :blame) ? 'active' : ''}
+        = link_to 'Files', project_tree_path(@project, @project.root_ref)
       %li{class: commit_tab_class}
         = link_to "Commits", project_commits_path(@project, @project.root_ref)
-
       %li{class: tab_class(:network)}
         = link_to "Network", graph_project_path(@project)
 
   - if @project.issues_enabled
-    %li{class: tab_class(:issues)}
+    %li{class: current_controller?(:issues, :milestones, :labels) ? 'active' : ''}
       = link_to  project_issues_filter_path(@project)  do
         Issues
         %span.count.issue_counter= @project.issues.opened.count

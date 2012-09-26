@@ -5,7 +5,6 @@ module TabHelper
              # Project Area
              when :wall; wall_tab?
              when :wiki; controller.controller_name == "wikis"
-             when :issues; issues_tab?
              when :network; current_page?(controller: "projects", action: "graph", id: @project)
              when :merge_requests; controller.controller_name == "merge_requests"
 
@@ -35,11 +34,7 @@ module TabHelper
              else
                false
              end
-    active ? "current" : nil
-  end
-
-  def issues_tab?
-    controller.controller_name == "issues" || controller.controller_name == "milestones"
+    active ? "active" : nil
   end
 
   def wall_tab?
@@ -48,21 +43,17 @@ module TabHelper
 
   def project_tab_class
     [:show, :files, :edit, :update].each do |action|
-      return "current" if current_page?(controller: "projects", action: action, id: @project)
+      return "active" if current_page?(controller: "projects", action: action, id: @project)
     end
 
     if ['snippets', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
-     "current"
+     "active"
     end
-  end
-
-  def tree_tab_class
-    controller.controller_name == "refs" ? "current" : nil
   end
 
   def commit_tab_class
     if ['commits', 'repositories', 'protected_branches'].include? controller.controller_name
-      "current"
+      "active"
     end
   end
 
