@@ -45,14 +45,17 @@ module Repository
     File.exists?(hook_file)
   end
 
+  # Returns an Array of branch names
   def branches
     repo.branches.collect(&:name).sort
   end
 
+  # Returns an Array of tag names
   def tags
     repo.tags.collect(&:name).sort.reverse
   end
 
+  # Returns an Array of branch and tag names
   def ref_names
     [branches + tags].flatten
   end
