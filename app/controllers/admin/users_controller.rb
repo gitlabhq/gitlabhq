@@ -30,7 +30,7 @@ class Admin::UsersController < AdminController
 
 
   def new
-    @admin_user = User.new(projects_limit: Gitlab.config.default_projects_limit)
+    @admin_user = User.new({ projects_limit: Gitlab.config.default_projects_limit }, as: :admin)
   end
 
   def edit
@@ -60,7 +60,7 @@ class Admin::UsersController < AdminController
   def create
     admin = params[:user].delete("admin")
 
-    @admin_user = User.new(params[:user])
+    @admin_user = User.new(params[:user], as: :admin)
     @admin_user.admin = (admin && admin.to_i > 0)
 
     respond_to do |format|
@@ -86,7 +86,7 @@ class Admin::UsersController < AdminController
     @admin_user.admin = (admin && admin.to_i > 0)
 
     respond_to do |format|
-      if @admin_user.update_attributes(params[:user])
+      if @admin_user.update_attributes(params[:user], as: :admin)
         format.html { redirect_to [:admin, @admin_user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else

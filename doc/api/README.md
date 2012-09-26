@@ -30,8 +30,9 @@ When listing resources you can pass the following parameters:
 ## Contents
 
 + [Users](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/users.md)
++ [Session](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/session.md)
 + [Projects](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/projects.md)
 + [Snippets](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/snippets.md)
++ [Repositories](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/repositories.md)
 + [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
 + [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
-+ [SSH Keys](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/keys.md)

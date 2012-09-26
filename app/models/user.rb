@@ -6,8 +6,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio,
-                  :name, :projects_limit, :skype, :linkedin, :twitter, :dark_scheme,
-                  :theme_id, :force_random_password, :extern_uid, :provider
+                  :name, :skype, :linkedin, :twitter, :dark_scheme,
+                  :theme_id, :force_random_password, :extern_uid, :provider, :as => [:default, :admin]
+  attr_accessible :projects_limit, :as => :admin
 
   attr_accessor :force_random_password
 

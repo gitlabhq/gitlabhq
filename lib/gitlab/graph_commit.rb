@@ -5,7 +5,7 @@ module Gitlab
     attr_accessor :time, :space
     attr_accessor :refs
 
-    include ActionView::Helpers::SanitizeHelper
+    include ActionView::Helpers::TagHelper
 
     def self.to_graph(project)
       @repo = project.repo
@@ -166,7 +166,7 @@ module Gitlab
       h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
       h[:id]      = sha
       h[:date]    = date
-      h[:message] = sanitize(Gitlab::Encode.utf8(message))
+      h[:message] = escape_once(Gitlab::Encode.utf8(message))
       h[:login]   = author.email
       h
     end

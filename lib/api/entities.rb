@@ -9,6 +9,10 @@ module Gitlab
       expose :id, :email, :name, :blocked, :created_at
     end
 
+    class UserLogin < UserBasic
+      expose :private_token
+    end
+
     class Hook < Grape::Entity
       expose :id, :url
     end
@@ -20,13 +24,18 @@ module Gitlab
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
     end
 
-    class UsersProject < Grape::Entity
-      expose :user, using: Entities::UserBasic
-      expose :project_access
+    class ProjectMember < UserBasic
+      expose :project_access, :as => :access_level do |user, options|
+        options[:project].users_projects.find_by_user_id(user.id).project_access
+      end
     end
 
     class RepoObject < Grape::Entity
       expose :name, :commit
+    end
+
+    class RepoCommit < Grape::Entity
+      expose :id, :short_id, :title, :author_name, :author_email, :created_at
     end
 
     class ProjectSnippet < Grape::Entity
@@ -36,7 +45,9 @@ module Gitlab
     end
 
     class Milestone < Grape::Entity
-      expose :id, :title, :description, :due_date, :closed, :updated_at, :created_at
+      expose :id
+      expose (:project_id) {|milestone| milestone.project.id}
+      expose :title, :description, :due_date, :closed, :updated_at, :created_at
     end
 
     class Issue < Grape::Entity
@@ -49,10 +60,8 @@ module Gitlab
       expose :closed, :updated_at, :created_at
     end
 
-    class Key < Grape::Entity
-      expose  :id, 
-              :title, 
-              :key
+    class SSHKey < Grape::Entity
+      expose :id, :title, :key
     end
   end
 end
