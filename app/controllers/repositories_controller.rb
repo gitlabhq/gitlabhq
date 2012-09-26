@@ -14,11 +14,11 @@ class RepositoriesController < ApplicationController
   end
 
   def branches
-    @branches = @project.repo.heads.sort_by(&:name)
+    @branches = @project.branches
   end
 
   def tags
-    @tags = @project.repo.tags.sort_by(&:name).reverse
+    @tags = @project.tags
   end
 
   def archive

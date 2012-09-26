@@ -50,9 +50,19 @@ module Repository
     repo.branches.collect(&:name).sort
   end
 
+  # Returns an Array of Branches
+  def branches
+    repo.branches.sort_by(&:name)
+  end
+
   # Returns an Array of tag names
   def tag_names
     repo.tags.collect(&:name).sort.reverse
+  end
+
+  # Returns an Array of Tags
+  def tags
+    repo.tags.sort_by(&:name).reverse
   end
 
   # Returns an Array of branch and tag names
