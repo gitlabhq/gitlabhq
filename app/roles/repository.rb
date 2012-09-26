@@ -46,18 +46,18 @@ module Repository
   end
 
   # Returns an Array of branch names
-  def branches
+  def branch_names
     repo.branches.collect(&:name).sort
   end
 
   # Returns an Array of tag names
-  def tags
+  def tag_names
     repo.tags.collect(&:name).sort.reverse
   end
 
   # Returns an Array of branch and tag names
   def ref_names
-    [branches + tags].flatten
+    [branch_names + tag_names].flatten
   end
 
   def repo
@@ -112,12 +112,12 @@ module Repository
   # - If two or more branches are present, returns the one that has a name
   #   matching root_ref (default_branch or 'master' if default_branch is nil)
   def discover_default_branch
-    if branches.length == 0
+    if branch_names.length == 0
       nil
-    elsif branches.length == 1
-      branches.first
+    elsif branch_names.length == 1
+      branch_names.first
     else
-      branches.select { |v| v == root_ref }.first
+      branch_names.select { |v| v == root_ref }.first
     end
   end
 
