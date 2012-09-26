@@ -1,6 +1,8 @@
-%h3
-  = @admin_project.name
-  = link_to 'Edit', edit_admin_project_path(@admin_project), class: "btn right small"
+%h3.page_title
+  Project: #{@admin_project.name}
+  = link_to edit_admin_project_path(@admin_project), class: "btn right" do
+    %i.icon-edit
+    Edit
 
 %br
 %table.zebra-striped
@@ -56,7 +58,7 @@
     %tr
       %td
         = link_to tm.user_name, admin_user_path(tm.user)
-      %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), class: "medium project-access-select", disabled: :disabled
+      %td= tm.project_access_human
       %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
       %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
 
