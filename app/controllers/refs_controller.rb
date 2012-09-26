@@ -69,6 +69,6 @@ class RefsController < ApplicationController
   end
 
   def ref
-    @ref = params[:ref]
+    @ref = params[:id] || params[:ref]
   end
 end
