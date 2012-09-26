@@ -13,6 +13,11 @@ describe ApplicationHelper do
     it "returns false when controller does not match argument" do
       current_controller?(:bar).should_not be_true
     end
+
+    it "should take any number of arguments" do
+      current_controller?(:baz, :bar).should_not be_true
+      current_controller?(:baz, :bar, :foo).should be_true
+    end
   end
 
   describe "gravatar_icon" do

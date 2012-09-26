@@ -3,13 +3,16 @@ module ApplicationHelper
 
   # Check if a particular controller is the current one
   #
+  # args - One or more controller names to check
+  #
   # Examples
   #
   #   # On TreeController
-  #   current_controller?(:tree)    # => true
-  #   current_controller?(:commits) # => false
-  def current_controller?(name)
-    controller.controller_name == name.to_s.downcase
+  #   current_controller?(:tree)           # => true
+  #   current_controller?(:commits)        # => false
+  #   current_controller?(:commits, :tree) # => true
+  def current_controller?(*args)
+    args.any? { |v| v.to_s.downcase == controller.controller_name }
   end
 
   def gravatar_icon(user_email = '', size = 40)
