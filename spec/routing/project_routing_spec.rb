@@ -285,6 +285,7 @@ end
 describe CommitController, "routing" do
   it "to #show" do
     get("/gitlabhq/commit/4246fb").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb')
+    get("/gitlabhq/commit/4246fb.patch").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb', format: 'patch')
     get("/gitlabhq/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
   end
 end
@@ -294,16 +295,8 @@ end
 #                         POST   /:project_id/commits(.:format)           commits#create
 #          project_commit GET    /:project_id/commits/:id(.:format)       commits#show
 describe CommitsController, "routing" do
-  it "to #patch" do
-    get("/gitlabhq/commits/1/patch").should route_to('commits#patch', project_id: 'gitlabhq', id: '1')
-  end
-
-  it "does something with atom feeds" do
-    get("/gitlabhq/commits/master.atom").should route_to('commits#show', project_id: 'gitlabhq', id: 'master.atom')
-  end
-
   it_behaves_like "RESTful project resources" do
-    let(:actions)    { [:index, :show] }
+    let(:actions)    { [:show] }
     let(:controller) { 'commits' }
   end
 end
@@ -384,64 +377,36 @@ describe NotesController, "routing" do
   end
 end
 
+# project_blame GET    /:project_id/blame/:id(.:format) blame#show {:id=>/.+/, :project_id=>/[^\/]+/}
 describe BlameController, "routing" do
   it "to #show" do
     get("/gitlabhq/blame/master/app/models/project.rb").should route_to('blame#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
   end
 end
 
+# project_blob GET    /:project_id/blob/:id(.:format) blob#show {:id=>/.+/, :project_id=>/[^\/]+/}
 describe BlobController, "routing" do
   it "to #show" do
     get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
   end
 end
 
+# project_tree GET    /:project_id/tree/:id(.:format) tree#show {:id=>/.+/, :project_id=>/[^\/]+/}
 describe TreeController, "routing" do
   it "to #show" do
     get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
   end
 end
 
+# project_compare_index GET    /:project_id/compare(.:format)             compare#index {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+#       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {:from=>/.+/, :to=>/.+/, :id=>/[^\/]+/, :project_id=>/[^\/]+/}
 describe CompareController, "routing" do
+  it "to #index" do
+    get("/gitlabhq/compare").should route_to('compare#index', project_id: 'gitlabhq')
+  end
+
   it "to #show" do
     get("/gitlabhq/compare/master...stable").should     route_to('compare#show', project_id: 'gitlabhq', from: 'master', to: 'stable')
     get("/gitlabhq/compare/issue/1234...stable").should route_to('compare#show', project_id: 'gitlabhq', from: 'issue/1234', to: 'stable')
-  end
-end
-
-# TODO: Pending
-#
-# /:project_id/blame/*path
-#   /gitlabhq/blame/master/app/contexts/base_context.rb
-#   /gitlabhq/blame/test/branch/name/app/contexts/base_context.rb
-#
-# /:project_id/blob/*path
-#   /gitlabhq/blob/master/app/contexts/base_context.rb
-#   /gitlabhq/blob/test/branch/name/app/contexts/base_context.rb
-#
-# /:project_id/commit/:id
-#   /gitlabhq/commit/caef9ed1121a16ca0cc78715695daaa974271bfd
-#
-# /:project_id/commits
-#
-# /:project_id/commits/*path
-#   /gitlabhq/commits/master/app/contexts/base_context.rb
-#   /gitlabhq/commits/test/branch/name/app/contexts/base_context.rb
-#   /gitlabhq/commits/master.atom
-#
-# /:project_id/raw/*path
-#   /gitlabhq/raw/master/app/contexts/base_context.rb
-#   /gitlabhq/raw/test/branch/name/app/contexts/base_context.rb
-#
-# /:project_id/tree/*path
-#   /gitlabhq/tree/master/app
-#   /gitlabhq/tree/test/branch/name/app
-describe "pending routing" do
-  before { pending }
-
-  describe "/:project_id/raw/:id" do
-    it "routes to a ref with a path" do
-      get("/gitlabhq/raw/master/app/models/project.rb").should route_to('raw#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-    end
   end
 end
