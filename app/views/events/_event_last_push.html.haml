@@ -4,7 +4,7 @@
       = image_tag gravatar_icon(event.author_email), class: "avatar"
       %span You pushed to
       = event.ref_type
-      = link_to project_commits_path(event.project, ref: event.ref_name) do
+      = link_to project_commits_path(event.project, event.ref_name) do
         %strong= truncate(event.ref_name, length: 28)
       at
       %strong= link_to event.project.name, event.project
