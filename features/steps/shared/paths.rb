@@ -1,21 +1,33 @@
 module SharedPaths
   include Spinach::DSL
 
-  And 'I visit dashboard search page' do
-    visit search_path
+  # ----------------------------------------
+  # Dashboard
+  # ----------------------------------------
+
+  Given 'I visit dashboard page' do
+    visit dashboard_path
   end
 
-  And 'I visit dashboard merge requests page' do
-    visit dashboard_merge_requests_path
-  end
-
-  And 'I visit dashboard issues page' do
+  Given 'I visit dashboard issues page' do
     visit dashboard_issues_path
   end
 
-  When 'I visit dashboard page' do
-    visit dashboard_path
+  Given 'I visit dashboard merge requests page' do
+    visit dashboard_merge_requests_path
   end
+
+  Given 'I visit dashboard search page' do
+    visit search_path
+  end
+
+  Given 'I visit dashboard help page' do
+    visit help_path
+  end
+
+  # ----------------------------------------
+  # Profile
+  # ----------------------------------------
 
   Given 'I visit profile page' do
     visit profile_path
@@ -25,8 +37,48 @@ module SharedPaths
     visit profile_account_path
   end
 
+  Given 'I visit profile SSH keys page' do
+    visit keys_path
+  end
+
+  Given 'I visit profile design page' do
+    visit profile_design_path
+  end
+
+  Given 'I visit profile history page' do
+    visit profile_history_path
+  end
+
   Given 'I visit profile token page' do
     visit profile_token_path
+  end
+
+  # ----------------------------------------
+  # Admin
+  # ----------------------------------------
+
+  Given 'I visit admin page' do
+    visit admin_root_path
+  end
+
+  Given 'I visit admin projects page' do
+    visit admin_projects_path
+  end
+
+  Given 'I visit admin users page' do
+    visit admin_users_path
+  end
+
+  Given 'I visit admin logs page' do
+    visit admin_logs_path
+  end
+
+  Given 'I visit admin hooks page' do
+    visit admin_hooks_path
+  end
+
+  Given 'I visit admin Resque page' do
+    visit admin_resque_path
   end
 
   When 'I visit new project page' do
