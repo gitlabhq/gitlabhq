@@ -43,7 +43,7 @@ describe "Gitlab Flavored Markdown" do
 
   describe "for commits" do
     it "should render title in commits#index" do
-      visit project_commits_path(project, ref: @branch_name)
+      visit project_commits_path(project, @branch_name)
 
       page.should have_link("##{issue.id}")
     end
@@ -69,7 +69,7 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should render title in refs#blame" do
-      visit blame_file_project_ref_path(project, File.join(@branch_name, @test_file))
+      visit project_blame_path(project, File.join(@branch_name, @test_file))
 
       within(".blame_commit") do
         page.should have_link("##{issue.id}")
