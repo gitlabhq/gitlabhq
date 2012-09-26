@@ -47,7 +47,11 @@ module SharedPaths
   end
 
   Given 'I visit project commits page' do
-    visit project_commits_path(@project, @project.root_ref)
+    visit project_commits_path(@project, @project.root_ref, {limit: 5})
+  end
+
+  Given 'I visit project commits page for stable branch' do
+    visit project_commits_path(@project, 'stable', {limit: 5})
   end
 
   Given 'I visit project source page' do
