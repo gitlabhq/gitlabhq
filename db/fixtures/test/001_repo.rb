@@ -3,13 +3,13 @@ require 'fileutils'
 print "Unpacking seed repository..."
 
 SEED_REPO = 'seed_project.tar.gz'
-REPO_PATH = File.join(Rails.root, 'tmp', 'repositories')
+REPO_PATH = Rails.root.join('tmp', 'repositories')
 
 # Make whatever directories we need to make
 FileUtils.mkdir_p(REPO_PATH)
 
 # Copy the archive to the repo path
-FileUtils.cp(File.join(Rails.root, 'spec', SEED_REPO), REPO_PATH)
+FileUtils.cp(Rails.root.join('spec', SEED_REPO), REPO_PATH)
 
 # chdir to the repo path
 FileUtils.cd(REPO_PATH) do

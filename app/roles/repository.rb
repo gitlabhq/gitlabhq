@@ -155,7 +155,7 @@ module Repository
 
     # Build file path
     file_name = self.code + "-" + commit.id.to_s + ".tar.gz"
-    storage_path = File.join(Rails.root, "tmp", "repositories", self.code)
+    storage_path = Rails.root.join("tmp", "repositories", self.code)
     file_path = File.join(storage_path, file_name)
 
     # Put files into a directory before archiving

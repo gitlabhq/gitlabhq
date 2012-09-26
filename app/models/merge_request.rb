@@ -1,4 +1,4 @@
-require File.join(Rails.root, "app/models/commit")
+require Rails.root.join("app/models/commit")
 
 class MergeRequest < ActiveRecord::Base
   include IssueCommonality

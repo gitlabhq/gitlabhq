@@ -105,7 +105,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render file: File.join(Rails.root, "public", "404"), layout: false, status: "404"
+    render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
   def require_non_empty_project
