@@ -1,0 +1,32 @@
+%div
+  %p.slead
+    Fill input field with commit id like
+    %code.label_branch 4eedf23
+    or branch/tag name like
+    %code.label_branch master
+    and press compare button for commits list, code diff.
+
+  %br
+
+  = form_tag project_compare_index_path(@project), method: :post do
+    .clearfix
+      = text_field_tag :from, params[:from], placeholder: "master", class: "xlarge"
+      = "..."
+      = text_field_tag :to, params[:to], placeholder: "aa8b4ef", class: "xlarge"
+    - if @refs_are_same
+      .alert
+        %span Refs are the same
+    .actions
+      = submit_tag "Compare", class: "btn primary wide commits-compare-btn"
+
+:javascript
+  $(function() {
+    var availableTags = #{@project.ref_names.to_json};
+
+    $("#from, #to").autocomplete({
+      source: availableTags,
+      minLength: 1
+    });
+
+    disableButtonIfEmptyField('#to', '.commits-compare-btn');
+  });

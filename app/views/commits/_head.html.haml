@@ -3,8 +3,8 @@
   %li{class: "#{'active' if current_page?(project_commits_path(@project)) }"}
     = link_to project_commits_path(@project) do
       Commits
-  %li{class: "#{'active' if current_page?(compare_project_commits_path(@project)) }"}
-    = link_to compare_project_commits_path(@project) do
+  %li{class: "#{'active' if current_controller?(:compare)}"}
+    = link_to project_compare_index_path(@project) do
       Compare
   %li{class: "#{branches_tab_class}"}
     = link_to project_repository_path(@project) do

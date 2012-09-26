@@ -139,7 +139,7 @@ module SharedPaths
   end
 
   Given 'I visit compare refs page' do
-    visit compare_project_commits_path(@project)
+    visit project_compare_index_path(@project)
   end
 
   Given 'I visit project commits page' do
