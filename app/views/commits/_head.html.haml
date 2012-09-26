@@ -1,7 +1,7 @@
 %ul.nav.nav-tabs
   %li= render partial: 'shared/ref_switcher', locals: {destination: 'commits'}
-  %li{class: "#{'active' if current_page?(project_commits_path(@project)) }"}
-    = link_to project_commits_path(@project) do
+  %li{class: "#{'active' if current_controller?(:commit, :commits)}"}
+    = link_to project_commits_path(@project, @project.root_ref) do
       Commits
   %li{class: "#{'active' if current_controller?(:compare)}"}
     = link_to project_compare_index_path(@project) do
@@ -16,7 +16,7 @@
       Tags
       %span.badge= @project.repo.tag_count
 
-  - if current_page?(project_commits_path(@project)) && current_user.private_token
+  - if current_controller?(:commits) && current_user.private_token
     %li.right
       %span.rss-icon
         = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
