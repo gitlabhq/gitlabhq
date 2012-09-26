@@ -1,4 +1,5 @@
 require 'digest/md5'
+
 module ApplicationHelper
 
   # Check if a particular controller is the current one
@@ -13,6 +14,20 @@ module ApplicationHelper
   #   current_controller?(:commits, :tree) # => true
   def current_controller?(*args)
     args.any? { |v| v.to_s.downcase == controller.controller_name }
+  end
+
+  # Check if a partcular action is the current one
+  #
+  # args - One or more action names to check
+  #
+  # Examples
+  #
+  #   # On Projects#new
+  #   current_action?(:new)           # => true
+  #   current_action?(:create)        # => false
+  #   current_action?(:new, :create)  # => true
+  def current_action?(*args)
+    args.any? { |v| v.to_s.downcase == action_name }
   end
 
   def gravatar_icon(user_email = '', size = 40)

@@ -20,6 +20,25 @@ describe ApplicationHelper do
     end
   end
 
+  describe 'current_action?' do
+    before do
+      stub!(:action_name).and_return('foo')
+    end
+
+    it "returns true when action matches argument" do
+      current_action?(:foo).should be_true
+    end
+
+    it "returns false when action does not match argument" do
+      current_action?(:bar).should_not be_true
+    end
+
+    it "should take any number of arguments" do
+      current_action?(:baz, :bar).should_not be_true
+      current_action?(:baz, :bar, :foo).should be_true
+    end
+  end
+
   describe "gravatar_icon" do
     let(:user_email) { 'user@email.com' }
 
