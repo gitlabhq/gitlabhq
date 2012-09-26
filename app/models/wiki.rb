@@ -1,4 +1,6 @@
 class Wiki < ActiveRecord::Base
+  attr_accessible :title, :content, :slug
+
   belongs_to :project
   belongs_to :user
   has_many :notes, as: :noteable, dependent: :destroy

@@ -4,6 +4,9 @@ class MergeRequest < ActiveRecord::Base
   include IssueCommonality
   include Votes
 
+  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
+                  :author_id_of_changes
+
   BROKEN_DIFF = "--broken-diff"
 
   UNCHECKED = 1
@@ -48,7 +51,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unchecked
-    self.update_attributes(state: UNCHECKED)
+    self.state = UNCHECKED
+    self.save
   end
 
   def can_be_merged?

@@ -13,6 +13,8 @@
 #
 
 class Milestone < ActiveRecord::Base
+  attr_accessible :title, :description, :due_date, :closed
+
   belongs_to :project
   has_many :issues
 

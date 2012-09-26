@@ -6,6 +6,9 @@ class Project < ActiveRecord::Base
   include Authority
   include Team
 
+  attr_accessible :name, :path, :description, :code, :default_branch, :issues_enabled,
+                  :wall_enabled, :merge_requests_enabled, :wiki_enabled
+
   #
   # Relations
   #
@@ -24,11 +27,6 @@ class Project < ActiveRecord::Base
   has_many :protected_branches, dependent: :destroy
 
   attr_accessor :error_code
-
-  #
-  # Protected attributes
-  #
-  attr_protected :private_flag, :owner_id
 
   #
   # Scopes

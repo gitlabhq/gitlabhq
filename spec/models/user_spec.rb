@@ -15,6 +15,11 @@ describe User do
     it { should have_many(:assigned_merge_requests).dependent(:destroy) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:projects_limit) }
+    it { should allow_mass_assignment_of(:projects_limit).as(:admin) }
+  end
+
   describe 'validations' do
     it { should validate_presence_of(:projects_limit) }
     it { should validate_numericality_of(:projects_limit) }
@@ -72,31 +77,5 @@ describe User do
       user = Factory(:user)
       user.authentication_token.should_not be_blank
     end
-  end
-
-  describe "attributes can be changed by a regular user" do
-    before do
-      @user = Factory :user
-      @user.update_attributes(skype: "testskype", linkedin: "testlinkedin")
-    end
-    it { @user.skype.should == 'testskype' }
-    it { @user.linkedin.should == 'testlinkedin' }
-  end
-
-  describe "attributes that shouldn't be changed by a regular user" do
-    before do
-      @user = Factory :user
-      @user.update_attributes(projects_limit: 50)
-    end
-    it { @user.projects_limit.should_not == 50 }
-  end
-
-  describe "attributes can be changed by an admin user" do
-    before do
-      @admin_user = Factory :admin
-      @admin_user.update_attributes({ skype: "testskype", projects_limit: 50 }, as: :admin)
-    end
-    it { @admin_user.skype.should == 'testskype' }
-    it { @admin_user.projects_limit.should == 50 }
   end
 end

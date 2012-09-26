@@ -1,6 +1,8 @@
 class ProtectedBranch < ActiveRecord::Base
   include GitHost
 
+  attr_accessible :name
+
   belongs_to :project
   validates_presence_of :project_id
   validates_presence_of :name

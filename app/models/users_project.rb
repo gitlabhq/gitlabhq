@@ -6,10 +6,10 @@ class UsersProject < ActiveRecord::Base
   DEVELOPER = 30
   MASTER    = 40
 
+  attr_accessible :user, :user_id, :project_access
+
   belongs_to :user
   belongs_to :project
-
-  attr_protected :project_id, :project
 
   after_save :update_repository
   after_destroy :update_repository
