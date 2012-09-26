@@ -7,6 +7,11 @@ describe Note do
     it { should belong_to(:author).class_name('User') }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:author) }
+    it { should_not allow_mass_assignment_of(:author_id) }
+  end
+
   describe "Validation" do
     it { should validate_presence_of(:note) }
     it { should validate_presence_of(:project) }

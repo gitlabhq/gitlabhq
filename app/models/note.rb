@@ -2,6 +2,9 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Note < ActiveRecord::Base
+  attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
+                  :attachment, :line_code
+
   belongs_to :project
   belongs_to :noteable, polymorphic: true
   belongs_to :author,
@@ -16,7 +19,6 @@ class Note < ActiveRecord::Base
            to: :author,
            prefix: true
 
-  attr_protected :author, :author_id
   attr_accessor :notify
   attr_accessor :notify_author
 
