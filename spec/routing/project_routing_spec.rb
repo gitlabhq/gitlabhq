@@ -399,10 +399,15 @@ describe TreeController, "routing" do
 end
 
 # project_compare_index GET    /:project_id/compare(.:format)             compare#index {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+#                       POST   /:project_id/compare(.:format)             compare#create {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
 #       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {:from=>/.+/, :to=>/.+/, :id=>/[^\/]+/, :project_id=>/[^\/]+/}
 describe CompareController, "routing" do
   it "to #index" do
     get("/gitlabhq/compare").should route_to('compare#index', project_id: 'gitlabhq')
+  end
+
+  it "to #compare" do
+    post("/gitlabhq/compare").should route_to('compare#create', project_id: 'gitlabhq')
   end
 
   it "to #show" do

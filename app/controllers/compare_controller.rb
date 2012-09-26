@@ -8,6 +8,9 @@ class CompareController < ApplicationController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
+  def index
+  end
+
   def show
     result = Commit.compare(project, params[:from], params[:to])
 
@@ -18,5 +21,9 @@ class CompareController < ApplicationController
     @line_notes    = []
 
     @commits = CommitDecorator.decorate(@commits)
+  end
+
+  def create
+    redirect_to project_compare_path(@project, params[:from], params[:to])
   end
 end

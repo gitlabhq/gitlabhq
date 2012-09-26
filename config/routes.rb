@@ -162,7 +162,7 @@ Gitlab::Application.routes.draw do
     # XXX: WIP
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
     resources :commits, only: [:show], constraints: {id: /.+/}
-    resources :compare, only: [:index]
+    resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :blob,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show], constraints: {id: /.+/}
