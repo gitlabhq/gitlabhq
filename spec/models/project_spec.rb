@@ -17,6 +17,11 @@ describe Project do
     it { should have_many(:protected_branches).dependent(:destroy) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:owner_id) }
+    it { should_not allow_mass_assignment_of(:private_flag) }
+  end
+
   describe "Validation" do
     let!(:project) { create(:project) }
 

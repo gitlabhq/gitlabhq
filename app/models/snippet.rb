@@ -1,6 +1,8 @@
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
+  attr_accessible :title, :content, :file_name, :expires_at
+
   belongs_to :project
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
@@ -9,7 +11,6 @@ class Snippet < ActiveRecord::Base
            :email,
            to: :author,
            prefix: true
-  attr_protected :author, :author_id, :project, :project_id
 
   validates_presence_of :project_id
   validates_presence_of :author_id
@@ -46,11 +47,11 @@ class Snippet < ActiveRecord::Base
     0
   end
 
-  def name 
+  def name
     file_name
   end
 
-  def mode 
+  def mode
     nil
   end
 

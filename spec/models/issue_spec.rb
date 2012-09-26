@@ -5,6 +5,11 @@ describe Issue do
     it { should belong_to(:milestone) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:author_id) }
+    it { should_not allow_mass_assignment_of(:project_id) }
+  end
+
   describe "Validation" do
     it { should ensure_length_of(:description).is_within(0..2000) }
     it { should ensure_inclusion_of(:closed).in_array([true, false]) }
