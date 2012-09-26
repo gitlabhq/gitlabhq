@@ -4,7 +4,6 @@ namespace :gitlab do
     task :write_hooks => :environment  do
       gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
       gitlab_hooks_path = Rails.root.join("lib", "hooks")
-
       gitlab_hook_files = ['post-receive']
 
       gitlab_hook_files.each do |file_name|
@@ -20,4 +19,3 @@ namespace :gitlab do
     end
   end
 end
-
