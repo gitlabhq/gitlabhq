@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe UsersProjectObserver do
-#  let(:users_project) { stub.as_null_object }
   let(:user) { Factory.create :user }
   let(:project) { Factory.create(:project, 
                                  code: "Fuu", 
