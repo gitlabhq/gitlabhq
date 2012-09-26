@@ -2,8 +2,6 @@ class LabelsController < ApplicationController
   before_filter :project
   before_filter :module_enabled
 
-  layout "project"
-
   # Authorize
   before_filter :add_project_abilities
 

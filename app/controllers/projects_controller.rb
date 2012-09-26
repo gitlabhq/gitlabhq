@@ -2,7 +2,6 @@ require Rails.root.join('lib', 'gitlab', 'graph_commit')
 
 class ProjectsController < ApplicationController
   before_filter :project, except: [:index, :new, :create]
-  layout :determine_layout
 
   # Authorize
   before_filter :add_project_abilities
@@ -98,13 +97,5 @@ class ProjectsController < ApplicationController
   def project
     @project ||= Project.find_by_code(params[:id])
     @project || render_404
-  end
-
-  def determine_layout
-    if @project && !@project.new_record?
-      "project"
-    else
-      "application"
-    end
   end
 end

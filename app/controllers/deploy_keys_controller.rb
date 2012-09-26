@@ -1,6 +1,5 @@
 class DeployKeysController < ApplicationController
   respond_to :html
-  layout "project"
   before_filter :project
 
   # Authorize

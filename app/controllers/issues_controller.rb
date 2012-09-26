@@ -4,8 +4,6 @@ class IssuesController < ApplicationController
   before_filter :issue, only: [:edit, :update, :destroy, :show]
   helper_method :issues_filter
 
-  layout "project"
-
   # Authorize
   before_filter :add_project_abilities
 

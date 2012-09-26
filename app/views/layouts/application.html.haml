@@ -1,10 +1,10 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  %body{class: "#{app_theme} application"}
+  %body{class: "#{app_theme} #{layout_type}"}
     = render "layouts/flash"
-    = render "layouts/head_panel", title: "Dashboard"
+    = render "layouts/head_panel"
     .container
-      = render partial: "layouts/app_menu"
+      = render partial: "layouts/#{layout_type}_menu"
       .content
         = yield

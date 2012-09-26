@@ -4,8 +4,7 @@ class WikisController < ApplicationController
   before_filter :authorize_read_wiki!
   before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
   before_filter :authorize_admin_wiki!, only: :destroy
-  layout "project"
-  
+
   def pages
     @wikis = @project.wikis.group(:slug).order("created_at")
   end
@@ -52,7 +51,7 @@ class WikisController < ApplicationController
   def history
     @wikis = @project.wikis.where(slug: params[:id]).order("created_at")
   end
-  
+
   def destroy
     @wikis = @project.wikis.where(slug: params[:id]).delete_all
 

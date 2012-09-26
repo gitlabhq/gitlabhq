@@ -1,5 +1,31 @@
 require 'digest/md5'
 module ApplicationHelper
+  # Determines the layout type based on various factors
+  #
+  # Returns one of :project, :admin, :profile, or :application
+  def layout_type
+    if @project.present? && !@project.new_record?
+      :project
+    elsif controller.kind_of?(AdminController)
+      :admin
+    elsif controller.class == DashboardController || controller.class == ProfileController
+      :profile
+    else
+      :application
+    end
+  end
+
+  # Returns the string to be used in the header title element based on the
+  # current layout_type
+  def header_title
+    case layout_type
+    when :project then @project.name
+    when :admin then "Admin Area"
+    when :profile
+      controller.class == DashboardController ? "Dashboard" : "Profile"
+    else "GitLab"
+    end
+  end
 
   def gravatar_icon(user_email = '', size = 40)
     if Gitlab.config.disable_gravatar? || user_email.blank?
