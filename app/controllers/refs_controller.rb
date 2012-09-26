@@ -55,7 +55,7 @@ class RefsController < ApplicationController
     @commit = CommitDecorator.decorate(@commit)
     @tree = Tree.new(@commit.tree, project, @ref, params[:path])
     @tree = TreeDecorator.new(@tree)
-    @hex_path = Digest::SHA1.hexdigest(params[:path] || "/")
+    @hex_path = Digest::SHA1.hexdigest(params[:path] || "")
 
     if params[:path]
       @history_path = project_tree_path(@project, File.join(@ref, params[:path]))
