@@ -8,6 +8,8 @@ class ProjectsController < ProjectController
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
+  layout 'application', only: [:new, :create]
+
   def new
     @project = Project.new
   end
