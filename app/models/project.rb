@@ -75,10 +75,10 @@ class Project < ActiveRecord::Base
   validates :description, length: { within: 0..2000 }
   validates :name, uniqueness: true, presence: true, length: { within: 0..255 }
   validates :path, uniqueness: true, presence: true, length: { within: 0..255 },
-            format: { with: /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+            format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :code, presence: true, uniqueness: true, length: { within: 1..255 },
-            format: { with: /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/,
+            format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
