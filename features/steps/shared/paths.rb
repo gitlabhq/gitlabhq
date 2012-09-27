@@ -125,6 +125,10 @@ module SharedPaths
     visit project_wiki_path(@project, :index)
   end
 
+  When 'I visit project hooks page' do
+    visit project_hooks_path(@project)
+  end
+
   # ----------------------------------------
   # "Shop" Project
   # ----------------------------------------

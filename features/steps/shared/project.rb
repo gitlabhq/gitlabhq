@@ -12,4 +12,8 @@ module SharedProject
     @project = Factory :project, :name => "Shop"
     @project.add_access(@user, :admin)
   end
+
+  def current_project
+    @project ||= Project.first
+  end
 end
