@@ -9,12 +9,11 @@ production:
   pool: 5
   username: root
   password: "secure password"
+  # host: localhost
   # socket: /tmp/mysql.sock
 
-
-# 
-# Development specific
 #
+# Development specific
 #
 development:
   adapter: mysql2
@@ -38,6 +37,3 @@ test: &test
   username: root
   password:
   # socket: /tmp/mysql.sock
-
-cucumber:
-  <<: *test
