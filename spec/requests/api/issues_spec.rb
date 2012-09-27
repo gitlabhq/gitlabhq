@@ -6,6 +6,7 @@ describe Gitlab::API do
   let(:user) { Factory :user }
   let!(:project) { Factory :project, owner: user }
   let!(:issue) { Factory :issue, author: user, assignee: user, project: project }
+  let!(:issue2) { Factory :closed_issue, author: user, assignee: user, project: project }
   before { project.add_access(user, :read) }
 
   describe "GET /issues" do
@@ -23,6 +24,21 @@ describe Gitlab::API do
         json_response.should be_an Array
         json_response.first['title'].should == issue.title
       end
+
+      it "should only return an array of open issues" do
+        get api("/issues?state=open", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.map {|r| r['closed'].should == false }
+      end
+
+      it "should only return an array of closed issues" do
+        get api("/issues?state=closed", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.map {|r| r['closed'].should == true }
+      end
+
     end
   end
 
@@ -32,6 +48,20 @@ describe Gitlab::API do
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == issue.title
+    end
+
+    it "should only return open issues" do
+      get api("/projects/#{project.code}/issues?state=open", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.map {|r| r['closed'].should == false }
+    end
+
+    it "should only return closed issues" do
+      get api("/projects/#{project.code}/issues?state=closed", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.map {|r| r['closed'].should == true}
     end
   end
 

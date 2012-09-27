@@ -5,11 +5,18 @@ module Gitlab
 
     resource :issues do
       # Get currently authenticated user's issues
-      #
+      # Parameters:
+      #   state [closed|open] - The state of the issue  
       # Example Request:
       #   GET /issues
       get do
-        present paginate(current_user.issues), with: Entities::Issue
+        if params[:state]
+          state = params[:state] == 'closed' ? true :false
+          issues = paginate(current_user.issues.where(:closed => state))
+        else
+          issues = current_user.issues
+        end
+        present issues, with: Entities::Issue
       end
     end
 
@@ -18,10 +25,17 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
+      #   state [closed|open] - The state of the issue
       # Example Request:
       #   GET /projects/:id/issues
       get ":id/issues" do
-        present paginate(user_project.issues), with: Entities::Issue
+        if params[:state]
+          state = params[:state] == 'closed' ? true :false
+          issues = paginate(user_project.issues.where(:closed => state))
+        else
+          issues = user_project.issues
+        end
+        present paginate(issues), with: Entities::Issue
       end
 
       # Get a single project issue
