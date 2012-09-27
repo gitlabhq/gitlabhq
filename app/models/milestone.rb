@@ -11,7 +11,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def participants
-    User.where(id: issues.map(&:assignee_id))
+    User.where(id: issues.pluck(:assignee_id))
   end
 
   def percent_complete

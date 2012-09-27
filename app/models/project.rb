@@ -147,7 +147,7 @@ class Project < ActiveRecord::Base
   end
 
   def wiki_notes
-    Note.where(noteable_id: wikis.map(&:id), noteable_type: 'Wiki', project_id: self.id)
+    Note.where(noteable_id: wikis.pluck(:id), noteable_type: 'Wiki', project_id: self.id)
   end
 
   def project_id
