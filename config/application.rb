@@ -53,5 +53,9 @@ module Gitlab
 
     # Add fonts
     config.assets.paths << "#{Rails.root}/app/assets/fonts"
+
+    config.to_prepare do
+      Devise::SessionsController.layout 'devise_layout'
+    end
   end
 end

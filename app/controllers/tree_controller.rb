@@ -1,13 +1,8 @@
 # Controller for viewing a repository's file structure
-class TreeController < ApplicationController
+class TreeController < ProjectResourceController
   include ExtractsPath
 
-  layout "project"
-
-  before_filter :project
-
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project

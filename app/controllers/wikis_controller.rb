@@ -1,10 +1,7 @@
-class WikisController < ApplicationController
-  before_filter :project
-  before_filter :add_project_abilities
+class WikisController < ProjectResourceController
   before_filter :authorize_read_wiki!
   before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
   before_filter :authorize_admin_wiki!, only: :destroy
-  layout "project"
   
   def pages
     @wikis = @project.wikis.group(:slug).order("created_at")

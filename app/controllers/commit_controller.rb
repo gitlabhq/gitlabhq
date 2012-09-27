@@ -1,12 +1,8 @@
 # Controller for a specific Commit
 #
 # Not to be confused with CommitsController, plural.
-class CommitController < ApplicationController
-  before_filter :project
-  layout "project"
-
+class CommitController < ProjectResourceController
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
