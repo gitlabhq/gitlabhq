@@ -2,7 +2,7 @@ module TabHelper
   # Navigation link helper
   #
   # Returns an `li` element with an 'active' class if the supplied
-  # controller(s) and/or action(s) currently active. The contents of the
+  # controller(s) and/or action(s) are currently active. The content of the
   # element is the value passed to the block.
   #
   # options - The options hash used to determine if the element is "active" (default: {})
