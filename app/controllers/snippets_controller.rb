@@ -1,10 +1,5 @@
-class SnippetsController < ApplicationController
-  before_filter :project
+class SnippetsController < ProjectResourceController
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any snippet
   before_filter :authorize_read_snippet!

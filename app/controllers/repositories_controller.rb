@@ -1,13 +1,8 @@
-class RepositoriesController < ApplicationController
-  before_filter :project
-
+class RepositoriesController < ProjectResourceController
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
-
-  layout "project"
 
   def show
     @activities = @project.commits_with_refs(20)
