@@ -6,23 +6,17 @@
     = render "layouts/head_panel", title: "Profile"
     .container
       %ul.main_menu
-        %li.home{class: tab_class(:profile)}
+        = nav_link(path: 'profile#show', html_options: {class: 'home'}) do
           = link_to "Profile", profile_path
-
-        %li{class: tab_class(:account)}
+        = nav_link(path: 'profile#account') do
           = link_to "Account", profile_account_path
-
-        %li{class: tab_class(:ssh_keys)}
+        = nav_link(controller: :keys) do
           = link_to keys_path do
             SSH Keys
             %span.count= current_user.keys.count
-
-        %li{class: tab_class(:design)}
+        = nav_link(path: 'profile#design') do
           = link_to "Design", profile_design_path
-
-        %li{class: tab_class(:history)}
+        = nav_link(path: 'profile#history') do
           = link_to "History", profile_history_path
 
-
-      .content
-        = yield
+      .content= yield

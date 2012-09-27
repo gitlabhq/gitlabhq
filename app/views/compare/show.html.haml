@@ -1,0 +1,16 @@
+= render "commits/head"
+
+%h3.page_title
+  Compare View
+%hr
+
+= render "form"
+
+- if @commits.present?
+  %div.ui-box
+    %h5.small Commits (#{@commits.count})
+    %ul.unstyled= render @commits
+
+  - unless @diffs.empty?
+    %h4 Diff
+    = render "commits/diffs", diffs: @diffs

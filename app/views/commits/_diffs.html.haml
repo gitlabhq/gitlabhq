@@ -5,7 +5,7 @@
     %p To prevent performance issue we rejected diff information.
     %p
       But if you still want to see diff
-      = link_to "click this link", project_commit_path(@project, @commit.id, force_show_diff: true), class: "dark"
+      = link_to "click this link", project_commit_path(@project, @commit, force_show_diff: true), class: "dark"
 
 %p.cgray
   Showing #{pluralize(diffs.count, "changed file")}
@@ -24,7 +24,7 @@
           %i.icon-file
           %span{id: "#{diff.old_path}"}= diff.old_path
         - else
-          = link_to tree_file_project_ref_path(@project, @commit.id, diff.new_path) do
+          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)) do
             %i.icon-file
             %span{id: "#{diff.new_path}"}= diff.new_path
         %br/

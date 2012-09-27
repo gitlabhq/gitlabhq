@@ -34,7 +34,7 @@
       - @branches.each do |branch|
         %tr
           %td
-            = link_to project_commits_path(@project, ref: branch.name) do
+            = link_to project_commits_path(@project, branch.name) do
               %strong= branch.name
               - if branch.name == @project.root_ref
                 %span.label default

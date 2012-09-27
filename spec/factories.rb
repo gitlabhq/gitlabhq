@@ -42,8 +42,8 @@ FactoryGirl.define do
 
   factory :project do
     sequence(:name) { |n| "project#{n}" }
-    path { name }
-    code { name }
+    path { name.downcase.gsub(/\s/, '_') }
+    code { name.downcase.gsub(/\s/, '_') }
     owner
   end
 

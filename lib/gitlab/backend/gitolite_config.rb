@@ -10,7 +10,7 @@ module Gitlab
     attr_reader :config_tmp_dir, :ga_repo, :conf
 
     def config_tmp_dir
-      @config_tmp_dir ||= File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+      @config_tmp_dir ||= Rails.root.join('tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
     end
 
     def ga_repo
@@ -19,7 +19,7 @@ module Gitlab
 
     def apply
       Timeout::timeout(30) do
-        File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
+        File.open(Rails.root.join('tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
             # Set exclusive lock
             # to prevent race condition

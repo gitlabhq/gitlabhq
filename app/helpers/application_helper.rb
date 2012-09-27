@@ -1,5 +1,34 @@
 require 'digest/md5'
+
 module ApplicationHelper
+
+  # Check if a particular controller is the current one
+  #
+  # args - One or more controller names to check
+  #
+  # Examples
+  #
+  #   # On TreeController
+  #   current_controller?(:tree)           # => true
+  #   current_controller?(:commits)        # => false
+  #   current_controller?(:commits, :tree) # => true
+  def current_controller?(*args)
+    args.any? { |v| v.to_s.downcase == controller.controller_name }
+  end
+
+  # Check if a partcular action is the current one
+  #
+  # args - One or more action names to check
+  #
+  # Examples
+  #
+  #   # On Projects#new
+  #   current_action?(:new)           # => true
+  #   current_action?(:create)        # => false
+  #   current_action?(:new, :create)  # => true
+  def current_action?(*args)
+    args.any? { |v| v.to_s.downcase == action_name }
+  end
 
   def gravatar_icon(user_email = '', size = 40)
     if Gitlab.config.disable_gravatar? || user_email.blank?
@@ -31,8 +60,8 @@ module ApplicationHelper
 
   def grouped_options_refs(destination = :tree)
     options = [
-      ["Branch", @project.repo.heads.map(&:name) ],
-      [ "Tag", @project.tags ]
+      ["Branch", @project.branch_names ],
+      [ "Tag", @project.tag_names ]
     ]
 
     # If reference is commit id -
@@ -58,11 +87,11 @@ module ApplicationHelper
 
     if @project && !@project.new_record?
       project_nav = [
-        { label: "#{@project.name} / Issues", url: project_issues_path(@project) },
-        { label: "#{@project.name} / Wall", url: wall_project_path(@project) },
-        { label: "#{@project.name} / Tree", url: tree_project_ref_path(@project, @project.root_ref) },
-        { label: "#{@project.name} / Commits", url: project_commits_path(@project) },
-        { label: "#{@project.name} / Team", url: project_team_index_path(@project) }
+        { label: "#{@project.name} / Issues",  url: project_issues_path(@project) },
+        { label: "#{@project.name} / Wall",    url: wall_project_path(@project) },
+        { label: "#{@project.name} / Tree",    url: project_tree_path(@project, @ref || @project.root_ref) },
+        { label: "#{@project.name} / Commits", url: project_commits_path(@project, @ref || @project.root_ref) },
+        { label: "#{@project.name} / Team",    url: project_team_index_path(@project) }
       ]
     end
 
@@ -83,45 +112,6 @@ module ApplicationHelper
       !event.rm_ref? &&
       event.project &&
       event.project.merge_requests_enabled
-  end
-
-  def tab_class(tab_key)
-    active = case tab_key
-
-             # Project Area
-             when :wall; wall_tab?
-             when :wiki; controller.controller_name == "wikis"
-             when :issues; issues_tab?
-             when :network; current_page?(controller: "projects", action: "graph", id: @project)
-             when :merge_requests; controller.controller_name == "merge_requests"
-
-             # Dashboard Area
-             when :help; controller.controller_name == "help"
-             when :search; current_page?(search_path)
-             when :dash_issues; current_page?(dashboard_issues_path)
-             when :dash_mr; current_page?(dashboard_merge_requests_path)
-             when :root; current_page?(dashboard_path) || current_page?(root_path)
-
-             # Profile Area
-             when :profile;  current_page?(controller: "profile", action: :show)
-             when :history;  current_page?(controller: "profile", action: :history)
-             when :account;  current_page?(controller: "profile", action: :account)
-             when :token;    current_page?(controller: "profile", action: :token)
-             when :design;   current_page?(controller: "profile", action: :design)
-             when :ssh_keys; controller.controller_name == "keys"
-
-             # Admin Area
-             when :admin_root;     controller.controller_name == "dashboard"
-             when :admin_users;    controller.controller_name == 'users'
-             when :admin_projects; controller.controller_name == "projects"
-             when :admin_hooks;    controller.controller_name == 'hooks'
-             when :admin_resque;   controller.controller_name == 'resque'
-             when :admin_logs;   controller.controller_name == 'logs'
-
-             else
-               false
-             end
-    active ? "current" : nil
   end
 
   def hexdigest(string)

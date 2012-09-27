@@ -192,33 +192,16 @@ describe ProtectedBranchesController, "routing" do
 end
 
 #    switch_project_refs GET    /:project_id/switch(.:format)              refs#switch
-#       tree_project_ref GET    /:project_id/:id/tree(.:format)            refs#tree
 #  logs_tree_project_ref GET    /:project_id/:id/logs_tree(.:format)       refs#logs_tree
-#       blob_project_ref GET    /:project_id/:id/blob(.:format)            refs#blob
-#  tree_file_project_ref GET    /:project_id/:id/tree/:path(.:format)      refs#tree
 #  logs_file_project_ref GET    /:project_id/:id/logs_tree/:path(.:format) refs#logs_tree
-# blame_file_project_ref GET    /:project_id/:id/blame/:path(.:format)     refs#blame
 describe RefsController, "routing" do
   it "to #switch" do
     get("/gitlabhq/switch").should route_to('refs#switch', project_id: 'gitlabhq')
   end
 
-  it "to #tree" do
-    get("/gitlabhq/stable/tree").should             route_to('refs#tree', project_id: 'gitlabhq', id: 'stable')
-    get("/gitlabhq/stable/tree/foo/bar/baz").should route_to('refs#tree', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
-  end
-
   it "to #logs_tree" do
     get("/gitlabhq/stable/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable')
     get("/gitlabhq/stable/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
-  end
-
-  it "to #blob" do
-    get("/gitlabhq/stable/blob").should route_to('refs#blob', project_id: 'gitlabhq', id: 'stable')
-  end
-
-  it "to #blame" do
-    get("/gitlabhq/stable/blame/foo/bar/baz").should route_to('refs#blame', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
   end
 end
 
@@ -298,25 +281,22 @@ describe HooksController, "routing" do
   end
 end
 
-# compare_project_commits GET    /:project_id/commits/compare(.:format)   commits#compare
+# project_commit GET    /:project_id/commit/:id(.:format) commit#show {:id=>/[[:alnum:]]{6,40}/, :project_id=>/[^\/]+/}
+describe CommitController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/commit/4246fb").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb')
+    get("/gitlabhq/commit/4246fb.patch").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb', format: 'patch')
+    get("/gitlabhq/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
+  end
+end
+
 #    patch_project_commit GET    /:project_id/commits/:id/patch(.:format) commits#patch
 #         project_commits GET    /:project_id/commits(.:format)           commits#index
 #                         POST   /:project_id/commits(.:format)           commits#create
-#      new_project_commit GET    /:project_id/commits/new(.:format)       commits#new
-#     edit_project_commit GET    /:project_id/commits/:id/edit(.:format)  commits#edit
 #          project_commit GET    /:project_id/commits/:id(.:format)       commits#show
-#                         PUT    /:project_id/commits/:id(.:format)       commits#update
-#                         DELETE /:project_id/commits/:id(.:format)       commits#destroy
 describe CommitsController, "routing" do
-  it "to #compare" do
-    get("/gitlabhq/commits/compare").should route_to('commits#compare', project_id: 'gitlabhq')
-  end
-
-  it "to #patch" do
-    get("/gitlabhq/commits/1/patch").should route_to('commits#patch', project_id: 'gitlabhq', id: '1')
-  end
-
   it_behaves_like "RESTful project resources" do
+    let(:actions)    { [:show] }
     let(:controller) { 'commits' }
   end
 end
@@ -394,5 +374,44 @@ describe NotesController, "routing" do
   it_behaves_like "RESTful project resources" do
     let(:actions)    { [:index, :create, :destroy] }
     let(:controller) { 'notes' }
+  end
+end
+
+# project_blame GET    /:project_id/blame/:id(.:format) blame#show {:id=>/.+/, :project_id=>/[^\/]+/}
+describe BlameController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/blame/master/app/models/project.rb").should route_to('blame#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+  end
+end
+
+# project_blob GET    /:project_id/blob/:id(.:format) blob#show {:id=>/.+/, :project_id=>/[^\/]+/}
+describe BlobController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+  end
+end
+
+# project_tree GET    /:project_id/tree/:id(.:format) tree#show {:id=>/.+/, :project_id=>/[^\/]+/}
+describe TreeController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+  end
+end
+
+# project_compare_index GET    /:project_id/compare(.:format)             compare#index {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+#                       POST   /:project_id/compare(.:format)             compare#create {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+#       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {:from=>/.+/, :to=>/.+/, :id=>/[^\/]+/, :project_id=>/[^\/]+/}
+describe CompareController, "routing" do
+  it "to #index" do
+    get("/gitlabhq/compare").should route_to('compare#index', project_id: 'gitlabhq')
+  end
+
+  it "to #compare" do
+    post("/gitlabhq/compare").should route_to('compare#create', project_id: 'gitlabhq')
+  end
+
+  it "to #show" do
+    get("/gitlabhq/compare/master...stable").should     route_to('compare#show', project_id: 'gitlabhq', from: 'master', to: 'stable')
+    get("/gitlabhq/compare/issue/1234...stable").should route_to('compare#show', project_id: 'gitlabhq', from: 'issue/1234', to: 'stable')
   end
 end

@@ -1,9 +1,8 @@
 %ul.nav.nav-tabs
   %li
     = render partial: 'shared/ref_switcher', locals: {destination: 'tree', path: params[:path]}
-  %li{class: "#{'active' if (controller.controller_name == "refs") }"}
-    = link_to tree_project_ref_path(@project, @ref) do
-      Source
+  = nav_link(controller: :refs) do
+    = link_to 'Source', project_tree_path(@project, @ref)
   %li.right
     .input-prepend.project_clone_holder
       %button{class: "btn small active", :"data-clone" => @project.ssh_url_to_repo} SSH

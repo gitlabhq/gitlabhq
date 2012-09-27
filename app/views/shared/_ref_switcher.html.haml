@@ -1,5 +1,5 @@
 = form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
   = select_tag "ref", grouped_options_refs, class: "project-refs-select chosen"
   = hidden_field_tag :destination, destination
-  - if respond_to?(:path)
+  - if defined?(path)
     = hidden_field_tag :path, path
