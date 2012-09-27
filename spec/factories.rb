@@ -78,6 +78,12 @@ FactoryGirl.define do
   end
 
   factory :event do
+    factory :closed_issue_event do
+      project
+      action Event::Closed
+      target factory: :closed_issue
+      author factory: :user
+    end
   end
 
   factory :key do

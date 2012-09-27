@@ -11,4 +11,8 @@ module SharedAuthentication
   Given 'I sign in as an admin' do
     login_as :admin
   end
+
+  def current_user
+    @user || User.first
+  end
 end
