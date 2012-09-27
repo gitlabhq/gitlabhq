@@ -5,15 +5,6 @@ GIT
     annotate (2.4.1.beta1)
 
 GIT
-  remote: https://github.com/gitlabhq/gitolite-client.git
-  revision: 9b715ca8bab6529f6c92204a25f84d12f25a6eb0
-  ref: 9b715ca8bab6529f6c92204a25f84d12f25a6eb0
-  specs:
-    gitolite (0.0.4.alpha)
-      grit (>= 2.4.1)
-      hashery (~> 1.4.0)
-
-GIT
   remote: https://github.com/gitlabhq/grack.git
   revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
   specs:
@@ -168,12 +159,17 @@ GEM
     git (1.2.5)
     github-markup (0.7.4)
     gitlab_meta (2.9)
+    gitolite (1.1.0)
+      gratr19 (~> 0.4.4.1)
+      grit (~> 2.5.0)
+      hashery (~> 1.5.0)
     grape (0.2.1)
       hashie (~> 1.2)
       multi_json
       multi_xml
       rack
       rack-mount
+    gratr19 (0.4.4.1)
     growl (1.0.3)
     guard (1.3.2)
       listen (>= 0.4.2)
@@ -189,7 +185,8 @@ GEM
       activesupport (~> 3.0)
       haml (~> 3.0)
       railties (~> 3.0)
-    hashery (1.4.0)
+    hashery (1.5.0)
+      blankslate
     hashie (1.2.0)
     headless (0.3.1)
     hike (1.2.1)
@@ -432,7 +429,7 @@ DEPENDENCIES
   git
   github-markup (~> 0.7.4)
   gitlab_meta (= 2.9)
-  gitolite!
+  gitolite (= 1.1.0)
   grack!
   grape (~> 0.2.1)
   grit!

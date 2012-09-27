@@ -23,12 +23,14 @@ gem 'omniauth-github'
 
 # GITLAB patched libs
 gem "grit",          :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
-gem "gitolite",      :git => "https://github.com/gitlabhq/gitolite-client.git", :ref => "9b715ca8bab6529f6c92204a25f84d12f25a6eb0"
 gem "pygments.rb",   :git => "https://github.com/gitlabhq/pygments.rb.git",     :ref => "2cada028da5054616634a1d9ca6941b65b3ce188"
 gem "omniauth-ldap", :git => "https://github.com/gitlabhq/omniauth-ldap.git",   :ref => "f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e"
 gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
 gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
 gem "linguist", "~> 1.0.0", :git => "https://github.com/gitlabhq/linguist.git"
+
+# Gitolite client (for work with gitolite-admin repo)
+gem "gitolite", '1.1.0'
 
 # API
 gem "grape", "~> 0.2.1"
