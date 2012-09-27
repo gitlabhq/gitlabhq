@@ -18,9 +18,10 @@
         - few_commits.each do |commit|
           = render "events/commit", commit: commit, project: project
 
-        %li.commits-stat
-          - if event.commits_count > 2
-            %span ... and #{event.commits_count - 2} more commits.
-          = link_to project_compare_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
-            %strong Compare &rarr; #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
+        - if event.commits_count > 1
+          %li.commits-stat
+            - if event.commits_count > 2
+              %span ... and #{event.commits_count - 2} more commits.
+            = link_to project_compare_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
+              %strong Compare &rarr; #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
   .clearfix
