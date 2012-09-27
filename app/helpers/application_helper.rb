@@ -60,8 +60,8 @@ module ApplicationHelper
 
   def grouped_options_refs(destination = :tree)
     options = [
-      ["Branch", @project.repo.heads.map(&:name) ],
-      [ "Tag", @project.tags ]
+      ["Branch", @project.branch_names ],
+      [ "Tag", @project.tag_names ]
     ]
 
     # If reference is commit id -
