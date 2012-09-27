@@ -1,4 +1,4 @@
-class HooksController < ProjectController
+class HooksController < ProjectResourceController
   # Authorize
   before_filter :authorize_read_project!
   before_filter :authorize_admin_project!, only: [:new, :create, :destroy]

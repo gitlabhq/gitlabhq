@@ -1,6 +1,6 @@
 require Rails.root.join('lib', 'gitlab', 'graph_commit')
 
-class ProjectsController < ProjectController
+class ProjectsController < ProjectResourceController
   skip_before_filter :project, only: [:new, :create]
 
   # Authorize

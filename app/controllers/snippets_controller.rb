@@ -1,4 +1,4 @@
-class SnippetsController < ProjectController
+class SnippetsController < ProjectResourceController
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read any snippet

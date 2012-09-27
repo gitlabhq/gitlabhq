@@ -1,4 +1,4 @@
-class WikisController < ProjectController
+class WikisController < ProjectResourceController
   before_filter :authorize_read_wiki!
   before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
   before_filter :authorize_admin_wiki!, only: :destroy

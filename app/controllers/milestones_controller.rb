@@ -1,4 +1,4 @@
-class MilestonesController < ProjectController
+class MilestonesController < ProjectResourceController
   before_filter :module_enabled
   before_filter :milestone, only: [:edit, :update, :destroy, :show]
 

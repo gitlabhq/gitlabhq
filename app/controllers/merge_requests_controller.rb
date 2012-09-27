@@ -1,4 +1,4 @@
-class MergeRequestsController < ProjectController
+class MergeRequestsController < ProjectResourceController
   before_filter :module_enabled
   before_filter :merge_request, only: [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check, :raw]
   before_filter :validates_merge_request, only: [:show, :diffs, :raw]

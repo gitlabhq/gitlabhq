@@ -1,4 +1,4 @@
-class RepositoriesController < ProjectController
+class RepositoriesController < ProjectResourceController
   # Authorize
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!

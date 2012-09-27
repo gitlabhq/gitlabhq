@@ -1,4 +1,4 @@
-class TeamMembersController < ProjectController
+class TeamMembersController < ProjectResourceController
   # Authorize
   before_filter :authorize_read_project!
   before_filter :authorize_admin_project!, except: [:index, :show]

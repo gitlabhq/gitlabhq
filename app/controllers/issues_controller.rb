@@ -1,4 +1,4 @@
-class IssuesController < ProjectController
+class IssuesController < ProjectResourceController
   before_filter :module_enabled
   before_filter :issue, only: [:edit, :update, :destroy, :show]
   helper_method :issues_filter

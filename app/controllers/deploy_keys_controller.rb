@@ -1,4 +1,4 @@
-class DeployKeysController < ProjectController
+class DeployKeysController < ProjectResourceController
   respond_to :html
 
   # Authorize

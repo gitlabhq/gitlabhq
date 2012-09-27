@@ -1,4 +1,4 @@
-class LabelsController < ProjectController
+class LabelsController < ProjectResourceController
   before_filter :module_enabled
 
   # Allow read any issue

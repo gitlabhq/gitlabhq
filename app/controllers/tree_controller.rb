@@ -1,5 +1,5 @@
 # Controller for viewing a repository's file structure
-class TreeController < ProjectController
+class TreeController < ProjectResourceController
   include ExtractsPath
 
   # Authorize

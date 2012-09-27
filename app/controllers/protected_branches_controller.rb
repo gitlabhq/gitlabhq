@@ -1,4 +1,4 @@
-class ProtectedBranchesController < ProjectController
+class ProtectedBranchesController < ProjectResourceController
   # Authorize
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project

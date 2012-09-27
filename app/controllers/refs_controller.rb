@@ -1,4 +1,4 @@
-class RefsController < ProjectController
+class RefsController < ProjectResourceController
   include Gitlab::Encode
 
   # Authorize

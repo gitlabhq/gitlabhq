@@ -1,6 +1,6 @@
 require "base64"
 
-class CommitsController < ProjectController
+class CommitsController < ProjectResourceController
   include ExtractsPath
 
   # Authorize

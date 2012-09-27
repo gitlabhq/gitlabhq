@@ -1,5 +1,5 @@
 # Controller for viewing a file's blame
-class BlameController < ProjectController
+class BlameController < ProjectResourceController
   include ExtractsPath
 
   # Authorize

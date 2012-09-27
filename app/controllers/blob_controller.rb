@@ -1,5 +1,5 @@
 # Controller for viewing a file's blame
-class BlobController < ProjectController
+class BlobController < ProjectResourceController
   include ExtractsPath
   include Gitlab::Encode
 
