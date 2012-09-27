@@ -61,7 +61,7 @@
       ajaxGet('#{@logs_path}');
     });
 
-- if params[:path] && request.xhr?
+- if @path.present? && request.xhr?
   :javascript
     $(window).unbind('popstate');
     $(window).bind('popstate', function() {
