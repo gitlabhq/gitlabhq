@@ -88,6 +88,7 @@ class UsersProject < ActiveRecord::Base
     self.class.access_roles.invert[self.project_access]
   end
 end
+
 # == Schema Information
 #
 # Table name: users_projects
@@ -99,4 +100,3 @@ end
 #  updated_at     :datetime        not null
 #  project_access :integer         default(0), not null
 #
-

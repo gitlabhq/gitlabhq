@@ -4,24 +4,11 @@ class Commit
   include StaticModel
   extend ActiveModel::Naming
 
-  attr_accessor :commit
-  attr_accessor :head
-  attr_accessor :refs
+  attr_accessor :commit, :head, :refs
 
-  delegate :message,
-    :authored_date,
-    :committed_date,
-    :parents,
-    :sha,
-    :date,
-    :committer,
-    :author,
-    :message,
-    :diffs,
-    :tree,
-    :id,
-    :to_patch,
-    to: :commit
+  delegate  :message, :authored_date, :committed_date, :parents, :sha,
+            :date, :committer, :author, :message, :diffs, :tree, :id,
+            :to_patch, to: :commit
 
   class << self
     def find_or_first(repo, commit_id = nil, root_ref)
@@ -30,6 +17,7 @@ class Commit
                else
                  repo.commits(root_ref).first
                end
+
       Commit.new(commit) if commit
     end
 

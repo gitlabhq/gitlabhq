@@ -7,25 +7,12 @@ class Snippet < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
 
-  delegate :name,
-           :email,
-           to: :author,
-           prefix: true
+  delegate :name, :email, to: :author, prefix: true
 
-  validates_presence_of :project_id
-  validates_presence_of :author_id
-
-  validates :title,
-            presence: true,
-            length: { within: 0..255 }
-
-  validates :file_name,
-            presence: true,
-            length: { within: 0..255 }
-
-  validates :content,
-            presence: true,
-            length: { within: 0..10000 }
+  validates_presence_of :author_id, :project_id
+  validates :title, presence: true, length: { within: 0..255 }
+  validates :file_name, presence: true, length: { within: 0..255 }
+  validates :content, presence: true, length: { within: 0..10000 }
 
   scope :fresh, order("created_at DESC")
   scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
@@ -59,6 +46,7 @@ class Snippet < ActiveRecord::Base
     expires_at && expires_at < Time.current
   end
 end
+
 # == Schema Information
 #
 # Table name: snippets
@@ -73,4 +61,3 @@ end
 #  file_name  :string(255)
 #  expires_at :datetime
 #
-

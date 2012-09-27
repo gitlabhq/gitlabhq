@@ -9,8 +9,7 @@ class Issue < ActiveRecord::Base
 
   belongs_to :milestone
 
-  validates :description,
-            length: { within: 0..2000 }
+  validates :description, length: { within: 0..2000 }
 
   def self.open_for(user)
     opened.assigned(user)
@@ -32,6 +31,7 @@ class Issue < ActiveRecord::Base
     closed_changed? && !closed
   end
 end
+
 # == Schema Information
 #
 # Table name: issues
@@ -49,4 +49,3 @@ end
 #  description  :text
 #  milestone_id :integer
 #
-

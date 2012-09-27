@@ -16,6 +16,10 @@ class Event < ActiveRecord::Base
   Joined    = 8 # User joined project
   Left      = 9 # User left project
 
+  delegate :name, :email, to: :author, prefix: true, allow_nil: true
+  delegate :title, to: :issue, prefix: true, allow_nil: true
+  delegate :title, to: :merge_request, prefix: true, allow_nil: true
+
   belongs_to :project
   belongs_to :target, polymorphic: true
 
@@ -134,12 +138,8 @@ class Event < ActiveRecord::Base
       "opened"
     end
   end
-
-
-  delegate :name, :email, to: :author, prefix: true, allow_nil: true
-  delegate :title, to: :issue, prefix: true, allow_nil: true
-  delegate :title, to: :merge_request, prefix: true, allow_nil: true
 end
+
 # == Schema Information
 #
 # Table name: events
@@ -155,4 +155,3 @@ end
 #  action      :integer
 #  author_id   :integer
 #
-

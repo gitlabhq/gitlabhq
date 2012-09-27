@@ -32,6 +32,7 @@ class Wiki < ActiveRecord::Base
     end
   end
 end
+
 # == Schema Information
 #
 # Table name: wikis
@@ -45,4 +46,3 @@ end
 #  slug       :string(255)
 #  user_id    :integer
 #
-

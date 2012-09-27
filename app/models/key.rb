@@ -6,14 +6,10 @@ class Key < ActiveRecord::Base
 
   attr_accessible :key, :title
 
-  validates :title,
-            presence: true,
-            length: { within: 0..255 }
-
-  validates :key,
-            presence: true,
-            format: { :with => /ssh-.{3} / },
-            length: { within: 0..5000 }
+  validates :title, presence: true, length: { within: 0..255 }
+  validates :key, presence: true,
+            length: { within: 0..5000 },
+            format: { :with => /ssh-.{3} / }
 
   before_save :set_identifier
   before_validation :strip_white_space
@@ -34,7 +30,7 @@ class Key < ActiveRecord::Base
 
   def set_identifier
     if is_deploy_key
-      self.identifier = "deploy_" + Digest::MD5.hexdigest(key)
+      self.identifier = "deploy_#{Digest::MD5.hexdigest(key)}"
     else
       self.identifier = "#{user.identifier}_#{Time.now.to_i}"
     end
@@ -57,6 +53,7 @@ class Key < ActiveRecord::Base
     Key.where(identifier: identifier).count == 0
   end
 end
+
 # == Schema Information
 #
 # Table name: keys
@@ -70,4 +67,3 @@ end
 #  identifier :string(255)
 #  project_id :integer
 #
-

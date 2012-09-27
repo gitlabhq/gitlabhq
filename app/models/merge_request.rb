@@ -18,8 +18,7 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
-  validates_presence_of :source_branch
-  validates_presence_of :target_branch
+  validates_presence_of :source_branch, :target_branch
   validate :validate_branches
 
   def self.find_all_by_branch(branch_name)
@@ -187,6 +186,7 @@ class MergeRequest < ActiveRecord::Base
     patch_path
   end
 end
+
 # == Schema Information
 #
 # Table name: merge_requests
@@ -206,4 +206,3 @@ end
 #  merged        :boolean         default(FALSE), not null
 #  state         :integer         default(1), not null
 #
-

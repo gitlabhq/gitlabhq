@@ -4,8 +4,7 @@ class ProtectedBranch < ActiveRecord::Base
   attr_accessible :name
 
   belongs_to :project
-  validates_presence_of :project_id
-  validates_presence_of :name
+  validates_presence_of :name, :project_id
 
   after_save :update_repository
   after_destroy :update_repository
@@ -18,6 +17,7 @@ class ProtectedBranch < ActiveRecord::Base
     project.commit(self.name)
   end
 end
+
 # == Schema Information
 #
 # Table name: protected_branches
@@ -28,4 +28,3 @@ end
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
 #
-

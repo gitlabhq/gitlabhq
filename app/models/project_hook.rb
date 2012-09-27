@@ -1,3 +1,7 @@
+class ProjectHook < WebHook
+  belongs_to :project
+end
+
 # == Schema Information
 #
 # Table name: web_hooks
@@ -9,7 +13,3 @@
 #  updated_at :datetime        not null
 #  type       :string(255)     default("ProjectHook")
 #
-
-class ProjectHook < WebHook
-  belongs_to :project
-end
