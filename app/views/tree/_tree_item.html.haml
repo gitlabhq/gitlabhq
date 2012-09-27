@@ -1,8 +1,8 @@
 - file = tree_full_path(content)
-%tr{ class: "tree-item #{tree_hex_class(content)}", url: tree_file_project_ref_path(@project, @ref, file) }
+%tr{ class: "tree-item #{tree_hex_class(content)}", url: project_tree_path(@project, tree_join(@id, file)) }
   %td.tree-item-file-name
     = tree_icon(content)
-    %strong= link_to truncate(content.name, length: 40), tree_file_project_ref_path(@project, @ref || @commit.id, file), remote: :true
+    %strong= link_to truncate(content.name, length: 40), project_tree_path(@project, tree_join(@id || @commit.id, file)), remote: :true
   %td.tree_time_ago.cgray
     - if index == 1
       %span.log_loading

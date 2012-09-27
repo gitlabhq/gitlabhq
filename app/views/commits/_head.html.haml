@@ -1,23 +1,23 @@
 %ul.nav.nav-tabs
   %li= render partial: 'shared/ref_switcher', locals: {destination: 'commits'}
-  %li{class: "#{'active' if current_page?(project_commits_path(@project)) }"}
-    = link_to project_commits_path(@project) do
-      Commits
-  %li{class: "#{'active' if current_page?(compare_project_commits_path(@project)) }"}
-    = link_to compare_project_commits_path(@project) do
-      Compare
-  %li{class: "#{branches_tab_class}"}
+
+  = nav_link(controller: [:commit, :commits]) do
+    = link_to 'Commits', project_commits_path(@project, @project.root_ref)
+  = nav_link(controller: :compare) do
+    = link_to 'Compare', project_compare_index_path(@project)
+
+  = nav_link(html_options: {class: branches_tab_class}) do
     = link_to project_repository_path(@project) do
       Branches
       %span.badge= @project.repo.branch_count
 
-  %li{class: "#{'active' if current_page?(tags_project_repository_path(@project)) }"}
+  = nav_link(controller: :repositories, action: :tags) do
     = link_to tags_project_repository_path(@project) do
       Tags
       %span.badge= @project.repo.tag_count
 
-  - if current_page?(project_commits_path(@project)) && current_user.private_token
+  - if current_controller?(:commits) && current_user.private_token
     %li.right
       %span.rss-icon
-        = link_to project_commits_path(@project, :atom, { private_token: current_user.private_token, ref: @ref }), title: "Feed" do
+        = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
           = image_tag "rss_ui.png", title: "feed"

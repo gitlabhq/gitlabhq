@@ -1,8 +1,8 @@
 Feature: Project Browse commits
   Background:
     Given I sign in as a user
-    And I own project "Shop"
-    Given I visit project commits page
+    And I own a project
+    And I visit my project's commits page
 
   Scenario: I browse commits list for master branch
     Then I see project commits
@@ -18,4 +18,4 @@ Feature: Project Browse commits
   Scenario: I compare refs
     Given I visit compare refs page
     And I fill compare fields with refs
-    And I see compared refs
+    Then I see compared refs

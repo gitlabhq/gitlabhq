@@ -12,7 +12,7 @@
       - commit = CommitDecorator.decorate(commit)
       %tr
         %td
-          %strong= link_to tag.name, project_commits_path(@project, ref: tag.name), class: ""
+          %strong= link_to tag.name, project_commits_path(@project, tag.name), class: ""
         %td
           = link_to project_commit_path(@project, commit.id) do
             %code= commit.short_id

@@ -68,10 +68,22 @@
      *  Blame file
      */
     &.blame {
+      table {
+        border:none;
+        box-shadow:none;
+        margin:0;
+      }
       tr {
         border-bottom: 1px solid #eee;
       }
       td {
+        &:first-child {
+          border-left:none;
+        }
+        &:last-child {
+          border-right:none;
+        }
+        background:#fff;
         padding:5px;
       }
       .author,

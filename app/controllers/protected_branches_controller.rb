@@ -4,7 +4,6 @@ class ProtectedBranchesController < ProjectController
   before_filter :require_non_empty_project
 
   before_filter :authorize_admin_project!, only: [:destroy, :create]
-  before_filter :render_full_content
 
   def index
     @branches = @project.protected_branches.all

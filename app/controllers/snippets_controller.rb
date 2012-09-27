@@ -50,7 +50,6 @@ class SnippetsController < ProjectController
 
   def show
     @note = @project.notes.new(noteable: @snippet)
-    render_full_content
   end
 
   def destroy

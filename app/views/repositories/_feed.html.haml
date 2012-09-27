@@ -2,7 +2,7 @@
 - commit = CommitDecorator.new(commit)
 %tr
   %td
-    = link_to project_commits_path(@project, ref: commit.head.name) do
+    = link_to project_commits_path(@project, commit.head.name) do
       %strong
         = commit.head.name
       - if commit.head.name == @project.root_ref

@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :set_current_user_for_mailer
-  before_filter :check_token_auth
   before_filter :set_current_user_for_observers
   before_filter :dev_tools if Rails.env == 'development'
 
@@ -23,13 +22,6 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-
-  def check_token_auth
-    # Redirect to login page if not atom feed
-    if params[:private_token].present? && params[:format] != 'atom'
-      redirect_to new_user_session_path
-    end
-  end
 
   def reject_blocked!
     if current_user && current_user.blocked
@@ -103,7 +95,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render file: File.join(Rails.root, "public", "404"), layout: false, status: "404"
+    render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
   def require_non_empty_project
@@ -114,10 +106,6 @@ class ApplicationController < ActionController::Base
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end
-
-  def render_full_content
-    @full_content = true
   end
 
   def dev_tools

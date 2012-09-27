@@ -125,7 +125,7 @@ describe Project do
 
   it "should return path to repo" do
     project = Project.new(path: "somewhere")
-    project.path_to_repo.should == File.join(Rails.root, "tmp", "repositories", "somewhere")
+    project.path_to_repo.should == Rails.root.join("tmp", "repositories", "somewhere")
   end
 
   it "returns the full web URL for this repo" do

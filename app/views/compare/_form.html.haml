@@ -1,9 +1,3 @@
-= render "head"
-
-%h3.page_title
-  Compare View
-%hr
-
 %div
   %p.slead
     Fill input field with commit id like
@@ -14,7 +8,7 @@
 
   %br
 
-  = form_tag compare_project_commits_path(@project), method: :get do
+  = form_tag project_compare_index_path(@project), method: :post do
     .clearfix
       = text_field_tag :from, params[:from], placeholder: "master", class: "xlarge"
       = "..."
@@ -25,29 +19,14 @@
     .actions
       = submit_tag "Compare", class: "btn primary wide commits-compare-btn"
 
-- if @commits.present?
-  %div.ui-box
-    %h5.small Commits (#{@commits.count})
-    %ul.unstyled= render @commits
-
-  - unless @diffs.empty?
-    %h4 Diff
-    = render "commits/diffs", diffs: @diffs
-
 :javascript
   $(function() {
     var availableTags = #{@project.ref_names.to_json};
 
-    $("#from").autocomplete({
-      source: availableTags,
-      minLength: 1
-    });
-
-    $("#to").autocomplete({
+    $("#from, #to").autocomplete({
       source: availableTags,
       minLength: 1
     });
 
     disableButtonIfEmptyField('#to', '.commits-compare-btn');
   });
-
