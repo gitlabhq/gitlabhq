@@ -6,7 +6,7 @@ class TreeDecorator < ApplicationDecorator
       part_path = ""
       parts = path.split("\/")
 
-      #parts = parts[0...-1] if is_blob? 
+      #parts = parts[0...-1] if is_blob?
 
       yield(h.link_to("..", "#", remote: :true)) if parts.count > max_links
 
@@ -21,7 +21,7 @@ class TreeDecorator < ApplicationDecorator
   end
 
   def up_dir?
-    !!path
+    path.present?
   end
 
   def up_dir_path
@@ -36,8 +36,8 @@ class TreeDecorator < ApplicationDecorator
   def mb_size
     size = (tree.size / 1024)
     if size < 1024
-      "#{size} KB" 
-    else 
+      "#{size} KB"
+    else
       "#{size/1024} MB"
     end
   end

@@ -1,6 +1,6 @@
 = render "head"
 
-- if params[:path]
+- if @path
   %ul.breadcrumb
     %li
       %span.arrow
@@ -9,7 +9,7 @@
       %span.divider
         \/
     %li
-      %a{href: "#"}= params[:path].split("/").join(" / ")
+      %a{href: "#"}= @path.split("/").join(" / ")
 
 %div{id: dom_id(@project)}
   #commits_list= render "commits"
