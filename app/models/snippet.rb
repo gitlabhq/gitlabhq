@@ -63,11 +63,11 @@ end
 #
 # Table name: snippets
 #
-#  id         :integer(4)      not null, primary key
+#  id         :integer         not null, primary key
 #  title      :string(255)
 #  content    :text
-#  author_id  :integer(4)      not null
-#  project_id :integer(4)      not null
+#  author_id  :integer         not null
+#  project_id :integer         not null
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
 #  file_name  :string(255)

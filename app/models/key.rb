@@ -61,13 +61,13 @@ end
 #
 # Table name: keys
 #
-#  id         :integer(4)      not null, primary key
-#  user_id    :integer(4)
+#  id         :integer         not null, primary key
+#  user_id    :integer
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
 #  key        :text
 #  title      :string(255)
 #  identifier :string(255)
-#  project_id :integer(4)
+#  project_id :integer
 #
 

@@ -30,10 +30,11 @@ end
 #
 # Table name: web_hooks
 #
-#  id         :integer(4)      not null, primary key
+#  id         :integer         not null, primary key
 #  url        :string(255)
-#  project_id :integer(4)
+#  project_id :integer
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
+#  type       :string(255)     default("ProjectHook")
 #
 

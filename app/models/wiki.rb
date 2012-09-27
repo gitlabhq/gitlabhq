@@ -36,13 +36,13 @@ end
 #
 # Table name: wikis
 #
-#  id         :integer(4)      not null, primary key
+#  id         :integer         not null, primary key
 #  title      :string(255)
 #  content    :text
-#  project_id :integer(4)
+#  project_id :integer
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
 #  slug       :string(255)
-#  user_id    :integer(4)
+#  user_id    :integer
 #
 
