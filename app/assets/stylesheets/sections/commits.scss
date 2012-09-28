@@ -47,6 +47,14 @@
       padding-left: 32px;
     }
 
+    .author,
+    .committer {
+      font-size:14px;
+      line-height:22px;
+      text-shadow:0 1px 1px #fff;
+      color:#777;
+    }
+
     .avatar {
       margin-right: 10px;
     }
@@ -226,4 +234,14 @@
       padding:2px 0;
     }
   }
+}
+
+.label_commit {
+  @include round-borders-all(4px);
+  padding:2px 4px;
+  border:none;
+  font-size:13px;
+  background: #474D57;
+  color:#fff;
+  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }

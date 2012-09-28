@@ -17,7 +17,7 @@
         = gfm escape_once(@commit.description)
   .commit-info
     .row
-      .span4
+      .span5
         = image_tag gravatar_icon(@commit.author_email, 40), class: "avatar"
         .author
           %strong= @commit.author_name
@@ -31,10 +31,10 @@
             committed
             %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
               #{time_ago_in_words(@commit.committed_date)} ago
-      .span7.right
+      .span6.right
         .sha-block
           %span.cgray commit
-          %code= @commit.id
+          %code.label_commit= @commit.id
         .sha-block
           %span.cgray= pluralize(@commit.parents.count, "parent")
           - @commit.parents.each do |parent|
