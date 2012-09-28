@@ -40,18 +40,22 @@ module Gitlab
 
             # Save changes in
             # gitolite-admin repo
-            # before pusht it
+            # before push it
             ga_repo.save
 
             # Push gitolite-admin repo
             # to apply all changes
             push(config_tmp_dir)
-
-            # Remove tmp dir
-            # wiith gitolite-admin
-            FileUtils.rm_rf(config_tmp_dir)
           ensure
-            # unlock so other task cann access
+            # Remove tmp dir
+            # removing the gitolite folder first is important to avoid
+            # NFS issues.
+            FileUtils.rm_rf(File.join(config_tmp_dir, 'gitolite'))
+
+            # Remove parent tmp dir
+            FileUtils.rm_rf(config_tmp_dir)
+
+            # Unlock so other task can access
             # gitolite configuration
             f.flock(File::LOCK_UN)
           end
