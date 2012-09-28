@@ -7,12 +7,12 @@ If you want to contribute to GitLab, follow this process:
 3. Code
 4. Create a pull request
 
-We only accept pull requests if: 
+We will only accept pull requests if: 
 
 * Your code has proper tests and all tests pass
 * Your code can be merged w/o problems 
-* It wont broke existing functionality
-* Its a quality code
+* It won't break existing functionality
+* It's quality code
 * We like it :)
 
 ## [You may need a developer VM](https://github.com/gitlabhq/developer-vm)
