@@ -5,8 +5,11 @@
   .event-title
     %strong.author_name #{event.author_name}
     %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
-    = link_to project_commits_path(event.project, event.ref_name) do
+    - if event.rm_ref?
       %strong= event.ref_name
+    - else
+      = link_to project_commits_path(event.project, event.ref_name) do
+        %strong= event.ref_name
     at
     %strong= link_to event.project.name, event.project
 
