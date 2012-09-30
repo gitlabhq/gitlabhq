@@ -41,7 +41,7 @@
   $(function(){
     var names = #{@project.users.pluck(:name)}, emoji = ['+1', '-1'];
     var emoji = $.map(emoji, function(value, i) {return {key:value + ':', name:value}});
-    $('#note_note').
+    $('#note_note, .per_line_form .line-note-text').
       atWho('@', { data: names }).
       atWho(':', {
         data: emoji,
