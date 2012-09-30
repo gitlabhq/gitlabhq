@@ -60,6 +60,25 @@
       GFM will autolink standard URLs you copy and paste into your text.
       So if you want to link to a URL (instead of a textual link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
 
+    %h4 Tables
+
+.row
+  .span8
+    %p
+      GFM will generate tables if you use PHP-Markdown Extra like syntax:
+    %pre= %Q{First Header   | Second Header\n---------------|---------------\nContent Cell 1 | Content Cell 2\nContent Cell 3 | Content Cell 4\nContent Cell 5 | Content Cell 6}
+    %p becomes
+    = markdown %Q{First Header   | Second Header\n---------------|---------------\nContent Cell 1 | Content Cell 2\nContent Cell 3 | Content Cell 4\nContent Cell 5 | Content Cell 6}
+
+  .span4
+    .alert.alert-info
+      %p
+        Consult the
+        %strong= link_to "PHP-Markdown Extra Tables", "http://michelf.ca/projects/php-markdown/extra/#table"
+        for more details.
+
+.row
+  .span8
     %h4 Fenced code blocks
 
     %p
@@ -70,6 +89,16 @@
     %pre= %Q{```ruby\nrequire 'redcarpet'\nmarkdown = Redcarpet.new("Hello World!")\nputs markdown.to_html\n```}
     %p becomes
     = markdown %Q{```ruby\nrequire 'redcarpet'\nmarkdown = Redcarpet.new("Hello World!")\nputs markdown.to_html\n```}
+
+    %h4 Automatic table of contents (TOC)
+
+    %p
+      GFM can create a table of contents (TOC) from all headers.
+      To use this feature you must add <code>~toc~</code> anywhere. Note that the TOC will always appear in the top above enything else.
+
+    %pre= %Q{~toc~\n# Header 1\n## Header 2\n# Header 1}
+    %p becomes
+    = markdown %Q{* [Header 1](#toc_0)\n  * [Header 2](#toc_1)\n* [Header 1](#toc_2)\n\n# Header 1\n## Header 2\n# Header 1}
 
     %h4 Emoji
 
@@ -94,6 +123,15 @@
 
 .row
   .span8
+    %h4 Custom HTML
+
+    %p
+      If you still want to, you can use custom HTML for specific tasks.
+
+    %pre= %Q{<em>\n  <p>This line is in HTML</p>\n</em>}
+    %p becomes
+    = markdown %Q{<em>\n  <p>This line is in HTML</p>\n</em>}
+
     %h4 Special GitLab references
 
     %p

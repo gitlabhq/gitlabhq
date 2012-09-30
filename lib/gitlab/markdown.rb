@@ -73,7 +73,7 @@ module Gitlab
         extractions[$1]
       end
 
-      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
+      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class), tags: ActionView::Base.sanitized_allowed_tags + %w(table tr td th)
     end
 
     private
