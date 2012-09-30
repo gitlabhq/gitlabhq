@@ -54,7 +54,7 @@ class Event < ActiveRecord::Base
     if project
       project.name
     else
-      "(deleted)"
+      "(deleted project)"
     end
   end
 
