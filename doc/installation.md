@@ -112,7 +112,6 @@ Generate key:
 
 Clone GitLab's fork of the Gitolite source code:
 
-    cd /home/git
     sudo -H -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup:
