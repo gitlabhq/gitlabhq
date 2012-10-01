@@ -1,16 +1,9 @@
 - if event.allowed?
   %div.event-item
-    - if event.issue?
-      = render "events/event_issue", event: event
-
-    - elsif event.merge_request?
-      = render "events/event_merge_request", event: event
-
-    - elsif event.push?
+    - if event.push?
       = render "events/event_push", event: event
-
-    - elsif event.membership_changed?
-      = render "events/event_membership_changed", event: event
+    - else
+      = render "events/event_common", event: event
 
     %span.cgray.right
       = time_ago_in_words(event.created_at)

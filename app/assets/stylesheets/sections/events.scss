@@ -5,32 +5,23 @@
 .event_label {
   &.pushed {
     padding:0 2px;
-    @extend .alert;
-    @extend .alert-info;
   }
 
   &.opened {
     padding:0 2px;
-    @extend .alert;
-    @extend .alert-success;
   }
 
   &.closed {
     padding:0 2px;
-    @extend .alert;
-    @extend .alert-error;
   }
 
   &.merged {
     padding:0 2px;
-    @extend .alert;
-    @extend .alert-success;
   }
 
   &.left,
   &.joined {
     padding:0 2px;
-    @extend .alert;
     float:none;
   }
 }

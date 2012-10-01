@@ -3,7 +3,7 @@
   = image_tag gravatar_icon(event.author_email), class: "avatar"
 
   .event-title
-    %strong.author_name #{event.author_name}
+    %span.author_name= link_to_author event
     %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
     = link_to project_commits_path(event.project, event.ref_name) do
       %strong= event.ref_name
