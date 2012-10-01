@@ -1,10 +1,14 @@
 - if event.allowed?
   %div.event-item
-    - if event.push?
-      = render "events/event_push", event: event
-    - else
-      = render "events/event_common", event: event
+    = event_image(event)
+    = image_tag gravatar_icon(event.author_email), class: "avatar"
 
+    - if event.push?
+      = render "events/event/push", event: event
+    - else
+      = render "events/event/common", event: event
+
+    .clearfix
     %span.cgray.right
       = time_ago_in_words(event.created_at)
       ago.

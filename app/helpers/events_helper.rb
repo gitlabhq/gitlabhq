@@ -19,4 +19,18 @@ module EventsHelper
 
     [event.action_name, target].join(" ")
   end
+
+  def event_image event
+    event_image_path = if event.push?
+                   "event_push.png"
+                 elsif event.merged?
+                   "event_mr_merged.png"
+                 end
+
+    return nil unless event_image_path
+
+    content_tag :div, class: 'event_icon' do
+      image_tag event_image_path
+    end
+  end
 end
