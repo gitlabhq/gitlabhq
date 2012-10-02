@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
   attr_accessor :error_code
 
   # Relations
+  belongs_to :group
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -173,4 +174,6 @@ end
 #  wall_enabled           :boolean         default(TRUE), not null
 #  merge_requests_enabled :boolean         default(TRUE), not null
 #  wiki_enabled           :boolean         default(TRUE), not null
+#  group_id               :integer
 #
+

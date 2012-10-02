@@ -1,7 +1,29 @@
+# == Schema Information
+#
+# Table name: projects
+#
+#  id                     :integer         not null, primary key
+#  name                   :string(255)
+#  path                   :string(255)
+#  description            :text
+#  created_at             :datetime        not null
+#  updated_at             :datetime        not null
+#  private_flag           :boolean         default(TRUE), not null
+#  code                   :string(255)
+#  owner_id               :integer
+#  default_branch         :string(255)
+#  issues_enabled         :boolean         default(TRUE), not null
+#  wall_enabled           :boolean         default(TRUE), not null
+#  merge_requests_enabled :boolean         default(TRUE), not null
+#  wiki_enabled           :boolean         default(TRUE), not null
+#  group_id               :integer
+#
+
 require 'spec_helper'
 
 describe Project do
   describe "Associations" do
+    it { should belong_to(:group) }
     it { should belong_to(:owner).class_name('User') }
     it { should have_many(:users) }
     it { should have_many(:events).dependent(:destroy) }
