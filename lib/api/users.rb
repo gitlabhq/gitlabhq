@@ -32,7 +32,7 @@ module Gitlab
       #   password (required)               - Password
       #   password_confirmation (required)  - Password confirmation
       #   skype                             - Skype ID
-      #   linkedin (required)               - Linkedin
+      #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
       #   projects_limit                    - Limit projects wich user can create
       # Example Request:
