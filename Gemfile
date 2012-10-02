@@ -53,9 +53,7 @@ gem "six"
 
 # Generate Fake data
 gem "ffaker"
-
-# Seed data
-gem "seed-fu"
+gem 'factory_girl_rails'
 
 # Markdown to HTML
 gem "redcarpet",     "~> 2.1.1"
@@ -122,7 +120,6 @@ group :development, :test do
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
-  gem 'factory_girl_rails'
 
   # Guard
   gem 'guard-rspec'
