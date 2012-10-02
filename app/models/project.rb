@@ -26,9 +26,12 @@ class Project < ActiveRecord::Base
   has_many :wikis,          dependent: :destroy
   has_many :protected_branches, dependent: :destroy
 
+  delegate :name, to: :owner, allow_nil: true, prefix: true
+
   # Scopes
   scope :public_only, where(private_flag: false)
-  scope :without_user, lambda { |user|  where("id not in (:ids)", ids: user.projects.map(&:id) ) }
+  scope :without_user, ->(user) { where("id not in (:ids)", ids: user.projects.map(&:id) ) }
+  scope :not_in_group, ->(group) { where("id not in (:ids)", ids: group.project_ids ) }
 
   def self.active
     joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")

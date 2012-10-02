@@ -43,6 +43,11 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
+    resources :groups, constraints: { id: /[^\/]+/ } do
+      member do
+        put :project_update
+      end
+    end
     resources :projects, constraints: { id: /[^\/]+/ } do
       member do
         get :team

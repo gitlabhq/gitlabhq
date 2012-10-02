@@ -19,4 +19,10 @@ class Group < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   validates :code, presence: true, uniqueness: true
   validates :owner_id, presence: true
+
+  delegate :name, to: :owner, allow_nil: true, prefix: true
+
+  def to_param
+    code
+  end
 end
