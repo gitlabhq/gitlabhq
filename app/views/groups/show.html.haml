@@ -9,8 +9,6 @@
       .loading.hide
     .side
       = render "events/event_last_push", event: @last_push
-      - if @groups.present?
-        = render "groups", groups: @groups
       = render "projects", projects: @projects
       %div
         %span.rss-icon

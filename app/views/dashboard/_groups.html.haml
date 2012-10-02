@@ -6,7 +6,7 @@
   %ul.unstyled
     - groups.each do |group|
       %li.wll
-        = link_to dashboard_path(group: group), class: dom_class(group) do
+        = link_to group_path(id: group.code), class: dom_class(group) do
           %strong.group_name= truncate(group.name, length: 25)
           %span.arrow
             &rarr;
