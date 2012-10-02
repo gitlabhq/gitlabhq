@@ -22,6 +22,10 @@ module Gitlab
       unauthorized! unless current_user
     end
 
+    def authenticated_as_admin!
+      forbidden! unless current_user.is_admin?
+    end
+
     def authorize! action, subject
       unless abilities.allowed?(current_user, action, subject)
         forbidden!
