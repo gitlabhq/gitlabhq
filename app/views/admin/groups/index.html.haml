@@ -9,7 +9,7 @@
 %table
   %thead
     %th Name
-    %th Path
+    %th Code
     %th Projects
     %th Edit
     %th.cred Danger Zone!
@@ -17,7 +17,7 @@
   - @groups.each do |group|
     %tr
       %td= link_to group.name, [:admin, group]
-      %td= group.path
+      %td= group.code
       %td= group.projects.count
       %td= link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn small"
       %td.bgred= link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn small danger"
