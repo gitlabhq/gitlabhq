@@ -13,6 +13,8 @@
 require 'spec_helper'
 
 describe Group do
+  let!(:group) { create(:group) }
+
   it { should have_many :projects }
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of(:name) }

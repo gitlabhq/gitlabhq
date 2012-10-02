@@ -47,6 +47,12 @@ FactoryGirl.define do
     owner
   end
 
+  factory :group do
+    sequence(:name) { |n| "group#{n}" }
+    code { name.downcase.gsub(/\s/, '_') }
+    owner
+  end
+
   factory :users_project do
     user
     project
