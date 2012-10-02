@@ -3,7 +3,6 @@ namespace :gitlab do
     desc "GITLAB | Setup production application"
     task :setup => [
       'db:setup',
-      'db:seed_fu',
       'gitlab:app:enable_automerge'
     ]
   end
