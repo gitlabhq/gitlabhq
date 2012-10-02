@@ -1,42 +1,28 @@
-- if @projects.any?
-  .projects
-    .activities.span8
-      = render 'shared/no_ssh'
-      - if @events.any?
-        .content_list= render @events
-      - else
-        %h4.nothing_here_message Projects activity will be displayed here
-      .loading.hide
-    .side
-      = render "events/event_last_push", event: @last_push
-      = render "projects", projects: @projects
-      %div
-        %span.rss-icon
-          = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
-            = image_tag "rss_ui.png", title: "feed"
-            %strong News Feed
-
-      %hr
-      .gitlab-promo
-        = link_to "Homepage", "http://gitlabhq.com"
-        = link_to "Blog", "http://blog.gitlabhq.com"
-        = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
-
-
-- else
-  %h3.nothing_here_message There are no projects you have access to.
-  %br
-  %h4.nothing_here_message
-    - if current_user.can_create_project?
-      You can create up to
-      = current_user.projects_limit
-      projects. Click on button below to add a new one
-      .link_holder
-        = link_to new_project_path, class: "btn primary" do
-          New Project »
+.projects
+  .activities.span8
+    .back_link
+      = link_to dashboard_path do
+        &larr; To dashboard
+    = render 'shared/no_ssh'
+    - if @events.any?
+      .content_list= render @events
     - else
-      If you will be added to project - it will be displayed here
+      %h4.nothing_here_message Projects activity will be displayed here
+    .loading.hide
+  .side
+    = render "events/event_last_push", event: @last_push
+    = render "projects", projects: @projects
+    %div
+      %span.rss-icon
+        = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
+          = image_tag "rss_ui.png", title: "feed"
+          %strong News Feed
 
+    %hr
+    .gitlab-promo
+      = link_to "Homepage", "http://gitlabhq.com"
+      = link_to "Blog", "http://blog.gitlabhq.com"
+      = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
 
 :javascript
   $(function(){ Pager.init(20); });
