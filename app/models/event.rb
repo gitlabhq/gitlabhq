@@ -58,6 +58,10 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def target_title
+    target.try :title
+  end
+
   def push?
     action == self.class::Pushed && valid_push?
   end

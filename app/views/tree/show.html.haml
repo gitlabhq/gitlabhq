@@ -1,5 +1,6 @@
 = render "head"
-#tree-holder= render partial: "tree", locals: {commit: @commit, tree: @tree}
+%div#tree-holder.tree-holder
+  = render "tree", commit: @commit, tree: @tree
 
 :javascript
   $(function() {

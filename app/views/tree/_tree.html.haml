@@ -8,12 +8,12 @@
     %li= link
 .clear
 %div.tree_progress
-#tree-content-holder
+%div#tree-content-holder.tree-content-holder
   - if tree.is_blob?
     = render partial: "tree/tree_file", locals: { name: tree.name, content: tree.data, file: tree }
   - else
     - contents = tree.contents
-    %table#tree-slider{class: "table_#{@hex_path}" }
+    %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
         %th Name
         %th Last Update
