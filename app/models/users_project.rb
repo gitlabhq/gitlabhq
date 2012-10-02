@@ -6,10 +6,10 @@ class UsersProject < ActiveRecord::Base
   DEVELOPER = 30
   MASTER    = 40
 
+  attr_accessible :user, :user_id, :project_access
+
   belongs_to :user
   belongs_to :project
-
-  attr_protected :project_id, :project
 
   after_save :update_repository
   after_destroy :update_repository
@@ -88,15 +88,15 @@ class UsersProject < ActiveRecord::Base
     self.class.access_roles.invert[self.project_access]
   end
 end
+
 # == Schema Information
 #
 # Table name: users_projects
 #
-#  id             :integer(4)      not null, primary key
-#  user_id        :integer(4)      not null
-#  project_id     :integer(4)      not null
+#  id             :integer         not null, primary key
+#  user_id        :integer         not null
+#  project_id     :integer         not null
 #  created_at     :datetime        not null
 #  updated_at     :datetime        not null
-#  project_access :integer(4)      default(0), not null
+#  project_access :integer         default(0), not null
 #
-

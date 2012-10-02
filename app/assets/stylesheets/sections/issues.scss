@@ -113,3 +113,17 @@ input.check_all_issues {
 .milestone {
   @extend .wll;
 }
+
+/**
+ *  Fix milestone calendar
+ */
+
+.ui-datepicker {
+  border:none;
+  box-shadow:none;
+  .ui-datepicker-header {
+    @include solid_shade;
+    margin-bottom:10px;
+    border:1px solid #bbb;
+  }
+}

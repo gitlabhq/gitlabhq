@@ -1,9 +1,12 @@
-%h3
+%h3.page_title
   Milestone ##{@milestone.id}
   %small
     = @milestone.expires_at
 
   %span.right
+    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn small grouped", title: "New Issue" do
+      %i.icon-plus
+      New Issue
     = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do

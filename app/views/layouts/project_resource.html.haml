@@ -1,0 +1,41 @@
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head"
+  %body{class: "#{app_theme} project"}
+    = render "layouts/flash"
+    = render "layouts/head_panel", title: @project.name
+    .container
+      %ul.main_menu
+        = nav_link(html_options: {class: "home #{project_tab_class}"}) do
+          = link_to @project.code, project_path(@project), title: "Project"
+
+        - if @project.repo_exists?
+          - if can? current_user, :download_code, @project
+            = nav_link(controller: %w(tree blob blame)) do
+              = link_to 'Files', project_tree_path(@project, @ref || @project.root_ref)
+            = nav_link(controller: %w(commit commits compare repositories protected_branches)) do
+              = link_to "Commits", project_commits_path(@project, @ref || @project.root_ref)
+            = nav_link(path: 'projects#graph') do
+              = link_to "Network", graph_project_path(@project)
+
+        - if @project.issues_enabled
+          = nav_link(controller: %w(issues milestones labels)) do
+            = link_to  project_issues_filter_path(@project)  do
+              Issues
+              %span.count.issue_counter= @project.issues.opened.count
+
+        - if @project.repo_exists? && @project.merge_requests_enabled
+          = nav_link(controller: :merge_requests) do
+            = link_to project_merge_requests_path(@project) do
+              Merge Requests
+              %span.count.merge_counter= @project.merge_requests.opened.count
+
+        - if @project.wall_enabled
+          = nav_link(path: 'projects#wall') do
+            = link_to 'Wall', wall_project_path(@project)
+
+        - if @project.wiki_enabled
+          = nav_link(controller: :wikis) do
+            = link_to 'Wiki', project_wiki_path(@project, :index)
+
+      .content= yield

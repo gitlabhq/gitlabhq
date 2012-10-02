@@ -1,0 +1,22 @@
+.event-title
+  %span.author_name= link_to_author event
+  %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
+  = link_to project_commits_path(event.project, event.ref_name) do
+    %strong= event.ref_name
+  at
+  %strong= link_to event.project.name, event.project
+
+- if event.push_with_commits?
+  - project = event.project
+  .event-body
+    %ul.unstyled.event_commits
+      - few_commits = event.commits[0...2]
+      - few_commits.each do |commit|
+        = render "events/commit", commit: commit, project: project
+
+      - if event.commits_count > 1
+        %li.commits-stat
+          - if event.commits_count > 2
+            %span ... and #{event.commits_count - 2} more commits.
+          = link_to project_compare_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
+            %strong Compare &rarr; #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}

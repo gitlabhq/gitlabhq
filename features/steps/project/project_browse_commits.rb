@@ -4,8 +4,6 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   include SharedPaths
 
   Then 'I see project commits' do
-    current_path.should == project_commits_path(@project)
-
     commit = @project.commit
     page.should have_content(@project.name)
     page.should have_content(commit.message)
@@ -34,14 +32,14 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   And 'I fill compare fields with refs' do
-    fill_in "from", :with => "master"
-    fill_in "to", :with => "stable"
+    fill_in "from", with: "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+    fill_in "to",   with: "8716fc78f3c65bbf7bcf7b574febd583bc5d2812"
     click_button "Compare"
   end
 
-  And 'I see compared refs' do
-    page.should have_content "Commits (27)"
+  Then 'I see compared refs' do
     page.should have_content "Compare View"
-    page.should have_content "Showing 73 changed files"
+    page.should have_content "Commits (1)"
+    page.should have_content "Showing 2 changed files"
   end
 end

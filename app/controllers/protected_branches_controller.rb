@@ -1,15 +1,9 @@
-class ProtectedBranchesController < ApplicationController
-  before_filter :project
-
+class ProtectedBranchesController < ProjectResourceController
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :require_non_empty_project
 
   before_filter :authorize_admin_project!, only: [:destroy, :create]
-  before_filter :render_full_content
-
-  layout "project"
 
   def index
     @branches = @project.protected_branches.all

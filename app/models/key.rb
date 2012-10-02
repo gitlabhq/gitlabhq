@@ -4,16 +4,12 @@ class Key < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  attr_protected :user_id
+  attr_accessible :key, :title
 
-  validates :title,
-            presence: true,
-            length: { within: 0..255 }
-
-  validates :key,
-            presence: true,
-            format: { :with => /ssh-.{3} / },
-            length: { within: 0..5000 }
+  validates :title, presence: true, length: { within: 0..255 }
+  validates :key, presence: true,
+            length: { within: 0..5000 },
+            format: { :with => /ssh-.{3} / }
 
   before_save :set_identifier
   before_validation :strip_white_space
@@ -34,7 +30,7 @@ class Key < ActiveRecord::Base
 
   def set_identifier
     if is_deploy_key
-      self.identifier = "deploy_" + Digest::MD5.hexdigest(key)
+      self.identifier = "deploy_#{Digest::MD5.hexdigest(key)}"
     else
       self.identifier = "#{user.identifier}_#{Time.now.to_i}"
     end
@@ -57,17 +53,17 @@ class Key < ActiveRecord::Base
     Key.where(identifier: identifier).count == 0
   end
 end
+
 # == Schema Information
 #
 # Table name: keys
 #
-#  id         :integer(4)      not null, primary key
-#  user_id    :integer(4)
+#  id         :integer         not null, primary key
+#  user_id    :integer
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
 #  key        :text
 #  title      :string(255)
 #  identifier :string(255)
-#  project_id :integer(4)
+#  project_id :integer
 #
-

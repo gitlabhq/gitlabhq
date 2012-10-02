@@ -15,6 +15,11 @@ describe User do
     it { should have_many(:assigned_merge_requests).dependent(:destroy) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:projects_limit) }
+    it { should allow_mass_assignment_of(:projects_limit).as(:admin) }
+  end
+
   describe 'validations' do
     it { should validate_presence_of(:projects_limit) }
     it { should validate_numericality_of(:projects_limit) }

@@ -1,8 +1,11 @@
-require File.join(Rails.root, "app/models/commit")
+require Rails.root.join("app/models/commit")
 
 class MergeRequest < ActiveRecord::Base
   include IssueCommonality
   include Votes
+
+  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
+                  :author_id_of_changes
 
   BROKEN_DIFF = "--broken-diff"
 
@@ -15,8 +18,7 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
-  validates_presence_of :source_branch
-  validates_presence_of :target_branch
+  validates_presence_of :source_branch, :target_branch
   validate :validate_branches
 
   def self.find_all_by_branch(branch_name)
@@ -48,7 +50,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unchecked
-    self.update_attributes(state: UNCHECKED)
+    self.state = UNCHECKED
+    self.save
   end
 
   def can_be_merged?
@@ -183,23 +186,23 @@ class MergeRequest < ActiveRecord::Base
     patch_path
   end
 end
+
 # == Schema Information
 #
 # Table name: merge_requests
 #
-#  id            :integer(4)      not null, primary key
+#  id            :integer         not null, primary key
 #  target_branch :string(255)     not null
 #  source_branch :string(255)     not null
-#  project_id    :integer(4)      not null
-#  author_id     :integer(4)
-#  assignee_id   :integer(4)
+#  project_id    :integer         not null
+#  author_id     :integer
+#  assignee_id   :integer
 #  title         :string(255)
-#  closed        :boolean(1)      default(FALSE), not null
+#  closed        :boolean         default(FALSE), not null
 #  created_at    :datetime        not null
 #  updated_at    :datetime        not null
 #  st_commits    :text(2147483647
 #  st_diffs      :text(2147483647
-#  merged        :boolean(1)      default(FALSE), not null
-#  state         :integer(4)      default(1), not null
+#  merged        :boolean         default(FALSE), not null
+#  state         :integer         default(1), not null
 #
-

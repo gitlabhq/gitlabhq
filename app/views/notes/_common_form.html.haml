@@ -37,3 +37,14 @@
           = f.file_field :attachment, class: "input-file"
         %span.hint Any file less than 10 MB
 
+:javascript
+  $(function(){
+    var names = #{@project.users.pluck(:name)}, emoji = ['+1', '-1'];
+    var emoji = $.map(emoji, function(value, i) {return {key:value + ':', name:value}});
+    $('#note_note, .per_line_form .line-note-text').
+      atWho('@', { data: names }).
+      atWho(':', {
+        data: emoji,
+        tpl: "<li data-value='${key}'>${name} #{escape_javascript image_tag('emoji/${name}.png', :size => '20x20')}</li>"
+      });
+  });

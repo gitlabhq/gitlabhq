@@ -10,7 +10,7 @@ module Gitlab
     attr_reader :config_tmp_dir, :ga_repo, :conf
 
     def config_tmp_dir
-      @config_tmp_dir ||= File.join(Rails.root, 'tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+      @config_tmp_dir ||= Rails.root.join('tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
     end
 
     def ga_repo
@@ -19,7 +19,7 @@ module Gitlab
 
     def apply
       Timeout::timeout(30) do
-        File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
+        File.open(Rails.root.join('tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
             # Set exclusive lock
             # to prevent race condition
@@ -40,18 +40,22 @@ module Gitlab
 
             # Save changes in
             # gitolite-admin repo
-            # before pusht it
+            # before push it
             ga_repo.save
 
             # Push gitolite-admin repo
             # to apply all changes
             push(config_tmp_dir)
-
-            # Remove tmp dir
-            # wiith gitolite-admin
-            FileUtils.rm_rf(config_tmp_dir)
           ensure
-            # unlock so other task cann access
+            # Remove tmp dir
+            # removing the gitolite folder first is important to avoid
+            # NFS issues.
+            FileUtils.rm_rf(File.join(config_tmp_dir, 'gitolite'))
+
+            # Remove parent tmp dir
+            FileUtils.rm_rf(config_tmp_dir)
+
+            # Unlock so other task can access
             # gitolite configuration
             f.flock(File::LOCK_UN)
           end

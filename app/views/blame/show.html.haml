@@ -1,0 +1,40 @@
+= render "head"
+
+#tree-holder
+  %ul.breadcrumb
+    %li
+      %span.arrow
+      = link_to project_tree_path(@project, @ref) do
+        = @project.name
+    - @tree.breadcrumbs(6) do |link|
+      \/
+      %li= link
+  .clear
+
+  .file_holder
+    .file_title
+      %i.icon-file
+      %span.file_name
+        = @tree.name
+        %small blame
+      %span.options
+        = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
+        = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
+        = link_to "source", project_tree_path(@project, @id), class: "btn very_small"
+    .file_content.blame
+      %table
+        - @blame.each do |commit, lines|
+          - commit = Commit.new(commit)
+          - commit = CommitDecorator.decorate(commit)
+          %tr
+            %td.author
+              = image_tag gravatar_icon(commit.author_email, 16)
+              = commit.author_name
+            %td.blame_commit
+              &nbsp;
+              %code= link_to commit.short_id, project_commit_path(@project, commit)
+              = link_to_gfm truncate(commit.title, length: 30), project_commit_path(@project, commit), class: "row_title" rescue "--broken encoding"
+            %td.lines
+              = preserve do
+                %pre
+                  = Gitlab::Encode.utf8 lines.join("\n")

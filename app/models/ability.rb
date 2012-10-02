@@ -52,7 +52,6 @@ class Ability
       :admin_wiki
     ] if project.master_access_for?(user) || project.owner == user
 
-
     rules.flatten
   end
 

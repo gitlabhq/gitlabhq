@@ -1,0 +1,10 @@
+%ul.nav.nav-tabs
+  %li
+    = render partial: 'shared/ref_switcher', locals: {destination: 'tree', path: @path}
+  = nav_link(controller: :tree) do
+    = link_to 'Source', project_tree_path(@project, @ref)
+  %li.right
+    .input-prepend.project_clone_holder
+      %button{class: "btn small active", :"data-clone" => @project.ssh_url_to_repo} SSH
+      %button{class: "btn small", :"data-clone" => @project.http_url_to_repo} HTTP
+      = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span5"

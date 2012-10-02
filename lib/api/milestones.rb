@@ -11,6 +11,8 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/milestones
       get ":id/milestones" do
+        authorize! :read_milestone, user_project
+
         present paginate(user_project.milestones), with: Entities::Milestone
       end
 
@@ -22,6 +24,8 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/milestones/:milestone_id
       get ":id/milestones/:milestone_id" do
+        authorize! :read_milestone, user_project
+
         @milestone = user_project.milestones.find(params[:milestone_id])
         present @milestone, with: Entities::Milestone
       end
@@ -36,6 +40,8 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/milestones
       post ":id/milestones" do
+        authorize! :admin_milestone, user_project
+
         attrs = attributes_for_keys [:title, :description, :due_date]
         @milestone = user_project.milestones.new attrs
         if @milestone.save

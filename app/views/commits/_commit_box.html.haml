@@ -5,10 +5,10 @@
         %span.btn.disabled.grouped
           %i.icon-comment
           = @notes_count
-      = link_to patch_project_commit_path(@project, @commit.id), class: "btn small grouped" do
+      = link_to project_commit_path(@project, @commit, format: :patch), class: "btn small grouped" do
         %i.icon-download-alt
         Get Patch
-      = link_to tree_project_ref_path(@project, @commit.id), class: "browse-button primary grouped" do
+      = link_to project_tree_path(@project, @commit), class: "browse-button primary grouped" do
         %strong Browse Code »
     %h3.commit-title.page_title
       = gfm escape_once(@commit.title)
@@ -17,7 +17,7 @@
         = gfm escape_once(@commit.description)
   .commit-info
     .row
-      .span4
+      .span5
         = image_tag gravatar_icon(@commit.author_email, 40), class: "avatar"
         .author
           %strong= @commit.author_name
@@ -31,10 +31,10 @@
             committed
             %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
               #{time_ago_in_words(@commit.committed_date)} ago
-      .span7.right
+      .span6.right
         .sha-block
           %span.cgray commit
-          %code= @commit.id
+          %code.label_commit= @commit.id
         .sha-block
           %span.cgray= pluralize(@commit.parents.count, "parent")
           - @commit.parents.each do |parent|

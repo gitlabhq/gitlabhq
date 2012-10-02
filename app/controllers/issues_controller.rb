@@ -1,14 +1,7 @@
-class IssuesController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
+class IssuesController < ProjectResourceController
   before_filter :module_enabled
   before_filter :issue, only: [:edit, :update, :destroy, :show]
   helper_method :issues_filter
-
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any issue
   before_filter :authorize_read_issue!

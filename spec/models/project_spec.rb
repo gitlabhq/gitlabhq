@@ -17,6 +17,11 @@ describe Project do
     it { should have_many(:protected_branches).dependent(:destroy) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:owner_id) }
+    it { should_not allow_mass_assignment_of(:private_flag) }
+  end
+
   describe "Validation" do
     let!(:project) { create(:project) }
 
@@ -120,7 +125,7 @@ describe Project do
 
   it "should return path to repo" do
     project = Project.new(path: "somewhere")
-    project.path_to_repo.should == File.join(Rails.root, "tmp", "repositories", "somewhere")
+    project.path_to_repo.should == Rails.root.join("tmp", "repositories", "somewhere")
   end
 
   it "returns the full web URL for this repo" do

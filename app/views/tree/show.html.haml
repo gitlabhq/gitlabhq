@@ -1,0 +1,8 @@
+= render "head"
+%div#tree-holder.tree-holder
+  = render "tree", commit: @commit, tree: @tree
+
+:javascript
+  $(function() {
+    Tree.init();
+  });

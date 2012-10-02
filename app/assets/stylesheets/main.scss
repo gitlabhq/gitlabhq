@@ -5,7 +5,7 @@
 $link_color:#3A89A3;
 $blue_link: #2fa0bb;
 $style_color: #474d57;
-$hover: #fdf5d9;
+$hover: #D9EDF7;
 
 /** GitLab Fonts **/
 @font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); }
@@ -143,6 +143,7 @@ $hover: #fdf5d9;
 @import "sections/projects.scss";
 @import "sections/merge_requests.scss";
 @import "sections/graph.scss";
+@import "sections/events.scss";
 
 /**
  * This scss file redefine chozen selectbox styles for

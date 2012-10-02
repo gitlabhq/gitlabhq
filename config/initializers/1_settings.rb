@@ -112,7 +112,7 @@ class Settings < Settingslogic
 
     def backup_path
       t = app['backup_path'] || "backups/"
-      t = /^\//.match(t) ? t : File.join(Rails.root + t)
+      t = /^\//.match(t) ? t : Rails.root .join(t)
       t
     end
 

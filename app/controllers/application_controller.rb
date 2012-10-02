@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :set_current_user_for_mailer
-  before_filter :check_token_auth
   before_filter :set_current_user_for_observers
   before_filter :dev_tools if Rails.env == 'development'
 
@@ -11,27 +10,18 @@ class ApplicationController < ActionController::Base
   helper_method :abilities, :can?
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
-    render "errors/gitolite", layout: "error", status: 500
+    render "errors/gitolite", layout: "errors", status: 500
   end
 
   rescue_from Encoding::CompatibilityError do |exception|
-    render "errors/encoding", layout: "error", status: 500
+    render "errors/encoding", layout: "errors", status: 500
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
-    render "errors/not_found", layout: "error", status: 404
+    render "errors/not_found", layout: "errors", status: 404
   end
-
-  layout :layout_by_resource
 
   protected
-
-  def check_token_auth
-    # Redirect to login page if not atom feed
-    if params[:private_token].present? && params[:format] != 'atom'
-      redirect_to new_user_session_path
-    end
-  end
 
   def reject_blocked!
     if current_user && current_user.blocked
@@ -48,14 +38,6 @@ class ApplicationController < ActionController::Base
       new_user_session_path
     else
       super
-    end
-  end
-
-  def layout_by_resource
-    if devise_controller?
-      "devise_layout"
-    else
-      "application"
     end
   end
 
@@ -76,7 +58,7 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    @project ||= current_user.projects.find_by_code(params[:project_id])
+    @project ||= current_user.projects.find_by_code(params[:project_id] || params[:id])
     @project || render_404
   end
 
@@ -93,15 +75,15 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!
-    render "errors/access_denied", layout: "error", status: 404
+    render "errors/access_denied", layout: "errors", status: 404
   end
 
   def not_found!
-    render "errors/not_found", layout: "error", status: 404
+    render "errors/not_found", layout: "errors", status: 404
   end
 
   def git_not_found!
-    render "errors/git_not_found", layout: "error", status: 404
+    render "errors/git_not_found", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -113,7 +95,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render file: File.join(Rails.root, "public", "404"), layout: false, status: "404"
+    render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
   def require_non_empty_project
@@ -124,10 +106,6 @@ class ApplicationController < ActionController::Base
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end
-
-  def render_full_content
-    @full_content = true
   end
 
   def dev_tools

@@ -1,29 +1,27 @@
 %ul.nav.nav-tabs
-  %li{ class: "#{'active' if current_page?(project_path(@project)) }" }
+  = nav_link(path: 'projects#show') do
     = link_to project_path(@project), class: "activities-tab tab" do
       %i.icon-home
       Show
-  %li{ class: " #{'active' if (controller.controller_name == "team_members") || current_page?(project_team_index_path(@project)) }" }
+  = nav_link(controller: :team_members) do
     = link_to project_team_index_path(@project), class: "team-tab tab" do
       %i.icon-user
       Team
-  %li{ class: "#{'active' if current_page?(files_project_path(@project)) }" }
-    = link_to files_project_path(@project), class: "files-tab tab " do
-      Attachments
-  %li{ class: " #{'active' if (controller.controller_name == "snippets") }" }
-    = link_to project_snippets_path(@project), class: "snippets-tab tab" do
-      Snippets
+  = nav_link(path: 'projects#files') do
+    = link_to 'Attachments', files_project_path(@project), class: "files-tab tab"
+  = nav_link(controller: :snippets) do
+    = link_to 'Snippets', project_snippets_path(@project), class: "snippets-tab tab"
 
   - if can? current_user, :admin_project, @project
-    %li.right{class: "#{'active' if controller.controller_name == "deploy_keys"}"}
+    = nav_link(controller: :deploy_keys, html_options: {class: 'right'}) do
       = link_to project_deploy_keys_path(@project) do
         %span
         Deploy Keys
-    %li.right{class: "#{'active' if controller.controller_name == "hooks" }"}
+    = nav_link(controller: :hooks, html_options: {class: 'right'}) do
       = link_to project_hooks_path(@project) do
         %span
         Hooks
-    %li.right{ class: "#{'active' if current_page?(edit_project_path(@project)) }" }
+    = nav_link(path: 'projects#edit', html_options: {class: 'right'}) do
       = link_to edit_project_path(@project), class: "stat-tab tab " do
         %i.icon-edit
         Edit

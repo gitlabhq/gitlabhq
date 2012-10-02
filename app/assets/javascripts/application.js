@@ -11,6 +11,7 @@
 //= require jquery.endless-scroll
 //= require jquery.highlight
 //= require jquery.waitforimages
+//= require jquery.atwho
 //= require bootstrap
 //= require modernizr
 //= require chosen-jquery

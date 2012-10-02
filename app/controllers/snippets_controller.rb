@@ -1,11 +1,5 @@
-class SnippetsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
+class SnippetsController < ProjectResourceController
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any snippet
   before_filter :authorize_read_snippet!
@@ -56,7 +50,6 @@ class SnippetsController < ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @snippet)
-    render_full_content
   end
 
   def destroy

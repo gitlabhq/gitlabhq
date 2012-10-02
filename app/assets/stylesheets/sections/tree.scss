@@ -1,20 +1,7 @@
-#tree-holder {
-  #tree-content-holder {
+.tree-holder {
+  .tree-content-holder {
     float:left;
     width:100%;
-  }
-  #tree-readme-holder {
-    float:left;
-    width:100%;
-    .readme {
-      border:1px solid #ccc;
-      padding:12px;
-      background: #F7F7F7;
-
-      pre {
-        overflow: auto;
-      }
-    }
   }
 
   .tree_progress {
@@ -25,14 +12,14 @@
     }
   }
 
-  #tree-slider {
+  .tree-table {
     @include border-radius(0);
     .tree-item {
       &:hover {
         td {
           background: $hover;
-          border-top:1px solid #FEA;
-          border-bottom:1px solid #FEA;
+          border-top:1px solid #ADF;
+          border-bottom:1px solid #ADF;
         }
         cursor:pointer;
       }
@@ -55,8 +42,7 @@
     }
   }
 
-
-  #tree-slider {
+  .tree-table {
     td {
       background:#fafafa;
     }
@@ -72,5 +58,4 @@
       text-decoration: underline;
     }
   }
-
 }

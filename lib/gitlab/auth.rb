@@ -26,7 +26,7 @@ module Gitlab
 
         password = Devise.friendly_token[0, 8].downcase
 
-        @user = User.new(
+        @user = User.new({
           extern_uid: uid,
           provider: provider,
           name: name,
@@ -34,7 +34,7 @@ module Gitlab
           password: password,
           password_confirmation: password,
           projects_limit: Gitlab.config.default_projects_limit,
-        )
+        }, as: :admin)
 
         if Gitlab.config.omniauth['block_auto_created_users']
           @user.blocked = true

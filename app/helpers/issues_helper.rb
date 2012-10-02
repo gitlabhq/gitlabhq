@@ -33,7 +33,7 @@ module IssuesHelper
     classes
   end
 
-  def issue_tags 
+  def issue_tags
     @project.issues.tag_counts_on(:labels).map(&:name)
   end
 

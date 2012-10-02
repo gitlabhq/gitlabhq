@@ -4,24 +4,11 @@ class Commit
   include StaticModel
   extend ActiveModel::Naming
 
-  attr_accessor :commit
-  attr_accessor :head
-  attr_accessor :refs
+  attr_accessor :commit, :head, :refs
 
-  delegate :message,
-    :authored_date,
-    :committed_date,
-    :parents,
-    :sha,
-    :date,
-    :committer,
-    :author,
-    :message,
-    :diffs,
-    :tree,
-    :id,
-    :to_patch,
-    to: :commit
+  delegate  :message, :authored_date, :committed_date, :parents, :sha,
+            :date, :committer, :author, :message, :diffs, :tree, :id,
+            :to_patch, to: :commit
 
   class << self
     def find_or_first(repo, commit_id = nil, root_ref)
@@ -30,6 +17,7 @@ class Commit
                else
                  repo.commits(root_ref).first
                end
+
       Commit.new(commit) if commit
     end
 
@@ -82,20 +70,24 @@ class Commit
     end
 
     def compare(project, from, to)
-      first = project.commit(to.try(:strip))
-      last = project.commit(from.try(:strip))
-
       result = {
         commits: [],
         diffs: [],
-        commit: nil
+        commit: nil,
+        same: false
       }
+
+      return result unless from && to
+
+      first = project.commit(to.try(:strip))
+      last = project.commit(from.try(:strip))
 
       if first && last
         commits = [first, last].sort_by(&:created_at)
         younger = commits.first
         older = commits.last
 
+        result[:same] = (younger.id == older.id)
         result[:commits] = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
         result[:diffs] = project.repo.diff(younger.id, older.id) rescue []
         result[:commit] = Commit.new(older)

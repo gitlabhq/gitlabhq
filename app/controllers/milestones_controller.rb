@@ -1,12 +1,6 @@
-class MilestonesController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
+class MilestonesController < ProjectResourceController
   before_filter :module_enabled
   before_filter :milestone, only: [:edit, :update, :destroy, :show]
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any milestone
   before_filter :authorize_read_milestone!

@@ -20,3 +20,8 @@ Feature: Profile
     Given I visit profile account page
     Then I reset my token
     And I should see new token
+
+  Scenario: I visit history tab
+    Given I have activity
+    When I visit profile history page
+    Then I should see my activity

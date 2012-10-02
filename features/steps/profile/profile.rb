@@ -41,4 +41,12 @@ class Profile < Spinach::FeatureSteps
     find("#token").value.should_not == @old_token
     find("#token").value.should == @user.reload.private_token
   end
+
+  Given 'I have activity' do
+    Factory :closed_issue_event, author: current_user
+  end
+
+  Then 'I should see my activity' do
+    page.should have_content "#{current_user.name} closed issue"
+  end
 end

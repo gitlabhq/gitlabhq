@@ -15,7 +15,7 @@ module Gitlab
     end
 
     def self.build
-      new(File.join(Rails.root, "log", file_name))
+      new(Rails.root.join("log", file_name))
     end
   end
 end

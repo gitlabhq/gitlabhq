@@ -1,10 +1,12 @@
-%h3
-  = @admin_user.name
+%h3.page_title
+  User: #{@admin_user.name}
   - if @admin_user.blocked
     %small Blocked
   - if @admin_user.admin
     %small Administrator
-  = link_to 'Edit', edit_admin_user_path(@admin_user), class: "btn small right"
+  = link_to edit_admin_user_path(@admin_user), class: "btn right" do
+    %i.icon-edit
+    Edit
 
 %br
 
@@ -94,6 +96,6 @@
       - project = tm.project
       %tr
         %td= link_to project.name, admin_project_path(project)
-        %td= select_tag :tm_project_access, options_for_select(Project.access_options, tm.project_access), class: "medium project-access-select", disabled: :disabled
+        %td= tm.project_access_human
         %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
         %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn small danger"
