@@ -4,6 +4,7 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user)  { Factory :user }
+  let(:admin) {Factory :admin}
   let(:key)   { Factory :key, user: user }
 
   describe "GET /users" do
@@ -29,6 +30,26 @@ describe Gitlab::API do
       get api("/users/#{user.id}", user)
       response.status.should == 200
       json_response['email'].should == user.email
+    end
+  end
+
+  describe "POST /users" do
+    before{ admin }
+
+    it "should not create invalid user" do
+      post api("/users", admin), { email: "invalid email" }
+      response.status.should == 404
+    end
+
+    it "should create user" do
+      expect{
+        post api("/users", admin), Factory.attributes(:user)
+      }.to change{User.count}.by(1)
+    end
+
+    it "shouldn't available for non admin users" do
+      post api("/users", user), Factory.attributes(:user)
+      response.status.should == 403
     end
   end
 
