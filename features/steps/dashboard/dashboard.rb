@@ -41,8 +41,8 @@ class Dashboard < Spinach::FeatureSteps
     )
   end
 
-  Then 'I should see "John Doe joined project Shop" event' do
-    page.should have_content "John Doe joined project Shop"
+  Then 'I should see "John Doe joined project at Shop" event' do
+    page.should have_content "John Doe joined project at Shop"
   end
 
   And 'user with name "John Doe" left project "Shop"' do
@@ -55,8 +55,8 @@ class Dashboard < Spinach::FeatureSteps
     )
   end
 
-  Then 'I should see "John Doe left project Shop" event' do
-    page.should have_content "John Doe left project Shop"
+  Then 'I should see "John Doe left project at Shop" event' do
+    page.should have_content "John Doe left project at Shop"
   end
 
   And 'I own project "Shop"' do
