@@ -32,13 +32,14 @@ class Admin::GroupsController < AdminController
   end
 
   def update
-    owner_id = params[:group].delete(:owner_id)
+    group_params = params[:group].dup
+    owner_id =group_params.delete(:owner_id)
 
     if owner_id
       @group.owner = User.find(owner_id)
     end
 
-    if @group.update_attributes(params[:group])
+    if @group.update_attributes(group_params)
       redirect_to [:admin, @group], notice: 'Group was successfully updated.'
     else
       render action: "edit"
