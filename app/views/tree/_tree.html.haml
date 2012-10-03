@@ -14,7 +14,6 @@
   - if tree.is_blob?
     = render partial: "tree/tree_file", object: tree
   - else
-    - contents = tree.contents
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
         %th Name
@@ -24,22 +23,16 @@
           = link_to "History", tree.history_path, class: "right"
 
       - if tree.up_dir?
-        %tr{ class: "tree-item", url: tree.up_dir_path }
+        %tr.tree-item
           %td.tree-item-file-name
-            = image_tag "file_empty.png"
-            = link_to "..", tree.up_dir_path, remote: :true
+            = image_tag "file_empty.png", size: '16x16'
+            = link_to "..", tree.up_dir_path, remote: true
           %td
           %td
 
-      - index = 0
-      - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
-        = render partial: "tree/tree_item", locals: { content: content, index: (index += 1) }
-      - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
-        = render partial: "tree/tree_item", locals: { content: content, index: (index += 1) }
-      - contents.select{ |i| i.is_a?(Grit::Submodule)}.each do |content|
-        = render partial: "tree/submodule_item", locals: { content: content, index: (index += 1) }
+      = render_tree(tree.contents)
 
-    - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
+    - if content = tree.contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
       .file_holder#README
         .file_title
           %i.icon-file
