@@ -9,12 +9,12 @@
   = nav_link(html_options: {class: branches_tab_class}) do
     = link_to project_repository_path(@project) do
       Branches
-      %span.badge= @project.repo.branch_count
+      %span.badge= @project.branches.length
 
   = nav_link(controller: :repositories, action: :tags) do
     = link_to tags_project_repository_path(@project) do
       Tags
-      %span.badge= @project.repo.tag_count
+      %span.badge= @project.tags.length
 
   - if current_controller?(:commits) && current_user.private_token
     %li.right
