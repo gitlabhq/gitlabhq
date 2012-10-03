@@ -1,0 +1,15 @@
+.projects_box
+  %h5
+    Projects
+    %small
+      (#{projects.count})
+  %ul.unstyled
+    - projects.each do |project|
+      %li.wll
+        = link_to project_path(project), class: dom_class(project) do
+          %strong.project_name= truncate(project.name, length: 25)
+          %span.arrow
+            &rarr;
+          %span.last_activity
+            %strong Last activity:
+            %span= project_last_activity(project)

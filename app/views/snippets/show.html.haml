@@ -7,14 +7,17 @@
     = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn small right"
 
 %br
-.file_holder
-  .file_title
-    %i.icon-file
-    %strong= @snippet.file_name
-    %span.options
-      = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn very_small", target: "_blank"
-  .file_content.code
-    %div{class: current_user.dark_scheme ? "black" : ""}
-      = raw @snippet.colorize(options: { linenos: 'True'})
+%div
+  .file_holder
+    .file_title
+      %i.icon-file
+      %strong= @snippet.file_name
+      %span.options
+        = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn very_small", target: "_blank"
+    .file_content.code
+      %div{class: current_user.dark_scheme ? "black" : ""}
+        = raw @snippet.colorize(options: { linenos: 'True'})
 
-= render "notes/notes_with_form", tid: @snippet.id, tt: "snippet"
+
+%div
+  = render "notes/notes_with_form", tid: @snippet.id, tt: "snippet"

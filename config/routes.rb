@@ -43,6 +43,12 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
+    resources :groups, constraints: { id: /[^\/]+/ } do
+      member do
+        put :project_update
+        delete :remove_project
+      end
+    end
     resources :projects, constraints: { id: /[^\/]+/ } do
       member do
         get :team
@@ -80,6 +86,19 @@ Gitlab::Application.routes.draw do
   get "dashboard"                => "dashboard#index"
   get "dashboard/issues"         => "dashboard#issues"
   get "dashboard/merge_requests" => "dashboard#merge_requests"
+
+
+  #
+  # Groups Area
+  #
+  resources :groups, constraints: { id: /[^\/]+/ }, only: [:show] do
+    member do
+      get :issues
+      get :merge_requests
+      get :search
+      get :people
+    end
+  end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 

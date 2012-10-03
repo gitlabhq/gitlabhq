@@ -1,0 +1,52 @@
+= render 'admin/shared/projects_head'
+%h3.page_title
+  Group: #{@group.name}
+  = link_to edit_admin_group_path(@group), class: "btn right" do
+    %i.icon-edit
+    Edit
+
+%br
+%table.zebra-striped
+  %thead
+    %tr
+      %th Group
+      %th
+  %tr
+    %td
+      %b
+        Name:
+    %td
+      = @group.name
+  %tr
+    %td
+      %b
+        Code:
+    %td
+      = @group.code
+  %tr
+    %td
+      %b
+        Owner:
+    %td
+      = @group.owner_name
+.ui-box
+  %h5
+    Projects
+    %small
+      (#{@group.projects.count})
+  %ul.unstyled
+    - @group.projects.each do |project|
+      %li.wll
+        %strong
+          = link_to project.name, [:admin, project]
+        .right
+          = link_to 'Remove from group', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
+        .clearfix
+
+%br
+%h3 Add new project
+%br
+= form_tag project_update_admin_group_path(@group), class: "bulk_import", method: :put  do
+  = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+  .form-actions
+    = submit_tag 'Add', class: "btn primary"

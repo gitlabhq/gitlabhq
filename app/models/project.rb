@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
   attr_accessor :error_code
 
   # Relations
+  belongs_to :group
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -25,16 +26,19 @@ class Project < ActiveRecord::Base
   has_many :wikis,          dependent: :destroy
   has_many :protected_branches, dependent: :destroy
 
+  delegate :name, to: :owner, allow_nil: true, prefix: true
+
   # Scopes
   scope :public_only, where(private_flag: false)
-  scope :without_user, lambda { |user|  where("id not in (:ids)", ids: user.projects.map(&:id) ) }
+  scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
+  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
 
   def self.active
     joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
   end
 
   def self.search query
-    where("name like :query or code like :query or path like :query", query: "%#{query}%")
+    where("name like :query OR code like :query OR path like :query", query: "%#{query}%")
   end
 
   def self.create_by_user(params, user)
@@ -173,4 +177,6 @@ end
 #  wall_enabled           :boolean         default(TRUE), not null
 #  merge_requests_enabled :boolean         default(TRUE), not null
 #  wiki_enabled           :boolean         default(TRUE), not null
+#  group_id               :integer
 #
+

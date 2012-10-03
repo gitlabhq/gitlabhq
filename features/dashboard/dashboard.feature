@@ -10,6 +10,11 @@ Feature: Dashboard
     Then I should see "Shop" project link
     Then I should see project "Shop" activity feed
 
+  Scenario: I should see groups list
+    Given I have group with projects
+    And I visit dashboard page
+    Then I should see groups list
+
   Scenario: I should see last push widget
     Then I should see last push widget
     And I click "Create Merge Request" link

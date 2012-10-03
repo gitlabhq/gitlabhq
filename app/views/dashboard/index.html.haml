@@ -9,28 +9,9 @@
       .loading.hide
     .side
       = render "events/event_last_push", event: @last_push
-      .projects_box
-        %h5
-          Projects
-          %small
-            (#{@projects.total_count})
-          - if current_user.can_create_project?
-            %span.right
-              = link_to new_project_path, class: "btn very_small info" do
-                %i.icon-plus
-                New Project
-        %ul.unstyled
-          - @projects.each do |project|
-            %li.wll
-              = link_to project_path(project), class: dom_class(project) do
-                %strong.project_name= truncate(project.name, length: 25)
-                %span.arrow
-                  &rarr;
-                %span.last_activity
-                  %strong Last activity:
-                  %span= project_last_activity(project)
-        .bottom= paginate @projects, theme: "gitlab"
-
+      - if @groups.present?
+        = render "groups", groups: @groups
+      = render "projects", projects: @projects
       %div
         %span.rss-icon
           = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do

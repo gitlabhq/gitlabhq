@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120905043334) do
+ActiveRecord::Schema.define(:version => 20121002151033) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -23,6 +23,14 @@ ActiveRecord::Schema.define(:version => 20120905043334) do
     t.datetime "updated_at",  :null => false
     t.integer  "action"
     t.integer  "author_id"
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "code",       :null => false
+    t.integer  "owner_id",   :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "issues", :force => true do |t|
@@ -108,6 +116,7 @@ ActiveRecord::Schema.define(:version => 20120905043334) do
     t.boolean  "wall_enabled",           :default => true, :null => false
     t.boolean  "merge_requests_enabled", :default => true, :null => false
     t.boolean  "wiki_enabled",           :default => true, :null => false
+    t.integer  "group_id"
   end
 
   create_table "protected_branches", :force => true do |t|
