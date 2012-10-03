@@ -16,8 +16,9 @@ module Gitlab
     end
 
     def remove_key key_id, projects
-      config.apply do |config|
-        config.rm_key(key_id)
+      save = false # Gitolite::GitoliteAdmin:save would restore all (including deleted) keys.
+      config.apply(save) do |config|
+        config.rm_key(key_id) # Changes will be commited so the save is not needed.
         config.update_projects(projects)
       end
     end

@@ -17,7 +17,7 @@ module Gitlab
       @ga_repo ||= ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
     end
 
-    def apply
+    def apply(save = true)
       Timeout::timeout(30) do
         File.open(File.join(Rails.root, 'tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
@@ -41,7 +41,7 @@ module Gitlab
             # Save changes in
             # gitolite-admin repo
             # before pusht it
-            ga_repo.save
+            ga_repo.save if save
 
             # Push gitolite-admin repo
             # to apply all changes
