@@ -15,6 +15,7 @@ $ ->
     $("#tree-slider .tree-item").live 'click', (e) ->
       $('.tree-item-file-name a', this).trigger('click') if (e.target.nodeName != "A")
 
+    # Show/Hide the loading spinner
     $('#tree-slider .tree-item-file-name a, .breadcrumb a, .project-refs-form').live
       "ajax:beforeSend": -> $('.tree_progress').addClass("loading")
       "ajax:complete":   -> $('.tree_progress').removeClass("loading")
