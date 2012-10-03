@@ -52,6 +52,14 @@ class Admin::GroupsController < AdminController
     redirect_to :back, notice: 'Group was successfully updated.'
   end
 
+  def remove_project
+    @project = Project.find(params[:project_id])
+    @project.group_id = nil
+    @project.save
+
+    redirect_to :back, notice: 'Group was successfully updated.'
+  end
+
   def destroy
     @group.destroy
 

@@ -1,3 +1,4 @@
+= render 'admin/shared/projects_head'
 %h3.page_title
   Group: #{@group.name}
   = link_to edit_admin_group_path(@group), class: "btn right" do
@@ -38,6 +39,9 @@
       %li.wll
         %strong
           = link_to project.name, [:admin, project]
+        .right
+          = link_to 'Remove from group', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
+        .clearfix
 
 %br
 %h3 Add new project
