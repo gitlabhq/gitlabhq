@@ -10,6 +10,7 @@
 //= require jquery.cookie
 //= require jquery.endless-scroll
 //= require jquery.highlight
+//= require jquery.history
 //= require jquery.waitforimages
 //= require jquery.atwho
 //= require bootstrap
