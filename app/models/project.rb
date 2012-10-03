@@ -30,15 +30,15 @@ class Project < ActiveRecord::Base
 
   # Scopes
   scope :public_only, where(private_flag: false)
-  scope :without_user, ->(user) { where("id not in (:ids)", ids: user.projects.map(&:id) ) }
-  scope :not_in_group, ->(group) { where("id not in (:ids)", ids: group.project_ids ) }
+  scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
+  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
 
   def self.active
     joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
   end
 
   def self.search query
-    where("name like :query or code like :query or path like :query", query: "%#{query}%")
+    where("name like :query OR code like :query OR path like :query", query: "%#{query}%")
   end
 
   def self.create_by_user(params, user)

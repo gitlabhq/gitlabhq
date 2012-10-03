@@ -50,7 +50,7 @@ class GroupsController < ApplicationController
   end
 
   def people
-    @users = group.projects.map(&:users).flatten.uniq
+    @users = group.users
   end
 
   protected

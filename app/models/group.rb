@@ -23,10 +23,14 @@ class Group < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   def self.search query
-    where("name like :query or code like :query", query: "%#{query}%")
+    where("name like :query OR code like :query", query: "%#{query}%")
   end
 
   def to_param
     code
+  end
+
+  def users
+    User.joins(:users_projects).where('users_projects.project_id' => project_ids).uniq
   end
 end
