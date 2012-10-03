@@ -7,10 +7,10 @@
       %span.label.label-tag.grouped
         %i.icon-tag
         = label.name
-    - if issue.notes.any?
+    - if issue.notes.size > 0
       %span.btn.small.disabled.grouped
         %i.icon-comment
-        = issue.notes.count
+        = issue.notes.size
     - if can? current_user, :modify_issue, issue
       - if issue.closed
         = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn small grouped reopen_issue", remote: true

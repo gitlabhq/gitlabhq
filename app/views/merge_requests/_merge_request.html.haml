@@ -6,10 +6,10 @@
           %strong
             %i.icon-ok
             = "MERGED"
-      - if merge_request.notes.any?
+      - if merge_request.notes.size > 0
         %span.btn.small.disabled.grouped
           %i.icon-comment
-          = merge_request.notes.count
+          = merge_request.notes.size
       %span.btn.small.disabled.grouped
         = merge_request.source_branch
         &rarr;
