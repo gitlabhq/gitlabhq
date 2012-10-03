@@ -46,7 +46,7 @@ class ProjectsController < ProjectResourceController
 
   def show
     limit = (params[:limit] || 20).to_i
-    @events = @project.events.recent.limit(limit).offset(params[:offset] || 0)
+    @events = @project.events.recent.includes(:target).limit(limit).offset(params[:offset] || 0)
 
     respond_to do |format|
       format.html do
