@@ -11,6 +11,8 @@ class Ability
   end
 
   def self.project_abilities(user, project)
+    access = project.access_for(user)
+
     rules = []
 
     rules << [
@@ -25,17 +27,17 @@ class Ability
       :write_project,
       :write_issue,
       :write_note
-    ] if project.guest_access_for?(user)
+    ] if access >= UsersProject::GUEST
 
     rules << [
       :download_code,
       :write_merge_request,
       :write_snippet
-    ] if project.report_access_for?(user)
+    ] if access >= UsersProject::REPORTER
 
     rules << [
       :write_wiki
-    ] if project.dev_access_for?(user)
+    ] if access >= UsersProject::DEVELOPER
 
     rules << [
       :modify_issue,
@@ -50,7 +52,7 @@ class Ability
       :admin_note,
       :accept_mr,
       :admin_wiki
-    ] if project.master_access_for?(user) || project.owner == user
+    ] if access >= UsersProject::MASTER || project.owner == user
 
     rules.flatten
   end
