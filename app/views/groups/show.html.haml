@@ -1,8 +1,10 @@
 .projects
   .activities.span8
-    .back_link
-      = link_to dashboard_path do
-        &larr; To dashboard
+    = link_to dashboard_path, class: 'btn very_small' do
+      &larr; To dashboard
+    &nbsp;
+    %span.cgray Events and projects are filtered in scope of group
+    %hr
     = render 'shared/no_ssh'
     - if @events.any?
       .content_list= render @events

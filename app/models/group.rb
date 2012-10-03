@@ -22,6 +22,10 @@ class Group < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
+  def self.search query
+    where("name like :query or code like :query", query: "%#{query}%")
+  end
+
   def to_param
     code
   end
