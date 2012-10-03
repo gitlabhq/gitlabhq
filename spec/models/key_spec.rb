@@ -51,4 +51,16 @@ describe Key do
       end
     end
   end
+
+  context "validate it is a fingerprintable key" do
+    let(:user) { Factory.create(:user) }
+
+    it "accepts the fingerprintable key" do
+      build(:key, user: user).should be_valid
+    end
+
+    it "rejects the unfingerprintable key" do
+      build(:key_with_a_space_in_the_middle).should_not be_valid
+    end
+  end
 end
