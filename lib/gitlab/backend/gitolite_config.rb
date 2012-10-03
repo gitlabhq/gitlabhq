@@ -96,8 +96,9 @@ module Gitlab
     end
 
     def rm_key(user)
-      File.unlink(File.join(config_tmp_dir, 'gitolite/keydir',"#{user}.pub"))
-      `cd #{File.join(config_tmp_dir,'gitolite')} ; git rm keydir/#{user}.pub`
+      key_path = File.join(config_tmp_dir, 'gitolite/keydir', "#{user}.pub")
+      ga_key = ::Gitolite::SSHKey.from_file(key_path)
+      ga_repo.rm_key(ga_key)
     end
 
     # update or create
