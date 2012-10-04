@@ -57,16 +57,16 @@ module ExtractsPath
       # Append a trailing slash if we only get a ref and no file path
       id = input
       id += '/' unless id.ends_with?('/')
-      
-      valid_refs = @project.branches + @project.tags
-      valid_refs.select! { |v| id.start_with?("#{v.name}/") }
-      
+
+      valid_refs = @project.ref_names
+      valid_refs.select! { |v| id.start_with?("#{v}/") }
+
       if valid_refs.length != 1
         # No exact ref match, so just try our best
         pair = id.match(/([^\/]+)(.*)/).captures
       else
         # Partition the string into the ref and the path, ignoring the empty first value
-        pair = id.partition(valid_refs.first.name)[1..-1]
+        pair = id.partition(valid_refs.first)[1..-1]
       end
     end
 
