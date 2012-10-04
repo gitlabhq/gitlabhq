@@ -5,6 +5,15 @@
     %i.icon-edit
     Edit
 
+- if !@admin_project.has_post_receive_file? && @admin_project.commit
+  %br
+  .alert.alert-error
+    %span
+      %strong Important!
+      Project has commits but missing post-receive file.
+      %br
+      If you exported project manually - copy post-receive hook to bare repository
+
 %br
 %table.zebra-striped
   %thead
