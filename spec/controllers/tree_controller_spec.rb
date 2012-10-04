@@ -25,6 +25,11 @@ describe TreeController do
       it { should respond_with(:success) }
     end
 
+    context "valid branch, no path" do
+      let(:id) { 'foo/bar/baz' }
+      it { should respond_with(:success) }
+    end
+
     context "valid branch, valid path" do
       let(:id) { 'master/README.md' }
       it { should respond_with(:success) }
