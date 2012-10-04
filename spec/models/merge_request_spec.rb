@@ -35,4 +35,19 @@ describe MergeRequest do
     it { should include_module(IssueCommonality) }
     it { should include_module(Votes) }
   end
+
+  describe "#mr_and_commit_notes" do
+    let!(:merge_request) { Factory.create(:merge_request) }
+
+    before do
+      merge_request.stub(:commits) { [merge_request.project.commit] }
+      Factory.create(:note, noteable: merge_request.commits.first)
+      Factory.create(:note, noteable: merge_request)
+    end
+
+    it "should include notes for commits" do
+      merge_request.commits.should_not be_empty
+      merge_request.mr_and_commit_notes.count.should == 2
+    end
+  end
 end
