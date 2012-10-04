@@ -6,7 +6,7 @@
       %i
         at
         = commit.committed_date.strftime("%Y-%m-%d %H:%M:%S")
-    %blockquote= simple_format commit.safe_message
+    %blockquote= simple_format(escape_once(commit.safe_message))
   - if event.commits_count > 15
     %p
       %i
