@@ -19,7 +19,7 @@ module IssueCommonality
     scope :opened, where(closed: false)
     scope :closed, where(closed: true)
     scope :of_group, ->(group) { where(project_id: group.project_ids) }
-    scope :assigned, lambda { |u| where(assignee_id: u.id)}
+    scope :assigned, ->(u) { where(assignee_id: u.id)}
 
     delegate :name,
              :email,

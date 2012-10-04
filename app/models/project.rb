@@ -38,7 +38,7 @@ class Project < ActiveRecord::Base
   end
 
   def self.search query
-    where("name like :query OR code like :query OR path like :query", query: "%#{query}%")
+    where("name LIKE :query OR code LIKE :query OR path LIKE :query", query: "%#{query}%")
   end
 
   def self.create_by_user(params, user)
@@ -127,7 +127,7 @@ class Project < ActiveRecord::Base
   end
 
   def commit_line_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code is not null")
+    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
   end
 
   def public?
