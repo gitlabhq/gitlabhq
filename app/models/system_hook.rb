@@ -1,12 +1,14 @@
 class SystemHook < WebHook
-  def async_execute(data)
-    Resque.enqueue(SystemHookWorker, id, data)
+  class << self
+    def all_hooks_fire(data)
+      SystemHook.all.each do |sh|
+        sh.async_execute data
+      end
+    end
   end
 
-  def self.all_hooks_fire(data)
-    SystemHook.all.each do |sh|
-      sh.async_execute data
-    end
+  def async_execute(data)
+    Resque.enqueue(SystemHookWorker, id, data)
   end
 end
 

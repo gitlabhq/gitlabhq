@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   include PushObserver
   include Authority
   include Team
+  include ProjectRepository
 
   attr_accessible :name, :path, :description, :code, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled
@@ -28,52 +29,6 @@ class Project < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
-  # Scopes
-  scope :public_only, where(private_flag: false)
-  scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
-  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
-
-  def self.active
-    joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
-  end
-
-  def self.search query
-    where("name LIKE :query OR code LIKE :query OR path LIKE :query", query: "%#{query}%")
-  end
-
-  def self.create_by_user(params, user)
-    project = Project.new params
-
-    Project.transaction do
-      project.owner = user
-      project.save!
-
-      # Add user as project master
-      project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
-
-      # when project saved no team member exist so
-      # project repository should be updated after first user add
-      project.update_repository
-    end
-
-    project
-  rescue Gitlab::Gitolite::AccessDenied => ex
-    project.error_code = :gitolite
-    project
-  rescue => ex
-    project.error_code = :db
-    project.errors.add(:base, "Can't save project. Please try again later")
-    project
-  end
-
-  def git_error?
-    error_code == :gitolite
-  end
-
-  def saved?
-    id && valid?
-  end
-
   # Validations
   validates :owner, presence: true
   validates :description, length: { within: 0..2000 }
@@ -88,6 +43,53 @@ class Project < ActiveRecord::Base
             :wiki_enabled, inclusion: { in: [true, false] }
   validate :check_limit, :repo_name
 
+  class << self
+    def active
+      joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
+    end
+
+    def search query
+      where("name LIKE :query OR code LIKE :query OR path LIKE :query", query: "%#{query}%")
+    end
+
+    def create_by_user(params, user)
+      project = Project.new params
+
+      Project.transaction do
+        project.owner = user
+        project.save!
+
+        # Add user as project master
+        project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
+
+        # when project saved no team member exist so
+        # project repository should be updated after first user add
+        project.update_repository
+      end
+
+      project
+    rescue Gitlab::Gitolite::AccessDenied => ex
+      project.error_code = :gitolite
+      project
+    rescue => ex
+      project.error_code = :db
+      project.errors.add(:base, "Can't save project. Please try again later")
+      project
+    end
+
+    def access_options
+      UsersProject.access_roles
+    end
+  end
+
+  def git_error?
+    error_code == :gitolite
+  end
+
+  def saved?
+    id && valid?
+  end
+
   def check_limit
     unless owner.can_create_project?
       errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
@@ -100,10 +102,6 @@ class Project < ActiveRecord::Base
     if path == "gitolite-admin"
       errors.add(:path, " like 'gitolite-admin' is not allowed")
     end
-  end
-
-  def self.access_options
-    UsersProject.access_roles
   end
 
   def to_param

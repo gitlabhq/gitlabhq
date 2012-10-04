@@ -11,8 +11,10 @@ class Issue < ActiveRecord::Base
 
   validates :description, length: { within: 0..2000 }
 
-  def self.open_for(user)
-    opened.assigned(user)
+  class << self
+    def open_for(user)
+      opened.assigned(user)
+    end
   end
 
   def is_assigned?

@@ -7,6 +7,8 @@ class MergeRequest < ActiveRecord::Base
   attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
                   :author_id_of_changes
 
+  attr_accessor :should_remove_source_branch
+
   BROKEN_DIFF = "--broken-diff"
 
   UNCHECKED = 1
@@ -16,13 +18,14 @@ class MergeRequest < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  attr_accessor :should_remove_source_branch
-
-  validates_presence_of :source_branch, :target_branch
+  validates :source_branch, presence: true
+  validates :target_branch, presence: true
   validate :validate_branches
 
-  def self.find_all_by_branch(branch_name)
-    where("source_branch like :branch or target_branch like :branch", branch: branch_name)
+  class << self
+    def find_all_by_branch(branch_name)
+      where("source_branch like :branch or target_branch like :branch", branch: branch_name)
+    end
   end
 
   def human_state

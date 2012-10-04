@@ -5,8 +5,9 @@ class Wiki < ActiveRecord::Base
   belongs_to :user
   has_many :notes, as: :noteable, dependent: :destroy
 
-  validates :content, :title, :user_id, presence: true
-  validates :title, length: 1..250
+  validates :content, presence: true
+  validates :user, presence: true
+  validates :title, presence: true, length: 1..250
 
   before_update :set_slug
 
@@ -15,10 +16,6 @@ class Wiki < ActiveRecord::Base
   end
 
   protected
-
-  def set_slug
-    self.slug = self.title.parameterize
-  end
 
   class << self
     def regenerate_from wiki
@@ -31,6 +28,11 @@ class Wiki < ActiveRecord::Base
       new_wiki
     end
   end
+
+  def set_slug
+    self.slug = self.title.parameterize
+  end
+
 end
 
 # == Schema Information
