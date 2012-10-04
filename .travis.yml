@@ -18,4 +18,4 @@ before_script:
   - "bundle exec rake db:migrate RAILS_ENV=test"
   - "bundle exec rake db:seed_fu RAILS_ENV=test"
   - "sh -e /etc/init.d/xvfb start"
-script: "bundle exec rake travis"
+script: "bundle exec rake travis --trace"
