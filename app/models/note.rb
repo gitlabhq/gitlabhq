@@ -5,9 +5,10 @@ class Note < ActiveRecord::Base
   mount_uploader  :attachment, AttachmentUploader
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code
+  attr_readonly :notes_count
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true
+  belongs_to :noteable, polymorphic: true, counter_cache: :notes_count
   belongs_to :author, class_name: "User"
 
   delegate :name, to: :project, prefix: true

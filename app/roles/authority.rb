@@ -2,12 +2,12 @@ module Authority
   # Compatible with all access rights
   # Should be rewrited for new access rights
   def add_access(user, *access)
-    access = if access.include?(:admin) 
-               { project_access: UsersProject::MASTER } 
+    access = if access.include?(:admin)
+               { project_access: UsersProject::MASTER }
              elsif access.include?(:write)
-               { project_access: UsersProject::DEVELOPER } 
+               { project_access: UsersProject::DEVELOPER }
              else
-               { project_access: UsersProject::REPORTER } 
+               { project_access: UsersProject::REPORTER }
              end
     opts = { user: user }
     opts.merge!(access)
@@ -54,5 +54,20 @@ module Authority
 
   def master_access_for?(user)
     !users_projects.where(user_id: user.id, project_access: [UsersProject::MASTER]).empty? || owner_id == user.id
+  end
+
+  # Get the project access level for a specific user
+  #
+  # Examples
+  #
+  #   project.access_for(master_user)    # => 40
+  #   project.access_for(developer_user) # => 30
+  #   project.access_for(reporter_user)  # => 20
+  #   project.access_for(guest_user)     # => 10
+  #   project.access_for(other_user)     # => 0
+  #
+  # Returns the numeric code for the user's project access, or 0
+  def access_for(user)
+    users_projects.where(user_id: user.id).pluck(:project_access).first || 0
   end
 end

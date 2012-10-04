@@ -54,7 +54,7 @@ class IssuesController < ProjectResourceController
 
     respond_to do |format|
       format.html do
-        if @issue.valid? 
+        if @issue.valid?
           redirect_to project_issue_path(@project, @issue)
         else
           render :new
@@ -69,7 +69,7 @@ class IssuesController < ProjectResourceController
 
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         if @issue.valid?
           redirect_to [@project, @issue]
         else
@@ -142,7 +142,7 @@ class IssuesController < ProjectResourceController
               end
 
     @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?
-    @issues = @issues.includes(:author, :project).order("updated_at")
+    @issues = @issues.includes(:author, :project, :assignee, :labels, :notes).order("updated_at")
 
     # Filter by specific assignee_id (or lack thereof)?
     if params[:assignee_id].present?
@@ -162,7 +162,7 @@ class IssuesController < ProjectResourceController
       all: "all",
       closed: "closed",
       to_me: "assigned-to-me",
-      open: "open" 
+      open: "open"
     }
   end
 end
