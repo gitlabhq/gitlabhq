@@ -21,13 +21,15 @@ class GroupsController < ApplicationController
 
   # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests.order("created_at DESC").page(params[:page]).per(20)
+    @merge_requests = current_user.cared_merge_requests
+    @merge_requests = @merge_requests.of_group(@group).order("created_at DESC").page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
     @user   = current_user
-    @issues = current_user.assigned_issues.opened.order("created_at DESC").page(params[:page]).per(20)
+    @issues = current_user.assigned_issues.opened
+    @issues = @issues.of_group(@group).order("created_at DESC").page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
     respond_to do |format|
