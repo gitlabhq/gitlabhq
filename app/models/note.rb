@@ -2,7 +2,6 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Note < ActiveRecord::Base
-  include NoteRepository
 
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code
@@ -22,6 +21,15 @@ class Note < ActiveRecord::Base
   validates :attachment, file_size: { maximum: 10.megabytes.to_i }
 
   mount_uploader  :attachment, AttachmentUploader
+
+  # Scopes
+  scope :common, where(noteable_id: nil)
+  scope :today, where("created_at >= :date", date: Date.today)
+  scope :last_week, where("created_at  >= :date", date: (Date.today - 7.days))
+  scope :since, ->(day) { where("created_at  >= :date", date: (day)) }
+  scope :fresh, order("created_at ASC, id ASC")
+  scope :inc_author_project, includes(:project, :author)
+  scope :inc_author, includes(:author)
 
   class << self
     def create_status_change_note(noteable, author, status)

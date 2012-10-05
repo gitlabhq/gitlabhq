@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-  include UserRepository
   include Account
 
   devise :database_authenticatable, :token_authenticatable, :lockable,
@@ -31,6 +30,12 @@ class User < ActiveRecord::Base
   before_validation :generate_password, on: :create
   before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
+
+  # Scopes
+  scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }
+  scope :admins, where(admin:  true)
+  scope :blocked, where(blocked:  true)
+  scope :active, where(blocked:  false)
 
   class << self
     def filter filter_name

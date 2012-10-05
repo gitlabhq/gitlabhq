@@ -5,7 +5,6 @@ class Project < ActiveRecord::Base
   include PushObserver
   include Authority
   include Team
-  include ProjectRepository
 
   attr_accessible :name, :path, :description, :code, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled
@@ -42,6 +41,11 @@ class Project < ActiveRecord::Base
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validate :check_limit, :repo_name
+
+  # Scopes
+  scope :public_only, where(private_flag: false)
+  scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
+  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
 
   class << self
     def active

@@ -1,6 +1,5 @@
 class Event < ActiveRecord::Base
   include PushEvent
-  include EventRepository
 
   attr_accessible :project, :action, :data, :author_id, :project_id,
                   :target_id, :target_type
@@ -27,6 +26,10 @@ class Event < ActiveRecord::Base
 
   # For Hash only
   serialize :data
+
+  # Scopes
+  scope :recent, order("created_at DESC")
+  scope :code_push, where(action: Pushed)
 
   class << self
     def determine_action(record)
