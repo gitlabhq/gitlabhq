@@ -28,9 +28,9 @@
     %h5
       Progress:
       %small
-        #{@milestone.issues.opened.count} open
-        &ndash;
         #{@milestone.issues.closed.count} closed
+        &ndash;
+        #{@milestone.issues.opened.count} open
     .progress.progress-success
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 
