@@ -8,7 +8,7 @@ $style_color: #474d57;
 $hover: #D9EDF7;
 
 /** GitLab Fonts **/
-@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); }
+@font-face { font-family: Korolev; src: font-url('korolev-medium-compressed.otf'); }
 
 /** MIXINS **/
 @mixin shade {
