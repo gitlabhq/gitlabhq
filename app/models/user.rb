@@ -68,7 +68,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  #protected ?
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
