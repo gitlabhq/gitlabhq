@@ -87,7 +87,7 @@ describe "Admin::Projects" do
       visit new_admin_project_path
       fill_in 'project_name', with: 'NewProject'
       fill_in 'project_code', with: 'NPR'
-      fill_in 'project_path', with: 'newproject'
+      fill_in 'project_path', with: 'gitlabhq_1'
       expect { click_button "Create project" }.to change { Project.count }.by(1)
       @project = Project.last
     end
@@ -102,13 +102,13 @@ describe "Admin::Projects" do
     end
   end
 
-  describe "Add new team member" do 
-    before do 
+  describe "Add new team member" do
+    before do
       @new_user = Factory :user
       visit admin_project_path(@project)
     end
 
-    it "should create new user" do 
+    it "should create new user" do
       select @new_user.name, from: "user_ids"
       expect { click_button "Add" }.to change { UsersProject.count }.by(1)
       page.should have_content @new_user.name
