@@ -184,7 +184,8 @@ Gitlab::Application.routes.draw do
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :blob,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show], constraints: {id: /.+/}
-    match "/compare/:from...:to" => "compare#show", as: "compare", constraints: {from: /.+/, to: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare",
+                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
     resources :team_members
