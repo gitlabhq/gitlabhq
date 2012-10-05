@@ -22,10 +22,8 @@ class MergeRequest < ActiveRecord::Base
   validates :target_branch, presence: true
   validate :validate_branches
 
-  class << self
-    def find_all_by_branch(branch_name)
-      where("source_branch like :branch or target_branch like :branch", branch: branch_name)
-    end
+  def self.find_all_by_branch(branch_name)
+    where("source_branch like :branch or target_branch like :branch", branch: branch_name)
   end
 
   def human_state

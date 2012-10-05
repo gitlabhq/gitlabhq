@@ -20,14 +20,12 @@ class Snippet < ActiveRecord::Base
   scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
   scope :expired, where(["expires_at IS NOT NULL AND expires_at < ?", Time.current])
 
-  class << self
-    def content_types
-      [
-        ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
-        ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
-        ".js", ".sh", ".coffee", ".yml", ".md"
-      ]
-    end
+  def self.content_types
+    [
+      ".rb", ".py", ".pl", ".scala", ".c", ".cpp", ".java",
+      ".haml", ".html", ".sass", ".scss", ".xml", ".php", ".erb",
+      ".js", ".sh", ".coffee", ".yml", ".md"
+    ]
   end
 
   def data

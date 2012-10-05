@@ -31,15 +31,13 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, includes(:project, :author)
   scope :inc_author, includes(:author)
 
-  class << self
-    def create_status_change_note(noteable, author, status)
-      create({
-        noteable: noteable,
-        project: noteable.project,
-        author: author,
-        note: "_Status changed to #{status}_"
-      }, without_protection: true)
-    end
+  def self.create_status_change_note(noteable, author, status)
+    create({
+      noteable: noteable,
+      project: noteable.project,
+      author: author,
+      note: "_Status changed to #{status}_"
+    }, without_protection: true)
   end
 
   def notify

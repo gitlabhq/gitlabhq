@@ -17,16 +17,14 @@ class Wiki < ActiveRecord::Base
 
   protected
 
-  class << self
-    def regenerate_from wiki
-      regenerated_field = [:slug, :content, :title]
+  def self.regenerate_from wiki
+    regenerated_field = [:slug, :content, :title]
 
-      new_wiki = Wiki.new
-      regenerated_field.each do |field|
-        new_wiki.send("#{field}=", wiki.send(field))
-      end
-      new_wiki
+    new_wiki = Wiki.new
+    regenerated_field.each do |field|
+      new_wiki.send("#{field}=", wiki.send(field))
     end
+    new_wiki
   end
 
   def set_slug
