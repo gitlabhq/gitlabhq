@@ -284,7 +284,7 @@ a different host, you can configure its connection string in the
     sudo vim /etc/nginx/sites-enabled/gitlab
 
     # Restart nginx:
-    /etc/init.d/nginx restart
+    sudo /etc/init.d/nginx restart
 
 ## 3. Init script
 
