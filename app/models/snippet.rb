@@ -9,11 +9,13 @@ class Snippet < ActiveRecord::Base
 
   delegate :name, :email, to: :author, prefix: true
 
-  validates_presence_of :author_id, :project_id
+  validates :author, presence: true
+  validates :project, presence: true
   validates :title, presence: true, length: { within: 0..255 }
   validates :file_name, presence: true, length: { within: 0..255 }
   validates :content, presence: true, length: { within: 0..10000 }
 
+  # Scopes
   scope :fresh, order("created_at DESC")
   scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
   scope :expired, where(["expires_at IS NOT NULL AND expires_at < ?", Time.current])

@@ -27,53 +27,56 @@ class User < ActiveRecord::Base
   validates :extern_uid, :allow_blank => true, :uniqueness => {:scope => :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
 
-  scope :not_in_project, lambda { |project|  where("id not in (:ids)", ids: project.users.map(&:id) ) }
+  before_validation :generate_password, on: :create
+  before_save :ensure_authentication_token
+  alias_attribute :private_token, :authentication_token
+
+  # Scopes
+  scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }
   scope :admins, where(admin:  true)
   scope :blocked, where(blocked:  true)
   scope :active, where(blocked:  false)
 
-  before_validation :generate_password, on: :create
-  before_save :ensure_authentication_token
-  alias_attribute :private_token, :authentication_token
+  class << self
+    def filter filter_name
+      case filter_name
+      when "admins"; self.admins
+      when "blocked"; self.blocked
+      when "wop"; self.without_projects
+      else
+        self.active
+      end
+    end
+
+    def without_projects
+      where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
+    end
+
+    def create_from_omniauth(auth, ldap = false)
+      gitlab_auth.create_from_omniauth(auth, ldap)
+    end
+
+    def find_or_new_for_omniauth(auth)
+      gitlab_auth.find_or_new_for_omniauth(auth)
+    end
+
+    def find_for_ldap_auth(auth, signed_in_resource = nil)
+      gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
+    end
+
+    def gitlab_auth
+      Gitlab::Auth.new
+    end
+
+    def search query
+      where("name LIKE :query or email LIKE :query", query: "%#{query}%")
+    end
+  end
 
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
-  end
-
-  def self.filter filter_name
-    case filter_name
-    when "admins"; self.admins
-    when "blocked"; self.blocked
-    when "wop"; self.without_projects
-    else
-      self.active
-    end
-  end
-
-  def self.without_projects
-    where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)')
-  end
-
-  def self.create_from_omniauth(auth, ldap = false)
-    gitlab_auth.create_from_omniauth(auth, ldap)
-  end
-
-  def self.find_or_new_for_omniauth(auth)
-    gitlab_auth.find_or_new_for_omniauth(auth)
-  end
-
-  def self.find_for_ldap_auth(auth, signed_in_resource = nil)
-    gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
-  end
-
-  def self.gitlab_auth
-    Gitlab::Auth.new
-  end
-
-  def self.search query
-    where("name LIKE :query OR email LIKE :query", query: "%#{query}%")
   end
 end
 
