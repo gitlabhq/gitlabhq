@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121002151033) do
+ActiveRecord::Schema.define(:version => 20121008190956) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -60,19 +60,25 @@ ActiveRecord::Schema.define(:version => 20121002151033) do
   end
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                                          :null => false
-    t.string   "source_branch",                                          :null => false
-    t.integer  "project_id",                                             :null => false
+    t.string   "target_branch",                    :null => false
+    t.string   "source_branch",                    :null => false
+    t.integer  "project_id",                       :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
-    t.boolean  "closed",                              :default => false, :null => false
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
-    t.text     "st_commits",    :limit => 2147483647
-    t.text     "st_diffs",      :limit => 2147483647
-    t.boolean  "merged",                              :default => false, :null => false
-    t.integer  "state",                               :default => 1,     :null => false
+    t.boolean  "closed",        :default => false, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    case ActiveRecord::Base.connection.adapter_name
+    when 'PostgreSQL'
+      t.text     "st_commits"
+      t.text     "st_diffs"
+    else
+      t.text     "st_commits",    :limit => 2147483647
+      t.text     "st_diffs",      :limit => 2147483647
+    end
+    t.boolean  "merged",        :default => false, :null => false
+    t.integer  "state",         :default => 1,     :null => false
   end
 
   add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
@@ -89,17 +95,17 @@ ActiveRecord::Schema.define(:version => 20121002151033) do
 
   create_table "notes", :force => true do |t|
     t.text     "note"
-    t.string   "noteable_id"
     t.string   "noteable_type"
     t.integer  "author_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
+    t.string   "noteable_commit_id"
+    t.integer  "noteable_id"
   end
 
-  add_index "notes", ["noteable_id"], :name => "index_notes_on_noteable_id"
   add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
 
   create_table "projects", :force => true do |t|
@@ -155,30 +161,35 @@ ActiveRecord::Schema.define(:version => 20121002151033) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "",    :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "",    :null => false
+    t.string   "email",                  :default => "",    :null => false
+    case ActiveRecord::Base.connection.adapter_name
+    when 'PostgreSQL'
+      t.string   "encrypted_password",     :default => "",    :null => false
+    else
+      t.string   "encrypted_password",     :limit => 128, :default => "",    :null => false
+    end
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                               :null => false
-    t.datetime "updated_at",                                               :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.string   "name"
-    t.boolean  "admin",                                 :default => false, :null => false
-    t.integer  "projects_limit",                        :default => 10
-    t.string   "skype",                                 :default => "",    :null => false
-    t.string   "linkedin",                              :default => "",    :null => false
-    t.string   "twitter",                               :default => "",    :null => false
+    t.boolean  "admin",                  :default => false, :null => false
+    t.integer  "projects_limit",         :default => 10
+    t.string   "skype",                  :default => "",    :null => false
+    t.string   "linkedin",               :default => "",    :null => false
+    t.string   "twitter",                :default => "",    :null => false
     t.string   "authentication_token"
-    t.boolean  "dark_scheme",                           :default => false, :null => false
-    t.integer  "theme_id",                              :default => 1,     :null => false
+    t.boolean  "dark_scheme",            :default => false, :null => false
+    t.integer  "theme_id",               :default => 1,     :null => false
     t.string   "bio"
-    t.boolean  "blocked",                               :default => false, :null => false
-    t.integer  "failed_attempts",                       :default => 0
+    t.boolean  "blocked",                :default => false, :null => false
+    t.integer  "failed_attempts",        :default => 0
     t.datetime "locked_at"
     t.string   "extern_uid"
     t.string   "provider"
