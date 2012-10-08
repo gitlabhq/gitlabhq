@@ -176,7 +176,6 @@ module Gitlab
         authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         @hook.destroy
-        nil
       end
 
       # Get a project repository branches
@@ -227,6 +226,16 @@ module Gitlab
 
         commits = user_project.commits(ref, nil, per_page, page * per_page)
         present CommitDecorator.decorate(commits), with: Entities::RepoCommit
+      end
+
+      # Get a project snippets
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/snippets
+      get ":id/snippets" do
+        present paginate(user_project.snippets), with: Entities::ProjectSnippet
       end
 
       # Get a project snippet

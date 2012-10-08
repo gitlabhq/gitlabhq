@@ -1,3 +1,8 @@
+master
+  - [API] add project snippets list
+  - [API] allow to authorize using private token in HTTP header
+  - [API] add user creation
+
 v 2.9.1
   - Fixed resque custom config init
 
@@ -9,7 +14,7 @@ v 2.9.0
   - restyled projects list on dashboard
   - ssh keys validation to prevent gitolite crash
   - send notifications if changed premission in project
-  - scss refactoring. gitlab_bootstrap/ dir 
+  - scss refactoring. gitlab_bootstrap/ dir
   - fix git push http body bigger than 112k problem
   - list of labels  page under issues tab
   - API for milestones, keys
@@ -113,7 +118,7 @@ v 2.1.0
 v 2.0.0
   - gitolite as main git host system
   - merge requests
-  - project/repo access 
+  - project/repo access
   - link to commit/issue feed
   - design tab
   - improved email notifications
@@ -147,7 +152,7 @@ v 1.1.0
   - bugfix & code cleaning
 
 v 1.0.2
-  - fixed bug with empty project 
+  - fixed bug with empty project
   - added adv validation for project path & code
   - feature: issues can be sortable
   - bugfix
