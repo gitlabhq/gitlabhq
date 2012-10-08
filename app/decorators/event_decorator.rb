@@ -24,15 +24,14 @@ class EventDecorator < ApplicationDecorator
     elsif self.push?
       if self.push_with_commits?
         if self.commits_count > 1
-          h.compare_project_commits_path(self.project, :from => self.parent_commit.id, :to => self.last_commit.id)
+          h.project_compare_url(self.project, :from => self.parent_commit.id, :to => self.last_commit.id)
         else
-          h.project_commit_path(self.project, :id => self.last_commit.id)
+          h.project_commit_url(self.project, :id => self.last_commit.id)
         end
       else
-        h.project_commits_url(self.project, ref: self.ref_name)
+        h.project_commits_url(self.project, self.ref_name)
       end
     end
-
   end
 
   def feed_summary
