@@ -176,7 +176,6 @@ module Gitlab
         authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         @hook.destroy
-        nil
       end
 
       # Get a project repository branches
