@@ -119,15 +119,15 @@ class Project < ActiveRecord::Base
   end
 
   def build_commit_note(commit)
-    notes.new(noteable_id: commit.id, noteable_type: "Commit")
+    notes.new(noteable_commit_id: commit.id, noteable_type: "Commit")
   end
 
   def commit_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit", line_code: nil)
+    notes.where(noteable_commit_id: commit.id, noteable_type: "Commit", line_code: nil)
   end
 
   def commit_line_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
+    notes.where(noteable_commit_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
   end
 
   def public?
