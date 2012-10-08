@@ -128,7 +128,7 @@ module Gitlab
     #
     # Returns boolean
     def valid_emoji?(emoji)
-      File.exists?(Rails.root.join('app', 'assets', 'images', 'emoji', "#{emoji}.png"))
+      Emoji::NAMES.include? emoji
     end
 
     # Private: Dispatches to a dedicated processing method based on reference

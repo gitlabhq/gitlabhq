@@ -23,7 +23,7 @@ class Group < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   def self.search query
-    where("name like :query OR code like :query", query: "%#{query}%")
+    where("name LIKE :query OR code LIKE :query", query: "%#{query}%")
   end
 
   def to_param

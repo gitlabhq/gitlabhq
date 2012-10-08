@@ -220,6 +220,15 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /projects/:id/snippets" do
+    it "should return a project snippet" do
+      get api("/projects/#{project.code}/snippets", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.first['title'].should == snippet.title
+    end
+  end
+
   describe "GET /projects/:id/snippets/:snippet_id" do
     it "should return a project snippet" do
       get api("/projects/#{project.code}/snippets/#{snippet.id}", user)

@@ -21,14 +21,13 @@ module Gitlab
             end
           end
           first_token = first_line[0..first_the_same_symbols][1..-1]
-
           diff_arr[index+1].sub!(first_token, first_token + START)
           diff_arr[index+2].sub!(first_token, first_token + START)
-
           last_the_same_symbols = 0
           (1..max_length + 1).each do |i|
             last_the_same_symbols = -i
-            if first_line[-i] != second_line[-i]
+            shortest_line = second_line.size > first_line.size ? first_line : second_line
+            if ( first_line[-i] != second_line[-i] ) || "#{first_token}#{START}".size == shortest_line[1..-i].size
               break
             end
           end

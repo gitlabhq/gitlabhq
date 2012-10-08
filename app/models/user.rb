@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   end
 
   def self.search query
-    where("name like :query or email like :query", query: "%#{query}%")
+    where("name LIKE :query OR email LIKE :query", query: "%#{query}%")
   end
 end
 

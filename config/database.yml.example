@@ -34,6 +34,6 @@ test: &test
   reconnect: false
   database: gitlabhq_test
   pool: 5
-  username: root
-  password: "secure password"
-  # socket: /tmp/mysql.sock
+  username: postgres
+  password:
+  # socket: /tmp/postgresql.sock
