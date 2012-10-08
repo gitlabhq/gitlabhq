@@ -1,0 +1,10 @@
+.file_holder
+  Edit file: 
+  %span.file_name
+    = @tree.path.force_encoding('utf-8')
+    %br
+    = form_tag(project_tree_path(@project, @id), :method => :put) do
+      %textarea
+        = @tree.data
+      = hidden_field_tag 'last_commit', @last_commit
+      = submit_tag "Save"

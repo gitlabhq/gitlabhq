@@ -19,4 +19,12 @@ class TreeController < ProjectResourceController
       format.js { no_cache_headers }
     end
   end
+
+  def edit
+    @last_commit = @project.commits(@ref, @path, 1).first.sha
+  end
+
+  def update
+    last_commit = @project.commits(@ref, @path, 1).first.sha
+  end
 end

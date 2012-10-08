@@ -183,7 +183,7 @@ Gitlab::Application.routes.draw do
     resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :blob,    only: [:show], constraints: {id: /.+/}
-    resources :tree,    only: [:show], constraints: {id: /.+/}
+    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
     match "/compare/:from...:to" => "compare#show", as: "compare",
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 

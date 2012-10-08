@@ -8,6 +8,7 @@
       = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
       = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
       = link_to "blame", project_blame_path(@project, @id), class: "btn very_small"
+      = link_to "Edit", edit_project_tree_path(@project, @id), class: "btn very_small"
   - if tree_file.text?
     - if gitlab_markdown?(tree_file.name)
       .file_content.wiki
