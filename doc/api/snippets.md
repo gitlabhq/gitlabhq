@@ -1,6 +1,14 @@
 ## List snippets
 
-Not implemented.
+Get a list of project snippets.
+
+```
+GET /projects/:id/snippets
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
 
 ## Single snippet
 

@@ -1,4 +1,5 @@
 master
+  - [API] add project snippets list
   - [API] allow to authorize using private token in HTTP header
   - [API] add user creation
 
