@@ -12,7 +12,7 @@ describe Milestone do
 
   describe "Validation" do
     it { should validate_presence_of(:title) }
-    it { should validate_presence_of(:project_id) }
+    it { should validate_presence_of(:project) }
     it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 
