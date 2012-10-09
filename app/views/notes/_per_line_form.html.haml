@@ -13,7 +13,7 @@
             = f.hidden_field :noteable_id
             = f.hidden_field :noteable_type
             = f.hidden_field :line_code
-            = f.text_area :note,  size: 255, class: 'line-note-text'
+            = f.text_area :note,  size: 255, class: 'line-note-text gfm-input'
             .note_actions
               .buttons
                 = f.submit 'Add note', class: "btn save-btn submit_note submit_inline_note", id: "submit_note"
