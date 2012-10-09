@@ -39,6 +39,23 @@ describe ApplicationHelper do
     end
   end
 
+  describe 'page_title' do
+    it "returns 'GitLab'" do
+      page_title.should == "GitLab"
+    end
+
+    it "includes a project's name when @project is set" do
+      @project = double(name: 'Project Name', persisted?: true)
+      page_title.should match(/ > Project Name/)
+    end
+
+    it "calls custom_page_title if it's defined" do
+      def custom_page_title; "Custom Title"; end
+
+      page_title.should == "Custom Title"
+    end
+  end
+
   describe "gravatar_icon" do
     let(:user_email) { 'user@email.com' }
 
