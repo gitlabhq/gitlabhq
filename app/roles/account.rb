@@ -41,7 +41,7 @@ module Account
   # Remove user from all projects and
   # set blocked attribute to true
   def block
-    users_projects.all.each do |membership|
+    users_projects.find_each do |membership|
       return false unless membership.destroy
     end
 

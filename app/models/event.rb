@@ -27,19 +27,22 @@ class Event < ActiveRecord::Base
   # For Hash only
   serialize :data
 
+  # Scopes
   scope :recent, order("created_at DESC")
   scope :code_push, where(action: Pushed)
 
-  def self.determine_action(record)
-    if [Issue, MergeRequest].include? record.class
-      Event::Created
-    elsif record.kind_of? Note
-      Event::Commented
+  class << self
+    def determine_action(record)
+      if [Issue, MergeRequest].include? record.class
+        Event::Created
+      elsif record.kind_of? Note
+        Event::Commented
+      end
     end
-  end
 
-  def self.recent_for_user user
-    where(project_id: user.projects.map(&:id)).recent
+    def recent_for_user user
+      where(project_id: user.projects.map(&:id)).recent
+    end
   end
 
   # Next events currently enabled for system
