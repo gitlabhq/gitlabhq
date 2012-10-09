@@ -13,8 +13,8 @@ describe Snippet do
   end
 
   describe "Validation" do
-    it { should validate_presence_of(:author_id) }
-    it { should validate_presence_of(:project_id) }
+    it { should validate_presence_of(:author) }
+    it { should validate_presence_of(:project) }
 
     it { should validate_presence_of(:title) }
     it { should ensure_length_of(:title).is_within(0..255) }

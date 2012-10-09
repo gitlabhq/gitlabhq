@@ -20,5 +20,5 @@ describe Group do
   it { should validate_uniqueness_of(:name) }
   it { should validate_presence_of :code }
   it { should validate_uniqueness_of(:code) }
-  it { should validate_presence_of :owner_id }
+  it { should validate_presence_of :owner }
 end

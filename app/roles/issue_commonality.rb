@@ -8,12 +8,9 @@ module IssueCommonality
     belongs_to :assignee, class_name: "User"
     has_many :notes, as: :noteable, dependent: :destroy
 
-    validates_presence_of :project_id
-    validates_presence_of :author_id
-
-    validates :title,
-              presence: true,
-              length: { within: 0..255 }
+    validates :project, presence: true
+    validates :author, presence: true
+    validates :title, presence: true, length: { within: 0..255 }
     validates :closed, inclusion: { in: [true, false] }
 
     scope :opened, where(closed: false)

@@ -6,15 +6,14 @@ class Key < ActiveRecord::Base
 
   attr_accessible :key, :title
 
-  validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true,
-            length: { within: 0..5000 },
-            format: { :with => /ssh-.{3} / }
-
-  before_save :set_identifier
   before_validation :strip_white_space
-  delegate :name, :email, to: :user, prefix: true
+  before_save :set_identifier
+
+  validates :title, presence: true, length: { within: 0..255 }
+  validates :key, presence: true, length: { within: 0..5000 }, format: { :with => /ssh-.{3} / }
   validate :unique_key, :fingerprintable_key
+
+  delegate :name, :email, to: :user, prefix: true
 
   def strip_white_space
     self.key = self.key.strip unless self.key.blank?
