@@ -39,12 +39,46 @@
 
 :javascript
   $(function(){
-    var names = #{@project.users.pluck(:name)}, emoji = ['+1', '-1'];
-    var emoji = $.map(emoji, function(value, i) {return {key:value + ':', name:value}});
-    $('#note_note, .per_line_form .line-note-text').
-      atWho('@', { data: names }).
-      atWho(':', {
-        data: emoji,
-        tpl: "<li data-value='${key}'>${name} #{escape_javascript image_tag('emoji/${name}.png', :size => '20x20')}</li>"
-      });
+    // init auto-completion of team members
+    var membersUrl = "#{root_url}/api/v2/projects/#{@project.code}/members";
+    var membersParams = {
+      private_token: "#{current_user.authentication_token}",
+      page: 1,
+    };
+    var membersData = [];
+    $('.gfm-input').atWho('@', function(query, callback) {
+      (function getMoreMembers() {
+        $.getJSON(membersUrl, membersParams).
+          success(function(members) {
+            // pick the data we need
+            var newMembersData = $.map(members, function(member) { return member.name });
+
+            // add the new page of data to the rest
+            $.merge(membersData, newMembersData);
+
+            // show the pop-up with a copy of the current data
+            callback(membersData.slice(0));
+
+            // are we past the last page?
+            if (newMembersData.length == 0) {
+              // set static data and stop callbacks
+              $('.gfm-input').atWho('@', { data: membersData, callback: null });
+            } else {
+              // get next page
+              getMoreMembers();
+            }
+          });
+        // next request will get the next page
+        membersParams.page += 1;
+      })();
+    });
+
+    // init auto-completion of emoji
+    var emoji = #{emoji_for_completion};
+    // convert the list so that the items have the right format for completion
+    emoji = $.map(emoji, function(value) {return { key: value+':', name: value }});
+    $('.gfm-input').atWho(':', {
+      data: emoji,
+      tpl: "<li data-value='${key}'>${name} #{escape_javascript image_tag('emoji/${name}.png', :size => '20x20')}</li>"
+    });
   });
