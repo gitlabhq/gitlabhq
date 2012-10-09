@@ -28,6 +28,8 @@
             My profile
           = link_to 'Logout', destroy_user_session_path, class: "logout", method: :delete
 
+= render "layouts/init_auto_complete"
+
 :javascript
   $(function(){
     $("#search").autocomplete({
