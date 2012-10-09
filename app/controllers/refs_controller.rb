@@ -9,9 +9,9 @@ class RefsController < ProjectResourceController
   before_filter :ref
   before_filter :define_tree_vars, only: [:blob, :logs_tree]
 
-  def switch 
-    respond_to do |format| 
-      format.html do 
+  def switch
+    respond_to do |format|
+      format.html do
         new_path = if params[:destination] == "tree"
                      project_tree_path(@project, @ref)
                    else

@@ -6,10 +6,7 @@ class GroupsController < ApplicationController
   before_filter :projects
 
   def show
-    @events = Event.where(project_id: project_ids).
-      order('id DESC').
-      limit(20).offset(params[:offset] || 0)
-
+    @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push
 
     respond_to do |format|
@@ -22,14 +19,14 @@ class GroupsController < ApplicationController
   # Get authored or assigned open merge requests
   def merge_requests
     @merge_requests = current_user.cared_merge_requests
-    @merge_requests = @merge_requests.of_group(@group).order("created_at DESC").page(params[:page]).per(20)
+    @merge_requests = @merge_requests.of_group(@group).recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
     @user   = current_user
     @issues = current_user.assigned_issues.opened
-    @issues = @issues.of_group(@group).order("created_at DESC").page(params[:page]).per(20)
+    @issues = @issues.of_group(@group).recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
     respond_to do |format|
@@ -39,16 +36,11 @@ class GroupsController < ApplicationController
   end
 
   def search
-    query = params[:search]
+    result = SearchContext.new(project_ids, params).execute
 
-    @merge_requests = []
-    @issues = []
-
-    if query.present?
-      @projects = @projects.search(query).limit(10)
-      @merge_requests = MergeRequest.where(project_id: project_ids).search(query).limit(10)
-      @issues = Issue.where(project_id: project_ids).search(query).limit(10)
-    end
+    @projects       = result[:projects]
+    @merge_requests = result[:merge_requests]
+    @issues         = result[:issues]
   end
 
   def people

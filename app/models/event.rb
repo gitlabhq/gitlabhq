@@ -30,6 +30,7 @@ class Event < ActiveRecord::Base
   # Scopes
   scope :recent, order("created_at DESC")
   scope :code_push, where(action: Pushed)
+  scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
     def determine_action(record)
@@ -38,10 +39,6 @@ class Event < ActiveRecord::Base
       elsif record.kind_of? Note
         Event::Commented
       end
-    end
-
-    def recent_for_user user
-      where(project_id: user.projects.map(&:id)).recent
     end
   end
 

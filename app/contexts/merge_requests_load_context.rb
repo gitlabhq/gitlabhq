@@ -1,4 +1,4 @@
-class MergeRequestsLoad < BaseContext
+class MergeRequestsLoadContext < BaseContext
   def execute
     type = params[:f]
 

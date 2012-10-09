@@ -54,7 +54,7 @@ class MilestonesController < ProjectResourceController
 
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         if @milestone.valid?
           redirect_to [@project, @milestone]
         else
