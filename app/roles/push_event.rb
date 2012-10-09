@@ -70,7 +70,7 @@ module PushEvent
     if new_ref?
       "pushed new"
     elsif rm_ref?
-      "removed #{ref_type}"
+      "deleted"
     else
       "pushed to"
     end
