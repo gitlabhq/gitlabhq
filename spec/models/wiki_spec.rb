@@ -16,6 +16,6 @@ describe Wiki do
     it { should validate_presence_of(:title) }
     it { should ensure_length_of(:title).is_within(1..250) }
     it { should validate_presence_of(:content) }
-    it { should validate_presence_of(:user_id) }
+    it { should validate_presence_of(:user) }
   end
 end
