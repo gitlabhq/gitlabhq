@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   def index
     @groups = Group.where(id: current_user.projects.pluck(:group_id))
     @projects = current_user.projects_with_events
-    @projects = @projects.page(params[:page]).per(40)
+    @projects = @projects.page(params[:page]).per(20)
 
     @events = Event.recent_for_user(current_user).limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push
