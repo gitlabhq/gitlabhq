@@ -54,10 +54,8 @@ class RefsController < ProjectResourceController
     @hex_path = Digest::SHA1.hexdigest(params[:path] || "")
 
     if params[:path]
-      @history_path = project_tree_path(@project, File.join(@ref, params[:path]))
       @logs_path = logs_file_project_ref_path(@project, @ref, params[:path])
     else
-      @history_path = project_tree_path(@project, @ref)
       @logs_path = logs_tree_project_ref_path(@project, @ref)
     end
   rescue
