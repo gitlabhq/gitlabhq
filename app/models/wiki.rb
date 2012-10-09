@@ -46,3 +46,4 @@ end
 #  slug       :string(255)
 #  user_id    :integer
 #
+

@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: keys
+#
+#  id         :integer         not null, primary key
+#  user_id    :integer
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  key        :text
+#  title      :string(255)
+#  identifier :string(255)
+#  project_id :integer
+#
+
 require 'spec_helper'
 
 describe Key do

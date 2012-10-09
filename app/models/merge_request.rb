@@ -202,8 +202,9 @@ end
 #  closed        :boolean         default(FALSE), not null
 #  created_at    :datetime        not null
 #  updated_at    :datetime        not null
-#  st_commits    :text(2147483647
-#  st_diffs      :text(2147483647
+#  st_commits    :text(4294967295
+#  st_diffs      :text(4294967295
 #  merged        :boolean         default(FALSE), not null
 #  state         :integer         default(1), not null
 #
+
