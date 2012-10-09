@@ -3,8 +3,7 @@
   .container
     .top_panel_content
       %div.app_logo
-        = link_to root_path, class: "home", title: "Home" do
-          %h1 GitLab
+        = link_to application_title, root_path, class: "home", title: "Home"
       %div.separator
         %div.vertical-bar
       %h1.project_name= title

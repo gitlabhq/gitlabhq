@@ -30,6 +30,17 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
+  # Returns an H1 element to be used in the page's logo section
+  #
+  # Calls `custom_application_title` if it's defined, allowing customization
+  def application_title
+    if defined?(custom_application_title)
+      custom_application_title
+    else
+      content_tag(:h1, "GitLab")
+    end
+  end
+
   # Returns a title to be used in the page's <title> element
   #
   # Automatically appends a project's name if @project is set.

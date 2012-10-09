@@ -39,6 +39,22 @@ describe ApplicationHelper do
     end
   end
 
+  describe 'application_title' do
+    it "returns an H1 element" do
+      application_title.should match(/<h1>/)
+    end
+
+    it "returns 'GitLab'" do
+      application_title.should match(/GitLab/)
+    end
+
+    it "calls custom_application_title if it's defined" do
+      def custom_application_title; "Custom Title"; end
+
+      application_title.should == "Custom Title"
+    end
+  end
+
   describe 'page_title' do
     it "returns 'GitLab'" do
       page_title.should == "GitLab"
