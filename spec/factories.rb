@@ -80,7 +80,7 @@ FactoryGirl.define do
 
   factory :note do
     project
-    note "Note"
+    note { Faker::Lorem.paragraph }
   end
 
   factory :event do
