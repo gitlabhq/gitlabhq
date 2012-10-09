@@ -1,10 +1,19 @@
-.file_holder
-  Edit file: 
+.file-editor
+  .file_name
+    File: 
   %span.file_name
     = @tree.path.force_encoding('utf-8')
     %br
     = form_tag(project_tree_path(@project, @id), :method => :put) do
-      %textarea
+      #editor
         = @tree.data
       = hidden_field_tag 'last_commit', @last_commit
+      = hidden_field_tag 'content'
+      
+      = text_area_tag 'text_commit'
       = submit_tag "Save"
+
+:javascript
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/twilight");
+  editor.getSession().setMode("ace/mode/javascript");
