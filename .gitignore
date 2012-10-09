@@ -10,6 +10,7 @@
 .sass-cache/
 .vagrant
 Vagrantfile
+app/assets/stylesheets/overrides.scss
 backups/*
 config/database.yml
 config/gitlab.yml
