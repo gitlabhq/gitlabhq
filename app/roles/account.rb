@@ -22,6 +22,10 @@ module Account
     projects_limit > my_own_projects.count
   end
 
+  def can_create_group?
+    is_admin?
+  end
+
   def last_activity_project
     projects.first
   end

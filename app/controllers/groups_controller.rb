@@ -52,7 +52,7 @@ class GroupsController < ApplicationController
   end
 
   def people
-    @users = group.users
+    @users = group.users.all
   end
 
   protected
