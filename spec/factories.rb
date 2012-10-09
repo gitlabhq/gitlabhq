@@ -76,6 +76,12 @@ FactoryGirl.define do
     project
     source_branch "master"
     target_branch "stable"
+
+    trait :closed do
+      closed true
+    end
+
+    factory :closed_merge_request, traits: [:closed]
   end
 
   factory :note do
