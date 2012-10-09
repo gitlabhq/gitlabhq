@@ -37,7 +37,6 @@
      *
      */
     .app_logo {
-      width:160px;
       a {
         h1 {
           background: none;
@@ -47,13 +46,16 @@
           padding-left: 0;
         }
       }
-      .separator {
-        width: 1px;
-        height: 40px;
-        margin: 0 10px;
-        overflow: hidden;
-        background: #222;
+    }
+
+    .separator {
+      line-height: 40px;
+      margin-top: -5px;
+
+      .vertical-bar {
         border-left: 1px solid #333;
+        border-right: 1px solid #222;
+        height: 40px;
       }
     }
 

@@ -22,7 +22,6 @@ header {
    *
    */
   .app_logo {
-    width:200px;
     float:left;
     position:relative;
     top:-5px;
@@ -31,7 +30,7 @@ header {
 
       h1 {
         padding-top: 5px;
-        width:90px;
+        width:auto;
         background: url('logo_dark.png') no-repeat 0px -3px;
         float:left;
         margin-left:5px;
@@ -43,19 +42,26 @@ header {
         padding-left:50px;
         height:40px;
         font-family: 'Korolev', sans-serif;
+        text-transform: uppercase;
       }
 
     }
-    .separator {
-      margin-left:20px;
-      float: left;
-      height: 60px;
-      width: 1px;
-      background: white;
+  }
+
+  // Spacing between logo and header title
+  .separator {
+    float: left;
+    line-height: 60px;
+    margin: -15px 15px 0 15px;
+
+    // Visible "Bar" inside the separator
+    .vertical-bar {
       border-left: 1px solid #DDD;
-      margin-top: -10px;
+      border-right: 1px solid #FFF;
+      height: 60px;
     }
   }
+
   .container {
     .top_panel_content {
       margin:auto;
