@@ -7,7 +7,7 @@ class LabelsController < ProjectResourceController
   respond_to :js, :html
 
   def index
-    @labels = @project.issues.tag_counts_on(:labels).order('count DESC')
+    @labels = @project.issues_labels.order('count DESC')
   end
 
   protected

@@ -1,4 +1,5 @@
-# Contains common functionality shared between Issues and MergeRequests
+# Contains common functionality
+# shared between Issues and MergeRequests
 module IssueCommonality
   extend ActiveSupport::Concern
 

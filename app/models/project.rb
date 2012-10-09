@@ -159,6 +159,10 @@ class Project < ActiveRecord::Base
   def project_id
     self.id
   end
+
+  def issues_labels
+    issues.tag_counts_on(:labels)
+  end
 end
 
 # == Schema Information
