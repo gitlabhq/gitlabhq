@@ -22,6 +22,12 @@ You might have some luck using these, but no guarantees:
 
 GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
 
+
+## Hardware: 
+
+We recommend to use server with at least 1GB RAM for gitlab instance.
+
+
 ## This installation guide created for Debian/Ubuntu and properly tested.
 
 The installation consists of 6 steps:
