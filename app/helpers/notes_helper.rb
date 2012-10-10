@@ -12,11 +12,5 @@ module NotesHelper
     !@mixed_targets || @main_target_type == note.noteable_type
   end
 
-  def note_vote_class(note)
-    if note.upvote?
-      "vote upvote"
-    elsif note.downvote?
-      "vote downvote"
-    end
   end
 end
