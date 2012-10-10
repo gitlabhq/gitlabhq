@@ -8,6 +8,7 @@
       %i.icon-plus
       New Issue
     = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
+    = link_to 'Overview', project_issues_path(@milestone.project, :print, milestone_id: @milestone.id), target: '_blank', class: "btn edit-milestone-link small grouped"
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do
         %i.icon-edit
