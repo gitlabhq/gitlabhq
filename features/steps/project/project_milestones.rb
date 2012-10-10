@@ -36,4 +36,26 @@ class ProjectMilestones < Spinach::FeatureSteps
 
     3.times { Factory :issue, :project => project, :milestone => milestone }
   end
+
+  Given 'the milestone has open and closed issues' do
+    project = Project.find_by_name("Shop")
+    milestone = project.milestones.find_by_title('v2.2')
+
+    # 3 Open issues created above; create one closed issue
+    create(:closed_issue, project: project, milestone: milestone)
+  end
+
+  When 'I click link "All Issues"' do
+    click_link 'All Issues'
+  end
+
+  Then "I should see 3 issues" do
+    page.should have_selector('.milestone-issue-filter tbody tr', count: 4)
+    page.should have_selector('.milestone-issue-filter tbody tr.hide', count: 1)
+  end
+
+  Then "I should see 4 issues" do
+    page.should have_selector('.milestone-issue-filter tbody tr', count: 4)
+    page.should_not have_selector('.milestone-issue-filter tbody tr.hide')
+  end
 end

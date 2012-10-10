@@ -30,7 +30,7 @@ class MilestonesController < ProjectResourceController
   end
 
   def show
-    @issues = @milestone.issues.opened.page(params[:page]).per(40)
+    @issues = @milestone.issues
     @users = @milestone.participants
 
     respond_to do |format|
