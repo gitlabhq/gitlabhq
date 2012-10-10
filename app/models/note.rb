@@ -49,7 +49,7 @@ class Note < ActiveRecord::Base
   end
 
   def target
-    if noteable_type == "Commit"
+    if commit?
       project.commit(noteable_id)
     else
       noteable
@@ -80,6 +80,10 @@ class Note < ActiveRecord::Base
 
   def commit?
     noteable_type == "Commit"
+  end
+
+  def line_note?
+    line_code.present?
   end
 
   def commit_author
