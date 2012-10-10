@@ -70,13 +70,55 @@ Now install the required packages:
     sudo apt-get update
     sudo apt-get upgrade
 
-    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix
+    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix
 
-    # If you want to use MySQL:
+
+# Database
+
+## SQLite
+
+    sudo apt-get install -y sqlite3 libsqlite3-dev 
+
+## MySQL
+
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
-    # If you want to use PostgreSQL:
+    # Login to MySQL
+    $ mysql -u root -p
+
+    # Create the GitLab production database
+    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+
+    # Create the MySQL User change $password to a real password
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+
+    # Grant proper permissions to the MySQL User
+    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+
+
+## PostgreSQL
+
     sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
+
+    # Connect to database server
+    sudo -u postgres psql -d template1
+
+    # Add a user called gitlab. Change $password to a real password
+    template1=# CREATE USER gitlab WITH PASSWORD '$password';
+
+    # Create the GitLab production database
+    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
+
+    # Grant all privileges on database
+    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+
+    # Quit from PostgreSQL server
+    template1=# \q
+
+    # Try connect to new database
+    $ su - gitlab
+    $ psql -d gitlabhq_production -U gitlab
+
 
 # 2. Install Ruby
 
@@ -172,62 +214,22 @@ and ensure you have followed all of the above steps carefully.
     # SQLite
     sudo -u gitlab cp config/database.yml.sqlite config/database.yml
 
-    # Or
     # Mysql
-    # Install MySQL as directed in Step #1
+    sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
-    # Login to MySQL
-    $ mysql -u root -p
-
-    # Create the GitLab production database
-    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-
-    # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
-
-    # Grant proper permissions to the MySQL User
-    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
-
-    # Exit MySQL Server and copy the example config, make sure to update username/password in config/database.yml
-    sudo -u gitlab cp config/database.yml.example config/database.yml
-
-    # Or
     # PostgreSQL
-    # Install PostgreSQL as directed in Step #1
-
-    # Connect to database server
-    sudo -u postgres psql -d template1
-
-    # Add a user called gitlab. Change $password to a real password
-    template1=# CREATE USER gitlab WITH PASSWORD '$password';
-
-    # Create the GitLab production database
-    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
-
-    # Grant all privileges on database
-    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
-
-    # Quit from PostgreSQL server
-    template1=# \q
-
-    # Try connect to new database
-    $ su - gitlab
-    $ psql -d gitlabhq_production -U gitlab
-
-    # Exit PostgreSQL Server and copy the example config, make sure to update username/password in config/database.yml
     sudo -u gitlab cp config/database.yml.postgres config/database.yml
 
-    # If you need create development, test, staging or another database
-    # Repeate some steps with actual commands
+    # make sure to update username/password in config/database.yml
 
 #### Install gems
 
-    # Please, check Gemfile before run bundle install
-    # Select database gem, wich you will use
-    # or run to setup gems with mysql usage
+    # mysql
     sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
+
     # or postgres
     sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
+
     # or sqlite
     sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
 
