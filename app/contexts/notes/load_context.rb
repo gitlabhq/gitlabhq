@@ -13,7 +13,7 @@ module Notes
                when "issue"
                  project.issues.find(target_id).notes.inc_author.fresh.limit(20)
                when "merge_request"
-                 project.merge_requests.find(target_id).notes.inc_author.fresh.limit(20)
+                 project.merge_requests.find(target_id).mr_and_commit_notes.inc_author.fresh.limit(20)
                when "snippet"
                  project.snippets.find(target_id).notes.fresh
                when "wall"

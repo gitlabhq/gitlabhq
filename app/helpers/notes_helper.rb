@@ -7,6 +7,11 @@ module NotesHelper
     params[:loading_new].present?
   end
 
+   # Helps to distinguish e.g. commit notes in mr notes list
+  def note_for_main_target?(note)
+    !@mixed_targets || @main_target_type == note.noteable_type
+  end
+
   def note_vote_class(note)
     if note.upvote?
       "vote upvote"
