@@ -1,17 +1,20 @@
 .file-editor
-  .file_name
-    File: 
-  %span.file_name
-    = @tree.path.force_encoding('utf-8')
-    %br
-    = form_tag(project_tree_path(@project, @id), :method => :put) do
-      #editor
-        = @tree.data
+  = form_tag(project_tree_path(@project, @id), :method => :put) do
+    .file_holder
+      .file_title
+        %i.icon-file
+        = @tree.path.force_encoding('utf-8')
+      .file_content.code
+        #editor= @tree.data
+
+    .editor-commit-comment
+      = label_tag 'text-commit' do
+        %p.slead Commit message
+      = text_area_tag 'text_commit'
+    .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content'
-      
-      = text_area_tag 'text_commit'
-      = submit_tag "Save"
+      = submit_tag "Save", class: 'btn save-btn'
 
 :javascript
   var editor = ace.edit("editor");
