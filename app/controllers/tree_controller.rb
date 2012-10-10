@@ -10,10 +10,8 @@ class TreeController < ProjectResourceController
   before_filter :assign_ref_vars
 
   def show
-    @hex_path = Digest::SHA1.hexdigest(@path)
-
-    @history_path = project_tree_path(@project, @id)
-    @logs_path    = logs_file_project_ref_path(@project, @ref, @path)
+    @hex_path  = Digest::SHA1.hexdigest(@path)
+    @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
     respond_to do |format|
       format.html

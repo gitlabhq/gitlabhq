@@ -1,7 +1,7 @@
 %ul.breadcrumb
   %li
     %span.arrow
-    = link_to project_tree_path(@project, @ref), remote: true do
+    = link_to project_tree_path(@project, @ref) do
       = @project.name
   - tree.breadcrumbs(6) do |link|
     \/
@@ -26,7 +26,7 @@
         %tr.tree-item
           %td.tree-item-file-name
             = image_tag "file_empty.png", size: '16x16'
-            = link_to "..", tree.up_dir_path, remote: true
+            = link_to "..", tree.up_dir_path
           %td
           %td
 
@@ -44,22 +44,9 @@
           - else
             = raw GitHub::Markup.render(content.name, content.data)
 
-:javascript
-  $(function(){
-    history.pushState({ path: this.path }, '', "#{@history_path}");
-  });
-
 - unless tree.is_blob?
   :javascript
     // Load last commit log for each file in tree
     $(window).load(function(){
       ajaxGet('#{@logs_path}');
     });
-
-- if @path.present? && request.xhr?
-  :javascript
-    $(window).unbind('popstate');
-    $(window).bind('popstate', function() {
-      if(location.pathname.search("tree") != -1) {
-        $.ajax({type: "GET", url: location.pathname, dataType: "script"})}
-        else { location.href = location.pathname;}});
