@@ -1,0 +1,17 @@
+:javascript
+  $(function() {
+    autocompleteMembersUrl = "#{ "/api/v2/projects/#{@project.code}/members" if @project }";
+    autocompleteMembersParams.private_token = "#{current_user.authentication_token}";
+
+    autocompleteEmojiData = #{raw emoji_autocomplete_source};
+    // convert the list so that the items have the right format for completion
+    autocompleteEmojiData = $.map(autocompleteEmojiData, function(value) {
+      return {
+        name: value,
+        insert: value+':',
+        image: '#{image_path("emoji")}/'+value+'.png'
+      }
+    });
+
+    setupGfmAutoComplete();
+  });
