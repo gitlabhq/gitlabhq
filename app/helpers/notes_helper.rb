@@ -12,5 +12,15 @@ module NotesHelper
     !@mixed_targets || @main_target_type == note.noteable_type
   end
 
+  def link_to_commit_diff_line_note(note)
+    return unless note.line_note?
+
+    commit = note.target
+    diff_index, diff_old_line, diff_new_line = note.line_code.split('_')
+
+    link_file = commit.diffs[diff_index.to_i].new_path
+    link_line = diff_new_line
+
+    link_to "#{link_file}:L#{link_line}", project_commit_path(@project, commit, anchor: note.line_code)
   end
 end
