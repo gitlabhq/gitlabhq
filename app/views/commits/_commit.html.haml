@@ -13,3 +13,10 @@
       = time_ago_in_words(commit.committed_date)
       ago
       &nbsp;
+
+    %span.notes_count
+      - notes = @project.commit_notes(commit) + @project.commit_line_notes(commit)
+      - if notes.any?
+        %span.btn.small.disabled.grouped
+          %i.icon-comment
+          = notes.count

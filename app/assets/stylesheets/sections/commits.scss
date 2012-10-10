@@ -203,6 +203,11 @@
     @extend .cgray;
   }
 
+  .notes_count {
+    float:right;
+    margin: -6px 8px 6px;
+  }
+
   code {
     background:#FCEEC1;
     color:$style_color;

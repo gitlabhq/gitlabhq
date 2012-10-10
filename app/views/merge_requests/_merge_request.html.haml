@@ -9,7 +9,7 @@
       - if merge_request.notes.any?
         %span.btn.small.disabled.grouped
           %i.icon-comment
-          = merge_request.notes.count
+          = merge_request.mr_and_commit_notes.count
       %span.btn.small.disabled.grouped
         = merge_request.source_branch
         &rarr;
