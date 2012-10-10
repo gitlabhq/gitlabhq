@@ -75,6 +75,9 @@ Now install the required packages:
     # If you want to use MySQL:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
+    # If you want to use PostgreSQL:
+    sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
+
 # 2. Install Ruby
 
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
@@ -188,9 +191,45 @@ and ensure you have followed all of the above steps carefully.
     # Exit MySQL Server and copy the example config, make sure to update username/password in config/database.yml
     sudo -u gitlab cp config/database.yml.example config/database.yml
 
+    # Or
+    # PostgreSQL
+    # Install PostgreSQL as directed in Step #1
+
+    # Connect to database server
+    sudo -u postgres psql -d template1
+
+    # Add a user called gitlab. Change $password to a real password
+    template1=# CREATE USER gitlab WITH PASSWORD '$password';
+
+    # Create the GitLab production database
+    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
+
+    # Grant all privileges on database
+    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+
+    # Quit from PostgreSQL server
+    template1=# \q
+
+    # Try connect to new database
+    $ su - gitlab
+    $ psql -d gitlabhq_production -U gitlab
+
+    # Exit PostgreSQL Server and copy the example config, make sure to update username/password in config/database.yml
+    sudo -u gitlab cp config/database.yml.postgres config/database.yml
+
+    # If you need create development, test, staging or another database
+    # Repeate some steps with actual commands
+
 #### Install gems
 
-    sudo -u gitlab -H bundle install --without development test --deployment
+    # Please, check Gemfile before run bundle install
+    # Select database gem, wich you will use
+    # or run to setup gems with mysql usage
+    sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
+    # or postgres
+    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
+    # or sqlite
+    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
 
 #### Setup database
 
