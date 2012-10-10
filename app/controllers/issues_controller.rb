@@ -24,6 +24,14 @@ class IssuesController < ProjectResourceController
       format.html # index.html.erb
       format.js
       format.atom { render layout: false }
+      format.print do
+        if params[:milestone_id]
+          @milestone = Milestone.find params[:milestone_id]
+          @issues = @milestone.issues.recent
+        else
+          redirect_to project_issues_path(@project), notice: "Milestone not specified."
+        end
+      end
     end
   end
 

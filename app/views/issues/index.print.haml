@@ -1,0 +1,77 @@
+!!! 5
+%html
+  %head
+    %meta{charset: "utf-8"}
+    %title
+      GitLab
+      = " > #{@project.name} | Milestone #{@milestone.title} | Issues"
+    = favicon_link_tag 'favicon.ico'
+    = stylesheet_link_tag 'application'
+    %body
+      .container
+        .content
+          %h2= @project.name
+
+          %h2 Milestone
+          %table.table.table-bordered.table-hover
+            %tbody
+              %tr
+                %td.span2
+                  %strong ID
+                %td
+                  = "##{@milestone.id}"
+              %tr
+                %td.span2
+                  %strong Title
+                %td
+                  = link_to @milestone.title, project_milestone_path(@project, @milestone)
+              %tr
+                %td.span2
+                  %strong Description
+                %td
+                  = @milestone.description
+              %tr
+                %td.span2
+                  %strong Expires at
+                %td
+                  = @milestone.due_date
+              %tr
+                %td.span2
+                  %strong Created at
+                %td
+                  = @milestone.created_at.to_s(:db)
+              %tr
+                %td.span2
+                  %strong Issue stats
+                %td
+                  = "Total: #{@issues.size}"
+                  %br
+                  = "Open: #{@issues.opened.size}"
+                  %br
+                  = "Closed: #{@issues.closed.size}"
+
+          %h2 Issues
+          %table.table.table-bordered.table-hover
+            %thead
+              %tr
+                %th ID
+                %th Title
+                %th Assigned to
+                %th Status
+                %th Created at
+            %tbody
+              - @issues.each do |issue|
+                %tr
+                  %td.span1
+                    = "##{issue.id}"
+                  %td
+                    = link_to issue.title, project_issue_path(@project, issue)
+                  %td
+                    - if issue.is_assigned?
+                      = link_to issue.assignee_name, project_issue_path(@project, issue)
+                    - else
+                      &mdash;
+                  %td
+                    = issue.closed? ? "closed" : "open"
+                  %td.span2
+                    = issue.created_at.to_s(:db)
