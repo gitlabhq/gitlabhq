@@ -81,12 +81,12 @@ describe Note do
   describe "Commit notes" do
     before do
       @note = Factory :note,
-        noteable_id: commit.id,
+        noteable_commit_id: commit.id,
         noteable_type: "Commit"
     end
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
+      @note.noteable_commit_id.should == commit.id
       @note.target.id.should == commit.id
     end
   end
@@ -94,13 +94,13 @@ describe Note do
   describe "Pre-line commit notes" do
     before do
       @note = Factory :note,
-        noteable_id: commit.id,
+        noteable_commit_id: commit.id,
         noteable_type: "Commit",
         line_code: "0_16_1"
     end
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
+      @note.noteable_commit_id.should == commit.id
       @note.target.id.should == commit.id
     end
   end
