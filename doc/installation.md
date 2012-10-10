@@ -296,7 +296,7 @@ Create init script in /etc/init.d/gitlab:
 
 GitLab autostart:
 
-    sudo update-rc.d gitlab defaults
+    sudo update-rc.d gitlab defaults 21
 
 Now you can start/restart/stop GitLab like:
 
