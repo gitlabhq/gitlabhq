@@ -52,8 +52,8 @@
             %li.active= link_to('Open Issues', '#')
             %li=link_to('All Issues', '#')
       - @issues.each do |issue|
-        %tr
-          %td{data: {closed: issue.closed}}
+        %tr{data: {closed: issue.closed}}
+          %td
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
