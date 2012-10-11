@@ -50,4 +50,47 @@ describe MergeRequest do
       merge_request.mr_and_commit_notes.count.should == 2
     end
   end
+
+  subject { Factory.create(:merge_request) }
+
+  describe '#is_being_reassigned?' do
+    it 'returns true if the merge_request assignee has changed' do
+      subject.assignee = Factory(:user)
+      subject.is_being_reassigned?.should be_true
+    end
+    it 'returns false if the merge request assignee has not changed' do
+      subject.is_being_reassigned?.should be_false
+    end
+  end
+
+  describe '#is_being_closed?' do
+    it 'returns true if the closed attribute has changed and is now true' do
+      subject.closed = true
+      subject.is_being_closed?.should be_true
+    end
+    it 'returns false if the closed attribute has changed and is now false' do
+      merge_request = Factory.create(:closed_merge_request)
+      merge_request.closed = false
+      merge_request.is_being_closed?.should be_false
+    end
+    it 'returns false if the closed attribute has not changed' do
+      subject.is_being_closed?.should be_false
+    end
+  end
+
+
+  describe '#is_being_reopened?' do
+    it 'returns true if the closed attribute has changed and is now false' do
+      merge_request = Factory.create(:closed_merge_request)
+      merge_request.closed = false
+      merge_request.is_being_reopened?.should be_true
+    end
+    it 'returns false if the closed attribute has changed and is now true' do
+      subject.closed = true
+      subject.is_being_reopened?.should be_false
+    end
+    it 'returns false if the closed attribute has not changed' do
+      subject.is_being_reopened?.should be_false
+    end
+  end
 end

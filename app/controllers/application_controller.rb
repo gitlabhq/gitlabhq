@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
-  before_filter :set_current_user_for_mailer
   before_filter :set_current_user_for_observers
   before_filter :dev_tools if Rails.env == 'development'
 
@@ -41,11 +40,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_current_user_for_mailer
-    MailerObserver.current_user = current_user
-  end
-
   def set_current_user_for_observers
+    MergeRequestObserver.current_user = current_user
     IssueObserver.current_user = current_user
   end
 
