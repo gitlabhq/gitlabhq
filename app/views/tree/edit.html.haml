@@ -8,9 +8,9 @@
         #editor= @tree.data
 
     .editor-commit-comment
-      = label_tag 'text-commit' do
+      = label_tag 'commit_message' do
         %p.slead Commit message
-      = text_area_tag 'text_commit'
+      = text_area_tag 'commit_message'
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content'
