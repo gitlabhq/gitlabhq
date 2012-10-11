@@ -21,11 +21,11 @@ class MergeRequestObserver < ActiveRecord::Observer
   protected
 
   def send_reassigned_email(merge_request)
-      recipients_ids = merge_request.assignee_id_was, merge_request.assignee_id
-      recipients_ids.delete current_user.id
+    recipients_ids = merge_request.assignee_id_was, merge_request.assignee_id
+    recipients_ids.delete current_user.id
 
-      recipients_ids.each do |recipient_id|
-        Notify.reassigned_merge_request_email(recipient_id, merge_request.id, merge_request.assignee_id_was).deliver
-      end
+    recipients_ids.each do |recipient_id|
+      Notify.reassigned_merge_request_email(recipient_id, merge_request.id, merge_request.assignee_id_was).deliver
+    end
   end
 end
