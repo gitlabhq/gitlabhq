@@ -16,16 +16,11 @@ class NoteObserver < ActiveRecord::Observer
   protected
 
   def notify_team_of_new_note(note)
-    team_without_note_author(note).map do |u|
-      case note.noteable_type
-      when "Commit"; Notify.note_commit_email(u.id, note.id).deliver
-      when "Issue";  Notify.note_issue_email(u.id, note.id).deliver
-      when "Wiki";  Notify.note_wiki_email(u.id, note.id).deliver
-      when "MergeRequest"; Notify.note_merge_request_email(u.id, note.id).deliver
-      when "Wall"; Notify.note_wall_email(u.id, note.id).deliver
-      when "Snippet"; true # no notifications for snippets?
-      else
-        true
+    notify_method = 'note_' + note.noteable_type.underscore + '_email'
+
+    if Notify.respond_to? notify_method
+      team_without_note_author(note).map do |u|
+        Notify.send(notify_method.to_sym, u.id, note.id).deliver
       end
     end
   end
