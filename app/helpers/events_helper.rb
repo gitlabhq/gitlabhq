@@ -1,7 +1,7 @@
 module EventsHelper
   def link_to_author(event)
     project = event.project
-    tm = project.team_member_by_id(event.author_id)
+    tm = project.team_member_by_id(event.author_id) if project
 
     if tm
       link_to event.author_name, project_team_member_path(project, tm)
