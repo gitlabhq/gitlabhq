@@ -228,13 +228,13 @@ If you got all YES - congratulations! You can go to the next step.
 
 # 5. Start the web server
 
-Application can be started with next command:
+Application can be started with next command listening on port 3000:
 
     # For test purposes
-    sudo -u gitlab bundle exec rails s -e production
+    sudo -u gitlab bundle exec rails s -e production -p 3000
 
     # As daemon
-    sudo -u gitlab bundle exec rails s -e production -d
+    sudo -u gitlab bundle exec rails s -e production -d -p 3000
 
 You can login via web using admin generated with setup:
 
