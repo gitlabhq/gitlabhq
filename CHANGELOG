@@ -1,4 +1,6 @@
 master
+  - [API] list one project hook
+  - [API] edit project hook
   - [API] add project snippets list
   - [API] allow to authorize using private token in HTTP header
   - [API] add user creation
