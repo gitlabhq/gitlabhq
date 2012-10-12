@@ -22,14 +22,14 @@ window.setupGfmAutoComplete = ->
   ###
     Emoji
   ###
-  $('.gfm-input').atWho ':',
+  $('.js-gfm-input').atWho ':',
     data: autocompleteEmojiData,
     tpl: autocompleteEmojiTemplate
 
   ###
     Team Members
   ###
-  $('.gfm-input').atWho '@', (query, callback) ->
+  $('.js-gfm-input').atWho '@', (query, callback) ->
     (getMoreMembers = ->
       $.getJSON(autocompleteMembersUrl, autocompleteMembersParams)
         .success (members) ->
@@ -45,7 +45,7 @@ window.setupGfmAutoComplete = ->
           # are we past the last page?
           if newMembersData.length == 0
             # set static data and stop callbacks
-            $('.gfm-input').atWho '@',
+            $('.js-gfm-input').atWho '@',
               data: autocompleteMembersData
               callback: null
           else
