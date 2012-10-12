@@ -147,6 +147,19 @@ module Gitlab
         @hooks = paginate user_project.hooks
         present @hooks, with: Entities::Hook
       end
+      
+      # Get a project hook
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   hook_id (required) - The ID of a project hook
+      # Example Request:
+      #   GET /projects/:id/hooks/:hook_id
+      get ":id/hooks/:hook_id" do
+        @hook = user_project.hooks.find(params[:hook_id])
+        present @hook, with: Entities::Hook
+      end
+      
 
       # Add hook to project
       #
@@ -162,6 +175,27 @@ module Gitlab
           present @hook, with: Entities::Hook
         else
           error!({'message' => '404 Not found'}, 404)
+        end
+      end
+      
+      # Update an existing project hook
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   hook_id (required) - The ID of a project hook
+      #   url (required) - The hook URL
+      # Example Request:
+      #   PUT /projects/:id/hooks/:hook_id
+      put ":id/hooks/:hook_id" do
+        @hook = user_project.hooks.find(params[:hook_id])
+        authorize! :admin_project, user_project
+
+        attrs = attributes_for_keys [:url]
+
+        if @hook.update_attributes attrs
+          present @hook, with: Entities::Hook
+        else
+          not_found!
         end
       end
 
