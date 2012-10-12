@@ -196,9 +196,9 @@ Parameters:
 
 Status code `200` will be returned on success.
 
-## Get project hooks
+## List project hooks
 
-Get hooks for project
+Get list for project hooks
 
 ```
 GET /projects/:id/hooks
@@ -209,6 +209,21 @@ Parameters:
 + `id` (required) - The ID or code name of a project
 
 Will return hooks with status `200 OK` on success, or `404 Not found` on fail.
+
+## Get project hook
+
+Get hook for project
+
+```
+GET /projects/:id/hooks/:hook_id
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `hook_id` (required) - The ID of a project hook
+
+Will return hook with status `200 OK` on success, or `404 Not found` on fail.
 
 ## Add project hook
 
@@ -224,6 +239,23 @@ Parameters:
 + `url` (required) - The hook URL
 
 Will return status `201 Created` on success, or `404 Not found` on fail.
+
+## Edit project hook
+
+Edit hook for project
+
+```
+PUT /projects/:id/hooks/:hook_id
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `hook_id` (required) - The ID of a project hook
++ `url` (required) - The hook URL
+
+Will return status `201 Created` on success, or `404 Not found` on fail.
+
 
 ## Delete project hook
 
