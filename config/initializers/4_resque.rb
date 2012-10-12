@@ -5,7 +5,7 @@ config_file = File.join(rails_root, 'config', 'resque.yml')
 
 if File.exists?(config_file)
   resque_config = YAML.load_file(config_file)
-  Resque.redis = resque_config[rails_env]
+  Resque.redis = Redis.connect(:url => resque_config[rails_env])
 end
 
 # Queues

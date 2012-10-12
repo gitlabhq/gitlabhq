@@ -3,10 +3,14 @@
 # This file was placed here by GitLab. It makes sure that your pushed commits
 # will be processed properly.
 
+RHOST=localhost
+RPORT=6379
+RDB=0
+
 while read oldrev newrev ref
 do
   # For every branch or tag that was pushed, create a Resque job in redis.
   pwd=`pwd`
   reponame=`basename "$pwd" | sed s/\.git$//`
-  env -i redis-cli rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
+  env -i redis-cli -h $RHOST -p $RPORT -n $RDB rpush "resque:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
 done

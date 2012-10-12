@@ -299,11 +299,11 @@ You can login via web using admin generated with setup:
 
 ## Customizing Resque's Redis connection
 
-If you'd like Resque to connect to a Redis server on a non-standard port or on
-a different host, you can configure its connection string in the
+If you'd like Resque to connect to a Redis server on a non-standard port, different host,
+or database other than the default, you can configure its connection string in the
 **config/resque.yml** file:
 
-    production: redis.example.com:6379
+    production: redis://redis.example.com:6379/0
 
 **Ok - we have a working application now. **
 **But keep going - there are some things that should be done **
