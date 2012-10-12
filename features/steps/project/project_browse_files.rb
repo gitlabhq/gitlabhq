@@ -36,7 +36,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     click_link 'Edit'
   end
 
-  Given 'I can edit file' do
+  Then 'I can edit code' do
     page.execute_script('editor.setValue("GitlabFileEditor")')
     page.evaluate_script('editor.getValue()').should == "GitlabFileEditor"
   end

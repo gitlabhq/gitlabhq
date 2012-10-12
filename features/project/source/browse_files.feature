@@ -24,4 +24,4 @@ Feature: Project Browse files
   Scenario: I can edit file
     Given I click on "Gemfile" file in repo
     And I click button "Edit"
-    Then I can edit file
+    Then I can edit code
