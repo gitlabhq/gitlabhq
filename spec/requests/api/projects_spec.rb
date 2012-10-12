@@ -192,10 +192,9 @@ describe Gitlab::API do
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "should update an existing project hook" do
       put api("/projects/#{project.code}/hooks/#{hook.id}", user),
-        code: 'updated code'
+        url: 'http://example.com'
       response.status.should == 200
       json_response['url'].should == 'http://example.com'
-      hook.reload.content.should == 'updated code'
     end
   end
   
