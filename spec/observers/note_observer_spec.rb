@@ -90,7 +90,7 @@ describe NoteObserver do
     it 'does nothing for a new note on a snippet' do
         note.stub(:noteable_type).and_return('Snippet')
 
-        subject.send(:notify_team_of_new_note, note).should == [true, true]
+        subject.send(:notify_team_of_new_note, note).should be_nil
     end
   end
 
