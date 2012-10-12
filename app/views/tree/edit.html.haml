@@ -13,10 +13,15 @@
       = text_area_tag 'commit_message'
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
-      = hidden_field_tag 'content'
-      = submit_tag "Save", class: 'btn save-btn'
+      = hidden_field_tag 'content', '', :id => :file_content
+      = button_tag "Save", class: 'btn save-btn'
 
 :javascript
   var editor = ace.edit("editor");
   editor.setTheme("ace/theme/twilight");
   editor.getSession().setMode("ace/mode/javascript");
+
+  $(".save-btn").click(function(){
+    $("#file_content").val(editor.getValue());
+    $(".form_editor form").submit();
+  });
