@@ -8,10 +8,10 @@
         ago
 
     - unless note_for_main_target?(note)
-      - if note.commit?
+      - if note.for_commit?
         %span.cgray
-          on #{link_to note.target.short_id, project_commit_path(@project, note.target)}
-          = link_to_commit_diff_line_note(note) if note.line_note?
+          on #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
+          = link_to_commit_diff_line_note(note) if note.for_diff_line?
 
     -# only show vote if it's a note for the main target
     - if note_for_main_target?(note)
