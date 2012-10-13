@@ -80,7 +80,7 @@ describe NoteObserver do
         subject.send(:notify_team_of_new_note, note)
       end
       it 'a wall' do
-        note.stub(:noteable_type).and_return('Wall')
+        note.stub(:noteable_type).and_return(nil)
         Notify.should_receive(:note_wall_email).twice.and_return(double(deliver: true))
 
         subject.send(:notify_team_of_new_note, note)

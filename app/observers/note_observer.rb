@@ -16,7 +16,8 @@ class NoteObserver < ActiveRecord::Observer
   protected
 
   def notify_team_of_new_note(note)
-    notify_method = 'note_' + note.noteable_type.underscore + '_email'
+    note_is_on = note.noteable_type || 'Wall'
+    notify_method = 'note_' + note_is_on.underscore + '_email'
 
     if Notify.respond_to? notify_method
       team_without_note_author(note).map do |u|
