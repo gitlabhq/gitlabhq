@@ -277,6 +277,9 @@ GEM
       activesupport (= 3.2.8)
       bundler (~> 1.0)
       railties (= 3.2.8)
+    rails-dev-tweaks (0.6.1)
+      actionpack (~> 3.1)
+      railties (~> 3.1)
     railties (3.2.8)
       actionpack (= 3.2.8)
       activesupport (= 3.2.8)
@@ -447,6 +450,7 @@ DEPENDENCIES
   pygments.rb (= 0.3.1)
   rack-mini-profiler
   rails (= 3.2.8)
+  rails-dev-tweaks
   raphael-rails (= 1.5.2)
   rb-fsevent
   rb-inotify

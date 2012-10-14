@@ -118,6 +118,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
