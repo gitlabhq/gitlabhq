@@ -3,7 +3,10 @@
     .file_holder
       .file_title
         %i.icon-file
-        = @tree.path.force_encoding('utf-8')
+        %span.file_name
+          = @tree.path.force_encoding('utf-8')
+        %span.options
+          = link_to "cancel editing", project_tree_path(@project, @id), class: "btn very_small"
       .file_content.code
         #editor= @tree.data
 

@@ -21,23 +21,23 @@ class TreeController < ProjectResourceController
   end
 
   def edit
-    @last_commit = @project.commits(@ref, @path, 1).first.sha
+    @last_commit = @project.last_commit_for(@ref, @path).sha
   end
 
   def update
     file_editor = Gitlab::FileEditor.new(current_user, @project, @ref)
     update_status = file_editor.update(
-      @path, 
-      params[:content], 
-      params[:commit_message], 
+      @path,
+      params[:content],
+      params[:commit_message],
       params[:last_commit]
     )
-    
+
     if update_status
       redirect_to project_tree_path(@project, @id), :notice => "File has been successfully changed"
     else
       flash[:notice] = "You can't save file because it has been changed"
-      render :edit 
+      render :edit
     end
   end
 end

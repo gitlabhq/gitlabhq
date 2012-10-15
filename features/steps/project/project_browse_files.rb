@@ -32,8 +32,8 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.source.should == ValidCommit::BLOB_FILE
   end
 
-  Given 'I click button "Edit"' do
-    click_link 'Edit'
+  Given 'I click button "edit"' do
+    click_link 'edit'
   end
 
   Then 'I can edit code' do

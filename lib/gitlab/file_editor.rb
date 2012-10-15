@@ -1,6 +1,9 @@
 module Gitlab
+  # GitLab file editor
+  #
+  # It gives you ability to make changes to files
+  # & commit this changes from GitLab UI.
   class FileEditor
-
     attr_accessor :user, :project, :ref
 
     def initialize(user, project, ref)
@@ -35,22 +38,21 @@ module Gitlab
             r.git.sh "git add ."
             r.git.sh "git commit -am '#{commit_message}'"
             output = r.git.sh "git push origin #{ref}"
+
             if output =~ /reject/
               return false
             end
           end
         end
       end
-      
       true
-
     end
-    
+
     protected
+
     def can_edit?(path, last_commit)
       current_last_commit = @project.commits(ref, path, 1).first.sha
       last_commit == current_last_commit
     end
-
   end
 end
