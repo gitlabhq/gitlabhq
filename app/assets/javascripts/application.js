@@ -18,4 +18,5 @@
 //= require chosen-jquery
 //= require raphael
 //= require branch-graph
+//= require ace-src-noconflict/ace.js
 //= require_tree .

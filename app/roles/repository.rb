@@ -32,6 +32,10 @@ module Repository
     Commit.commits(repo, ref, path, limit, offset)
   end
 
+  def last_commit_for(ref, path = nil)
+    commits(ref, path, 1).first
+  end
+
   def commits_between(from, to)
     Commit.commits_between(repo, from, to)
   end

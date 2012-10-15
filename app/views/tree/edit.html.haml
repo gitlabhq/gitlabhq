@@ -1,0 +1,30 @@
+.file-editor
+  = form_tag(project_tree_path(@project, @id), :method => :put) do
+    .file_holder
+      .file_title
+        %i.icon-file
+        %span.file_name
+          = @tree.path.force_encoding('utf-8')
+        %span.options
+          = link_to "cancel editing", project_tree_path(@project, @id), class: "btn very_small"
+      .file_content.code
+        #editor= @tree.data
+
+    .editor-commit-comment
+      = label_tag 'commit_message' do
+        %p.slead Commit message
+      = text_area_tag 'commit_message', '', :required => true
+    .form-actions
+      = hidden_field_tag 'last_commit', @last_commit
+      = hidden_field_tag 'content', '', :id => :file_content
+      = button_tag "Save", class: 'btn save-btn'
+
+:javascript
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/twilight");
+  editor.getSession().setMode("ace/mode/javascript");
+
+  $(".save-btn").click(function(){
+    $("#file_content").val(editor.getValue());
+    $(".form_editor form").submit();
+  });

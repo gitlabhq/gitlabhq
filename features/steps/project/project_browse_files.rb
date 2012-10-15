@@ -31,4 +31,14 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   Then 'I should see raw file content' do
     page.source.should == ValidCommit::BLOB_FILE
   end
+
+  Given 'I click button "edit"' do
+    click_link 'edit'
+  end
+
+  Then 'I can edit code' do
+    page.execute_script('editor.setValue("GitlabFileEditor")')
+    page.evaluate_script('editor.getValue()').should == "GitlabFileEditor"
+  end
+
 end

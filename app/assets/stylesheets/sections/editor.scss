@@ -1,0 +1,14 @@
+.file-editor {
+  #editor{
+    height: 500px;
+    width: 100%;
+    position: relative;
+  }
+  .editor-commit-comment {
+    padding-top:20px;
+    textarea {
+      width: 50%;
+      margin-left: 20px;
+    }
+  }
+}
