@@ -4,12 +4,7 @@
     %span.file_name
       = blob.name.force_encoding('utf-8')
       %small #{blob.mode}
-    %span.options
-      .btn-group.tree-btn-group
-        = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
-        = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
-        = link_to "blame", project_blame_path(@project, @id), class: "btn very_small"
-        = link_to "edit", edit_project_tree_path(@project, @id), class: "btn very_small"
+    %span.options= render "tree/blob_actions"
   - if blob.text?
     - if gitlab_markdown?(blob.name)
       .file_content.wiki

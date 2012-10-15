@@ -1,0 +1,5 @@
+.btn-group.tree-btn-group
+  = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
+  = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
+  = link_to "blame", project_blame_path(@project, @id), class: "btn very_small"
+  = link_to "edit", edit_project_tree_path(@project, @id), class: "btn very_small"
