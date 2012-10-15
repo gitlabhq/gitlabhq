@@ -6,32 +6,8 @@
       %small #{blob.mode}
     %span.options= render "tree/blob_actions"
   - if blob.text?
-    - if gitlab_markdown?(blob.name)
-      .file_content.wiki
-        = preserve do
-          = markdown(blob.data)
-    - elsif markup?(blob.name)
-      .file_content.wiki
-        = raw GitHub::Markup.render(blob.name, blob.data)
-    - else
-      .file_content.code
-        - unless blob.empty?
-          %div{class: current_user.dark_scheme ? "black" : "white"}
-            = preserve do
-              = raw blob.colorize(options: { linenos: 'True'})
-        - else
-          %h4.nothing_here_message Empty file
-
+    = render "tree/blob/text", blob: blob
   - elsif blob.image?
-    .file_content.image_file
-      %img{ src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"}
-
+    = render "tree/blob/image", blob: blob
   - else
-    .file_content.blob_file
-      %center
-        = link_to project_blob_path(@project, @id) do
-          %div.padded
-            %br
-            = image_tag "download.png", width: 64
-            %h3
-              Download (#{blob.mb_size})
+    = render "tree/blob/download", blob: blob
