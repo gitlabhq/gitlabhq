@@ -18,15 +18,15 @@
       %thead
         %th Name
         %th Last Update
-        %th
-          Last commit
-          = link_to "History", tree.history_path, class: "right"
+        %th Last Commit
+        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
 
       - if tree.up_dir?
         %tr.tree-item
           %td.tree-item-file-name
             = image_tag "file_empty.png", size: '16x16'
             = link_to "..", tree.up_dir_path
+          %td
           %td
           %td
 
