@@ -5,4 +5,4 @@
         %br
         = image_tag "download.png", width: 64
         %h3
-          Download (#{blob.mb_size})
+          Download (#{number_to_human_size blob.size})
