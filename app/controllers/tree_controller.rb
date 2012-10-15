@@ -8,6 +8,7 @@ class TreeController < ProjectResourceController
   before_filter :require_non_empty_project
 
   before_filter :assign_ref_vars
+  before_filter :edit_requirements, only: [:edit, :update]
 
   def show
     @hex_path  = Digest::SHA1.hexdigest(@path)
@@ -38,6 +39,14 @@ class TreeController < ProjectResourceController
     else
       flash[:notice] = "Your changes could not be commited, because the file has been changed"
       render :edit
+    end
+  end
+
+  private
+
+  def edit_requirements
+    unless @tree.is_blob? && @tree.text?
+      redirect_to project_tree_path(@project, @id), notice: "You can only edit text files"
     end
   end
 end
