@@ -2,34 +2,34 @@
   .file_title
     %i.icon-file
     %span.file_name
-      = tree_file.name.force_encoding('utf-8')
-      %small #{tree_file.mode}
+      = blob.name.force_encoding('utf-8')
+      %small #{blob.mode}
     %span.options
       .btn-group.tree-btn-group
         = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
         = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
         = link_to "blame", project_blame_path(@project, @id), class: "btn very_small"
         = link_to "edit", edit_project_tree_path(@project, @id), class: "btn very_small"
-  - if tree_file.text?
-    - if gitlab_markdown?(tree_file.name)
+  - if blob.text?
+    - if gitlab_markdown?(blob.name)
       .file_content.wiki
         = preserve do
-          = markdown(tree_file.data)
-    - elsif markup?(tree_file.name)
+          = markdown(blob.data)
+    - elsif markup?(blob.name)
       .file_content.wiki
-        = raw GitHub::Markup.render(tree_file.name, tree_file.data)
+        = raw GitHub::Markup.render(blob.name, blob.data)
     - else
       .file_content.code
-        - unless tree_file.empty?
+        - unless blob.empty?
           %div{class: current_user.dark_scheme ? "black" : "white"}
             = preserve do
-              = raw tree_file.colorize(options: { linenos: 'True'})
+              = raw blob.colorize(options: { linenos: 'True'})
         - else
           %h4.nothing_here_message Empty file
 
-  - elsif tree_file.image?
+  - elsif blob.image?
     .file_content.image_file
-      %img{ src: "data:#{tree_file.mime_type};base64,#{Base64.encode64(tree_file.data)}"}
+      %img{ src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"}
 
   - else
     .file_content.blob_file
@@ -39,4 +39,4 @@
             %br
             = image_tag "download.png", width: 64
             %h3
-              Download (#{tree_file.mb_size})
+              Download (#{blob.mb_size})

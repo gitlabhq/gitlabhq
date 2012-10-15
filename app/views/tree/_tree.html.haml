@@ -12,7 +12,7 @@
 
 %div#tree-content-holder.tree-content-holder
   - if tree.is_blob?
-    = render partial: "tree/tree_file", object: tree
+    = render partial: "tree/blob", object: tree
   - else
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
