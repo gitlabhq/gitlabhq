@@ -51,7 +51,7 @@ module Gitlab
     protected
 
     def can_edit?(path, last_commit)
-      current_last_commit = @project.commits(ref, path, 1).first.sha
+      current_last_commit = @project.last_commit_for(ref, path).sha
       last_commit == current_last_commit
     end
   end
