@@ -13,9 +13,7 @@ module NotesHelper
   end
 
   def link_to_commit_diff_line_note(note)
-    return unless note.line_note?
-
-    commit = note.target
+    commit = note.noteable
     diff_index, diff_old_line, diff_new_line = note.line_code.split('_')
 
     link_file = commit.diffs[diff_index.to_i].new_path

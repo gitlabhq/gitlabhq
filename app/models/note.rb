@@ -48,11 +48,12 @@ class Note < ActiveRecord::Base
     @notify_author ||= false
   end
 
-  def target
-    if commit?
+  # override to return commits, which are not active record
+  def noteable
+    if for_commit?
       project.commit(noteable_id)
     else
-      noteable
+      super
     end
   # Temp fix to prevent app crash
   # if note commit id doesnt exist
@@ -74,22 +75,22 @@ class Note < ActiveRecord::Base
   #   Boolean
   #
   def notify_only_author?(user)
-    commit? && commit_author &&
+    for_commit? && commit_author &&
       commit_author.email != user.email
   end
 
-  def commit?
+  def for_commit?
     noteable_type == "Commit"
   end
 
-  def line_note?
+  def for_diff_line?
     line_code.present?
   end
 
   def commit_author
     @commit_author ||=
-      project.users.find_by_email(target.author_email) ||
-      project.users.find_by_name(target.author_name)
+      project.users.find_by_email(noteable.author_email) ||
+      project.users.find_by_name(noteable.author_name)
   rescue
     nil
   end
