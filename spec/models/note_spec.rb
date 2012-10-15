@@ -85,9 +85,19 @@ describe Note do
         noteable_type: "Commit"
     end
 
+    it "should be accessible through #noteable" do
+      @note.noteable_id.should == commit.id
+      @note.noteable.should be_a(Commit)
+      @note.noteable.should == commit
+    end
+
     it "should save a valid note" do
       @note.noteable_id.should == commit.id
-      @note.target.id.should == commit.id
+      @note.noteable == commit
+    end
+
+    it "should be recognized by #for_commit?" do
+      @note.should be_for_commit
     end
   end
 
@@ -101,7 +111,11 @@ describe Note do
 
     it "should save a valid note" do
       @note.noteable_id.should == commit.id
-      @note.target.id.should == commit.id
+      @note.noteable.id.should == commit.id
+    end
+
+    it "should be recognized by #for_diff_line?" do
+      @note.should be_for_diff_line
     end
   end
 
