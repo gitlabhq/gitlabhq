@@ -1,6 +1,6 @@
 = render "head"
 
-#tree-holder
+#tree-holder.tree-holder
   %ul.breadcrumb
     %li
       %span.arrow
@@ -15,12 +15,9 @@
     .file_title
       %i.icon-file
       %span.file_name
-        = @tree.name
-        %small blame
-      %span.options
-        = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
-        = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
-        = link_to "source", project_tree_path(@project, @id), class: "btn very_small"
+        = @tree.name.force_encoding('utf-8')
+        %small= number_to_human_size @tree.size
+      %span.options= render "tree/blob_actions"
     .file_content.blame
       %table
         - @blame.each do |commit, lines|
