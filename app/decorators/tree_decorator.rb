@@ -28,17 +28,4 @@ class TreeDecorator < ApplicationDecorator
     file = File.join(path, "..")
     h.project_tree_path(project, h.tree_join(ref, file))
   end
-
-  def history_path
-    h.project_commits_path(project, h.tree_join(ref, path))
-  end
-
-  def mb_size
-    size = (tree.size / 1024)
-    if size < 1024
-      "#{size} KB"
-    else
-      "#{size/1024} MB"
-    end
-  end
 end

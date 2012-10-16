@@ -43,6 +43,10 @@
   }
 
   .tree-table {
+    th .btn {
+      margin: -2px -1px;
+      padding: 2px 10px;
+    }
     td {
       background:#fafafa;
     }

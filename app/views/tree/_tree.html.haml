@@ -12,15 +12,14 @@
 
 %div#tree-content-holder.tree-content-holder
   - if tree.is_blob?
-    = render partial: "tree/tree_file", object: tree
+    = render "tree/blob", blob: tree
   - else
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
         %th Name
         %th Last Update
-        %th
-          Last commit
-          = link_to "History", tree.history_path, class: "right"
+        %th Last Commit
+        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
 
       - if tree.up_dir?
         %tr.tree-item
@@ -29,20 +28,12 @@
             = link_to "..", tree.up_dir_path
           %td
           %td
+          %td
 
       = render_tree(tree.contents)
 
-    - if content = tree.contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
-      .file_holder#README
-        .file_title
-          %i.icon-file
-          = content.name
-        .file_content.wiki
-          - if gitlab_markdown?(content.name)
-            = preserve do
-              = markdown(content.data)
-          - else
-            = raw GitHub::Markup.render(content.name, content.data)
+    - if readme = tree.contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+      = render "tree/readme", readme: readme
 
 - unless tree.is_blob?
   :javascript
