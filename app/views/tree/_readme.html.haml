@@ -6,5 +6,8 @@
     - if gitlab_markdown?(readme.name)
       = preserve do
         = markdown(readme.data)
+    - elsif plain_text_readme?(readme.name)
+      %pre.clean
+        = readme.data
     - else
       = raw GitHub::Markup.render(readme.name, readme.data)
