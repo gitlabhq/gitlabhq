@@ -1,8 +1,12 @@
+require 'securerandom'
+
+password = SecureRandom.urlsafe_base64(16)
+
 admin = User.create(
   :email => "admin@local.host",
   :name => "Administrator",
-  :password => "5iveL!fe",
-  :password_confirmation => "5iveL!fe"
+  :password => password,
+  :password_confirmation => password
 )
 
 admin.projects_limit = 10000
@@ -14,6 +18,6 @@ puts %q[
 Administrator account created:
 
 login.........admin@local.host
-password......5iveL!fe
-]
+password......] + password
+
 end
