@@ -19,4 +19,5 @@
 //= require raphael
 //= require branch-graph
 //= require ace-src-noconflict/ace.js
+//= require epiceditor
 //= require_tree .

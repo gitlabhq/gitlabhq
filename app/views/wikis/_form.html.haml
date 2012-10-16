@@ -5,7 +5,6 @@
       %ul
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
-
   .main_box
     .top_box_content
       = f.label :title
@@ -21,7 +20,34 @@
 
     .bottom_box_content
       = f.label :content
-      .input= f.text_area :content, class: 'span8 gfm-input'
+      .input#em_content
+      .input= f.text_field :content, :type => "hidden"
+    :javascript
+      var opts = {
+       container: 'em_content',
+       basePath: '/assets/',
+       clientSideStorage: true,
+       parser: marked,
+       file: {
+        name: 'epiceditor',
+        defaultContent: '',
+        autoSave: 100
+       },
+       theme: {
+        base:'/themes/base/epiceditor.css',
+        preview:'/themes/preview/preview-dark.css',
+        editor:'/themes/editor/epic-dark.css'
+       },
+       focusOnLoad: false,
+       shortcut: {
+        modifier: 18,
+        fullscreen: 70,
+        preview: 80,
+        edit: 79
+       }
+      }
+      var editor = new EpicEditor(opts).load();
+      editor.importFile('epiceditor',"#{escape_javascript(@wiki[:content])}");
   .actions
-    = f.submit 'Save', class: "save-btn btn"
+    = f.submit 'Save', class: "save-btn btn", :onclick=>"$('#wiki_content').val(editor.exportFile('epiceditor'));"
     = link_to "Cancel", project_wiki_path(@project, :index), class: "btn cancel-btn"
