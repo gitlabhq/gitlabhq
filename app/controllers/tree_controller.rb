@@ -34,9 +34,9 @@ class TreeController < ProjectResourceController
     )
 
     if update_status
-      redirect_to project_tree_path(@project, @id), :notice => "File has been successfully changed"
+      redirect_to project_tree_path(@project, @id), notice: "Your changes have been successfully commited"
     else
-      flash[:notice] = "You can't save file because it has been changed"
+      flash[:notice] = "Your changes could not be commited, because the file has been changed"
       render :edit
     end
   end
