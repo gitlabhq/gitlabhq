@@ -28,4 +28,8 @@ class TreeDecorator < ApplicationDecorator
     file = File.join(path, "..")
     h.project_tree_path(project, h.tree_join(ref, file))
   end
+
+  def readme
+    @readme ||= contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+  end
 end

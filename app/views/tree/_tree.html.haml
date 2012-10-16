@@ -32,8 +32,8 @@
 
       = render_tree(tree.contents)
 
-    - if readme = tree.contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
-      = render "tree/readme", readme: readme
+    - if tree.readme
+      = render "tree/readme", readme: tree.readme
 
 - unless tree.is_blob?
   :javascript
