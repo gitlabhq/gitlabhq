@@ -8,9 +8,9 @@
   %span.right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       - if @issue.closed
-        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped success"
+        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
       - else
-        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn grouped danger", title: "Close Issue"
+        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       = link_to edit_project_issue_path(@project, @issue), class: "btn grouped" do
         %i.icon-edit
