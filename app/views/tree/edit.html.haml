@@ -4,7 +4,7 @@
       .file_title
         %i.icon-file
         %span.file_name
-          = @tree.path.force_encoding('utf-8')
+          = "#{@tree.path.force_encoding('utf-8')} (#{@ref})"
         %span.options
           = link_to "cancel editing", project_tree_path(@project, @id), class: "btn very_small"
       .file_content.code
