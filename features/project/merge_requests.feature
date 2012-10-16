@@ -40,3 +40,11 @@ Feature: Project Merge Requests
     And I leave a comment like "XML attached"
     Then I should see comment "XML attached"
 
+  @javascript @feat-1
+  Scenario: I comment merge request diff
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I switch to the diff tab
+    And I leave a comment like "Line is wrong" on line 182 of the first file
+    And I switch to the comments tab
+    Then I should see a discussion has started on line 182

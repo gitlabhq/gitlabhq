@@ -82,6 +82,20 @@ FactoryGirl.define do
     end
 
     factory :closed_merge_request, traits: [:closed]
+
+    factory :merge_request_with_diffs do
+      st_commits do
+        repo = Grit::Repo.new(Rails.root.join('tmp', 'repositories', 'gitlabhq'))
+        [Commit.new(repo.commit('bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a'))]
+      end
+      st_diffs do
+        diffs = []
+        st_commits.each do |commit|
+          diffs += commit.diffs
+        end
+        diffs
+      end
+    end
   end
 
   factory :note do

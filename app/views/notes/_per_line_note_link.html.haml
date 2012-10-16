@@ -1,1 +1,1 @@
-= link_to "", "#", class: "line_note_link", data: { line_code: line_code }, title: "Add note for this line"
+= link_to "", "#", id: "line-note-#{line_code}", class: "line_note_link", data: { line_code: line_code }, title: "Add note on line #{line_code[/[0-9]+\z/]}"
