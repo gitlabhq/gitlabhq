@@ -128,7 +128,7 @@ module Gitlab
     #
     # Returns boolean
     def valid_emoji?(emoji)
-      Emoji::NAMES.include? emoji
+      Emoji.names.include? emoji
     end
 
     # Private: Dispatches to a dedicated processing method based on reference
