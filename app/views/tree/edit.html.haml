@@ -17,7 +17,7 @@
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', :id => :file_content
-      = button_tag "Save", class: 'btn save-btn'
+      = button_tag "Commit", class: 'btn save-btn'
 
 :javascript
   var editor = ace.edit("editor");
