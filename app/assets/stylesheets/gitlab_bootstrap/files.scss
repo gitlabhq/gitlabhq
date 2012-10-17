@@ -37,6 +37,20 @@
     background:#fff;
     font-size: 11px;
 
+    &.wiki {
+      font-size: 13px;
+      code {
+        padding:0 4px;
+      }
+      padding:20px;
+      h1, h2 {
+        line-height: 46px;
+      }
+      h3, h4 {
+        line-height: 40px;
+      }
+    }
+
     &.image_file {
       background:#eee;
       text-align:center;
