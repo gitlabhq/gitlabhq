@@ -1,9 +1,6 @@
-- discussions = []
 - @notes.each do |note|
   - next unless note.author
-  - if note.line_code.nil?
-    = render "note", note: note
+  - if part_of_discussion?(note)
+    = render_discussion(note)
   - else
-    - next if discussions.include?(note.line_code)
-    - discussions << note.line_code
-    = render "discussion", note: note
+    = render 'note', note: note

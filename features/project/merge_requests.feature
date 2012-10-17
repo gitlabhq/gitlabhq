@@ -40,7 +40,7 @@ Feature: Project Merge Requests
     And I leave a comment like "XML attached"
     Then I should see comment "XML attached"
 
-  @javascript @feat-1
+  @javascript
   Scenario: I comment merge request diff
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"

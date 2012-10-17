@@ -106,7 +106,11 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   Then 'I should see a discussion has started on line 182' do
-    page.should have_content "#{current_user.name} started a discussion on this merge request (on line 182):"
+    mr = MergeRequest.find_by_title("Bug NS-05")
+    first_commit = mr.st_commits.first
+    first_diff   = mr.st_diffs.first
+    page.should have_content "#{current_user.name} started a discussion on this merge request diff"
+    page.should have_content "#{first_diff.b_path}:L182"
     page.should have_content "Line is wrong"
   end
 end

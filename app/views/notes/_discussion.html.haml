@@ -1,7 +1,21 @@
-.group_diff_note
+.note_discussion
   .header
-    = link_to diffs_project_merge_request_path(note.project, note.noteable_id, anchor: note.line_code) do
-      = "#{note.author.name} started a discussion on this merge request (on line #{note.line_code.split('_')[2]}):"
+    %strong= note.author_name
+    - case note.noteable_type
+    - when 'MergeRequest'
+      %cite.cgray
+        started a discussion on this merge request diff
+      = link_to_merge_request_diff_line_note(note)
+      \:
+    - when 'Commit'
+      %cite.cgray
+        started a discussion on commit
+      #{link_to note.target.short_id, project_commit_path(@project, note.target)}
+      = link_to_commit_diff_line_note(note) if note.line_note?
+      \:
+    - else
+      %cite.cgray
+        started a discussion:
   .body
-    - @notes.select {|a_note| a_note.line_code == note.line_code}.each do |a_note|
-      = render "note", note: a_note
+    - discussion_notes(note).each do |a_note|
+      = render 'note', note: a_note

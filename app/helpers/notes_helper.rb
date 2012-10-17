@@ -1,4 +1,6 @@
 module NotesHelper
+  include DiscussionHelper
+
   def loading_more_notes?
     params[:loading_more].present?
   end
@@ -20,5 +22,17 @@ module NotesHelper
     link_line = diff_new_line
 
     link_to "#{link_file}:L#{link_line}", project_commit_path(@project, commit, anchor: note.line_code)
+  end
+
+  def link_to_merge_request_diff_line_note(note)
+    return unless note.line_note?
+
+    mr = note.target
+    diff_index, diff_old_line, diff_new_line = note.line_code.split('_')
+
+    link_file = mr.diffs[diff_index.to_i].b_path
+    link_line = diff_new_line
+
+    link_to "#{link_file}:L#{link_line}", diffs_project_merge_request_path(note.project, note.noteable_id, anchor: note.line_code)
   end
 end
