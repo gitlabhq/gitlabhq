@@ -201,6 +201,7 @@ and ensure you have followed all of the above steps carefully.
 
     sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
     sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
+    sudo chmod g+rx /home/git/.gitolite
 
 #### Check application status
 
