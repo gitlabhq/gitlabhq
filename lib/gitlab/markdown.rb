@@ -176,8 +176,6 @@ module Gitlab
       if commit = @project.commit(identifier)
         link_to(identifier, project_commit_path(@project, commit), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
-    rescue Grit::NoSuchPathError
-      nil
     end
   end
 end
