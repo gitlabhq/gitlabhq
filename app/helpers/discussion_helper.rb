@@ -29,12 +29,14 @@ module DiscussionHelper
     unless discussions_for(note.noteable_type).include?(discussion_id_for(note))
       discussions_for(note.noteable_type).push(discussion_id_for(note))
 
-      render 'discussion', note: note
+      if note.line_note?
+        @reply_allowed = true
+        @line_notes = discussion_notes(note)
+        render 'discussion', note: note, diff: note.diff
+      else
+        render 'discussion', note: note
+      end
     end
-  end
-
-  def has_rendered?(note)
-    discussions_for(note.noteable_type).include?(discussion_id_for(note))
   end
 
   def discussion_notes(note)

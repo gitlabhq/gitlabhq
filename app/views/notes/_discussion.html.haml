@@ -1,21 +1,31 @@
 .note_discussion
   .header
-    %strong= note.author_name
-    - case note.noteable_type
-    - when 'MergeRequest'
-      %cite.cgray
-        started a discussion on this merge request diff
-      = link_to_merge_request_diff_line_note(note)
-      \:
-    - when 'Commit'
-      %cite.cgray
-        started a discussion on commit
-      #{link_to note.target.short_id, project_commit_path(@project, note.target)}
-      = link_to_commit_diff_line_note(note) if note.line_note?
-      \:
-    - else
-      %cite.cgray
-        started a discussion:
-  .body
-    - discussion_notes(note).each do |a_note|
-      = render 'note', note: a_note
+    = image_tag gravatar_icon(note.author.email), class: "avatar s32"
+    .text
+      %strong= note.author_name
+      - case note.noteable_type
+      - when 'MergeRequest'
+        %cite.cgray started a discussion on this merge request diff
+        = link_to_merge_request_diff_line_note(note)
+      - when 'Commit'
+        %cite.cgray started a discussion on commit
+        #{link_to note.target.short_id, project_commit_path(@project, note.target)}
+        = link_to_commit_diff_line_note(note) if note.line_note?
+      - else
+        %cite.cgray started a discussion
+  - if note.line_code?
+    .diff_file
+      .diff_file_header
+        - if diff.deleted_file
+          %i.icon-file
+          %span{id: "#{diff.a_path}"}= diff.a_path
+        - else
+          %i.icon-file
+          %span{id: "#{diff.b_path}"}= diff.b_path
+        %br/
+      .diff_file_content
+        = render "commits/text_file", diff: note.diff, index: note.diff_index
+  - else
+    .body
+      - discussion_notes(note).each do |a_note|
+        = render 'note', note: a_note

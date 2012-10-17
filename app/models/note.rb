@@ -106,6 +106,22 @@ class Note < ActiveRecord::Base
   def downvote?
     note.start_with?('-1') || note.start_with?(':-1:')
   end
+
+  def diff_index
+    line_code.split('_')[0].to_i
+  end
+
+  def diff_old_line
+    line_code.split('_')[1].to_i
+  end
+
+  def diff_new_line
+    line_code.split('_')[2].to_i
+  end
+
+  def diff
+    target.diffs[diff_index]
+  end
 end
 
 # == Schema Information

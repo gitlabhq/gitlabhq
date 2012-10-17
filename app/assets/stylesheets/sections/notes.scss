@@ -10,19 +10,37 @@
   padding:0px;
 
   .note_discussion {
-    @extend .borders;
-    @extend .prepend-top-20;
-    @extend .append-bottom-20;
-    border-width:1px;
-    @include solid_shade;
-
     .header {
-      padding: 15px;
-      background-color: whiteSmoke;
-      border-bottom: 1px solid #EEE;
+      padding: 5px;
+      padding-bottom: 15px;
+
+      .text {
+        padding-top: 9px;
+      }
     }
+
+    .body, .diff_file {
+      @extend .borders;
+      @extend .prepend-top-20;
+      @extend .append-bottom-20;
+      border-width:1px;
+      background-color: whiteSmoke;
+      margin-left: 15px;
+
+      .note {
+        border-bottom: 0px;
+        padding: 0px;
+      }
+    }
+
     .body {
-      padding: 15px;
+      .note {
+        border-bottom: 1px solid #ddd;
+        padding: 15px;
+      }
+      .note:nth-child(odd) {
+        background-color: #fafafa;
+      }
     }
   }
 }
