@@ -10,10 +10,9 @@
         %i.icon-edit
         Edit
 %br
-.file_holder
-  .file_content.wiki
-    = preserve do
-      = markdown @wiki.content
+.file_content.wiki
+  = preserve do
+    = markdown @wiki.content
 
 %p.time Last edited by #{@wiki.user.name}, #{time_ago_in_words @wiki.created_at} ago
 - if can? current_user, :admin_wiki, @project
