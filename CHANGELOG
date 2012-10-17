@@ -1,4 +1,7 @@
 master
+  - Projects groups
+  - Web Editor
+  - Fixed bug with gitolite keys
   - [API] list one project hook
   - [API] edit project hook
   - [API] add project snippets list
