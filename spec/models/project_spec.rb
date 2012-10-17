@@ -169,10 +169,9 @@ describe Project do
 
   describe "last_activity" do
     let(:project)    { Factory :project }
-    let(:last_event) { double }
 
     before do
-      project.stub_chain(:events, :order).and_return( [ double, double, last_event ] )
+      project.stub(last_event: double)
     end
 
     it { project.last_activity.should == last_event }
@@ -182,8 +181,8 @@ describe Project do
     let(:project)    { Factory :project }
 
     it 'returns the creation date of the project\'s last event if present' do
-      last_event = double(created_at: 'now')
-      project.stub(:events).and_return( [double, double, last_event] )
+      last_event = double(created_at: Time.now)
+      project.stub(last_event: last_event)
       project.last_activity_date.should == last_event.created_at
     end
 

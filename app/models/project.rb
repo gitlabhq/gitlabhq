@@ -25,6 +25,7 @@ class Project < ActiveRecord::Base
   has_many :hooks,          dependent: :destroy, class_name: "ProjectHook"
   has_many :wikis,          dependent: :destroy
   has_many :protected_branches, dependent: :destroy
+  has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -141,15 +142,11 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity
-    events.order("created_at ASC").last
+    last_event
   end
 
   def last_activity_date
-    if events.last
-      events.last.created_at
-    else
-      updated_at
-    end
+    last_event.try(:created_at) || updated_at
   end
 
   def wiki_notes
