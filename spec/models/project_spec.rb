@@ -167,29 +167,29 @@ describe Project do
     end
   end
 
-  describe "last_activity" do
+  describe "last_activity methods" do
     let(:project)    { Factory :project }
+    let(:last_event) { double(created_at: Time.now) }
 
-    before do
-      project.stub(last_event: double)
+    describe "last_activity" do
+      it "should alias last_activity to last_event"do
+        project.stub(last_event: last_event)
+        project.last_activity.should == last_event
+      end
     end
 
-    it { project.last_activity.should == last_event }
+    describe 'last_activity_date' do
+      it 'returns the creation date of the project\'s last event if present' do
+        project.stub(last_event: last_event)
+        project.last_activity_date.should == last_event.created_at
+      end
+
+      it 'returns the project\'s last update date if it has no events' do
+        project.last_activity_date.should == project.updated_at
+      end
+    end
   end
 
-  describe 'last_activity_date' do
-    let(:project)    { Factory :project }
-
-    it 'returns the creation date of the project\'s last event if present' do
-      last_event = double(created_at: Time.now)
-      project.stub(last_event: last_event)
-      project.last_activity_date.should == last_event.created_at
-    end
-
-    it 'returns the project\'s last update date if it has no events' do
-      project.last_activity_date.should == project.updated_at
-    end
-  end
   describe "fresh commits" do
     let(:project) { Factory :project }
 
