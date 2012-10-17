@@ -109,6 +109,7 @@ group :assets do
   gem "modernizr",        "2.5.3"
   gem "raphael-rails",    "1.5.2"
   gem 'bootstrap-sass',   "2.0.4"
+  gem "font-awesome-sass-rails", "~> 2.0.0"
 end
 
 group :development do
