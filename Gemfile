@@ -94,6 +94,7 @@ gem 'settingslogic'
 
 # Misc
 gem "foreman"
+gem 'gemoji', require: 'emoji/railtie'
 gem "git"
 
 group :assets do

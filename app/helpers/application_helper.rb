@@ -115,7 +115,7 @@ module ApplicationHelper
   def emoji_autocomplete_source
     # should be an array of strings
     # so to_s can be called, because it is sufficient and to_json is too slow
-    Emoji::NAMES.to_s
+    Emoji.names.to_s
   end
 
   def ldap_enable?
