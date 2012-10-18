@@ -1,9 +1,14 @@
 class NoteObserver < ActiveRecord::Observer
 
   def after_create(note)
+    send_notify_mails(note)
+  end
+
+  protected
+
+  def send_notify_mails(note)
     if note.notify
-      # Notify whole team except author of note
-      notify_team_of_new_note(note)
+      notify_team(note)
     elsif note.notify_author
       # Notify only author of resource
       Notify.note_commit_email(note.commit_author.id, note.id).deliver
@@ -13,15 +18,15 @@ class NoteObserver < ActiveRecord::Observer
     end
   end
 
-  protected
-
-  def notify_team_of_new_note(note)
-    note_is_on = note.noteable_type || 'Wall'
-    notify_method = 'note_' + note_is_on.underscore + '_email'
+  # Notifies the whole team except the author of note
+  def notify_team(note)
+    # Note: wall posts are not "attached" to anything, so fall back to "Wall"
+    noteable_type = note.noteable_type || "Wall"
+    notify_method = "note_#{noteable_type.underscore}_email".to_sym
 
     if Notify.respond_to? notify_method
       team_without_note_author(note).map do |u|
-        Notify.send(notify_method.to_sym, u.id, note.id).deliver
+        Notify.send(notify_method, u.id, note.id).deliver
       end
     end
   end
