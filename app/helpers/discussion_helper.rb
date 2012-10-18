@@ -1,13 +1,15 @@
 module DiscussionHelper
   def part_of_discussion?(note)
-    case note.noteable_type
-    when 'MergeRequest'
-      note.line_code.present?
-    when 'Commit'
-      true
-    else
-      false
-    end
+    part_of_discussion = case note.noteable_type
+                         when 'MergeRequest'
+                           note.line_code.present?
+                         when 'Commit'
+                           true
+                         else
+                           false
+                         end
+
+    part_of_discussion && @show_discussions
   end
 
   def discussion_title(note)

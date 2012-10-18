@@ -17,7 +17,7 @@ class CommitController < ProjectResourceController
     @note             = result[:note]
     @line_notes       = result[:line_notes]
     @notes_count      = result[:notes_count]
-    @comments_allowed = true
+    @comments_allowed = @reply_allowed = true
 
     respond_to do |format|
       format.html do
