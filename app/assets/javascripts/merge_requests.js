@@ -15,20 +15,12 @@ var MergeRequest = {
         self.showAllCommits();
       });
 
-      $(".line_note_reply_link").live("click", function(e) {
+      $(".line_note_link, .line_note_reply_link").live("click", function(e) {
         var form = $(".per_line_form");
         $(this).parent().parent().after(form);
         form.find("#note_line_code").val($(this).attr("line_code"));
         form.find("#note_noteable_type").val($(this).attr("noteable_type"));
         form.find("#note_noteable_id").val($(this).attr("noteable_id"));
-        form.show();
-        return false;
-      });
-
-      $(".line_note_link").live("click", function(e) {
-        var form = $(".per_line_form");
-        $(this).parent().parent().after(form);
-        form.find("#note_line_code").val($(this).attr("line_code"));
         form.show();
         return false;
       });

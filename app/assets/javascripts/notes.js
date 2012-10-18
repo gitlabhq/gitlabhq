@@ -259,15 +259,7 @@ var PerLineNotes = {
        * Shows the note form below the line.
        * Sets some hidden fields in the form.
        */
-      $(".diff_file_content").on("click", ".line_note_link", function(e) {
-        var form = $(".per_line_form");
-        $(this).closest("tr").after(form);
-        form.find("#note_line_code").val($(this).data("lineCode"));
-        form.show();
-        return false;
-      });
-
-      $(".diff_file_content").on("click", ".line_note_reply_link", function(e) {
+      $(".diff_file_content").on("click", ".line_note_link, .line_note_reply_link", function(e) {
         var form = $(".per_line_form");
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).data("lineCode"));

@@ -7,10 +7,14 @@ class NotesController < ProjectResourceController
 
   def index
     notes
+
     if params[:target_type] == "merge_request"
-      @mixed_targets = true
+      @mixed_targets    = true
       @main_target_type = params[:target_type].camelize
       @show_discussions = true
+      @has_diff         = true
+    elsif params[:target_type] == "commit"
+      @has_diff = true
     end
 
     respond_with(@notes)
@@ -43,6 +47,5 @@ class NotesController < ProjectResourceController
 
   def notes
     @notes = Notes::LoadContext.new(project, current_user, params).execute
-    @has_diff = @notes.any? { |note| note.line_note? }
   end
 end

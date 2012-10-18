@@ -92,25 +92,60 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     visit diffs_project_merge_request_path(mr.project, mr)
   end
 
-  And 'I switch to the comments tab' do
+  And 'I switch to the merge request\'s comments tab' do
     mr = MergeRequest.find_by_title("Bug NS-05")
     visit project_merge_request_path(mr.project, mr)
   end
 
-  And 'I leave a comment like "Line is wrong" on line 182 of the first file' do
+  And 'I click on the first commit in the merge request' do
+    mr = MergeRequest.find_by_title("Bug NS-05")
+    click_link mr.st_commits.first.short_id(8)
+  end
+
+  And 'I leave a comment on the diff page' do
+    within(:xpath, "//div[@class='note-form-holder']") do
+      fill_in "note_note", with: "One comment to rule them all"
+      click_button "Add Comment"
+    end
+  end
+
+  And 'I leave a comment like "Line is wrong" on line 185 of the first file' do
     within(:xpath, "//div[@class='diff_file'][1]") do
-      click_link "Add note on line 182"
+      click_link "Add note on line 185"
+    end
+
+    within(:xpath, "//div[@class='line-note-form-holder']") do
       fill_in "note_note", with: "Line is wrong"
       click_button "Add note"
     end
   end
 
-  Then 'I should see a discussion has started on line 182' do
+  Then 'I should see a discussion has started on line 185' do
     mr = MergeRequest.find_by_title("Bug NS-05")
     first_commit = mr.st_commits.first
     first_diff   = mr.st_diffs.first
     page.should have_content "#{current_user.name} started a discussion on this merge request diff"
-    page.should have_content "#{first_diff.b_path}:L182"
+    page.should have_content "#{first_diff.b_path}:L185"
     page.should have_content "Line is wrong"
+  end
+
+  Then 'I should see a discussion has started on commit bcf03b5de6c:L185' do
+    mr = MergeRequest.find_by_title("Bug NS-05")
+    first_commit = mr.st_commits.first
+    first_diff   = mr.st_diffs.first
+    page.should have_content "#{current_user.name} started a discussion on commit"
+    page.should have_content first_commit.short_id(8)
+    page.should have_content "#{first_diff.b_path}:L185"
+    page.should have_content "Line is wrong"
+  end
+
+  Then 'I should see a discussion has started on commit bcf03b5de6c' do
+    mr = MergeRequest.find_by_title("Bug NS-05")
+    first_commit = mr.st_commits.first
+    first_diff   = mr.st_diffs.first
+    page.should have_content "#{current_user.name} started a discussion on commit"
+    page.should have_content first_commit.short_id(8)
+    page.should have_content "One comment to rule them all"
+    page.should_not have_content "#{first_diff.b_path}:L185"
   end
 end

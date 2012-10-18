@@ -18,6 +18,8 @@ class CommitController < ProjectResourceController
     @line_notes       = result[:line_notes]
     @notes_count      = result[:notes_count]
     @comments_allowed = @reply_allowed = true
+    @comments_target  = { noteable_type: 'Commit',
+                          noteable_id: @commit.id }
 
     respond_to do |format|
       format.html do
