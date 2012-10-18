@@ -140,6 +140,7 @@ GEM
       sass-rails (>= 3.1.1)
     foreman (0.47.0)
       thor (>= 0.13.6)
+    gemoji (1.1.1)
     gherkin-ruby (0.2.1)
     git (1.2.5)
     github-linguist (2.3.4)
@@ -422,6 +423,7 @@ DEPENDENCIES
   ffaker
   font-awesome-sass-rails (~> 2.0.0)
   foreman
+  gemoji
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
