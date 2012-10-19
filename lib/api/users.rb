@@ -28,18 +28,17 @@ module Gitlab
       #
       # Parameters:
       #   email (required)                  - Email
-      #   name (required)                   - Name
       #   password (required)               - Password
-      #   password_confirmation (required)  - Password confirmation
+      #   name                              - Name
       #   skype                             - Skype ID
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
-      #   projects_limit                    - Limit projects wich user can create
+      #   projects_limit                    - Number of projects user can create
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
-        attrs = attributes_for_keys [:email, :name, :password, :password_confirmation, :skype, :linkedin, :twitter, :projects_limit]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit]
         user = User.new attrs, as: :admin
         if user.save
           present user, with: Entities::User
