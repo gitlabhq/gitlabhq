@@ -23,7 +23,7 @@ module Gitlab
         @user = User.find(params[:id])
         present @user, with: Entities::User
       end
-      
+
       # Create user. Available only for admin
       #
       # Parameters:
@@ -40,7 +40,7 @@ module Gitlab
       post do
         authenticated_as_admin!
         attrs = attributes_for_keys [:email, :name, :password, :password_confirmation, :skype, :linkedin, :twitter, :projects_limit]
-        user = User.new attrs
+        user = User.new attrs, as: :admin
         if user.save
           present user, with: Entities::User
         else
