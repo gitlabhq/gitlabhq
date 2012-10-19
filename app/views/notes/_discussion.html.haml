@@ -3,17 +3,16 @@
     = image_tag gravatar_icon(note.author.email), class: "avatar s32"
     .text
       %strong= note.author_name
-      - case note.noteable_type
-      - when 'MergeRequest'
+      - if note.for_merge_request?
         %cite.cgray started a discussion on this merge request diff
         = link_to_merge_request_diff_line_note(note)
-      - when 'Commit'
+      - elsif note.for_commit?
         %cite.cgray started a discussion on commit
-        #{link_to note.target.short_id, project_commit_path(@project, note.target)}
-        = link_to_commit_diff_line_note(note) if note.line_note?
+        #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
+        = link_to_commit_diff_line_note(note) if note.for_diff_line?
       - else
         %cite.cgray started a discussion
-  - if note.line_code?
+  - if note.for_diff_line?
     .diff_file
       .diff_file_header
         - if diff.deleted_file
@@ -24,7 +23,7 @@
           %span{id: "#{diff.b_path}"}= diff.b_path
         %br/
       .diff_file_content
-        = render "commits/text_file", diff: note.diff, index: note.diff_index
+        = render "commits/text_file", diff: diff, index: note.diff_index
   - else
     .body
       - discussion_notes(note).each do |a_note|

@@ -15,14 +15,14 @@ module NotesHelper
   end
 
   def link_to_commit_diff_line_note(note)
-    if note.line_note?
-      link_to "#{note.diff.new_path}:L#{note.diff_new_line}", project_commit_path(@project, note.noteable, anchor: note.line_code)
+    if note.for_diff_line?
+      link_to "#{note.diff.new_path}:L#{note.diff_new_line}", project_commit_path(@project, note.noteable, anchor: note.noteable)
     end
   end
 
   def link_to_merge_request_diff_line_note(note)
-    if note.line_note?
-      link_to "#{note.diff.b_path}:L#{note.diff_new_line}", diffs_project_merge_request_path(note.project, note.noteable_id, anchor: note.line_code)
+    if note.for_diff_line?
+      link_to "#{note.diff.b_path}:L#{note.diff_new_line}", diffs_project_merge_request_path(note.project, note.noteable_id, anchor: note.noteable)
     end
   end
 end

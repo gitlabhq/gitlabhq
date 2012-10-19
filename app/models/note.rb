@@ -83,6 +83,18 @@ class Note < ActiveRecord::Base
     noteable_type == "Commit"
   end
 
+  def for_commit_diff_line?
+    for_commit? && for_diff_line?
+  end
+
+  def for_merge_request?
+    noteable_type == "MergeRequest"
+  end
+
+  def for_merge_request_diff_line?
+    for_merge_request? && for_diff_line?
+  end
+
   def for_diff_line?
     line_code.present?
   end
@@ -120,7 +132,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff
-    target.diffs[diff_index]
+    noteable.diffs[diff_index]
   end
 end
 

@@ -1,37 +1,25 @@
 module DiscussionHelper
   def part_of_discussion?(note)
-    part_of_discussion = case note.noteable_type
-                         when 'MergeRequest'
-                           note.line_code.present?
-                         when 'Commit'
-                           true
-                         else
-                           false
-                         end
-
-    part_of_discussion && @show_discussions
+    note.for_commit? || note.for_merge_request_diff_line?
   end
 
   def discussion_title(note)
-    case note.noteable_type
-    when 'MergeRequest'
-      "#{note.author.name} started a discussion on this merge request (on line #{note.line_code.split('_')[2]}):"
-    when 'Commit'
-      if note.line_code.present?
-        "#{note.author.name} started a discussion on commit #{link_to_commit_diff_line_note(note)}:"
-      else
-        "#{note.author.name} started a discussion on commit #{note.noteable_id}:"
-      end
+    if note.for_merge_request?
+      "#{note.author.name} started a discussion on this merge request (on line #{note.diff_new_line}):"
+    elsif note.for_commit_diff_line?
+      "#{note.author.name} started a discussion on commit #{link_to_commit_diff_line_note(note)}:"
+    elsif note.for_commit?
+      "#{note.author.name} started a discussion on commit #{note.noteable_id}:"
     else
       "#{note.author.name} started a discussion:"
     end
   end
 
   def render_discussion(note)
-    unless discussions_for(note.noteable_type).include?(discussion_id_for(note))
-      discussions_for(note.noteable_type).push(discussion_id_for(note))
+    unless discussions_for(note).include?(discussion_id_for(note))
+      discussions_for(note).push(discussion_id_for(note))
 
-      if note.line_note?
+      if note.for_diff_line?
         @reply_allowed = true
         @line_notes = discussion_notes(note)
         render 'discussion', note: note, diff: note.diff
@@ -51,13 +39,12 @@ module DiscussionHelper
     [note.line_code, note.noteable_id, note.noteable_type]
   end
 
-  def discussions_for(type)
+  def discussions_for(note)
     @discussions ||= { merge_requests: [], commits: [] }
 
-    case type
-    when 'MergeRequest'
+    if note.for_merge_request?
       @discussions[:merge_requests]
-    when 'Commit'
+    elsif note.for_commit?
       @discussions[:commits]
     else
       []
