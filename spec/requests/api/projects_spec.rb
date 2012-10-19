@@ -46,7 +46,7 @@ describe Gitlab::API do
       response.status.should == 201
     end
 
-    it "should repsond with 404 on failure" do
+    it "should respond with 404 on failure" do
       post api("/projects", user)
       response.status.should == 404
     end
@@ -188,7 +188,7 @@ describe Gitlab::API do
       }.to change {project.hooks.count}.by(1)
     end
   end
-  
+
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "should update an existing project hook" do
       put api("/projects/#{project.code}/hooks/#{hook.id}", user),
@@ -197,7 +197,7 @@ describe Gitlab::API do
       json_response['url'].should == 'http://example.com'
     end
   end
-  
+
 
   describe "DELETE /projects/:id/hooks" do
     it "should delete hook from project" do
@@ -239,7 +239,7 @@ describe Gitlab::API do
   end
 
   describe "GET /projects/:id/snippets" do
-    it "should return a project snippet" do
+    it "should return an array of project snippets" do
       get api("/projects/#{project.code}/snippets", user)
       response.status.should == 200
       json_response.should be_an Array
