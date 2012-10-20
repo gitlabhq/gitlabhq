@@ -135,7 +135,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    self.update_attributes state: CANNOT_BE_MERGED
+    self.state = CANNOT_BE_MERGED
+    self.save
   end
 
   def reloaded_commits
@@ -166,7 +167,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user)
-    if Gitlab::Merge.new(self, current_user).merge && self.unmerged_commits.empty?
+    if Gitlab::Merge.new(self, current_user).merge! && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end
