@@ -135,7 +135,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    self.update_attributes state: CANNOT_BE_MERGED
+    self.state = CANNOT_BE_MERGED
+    self.save
   end
 
   def reloaded_commits
