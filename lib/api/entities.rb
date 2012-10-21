@@ -63,5 +63,11 @@ module Gitlab
     class SSHKey < Grape::Entity
       expose :id, :title, :key
     end
+
+    class MergeRequest < Grape::Entity
+      expose :id, :target_branch, :source_branch, :project_id,
+             :title, :closed, :merged
+      expose :author, :assignee, using: Entities::UserBasic
+    end
   end
 end
