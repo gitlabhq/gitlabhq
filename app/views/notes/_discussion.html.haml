@@ -28,3 +28,5 @@
     .body
       - discussion_notes(note).each do |a_note|
         = render 'note', note: a_note
+
+- discussion_rendered!(note)
