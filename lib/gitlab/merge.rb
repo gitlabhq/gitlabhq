@@ -65,6 +65,8 @@ module Gitlab
           end
         end
       end
+    rescue Errno::ENOMEM => ex
+      Gitlab::GitLogger.error(ex.message)
     rescue Grit::Git::GitTimeout
       return false
     end
