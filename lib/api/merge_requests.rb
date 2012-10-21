@@ -33,7 +33,17 @@ module Gitlab
 
       #update merge_request
       put ":id/merge_request/:merge_request_id" do
-
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
+        project = current_user.projects.find(params[:id])
+        merge_request = project.merge_requests.find(params[:merge_request_id])
+        
+        if merge_request.update_attributes attrs
+          merge_request.reload_code
+          merge_request.mark_as_unchecked
+          present merge_request, with: Entities::MergeRequest
+        else
+          not_found!
+        end
       end
 
     end
