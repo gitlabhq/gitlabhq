@@ -48,5 +48,13 @@ class TreeController < ProjectResourceController
     unless @tree.is_blob? && @tree.text?
       redirect_to project_tree_path(@project, @id), notice: "You can only edit text files"
     end
+
+    allowed = if project.protected_branch? @ref
+                can?(current_user, :push_code_to_protected_branches, project)
+              else
+                can?(current_user, :push_code, project)
+              end
+
+    return access_denied! unless allowed
   end
 end

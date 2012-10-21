@@ -59,4 +59,12 @@ module TreeHelper
   def tree_join(*args)
     File.join(*args)
   end
+
+  def allowed_tree_edit?
+    if @project.protected_branch? @ref
+      can?(current_user, :push_code_to_protected_branches, @project)
+    else
+      can?(current_user, :push_code, @project)
+    end
+  end
 end

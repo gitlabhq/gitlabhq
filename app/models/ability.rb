@@ -35,8 +35,13 @@ class Ability
       ] if project.report_access_for?(user)
 
       rules << [
-        :write_wiki
+        :write_wiki,
+        :push_code
       ] if project.dev_access_for?(user)
+
+      rules << [
+        :push_code_to_protected_branches
+      ] if project.master_access_for?(user)
 
       rules << [
         :modify_issue,

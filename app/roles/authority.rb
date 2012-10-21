@@ -53,6 +53,6 @@ module Authority
   end
 
   def master_access_for?(user)
-    !users_projects.where(user_id: user.id, project_access: [UsersProject::MASTER]).empty? || owner_id == user.id
+    !users_projects.where(user_id: user.id, project_access: [UsersProject::MASTER]).empty?
   end
 end
