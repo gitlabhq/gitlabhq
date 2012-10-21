@@ -1,7 +1,7 @@
 module Team
-  def team_member_by_name_or_email(email = nil, name = nil)
-    user = users.where("email like ? or name like ?", email, name).first
-    users_projects.find_by_user_id(user.id) if user
+  def team_member_by_name_or_email(name = nil, email = nil)
+    user = users.where("name like ? or email like ?", name, email).first
+    users_projects.where(user: user) if user
   end
 
   # Get Team Member record by user id
