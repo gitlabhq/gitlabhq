@@ -6,12 +6,18 @@ module Gitlab
     resource :projects do
       #list
       get ":id/merge_requests" do
+        authorize! :read_merge_request, user_project
+        
         present user_project.merge_requests, with: Entities::MergeRequest
       end
       
       #show
       get ":id/merge_request/:merge_request_id" do
-        present user_project.merge_requests.find(params[:merge_request_id]), with: Entities::MergeRequest
+        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+        
+        authorize! :read_merge_request, merge_request
+        
+        present merge_request, with: Entities::MergeRequest
       end
 
       #create merge_request
@@ -19,6 +25,8 @@ module Gitlab
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
         merge_request = user_project.merge_requests.new(attrs)
         merge_request.author = current_user
+        
+        authorize! :write_merge_request, merge_request
         
         if merge_request.save
           merge_request.reload_code
@@ -32,6 +40,8 @@ module Gitlab
       put ":id/merge_request/:merge_request_id" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
+        
+        authorize! :modify_merge_request, merge_request
         
         if merge_request.update_attributes attrs
           merge_request.reload_code
