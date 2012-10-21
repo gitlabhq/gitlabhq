@@ -69,5 +69,10 @@ module Gitlab
              :title, :closed, :merged
       expose :author, :assignee, using: Entities::UserBasic
     end
+
+    class Note < Grape::Entity
+      expose :author, using: Entities::UserBasic
+      expose :note
+    end
   end
 end

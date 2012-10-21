@@ -52,6 +52,18 @@ module Gitlab
         end
       end
 
+      #post comment to merge request
+      post ":id/merge_request/:merge_request_id/comments" do
+        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+        note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
+        note.author = current_user
+        if note.save
+          present note, with: Entities::Note
+        else
+          not_found!
+        end
+      end
+
     end
   end
 end
