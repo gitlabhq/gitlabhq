@@ -1,5 +1,5 @@
 module Gitlab
-  # Issues API
+  # MergeRequest API
   class MergeRequests < Grape::API
     before { authenticate! }
 
@@ -26,7 +26,7 @@ module Gitlab
         merge_request = user_project.merge_requests.new(attrs)
         merge_request.author = current_user
         
-        authorize! :write_merge_request, merge_request
+        authorize! :write_merge_request, user_project
         
         if merge_request.save
           merge_request.reload_code
