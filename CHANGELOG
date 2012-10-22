@@ -1,7 +1,19 @@
-master
+v 3.0.0
   - Projects groups
   - Web Editor
   - Fixed bug with gitolite keys
+  - UI improved
+  - Increased perfomance of application
+  - Show user avatar in last commit when browsing Files 
+  - Refactored Gitlab::Merge
+  - Use Font Awsome for icons
+  - Separate observing of Note and MergeRequestsa
+  - Milestone "All Issues" filter
+  - Fix issue close and reopen button text and styles
+  - Fix forward/back while browsing Tree hierarchy
+  - Show numer of notes for commits and merge requests
+  - Added support pg from box and update installation doc
+  - Reject ssh keys that break gitolite
   - [API] list one project hook
   - [API] edit project hook
   - [API] add project snippets list
