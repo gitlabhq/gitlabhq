@@ -4,14 +4,30 @@ module Gitlab
     before { authenticate! }
 
     resource :projects do
-      #list
+      
+      # List merge requests
+      # 
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #
+      # Example:
+      #   GET /:id/merge_requests
+      #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
         
-        present user_project.merge_requests, with: Entities::MergeRequest
+        present paginate(user_project.merge_requests), with: Entities::MergeRequest
       end
       
-      #show
+      # Show MR
+      # 
+      # Parameters:
+      #   id (required)               - The ID or code name of a project
+      #   merge_request_id (required) - The ID of MR
+      # 
+      # Example:
+      #   GET /:id/merge_request/:merge_request_id
+      #
       get ":id/merge_request/:merge_request_id" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         
@@ -20,7 +36,19 @@ module Gitlab
         present merge_request, with: Entities::MergeRequest
       end
 
-      #create merge_request
+      # Create MR
+      #
+      # Parameters:
+      #
+      #   id (required)            - The ID or code name of a project
+      #   source_branch (required) - The source branch
+      #   target_branch (required) - The target branch
+      #   assignee_id              - Assignee user ID
+      #   title (required)         - Title of MR
+      # 
+      # Example:
+      #   POST /:id/merge_requests
+      #
       post ":id/merge_requests" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
         merge_request = user_project.merge_requests.new(attrs)
@@ -36,7 +64,19 @@ module Gitlab
         end
       end
 
-      #update merge_request
+      # Update MR
+      #
+      # Parameters:
+      #   id (required)               - The ID or code name of a project
+      #   merge_request_id (required) - ID of MR
+      #   source_branch               - The source branch
+      #   target_branch               - The target branch
+      #   assignee_id                 - Assignee user ID
+      #   title                       - Title of MR
+      #   closed                      - Status of MR. true - closed
+      # Example:
+      #   PUT /:id/merge_request/:merge_request_id
+      #
       put ":id/merge_request/:merge_request_id" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
@@ -52,7 +92,15 @@ module Gitlab
         end
       end
 
-      #post comment to merge request
+      # Post comment to merge request
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   merge_request_id (required) - ID of MR
+      #   note (required) - Text of comment
+      # Examples: 
+      #   POST /:id/merge_request/:merge_request_id/comments
+      #
       post ":id/merge_request/:merge_request_id/comments" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
