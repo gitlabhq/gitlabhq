@@ -64,7 +64,7 @@ class Admin::GroupsController < AdminController
   def destroy
     @group.destroy
 
-    redirect_to groups_url, notice: 'Group was successfully deleted.'
+    redirect_to admin_groups_path, notice: 'Group was successfully deleted.'
   end
 
   private
