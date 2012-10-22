@@ -43,6 +43,12 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
+    resources :groups, constraints: { id: /[^\/]+/ } do
+      member do
+        put :project_update
+        delete :remove_project
+      end
+    end
     resources :projects, constraints: { id: /[^\/]+/ } do
       member do
         get :team
@@ -80,6 +86,19 @@ Gitlab::Application.routes.draw do
   get "dashboard"                => "dashboard#index"
   get "dashboard/issues"         => "dashboard#issues"
   get "dashboard/merge_requests" => "dashboard#merge_requests"
+
+
+  #
+  # Groups Area
+  #
+  resources :groups, constraints: { id: /[^\/]+/ }, only: [:show] do
+    member do
+      get :issues
+      get :merge_requests
+      get :search
+      get :people
+    end
+  end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
@@ -122,34 +141,10 @@ Gitlab::Application.routes.draw do
       end
 
       member do
-        get "tree",      constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
+        # tree viewer logs
         get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
-
-        get "blob",
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
-            path: /.*/
-          }
-
-        # tree viewer
-        get "tree/:path" => "refs#tree",
-          as: :tree_file,
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
-            path: /.*/
-          }
-
-        # tree viewer
         get "logs_tree/:path" => "refs#logs_tree",
           as: :logs_file,
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
-            path: /.*/
-          }
-
-        # blame
-        get "blame/:path" => "refs#blame",
-          as: :blame_file,
           constraints: {
             id:   /[a-zA-Z.0-9\/_\-]+/,
             path: /.*/
@@ -182,27 +177,28 @@ Gitlab::Application.routes.draw do
         get :test
       end
     end
-    resources :commits do
-      collection do
-        get :compare
-      end
 
-      member do
-        get :patch
-      end
-    end
+    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+    resources :commits, only: [:show], constraints: {id: /.+/}
+    resources :compare, only: [:index, :create]
+    resources :blame,   only: [:show], constraints: {id: /.+/}
+    resources :blob,    only: [:show], constraints: {id: /.+/}
+    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare",
+                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
+
     resources :team, controller: 'team_members', only: [:index]
     resources :team_members
     resources :milestones
     resources :labels, only: [:index]
     resources :issues do
-
       collection do
         post  :sort
         post  :bulk_update
         get   :search
       end
     end
+
     resources :notes, only: [:index, :create, :destroy] do
       collection do
         post :preview

@@ -7,18 +7,25 @@
     @extend .span4;
     @extend .right;
 
+    .groups_box,
     .projects_box {
       h5 {
         color:$style_color;
         font-size:16px;
         text-shadow: 0 1px 1px #fff;
         padding: 2px 10px;
+        line-height:32px;
+        font-size:14px;
       }
       ul {
         li {
           padding:0;
           a {
             display:block;
+            .group_name {
+              font-size:14px;
+              line-height:18px;
+            }
             .project_name {
               color:#4fa2bd;
               font-size:14px;
@@ -74,7 +81,7 @@
   @include bg-gray-gradient;
   padding: 4px 7px;
   border: 1px solid #CCC;
-  margin-bottom:5px;
+  margin-bottom:20px;
 }
 
 .project_clone_holder {

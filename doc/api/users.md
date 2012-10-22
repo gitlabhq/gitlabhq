@@ -65,6 +65,27 @@ Parameters:
 }
 ```
 
+## User creation
+Create user. Available only for admin
+
+```
+POST /users
+```
+
+Parameters:
++ `email` (required)                  - Email
++ `name` (required)                   - Name
++ `password` (required)               - Password
++ `password_confirmation` (required)  - Password confirmation
++ `skype`                             - Skype ID
++ `linkedin`                          - Linkedin
++ `twitter`                           - Twitter account
++ `projects_limit`                    - Limit projects wich user can create
+
+
+Will return created user with status `201 Created` on success, or `404 Not
+found` on fail.
+
 ## Current user
 
 Get currently authenticated user.

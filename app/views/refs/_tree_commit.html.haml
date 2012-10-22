@@ -1,3 +1,0 @@
-- if tm
-  = link_to "[#{tm.user_name}]", project_team_member_path(@project, tm)
-= link_to_gfm truncate(content_commit.title, length: tm ? 30 : 50), project_commit_path(@project, content_commit.id), class: "tree-commit-link"

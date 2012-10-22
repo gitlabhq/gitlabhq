@@ -8,7 +8,7 @@
 
     = f.hidden_field :noteable_id
     = f.hidden_field :noteable_type
-    = f.text_area :note, size: 255, class: 'note-text'
+    = f.text_area :note, size: 255, class: 'note-text gfm-input'
     #preview-note.preview_note.hide
     .hint
       .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
@@ -36,4 +36,3 @@
           %a.file_upload.btn.small Upload File
           = f.file_field :attachment, class: "input-file"
         %span.hint Any file less than 10 MB
-

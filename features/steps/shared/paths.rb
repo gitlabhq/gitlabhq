@@ -1,21 +1,37 @@
 module SharedPaths
   include Spinach::DSL
 
-  And 'I visit dashboard search page' do
-    visit search_path
+  When 'I visit new project page' do
+    visit new_project_path
   end
 
-  And 'I visit dashboard merge requests page' do
-    visit dashboard_merge_requests_path
+  # ----------------------------------------
+  # Dashboard
+  # ----------------------------------------
+
+  Given 'I visit dashboard page' do
+    visit dashboard_path
   end
 
-  And 'I visit dashboard issues page' do
+  Given 'I visit dashboard issues page' do
     visit dashboard_issues_path
   end
 
-  When 'I visit dashboard page' do
-    visit dashboard_path
+  Given 'I visit dashboard merge requests page' do
+    visit dashboard_merge_requests_path
   end
+
+  Given 'I visit dashboard search page' do
+    visit search_path
+  end
+
+  Given 'I visit dashboard help page' do
+    visit help_path
+  end
+
+  # ----------------------------------------
+  # Profile
+  # ----------------------------------------
 
   Given 'I visit profile page' do
     visit profile_path
@@ -25,13 +41,97 @@ module SharedPaths
     visit profile_account_path
   end
 
+  Given 'I visit profile SSH keys page' do
+    visit keys_path
+  end
+
+  Given 'I visit profile design page' do
+    visit profile_design_path
+  end
+
+  Given 'I visit profile history page' do
+    visit profile_history_path
+  end
+
   Given 'I visit profile token page' do
     visit profile_token_path
   end
 
-  When 'I visit new project page' do
-    visit new_project_path
+  # ----------------------------------------
+  # Admin
+  # ----------------------------------------
+
+  Given 'I visit admin page' do
+    visit admin_root_path
   end
+
+  Given 'I visit admin projects page' do
+    visit admin_projects_path
+  end
+
+  Given 'I visit admin users page' do
+    visit admin_users_path
+  end
+
+  Given 'I visit admin logs page' do
+    visit admin_logs_path
+  end
+
+  Given 'I visit admin hooks page' do
+    visit admin_hooks_path
+  end
+
+  Given 'I visit admin Resque page' do
+    visit admin_resque_path
+  end
+
+  # ----------------------------------------
+  # Generic Project
+  # ----------------------------------------
+
+  Given "I visit my project's home page" do
+    visit project_path(@project)
+  end
+
+  Given "I visit my project's files page" do
+    visit project_tree_path(@project, @project.root_ref)
+  end
+
+  Given "I visit my project's commits page" do
+    visit project_commits_path(@project, @project.root_ref, {limit: 5})
+  end
+
+  Given "I visit my project's network page" do
+    # Stub out find_all to speed this up (10 commits vs. 650)
+    commits = Grit::Commit.find_all(@project.repo, nil, {max_count: 10})
+    Grit::Commit.stub(:find_all).and_return(commits)
+
+    visit graph_project_path(@project)
+  end
+
+  Given "I visit my project's issues page" do
+    visit project_issues_path(@project)
+  end
+
+  Given "I visit my project's merge requests page" do
+    visit project_merge_requests_path(@project)
+  end
+
+  Given "I visit my project's wall page" do
+    visit wall_project_path(@project)
+  end
+
+  Given "I visit my project's wiki page" do
+    visit project_wiki_path(@project, :index)
+  end
+
+  When 'I visit project hooks page' do
+    visit project_hooks_path(@project)
+  end
+
+  # ----------------------------------------
+  # "Shop" Project
+  # ----------------------------------------
 
   And 'I visit project "Shop" page' do
     project = Project.find_by_name("Shop")
@@ -43,23 +143,27 @@ module SharedPaths
   end
 
   Given 'I visit compare refs page' do
-    visit compare_project_commits_path(@project)
+    visit project_compare_index_path(@project)
   end
 
   Given 'I visit project commits page' do
-    visit project_commits_path(@project)
+    visit project_commits_path(@project, @project.root_ref, {limit: 5})
+  end
+
+  Given 'I visit project commits page for stable branch' do
+    visit project_commits_path(@project, 'stable', {limit: 5})
   end
 
   Given 'I visit project source page' do
-    visit tree_project_ref_path(@project, @project.root_ref)
+    visit project_tree_path(@project, @project.root_ref)
   end
 
   Given 'I visit blob file from repo' do
-    visit tree_project_ref_path(@project, ValidCommit::ID, :path => ValidCommit::BLOB_FILE_PATH)
+    visit project_tree_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
   end
 
   Given 'I visit project source page for "8470d70"' do
-    visit tree_project_ref_path(@project, "8470d70")
+    visit project_tree_path(@project, "8470d70")
   end
 
   Given 'I visit project tags page' do

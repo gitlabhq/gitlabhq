@@ -33,7 +33,7 @@ module IssuesHelper
     classes
   end
 
-  def issue_tags 
+  def issue_tags
     @project.issues.tag_counts_on(:labels).map(&:name)
   end
 
@@ -42,5 +42,14 @@ module IssuesHelper
   def unassigned_filter
     # Milestone uses :title, Issue uses :name
     OpenStruct.new(id: 0, title: 'Unspecified', name: 'Unassigned')
+  end
+
+  def issues_filter
+    {
+      all: "all",
+      closed: "closed",
+      to_me: "assigned-to-me",
+      open: "open"
+    }
   end
 end

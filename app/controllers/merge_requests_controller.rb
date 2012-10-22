@@ -1,14 +1,8 @@
-class MergeRequestsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
+class MergeRequestsController < ProjectResourceController
   before_filter :module_enabled
   before_filter :merge_request, only: [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check, :raw]
   before_filter :validates_merge_request, only: [:show, :diffs, :raw]
   before_filter :define_show_vars, only: [:show, :diffs]
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any merge_request
   before_filter :authorize_read_merge_request!
@@ -24,7 +18,7 @@ class MergeRequestsController < ApplicationController
 
 
   def index
-    @merge_requests = MergeRequestsLoad.new(project, current_user, params).execute
+    @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
   end
 
   def show
@@ -61,7 +55,7 @@ class MergeRequestsController < ApplicationController
       @merge_request.reload_code
       redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.'
     else
-      render action: "new" 
+      render action: "new"
     end
   end
 
@@ -76,7 +70,7 @@ class MergeRequestsController < ApplicationController
   end
 
   def automerge_check
-    if @merge_request.unchecked? 
+    if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
     render json: {state: @merge_request.human_state}
@@ -131,7 +125,7 @@ class MergeRequestsController < ApplicationController
 
   def validates_merge_request
     # Show git not found page if target branch doesnt exist
-    return git_not_found! unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch) 
+    return git_not_found! unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch)
 
     # Show git not found page if source branch doesnt exist
     # and there is no saved commits between source & target branch
@@ -142,7 +136,7 @@ class MergeRequestsController < ApplicationController
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
 
-    # Get commits from repository 
+    # Get commits from repository
     # or from cache if already merged
     @commits = @merge_request.commits
     @commits = CommitDecorator.decorate(@commits)

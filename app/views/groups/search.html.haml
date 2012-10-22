@@ -1,0 +1,75 @@
+= form_tag search_group_path(@group), method: :get, class: 'form-inline' do |f|
+  .padded
+    = label_tag :search do
+      %strong Looking for
+    .input
+      = search_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge search-text-input", id: "dashboard_search"
+      = submit_tag 'Search', class: "btn primary wide"
+- if params[:search].present?
+  %br
+  %h3
+    Search results
+    %small (#{@projects.count + @merge_requests.count + @issues.count})
+  %hr
+  .search_results
+    .row
+      .span6
+        %table
+          %thead
+            %tr
+              %th Projects
+          %tbody
+            - @projects.each do |project|
+              %tr
+                %td
+                  = link_to project do
+                    %strong.term= project.name
+                    %small.cgray
+                      last activity at
+                      = project.last_activity_date.stamp("Aug 25, 2011")
+            - if @projects.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No Projects
+        %br
+        %table
+          %thead
+            %tr
+              %th Merge Requests
+          %tbody
+            - @merge_requests.each do |merge_request|
+              %tr
+                %td
+                  = link_to [merge_request.project, merge_request] do
+                    %span.badge.badge-info ##{merge_request.id}
+                    &ndash;
+                    %strong.term= truncate merge_request.title, length: 50
+                    %strong.right
+                      %span.label= merge_request.project.name
+            - if @merge_requests.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No Merge Requests
+      .span6
+        %table
+          %thead
+            %tr
+              %th Issues
+          %tbody
+            - @issues.each do |issue|
+              %tr
+                %td
+                  = link_to [issue.project, issue] do
+                    %span.badge.badge-info ##{issue.id}
+                    &ndash;
+                    %strong.term= truncate issue.title, length: 40
+                  %strong.right
+                    %span.label= issue.project.name
+            - if @issues.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No Issues
+  :javascript
+    $(function() {
+      $(".search_results .term").highlight("#{params[:search]}");
+    })

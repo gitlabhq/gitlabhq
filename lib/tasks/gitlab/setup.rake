@@ -4,8 +4,7 @@ namespace :gitlab do
     task :setup => [
       'db:setup',
       'db:seed_fu',
-      'gitlab:app:enable_automerge' 
+      'gitlab:app:enable_automerge'
     ]
   end
 end
-

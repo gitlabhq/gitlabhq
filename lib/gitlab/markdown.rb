@@ -128,7 +128,7 @@ module Gitlab
     #
     # Returns boolean
     def valid_emoji?(emoji)
-      File.exists?(Rails.root.join('app', 'assets', 'images', 'emoji', "#{emoji}.png"))
+      Emoji.names.include? emoji
     end
 
     # Private: Dispatches to a dedicated processing method based on reference
@@ -173,8 +173,8 @@ module Gitlab
     end
 
     def reference_commit(identifier)
-      if commit = @project.commit(identifier)
-        link_to(identifier, project_commit_path(@project, id: commit.id), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
+      if @project.valid_repo? && commit = @project.commit(identifier)
+        link_to(identifier, project_commit_path(@project, commit), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
     end
   end

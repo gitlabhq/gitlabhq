@@ -1,10 +1,11 @@
 module Grack
   class Auth < Rack::Auth::Basic
+    attr_accessor :user, :project
 
     def valid?
       # Authentication with username and password
       email, password = @auth.credentials
-      user = User.find_by_email(email)
+      self.user = User.find_by_email(email)
       return false unless user.try(:valid_password?, password)
 
       # Set GL_USER env variable
@@ -18,28 +19,39 @@ module Grack
 
       # Find project by PATH_INFO from env
       if m = /^\/([\w-]+).git/.match(@request.path_info).to_a
-        return false unless project = Project.find_by_path(m.last)
+        self.project = Project.find_by_path(m.last)
+        return false unless project
       end
 
       # Git upload and receive
       if @request.get?
-        true
+        validate_get_request
       elsif @request.post?
-        if @request.path_info.end_with?('git-upload-pack')
-          return project.dev_access_for?(user)
-        elsif @request.path_info.end_with?('git-receive-pack')
-          if project.protected_branches.map(&:name).include?(current_ref)
-            project.master_access_for?(user)
-          else
-            project.dev_access_for?(user)
-          end
-        else
-          false
-        end
+        validate_post_request
       else
         false
       end
-    end# valid?
+    end
+
+    def validate_get_request
+      true
+    end
+
+    def validate_post_request
+      if @request.path_info.end_with?('git-upload-pack')
+        can?(user, :push_code, project)
+      elsif @request.path_info.end_with?('git-receive-pack')
+        action = if project.protected_branch?(current_ref)
+                   :push_code_to_protected_branches
+                 else
+                   :push_code
+                 end
+
+        can?(user, action, project)
+      else
+        false
+      end
+    end
 
     def current_ref
       if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/

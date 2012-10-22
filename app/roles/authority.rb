@@ -2,12 +2,12 @@ module Authority
   # Compatible with all access rights
   # Should be rewrited for new access rights
   def add_access(user, *access)
-    access = if access.include?(:admin) 
-               { project_access: UsersProject::MASTER } 
+    access = if access.include?(:admin)
+               { project_access: UsersProject::MASTER }
              elsif access.include?(:write)
-               { project_access: UsersProject::DEVELOPER } 
+               { project_access: UsersProject::DEVELOPER }
              else
-               { project_access: UsersProject::REPORTER } 
+               { project_access: UsersProject::REPORTER }
              end
     opts = { user: user }
     opts.merge!(access)
@@ -53,6 +53,6 @@ module Authority
   end
 
   def master_access_for?(user)
-    !users_projects.where(user_id: user.id, project_access: [UsersProject::MASTER]).empty? || owner_id == user.id
+    !users_projects.where(user_id: user.id, project_access: [UsersProject::MASTER]).empty?
   end
 end

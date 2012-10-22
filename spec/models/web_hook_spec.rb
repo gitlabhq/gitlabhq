@@ -1,8 +1,24 @@
+# == Schema Information
+#
+# Table name: web_hooks
+#
+#  id         :integer         not null, primary key
+#  url        :string(255)
+#  project_id :integer
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  type       :string(255)     default("ProjectHook")
+#
+
 require 'spec_helper'
 
 describe ProjectHook do
   describe "Associations" do
     it { should belong_to :project }
+  end
+
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:project_id) }
   end
 
   describe "Validations" do

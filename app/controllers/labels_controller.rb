@@ -1,12 +1,5 @@
-class LabelsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
+class LabelsController < ProjectResourceController
   before_filter :module_enabled
-
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any issue
   before_filter :authorize_read_issue!
@@ -14,7 +7,7 @@ class LabelsController < ApplicationController
   respond_to :js, :html
 
   def index
-    @labels = @project.issues.tag_counts_on(:labels).order('count DESC')
+    @labels = @project.issues_labels.order('count DESC')
   end
 
   protected

@@ -21,27 +21,27 @@ describe Project, "Repository" do
   end
 
   describe "#discover_default_branch" do
-    let(:master) { double(name: 'master') }
-    let(:stable) { double(name: 'stable') }
+    let(:master) { 'master' }
+    let(:stable) { 'stable' }
 
     it "returns 'master' when master exists" do
-      project.should_receive(:heads).and_return([stable, master])
+      project.should_receive(:branch_names).at_least(:once).and_return([stable, master])
       project.discover_default_branch.should == 'master'
     end
 
     it "returns non-master when master exists but default branch is set to something else" do
       project.default_branch = 'stable'
-      project.should_receive(:heads).and_return([stable, master])
+      project.should_receive(:branch_names).at_least(:once).and_return([stable, master])
       project.discover_default_branch.should == 'stable'
     end
 
     it "returns a non-master branch when only one exists" do
-      project.should_receive(:heads).and_return([stable])
+      project.should_receive(:branch_names).at_least(:once).and_return([stable])
       project.discover_default_branch.should == 'stable'
     end
 
     it "returns nil when no branch exists" do
-      project.should_receive(:heads).and_return([])
+      project.should_receive(:branch_names).at_least(:once).and_return([])
       project.discover_default_branch.should be_nil
     end
   end

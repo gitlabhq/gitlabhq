@@ -1,10 +1,5 @@
-class HooksController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
-  layout "project"
-
+class HooksController < ProjectResourceController
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_admin_project!, only: [:new, :create, :destroy]
 

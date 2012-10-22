@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: snippets
+#
+#  id         :integer         not null, primary key
+#  title      :string(255)
+#  content    :text
+#  author_id  :integer         not null
+#  project_id :integer         not null
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  file_name  :string(255)
+#  expires_at :datetime
+#
+
 require 'spec_helper'
 
 describe Snippet do
@@ -7,9 +22,14 @@ describe Snippet do
     it { should have_many(:notes).dependent(:destroy) }
   end
 
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:author_id) }
+    it { should_not allow_mass_assignment_of(:project_id) }
+  end
+
   describe "Validation" do
-    it { should validate_presence_of(:author_id) }
-    it { should validate_presence_of(:project_id) }
+    it { should validate_presence_of(:author) }
+    it { should validate_presence_of(:project) }
 
     it { should validate_presence_of(:title) }
     it { should ensure_length_of(:title).is_within(0..255) }

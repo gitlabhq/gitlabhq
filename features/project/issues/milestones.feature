@@ -16,3 +16,11 @@ Feature: Project Milestones
     Given I click link "New Milestone"
     And I submit new milestone "v2.3"
     Then I should see milestone "v2.3"
+
+  @javascript
+  Scenario: Listing closed issues
+    Given the milestone has open and closed issues
+    And I click link "v2.2"
+    Then I should see 3 issues
+    When I click link "All Issues"
+    Then I should see 4 issues

@@ -1,15 +1,9 @@
 class SearchController < ApplicationController
   def show
-    query = params[:search]
+    result = SearchContext.new(current_user.project_ids, params).execute
 
-    @projects = []
-    @merge_requests = []
-    @issues = []
-
-    if query.present?
-      @projects = current_user.projects.search(query).limit(10)
-      @merge_requests = MergeRequest.where(project_id: current_user.project_ids).search(query).limit(10)
-      @issues = Issue.where(project_id: current_user.project_ids).search(query).limit(10)
-    end
+    @projects       = result[:projects]
+    @merge_requests = result[:merge_requests]
+    @issues         = result[:issues]
   end
 end

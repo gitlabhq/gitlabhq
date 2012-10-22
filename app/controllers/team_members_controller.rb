@@ -1,9 +1,5 @@
-class TeamMembersController < ApplicationController
-  before_filter :project
-  layout "project"
-
+class TeamMembersController < ProjectResourceController
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!
   before_filter :authorize_admin_project!, except: [:index, :show]
 

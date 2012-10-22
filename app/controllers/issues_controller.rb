@@ -1,14 +1,6 @@
-class IssuesController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :project
+class IssuesController < ProjectResourceController
   before_filter :module_enabled
   before_filter :issue, only: [:edit, :update, :destroy, :show]
-  helper_method :issues_filter
-
-  layout "project"
-
-  # Authorize
-  before_filter :add_project_abilities
 
   # Allow read any issue
   before_filter :authorize_read_issue!
@@ -26,7 +18,6 @@ class IssuesController < ApplicationController
 
   def index
     @issues = issues_filtered
-
     @issues = @issues.page(params[:page]).per(20)
 
     respond_to do |format|
@@ -61,7 +52,7 @@ class IssuesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if @issue.valid? 
+        if @issue.valid?
           redirect_to project_issue_path(@project, @issue)
         else
           render :new
@@ -76,7 +67,7 @@ class IssuesController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.html do 
+      format.html do
         if @issue.valid?
           redirect_to [@project, @issue]
         else
@@ -141,35 +132,6 @@ class IssuesController < ApplicationController
   end
 
   def issues_filtered
-    @issues = case params[:f]
-              when issues_filter[:all] then @project.issues
-              when issues_filter[:closed] then @project.issues.closed
-              when issues_filter[:to_me] then @project.issues.opened.assigned(current_user)
-              else @project.issues.opened
-              end
-
-    @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?
-    @issues = @issues.includes(:author, :project).order("updated_at")
-
-    # Filter by specific assignee_id (or lack thereof)?
-    if params[:assignee_id].present?
-      @issues = @issues.where(assignee_id: (params[:assignee_id] == '0' ? nil : params[:assignee_id]))
-    end
-
-    # Filter by specific milestone_id (or lack thereof)?
-    if params[:milestone_id].present?
-      @issues = @issues.where(milestone_id: (params[:milestone_id] == '0' ? nil : params[:milestone_id]))
-    end
-
-    @issues
-  end
-
-  def issues_filter
-    {
-      all: "all",
-      closed: "closed",
-      to_me: "assigned-to-me",
-      open: "open" 
-    }
+    @issues = IssuesListContext.new(project, current_user, params).execute
   end
 end

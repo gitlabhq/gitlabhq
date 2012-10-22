@@ -1,8 +1,8 @@
 - commit = CommitDecorator.decorate(commit)
 %li.commit
   %p
-    = link_to commit.short_id(8), project_commit_path(project, id: commit.id), class: "commit_short_id"
-    %strong.cdark= commit.author_name
+    = link_to commit.short_id(8), project_commit_path(project, commit), class: "commit_short_id"
+    %span= commit.author_name
     &ndash;
     = image_tag gravatar_icon(commit.author_email), class: "avatar", width: 16
     = gfm escape_once(truncate(commit.title, length: 50)) rescue "--broken encoding"

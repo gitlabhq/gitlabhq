@@ -1,9 +1,8 @@
 - @logs.each do |content_data| 
   - file_name = content_data[:file_name]
-  - content_commit = content_data[:commit]
-  - tm = @project.team_member_by_name_or_email(content_commit.author_email, content_commit.author_name)
+  - commit = content_data[:commit]
 
   :plain
     var row = $("table.table_#{@hex_path} tr.file_#{hexdigest(file_name)}");
-    row.find("td.tree_time_ago").html('#{escape_javascript(time_ago_in_words(content_commit.committed_date))} ago');
-    row.find("td.tree_commit").html('#{escape_javascript(render("tree_commit", tm: tm, content_commit: content_commit))}');
+    row.find("td.tree_time_ago").html('#{escape_javascript time_ago_in_words(commit.committed_date)} ago');
+    row.find("td.tree_commit").html('#{escape_javascript render("tree/tree_commit_column", commit: commit)}');

@@ -1,11 +1,10 @@
 namespace :gitlab do
   namespace :gitolite do
     desc "GITLAB | Rebuild each project at gitolite config"
-    task :update_repos => :environment  do
+    task :update_repos => :environment do
       puts "Starting Projects"
       Project.find_each(:batch_size => 100) do |project|
-        puts
-        puts "=== #{project.name}"
+        puts "\n=== #{project.name}"
         project.update_repository
         puts
       end

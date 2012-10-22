@@ -31,15 +31,17 @@ class Settings < Settingslogic
     end
 
     def build_url
-      raw_url = self.web_protocol
-      raw_url << "://"
-      raw_url << web_host
-
       if web_custom_port?
-        raw_url << ":#{web_port}"
+        custom_port = ":#{web_port}"
+      else
+        custom_port = nil
       end
-
-      raw_url
+      [
+        web_protocol,
+        "://",
+        web_host,
+        custom_port
+      ].join('')
     end
 
     def ssh_port
@@ -112,7 +114,7 @@ class Settings < Settingslogic
 
     def backup_path
       t = app['backup_path'] || "backups/"
-      t = /^\//.match(t) ? t : File.join(Rails.root + t)
+      t = /^\//.match(t) ? t : Rails.root .join(t)
       t
     end
 

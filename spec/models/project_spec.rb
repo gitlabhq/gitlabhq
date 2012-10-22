@@ -1,7 +1,29 @@
+# == Schema Information
+#
+# Table name: projects
+#
+#  id                     :integer         not null, primary key
+#  name                   :string(255)
+#  path                   :string(255)
+#  description            :text
+#  created_at             :datetime        not null
+#  updated_at             :datetime        not null
+#  private_flag           :boolean         default(TRUE), not null
+#  code                   :string(255)
+#  owner_id               :integer
+#  default_branch         :string(255)
+#  issues_enabled         :boolean         default(TRUE), not null
+#  wall_enabled           :boolean         default(TRUE), not null
+#  merge_requests_enabled :boolean         default(TRUE), not null
+#  wiki_enabled           :boolean         default(TRUE), not null
+#  group_id               :integer
+#
+
 require 'spec_helper'
 
 describe Project do
   describe "Associations" do
+    it { should belong_to(:group) }
     it { should belong_to(:owner).class_name('User') }
     it { should have_many(:users) }
     it { should have_many(:events).dependent(:destroy) }
@@ -15,6 +37,11 @@ describe Project do
     it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:wikis).dependent(:destroy) }
     it { should have_many(:protected_branches).dependent(:destroy) }
+  end
+
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:owner_id) }
+    it { should_not allow_mass_assignment_of(:private_flag) }
   end
 
   describe "Validation" do
@@ -120,7 +147,7 @@ describe Project do
 
   it "should return path to repo" do
     project = Project.new(path: "somewhere")
-    project.path_to_repo.should == File.join(Rails.root, "tmp", "repositories", "somewhere")
+    project.path_to_repo.should == Rails.root.join("tmp", "repositories", "somewhere")
   end
 
   it "returns the full web URL for this repo" do
@@ -140,30 +167,29 @@ describe Project do
     end
   end
 
-  describe "last_activity" do
+  describe "last_activity methods" do
     let(:project)    { Factory :project }
-    let(:last_event) { double }
+    let(:last_event) { double(created_at: Time.now) }
 
-    before do
-      project.stub_chain(:events, :order).and_return( [ double, double, last_event ] )
+    describe "last_activity" do
+      it "should alias last_activity to last_event"do
+        project.stub(last_event: last_event)
+        project.last_activity.should == last_event
+      end
     end
 
-    it { project.last_activity.should == last_event }
+    describe 'last_activity_date' do
+      it 'returns the creation date of the project\'s last event if present' do
+        project.stub(last_event: last_event)
+        project.last_activity_date.should == last_event.created_at
+      end
+
+      it 'returns the project\'s last update date if it has no events' do
+        project.last_activity_date.should == project.updated_at
+      end
+    end
   end
 
-  describe 'last_activity_date' do
-    let(:project)    { Factory :project }
-
-    it 'returns the creation date of the project\'s last event if present' do
-      last_event = double(created_at: 'now')
-      project.stub(:events).and_return( [double, double, last_event] )
-      project.last_activity_date.should == last_event.created_at
-    end
-
-    it 'returns the project\'s last update date if it has no events' do
-      project.last_activity_date.should == project.updated_at
-    end
-  end
   describe "fresh commits" do
     let(:project) { Factory :project }
 

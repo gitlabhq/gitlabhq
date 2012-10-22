@@ -1,9 +1,12 @@
-%h3
+%h3.page_title
   Milestone ##{@milestone.id}
   %small
     = @milestone.expires_at
 
   %span.right
+    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn small grouped", title: "New Issue" do
+      %i.icon-plus
+      New Issue
     = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do
@@ -28,9 +31,9 @@
     %h5
       Progress:
       %small
-        #{@milestone.issues.opened.count} open
-        &ndash;
         #{@milestone.issues.closed.count} closed
+        &ndash;
+        #{@milestone.issues.opened.count} open
     .progress.progress-success
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 
@@ -42,18 +45,20 @@
 
 .row
   .span6
-    %table
+    %table.milestone-issue-filter
       %thead
-        %th Open Issues
+        %th
+          %ul.nav.nav-pills
+            %li.active= link_to('Open Issues', '#')
+            %li=link_to('All Issues', '#')
       - @issues.each do |issue|
-        %tr
+        %tr{data: {closed: issue.closed}}
           %td
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
             = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
     %br
-    = paginate @issues, theme: "gitlab"
 
   .span6
     %table

@@ -1,0 +1,43 @@
+%ul.breadcrumb
+  %li
+    %span.arrow
+    = link_to project_tree_path(@project, @ref) do
+      = @project.name
+  - tree.breadcrumbs(6) do |link|
+    \/
+    %li= link
+
+.clear
+%div.tree_progress
+
+%div#tree-content-holder.tree-content-holder
+  - if tree.is_blob?
+    = render "tree/blob", blob: tree
+  - else
+    %table#tree-slider{class: "table_#{@hex_path} tree-table" }
+      %thead
+        %th Name
+        %th Last Update
+        %th Last Commit
+        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
+
+      - if tree.up_dir?
+        %tr.tree-item
+          %td.tree-item-file-name
+            = image_tag "file_empty.png", size: '16x16'
+            = link_to "..", tree.up_dir_path
+          %td
+          %td
+          %td
+
+      = render_tree(tree.contents)
+
+    - if tree.readme
+      = render "tree/readme", readme: tree.readme
+
+- unless tree.is_blob?
+  :javascript
+    // Load last commit log for each file in tree
+    $(window).load(function(){
+      ajaxGet('#{@logs_path}');
+    });

@@ -147,6 +147,19 @@ module Gitlab
         @hooks = paginate user_project.hooks
         present @hooks, with: Entities::Hook
       end
+      
+      # Get a project hook
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   hook_id (required) - The ID of a project hook
+      # Example Request:
+      #   GET /projects/:id/hooks/:hook_id
+      get ":id/hooks/:hook_id" do
+        @hook = user_project.hooks.find(params[:hook_id])
+        present @hook, with: Entities::Hook
+      end
+      
 
       # Add hook to project
       #
@@ -164,6 +177,27 @@ module Gitlab
           error!({'message' => '404 Not found'}, 404)
         end
       end
+      
+      # Update an existing project hook
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   hook_id (required) - The ID of a project hook
+      #   url (required) - The hook URL
+      # Example Request:
+      #   PUT /projects/:id/hooks/:hook_id
+      put ":id/hooks/:hook_id" do
+        @hook = user_project.hooks.find(params[:hook_id])
+        authorize! :admin_project, user_project
+
+        attrs = attributes_for_keys [:url]
+
+        if @hook.update_attributes attrs
+          present @hook, with: Entities::Hook
+        else
+          not_found!
+        end
+      end
 
       # Delete project hook
       #
@@ -176,7 +210,6 @@ module Gitlab
         authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         @hook.destroy
-        nil
       end
 
       # Get a project repository branches
@@ -227,6 +260,16 @@ module Gitlab
 
         commits = user_project.commits(ref, nil, per_page, page * per_page)
         present CommitDecorator.decorate(commits), with: Entities::RepoCommit
+      end
+
+      # Get a project snippets
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      # Example Request:
+      #   GET /projects/:id/snippets
+      get ":id/snippets" do
+        present paginate(user_project.snippets), with: Entities::ProjectSnippet
       end
 
       # Get a project snippet

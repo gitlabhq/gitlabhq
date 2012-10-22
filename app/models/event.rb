@@ -1,6 +1,9 @@
 class Event < ActiveRecord::Base
   include PushEvent
 
+  attr_accessible :project, :action, :data, :author_id, :project_id,
+                  :target_id, :target_type
+
   default_scope where("author_id IS NOT NULL")
 
   Created   = 1
@@ -13,25 +16,30 @@ class Event < ActiveRecord::Base
   Joined    = 8 # User joined project
   Left      = 9 # User left project
 
+  delegate :name, :email, to: :author, prefix: true, allow_nil: true
+  delegate :title, to: :issue, prefix: true, allow_nil: true
+  delegate :title, to: :merge_request, prefix: true, allow_nil: true
+
+  belongs_to :author, class_name: "User"
   belongs_to :project
   belongs_to :target, polymorphic: true
 
   # For Hash only
   serialize :data
 
+  # Scopes
   scope :recent, order("created_at DESC")
   scope :code_push, where(action: Pushed)
+  scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
-  def self.determine_action(record)
-    if [Issue, MergeRequest].include? record.class
-      Event::Created
-    elsif record.kind_of? Note
-      Event::Commented
+  class << self
+    def determine_action(record)
+      if [Issue, MergeRequest].include? record.class
+        Event::Created
+      elsif record.kind_of? Note
+        Event::Commented
+      end
     end
-  end
-
-  def self.recent_for_user user
-    where(project_id: user.projects.map(&:id)).recent
   end
 
   # Next events currently enabled for system
@@ -46,8 +54,12 @@ class Event < ActiveRecord::Base
     if project
       project.name
     else
-      "(deleted)"
+      "(deleted project)"
     end
+  end
+
+  def target_title
+    target.try :title
   end
 
   def push?
@@ -131,24 +143,21 @@ class Event < ActiveRecord::Base
       "opened"
     end
   end
-
-  delegate :name, :email, to: :author, prefix: true, allow_nil: true
-  delegate :title, to: :issue, prefix: true, allow_nil: true
-  delegate :title, to: :merge_request, prefix: true, allow_nil: true
 end
+
 # == Schema Information
 #
 # Table name: events
 #
-#  id          :integer(4)      not null, primary key
+#  id          :integer         not null, primary key
 #  target_type :string(255)
-#  target_id   :integer(4)
+#  target_id   :integer
 #  title       :string(255)
 #  data        :text
-#  project_id  :integer(4)
+#  project_id  :integer
 #  created_at  :datetime        not null
 #  updated_at  :datetime        not null
-#  action      :integer(4)
-#  author_id   :integer(4)
+#  action      :integer
+#  author_id   :integer
 #
 

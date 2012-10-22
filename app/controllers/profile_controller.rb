@@ -1,5 +1,4 @@
 class ProfileController < ApplicationController
-  layout "profile"
   before_filter :user
 
   def show

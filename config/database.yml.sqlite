@@ -12,11 +12,8 @@ production:
   pool: 5
   timeout: 5000
 
-
-# 
+#
 # Development specific
-#
-#
 #
 development:
   adapter: sqlite3
@@ -32,6 +29,3 @@ test: &test
   database: db/test.sqlite3
   pool: 5
   timeout: 5000
-
-cucumber:
-  <<: *test

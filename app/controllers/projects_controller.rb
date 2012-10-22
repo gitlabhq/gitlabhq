@@ -1,14 +1,14 @@
 require Rails.root.join('lib', 'gitlab', 'graph_commit')
 
-class ProjectsController < ApplicationController
-  before_filter :project, except: [:index, :new, :create]
-  layout :determine_layout
+class ProjectsController < ProjectResourceController
+  skip_before_filter :project, only: [:new, :create]
 
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_read_project!, except: [:index, :new, :create]
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
+
+  layout 'application', only: [:new, :create]
 
   def new
     @project = Project.new
@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
 
   def show
     limit = (params[:limit] || 20).to_i
-    @events = @project.events.recent.limit(limit)
+    @events = @project.events.recent.limit(limit).offset(params[:offset] || 0)
 
     respond_to do |format|
       format.html do
@@ -57,6 +57,7 @@ class ProjectsController < ApplicationController
            render "projects/empty"
          end
       end
+      format.js
     end
   end
 
@@ -90,21 +91,6 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to root_path }
-    end
-  end
-
-  protected
-
-  def project
-    @project ||= Project.find_by_code(params[:id])
-    @project || render_404
-  end
-
-  def determine_layout
-    if @project && !@project.new_record?
-      "project"
-    else
-      "application"
     end
   end
 end

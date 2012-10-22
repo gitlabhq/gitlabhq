@@ -1,15 +1,8 @@
-class DeployKeysController < ApplicationController
+class DeployKeysController < ProjectResourceController
   respond_to :html
-  layout "project"
-  before_filter :project
 
   # Authorize
-  before_filter :add_project_abilities
   before_filter :authorize_admin_project!
-
-  def project
-    @project ||= Project.find_by_code(params[:project_id])
-  end
 
   def index
     @keys = @project.deploy_keys.all

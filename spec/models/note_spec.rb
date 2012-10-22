@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: notes
+#
+#  id            :integer         not null, primary key
+#  note          :text
+#  noteable_id   :string(255)
+#  noteable_type :string(255)
+#  author_id     :integer
+#  created_at    :datetime        not null
+#  updated_at    :datetime        not null
+#  project_id    :integer
+#  attachment    :string(255)
+#  line_code     :string(255)
+#
+
 require 'spec_helper'
 
 describe Note do
@@ -5,6 +21,11 @@ describe Note do
     it { should belong_to(:project) }
     it { should belong_to(:noteable) }
     it { should belong_to(:author).class_name('User') }
+  end
+
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:author) }
+    it { should_not allow_mass_assignment_of(:author_id) }
   end
 
   describe "Validation" do
@@ -64,9 +85,19 @@ describe Note do
         noteable_type: "Commit"
     end
 
+    it "should be accessible through #noteable" do
+      @note.noteable_id.should == commit.id
+      @note.noteable.should be_a(Commit)
+      @note.noteable.should == commit
+    end
+
     it "should save a valid note" do
       @note.noteable_id.should == commit.id
-      @note.target.id.should == commit.id
+      @note.noteable == commit
+    end
+
+    it "should be recognized by #for_commit?" do
+      @note.should be_for_commit
     end
   end
 
@@ -80,7 +111,11 @@ describe Note do
 
     it "should save a valid note" do
       @note.noteable_id.should == commit.id
-      @note.target.id.should == commit.id
+      @note.noteable.id.should == commit.id
+    end
+
+    it "should be recognized by #for_diff_line?" do
+      @note.should be_for_diff_line
     end
   end
 

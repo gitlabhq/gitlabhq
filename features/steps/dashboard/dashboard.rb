@@ -41,8 +41,8 @@ class Dashboard < Spinach::FeatureSteps
     )
   end
 
-  Then 'I should see "John Doe joined project Shop" event' do
-    page.should have_content "John Doe joined project Shop"
+  Then 'I should see "John Doe joined project at Shop" event' do
+    page.should have_content "John Doe joined project at Shop"
   end
 
   And 'user with name "John Doe" left project "Shop"' do
@@ -55,13 +55,21 @@ class Dashboard < Spinach::FeatureSteps
     )
   end
 
-  Then 'I should see "John Doe left project Shop" event' do
-    page.should have_content "John Doe left project Shop"
+  Then 'I should see "John Doe left project at Shop" event' do
+    page.should have_content "John Doe left project at Shop"
   end
 
   And 'I own project "Shop"' do
     @project = Factory :project, :name => 'Shop'
     @project.add_access(@user, :admin)
+  end
+
+  And 'I have group with projects' do
+    @group   = Factory :group
+    @project = Factory :project, group: @group
+    @event   = Factory :closed_issue_event, project: @project
+
+    @project.add_access current_user, :admin
   end
 
   And 'project "Shop" has push event' do
@@ -88,5 +96,11 @@ class Dashboard < Spinach::FeatureSteps
       :data => data,
       :author_id => @user.id
     )
+  end
+
+  Then 'I should see groups list' do
+    Group.all.each do |group|
+      page.should have_link group.name
+    end
   end
 end

@@ -1,17 +1,15 @@
 - if event.allowed?
-  - if event.issue?
-    .event_feed
-      = render "events/event_issue", event: event
+  %div.event-item
+    = event_image(event)
+    = image_tag gravatar_icon(event.author_email), class: "avatar"
 
-  - elsif event.merge_request?
-    .event_feed
-      = render "events/event_merge_request", event: event
+    - if event.push?
+      = render "events/event/push", event: event
+    - else
+      = render "events/event/common", event: event
 
-  - elsif event.push?
-    .event_feed
-      = render "events/event_push", event: event
-
-  - elsif event.membership_changed?
-    .event_feed
-      = render "events/event_membership_changed", event: event
-
+    .clearfix
+    %span.cgray.right
+      = time_ago_in_words(event.created_at)
+      ago.
+    .clearfix

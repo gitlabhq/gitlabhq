@@ -1,0 +1,20 @@
+.groups_box
+  %h5
+    Groups
+    %small
+      (#{groups.count})
+    - if current_user.can_create_group?
+      %span.right
+        = link_to new_admin_group_path, class: "btn very_small info" do
+          %i.icon-plus
+          New Group
+  %ul.unstyled
+    - groups.each do |group|
+      %li.wll
+        = link_to group_path(id: group.code), class: dom_class(group) do
+          %strong.group_name= truncate(group.name, length: 25)
+          %span.arrow
+            &rarr;
+          %span.last_activity
+            %strong Projects:
+            %span= group.projects.count

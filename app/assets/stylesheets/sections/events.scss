@@ -1,0 +1,110 @@
+/**
+ * Events labels
+ *
+ */
+.event_label {
+  &.pushed {
+    padding:0 2px;
+  }
+
+  &.opened {
+    padding:0 2px;
+  }
+
+  &.closed {
+    padding:0 2px;
+  }
+
+  &.merged {
+    padding:0 2px;
+  }
+
+  &.left,
+  &.joined {
+    padding:0 2px;
+    float:none;
+  }
+}
+
+/**
+ * Dashboard events feed
+ *
+ */
+.event-item {
+  min-height:40px;
+  border-bottom:1px solid #eee;
+  .event-title {
+    color:#333;
+    font-weight: bold;
+    .author_name {
+      color:#333;
+    }
+  }
+  .event-body {
+    p {
+      color:#555;
+    }
+    .event-info {
+      color:#666;
+    }
+  }
+  .avatar {
+    width:32px;
+  }
+  .event_icon {
+    float: right;
+    border: 1px solid #EEE;
+    padding: 5px;
+    @include border-radius(5px);
+    background: #F9F9F9;
+    img {
+      width:20px;
+    }
+  }
+  ul {
+    margin-left:50px;
+    margin-bottom:5px;
+    .avatar {
+      width:18px;
+      margin-top:3px;
+    }
+  }
+
+  padding: 15px 5px;
+  &:last-child { border:none }
+  .wll:hover { background:none }
+
+  .event_commits {
+    margin-top: 5px;
+
+    li {
+      &.commit {
+        background: transparent;
+        padding:3px;
+        border:none;
+        font-size:12px;
+      }
+      &.commits-stat {
+        display: block;
+        margin-top: 5px;
+      }
+    }
+  }
+}
+
+/**
+ * Push event widget
+ *
+ */
+.event_lp {
+  @extend .ui-box;
+  color:#777;
+  margin-bottom:20px;
+  padding:8px;
+  @include border-radius(4px);
+  min-height:22px;
+
+  .avatar {
+    width:24px;
+  }
+}

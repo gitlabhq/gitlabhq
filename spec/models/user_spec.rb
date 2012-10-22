@@ -1,3 +1,37 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :integer         not null, primary key
+#  email                  :string(255)     default(""), not null
+#  encrypted_password     :string(128)     default(""), not null
+#  reset_password_token   :string(255)
+#  reset_password_sent_at :datetime
+#  remember_created_at    :datetime
+#  sign_in_count          :integer         default(0)
+#  current_sign_in_at     :datetime
+#  last_sign_in_at        :datetime
+#  current_sign_in_ip     :string(255)
+#  last_sign_in_ip        :string(255)
+#  created_at             :datetime        not null
+#  updated_at             :datetime        not null
+#  name                   :string(255)
+#  admin                  :boolean         default(FALSE), not null
+#  projects_limit         :integer         default(10)
+#  skype                  :string(255)     default(""), not null
+#  linkedin               :string(255)     default(""), not null
+#  twitter                :string(255)     default(""), not null
+#  authentication_token   :string(255)
+#  dark_scheme            :boolean         default(FALSE), not null
+#  theme_id               :integer         default(1), not null
+#  bio                    :string(255)
+#  blocked                :boolean         default(FALSE), not null
+#  failed_attempts        :integer         default(0)
+#  locked_at              :datetime
+#  extern_uid             :string(255)
+#  provider               :string(255)
+#
+
 require 'spec_helper'
 
 describe User do
@@ -13,6 +47,11 @@ describe User do
     it { should have_many(:assigned_issues).dependent(:destroy) }
     it { should have_many(:merge_requests).dependent(:destroy) }
     it { should have_many(:assigned_merge_requests).dependent(:destroy) }
+  end
+
+  describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:projects_limit) }
+    it { should allow_mass_assignment_of(:projects_limit).as(:admin) }
   end
 
   describe 'validations' do

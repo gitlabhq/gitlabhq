@@ -235,7 +235,7 @@ describe Notify do
             commit.stub(:safe_message).and_return('some message')
           end
         end
-        before(:each) { note.stub(:target).and_return(commit) }
+        before(:each) { note.stub(:noteable).and_return(commit) }
 
         subject { Notify.note_commit_email(recipient.id, note.id) }
 

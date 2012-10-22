@@ -22,6 +22,12 @@ You might have some luck using these, but no guarantees:
 
 GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
 
+
+## Hardware: 
+
+We recommend to use server with at least 1GB RAM for gitlab instance.
+
+
 ## This installation guide created for Debian/Ubuntu and properly tested.
 
 The installation consists of 6 steps:
@@ -70,10 +76,55 @@ Now install the required packages:
     sudo apt-get update
     sudo apt-get upgrade
 
-    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev sqlite3 libsqlite3-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix
+    sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix libpq-dev
 
-    # If you want to use MySQL:
+
+# Database
+
+## SQLite
+
+    sudo apt-get install -y sqlite3 libsqlite3-dev 
+
+## MySQL
+
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+
+    # Login to MySQL
+    $ mysql -u root -p
+
+    # Create the GitLab production database
+    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+
+    # Create the MySQL User change $password to a real password
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+
+    # Grant proper permissions to the MySQL User
+    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+
+
+## PostgreSQL
+
+    sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
+
+    # Connect to database server
+    sudo -u postgres psql -d template1
+
+    # Add a user called gitlab. Change $password to a real password
+    template1=# CREATE USER gitlab WITH PASSWORD '$password';
+
+    # Create the GitLab production database
+    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
+
+    # Grant all privileges on database
+    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+
+    # Quit from PostgreSQL server
+    template1=# \q
+
+    # Try connect to new database
+    $ su - gitlab
+    $ psql -d gitlabhq_production -U gitlab
+
 
 # 2. Install Ruby
 
@@ -112,7 +163,6 @@ Generate key:
 
 Clone GitLab's fork of the Gitolite source code:
 
-    cd /home/git
     sudo -H -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup:
@@ -127,6 +177,7 @@ Setup:
 
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
     sudo -u git -H sed -i 's/0077/0007/g' /home/git/.gitolite.rc
+    sudo -u git -H sed -i "s/\(GIT_CONFIG_KEYS\s*=>*\s*\).\{2\}/\1'\.\*'/g" /home/git/.gitolite.rc
 
 Permissions:
 
@@ -170,28 +221,24 @@ and ensure you have followed all of the above steps carefully.
     # SQLite
     sudo -u gitlab cp config/database.yml.sqlite config/database.yml
 
-    # Or
     # Mysql
-    # Install MySQL as directed in Step #1
+    sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
-    # Login to MySQL
-    $ mysql -u root -p
+    # PostgreSQL
+    sudo -u gitlab cp config/database.yml.postgres config/database.yml
 
-    # Create the GitLab production database
-    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-
-    # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
-
-    # Grant proper permissions to the MySQL User
-    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
-
-    # Exit MySQL Server and copy the example config, make sure to update username/password in config/database.yml
-    sudo -u gitlab cp config/database.yml.example config/database.yml
+    # make sure to update username/password in config/database.yml
 
 #### Install gems
 
-    sudo -u gitlab -H bundle install --without development test --deployment
+    # mysql
+    sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
+
+    # or postgres
+    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
+
+    # or sqlite
+    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
 
 #### Setup database
 
@@ -285,7 +332,7 @@ a different host, you can configure its connection string in the
     sudo vim /etc/nginx/sites-enabled/gitlab
 
     # Restart nginx:
-    /etc/init.d/nginx restart
+    sudo /etc/init.d/nginx restart
 
 ## 3. Init script
 
@@ -296,7 +343,7 @@ Create init script in /etc/init.d/gitlab:
 
 GitLab autostart:
 
-    sudo update-rc.d gitlab defaults
+    sudo update-rc.d gitlab defaults 21
 
 Now you can start/restart/stop GitLab like:
 

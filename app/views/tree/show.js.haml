@@ -1,0 +1,10 @@
+:plain
+  // Load Files list
+  $("#tree-holder").html("#{escape_javascript(render(partial: "tree", locals: {tree: @tree}))}");
+  $("#tree-content-holder").show("slide", { direction: "right" }, 150);
+  $('.project-refs-form #path').val("#{@path}");
+
+  //  Load last commit log for each file in tree
+  $('#tree-slider').waitForImages(function() {
+    ajaxGet('#{@logs_path}');
+  });

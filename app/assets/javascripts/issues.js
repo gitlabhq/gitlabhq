@@ -6,6 +6,7 @@ function switchToNewIssue(form){
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.top-tabs .add_new').hide();
     disableButtonIfEmptyField("#issue_title", ".save-btn");
+    setupGfmAutoComplete();
   });
 }
 
@@ -17,6 +18,7 @@ function switchToEditIssue(form){
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.add_new').hide();
     disableButtonIfEmptyField("#issue_title", ".save-btn");
+    setupGfmAutoComplete();
   });
 }
 

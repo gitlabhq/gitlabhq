@@ -25,11 +25,23 @@ module StaticModel
     id
   end
 
+  def new_record?
+    false
+  end
+
   def persisted?
     false
   end
 
   def destroyed?
     false
+  end
+
+  def ==(other)
+    if other.is_a? StaticModel
+      id == other.id
+    else
+      super
+    end
   end
 end
