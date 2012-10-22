@@ -39,9 +39,9 @@ class MergeRequest < ActiveRecord::Base
     if target_branch == source_branch
       errors.add :base, "You can not use same branch for source and target branches"
     end
-    available_branches = project.heads.map(&:name)
+    available_branches = project.repo.branches
     unless available_branches.include?(target_branch) and available_branches.include?(source_branch)
-      errors.add :base, "Specified source branch or target branch not exist"
+      errors.add :base, "Specified source branch or target branch does not exist"
     end
   end
 
