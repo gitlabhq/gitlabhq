@@ -1,6 +1,7 @@
 - if @projects.any?
   .projects
     .activities.span8
+      = render "events/event_last_push", event: @last_push
       = render 'shared/no_ssh'
       - if @events.any?
         .content_list= render @events
@@ -8,7 +9,6 @@
         %h4.nothing_here_message Projects activity will be displayed here
       .loading.hide
     .side
-      = render "events/event_last_push", event: @last_push
       - if @groups.present?
         = render "groups", groups: @groups
       = render "projects", projects: @projects

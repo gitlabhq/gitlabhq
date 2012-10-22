@@ -1,5 +1,6 @@
 .projects
   .activities.span8
+    = render "events/event_last_push", event: @last_push
     = link_to dashboard_path, class: 'btn very_small' do
       &larr; To dashboard
     &nbsp;
@@ -12,7 +13,6 @@
       %h4.nothing_here_message Projects activity will be displayed here
     .loading.hide
   .side
-    = render "events/event_last_push", event: @last_push
     = render "projects", projects: @projects
     %div
       %span.rss-icon

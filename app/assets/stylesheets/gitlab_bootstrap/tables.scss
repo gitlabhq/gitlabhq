@@ -5,6 +5,12 @@ table {
   border:1px solid #bbb;
   width:100%;
 
+  &.low {
+    td {
+      line-height:18px;
+    }
+  }
+
   th {
     font-weight: bold;
     vertical-align: middle;
@@ -26,6 +32,8 @@ table {
 
   td {
     border-color:#f1f1f1;
+    line-height:28px;
+
     &:first-child {
       border-left:1px solid #bbb;
     }

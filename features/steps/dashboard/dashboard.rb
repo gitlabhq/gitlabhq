@@ -16,7 +16,7 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   Then 'I should see last push widget' do
-    page.should have_content "You pushed to branch new_design"
+    page.should have_content "You pushed to new_design"
     page.should have_link "Create Merge Request"
   end
 

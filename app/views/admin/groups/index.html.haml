@@ -1,6 +1,10 @@
 = render 'admin/shared/projects_head'
 %h3.page_title
   Groups
+  %small
+    allows you to keep projects organized.
+    Use groups for uniting related projects.
+
   = link_to 'New Group', new_admin_group_path, class: "btn small right"
 %br
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
