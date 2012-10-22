@@ -1,3 +1,6 @@
+v 3.0.1
+  - Fixed git over http
+
 v 3.0.0
   - Projects groups
   - Web Editor

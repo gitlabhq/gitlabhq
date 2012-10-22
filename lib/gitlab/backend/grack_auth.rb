@@ -53,6 +53,10 @@ module Grack
       end
     end
 
+    def can?(object, action, subject)
+      abilities.allowed?(object, action, subject)
+    end
+
     def current_ref
       if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
         input = Zlib::GzipReader.new(@request.body).read
@@ -62,6 +66,16 @@ module Grack
       # Need to reset seek point
       @request.body.rewind
       /refs\/heads\/([\w-]+)/.match(input).to_a.first
+    end
+
+    protected
+
+    def abilities
+      @abilities ||= begin
+                       abilities = Six.new
+                       abilities << Ability
+                       abilities
+                     end
     end
   end# Auth
 end# Grack
