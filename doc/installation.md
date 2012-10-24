@@ -51,31 +51,12 @@ The basic installation will provide you a GitLab setup with options:
 
 The installation consists of next steps:
 
-1. Install packages / dependencies
-2. Install ruby
-3. Install Gitolite
-4. Install mysql and create db
-5. Install and configure GitLab.
-6. nginx + unicorn
-7. service gitlab 
-
-> - - -
-> The first 3 steps of this guide can be easily skipped by executing an install script:
->
->     # Install curl and sudo
->     apt-get install curl sudo
->
->     # 3 steps in 1 command :)
->     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu.sh | sh
->
-> Now you can go to [Step 4](#4-install-gitlab-and-configuration-check-status-configuration)
->
-> Or if you are installing on Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
->
->     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu_aws.sh | sh
->
-> for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlab-recipes/blob/master/install/debian_ubuntu_aws.sh)
-> - - -
+1. packages / dependencies
+2. ruby
+3. gitolite
+4. mysql
+5. GitLab.
+6. nginx 
 
 
 # 1. Install packages
@@ -216,6 +197,11 @@ and ensure you have followed all of the above steps carefully.
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
 
+#### Copy unicorn config
+
+    cd /home/gitlab/gitlab
+    sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
+
 #### Setup GitLab hooks
 
     sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
@@ -243,16 +229,25 @@ Checking status:
     UMASK for .gitolite.rc is 0007? ............YES
     /home/git/share/gitolite/hooks/common/post-receive exists? ............YES
 
-If you got all YES - congratulations! You can go to the next step.
+If you got all YES - congratulations! You can run a GitLab app.
 
-# 6. nginx + unicorn
+### init script
 
-## 1. Unicorn
+Create init script in /etc/init.d/gitlab:
 
-    cd /home/gitlab/gitlab
-    sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
+    sudo chmod +x /etc/init.d/gitlab
 
-## 2. Nginx
+GitLab autostart:
+
+    sudo update-rc.d gitlab defaults 21
+
+### Now you should start GitLab application:
+
+    sudo service gitlab start
+
+
+# 7. Nginx
 
     # Install first
     sudo apt-get install nginx
@@ -270,22 +265,7 @@ If you got all YES - congratulations! You can go to the next step.
     sudo /etc/init.d/nginx restart
 
 
-
-# 7. service gitlab
-
-Create init script in /etc/init.d/gitlab:
-
-    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
-    sudo chmod +x /etc/init.d/gitlab
-
-GitLab autostart:
-
-    sudo update-rc.d gitlab defaults 21
-
-Now you can start GitLab like:
-
-    sudo service gitlab start
-
+# Done!  Visit **YOUR_SERVER_FQDN** for gitlab instance
 
 You can login via web using admin generated with setup:
 
@@ -296,6 +276,23 @@ You can login via web using admin generated with setup:
 
 # Advanced setup tips:
 
+> - - -
+> The first 3 steps of this guide can be easily skipped by executing an install script:
+>
+>     # Install curl and sudo
+>     apt-get install curl sudo
+>
+>     # 3 steps in 1 command :)
+>     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu.sh | sh
+>
+> Now you can go to [Step 4](#4-install-gitlab-and-configuration-check-status-configuration)
+>
+> Or if you are installing on Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
+>
+>     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu_aws.sh | sh
+>
+> for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlab-recipes/blob/master/install/debian_ubuntu_aws.sh)
+> - - -
 
 ## Customizing Resque's Redis connection
 
