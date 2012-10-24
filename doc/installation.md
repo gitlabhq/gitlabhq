@@ -51,12 +51,13 @@ The basic installation will provide you a GitLab setup with options:
 
 The installation consists of next steps:
 
-1. packages / dependencies
-2. ruby
-3. gitolite
-4. mysql
-5. GitLab.
-6. nginx 
+1. Packages / dependencies
+2. Ruby
+3. Users
+4. Gitolite
+5. Mysql
+6. GitLab.
+7. Nginx 
 
 
 # 1. Install packages
@@ -72,6 +73,9 @@ Now install the required packages:
 
     sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix libpq-dev
 
+    sudo pip install pygments
+
+
 # 2. Install Ruby
 
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p194.tar.gz
@@ -81,7 +85,7 @@ Now install the required packages:
     make
     sudo make install
 
-# 3. Install Gitolite
+# 3. Users
 
 Create user for git:
 
@@ -111,6 +115,9 @@ Generate key:
 
     sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 
+
+# 4. Gitolite
+
 Clone GitLab's fork of the Gitolite source code:
 
     sudo -H -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
@@ -134,8 +141,6 @@ Permissions:
     sudo chmod -R g+rwX /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
-#### CHECK: Logout & login again to apply git group to your user
-
     # clone admin repo to add localhost to known_hosts
     # & be sure your user has access to gitolite
     sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin
@@ -148,7 +153,7 @@ Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wik
 and ensure you have followed all of the above steps carefully.
 
 
-# 4. Mysql database
+# 5. Mysql database
 
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
@@ -165,12 +170,12 @@ and ensure you have followed all of the above steps carefully.
     mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
 
 
-# 5. Clone GitLab source and install prerequisites
+# 6. GitLab
 
-    sudo gem install charlock_holmes --version '0.6.8'
-    sudo pip install pygments
-    sudo gem install bundler
     cd /home/gitlab
+
+
+#### Get source code
 
     # Get gitlab code. Use this for stable setup
     sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
@@ -179,6 +184,9 @@ and ensure you have followed all of the above steps carefully.
     # Master branch (recent changes, less stable)
     sudo -H -u gitlab git clone -b master https://github.com/gitlabhq/gitlabhq.git gitlab
 
+
+#### Copy configs
+ 
     cd gitlab
 
     # Rename config files
@@ -190,16 +198,18 @@ and ensure you have followed all of the above steps carefully.
 
 #### Install gems
 
-    # mysql
+    cd /home/gitlab/gitlab
+
+    sudo gem install charlock_holmes --version '0.6.8'
+    sudo gem install bundler
     sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
 
-#### Setup database
+#### Setup application
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 #### Copy unicorn config
 
-    cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
 
 #### Setup GitLab hooks
@@ -231,7 +241,7 @@ Checking status:
 
 If you got all YES - congratulations! You can run a GitLab app.
 
-### init script
+#### init script
 
 Create init script in /etc/init.d/gitlab:
 
@@ -242,7 +252,7 @@ GitLab autostart:
 
     sudo update-rc.d gitlab defaults 21
 
-### Now you should start GitLab application:
+#### Now you should start GitLab application:
 
     sudo service gitlab start
 
@@ -276,6 +286,9 @@ You can login via web using admin generated with setup:
 
 # Advanced setup tips:
 
+
+## Quick setup
+
 > - - -
 > The first 3 steps of this guide can be easily skipped by executing an install script:
 >
@@ -293,6 +306,7 @@ You can login via web using admin generated with setup:
 >
 > for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlab-recipes/blob/master/install/debian_ubuntu_aws.sh)
 > - - -
+
 
 ## Customizing Resque's Redis connection
 
