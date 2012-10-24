@@ -188,7 +188,6 @@ Gitlab::Application.routes.draw do
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
-    resources :team_members
     resources :milestones
     resources :labels, only: [:index]
     resources :issues do
@@ -196,6 +195,16 @@ Gitlab::Application.routes.draw do
         post  :sort
         post  :bulk_update
         get   :search
+      end
+    end
+
+    resources :team_members do
+      collection do
+
+        # Used for import team
+        # from another project
+        get :import
+        post :apply_import
       end
     end
 

@@ -86,4 +86,24 @@ class ProjectTeamManagement < Spinach::FeatureSteps
     project = Project.find_by_name("Shop")
     project.add_access(user, :write)
   end
+
+  Given 'I own project "Website"' do
+    @project = Factory :project, :name => "Website"
+    @project.add_access(@user, :admin)
+  end
+
+  And '"Mike" is "Website" reporter' do
+    user = User.find_by_name("Mike")
+    project = Project.find_by_name("Website")
+    project.add_access(user, :read)
+  end
+
+  And 'I click link "Import team from another project"' do
+    click_link "Import team from another project"
+  end
+
+  When 'I submit "Website" project for import team' do
+    select 'Website', from: 'source_project_id'
+    click_button 'Import'
+  end
 end

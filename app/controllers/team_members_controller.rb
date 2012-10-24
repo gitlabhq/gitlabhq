@@ -43,4 +43,12 @@ class TeamMembersController < ProjectResourceController
       format.js { render nothing: true }
     end
   end
+
+  def apply_import
+    giver = Project.find(params[:source_project_id])
+    status = UsersProject.import_team(giver, project)
+    notice = status ? "Succesfully imported" : "Import failed"
+
+    redirect_to project_team_members_path(project), notice: notice
+  end
 end

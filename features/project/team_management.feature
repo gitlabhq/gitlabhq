@@ -32,3 +32,10 @@ Feature: Project Team management
     And I click link "Remove from team"
     Then I visit project "Shop" team page
     And I should not see "Sam" in team list
+
+  Scenario: Import team from another project
+    Given I own project "Website"
+    And "Mike" is "Website" reporter
+    And I click link "Import team from another project"
+    When I submit "Website" project for import team
+    Then I should see "Mike" in team list as "Reporter"
