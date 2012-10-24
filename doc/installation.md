@@ -30,14 +30,6 @@ We recommend to use server with at least 1GB RAM for gitlab instance.
 
 ## This installation guide created for Debian/Ubuntu and properly tested.
 
-The installation consists of 6 steps:
-
-1. Install packages / dependencies
-2. Install ruby
-3. Install Gitolite
-4. Install and configure GitLab.
-5. Start the web front-end
-6. Start a Resque worker (for background processing)
 
 ### IMPORTANT
 
@@ -46,6 +38,26 @@ Please make sure you have followed all the steps below before posting to the mai
 Only create a GitHub Issue if you want a specific part of this installation guide updated.
 
 Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
+
+
+# Basic setup
+
+The basic installation will provide you a GitLab setup with options:
+
+1. ruby 1.9.3
+2. mysql as main db
+3. gitolite v3 fork by gitlab
+4. nginx + unicorn
+
+The installation consists of next steps:
+
+1. Install packages / dependencies
+2. Install ruby
+3. Install Gitolite
+4. Install mysql and create db
+5. Install and configure GitLab.
+6. nginx + unicorn
+7. service gitlab 
 
 > - - -
 > The first 3 steps of this guide can be easily skipped by executing an install script:
@@ -65,6 +77,7 @@ Also read the [Read this before you submit an issue](https://github.com/gitlabhq
 > for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlab-recipes/blob/master/install/debian_ubuntu_aws.sh)
 > - - -
 
+
 # 1. Install packages
 
 *Keep in mind that `sudo` is not installed on Debian by default. You should install it as root:*
@@ -77,54 +90,6 @@ Now install the required packages:
     sudo apt-get upgrade
 
     sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix libpq-dev
-
-
-# Database
-
-## SQLite
-
-    sudo apt-get install -y sqlite3 libsqlite3-dev 
-
-## MySQL
-
-    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
-
-    # Login to MySQL
-    $ mysql -u root -p
-
-    # Create the GitLab production database
-    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-
-    # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
-
-    # Grant proper permissions to the MySQL User
-    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
-
-
-## PostgreSQL
-
-    sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
-
-    # Connect to database server
-    sudo -u postgres psql -d template1
-
-    # Add a user called gitlab. Change $password to a real password
-    template1=# CREATE USER gitlab WITH PASSWORD '$password';
-
-    # Create the GitLab production database
-    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
-
-    # Grant all privileges on database
-    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
-
-    # Quit from PostgreSQL server
-    template1=# \q
-
-    # Try connect to new database
-    $ su - gitlab
-    $ psql -d gitlabhq_production -U gitlab
-
 
 # 2. Install Ruby
 
@@ -201,7 +166,25 @@ Permissions:
 Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
 and ensure you have followed all of the above steps carefully.
 
-# 4. Clone GitLab source and install prerequisites
+
+# 4. Mysql database
+
+    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+
+    # Login to MySQL
+    $ mysql -u root -p
+
+    # Create the GitLab production database
+    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+
+    # Create the MySQL User change $password to a real password
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+
+    # Grant proper permissions to the MySQL User
+    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+
+
+# 5. Clone GitLab source and install prerequisites
 
     sudo gem install charlock_holmes --version '0.6.8'
     sudo pip install pygments
@@ -220,29 +203,14 @@ and ensure you have followed all of the above steps carefully.
     # Rename config files
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
 
-#### Select the database you want to use
-
-    # SQLite
-    sudo -u gitlab cp config/database.yml.sqlite config/database.yml
-
-    # Mysql
-    sudo -u gitlab cp config/database.yml.mysql config/database.yml
-
-    # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgres config/database.yml
-
+    # Copy mysql db config
     # make sure to update username/password in config/database.yml
+    sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
 #### Install gems
 
     # mysql
     sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
-
-    # or postgres
-    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
-
-    # or sqlite
-    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
 
 #### Setup database
 
@@ -277,49 +245,12 @@ Checking status:
 
 If you got all YES - congratulations! You can go to the next step.
 
-# 5. Start the web server
-
-Application can be started with next command:
-
-    # For test purposes
-    sudo -u gitlab bundle exec rails s -e production
-
-    # As daemon
-    sudo -u gitlab bundle exec rails s -e production -d
-
-You can login via web using admin generated with setup:
-
-    admin@local.host
-    5iveL!fe
-
-#  6. Run Resque process (for processing job queue).
-
-    # Manually
-    sudo -u gitlab bundle exec rake environment resque:work QUEUE=* RAILS_ENV=production BACKGROUND=yes
-
-    # GitLab start script
-    sudo -u gitlab ./resque.sh
-    # if you run this as root /home/gitlab/gitlab/tmp/pids/resque_worker.pid will be owned by root
-    # causing the resque worker not to start via init script on next boot/service restart
-
-## Customizing Resque's Redis connection
-
-If you'd like Resque to connect to a Redis server on a non-standard port or on
-a different host, you can configure its connection string in the
-**config/resque.yml** file:
-
-    production: redis.example.com:6379
-
-**Ok - we have a working application now. **
-**But keep going - there are some things that should be done **
-
-# Nginx && Unicorn
+# 6. nginx + unicorn
 
 ## 1. Unicorn
 
     cd /home/gitlab/gitlab
     sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
-    sudo -u gitlab bundle exec unicorn_rails -c config/unicorn.rb -E production -D
 
 ## 2. Nginx
 
@@ -338,7 +269,9 @@ a different host, you can configure its connection string in the
     # Restart nginx:
     sudo /etc/init.d/nginx restart
 
-## 3. Init script
+
+
+# 7. service gitlab
 
 Create init script in /etc/init.d/gitlab:
 
@@ -349,6 +282,101 @@ GitLab autostart:
 
     sudo update-rc.d gitlab defaults 21
 
-Now you can start/restart/stop GitLab like:
+Now you can start GitLab like:
 
-    sudo /etc/init.d/gitlab restart
+    sudo service gitlab start
+
+
+You can login via web using admin generated with setup:
+
+    admin@local.host
+    5iveL!fe
+
+
+
+# Advanced setup tips:
+
+
+## Customizing Resque's Redis connection
+
+If you'd like Resque to connect to a Redis server on a non-standard port or on
+a different host, you can configure its connection string in the
+**config/resque.yml** file:
+
+    production: redis.example.com:6379
+
+**Ok - we have a working application now. **
+**But keep going - there are some things that should be done **
+
+
+# Database
+
+## SQLite
+
+    sudo apt-get install -y sqlite3 libsqlite3-dev 
+
+## MySQL
+
+    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+
+    # Login to MySQL
+    $ mysql -u root -p
+
+    # Create the GitLab production database
+    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+
+    # Create the MySQL User change $password to a real password
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+
+    # Grant proper permissions to the MySQL User
+    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+
+
+## PostgreSQL
+
+    sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
+
+    # Connect to database server
+    sudo -u postgres psql -d template1
+
+    # Add a user called gitlab. Change $password to a real password
+    template1=# CREATE USER gitlab WITH PASSWORD '$password';
+
+    # Create the GitLab production database
+    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
+
+    # Grant all privileges on database
+    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+
+    # Quit from PostgreSQL server
+    template1=# \q
+
+    # Try connect to new database
+    $ su - gitlab
+    $ psql -d gitlabhq_production -U gitlab
+
+
+
+#### Select the database you want to use
+
+    # SQLite
+    sudo -u gitlab cp config/database.yml.sqlite config/database.yml
+
+    # Mysql
+    sudo -u gitlab cp config/database.yml.mysql config/database.yml
+
+    # PostgreSQL
+    sudo -u gitlab cp config/database.yml.postgres config/database.yml
+
+    # make sure to update username/password in config/database.yml
+
+#### Install gems
+
+    # mysql
+    sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
+
+    # or postgres
+    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
+
+    # or sqlite
+    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
