@@ -12,6 +12,6 @@
     .input= select_tag(:source_project_id, options_from_collection_for_select(current_user.projects, :id, :name), prompt: "Select project", class: "chosen xxlarge", required: true)
 
   .actions
-    = submit_tag 'Save', class: "btn save-btn"
+    = submit_tag 'Import', class: "btn save-btn"
     = link_to "Cancel", project_team_index_path(@project), class: "btn cancel-btn"
 
