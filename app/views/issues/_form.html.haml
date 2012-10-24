@@ -12,7 +12,7 @@
           = f.label :title do
             %strong= "Subject *"
           .input
-            = f.text_field :title, maxlength: 255, class: "xxlarge gfm-input"
+            = f.text_field :title, maxlength: 255, class: "xxlarge gfm-input", autofocus: true
       .issue_middle_block
         .issue_assignee
           = f.label :assignee_id do
