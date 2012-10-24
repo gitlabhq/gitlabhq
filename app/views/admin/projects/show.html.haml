@@ -5,7 +5,7 @@
     %i.icon-edit
     Edit
 
-- if !@admin_project.has_post_receive_file? && @admin_project.commit
+- if !@admin_project.has_post_receive_file? && @admin_project.has_commits?
   %br
   .alert.alert-error
     %span

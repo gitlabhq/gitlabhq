@@ -157,6 +157,10 @@ Add your user to the `git` group:
 
     sudo usermod -a -G git gitlab
 
+Add `git` user to `gitlab` group:
+
+    sudo usermod -a -G gitlab git
+
 Generate key:
 
     sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa

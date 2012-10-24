@@ -137,6 +137,8 @@ module Repository
 
   def has_commits?
     !!commit
+  rescue Grit::NoSuchPathError
+    false
   end
 
   def root_ref

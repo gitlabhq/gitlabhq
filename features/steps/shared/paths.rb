@@ -6,6 +6,22 @@ module SharedPaths
   end
 
   # ----------------------------------------
+  # Group
+  # ----------------------------------------
+
+  When 'I visit group page' do
+    visit group_path(current_group)
+  end
+
+  When 'I visit group issues page' do
+    visit issues_group_path(current_group)
+  end
+
+  When 'I visit group merge requests page' do
+    visit merge_requests_group_path(current_group)
+  end
+
+  # ----------------------------------------
   # Dashboard
   # ----------------------------------------
 
@@ -83,6 +99,10 @@ module SharedPaths
 
   Given 'I visit admin Resque page' do
     visit admin_resque_path
+  end
+
+  And 'I visit admin groups page' do
+    visit admin_groups_path
   end
 
   # ----------------------------------------
