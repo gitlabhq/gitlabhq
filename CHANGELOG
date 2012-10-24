@@ -1,3 +1,7 @@
+v 3.0.3
+  - Fixed bug with issues list in Chrome
+  - New Feature: Import team from another project
+
 v 3.0.2
   - Fixed gitlab:app:setup
   - Fixed application error on empty project in admin area
