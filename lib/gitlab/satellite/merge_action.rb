@@ -55,11 +55,11 @@ module Gitlab
         prepare_satellite!(repo)
 
         # create target branch in satellite at the corresponding commit from Gitolite
-        repo.git.checkout({b: true}, merge_request.target_branch, "origin/#{merge_request.target_branch}")
+        repo.git.checkout({raise: true, b: true}, merge_request.target_branch, "origin/#{merge_request.target_branch}")
 
         # merge the source branch from Gitolite into the satellite
         # will raise CommandFailed when merge fails
-        repo.git.pull({no_ff: true, raise: true}, :origin, merge_request.source_branch)
+        repo.git.pull({raise: true, no_ff: true}, :origin, merge_request.source_branch)
       rescue Grit::Git::CommandFailed => ex
         Gitlab::GitLogger.error(ex.message)
         false

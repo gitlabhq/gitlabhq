@@ -26,7 +26,7 @@ class TreeController < ProjectResourceController
   end
 
   def update
-    file_editor = Gitlab::FileEditor.new(current_user, @project, @ref)
+    file_editor = Gitlab::Satellite::EditFileAction.new(current_user, @project, @ref)
     update_status = file_editor.update(
       @path,
       params[:content],
