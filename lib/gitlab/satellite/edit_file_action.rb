@@ -5,15 +5,16 @@ module Gitlab
     # It gives you ability to make changes to files
     # & commit this changes from GitLab UI.
     class EditFileAction < Action
-      attr_accessor :ref
+      attr_accessor :path, :ref
 
-      def initialize(user, project, ref)
+      def initialize(user, project, ref, path)
         super user, project
+        @path = path
         @ref = ref
       end
 
-      def update(path, content, commit_message, last_commit)
-        return false unless can_edit?(path, last_commit)
+      def update(content, commit_message, last_commit)
+        return false unless can_edit?(last_commit)
 
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
@@ -34,7 +35,7 @@ module Gitlab
 
       protected
 
-      def can_edit?(path, last_commit)
+      def can_edit?(last_commit)
         current_last_commit = @project.last_commit_for(ref, path).sha
         last_commit == current_last_commit
       end
