@@ -26,12 +26,12 @@ module Gitlab
           if merge_in_satellite!(merge_repo)
             # push merge back to Gitolite
             # will raise CommandFailed when push fails
-            merge_repo.git.push({raise: true}, :origin, merge_request.target_branch)
+            merge_repo.git.push({raise: true, timeout: true}, :origin, merge_request.target_branch)
 
             # remove source branch
             if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch)
               # will raise CommandFailed when push fails
-              merge_repo.git.push({raise: true}, :origin, ":#{merge_request.source_branch}")
+              merge_repo.git.push({raise: true, timeout: true}, :origin, ":#{merge_request.source_branch}")
             end
 
             # merge, push and branch removal successful
@@ -55,11 +55,11 @@ module Gitlab
         prepare_satellite!(repo)
 
         # create target branch in satellite at the corresponding commit from Gitolite
-        repo.git.checkout({raise: true, b: true}, merge_request.target_branch, "origin/#{merge_request.target_branch}")
+        repo.git.checkout({raise: true, timeout: true, b: true}, merge_request.target_branch, "origin/#{merge_request.target_branch}")
 
         # merge the source branch from Gitolite into the satellite
         # will raise CommandFailed when merge fails
-        repo.git.pull({raise: true, no_ff: true}, :origin, merge_request.source_branch)
+        repo.git.pull({raise: true, timeout: true, no_ff: true}, :origin, merge_request.source_branch)
       rescue Grit::Git::CommandFailed => ex
         Gitlab::GitLogger.error(ex.message)
         false
