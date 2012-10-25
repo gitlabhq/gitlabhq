@@ -26,6 +26,7 @@
 .underlined { border-bottom: 1px solid #CCC; }
 .no-borders { border:none; }
 .vlink { color: $link_color !important; }
+.underlined_link { text-decoration: underline; }
 .borders { border: 1px solid #ccc; @include shade; }
 .hint { font-style: italic; color: #999; }
 
