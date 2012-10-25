@@ -50,10 +50,7 @@ module Gitlab
       #
       # Note: use this within #in_locked_and_timed_satellite
       def prepare_satellite!(repo)
-        project.satellite.clear
-
-        repo.git.reset(hard: true)
-        repo.git.fetch({}, :origin)
+        project.satellite.clear_and_update!
 
         repo.git.config({}, "user.name", user.name)
         repo.git.config({}, "user.email", user.email)
