@@ -3,7 +3,7 @@
 Get all MR for this project.
 
 ```
-GET /:id/merge_requests
+GET /projects/:id/merge_requests
 ```
 
 Parameters:
@@ -43,7 +43,7 @@ Parameters:
 Show information about MR.
 
 ```
-GET /:id/merge_request/:merge_request_id
+GET /projects/:id/merge_request/:merge_request_id
 ```
 
 Parameters:
@@ -83,7 +83,7 @@ Parameters:
 Create MR.
 
 ```
-POST /:id/merge_requests
+POST /projects/:id/merge_requests
 ```
 
 Parameters:
@@ -125,7 +125,7 @@ Parameters:
 Update MR. You can change branches, title, or even close the MR.
 
 ```
-PUT /:id/merge_request/:merge_request_id
+PUT /projects/:id/merge_request/:merge_request_id
 ```
 
 Parameters:
@@ -169,7 +169,7 @@ Parameters:
 Post comment to MR
 
 ```
-POST /:id/merge_request/:merge_request_id/comments
+POST /projects/:id/merge_request/:merge_request_id/comments
 ```
 
 Parameters:

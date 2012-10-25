@@ -11,7 +11,7 @@ module Gitlab
       #   id (required) - The ID or code name of a project
       #
       # Example:
-      #   GET /:id/merge_requests
+      #   GET /projects/:id/merge_requests
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
@@ -26,7 +26,7 @@ module Gitlab
       #   merge_request_id (required) - The ID of MR
       # 
       # Example:
-      #   GET /:id/merge_request/:merge_request_id
+      #   GET /projects/:id/merge_request/:merge_request_id
       #
       get ":id/merge_request/:merge_request_id" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
@@ -47,7 +47,7 @@ module Gitlab
       #   title (required)         - Title of MR
       # 
       # Example:
-      #   POST /:id/merge_requests
+      #   POST /projects/:id/merge_requests
       #
       post ":id/merge_requests" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
@@ -75,7 +75,7 @@ module Gitlab
       #   title                       - Title of MR
       #   closed                      - Status of MR. true - closed
       # Example:
-      #   PUT /:id/merge_request/:merge_request_id
+      #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
@@ -99,7 +99,7 @@ module Gitlab
       #   merge_request_id (required) - ID of MR
       #   note (required) - Text of comment
       # Examples: 
-      #   POST /:id/merge_request/:merge_request_id/comments
+      #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
       post ":id/merge_request/:merge_request_id/comments" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
