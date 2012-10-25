@@ -5,20 +5,8 @@ module Gitlab
 
     attr_accessor :project
 
-    def initialize project
-      self.project = project
-    end
-
-    def create
-      `git clone #{project.url_to_repo} #{path}`
-    end
-
-    def path
-      Rails.root.join("tmp", "repo_satellites", project.path)
-    end
-
-    def exists?
-      File.exists? path
+    def initialize(project)
+      @project = project
     end
 
     #will be deleted all branches except PARKING_BRANCH
@@ -37,5 +25,16 @@ module Gitlab
       end
     end
 
+    def create
+      `git clone #{project.url_to_repo} #{path}`
+    end
+
+    def exists?
+      File.exists? path
+    end
+
+    def path
+      Rails.root.join("tmp", "repo_satellites", project.path)
+    end
   end
 end
