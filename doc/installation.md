@@ -1,35 +1,6 @@
-## Platform requirements:
+_This installation guide created for Debian/Ubuntu and properly tested._
 
-**The project is designed for the Linux operating system.**
-
-It may work on FreeBSD and Mac OS, but we don't test our application for these systems and can't guarantee stability and full functionality.
-
-We officially support (recent versions of) these Linux distributions:
-
-- Ubuntu Linux
-- Debian/GNU Linux
-
-It should work on:
-
-- Fedora
-- CentOs
-- RedHat
-
-You might have some luck using these, but no guarantees:
-
- - MacOS X
- - FreeBSD
-
-GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
-
-
-## Hardware: 
-
-We recommend to use server with at least 1GB RAM for gitlab instance.
-
-
-## This installation guide created for Debian/Ubuntu and properly tested.
-
+_Checkout requirements before setup_
 
 ### IMPORTANT
 
@@ -39,6 +10,7 @@ Only create a GitHub Issue if you want a specific part of this installation guid
 
 Also read the [Read this before you submit an issue](https://github.com/gitlabhq/gitlabhq/wiki/Read-this-before-you-submit-an-issue) wiki page.
 
+- - -
 
 # Basic setup
 
@@ -103,12 +75,9 @@ Create user for GitLab:
     # ubuntu/debian
     sudo adduser --disabled-login --gecos 'gitlab system' gitlab
 
-Add your user to the `git` group:
+Add your users to groups:
 
     sudo usermod -a -G git gitlab
-
-Add `git` user to `gitlab` group:
-
     sudo usermod -a -G gitlab git
 
 Generate key:
@@ -190,11 +159,18 @@ and ensure you have followed all of the above steps carefully.
     cd gitlab
 
     # Rename config files
+    #
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
 
     # Copy mysql db config
+    #
     # make sure to update username/password in config/database.yml
+    #
     sudo -u gitlab cp config/database.yml.mysql config/database.yml
+
+    # Copy unicorn config
+    #
+    sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
 
 #### Install gems
 
@@ -208,9 +184,6 @@ and ensure you have followed all of the above steps carefully.
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
 
-#### Copy unicorn config
-
-    sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
 
 #### Setup GitLab hooks
 
@@ -275,13 +248,15 @@ GitLab autostart:
     sudo /etc/init.d/nginx restart
 
 
-# Done!  Visit **YOUR_SERVER_FQDN** for gitlab instance
+# Done!  Visit YOUR_SERVER for gitlab instance
 
 You can login via web using admin generated with setup:
 
     admin@local.host
     5iveL!fe
 
+
+- - -
 
 
 # Advanced setup tips:
@@ -318,76 +293,3 @@ a different host, you can configure its connection string in the
 
 **Ok - we have a working application now. **
 **But keep going - there are some things that should be done **
-
-
-# Database
-
-## SQLite
-
-    sudo apt-get install -y sqlite3 libsqlite3-dev 
-
-## MySQL
-
-    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
-
-    # Login to MySQL
-    $ mysql -u root -p
-
-    # Create the GitLab production database
-    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-
-    # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
-
-    # Grant proper permissions to the MySQL User
-    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
-
-
-## PostgreSQL
-
-    sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
-
-    # Connect to database server
-    sudo -u postgres psql -d template1
-
-    # Add a user called gitlab. Change $password to a real password
-    template1=# CREATE USER gitlab WITH PASSWORD '$password';
-
-    # Create the GitLab production database
-    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
-
-    # Grant all privileges on database
-    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
-
-    # Quit from PostgreSQL server
-    template1=# \q
-
-    # Try connect to new database
-    $ su - gitlab
-    $ psql -d gitlabhq_production -U gitlab
-
-
-
-#### Select the database you want to use
-
-    # SQLite
-    sudo -u gitlab cp config/database.yml.sqlite config/database.yml
-
-    # Mysql
-    sudo -u gitlab cp config/database.yml.mysql config/database.yml
-
-    # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgres config/database.yml
-
-    # make sure to update username/password in config/database.yml
-
-#### Install gems
-
-    # mysql
-    sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
-
-    # or postgres
-    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
-
-    # or sqlite
-    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
