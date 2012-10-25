@@ -17,6 +17,10 @@ web:
 email:
   from: notify@localhost
 
+# URL used for support 
+#support:
+#  url: "http://helpdesk"
+
 # Application specific settings
 # Like default project limit for user etc
 app:

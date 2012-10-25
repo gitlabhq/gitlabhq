@@ -20,6 +20,10 @@
           = link_to new_project_path, class: "btn small", title: "Create New Project" do
             %i.icon-plus
             Project
+        - if Gitlab.config['support']  
+          %a{:class => "btn small", :href =>  Gitlab.config.support_url }
+            %i.icon-envelope
+            Support
       .account-box
         = link_to profile_path, class: "pic" do
           = image_tag gravatar_icon(current_user.email)
