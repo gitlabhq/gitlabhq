@@ -1,12 +1,11 @@
 module Gitlab
   module Satellite
     class MergeAction < Action
-      attr_accessor :merge_request, :user
+      attr_accessor :merge_request
 
       def initialize(merge_request, user)
-        super merge_request.project
+        super merge_request.project, user
         @merge_request = merge_request
-        @user = user
       end
 
       def can_be_merged?
@@ -64,19 +63,6 @@ module Gitlab
       rescue Grit::Git::CommandFailed => ex
         Gitlab::GitLogger.error(ex.message)
         false
-      end
-
-      # * Clears the satellite
-      # * Updates the satellite from Gitolite
-      # * Sets up Git variables for the user
-      def prepare_satellite!(repo)
-        project.satellite.clear
-
-        repo.git.reset(hard: true)
-        repo.git.fetch({}, :origin)
-
-        repo.git.config({}, "user.name", user.name)
-        repo.git.config({}, "user.email", user.email)
       end
     end
   end

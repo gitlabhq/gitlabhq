@@ -3,10 +3,11 @@ module Gitlab
     class Action
       DEFAULT_OPTIONS = { git_timeout: 30.seconds }
 
-      attr_accessor :options, :project
+      attr_accessor :options, :project, :user
 
-      def initialize(project, options = {})
+      def initialize(project, user, options = {})
         @project = project
+        @user = user
         @options = DEFAULT_OPTIONS.merge(options)
       end
 
@@ -41,6 +42,21 @@ module Gitlab
 
       def lock_file
         Rails.root.join("tmp", "#{project.path}.lock")
+      end
+
+      # * Clears the satellite
+      # * Updates the satellite from Gitolite
+      # * Sets up Git variables for the user
+      #
+      # Note: use this within #in_locked_and_timed_satellite
+      def prepare_satellite!(repo)
+        project.satellite.clear
+
+        repo.git.reset(hard: true)
+        repo.git.fetch({}, :origin)
+
+        repo.git.config({}, "user.name", user.name)
+        repo.git.config({}, "user.email", user.email)
       end
     end
   end
