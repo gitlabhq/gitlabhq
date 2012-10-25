@@ -10,6 +10,8 @@ module Gitlab
       end
 
       def clear_and_update!
+        raise "Satellite doesn't exist" unless exists?
+
         delete_heads!
         clear_working_dir!
         update_from_source!
@@ -23,8 +25,29 @@ module Gitlab
         File.exists? path
       end
 
+      # Locks the satellite and yields
+      def lock
+        raise "Satellite doesn't exist" unless exists?
+
+        File.open(lock_file, "w+") do |f|
+          f.flock(File::LOCK_EX)
+
+          return yield
+        end
+      end
+
+      def lock_file
+        Rails.root.join("tmp", "#{project.path}.lock")
+      end
+
       def path
         Rails.root.join("tmp", "repo_satellites", project.path)
+      end
+
+      def repo
+        raise "Satellite doesn't exist" unless exists?
+
+        @repo ||= Grit::Repo.new(path)
       end
 
       private
@@ -39,7 +62,7 @@ module Gitlab
       # This ensures we have no name clashes or issues updating branches when
       # working with the satellite.
       def delete_heads!
-        heads = repo.heads.map{|head| head.name}
+        heads = repo.heads.map(&:name)
 
         # update or create the parking branch
         if heads.include? PARKING_BRANCH
@@ -54,15 +77,11 @@ module Gitlab
         heads.each { |head| repo.git.branch({D: true}, head) }
       end
 
-      def repo
-        @repo ||= Grit::Repo.new(path)
-      end
-
       # Updates the satellite from Gitolite
       #
       # Note: this will only update remote branches (i.e. origin/*)
       def update_from_source!
-        repo.git.fetch({}, :origin)
+        repo.git.fetch({timeout: true}, :origin)
       end
     end
   end

@@ -18,18 +18,8 @@ module Gitlab
       # * Yields the prepared satellite repo
       def in_locked_and_timed_satellite
         Grit::Git.with_timeout(options[:git_timeout]) do
-          File.open(lock_file, "w+") do |f|
-            f.flock(File::LOCK_EX)
-
-            unless project.satellite.exists?
-              raise "Satellite doesn't exist"
-            end
-
-            Dir.chdir(project.satellite.path) do
-              repo = Grit::Repo.new('.')
-
-              return yield repo
-            end
+          project.satellite.lock do
+            return yield project.satellite.repo
           end
         end
       rescue Errno::ENOMEM => ex
@@ -38,10 +28,6 @@ module Gitlab
       rescue Grit::Git::GitTimeout => ex
         Gitlab::GitLogger.error(ex.message)
         return false
-      end
-
-      def lock_file
-        Rails.root.join("tmp", "#{project.path}.lock")
       end
 
       # * Clears the satellite
