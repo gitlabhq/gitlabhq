@@ -18,5 +18,6 @@ module Gitlab
     mount Issues
     mount Milestones
     mount Session
+    mount MergeRequests
   end
 end
