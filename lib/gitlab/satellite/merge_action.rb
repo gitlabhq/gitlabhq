@@ -3,8 +3,8 @@ module Gitlab
     class MergeAction < Action
       attr_accessor :merge_request
 
-      def initialize(merge_request, user)
-        super merge_request.project, user
+      def initialize(user, merge_request)
+        super user, merge_request.project
         @merge_request = merge_request
       end
 

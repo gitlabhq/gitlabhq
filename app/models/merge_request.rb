@@ -60,7 +60,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    self.state = if Gitlab::Satellite::MergeAction.new(self, self.author).can_be_merged?
+    self.state = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
                    CAN_BE_MERGED
                  else
                    CANNOT_BE_MERGED
@@ -167,7 +167,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user)
-    if Gitlab::Satellite::MergeAction.new(self, current_user).merge! && self.unmerged_commits.empty?
+    if Gitlab::Satellite::MergeAction.new(current_user, self).merge! && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end

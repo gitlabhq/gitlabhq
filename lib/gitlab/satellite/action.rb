@@ -5,10 +5,10 @@ module Gitlab
 
       attr_accessor :options, :project, :user
 
-      def initialize(project, user, options = {})
+      def initialize(user, project, options = {})
+        @options = DEFAULT_OPTIONS.merge(options)
         @project = project
         @user = user
-        @options = DEFAULT_OPTIONS.merge(options)
       end
 
       protected
