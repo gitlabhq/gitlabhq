@@ -2,6 +2,7 @@ _This installation guide created for Debian/Ubuntu and properly tested._
 
 _Checkout requirements before setup_
 
+
 ### IMPORTANT
 
 Please make sure you have followed all the steps below before posting to the mailing list with installation and configuration questions.
@@ -32,7 +33,7 @@ The installation consists of next steps:
 7. Nginx 
 
 
-# 1. Install packages
+# 1. Packages / dependencies
 
 *Keep in mind that `sudo` is not installed on Debian by default. You should install it as root:*
 
