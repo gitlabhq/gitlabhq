@@ -68,6 +68,9 @@ module Account
   end
 
   def projects_with_events
-    projects.includes(:events).order("events.created_at DESC")
+    projects.joins(:events)
+      .select("projects.*, MAX(events.created_at)")
+      .group("projects.id")
+      .order("MAX(events.created_at) DESC")
   end
 end
