@@ -262,27 +262,7 @@ You can login via web using admin generated with setup:
 
 # Advanced setup tips:
 
-
-## Quick setup
-
-> - - -
-> The first 3 steps of this guide can be easily skipped by executing an install script:
->
->     # Install curl and sudo
->     apt-get install curl sudo
->
->     # 3 steps in 1 command :)
->     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu.sh | sh
->
-> Now you can go to [Step 4](#4-install-gitlab-and-configuration-check-status-configuration)
->
-> Or if you are installing on Amazon Web Services using Ubuntu 12.04 you can do all steps (1 to 6) at once with:
->
->     curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/debian_ubuntu_aws.sh | sh
->
-> for more detailed instructions read the HOWTO section of [the script](https://github.com/gitlabhq/gitlab-recipes/blob/master/install/debian_ubuntu_aws.sh)
-> - - -
-
+_Checkout databases.md for postgres or sqlite_
 
 ## Customizing Resque's Redis connection
 
