@@ -19,7 +19,7 @@ module Gitlab
     # It also removes the source branch if requested in the merge request.
     #
     # Returns false if the merge produced conflicts
-    # Returns false if pushing from the satallite to Gitolite failed or was rejected
+    # Returns false if pushing from the satellite to Gitolite failed or was rejected
     # Returns true otherwise
     def merge!
       in_locked_and_timed_satellite do |merge_repo|
@@ -46,7 +46,7 @@ module Gitlab
 
     # * Sets a 30s timeout for Git
     # * Locks the satellite repo
-    # * Yields the prepared satallite repo
+    # * Yields the prepared satellite repo
     def in_locked_and_timed_satellite
       Grit::Git.with_timeout(30.seconds) do
         lock_file = Rails.root.join("tmp", "#{project.path}.lock")
@@ -78,7 +78,7 @@ module Gitlab
     # Returns false if the merge produced conflicts
     # Returns true otherwise
     def merge_in_satellite!(repo)
-      prepare_satelite!(repo)
+      prepare_satellite!(repo)
 
       # create target branch in satellite at the corresponding commit from Gitolite
       repo.git.checkout({b: true}, merge_request.target_branch, "origin/#{merge_request.target_branch}")
@@ -93,7 +93,7 @@ module Gitlab
     # * Clears the satellite
     # * Updates the satellite from Gitolite
     # * Sets up Git variables for the user
-    def prepare_satelite!(repo)
+    def prepare_satellite!(repo)
       project.satellite.clear
 
       repo.git.reset(hard: true)
