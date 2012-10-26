@@ -61,6 +61,22 @@
     %br
 
   .span6
+    %table.milestone-merge_requests-filter
+      %thead
+        %th
+          %ul.nav.nav-pills
+            %li.active= link_to('Open Merge Requests', '#')
+            %li=link_to('All Merge Requests', '#')
+      - @merge_requests.each do |merge_request|
+        %tr{data: {closed: merge_request.closed}}
+          %td
+            = link_to [@project, merge_request] do
+              %span.badge.badge-info ##{merge_request.id}
+            &ndash;
+            = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
+    %br
+
+  .span6
     %table
       %thead
         %th Participants

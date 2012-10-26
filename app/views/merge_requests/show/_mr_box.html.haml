@@ -14,9 +14,13 @@
       %strong.author= link_to_merge_request_author(@merge_request)
 
       - if @merge_request.assignee
-        %cite.cgray and currently assigned to
+        %cite.cgray , currently assigned to
         = image_tag gravatar_icon(@merge_request.assignee_email), width: 16, class: "lil_av"
         %strong.author= link_to_merge_request_assignee(@merge_request)
+      - if @merge_request.milestone
+        - milestone = @merge_request.milestone
+        %cite.cgray and attached to milestone
+        %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
 
   - if @merge_request.closed

@@ -4,10 +4,12 @@ class MergeRequest < ActiveRecord::Base
   include IssueCommonality
   include Votes
 
-  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
+  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch, :milestone_id,
                   :author_id_of_changes
 
   attr_accessor :should_remove_source_branch
+
+  belongs_to :milestone
 
   BROKEN_DIFF = "--broken-diff"
 
@@ -24,6 +26,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.find_all_by_branch(branch_name)
     where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+  end
+
+  def self.find_all_by_milestone(milestone)
+    where("milestone_id = :milestone_id", milestone_id: milestone)
   end
 
   def human_state
@@ -212,5 +218,6 @@ end
 #  st_diffs      :text(4294967295
 #  merged        :boolean         default(FALSE), not null
 #  state         :integer         default(1), not null
+#  milestone_id  :integer
 #
 
