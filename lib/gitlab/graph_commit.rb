@@ -9,7 +9,7 @@ module Gitlab
 
     def self.to_graph(project)
       @repo = project.repo
-      commits = Grit::Commit.find_all(@repo, nil, {max_count: 650})
+      commits = Grit::Commit.find_all(@repo, nil, {max_count: 650}).dup
 
       ref_cache = {}
 

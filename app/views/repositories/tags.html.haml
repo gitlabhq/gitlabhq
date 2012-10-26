@@ -15,7 +15,7 @@
             = link_to project_commits_path(@project, tag.name), class: "" do
               %i.icon-tag
               = tag.name
-          %small.light= truncate(tag.message, length: 70)
+          %small.light= truncate(tag.message || '', length: 70)
         %td
           = image_tag gravatar_icon(commit.author_email), class: "avatar s16"
           = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
