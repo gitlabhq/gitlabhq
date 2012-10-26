@@ -103,8 +103,7 @@ Setup:
     sudo chmod 0444 /home/git/gitlab.pub
 
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
-    sudo -u git -H sed -i 's/0077/0007/g' /home/git/.gitolite.rc
-    sudo -u git -H sed -i "s/\(GIT_CONFIG_KEYS\s*=>*\s*\).\{2\}/\1'\.\*'/g" /home/git/.gitolite.rc
+ 
 
 Permissions:
 
