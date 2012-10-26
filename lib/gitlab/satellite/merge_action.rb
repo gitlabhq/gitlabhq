@@ -1,5 +1,6 @@
 module Gitlab
   module Satellite
+    # GitLab server-side merge
     class MergeAction < Action
       attr_accessor :merge_request
 
@@ -8,6 +9,7 @@ module Gitlab
         @merge_request = merge_request
       end
 
+      # Checks if a merge request can be executed without user interaction
       def can_be_merged?
         in_locked_and_timed_satellite do |merge_repo|
           merge_in_satellite!(merge_repo)

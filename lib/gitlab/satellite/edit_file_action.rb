@@ -1,9 +1,6 @@
 module Gitlab
   module Satellite
-    # GitLab file editor
-    #
-    # It gives you ability to make changes to files
-    # & commit this changes from GitLab UI.
+    # GitLab server-side file update and commit
     class EditFileAction < Action
       attr_accessor :file_path, :ref
 
@@ -13,6 +10,12 @@ module Gitlab
         @ref = ref
       end
 
+      # Updates the files content and creates a new commit for it
+      #
+      # Returns false if the ref has been updated while editing the file
+      # Returns false if commiting the change fails
+      # Returns false if pushing from the satellite to Gitolite failed or was rejected
+      # Returns true otherwise
       def commit!(content, commit_message, last_commit)
         return false unless can_edit?(last_commit)
 
