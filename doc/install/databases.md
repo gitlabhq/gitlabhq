@@ -58,7 +58,7 @@ GitLab use mysql as default database but you are free to use PostgreSQL or SQLit
     sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
     # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgres config/database.yml
+    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
 
     # make sure to update username/password in config/database.yml
 
