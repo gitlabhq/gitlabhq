@@ -25,14 +25,18 @@ module Gitlab
         File.exists? path
       end
 
-      # Locks the satellite and yields
+      # * Locks the satellite
+      # * Changes the current directory to the satellite's working dir
+      # * Yields
       def lock
         raise "Satellite doesn't exist" unless exists?
 
         File.open(lock_file, "w+") do |f|
           f.flock(File::LOCK_EX)
 
-          return yield
+          Dir.chdir(path) do
+            return yield
+          end
         end
       end
 
