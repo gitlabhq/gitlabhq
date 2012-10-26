@@ -29,6 +29,7 @@
 .underlined_link { text-decoration: underline; }
 .borders { border: 1px solid #ccc; @include shade; }
 .hint { font-style: italic; color: #999; }
+.light { color: #888 }
 
 /** PILLS & TABS**/
 .nav-pills a:hover { background-color:#888; }

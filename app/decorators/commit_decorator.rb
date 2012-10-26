@@ -50,7 +50,7 @@ class CommitDecorator < ApplicationDecorator
   #  avatar: true   will prepend avatar image
   def author_link(options)
     text = if options[:avatar]
-            avatar = h.image_tag h.gravatar_icon(author_email), class: "avatar", width: 16
+            avatar = h.image_tag h.gravatar_icon(author_email), class: "avatar s16", width: 16
             "#{avatar} #{author_name}"
           else
             author_name
