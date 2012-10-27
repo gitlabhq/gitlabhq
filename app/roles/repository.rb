@@ -41,7 +41,7 @@ module Repository
   end
 
   def satellite
-    @satellite ||= Gitlab::Satellite.new(self)
+    @satellite ||= Gitlab::Satellite::Satellite.new(self)
   end
 
   def has_post_receive_file?

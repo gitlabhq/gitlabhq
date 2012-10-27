@@ -26,15 +26,14 @@ class TreeController < ProjectResourceController
   end
 
   def update
-    file_editor = Gitlab::FileEditor.new(current_user, @project, @ref)
-    update_status = file_editor.update(
-      @path,
+    edit_file_action = Gitlab::Satellite::EditFileAction.new(current_user, @project, @ref, @path)
+    updated_successfully = edit_file_action.commit!(
       params[:content],
       params[:commit_message],
       params[:last_commit]
     )
 
-    if update_status
+    if updated_successfully
       redirect_to project_tree_path(@project, @id), notice: "Your changes have been successfully commited"
     else
       flash[:notice] = "Your changes could not be commited, because the file has been changed"
