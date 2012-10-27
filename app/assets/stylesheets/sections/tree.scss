@@ -72,6 +72,15 @@
       }
     }
   }
+
+  .blame {
+    img.avatar {
+      border: 0 none;
+      float: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
 }
 
 .tree-btn-group {
