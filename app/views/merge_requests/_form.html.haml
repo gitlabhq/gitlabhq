@@ -30,12 +30,12 @@
   .clearfix
     .main_box
       .top_box_content
-        = f.label :title do 
+        = f.label :title do
           %strong= "Title *"
-        .input= f.text_field :title, class: "input-xxlarge pad gfm-input", maxlength: 255, rows: 5
+        .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5
       .middle_box_content
-        = f.label :assignee_id do 
-          %i.icon-user 
+        = f.label :assignee_id do
+          %i.icon-user
           Assign to
         .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
 

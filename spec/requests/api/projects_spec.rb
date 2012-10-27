@@ -239,7 +239,7 @@ describe Gitlab::API do
   end
 
   describe "GET /projects/:id/snippets" do
-    it "should return a project snippet" do
+    it "should return an array of project snippets" do
       get api("/projects/#{project.code}/snippets", user)
       response.status.should == 200
       json_response.should be_an Array

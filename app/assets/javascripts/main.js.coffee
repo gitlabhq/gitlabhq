@@ -7,7 +7,7 @@ window.slugify = (text) ->
 window.ajaxGet = (url) ->
   $.ajax({type: "GET", url: url, dataType: "script"})
 
- # Disable button if text field is empty
+# Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
   closest_submit = field.closest("form").find(button_selector)
@@ -15,21 +15,21 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   closest_submit.disable() if field.val() is ""
 
   field.on "keyup", ->
-    if $(this).val() is ""
+    if $(@).val() is ""
       closest_submit.disable()
     else
       closest_submit.enable()
 
 $ ->
   # Click a .one_click_select field, select the contents
-  $(".one_click_select").live 'click', -> $(this).select()
+  $(".one_click_select").on 'click', -> $(@).select()
 
   # Initialize chosen selects
   $('select.chosen').chosen()
 
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
-    buttons = $('[type="submit"]', this)
+    buttons = $('[type="submit"]', @)
 
     switch e.type
       when 'ajax:beforeSend', 'submit'
@@ -38,7 +38,7 @@ $ ->
         buttons.enable()
 
   # Show/Hide the profile menu when hovering the account box
-  $('.account-box').hover -> $(this).toggleClass('hover')
+  $('.account-box').hover -> $(@).toggleClass('hover')
 
   # Focus search field by pressing 's' key
   $(document).keypress (e) ->
@@ -52,22 +52,22 @@ $ ->
 
   # Commit show suppressed diff
   $(".supp_diff_link").bind "click", ->
-    $(this).next('table').show()
-    $(this).remove()
+    $(@).next('table').show()
+    $(@).remove()
 
   # Note markdown preview
   $(document).on 'click', '#preview-link', (e) ->
-    $('#preview-note').text('Loading...')
+    $('#preview-note').text 'Loading...'
 
-    previewLinkText = if $(this).text() == 'Preview' then 'Edit' else 'Preview'
-    $(this).text(previewLinkText)
+    previewLinkText = if $(@).text() is 'Preview' then 'Edit' else 'Preview'
+    $(@).text previewLinkText
 
     note = $('#note_note').val()
 
-    if note.trim().length == 0
-      $('#preview-note').text("Nothing to preview.")
+    if note.trim().length is 0
+      $('#preview-note').text 'Nothing to preview.'
     else
-      $.post $(this).attr('href'), {note: note}, (data) ->
+      $.post $(@).attr('href'), {note: note}, (data) ->
         $('#preview-note').html(data)
 
     $('#preview-note, #note_note').toggle()
@@ -79,14 +79,14 @@ $ ->
   $.fn.extend chosen: (options) ->
     default_options = search_contains: "true"
     $.extend default_options, options
-    _chosen.apply this, [default_options]
+    _chosen.apply @, [default_options]
 
   # Disable an element and add the 'disabled' Bootstrap class
   $.fn.extend disable: ->
-    $(this).attr('disabled', 'disabled').addClass('disabled')
+    $(@).attr('disabled', 'disabled').addClass('disabled')
 
   # Enable an element and remove the 'disabled' Bootstrap class
   $.fn.extend enable: ->
-    $(this).removeAttr('disabled').removeClass('disabled')
+    $(@).removeAttr('disabled').removeClass('disabled')
 
 )(jQuery)
