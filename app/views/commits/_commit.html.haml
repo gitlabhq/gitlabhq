@@ -4,9 +4,8 @@
       %strong= link_to "Browse Code »", project_tree_path(@project, commit), class: "right"
   %p
     = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
-    %strong.commit-author-name= commit.author_name
+    %strong= commit.author_link avatar: true, size: 24
     %span.dash &ndash;
-    = image_tag gravatar_icon(commit.author_email), class: "avatar", width: 16
     = link_to_gfm truncate(commit.title, length: 50), project_commit_path(@project, commit.id), class: "row_title"
 
     %span.committed_ago
