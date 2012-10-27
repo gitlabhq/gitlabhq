@@ -14,7 +14,7 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
 
   closest_submit.disable() if field.val() is ""
 
-  field.on "keyup", ->
+  field.on "input", ->
     if $(@).val() is ""
       closest_submit.disable()
     else
