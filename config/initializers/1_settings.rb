@@ -14,6 +14,10 @@ class Settings < Settingslogic
       self.email['from'] ||= ("notify@" + web_host)
     end
 
+    def support_url
+      self.support['url'] ||= nil
+    end
+
     def url
       self['url'] ||= build_url
     end
