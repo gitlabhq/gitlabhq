@@ -65,6 +65,7 @@ namespace :gitlab do
           puts "YES".green
         else
           puts "NO".red
+          puts "Check read and execute permissions on file #{dest} and directory #{gitolite_hooks_path}"
           return
         end
       end
