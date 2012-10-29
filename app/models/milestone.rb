@@ -3,6 +3,7 @@ class Milestone < ActiveRecord::Base
 
   belongs_to :project
   has_many :issues
+  has_many :merge_requests
 
   validates :title, presence: true
   validates :project, presence: true
