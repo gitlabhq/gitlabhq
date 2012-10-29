@@ -18,4 +18,4 @@
 
       - if milestone.merge_requests.any?
         = link_to project_merge_requests_path(milestone.project, milestone_id: milestone.id), class: "btn very_small" do
-          %strong= pluralize milestone.issues.count, 'Merge Request'
+          %strong= pluralize milestone.merge_requests.count, 'Merge Request'
