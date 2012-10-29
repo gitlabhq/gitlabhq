@@ -1,4 +1,10 @@
 %tr.line_notes_row.reply
   %td{colspan: 3}
-    %i.icon-comment
-    = link_to "Reply", "#", class: "line_note_reply_link", data: { line_code: line_code }, title: "Add note for this line"
+    = link_to "#",
+              class: "line_note_reply_link",
+              data: { line_code:     note.line_code,
+                      noteable_type: note.noteable_type,
+                      noteable_id:   note.noteable_id },
+              title: "Add note for this line" do
+      %i.icon-comment
+      Reply

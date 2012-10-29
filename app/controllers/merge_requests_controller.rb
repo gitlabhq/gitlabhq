@@ -34,7 +34,9 @@ class MergeRequestsController < ProjectResourceController
     @diffs = @merge_request.diffs
     @commit = @merge_request.last_commit
 
-    @comments_allowed = true
+    @comments_allowed = @reply_allowed = true
+    @comments_target  = { noteable_type: 'MergeRequest',
+                          noteable_id: @merge_request.id }
     @line_notes = @merge_request.notes.where("line_code is not null")
   end
 
