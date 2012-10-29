@@ -7,9 +7,9 @@
 - if @commits.present?
   %ul.nav.nav-tabs.mr_nav_tabs
     %li
-      = link_to "#notes", title: "Comments", "data-url" => project_merge_request_path(@project, @merge_request), class: "merge-notes-tab tab" do
-        %i.icon-comment
-        Comments
+      = link_to "#notes", title: "Discussion", "data-url" => project_merge_request_path(@project, @merge_request), class: "merge-notes-tab tab" do
+        %i.icon-comments
+        Discussion
     %li
       = link_to "#diffs", title: "Diff", "data-url" => diffs_project_merge_request_path(@project, @merge_request), class: "merge-diffs-tab tab" do
         %i.icon-list-alt
