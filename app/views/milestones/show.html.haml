@@ -31,10 +31,10 @@
     %h5
       Progress:
       %small
-        #{@milestone.issues.closed.count} closed
+        #{@milestone.closed_items_count} closed
         &ndash;
-        #{@milestone.issues.opened.count} open
-    .progress.progress-success
+        #{@milestone.open_items_count} open
+    .progress.progress-info
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
@@ -58,10 +58,9 @@
               %span.badge.badge-info ##{issue.id}
             &ndash;
             = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
-    %br
 
   .span6
-    %table.milestone-merge_requests-filter
+    %table.milestone-merge-requests-filter
       %thead
         %th
           %ul.nav.nav-pills
@@ -74,15 +73,13 @@
               %span.badge.badge-info ##{merge_request.id}
             &ndash;
             = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
-    %br
 
-  .span6
-    %table
-      %thead
-        %th Participants
-      - @users.each do |user|
-        %tr
-          %td
-            = image_tag gravatar_icon(user.email, 24), width: "24"
-            &nbsp;
-            = user.name
+%hr
+%h6 Participants:
+%div
+  - @users.each do |user|
+    = link_to tm_path(user.tm_of(@project)), class: 'float-link' do
+      = user.avatar_image
+      = user.name
+
+.clearfix

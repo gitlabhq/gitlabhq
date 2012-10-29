@@ -9,13 +9,13 @@
     %small
       = milestone.expires_at
   .row
-    .progress.progress-success.span4
+    .progress.progress-info.span4
       .bar{style: "width: #{milestone.percent_complete}%;"}
     .span6
       - if milestone.issues.any?
-        = link_to project_issues_path(milestone.project, milestone_id: milestone.id), class: "padded" do
+        = link_to project_issues_path(milestone.project, milestone_id: milestone.id), class: "btn very_small" do
           %strong= pluralize milestone.issues.count, 'Issue'
 
       - if milestone.merge_requests.any?
-        = link_to project_merge_requests_path(milestone.project, milestone_id: milestone.id), class: "padded" do
+        = link_to project_merge_requests_path(milestone.project, milestone_id: milestone.id), class: "btn very_small" do
           %strong= pluralize milestone.issues.count, 'Merge Request'

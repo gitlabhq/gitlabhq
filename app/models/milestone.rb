@@ -16,16 +16,20 @@ class Milestone < ActiveRecord::Base
     User.where(id: issues.pluck(:assignee_id))
   end
 
-  def issues_percent_complete
-    ((self.issues.closed.count * 100) / self.issues.count).abs
+  def open_items_count
+    self.issues.opened.count + self.merge_requests.opened.count
   end
 
-  def merge_requests_percent_complete
-    ((self.merge_requests.closed.count * 100) / self.merge_requests.count).abs
+  def closed_items_count
+    self.issues.closed.count + self.merge_requests.closed.count
+  end
+
+  def total_items_count
+    self.issues.count + self.merge_requests.count
   end
 
   def percent_complete
-    (issues_percent_complete + merge_requests_percent_complete) / 2
+    ((closed_items_count * 100) / total_items_count).abs
   rescue ZeroDivisionError
     100
   end
