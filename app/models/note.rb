@@ -18,7 +18,6 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Note < ActiveRecord::Base
-
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code
 
@@ -55,12 +54,58 @@ class Note < ActiveRecord::Base
     }, without_protection: true)
   end
 
-  def notify
-    @notify ||= false
+  def commit_author
+    @commit_author ||=
+      project.users.find_by_email(noteable.author_email) ||
+      project.users.find_by_name(noteable.author_name)
+  rescue
+    nil
   end
 
-  def notify_author
-    @notify_author ||= false
+  def diff
+    noteable.diffs[diff_file_index]
+  end
+
+  def diff_file_index
+    line_code.split('_')[0].to_i
+  end
+
+  def diff_file_name
+    diff.b_path
+  end
+
+  def diff_new_line
+    line_code.split('_')[2].to_i
+  end
+
+  def discussion_id
+    @discussion_id ||= [noteable_type, noteable_id, line_code].join.underscore.to_sym
+  end
+
+  # Returns true if this is a downvote note,
+  # otherwise false is returned
+  def downvote?
+    note.start_with?('-1') || note.start_with?(':-1:')
+  end
+
+  def for_commit?
+    noteable_type == "Commit"
+  end
+
+  def for_commit_diff_line?
+    for_commit? && for_diff_line?
+  end
+
+  def for_diff_line?
+    line_code.present?
+  end
+
+  def for_merge_request?
+    noteable_type == "MergeRequest"
+  end
+
+  def for_merge_request_diff_line?
+    for_merge_request? && for_diff_line?
   end
 
   # override to return commits, which are not active record
@@ -74,6 +119,14 @@ class Note < ActiveRecord::Base
   # if note commit id doesnt exist
   rescue
     nil
+  end
+
+  def notify
+    @notify ||= false
+  end
+
+  def notify_author
+    @notify_author ||= false
   end
 
   # Check if we can notify commit author
@@ -94,31 +147,9 @@ class Note < ActiveRecord::Base
       commit_author.email != user.email
   end
 
-  def for_commit?
-    noteable_type == "Commit"
-  end
-
-  def for_diff_line?
-    line_code.present?
-  end
-
-  def commit_author
-    @commit_author ||=
-      project.users.find_by_email(noteable.author_email) ||
-      project.users.find_by_name(noteable.author_name)
-  rescue
-    nil
-  end
-
   # Returns true if this is an upvote note,
   # otherwise false is returned
   def upvote?
     note.start_with?('+1') || note.start_with?(':+1:')
-  end
-
-  # Returns true if this is a downvote note,
-  # otherwise false is returned
-  def downvote?
-    note.start_with?('-1') || note.start_with?(':-1:')
   end
 end
