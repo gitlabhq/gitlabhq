@@ -215,6 +215,11 @@ module SharedPaths
     visit project_merge_request_path(mr.project, mr)
   end
 
+  Given 'I visit merge request page "Bug NS-05"' do
+    mr = MergeRequest.find_by_title("Bug NS-05")
+    visit project_merge_request_path(mr.project, mr)
+  end
+
   And 'I visit project "Shop" merge requests page' do
     visit project_merge_requests_path(Project.find_by_name("Shop"))
   end
