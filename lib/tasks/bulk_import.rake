@@ -3,13 +3,14 @@ task :import_projects, [:directory,:email] => :environment  do |t, args|
   user_email, import_directory = args.email, args.directory
   repos_to_import = Dir.glob("#{import_directory}/*")
   git_base_path = Gitlab.config.git_base_path
-  imported_count, skipped_count, failed_count = 0
+  imported_count, skipped_count, failed_count = 0, 0, 0
 
-  puts "Found #{repos_to_import.size} repos to import"
+  puts "Importing #{repos_to_import.size} repositories from #{import_directory}, owner #{user_email}"
 
   repos_to_import.each do |repo_path|
-    repo_name = File.basename(repo_path).sub(/\.git$/, '')
     puts "  Processing #{repo_name}"
+    repo_name = File.basename(repo_path).sub(/\.git$/, '')
+    clone_path = "#{git_base_path}#{repo_name}.git"
 
     if Dir.exists? clone_path
       if Project.find_by_code(repo_name)
@@ -59,17 +60,14 @@ def create_repo_project(project_name, user_email)
     if Project.find_by_code(project_name)
       puts "  INFO: Project #{project_name} already exists in Gitlab, skipping."
     else
-      project = Project.create(
-        name: project_name,
-        code: project_name,
-        path: project_name,
-        owner: user,
-        description: "Automatically created from 'import_projects' rake task on #{Time.now}"
+      project = Project.create_by_user({
+        :name => project_name,
+        :code => project_name,
+        :path => project_name,
+        :description => "Automatically created from 'import_projects' rake task on #{Time.now}"}, user
       )
 
       if project.valid?
-        # Add user as admin for project
-        project.users_projects.create!(:project_access => UsersProject::MASTER, :user => user)
         project.update_repository
       else
         puts "  ERROR: Failed to create project #{project} because #{project.errors.first}"
