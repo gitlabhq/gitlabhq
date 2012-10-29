@@ -84,6 +84,11 @@ $baseLineHeight: 18px !default;
 @import "common.scss";
 
 /**
+ * Styles necessary to support JS behaviours.
+ */
+@import "behaviors.scss";
+
+/**
  * Styles related to specific part of app
  */
 @import "sections/commits.scss";
