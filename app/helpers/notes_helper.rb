@@ -9,16 +9,13 @@ module NotesHelper
 
    # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)
-    !@mixed_targets || @main_target_type == note.noteable_type
+    !@mixed_targets || (@main_target_type == note.noteable_type && !note.for_diff_line?)
   end
 
   def link_to_commit_diff_line_note(note)
-    commit = note.noteable
-    diff_index, diff_old_line, diff_new_line = note.line_code.split('_')
+    if note.for_commit_diff_line?
+      link_to "#{note.diff_file_name}:L#{note.diff_new_line}", project_commit_path(@project, note.noteable, anchor: note.line_code)
+    end
 
-    link_file = commit.diffs[diff_index.to_i].new_path
-    link_line = diff_new_line
-
-    link_to "#{link_file}:L#{link_line}", project_commit_path(@project, commit, anchor: note.line_code)
   end
 end
