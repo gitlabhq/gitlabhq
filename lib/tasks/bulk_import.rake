@@ -8,9 +8,7 @@ task :import_projects, [:directory,:email] => :environment  do |t, args|
   puts "Found #{repos_to_import.size} repos to import"
 
   repos_to_import.each do |repo_path|
-    repo_name = File.basename repo_path
-    clone_path = "#{git_base_path}#{repo_name}.git"
-
+    repo_name = File.basename(repo_path).sub(/\.git$/, '')
     puts "  Processing #{repo_name}"
 
     if Dir.exists? clone_path
