@@ -115,4 +115,15 @@ var MergeRequest = {
         $(".merge_in_progress").hide();
         $(".automerge_widget.already_cannot_be_merged").show();
     }
+};
+
+/*
+ * Filter merge requests
+ */
+function merge_requestsPage() {
+  $("#assignee_id").chosen();
+  $("#milestone_id").chosen();
+  $("#milestone_id, #assignee_id").on("change", function(){
+    $(this).closest("form").submit();
+  });
 }

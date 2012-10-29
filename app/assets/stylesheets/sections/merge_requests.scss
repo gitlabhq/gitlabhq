@@ -121,3 +121,20 @@ li.merge_request {
 .mr_direction_tip {
   margin-top:40px
 }
+
+.merge_requests_form_box {
+  @extend .main_box;
+  .merge_requests_middle_box {
+    @extend .middle_box_content;
+    height:30px;
+    .merge_requests_assignee {
+      @extend .span6;
+      float:left;
+    }
+    .merge_requests_milestone {
+      @extend .span4;
+      float:left;
+    }
+  }
+}
+
