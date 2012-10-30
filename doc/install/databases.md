@@ -26,7 +26,7 @@ GitLab use mysql as default database but you are free to use PostgreSQL or SQLit
 
 ## PostgreSQL
 
-    sudo apt-get install -y postgresql-9.2 postgresql-server-dev-9.2
+    sudo apt-get install -y postgresql-9.1 postgresql-server-dev-9.1
 
     # Connect to database server
     sudo -u postgres psql -d template1
@@ -34,18 +34,14 @@ GitLab use mysql as default database but you are free to use PostgreSQL or SQLit
     # Add a user called gitlab. Change $password to a real password
     template1=# CREATE USER gitlab WITH PASSWORD '$password';
 
-    # Create the GitLab production database
-    template1=# CREATE DATABASE IF NOT EXISTS gitlabhq_production;
-
-    # Grant all privileges on database
-    template1=# GRANT ALL PRIVILEGES ON DATABASE gitlabhq_production to gitlab;
+    # Create the GitLab production database & grant all privileges on database
+    template1=# CREATE DATABASE gitlabhq_production OWNER gitlab;
 
     # Quit from PostgreSQL server
     template1=# \q
 
     # Try connect to new database
-    $ su - gitlab
-    $ psql -d gitlabhq_production -U gitlab
+    sudo -u gitlab psql -d gitlabhq_production
 
 
 
