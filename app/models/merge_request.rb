@@ -10,8 +10,6 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
-  belongs_to :milestone
-
   BROKEN_DIFF = "--broken-diff"
 
   UNCHECKED = 1

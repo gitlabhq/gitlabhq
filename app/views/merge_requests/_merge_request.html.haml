@@ -13,7 +13,7 @@
       - if merge_request.milestone_id?
         %span.btn.small.disabled.grouped
           %i.icon-time
-          = merge_request.project.milestones.find(merge_request.milestone_id).title
+          = merge_request.milestone.title
       %span.btn.small.disabled.grouped
         = merge_request.source_branch
         &rarr;
