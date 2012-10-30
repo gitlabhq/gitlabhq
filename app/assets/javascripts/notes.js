@@ -89,12 +89,12 @@ var NoteList = {
   getContent:
     function() {
       $.ajax({
-        type: "GET",
-      url: this.notes_path,
-      data: this.target_params,
-      complete: function(){ $('.notes-status').removeClass("loading")},
-      beforeSend: function() { $('.notes-status').addClass("loading") },
-      dataType: "script"});
+        url: this.notes_path,
+        data: this.target_params,
+        complete: function(){ $('.notes-status').removeClass("loading")},
+        beforeSend: function() { $('.notes-status').addClass("loading") },
+        dataType: "script"
+      });
     },
 
   /**
@@ -102,9 +102,9 @@ var NoteList = {
    * Replaces the content of #notes-list with the given html.
    */
   setContent:
-    function(first_id, last_id, html) {
-      this.top_id = first_id;
-      this.bottom_id = last_id;
+    function(newNoteIds, html) {
+      this.top_id = newNoteIds.first();
+      this.bottom_id = newNoteIds.last();
       $("#notes-list").html(html);
 
       // init infinite scrolling
@@ -151,12 +151,12 @@ var NoteList = {
       // only load more notes if there are no "new" notes
       $('.loading').show();
       $.ajax({
-        type: "GET",
         url: this.notes_path,
         data: this.target_params + "&loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id,
         complete: function(){ $('.notes-status').removeClass("loading")},
         beforeSend: function() { $('.notes-status').addClass("loading") },
-        dataType: "script"});
+        dataType: "script"
+      });
     },
 
   /**
@@ -164,9 +164,10 @@ var NoteList = {
    * Append notes to #notes-list.
    */
   appendMoreNotes:
-    function(id, html) {
-      if(id != this.bottom_id) {
-        this.bottom_id = id;
+    function(newNoteIds, html) {
+      var lastNewNoteId = newNoteIds.last();
+      if(lastNewNoteId != this.bottom_id) {
+        this.bottom_id = lastNewNoteId;
         $("#notes-list").append(html);
       }
     },
@@ -212,10 +213,10 @@ var NoteList = {
   getNew:
     function() {
       $.ajax({
-        type: "GET",
-      url: this.notes_path,
-      data: this.target_params + "&loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id),
-      dataType: "script"});
+        url: this.notes_path,
+        data: this.target_params + "&loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id),
+        dataType: "script"
+      });
     },
 
   /**
@@ -223,7 +224,7 @@ var NoteList = {
    * Replaces the content of #new-notes-list with the given html.
    */
   replaceNewNotes:
-    function(html) {
+    function(newNoteIds, html) {
       $("#new-notes-list").html(html);
       this.updateVotes();
     },
