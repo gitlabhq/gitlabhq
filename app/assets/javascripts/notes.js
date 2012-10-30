@@ -263,6 +263,8 @@ var PerLineNotes = {
         var form = $(".per_line_form");
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).data("lineCode"));
+        form.find("#note_noteable_type").val($(this).data("noteableType"));
+        form.find("#note_noteable_id").val($(this).data("noteableId"));
         form.show();
         return false;
       });

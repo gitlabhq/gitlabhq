@@ -1,4 +1,7 @@
 - @notes.each do |note|
   - next unless note.author
-  = render "note", note: note
-
+  - if @show_discussions && part_of_discussion?(note)
+    - unless has_rendered?(note)
+      = render 'discussion', discussion_params(note)
+  - else
+    = render 'note', note: note

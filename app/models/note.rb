@@ -83,6 +83,18 @@ class Note < ActiveRecord::Base
     noteable_type == "Commit"
   end
 
+  def for_commit_diff_line?
+    for_commit? && for_diff_line?
+  end
+
+  def for_merge_request?
+    noteable_type == "MergeRequest"
+  end
+
+  def for_merge_request_diff_line?
+    for_merge_request? && for_diff_line?
+  end
+
   def for_diff_line?
     line_code.present?
   end
@@ -105,6 +117,22 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def downvote?
     note.start_with?('-1') || note.start_with?(':-1:')
+  end
+
+  def diff_index
+    line_code.split('_')[0].to_i
+  end
+
+  def diff_old_line
+    line_code.split('_')[1].to_i
+  end
+
+  def diff_new_line
+    line_code.split('_')[2].to_i
+  end
+
+  def diff
+    noteable.diffs[diff_index]
   end
 end
 

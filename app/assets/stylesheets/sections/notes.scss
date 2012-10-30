@@ -8,6 +8,41 @@
   list-style:none;
   margin:0px;
   padding:0px;
+
+  .note_discussion {
+    .header {
+      padding: 5px;
+      padding-bottom: 15px;
+
+      .text {
+        padding-top: 9px;
+      }
+    }
+
+    .body, .diff_file {
+      @extend .borders;
+      @extend .prepend-top-20;
+      @extend .append-bottom-20;
+      border-width:1px;
+      background-color: whiteSmoke;
+      margin-left: 15px;
+
+      .note {
+        border-bottom: 0px;
+        padding: 0px;
+      }
+    }
+
+    .body {
+      .note {
+        border-bottom: 1px solid #ddd;
+        padding: 15px;
+      }
+      .note:nth-child(odd) {
+        background-color: #fafafa;
+      }
+    }
+  }
 }
 
 .issue_notes,
@@ -73,6 +108,7 @@
 #notes-list.reversed .note,
 #new-notes-list.reversed .note {
   border-top: 1px solid #eee;
+
 }
 
 /* mark vote notes */
