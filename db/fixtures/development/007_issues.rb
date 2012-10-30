@@ -6,12 +6,10 @@
   # Random user
   user = project.users.sample
   user_id = user.id
-  MergeRequestObserver.current_user = user
+  IssueObserver.current_user = user
 
-  MergeRequest.seed(:id, [{
+  Issue.seed(:id, [{
     id: i,
-    source_branch: 'master',
-    target_branch: 'feature',
     project_id: project_id,
     author_id: user_id,
     assignee_id: user_id,
