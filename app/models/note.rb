@@ -85,7 +85,9 @@ class Note < ActiveRecord::Base
   # Returns true if this is a downvote note,
   # otherwise false is returned
   def downvote?
-    note.start_with?('-1') || note.start_with?(':-1:')
+    votable? && (note.start_with?('-1') ||
+                 note.start_with?(':-1:')
+                )
   end
 
   def for_commit?
@@ -98,6 +100,10 @@ class Note < ActiveRecord::Base
 
   def for_diff_line?
     line_code.present?
+  end
+
+  def for_issue?
+    noteable_type == "Issue"
   end
 
   def for_merge_request?
@@ -150,6 +156,12 @@ class Note < ActiveRecord::Base
   # Returns true if this is an upvote note,
   # otherwise false is returned
   def upvote?
-    note.start_with?('+1') || note.start_with?(':+1:')
+    votable? && (note.start_with?('+1') ||
+                 note.start_with?(':+1:')
+                )
+  end
+
+  def votable?
+    for_issue? || (for_merge_request? && !for_diff_line?)
   end
 end

@@ -43,79 +43,105 @@ describe Note do
     let(:project) { create(:project) }
 
     it "recognizes a neutral note" do
-      note = create(:note, note: "This is not a +1 note")
+      note = create(:votable_note, note: "This is not a +1 note")
       note.should_not be_upvote
       note.should_not be_downvote
     end
 
     it "recognizes a neutral emoji note" do
-      note = build(:note, note: "I would :+1: this, but I don't want to")
+      note = build(:votable_note, note: "I would :+1: this, but I don't want to")
       note.should_not be_upvote
       note.should_not be_downvote
     end
 
     it "recognizes a +1 note" do
-      note = create(:note, note: "+1 for this")
+      note = create(:votable_note, note: "+1 for this")
       note.should be_upvote
     end
 
     it "recognizes a +1 emoji as a vote" do
-      note = build(:note, note: ":+1: for this")
+      note = build(:votable_note, note: ":+1: for this")
       note.should be_upvote
     end
 
     it "recognizes a -1 note" do
-      note = create(:note, note: "-1 for this")
+      note = create(:votable_note, note: "-1 for this")
       note.should be_downvote
     end
 
     it "recognizes a -1 emoji as a vote" do
-      note = build(:note, note: ":-1: for this")
+      note = build(:votable_note, note: ":-1: for this")
       note.should be_downvote
     end
   end
 
-  let(:project) { create(:project) }
-  let(:commit) { project.commit }
-
   describe "Commit notes" do
-    before do
-      @note = create(:note,
-                     noteable_id: commit.id,
-                     noteable_type: "Commit")
-    end
+    let!(:note) { create(:note_on_commit, note: "+1 from me") }
+    let!(:commit) { note.noteable }
 
     it "should be accessible through #noteable" do
-      @note.noteable_id.should == commit.id
-      @note.noteable.should be_a(Commit)
-      @note.noteable.should == commit
+      note.noteable_id.should == commit.id
+      note.noteable.should be_a(Commit)
+      note.noteable.should == commit
     end
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
-      @note.noteable == commit
+      note.noteable_id.should == commit.id
+      note.noteable == commit
     end
 
     it "should be recognized by #for_commit?" do
-      @note.should be_for_commit
+      note.should be_for_commit
+    end
+
+    it "should not be votable" do
+      note.should_not be_votable
     end
   end
 
-  describe "Pre-line commit notes" do
-    before do
-      @note = create(:note,
-                     noteable_id: commit.id,
-                     noteable_type: "Commit",
-                     line_code: "0_16_1")
-    end
+  describe "Commit diff line notes" do
+    let!(:note) { create(:note_on_commit_line, note: "+1 from me") }
+    let!(:commit) { note.noteable }
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
-      @note.noteable.id.should == commit.id
+      note.noteable_id.should == commit.id
+      note.noteable.id.should == commit.id
     end
 
     it "should be recognized by #for_diff_line?" do
-      @note.should be_for_diff_line
+      note.should be_for_diff_line
+    end
+
+    it "should be recognized by #for_commit_diff_line?" do
+      note.should be_for_commit_diff_line
+    end
+
+    it "should not be votable" do
+      note.should_not be_votable
+    end
+  end
+
+  describe "Issue notes" do
+    let!(:note) { create(:note_on_issue, note: "+1 from me") }
+
+    it "should not be votable" do
+      note.should be_votable
+    end
+  end
+
+  describe "Merge request notes" do
+    let!(:note) { create(:note_on_merge_request, note: "+1 from me") }
+
+    it "should not be votable" do
+      note.should be_votable
+    end
+  end
+
+  describe "Merge request diff line notes" do
+    let!(:note) { create(:note_on_merge_request_line, note: "+1 from me") }
+
+    it "should not be votable" do
+      note.should_not be_votable
     end
   end
 
