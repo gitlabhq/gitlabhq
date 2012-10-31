@@ -30,6 +30,32 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
+  # Returns an H1 element to be used in the page's logo section
+  #
+  # Calls `custom_application_title` if it's defined, allowing customization
+  def application_title
+    if defined?(custom_application_title)
+      custom_application_title
+    else
+      content_tag(:h1, "GitLab")
+    end
+  end
+
+  # Returns a title to be used in the page's <title> element
+  #
+  # Automatically appends a project's name if @project is set.
+  #
+  # Calls `custom_page_title` if it's defined, allowing customization
+  def page_title
+    if defined?(custom_page_title)
+      custom_page_title
+    else
+      title = "GitLab"
+      title += " > #{@project.name}" if @project && @project.persisted?
+      title
+    end
+  end
+
   def gravatar_icon(user_email = '', size = 40)
     if Gitlab.config.disable_gravatar? || user_email.blank?
       'no_avatar.png'

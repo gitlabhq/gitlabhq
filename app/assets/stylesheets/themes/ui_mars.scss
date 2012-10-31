@@ -64,6 +64,7 @@
     .search-input::-webkit-input-placeholder {
       color: #666;
     }
+
     .app_logo {
       a {
         h1 {
@@ -72,11 +73,14 @@
           text-shadow: 0 1px 1px #111;
         }
       }
-      .separator {
-        display:none;
-      }
-
     }
+
+    .separator {
+      .vertical-bar {
+        border: none;
+      }
+    }
+
     .project_name {
       color:#fff;
       text-shadow: 0 1px 1px #111;
