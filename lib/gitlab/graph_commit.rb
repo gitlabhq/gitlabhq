@@ -2,18 +2,18 @@ require "grit"
 
 module Gitlab
   class GraphCommit
-    attr_accessor :time, :space
-    attr_accessor :refs
+    attr_accessor :time, :space, :refs
 
     include ActionView::Helpers::TagHelper
 
     def self.to_graph(project)
       @repo = project.repo
-      commits = Grit::Commit.find_all(@repo, nil, {max_count: 650}).dup
+
+      commits = collect_commits(@repo).dup
 
       ref_cache = {}
 
-      commits.map! {|c| GraphCommit.new(Commit.new(c))}
+      commits.map! { |commit| GraphCommit.new(Commit.new(commit))}
       commits.each { |commit| commit.add_refs(ref_cache, @repo) }
 
       days = GraphCommit.index_commits(commits)
@@ -21,6 +21,16 @@ module Gitlab
       @commits_json = commits.map(&:to_graph_hash).to_json
 
       return @days_json, @commits_json
+    end
+
+    # Get commits from repository
+    #
+    def self.collect_commits repo
+      Grit::Commit.find_all(repo, nil, {max_count: self.max_count})
+    end
+
+    def self.max_count
+      @max_count ||= 650
     end
 
     # Method is adding time and space on the

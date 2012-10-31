@@ -11,12 +11,10 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'I visit project "Shop" network page' do
+    # Stub GraphCommit max_size to speed up test (10 commits vs. 650)
+    Gitlab::GraphCommit.stub(max_count: 10)
+
     project = Project.find_by_name("Shop")
-
-    # Stub out find_all to speed this up (10 commits vs. 650)
-    commits = Grit::Commit.find_all(project.repo, nil, {max_count: 10})
-    Grit::Commit.stub(:find_all).and_return(commits)
-
     visit graph_project_path(project)
   end
 end
