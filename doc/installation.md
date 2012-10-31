@@ -2,7 +2,7 @@
 
 **The project is designed for the Linux operating system.**
 
-It may work on FreeBSD and Mac OS, but we don't test our application for these systems and can't guarantee stability and full functionality.
+It may work on BSD-based systems (FreeBSD, OpenBSD, NetBSD, Mac OS X), but we don't test our application for these systems and can't guarantee stability and full functionality.
 
 We officially support (recent versions of) these Linux distributions:
 
@@ -19,8 +19,12 @@ You might have some luck using these, but no guarantees:
 
  - MacOS X
  - FreeBSD
+ - OpenBSD
+ - NetBSD
 
-GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
+See if their "ports" or "packages" system can help.
+
+GitLab does **not** run on Windows and we have no plans of making GitLab compatible with Windows.
 
 
 ## Hardware: 
