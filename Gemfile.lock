@@ -7,6 +7,7 @@ GIT
 GIT
   remote: https://github.com/gitlabhq/grack.git
   revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
+  ref: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
   specs:
     grack (1.0.0)
       rack (~> 1.4.1)
@@ -35,6 +36,7 @@ GIT
 GIT
   remote: https://github.com/gitlabhq/yaml_db.git
   revision: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
+  ref: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
   specs:
     yaml_db (0.2.2)
 
