@@ -121,6 +121,10 @@ module SharedPaths
     visit project_commits_path(@project, @project.root_ref, {limit: 5})
   end
 
+  Given "I visit my project's commits page for a specific path" do
+    visit project_commits_path(@project, @project.root_ref + "/app/models/project.rb", {limit: 5})
+  end
+
   Given "I visit my project's network page" do
     # Stub GraphCommit max_size to speed up test (10 commits vs. 650)
     Gitlab::GraphCommit.stub(max_count: 10)
