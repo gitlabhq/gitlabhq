@@ -28,7 +28,7 @@ module GitlabMarkdownHelper
       # If the user wants TOC we run a Render::HTML_TOC
       # See http://dev.af83.com/2012/02/27/howto-extend-the-redcarpet2-markdown-lib.html
       toc = nil
-      if text.match("~toc~") != nil
+      if text.lines.first.match("~toc~") != nil
          html_toc = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC, space_after_headers: true)
          toc = html_toc.render(text)
 
@@ -53,7 +53,7 @@ module GitlabMarkdownHelper
     end
 
     if toc == nil
-    @markdown.render(text).html_safe
+      @markdown.render(text).html_safe
     else
       (toc + @markdown.render(text)).html_safe
     end
