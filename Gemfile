@@ -114,8 +114,9 @@ group :assets do
 end
 
 group :development do
-  gem "letter_opener"
   gem "annotate", git: "https://github.com/ctran/annotate_models.git"
+  gem "letter_opener"
+  gem 'quiet_assets', '1.0.1'
   gem 'rack-mini-profiler'
 end
 

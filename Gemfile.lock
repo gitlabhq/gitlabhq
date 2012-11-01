@@ -262,6 +262,8 @@ GEM
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
     pyu-ruby-sasl (0.0.3.3)
+    quiet_assets (1.0.1)
+      railties (~> 3.1)
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -456,6 +458,7 @@ DEPENDENCIES
   pg
   pry
   pygments.rb (= 0.3.1)
+  quiet_assets (= 1.0.1)
   rack-mini-profiler
   rails (= 3.2.8)
   rails-dev-tweaks
