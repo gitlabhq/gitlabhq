@@ -2,14 +2,7 @@
 
 - if @path.present?
   %ul.breadcrumb
-    %li
-      %span.arrow
-      = link_to project_commits_path(@project) do
-        = @project.name
-      %span.divider
-        \/
-    %li
-      %a{href: "#"}= @path.split("/").join(" / ")
+    = breadcrumbs
 
 %div{id: dom_id(@project)}
   #commits_list= render "commits"
