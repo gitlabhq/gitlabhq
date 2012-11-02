@@ -1,18 +1,78 @@
 #!/bin/bash
 
-# this installer installs gitlab
-# NOTE: the installer will upgrade your system without promt! Because of this and other reasons like security we highly encourage you to run this on a dedicated VPS! Alway make backups of important files if there are any!
+# This is a (for now unofficial) installer for gitlab intented for Debian or Debian based distro's like Ubuntu. 
+# The installer will install: 
+# 
+# - GitLab
+# - MySQL
+# - Gitolite
+# - Nginx
+# - a mailserver if you choose so
+# - a few thing like ruby, some gems, python stuff and so on
+# 
+# NOTE: the installer will upgrade your system without a promt! Because of this and other reasons like security we highly encourage you to run this on a dedicated VPS! Alway make backups of important files if there are any before using this installer!
+#
+# This installer is mainly based on https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
+# 
+# - additions are mainly:
+#	* try to help user more with the mailserver (excpecially exim) or give the option not to install any mailserver
+# 	* not using path dependant commands, i.e. we dont want to cd in to directories where possible
+# 	* some checks like filesystem and RAM free space + port bindings to port 80
+# 	* making timeout higher for slow systems
+#
+# License: do whatever your want with this. Would be nice if you would report bugs to the place where you got this script.
 
 
-### user settings
+### settings
 # DEBUG mode (gives info about what is run). To enable set to "yes"
-debug=yes
+debug=no
 # minimum amount of diskpace we need in GB
-minfreedisk=1
+minfreedisk=2
 # minimum amount of free RAM in MB
 minfreeram=300
 # folder for downloading and making Ruby (needs some free diskspace and maybe exec permission?, so maybe you need to change this)
 tmpfolder=/tmp
+
+
+### functions
+configure_exim () {
+
+	echo -e "\n\nYou have chosen exim4. Please provide your e-mailadres so we can test the funcitonality later on:\n"	
+	# your mailadress
+	read yourmail 
+	
+	sudo apt-get install -y exim4
+
+	# configure exim
+	echo -e "\n\nIn the next step you will be asked some questions in orde to configure exim. \nWe suggest to use \"mail sent by smarthost; no local mail\". \nAfter this question only these two questions are really important:\n - \"IP address or host name of the outgoing smarthost\" \n   (fill in something like mail.youdomainname.com)\n - \"Root and postmaster mail recipient\". (fill in your own mailadress)\n\nThis way you can use a external mailserver just like your mailclient would do. \nIf you choose this, we will help you with the setup. \n(mailserver should support SSL though).\n\nIf you choose a different setup than smarthost you have to configure \nthe mailserver yourself after the install of GitLab. \n\nPress any key to continue...\n"
+	read confirm4
+	
+	dpkg-reconfigure exim4-config
+
+	. /etc/exim4/update-exim4.conf.conf
+	
+	# setup smarthost
+	if [ "${dc_smarthost}" != "" ]; then
+	
+		echo -e "You have chosen a smarthost setup. We would like to help you configure this.\nPlease state the username for your mailserver:\n"		
+		# username of your mailserver
+		read smarthostusrname
+		
+		echo -e "Please provide the password for you mailserver:\n"
+		# password of your mailserver
+		read -s smarthostpasswd
+
+		echo "*:${smarthostusrname}:${smarthostpasswd}" > /etc/exim4/passwd.client
+		chown root:Debian-exim /etc/exim4/passwd.client && chmod 640 /etc/exim4/passwd.client
+		echo "The mailfunctionality seems to work" | mail -r Gitserver -s "Gitserver testmail" ${yourmail}
+		
+		echo -e "\n\nYou schould receive a testmail within a minute. If not, please configure\nthe mailserver yourself after the installation of GitLab. \n\nPress any key to continue...\n"
+		read confirm4
+
+	fi
+		
+}
+
 
 ### set debug if wanted
 if [ "${debug}" = "yes" ]; then
@@ -21,36 +81,15 @@ if [ "${debug}" = "yes" ]; then
 	
 fi
 
-### run some checks
-# check if user has given us a good branch to use
-die () {
-
-	echo "ERROR: you need to provide exactly 11 arguments!!!"    
-	echo "usage: $0 [ branch ] 'stable' or 'master' (master is less stable but newer branch)"
-	exit 1
-
-}
-
-# check amount of arguments
-[ "$#" -eq 1 ] || die 
-
-# check sanity of argument
-if [ "${1}" != "stable" ] || [ "${1}" != "master" ]; then
-
-	echo "You must specify as argument: 'stable' or 'master'"
-	exit 1
-	
-fi
-
 # check available diskspace
 check=`df -B 1073741824 | grep "[[:space:]]/$" | sed 's/^[ ]*//' | sed 's/   */ /g' | cut -d' ' -f4`
 
 if [ "${check}" -lt "${minfreedisk}" ]; then
 
-	echo We think theres not enough space left on your filesystem (where / is mounted). You need at least ${minfreedisk} GB:
+	echo -e "We think theres not enough space left on your filesystem (where / is mounted). You need at least ${minfreedisk} GB on your filesystem:"
 	df -h
 	
-	echo are you sure you want to continue? (type 'yes' to continue)
+	echo -e "are you sure you want to continue? (type 'yes' to continue)"
 	read confirm
 	
 	if [ "${confirm}" != "yes" ]; then
@@ -66,13 +105,13 @@ check=`free -m | grep "buffers/cache" | sed 's/   */ /g' | cut -d' ' -f4`
 
 if [ "${check}" -lt "${minfreeram}" ]; then
 
-	echo -e  "We think that there's not enough RAM left. You need at least ${minfreeram} GB."
+	echo -e  "We think that there's not enough RAM left. You need at least ${minfreeram} MB of free RAM."
 	free -m
 	
-	echo are you sure you want to continue? (type 'yes' to continue)
-	read confirm
+	echo -e "are you sure you want to continue? (type 'yes' to continue)"
+	read confirm2
 	
-	if [ "${confirm}" != "yes" ]; then
+	if [ "${confirm2}" != "yes" ]; then
 	
 		exit 1
 		
@@ -90,8 +129,23 @@ fi
 
 
 ## start installer
-# update apt so we have newest repo info
-apt-get update 
+# check sanity of argument, if no argument given use stable branch
+while [ "${branch}" != "stable" ] && [ "${branch}" != "master" ]; do
+
+	echo -e "Do you want a \"stable\" Gitlab setup or do you want to use the less stable \"master\" branch? (available options: [ stable / master ] )"
+	read branch 
+	
+	if [ "${branch}" != "stable" ] && [ "${branch}" != "master" ]; then
+	
+		echo -e "You did not state \"stable\" or \"master\"!"
+	
+	fi
+		
+done
+
+
+# update apt so we have newest repo info and clean old downloads and stuff
+apt-get update && apt-get autoclean && apt-get autoremove
 
 
 ### install sudo if needed
@@ -106,14 +160,121 @@ if [ ! -f "/usr/bin/sudo" ]; then
 		
 	else
 	
-		apt-get install sudo
+		apt-get install -y sudo
 		
 	fi
 	
 fi
 
+# do we have a mailer?
+sudo apt-get install -y apt-show-versions
+checkexim=`apt-show-versions | grep exim4`
+checkpostfix=`apt-show-versions | grep postfix`
+checksendmail=`apt-show-versions | grep sendmail`
+
+if [ "${checkexim}" = "" ] && [ "${checkpostfix}" = "" ] && [ "${checksendmail}" = "" ]; then
+
+	while [ "${choice}" != "0" ] && [ "${choice}" != "1" ] && [ "${choice}" != "2" ] && [ "${choice}" != "3" ]; do
+		
+		echo -e "you do not have a MTA (mail transfer agent) yet. You can choose between no mailer (0), Exim4 (1 - recommended), postfix (2) or sendmail (3). Please enter you choice:\n"
+		read choice
+		
+		if [ "${choice}" != "0" ] && [ "${choice}" != "1" ] && [ "${choice}" != "2" ] && [ "${choice}" != "3" ]; then
+		
+			echo -e "You did not choose 0,1,2 or 3! \n"
+			
+		fi
+		
+	done
+	
+	if [ "${choice}" = "1" ]; then
+		
+		configure_exim
+		
+	elif  [ "${choice}" = "2" ]; then
+		
+		echo -e "You have chosen postfix. At this time there is limited support. You should configure it yourself.\n"	
+		sudo apt-get install postfix
+		
+	elif  [ "${choice}" = "3" ]; then
+		
+		echo -e "You have chosen sendmail. At this time there is limited support. You should configure it yourself. \n"	
+		sudo apt-get install sendmail
+		
+	else
+	
+		echo "You have chosen not to install a mailserver"
+	
+	fi
+	
+elif [ "${checkexim}" != "" ]; then
+
+	
+	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
+	
+		echo -e "You have exim installed. Would you like us to help you configure it? (yes/no) (if exim works fine on this host answer NO)"	
+		read confirm3
+	
+		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
+		
+			echo -e  "Please answer with yes or no"
+			
+		fi
+		
+	done
+	
+	if [ "${confirm3}" != "yes" ]; then
+	
+		configure_exim
+		
+	fi
+
+elif [ "${checkpostfix}" != "" ]; then
+	
+	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
+	
+		echo -e "You have already postfix installed, do you want to install exim instead including some help to get it working? (yes/no) (if postfix works fine on this host answer NO)"
+		read confirm3
+	
+		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
+		
+			echo -e  "Please answer with yes or no"
+			
+		fi
+		
+	done
+	
+	apt-get purge -y postfix*	
+	
+	configure_exim
+
+elif [ "${checksendmail}" != "" ]; then
+
+	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
+	
+		echo -e "You have already sendmail installed, do you want to install exim instead including some help to get it working? (yes/no) (if sendmail works fine on this host answer NO)"
+		read confirm3
+	
+		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
+		
+			echo -e  "Please answer with yes or no"
+			
+		fi
+		
+	done
+	
+	apt-get purge -y sendmail*
+	
+	configure_exim
+
+fi
+
+
 ### upgrade and install the required packages:
-sudo apt-get upgrade -y && sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev wget curl gcc checkinstall libxml2-dev libxslt1-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev libpq-dev
+echo -e "If you did not install MySQl before, you will need to provide a root password for it in the next step. Make shure you write it down! You will need to provide it to GitLab for a succesfull installation.\n\n Press any key to continue"
+read confirm
+
+sudo apt-get upgrade -y && sudo apt-get install -y nano mysql-server mysql-client libmysqlclient-dev wget curl gcc checkinstall libxml2-dev libxslt1-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev libpq-dev
 
 sudo pip install pygments
 
@@ -178,12 +339,12 @@ ssh-keyscan -t rsa localhost >> /home/gitlab/.ssh/known_hosts
 
 ### install gitlab
 # clone gitlab repo for stable setup
-if [ "${1}" = "stable" ]; then
+if [ "${branch}" = "stable" ]; then
 
 	sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git /home/gitlab/gitlab
 
 # or use master branch (recent changes, less stable)
-elif [ "${1}" = "master" ]; then
+elif [ "${branch}" = "master" ]; then
 	
 	sudo -H -u gitlab git clone -b master https://github.com/gitlabhq/gitlabhq.git /home/gitlab/gitlab
 
@@ -218,7 +379,7 @@ sudo update-rc.d gitlab defaults 21
 sed -i "/timeout / c timeout 300" /home/gitlab/gitlab/config/unicorn.rb
 
 # start gitlab
-sudo service gitlab start
+/etc/init.d/gitlab start
 
 
 ### install Nginx
@@ -247,7 +408,7 @@ sudo editor /etc/nginx/sites-enabled/gitlab
 sudo /etc/init.d/nginx restart
 
 
-### cleanup
+### cleanup ruby download and make folder
 rm -r ${tmpfolder}/${deploy}
 
 
