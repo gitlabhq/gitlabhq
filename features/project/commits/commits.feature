@@ -19,3 +19,7 @@ Feature: Project Browse commits
     Given I visit compare refs page
     And I fill compare fields with refs
     Then I see compared refs
+
+  Scenario: I browse commits for a specific path
+    Given I visit my project's commits page for a specific path
+    Then I see breadcrumb links
