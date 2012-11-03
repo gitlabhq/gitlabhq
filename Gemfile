@@ -67,8 +67,10 @@ gem "redcarpet",     "~> 2.1.1"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "thin"
-gem "unicorn"
+group :servers do
+  gem "thin"
+  gem "unicorn"
+end
 
 # Issue tags
 gem "acts-as-taggable-on", "2.3.1"
