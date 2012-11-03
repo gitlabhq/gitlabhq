@@ -23,7 +23,7 @@ You might have some luck using these, but no guarantees:
 GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
 
 
-## Hardware: 
+## Hardware:
 
 We recommend to use server with at least 1GB RAM for gitlab instance.
 
@@ -83,7 +83,7 @@ Now install the required packages:
 
 ## SQLite
 
-    sudo apt-get install -y sqlite3 libsqlite3-dev 
+    sudo apt-get install -y sqlite3 libsqlite3-dev
 
 ## MySQL
 
@@ -233,10 +233,10 @@ and ensure you have followed all of the above steps carefully.
 
 #### Install gems
 
-    # mysql
+    # postgres
     sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
 
-    # or postgres
+    # or mysql
     sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
 
     # or sqlite
