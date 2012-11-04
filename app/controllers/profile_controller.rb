@@ -22,7 +22,7 @@ class ProfileController < ApplicationController
       flash[:notice] = "Password was successfully updated. Please login with it"
       redirect_to new_user_session_path
     else
-      render action: "password"
+      render 'account'
     end
   end
 
