@@ -11,8 +11,8 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'I visit project "Shop" network page' do
-    # Stub GraphCommit max_size to speed up test (10 commits vs. 650)
-    Gitlab::GraphCommit.stub(max_count: 10)
+    # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
+    Gitlab::Graph::JsonBuilder.stub(max_count: 10)
 
     project = Project.find_by_name("Shop")
     visit graph_project_path(project)
