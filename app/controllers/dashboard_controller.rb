@@ -1,12 +1,17 @@
 class DashboardController < ApplicationController
   respond_to :html
 
+  before_filter :event_filter, only: :index
+
   def index
     @groups = Group.where(id: current_user.projects.pluck(:group_id))
     @projects = current_user.projects_with_events
     @projects = @projects.page(params[:page]).per(30)
 
-    @events = Event.in_projects(current_user.project_ids).limit(20).offset(params[:offset] || 0)
+    @events = Event.in_projects(current_user.project_ids)
+    @events = @event_filter.apply_filter(@events)
+    @events = @events.limit(20).offset(params[:offset] || 0)
+
     @last_push = current_user.recent_push
 
     respond_to do |format|
@@ -33,5 +38,9 @@ class DashboardController < ApplicationController
       format.html
       format.atom { render layout: false }
     end
+  end
+
+  def event_filter
+    @event_filter ||= EventFilter.new(params[:event_filter])
   end
 end
