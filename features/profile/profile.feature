@@ -16,6 +16,11 @@ Feature: Profile
     Then I change my password
     And I should be redirected to sign in page
 
+  Scenario: I unsuccessfully change my password
+    Given I visit profile account page
+    When I unsuccessfully change my password
+    Then I should see a password error message
+
   Scenario: I reset my token
     Given I visit profile account page
     Then I reset my token

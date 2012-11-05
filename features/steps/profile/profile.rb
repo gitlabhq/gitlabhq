@@ -28,6 +28,16 @@ class Profile < Spinach::FeatureSteps
     click_button "Save"
   end
 
+  When 'I unsuccessfully change my password' do
+    fill_in "user_password", with: "password"
+    fill_in "user_password_confirmation", with: "confirmation"
+    click_button "Save"
+  end
+
+  Then "I should see a password error message" do
+    page.should have_content "Password doesn't match confirmation"
+  end
+
   And 'I should be redirected to sign in page' do
     current_path.should == new_user_session_path
   end
