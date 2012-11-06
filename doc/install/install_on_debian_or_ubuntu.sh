@@ -15,20 +15,26 @@
 # This installer is mainly based on https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
 # 
 # - additions are mainly:
-#	* try to help user more with the mailserver (excpecially exim) or give the option not to install any mailserver
+#	* A 100% working GitLab installation after running this script (no maual steps needed).
+#	* We help you with the mailserver (excpecially when choosing exim in combination with a smarthost setup). 
+#		In our opninion this is the most reasenable setup because you use a other mailserver in stead of directly sending mail. 
+#		This prevensts SPAM issues caused by spf misconfiguration and prevents open relay and such. 
+#		A lot of people dont know how to configure a mailserver (wheter it is postfix or any other MTA). We do the job for you. 
+#		All you need is a external mailserver (also Google is an option), a username and a password. Just like you mailclient uses.
+#	* We also give the option not to install any mailserver if you are happy with your current setup.
 # 	* not using path dependant commands, i.e. we dont want to cd in to directories where possible
 # 	* some checks like filesystem and RAM free space + port bindings to port 80
 # 	* making timeout higher for slow systems
 #
-# License: do whatever your want with this. Would be nice if you would report bugs to the place where you got this script.
+# License: do whatever your want with this. Would be nice if you would report bugs to the place where you got this script or give some effort to contribute to it.
 
 
-### settings
+### settings (MOST PEOPLE DONT NEED TO EDIT ANYTHING!)
 # DEBUG mode (gives info about what is run). To enable set to "yes"
 debug=no
-# minimum amount of diskpace we need in GB
+# minimum amount of diskpace we need in GB (used for warning)
 minfreedisk=2
-# minimum amount of free RAM in MB
+# minimum amount of free RAM in MB (used for warning)
 minfreeram=300
 # folder for downloading and making Ruby (needs some free diskspace and maybe exec permission?, so maybe you need to change this)
 tmpfolder=/tmp
@@ -37,36 +43,36 @@ tmpfolder=/tmp
 ### functions
 configure_exim () {
 
-	echo -e "\n\nYou have chosen exim4. Please provide your e-mailadres so we can test the funcitonality later on:\n"	
+	echo -e "\n\nYou have chosen exim4. Please provide your e-mailadres so we can test the funcitonality later on:"	
 	# your mailadress
 	read yourmail 
 	
 	sudo apt-get install -y exim4
 
 	# configure exim
-	echo -e "\n\nIn the next step you will be asked some questions in orde to configure exim. \nWe suggest to use \"mail sent by smarthost; no local mail\". \nAfter this question only these two questions are really important:\n - \"IP address or host name of the outgoing smarthost\" \n   (fill in something like mail.youdomainname.com)\n - \"Root and postmaster mail recipient\". (fill in your own mailadress)\n\nThis way you can use a external mailserver just like your mailclient would do. \nIf you choose this, we will help you with the setup. \n(mailserver should support SSL though).\n\nIf you choose a different setup than smarthost you have to configure \nthe mailserver yourself after the install of GitLab. \n\nPress any key to continue...\n"
+	echo -e "\n\nIn the next step you will be asked some questions in orde to configure exim. \nWe suggest to use \"mail sent by smarthost; no local mail\". \nAfter this question only these two questions are really important:\n - \"IP address or host name of the outgoing smarthost\" \n   (fill in something like mail.youdomainname.com or smtp.gmail.com)\n - \"Root and postmaster mail recipient\". (fill in your own mailadress)\n\nThis way you can use a external mailserver just like your mailclient would do. \nIf you choose this, we will help you with the setup. \n(mailserver should support SSL though).\n\nIf you choose a different setup than smarthost you have to configure \nthe mailserver yourself after the install of GitLab. \n\nPress any key to continue..."
 	read confirm4
 	
-	dpkg-reconfigure exim4-config
+	sudo dpkg-reconfigure exim4-config
 
 	. /etc/exim4/update-exim4.conf.conf
 	
 	# setup smarthost
 	if [ "${dc_smarthost}" != "" ]; then
 	
-		echo -e "You have chosen a smarthost setup. We would like to help you configure this.\nPlease state the username for your mailserver:\n"		
+		echo -e "\n\nYou have chosen a smarthost setup. We would like to help you configure this.\nPlease state the username for your mailserver:"		
 		# username of your mailserver
 		read smarthostusrname
 		
-		echo -e "Please provide the password for you mailserver:\n"
+		echo -e "\n\nPlease provide the password for you mailserver:"
 		# password of your mailserver
 		read -s smarthostpasswd
 
 		echo "*:${smarthostusrname}:${smarthostpasswd}" > /etc/exim4/passwd.client
-		chown root:Debian-exim /etc/exim4/passwd.client && chmod 640 /etc/exim4/passwd.client
+		sudo chown root:Debian-exim /etc/exim4/passwd.client && chmod 640 /etc/exim4/passwd.client
 		echo "The mailfunctionality seems to work" | mail -r Gitserver -s "Gitserver testmail" ${yourmail}
 		
-		echo -e "\n\nYou schould receive a testmail within a minute. If not, please configure\nthe mailserver yourself after the installation of GitLab. \n\nPress any key to continue...\n"
+		echo -e "\n\nYou schould receive a testmail within a minute. If not, please configure\nthe mailserver yourself after the installation of GitLab. \n\nPress any key to continue..."
 		read confirm4
 
 	fi
@@ -176,12 +182,12 @@ if [ "${checkexim}" = "" ] && [ "${checkpostfix}" = "" ] && [ "${checksendmail}"
 
 	while [ "${choice}" != "0" ] && [ "${choice}" != "1" ] && [ "${choice}" != "2" ] && [ "${choice}" != "3" ]; do
 		
-		echo -e "you do not have a MTA (mail transfer agent) yet. You can choose between no mailer (0), Exim4 (1 - recommended), postfix (2) or sendmail (3). Please enter you choice:\n"
+		echo -e "you do not have a MTA (mail transfer agent) yet. You can choose between no mailer (0), Exim4 (1 - recommended), postfix (2) or sendmail (3). Please enter you choice:"
 		read choice
 		
 		if [ "${choice}" != "0" ] && [ "${choice}" != "1" ] && [ "${choice}" != "2" ] && [ "${choice}" != "3" ]; then
 		
-			echo -e "You did not choose 0,1,2 or 3! \n"
+			echo -e "You did not choose 0,1,2 or 3!"
 			
 		fi
 		
@@ -193,12 +199,12 @@ if [ "${checkexim}" = "" ] && [ "${checkpostfix}" = "" ] && [ "${checksendmail}"
 		
 	elif  [ "${choice}" = "2" ]; then
 		
-		echo -e "You have chosen postfix. At this time there is limited support. You should configure it yourself.\n"	
+		echo -e "\n\nYou have chosen postfix. At this time there is limited support. You should configure it yourself."	
 		sudo apt-get install postfix
 		
 	elif  [ "${choice}" = "3" ]; then
 		
-		echo -e "You have chosen sendmail. At this time there is limited support. You should configure it yourself. \n"	
+		echo -e "\n\nYou have chosen sendmail. At this time there is limited support. You should configure it yourself."	
 		sudo apt-get install sendmail
 		
 	else
@@ -212,7 +218,7 @@ elif [ "${checkexim}" != "" ]; then
 	
 	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
 	
-		echo -e "You have exim installed. Would you like us to help you configure it? (yes/no) (if exim works fine on this host answer NO)"	
+		echo -e "\n\nYou have exim installed. Would you like us to help you configure it? (yes/no) (if exim works fine on this host answer NO)"	
 		read confirm3
 	
 		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
@@ -233,7 +239,7 @@ elif [ "${checkpostfix}" != "" ]; then
 	
 	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
 	
-		echo -e "You have already postfix installed, do you want to install exim instead including some help to get it working? (yes/no) (if postfix works fine on this host answer NO)"
+		echo -e "\n\nYou have already postfix installed, do you want to install exim instead including some help to get it working? (yes/no) (if postfix works fine on this host answer NO)"
 		read confirm3
 	
 		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
@@ -244,7 +250,8 @@ elif [ "${checkpostfix}" != "" ]; then
 		
 	done
 	
-	apt-get purge -y postfix*	
+	sudo /etc/init.d/postfix stop
+	sudo apt-get purge -y postfix*	
 	
 	configure_exim
 
@@ -252,7 +259,7 @@ elif [ "${checksendmail}" != "" ]; then
 
 	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
 	
-		echo -e "You have already sendmail installed, do you want to install exim instead including some help to get it working? (yes/no) (if sendmail works fine on this host answer NO)"
+		echo -e "\n\nYou have already sendmail installed, do you want to install exim instead including some help to get it working? (yes/no) (if sendmail works fine on this host answer NO)"
 		read confirm3
 	
 		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
@@ -263,7 +270,8 @@ elif [ "${checksendmail}" != "" ]; then
 		
 	done
 	
-	apt-get purge -y sendmail*
+	sudo /etc/init.d/sendmail stop
+	sudo apt-get purge -y sendmail*
 	
 	configure_exim
 
@@ -355,6 +363,11 @@ sudo -u gitlab cp /home/gitlab/gitlab/config/gitlab.yml.example /home/gitlab/git
 sudo -u gitlab cp /home/gitlab/gitlab/config/database.yml.mysql /home/gitlab/gitlab/config/database.yml
 sudo -u gitlab cp /home/gitlab/gitlab/config/unicorn.rb.example /home/gitlab/gitlab/config/unicorn.rb
 
+# edit gitlab.yml for correct e-mailsender
+echo -e "What e-mailadres do you like to use for GitLab mails? (for account creation and notifications)"
+read mailsender
+sed -i "/from: / c from: ${mailsender}" /home/gitlab/gitlab/config/environments/production.rb
+
 # install gems and bundle
 sudo gem install charlock_holmes --version '0.6.8'
 sudo gem install bundler
@@ -367,6 +380,12 @@ sudo -u gitlab sh -c "cd /home/gitlab/gitlab && bundle exec rake gitlab:app:setu
 sudo cp /home/gitlab/gitlab/lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
 sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
 
+# if we have exim, patch the sendmailcommand not to use the -t option because this does not work. All the headers are available so we dont have to extract them anyway.
+if [ -f "/usr/sbin/exim4" ]; then
+
+	sed -i "/config.action_mailer.delivery_method = :sendmail/ c config.action_mailer.sendmail_settings = {\n     :location => '/usr/sbin/sendmail',\n     :arguments => '-i'\n}" /home/gitlab/gitlab/config/environments/production.rb
+	
+fi
 
 # install init-script
 sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
