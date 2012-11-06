@@ -57,7 +57,7 @@ module TreeHelper
 
   # Simple shortcut to File.join
   def tree_join(*args)
-    File.join(*args)
+    File.join(*args.map{|argument| argument.dup.force_encoding('UTF-8')})
   end
 
   def allowed_tree_edit?
