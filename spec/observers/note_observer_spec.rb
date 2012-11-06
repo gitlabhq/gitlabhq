@@ -13,7 +13,7 @@ describe NoteObserver do
       subject.should_receive :after_create
 
       Note.observers.enable :note_observer do
-        Factory.create(:note)
+        create(:note)
       end
     end
 

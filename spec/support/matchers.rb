@@ -59,9 +59,9 @@ module UrlAccess
 
   def emulate_user(user)
     user = case user
-           when :user then Factory(:user)
+           when :user then create(:user)
            when :visitor then nil
-           when :admin then Factory(:admin)
+           when :admin then create(:admin)
            else user
            end
     login_with(user) if user

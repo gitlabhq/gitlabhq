@@ -4,7 +4,7 @@ describe UserObserver do
   subject { UserObserver.instance }
 
   it 'calls #after_create when new users are created' do
-    new_user = Factory.new(:user)
+    new_user = build(:user)
     subject.should_receive(:after_create).with(new_user)
 
     User.observers.enable :user_observer do

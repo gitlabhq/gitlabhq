@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Gitlab::API do
   include ApiHelpers
 
-  let(:user) { Factory :user }
-  let!(:project) { Factory :project, owner: user }
-  let!(:milestone) { Factory :milestone, project: project }
+  let(:user) { create(:user) }
+  let!(:project) { create(:project, owner: user) }
+  let!(:milestone) { create(:milestone, project: project) }
 
   before { project.add_access(user, :read) }
 

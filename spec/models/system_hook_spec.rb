@@ -17,19 +17,19 @@ describe SystemHook do
     before(:each) { ActiveRecord::Base.observers.enable(:all) }
 
     before(:each) do
-      @system_hook = Factory :system_hook
+      @system_hook = create(:system_hook)
       WebMock.stub_request(:post, @system_hook.url)
     end
 
     it "project_create hook" do
       with_resque do
-        project = Factory :project
+        project = create(:project)
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_create/).once
     end
 
     it "project_destroy hook" do
-      project = Factory :project
+      project = create(:project)
       with_resque do
         project.destroy
       end
@@ -38,13 +38,13 @@ describe SystemHook do
 
     it "user_create hook" do
       with_resque do
-        Factory :user
+        create(:user)
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_create/).once
     end
 
     it "user_destroy hook" do
-      user = Factory :user
+      user = create(:user)
       with_resque do
         user.destroy
       end
@@ -52,8 +52,8 @@ describe SystemHook do
     end
 
     it "project_create hook" do
-      user = Factory :user
-      project = Factory :project
+      user = create(:user)
+      project = create(:project)
       with_resque do
         project.users << user
       end
@@ -61,8 +61,8 @@ describe SystemHook do
     end
 
     it "project_destroy hook" do
-      user = Factory :user
-      project = Factory :project
+      user = create(:user)
+      project = create(:project)
       project.users << user
       with_resque do
         project.users_projects.clear

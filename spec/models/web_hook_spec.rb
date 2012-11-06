@@ -39,8 +39,8 @@ describe ProjectHook do
 
   describe "execute" do
     before(:each) do
-      @project_hook = Factory :project_hook
-      @project = Factory :project
+      @project_hook = create(:project_hook)
+      @project = create(:project)
       @project.hooks << [@project_hook]
       @data = { before: 'oldrev', after: 'newrev', ref: 'ref'}
 

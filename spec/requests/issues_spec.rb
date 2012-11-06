@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe "Issues" do
-  let(:project) { Factory :project }
+  let(:project) { create(:project) }
 
   before do
     login_as :user
-    @user2 = Factory :user
+    @user2 = create(:user)
 
     project.add_access(@user, :read, :write)
     project.add_access(@user2, :read, :write)
@@ -13,10 +13,10 @@ describe "Issues" do
 
   describe "Edit issue", js: true do
     before do
-      @issue = Factory :issue,
-        author: @user,
-        assignee: @user,
-        project: project
+      @issue = create(:issue,
+                      author: @user,
+                      assignee: @user,
+                      project: project)
       visit project_issues_path(project)
       click_link "Edit"
     end
@@ -46,11 +46,11 @@ describe "Issues" do
   describe "Search issue", js: true do
     before do
       ['foobar', 'foobar2', 'gitlab'].each do |title|
-        @issue = Factory :issue,
-          author: @user,
-          assignee: @user,
-          project: project,
-          title: title
+        @issue = create(:issue,
+                        author: @user,
+                        assignee: @user,
+                        project: project,
+                        title: title)
         @issue.save
       end
     end
@@ -93,15 +93,15 @@ describe "Issues" do
   describe "Filter issue" do
     before do
       ['foobar', 'barbaz', 'gitlab'].each do |title|
-        @issue = Factory :issue,
-          author: @user,
-          assignee: @user,
-          project: project,
-          title: title
+        @issue = create(:issue,
+                        author: @user,
+                        assignee: @user,
+                        project: project,
+                        title: title)
       end
 
       @issue = Issue.first
-      @issue.milestone = Factory(:milestone, project: project)
+      @issue.milestone = create(:milestone, project: project)
       @issue.assignee = nil
       @issue.save
     end

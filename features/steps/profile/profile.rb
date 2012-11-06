@@ -53,7 +53,7 @@ class Profile < Spinach::FeatureSteps
   end
 
   Given 'I have activity' do
-    Factory :closed_issue_event, author: current_user
+    create(:closed_issue_event, author: current_user)
   end
 
   Then 'I should see my activity' do

@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe "Admin::Hooks" do
   before do
-    @project = Factory :project,
-      name: "LeGiT",
-      code: "LGT"
+    @project = create(:project,
+                      name: "LeGiT",
+                      code: "LGT")
     login_as :admin
 
-    @system_hook = Factory :system_hook
+    @system_hook = create(:system_hook)
 
   end
 
