@@ -13,6 +13,7 @@
 //= require jquery.history
 //= require jquery.waitforimages
 //= require jquery.atwho
+//= require jquery.scrollto
 //= require bootstrap
 //= require modernizr
 //= require chosen-jquery
