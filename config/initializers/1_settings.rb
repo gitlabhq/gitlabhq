@@ -104,6 +104,10 @@ class Settings < Settingslogic
       git_host['admin_uri'] || 'git@localhost:gitolite-admin'
     end
 
+    def gitolite_config_file
+      git_host['config_file'] || 'gitolite.conf'
+    end
+
     def gitolite_admin_key
       git_host['gitolite_admin_key'] || 'gitlab'
     end

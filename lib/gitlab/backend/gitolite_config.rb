@@ -14,7 +14,10 @@ module Gitlab
     end
 
     def ga_repo
-      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
+      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(
+        File.join(config_tmp_dir,'gitolite'),
+        conf: Gitlab.config.gitolite_config_file
+      )
     end
 
     def apply
