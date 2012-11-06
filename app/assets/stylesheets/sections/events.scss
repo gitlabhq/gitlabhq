@@ -115,3 +115,29 @@
     margin: -3px;
   }
 }
+
+/**
+ * Event filter
+ *
+ */
+.event_filter {
+  position: absolute;
+  width: 40px;
+  margin-left: -50px;
+
+  .filter_icon {
+    float: left;
+    border-left: 3px solid #4bc;
+    padding: 7px;
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    img {
+      width:20px;
+    }
+
+    &.inactive {
+      border-left: 3px solid #EEE;
+      opacity: 0.5;
+    }
+  }
+}
