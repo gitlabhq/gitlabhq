@@ -11,7 +11,7 @@
 %div.tree_progress
 
 %div#tree-content-holder.tree-content-holder
-  - if tree.is_blob?
+  - if tree.blob?
     = render "tree/blob", blob: tree
   - else
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
@@ -35,7 +35,7 @@
     - if tree.readme
       = render "tree/readme", readme: tree.readme
 
-- unless tree.is_blob?
+- unless tree.blob?
   :javascript
     // Load last commit log for each file in tree
     $(window).load(function(){
