@@ -4,9 +4,7 @@ class TreeDecorator < ApplicationDecorator
   def breadcrumbs(max_links = 2)
     if path
       part_path = ""
-      parts = path.split("\/")
-
-      #parts = parts[0...-1] if is_blob?
+      parts = path.split('/')
 
       yield(h.link_to("..", "#")) if parts.count > max_links
 
