@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is a (for now unofficial) installer for gitlab intented for Debian or Debian based distro's like Ubuntu. 
+# This is a (for now unofficial) installer for gitlab intented for Debian or Debian based distro's like Ubuntu (probably a good aptitude system should be enough for running this installer). 
 # The installer will install: 
 # 
 # - GitLab
@@ -11,6 +11,8 @@
 # - a few thing like ruby, some gems, python stuff and so on
 # 
 # NOTE: the installer will upgrade your system without a promt! Because of this and other reasons like security we highly encourage you to run this on a dedicated VPS! Alway make backups of important files if there are any before using this installer!
+#
+# HOW TO INSTALL: apt-get install -y curl && bash <(curl -s https://raw.github.com/richardland/gitlabhq/master/doc/install/install_on_debian_or_ubuntu.sh)
 #
 # This installer is mainly based on https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
 # 
@@ -25,6 +27,14 @@
 # 	* not using path dependant commands, i.e. we dont want to cd in to directories where possible
 # 	* some checks like filesystem and RAM free space + port bindings to port 80
 # 	* making timeout higher for slow systems
+#
+# TODO: - overall usability by: 	
+#			- help fillign in the IP and portnumbers of nginx hostfile			
+#			- enable ssl
+#			- maybe change the way port 80 is detected. Outgoung connection TO port 80 is now also detected as wrapped port
+#			- changing cosmetics (clearing screen, progressbars and rerouting stdout to dev/null)
+#			- tekstual changes
+#			- ask for username and password so account doesnt have default credentials
 #
 # License: do whatever your want with this. Would be nice if you would report bugs to the place where you got this script or give some effort to contribute to it.
 
@@ -50,7 +60,7 @@ configure_exim () {
 	sudo apt-get install -y exim4
 
 	# configure exim
-	echo -e "\n\nIn the next step you will be asked some questions in orde to configure exim. \nWe suggest to use \"mail sent by smarthost; no local mail\". \nAfter this question only these two questions are really important:\n - \"IP address or host name of the outgoing smarthost\" \n   (fill in something like mail.youdomainname.com or smtp.gmail.com)\n - \"Root and postmaster mail recipient\". (fill in your own mailadress)\n\nThis way you can use a external mailserver just like your mailclient would do. \nIf you choose this, we will help you with the setup. \n(mailserver should support SSL though).\n\nIf you choose a different setup than smarthost you have to configure \nthe mailserver yourself after the install of GitLab. \n\nPress any key to continue..."
+	echo -e "\n\nIn the next step you will be asked some questions in orde to configure exim. \nWe suggest to use \"mail sent by smarthost; no local mail\". \nAfter this question only these two questions are really important:\n - \"IP address or host name of the outgoing smarthost\" \n   (fill in something like mail.youdomainname.com or smtp.gmail.com)\n - \"Root and postmaster mail recipient\". (fill in your own mailadress)\n\nThis way you can use a external mailserver just like your mailclient would do. \nIf you choose this, we will help you with the setup. \n(mailserver should support SSL though).\n\nIf you choose a different setup than smarthost you have to configure \nthe mailserver yourself after the install of GitLab.\nBest thing to do this is with the command 'dpkg-reconfigure exim4-config' \n\nPress any key to continue..."
 	read confirm4
 	
 	sudo dpkg-reconfigure exim4-config
@@ -259,7 +269,7 @@ elif [ "${checksendmail}" != "" ]; then
 
 	while [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; do
 	
-		echo -e "\n\nYou have already sendmail installed, do you want to install exim instead including some help to get it working? (yes/no) (if sendmail works fine on this host answer NO)"
+		echo -e "\n\nYou already have sendmail installed, do you want to install Exim4 instead\nincluding some help to get it working? (yes/no) (if you don't send mail using the sendmail MTA and this stuff is too complicated for you answer 'yes', if sendmail works fine on this host answer 'yes')"
 		read confirm3
 	
 		if [ "${confirm3}" != "yes" ] && [ "${confirm3}" != "no" ]; then
@@ -364,9 +374,9 @@ sudo -u gitlab cp /home/gitlab/gitlab/config/database.yml.mysql /home/gitlab/git
 sudo -u gitlab cp /home/gitlab/gitlab/config/unicorn.rb.example /home/gitlab/gitlab/config/unicorn.rb
 
 # edit gitlab.yml for correct e-mailsender
-echo -e "What e-mailadres do you like to use for GitLab mails? (for account creation and notifications)"
+echo -e "What (existing) sender e-mailadres do you like to use for GitLab mails? (for account creation and notifications)"
 read mailsender
-sed -i "/from: / c from: ${mailsender}" /home/gitlab/gitlab/config/environments/production.rb
+sed -i "/from: / c from: ${mailsender}" /home/gitlab/gitlab/config/gitlab.yml
 
 # install gems and bundle
 sudo gem install charlock_holmes --version '0.6.8'
@@ -432,6 +442,6 @@ rm -r ${tmpfolder}/${deploy}
 
 
 ### Post install message
-echo -e "Installation is complete! Please go to the ip/port you just entered and use the following credentials to log in:\n\nusername: admin@local.host\npassword: 5iveL!fe\n\nMake sure to change these credential immedialty after logging in!"
+echo -e "Installation is complete! Please go to the ip/port you just entered and use the following credentials to log in:\n\nusername: admin@local.host\npassword: 5iveL!fe\n\nMake sure to change these credential immedialty after logging in!\n\nAnd be patient. The first time rendering GitLab can take some minutes on slow systems... HAVE FUN"
 
 exit 0
