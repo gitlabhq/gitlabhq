@@ -6,7 +6,10 @@
         %h2{style: "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
           Hi #{@user['name']}!
         %p{style: "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
-          Administrator created account for you. Now you are a member of company GitLab application.
+          - if Gitlab.config.gitlab.signup_enabled
+            Account has been created successfully.
+          - else
+            Administrator created account for you. Now you are a member of company GitLab application.
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
     %tr
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
@@ -15,8 +18,9 @@
           login..........................................
           %code= @user['email']
         %p{style: "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 16px;font-family: Helvetica, Arial, sans-serif; "}
-          password..................................
-          %code= @password
+          - unless Gitlab.config.gitlab.signup_enabled
+            password..................................
+            %code= @password
         %p{style: "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 28px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
           = link_to "Click here to login", root_url
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}

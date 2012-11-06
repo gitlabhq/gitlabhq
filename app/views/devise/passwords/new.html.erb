@@ -5,5 +5,5 @@
   <br/>
   <br/>
   <%= f.submit "Reset password", :class => "primary btn"  %>
-  <div class="right"> <%= render :partial => "devise/shared/links" %></div>
+  <div class="right"> <%= link_to "Sign in", new_session_path(resource_name), :class => "btn" %><br /></div>
 <% end %>

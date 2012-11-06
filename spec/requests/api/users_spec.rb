@@ -53,6 +53,36 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /users/sign_up" do
+    before do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
+    end
+    it "should redirect to sign in page if signup is disabled" do
+      get "/users/sign_up"
+      response.status.should == 302
+      response.should redirect_to(new_user_session_path)
+    end
+  end
+
+  describe "GET /users/sign_up" do
+    before do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+    end
+    it "should return sign up page if signup is enabled" do
+      get "/users/sign_up"
+      response.status.should == 200
+    end
+    it "should create a new user account" do
+      visit new_user_registration_path
+      fill_in "user_name", with: "Name Surname"
+      fill_in "user_username", with: "Great"
+      fill_in "user_email", with: "name@mail.com"
+      fill_in "user_password", with: "password1234"
+      fill_in "user_password_confirmation", with: "password1234"
+      expect { click_button "Sign up" }.to change {User.count}.by(1)
+    end
+  end
+
   describe "GET /user" do
     it "should return current user" do
       get api("/user", user)
