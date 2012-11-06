@@ -9,18 +9,27 @@ class ApplicationController < ActionController::Base
   helper_method :abilities, :can?
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
+    log_exception(exception)
     render "errors/gitolite", layout: "errors", status: 500
   end
 
   rescue_from Encoding::CompatibilityError do |exception|
+    log_exception(exception)
     render "errors/encoding", layout: "errors", status: 500
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
+    log_exception(exception)
     render "errors/not_found", layout: "errors", status: 404
   end
 
   protected
+
+  def log_exception(exception)
+    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
+    application_trace.map!{ |t| "  #{t}\n" }
+    logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
+  end
 
   def reject_blocked!
     if current_user && current_user.blocked
