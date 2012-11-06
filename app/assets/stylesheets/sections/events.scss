@@ -123,6 +123,7 @@
 .event_filter {
   position: absolute;
   width: 40px;
+  margin-left: -50px;
 
   .filter_icon {
     float: left;
@@ -138,11 +139,5 @@
       border-left: 3px solid #EEE;
       opacity: 0.5;
     }
-  }
-}
-
-.activities {
-  .content_list {
-    margin-left:50px;
   }
 }
