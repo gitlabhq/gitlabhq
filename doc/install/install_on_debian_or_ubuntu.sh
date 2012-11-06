@@ -29,7 +29,7 @@
 # 	* making timeout higher for slow systems
 #
 # TODO: - overall usability by: 	
-#			- help fillign in the IP and portnumbers of nginx hostfile			
+#			- help fillign in the IP and portnumbers of nginx hostfile			(als o in /home/gitlab/gitlab/config/gitlab.yml  so link in welcome mail is OK)
 #			- enable ssl
 #			- maybe change the way port 80 is detected. Outgoung connection TO port 80 is now also detected as wrapped port
 #			- changing cosmetics (clearing screen, progressbars and rerouting stdout to dev/null)
@@ -378,6 +378,60 @@ echo -e "What (existing) sender e-mailadres do you like to use for GitLab mails?
 read mailsender
 sed -i "/from: / c from: ${mailsender}" /home/gitlab/gitlab/config/gitlab.yml
 
+# edit gitlab.yml for correct hostname
+while [ "${domainpoint}" != "yes" ] && [ "${domainpoint}" != "no" ]; do
+
+	echo -e "Do you have a domainname pointing to this machine? (yes/no)"
+	read domainpoint
+		
+	if [ "${domainpoint}" != "yes" ] && [ "${domainpoint}" != "no" ]; then
+	
+		echo -e  "Please answer with yes or no"
+		
+	fi
+		
+done
+
+if [ "${domainpoint}" = "yes" ]; then
+
+	echo -e "Please provide the domainname that points to "
+	read domainname
+	
+	sed -i "/host: localhost/ c host: ${domainname}" /home/gitlab/gitlab/config/gitlab.yml
+	
+fi
+
+echo -e "Please provide the ip of this machine:"
+read ipmach
+
+if [ "${domainname}" = "" ]; then
+	
+	sed -i "/host: localhost/ c host: ${ipmach}" /home/gitlab/gitlab/config/gitlab.yml
+	
+fi
+		
+
+
+# ask for specific port
+porteighty=`netstat -natp | grep LISTEN | grep :80`
+if [ "${porteighty}" !=  "" ]; then
+
+	echo -e "Another process is bound to port 80. Please give a alternative port for GitLab to run on:"
+	read gitport
+		
+	sed -i "/port: 80/ c host: ${gitport}" /home/gitlab/gitlab/config/gitlab.yml
+	
+else
+
+	echo -e "PLease provide a port for GitLab to run on. (Port 80, the default non ssl port, is not used so you could use it):"
+	read gitport
+	
+	sed -i "/port: 80/ c host: ${gitport}" /home/gitlab/gitlab/config/gitlab.yml	
+
+fi
+
+
+
 # install gems and bundle
 sudo gem install charlock_holmes --version '0.6.8'
 sudo gem install bundler
@@ -419,11 +473,7 @@ sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P 
 sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 # check if a precess is using port 80
-check=`netstat -natp | grep :80`
-if [ "${check}" !=  "" ]; then
-
-	echo -e "make sure you do not use port 80, because another process is using this port:\n${check}\n\nWe will remove the default nginx host for you, but make sure to change the port in the next step! Press Enter to continue..."
-	read confirm
+if [ "${porteighty}" !=  "" ]; then
 	
 	rm /etc/nginx/sites-enabled/default
 	
@@ -431,6 +481,17 @@ fi
 
 # Change **YOUR_SERVER_IP**, port and **YOUR_SERVER_FQDN**
 # to the IP address and fully-qualified domain name
+
+sed -i "/YOUR_SERVER_IP:80/ c listen ${ipmach}:${gitport}" /etc/nginx/sites-enabled/gitlab
+
+if [ "${domainname}" != "" ]; then
+	
+	sed -i "/server_name YOUR_SERVER_FQDN;/ c server_name ${domainname};" /home/gitlab/gitlab/config/gitlab.yml
+	
+fi
+
+
+
 sudo editor /etc/nginx/sites-enabled/gitlab
 
 # Restart nginx:
