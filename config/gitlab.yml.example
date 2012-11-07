@@ -29,16 +29,6 @@ app:
 #
 # 2. Auth settings
 # ==========================
-ldap: 
-  enabled: false
-  host: '_your_ldap_server'
-  base: '_the_base_where_you_search_for_users'
-  port: 636
-  uid: 'sAMAccountName'
-  method: 'ssl' # plain
-  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-  password: '_the_password_of_the_bind_user'
-
 omniauth:
   # Enable ability for users
   # to login via twitter, google ..
@@ -48,17 +38,45 @@ omniauth:
   # It allows user to login without having user account
   allow_single_sign_on: false
   block_auto_created_users: true
+  # Please note that ldap and shibboleth authentication methods need this settings:
+  # allow_single_sign_on: true
+  # block_auto_created_users: false
 
   # Auth providers 
   providers:
-    # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-    #     app_secret: 'YOUR APP SECRET',
-    #     args: { access_type: 'offline', approval_prompt: '' } }
-    # - { name: 'twitter', app_id: 'YOUR APP ID',
-    #     app_secret: 'YOUR APP SECRET'}
-    # - { name: 'github', app_id: 'YOUR APP ID',
-    #     app_secret: 'YOUR APP SECRET' }
 
+    google_oauth2:
+      - 'YOUR APP ID'
+      - 'YOUR APP SECRET'
+      - args:
+          access_type: 'offline'
+          approval_prompt: ''
+
+    twitter:
+      - 'YOUR APP ID'
+      - 'YOUR APP SECRET'
+
+    github:
+      - 'YOUR APP ID'
+      - 'YOUR APP SECRET'
+
+    ldap:
+      host: '_your_ldap_server'
+      base: '_the_base_where_you_search_for_users'
+      port: 636
+      uid: 'sAMAccountName'
+      method: 'ssl' # plain
+      bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+      password: '_the_password_of_the_bind_user'
+
+    shibboleth:
+      shib_session_id_field:     'HTTP_SHIB_SESSION_ID'
+      shib_application_id_field: 'HTTP_SHIB_APPLICATION_ID'
+      uid_field:   'HTTP_SSOUNIXNAME'
+      name_field:  'HTTP_SSONAME'
+      info_fields:
+        email: 'HTTP_SSOCONTACTMAIL'
+      debug: false
 
 #
 # 3. Advanced settings:

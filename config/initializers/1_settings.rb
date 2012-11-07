@@ -126,12 +126,6 @@ class Settings < Settingslogic
       app['backup_keep_time'] || 0
     end
 
-    def ldap_enabled?
-      ldap && ldap['enabled']
-    rescue Settingslogic::MissingSetting
-      false
-    end
-
     def omniauth_enabled?
       omniauth && omniauth['enabled']
     rescue Settingslogic::MissingSetting
@@ -139,7 +133,7 @@ class Settings < Settingslogic
     end
 
     def omniauth_providers
-      (omniauth_enabled? && omniauth['providers']) || []
+      (omniauth_enabled? && omniauth['providers']) || {}
     end
 
     def disable_gravatar?

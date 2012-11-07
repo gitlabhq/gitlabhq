@@ -247,6 +247,8 @@ GEM
     omniauth-oauth2 (1.1.0)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    omniauth-shibboleth (1.0.7)
+      omniauth-oauth (~> 1.0)
     omniauth-twitter (0.0.13)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
@@ -454,6 +456,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-ldap!
+  omniauth-shibboleth (~> 1.0.7)
   omniauth-twitter
   pg
   pry

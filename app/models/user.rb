@@ -60,10 +60,6 @@ class User < ActiveRecord::Base
       gitlab_auth.find_or_new_for_omniauth(auth)
     end
 
-    def find_for_ldap_auth(auth, signed_in_resource = nil)
-      gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
-    end
-
     def gitlab_auth
       Gitlab::Auth.new
     end
