@@ -244,6 +244,14 @@ and ensure you have followed all of the above steps carefully.
     # or sqlite
     sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
 
+#### Configure git client
+
+Gitlab needs to be able to commit and push changes to gitolite.
+Git requires a username and email in order to be able to do that.
+
+    sudo -u gitlab -H git config --global user.email "gitlab@localhost"
+    sudo -u gitlab -H git config --global user.name "Gitlab"
+
 #### Setup database
 
     sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
