@@ -74,14 +74,12 @@ POST /users
 
 Parameters:
 + `email` (required)                  - Email
-+ `name` (required)                   - Name
 + `password` (required)               - Password
-+ `password_confirmation` (required)  - Password confirmation
++ `name`                              - Name
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
-+ `projects_limit`                    - Limit projects wich user can create
-
++ `projects_limit`                    - Number of projects user can create
 
 Will return created user with status `201 Created` on success, or `404 Not
 found` on fail.
