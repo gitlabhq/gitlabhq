@@ -15,4 +15,21 @@ class DashboardSearch < Spinach::FeatureSteps
     @project = Factory :project, :name => "Shop"
     @project.add_access(@user, :admin)
   end
+
+  Given 'I search for "Contibuting"' do
+    fill_in "dashboard_search", :with => "Contibuting"
+    click_button "Search"
+  end
+
+  And 'Project "Shop" has wiki page "Contibuting guide"' do
+    @wiki_page = Factory :wiki, :project => @project,
+                         :title => "Contibuting guide",
+                         :slug => "contributing"
+  end
+
+  Then 'I should see "Contibuting guide" wiki link' do
+    page.should have_link "Contibuting guide"
+  end
+
+
 end

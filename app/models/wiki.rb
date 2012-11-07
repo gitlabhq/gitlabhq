@@ -15,6 +15,12 @@ class Wiki < ActiveRecord::Base
     slug
   end
 
+  class << self
+    def search(query)
+      where("title like :query OR content like :query", query: "%#{query}%")
+    end
+  end
+
   protected
 
   def self.regenerate_from wiki
