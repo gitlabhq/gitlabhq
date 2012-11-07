@@ -4,7 +4,7 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user)  { Factory :user }
-  let(:admin) {Factory :admin}
+  let(:admin) { Factory :admin }
   let(:key)   { Factory :key, user: user }
 
   describe "GET /users" do
@@ -42,9 +42,9 @@ describe Gitlab::API do
     end
 
     it "should create user" do
-      expect{
-        post api("/users", admin), Factory.attributes(:user)
-      }.to change{User.count}.by(1)
+      expect {
+        post api("/users", admin), Factory.attributes(:user, projects_limit: 3)
+      }.to change { User.count }.by(1)
     end
 
     it "shouldn't available for non admin users" do
