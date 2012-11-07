@@ -12,11 +12,8 @@
     .span5
       .mr_branch_box
         %h5 From (Head Branch)
-        .body 
-          .padded
-            = f.label :source_branch, "From", class: "control-label"
-            .controls
-              = f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span3'})
+        .body
+          .padded= f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
       .mr_source_commit
 
     .span2
@@ -25,10 +22,7 @@
       .mr_branch_box
         %h5 To (Base Branch)
         .body
-          .padded
-            = f.label :target_branch, "To", class: "control-label"
-            .controls
-              = f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span3'})
+          .padded= f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
       .mr_target_commit
 
   %h4.cdark 2. Fill info
@@ -38,7 +32,7 @@
       .top_box_content
         = f.label :title do 
           %strong= "Title *"
-        .input= f.text_field :title, class: "input-xxlarge pad", maxlength: 255, rows: 5
+        .input= f.text_field :title, class: "input-xxlarge pad gfm-input", maxlength: 255, rows: 5
       .middle_box_content
         = f.label :assignee_id do 
           %i.icon-user 

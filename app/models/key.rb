@@ -6,15 +6,14 @@ class Key < ActiveRecord::Base
 
   attr_accessible :key, :title
 
-  validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true,
-            length: { within: 0..5000 },
-            format: { :with => /ssh-.{3} / }
-
-  before_save :set_identifier
   before_validation :strip_white_space
+  before_save :set_identifier
+
+  validates :title, presence: true, length: { within: 0..255 }
+  validates :key, presence: true, length: { within: 0..5000 }, format: { :with => /ssh-.{3} / }
+  validate :unique_key, :fingerprintable_key
+
   delegate :name, :email, to: :user, prefix: true
-  validate :unique_key
 
   def strip_white_space
     self.key = self.key.strip unless self.key.blank?
@@ -26,6 +25,21 @@ class Key < ActiveRecord::Base
     if (query.count > 0)
       errors.add :key, 'already exist.'
     end
+  end
+
+  def fingerprintable_key
+    return true unless key # Don't test if there is no key.
+    # `ssh-keygen -lf /dev/stdin <<< "#{key}"` errors with: redirection unexpected
+    file = Tempfile.new('key_file')
+    begin
+      file.puts key
+      file.rewind
+      fingerprint_output = `ssh-keygen -lf #{file.path} 2>&1` # Catch stderr.
+    ensure
+      file.close
+      file.unlink # deletes the temp file
+    end
+    errors.add(:key, "can't be fingerprinted") if fingerprint_output.match("failed")
   end
 
   def set_identifier
@@ -67,3 +81,4 @@ end
 #  identifier :string(255)
 #  project_id :integer
 #
+

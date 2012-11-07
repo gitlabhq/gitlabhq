@@ -7,6 +7,11 @@ class NotesController < ProjectResourceController
 
   def index
     notes
+    if params[:target_type] == "merge_request"
+      @mixed_targets = true
+      @main_target_type = params[:target_type].camelize
+    end
+
     respond_with(@notes)
   end
 

@@ -36,4 +36,12 @@ module StaticModel
   def destroyed?
     false
   end
+
+  def ==(other)
+    if other.is_a? StaticModel
+      id == other.id
+    else
+      super
+    end
+  end
 end

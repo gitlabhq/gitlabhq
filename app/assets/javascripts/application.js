@@ -10,6 +10,7 @@
 //= require jquery.cookie
 //= require jquery.endless-scroll
 //= require jquery.highlight
+//= require jquery.history
 //= require jquery.waitforimages
 //= require jquery.atwho
 //= require bootstrap
@@ -17,4 +18,5 @@
 //= require chosen-jquery
 //= require raphael
 //= require branch-graph
+//= require ace-src-noconflict/ace
 //= require_tree .

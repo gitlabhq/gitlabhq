@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
   attr_accessor :error_code
 
   # Relations
+  belongs_to :group
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -24,51 +25,9 @@ class Project < ActiveRecord::Base
   has_many :hooks,          dependent: :destroy, class_name: "ProjectHook"
   has_many :wikis,          dependent: :destroy
   has_many :protected_branches, dependent: :destroy
+  has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
 
-  # Scopes
-  scope :public_only, where(private_flag: false)
-  scope :without_user, lambda { |user|  where("id not in (:ids)", ids: user.projects.map(&:id) ) }
-
-  def self.active
-    joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
-  end
-
-  def self.search query
-    where("name like :query or code like :query or path like :query", query: "%#{query}%")
-  end
-
-  def self.create_by_user(params, user)
-    project = Project.new params
-
-    Project.transaction do
-      project.owner = user
-      project.save!
-
-      # Add user as project master
-      project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
-
-      # when project saved no team member exist so
-      # project repository should be updated after first user add
-      project.update_repository
-    end
-
-    project
-  rescue Gitlab::Gitolite::AccessDenied => ex
-    project.error_code = :gitolite
-    project
-  rescue => ex
-    project.error_code = :db
-    project.errors.add(:base, "Can't save project. Please try again later")
-    project
-  end
-
-  def git_error?
-    error_code == :gitolite
-  end
-
-  def saved?
-    id && valid?
-  end
+  delegate :name, to: :owner, allow_nil: true, prefix: true
 
   # Validations
   validates :owner, presence: true
@@ -84,6 +43,58 @@ class Project < ActiveRecord::Base
             :wiki_enabled, inclusion: { in: [true, false] }
   validate :check_limit, :repo_name
 
+  # Scopes
+  scope :public_only, where(private_flag: false)
+  scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
+  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
+
+  class << self
+    def active
+      joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
+    end
+
+    def search query
+      where("name LIKE :query OR code LIKE :query OR path LIKE :query", query: "%#{query}%")
+    end
+
+    def create_by_user(params, user)
+      project = Project.new params
+
+      Project.transaction do
+        project.owner = user
+        project.save!
+
+        # Add user as project master
+        project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
+
+        # when project saved no team member exist so
+        # project repository should be updated after first user add
+        project.update_repository
+      end
+
+      project
+    rescue Gitlab::Gitolite::AccessDenied => ex
+      project.error_code = :gitolite
+      project
+    rescue => ex
+      project.error_code = :db
+      project.errors.add(:base, "Can't save project. Please try again later")
+      project
+    end
+
+    def access_options
+      UsersProject.access_roles
+    end
+  end
+
+  def git_error?
+    error_code == :gitolite
+  end
+
+  def saved?
+    id && valid?
+  end
+
   def check_limit
     unless owner.can_create_project?
       errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
@@ -96,10 +107,6 @@ class Project < ActiveRecord::Base
     if path == "gitolite-admin"
       errors.add(:path, " like 'gitolite-admin' is not allowed")
     end
-  end
-
-  def self.access_options
-    UsersProject.access_roles
   end
 
   def to_param
@@ -123,7 +130,7 @@ class Project < ActiveRecord::Base
   end
 
   def commit_line_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code is not null")
+    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
   end
 
   def public?
@@ -135,15 +142,11 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity
-    events.order("created_at ASC").last
+    last_event
   end
 
   def last_activity_date
-    if events.last
-      events.last.created_at
-    else
-      updated_at
-    end
+    last_event.try(:created_at) || updated_at
   end
 
   def wiki_notes
@@ -152,6 +155,10 @@ class Project < ActiveRecord::Base
 
   def project_id
     self.id
+  end
+
+  def issues_labels
+    issues.tag_counts_on(:labels)
   end
 end
 
@@ -173,4 +180,6 @@ end
 #  wall_enabled           :boolean         default(TRUE), not null
 #  merge_requests_enabled :boolean         default(TRUE), not null
 #  wiki_enabled           :boolean         default(TRUE), not null
+#  group_id               :integer
 #
+

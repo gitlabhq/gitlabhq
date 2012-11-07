@@ -1,6 +1,6 @@
 # GitLab API
 
-All API requests require authentication. You need to pass a `private_token` parameter to authenticate. You can find or reset your private token in your profile.
+All API requests require authentication. You need to pass a `private_token` parameter by url or header. You can find or reset your private token in your profile.
 
 If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
 

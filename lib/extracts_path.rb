@@ -56,9 +56,9 @@ module ExtractsPath
 
       # Append a trailing slash if we only get a ref and no file path
       id = input
-      id += '/' unless id.include?('/')
+      id += '/' unless id.ends_with?('/')
 
-      valid_refs = @project.branches + @project.tags
+      valid_refs = @project.ref_names
       valid_refs.select! { |v| id.start_with?("#{v}/") }
 
       if valid_refs.length != 1
@@ -70,8 +70,8 @@ module ExtractsPath
       end
     end
 
-    # Remove leading slash from path
-    pair[1].gsub!(/^\//, '')
+    # Remove ending slashes from path
+    pair[1].gsub!(/^\/|\/$/, '')
 
     pair
   end

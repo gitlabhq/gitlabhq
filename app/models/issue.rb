@@ -14,22 +14,6 @@ class Issue < ActiveRecord::Base
   def self.open_for(user)
     opened.assigned(user)
   end
-
-  def is_assigned?
-    !!assignee_id
-  end
-
-  def is_being_reassigned?
-    assignee_id_changed?
-  end
-
-  def is_being_closed?
-    closed_changed? && closed
-  end
-
-  def is_being_reopened?
-    closed_changed? && !closed
-  end
 end
 
 # == Schema Information
@@ -49,3 +33,4 @@ end
 #  description  :text
 #  milestone_id :integer
 #
+

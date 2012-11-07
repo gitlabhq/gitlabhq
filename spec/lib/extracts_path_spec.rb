@@ -7,8 +7,7 @@ describe ExtractsPath do
 
   before do
     @project = project
-    project.stub(:branches).and_return(['master', 'foo/bar/baz'])
-    project.stub(:tags).and_return(['v1.0.0', 'v2.0.0'])
+    project.stub(:ref_names).and_return(['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0'])
   end
 
   describe '#extract_ref' do

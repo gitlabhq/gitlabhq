@@ -1,0 +1,12 @@
+.ui-box
+  %h5
+    People
+    %small
+      (#{@users.size})
+  %ul.unstyled
+    - @users.each do |user|
+      %li.wll
+        = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
+        %strong= user.name
+        %span.cgray= user.email
+

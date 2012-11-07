@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: keys
+#
+#  id         :integer         not null, primary key
+#  user_id    :integer
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#  key        :text
+#  title      :string(255)
+#  identifier :string(255)
+#  project_id :integer
+#
+
 require 'spec_helper'
 
 describe Key do
@@ -49,6 +63,18 @@ describe Key do
         create(:key, user: user)
         build(:key, user: user).should_not be_valid
       end
+    end
+  end
+
+  context "validate it is a fingerprintable key" do
+    let(:user) { Factory.create(:user) }
+
+    it "accepts the fingerprintable key" do
+      build(:key, user: user).should be_valid
+    end
+
+    it "rejects the unfingerprintable key" do
+      build(:key_with_a_space_in_the_middle).should_not be_valid
     end
   end
 end

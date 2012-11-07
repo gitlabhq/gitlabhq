@@ -12,6 +12,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
       xml.entry do
         event_link = event.feed_url
         event_title = event.feed_title
+        event_summary = event.feed_summary
 
         xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
         xml.link    :href => event_link
@@ -22,7 +23,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
           xml.name event.author_name
           xml.email event.author_email
         end
-        xml.summary event_title
+        xml.summary(:type => "xhtml") { |x| x << event_summary unless event_summary.nil? }
       end
     end
   end

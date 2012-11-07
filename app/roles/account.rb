@@ -22,6 +22,10 @@ module Account
     projects_limit > my_own_projects.count
   end
 
+  def can_create_group?
+    is_admin?
+  end
+
   def last_activity_project
     projects.first
   end
@@ -41,7 +45,7 @@ module Account
   # Remove user from all projects and
   # set blocked attribute to true
   def block
-    users_projects.all.each do |membership|
+    users_projects.find_each do |membership|
       return false unless membership.destroy
     end
 

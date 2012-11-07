@@ -43,4 +43,13 @@ module IssuesHelper
     # Milestone uses :title, Issue uses :name
     OpenStruct.new(id: 0, title: 'Unspecified', name: 'Unassigned')
   end
+
+  def issues_filter
+    {
+      all: "all",
+      closed: "closed",
+      to_me: "assigned-to-me",
+      open: "open"
+    }
+  end
 end

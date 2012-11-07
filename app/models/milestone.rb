@@ -4,7 +4,8 @@ class Milestone < ActiveRecord::Base
   belongs_to :project
   has_many :issues
 
-  validates_presence_of :title, :project_id
+  validates :title, presence: true
+  validates :project, presence: true
 
   def self.active
     where("due_date > ? OR due_date IS NULL", Date.today)
@@ -38,3 +39,4 @@ end
 #  created_at  :datetime        not null
 #  updated_at  :datetime        not null
 #
+

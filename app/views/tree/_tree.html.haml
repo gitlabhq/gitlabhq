@@ -1,58 +1,39 @@
 %ul.breadcrumb
   %li
     %span.arrow
-    = link_to project_tree_path(@project, @ref), remote: true do
+    = link_to project_tree_path(@project, @ref) do
       = @project.name
   - tree.breadcrumbs(6) do |link|
     \/
     %li= link
+
 .clear
 %div.tree_progress
+
 %div#tree-content-holder.tree-content-holder
   - if tree.is_blob?
-    = render partial: "tree/tree_file", locals: { name: tree.name, content: tree.data, file: tree }
+    = render "tree/blob", blob: tree
   - else
-    - contents = tree.contents
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
         %th Name
         %th Last Update
-        %th
-          Last commit
-          = link_to "History", tree.history_path, class: "right"
+        %th Last Commit
+        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
 
       - if tree.up_dir?
-        %tr{ class: "tree-item", url: tree.up_dir_path }
+        %tr.tree-item
           %td.tree-item-file-name
-            = image_tag "file_empty.png"
-            = link_to "..", tree.up_dir_path, remote: :true
+            = image_tag "file_empty.png", size: '16x16'
+            = link_to "..", tree.up_dir_path
           %td
           %td
+          %td
 
-      - index = 0
-      - contents.select{ |i| i.is_a?(Grit::Tree)}.each do |content|
-        = render partial: "tree/tree_item", locals: { content: content, index: (index += 1) }
-      - contents.select{ |i| i.is_a?(Grit::Blob)}.each do |content|
-        = render partial: "tree/tree_item", locals: { content: content, index: (index += 1) }
-      - contents.select{ |i| i.is_a?(Grit::Submodule)}.each do |content|
-        = render partial: "tree/submodule_item", locals: { content: content, index: (index += 1) }
+      = render_tree(tree.contents)
 
-    - if content = contents.select{ |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }.first
-      .file_holder#README
-        .file_title
-          %i.icon-file
-          = content.name
-        .file_content.wiki
-          - if gitlab_markdown?(content.name)
-            = preserve do
-              = markdown(content.data)
-          - else
-            = raw GitHub::Markup.render(content.name, content.data)
-
-:javascript
-  $(function(){
-    history.pushState({ path: this.path }, '', "#{@history_path}");
-  });
+    - if tree.readme
+      = render "tree/readme", readme: tree.readme
 
 - unless tree.is_blob?
   :javascript
@@ -60,11 +41,3 @@
     $(window).load(function(){
       ajaxGet('#{@logs_path}');
     });
-
-- if @path.present? && request.xhr?
-  :javascript
-    $(window).unbind('popstate');
-    $(window).bind('popstate', function() {
-      if(location.pathname.search("tree") != -1) {
-        $.ajax({type: "GET", url: location.pathname, dataType: "script"})}
-        else { location.href = location.pathname;}});

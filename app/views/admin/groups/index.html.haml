@@ -1,0 +1,29 @@
+= render 'admin/shared/projects_head'
+%h3.page_title
+  Groups
+  %small
+    allows you to keep projects organized.
+    Use groups for uniting related projects.
+
+  = link_to 'New Group', new_admin_group_path, class: "btn small right"
+%br
+= form_tag admin_groups_path, method: :get, class: 'form-inline' do
+  = text_field_tag :name, params[:name], class: "xlarge"
+  = submit_tag "Search", class: "btn submit primary"
+
+%table
+  %thead
+    %th Name
+    %th Code
+    %th Projects
+    %th Edit
+    %th.cred Danger Zone!
+
+  - @groups.each do |group|
+    %tr
+      %td= link_to group.name, [:admin, group]
+      %td= group.code
+      %td= group.projects.count
+      %td= link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn small"
+      %td.bgred= link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn small danger"
+= paginate @groups, theme: "admin"

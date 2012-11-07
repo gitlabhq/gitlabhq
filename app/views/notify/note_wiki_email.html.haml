@@ -5,7 +5,7 @@
       %td{align: "left", style: "padding: 20px 0 0;"}
         %h2{style: "color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
           New comment for Wiki page
-          = link_to_gfm @wiki.title, project_issue_url(@wiki.project, @wiki, anchor: "note_#{@note.id}")
+          = link_to_gfm @wiki.title, project_wiki_url(@wiki.project, @wiki, anchor: "note_#{@note.id}")
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
     %tr
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}

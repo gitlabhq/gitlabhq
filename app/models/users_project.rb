@@ -14,62 +14,93 @@ class UsersProject < ActiveRecord::Base
   after_save :update_repository
   after_destroy :update_repository
 
-  validates_uniqueness_of :user_id, scope: [:project_id], message: "already exists in project"
-  validates_presence_of :user_id
-  validates_presence_of :project_id
+  validates :user, presence: true
+  validates :user_id, uniqueness: { :scope => [:project_id], message: "already exists in project" }
+  validates :project, presence: true
 
   delegate :name, :email, to: :user, prefix: true
 
-  def self.bulk_delete(project, user_ids)
-    UsersProject.transaction do
-      UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
-        users_project.destroy
+  class << self
+    def import_team(source_project, target_project)
+      UsersProject.without_repository_callback do
+        UsersProject.transaction do
+          team = source_project.users_projects.all
+
+          team.each do |tm|
+            # Skip if user already present in team
+            next if target_project.users.include?(tm.user)
+
+            new_tm = tm.dup
+            new_tm.id = nil
+            new_tm.project_id = target_project.id
+            new_tm.save
+          end
+        end
+      end
+
+      target_project.update_repository
+      true
+    rescue
+      false
+    end
+
+    def without_repository_callback
+      UsersProject.skip_callback(:destroy, :after, :update_repository)
+      yield
+      UsersProject.set_callback(:destroy, :after, :update_repository)
+    end
+
+    def bulk_delete(project, user_ids)
+      UsersProject.transaction do
+        UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+          users_project.destroy
+        end
       end
     end
-  end
 
-  def self.bulk_update(project, user_ids, project_access)
-    UsersProject.transaction do
-      UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
-        users_project.project_access = project_access
-        users_project.save
+    def bulk_update(project, user_ids, project_access)
+      UsersProject.transaction do
+        UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+          users_project.project_access = project_access
+          users_project.save
+        end
       end
     end
-  end
 
-  def self.bulk_import(project, user_ids, project_access)
-    UsersProject.transaction do
-      user_ids.each do |user_id|
-        users_project = UsersProject.new(
-          project_access: project_access,
-          user_id: user_id
-        )
-        users_project.project = project
-        users_project.save
+    def bulk_import(project, user_ids, project_access)
+      UsersProject.transaction do
+        user_ids.each do |user_id|
+          users_project = UsersProject.new(
+            project_access: project_access,
+            user_id: user_id
+          )
+          users_project.project = project
+          users_project.save
+        end
       end
     end
-  end
 
-  def self.user_bulk_import(user, project_ids, project_access)
-    UsersProject.transaction do
-      project_ids.each do |project_id|
-        users_project = UsersProject.new(
-          project_access: project_access,
-        )
-        users_project.project_id = project_id
-        users_project.user_id = user.id
-        users_project.save
+    def user_bulk_import(user, project_ids, project_access)
+      UsersProject.transaction do
+        project_ids.each do |project_id|
+          users_project = UsersProject.new(
+            project_access: project_access,
+          )
+          users_project.project_id = project_id
+          users_project.user_id = user.id
+          users_project.save
+        end
       end
     end
-  end
 
-  def self.access_roles
-    {
-      "Guest"     => GUEST,
-      "Reporter"  => REPORTER,
-      "Developer" => DEVELOPER,
-      "Master"    => MASTER
-    }
+    def access_roles
+      {
+        "Guest"     => GUEST,
+        "Reporter"  => REPORTER,
+        "Developer" => DEVELOPER,
+        "Master"    => MASTER
+      }
+    end
   end
 
   def role_access
@@ -100,3 +131,4 @@ end
 #  updated_at     :datetime        not null
 #  project_access :integer         default(0), not null
 #
+

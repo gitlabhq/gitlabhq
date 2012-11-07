@@ -32,6 +32,10 @@ module Repository
     Commit.commits(repo, ref, path, limit, offset)
   end
 
+  def last_commit_for(ref, path = nil)
+    commits(ref, path, 1).first
+  end
+
   def commits_between(from, to)
     Commit.commits_between(repo, from, to)
   end
@@ -133,6 +137,8 @@ module Repository
 
   def has_commits?
     !!commit
+  rescue Grit::NoSuchPathError
+    false
   end
 
   def root_ref
@@ -176,5 +182,10 @@ module Repository
 
   def http_url_to_repo
     http_url = [Gitlab.config.url, "/", path, ".git"].join('')
+  end
+
+  # Check if current branch name is marked as protected in the system
+  def protected_branch? branch_name
+    protected_branches.map(&:name).include?(branch_name)
   end
 end

@@ -9,11 +9,11 @@ class Notify < ActionMailer::Base
 
   default from: Gitlab.config.email_from
 
-  def new_user_email(user_id, password)
-    @user = User.find(user_id)
-    @password = password
-    mail(to: @user.email, subject: subject("Account was created for you"))
-  end
+
+
+  #
+  # Issue
+  #
 
   def new_issue_email(issue_id)
     @issue = Issue.find(issue_id)
@@ -21,40 +21,26 @@ class Notify < ActionMailer::Base
     mail(to: @issue.assignee_email, subject: subject("new issue ##{@issue.id}", @issue.title))
   end
 
-  def note_wall_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject)
+  def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
+    @issue = Issue.find(issue_id)
+    @previous_assignee ||= User.find(previous_assignee_id)
+    @project = @issue.project
+    mail(to: recipient(recipient_id), subject: subject("changed issue ##{@issue.id}", @issue.title))
   end
 
-  def note_commit_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @commit = @note.target
-    @commit = CommitDecorator.decorate(@commit)
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
+  def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id)
+    @issue = Issue.find issue_id
+    @issue_status = status
+    @updated_by = User.find updated_by_user_id
+    mail(to: recipient(recipient_id),
+        subject: subject("changed issue ##{@issue.id}", @issue.title))
   end
 
-  def note_merge_request_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @merge_request = @note.noteable
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for merge request !#{@merge_request.id}"))
-  end
 
-  def note_issue_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @issue = @note.noteable
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for issue ##{@issue.id}"))
-  end
 
-  def note_wiki_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @wiki = @note.noteable
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for wiki"))
-  end
+  #
+  # Merge Request
+  #
 
   def new_merge_request_email(merge_request_id)
     @merge_request = MergeRequest.find(merge_request_id)
@@ -69,12 +55,52 @@ class Notify < ActionMailer::Base
     mail(to: recipient(recipient_id), subject: subject("changed merge request !#{@merge_request.id}", @merge_request.title))
   end
 
-  def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
-    @issue = Issue.find(issue_id)
-    @previous_assignee ||= User.find(previous_assignee_id)
-    @project = @issue.project
-    mail(to: recipient(recipient_id), subject: subject("changed issue ##{@issue.id}", @issue.title))
+
+
+  #
+  # Note
+  #
+
+  def note_commit_email(recipient_id, note_id)
+    @note = Note.find(note_id)
+    @commit = @note.noteable
+    @commit = CommitDecorator.decorate(@commit)
+    @project = @note.project
+    mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
   end
+
+  def note_issue_email(recipient_id, note_id)
+    @note = Note.find(note_id)
+    @issue = @note.noteable
+    @project = @note.project
+    mail(to: recipient(recipient_id), subject: subject("note for issue ##{@issue.id}"))
+  end
+
+  def note_merge_request_email(recipient_id, note_id)
+    @note = Note.find(note_id)
+    @merge_request = @note.noteable
+    @project = @note.project
+    mail(to: recipient(recipient_id), subject: subject("note for merge request !#{@merge_request.id}"))
+  end
+
+  def note_wall_email(recipient_id, note_id)
+    @note = Note.find(note_id)
+    @project = @note.project
+    mail(to: recipient(recipient_id), subject: subject)
+  end
+
+  def note_wiki_email(recipient_id, note_id)
+    @note = Note.find(note_id)
+    @wiki = @note.noteable
+    @project = @note.project
+    mail(to: recipient(recipient_id), subject: subject("note for wiki"))
+  end
+
+
+
+  #
+  # Project
+  #
 
   def project_access_granted_email(user_project_id)
     @users_project = UsersProject.find user_project_id
@@ -83,13 +109,18 @@ class Notify < ActionMailer::Base
          subject: subject("access to project was granted"))
   end
 
-  def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id)
-    @issue = Issue.find issue_id
-    @issue_status = status
-    @updated_by = User.find updated_by_user_id
-    mail(to: recipient(recipient_id),
-        subject: subject("changed issue ##{@issue.id}", @issue.title))
+
+
+  #
+  # User
+  #
+
+  def new_user_email(user_id, password)
+    @user = User.find(user_id)
+    @password = password
+    mail(to: @user.email, subject: subject("Account was created for you"))
   end
+
 
   private
 

@@ -15,8 +15,8 @@
       - if issue.closed
         = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn small grouped reopen_issue", remote: true
       - else
-        = link_to 'Resolve', project_issue_path(issue.project, issue, issue: {closed: true }, status_only: true), method: :put, class: "success btn small grouped close_issue", remote: true
-      = link_to edit_project_issue_path(issue.project, issue), class: "btn small edit-issue-link", remote: true do
+        = link_to 'Close', project_issue_path(issue.project, issue, issue: {closed: true }, status_only: true), method: :put, class: "btn small grouped close_issue", remote: true
+      = link_to edit_project_issue_path(issue.project, issue), class: "btn small edit-issue-link grouped", remote: true do
         %i.icon-edit
         Edit
 

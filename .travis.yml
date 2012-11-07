@@ -1,4 +1,5 @@
 env:
+  - DB=postgresql
   - DB=mysql
 before_install:
   - sudo apt-get install libicu-dev -y
@@ -11,6 +12,7 @@ rvm:
   - 1.9.3
 services:
   - mysql
+  - postgresql
 before_script:
   - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
@@ -18,4 +20,4 @@ before_script:
   - "bundle exec rake db:migrate RAILS_ENV=test"
   - "bundle exec rake db:seed_fu RAILS_ENV=test"
   - "sh -e /etc/init.d/xvfb start"
-script: "bundle exec rake travis"
+script: "bundle exec rake travis --trace"

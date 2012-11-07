@@ -12,7 +12,7 @@
           = f.label :title do
             %strong= "Subject *"
           .input
-            = f.text_field :title, maxlength: 255, class: "xxlarge"
+            = f.text_field :title, maxlength: 255, class: "xxlarge gfm-input", autofocus: true
       .issue_middle_block
         .issue_assignee
           = f.label :assignee_id do
@@ -37,7 +37,7 @@
         .clearfix
           = f.label :description, "Details"
           .input
-            = f.text_area :description, maxlength: 2000, class: "xxlarge", rows: 14
+            = f.text_area :description, maxlength: 2000, class: "xxlarge gfm-input", rows: 14
             %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
 
 

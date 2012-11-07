@@ -230,7 +230,7 @@ var NoteList = {
   updateVotes:
     function() {
       var votes = $("#votes .votes");
-      var notes = $("#notes-list, #new-notes-list").find(".note.vote");
+      var notes = $("#notes-list, #new-notes-list").find(".note .vote");
 
       // only update if there is a vote display
       if (votes.size()) {

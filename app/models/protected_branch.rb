@@ -4,7 +4,8 @@ class ProtectedBranch < ActiveRecord::Base
   attr_accessible :name
 
   belongs_to :project
-  validates_presence_of :name, :project_id
+  validates :name, presence: true
+  validates :project, presence: true
 
   after_save :update_repository
   after_destroy :update_repository
@@ -28,3 +29,4 @@ end
 #  created_at :datetime        not null
 #  updated_at :datetime        not null
 #
+

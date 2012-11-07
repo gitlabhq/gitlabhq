@@ -107,7 +107,7 @@ class Commit
   end
 
   def safe_message
-    utf8 message
+    @safe_message ||= utf8 message
   end
 
   def created_at

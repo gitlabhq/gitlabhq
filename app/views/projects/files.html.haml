@@ -4,14 +4,13 @@
     %thead
       %tr
         %th File name
-        %th 
+        %th
 
     - @notes.each do |note|
       %tr
         %td
           %a{href: note.attachment.url}
-            = image_tag gravatar_icon(note.author_email), class: "left", width: 16
-            &nbsp;
+            = image_tag gravatar_icon(note.author_email), class: "avatar s24"
             = note.attachment_identifier
         %td
           Added

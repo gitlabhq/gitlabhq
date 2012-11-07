@@ -17,7 +17,7 @@ module CommitsHelper
     line_old = 1
     line_new = 1
     type = nil
-    
+
     lines_arr = ::Gitlab::InlineDiff.processing diff_arr
     lines_arr.each do |line|
       next if line.match(/^\-\-\- \/dev\/null/)

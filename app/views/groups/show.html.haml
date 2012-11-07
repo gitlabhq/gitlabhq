@@ -1,0 +1,30 @@
+.projects
+  .activities.span8
+    = render "events/event_last_push", event: @last_push
+    = link_to dashboard_path, class: 'btn very_small' do
+      &larr; To dashboard
+    &nbsp;
+    %span.cgray Events and projects are filtered in scope of group
+    %hr
+    = render 'shared/no_ssh'
+    - if @events.any?
+      .content_list= render @events
+    - else
+      %h4.nothing_here_message Projects activity will be displayed here
+    .loading.hide
+  .side
+    = render "projects", projects: @projects
+    %div
+      %span.rss-icon
+        = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
+          = image_tag "rss_ui.png", title: "feed"
+          %strong News Feed
+
+    %hr
+    .gitlab-promo
+      = link_to "Homepage", "http://gitlabhq.com"
+      = link_to "Blog", "http://blog.gitlabhq.com"
+      = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+
+:javascript
+  $(function(){ Pager.init(20); });

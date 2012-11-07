@@ -11,8 +11,8 @@ describe Issue, "IssueCommonality" do
   end
 
   describe "Validation" do
-    it { should validate_presence_of(:project_id) }
-    it { should validate_presence_of(:author_id) }
+    it { should validate_presence_of(:project) }
+    it { should validate_presence_of(:author) }
     it { should validate_presence_of(:title) }
     it { should ensure_length_of(:title).is_at_least(0).is_at_most(255) }
   end

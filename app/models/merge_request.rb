@@ -7,6 +7,8 @@ class MergeRequest < ActiveRecord::Base
   attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
                   :author_id_of_changes
 
+  attr_accessor :should_remove_source_branch
+
   BROKEN_DIFF = "--broken-diff"
 
   UNCHECKED = 1
@@ -16,13 +18,12 @@ class MergeRequest < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  attr_accessor :should_remove_source_branch
-
-  validates_presence_of :source_branch, :target_branch
+  validates :source_branch, presence: true
+  validates :target_branch, presence: true
   validate :validate_branches
 
   def self.find_all_by_branch(branch_name)
-    where("source_branch like :branch or target_branch like :branch", branch: branch_name)
+    where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
   end
 
   def human_state
@@ -134,7 +135,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    self.update_attributes state: CANNOT_BE_MERGED
+    self.state = CANNOT_BE_MERGED
+    self.save
   end
 
   def reloaded_commits
@@ -165,7 +167,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user)
-    if Gitlab::Merge.new(self, current_user).merge && self.unmerged_commits.empty?
+    if Gitlab::Merge.new(self, current_user).merge! && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end
@@ -185,6 +187,11 @@ class MergeRequest < ActiveRecord::Base
 
     patch_path
   end
+
+  def mr_and_commit_notes
+    commit_ids = commits.map(&:id)
+    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND noteable_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
+  end
 end
 
 # == Schema Information
@@ -201,8 +208,9 @@ end
 #  closed        :boolean         default(FALSE), not null
 #  created_at    :datetime        not null
 #  updated_at    :datetime        not null
-#  st_commits    :text(2147483647
-#  st_diffs      :text(2147483647
+#  st_commits    :text(4294967295
+#  st_diffs      :text(4294967295
 #  merged        :boolean         default(FALSE), not null
 #  state         :integer         default(1), not null
 #
+

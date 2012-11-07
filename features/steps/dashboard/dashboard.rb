@@ -16,7 +16,7 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   Then 'I should see last push widget' do
-    page.should have_content "You pushed to branch new_design"
+    page.should have_content "You pushed to new_design"
     page.should have_link "Create Merge Request"
   end
 
@@ -64,6 +64,14 @@ class Dashboard < Spinach::FeatureSteps
     @project.add_access(@user, :admin)
   end
 
+  And 'I have group with projects' do
+    @group   = Factory :group
+    @project = Factory :project, group: @group
+    @event   = Factory :closed_issue_event, project: @project
+
+    @project.add_access current_user, :admin
+  end
+
   And 'project "Shop" has push event' do
     @project = Project.find_by_name("Shop")
 
@@ -88,5 +96,11 @@ class Dashboard < Spinach::FeatureSteps
       :data => data,
       :author_id => @user.id
     )
+  end
+
+  Then 'I should see groups list' do
+    Group.all.each do |group|
+      page.should have_link group.name
+    end
   end
 end

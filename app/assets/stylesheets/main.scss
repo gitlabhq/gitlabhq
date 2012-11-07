@@ -1,5 +1,6 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
+@import 'font-awesome';
 
 /** GitLab colors **/
 $link_color:#3A89A3;
@@ -8,7 +9,7 @@ $style_color: #474d57;
 $hover: #D9EDF7;
 
 /** GitLab Fonts **/
-@font-face { font-family: Korolev; src: url('korolev-medium-compressed.otf'); }
+@font-face { font-family: Korolev; src: font-url('korolev-medium-compressed.otf'); }
 
 /** MIXINS **/
 @mixin shade {
@@ -182,3 +183,9 @@ $hover: #D9EDF7;
  *
  */
 @import "highlight/dark.scss";
+
+/**
+ * File Editor styles
+ *
+ */
+@import "sections/editor.scss";

@@ -43,19 +43,44 @@
   }
 
   .tree-table {
+    th .btn {
+      margin: -2px -1px;
+      padding: 2px 10px;
+    }
     td {
+      line-height:20px;
       background:#fafafa;
     }
   }
 
-  .tree-commit-link {
-    color:#333;
+  .tree_author {
+    padding-right: 8px;
+
+    img.avatar {
+      border: 0 none;
+      float: none;
+      margin-right: 0;
+      padding: 0;
+      width: 16px;
+    }
   }
 
-  a.tree-commit-link {
-    color: #666;
-    &:hover {
-      text-decoration: underline;
+  .tree_commit {
+    color: gray;
+
+    .tree-commit-link {
+      color: #444;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
+
+.tree-btn-group {
+  .btn {
+    margin-right:-3px;
+    padding:2px 10px;
+  }
+}
+

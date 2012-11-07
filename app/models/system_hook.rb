@@ -1,12 +1,12 @@
 class SystemHook < WebHook
-  def async_execute(data)
-    Resque.enqueue(SystemHookWorker, id, data)
-  end
-
   def self.all_hooks_fire(data)
     SystemHook.all.each do |sh|
       sh.async_execute data
     end
+  end
+
+  def async_execute(data)
+    Resque.enqueue(SystemHookWorker, id, data)
   end
 end
 
@@ -21,3 +21,4 @@ end
 #  updated_at :datetime        not null
 #  type       :string(255)     default("ProjectHook")
 #
+

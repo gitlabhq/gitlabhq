@@ -172,7 +172,15 @@ describe Gitlab::API do
     end
   end
 
-  describe "POST /projects/:id/users" do
+  describe "GET /projects/:id/hooks/:hook_id" do
+    it "should return a project hook" do
+      get api("/projects/#{project.code}/hooks/#{hook.id}", user)
+      response.status.should == 200
+      json_response['url'].should == hook.url
+    end
+  end
+
+  describe "POST /projects/:id/hooks" do
     it "should add hook to project" do
       expect {
         post api("/projects/#{project.code}/hooks", user),
@@ -180,6 +188,16 @@ describe Gitlab::API do
       }.to change {project.hooks.count}.by(1)
     end
   end
+  
+  describe "PUT /projects/:id/hooks/:hook_id" do
+    it "should update an existing project hook" do
+      put api("/projects/#{project.code}/hooks/#{hook.id}", user),
+        url: 'http://example.com'
+      response.status.should == 200
+      json_response['url'].should == 'http://example.com'
+    end
+  end
+  
 
   describe "DELETE /projects/:id/hooks" do
     it "should delete hook from project" do
@@ -220,6 +238,15 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /projects/:id/snippets" do
+    it "should return a project snippet" do
+      get api("/projects/#{project.code}/snippets", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.first['title'].should == snippet.title
+    end
+  end
+
   describe "GET /projects/:id/snippets/:snippet_id" do
     it "should return a project snippet" do
       get api("/projects/#{project.code}/snippets/#{snippet.id}", user)
@@ -237,7 +264,7 @@ describe Gitlab::API do
     end
   end
 
-  describe "PUT /projects/:id/snippets" do
+  describe "PUT /projects/:id/snippets/:shippet_id" do
     it "should update an existing project snippet" do
       put api("/projects/#{project.code}/snippets/#{snippet.id}", user),
         code: 'updated code'

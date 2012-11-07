@@ -24,6 +24,22 @@
     }
   }
 
+  &.btn-info {
+    background:#5aB9C3;
+    border-color: $blue_link;
+    color:#fff;
+    text-shadow: 0 1px 1px #268;
+    &:hover {
+      background:$blue_link;
+      color:#fff;
+    }
+
+    &.disabled {
+      color:#fff;
+      background:#29B;
+    }
+  }
+
   &.success {
     @extend .btn-success;
 

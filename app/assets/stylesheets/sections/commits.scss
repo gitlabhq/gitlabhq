@@ -101,6 +101,11 @@
       }
     }
 
+    table {
+      td {
+        line-height:18px;
+      }
+    }
   }
   .diff_file_content_image {
     background:#eee;
@@ -201,6 +206,11 @@
   .committed_ago {
     float:right;
     @extend .cgray;
+  }
+
+  .notes_count {
+    float:right;
+    margin: -6px 8px 6px;
   }
 
   code {

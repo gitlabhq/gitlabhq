@@ -7,7 +7,7 @@ class WebHook < ActiveRecord::Base
   default_timeout 10
 
   validates :url, presence: true,
-            format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
+                  format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
 
   def execute(data)
     parsed_url = URI.parse(url)
@@ -34,3 +34,4 @@ end
 #  updated_at :datetime        not null
 #  type       :string(255)     default("ProjectHook")
 #
+

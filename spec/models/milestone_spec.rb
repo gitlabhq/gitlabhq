@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: milestones
+#
+#  id          :integer         not null, primary key
+#  title       :string(255)     not null
+#  project_id  :integer         not null
+#  description :text
+#  due_date    :date
+#  closed      :boolean         default(FALSE), not null
+#  created_at  :datetime        not null
+#  updated_at  :datetime        not null
+#
+
 require 'spec_helper'
 
 describe Milestone do
@@ -12,7 +26,7 @@ describe Milestone do
 
   describe "Validation" do
     it { should validate_presence_of(:title) }
-    it { should validate_presence_of(:project_id) }
+    it { should validate_presence_of(:project) }
     it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 

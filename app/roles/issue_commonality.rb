@@ -8,17 +8,16 @@ module IssueCommonality
     belongs_to :assignee, class_name: "User"
     has_many :notes, as: :noteable, dependent: :destroy
 
-    validates_presence_of :project_id
-    validates_presence_of :author_id
-
-    validates :title,
-              presence: true,
-              length: { within: 0..255 }
+    validates :project, presence: true
+    validates :author, presence: true
+    validates :title, presence: true, length: { within: 0..255 }
     validates :closed, inclusion: { in: [true, false] }
 
     scope :opened, where(closed: false)
     scope :closed, where(closed: true)
-    scope :assigned, lambda { |u| where(assignee_id: u.id)}
+    scope :of_group, ->(group) { where(project_id: group.project_ids) }
+    scope :assigned, ->(u) { where(assignee_id: u.id)}
+    scope :recent, order("created_at DESC")
 
     delegate :name,
              :email,
@@ -47,4 +46,21 @@ module IssueCommonality
   def new?
     today? && created_at == updated_at
   end
+
+  def is_assigned?
+    !!assignee_id
+  end
+
+  def is_being_reassigned?
+    assignee_id_changed?
+  end
+
+  def is_being_closed?
+    closed_changed? && closed
+  end
+
+  def is_being_reopened?
+    closed_changed? && !closed
+  end
+
 end

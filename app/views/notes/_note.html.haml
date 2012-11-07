@@ -1,4 +1,4 @@
-%li{id: dom_id(note), class: "note #{note_vote_class(note)}"}
+%li{id: dom_id(note), class: "note"}
   = image_tag gravatar_icon(note.author.email), class: "avatar s32"
   %div.note-author
     %strong= note.author_name
@@ -6,14 +6,25 @@
       %cite.cgray
         = time_ago_in_words(note.updated_at)
         ago
-    - if note.upvote?
-      %span.label.label-success
-        %i.icon-thumbs-up
-        \+1
-    - if note.downvote?
-      %span.label.label-error
-        %i.icon-thumbs-down
-        \-1
+
+    - unless note_for_main_target?(note)
+      - if note.for_commit?
+        %span.cgray
+          on #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
+          = link_to_commit_diff_line_note(note) if note.for_diff_line?
+
+    -# only show vote if it's a note for the main target
+    - if note_for_main_target?(note)
+      - if note.upvote?
+        %span.vote.upvote.label.label-success
+          %i.icon-thumbs-up
+          \+1
+      - if note.downvote?
+        %span.vote.downvote.label.label-error
+          %i.icon-thumbs-down
+          \-1
+
+    -# remove button
     - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
       = link_to [@project, note], confirm: 'Are you sure?', method: :delete, remote: true, class: "cred delete-note btn very_small" do
         %i.icon-trash

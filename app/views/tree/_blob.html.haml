@@ -1,0 +1,13 @@
+.file_holder
+  .file_title
+    %i.icon-file
+    %span.file_name
+      = blob.name.force_encoding('utf-8')
+      %small= number_to_human_size blob.size
+    %span.options= render "tree/blob_actions"
+  - if blob.text?
+    = render "tree/blob/text", blob: blob
+  - elsif blob.image?
+    = render "tree/blob/image", blob: blob
+  - else
+    = render "tree/blob/download", blob: blob

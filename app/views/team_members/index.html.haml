@@ -5,9 +5,14 @@
 
 - if can? current_user, :admin_team_member, @project
   %p.slead
-    = link_to new_project_team_member_path(@project), class: "btn small right", title: "New Team Member" do
-      New Team Member
     Read more about project permissions
     %strong= link_to "here", help_permissions_path, class: "vlink"
 
+    %span.right
+      = link_to import_project_team_members_path(@project), class: "btn small grouped", title: "Import team from another project" do
+        Import team from another project
+      = link_to new_project_team_member_path(@project), class: "btn success small grouped", title: "New Team Member" do
+        New Team Member
+
+    .clearfix
 = render partial: "team_members/team", locals: {project: @project}

@@ -1,0 +1,17 @@
+= render "projects/project_head"
+
+%h3.page_title
+  = "Import team from another project"
+%hr
+%p.slead
+  Read more about team import #{link_to "here", '#', class: 'vlink'}.
+= form_tag apply_import_project_team_members_path(@project), method: 'post' do
+  %p.slead Choose project you want to use as team source:
+  .padded
+    = label_tag :source_project_id, "Project"
+    .input= select_tag(:source_project_id, options_from_collection_for_select(current_user.projects, :id, :name), prompt: "Select project", class: "chosen xxlarge", required: true)
+
+  .actions
+    = submit_tag 'Import', class: "btn save-btn"
+    = link_to "Cancel", project_team_index_path(@project), class: "btn cancel-btn"
+
