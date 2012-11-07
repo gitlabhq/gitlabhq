@@ -8,9 +8,9 @@ Install the Gitlab development in a virtual machine with the [Gitlab Vagrant vir
 
 ### Start application in development mode
 
-#### 1. Via gitlab cli
+#### 1. Via foreman
 
-    ./gitlab start
+    bundle exec foreman start -p 3000
 
 #### 2. Manually
 
