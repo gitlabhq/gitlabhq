@@ -112,4 +112,33 @@ describe User do
       user.authentication_token.should_not be_blank
     end
   end
+
+  describe 'User' do
+    let(:user)  { create(:user) }
+
+    it "should have default project limit" do
+      user.projects_limit.should_not be_blank
+      user.projects_limit.should == Gitlab.config.default_projects_limit
+    end
+
+    it "should be able to create a project" do
+      user.stub!(:my_own_projects).and_return([create(:project)])
+      user.projects_limit = 2
+      user.can_create_project?.should be_true
+    end
+
+    it "should not be able to create a project when there is a project limit" do
+      Gitlab.config.stub(:no_repo_limit?).and_return(false)
+      user.stub!(:my_own_projects).and_return([create(:project)])
+      user.projects_limit = 1
+      user.can_create_project?.should be_false
+    end
+
+    it "should be able to create a project when there is no project limit" do
+      Gitlab.config.stub(:no_repo_limit?).and_return(true)
+      user.stub!(:my_own_projects).and_return([create(:project)])
+      user.projects_limit = 0
+      user.can_create_project?.should be_true
+    end
+  end
 end
