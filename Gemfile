@@ -27,7 +27,7 @@ gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref:
 gem "omniauth-ldap", git: "https://github.com/gitlabhq/omniauth-ldap.git",  ref: 'f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e'
 gem 'yaml_db',       git: "https://github.com/gitlabhq/yaml_db.git",        ref: '98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
-gem 'grit_ext',      git: "https://github.com/SaitoWu/grit_ext.git"
+gem 'grit_ext',      git: "https://github.com/SaitoWu/grit_ext.git",        ref: '212fd40bea61f3c6a167223768e7295dc32bbc10'
 
 # Gitolite client (for work with gitolite-admin repo)
 gem "gitolite", '1.1.0'

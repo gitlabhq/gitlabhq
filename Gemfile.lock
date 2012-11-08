@@ -1,8 +1,9 @@
 GIT
   remote: https://github.com/SaitoWu/grit_ext.git
-  revision: 8558b3282696c50813eaba4100ab6f5fec0ebc16
+  revision: 212fd40bea61f3c6a167223768e7295dc32bbc10
+  ref: 212fd40bea61f3c6a167223768e7295dc32bbc10
   specs:
-    grit_ext (0.5.0)
+    grit_ext (0.6.0)
       charlock_holmes (~> 0.6.9)
 
 GIT
