@@ -14,7 +14,7 @@ class Tree
             end
   end
 
-  def is_blob?
+  def blob?
     tree.is_a?(Grit::Blob)
   end
 

@@ -44,7 +44,7 @@ class TreeController < ProjectResourceController
   private
 
   def edit_requirements
-    unless @tree.is_blob? && @tree.text?
+    unless @tree.blob? && @tree.text?
       redirect_to project_tree_path(@project, @id), notice: "You can only edit text files"
     end
 

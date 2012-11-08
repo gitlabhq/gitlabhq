@@ -29,13 +29,17 @@ class RefsController < ProjectResourceController
   end
 
   def logs_tree
-    contents = @tree.contents
-    @logs = contents.map do |content|
-      file = params[:path] ? File.join(params[:path], content.name) : content.name
+    @logs = @tree.contents.map do |content|
+      content_name = tree_join(content.name)
+      file = if params[:path].present?
+              tree_join(params[:path], content_name)
+            else
+              content_name
+            end
       last_commit = @project.commits(@commit.id, file, 1).last
       last_commit = CommitDecorator.decorate(last_commit)
       {
-        file_name: content.name,
+        file_name: content_name,
         commit: last_commit
       }
     end

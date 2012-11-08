@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  helper_method :abilities, :can?
+  helper_method :abilities, :can?, :tree_join
 
   rescue_from Gitlab::Gitolite::AccessDenied do |exception|
     log_exception(exception)
@@ -21,6 +21,13 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound do |exception|
     log_exception(exception)
     render "errors/not_found", layout: "errors", status: 404
+  end
+
+  # Use this instead of File.join for paths presented in the UI
+  #
+  # Note: this will make sure the path is UTF-8-encoded
+  def tree_join(*args)
+    File.join(*args.map{|arg| arg.dup.force_encoding('UTF-8')})
   end
 
   protected

@@ -11,7 +11,7 @@ class BlobController < ProjectResourceController
   before_filter :assign_ref_vars
 
   def show
-    if @tree.is_blob?
+    if @tree.blob?
       if @tree.text?
         encoding = detect_encoding(@tree.data)
         mime_type = encoding ? "text/plain; charset=#{encoding}" : "text/plain"
