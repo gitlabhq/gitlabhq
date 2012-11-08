@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/SaitoWu/grit_ext.git
+  revision: 8558b3282696c50813eaba4100ab6f5fec0ebc16
+  specs:
+    grit_ext (0.5.0)
+      charlock_holmes (~> 0.6.9)
+
+GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: 18cd39ad01829deba5aa34634b8540d6675ab978
   specs:
@@ -92,7 +99,7 @@ GEM
     carrierwave (0.6.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
-    charlock_holmes (0.6.8)
+    charlock_holmes (0.6.9)
     childprocess (0.3.2)
       ffi (~> 1.0.6)
     chosen-rails (0.9.8.3)
@@ -415,7 +422,6 @@ DEPENDENCIES
   capybara
   capybara-webkit
   carrierwave
-  charlock_holmes
   chosen-rails
   coffee-rails (= 3.2.2)
   colored
@@ -436,6 +442,7 @@ DEPENDENCIES
   grack!
   grape (~> 0.2.1)
   grit!
+  grit_ext!
   growl
   guard-rspec
   guard-spinach
