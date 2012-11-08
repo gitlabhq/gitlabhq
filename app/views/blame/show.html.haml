@@ -15,7 +15,7 @@
     .file_title
       %i.icon-file
       %span.file_name
-        = @tree.name.force_encoding('utf-8')
+        = @tree.name
         %small= number_to_human_size @tree.size
       %span.options= render "tree/blob_actions"
     .file_content.blame
@@ -32,4 +32,4 @@
             %td.lines
               = preserve do
                 %pre
-                  = Gitlab::Encode.utf8 lines.join("\n")
+                  = lines.join("\n")
