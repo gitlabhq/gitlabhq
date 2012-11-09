@@ -17,8 +17,8 @@ It should work on:
 
 You might have some luck using these, but no guarantees:
 
- - MacOS X
- - FreeBSD
+- FreeBSD will likely work, see https://github.com/gitlabhq/gitlabhq/issues/796
+- MacOS X will likely work, see https://groups.google.com/forum/#!topic/gitlabhq/5IXHbPkjKLA
 
 GitLab does **not** run on Windows and we have no plans of making GitLab compatible.
 
