@@ -266,7 +266,7 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
       slop (>= 2.4.4, < 3)
-    pygments.rb (0.3.1)
+    pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
     pyu-ruby-sasl (0.0.3.3)
@@ -465,7 +465,7 @@ DEPENDENCIES
   omniauth-twitter
   pg
   pry
-  pygments.rb (= 0.3.1)
+  pygments.rb (= 0.3.2)
   quiet_assets (= 1.0.1)
   rack-mini-profiler
   rails (= 3.2.8)
