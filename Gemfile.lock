@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/SaitoWu/grit_ext.git
-  revision: 212fd40bea61f3c6a167223768e7295dc32bbc10
-  ref: 212fd40bea61f3c6a167223768e7295dc32bbc10
-  specs:
-    grit_ext (0.6.0)
-      charlock_holmes (~> 0.6.9)
-
-GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: 18cd39ad01829deba5aa34634b8540d6675ab978
   specs:
@@ -29,6 +21,14 @@ GIT
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
+
+GIT
+  remote: https://github.com/gitlabhq/grit_ext.git
+  revision: 212fd40bea61f3c6a167223768e7295dc32bbc10
+  ref: 212fd40bea61f3c6a167223768e7295dc32bbc10
+  specs:
+    grit_ext (0.6.0)
+      charlock_holmes (~> 0.6.9)
 
 GIT
   remote: https://github.com/gitlabhq/omniauth-ldap.git
