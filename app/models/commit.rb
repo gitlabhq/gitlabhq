@@ -1,6 +1,5 @@
 class Commit
   include ActiveModel::Conversion
-  include Gitlab::Encode
   include StaticModel
   extend ActiveModel::Naming
 
@@ -112,7 +111,7 @@ class Commit
   end
 
   def safe_message
-    @safe_message ||= utf8 message
+    @safe_message ||= message
   end
 
   def created_at
@@ -124,7 +123,7 @@ class Commit
   end
 
   def author_name
-    utf8 author.name
+    author.name
   end
 
   # Was this commit committed by a different person than the original author?
@@ -133,7 +132,7 @@ class Commit
   end
 
   def committer_name
-    utf8 committer.name
+    committer.name
   end
 
   def committer_email

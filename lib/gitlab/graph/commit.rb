@@ -22,13 +22,13 @@ module Gitlab
         h[:parents] = self.parents.collect do |p|
           [p.id,0,0]
         end
-        h[:author]  = Gitlab::Encode.utf8(author.name)
+        h[:author]  = author.name
         h[:time]    = time
         h[:space]   = space
         h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
         h[:id]      = sha
         h[:date]    = date
-        h[:message] = escape_once(Gitlab::Encode.utf8(message))
+        h[:message] = escape_once(message)
         h[:login]   = author.email
         h
       end
