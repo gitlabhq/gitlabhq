@@ -176,7 +176,7 @@ and ensure you have followed all of the above steps carefully.
 
     cd /home/gitlab/gitlab
 
-    sudo gem install charlock_holmes --version '0.6.8'
+    sudo gem install charlock_holmes --version '0.6.9'
     sudo gem install bundler
     sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
 

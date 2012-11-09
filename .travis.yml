@@ -4,7 +4,7 @@ env:
 before_install:
   - sudo apt-get install libicu-dev -y
   - sudo apt-get install libqt4-dev libqtwebkit-dev -y
-  - gem install charlock_holmes -v="0.6.8"
+  - gem install charlock_holmes -v="0.6.9"
 branches:
   only:
     - 'master'
