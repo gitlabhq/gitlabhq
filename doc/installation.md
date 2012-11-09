@@ -77,6 +77,7 @@ Now install the required packages:
     sudo apt-get upgrade
 
     sudo apt-get install -y wget curl gcc checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev libmysql++-dev make build-essential zlib1g-dev libicu-dev redis-server openssh-server git-core python-dev python-pip libyaml-dev postfix libpq-dev
+    sudo apt-get install -y python-pip libicu-deb redis-server # required on Ubuntu-12.04
 
 
 # Database
@@ -121,7 +122,7 @@ Now install the required packages:
     # Quit from PostgreSQL server
     template1=# \q
 
-    # Try connect to new database
+    # Try connect to new database (do this later when user 'gitlab' has been created)
     $ su - gitlab
     $ psql -d gitlabhq_production -U gitlab
 
@@ -227,7 +228,7 @@ and ensure you have followed all of the above steps carefully.
     sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
     # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgres config/database.yml
+    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
 
     # make sure to update username/password in config/database.yml
 
