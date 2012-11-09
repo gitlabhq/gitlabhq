@@ -1,7 +1,6 @@
 # Controller for viewing a file's blame
 class BlobController < ProjectResourceController
   include ExtractsPath
-  include Gitlab::Encode
 
   # Authorize
   before_filter :authorize_read_project!

@@ -4,7 +4,7 @@
       .file_title
         %i.icon-file
         %span.file_name
-          = "#{@tree.path.force_encoding('utf-8')} (#{@ref})"
+          = "#{@tree.path} (#{@ref})"
       .file_content.code
         #editor= @tree.data
 
