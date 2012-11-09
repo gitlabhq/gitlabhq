@@ -47,6 +47,8 @@ module Gitlab
             # to apply all changes
             push(config_tmp_dir)
           ensure
+            # Without chdir here, on push failure ruby process cwd stucked in deleted folder
+            Dir.chdir(Rails.root)
             # Remove tmp dir
             # removing the gitolite folder first is important to avoid
             # NFS issues.
@@ -193,9 +195,7 @@ module Gitlab
       Dir.chdir(File.join(tmp_dir, "gitolite"))
       system('git add -A')
       system('git commit -am "GitLab"')
-      if system('git push')
-        Dir.chdir(Rails.root)
-      else
+      unless system('git push')
         raise PushError, "unable to push gitolite-admin repo"
       end
     end
