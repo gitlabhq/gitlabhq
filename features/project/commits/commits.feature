@@ -23,3 +23,7 @@ Feature: Project Browse commits
   Scenario: I browse commits for a specific path
     Given I visit my project's commits page for a specific path
     Then I see breadcrumb links
+
+  Scenario: I browse commits stats
+    Given I visit my project's commits stats page
+    Then I see commits stats

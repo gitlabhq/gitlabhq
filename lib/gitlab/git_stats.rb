@@ -29,7 +29,7 @@ module Gitlab
     protected
 
     def collect_authors
-      shortlog = repo.git.shortlog({:e => true, :s => true }, ref)
+      shortlog = repo.git.shortlog({e: true, s: true }, ref)
 
       authors = []
 

@@ -51,4 +51,10 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     find('ul.breadcrumb li:first a')['href'].should match(/#{@project.path}\/commits\/master\z/)
     find('ul.breadcrumb li:last a')['href'].should match(%r{master/app/models/project\.rb\z})
   end
+
+  Then 'I see commits stats' do
+    page.should have_content 'Stats for master'
+    page.should have_content 'Committers'
+    page.should have_content 'Total commits'
+  end
 end

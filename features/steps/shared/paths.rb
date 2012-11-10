@@ -125,6 +125,10 @@ module SharedPaths
     visit project_commits_path(@project, @project.root_ref + "/app/models/project.rb", {limit: 5})
   end
 
+  Given 'I visit my project\'s commits stats page' do
+    visit stats_project_repository_path(@project)
+  end
+
   Given "I visit my project's network page" do
     # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
     Gitlab::Graph::JsonBuilder.stub(max_count: 10)
