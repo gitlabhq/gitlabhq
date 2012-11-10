@@ -17,6 +17,8 @@
 //= require modernizr
 //= require chosen-jquery
 //= require raphael
+//= require g.raphael-min
+//= require g.bar-min
 //= require branch-graph
 //= require ace-src-noconflict/ace
 //= require_tree .

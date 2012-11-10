@@ -31,3 +31,11 @@ ul {
     }
   }
 }
+
+ol, ul {
+  &.styled {
+    li {
+      padding:2px;
+    }
+  }
+}

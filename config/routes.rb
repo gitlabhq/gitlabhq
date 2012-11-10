@@ -128,6 +128,7 @@ Gitlab::Application.routes.draw do
       member do
         get "branches"
         get "tags"
+        get "stats"
         get "archive"
       end
     end
