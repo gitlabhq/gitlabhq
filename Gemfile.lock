@@ -42,6 +42,15 @@ GIT
       rubyntlm (~> 0.1.1)
 
 GIT
+  remote: https://github.com/gitlabhq/pygments.rb.git
+  revision: 4db80c599067e2d5f23c5c243bf85b8ca0368ad4
+  ref: 4db80c599067e2d5f23c5c243bf85b8ca0368ad4
+  specs:
+    pygments.rb (0.3.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
+
+GIT
   remote: https://github.com/gitlabhq/yaml_db.git
   revision: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
   ref: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
@@ -266,9 +275,6 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
       slop (>= 2.4.4, < 3)
-    pygments.rb (0.3.1)
-      posix-spawn (~> 0.3.6)
-      yajl-ruby (~> 1.1.0)
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.1)
       railties (~> 3.1)
@@ -465,7 +471,7 @@ DEPENDENCIES
   omniauth-twitter
   pg
   pry
-  pygments.rb (= 0.3.1)
+  pygments.rb!
   quiet_assets (= 1.0.1)
   rack-mini-profiler
   rails (= 3.2.8)
