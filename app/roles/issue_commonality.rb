@@ -6,6 +6,7 @@ module IssueCommonality
     belongs_to :project
     belongs_to :author, class_name: "User"
     belongs_to :assignee, class_name: "User"
+    belongs_to :milestone
     has_many :notes, as: :noteable, dependent: :destroy
 
     validates :project, presence: true

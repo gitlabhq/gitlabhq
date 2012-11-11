@@ -10,6 +10,6 @@
     - unless blob.empty?
       %div{class: current_user.dark_scheme ? "black" : "white"}
         = preserve do
-          = raw blob.colorize(options: { linenos: 'True'})
+          = raw blob.colorize(options: { linenos: true, lineanchors: :line, anchorlinenos: true })
     - else
       %h4.nothing_here_message Empty file

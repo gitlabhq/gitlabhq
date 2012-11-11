@@ -1,4 +1,4 @@
-require Rails.root.join('lib', 'gitlab', 'graph_commit')
+require Rails.root.join('lib', 'gitlab', 'graph', 'json_builder')
 
 class ProjectsController < ProjectResourceController
   skip_before_filter :project, only: [:new, :create]
@@ -79,7 +79,9 @@ class ProjectsController < ProjectResourceController
   end
 
   def graph
-    @days_json, @commits_json = Gitlab::GraphCommit.to_graph(project)
+    graph = Gitlab::Graph::JsonBuilder.new(project)
+
+    @days_json, @commits_json = graph.days_json, graph.commits_json
   end
 
   def destroy

@@ -14,8 +14,9 @@
     = f.submit "Sign in", :class => "primary btn wide"
     .right
       = render :partial => "devise/shared/links"
-    - if devise_mapping.omniauthable?
-      %hr/
-      - resource_class.omniauth_providers.each do |provider|
-        %span
-          = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
+    .clearfix
+    - if devise_mapping.omniauthable? && resource_class.omniauth_providers.present?
+      %div
+        - resource_class.omniauth_providers.each do |provider|
+          %span
+            = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)

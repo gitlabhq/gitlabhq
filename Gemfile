@@ -11,9 +11,9 @@ end
 gem "rails", "3.2.8"
 
 # Supported DBs
-gem "sqlite3", :group => :sqlite
-gem "mysql2", :group => :mysql
-gem "pg", :group => :postgres
+gem "sqlite3", group: :sqlite
+gem "mysql2", group: :mysql
+gem "pg", group: :postgres
 
 # Auth
 gem "devise", "~> 2.1.0"
@@ -23,10 +23,11 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # GITLAB patched libs
-gem "grit",          :git => "https://github.com/gitlabhq/grit.git",            :ref => "7f35cb98ff17d534a07e3ce6ec3d580f67402837"
-gem "omniauth-ldap", :git => "https://github.com/gitlabhq/omniauth-ldap.git",   :ref => "f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e"
-gem 'yaml_db',       :git => "https://github.com/gitlabhq/yaml_db.git"
-gem 'grack',         :git => "https://github.com/gitlabhq/grack.git"
+gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'
+gem "omniauth-ldap", git: "https://github.com/gitlabhq/omniauth-ldap.git",  ref: 'f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e'
+gem 'yaml_db',       git: "https://github.com/gitlabhq/yaml_db.git",        ref: '98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd'
+gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
+gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",        ref: '212fd40bea61f3c6a167223768e7295dc32bbc10'
 
 # Gitolite client (for work with gitolite-admin repo)
 gem "gitolite", '1.1.0'
@@ -35,7 +36,7 @@ gem "gitolite", '1.1.0'
 gem "pygments.rb", "0.3.1"
 
 # Language detection
-gem "github-linguist", "~> 2.3.4" , :require => "linguist"
+gem "github-linguist", "~> 2.3.4" , require: "linguist"
 
 # API
 gem "grape", "~> 0.2.1"
@@ -83,9 +84,6 @@ gem 'resque_mailer'
 # HTTP requests
 gem "httparty"
 
-# Handle encodings
-gem "charlock_holmes"
-
 # Colored output to console
 gem "colored"
 
@@ -114,8 +112,9 @@ group :assets do
 end
 
 group :development do
+  gem "annotate", git: "https://github.com/ctran/annotate_models.git"
   gem "letter_opener"
-  gem "annotate", :git => "https://github.com/ctran/annotate_models.git"
+  gem 'quiet_assets', '1.0.1'
   gem 'rack-mini-profiler'
 end
 
@@ -137,13 +136,13 @@ group :development, :test do
   gem 'guard-spinach'
 
   # Notification
-  gem 'rb-fsevent', :require => darwin_only('rb-fsevent')
-  gem 'growl',      :require => darwin_only('growl')
-  gem 'rb-inotify', :require => linux_only('rb-inotify')
+  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
+  gem 'growl',      require: darwin_only('growl')
+  gem 'rb-inotify', require: linux_only('rb-inotify')
 end
 
 group :test do
-  gem "simplecov", :require => false
+  gem "simplecov", require: false
   gem "shoulda-matchers"
   gem 'email_spec'
   gem 'resque_spec'

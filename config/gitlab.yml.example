@@ -74,6 +74,7 @@ git_host:
   upload_pack: true
   receive_pack: true
   # host: localhost
+  # config_file: gitolite.conf
   # port: 22
 
 # Git settings

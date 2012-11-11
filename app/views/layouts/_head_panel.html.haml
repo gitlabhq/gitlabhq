@@ -8,9 +8,7 @@
             GITLAB
         %span.separator
       %h1.project_name= title
-      .search
-        = form_tag search_path, method: :get do |f|
-          = text_field_tag "search", nil, placeholder: "Search", class: "search-input"
+      = render "layouts/search"
       .fbtn
         - if current_user.is_admin?
           = link_to admin_root_path, class: "btn small", title: "Admin area" do
@@ -29,11 +27,3 @@
           = link_to 'Logout', destroy_user_session_path, class: "logout", method: :delete
 
 = render "layouts/init_auto_complete"
-
-:javascript
-  $(function(){
-    $("#search").autocomplete({
-      source: #{raw search_autocomplete_source},
-      select: function(event, ui) { location.href = ui.item.url }
-    });
-  });

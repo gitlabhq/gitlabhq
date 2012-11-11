@@ -16,9 +16,14 @@ class RepositoriesController < ProjectResourceController
     @tags = @project.tags
   end
 
+  def stats
+    @stats = Gitlab::GitStats.new(@project.repo, @project.root_ref)
+    @graph = @stats.graph
+  end
+
   def archive
     unless can?(current_user, :download_code, @project)
-      render_404 and return 
+      render_404 and return
     end
 
 

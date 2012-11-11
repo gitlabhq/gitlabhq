@@ -7,8 +7,6 @@ class Issue < ActiveRecord::Base
 
   acts_as_taggable_on :labels
 
-  belongs_to :milestone
-
   validates :description, length: { within: 0..2000 }
 
   def self.open_for(user)
