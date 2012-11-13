@@ -194,8 +194,10 @@ module Gitlab
 
     def push tmp_dir
       Dir.chdir(File.join(tmp_dir, "gitolite"))
-      system('git add -A')
-      system('git commit -am "GitLab"')
+      raise "Git add failed." unless system('git add -A')
+      system('git commit -m "GitLab"') # git commit returns 0 on success, and 1 if there is nothing to commit
+      raise "Git commit failed." unless [0,1].include? $?.exitstatus
+
       if system('git push')
         Dir.chdir(Rails.root)
       else
