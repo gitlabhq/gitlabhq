@@ -1,2 +1,0 @@
-web: bundle exec rails s -p $PORT -e production
-worker: bundle exec rake environment resque:work RAILS_ENV=production QUEUE=*

@@ -147,7 +147,7 @@ module Gitlab
         @hooks = paginate user_project.hooks
         present @hooks, with: Entities::Hook
       end
-      
+
       # Get a project hook
       #
       # Parameters:
@@ -159,7 +159,7 @@ module Gitlab
         @hook = user_project.hooks.find(params[:hook_id])
         present @hook, with: Entities::Hook
       end
-      
+
 
       # Add hook to project
       #
@@ -177,7 +177,7 @@ module Gitlab
           error!({'message' => '404 Not found'}, 404)
         end
       end
-      
+
       # Update an existing project hook
       #
       # Parameters:
@@ -382,13 +382,7 @@ module Gitlab
         tree = Tree.new commit.tree, user_project, ref, params[:filepath]
         not_found! "File" unless tree.try(:tree)
 
-        if tree.text?
-          encoding = Gitlab::Encode.detect_encoding(tree.data)
-          content_type encoding ? "text/plain; charset=#{encoding}" : "text/plain"
-        else
-          content_type tree.mime_type
-        end
-
+        content_type tree.mime_type
         present tree.data
       end
 

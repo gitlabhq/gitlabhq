@@ -16,6 +16,7 @@
 #  st_diffs      :text(4294967295
 #  merged        :boolean         default(FALSE), not null
 #  state         :integer         default(1), not null
+#  milestone_id  :integer
 #
 
 require 'spec_helper'

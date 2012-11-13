@@ -80,12 +80,6 @@ describe "Gitlab Flavored Markdown" do
 
       page.should have_link("##{issue.id}")
     end
-
-    it "should render title in repositories#tags" do
-      visit tags_project_repository_path(project)
-
-      page.should have_link("##{issue.id}")
-    end
   end
 
   describe "for issues" do

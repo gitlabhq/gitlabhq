@@ -121,10 +121,17 @@ module SharedPaths
     visit project_commits_path(@project, @project.root_ref, {limit: 5})
   end
 
+  Given "I visit my project's commits page for a specific path" do
+    visit project_commits_path(@project, @project.root_ref + "/app/models/project.rb", {limit: 5})
+  end
+
+  Given 'I visit my project\'s commits stats page' do
+    visit stats_project_repository_path(@project)
+  end
+
   Given "I visit my project's network page" do
-    # Stub out find_all to speed this up (10 commits vs. 650)
-    commits = Grit::Commit.find_all(@project.repo, nil, {max_count: 10})
-    Grit::Commit.stub(:find_all).and_return(commits)
+    # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
+    Gitlab::Graph::JsonBuilder.stub(max_count: 10)
 
     visit graph_project_path(@project)
   end

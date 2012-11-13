@@ -70,9 +70,6 @@
         color:#ccc;
         &:hover {
           color:#fff;
-          i { 
-            @extend .icon-white;
-          }
         }
         border: none;
         box-shadow:none;

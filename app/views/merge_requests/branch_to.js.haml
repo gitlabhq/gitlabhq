@@ -1,3 +1,2 @@
 :plain
-  $(".mr_target_commit").html("#{escape_javascript(render 'commits/commit', commit: @commit)}");
-
+  $(".mr_target_commit").html("#{commit_to_html(@commit)}");

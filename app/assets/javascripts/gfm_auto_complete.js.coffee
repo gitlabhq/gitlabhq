@@ -1,57 +1,47 @@
+# Creates the variables for setting up GFM auto-completion
 
-###
-  Creates the variables for setting up GFM auto-completion
-###
 # Emoji
-window.autocompleteEmojiData = [];
-window.autocompleteEmojiTemplate = "<li data-value='${insert}'>${name} <img alt='${name}' height='20' src='${image}' width='20' /></li>";
+data      = []
+template  = "<li data-value='${insert}'>${name} <img alt='${name}' height='20' src='${image}' width='20' /></li>"
+window.autocompleteEmoji = {data, template}
 
 # Team Members
-window.autocompleteMembersUrl = "";
-window.autocompleteMembersParams =
-  private_token: ""
-  page: 1
-window.autocompleteMembersData = [];
+url     = '';
+params  = {private_token: '', page: 1}
+window.autocompleteMembers = {data, url, params}
 
-
-
-###
-  Add GFM auto-completion to all input fields, that accept GFM input.
-###
+# Add GFM auto-completion to all input fields, that accept GFM input.
 window.setupGfmAutoComplete = ->
-  ###
-    Emoji
-  ###
-  $('.gfm-input').atWho ':',
-    data: autocompleteEmojiData,
-    tpl: autocompleteEmojiTemplate
+  $input = $('.js-gfm-input')
 
-  ###
-    Team Members
-  ###
-  $('.gfm-input').atWho '@', (query, callback) ->
+  # Emoji
+  $input.atWho ':',
+    data: autocompleteEmoji.data,
+    tpl: autocompleteEmoji.template
+
+  # Team Members
+  $input.atWho '@', (query, callback) ->
     (getMoreMembers = ->
-      $.getJSON(autocompleteMembersUrl, autocompleteMembersParams)
-        .success (members) ->
-          # pick the data we need
-          newMembersData = $.map members, (m) -> m.name
+      $.getJSON(autocompleteMembers.url, autocompleteMembers.params).success (members) ->
+        # pick the data we need
+        newMembersData = $.map members, (m) -> m.name
 
-          # add the new page of data to the rest
-          $.merge autocompleteMembersData, newMembersData
+        # add the new page of data to the rest
+        $.merge autocompleteMembers.data, newMembersData
 
-          # show the pop-up with a copy of the current data
-          callback autocompleteMembersData[..]
+        # show the pop-up with a copy of the current data
+        callback autocompleteMembers.data[..]
 
-          # are we past the last page?
-          if newMembersData.length == 0
-            # set static data and stop callbacks
-            $('.gfm-input').atWho '@',
-              data: autocompleteMembersData
-              callback: null
-          else
-            # get next page
-            getMoreMembers()
+        # are we past the last page?
+        if newMembersData.length is 0
+          # set static data and stop callbacks
+          $input.atWho '@',
+            data: autocompleteMembers.data
+            callback: null
+        else
+          # get next page
+          getMoreMembers()
 
       # so the next request gets the next page
-      autocompleteMembersParams.page += 1;
-    ).call();
+      autocompleteMembers.params.page += 1
+    ).call()

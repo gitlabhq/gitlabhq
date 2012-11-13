@@ -34,6 +34,11 @@ table {
     border-color:#f1f1f1;
     line-height:28px;
 
+    .s16 {
+      margin-top: 5px;
+      margin-right: 5px;
+    }
+
     &:first-child {
       border-left:1px solid #bbb;
     }

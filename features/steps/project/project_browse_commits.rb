@@ -42,4 +42,19 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     page.should have_content "Commits (1)"
     page.should have_content "Showing 2 changed files"
   end
+
+  Then 'I see breadcrumb links' do
+    page.should have_selector('ul.breadcrumb')
+    page.should have_selector('ul.breadcrumb span.divider', count: 3)
+    page.should have_selector('ul.breadcrumb a', count: 4)
+
+    find('ul.breadcrumb li:first a')['href'].should match(/#{@project.path}\/commits\/master\z/)
+    find('ul.breadcrumb li:last a')['href'].should match(%r{master/app/models/project\.rb\z})
+  end
+
+  Then 'I see commits stats' do
+    page.should have_content 'Stats for master'
+    page.should have_content 'Committers'
+    page.should have_content 'Total commits'
+  end
 end

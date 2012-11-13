@@ -1,5 +1,4 @@
 class RefsController < ProjectResourceController
-  include Gitlab::Encode
 
   # Authorize
   before_filter :authorize_read_project!

@@ -157,10 +157,15 @@
         font-size:12px !important;
       }
 
-      table.highlighttable .linenodiv pre {
-        text-align: right;
-        padding-right: 4px;
-        color:#666;
+      table.highlighttable .linenodiv {
+        a {
+          color: #666;
+        }
+        pre {
+          text-align: right;
+          padding-right: 4px;
+          color:#666;
+        }
       }
     }
   }

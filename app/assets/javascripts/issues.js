@@ -1,6 +1,5 @@
-function switchToNewIssue(form){
+function switchToNewIssue(){
   $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
-    $(".issues_content").after(form);
     $('select#issue_assignee_id').chosen();
     $('select#issue_milestone_id').chosen();
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
@@ -10,9 +9,8 @@ function switchToNewIssue(form){
   });
 }
 
-function switchToEditIssue(form){
+function switchToEditIssue(){
   $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
-    $(".issues_content").after(form);
     $('select#issue_assignee_id').chosen();
     $('select#issue_milestone_id').chosen();
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
@@ -33,8 +31,8 @@ function switchFromEditIssue(){
 function backToIssues(){
   $("#edit_issue_dialog, #new_issue_dialog").hide("fade", { direction: "right" }, 150, function(){
     $(".issues_content").show("fade", { direction: "left" }, 150, function() { 
-      $("#edit_issue_dialog").remove();
-      $("#new_issue_dialog").remove();
+      $("#edit_issue_dialog").html("");
+      $("#new_issue_dialog").html("");
       $('.add_new').show();
     });
   });

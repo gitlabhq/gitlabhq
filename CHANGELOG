@@ -28,7 +28,7 @@ v 3.0.0
   - Reject ssh keys that break gitolite
   - [API] list one project hook
   - [API] edit project hook
-  - [API] add project snippets list
+  - [API] list project snippets
   - [API] allow to authorize using private token in HTTP header
   - [API] add user creation
 

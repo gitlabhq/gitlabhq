@@ -9,7 +9,7 @@
   %br
   %h3
     Search results
-    %small (#{@projects.count + @merge_requests.count + @issues.count})
+    %small (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count})
   %hr
   .search_results
     .row
@@ -69,6 +69,23 @@
               %tr
                 %td
                   %h4.nothing_here_message No Issues
+      .span6
+        %table
+          %thead
+            %tr
+              %th Wiki
+          %tbody
+            - @wiki_pages.each do |wiki_page|
+              %tr
+                %td
+                  = link_to project_wiki_path(wiki_page.project, wiki_page) do
+                    %strong.term= truncate wiki_page.title, length: 40
+                  %strong.right
+                    %span.label= wiki_page.project.name
+            - if @wiki_pages.blank?
+              %tr
+                %td
+                  %h4.nothing_here_message No wiki pages
   :javascript
     $(function() {
       $(".search_results .term").highlight("#{params[:search]}");

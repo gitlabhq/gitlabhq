@@ -57,10 +57,7 @@
     padding-right: 8px;
 
     img.avatar {
-      border: 0 none;
-      float: none;
-      margin-right: 0;
-      padding: 0;
+      margin-top: 0;
       width: 16px;
     }
   }
@@ -73,6 +70,15 @@
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+
+  .blame {
+    img.avatar {
+      border: 0 none;
+      float: none;
+      margin: 0;
+      padding: 0;
     }
   }
 }

@@ -16,6 +16,11 @@
       Tags
       %span.badge= @project.tags.length
 
+  = nav_link(controller: :repositories, action: :stats) do
+    = link_to stats_project_repository_path(@project) do
+      Stats
+
+
   - if current_controller?(:commits) && current_user.private_token
     %li.right
       %span.rss-icon

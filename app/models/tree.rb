@@ -8,7 +8,7 @@ class Tree
   def initialize(raw_tree, project, ref = nil, path = nil)
     @project, @ref, @path = project, ref, path
     @tree = if path.present?
-              raw_tree / path.dup.force_encoding('ascii-8bit')
+              raw_tree / path
             else
               raw_tree
             end

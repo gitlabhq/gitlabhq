@@ -47,12 +47,15 @@
       padding-left: 32px;
     }
 
-    .author,
-    .committer {
+    .author a,
+    .committer a {
       font-size:14px;
       line-height:22px;
       text-shadow:0 1px 1px #fff;
       color:#777;
+      &:hover {
+        color: #999;
+      }
     }
 
     .avatar {
@@ -227,6 +230,9 @@
 
   .commit-author-name {
     color: #777;
+    &:hover {
+      color: #999;
+    }
   }
 }
 

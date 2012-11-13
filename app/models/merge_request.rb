@@ -1,10 +1,11 @@
 require Rails.root.join("app/models/commit")
+require Rails.root.join("app/roles/static_model")
 
 class MergeRequest < ActiveRecord::Base
   include IssueCommonality
   include Votes
 
-  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
+  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch, :milestone_id,
                   :author_id_of_changes
 
   attr_accessor :should_remove_source_branch
@@ -24,6 +25,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.find_all_by_branch(branch_name)
     where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+  end
+
+  def self.find_all_by_milestone(milestone)
+    where("milestone_id = :milestone_id", milestone_id: milestone)
   end
 
   def human_state
@@ -60,7 +65,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    self.state = if Gitlab::Merge.new(self, self.author).can_be_merged?
+    self.state = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
                    CAN_BE_MERGED
                  else
                    CANNOT_BE_MERGED
@@ -167,7 +172,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user)
-    if Gitlab::Merge.new(self, current_user).merge! && self.unmerged_commits.empty?
+    if Gitlab::Satellite::MergeAction.new(current_user, self).merge! && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end
@@ -212,5 +217,6 @@ end
 #  st_diffs      :text(4294967295
 #  merged        :boolean         default(FALSE), not null
 #  state         :integer         default(1), not null
+#  milestone_id  :integer
 #
 

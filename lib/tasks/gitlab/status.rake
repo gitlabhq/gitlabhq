@@ -49,7 +49,7 @@ namespace :gitlab do
       end
 
       print "UMASK for .gitolite.rc is 0007? ............"
-      if open("#{git_base_path}/../.gitolite.rc").grep(/UMASK([ \t]*)=([ \t>]*)0007/).any?
+      if open(File.absolute_path("#{git_base_path}/../.gitolite.rc")).grep(/UMASK([ \t]*)=([ \t>]*)0007/).any?
         puts "YES".green
       else
         puts "NO".red

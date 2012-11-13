@@ -21,13 +21,21 @@ ul {
     .author { color: #999; }
 
     p {
-      padding-top:5px;
+      padding-top: 1px;
       margin:0;
       color:#222;
       img {
         position:relative;
         top:3px;
       }
+    }
+  }
+}
+
+ol, ul {
+  &.styled {
+    li {
+      padding:2px;
     }
   }
 }
