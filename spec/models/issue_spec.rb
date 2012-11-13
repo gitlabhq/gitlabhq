@@ -38,11 +38,11 @@ describe Issue do
     it { should include_module(Votes) }
   end
 
-  subject { Factory.create(:issue) }
+  subject { create(:issue) }
 
   describe '#is_being_reassigned?' do
     it 'returns true if the issue assignee has changed' do
-      subject.assignee = Factory(:user)
+      subject.assignee = create(:user)
       subject.is_being_reassigned?.should be_true
     end
     it 'returns false if the issue assignee has not changed' do
@@ -56,7 +56,7 @@ describe Issue do
       subject.is_being_closed?.should be_true
     end
     it 'returns false if the closed attribute has changed and is now false' do
-      issue = Factory.create(:closed_issue)
+      issue = create(:closed_issue)
       issue.closed = false
       issue.is_being_closed?.should be_false
     end
@@ -68,7 +68,7 @@ describe Issue do
 
   describe '#is_being_reopened?' do
     it 'returns true if the closed attribute has changed and is now false' do
-      issue = Factory.create(:closed_issue)
+      issue = create(:closed_issue)
       issue.closed = false
       issue.is_being_reopened?.should be_true
     end

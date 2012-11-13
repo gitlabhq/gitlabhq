@@ -9,9 +9,9 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'I have group with projects' do
-    @group   = Factory :group
-    @project = Factory :project, group: @group
-    @event   = Factory :closed_issue_event, project: @project
+    @group   = create(:group)
+    @project = create(:project, group: @group)
+    @event   = create(:closed_issue_event, project: @project)
 
     @project.add_access current_user, :admin
   end

@@ -74,11 +74,11 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   And 'gitlab user "Mike"' do
-    Factory :user, :name => "Mike"
+    create(:user, :name => "Mike")
   end
 
   And 'gitlab user "Sam"' do
-    Factory :user, :name => "Sam"
+    create(:user, :name => "Sam")
   end
 
   And '"Sam" is "Shop" developer' do
@@ -88,7 +88,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I own project "Website"' do
-    @project = Factory :project, :name => "Website"
+    @project = create(:project, :name => "Website")
     @project.add_access(@user, :admin)
   end
 

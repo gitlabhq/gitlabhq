@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Project do
   describe :authorization do
     before do
-      @p1 = Factory :project
-      @u1 = Factory :user
-      @u2 = Factory :user
+      @p1 = create(:project)
+      @u1 = create(:user)
+      @u2 = create(:user)
       @abilities = Six.new
       @abilities << Ability
     end

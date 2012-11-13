@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe Gitlab::API do 
+describe Gitlab::API do
   include ApiHelpers
-  
-  let(:user) { Factory :user }
-  let!(:project) { Factory :project, owner: user }
-  let!(:merge_request) { Factory :merge_request, author: user, assignee: user, project: project, title: "Test" }
+
+  let(:user) { create(:user ) }
+  let!(:project) { create(:project, owner: user) }
+  let!(:merge_request) { create(:merge_request, author: user, assignee: user, project: project, title: "Test") }
   before { project.add_access(user, :read) }
 
   describe "GET /projects/:id/merge_requests" do
@@ -39,7 +39,7 @@ describe Gitlab::API do
       post api("/projects/#{project.code}/merge_requests", user),
         title: 'Test merge_request', source_branch: "stable", target_branch: "master", author: user
       response.status.should == 201
-      json_response['title'].should == 'Test merge_request' 
+      json_response['title'].should == 'Test merge_request'
     end
   end
 
@@ -47,7 +47,7 @@ describe Gitlab::API do
     it "should return merge_request" do
       put api("/projects/#{project.code}/merge_request/#{merge_request.id}", user), title: "New title"
       response.status.should == 200
-      json_response['title'].should == 'New title' 
+      json_response['title'].should == 'New title'
     end
   end
 
@@ -55,7 +55,7 @@ describe Gitlab::API do
     it "should return comment" do
       post api("/projects/#{project.code}/merge_request/#{merge_request.id}/comments", user), note: "My comment"
       response.status.should == 201
-      json_response['note'].should == 'My comment' 
+      json_response['note'].should == 'My comment'
     end
   end
 

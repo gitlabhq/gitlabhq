@@ -40,10 +40,10 @@ describe Note do
   end
 
   describe "Voting score" do
-    let(:project) { Factory(:project) }
+    let(:project) { create(:project) }
 
     it "recognizes a neutral note" do
-      note = Factory(:note, note: "This is not a +1 note")
+      note = create(:note, note: "This is not a +1 note")
       note.should_not be_upvote
       note.should_not be_downvote
     end
@@ -55,7 +55,7 @@ describe Note do
     end
 
     it "recognizes a +1 note" do
-      note = Factory(:note, note: "+1 for this")
+      note = create(:note, note: "+1 for this")
       note.should be_upvote
     end
 
@@ -65,7 +65,7 @@ describe Note do
     end
 
     it "recognizes a -1 note" do
-      note = Factory(:note, note: "-1 for this")
+      note = create(:note, note: "-1 for this")
       note.should be_downvote
     end
 
@@ -80,9 +80,9 @@ describe Note do
 
   describe "Commit notes" do
     before do
-      @note = Factory :note,
-        noteable_id: commit.id,
-        noteable_type: "Commit"
+      @note = create(:note,
+                     noteable_id: commit.id,
+                     noteable_type: "Commit")
     end
 
     it "should be accessible through #noteable" do
@@ -103,10 +103,10 @@ describe Note do
 
   describe "Pre-line commit notes" do
     before do
-      @note = Factory :note,
-        noteable_id: commit.id,
-        noteable_type: "Commit",
-        line_code: "0_16_1"
+      @note = create(:note,
+                     noteable_id: commit.id,
+                     noteable_type: "Commit",
+                     line_code: "0_16_1")
     end
 
     it "should save a valid note" do
@@ -120,9 +120,9 @@ describe Note do
   end
 
   describe '#create_status_change_note' do
-    let(:project)  { Factory.create(:project) }
-    let(:thing)    { Factory.create(:issue, project: project) }
-    let(:author)   { Factory(:user) }
+    let(:project)  { create(:project) }
+    let(:thing)    { create(:issue, project: project) }
+    let(:author)   { create(:user) }
     let(:status)   { 'new_status' }
 
     subject { Note.create_status_change_note(thing, author, status) }
@@ -141,10 +141,10 @@ describe Note do
   describe :authorization do
     before do
       @p1 = create(:project)
-      @p2 = Factory :project
-      @u1 = Factory :user
-      @u2 = Factory :user
-      @u3 = Factory :user
+      @p2 = create(:project)
+      @u1 = create(:user)
+      @u2 = create(:user)
+      @u3 = create(:user)
       @abilities = Six.new
       @abilities << Ability
     end

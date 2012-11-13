@@ -32,7 +32,7 @@ describe Event do
 
   describe "Push event" do
     before do
-      project = Factory :project
+      project = create(:project)
       @user = project.owner
 
       data = {

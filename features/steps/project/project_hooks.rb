@@ -6,7 +6,7 @@ class ProjectHooks < Spinach::FeatureSteps
   include RSpec::Mocks::ExampleMethods
 
   Given 'project has hook' do
-    @hook = Factory :project_hook, project: current_project
+    @hook = create(:project_hook, project: current_project)
   end
 
   Then 'I should see project hook' do
