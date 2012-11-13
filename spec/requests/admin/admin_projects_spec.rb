@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe "Admin::Projects" do
   before do
-    @project = Factory :project,
-      name: "LeGiT",
-      code: "LGT"
+    @project = create(:project,
+                      name: "LeGiT",
+                      code: "LGT")
     login_as :admin
   end
 
@@ -104,7 +104,7 @@ describe "Admin::Projects" do
 
   describe "Add new team member" do
     before do
-      @new_user = Factory :user
+      @new_user = create(:user)
       visit admin_project_path(@project)
     end
 

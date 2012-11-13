@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Users Security" do
   describe "Project" do
     before do
-      @u1 = Factory :user
+      @u1 = create(:user)
     end
 
     describe "GET /login" do

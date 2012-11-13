@@ -157,7 +157,7 @@ describe Project do
 
   describe :valid_repo? do
     it "should be valid repo" do
-      project = Factory :project
+      project = create(:project)
       project.valid_repo?.should be_true
     end
 
@@ -168,7 +168,7 @@ describe Project do
   end
 
   describe "last_activity methods" do
-    let(:project)    { Factory :project }
+    let(:project)    { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
 
     describe "last_activity" do
@@ -191,7 +191,7 @@ describe Project do
   end
 
   describe "fresh commits" do
-    let(:project) { Factory :project }
+    let(:project) { create(:project) }
 
     it { project.fresh_commits(3).count.should == 3 }
     it { project.fresh_commits.first.id.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a" }
@@ -199,7 +199,7 @@ describe Project do
   end
 
   describe "commits_between" do
-    let(:project) { Factory :project }
+    let(:project) { create(:project) }
 
     subject do
       commits = project.commits_between("3a4b4fb4cde7809f033822a171b9feae19d41fff",
@@ -213,7 +213,7 @@ describe Project do
   end
 
   describe "Git methods" do
-    let(:project) { Factory :project }
+    let(:project) { create(:project) }
 
     describe :repo do
       it "should return valid repo" do
@@ -270,14 +270,14 @@ describe Project do
   end
 
   describe :update_merge_requests do
-    let(:project) { Factory :project }
+    let(:project) { create(:project) }
 
     before do
-      @merge_request = Factory :merge_request,
-        project: project,
-        merged: false,
-        closed: false
-      @key = Factory :key, user_id: project.owner.id
+      @merge_request = create(:merge_request,
+                              project: project,
+                              merged: false,
+                              closed: false)
+      @key = create(:key, user_id: project.owner.id)
     end
 
     it "should close merge request if last commit from source branch was pushed to target branch" do

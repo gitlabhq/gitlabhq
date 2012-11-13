@@ -108,7 +108,7 @@ describe User do
 
   describe 'authentication token' do
     it "should have authentication token" do
-      user = Factory(:user)
+      user = create(:user)
       user.authentication_token.should_not be_blank
     end
   end

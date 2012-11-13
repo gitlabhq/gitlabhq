@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe "Dashboard Issues Feed" do
   describe "GET /issues" do
-    let!(:user)     { Factory :user }
-    let!(:project1) { Factory :project }
-    let!(:project2) { Factory :project }
-    let!(:issue1)   { Factory :issue, author: user, assignee: user, project: project1 }
-    let!(:issue2)   { Factory :issue, author: user, assignee: user, project: project2 }
+    let!(:user)     { create(:user) }
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project) }
+    let!(:issue1)   { create(:issue, author: user, assignee: user, project: project1) }
+    let!(:issue2)   { create(:issue, author: user, assignee: user, project: project2) }
 
     describe "atom feed" do
       it "should render atom feed via private token" do

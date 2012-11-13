@@ -30,8 +30,8 @@ describe Milestone do
     it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 
-  let(:milestone) { Factory :milestone }
-  let(:issue) { Factory :issue }
+  let(:milestone) { create(:milestone) }
+  let(:issue) { create(:issue) }
 
   describe "#percent_complete" do
     it "should not count open issues" do

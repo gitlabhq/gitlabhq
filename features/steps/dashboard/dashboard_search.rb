@@ -12,7 +12,7 @@ class DashboardSearch < Spinach::FeatureSteps
   end
 
   And 'I own project "Shop"' do
-    @project = create :project, name: "Shop"
+    @project = create(:project, :name => "Shop")
     @project.add_access(@user, :admin)
   end
 

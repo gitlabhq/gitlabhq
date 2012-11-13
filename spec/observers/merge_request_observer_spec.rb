@@ -16,7 +16,7 @@ describe MergeRequestObserver do
       subject.should_receive(:after_create)
 
       MergeRequest.observers.enable :merge_request_observer do
-        Factory.create(:merge_request, project: Factory.create(:project))
+        create(:merge_request, project: create(:project))
       end
     end
 
@@ -43,7 +43,7 @@ describe MergeRequestObserver do
     end
 
     it 'is called when a merge request is changed' do
-      changed = Factory.create(:merge_request, project: Factory.create(:project))
+      changed = create(:merge_request, project: create(:project))
       subject.should_receive(:after_update)
 
       MergeRequest.observers.enable :merge_request_observer do

@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Project, "Hooks" do
-  let(:project) { Factory :project }
-  before do 
-    @key = Factory :key, user: project.owner
+  let(:project) { create(:project) }
+  before do
+    @key = create(:key, user: project.owner)
     @user = @key.user
     @key_id = @key.identifier
   end
 
-  describe "Post Receive Event" do 
-    it "should create push event" do 
+  describe "Post Receive Event" do
+    it "should create push event" do
       oldrev, newrev, ref = '00000000000000000000000000000000', 'newrev', 'refs/heads/master'
       project.observe_push(oldrev, newrev, ref, @user)
       event = Event.last
@@ -32,8 +32,8 @@ describe Project, "Hooks" do
 
     context "with web hooks" do
       before do
-        @project_hook = Factory(:project_hook)
-        @project_hook_2 = Factory(:project_hook)
+        @project_hook = create(:project_hook)
+        @project_hook_2 = create(:project_hook)
         project.hooks << [@project_hook, @project_hook_2]
       end
 
@@ -47,7 +47,7 @@ describe Project, "Hooks" do
 
     context "does not execute web hooks" do
       before do
-        @project_hook = Factory(:project_hook)
+        @project_hook = create(:project_hook)
         project.hooks << [@project_hook]
       end
 

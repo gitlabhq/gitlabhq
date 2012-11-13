@@ -53,7 +53,7 @@ describe Key do
     end
 
     context "as a personal key" do
-      let(:user) { Factory.create(:user) }
+      let(:user) { create(:user) }
 
       it "accepts the key once" do
         build(:key, user: user).should be_valid
@@ -67,7 +67,7 @@ describe Key do
   end
 
   context "validate it is a fingerprintable key" do
-    let(:user) { Factory.create(:user) }
+    let(:user) { create(:user) }
 
     it "accepts the fingerprintable key" do
       build(:key, user: user).should be_valid

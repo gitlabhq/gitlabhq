@@ -9,8 +9,8 @@ describe PostReceive do
   end
 
   context "web hook" do
-    let(:project) { Factory.create(:project) }
-    let(:key) { Factory.create(:key, user: project.owner) }
+    let(:project) { create(:project) }
+    let(:key) { create(:key, user: project.owner) }
     let(:key_id) { key.identifier }
 
     it "fetches the correct project" do
