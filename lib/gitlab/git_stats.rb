@@ -15,7 +15,8 @@ module Gitlab
     end
 
     def files_count
-      repo.git.sh("git ls-tree -r --name-only #{ref} | wc -l").first.to_i
+      args = [ref, '-r', '--name-only' ]
+      repo.git.run(nil, 'ls-tree', nil, {}, args).split("\n").count
     end
 
     def authors_count
@@ -52,15 +53,11 @@ module Gitlab
 
     def build_graph n = 4
       from, to = (Date.today - n.weeks), Date.today
+      args = ['--all', "--since=#{from.to_s(:date)}", '--format=%ad' ]
+      rev_list = repo.git.run(nil, 'rev-list', nil, {}, args).split("\n")
 
-      format = "--pretty=format:'%h|%at|%ai|%aE'"
-      commits_strings = repo.git.sh("git rev-list --since #{from.to_s(:date)} #{format} #{ref} | grep -v commit")[0].split("\n")
-
-      commits_dates = commits_strings.map do |string|
-        data = string.split("|")
-        date = data[2]
-        Time.parse(date).to_date.to_s(:date)
-      end
+      commits_dates = rev_list.values_at(* rev_list.each_index.select {|i| i.odd?})
+      commits_dates = commits_dates.map { |date_str| Time.parse(date_str).to_date.to_s(:date) }
 
       commits_per_day = from.upto(to).map do |day|
         commits_dates.count(day.to_date.to_s(:date))
