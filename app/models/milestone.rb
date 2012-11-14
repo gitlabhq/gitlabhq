@@ -7,6 +7,7 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true
   validates :project, presence: true
+  validates :closed, inclusion: { in: [true, false] }
 
   def self.active
     where("due_date > ? OR due_date IS NULL", Date.today)
