@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.8"
+gem "rails", "3.2.9"
 
 # Supported DBs
 gem "sqlite3", group: :sqlite
