@@ -26,3 +26,4 @@ GitLab does **not** run on Windows and we have no plans of making GitLab compati
 ## Hardware: 
 
 We recommend to use server with at least 1GB RAM for gitlab instance.
+Processor architectures matter.  PowerPC doesn't run V8, so it's out.  ARM, even with Debian Unstable's libv8, doesn't seem to work either.  MIPS is less supported than ARM in V8.  Right now you should probably stick to normal architectures like x86 and x64.
