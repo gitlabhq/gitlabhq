@@ -51,6 +51,24 @@ module Gitlab
           not_found!
         end
       end
+
+      # Transfer a project to the Group namespace
+      #
+      # Parameters:
+      #   id - group id
+      #   project_id  - project id
+      # Example Request:
+      #   POST /groups/:id/projects/:project_id
+      post ":id/projects/:project_id" do
+        authenticated_as_admin!
+        @group = Group.find(params[:id])
+        project = Project.find(params[:project_id])
+        if project.transfer(@group)
+          present @group
+        else
+          not_found!
+        end
+      end 
     end
   end
 end

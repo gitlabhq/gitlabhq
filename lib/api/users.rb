@@ -77,6 +77,26 @@ module Gitlab
         end
       end
 
+      # Add ssh key to a specified user. Only available to admin users.
+      #
+      # Parameters:
+      # id (required) - The ID of a user
+      # key (required) - New SSH Key
+      # title (required) - New SSH Key's title
+      # Example Request:
+      # POST /users/:id/keys
+      post ":id/keys" do
+        authenticated_as_admin!
+        user = User.find(params[:id])
+        attrs = attributes_for_keys [:title, :key]
+        key = user.keys.new attrs
+        if key.save
+          present key, with: Entities::SSHKey
+        else
+          not_found!
+        end
+      end
+
       # Delete user. Available only for admin
       #
       # Example Request:
