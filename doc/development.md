@@ -18,7 +18,7 @@ Install the Gitlab development in a virtual machine with the [Gitlab Vagrant vir
     bundle exec rake environment resque:work QUEUE=* VVERBOSE=1
 
 
-### Test DB seutup & seed
+### Test DB setup & seed
 
     bundle exec rake db:setup RAILS_ENV=test
     bundle exec rake db:seed_fu RAILS_ENV=test
