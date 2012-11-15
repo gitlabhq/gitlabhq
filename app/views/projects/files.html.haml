@@ -9,7 +9,7 @@
     - @notes.each do |note|
       %tr
         %td
-          %a{href: note.attachment.url}
+          %a{href: note.attachment.url.detect_encoding!}
             = image_tag gravatar_icon(note.author_email), class: "avatar s24"
             = note.attachment_identifier
         %td

@@ -36,5 +36,5 @@
     - if note.attachment.url
       .right
         %div.file
-          = link_to note.attachment_identifier, note.attachment.url, target: "_blank"
+          = link_to note.attachment_identifier, note.attachment.url.detect_encoding!, target: "_blank"
   .clear
