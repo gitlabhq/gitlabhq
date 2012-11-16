@@ -25,18 +25,6 @@ module Gitlab
   #   >> gfm(":trollface:")
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
-    REFERENCE_PATTERN = %r{
-      (\W)?           # Prefix (1)
-      (               # Reference (2)
-        @([\w\._]+)   # User name (3)
-        |[#!$](\d+)   # Issue/MR/Snippet ID (4)
-        |([\h]{6,40}) # Commit ID (5)
-      )
-      (\W)?           # Suffix (6)
-    }x.freeze
-
-    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
-
     attr_reader :html_options
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -92,6 +80,16 @@ module Gitlab
       text
     end
 
+    REFERENCE_PATTERN = %r{
+      (\W)?           # Prefix (1)
+      (               # Reference (2)
+        @([\w\._]+)   # User name (3)
+        |[#!$](\d+)   # Issue/MR/Snippet ID (4)
+        |([\h]{6,40}) # Commit ID (5)
+      )
+      (\W)?           # Suffix (6)
+    }x.freeze
+
     def parse_references(text)
       # parse reference links
       text.gsub!(REFERENCE_PATTERN) do |match|
@@ -111,11 +109,13 @@ module Gitlab
       end
     end
 
+    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
+
     def parse_emoji(text)
       # parse emoji
       text.gsub!(EMOJI_PATTERN) do |match|
         if valid_emoji?($2)
-          image_tag("emoji/#{$2}.png", size: "20x20", class: 'emoji', title: $1, alt: $1)
+          image_tag("emoji/#{$2}.png", class: 'emoji', title: $1, alt: $1)
         else
           match
         end
