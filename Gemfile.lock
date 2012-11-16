@@ -94,9 +94,6 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
-    capybara-webkit (0.12.1)
-      capybara (>= 1.0.0, < 1.2)
-      json
     carrierwave (0.6.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -143,6 +140,8 @@ GEM
       railties (>= 3.0.0)
     faraday (0.8.4)
       multipart-post (~> 1.1)
+    faye-websocket (0.4.6)
+      eventmachine (>= 0.12.0)
     ffaker (1.14.0)
     ffi (1.0.11)
     font-awesome-sass-rails (2.0.0.0)
@@ -189,8 +188,8 @@ GEM
     hashery (1.5.0)
       blankslate
     hashie (1.2.0)
-    headless (0.3.1)
     hike (1.2.1)
+    http_parser.rb (0.5.3)
     httparty (0.8.3)
       multi_json (~> 1.0)
       multi_xml
@@ -260,6 +259,12 @@ GEM
       omniauth-oauth (~> 1.0)
     orm_adapter (0.3.0)
     pg (0.14.0)
+    poltergeist (1.0.2)
+      capybara (~> 1.1)
+      childprocess (~> 0.3)
+      faye-websocket (~> 0.4, >= 0.4.4)
+      http_parser.rb (~> 0.5.3)
+      multi_json (~> 1.0)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
     pry (0.9.9.6)
@@ -422,7 +427,6 @@ DEPENDENCIES
   awesome_print
   bootstrap-sass (= 2.0.4)
   capybara
-  capybara-webkit
   carrierwave
   chosen-rails
   coffee-rails (= 3.2.2)
@@ -449,7 +453,6 @@ DEPENDENCIES
   guard-rspec
   guard-spinach
   haml-rails
-  headless
   httparty
   jquery-atwho-rails (= 0.1.6)
   jquery-rails (= 2.0.2)
@@ -465,6 +468,7 @@ DEPENDENCIES
   omniauth-ldap!
   omniauth-twitter
   pg
+  poltergeist
   pry
   pygments.rb (= 0.3.1)
   quiet_assets (= 1.0.1)
