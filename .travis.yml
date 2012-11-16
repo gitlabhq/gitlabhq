@@ -5,7 +5,8 @@ before_install:
   - sudo apt-get install libicu-dev -y
   - wget -P /tmp http://phantomjs.googlecode.com/files/phantomjs-1.7.0-linux-i686.tar.bz2
   - tar -xf  /tmp/phantomjs-1.7.0-linux-i686.tar.bz2 -C /tmp/
-  - PATH=$PATH:/tmp/phantomjs-1.7.0-linux-i686/bin
+  - sudo rm -rf /usr/local/phantomjs
+  - sudo mv /tmp/phantomjs-1.7.0-linux-i686 /usr/local/phantomjs
   - gem install charlock_holmes -v="0.6.9"
 branches:
   only:
