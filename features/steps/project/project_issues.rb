@@ -96,8 +96,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see selected milestone with title "v3.0"' do
-    issues_milestone_selector = "#issue_milestone_id_chzn/a"
-    wait_until { page.has_content?("Details") }
+    issues_milestone_selector = "#milestone_id_chzn > a"
     page.find(issues_milestone_selector).should have_content("v3.0")
   end
 
