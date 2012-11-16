@@ -107,8 +107,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see first assignee from "Shop" as selected assignee' do
-    issues_assignee_selector = "#issue_assignee_id_chzn/a"
-    wait_until { page.has_content?("Details") }
+    issues_assignee_selector = "#assignee_id_chzn > a"
     project = Project.find_by_name "Shop"
     assignee_name = project.users.first.name
     page.find(issues_assignee_selector).should have_content(assignee_name)
