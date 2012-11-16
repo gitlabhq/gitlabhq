@@ -123,8 +123,6 @@ group :development, :test do
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
-  gem "capybara-webkit"
-  gem "headless"
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
@@ -139,6 +137,9 @@ group :development, :test do
   gem 'rb-fsevent', require: darwin_only('rb-fsevent')
   gem 'growl',      require: darwin_only('growl')
   gem 'rb-inotify', require: linux_only('rb-inotify')
+
+  # PhantomJS driver for Capybara
+  gem 'poltergeist'
 end
 
 group :test do
