@@ -11,8 +11,7 @@
       // find the commented line ...
       var trEl = $(".#{note.line_code}").parent();
       // ... and insert the note and the reply button after it
-      trEl.after("#{escape_javascript(render "notes/diff_notes_reply_button", note: note)}");
-      trEl.after("#{escape_javascript(render "notes/diff_note", note: note)}");
+      trEl.after("#{escape_javascript(render "notes/diff_notes_with_reply", notes: [note])}");
     } else {
       // instert new note before reply button
       trRpl.before("#{escape_javascript(render "notes/diff_note", note: note)}");
