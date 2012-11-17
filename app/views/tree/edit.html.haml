@@ -19,8 +19,11 @@
       = link_to "Cancel", project_tree_path(@project, @id), class: "btn cancel-btn", confirm: "Are you sure?"
 
 :javascript
+  var ace_mode = "#{@tree.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
-  editor.getSession().setMode("ace/mode/javascript");
+  if (ace_mode) {
+    editor.getSession().setMode('ace/mode/' + ace_mode);
+  }
 
   $(".save-btn").click(function(){
     $("#file_content").val(editor.getValue());
