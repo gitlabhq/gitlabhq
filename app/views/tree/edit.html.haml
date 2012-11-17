@@ -6,7 +6,7 @@
         %span.file_name
           = "#{@tree.path} (#{@ref})"
       .file_content.code
-        #editor= @tree.data
+        %pre#editor= @tree.data
 
     .editor-commit-comment
       = label_tag 'commit_message' do

@@ -1,8 +1,11 @@
 .file-editor {
   #editor{
+    border: none;
     height: 500px;
-    width: 100%;
+    margin: 0;
+    padding: 0;
     position: relative;
+    width: 100%;
   }
   .editor-commit-comment {
     padding-top:20px;
