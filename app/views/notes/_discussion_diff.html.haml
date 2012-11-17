@@ -20,5 +20,5 @@
           %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
 
           - if line_code == note.line_code
-            = render "notes/per_line_notes_with_reply", notes: discussion_notes
+            = render "notes/diff_notes_with_reply", notes: discussion_notes
             - break # cut off diff after notes
