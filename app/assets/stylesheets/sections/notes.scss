@@ -1,8 +1,7 @@
 /**
  * Notes
  */
-#notes-list,
-#new-notes-list {
+ul.notes {
   display: block;
   list-style: none;
   margin: 0px;
@@ -81,21 +80,36 @@
       padding-bottom: 5px;
     }
   }
+
+  // paint top or bottom borders depending on notes direction
+  &:not(.reversed) .note,
+  &:not(.reversed) .discussion {
+    border-bottom: 1px solid #eee;
+  }
+  &.reversed .note,
+  &.reversed .discussion {
+    border-top: 1px solid #eee;
+  }
 }
 
-#notes-list:not(.reversed) .note,
-#notes-list:not(.reversed) .discussion,
-#new-notes-list:not(.reversed) .note,
-#new-notes-list:not(.reversed) .discussion {
-  border-bottom: 1px solid #eee;
-}
-#notes-list.reversed .note,
-#notes-list.reversed .discussion,
-#new-notes-list.reversed .note,
-#new-notes-list.reversed .discussion {
-  border-top: 1px solid #eee;
+.comment-btn {
+  @extend .save-btn;
 }
 
+.diff_file tr.notes_holder {
+  font-family: $sansFontFamily;
+  font-size: 13px;
+  line-height: 18px;
+
+  td:last-child {
+    background-color: $white;
+    padding-top: 0;
+  }
+
+  .comment-btn {
+    margin-top: 8px;
+  }
+}
 
 /**
  * Discussion/Note Actions
@@ -223,36 +237,6 @@ p.notify_controls input{
 
 p.notify_controls span{
   font-weight: 700;
-}
-
-tr.line_notes_row {
-  border-bottom: 1px solid #DDD;
-  border-left: 7px solid #2A79A3;
-
-  &.reply {
-    background: #eee;
-    border-left: 7px solid #2A79A3;
-    border-top: 1px solid #ddd;
-    td {
-      padding: 7px 10px;
-    }
-    a.line_note_reply_link {
-      border: 1px solid #eaeaea;
-      @include border-radius(4px);
-      padding: 3px 10px;
-      margin-left: 5px;
-      color: white;
-      background: #2A79A3;
-      border-color: #2A79A3;
-    }
-  }
-  ul {
-    margin: 0;
-    li {
-      padding: 0;
-      border: none;
-    }
-  }
 }
 
 .line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }

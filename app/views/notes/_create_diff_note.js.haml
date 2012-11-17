@@ -6,7 +6,7 @@
 
     // find the reply button for this line
     // (might not be there if this is the first note)
-    var trRpl = $("a.line_note_reply_link[data-noteable-type='#{note.noteable_type}'][data-noteable-id='#{note.noteable_id}'][data-line-code='#{note.line_code}']").closest("tr");
+    var trRpl = $(".js-note-add-to-diff-line[data-noteable-type='#{note.noteable_type}'][data-noteable-id='#{note.noteable_id}'][data-line-code='#{note.line_code}']").closest("tr");
     if (trRpl.size() == 0) {
       // find the commented line ...
       var trEl = $(".#{note.line_code}").parent();

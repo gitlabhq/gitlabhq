@@ -1,15 +1,18 @@
-- notes.each do |note|
-  = render "notes/diff_note", note: note
+%tr.notes_holder
+  %td.notes_line{ colspan: 2 }
+    %span.btn.disabled
+      %i.icon-comment
+      = notes.count
+  %td.notes_content
+    %ul.notes
+      = render notes
 
--# reply button
-- note = notes.first # example note
-%tr.line_notes_row.reply
-  %td{colspan: 3}
-    = link_to "javascript:;",
-              class: "line_note_reply_link js-note-add-to-diff-line",
+    -# reply button
+    - note = notes.first # example note
+    %button{  class: "btn comment-btn js-note-add-to-diff-line",
               data: { line_code:     note.line_code,
                       noteable_type: note.noteable_type,
                       noteable_id:   note.noteable_id },
-              title: "Add a comment to this line" do
+              title: "Add a comment to this line" }
       %i.icon-comment
       Reply

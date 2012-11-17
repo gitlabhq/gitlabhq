@@ -176,12 +176,14 @@
       }
     }
   }
-  .old_line, .new_line {
-    margin: 0px;
-    padding: 0px;
-    border: none;
-    background: #EEE;
-    color: #666;
+  .new_line,
+  .old_line,
+  .notes_line {
+    margin:0px;
+    padding:0px;
+    border:none;
+    background:#EEE;
+    color:#666;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
     text-align: right;
@@ -191,6 +193,13 @@
     moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+
+    &.notes_line {
+      border: 1px solid #ccc;
+      border-left: none;
+      text-align: center;
+      padding: 10px 0;
+    }
     a {
       float: left;
       width: 35px;
@@ -217,6 +226,10 @@
       color: #ccc;
       background: #fafafa;
     }
+  }
+  .notes_content {
+    border: 1px solid #ccc;
+    border-width: 1px 0;
   }
 }
 

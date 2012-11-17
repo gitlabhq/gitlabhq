@@ -1,8 +1,8 @@
 - if can? current_user, :write_note, @project
   = render "notes/common_form"
 
-%ul.reversed#new-notes-list
-%ul.reversed#notes-list
+%ul#new-notes-list.reversed.notes
+%ul#notes-list.reversed.notes
 .notes-status
 
 :javascript
