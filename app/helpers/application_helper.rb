@@ -30,7 +30,9 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
-  def gravatar_icon(user_email = '', size = 40)
+  def gravatar_icon(user_email = '', size = nil)
+    size = 40 if size.nil? || size <= 0
+
     if Gitlab.config.disable_gravatar? || user_email.blank?
       'no_avatar.png'
     else
