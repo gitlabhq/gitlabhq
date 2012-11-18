@@ -1,26 +1,26 @@
 %ul.bordered-list
-  - diffs.each do |diff|
+  - diffs.each_with_index do |diff, i|
     %li
       - if diff.deleted_file
-        %span.removed_file
-          %a{href: "##{diff.old_path}"}
+        %span.deleted-file
+          %a{href: "#diff-#{i}"}
+            %i.icon-minus
             = diff.old_path
-            = image_tag "diff_file_delete.png"
       - elsif diff.renamed_file
-        %span.moved_file
-          %a{href: "##{diff.new_path}"}
+        %span.renamed-file
+          %a{href: "#diff-#{i}"}
+            %i.icon-minus
             = diff.old_path
             = "->"
             = diff.new_path
-            = image_tag "diff_file_notice.png"
       - elsif diff.new_file
-        %span.new_file
-          %a{href: "##{diff.new_path}"}
+        %span.new-file
+          %a{href: "#diff-#{i}"}
+            %i.icon-plus
             = diff.new_path
-            = image_tag "diff_file_add.png"
       - else
-        %span.edit_file
-          %a{href: "##{diff.new_path}"}
+        %span.edit-file
+          %a{href: "#diff-#{i}"}
+            %i.icon-adjust
             = diff.new_path
-            = image_tag "diff_file_info.png"
 

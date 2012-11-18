@@ -74,16 +74,33 @@
   margin-bottom:1em;
 
   .diff_file_header {
-    padding:7px 5px;
-    border-bottom:1px solid #CCC;
+    @extend .clearfix;
+    padding: 5px 5px 5px 10px;
+    color: #555;
+    border-bottom:1px solid #D8D8D8;
     background: #eee;
     background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
     background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
-    span {
-      font-size:14px;
+    > span {
+      font-family: $monospace;
+      font-size:12px;
+      line-height: 30px;
+    }
+    
+    a.view-commit{
+      font-weight: bold;
+    }
+    
+    .commit-short-id{
+      font-family: $monospace;
+      font-size: smaller;
+    }
+    
+    .file-mode{
+      font-family: $monospace;
     }
   }
   .diff_file_content {
@@ -92,7 +109,7 @@
     background:#fff;
     color:#333;
     font-size: 12px;
-    font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+    font-family: $monospace;
     .old{
       span.idiff{
         background-color:#FAA;
@@ -113,22 +130,31 @@
   .diff_file_content_image {
     background:#eee;
     text-align:center;
-    img {
+    .image {
+      display: inline-block;
       margin:50px;
       padding:1px;
       max-width:400px;
 
-      &.diff_image_removed {
-        border: 1px solid #C00;
+      &.diff_removed {
+        img{
+          border: 1px solid #C00;
+        }
       }
 
-      &.diff_image_added {
-        border: 1px solid #0C0;;
+      &.diff_added {
+        img{
+          border: 1px solid #0C0;
+        }
+      }
+      
+      .image-info{
+        margin: 5px 0 0 0;
       }
     }
 
     &.img_compared {
-      img {
+      .image {
         max-width:300px;
       }
     }
@@ -225,7 +251,7 @@
     float:left;
     @extend .lined;
     min-width:65px;
-    font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+    font-family: $monospace;
   }
 
   .commit-author-name {
@@ -237,17 +263,29 @@
 }
 
 .diff_file_header a,
-.file_stats a {
-  color:$style_color;
+.file-stats a {
+  color: $style_color;
 }
 
-.file_stats {
-  span {
-    img {
-      width:14px;
-      float:left;
-      margin-right:6px;
-      padding:2px 0;
+.file-stats {
+  .new-file{
+    i{
+      color: #1BCF00;
+    }
+  }
+  .renamed-file{
+    i{
+      color: #FE9300;
+    }
+  }
+  .deleted-file{
+    i{
+      color: #FF0000;
+    }
+  }
+  .edit-file{
+    i{
+      color: #555;
     }
   }
 }
@@ -259,5 +297,5 @@
   font-size:13px;
   background: #474D57;
   color:#fff;
-  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+  font-family: $monospace;
 }
