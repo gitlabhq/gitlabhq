@@ -11,6 +11,7 @@ $hover_border: #ADF;
 
 /** GitLab Fonts **/
 @font-face { font-family: Korolev; src: font-url('korolev-medium-compressed.otf'); }
+$monospace: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono', 'lucida console', monospace;
 
 /** MIXINS **/
 @mixin shade {
