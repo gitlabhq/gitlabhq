@@ -98,6 +98,9 @@ class Admin::UsersController < AdminController
 
   def destroy
     @admin_user = User.find(params[:id])
+    if @admin_user.my_own_projects.count > 0
+      redirect_to admin_users_path, alert: "User is a project owner and can't be removed." and return
+    end
     @admin_user.destroy
 
     respond_to do |format|
