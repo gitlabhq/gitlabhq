@@ -77,7 +77,7 @@
     @extend .clearfix;
     padding: 5px 5px 5px 10px;
     color: #555;
-    border-bottom:1px solid #D8D8D8;
+    border-bottom:1px solid #CCC;
     background: #eee;
     background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
     background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -86,19 +86,19 @@
 
     > span {
       font-family: $monospace;
-      font-size:12px;
+      font-size:14px;
       line-height: 30px;
     }
-    
+
     a.view-commit{
       font-weight: bold;
     }
-    
+
     .commit-short-id{
       font-family: $monospace;
       font-size: smaller;
     }
-    
+
     .file-mode{
       font-family: $monospace;
     }
@@ -147,7 +147,7 @@
           border: 1px solid #0C0;
         }
       }
-      
+
       .image-info{
         margin: 5px 0 0 0;
       }
