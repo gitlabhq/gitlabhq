@@ -11,13 +11,15 @@ describe Project, "Hooks" do
   describe "Post Receive Event" do
     it "should create push event" do
       oldrev, newrev, ref = '00000000000000000000000000000000', 'newrev', 'refs/heads/master'
-      project.observe_push(oldrev, newrev, ref, @user)
+      data = project.post_receive_data(oldrev, newrev, ref, @user)
+
+      project.observe_push(data)
       event = Event.last
 
       event.should_not be_nil
       event.project.should == project
       event.action.should == Event::Pushed
-      event.data == project.post_receive_data(oldrev, newrev, ref, @user)
+      event.data.should == data
     end
   end
 
@@ -25,7 +27,7 @@ describe Project, "Hooks" do
     context "with no web hooks" do
       it "raises no errors" do
         lambda {
-          project.execute_hooks('oldrev', 'newrev', 'ref', @user)
+          project.execute_hooks({})
         }.should_not raise_error
       end
     end
@@ -41,7 +43,7 @@ describe Project, "Hooks" do
         @project_hook.should_receive(:execute).once
         @project_hook_2.should_receive(:execute).once
 
-        project.execute_hooks('oldrev', 'newrev', 'refs/heads/master', @user)
+        project.trigger_post_receive('oldrev', 'newrev', 'refs/heads/master', @user)
       end
     end
 
@@ -53,12 +55,12 @@ describe Project, "Hooks" do
 
       it "when pushing a branch for the first time" do
         @project_hook.should_not_receive(:execute)
-        project.execute_hooks('00000000000000000000000000000000', 'newrev', 'refs/heads/master', @user)
+        project.trigger_post_receive('00000000000000000000000000000000', 'newrev', 'refs/heads/master', @user)
       end
 
       it "when pushing tags" do
         @project_hook.should_not_receive(:execute)
-        project.execute_hooks('oldrev', 'newrev', 'refs/tags/v1.0.0', @user)
+        project.trigger_post_receive('oldrev', 'newrev', 'refs/tags/v1.0.0', @user)
       end
     end
 
