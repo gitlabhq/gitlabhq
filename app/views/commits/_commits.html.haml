@@ -1,4 +1,4 @@
-- @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
+- @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   %div.ui-box
     %h5.small
       %i.icon-calendar
