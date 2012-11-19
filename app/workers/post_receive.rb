@@ -6,11 +6,15 @@ class PostReceive
     return false if project.nil?
 
     # Ignore push from non-gitlab users
-    if /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
-      return false unless user = User.find_by_email(identifier)
+    user = if identifier.eql? Gitlab.config.gitolite_admin_key 
+      email = project.commit(newrev).author.email
+      User.find_by_email(email)
+    elsif /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
+      User.find_by_email(identifier)
     else
-      return false unless user = Key.find_by_identifier(identifier).try(:user)
+      Key.find_by_identifier(identifier).try(:user)
     end
+    return false unless user
 
     project.trigger_post_receive(oldrev, newrev, ref, user)
   end
