@@ -82,14 +82,14 @@ namespace :gitlab do
       end
 
       settings = YAML.load_file("backup_information.yml")
-      ENV["VERSION"] = "#{settings["db_version"]}" if settings["db_version"].to_i > 0
+      ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
       # restoring mismatching backups can lead to unexpected problems
-      if settings["gitlab_version"] != %x{git rev-parse HEAD}.gsub(/\n/,"")
+      if settings[:gitlab_version] != %x{git rev-parse HEAD}.gsub(/\n/,"")
         puts "gitlab_version mismatch:".red
         puts "  Your current HEAD differs from the HEAD in the backup!".red
         puts "  Please switch to the following revision and try again:".red
-        puts "  revision: #{settings["gitlab_version"]}".red
+        puts "  revision: #{settings[:gitlab_version]}".red
         exit 1
       end
 
