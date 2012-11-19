@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121120051432) do
+ActiveRecord::Schema.define(:version => 20121120113838) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -131,9 +131,11 @@ ActiveRecord::Schema.define(:version => 20121120051432) do
     t.string   "type"
     t.string   "title"
     t.string   "token"
-    t.integer  "project_id", :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "project_id",                     :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.boolean  "active",      :default => false, :null => false
+    t.string   "project_url"
   end
 
   create_table "snippets", :force => true do |t|

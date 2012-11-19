@@ -12,7 +12,7 @@
 #
 
 class Service < ActiveRecord::Base
-  attr_accessible :title, :token, :type
+  attr_accessible :title, :token, :type, :active
 
   belongs_to :project
   has_one :service_hook

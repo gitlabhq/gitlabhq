@@ -133,6 +133,12 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+      member do
+        get :test
+      end
+    end
+
     resources :deploy_keys
     resources :protected_branches, only: [:index, :create, :destroy]
 

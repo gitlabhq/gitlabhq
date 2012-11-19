@@ -1,0 +1,42 @@
+%h3.page_title
+  Services &rarr; GitLab CI Integration
+
+  .right
+    .thumbnail
+      - if @service.active
+        = image_tag 'service-gitlab-ci.png', class: 'small'
+      - else
+        = image_tag 'service-disabled-gitlab-ci.png', class: 'small'
+
+%hr
+
+
+= form_for(@service, :as => :service, :url => project_service_path(@project, @service), :method => :put) do |f|
+  - if @service.errors.any?
+    .alert-message.block-message.error
+      %ul
+        - @service.errors.full_messages.each do |msg|
+          %li= msg
+
+
+  .control-group
+    = f.label :active, "Active", class: "control-label"
+    .controls
+      = f.check_box :active
+
+  .control-group
+    = f.label :active, "Project URL", class: "control-label"
+    .controls
+      = f.text_field :project_url, class: "input-xlarge", placeholder: "http://ci.gitlabhq.com/projects/3"
+
+  .control-group
+    = f.label :token, class: "control-label" do
+      CI Project token
+    .controls
+      = f.text_field :token, class: "input-xlarge", placeholder: "GitLab CI project specific token"
+
+
+  .form-actions
+    = f.submit 'Save', class: 'btn save-btn'
+    &nbsp;
+    = link_to 'Test settings', test_project_service_path(@project), class: 'btn btn-small'
