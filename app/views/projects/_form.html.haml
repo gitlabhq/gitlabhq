@@ -10,9 +10,8 @@
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
 
-  %hr
-  .adv_settings
-    %h6 Advanced settings:
+  %fieldset
+    %legend  Advanced settings:
     .clearfix
       = f.label :path do
         Path
@@ -34,9 +33,8 @@
         .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless @project.new_record?
-    %hr
-    .adv_settings
-      %h6 Features:
+    %fieldset
+      %legend Features:
 
       .clearfix
         = f.label :issues_enabled, "Issues"

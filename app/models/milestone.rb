@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: milestones
+#
+#  id          :integer          not null, primary key
+#  title       :string(255)      not null
+#  project_id  :integer          not null
+#  description :text
+#  due_date    :date
+#  closed      :boolean          default(FALSE), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class Milestone < ActiveRecord::Base
   attr_accessible :title, :description, :due_date, :closed
 
@@ -39,18 +53,3 @@ class Milestone < ActiveRecord::Base
     "expires at #{due_date.stamp("Aug 21, 2011")}" if due_date
   end
 end
-
-# == Schema Information
-#
-# Table name: milestones
-#
-#  id          :integer         not null, primary key
-#  title       :string(255)     not null
-#  project_id  :integer         not null
-#  description :text
-#  due_date    :date
-#  closed      :boolean         default(FALSE), not null
-#  created_at  :datetime        not null
-#  updated_at  :datetime        not null
-#
-

@@ -2,20 +2,20 @@
 #
 # Table name: projects
 #
-#  id                     :integer         not null, primary key
+#  id                     :integer          not null, primary key
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime        not null
-#  updated_at             :datetime        not null
-#  private_flag           :boolean         default(TRUE), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  private_flag           :boolean          default(TRUE), not null
 #  code                   :string(255)
 #  owner_id               :integer
 #  default_branch         :string(255)
-#  issues_enabled         :boolean         default(TRUE), not null
-#  wall_enabled           :boolean         default(TRUE), not null
-#  merge_requests_enabled :boolean         default(TRUE), not null
-#  wiki_enabled           :boolean         default(TRUE), not null
+#  issues_enabled         :boolean          default(TRUE), not null
+#  wall_enabled           :boolean          default(TRUE), not null
+#  merge_requests_enabled :boolean          default(TRUE), not null
+#  wiki_enabled           :boolean          default(TRUE), not null
 #  group_id               :integer
 #
 
@@ -37,6 +37,7 @@ describe Project do
     it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:wikis).dependent(:destroy) }
     it { should have_many(:protected_branches).dependent(:destroy) }
+    it { should have_many(:services).dependent(:destroy) }
   end
 
   describe "Mass assignment" do

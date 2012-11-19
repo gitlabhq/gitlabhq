@@ -132,4 +132,16 @@ FactoryGirl.define do
     name
     project
   end
+
+  factory :service do
+    type ""
+    title "GitLab CI"
+    token "x56olispAND34ng"
+    project
+  end
+
+  factory :service_hook do
+    url
+    service
+  end
 end
