@@ -57,7 +57,7 @@ module PushObserver
     services.each do |service|
 
       # Call service hook only if it is active
-      service.execute if service.active
+      service.execute(data) if service.active
     end
   end
 
