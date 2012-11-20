@@ -97,7 +97,8 @@ GEM
     backports (2.6.5)
     bcrypt-ruby (3.0.1)
     blankslate (3.1.2)
-    bootstrap-sass (2.0.4.0)
+    bootstrap-sass (2.2.1.1)
+      sass (~> 3.2)
     builder (3.0.4)
     capybara (1.1.3)
       mime-types (>= 1.16)
@@ -446,7 +447,7 @@ DEPENDENCIES
   acts-as-taggable-on (= 2.3.3)
   annotate!
   awesome_print
-  bootstrap-sass (= 2.0.4)
+  bootstrap-sass (= 2.2.1.1)
   capybara
   carrierwave (~> 0.7.1)
   chosen-rails (= 0.9.8)

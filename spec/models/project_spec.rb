@@ -37,7 +37,6 @@ describe Project do
     it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:wikis).dependent(:destroy) }
     it { should have_many(:protected_branches).dependent(:destroy) }
-    it { should have_many(:services).dependent(:destroy) }
   end
 
   describe "Mass assignment" do

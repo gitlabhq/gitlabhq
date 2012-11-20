@@ -22,7 +22,7 @@
       .diff_file_header
         - if diff.deleted_file
           %span= diff.old_path
-          
+
           - if @commit.prev_commit
             = link_to project_tree_path(@project, tree_join(@commit.prev_commit_id, diff.new_path)), {:class => 'btn right view-commit'} do
               View file @
@@ -31,11 +31,11 @@
           %span= diff.new_path
           - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
             %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
-          
-          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn right view-commit'} do
+
+          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn very_small right view-commit'} do
             View file @
             %span.commit-short-id= @commit.short_id(6)
-            
+
         %br/
       .diff_file_content
         -# Skipp all non non-supported blobs
@@ -51,10 +51,10 @@
                 %div.image-info= "#{number_to_human_size file.size}"
           - else
             .diff_file_content_image.img_compared
-              .image.diff_removed 
+              .image.diff_removed
                 %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
                 %div.image-info= "#{number_to_human_size file.size}"
-              .image.diff_added 
+              .image.diff_added
                 %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
                 %div.image-info= "#{number_to_human_size file.size}"
         - else

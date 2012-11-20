@@ -85,9 +85,14 @@
 }
 
 .project_clone_holder {
+  .btn {
+    height: 27px;
+  }
   input[type="text"] {
+    height: 17px;
     border: 1px solid #BBB;
     box-shadow: none;
+    padding: 4px 10px;
   }
 }
 
