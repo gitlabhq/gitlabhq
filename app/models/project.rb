@@ -200,7 +200,7 @@ class Project < ActiveRecord::Base
   end
 
   def commit_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit", line_code: nil)
+    notes.where(noteable_id: commit.id, noteable_type: "Commit").where('line_code IS NULL OR line_code = ""')
   end
 
   def commit_line_notes(commit)
