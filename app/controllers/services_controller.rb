@@ -19,7 +19,7 @@ class ServicesController < ProjectResourceController
     @service = @project.gitlab_ci_service
 
     if @service.update_attributes(params[:service])
-      redirect_to :back
+      redirect_to edit_project_service_path(@project, :gitlab_ci)
     else
       render 'edit'
     end

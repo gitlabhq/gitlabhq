@@ -14,12 +14,16 @@
 class GitlabCiService < Service
   attr_accessible :project_url
 
-  validates :project_url, presence: true
-  validates :token, presence: true
+  validates :project_url, presence: true, if: :activated?
+  validates :token, presence: true, if: :activated?
 
   delegate :execute, to: :service_hook, prefix: nil
 
-  after_save :compose_service_hook
+  after_save :compose_service_hook, if: :activated?
+
+  def activated?
+    active
+  end
 
   def compose_service_hook
     hook = service_hook || build_service_hook
