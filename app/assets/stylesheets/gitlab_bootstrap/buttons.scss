@@ -2,7 +2,7 @@
   @include bg-gradient(#f7f7f7, #d5d5d5);
   border-color:#aaa;
   font-size: 13px;
-  line-height: 17px;
+  line-height: 18px;
   &:hover {
     @include bg-gray-gradient;
     border-color:#bbb;
@@ -86,7 +86,7 @@
 
   &.small {
     @extend .btn-small;
-    line-height: 16px;
+    line-height: 18px;
   }
 
   &.active {
