@@ -47,7 +47,6 @@ class Project < ActiveRecord::Base
   has_many :wikis,          dependent: :destroy
   has_many :protected_branches, dependent: :destroy
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
-  has_many :services, dependent: :destroy
   has_one :gitlab_ci_service, dependent: :destroy
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
@@ -184,5 +183,9 @@ class Project < ActiveRecord::Base
 
   def issues_labels
     issues.tag_counts_on(:labels)
+  end
+
+  def services
+    [gitlab_ci_service].compact
   end
 end
