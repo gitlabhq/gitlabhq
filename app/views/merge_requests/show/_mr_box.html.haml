@@ -6,6 +6,9 @@
       - else
         .alert-message.success.status_info Open
       = gfm escape_once(@merge_request.title)
+      - if @project.gitlab_ci?
+        .right
+          = image_tag ci_status_path, class: 'status-badge'
 
   .middle_box_content
     %div

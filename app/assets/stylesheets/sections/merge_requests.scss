@@ -138,3 +138,8 @@ li.merge_request {
   }
 }
 
+.status-badge {
+  height: 32px;
+  width: 100%;
+  @include border-radius(5px);
+}

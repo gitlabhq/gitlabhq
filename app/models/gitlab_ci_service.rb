@@ -32,4 +32,8 @@ class GitlabCiService < Service
     hook.url = [project_url, "/build", "?token=#{token}"].join("")
     hook.save
   end
+
+  def commit_badge_path sha
+    project_url + "/status?sha=#{sha}"
+  end
 end

@@ -188,4 +188,8 @@ class Project < ActiveRecord::Base
   def services
     [gitlab_ci_service].compact
   end
+
+  def gitlab_ci?
+    gitlab_ci_service && gitlab_ci_service.active
+  end
 end
