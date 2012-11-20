@@ -9,11 +9,11 @@ module Notes
 
       @notes = case target_type
                when "commit"
-                 project.commit_notes(project.commit(target_id)).fresh.limit(20)
+                 project.commit_notes(project.commit(target_id)).fresh
                when "issue"
-                 project.issues.find(target_id).notes.inc_author.fresh.limit(20)
+                 project.issues.find(target_id).notes.inc_author.fresh
                when "merge_request"
-                 project.merge_requests.find(target_id).mr_and_commit_notes.inc_author.fresh.limit(20)
+                 project.merge_requests.find(target_id).mr_and_commit_notes.inc_author.fresh
                when "snippet"
                  project.snippets.find(target_id).notes.fresh
                when "wall"
