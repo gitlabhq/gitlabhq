@@ -12,11 +12,8 @@ class NotesController < ProjectResourceController
     @notes = Notes::LoadContext.new(project, current_user, params).execute
 
     if params[:target_type] == "merge_request"
-      @has_diff      = true
       @mixed_targets = true
       @discussions   = discussions_from_notes
-    elsif params[:target_type] == "commit"
-      @has_diff = true
     end
 
     respond_with(@notes)

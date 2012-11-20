@@ -17,34 +17,6 @@ var NoteList = {
       this.reversed = $("#notes-list").is(".reversed");
       this.target_params = "target_type=" + this.target_type + "&target_id=" + this.target_id;
 
-      // get initial set of notes
-      this.getContent();
-
-      $("#notes-list, #new-notes-list").on("ajax:success", ".js-note-delete", function() {
-        $(this).closest('li').fadeOut(function() {
-          $(this).remove();
-          NoteList.updateVotes();
-        });
-      });
-
-      $(".note-form-holder").on("ajax:before", function(){
-        $(".submit_note").disable();
-      })
-
-      $(".note-form-holder").on("ajax:complete", function(){
-        $(".submit_note").enable();
-        $('#preview-note').hide();
-        $('#note_note').show();
-      })
-
-      disableButtonIfEmptyField(".note-text", ".submit_note");
-
-      $("#note_attachment").change(function(e){
-        var val = $('.input-file').val();
-        var filename = val.replace(/^.*[\\\/]/, '');
-        $(".file_name").text(filename);
-      });
-
       if(this.reversed) {
         var textarea = $(".note-text");
         $('.note_advanced_opts').hide();
@@ -54,6 +26,17 @@ var NoteList = {
           $('.note_advanced_opts').show();
         });
       }
+
+      // get initial set of notes
+      this.getContent();
+
+      disableButtonIfEmptyField(".js-note-text", ".js-comment-button");
+
+      $("#note_attachment").change(function(e){
+        var val = $('.input-file').val();
+        var filename = val.replace(/^.*[\\\/]/, '');
+        $(".file_name").text(filename);
+      });
 
       // Setup note preview
       $(document).on('click', '#preview-link', function(e) {
@@ -72,9 +55,168 @@ var NoteList = {
         }
 
         $('#preview-note, #note_note').toggle();
-        e.preventDefault();
+      });+
+
+      $(document).on("click",
+                     ".js-add-diff-note-button",
+                     NoteList.addDiffNote);
+
+      // reply to diff notes
+      $(document).on("click",
+                     ".js-diff-note-reply-button",
+                     NoteList.replyToDiffNote);
+
+      // hide diff note form
+      $(document).on("click",
+                     ".js-hide-diff-note-form",
+                     NoteList.removeDiffNoteForm);
+
+      // do some diff note specific housekeeping when removing a diff note
+      $(document).on("click",
+                     ".diff_file .js-note-delete",
+                     NoteList.removeDiffNote);
+
+      // remove a note (in general)
+      $(document).on("click",
+                     ".js-note-delete",
+                     NoteList.removeNote);
+
+      // clean up previews for forms
+      $(document).on("ajax:complete", ".note-form-holder", function(){
+        $(this).find('#preview-note').hide();
+        $(this).find('#note_note').show();
       });
     },
+
+
+  /**
+   * Event handlers
+   */
+
+
+  /**
+   * Called when clicking on the "add a comment" button on the side of a diff line.
+   *
+   * Inserts a temporary row for the form below the line.
+   * Sets up the form and shows it.
+   */
+  addDiffNote: function(e) {
+    // find the form
+    var form = $(".js-note-forms .js-diff-note-form");
+    var row = $(this).closest("tr");
+    var nextRow = row.next();
+
+    // does it already have notes?
+    if (nextRow.is(".notes_holder")) {
+      $.proxy(NoteList.replyToDiffNote,
+              nextRow.find(".js-diff-note-reply-button")
+             ).call();
+    } else {
+      // add a notes row and insert the form
+      row.after('<tr class="notes_holder js-temp-notes-holder"><td class="notes_line" colspan="2"></td><td class="notes_content"></td></tr>');
+      form.clone().appendTo(row.next().find(".notes_content"));
+
+      // show the form
+      NoteList.setupDiffNoteForm($(this), row.next().find("form"));
+    }
+
+    e.preventDefault();
+  },
+
+  /**
+   * Called in response to deleting a note on a diff line.
+   *
+   * Removes the actual note from view.
+   * Removes the whole notes row if the last note for that line is being removed.
+   *
+   * Note: must be called before removeNote()
+   */
+  removeDiffNote: function() {
+    var notes = $(this).closest(".notes");
+
+    // check if this is the last note for this line
+    if (notes.find(".note").length === 1) {
+      notes.closest("tr").remove();
+    }
+  },
+
+  /**
+   * Called in response to "cancel" on a diff note form.
+   * 
+   * Shows the reply button again.
+   * Removes the form and if necessary it's temporary row.
+   */
+  removeDiffNoteForm: function(e) {
+    var form = $(this).closest("form");
+    var row = form.closest("tr");
+
+    // show the reply button (will only work for replys)
+    form.prev(".js-diff-note-reply-button").show();
+
+    if (row.is(".js-temp-notes-holder")) {
+      // remove temporary row
+      row.remove();
+    } else {
+      // only remove the form
+      form.remove();
+    }
+
+    e.preventDefault();
+  },
+
+  /**
+   * Called in response to deleting a note of any kind.
+   *
+   * Removes the actual note from view.
+   */
+  removeNote: function() {
+    $(this).closest(".note").remove();
+    NoteList.updateVotes();
+  },
+
+  /**
+   * Called when clicking on the "reply" button for a diff line.
+   *
+   * Shows the note form below the notes.
+   */
+  replyToDiffNote: function() {
+    // find the form
+    var form = $(".js-note-forms .js-diff-note-form");
+
+
+    // hide reply button
+    $(this).hide();
+    // insert the form after the button
+    form.clone().insertAfter($(this));
+
+    // show the form
+    NoteList.setupDiffNoteForm($(this), $(this).next("form"));
+  },
+
+  /**
+   * Shows the diff line form and does some setup.
+   *
+   * Sets some hidden fields in the form.
+   *
+   * Note: "this" must have the "discussionId", "lineCode", "noteableType" and
+   *       "noteableId" data attributes set.
+   */
+  setupDiffNoteForm: function(data_holder, form) {
+    // setup note target
+    form.attr("rel", data_holder.data("discussionId"));
+    form.find("#note_line_code").val(data_holder.data("lineCode"));
+    form.find("#note_noteable_type").val(data_holder.data("noteableType"));
+    form.find("#note_noteable_id").val(data_holder.data("noteableId"));
+
+    // setup interaction
+    disableButtonIfEmptyField(form.find(".js-note-text"), form.find(".js-comment-button"));
+    setupGfmAutoComplete();
+
+    // cleanup after successfully creating a diff note
+    form.on("ajax:success", NoteList.removeDiffNoteForm);
+
+    form.show();
+  },
 
 
   /**
@@ -272,52 +414,3 @@ var NoteList = {
       }
     }
 };
-
-var PerLineNotes = {
-  init:
-    function() {
-      $(".per_line_form .hide-button").on("click", function(){
-        $(this).closest(".per_line_form").hide();
-        return false;
-      });
-
-      /**
-       * Called when clicking on the "add note" or "reply" button for a diff line.
-       *
-       * Shows the note form below the line.
-       * Sets some hidden fields in the form.
-       */
-      $(".diff_file_content").on("click", ".js-note-add-to-diff-line", function(e) {
-        var form = $(".per_line_form");
-        $(this).closest("tr").after(form);
-        form.find("#note_line_code").val($(this).data("lineCode"));
-        form.find("#note_noteable_type").val($(this).data("noteableType"));
-        form.find("#note_noteable_id").val($(this).data("noteableId"));
-        form.show();
-        e.preventDefault();
-      });
-
-      disableButtonIfEmptyField(".line-note-text", ".submit_inline_note");
-
-      /**
-       * Called in response to successfully deleting a note on a diff line.
-       *
-       * Removes the actual note from view.
-       * Removes the reply button if the last note for that line has been removed.
-       */
-      $(".diff_file_content").on("ajax:success", ".js-note-delete", function() {
-        var trNote = $(this).closest("tr");
-        trNote.fadeOut(function() {
-          $(this).remove();
-        });
-
-        // check if this is the last note for this line
-        // elements must really be removed for this to work reliably
-        var trLine = trNote.prev();
-        var trRpl  = trNote.next();
-        if (trLine.is(".line_holder") && trRpl.is(".reply")) {
-          trRpl.fadeOut(function() { $(this).remove(); });
-        }
-      });
-    }
-}

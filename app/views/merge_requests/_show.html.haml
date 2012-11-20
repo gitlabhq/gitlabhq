@@ -21,8 +21,6 @@
   = render "merge_requests/show/diffs" if @diffs
 .status
 
-= render "notes/diff_note_form"
-
 :javascript
   $(function(){
     MergeRequest.init({

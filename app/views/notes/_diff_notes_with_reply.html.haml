@@ -1,4 +1,5 @@
-%tr.notes_holder
+- note = notes.first # example note
+%tr.notes_holder{ data: { :'discussion-id' => note.discussion_id } }
   %td.notes_line{ colspan: 2 }
     %span.btn.disabled
       %i.icon-comment
@@ -8,11 +9,12 @@
       = render notes
 
     -# reply button
-    - note = notes.first # example note
-    %button{  class: "btn comment-btn js-note-add-to-diff-line",
-              data: { line_code:     note.line_code,
-                      noteable_type: note.noteable_type,
-                      noteable_id:   note.noteable_id },
-              title: "Add a comment to this line" }
+    = link_to "javascript:;",
+              class: "btn comment-btn js-diff-note-reply-button",
+              data: { noteable_type: note.noteable_type,
+                      noteable_id:   note.noteable_id,
+                      line_code:     note.line_code,
+                      discussion_id: note.discussion_id },
+              title: "Add a comment to this line" do
       %i.icon-comment
       Reply

@@ -8,7 +8,7 @@
 
     = f.hidden_field :noteable_id
     = f.hidden_field :noteable_type
-    = f.text_area :note, size: 255, class: 'note-text js-gfm-input'
+    = f.text_area :note, size: 255, class: 'js-note-text js-gfm-input'
     #preview-note.preview_note.hide
     .hint
       .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
@@ -16,7 +16,7 @@
 
     .row.note_advanced_opts
       .span3
-        = f.submit 'Add Comment', class: "btn comment-btn submit_note grouped", id: "submit_note"
+        = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
         = link_to 'Preview', preview_project_notes_path(@project), class: 'btn grouped', id: 'preview-link'
       .span4.notify_opts
         %h6.left Notify via email:

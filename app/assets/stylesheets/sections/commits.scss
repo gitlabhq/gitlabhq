@@ -194,12 +194,6 @@
     -khtml-user-select: none;
     user-select: none;
 
-    &.notes_line {
-      border: 1px solid #ccc;
-      border-left: none;
-      text-align: center;
-      padding: 10px 0;
-    }
     a {
       float: left;
       width: 35px;
@@ -226,10 +220,6 @@
       color: #ccc;
       background: #fafafa;
     }
-  }
-  .notes_content {
-    border: 1px solid #ccc;
-    border-width: 1px 0;
   }
 }
 
