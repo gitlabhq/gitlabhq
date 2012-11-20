@@ -67,7 +67,7 @@ module Account
     events = events.recent.limit(1).first
   end
 
-  def projects_with_events
-    projects.includes(:events).order("events.created_at DESC")
+  def projects_sorted_by_activity
+    projects.order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC")
   end
 end
