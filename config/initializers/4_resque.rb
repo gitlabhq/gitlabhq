@@ -5,7 +5,7 @@ if File.exists?(config_file)
   resque_config = YAML.load_file(config_file)
   Resque.redis = resque_config[Rails.env]
 end
-
+Resque.redis.namespace = 'resque:gitlab'
 # Queues
 Resque.watch_queue(PostReceive.instance_variable_get("@queue"))
 
