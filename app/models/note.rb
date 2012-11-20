@@ -32,6 +32,7 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
 
   validates :note, :project, presence: true
+  validates :line_code, format: { with: /\A\d+_\d+_\d+\Z/ }, allow_blank: true
   validates :attachment, file_size: { maximum: 10.megabytes.to_i }
 
   mount_uploader :attachment, AttachmentUploader
