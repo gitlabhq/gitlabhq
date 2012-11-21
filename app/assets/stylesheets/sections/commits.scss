@@ -133,8 +133,11 @@
     .image {
       display: inline-block;
       margin:50px;
-      padding:1px;
       max-width:400px;
+
+      img{
+        background: url('trans_bg.gif');
+      }
 
       &.diff_removed {
         img{
