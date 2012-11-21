@@ -12,6 +12,8 @@ header {
       .nav > li > a {
         color: $style_color;
         text-shadow: 0 1px 0 #fff;
+        font-size: 18px;
+        padding: 11px;
       }
 
       /** NAV block with links and profile **/
@@ -51,15 +53,6 @@ header {
         height:40px;
         font-family: 'Korolev', sans-serif;
       }
-
-    }
-    .separator {
-      float: left;
-      height: 60px;
-      width: 1px;
-      background: white;
-      border-left: 1px solid #DDD;
-      margin-top: -10px;
     }
   }
 
@@ -218,5 +211,52 @@ header {
       border-bottom-right-radius: 5px;
       border-bottom-left-radius: 5px;
   border-bottom: 0; } }
+
+
+
+  /*
+   * Dark header
+   *
+   */
+  &.header-dark {
+    &.navbar-gitlab {
+      .navbar-inner {
+        background: #708090;
+        border-bottom: 1px solid #AAA;
+
+        .nav > li > a {
+          color: #fff;
+          text-shadow: 0 1px 0 #111;
+        }
+      }
+    }
+
+    .search {
+      .search-input {
+        background-color: #D2D5DA;
+        background-color: rgba(255, 255, 255, 0.5);
+
+        &:focus {
+          background-color: white;
+        }
+      }
+    }
+    .search-input::-webkit-input-placeholder {
+      color: #666;
+    }
+    .app_logo {
+      a {
+        h1 {
+          background: url('logo_white.png') no-repeat 0px 2px;
+          color:#fff;
+          text-shadow: 0 1px 1px #111;
+        }
+      }
+    }
+    .project_name {
+      color:#fff;
+      text-shadow: 0 1px 1px #111;
+    }
+  }
 }
 

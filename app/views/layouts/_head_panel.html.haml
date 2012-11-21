@@ -9,14 +9,16 @@
       %ul.nav
         - if current_user.is_admin?
           %li
-            = link_to admin_root_path, title: "Admin area" do
-              %i.icon-cog
-              Admin
+            = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
+              %i.icon-cogs
         - if current_user.can_create_project?
           %li
-            = link_to new_project_path, title: "Create New Project" do
+            = link_to new_project_path, title: "Create New Project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
               %i.icon-plus
-              Project
+        %li
+          = link_to profile_path, title: "Your Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
+            %i.icon-user
+        %span.separator
         %li
           = render "layouts/search"
         %li

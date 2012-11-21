@@ -8,61 +8,16 @@
  *
  */
 .ui_gray {
-
   /*
    *  Application Header
    *
    */
   header {
-
+    @extend .header-dark;
     &.navbar-gitlab {
       .navbar-inner {
         background: #708090;
-        border-bottom: 1px solid #AAA;
-
-        .nav > li > a {
-          color: #fff;
-          text-shadow: 0 1px 0 #111;
-        }
       }
-    }
-
-    .search {
-      float: right;
-      margin-right: 45px;
-      .search-input {
-        border: 1px solid #aaa;
-        background-color: #D2D5DA;
-        background-color: rgba(255, 255, 255, 0.5);
-
-        &:focus {
-          background-color: white;
-        }
-      }
-    }
-    .search-input::-webkit-input-placeholder {
-      color: #666;
-    }
-    .app_logo {
-      a {
-        h1 {
-          background: url('logo_white.png') no-repeat 0px 2px;
-          color:#fff;
-          text-shadow: 0 1px 1px #111;
-        }
-      }
-      .separator {
-        display:none;
-      }
-
-    }
-    .project_name {
-      color:#fff;
-      text-shadow: 0 1px 1px #111;
     }
   }
-  /*
-   *  End of Application Header
-   *
-   */
 }

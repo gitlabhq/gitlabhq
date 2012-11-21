@@ -30,6 +30,10 @@ $ ->
   # Initialize tooltips
   $('.has_tooltip').tooltip()
 
+  # Bottom tooltip
+  $('.has_bottom_tooltip').tooltip(placement: 'bottom')
+
+
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
     buttons = $('[type="submit"]', @)
