@@ -191,14 +191,14 @@ p.notify_controls span{
  */
 .diff_file tr.line_holder {
   .add-diff-note {
-    position:absolute;
-    margin-left:-70px;
-    margin-top:-10px;
-    z-index:10;
-    background: url("comment_add.png") no-repeat left 0;
-    width:32px;
-    height:32px;
+    background: url("diff_note_add.png") no-repeat left 0;
+    height: 22px;
+    margin-left: -65px;
+    position: absolute;
+    width: 22px;
+    z-index: 10;
 
+    // "hide" it by default
     opacity: 0.0;
     filter: alpha(opacity=0);
 
@@ -208,6 +208,7 @@ p.notify_controls span{
     }
   }
 
+  // "show" the icon also if we just hover somwhere over the line
   &:hover > td {
     background: $hover !important;
 
