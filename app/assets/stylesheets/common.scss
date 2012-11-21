@@ -628,10 +628,11 @@ li.note {
 
 .error_message {
   @extend .cred;
-  border-bottom: 1px solid #D21;
-  padding-bottom:20px;
-  text-align:center;
-  margin-bottom:10px;
+  border-left: 4px solid #E99;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #FEE;
+  padding-left: 20px;
 }
 
 .oauth_select_holder {
