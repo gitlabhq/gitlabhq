@@ -13,15 +13,15 @@
     %legend  Advanced settings:
     .control-group
       = f.label :path do
-        Path
+        Repository
       .controls
-        = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
+        = text_field_tag :ppath, @project.path_to_repo, class: "xxlarge", readonly: true
 
     .control-group
       = f.label :namespace_id do
         %span Namespace
       .controls
-        = f.select :namespace_id, namespaces_options(@project.namespace_id), {}, {class: 'chosen'}
+        = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
         &nbsp;
         %span.cred Be careful. Changing project namespace can have unintended side effects
 

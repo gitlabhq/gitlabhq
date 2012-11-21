@@ -83,7 +83,11 @@ module Gitlab
 
     def destroy_project(project)
       FileUtils.rm_rf(project.path_to_repo)
-      conf.rm_repo(project.path)
+      conf.rm_repo(project.path_with_namespace)
+    end
+
+    def clean_repo repo_name
+      conf.rm_repo(repo_name)
     end
 
     def destroy_project!(project)

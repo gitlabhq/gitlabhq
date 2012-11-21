@@ -254,6 +254,10 @@ class Project < ActiveRecord::Base
       old_dir = old_namespace.try(:path) || ''
       new_dir = new_namespace.try(:path) || ''
 
+      old_repo = File.join(old_dir, self.path)
+
+      git_host.move_repository(old_repo, self.path_with_namespace, self)
+
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
       save!

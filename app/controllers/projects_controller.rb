@@ -36,7 +36,7 @@ class ProjectsController < ProjectResourceController
   def update
     namespace_id = params[:project].delete(:namespace_id)
 
-    if namespace_id
+    if namespace_id.present? and namespace_id.to_i != project.namespace_id
       namespace = Namespace.find(namespace_id)
       project.transfer(namespace)
     end

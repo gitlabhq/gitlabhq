@@ -27,6 +27,7 @@ class Namespace < ActiveRecord::Base
 
   after_create :ensure_dir_exist
   after_update :move_dir
+  after_destroy :rm_dir
 
   scope :root, where('type IS NULL')
 
@@ -51,5 +52,10 @@ class Namespace < ActiveRecord::Base
     old_path = File.join(Gitlab.config.git_base_path, path_was)
     new_path = File.join(Gitlab.config.git_base_path, path)
     system("mv #{old_path} #{new_path}")
+  end
+
+  def rm_dir
+    dir_path = File.join(Gitlab.config.git_base_path, path)
+    system("rm -rf #{dir_path}")
   end
 end
