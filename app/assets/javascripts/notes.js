@@ -9,85 +9,84 @@ var NoteList = {
   loading_more_disabled: false,
   reversed: false,
 
-  init:
-    function(tid, tt, path) {
-      this.notes_path = path + ".js";
-      this.target_id = tid;
-      this.target_type = tt;
-      this.reversed = $("#notes-list").is(".reversed");
-      this.target_params = "target_type=" + this.target_type + "&target_id=" + this.target_id;
+  init: function(tid, tt, path) {
+    this.notes_path = path + ".js";
+    this.target_id = tid;
+    this.target_type = tt;
+    this.reversed = $("#notes-list").is(".reversed");
+    this.target_params = "target_type=" + this.target_type + "&target_id=" + this.target_id;
 
-      if(this.reversed) {
-        var textarea = $(".note-text");
-        $('.note_advanced_opts').hide();
-        textarea.css("height", "40px");
-        textarea.on("focus", function(){
-          $(this).css("height", "80px");
-          $('.note_advanced_opts').show();
+    if(this.reversed) {
+      var textarea = $(".note-text");
+      $('.note_advanced_opts').hide();
+      textarea.css("height", "40px");
+      textarea.on("focus", function(){
+        $(this).css("height", "80px");
+        $('.note_advanced_opts').show();
+      });
+    }
+
+    // get initial set of notes
+    this.getContent();
+
+    disableButtonIfEmptyField(".js-note-text", ".js-comment-button");
+
+    $("#note_attachment").change(function(e){
+      var val = $('.input-file').val();
+      var filename = val.replace(/^.*[\\\/]/, '');
+      $(".file_name").text(filename);
+    });
+
+    // Setup note preview
+    $(document).on('click', '#preview-link', function(e) {
+      $('#preview-note').text('Loading...');
+
+      $(this).text($(this).text() === "Edit" ? "Preview" : "Edit");
+
+      var note_text = $('#note_note').val();
+
+      if(note_text.trim().length === 0) {
+        $('#preview-note').text('Nothing to preview.');
+      } else {
+        $.post($(this).attr('href'), {note: note_text}).success(function(data) {
+          $('#preview-note').html(data);
         });
       }
 
-      // get initial set of notes
-      this.getContent();
+      $('#preview-note, #note_note').toggle();
+    });+
 
-      disableButtonIfEmptyField(".js-note-text", ".js-comment-button");
+    $(document).on("click",
+                    ".js-add-diff-note-button",
+                    NoteList.addDiffNote);
 
-      $("#note_attachment").change(function(e){
-        var val = $('.input-file').val();
-        var filename = val.replace(/^.*[\\\/]/, '');
-        $(".file_name").text(filename);
-      });
+    // reply to diff notes
+    $(document).on("click",
+                    ".js-discussion-reply-button",
+                    NoteList.replyToDiscussionNote);
 
-      // Setup note preview
-      $(document).on('click', '#preview-link', function(e) {
-        $('#preview-note').text('Loading...');
+    // hide diff note form
+    $(document).on("click",
+                    ".js-close-discussion-note-form",
+                    NoteList.removeDiscussionNoteForm);
 
-        $(this).text($(this).text() === "Edit" ? "Preview" : "Edit");
+    // do some specific housekeeping when removing a diff or discussion note
+    $(document).on("click",
+                    ".diff_file .js-note-delete," +
+                    ".discussion .js-note-delete",
+                    NoteList.removeDiscussionNote);
 
-        var note_text = $('#note_note').val();
+    // remove a note (in general)
+    $(document).on("click",
+                    ".js-note-delete",
+                    NoteList.removeNote);
 
-        if(note_text.trim().length === 0) {
-          $('#preview-note').text('Nothing to preview.');
-        } else {
-          $.post($(this).attr('href'), {note: note_text}).success(function(data) {
-            $('#preview-note').html(data);
-          });
-        }
-
-        $('#preview-note, #note_note').toggle();
-      });+
-
-      $(document).on("click",
-                     ".js-add-diff-note-button",
-                     NoteList.addDiffNote);
-
-      // reply to diff notes
-      $(document).on("click",
-                     ".js-discussion-reply-button",
-                     NoteList.replyToDiscussionNote);
-
-      // hide diff note form
-      $(document).on("click",
-                     ".js-close-discussion-note-form",
-                     NoteList.removeDiscussionNoteForm);
-
-      // do some specific housekeeping when removing a diff or discussion note
-      $(document).on("click",
-                     ".diff_file .js-note-delete," +
-                     ".discussion .js-note-delete",
-                     NoteList.removeDiscussionNote);
-
-      // remove a note (in general)
-      $(document).on("click",
-                     ".js-note-delete",
-                     NoteList.removeNote);
-
-      // clean up previews for forms
-      $(document).on("ajax:complete", ".note-form-holder", function(){
-        $(this).find('#preview-note').hide();
-        $(this).find('#note_note').show();
-      });
-    },
+    // clean up previews for forms
+    $(document).on("ajax:complete", ".note-form-holder", function(){
+      $(this).find('#preview-note').hide();
+      $(this).find('#note_note').show();
+    });
+  },
 
 
   /**
@@ -232,35 +231,33 @@ var NoteList = {
   /**
    * Gets an inital set of notes.
    */
-  getContent:
-    function() {
-      $.ajax({
-        url: this.notes_path,
-        data: this.target_params,
-        complete: function(){ $('.notes-status').removeClass("loading")},
-        beforeSend: function() { $('.notes-status').addClass("loading") },
-        dataType: "script"
-      });
-    },
+  getContent: function() {
+    $.ajax({
+      url: this.notes_path,
+      data: this.target_params,
+      complete: function(){ $('.notes-status').removeClass("loading")},
+      beforeSend: function() { $('.notes-status').addClass("loading") },
+      dataType: "script"
+    });
+  },
 
   /**
    * Called in response to getContent().
    * Replaces the content of #notes-list with the given html.
    */
-  setContent:
-    function(newNoteIds, html) {
-      this.top_id = newNoteIds.first();
-      this.bottom_id = newNoteIds.last();
-      $("#notes-list").html(html);
+  setContent: function(newNoteIds, html) {
+    this.top_id = newNoteIds.first();
+    this.bottom_id = newNoteIds.last();
+    $("#notes-list").html(html);
 
-      if (this.reversed) {
-        // init infinite scrolling
-        this.initLoadMore();
+    if (this.reversed) {
+      // init infinite scrolling
+      this.initLoadMore();
 
-        // init getting new notes
-        this.initRefreshNew();
-      }
-    },
+      // init getting new notes
+      this.initRefreshNew();
+    }
+  },
 
 
   /**
@@ -274,66 +271,62 @@ var NoteList = {
   /**
    * Initializes loading more notes when scrolling to the bottom of the page.
    */
-  initLoadMore:
-    function() {
-      $(document).endlessScroll({
-        bottomPixels: 400,
-        fireDelay: 1000,
-        fireOnce:true,
-        ceaseFire: function() {
-          return NoteList.loading_more_disabled;
-        },
-        callback: function(i) {
-          NoteList.getMore();
-        }
-      });
-    },
+  initLoadMore: function() {
+    $(document).endlessScroll({
+      bottomPixels: 400,
+      fireDelay: 1000,
+      fireOnce:true,
+      ceaseFire: function() {
+        return NoteList.loading_more_disabled;
+      },
+      callback: function(i) {
+        NoteList.getMore();
+      }
+    });
+  },
 
   /**
    * Gets an additional set of notes.
    */
-  getMore:
-    function() {
-      // only load more notes if there are no "new" notes
-      $('.loading').show();
-      $.ajax({
-        url: this.notes_path,
-        data: this.target_params + "&loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id,
-        complete: function(){ $('.notes-status').removeClass("loading")},
-        beforeSend: function() { $('.notes-status').addClass("loading") },
-        dataType: "script"
-      });
-    },
+  getMore: function() {
+    // only load more notes if there are no "new" notes
+    $('.loading').show();
+    $.ajax({
+      url: this.notes_path,
+      data: this.target_params + "&loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id,
+      complete: function(){ $('.notes-status').removeClass("loading")},
+      beforeSend: function() { $('.notes-status').addClass("loading") },
+      dataType: "script"
+    });
+  },
 
   /**
    * Called in response to getMore().
    * Append notes to #notes-list.
    */
-  appendMoreNotes:
-    function(newNoteIds, html) {
-      var lastNewNoteId = newNoteIds.last();
-      if(lastNewNoteId != this.bottom_id) {
-        this.bottom_id = lastNewNoteId;
-        $("#notes-list").append(html);
-      }
-    },
+  appendMoreNotes: function(newNoteIds, html) {
+    var lastNewNoteId = newNoteIds.last();
+    if(lastNewNoteId != this.bottom_id) {
+      this.bottom_id = lastNewNoteId;
+      $("#notes-list").append(html);
+    }
+  },
 
   /**
    * Called in response to getMore().
    * Disables loading more notes when scrolling to the bottom of the page.
    * Initalizes refreshing new notes.
    */
-  finishedLoadingMore:
-    function() {
-      this.loading_more_disabled = true;
+  finishedLoadingMore: function() {
+    this.loading_more_disabled = true;
 
-      // from now on only get new notes
-      if (!this.reversed) {
-        this.initRefreshNew();
-      }
-      // make sure we are up to date
-      this.updateVotes();
-    },
+    // from now on only get new notes
+    if (!this.reversed) {
+      this.initRefreshNew();
+    }
+    // make sure we are up to date
+    this.updateVotes();
+  },
 
 
   /**
@@ -348,45 +341,41 @@ var NoteList = {
   /**
    * Initializes getting new notes every n seconds.
    */
-  initRefreshNew:
-    function() {
-      setInterval("NoteList.getNew()", 10000);
-    },
+  initRefreshNew: function() {
+    setInterval("NoteList.getNew()", 10000);
+  },
 
   /**
    * Gets the new set of notes.
    */
-  getNew:
-    function() {
-      $.ajax({
-        url: this.notes_path,
-        data: this.target_params + "&loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id),
-        dataType: "script"
-      });
-    },
+  getNew: function() {
+    $.ajax({
+      url: this.notes_path,
+      data: this.target_params + "&loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id),
+      dataType: "script"
+    });
+  },
 
   /**
    * Called in response to getNew().
    * Replaces the content of #new-notes-list with the given html.
    */
-  replaceNewNotes:
-    function(newNoteIds, html) {
-      $("#new-notes-list").html(html);
-      this.updateVotes();
-    },
+  replaceNewNotes: function(newNoteIds, html) {
+    $("#new-notes-list").html(html);
+    this.updateVotes();
+  },
 
   /**
    * Adds a single note to #new-notes-list.
    */
-  appendNewNote:
-    function(id, html) {
-      if (this.reversed) {
-        $("#notes-list").prepend(html);
-      } else {
-        $("#notes-list").append(html);
-      }
-      this.updateVotes();
-    },
+  appendNewNote: function(id, html) {
+    if (this.reversed) {
+      $("#notes-list").prepend(html);
+    } else {
+      $("#notes-list").append(html);
+    }
+    this.updateVotes();
+  },
 
   /**
    * Recalculates the votes and updates them (if they are displayed at all).
@@ -396,25 +385,24 @@ var NoteList = {
    * Might produce inaccurate results when not all notes have been loaded and a
    * recalculation is triggered (e.g. when deleting a note).
    */
-  updateVotes:
-    function() {
-      var votes = $("#votes .votes");
-      var notes = $("#notes-list, #new-notes-list").find(".note .vote");
+  updateVotes: function() {
+    var votes = $("#votes .votes");
+    var notes = $("#notes-list").find(".note .vote");
 
-      // only update if there is a vote display
-      if (votes.size()) {
-        var upvotes = notes.filter(".upvote").size();
-        var downvotes = notes.filter(".downvote").size();
-        var votesCount = upvotes + downvotes;
-        var upvotesPercent = votesCount ? (100.0 / votesCount * upvotes) : 0;
-        var downvotesPercent = votesCount ? (100.0 - upvotesPercent) : 0;
+    // only update if there is a vote display
+    if (votes.size()) {
+      var upvotes = notes.filter(".upvote").size();
+      var downvotes = notes.filter(".downvote").size();
+      var votesCount = upvotes + downvotes;
+      var upvotesPercent = votesCount ? (100.0 / votesCount * upvotes) : 0;
+      var downvotesPercent = votesCount ? (100.0 - upvotesPercent) : 0;
 
-        // change vote bar lengths
-        votes.find(".bar-success").css("width", upvotesPercent+"%");
-        votes.find(".bar-danger").css("width", downvotesPercent+"%");
-        // replace vote numbers
-        votes.find(".upvotes").text(votes.find(".upvotes").text().replace(/\d+/, upvotes));
-        votes.find(".downvotes").text(votes.find(".downvotes").text().replace(/\d+/, downvotes));
-      }
+      // change vote bar lengths
+      votes.find(".bar-success").css("width", upvotesPercent+"%");
+      votes.find(".bar-danger").css("width", downvotesPercent+"%");
+      // replace vote numbers
+      votes.find(".upvotes").text(votes.find(".upvotes").text().replace(/\d+/, upvotes));
+      votes.find(".downvotes").text(votes.find(".downvotes").text().replace(/\d+/, downvotes));
     }
+  }
 };
