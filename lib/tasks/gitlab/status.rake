@@ -2,7 +2,7 @@ namespace :gitlab do
   namespace :app do
     desc "GITLAB | Check GitLab installation status"
     task :status => :environment  do
-      puts "Starting diagnostics".yellow
+      puts "\nStarting diagnostics".yellow
       git_base_path = Gitlab.config.git_base_path
 
       print "config/database.yml............"
@@ -86,17 +86,24 @@ namespace :gitlab do
       end
 
       if Project.count > 0
-        puts "Validating projects repositories:".yellow
+        puts "\nValidating projects repositories:".yellow
         Project.find_each(:batch_size => 100) do |project|
-          print "#{project.name}....."
+          print "* #{project.name}....."
           hook_file = File.join(project.path_to_repo, 'hooks', 'post-receive')
 
           unless File.exists?(hook_file)
             puts "post-receive file missing".red
-            return
+            next
           end
 
-          puts "post-receive file ok".green
+          original_content = File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
+          new_content = File.read(hook_file)
+
+          if original_content == new_content
+            puts "post-receive file ok".green
+          else
+            puts "post-receive file content does not match".red
+          end
         end
       end
 
