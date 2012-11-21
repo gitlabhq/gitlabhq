@@ -22,4 +22,12 @@ describe Group do
   it { should validate_presence_of :path }
   it { should validate_uniqueness_of(:path) }
   it { should validate_presence_of :owner }
+
+  describe :users do
+    it { group.users.should == [] }
+  end
+
+  describe :human_name do
+    it { group.human_name.should == group.name }
+  end
 end

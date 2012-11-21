@@ -5,7 +5,7 @@ require 'rspec'
 require 'database_cleaner'
 require 'spinach/capybara'
 
-%w(namespaces_stub gitolite_stub stubbed_repository valid_commit).each do |f|
+%w(gitolite_stub stubbed_repository valid_commit).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
@@ -32,6 +32,11 @@ end
 DatabaseCleaner.strategy = :truncation
 
 Spinach.hooks.before_scenario do
+  # Use tmp dir for FS manipulations
+  Gitlab.config.stub(git_base_path: Rails.root.join('tmp', 'test-git-base-path'))
+  FileUtils.rm_rf Gitlab.config.git_base_path
+  FileUtils.mkdir_p Gitlab.config.git_base_path
+
   DatabaseCleaner.start
 end
 
