@@ -7,4 +7,8 @@ module DashboardHelper
       dashboard_merge_requests_path(options)
     end
   end
+
+  def entities_per_project project, entity
+    project.items_for(entity).where(assignee_id: current_user.id).count
+  end
 end

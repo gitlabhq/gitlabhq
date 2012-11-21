@@ -41,11 +41,11 @@ module Gitlab
       end
 
       def lock_file
-        Rails.root.join("tmp", "#{project.path}.lock")
+        Rails.root.join("tmp", "satellite_#{project.id}.lock")
       end
 
       def path
-        Rails.root.join("tmp", "repo_satellites", project.path)
+        Rails.root.join("tmp", "repo_satellites", project.path_with_namespace)
       end
 
       def repo

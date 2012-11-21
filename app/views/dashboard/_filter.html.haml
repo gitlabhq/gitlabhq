@@ -21,10 +21,11 @@
     %legend Projects:
     %ul.nav.nav-pills.nav-stacked
       - @projects.each do |project|
-        %li{class: ("active" if params[:project_id] == project.id.to_s)}
-          = link_to dashboard_filter_path(entity, project_id: project.id) do
-            = project.name_with_namespace
-            %small.right= project.items_for(entity).where(assignee_id: current_user.id).count
+        - unless entities_per_project(project, entity).zero?
+          %li{class: ("active" if params[:project_id] == project.id.to_s)}
+            = link_to dashboard_filter_path(entity, project_id: project.id) do
+              = project.name_with_namespace
+              %small.right= entities_per_project(project, entity)
 
   %fieldset
     %hr
