@@ -1,6 +1,10 @@
 = form_for @user, url: profile_update_path, remote: true, method: :put do |f|
-  %fieldset
-    %legend Application theme
+  %fieldset.application-theme
+    %legend
+      Application theme
+      .update-feedback.hide
+        %i.icon-ok
+        Saved
     .themes_opts
       = label_tag do
         .prev.default
@@ -29,8 +33,12 @@
     %br
     .clearfix
 
-  %fieldset
-    %legend Code review
+  %fieldset.code-preview-theme
+    %legend
+      Code preview theme
+      .update-feedback.hide
+        %i.icon-ok
+        Saved
     .code_highlight_opts
       = label_tag do
         .prev
@@ -42,10 +50,3 @@
           = image_tag "dark.png"
         = f.radio_button :dark_scheme, true
         Dark code preview
-
-:javascript
-  $(function(){
-    $(".edit_user input").bind("click", function() {
-      $(".edit_user").submit();
-    });
-  })
