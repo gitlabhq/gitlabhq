@@ -32,7 +32,6 @@ module Gitlab
         message = "Project #{project.name} cannot be moved from #{old_path} to #{new_path}"
         log_info "Error! #{message}"
         raise ProjectMoveError.new(message)
-        false
       end
     end
 

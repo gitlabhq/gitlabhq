@@ -11,8 +11,8 @@ class Namespace
   end
 end
 
-class Gitlab::ProjectMover
-  def execute
-    true
-  end
-end
+#class Gitlab::ProjectMover
+  #def execute
+    #true
+  #end
+#end
