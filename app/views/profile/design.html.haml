@@ -3,28 +3,35 @@
     %legend Application theme
     .themes_opts
       = label_tag do
-        .prev
-          = image_tag "gitlab_default.png"
+        .prev.default
         = f.radio_button :theme_id, 1
         Default
 
       = label_tag do
-        .prev
-          = image_tag "gitlab_classic.png"
+        .prev.classic
         = f.radio_button :theme_id, 2
         Classic
 
       = label_tag do
-        .prev
-          = image_tag "gitlab_modern.png"
+        .prev.modern
         = f.radio_button :theme_id, 3
         Modern
+
+      = label_tag do
+        .prev.gray
+        = f.radio_button :theme_id, 4
+        SlateGray
+
+      = label_tag do
+        .prev.violet
+        = f.radio_button :theme_id, 5
+        Violet
     %br
     .clearfix
 
   %fieldset
     %legend Code review
-    .themes_opts
+    .code_highlight_opts
       = label_tag do
         .prev
           = image_tag "white.png"

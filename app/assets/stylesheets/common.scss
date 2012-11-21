@@ -584,25 +584,6 @@ li.note {
   }
 }
 
-.themes_opts {
-  padding-left:20px;
-
-  label {
-    width:175px;
-    margin-right:40px;
-
-    .prev {
-      @extend .thumbnail;
-      height:120px;
-      width:175px;
-      margin-bottom:10px;
-      img {
-        width:180px;
-      }
-    }
-  }
-}
-
 .git_error_tips {
   @extend .span6;
   text-align:left;

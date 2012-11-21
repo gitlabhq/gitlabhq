@@ -118,14 +118,12 @@ $monospace: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono'
 @import "themes/ui_basic.scss";
 
 /**
- * UI mars theme
+ * UI themes:
  */
 @import "themes/ui_mars.scss";
-
-/**
- * UI Modern theme
- */
 @import "themes/ui_modern.scss";
+@import "themes/ui_gray.scss";
+@import "themes/ui_color.scss";
 
 /**
  * GitLab bootstrap.
@@ -159,6 +157,7 @@ $monospace: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono'
 @import "sections/merge_requests.scss";
 @import "sections/graph.scss";
 @import "sections/events.scss";
+@import "sections/themes.scss";
 
 /**
  * This scss file redefine chozen selectbox styles for

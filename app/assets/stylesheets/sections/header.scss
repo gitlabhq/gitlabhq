@@ -39,15 +39,15 @@ header {
 
       h1 {
         width:90px;
-        background: url('logo_dark.png') no-repeat 0px -3px;
+        background: url('logo_dark.png') no-repeat 0px 2px;
         float:left;
-        margin-left:5px;
+        margin-left:2px;
         font-size:30px;
         line-height:48px;
         font-weight:normal;
         color:$style_color;
         text-shadow: 0 1px 1px #FFF;
-        padding-left:50px;
+        padding-left:45px;
         height:40px;
         font-family: 'Korolev', sans-serif;
       }
@@ -98,7 +98,7 @@ header {
       background-position: 10px;
       padding-left:25px;
       font-size: 13px;
-      @include border-radius(2px);
+      @include border-radius(3px);
       border:1px solid #c6c6c6;
       box-shadow:none;
       &:focus {
@@ -123,7 +123,7 @@ header {
     display: block;
     cursor: pointer;
     img {
-      @include border-radius(2px);
+      @include border-radius(3px);
       right: 5px;
       position: absolute;
       width: 28px;
