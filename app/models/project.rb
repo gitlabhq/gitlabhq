@@ -269,4 +269,13 @@ class Project < ActiveRecord::Base
                                end
                              end
   end
+
+  def items_for entity
+    case entity
+    when 'issue' then
+      issues
+    when 'merge_request' then
+      merge_requests
+    end
+  end
 end

@@ -653,3 +653,16 @@ pre {
     margin-right:5px;
   }
 }
+
+.dashboard-search-filter {
+  padding:5px;
+
+  .search-text-input {
+    float:left;
+    @extend .span2;
+  }
+  .btn {
+    margin-left: 5px;
+    float:left;
+  }
+}
