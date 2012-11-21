@@ -13,7 +13,7 @@ GitLab is a free project and repository management application
 
 * Ubuntu/Debian
 * ruby 1.9.3+
-* mysql or sqlite
+* MySQL
 * git
 * gitolite
 * redis
