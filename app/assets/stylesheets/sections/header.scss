@@ -156,12 +156,7 @@ header {
   display: block; } }
 
   .account-links {
-    background: #79C3E0;
-    display: none;
     border-radius: 5px;
-    width: 100px;
-    margin-top: 0;
-    float: right;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     position: relative;
     &:before {
@@ -171,33 +166,33 @@ header {
       position: absolute;
       border: 5px solid transparent;
       border-color: rgba(255, 255, 255, 0);
-      border-bottom-color: #333;
+      border-bottom-color: #555;
       text-indent: -9999px;
       top: -10px;
       line-height: 0;
       right: 10px;
     z-index: 10; }
-    background: #333;
+    background: #555;
     display: none;
     z-index: 100000;
     @include border-radius(4px);
     width: 100px;
     position: absolute;
-    right: 10px;
-    top: 42px;
+    right: 5px;
+    top: 38px;
     margin-top: 0;
     float: right;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     a {
-      color: #EEE;
-      padding: 6px 10px;
+      color: #fff;
+      padding: 7px 10px;
       display: block;
       text-shadow: none;
-      border-bottom: 1px solid #555;
+      border-bottom: 1px solid #666;
       font-size: 12px;
       &:hover {
-        color:#eee;
-        background: #444;
+        color:#fff;
+        background: #333;
       }
     }
   }

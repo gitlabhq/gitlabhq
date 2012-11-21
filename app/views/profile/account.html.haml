@@ -1,7 +1,6 @@
 - if Gitlab.config.omniauth_enabled?
   %fieldset
-    %legend
-      %h3.page_title Social Accounts
+    %legend Social Accounts
     .oauth_select_holder
       %p.hint Tip: Click on icon to activate sigin with one of the following services
       - User.omniauth_providers.each do |provider|
@@ -11,10 +10,9 @@
 
 %fieldset
   %legend
-    %h3.page_title
-      Private token
-      %span.cred.right
-        keep it secret!
+    Private token
+    %span.cred.right
+      keep it secret!
   .padded
     = form_for @user, url: profile_reset_private_token_path, method: :put do |f|
       .data
@@ -31,8 +29,7 @@
             = f.submit 'Generate', class: "btn success btn-build-token"
 
 %fieldset
-  %legend
-    %h3.page_title Password
+  %legend Password
   = form_for @user, url: profile_password_path, method: :put do |f|
     .padded
       %p.slead After successful password update you will be redirected to login page where you should login with new password

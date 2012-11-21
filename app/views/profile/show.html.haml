@@ -1,5 +1,5 @@
 .profile_avatar_holder
-  = image_tag gravatar_icon(@user.email, 90), class: "styled_image"
+  = image_tag gravatar_icon(@user.email, 90)
 %h3.page_title
   = @user.name
   %br
@@ -19,21 +19,23 @@
       .control-group
         = f.label :name, class: "control-label"
         .controls
-          = f.text_field :name, class: "input-xlarge"
+          = f.text_field :name, class: "input-xlarge", required: true
           %span.help-block Enter your name, so people you know can recognize you.
       .control-group
         = f.label :email, class: "control-label"
         .controls
-          = f.text_field :email, class: "input-xlarge"
+          = f.text_field :email, class: "input-xlarge", required: true
           %span.help-block We also use email for avatar detection.
 
     .span5.right
-      %div.tips
-        %h6 Tips:
+      %fieldset.tips
+        %legend Tips:
         %ul
+          %li
+            %p You can change your password on Account page
           -unless Gitlab.config.disable_gravatar?
             %li
-              %p.hint You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
+              %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
 
           - if Gitlab.config.omniauth_enabled? && @user.provider?
             %li
@@ -41,7 +43,6 @@
                 You can login through #{@user.provider.titleize}!
                 = link_to "click here to change", profile_account_path
 
-  %hr
   .row
     .span7
       .control-group
@@ -59,23 +60,22 @@
           = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
     .span5.right
-      .ui-box.white
-        .ui-box-body
-          %h4
-            Personal projects:
-            %small.right
-              %span= current_user.my_own_projects.count
-              of
-              %span= current_user.projects_limit
+      %fieldset
+        %legend
+          Personal projects:
+          %small.right
+            %span= current_user.my_own_projects.count
+            of
+            %span= current_user.projects_limit
+        .padded
           .progress
             .bar{style: "width: #{current_user.projects_limit_percent}%;"}
 
-      .ui-box.white
-        .ui-box-body
-          %h4
-            SSH public keys:
-            %strong.right= link_to current_user.keys.count, keys_path
-
+      %fieldset
+        %legend
+          SSH public keys:
+          %strong.right= link_to current_user.keys.count, keys_path
+        .padded
           = link_to "Add Public Key", new_key_path, class: "btn small"
 
   .form-actions

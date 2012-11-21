@@ -1,7 +1,6 @@
 = form_for @user, url: profile_update_path, remote: true, method: :put do |f|
-  %div
-    %h3.page_title Application theme
-    %br
+  %fieldset
+    %legend Application theme
     .themes_opts
       = label_tag do
         .prev
@@ -23,19 +22,19 @@
     %br
     .clearfix
 
-  %h3.page_title Code review
-  %br
-  .themes_opts
-    = label_tag do
-      .prev
-        = image_tag "white.png"
-      = f.radio_button :dark_scheme, false
-      White code preview
-    = label_tag do
-      .prev
-        = image_tag "dark.png"
-      = f.radio_button :dark_scheme, true
-      Dark code preview
+  %fieldset
+    %legend Code review
+    .themes_opts
+      = label_tag do
+        .prev
+          = image_tag "white.png"
+        = f.radio_button :dark_scheme, false
+        White code preview
+      = label_tag do
+        .prev
+          = image_tag "dark.png"
+        = f.radio_button :dark_scheme, true
+        Dark code preview
 
 :javascript
   $(function(){
