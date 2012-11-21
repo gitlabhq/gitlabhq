@@ -21,9 +21,10 @@ class ProjectsController < ProjectResourceController
     @project = Project.create_by_user(params[:project], current_user)
 
     respond_to do |format|
+      flash[:notice] = 'Project was successfully created.' if @project.saved?
       format.html do
         if @project.saved?
-          redirect_to(@project, notice: 'Project was successfully created.')
+          redirect_to @project
         else
           render action: "new"
         end
