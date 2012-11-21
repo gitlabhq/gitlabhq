@@ -377,6 +377,20 @@ var NoteList = {
     this.updateVotes();
   },
 
+  appendNewDiscussionNote: function(discussionId, diffRowHtml, noteHtml) {
+    // is this the first note of discussion?
+    var row = $("form[rel='"+discussionId+"']").closest("tr");
+    if (row.is(".js-temp-notes-holder")) {
+      // insert the note and the reply button after it
+      row.after(diffRowHtml);
+      // will be added again below
+      row.next().find(".note").remove();
+    }
+
+    // append new note to all matching discussions
+    $(".notes[rel='"+discussionId+"']").append(noteHtml);
+  },
+
   /**
    * Recalculates the votes and updates them (if they are displayed at all).
    *

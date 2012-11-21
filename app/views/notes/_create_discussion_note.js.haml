@@ -1,13 +1,5 @@
 - if note.valid?
   :plain
-    // is this the first note of discussion?
-    var row = $("form[rel='#{note.discussion_id}']").closest("tr");
-    if (row.is(".js-temp-notes-holder")) {
-      // insert the note and the reply button after it
-      row.after("#{escape_javascript(render "notes/diff_notes_with_reply", notes: [note])}");
-      // will be added again below
-      row.next().find(".note").remove();
-    }
-
-    // append new note to all discussions
-    $(".notes[rel='#{note.discussion_id}']").append("#{escape_javascript(render "notes/note", note: note)}");
+    NoteList.appendNewDiscussionNote("#{note.discussion_id}",
+                                     "#{escape_javascript(render "notes/diff_notes_with_reply", notes: [note])}",
+                                     "#{escape_javascript(render "notes/note", note: note)}");
