@@ -110,6 +110,6 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   Then 'I should see 1 project at group list' do
-    page.find('span.last_activity').find('span').should have_content('1')
+    page.find('span.last_activity/span').should have_content('1')
   end
 end
