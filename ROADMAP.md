@@ -5,6 +5,7 @@
 * Help page for service tasks like repos import, backup etc
 * Hide last push widget after following link
 * Add comment events 
+* gitolite namespaces for projects per user/group. It will allow us same project names for different users
 
 ### Issues
 
