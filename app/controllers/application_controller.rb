@@ -63,7 +63,10 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    @project ||= current_user.projects.find_by_code(params[:project_id] || params[:id])
+    id = params[:project_id] || params[:id]
+    id = id.split("/") if id.include?("/")
+
+    @project ||= current_user.projects.find_by_code(id)
     @project || render_404
   end
 

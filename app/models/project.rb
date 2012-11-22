@@ -135,7 +135,11 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    code
+    if namespace
+      namespace.code + "/" + code
+    else
+      code
+    end
   end
 
   def web_url
@@ -200,5 +204,8 @@ class Project < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def move_repo
   end
 end

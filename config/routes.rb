@@ -18,7 +18,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.git_base_path,
     upload_pack:  Gitlab.config.git_upload_pack,
     receive_pack: Gitlab.config.git_receive_pack
-  }), at: '/:path', constraints: { path: /[\w\.-]+\.git/ }
+  }), at: '/:path', constraints: { path: /[-\/\w\.-]+\.git/ }
 
   #
   # Help
@@ -107,7 +107,7 @@ Gitlab::Application.routes.draw do
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /[^\/]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
       get "graph"
