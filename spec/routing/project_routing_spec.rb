@@ -285,6 +285,7 @@ end
 describe CommitController, "routing" do
   it "to #show" do
     get("/gitlabhq/commit/4246fb").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb')
+    get("/gitlabhq/commit/4246fb.diff").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb', format: 'diff')
     get("/gitlabhq/commit/4246fb.patch").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb', format: 'patch')
     get("/gitlabhq/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
   end

@@ -26,6 +26,7 @@ class CommitController < ProjectResourceController
         end
       end
 
+      format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
   end
