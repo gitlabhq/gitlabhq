@@ -32,7 +32,8 @@ class Project < ActiveRecord::Base
   attr_accessor :error_code
 
   # Relations
-  belongs_to :group
+  belongs_to :group, foreign_key: "namespace_id", conditions: 'type = Group'
+  belongs_to :namespace
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -191,5 +192,13 @@ class Project < ActiveRecord::Base
 
   def gitlab_ci?
     gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def path_with_namespace
+    if namespace
+      namespace.code + '/' + path
+    else
+      path
+    end
   end
 end
