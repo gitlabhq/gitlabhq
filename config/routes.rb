@@ -159,12 +159,11 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :merge_requests do
+    resources :merge_requests, constraints: {id: /\d+/} do
       member do
         get :diffs
         get :automerge
         get :automerge_check
-        get :raw
       end
 
       collection do
