@@ -11,17 +11,32 @@
         - @note.errors.full_messages.each do |msg|
           %div= msg
 
-    = f.text_area :note, size: 255, class: 'js-note-text js-gfm-input'
-    #preview-note.preview_note.hide
-    .hint
-      .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+    .js-toggler-container
+      = f.text_area :note, size: 255, class: 'note_text turn-on js-note-text js-gfm-input'
+      .note_preview.js-note-preview.hide.turn-off
+
+      .hint
+        .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
       .clearfix
 
-    .row.note_advanced_opts
-      .span3
+      .buttons
         = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
-        = link_to 'Preview', preview_project_notes_path(@project), class: 'btn grouped', id: 'preview-link'
-      .span4.notify_opts
+        %button.btn.grouped.js-note-preview-button.js-toggler-target.turn-on{ data: {url: preview_project_notes_path(@project)} }
+          Preview
+        %button.btn.grouped.js-note-preview-button.js-toggler-target.turn-off
+          Edit
+
+    .note_advanced_opts
+      .attachments.right
+        %h6.left Attachment:
+        %span.file_name File name...
+
+        .input.input_file
+          %a.file_upload.btn.small Upload File
+          = f.file_field :attachment, class: "input-file"
+        %span.hint Any file less than 10 MB
+
+      .notify_opts.right
         %h6.left Notify via email:
         = label_tag :notify do
           = check_box_tag :notify, 1, @note.noteable_type != "Commit"
@@ -31,11 +46,4 @@
           = label_tag :notify_author do
             = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
             %span Commit author
-      .span5.attachments
-        %h6.left Attachment:
-        %span.file_name File name...
-
-        .input.input_file
-          %a.file_upload.btn.small Upload File
-          = f.file_field :attachment, class: "input-file"
-        %span.hint Any file less than 10 MB
+  .clearfix

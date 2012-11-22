@@ -10,24 +10,25 @@ var NoteList = {
   reversed: false,
 
   init: function(tid, tt, path) {
-    this.notes_path = path + ".js";
-    this.target_id = tid;
-    this.target_type = tt;
-    this.reversed = $("#notes-list").is(".reversed");
-    this.target_params = "target_type=" + this.target_type + "&target_id=" + this.target_id;
+    NoteList.notes_path = path + ".js";
+    NoteList.target_id = tid;
+    NoteList.target_type = tt;
+    NoteList.reversed = $("#notes-list").is(".reversed");
+    NoteList.target_params = "target_type=" + NoteList.target_type + "&target_id=" + NoteList.target_id;
 
-    if(this.reversed) {
-      var textarea = $(".note-text");
-      $('.note_advanced_opts').hide();
+    if(NoteList.reversed) {
+      var form = $("#new_note");
+      form.find(".buttons, .note_advanced_opts").hide();
+      var textarea = form.find(".js-note-text");
       textarea.css("height", "40px");
       textarea.on("focus", function(){
-        $(this).css("height", "80px");
-        $('.note_advanced_opts').show();
+        textarea.css("height", "80px");
+        form.find(".buttons, .note_advanced_opts").show();
       });
     }
 
     // get initial set of notes
-    this.getContent();
+    NoteList.getContent();
 
     disableButtonIfEmptyField(".js-note-text", ".js-comment-button");
 
@@ -37,33 +38,20 @@ var NoteList = {
       $(".file_name").text(filename);
     });
 
-    // Setup note preview
-    $(document).on('click', '#preview-link', function(e) {
-      $('#preview-note').text('Loading...');
-
-      $(this).text($(this).text() === "Edit" ? "Preview" : "Edit");
-
-      var note_text = $('#note_note').val();
-
-      if(note_text.trim().length === 0) {
-        $('#preview-note').text('Nothing to preview.');
-      } else {
-        $.post($(this).attr('href'), {note: note_text}).success(function(data) {
-          $('#preview-note').html(data);
-        });
-      }
-
-      $('#preview-note, #note_note').toggle();
-    });+
-
+    // add a new diff note
     $(document).on("click",
                     ".js-add-diff-note-button",
                     NoteList.addDiffNote);
 
-    // reply to diff notes
+    // reply to diff/discussion notes
     $(document).on("click",
                     ".js-discussion-reply-button",
                     NoteList.replyToDiscussionNote);
+
+    // setup note preview
+    $(document).on("click",
+                    ".js-note-preview-button",
+                    NoteList.previewNote);
 
     // hide diff note form
     $(document).on("click",
@@ -83,8 +71,12 @@ var NoteList = {
 
     // clean up previews for forms
     $(document).on("ajax:complete", ".note-form-holder", function(){
-      $(this).find('#preview-note').hide();
-      $(this).find('#note_note').show();
+      //$(this).find('.js-note-preview-button').text('Preview');
+      //$(this).find('.js-note-preview').hide();
+
+      $(this).find('.error').remove();
+      $(this).find('.js-note-text').val("");
+      $(this).show();
     });
   },
 
@@ -118,6 +110,31 @@ var NoteList = {
 
       // show the form
       NoteList.setupDiscussionNoteForm($(this), row.next().find("form"));
+    }
+
+    e.preventDefault();
+  },
+
+  /**
+   * Shows the note preview.
+   *
+   * Lets the server render GFM into Html and displays it.
+   *
+   * Note: uses the Toggler behavior to toggle preview/edit views/buttons
+   */
+  previewNote: function(e) {
+    var form = $(this).closest("form");
+    var preview = form.find('.js-note-preview');
+    var note_text = form.find('.js-note-text').val();
+
+    if(note_text.trim().length === 0) {
+      preview.text('Nothing to preview.');
+    } else if($(this).data('url')) {
+      preview.text('Loading...');
+      $.post($(this).data('url'), {note: note_text})
+        .success(function(previewData) {
+          preview.html(previewData);
+        });
     }
 
     e.preventDefault();
@@ -233,8 +250,8 @@ var NoteList = {
    */
   getContent: function() {
     $.ajax({
-      url: this.notes_path,
-      data: this.target_params,
+      url: NoteList.notes_path,
+      data: NoteList.target_params,
       complete: function(){ $('.notes-status').removeClass("loading")},
       beforeSend: function() { $('.notes-status').addClass("loading") },
       dataType: "script"
@@ -246,23 +263,23 @@ var NoteList = {
    * Replaces the content of #notes-list with the given html.
    */
   setContent: function(newNoteIds, html) {
-    this.top_id = newNoteIds.first();
-    this.bottom_id = newNoteIds.last();
+    NoteList.top_id = newNoteIds.first();
+    NoteList.bottom_id = newNoteIds.last();
     $("#notes-list").html(html);
 
-    if (this.reversed) {
+    if (NoteList.reversed) {
       // init infinite scrolling
-      this.initLoadMore();
+      NoteList.initLoadMore();
 
       // init getting new notes
-      this.initRefreshNew();
+      NoteList.initRefreshNew();
     }
   },
 
 
   /**
    * Handle loading more notes when scrolling to the bottom of the page.
-   * The id of the last note in the list is in this.bottom_id.
+   * The id of the last note in the list is in NoteList.bottom_id.
    *
    * Set up refreshing only new notes after all notes have been loaded.
    */
@@ -292,8 +309,8 @@ var NoteList = {
     // only load more notes if there are no "new" notes
     $('.loading').show();
     $.ajax({
-      url: this.notes_path,
-      data: this.target_params + "&loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id,
+      url: NoteList.notes_path,
+      data: NoteList.target_params + "&loading_more=1&" + (NoteList.reversed ? "before_id" : "after_id") + "=" + NoteList.bottom_id,
       complete: function(){ $('.notes-status').removeClass("loading")},
       beforeSend: function() { $('.notes-status').addClass("loading") },
       dataType: "script"
@@ -306,8 +323,8 @@ var NoteList = {
    */
   appendMoreNotes: function(newNoteIds, html) {
     var lastNewNoteId = newNoteIds.last();
-    if(lastNewNoteId != this.bottom_id) {
-      this.bottom_id = lastNewNoteId;
+    if(lastNewNoteId != NoteList.bottom_id) {
+      NoteList.bottom_id = lastNewNoteId;
       $("#notes-list").append(html);
     }
   },
@@ -315,17 +332,12 @@ var NoteList = {
   /**
    * Called in response to getMore().
    * Disables loading more notes when scrolling to the bottom of the page.
-   * Initalizes refreshing new notes.
    */
   finishedLoadingMore: function() {
-    this.loading_more_disabled = true;
+    NoteList.loading_more_disabled = true;
 
-    // from now on only get new notes
-    if (!this.reversed) {
-      this.initRefreshNew();
-    }
     // make sure we are up to date
-    this.updateVotes();
+    NoteList.updateVotes();
   },
 
 
@@ -334,7 +346,7 @@ var NoteList = {
    *
    * New notes are all notes that are created after the site has been loaded.
    * The "old" notes are in #notes-list the "new" ones will be in #new-notes-list.
-   * The id of the last "old" note is in this.bottom_id.
+   * The id of the last "old" note is in NoteList.bottom_id.
    */
 
 
@@ -350,8 +362,8 @@ var NoteList = {
    */
   getNew: function() {
     $.ajax({
-      url: this.notes_path,
-      data: this.target_params + "&loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id),
+      url: NoteList.notes_path,
+      data: NoteList.target_params + "&loading_new=1&after_id=" + (NoteList.reversed ? NoteList.top_id : NoteList.bottom_id),
       dataType: "script"
     });
   },
@@ -362,21 +374,20 @@ var NoteList = {
    */
   replaceNewNotes: function(newNoteIds, html) {
     $("#new-notes-list").html(html);
-    this.updateVotes();
+    NoteList.updateVotes();
   },
 
   /**
-   * Adds a single note to #new-notes-list.
+   * Adds a single common note to #(new-)notes-list.
    */
   appendNewNote: function(id, html) {
-    if (this.reversed) {
-      $("#notes-list").prepend(html);
-    } else {
-      $("#notes-list").append(html);
-    }
-    this.updateVotes();
+    $("#notes-list").append(html);
+    NoteList.updateVotes();
   },
 
+  /**
+   * Adds a single discussion note to #(new-)notes-list.
+   */
   appendNewDiscussionNote: function(discussionId, diffRowHtml, noteHtml) {
     // is this the first note of discussion?
     var row = $("form[rel='"+discussionId+"']").closest("tr");
@@ -401,7 +412,7 @@ var NoteList = {
    */
   updateVotes: function() {
     var votes = $("#votes .votes");
-    var notes = $("#notes-list").find(".note .vote");
+    var notes = $("#notes-list .note .vote");
 
     // only update if there is a vote display
     if (votes.size()) {

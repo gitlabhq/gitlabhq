@@ -1,7 +1,8 @@
 %ul#notes-list.notes
+.notes-status
 
 - if can? current_user, :write_note, @project
-  .note-forms.js-note-forms
+  #note-forms.js-note-forms
     = render "notes/common_form"
     = render "notes/discussion_note_form"
 

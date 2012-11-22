@@ -10,7 +10,7 @@
       - @note.errors.full_messages.each do |msg|
         %div= msg
 
-  = f.text_area :note,  size: 255, class: 'js-note-text js-gfm-input'
+  = f.text_area :note,  size: 255, class: 'note_text js-note-text js-gfm-input'
   .note_actions
     .buttons
       = f.submit 'Add Comment', class: "btn comment-btn js-comment-button"
