@@ -60,7 +60,8 @@ describe Gitlab::API do
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        public_enabled: false
       })
 
       post api("/projects", user), project

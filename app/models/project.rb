@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
   include Team
 
   attr_accessible :name, :path, :description, :code, :default_branch, :issues_enabled,
-                  :wall_enabled, :merge_requests_enabled, :wiki_enabled
+                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, :public_enabled
   attr_accessor :error_code
 
   # Relations
@@ -62,7 +62,7 @@ class Project < ActiveRecord::Base
             format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
-            :wiki_enabled, inclusion: { in: [true, false] }
+            :wiki_enabled, :public_enabled, inclusion: { in: [true, false] }
   validate :check_limit, :repo_name
 
   # Scopes
