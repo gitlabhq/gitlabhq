@@ -26,7 +26,7 @@ class CommitController < ProjectResourceController
         end
       end
 
-      format.patch
+      format.patch { render text: @commit.to_patch }
     end
   end
 end
