@@ -76,10 +76,22 @@ ul.notes {
     p { color: $style_color; }
 
     .avatar {
-      margin-top:3px;
+      margin-top: 3px;
+    }
+    .attachment {
+      font-size: 16px;
+      margin-top: -20px;
+
+      .icon-attachment {
+        @extend .icon-paper-clip;
+        font-size: 24px;
+        position: relative;
+        text-align: right;
+        top: 6px;
+      }
     }
     .note-body {
-      margin-left:45px;
+      margin-left: 45px;
       padding-top: 5px;
     }
     .note-header {
@@ -187,7 +199,7 @@ p.notify_controls span{
 // TODO: end cleaup
 
 /**
- * add line note button on the side of diffs
+ * line note button on the side of diffs
  */
 .diff_file tr.line_holder {
   .add-diff-note {

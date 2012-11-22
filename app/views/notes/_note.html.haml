@@ -27,8 +27,9 @@
   .note-body
     = preserve do
       = markdown(note.note)
-    - if note.attachment.url
-      .right
-        %div.file
-          = link_to note.attachment_identifier, note.attachment.url, target: "_blank"
+  - if note.attachment.url
+    .attachment.right
+      = link_to note.attachment.url, target: "_blank" do
+        %i.icon-attachment
+        = note.attachment_identifier
   .clear
