@@ -21,7 +21,7 @@ module Gitlab
       expose :id, :code, :name, :description, :path, :default_branch
       expose :owner, using: Entities::UserBasic
       expose :private_flag, as: :private
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
+      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :public_enabled, :created_at
     end
 
     class ProjectMember < UserBasic

@@ -60,6 +60,10 @@
         = f.label :wiki_enabled, "Wiki"
         .input= f.check_box :wiki_enabled
 
+      .clearfix
+        = f.label :public_enabled, "Public"
+        .input= f.check_box :public_enabled
+
   - unless project.new_record?
     .actions
       = f.submit 'Save Project', class: "btn save-btn"

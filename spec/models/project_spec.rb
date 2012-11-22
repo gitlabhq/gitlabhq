@@ -12,10 +12,11 @@
 #  code                   :string(255)
 #  owner_id               :integer
 #  default_branch         :string(255)
-#  issues_enabled         :boolean          default(TRUE), not null
-#  wall_enabled           :boolean          default(TRUE), not null
-#  merge_requests_enabled :boolean          default(TRUE), not null
-#  wiki_enabled           :boolean          default(TRUE), not null
+#  issues_enabled         :boolean         default(TRUE), not null
+#  wall_enabled           :boolean         default(TRUE), not null
+#  merge_requests_enabled :boolean         default(TRUE), not null
+#  wiki_enabled           :boolean         default(TRUE), not null
+#  public_enabled         :boolean         default(FALSE), not null
 #  group_id               :integer
 #
 
@@ -68,6 +69,7 @@ describe Project do
     it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
+    it { should ensure_inclusion_of(:public_enabled).in_array([true, false]) }
 
     it "should not allow new projects beyond user limits" do
       project.stub(:owner).and_return(double(can_create_project?: false, projects_limit: 1))
