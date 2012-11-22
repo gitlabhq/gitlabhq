@@ -1,4 +1,7 @@
 - if note.valid?
+  - if note.for_wall?
+    NoteList.appendNewWallNote(#{note.id}, "#{escape_javascript(render "notes/note", note: note)}");
+  - else
     NoteList.appendNewNote(#{note.id}, "#{escape_javascript(render "notes/note", note: note)}");
 
 - else

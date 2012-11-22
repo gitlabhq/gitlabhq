@@ -1,7 +1,8 @@
 module NotesHelper
    # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)
-    @target_type.camelize == note.noteable_type && !note.for_diff_line?
+    note.for_wall? ||
+      (@target_type.camelize == note.noteable_type && !note.for_diff_line?)
   end
 
   def note_target_fields

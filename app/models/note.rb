@@ -115,6 +115,10 @@ class Note < ActiveRecord::Base
     for_merge_request? && for_diff_line?
   end
 
+  def for_wall?
+    noteable_type.blank?
+  end
+
   # override to return commits, which are not active record
   def noteable
     if for_commit?

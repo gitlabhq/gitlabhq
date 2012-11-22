@@ -267,6 +267,7 @@ var NoteList = {
     NoteList.bottom_id = newNoteIds.last();
     $("#notes-list").html(html);
 
+    // for the wall
     if (NoteList.reversed) {
       // init infinite scrolling
       NoteList.initLoadMore();
@@ -352,6 +353,8 @@ var NoteList = {
 
   /**
    * Initializes getting new notes every n seconds.
+   *
+   * Note: only used on wall.
    */
   initRefreshNew: function() {
     setInterval("NoteList.getNew()", 10000);
@@ -359,6 +362,8 @@ var NoteList = {
 
   /**
    * Gets the new set of notes.
+   *
+   * Note: only used on wall.
    */
   getNew: function() {
     $.ajax({
@@ -371,6 +376,8 @@ var NoteList = {
   /**
    * Called in response to getNew().
    * Replaces the content of #new-notes-list with the given html.
+   *
+   * Note: only used on wall.
    */
   replaceNewNotes: function(newNoteIds, html) {
     $("#new-notes-list").html(html);
@@ -378,7 +385,7 @@ var NoteList = {
   },
 
   /**
-   * Adds a single common note to #(new-)notes-list.
+   * Adds a single common note to #notes-list.
    */
   appendNewNote: function(id, html) {
     $("#notes-list").append(html);
@@ -386,7 +393,7 @@ var NoteList = {
   },
 
   /**
-   * Adds a single discussion note to #(new-)notes-list.
+   * Adds a single discussion note to #notes-list.
    */
   appendNewDiscussionNote: function(discussionId, diffRowHtml, noteHtml) {
     // is this the first note of discussion?
@@ -400,6 +407,15 @@ var NoteList = {
 
     // append new note to all matching discussions
     $(".notes[rel='"+discussionId+"']").append(noteHtml);
+  },
+
+  /**
+   * Adds a single wall note to #new-notes-list.
+   *
+   * Note: only used on wall.
+   */
+  appendNewWallNote: function(id, html) {
+    $("#new-notes-list").prepend(html);
   },
 
   /**
