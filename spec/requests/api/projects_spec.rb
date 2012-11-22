@@ -3,14 +3,14 @@ require 'spec_helper'
 describe Gitlab::API do
   include ApiHelpers
 
-  let(:user) { Factory :user }
-  let(:user2) { Factory.create(:user) }
-  let(:user3) { Factory.create(:user) }
-  let!(:hook) { Factory :project_hook, project: project, url: "http://example.com" }
-  let!(:project) { Factory :project, owner: user }
-  let!(:snippet) { Factory :snippet, author: user, project: project, title: 'example' }
-  let!(:users_project) { Factory :users_project, user: user, project: project, project_access: UsersProject::MASTER  }
-  let!(:users_project2) { Factory :users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER  }
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:user3) { create(:user) }
+  let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
+  let!(:project) { create(:project, owner: user ) }
+  let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
+  let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
+  let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
   before { project.add_access(user, :read) }
 
   describe "GET /projects" do
@@ -46,13 +46,13 @@ describe Gitlab::API do
       response.status.should == 201
     end
 
-    it "should repsond with 404 on failure" do
+    it "should respond with 404 on failure" do
       post api("/projects", user)
       response.status.should == 404
     end
 
     it "should assign attributes to project" do
-      project = Factory.attributes(:project, {
+      project = attributes_for(:project, {
         path: 'path',
         code: 'code',
         description: Faker::Lorem.sentence,
@@ -188,16 +188,16 @@ describe Gitlab::API do
       }.to change {project.hooks.count}.by(1)
     end
   end
-  
+
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "should update an existing project hook" do
       put api("/projects/#{project.code}/hooks/#{hook.id}", user),
-        url: 'http://example.com'
+        url: 'http://example.org'
       response.status.should == 200
-      json_response['url'].should == 'http://example.com'
+      json_response['url'].should == 'http://example.org'
     end
   end
-  
+
 
   describe "DELETE /projects/:id/hooks" do
     it "should delete hook from project" do
@@ -239,7 +239,7 @@ describe Gitlab::API do
   end
 
   describe "GET /projects/:id/snippets" do
-    it "should return a project snippet" do
+    it "should return an array of project snippets" do
       get api("/projects/#{project.code}/snippets", user)
       response.status.should == 200
       json_response.should be_an Array

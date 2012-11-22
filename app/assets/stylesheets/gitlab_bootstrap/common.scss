@@ -26,8 +26,10 @@
 .underlined { border-bottom: 1px solid #CCC; }
 .no-borders { border:none; }
 .vlink { color: $link_color !important; }
+.underlined_link { text-decoration: underline; }
 .borders { border: 1px solid #ccc; @include shade; }
 .hint { font-style: italic; color: #999; }
+.light { color: #888 }
 
 /** PILLS & TABS**/
 .nav-pills a:hover { background-color:#888; }
@@ -38,6 +40,7 @@
     > a {
       padding:8px 20px;
       margin-right: 7px;
+      line-height: 19px;
       border-color: #EEE;
       color:#888;
       border-bottom: 1px solid #ddd;
@@ -66,11 +69,12 @@
 .alert-message.error { @extend .alert-error; }
 
 /** AVATARS **/
-img.avatar { float:left; margin-right:15px; width:40px; border:1px solid #ddd; padding:1px; }
-img.avatar.s16 { width:16px; height:16px; }
-img.avatar.s24 { width:24px; height:24px; }
-img.avatar.s32 { width:32px; height:32px; }
+img.avatar { float:left; margin-right:12px; width:40px; border:1px solid #ddd; padding:1px; }
+img.avatar.s16 { width:16px; height:16px; margin-right:6px; }
+img.avatar.s24 { width:24px; height:24px; margin-right:8px; }
+img.avatar.s32 { width:32px; height:32px; margin-right:10px; }
 img.lil_av { padding-left: 4px; padding-right:3px; }
+img.small { width: 80px; }
 
 /** HELPERS **/
 .nothing_here_message { text-align:center; padding:20px; color:#777; }
@@ -85,3 +89,5 @@ input[type='search'].search-text-input {
   @include border-radius(4px);
   border:1px solid #ccc;
 }
+
+fieldset legend { font-size: 17px; }

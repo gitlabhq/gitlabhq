@@ -18,7 +18,7 @@ module Grack
       @env['SCRIPT_NAME'] = ""
 
       # Find project by PATH_INFO from env
-      if m = /^\/([\w-]+).git/.match(@request.path_info).to_a
+      if m = /^\/([\w\.-]+)\.git/.match(@request.path_info).to_a
         self.project = Project.find_by_path(m.last)
         return false unless project
       end
@@ -65,7 +65,7 @@ module Grack
       end
       # Need to reset seek point
       @request.body.rewind
-      /refs\/heads\/([\w-]+)/.match(input).to_a.first
+      /refs\/heads\/([\w\.-]+)/.match(input).to_a.first
     end
 
     protected

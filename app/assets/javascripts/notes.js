@@ -14,8 +14,8 @@ var NoteList = {
       this.notes_path = path + ".js";
       this.target_id = tid;
       this.target_type = tt;
-      this.reversed = $("#notes-list").hasClass("reversed");
-      this.target_params = "&target_type=" + this.target_type + "&target_id=" + this.target_id;
+      this.reversed = $("#notes-list").is(".reversed");
+      this.target_params = "target_type=" + this.target_type + "&target_id=" + this.target_id;
 
       // get initial set of notes
       this.getContent();
@@ -33,6 +33,8 @@ var NoteList = {
 
       $(".note-form-holder").on("ajax:complete", function(){
         $(".submit_note").enable();
+        $('#preview-note').hide();
+        $('#note_note').show();
       })
 
       disableButtonIfEmptyField(".note-text", ".submit_note");
@@ -52,6 +54,26 @@ var NoteList = {
           $('.note_advanced_opts').show();
         });
       }
+
+      // Setup note preview
+      $(document).on('click', '#preview-link', function(e) {
+        $('#preview-note').text('Loading...');
+
+        $(this).text($(this).text() === "Edit" ? "Preview" : "Edit");
+
+        var note_text = $('#note_note').val();
+
+        if(note_text.trim().length === 0) {
+          $('#preview-note').text('Nothing to preview.');
+        } else {
+          $.post($(this).attr('href'), {note: note_text}).success(function(data) {
+            $('#preview-note').html(data);
+          });
+        }
+
+        $('#preview-note, #note_note').toggle();
+        e.preventDefault();
+      });
     },
 
 
@@ -69,7 +91,7 @@ var NoteList = {
       $.ajax({
         type: "GET",
       url: this.notes_path,
-      data: "?" + this.target_params,
+      data: this.target_params,
       complete: function(){ $('.notes-status').removeClass("loading")},
       beforeSend: function() { $('.notes-status').addClass("loading") },
       dataType: "script"});
@@ -131,7 +153,7 @@ var NoteList = {
       $.ajax({
         type: "GET",
         url: this.notes_path,
-        data: "loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id + this.target_params,
+        data: this.target_params + "&loading_more=1&" + (this.reversed ? "before_id" : "after_id") + "=" + this.bottom_id,
         complete: function(){ $('.notes-status').removeClass("loading")},
         beforeSend: function() { $('.notes-status').addClass("loading") },
         dataType: "script"});
@@ -192,7 +214,7 @@ var NoteList = {
       $.ajax({
         type: "GET",
       url: this.notes_path,
-      data: "loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id) + this.target_params,
+      data: this.target_params + "&loading_new=1&after_id=" + (this.reversed ? this.top_id : this.bottom_id),
       dataType: "script"});
     },
 
@@ -264,7 +286,7 @@ var PerLineNotes = {
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).data("lineCode"));
         form.show();
-        return false;
+        e.preventDefault();
       });
 
       disableButtonIfEmptyField(".line-note-text", ".submit_inline_note");
@@ -285,7 +307,7 @@ var PerLineNotes = {
         // elements must really be removed for this to work reliably
         var trLine = trNote.prev();
         var trRpl  = trNote.next();
-        if (trLine.hasClass("line_holder") && trRpl.hasClass("reply")) {
+        if (trLine.is(".line_holder") && trRpl.is(".reply")) {
           trRpl.fadeOut(function() { $(this).remove(); });
         }
       });

@@ -9,8 +9,8 @@ describe PostReceive do
   end
 
   context "web hook" do
-    let(:project) { Factory.create(:project) }
-    let(:key) { Factory.create(:key, user: project.owner) }
+    let(:project) { create(:project) }
+    let(:key) { create(:key, user: project.owner) }
     let(:key_id) { key.identifier }
 
     it "fetches the correct project" do
@@ -27,16 +27,12 @@ describe PostReceive do
       PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id).should be_false
     end
 
-    it "asks the project to execute web hooks" do
+    it "asks the project to trigger all hooks" do
       Project.stub(find_by_path: project)
-      project.should_receive(:execute_hooks).with('sha-old', 'sha-new', 'refs/heads/master', project.owner)
-
-      PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id)
-    end
-
-    it "asks the project to observe push/create event data" do
-      Project.stub(find_by_path: project)
-      project.should_receive(:observe_push).with('sha-old', 'sha-new', 'refs/heads/master', project.owner)
+      project.should_receive(:execute_hooks)
+      project.should_receive(:execute_services)
+      project.should_receive(:update_merge_requests)
+      project.should_receive(:observe_push)
 
       PostReceive.perform(project.path, 'sha-old', 'sha-new', 'refs/heads/master', key_id)
     end

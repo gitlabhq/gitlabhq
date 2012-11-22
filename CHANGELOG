@@ -1,3 +1,21 @@
+v 3.1.0
+  - Updated gems
+  - Services: Gitlab CI integration
+  - Events filter on dashboard
+  - Own namespace for redis/resque
+  - Optimized commit diff views
+  - add alphabetical order for projects admin page
+  - Improved web editor
+  - Commit stats page
+  - Documentation split and cleanup
+  - Link to commit authors everywhere
+  - Restyled milestones list
+  - added Milestone to Merge Request
+  - Restyled Top panel
+  - Refactored Satellite Code
+  - Added file line links
+  - moved from capybara-webkit to poltergeist + phantomjs
+
 v 3.0.3
   - Fixed bug with issues list in Chrome
   - New Feature: Import team from another project
@@ -28,7 +46,7 @@ v 3.0.0
   - Reject ssh keys that break gitolite
   - [API] list one project hook
   - [API] edit project hook
-  - [API] add project snippets list
+  - [API] list project snippets
   - [API] allow to authorize using private token in HTTP header
   - [API] add user creation
 

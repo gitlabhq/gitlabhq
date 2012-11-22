@@ -18,7 +18,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.git_base_path,
     upload_pack:  Gitlab.config.git_upload_pack,
     receive_pack: Gitlab.config.git_receive_pack
-  }), at: '/:path', constraints: { path: /[\w-]+\.git/ }
+  }), at: '/:path', constraints: { path: /[\w\.-]+\.git/ }
 
   #
   # Help
@@ -128,7 +128,14 @@ Gitlab::Application.routes.draw do
       member do
         get "branches"
         get "tags"
+        get "stats"
         get "archive"
+      end
+    end
+
+    resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+      member do
+        get :test
       end
     end
 

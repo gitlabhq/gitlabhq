@@ -4,13 +4,21 @@
       %h5
         Resque Workers
       .data.padded
-        = link_to admin_resque_path do
-          %h1{class: @workers.present? ? "cgreen" : "cred"}
-            = @workers.count
-        %hr
-        %p
-          %strong{class: @pending_jobs > 0 ? "cred" : "cgreen"}
-            #{@pending_jobs} post receive jobs waiting
+        - if @resque_accessible
+          = link_to admin_resque_path do
+            %h1{class: @workers.present? ? "cgreen" : "cred"}
+              = @workers.count
+          %hr
+          %p
+            %strong{class: @pending_jobs > 0 ? "cred" : "cgreen"}
+              #{@pending_jobs} post receive jobs waiting
+        - else
+          = link_to admin_resque_path do
+            %h1.cdark ?
+          %hr
+          %p
+            %strong Resque status unknown
+
 
   .span4
     .ui-box
@@ -42,6 +50,6 @@
     %hr
     - @users.each do |user|
       %p
-        = link_to [:admin, user] do 
+        = link_to [:admin, user] do
           = user.name
           %small= user.email

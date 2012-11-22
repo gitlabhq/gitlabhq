@@ -57,12 +57,17 @@ module CommitsHelper
 
   def image_diff_class(diff)
     if diff.deleted_file
-      "diff_image_removed"
+      "diff_removed"
     elsif diff.new_file
-      "diff_image_added"
+      "diff_added"
     else
       nil
     end
   end
 
+  def commit_to_html commit
+    if commit.model
+      escape_javascript(render 'commits/commit', commit: commit)
+    end
+  end
 end

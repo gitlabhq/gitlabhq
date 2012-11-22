@@ -21,7 +21,7 @@ class CommitLoadContext < BaseContext
       result[:notes_count] = line_notes.count + project.commit_notes(commit).count
 
       begin
-        result[:suppress_diff] = true if commit.diffs.size > 200 && !params[:force_show_diff]
+        result[:suppress_diff] = true if commit.diffs.size > Commit::DIFF_SAFE_SIZE && !params[:force_show_diff]
       rescue Grit::Git::GitTimeout
         result[:suppress_diff] = true
         result[:status] = :huge_commit

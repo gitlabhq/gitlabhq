@@ -4,8 +4,8 @@ describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
 
-  let(:recipient) { Factory.create(:user, email: 'recipient@example.com') }
-  let(:project) { Factory.create(:project) }
+  let(:recipient) { create(:user, email: 'recipient@example.com') }
+  let(:project) { create(:project) }
 
   shared_examples 'a multiple recipients email' do
     it 'is sent to the given recipient' do
@@ -15,7 +15,7 @@ describe Notify do
 
   describe 'for new users, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { Factory.create(:user, email: 'newguy@example.com') }
+    let(:new_user) { create(:user, email: 'newguy@example.com') }
 
     subject { Notify.new_user_email(new_user.id, new_user.password) }
 
@@ -42,8 +42,8 @@ describe Notify do
 
   context 'for a project' do
     describe 'items that are assignable, the email' do
-      let(:assignee) { Factory.create(:user, email: 'assignee@example.com') }
-      let(:previous_assignee) { Factory.create(:user, name: 'Previous Assignee') }
+      let(:assignee) { create(:user, email: 'assignee@example.com') }
+      let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
 
       shared_examples 'an assignee email' do
         it 'is sent to the assignee' do
@@ -52,7 +52,7 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { Factory.create(:issue, assignee: assignee, project: project ) }
+        let(:issue) { create(:issue, assignee: assignee, project: project ) }
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.id) }
@@ -93,10 +93,10 @@ describe Notify do
         end
 
         describe 'status changed' do
-          let(:current_user) { Factory.create :user, email: "current@email.com" }
+          let(:current_user) { create(:user, email: "current@email.com") }
           let(:status) { 'closed' }
           subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
-        
+
           it 'has the correct subject' do
             should have_subject /changed issue ##{issue.id} \| #{issue.title}/i
           end
@@ -117,7 +117,7 @@ describe Notify do
       end
 
       context 'for merge requests' do
-        let(:merge_request) { Factory.create(:merge_request, assignee: assignee, project: project) }
+        let(:merge_request) { create(:merge_request, assignee: assignee, project: project) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.id) }
@@ -169,13 +169,13 @@ describe Notify do
     end
 
     describe 'project access changed' do
-      let(:project) { Factory.create(:project, 
-                                      path: "Fuu", 
-                                      code: "Fuu") }
-      let(:user) { Factory.create :user }
-      let(:users_project) { Factory.create(:users_project, 
-                                           project: project, 
-                                           user: user) }
+      let(:project) { create(:project,
+                             path: "Fuu",
+                             code: "Fuu") }
+      let(:user) { create(:user) }
+      let(:users_project) { create(:users_project,
+                                   project: project,
+                                   user: user) }
       subject { Notify.project_access_granted_email(users_project.id) }
       it 'has the correct subject' do
         should have_subject /access to project was granted/
@@ -189,8 +189,8 @@ describe Notify do
     end
 
     context 'items that are noteable, the email for a note' do
-      let(:note_author) { Factory.create(:user, name: 'author_name') }
-      let(:note) { Factory.create(:note, project: project, author: note_author) }
+      let(:note_author) { create(:user, name: 'author_name') }
+      let(:note) { create(:note, project: project, author: note_author) }
 
       before :each do
           Note.stub(:find).with(note.id).and_return(note)
@@ -251,7 +251,7 @@ describe Notify do
       end
 
       describe 'on a merge request' do
-        let(:merge_request) { Factory.create(:merge_request, project: project) }
+        let(:merge_request) { create(:merge_request, project: project) }
         let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(merge_request) }
 
@@ -269,7 +269,7 @@ describe Notify do
       end
 
       describe 'on an issue' do
-        let(:issue) { Factory.create(:issue, project: project) }
+        let(:issue) { create(:issue, project: project) }
         let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(issue) }
 

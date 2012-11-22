@@ -1,15 +1,21 @@
+/** Override bootstrap variables **/
+$baseFontSize: 13px !default;
+$baseLineHeight: 18px !default;
+
 @import "bootstrap";
 @import "bootstrap-responsive";
 @import 'font-awesome';
 
 /** GitLab colors **/
-$link_color:#3A89A3;
-$blue_link: #2fa0bb;
-$style_color: #474d57;
+$link_color: #3A89A3;
+$blue_link: #2FA0BB;
+$style_color: #474D57;
 $hover: #D9EDF7;
+$hover_border: #ADF;
 
 /** GitLab Fonts **/
 @font-face { font-family: Korolev; src: font-url('korolev-medium-compressed.otf'); }
+$monospace: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono', 'lucida console', monospace;
 
 /** MIXINS **/
 @mixin shade {
@@ -19,9 +25,9 @@ $hover: #D9EDF7;
 }
 
 @mixin solid_shade {
-  -moz-box-shadow: 0 0 0 3px #eee;
-  -webkit-box-shadow: 0 0 0 3px #eee;
-  box-shadow: 0 0 0 3px #eee;
+  -moz-box-shadow: 0 0 0 3px #f1f1f1;
+  -webkit-box-shadow: 0 0 0 3px #f1f1f1;
+  box-shadow: 0 0 0 3px #f1f1f1;
 }
 
 @mixin border-radius($radius) {
@@ -64,6 +70,14 @@ $hover: #D9EDF7;
   background-image: -o-linear-gradient($from, $to);
 }
 
+@mixin bg-light-gray-gradient {
+  background:#f1f1f1;
+  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #f5f5f5), to(#e1e1e1));
+  background-image: -webkit-linear-gradient(#f5f5f5 6.6%, #e1e1e1);
+  background-image: -moz-linear-gradient(#f5f5f5 6.6%, #e1e1e1);
+  background-image: -o-linear-gradient(#f5f5f5 6.6%, #e1e1e1);
+}
+
 @mixin bg-gray-gradient {
   background:#eee;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
@@ -104,14 +118,12 @@ $hover: #D9EDF7;
 @import "themes/ui_basic.scss";
 
 /**
- * UI mars theme
+ * UI themes:
  */
 @import "themes/ui_mars.scss";
-
-/**
- * UI Modern theme
- */
 @import "themes/ui_modern.scss";
+@import "themes/ui_gray.scss";
+@import "themes/ui_color.scss";
 
 /**
  * GitLab bootstrap.
@@ -145,6 +157,7 @@ $hover: #D9EDF7;
 @import "sections/merge_requests.scss";
 @import "sections/graph.scss";
 @import "sections/events.scss";
+@import "sections/themes.scss";
 
 /**
  * This scss file redefine chozen selectbox styles for

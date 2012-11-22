@@ -10,10 +10,12 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def block_code(code, language)
+    options = { options: {encoding: 'utf-8'} }
+
     if Pygments::Lexer.find(language)
-      Pygments.highlight(code, lexer: language, options: {encoding: 'utf-8'})
+      Pygments.highlight(code, options.merge(lexer: language.downcase))
     else
-      Pygments.highlight(code, options: {encoding: 'utf-8'})
+      Pygments.highlight(code, options)
     end
   end
 

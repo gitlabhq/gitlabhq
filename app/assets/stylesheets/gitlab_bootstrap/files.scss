@@ -132,35 +132,74 @@
      *  Code file
      */
     &.code {
-      padding:0;
-      td.code {
-        width: 100%;
-        .highlight {
-          margin-left: 55px;
-          overflow:auto;
-          overflow-y:hidden;
-        }
-      }
-      .highlight pre {
-        white-space: pre;
-        word-wrap:normal;
-      }
+      padding: 0;
 
-      table.highlighttable {
+      table.lines {
         border: none;
-      }
-      body.project-page table.highlighttable td { border: none }
-      table.highlighttable tr:hover { background:none;}
+        box-shadow: none;
+        margin: 0px;
+        padding: 0px;
+        table-layout: fixed;
 
-      table.highlighttable pre{
-        line-height:16px !important;
-        font-size:12px !important;
-      }
+        pre {
+          background: none;
+          border: none;
+          font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+          font-size: 12px !important;
+          line-height: 16px !important;
+          margin: 0;
+          padding: 10px 0;
+        }
+        td {
+          border: none;
+          margin: 0;
+          padding: 0;
+          vertical-align: top;
 
-      table.highlighttable .linenodiv pre {
-        text-align: right;
-        padding-right: 4px;
-        color:#666;
+          &:first-child {
+            background: #eee;
+            width: 50px;
+          }
+          &:last-child {
+          }
+        }
+        tr:hover {
+          background: none;
+        }
+
+        pre.line_numbers {
+          color: #666;
+          padding: 10px 6px 10px 0;
+          text-align: right;
+
+          a {
+            color: #666;
+
+            i {
+              display: none;
+              font-size: 14px;
+              line-height: 14px;
+            }
+            &:hover i {
+              display: inherit;
+            }
+          }
+        }
+
+        .highlight {
+          border-left: 1px solid #DEE2E3;
+          overflow: auto;
+          overflow-y: hidden;
+
+          pre {
+            white-space: pre;
+            word-wrap: normal;
+
+            .line {
+              padding: 0 10px;
+            }
+          }
+        }
       }
     }
   }

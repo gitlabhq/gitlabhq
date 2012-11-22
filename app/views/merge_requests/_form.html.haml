@@ -28,16 +28,22 @@
   %h4.cdark 2. Fill info
 
   .clearfix
-    .main_box
+    .merge_requests_form_box
       .top_box_content
-        = f.label :title do 
+        = f.label :title do
           %strong= "Title *"
-        .input= f.text_field :title, class: "input-xxlarge pad gfm-input", maxlength: 255, rows: 5
-      .middle_box_content
-        = f.label :assignee_id do 
-          %i.icon-user 
-          Assign to
-        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+        .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5
+      .merge_requests_middle_box
+        .merge_requests_assignee
+          = f.label :assignee_id do
+            %i.icon-user
+            Assign to
+          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+        .merge_requests_milestone
+          = f.label :milestone_id do
+            %i.icon-time
+            Milestone
+          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
   .control-group
 

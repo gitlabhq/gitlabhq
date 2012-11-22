@@ -32,9 +32,9 @@ class ProjectMilestones < Spinach::FeatureSteps
 
   And 'project "Shop" has milestone "v2.2"' do
     project = Project.find_by_name("Shop")
-    milestone = Factory :milestone, :title => "v2.2", :project => project
+    milestone = create(:milestone, :title => "v2.2", :project => project)
 
-    3.times { Factory :issue, :project => project, :milestone => milestone }
+    3.times { create(:issue, :project => project, :milestone => milestone) }
   end
 
   Given 'the milestone has open and closed issues' do

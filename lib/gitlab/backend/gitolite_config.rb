@@ -14,7 +14,10 @@ module Gitlab
     end
 
     def ga_repo
-      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
+      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(
+        File.join(config_tmp_dir,'gitolite'),
+        conf: Gitlab.config.gitolite_config_file
+      )
     end
 
     def apply
@@ -191,8 +194,10 @@ module Gitlab
 
     def push tmp_dir
       Dir.chdir(File.join(tmp_dir, "gitolite"))
-      system('git add -A')
-      system('git commit -am "GitLab"')
+      raise "Git add failed." unless system('git add -A')
+      system('git commit -m "GitLab"') # git commit returns 0 on success, and 1 if there is nothing to commit
+      raise "Git commit failed." unless [0,1].include? $?.exitstatus
+
       if system('git push')
         Dir.chdir(Rails.root)
       else

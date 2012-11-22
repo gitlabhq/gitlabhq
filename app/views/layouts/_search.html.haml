@@ -1,0 +1,11 @@
+.search
+  = form_tag search_path, method: :get, class: 'navbar-form pull-left' do |f|
+    = text_field_tag "search", nil, placeholder: "Search", class: "search-input"
+
+:javascript
+  $(function(){
+    $("#search").autocomplete({
+      source: #{raw search_autocomplete_source},
+      select: function(event, ui) { location.href = ui.item.url }
+    });
+  });

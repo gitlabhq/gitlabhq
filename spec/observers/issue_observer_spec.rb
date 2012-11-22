@@ -16,7 +16,7 @@ describe IssueObserver do
       subject.should_receive(:after_create)
 
       Issue.observers.enable :issue_observer do
-        Factory.create(:issue, project: Factory.create(:project))
+        create(:issue, project: create(:project))
       end
     end
 
@@ -43,7 +43,7 @@ describe IssueObserver do
     end
 
     it 'is called when an issue is changed' do
-      changed = Factory.create(:issue, project: Factory.create(:project))
+      changed = create(:issue, project: create(:project))
       subject.should_receive(:after_update)
 
       Issue.observers.enable :issue_observer do

@@ -28,6 +28,16 @@ class Profile < Spinach::FeatureSteps
     click_button "Save"
   end
 
+  When 'I unsuccessfully change my password' do
+    fill_in "user_password", with: "password"
+    fill_in "user_password_confirmation", with: "confirmation"
+    click_button "Save"
+  end
+
+  Then "I should see a password error message" do
+    page.should have_content "Password doesn't match confirmation"
+  end
+
   And 'I should be redirected to sign in page' do
     current_path.should == new_user_session_path
   end
@@ -43,10 +53,27 @@ class Profile < Spinach::FeatureSteps
   end
 
   Given 'I have activity' do
-    Factory :closed_issue_event, author: current_user
+    create(:closed_issue_event, author: current_user)
   end
 
   Then 'I should see my activity' do
     page.should have_content "#{current_user.name} closed issue"
+  end
+
+  When "I change my application theme" do
+    choose "Violet"
+  end
+
+  When "I change my code preview theme" do
+    choose "Dark code preview"
+  end
+
+  Then "I should see the theme change immediately" do
+    page.should have_selector('body.ui_color')
+    page.should_not have_selector('body.ui_basic')
+  end
+
+  Then "I should receive feedback that the changes were saved" do
+    page.should have_content("Saved")
   end
 end

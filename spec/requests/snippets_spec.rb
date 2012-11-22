@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Snippets" do
-  let(:project) { Factory :project }
+  let(:project) { create(:project) }
 
   before do
     login_as :user
@@ -10,9 +10,9 @@ describe "Snippets" do
 
   describe "GET /snippets" do
     before do
-      @snippet = Factory :snippet,
-        author: @user,
-        project: project
+      @snippet = create(:snippet,
+                        author: @user,
+                        project: project)
 
       visit project_snippets_path(project)
     end
@@ -68,9 +68,9 @@ describe "Snippets" do
 
   describe "Edit snippet" do
     before do
-      @snippet = Factory :snippet,
-        author: @user,
-        project: project
+      @snippet = create(:snippet,
+                        author: @user,
+                        project: project)
       visit project_snippet_path(project, @snippet)
       click_link "Edit"
     end

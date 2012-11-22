@@ -9,7 +9,11 @@ class ProfileController < ApplicationController
 
   def update
     @user.update_attributes(params[:user])
-    redirect_to :back
+
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
+    end
   end
 
   def token
@@ -22,7 +26,7 @@ class ProfileController < ApplicationController
       flash[:notice] = "Password was successfully updated. Please login with it"
       redirect_to new_user_session_path
     else
-      render action: "password"
+      render 'account'
     end
   end
 

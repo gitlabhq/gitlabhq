@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: groups
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)      not null
+#  code       :string(255)      not null
+#  owner_id   :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Group < ActiveRecord::Base
   attr_accessible :code, :name, :owner_id
 
@@ -22,16 +34,3 @@ class Group < ActiveRecord::Base
     User.joins(:users_projects).where(users_projects: {project_id: project_ids}).uniq
   end
 end
-
-# == Schema Information
-#
-# Table name: groups
-#
-#  id         :integer         not null, primary key
-#  name       :string(255)     not null
-#  code       :string(255)     not null
-#  owner_id   :integer         not null
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#
-

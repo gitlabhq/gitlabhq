@@ -32,7 +32,7 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   Given 'user with name "John Doe" joined project "Shop"' do
-    user = Factory.create(:user, {name: "John Doe"})
+    user = create(:user, {name: "John Doe"})
     project = Project.find_by_name "Shop"
     Event.create(
       project: project,
@@ -60,14 +60,14 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   And 'I own project "Shop"' do
-    @project = Factory :project, :name => 'Shop'
+    @project = create :project, name: 'Shop'
     @project.add_access(@user, :admin)
   end
 
   And 'I have group with projects' do
-    @group   = Factory :group
-    @project = Factory :project, group: @group
-    @event   = Factory :closed_issue_event, project: @project
+    @group   = create(:group)
+    @project = create(:project, group: @group)
+    @event   = create(:closed_issue_event, project: @project)
 
     @project.add_access current_user, :admin
   end
@@ -76,25 +76,25 @@ class Dashboard < Spinach::FeatureSteps
     @project = Project.find_by_name("Shop")
 
     data = {
-      :before => "0000000000000000000000000000000000000000",
-      :after => "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      :ref => "refs/heads/new_design",
-      :user_id => @user.id,
-      :user_name => @user.name,
-      :repository => {
-        :name => @project.name,
-        :url => "localhost/rubinius",
-        :description => "",
-        :homepage => "localhost/rubinius",
-        :private => true
+      before: "0000000000000000000000000000000000000000",
+      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
+      ref: "refs/heads/new_design",
+      user_id: @user.id,
+      user_name: @user.name,
+      repository: {
+        name: @project.name,
+        url: "localhost/rubinius",
+        description: "",
+        homepage: "localhost/rubinius",
+        private: true
       }
     }
 
     @event = Event.create(
-      :project => @project,
-      :action => Event::Pushed,
-      :data => data,
-      :author_id => @user.id
+      project: @project,
+      action: Event::Pushed,
+      data: data,
+      author_id: @user.id
     )
   end
 

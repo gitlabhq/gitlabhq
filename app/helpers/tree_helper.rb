@@ -67,4 +67,29 @@ module TreeHelper
       can?(current_user, :push_code, @project)
     end
   end
+
+  # Breadcrumb links for a Project and, if applicable, a tree path
+  def breadcrumbs
+    return unless @project && @ref
+
+    # Add the root project link and the arrow icon
+    crumbs = content_tag(:li) do
+      content_tag(:span, nil, class: 'arrow') +
+      link_to(@project.name, project_commits_path(@project, @ref))
+    end
+
+    if @path
+      parts = @path.split('/')
+
+      parts.each_with_index do |part, i|
+        crumbs += content_tag(:span, '/', class: 'divider')
+        crumbs += content_tag(:li) do
+          # The text is just the individual part, but the link needs all the parts before it
+          link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
+        end
+      end
+    end
+
+    crumbs.html_safe
+  end
 end

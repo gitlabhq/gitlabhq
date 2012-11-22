@@ -2,14 +2,14 @@
 #
 # Table name: milestones
 #
-#  id          :integer         not null, primary key
-#  title       :string(255)     not null
-#  project_id  :integer         not null
+#  id          :integer          not null, primary key
+#  title       :string(255)      not null
+#  project_id  :integer          not null
 #  description :text
 #  due_date    :date
-#  closed      :boolean         default(FALSE), not null
-#  created_at  :datetime        not null
-#  updated_at  :datetime        not null
+#  closed      :boolean          default(FALSE), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 
 require 'spec_helper'
@@ -30,8 +30,8 @@ describe Milestone do
     it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 
-  let(:milestone) { Factory :milestone }
-  let(:issue) { Factory :issue }
+  let(:milestone) { create(:milestone) }
+  let(:issue) { create(:issue) }
 
   describe "#percent_complete" do
     it "should not count open issues" do

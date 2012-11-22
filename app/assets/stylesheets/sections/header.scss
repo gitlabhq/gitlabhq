@@ -3,18 +3,29 @@
  *
  */
 header {
-  width:100%;
-  padding:0;
-  margin:0;
-  top:1px;
-  left:0;
-  background: #F1F1F1; /* for non-css3 browsers */
-  border-bottom: 1px solid #ccc;
-  box-shadow: 0 -1px 0 white inset;
-  -moz-box-shadow: 0 -1px 0 white inset;
-  -webkit-box-shadow: 0 -1px 0 white inset;
+  &.navbar-gitlab {
+    .navbar-inner {
+      height:45px;
+      padding: 5px;
+      background: #F1F1F1;
+
+      .nav > li > a {
+        color: $style_color;
+        text-shadow: 0 1px 0 #fff;
+        font-size: 18px;
+        padding: 11px;
+      }
+
+      /** NAV block with links and profile **/
+      .nav {
+        float: right;
+        margin-right: 0;
+      }
+    }
+  }
+
   z-index:10;
-  height:60px;
+  /*height:60px;*/
 
   /**
    *
@@ -22,45 +33,26 @@ header {
    *
    */
   .app_logo {
-    width:200px;
+    width:170px;
     float:left;
-    position:relative;
-    top:-5px;
     a {
       float:left;
+      padding: 0px;
 
       h1 {
-        padding-top: 5px;
         width:90px;
-        background: url('logo_dark.png') no-repeat 0px -3px;
+        background: url('logo_dark.png') no-repeat 0px 2px;
         float:left;
-        margin-left:5px;
-        font-size:36px;
-        line-height:36px;
+        margin-left:2px;
+        font-size:30px;
+        line-height:48px;
         font-weight:normal;
         color:$style_color;
         text-shadow: 0 1px 1px #FFF;
-        padding-left:50px;
+        padding-left:45px;
         height:40px;
         font-family: 'Korolev', sans-serif;
       }
-
-    }
-    .separator {
-      margin-left:20px;
-      float: left;
-      height: 60px;
-      width: 1px;
-      background: white;
-      border-left: 1px solid #DDD;
-      margin-top: -10px;
-    }
-  }
-  .container {
-    .top_panel_content {
-      margin:auto;
-      position:relative;
-      padding:15px 0;
     }
   }
 
@@ -74,24 +66,13 @@ header {
     float:left;
     margin:0;
     margin-right:30px;
-    font-size:36px;
-    line-height:36px;
+    font-size:30px;
+    line-height:48px;
     font-weight:normal;
     color:$style_color;
     text-shadow: 0 1px 1px #FFF;
     font-family: 'Korolev', sans-serif;
   }
-
-  .fbtn {
-    float: right;
-    margin-right:10px;
-    .btn {
-      margin-left:7px;
-      background: #F1F1F1;
-      border: 1px solid #CCC;
-    }
-  }
-
 
   /**
    *
@@ -99,8 +80,9 @@ header {
    *
    */
   .search {
-    float: right;
     margin-right: 45px;
+    margin-left:10px;
+    margin-top: 2px;
 
     .search-input {
       @extend .span2;
@@ -108,8 +90,13 @@ header {
       background-repeat: no-repeat;
       background-position: 10px;
       padding-left:25px;
-      @include border-radius(5px);
-      border:1px solid #ccc;
+      font-size: 13px;
+      @include border-radius(3px);
+      border:1px solid #c6c6c6;
+      box-shadow:none;
+      &:focus {
+        @extend .span3;
+      }
     }
   }
 
@@ -121,7 +108,7 @@ header {
   .account-box {
     position: absolute;
     right: 0;
-    top: 13px;
+    top: 6px;
     z-index: 10000;
     width: 128px;
     font-size: 11px;
@@ -129,13 +116,13 @@ header {
     display: block;
     cursor: pointer;
     img {
-      @include border-radius(4px);
+      @include border-radius(3px);
       right: 5px;
       position: absolute;
       width: 28px;
       height: 28px;
       display: block;
-      top: 2px;
+      top:1px;
       &:after {
         content: " ";
         display: block;
@@ -162,12 +149,7 @@ header {
   display: block; } }
 
   .account-links {
-    background: #79C3E0;
-    display: none;
     border-radius: 5px;
-    width: 100px;
-    margin-top: 0;
-    float: right;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     position: relative;
     &:before {
@@ -177,32 +159,33 @@ header {
       position: absolute;
       border: 5px solid transparent;
       border-color: rgba(255, 255, 255, 0);
-      border-bottom-color: #333;
+      border-bottom-color: #555;
       text-indent: -9999px;
       top: -10px;
       line-height: 0;
       right: 10px;
     z-index: 10; }
-    background: #333;
+    background: #555;
     display: none;
     z-index: 100000;
-    border-radius: 5px;
+    @include border-radius(4px);
     width: 100px;
     position: absolute;
-    right: 10px;
-    top: 42px;
+    right: 5px;
+    top: 38px;
     margin-top: 0;
     float: right;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     a {
-      color: #EEE;
-      padding: 6px 10px;
+      color: #fff;
+      padding: 7px 10px;
       display: block;
       text-shadow: none;
-      border-bottom: 1px solid #555;
+      border-bottom: 1px solid #666;
+      font-size: 12px;
       &:hover {
-        color:#eee;
-        background: #444;
+        color:#fff;
+        background: #333;
       }
     }
   }
@@ -228,5 +211,52 @@ header {
       border-bottom-right-radius: 5px;
       border-bottom-left-radius: 5px;
   border-bottom: 0; } }
+
+
+
+  /*
+   * Dark header
+   *
+   */
+  &.header-dark {
+    &.navbar-gitlab {
+      .navbar-inner {
+        background: #708090;
+        border-bottom: 1px solid #AAA;
+
+        .nav > li > a {
+          color: #fff;
+          text-shadow: 0 1px 0 #111;
+        }
+      }
+    }
+
+    .search {
+      .search-input {
+        background-color: #D2D5DA;
+        background-color: rgba(255, 255, 255, 0.5);
+
+        &:focus {
+          background-color: white;
+        }
+      }
+    }
+    .search-input::-webkit-input-placeholder {
+      color: #666;
+    }
+    .app_logo {
+      a {
+        h1 {
+          background: url('logo_white.png') no-repeat 0px 2px;
+          color:#fff;
+          text-shadow: 0 1px 1px #111;
+        }
+      }
+    }
+    .project_name {
+      color:#fff;
+      text-shadow: 0 1px 1px #111;
+    }
+  }
 }
 

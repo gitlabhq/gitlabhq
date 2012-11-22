@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::API do
   include ApiHelpers
 
-  let(:user) { Factory :user }
+  let(:user) { create(:user) }
 
   describe "POST /session" do
     context "when valid password" do

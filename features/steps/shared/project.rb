@@ -9,7 +9,7 @@ module SharedProject
 
   # Create a specific project called "Shop"
   And 'I own project "Shop"' do
-    @project = Factory :project, :name => "Shop"
+    @project = create(:project, :name => "Shop")
     @project.add_access(@user, :admin)
   end
 

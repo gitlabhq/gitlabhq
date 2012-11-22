@@ -1,4 +1,4 @@
-require Rails.root.join('lib', 'gitlab', 'graph_commit')
+require Rails.root.join('lib', 'gitlab', 'graph', 'json_builder')
 
 class ProjectsController < ProjectResourceController
   skip_before_filter :project, only: [:new, :create]
@@ -21,9 +21,10 @@ class ProjectsController < ProjectResourceController
     @project = Project.create_by_user(params[:project], current_user)
 
     respond_to do |format|
+      flash[:notice] = 'Project was successfully created.' if @project.saved?
       format.html do
         if @project.saved?
-          redirect_to(@project, notice: 'Project was successfully created.')
+          redirect_to @project
         else
           render action: "new"
         end
@@ -79,7 +80,9 @@ class ProjectsController < ProjectResourceController
   end
 
   def graph
-    @days_json, @commits_json = Gitlab::GraphCommit.to_graph(project)
+    graph = Gitlab::Graph::JsonBuilder.new(project)
+
+    @days_json, @commits_json = graph.days_json, graph.commits_json
   end
 
   def destroy

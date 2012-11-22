@@ -1,28 +1,44 @@
 .file-editor
-  = form_tag(project_tree_path(@project, @id), :method => :put) do
+  = form_tag(project_tree_path(@project, @id), method: :put, class: "form-horizontal") do
     .file_holder
       .file_title
         %i.icon-file
         %span.file_name
-          = "#{@tree.path.force_encoding('utf-8')} (#{@ref})"
+          = @tree.path
+          %small
+            on
+            %strong= @ref
+        %span.options
+          .btn-group.tree-btn-group
+            = link_to "Cancel", project_tree_path(@project, @id), class: "btn very_small cancel-btn", confirm: "Are you sure?"
       .file_content.code
-        #editor= @tree.data
+        %pre#editor= @tree.data
 
-    .editor-commit-comment
-      = label_tag 'commit_message' do
-        %p.slead Commit message
-      = text_area_tag 'commit_message', '', :required => true
+    .control-group.commit_message-group
+      = label_tag 'commit_message', class: "control-label" do
+        Commit message
+      .controls
+        = text_area_tag 'commit_message', '', placeholder: "Update #{@tree.name}", required: true, rows: 3
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
-      = hidden_field_tag 'content', '', :id => :file_content
-      = button_tag "Commit", class: 'btn save-btn'
+      = hidden_field_tag 'content', '', id: :file_content
+      .commit-button-annotation
+        = button_tag "Commit", class: 'btn commit-btn js-commit-button'
+        .message
+          to branch
+          %strong= @ref
       = link_to "Cancel", project_tree_path(@project, @id), class: "btn cancel-btn", confirm: "Are you sure?"
 
 :javascript
+  var ace_mode = "#{@tree.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
-  editor.getSession().setMode("ace/mode/javascript");
+  if (ace_mode) {
+    editor.getSession().setMode('ace/mode/' + ace_mode);
+  }
 
-  $(".save-btn").click(function(){
+  disableButtonIfEmptyField("#commit_message", ".js-commit-button");
+
+  $(".js-commit-button").click(function(){
     $("#file_content").val(editor.getValue());
-    $(".form_editor form").submit();
+    $(".file-editor form").submit();
   });
