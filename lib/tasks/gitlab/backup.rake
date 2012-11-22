@@ -118,7 +118,7 @@ namespace :gitlab do
       project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
       project.each do |project|
         print "- Dumping repository #{project.first}... "
-        if Kernel.system("cd #{project.second} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/#{project.first}.bundle --all > /dev/null 2>&1")
+        if Kernel.system("cd #{project.second}/.. > /dev/null 2>&1 && tar cf #{backup_path_repo}/#{project.first}.tar #{project.first}.git > /dev/null 2>&1")
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -134,7 +134,7 @@ namespace :gitlab do
       project.each do |project|
         print "- Restoring repository #{project.first}... "
         FileUtils.rm_rf(project.second) if File.dirname(project.second) # delete old stuff
-        if Kernel.system("cd #{File.dirname(project.second)} > /dev/null 2>&1 && git clone --bare #{backup_path_repo}/#{project.first}.bundle #{project.first}.git > /dev/null 2>&1")
+        if Kernel.system("cd #{File.dirname(project.second)} > /dev/null 2>&1 && tar xf #{backup_path_repo}/#{project.first}.tar > /dev/null 2>&1")
           permission_commands = [
             "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
             "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}"
