@@ -79,11 +79,15 @@ module Repository
   end
 
   def url_to_repo
-    git_host.url_to_repo(path)
+    git_host.url_to_repo(path_with_namespace)
   end
 
   def path_to_repo
-    File.join(Gitlab.config.git_base_path, "#{path}.git")
+    File.join(Gitlab.config.git_base_path, namespace_dir, "#{path}.git")
+  end
+
+  def namespace_dir
+    namespace.try(:code) || ''
   end
 
   def update_repository

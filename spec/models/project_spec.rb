@@ -24,6 +24,7 @@ require 'spec_helper'
 describe Project do
   describe "Associations" do
     it { should belong_to(:group) }
+    it { should belong_to(:namespace) }
     it { should belong_to(:owner).class_name('User') }
     it { should have_many(:users) }
     it { should have_many(:events).dependent(:destroy) }

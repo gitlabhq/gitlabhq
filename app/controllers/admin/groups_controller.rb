@@ -48,14 +48,18 @@ class Admin::GroupsController < AdminController
 
   def project_update
     project_ids = params[:project_ids]
-    Project.where(id: project_ids).update_all(group_id: @group.id)
+
+    Project.where(id: project_ids).each do |project|
+      project.namespace_id = @group.id
+      project.save
+    end
 
     redirect_to :back, notice: 'Group was successfully updated.'
   end
 
   def remove_project
     @project = Project.find(params[:project_id])
-    @project.group_id = nil
+    @project.namespace_id = nil
     @project.save
 
     redirect_to :back, notice: 'Group was successfully updated.'

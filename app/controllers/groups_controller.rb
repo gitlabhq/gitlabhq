@@ -54,7 +54,7 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= current_user.projects_sorted_by_activity.where(group_id: @group.id)
+    @projects ||= current_user.projects_sorted_by_activity.where(namespace_id: @group.id)
   end
 
   def project_ids

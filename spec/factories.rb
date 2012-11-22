@@ -29,10 +29,14 @@ FactoryGirl.define do
     owner
   end
 
-  factory :group do
+  factory :namespace do
     sequence(:name) { |n| "group#{n}" }
     code { name.downcase.gsub(/\s/, '_') }
     owner
+
+    factory :group do
+      type 'Group'
+    end
   end
 
   factory :users_project do
