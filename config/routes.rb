@@ -49,7 +49,7 @@ Gitlab::Application.routes.draw do
         delete :remove_project
       end
     end
-    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create] do
       member do
         get :team
         put :team_update

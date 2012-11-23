@@ -1,7 +1,7 @@
 = render 'admin/shared/projects_head'
 %h3.page_title
   Projects
-  = link_to 'New Project', new_admin_project_path, class: "btn small right"
+  = link_to 'New Project', new_project_path, class: "btn small right"
 %br
 = form_tag admin_projects_path, method: :get, class: 'form-inline' do
   = text_field_tag :name, params[:name], class: "xlarge"
@@ -16,7 +16,7 @@
     %th Edit
     %th.cred Danger Zone!
 
-  - @admin_projects.each do |project|
+  - @projects.each do |project|
     %tr
       %td= link_to project.name, [:admin, project]
       %td= project.path
@@ -24,4 +24,4 @@
       %td= last_commit(project)
       %td= link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn small"
       %td.bgred= link_to 'Destroy', [:admin, project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn small danger"
-= paginate @admin_projects, theme: "admin"
+= paginate @projects, theme: "admin"
