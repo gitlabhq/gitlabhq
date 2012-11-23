@@ -7,7 +7,7 @@
     .container
       %ul.main_menu
         = nav_link(html_options: {class: "home #{project_tab_class}"}) do
-          = link_to @project.code, project_path(@project), title: "Project"
+          = link_to @project.path, project_path(@project), title: "Project"
 
         - if @project.repo_exists?
           - if can? current_user, :download_code, @project

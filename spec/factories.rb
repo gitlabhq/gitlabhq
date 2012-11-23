@@ -26,13 +26,12 @@ FactoryGirl.define do
   factory :project do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    code { name.downcase.gsub(/\s/, '_') }
     owner
   end
 
   factory :namespace do
     sequence(:name) { |n| "group#{n}" }
-    code { name.downcase.gsub(/\s/, '_') }
+    path { name.downcase.gsub(/\s/, '_') }
     owner
 
     factory :group do

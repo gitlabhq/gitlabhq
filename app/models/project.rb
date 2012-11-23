@@ -86,7 +86,7 @@ class Project < ActiveRecord::Base
 
     def create_by_user(params, user)
       namespace_id = params.delete(:namespace_id)
-      namespace_id ||= current_user.namespace_id
+      namespace_id ||= user.namespace_id
 
       project = Project.new params
 
