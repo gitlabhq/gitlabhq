@@ -17,4 +17,8 @@ class Namespace < ActiveRecord::Base
   def to_param
     code
   end
+
+  def human_name
+    owner_name
+  end
 end

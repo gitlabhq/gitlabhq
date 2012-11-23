@@ -12,6 +12,12 @@
   %hr
   %div.adv_settings
     %h6 Advanced settings:
+    - if current_user.namespaces.size > 1
+      .clearfix
+        = f.label :namespace_id do
+          Namespace
+        .input
+          = f.select :namespace_id, namespaces_options, {}, {class: 'chosen'}
     .clearfix
       = f.label :path do
         Git Clone

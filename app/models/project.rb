@@ -81,10 +81,13 @@ class Project < ActiveRecord::Base
     end
 
     def create_by_user(params, user)
+      namespace_id = params.delete(:namespace_id) || namespace.try(:id)
+
       project = Project.new params
 
       Project.transaction do
         project.owner = user
+        project.namespace_id = namespace_id
         project.save!
 
         # Add user as project master

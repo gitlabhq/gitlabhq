@@ -36,6 +36,7 @@ require 'spec_helper'
 
 describe User do
   describe "Associations" do
+    it { should have_one(:namespace) }
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:projects) }
     it { should have_many(:my_own_projects).class_name('Project') }

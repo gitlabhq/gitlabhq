@@ -38,12 +38,15 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name,
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
                   :extern_uid, :provider, :as => [:default, :admin]
   attr_accessible :projects_limit, :as => :admin
 
   attr_accessor :force_random_password
+
+  # Namespace for personal projects
+  has_one :namespace, class_name: "Namespace", foreign_key: :owner_id, conditions: 'type IS NULL', dependent: :destroy
 
   has_many :keys, dependent: :destroy
   has_many :projects, through: :users_projects
@@ -111,5 +114,12 @@ class User < ActiveRecord::Base
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
+  end
+
+  def namespaces
+    namespaces = []
+    namespaces << self.namespace
+    namespaces = namespaces + Group.all if admin
+    namespaces
   end
 end

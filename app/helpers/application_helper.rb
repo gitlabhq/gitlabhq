@@ -74,6 +74,18 @@ module ApplicationHelper
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
+  def namespaces_options
+    groups = current_user.namespaces.select {|n| n.type == 'Group'}
+    users = current_user.namespaces.reject {|n| n.type == 'Group'}
+
+    options = [
+      ["Groups", groups.map {|g| [g.human_name, g.id]} ],
+      [ "Users", users.map {|u| [u.human_name, u.id]} ]
+    ]
+
+    grouped_options_for_select(options, current_user.namespace.id)
+  end
+
   def search_autocomplete_source
     projects = current_user.projects.map{ |p| { label: p.name, url: project_path(p) } }
 
