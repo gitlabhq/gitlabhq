@@ -9,6 +9,12 @@ class UserObserver < ActiveRecord::Observer
     log_info("User \"#{user.name}\" (#{user.email})  was removed")
   end
 
+  def after_save user
+    if user.username_changed?
+      user.namespace.update_attributes(code: user.username)
+    end
+  end
+
   protected
 
   def log_info message

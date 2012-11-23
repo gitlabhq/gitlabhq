@@ -1,7 +1,7 @@
 class ProjectObserver < ActiveRecord::Observer
   def before_save(project)
     # Move repository if namespace changed
-    if project.namespace_id_changed?
+    if project.namespace_id_changed? and not project.new_record?
       move_project(project)
     end
   end
