@@ -42,4 +42,14 @@ class Admin::ProjectsController < AdminController
 
     redirect_to projects_url, notice: 'Project was successfully deleted.'
   end
+
+  protected
+
+  def project
+    id = params[:project_id] || params[:id]
+    id = id.split("/") if id.include?("/")
+
+    @project ||= Project.find_by_path(id)
+    @project || render_404
+  end
 end

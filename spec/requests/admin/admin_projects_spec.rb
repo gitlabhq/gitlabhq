@@ -39,8 +39,8 @@ describe "Admin::Projects" do
     end
 
     it "should have project edit page" do
-      page.should have_content("Project name")
-      page.should have_content("URL")
+      page.should have_content("Edit project")
+      page.should have_button("Save Project")
     end
 
     describe "Update project" do
@@ -57,39 +57,6 @@ describe "Admin::Projects" do
       it "should change project entry" do
         @project.name.should == "Big Bang"
       end
-    end
-  end
-
-  describe "GET /admin/projects/new" do
-    before do
-      visit admin_projects_path
-      click_link "New Project"
-    end
-
-    it "should be correct path" do
-      current_path.should == new_admin_project_path
-    end
-
-    it "should have labels for new project" do
-      page.should have_content("Project name is")
-    end
-  end
-
-  describe "POST /admin/projects" do
-    before do
-      visit new_admin_project_path
-      fill_in 'project_name', with: 'NewProject'
-      expect { click_button "Create project" }.to change { Project.count }.by(1)
-      @project = Project.last
-    end
-
-    it "should be correct path" do
-      current_path.should == admin_project_path(@project)
-    end
-
-    it "should show project" do
-      page.should have_content(@project.name)
-      page.should have_content(@project.path)
     end
   end
 

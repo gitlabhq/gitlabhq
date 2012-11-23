@@ -53,7 +53,6 @@ describe Gitlab::API do
 
     it "should assign attributes to project" do
       project = attributes_for(:project, {
-        path: project.name.parameterize,
         description: Faker::Lorem.sentence,
         default_branch: 'stable',
         issues_enabled: false,
@@ -257,7 +256,7 @@ describe Gitlab::API do
   describe "POST /projects/:id/snippets" do
     it "should create a new project snippet" do
       post api("/projects/#{project.path}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', path: 'test'
+        title: 'api test', file_name: 'sample.rb', code: 'test'
       response.status.should == 201
       json_response['title'].should == 'api test'
     end
@@ -266,10 +265,10 @@ describe Gitlab::API do
   describe "PUT /projects/:id/snippets/:shippet_id" do
     it "should update an existing project snippet" do
       put api("/projects/#{project.path}/snippets/#{snippet.id}", user),
-        path: 'updated path'
+        code: 'updated code'
       response.status.should == 200
       json_response['title'].should == 'example'
-      snippet.reload.content.should == 'updated path'
+      snippet.reload.content.should == 'updated code'
     end
   end
 

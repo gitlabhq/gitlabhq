@@ -88,7 +88,7 @@ module ApplicationHelper
       [ "Users", users.map {|u| [u.human_name, u.id]} ]
     ]
 
-    if selected == :current_user
+    if selected == :current_user && current_user.namespace
       selected = current_user.namespace.id
     end
 

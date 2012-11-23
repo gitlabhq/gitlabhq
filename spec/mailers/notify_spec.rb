@@ -169,9 +169,7 @@ describe Notify do
     end
 
     describe 'project access changed' do
-      let(:project) { create(:project,
-                             path: "Fuu",
-                             code: "Fuu") }
+      let(:project) { create(:project) }
       let(:user) { create(:user) }
       let(:users_project) { create(:users_project,
                                    project: project,

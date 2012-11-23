@@ -11,7 +11,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/milestones" do
     it "should return project milestones" do
-      get api("/projects/#{project.code}/milestones", user)
+      get api("/projects/#{project.path}/milestones", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == milestone.title
@@ -20,7 +20,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/milestones/:milestone_id" do
     it "should return a project milestone by id" do
-      get api("/projects/#{project.code}/milestones/#{milestone.id}", user)
+      get api("/projects/#{project.path}/milestones/#{milestone.id}", user)
       response.status.should == 200
       json_response['title'].should == milestone.title
     end
@@ -28,7 +28,7 @@ describe Gitlab::API do
 
   describe "POST /projects/:id/milestones" do
     it "should create a new project milestone" do
-      post api("/projects/#{project.code}/milestones", user),
+      post api("/projects/#{project.path}/milestones", user),
         title: 'new milestone'
       response.status.should == 201
       json_response['title'].should == 'new milestone'
@@ -38,7 +38,7 @@ describe Gitlab::API do
 
   describe "PUT /projects/:id/milestones/:milestone_id" do
     it "should update a project milestone" do
-      put api("/projects/#{project.code}/milestones/#{milestone.id}", user),
+      put api("/projects/#{project.path}/milestones/#{milestone.id}", user),
         title: 'updated title'
       response.status.should == 200
       json_response['title'].should == 'updated title'
