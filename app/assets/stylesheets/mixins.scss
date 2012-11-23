@@ -10,37 +10,36 @@
   box-shadow: 0 0 0 3px #f1f1f1;
 }
 
+
+@mixin box-shadow($shadow) {
+  -webkit-box-shadow: $radius;
+  -moz-box-shadow: $radius;
+  -ms-box-shadow: $radius;
+  -o-box-shadow: $radius;
+  box-shadow: $radius;
+}
+
 @mixin border-radius($radius) {
-  -moz-border-radius: $radius;
   -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
   border-radius: $radius;
 }
 
 @mixin round-borders-bottom($radius) {
   border-top: 1px solid #eaeaea;
-  -webkit-border-bottom-left-radius: $radius;
-  -webkit-border-bottom-right-radius: $radius;
-  -moz-border-radius-bottomright: $radius;
-  -moz-border-radius-bottomleft: $radius;
-  border-bottom-right-radius: $radius;
-  border-bottom-left-radius: $radius;
+  @include border-radius(0 0 $radius $radius);
 }
 
 @mixin round-borders-top($radius) {
   border-top: 1px solid #eaeaea;
-  -moz-border-radius-topright: $radius;
-  -moz-border-radius-topleft: $radius;
-  border-top-right-radius: $radius;
-  border-top-left-radius: $radius;
-  -webkit-border-top-left-radius: $radius;
-  -webkit-border-top-right-radius: $radius;
+  @include border-radius($radius $radius 0 0);
 }
 
 @mixin round-borders-all($radius) {
   border: 1px solid #eaeaea;
-  -moz-border-radius: $radius;
-  -webkit-border-radius: $radius;
-  border-radius: $radius;
+  @include border-radius($radius);
 }
 
 @mixin bg-gradient($from, $to) {
@@ -51,7 +50,7 @@
 }
 
 @mixin bg-light-gray-gradient {
-  background:#f1f1f1;
+  background: #f1f1f1;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #f5f5f5), to(#e1e1e1));
   background-image: -webkit-linear-gradient(#f5f5f5 6.6%, #e1e1e1);
   background-image: -moz-linear-gradient(#f5f5f5 6.6%, #e1e1e1);
@@ -59,7 +58,7 @@
 }
 
 @mixin bg-gray-gradient {
-  background:#eee;
+  background: #eee;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
   background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
   background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -67,7 +66,7 @@
 }
 
 @mixin bg-dark-gray-gradient {
-  background:#eee;
+  background: #eee;
   background-image: -webkit-linear-gradient(#e9e9e9, #d7d7d7);
   background-image: -moz-linear-gradient(#e9e9e9, #d7d7d7);
   background-image: -o-linear-gradient(#e9e9e9, #d7d7d7);

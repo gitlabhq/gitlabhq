@@ -3,7 +3,7 @@
  *
  */
 ul.main_menu {
-  border-radius: 4px;
+  @include border-radius(4px);
   margin: auto;
   margin: 30px 0;
   border: 1px solid #BBB;
@@ -26,8 +26,7 @@ ul.main_menu {
     color: #777;
     background: #f2f2f2;
     border-top: 1px solid #CCC;
-    border-radius: 8px;
-    -moz-border-radius: 8px;
+    @include border-radius(8px);
   }
   .label {
     background: $hover;
@@ -41,23 +40,18 @@ ul.main_menu {
     width: 1%;
     border-right: 1px solid #DDD;
     border-left: 1px solid #EEE;
-    border-bottom:2px solid #CFCFCF;
+    border-bottom: 2px solid #CFCFCF;
 
     &:first-child{
-      -webkit-border-top-left-radius: 4px;
-      -webkit-border-bottom-left-radius: 4px;
-      -moz-border-radius-topleft: 4px;
-      -moz-border-radius-bottomleft: 4px;
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
+      @include border-radius(5px 0 0 5px);
       border-left: 0;
     }
 
     &.active {
-      background-color:#D5D5D5;
+      background-color: #D5D5D5;
       border-right: 1px solid #BBB;
       border-left: 1px solid #BBB;
-      border-radius: 0 0 1px 1px;
+      @include border-radius(0 0 1px 1px);
       &:first-child{
         border-bottom: none;
         border-left: none;
@@ -83,8 +77,8 @@ ul.main_menu {
     height: 35px;
     line-height: 36px;
     color: $style_color;
-    text-shadow:0 1px 1px white;
-    padding:0 10px;
+    text-shadow: 0 1px 1px white;
+    padding: 0 10px;
   }
 }
 /*

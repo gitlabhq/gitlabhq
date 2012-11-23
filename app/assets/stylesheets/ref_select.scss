@@ -33,17 +33,15 @@
 .chzn-container {
   .chzn-search {
     input:focus {
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
+      @include box-shadow(none);
     }
   }
 
   .chzn-drop {
-    margin:7px 0;
+    margin: 7px 0;
     min-width: 200px;
     border: 1px solid #bbb;
-    border-radius: 0;
+    @include border-radius(0);
 
     .chzn-results {
       margin-top: 5px;
@@ -55,7 +53,7 @@
         padding: 8px;
       }
       .active-result {
-        border-radius: 0;
+        @include border-radius(0);
 
         &.highlighted {
           background: $hover;

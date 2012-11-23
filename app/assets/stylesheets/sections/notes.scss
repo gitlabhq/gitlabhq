@@ -36,7 +36,7 @@
   border: 1px solid #ddd;
   padding: 10px;
   min-height: 60px;
-  background:#f5f5f5;
+  background: #f5f5f5;
 }
 
 .note {
@@ -94,15 +94,15 @@ p.notify_controls span{
 }
 
 tr.line_notes_row {
-  border-bottom:1px solid #DDD;
+  border-bottom: 1px solid #DDD;
   border-left: 7px solid #2A79A3;
 
   &.reply {
-    background:#eee;
+    background: #eee;
     border-left: 7px solid #2A79A3;
-    border-top:1px solid #ddd;
+    border-top: 1px solid #ddd;
     td {
-      padding:7px 10px;
+      padding: 7px 10px;
     }
     a.line_note_reply_link {
       @include round-borders-all(4px);
@@ -125,11 +125,11 @@ tr.line_notes_row {
 .line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 .per_line_form {
-  background:#f5f5f5;
-  border-top:1px solid #eee;
+  background: #f5f5f5;
+  border-top: 1px solid #eee;
   form {  margin: 0; }
   td {
-    border-bottom:1px solid #ddd;
+    border-bottom: 1px solid #ddd;
   }
   .note_actions {
     margin: 0;

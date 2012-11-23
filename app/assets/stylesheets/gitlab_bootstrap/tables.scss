@@ -2,7 +2,7 @@ table {
   @extend .table;
   @extend .table-striped;
   @include solid_shade;
-  border:1px solid #bbb;
+  border: 1px solid #bbb;
   width: 100%;
 
   &.low {
@@ -31,7 +31,7 @@ table {
   }
 
   td {
-    border-color:#f1f1f1;
+    border-color: #f1f1f1;
     line-height: 28px;
 
     .s16 {
@@ -40,11 +40,11 @@ table {
     }
 
     &:first-child {
-      border-left:1px solid #bbb;
+      border-left: 1px solid #bbb;
     }
 
     &:last-child {
-      border-right:1px solid #bbb;
+      border-right: 1px solid #bbb;
     }
   }
 

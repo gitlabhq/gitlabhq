@@ -3,7 +3,7 @@
  *
  */
 .file_holder {
-  border:1px solid #BBB;
+  border: 1px solid #BBB;
   margin-bottom: 1em;
   @include solid_shade;
 
@@ -28,19 +28,19 @@
       font-size: 14px;
       text-shadow: 0 1px 1px #fff;
       small {
-        color:#999;
+        color: #999;
         font-size: 13px;
       }
     }
   }
   .file_content {
-    background:#fff;
+    background: #fff;
     font-size: 11px;
 
     &.wiki {
       font-size: 13px;
       code {
-        padding:0 4px;
+        padding: 0 4px;
       }
       padding: 20px;
       h1, h2 {
@@ -52,7 +52,7 @@
     }
 
     &.image_file {
-      background:#eee;
+      background: #eee;
       text-align: center;
       img {
         padding: 100px;
@@ -83,12 +83,12 @@
         &:last-child {
           border-right: none;
         }
-        background:#fff;
+        background: #fff;
         padding: 5px;
       }
       .author,
       .blame_commit {
-        background:#f5f5f5;
+        background: #f5f5f5;
         vertical-align: top;
       }
       .lines {
@@ -102,7 +102,7 @@
     }
 
     &.logs {
-      background:#eee;
+      background: #eee;
       max-height: 700px;
       overflow-y: auto;
 
@@ -113,10 +113,10 @@
         margin-bottom: 0;
         background: white;
         li {
-          color:#888;
+          color: #888;
           p {
             margin: 0;
-            color:#333;
+            color: #333;
             line-height: 24px;
             padding-left: 10px;
           }

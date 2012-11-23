@@ -4,24 +4,24 @@
  */
 .event_label {
   &.pushed {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.opened {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.closed {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.merged {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.left,
   &.joined {
-    padding:0 2px;
+    padding: 0 2px;
     float: none;
   }
 }
@@ -32,21 +32,21 @@
  */
 .event-item {
   min-height: 40px;
-  border-bottom:1px solid #eee;
+  border-bottom: 1px solid #eee;
   .event-title {
-    color:#333;
+    color: #333;
     font-weight: bold;
     .author_name {
-      color:#333;
+      color: #333;
     }
   }
   .event-body {
     p {
-      color:#555;
+      color: #555;
       padding-top: 5px;
     }
     .event-info {
-      color:#666;
+      color: #666;
     }
   }
   .avatar {
@@ -98,12 +98,12 @@
  *
  */
 .event_lp {
-  color:#777;
+  color: #777;
   padding: 10px;
   min-height: 22px;
   border-left: 5px solid #5AB9C3;
   margin-bottom: 20px;
-  background:#f9f9f9;
+  background: #f9f9f9;
 
   .avatar {
     width: 24px;

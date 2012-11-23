@@ -51,8 +51,8 @@
     .committer a {
       font-size: 14px;
       line-height: 22px;
-      text-shadow:0 1px 1px #fff;
-      color:#777;
+      text-shadow: 0 1px 1px #fff;
+      color: #777;
       &:hover {
         color: #999;
       }
@@ -70,15 +70,16 @@
  *
  */
 .diff_file {
-  border:1px solid #CCC;
+  border: 1px solid #CCC;
   margin-bottom: 1em;
 
   .diff_file_header {
     @extend .clearfix;
     padding: 5px 5px 5px 10px;
     color: #555;
-    border-bottom:1px solid #CCC;
+    border-bottom: 1px solid #CCC;
     background: #eee;
+    // TODO Replace with linear-gradient mixin
     background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
     background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -106,18 +107,18 @@
   .diff_file_content {
     overflow: auto;
     overflow-y: hidden;
-    background:#fff;
-    color:#333;
+    background: #fff;
+    color: #333;
     font-size: 12px;
     font-family: $monospace;
     .old{
       span.idiff{
-        background-color:#FAA;
+        background-color: #FAA;
       }
     }
     .new{
       span.idiff{
-        background-color:#AFA;
+        background-color: #AFA;
       }
     }
 
@@ -128,7 +129,7 @@
     }
   }
   .diff_file_content_image {
-    background:#eee;
+    background: #eee;
     text-align: center;
     .image {
       display: inline-block;
@@ -179,8 +180,8 @@
     margin: 0px;
     padding: 0px;
     border: none;
-    background:#EEE;
-    color:#666;
+    background: #EEE;
+    color: #666;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
     text-align: right;
@@ -194,7 +195,7 @@
       float: left;
       width: 35px;
       font-weight: normal;
-      color:#666;
+      color: #666;
       &:hover {
         text-decoration: underline;
       }
@@ -213,8 +214,8 @@
       background: #FDD;
     }
     &.matched {
-      color:#ccc;
-      background:#fafafa;
+      color: #ccc;
+      background: #fafafa;
     }
   }
 }
@@ -246,7 +247,7 @@
   }
 
   code {
-    background:#FCEEC1;
+    background: #FCEEC1;
     color: $style_color;
   }
 
@@ -295,10 +296,10 @@
 
 .label_commit {
   @include round-borders-all(4px);
-  padding:2px 4px;
+  padding: 2px 4px;
   border: none;
   font-size: 13px;
   background: #474D57;
-  color:#fff;
+  color: #fff;
   font-family: $monospace;
 }

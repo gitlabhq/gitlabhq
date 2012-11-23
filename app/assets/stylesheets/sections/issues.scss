@@ -28,7 +28,7 @@
 
 .issues_table {
   .issue {
-    padding:7px 10px;
+    padding: 7px 10px;
 
     .issue_check {
       float: left;
@@ -141,6 +141,6 @@ input.check_all_issues {
   .ui-datepicker-header {
     @include solid_shade;
     margin-bottom: 10px;
-    border:1px solid #bbb;
+    border: 1px solid #bbb;
   }
 }
