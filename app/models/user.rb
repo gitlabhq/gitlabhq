@@ -63,10 +63,13 @@ class User < ActiveRecord::Base
   validates :bio, length: { within: 0..255 }
   validates :extern_uid, :allow_blank => true, :uniqueness => {:scope => :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
+  validates :username, presence: true
 
   before_validation :generate_password, on: :create
   before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
+
+  delegate :code, to: :namespace, allow_nil: true, prefix: true
 
   # Scopes
   scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }
@@ -121,5 +124,9 @@ class User < ActiveRecord::Base
     namespaces << self.namespace
     namespaces = namespaces + Group.all if admin
     namespaces
+  end
+
+  def several_namespaces?
+    namespaces.size > 1
   end
 end

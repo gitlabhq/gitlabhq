@@ -67,6 +67,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+
   validate :check_limit, :repo_name
 
   # Scopes
@@ -89,6 +90,12 @@ class Project < ActiveRecord::Base
       project = Project.new params
 
       Project.transaction do
+
+        # Build gitlab-hq code from GitLab HQ name
+        #
+        slug = project.name.dup.parameterize
+        project.code = project.path = slug
+
         project.owner = user
         project.namespace_id = namespace_id
         project.save!

@@ -10,6 +10,8 @@ class Namespace < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
+  after_save :ensure_dir_exist
+
   scope :root, where('type IS NULL')
 
   def self.search query
@@ -22,5 +24,10 @@ class Namespace < ActiveRecord::Base
 
   def human_name
     owner_name
+  end
+
+  def ensure_dir_exist
+    namespace_dir_path = File.join(Gitlab.config.git_base_path, code)
+    Dir.mkdir(namespace_dir_path) unless File.exists?(namespace_dir_path)
   end
 end

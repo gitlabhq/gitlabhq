@@ -16,6 +16,11 @@
               = f.text_field :name
               %span.help-inline * required
           .clearfix
+            = f.label :username
+            .input
+              = f.text_field :username
+              %span.help-inline * required
+          .clearfix
             = f.label :email
             .input
               = f.text_field :email
@@ -26,11 +31,11 @@
               = f.label :force_random_password do
                 %span Generate random password
               .input= f.check_box :force_random_password, {}, true, nil
-          
+
           %div.password-fields
             .clearfix
               = f.label :password
-              .input= f.password_field :password, disabled: f.object.force_random_password 
+              .input= f.password_field :password, disabled: f.object.force_random_password
             .clearfix
               = f.label :password_confirmation
               .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
