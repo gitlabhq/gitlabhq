@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe "Issues Feed" do
   describe "GET /issues" do
-    let!(:user)     { Factory :user }
-    let!(:project)  { Factory :project, owner: user }
-    let!(:issue)    { Factory :issue, author: user, project: project }
+    let!(:user)     { create(:user) }
+    let!(:project)  { create(:project, owner: user) }
+    let!(:issue)    { create(:issue, author: user, project: project) }
 
     before { project.add_access(user, :read, :write) }
 

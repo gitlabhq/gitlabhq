@@ -38,4 +38,8 @@ module MergeRequestsHelper
     classes << " merged" if mr.merged?
     classes
   end
+
+  def ci_status_path
+    @project.gitlab_ci_service.commit_badge_path(@merge_request.last_commit.sha)
+  end
 end

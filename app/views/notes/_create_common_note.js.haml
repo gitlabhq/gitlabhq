@@ -9,6 +9,5 @@
 
 - else
   :plain
-    $(".note-form-holder").replaceWith("#{escape_javascript(render 'form')}");
-    setupGfmAutoComplete();
-
+    $(".note-form-holder").replaceWith("#{escape_javascript(render 'notes/common_form')}");
+    GitLab.GfmAutoComplete.setup();

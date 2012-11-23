@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: users_projects
+#
+#  id             :integer          not null, primary key
+#  user_id        :integer          not null
+#  project_id     :integer          not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  project_access :integer          default(0), not null
+#
+
 class UsersProject < ActiveRecord::Base
   include GitHost
 
@@ -119,16 +131,3 @@ class UsersProject < ActiveRecord::Base
     self.class.access_roles.invert[self.project_access]
   end
 end
-
-# == Schema Information
-#
-# Table name: users_projects
-#
-#  id             :integer         not null, primary key
-#  user_id        :integer         not null
-#  project_id     :integer         not null
-#  created_at     :datetime        not null
-#  updated_at     :datetime        not null
-#  project_access :integer         default(0), not null
-#
-

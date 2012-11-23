@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: merge_requests
+#
+#  id            :integer          not null, primary key
+#  target_branch :string(255)      not null
+#  source_branch :string(255)      not null
+#  project_id    :integer          not null
+#  author_id     :integer
+#  assignee_id   :integer
+#  title         :string(255)
+#  closed        :boolean          default(FALSE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  st_commits    :text(2147483647)
+#  st_diffs      :text(2147483647)
+#  merged        :boolean          default(FALSE), not null
+#  state         :integer          default(1), not null
+#  milestone_id  :integer
+#
+
 require Rails.root.join("app/models/commit")
 require Rails.root.join("app/roles/static_model")
 
@@ -198,25 +219,3 @@ class MergeRequest < ActiveRecord::Base
     Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND noteable_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
   end
 end
-
-# == Schema Information
-#
-# Table name: merge_requests
-#
-#  id            :integer         not null, primary key
-#  target_branch :string(255)     not null
-#  source_branch :string(255)     not null
-#  project_id    :integer         not null
-#  author_id     :integer
-#  assignee_id   :integer
-#  title         :string(255)
-#  closed        :boolean         default(FALSE), not null
-#  created_at    :datetime        not null
-#  updated_at    :datetime        not null
-#  st_commits    :text(4294967295
-#  st_diffs      :text(4294967295
-#  merged        :boolean         default(FALSE), not null
-#  state         :integer         default(1), not null
-#  milestone_id  :integer
-#
-

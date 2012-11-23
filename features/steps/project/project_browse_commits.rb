@@ -53,8 +53,9 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   Then 'I see commits stats' do
-    page.should have_content 'Stats for master'
+    page.should have_content 'Stats'
     page.should have_content 'Committers'
     page.should have_content 'Total commits'
+    page.should have_content 'Authors'
   end
 end

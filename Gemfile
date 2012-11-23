@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.8"
+gem "rails", "3.2.9"
 
 # Supported DBs
 gem "sqlite3", group: :sqlite
@@ -17,7 +17,7 @@ gem "pg", group: :postgres
 
 # Auth
 gem "devise", "~> 2.1.0"
-gem 'omniauth'
+gem 'omniauth', "~> 1.1.1"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
@@ -27,13 +27,13 @@ gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref:
 gem "omniauth-ldap", git: "https://github.com/gitlabhq/omniauth-ldap.git",  ref: 'f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e'
 gem 'yaml_db',       git: "https://github.com/gitlabhq/yaml_db.git",        ref: '98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
-gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",        ref: '212fd40bea61f3c6a167223768e7295dc32bbc10'
+gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '212fd40bea61f3c6a167223768e7295dc32bbc10'
 
 # Gitolite client (for work with gitolite-admin repo)
 gem "gitolite", '1.1.0'
 
 # Syntax highlighter
-gem "pygments.rb", "0.3.1"
+gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", ref: '4db80c599067e2d5f23c5c243bf85b8ca0368ad4'
 
 # Language detection
 gem "github-linguist", "~> 2.3.4" , require: "linguist"
@@ -46,13 +46,13 @@ gem "grape", "~> 0.2.1"
 gem "stamp"
 
 # Pagination
-gem "kaminari"
+gem "kaminari", "~> 0.14.1"
 
 # HAML
-gem "haml-rails"
+gem "haml-rails", "~> 0.3.5"
 
 # Files attachments
-gem "carrierwave"
+gem "carrierwave", "~> 0.7.1"
 
 # Authorization
 gem "six"
@@ -64,21 +64,21 @@ gem "ffaker"
 gem "seed-fu"
 
 # Markdown to HTML
-gem "redcarpet",     "~> 2.1.1"
+gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "thin"
-gem "unicorn"
+gem "thin", '~> 1.5.0'
+gem "unicorn", "~> 4.4.0"
 
 # Issue tags
-gem "acts-as-taggable-on", "2.3.1"
+gem "acts-as-taggable-on", "2.3.3"
 
 # Decorators
-gem "draper"
+gem "draper", "~> 0.18.0"
 
 # Background jobs
-gem "resque", "~> 1.20.0"
+gem "resque", "~> 1.23.0"
 gem 'resque_mailer'
 
 # HTTP requests
@@ -87,34 +87,34 @@ gem "httparty"
 # Colored output to console
 gem "colored"
 
-# GITLAB settings
+# GitLab settings
 gem 'settingslogic'
 
 # Misc
 gem "foreman"
-gem 'gemoji', require: 'emoji/railtie'
 gem "git"
 
 group :assets do
-  gem "sass-rails",   "3.2.5"
-  gem "coffee-rails", "3.2.2"
-  gem "uglifier",     "1.0.3"
+  gem "sass-rails",   "~> 3.2.5"
+  gem "coffee-rails", "~> 3.2.2"
+  gem "uglifier",     "~> 1.3.0"
   gem "therubyracer"
 
-  gem 'chosen-rails'
-  gem 'jquery-atwho-rails', '0.1.6'
-  gem "jquery-rails",     "2.0.2"
-  gem "jquery-ui-rails",  "0.5.0"
-  gem "modernizr",        "2.5.3"
-  gem "raphael-rails",    "1.5.2"
-  gem 'bootstrap-sass',   "2.0.4"
+  gem 'chosen-rails',     "0.9.8"
+  gem 'jquery-atwho-rails', "0.1.6"
+  gem "jquery-rails",     "2.1.3"
+  gem "jquery-ui-rails",  "2.0.2"
+  gem "modernizr",        "2.6.2"
+  gem "raphael-rails",    "2.1.0"
+  gem 'bootstrap-sass',   "2.2.1.1"
   gem "font-awesome-sass-rails", "~> 2.0.0"
+  gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 end
 
 group :development do
   gem "annotate", git: "https://github.com/ctran/annotate_models.git"
   gem "letter_opener"
-  gem 'quiet_assets', '1.0.1'
+  gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler'
 end
 
@@ -123,8 +123,6 @@ group :development, :test do
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
-  gem "capybara-webkit"
-  gem "headless"
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
@@ -139,11 +137,14 @@ group :development, :test do
   gem 'rb-fsevent', require: darwin_only('rb-fsevent')
   gem 'growl',      require: darwin_only('growl')
   gem 'rb-inotify', require: linux_only('rb-inotify')
+
+  # PhantomJS driver for Capybara
+  gem 'poltergeist'
 end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers"
+  gem "shoulda-matchers", "1.3.0"
   gem 'email_spec'
   gem 'resque_spec'
   gem "webmock"
@@ -151,5 +152,5 @@ group :test do
 end
 
 group :production do
-  gem "gitlab_meta", '3.0'
+  gem "gitlab_meta", '3.1'
 end

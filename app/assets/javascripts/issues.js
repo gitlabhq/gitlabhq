@@ -5,7 +5,7 @@ function switchToNewIssue(){
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.top-tabs .add_new').hide();
     disableButtonIfEmptyField("#issue_title", ".save-btn");
-    setupGfmAutoComplete();
+    GitLab.GfmAutoComplete.setup();
   });
 }
 
@@ -16,7 +16,7 @@ function switchToEditIssue(){
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
     $('.add_new').hide();
     disableButtonIfEmptyField("#issue_title", ".save-btn");
-    setupGfmAutoComplete();
+    GitLab.GfmAutoComplete.setup();
   });
 }
 
@@ -39,10 +39,10 @@ function backToIssues(){
 }
 
 function initIssuesSearch() { 
-  var href       = $('.issue_search').parent().attr('action');
+  var href       = $('#issue_search_form').attr('action');
   var last_terms = '';
 
-  $('.issue_search').keyup(function() {
+  $('#issue_search').keyup(function() {
     var terms       = $(this).val();
     var milestone_id  = $('#milestone_id').val();
     var status      = $('#status').val();
@@ -56,10 +56,6 @@ function initIssuesSearch() {
         });
       }
     }
-  });
-
-  $('.delete-issue').live('ajax:success', function() {
-    $(this).closest('tr').fadeOut(); updatePage();
   });
 }
 

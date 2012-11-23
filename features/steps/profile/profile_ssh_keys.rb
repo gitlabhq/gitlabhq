@@ -43,6 +43,6 @@ class ProfileSshKeys < Spinach::FeatureSteps
   end
 
   And 'I have ssh key "ssh-rsa Work"' do
-    Factory :key, :user => @user, :title => "ssh-rsa Work", :key => "jfKLJDFKSFJSHFJssh-rsa Work"
+    create(:key, :user => @user, :title => "ssh-rsa Work", :key => "jfKLJDFKSFJSHFJssh-rsa Work")
   end
 end

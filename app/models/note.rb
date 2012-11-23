@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: notes
+#
+#  id            :integer          not null, primary key
+#  note          :text
+#  noteable_id   :string(255)
+#  noteable_type :string(255)
+#  author_id     :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  project_id    :integer
+#  attachment    :string(255)
+#  line_code     :string(255)
+#
+
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
@@ -107,20 +123,3 @@ class Note < ActiveRecord::Base
     note.start_with?('-1') || note.start_with?(':-1:')
   end
 end
-
-# == Schema Information
-#
-# Table name: notes
-#
-#  id            :integer         not null, primary key
-#  note          :text
-#  noteable_id   :string(255)
-#  noteable_type :string(255)
-#  author_id     :integer
-#  created_at    :datetime        not null
-#  updated_at    :datetime        not null
-#  project_id    :integer
-#  attachment    :string(255)
-#  line_code     :string(255)
-#
-

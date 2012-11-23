@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe UsersProjectObserver do
-  let(:user) { Factory.create :user }
-  let(:project) { Factory.create(:project, 
-                                 code: "Fuu", 
-                                 path: "Fuu" ) }
-  let(:users_project) { Factory.create(:users_project,
-                                        project: project,
-                                        user: user )}
+  let(:user) { create(:user) }
+  let(:project) { create(:project,
+                         code: "Fuu",
+                         path: "Fuu" ) }
+  let(:users_project) { create(:users_project,
+                               project: project,
+                               user: user )}
   subject { UsersProjectObserver.instance }
 
   describe "#after_commit" do

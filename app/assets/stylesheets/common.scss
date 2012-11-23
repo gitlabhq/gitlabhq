@@ -20,18 +20,6 @@ body {
   float:right;
 }
 
-.profile_avatar_holder {
-  float:left;
-  width:60px;
-  height:60px;
-  margin-right:20px;
-  img {
-    width:60px;
-    height:60px;
-    background:#eee;
-  }
-}
-
 
 .visible_link,
 .author_link {
@@ -596,25 +584,6 @@ li.note {
   }
 }
 
-.themes_opts {
-  padding-left:20px;
-
-  label {
-    width:175px;
-    margin-right:40px;
-
-    .prev {
-      @extend .thumbnail;
-      height:120px;
-      width:175px;
-      margin-bottom:10px;
-      img {
-        width:180px;
-      }
-    }
-  }
-}
-
 .git_error_tips {
   @extend .span6;
   text-align:left;
@@ -628,10 +597,11 @@ li.note {
 
 .error_message {
   @extend .cred;
-  border-bottom: 1px solid #D21;
-  padding-bottom:20px;
-  text-align:center;
-  margin-bottom:10px;
+  border-left: 4px solid #E99;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #FEE;
+  padding-left: 20px;
 }
 
 .oauth_select_holder {

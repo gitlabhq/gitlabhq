@@ -15,6 +15,7 @@ describe Issue, "IssueCommonality" do
     it { should validate_presence_of(:author) }
     it { should validate_presence_of(:title) }
     it { should ensure_length_of(:title).is_at_least(0).is_at_most(255) }
+    it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 
   describe "Scope" do

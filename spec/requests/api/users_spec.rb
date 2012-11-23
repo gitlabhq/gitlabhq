@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Gitlab::API do
   include ApiHelpers
 
-  let(:user)  { Factory :user }
-  let(:admin) { Factory :admin }
-  let(:key)   { Factory :key, user: user }
+  let(:user)  { create(:user) }
+  let(:admin) { create(:admin) }
+  let(:key)   { create(:key, user: user) }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -43,12 +43,12 @@ describe Gitlab::API do
 
     it "should create user" do
       expect {
-        post api("/users", admin), Factory.attributes(:user, projects_limit: 3)
+        post api("/users", admin), attributes_for(:user, projects_limit: 3)
       }.to change { User.count }.by(1)
     end
 
     it "shouldn't available for non admin users" do
-      post api("/users", user), Factory.attributes(:user)
+      post api("/users", user), attributes_for(:user)
       response.status.should == 403
     end
   end
@@ -103,7 +103,7 @@ describe Gitlab::API do
     end
 
     it "should create ssh key" do
-      key_attrs = Factory.attributes :key
+      key_attrs = attributes_for :key
       expect {
         post api("/user/keys", user), key_attrs
       }.to change{ user.keys.count }.by(1)

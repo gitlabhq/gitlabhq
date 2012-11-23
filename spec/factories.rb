@@ -1,21 +1,3 @@
-# Backwards compatibility with the old method
-def Factory(type, *args)
-  FactoryGirl.create(type, *args)
-end
-
-module Factory
-  def self.create(type, *args)
-    FactoryGirl.create(type, *args)
-  end
-
-  def self.new(type, *args)
-    FactoryGirl.build(type, *args)
-  end
-  def self.attributes(type, *args)
-    FactoryGirl.attributes_for(type, *args)
-  end
-end
-
 FactoryGirl.define do
   sequence :sentence, aliases: [:title, :content] do
     Faker::Lorem.sentence
@@ -149,5 +131,17 @@ FactoryGirl.define do
   factory :protected_branch do
     name
     project
+  end
+
+  factory :service do
+    type ""
+    title "GitLab CI"
+    token "x56olispAND34ng"
+    project
+  end
+
+  factory :service_hook do
+    url
+    service
   end
 end

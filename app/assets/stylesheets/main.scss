@@ -1,3 +1,7 @@
+/** Override bootstrap variables **/
+$baseFontSize: 13px !default;
+$baseLineHeight: 18px !default;
+
 @import "bootstrap";
 @import "bootstrap-responsive";
 @import 'font-awesome';
@@ -11,6 +15,7 @@ $hover_border: #ADF;
 
 /** GitLab Fonts **/
 @font-face { font-family: Korolev; src: font-url('korolev-medium-compressed.otf'); }
+$monospace: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono', 'lucida console', monospace;
 
 /** MIXINS **/
 @mixin shade {
@@ -113,14 +118,12 @@ $hover_border: #ADF;
 @import "themes/ui_basic.scss";
 
 /**
- * UI mars theme
+ * UI themes:
  */
 @import "themes/ui_mars.scss";
-
-/**
- * UI Modern theme
- */
 @import "themes/ui_modern.scss";
+@import "themes/ui_gray.scss";
+@import "themes/ui_color.scss";
 
 /**
  * GitLab bootstrap.
@@ -154,6 +157,7 @@ $hover_border: #ADF;
 @import "sections/merge_requests.scss";
 @import "sections/graph.scss";
 @import "sections/events.scss";
+@import "sections/themes.scss";
 
 /**
  * This scss file redefine chozen selectbox styles for

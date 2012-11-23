@@ -30,6 +30,10 @@ $ ->
   # Initialize tooltips
   $('.has_tooltip').tooltip()
 
+  # Bottom tooltip
+  $('.has_bottom_tooltip').tooltip(placement: 'bottom')
+
+
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
     buttons = $('[type="submit"]', @)
@@ -57,25 +61,6 @@ $ ->
   $(".supp_diff_link").bind "click", ->
     $(@).next('table').show()
     $(@).remove()
-
-  # Note markdown preview
-  $(document).on 'click', '#preview-link', (e) ->
-    $('#preview-note').text 'Loading...'
-
-    previewLinkText = if $(@).text() is 'Preview' then 'Edit' else 'Preview'
-    $(@).text previewLinkText
-
-    note = $('#note_note').val()
-
-    if note.trim().length is 0
-      $('#preview-note').text 'Nothing to preview.'
-    else
-      $.post $(@).attr('href'), {note: note}, (data) ->
-        $('#preview-note').html(data)
-
-    $('#preview-note, #note_note').toggle()
-    e.preventDefault()
-    false
 
 (($) ->
   _chosen = $.fn.chosen

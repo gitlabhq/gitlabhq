@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: projects
+#
+#  id                     :integer          not null, primary key
+#  name                   :string(255)
+#  path                   :string(255)
+#  description            :text
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  private_flag           :boolean          default(TRUE), not null
+#  code                   :string(255)
+#  owner_id               :integer
+#  default_branch         :string(255)
+#  issues_enabled         :boolean          default(TRUE), not null
+#  wall_enabled           :boolean          default(TRUE), not null
+#  merge_requests_enabled :boolean          default(TRUE), not null
+#  wiki_enabled           :boolean          default(TRUE), not null
+#  group_id               :integer
+#
+
 require "grit"
 
 class Project < ActiveRecord::Base
@@ -26,6 +47,7 @@ class Project < ActiveRecord::Base
   has_many :wikis,          dependent: :destroy
   has_many :protected_branches, dependent: :destroy
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
+  has_one :gitlab_ci_service, dependent: :destroy
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -162,26 +184,12 @@ class Project < ActiveRecord::Base
   def issues_labels
     issues.tag_counts_on(:labels)
   end
+
+  def services
+    [gitlab_ci_service].compact
+  end
+
+  def gitlab_ci?
+    gitlab_ci_service && gitlab_ci_service.active
+  end
 end
-
-# == Schema Information
-#
-# Table name: projects
-#
-#  id                     :integer         not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime        not null
-#  updated_at             :datetime        not null
-#  private_flag           :boolean         default(TRUE), not null
-#  code                   :string(255)
-#  owner_id               :integer
-#  default_branch         :string(255)
-#  issues_enabled         :boolean         default(TRUE), not null
-#  wall_enabled           :boolean         default(TRUE), not null
-#  merge_requests_enabled :boolean         default(TRUE), not null
-#  wiki_enabled           :boolean         default(TRUE), not null
-#  group_id               :integer
-#
-

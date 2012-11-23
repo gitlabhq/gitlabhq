@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121026114600) do
+ActiveRecord::Schema.define(:version => 20121120113838) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -127,6 +127,17 @@ ActiveRecord::Schema.define(:version => 20121026114600) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "services", :force => true do |t|
+    t.string   "type"
+    t.string   "title"
+    t.string   "token"
+    t.integer  "project_id",                     :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.boolean  "active",      :default => false, :null => false
+    t.string   "project_url"
+  end
+
   create_table "snippets", :force => true do |t|
     t.string   "title"
     t.text     "content"
@@ -203,6 +214,7 @@ ActiveRecord::Schema.define(:version => 20121026114600) do
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
     t.string   "type",       :default => "ProjectHook"
+    t.integer  "service_id"
   end
 
   create_table "wikis", :force => true do |t|
