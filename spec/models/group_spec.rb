@@ -18,7 +18,7 @@ describe Group do
   it { should have_many :projects }
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of(:name) }
-  it { should validate_presence_of :code }
-  it { should validate_uniqueness_of(:code) }
+  it { should validate_presence_of :path }
+  it { should validate_uniqueness_of(:path) }
   it { should validate_presence_of :owner }
 end

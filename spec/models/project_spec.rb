@@ -59,9 +59,6 @@ describe Project do
 
     it { should ensure_length_of(:description).is_within(0..2000) }
 
-    it { should validate_presence_of(:code) }
-    it { should validate_uniqueness_of(:code) }
-    it { should ensure_length_of(:code).is_within(1..255) }
     # TODO: Formats
 
     it { should validate_presence_of(:owner) }
@@ -152,7 +149,7 @@ describe Project do
   end
 
   it "returns the full web URL for this repo" do
-    project = Project.new(code: "somewhere")
+    project = Project.new(path: "somewhere")
     project.web_url.should == "#{Gitlab.config.url}/somewhere"
   end
 
@@ -163,7 +160,7 @@ describe Project do
     end
 
     it "should be invalid repo" do
-      project = Project.new(name: "ok_name", path: "/INVALID_PATH/", code: "NEOK")
+      project = Project.new(name: "ok_name", path: "/INVALID_PATH/", path: "NEOK")
       project.valid_repo?.should be_false
     end
   end
