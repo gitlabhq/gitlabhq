@@ -12,10 +12,10 @@ ul {
     border-bottom: 1px solid #eee;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-    &.smoke { background-color:#f5f5f5; }
+    &.smoke { background-color: #f5f5f5; }
     &:hover {
       background: $hover;
-      border-bottom:1px solid #ADF;
+      border-bottom: 1px solid #ADF;
     }
     &:last-child { border:none }
     .author { color: #999; }
@@ -23,7 +23,7 @@ ul {
     p {
       padding-top: 1px;
       margin: 0;
-      color:#222;
+      color: #222;
       img {
         position: relative;
         top: 3px;

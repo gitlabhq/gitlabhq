@@ -10,7 +10,7 @@ body {
 }
 
 .container .content {
-  margin:0 0;
+  margin: 0 0;
 }
 
 .container  .sidebar {
@@ -32,7 +32,7 @@ body {
   text-decoration: underline;
   font-size: 14px;
   font-weight: bold;
-  padding:10px 0;
+  padding: 10px 0;
   padding-bottom: 0;
 }
 
@@ -61,7 +61,7 @@ table a code {
 }
 
 .loading {
-  margin:20px auto;
+  margin: 20px auto;
   background: url(ajax_loader.gif) no-repeat center center;
   width: 40px;
   height: 40px;
@@ -78,10 +78,10 @@ table a code {
   overflow: hidden;
   background: white;
   cursor: pointer;
-  border-bottom:1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 
   h4 {
-    color:#666;
+    color: #666;
     font-size: 18px;
     line-height: 38px;
     padding-top: 5px;
@@ -102,7 +102,7 @@ span.update-author {
   display: block;
 }
 span.update-author {
-  color:#999;
+  color: #999;
   font-weight: normal;
   font-style: italic;
 }
@@ -122,7 +122,7 @@ span.update-author {
   display: none;
 }
 .user-mention {
-  color:#2FA0BB;
+  color: #2FA0BB;
   font-weight: bold;
 }
 
@@ -136,9 +136,9 @@ span.update-author {
   &.label-tag {
     background: none;
     border: none;
-    padding:4px 6px;
-    color:#444;
-    text-shadow:0 0 1px #fff;
+    padding: 4px 6px;
+    color: #444;
+    text-shadow: 0 0 1px #fff;
 
     &.grouped {
       float: left;
@@ -149,9 +149,9 @@ span.update-author {
   &.label-issue {
     background-color: #eee;
     border: 1px solid #ccc;
-    padding:4px 6px;
-    color:#444;
-    text-shadow:0 0 1px #fff;
+    padding: 4px 6px;
+    color: #444;
+    text-shadow: 0 0 1px #fff;
 
     &.grouped {
       float: left;
@@ -213,7 +213,7 @@ ul.breadcrumb {
   }
 
   a {
-    color:#474D57;
+    color: #474D57;
     font-weight: bold;
     font-size: 14px;
   }
@@ -264,7 +264,7 @@ input.git_clone_url {
 
 /** bordered list **/
 ul.bordered-list {
-  margin:5px 0px;
+  margin: 5px 0px;
   padding: 0px;
   li {
     padding: 5px 0;
@@ -310,7 +310,7 @@ p.time {
 
 
 .styled_image {
-  border:2px solid #ddd;
+  border: 2px solid #ddd;
 }
 
 
@@ -337,22 +337,22 @@ p.time {
 
 .leftbar {
   h5, .title {
-    padding:5px 10px;
+    padding: 5px 10px;
   }
 
   h4 {
     font-size: 14px;
-    padding:2px 10px;
-    color:#666;
-    border-bottom:1px solid #f1f1f1;
+    padding: 2px 10px;
+    color: #666;
+    border-bottom: 1px solid #f1f1f1;
   }
   a:last-child h4 { border: none; }
 
   a:hover {
     h4 {
-      color:#111;
+      color: #111;
       background: $hover;
-      border-color:#CCC;
+      border-color: #CCC;
       .ico.project {
         background-position:-209px -21px;
       }
@@ -420,12 +420,12 @@ p.time {
 
 
 .highlight_word {
-  background:#EEDC94;
+  background: #EEDC94;
 }
 
 .status_info {
   font-size: 14px;
-  padding:5px 15px;
+  padding: 5px 15px;
   line-height: 24px;
   width: 60px;
   text-align: center;
@@ -450,7 +450,7 @@ p.time {
   background: #E3E5EA;
   padding: 5px;
   margin-top: 5px;
-  border-radius: 5px;
+  @include border-radius(5px);
   text-shadow: none;
   color: #999;
   line-height: 16px;
@@ -504,7 +504,7 @@ li.note {
 
 .team_member_show {
   td:first-child {
-    color:#aaa;
+    color: #aaa;
   }
 }
 
@@ -554,12 +554,12 @@ li.note {
 
 /* CHZN reset few styles */
 .chzn-container-single .chzn-single {
-  background:#FFF;
+  background: #FFF;
   border: 1px solid #bbb;
   box-shadow: none;
 }
 .chzn-container-active .chzn-single {
-  background:#fff;
+  background: #fff;
 }
 
 
@@ -572,15 +572,15 @@ li.note {
 .issue {
   &.today{
     background: #EFE;
-    border-color:#CEC;
+    border-color: #CEC;
   }
   &.closed {
     background: #F5f5f5;
-    border-color:#E5E5E5;
+    border-color: #E5E5E5;
   }
   &.merged {
     background: #F5f5f5;
-    border-color:#E5E5E5;
+    border-color: #E5E5E5;
   }
 }
 
@@ -612,7 +612,7 @@ li.note {
   }
   .active {
     img {
-      border:1px solid #ccc;
+      border: 1px solid #ccc;
       background: $hover;
       @include border-radius(5px);
     }
@@ -627,7 +627,7 @@ li.note {
 
 .gitlab-promo {
   a {
-    color:#aaa;
+    color: #aaa;
     margin-right: 30px;
   }
 }

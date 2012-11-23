@@ -92,7 +92,7 @@ header {
       padding-left: 25px;
       font-size: 13px;
       @include border-radius(3px);
-      border:1px solid #c6c6c6;
+      border: 1px solid #c6c6c6;
       box-shadow: none;
       &:focus {
         @extend .span3;
@@ -132,7 +132,7 @@ header {
         left: 0;
         bottom: 0;
         float: right;
-        border-radius: 5px;
+        @include border-radius(5px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-bottom: 0;
         background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.15)), to(rgba(0, 0, 0, 0.25))), -webkit-gradient(linear, left top, right bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.5, rgba(255, 255, 255, 0.1)), color-stop(0.501, rgba(255, 255, 255, 0)), color-stop(1, rgba(255, 255, 255, 0)));
@@ -149,7 +149,7 @@ header {
   display: block; } }
 
   .account-links {
-    border-radius: 5px;
+    @include border-radius(5px);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     position: relative;
     &:before {
@@ -184,7 +184,7 @@ header {
       border-bottom: 1px solid #666;
       font-size: 12px;
       &:hover {
-        color:#fff;
+        color: #fff;
         background: #333;
       }
     }
@@ -197,20 +197,13 @@ header {
 
   .account-links a {
     &:first-child {
-      -webkit-border-top-left-radius: 5px;
-      -webkit-border-top-right-radius: 5px;
-      -moz-border-radius-topleft: 5px;
-      -moz-border-radius-topright: 5px;
-      border-top-left-radius: 5px;
-    border-top-right-radius: 5px; }
+      @include border-radius(5px 5px 0 0);
+    }
     &:last-child {
-      -webkit-border-bottom-right-radius: 5px;
-      -webkit-border-bottom-left-radius: 5px;
-      -moz-border-radius-bottomright: 5px;
-      -moz-border-radius-bottomleft: 5px;
-      border-bottom-right-radius: 5px;
-      border-bottom-left-radius: 5px;
-  border-bottom: 0; } }
+      @include border-radius(0 0 5px 5px);
+      border-bottom: 0; 
+    } 
+  }
 
 
 
@@ -248,13 +241,13 @@ header {
       a {
         h1 {
           background: url('logo_white.png') no-repeat 0px 2px;
-          color:#fff;
+          color: #fff;
           text-shadow: 0 1px 1px #111;
         }
       }
     }
     .project_name {
-      color:#fff;
+      color: #fff;
       text-shadow: 0 1px 1px #111;
     }
   }
