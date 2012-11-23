@@ -10,6 +10,8 @@ class Namespace < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
+  scope :root, where('type IS NULL')
+
   def self.search query
     where("name LIKE :query OR code LIKE :query", query: "%#{query}%")
   end

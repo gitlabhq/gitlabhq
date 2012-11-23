@@ -80,7 +80,7 @@ class Project < ActiveRecord::Base
     end
 
     def search query
-      where("name LIKE :query OR code LIKE :query OR path LIKE :query", query: "%#{query}%")
+      where("projects.name LIKE :query OR projects.code LIKE :query OR projects.path LIKE :query", query: "%#{query}%")
     end
 
     def create_by_user(params, user)

@@ -74,16 +74,25 @@ module ApplicationHelper
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
-  def namespaces_options
+  def namespaces_options(selected = :current_user, scope = :default)
     groups = current_user.namespaces.select {|n| n.type == 'Group'}
-    users = current_user.namespaces.reject {|n| n.type == 'Group'}
+
+    users = if scope == :all
+              Namespace.root
+            else
+              current_user.namespaces.reject {|n| n.type == 'Group'}
+            end
 
     options = [
       ["Groups", groups.map {|g| [g.human_name, g.id]} ],
       [ "Users", users.map {|u| [u.human_name, u.id]} ]
     ]
 
-    grouped_options_for_select(options, current_user.namespace.id)
+    if selected == :current_user
+      selected = current_user.namespace.id
+    end
+
+    grouped_options_for_select(options, selected)
   end
 
   def search_autocomplete_source

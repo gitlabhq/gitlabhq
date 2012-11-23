@@ -4,13 +4,14 @@
   = link_to 'New Project', new_project_path, class: "btn small right"
 %br
 = form_tag admin_projects_path, method: :get, class: 'form-inline' do
+  = select_tag :namespace_id, namespaces_options(params[:namespace_id], :all), class: "chosen xlarge", include_blank: true
   = text_field_tag :name, params[:name], class: "xlarge"
   = submit_tag "Search", class: "btn submit primary"
 
 %table
   %thead
     %th Name
-    %th Path
+    %th Project
     %th Team Members
     %th Last Commit
     %th Edit
@@ -18,8 +19,13 @@
 
   - @projects.each do |project|
     %tr
-      %td= link_to project.name, [:admin, project]
-      %td= project.path
+      %td
+        - if project.namespace
+          = link_to project.namespace.human_name, [:admin, project]
+          &rarr;
+        = link_to project.name, [:admin, project]
+      %td
+        %span.monospace= project.path_with_namespace + ".git"
       %td= project.users_projects.count
       %td= last_commit(project)
       %td= link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn small"
