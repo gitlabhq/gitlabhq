@@ -73,7 +73,6 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'I fill in issue search with ""' do
-    page.execute_script("$('.issue_search').val('').keyup();");
     fill_in 'issue_search', with: ""
   end
 

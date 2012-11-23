@@ -59,6 +59,18 @@ GIT
   specs:
     yaml_db (0.2.2)
 
+GIT
+  remote: https://github.com/jonleighton/poltergeist.git
+  revision: 5c2e092001074a8cf09f332d3714e9ba150bc8ca
+  ref: 5c2e092001074a8cf09f332d3714e9ba150bc8ca
+  specs:
+    poltergeist (1.0.2)
+      capybara (~> 1.1)
+      childprocess (~> 0.3)
+      faye-websocket (~> 0.4, >= 0.4.4)
+      http_parser.rb (~> 0.5.3)
+      multi_json (~> 1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -279,12 +291,6 @@ GEM
       omniauth-oauth (~> 1.0)
     orm_adapter (0.4.0)
     pg (0.14.1)
-    poltergeist (1.0.2)
-      capybara (~> 1.1)
-      childprocess (~> 0.3)
-      faye-websocket (~> 0.4, >= 0.4.4)
-      http_parser.rb (~> 0.5.3)
-      multi_json (~> 1.0)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
     pry (0.9.10)
@@ -490,7 +496,7 @@ DEPENDENCIES
   omniauth-ldap!
   omniauth-twitter
   pg
-  poltergeist
+  poltergeist!
   pry
   pygments.rb!
   quiet_assets (~> 1.0.1)
