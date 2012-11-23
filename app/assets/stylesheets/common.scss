@@ -1,12 +1,12 @@
 /** LAYOUT **/
 
 body {
-  margin-bottom:20px;
+  margin-bottom: 20px;
 }
 
 .container {
-  padding-top:0;
-  z-index:5;
+  padding-top: 0;
+  z-index: 5;
 }
 
 .container .content {
@@ -15,9 +15,9 @@ body {
 
 .container  .sidebar {
   width: 200px;
-  height:100%;
-  min-height:450px;
-  float:right;
+  height: 100%;
+  min-height: 450px;
+  float: right;
 }
 
 
@@ -29,25 +29,25 @@ body {
 .help li { color:#111 }
 
 .back_link {
-  text-decoration:underline;
-  font-size:14px;
-  font-weight:bold;
+  text-decoration: underline;
+  font-size: 14px;
+  font-weight: bold;
   padding:10px 0;
-  padding-bottom:0;
+  padding-bottom: 0;
 }
 
 .info_link {
-  margin-right:5px;
-  float:left;
+  margin-right: 5px;
+  float: left;
 
   img {
-    width:20px;
+    width: 20px;
   }
 }
 
 .download_repo_link {
   background: url("images.png") no-repeat 0 -48px;
-  padding-left:20px;
+  padding-left: 20px;
 }
 
 table a code {
@@ -63,30 +63,30 @@ table a code {
 .loading {
   margin:20px auto;
   background: url(ajax_loader.gif) no-repeat center center;
-  width:40px;
-  height:40px;
+  width: 40px;
+  height: 40px;
 }
 
 /** FLASH message **/
 #flash_container {
-  height:50px;
-  position:fixed;
-  z-index:10001;
-  top:0px;
-  width:100%;
-  margin-bottom:15px;
-  overflow:hidden;
-  background:white;
-  cursor:pointer;
+  height: 50px;
+  position: fixed;
+  z-index: 10001;
+  top: 0px;
+  width: 100%;
+  margin-bottom: 15px;
+  overflow: hidden;
+  background: white;
+  cursor: pointer;
   border-bottom:1px solid #ccc;
 
   h4 {
     color:#666;
-    font-size:18px;
-    line-height:38px;
-    padding-top:5px;
-    margin:2px;
-    font-weight:normal;
+    font-size: 18px;
+    line-height: 38px;
+    padding-top: 5px;
+    margin: 2px;
+    font-weight: normal;
   }
 }
 
@@ -95,39 +95,39 @@ table a code {
 }
 
 .handle:hover {
-  cursor:move;
+  cursor: move;
 }
 
 span.update-author {
-  display:block;
+  display: block;
 }
 span.update-author {
   color:#999;
-  font-weight:normal;
-  font-style:italic;
+  font-weight: normal;
+  font-style: italic;
 }
 span.update-author strong {
-  font-weight:bold;
+  font-weight: bold;
   font-style: normal;
 }
 
 /** UPDATE ITEM **/
 span.update-author {
-  display:block;
+  display: block;
 }
 /** END UPDATE ITEM **/
 .dashboard-loader {
-  float:left;
-  margin:10px;
-  display:none;
+  float: left;
+  margin: 10px;
+  display: none;
 }
 .user-mention {
   color:#2FA0BB;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 .neib {
-  margin-right:10px;
+  margin-right: 10px;
 }
 
 .label {
@@ -201,12 +201,12 @@ form {
 
 
 .field_with_errors {
-  display:inline;
+  display: inline;
 }
 
 ul.breadcrumb {
-  background:white;
-  border:none;
+  background: white;
+  border: none;
   li {
     display: inline;
     text-shadow: 0 1px 0 white
@@ -214,8 +214,8 @@ ul.breadcrumb {
 
   a {
     color:#474D57;
-    font-weight:bold;
-    font-size:14px;
+    font-weight: bold;
+    font-size: 14px;
   }
 
   .arrow {
@@ -225,31 +225,31 @@ ul.breadcrumb {
     float: left;
     position: relative;
     left: -10px;
-    padding:0;
-    margin:0;
+    padding: 0;
+    margin: 0;
   }
 }
 
 input[type=text] {
   &.large_text {
-    padding:6px;
-    font-size:16px;
+    padding: 6px;
+    font-size: 16px;
   }
 }
 
 input.git_clone_url {
-  width:325px;
+  width: 325px;
 }
 
 .merge-request-form-holder {
   select {
-    width:300px;
+    width: 300px;
   }
 }
 
 /** Issues **/
 #issue_assignee_id {
-  width:300px;
+  width: 300px;
 }
 
 #new_issue_dialog textarea{
@@ -257,7 +257,7 @@ input.git_clone_url {
 }
 
 .project_list_url {
-  width:250px;
+  width: 250px;
   background:#fff !important;
 }
 
@@ -265,13 +265,13 @@ input.git_clone_url {
 /** bordered list **/
 ul.bordered-list {
   margin:5px 0px;
-  padding:0px;
+  padding: 0px;
   li {
     padding: 5px 0;
     border-bottom: 1px solid #EEE;
     overflow: hidden;
     display: block;
-    margin:0px;
+    margin: 0px;
   }
 }
 
@@ -287,10 +287,10 @@ ul.bordered-list li:last-child { border:none }
 
 li.commit {
   .avatar {
-    width:24px;
+    width: 24px;
     top:-5px;
-    margin-right:10px;
-    margin-left:10px;
+    margin-right: 10px;
+    margin-left: 10px;
   }
 
   code {
@@ -341,17 +341,17 @@ p.time {
   }
 
   h4 {
-    font-size:14px;
+    font-size: 14px;
     padding:2px 10px;
     color:#666;
     border-bottom:1px solid #f1f1f1;
   }
-  a:last-child h4 { border:none; }
+  a:last-child h4 { border: none; }
 
   a:hover {
     h4 {
       color:#111;
-      background:$hover;
+      background: $hover;
       border-color:#CCC;
       .ico.project {
         background-position:-209px -21px;
@@ -359,7 +359,7 @@ p.time {
     }
   }
   .bottom {
-    padding:10px;
+    padding: 10px;
   }
 }
 
@@ -424,13 +424,13 @@ p.time {
 }
 
 .status_info {
-  font-size:14px;
+  font-size: 14px;
   padding:5px 15px;
-  line-height:24px;
-  width:60px;
-  text-align:center;
-  float:left;
-  margin-right:20px;
+  line-height: 24px;
+  width: 60px;
+  text-align: center;
+  float: left;
+  margin-right: 20px;
 
   &.success {
     background: #5BB75B;
@@ -449,12 +449,12 @@ p.time {
 .arrow{
   background: #E3E5EA;
   padding: 5px;
-  margin-top:5px;
+  margin-top: 5px;
   border-radius: 5px;
   text-shadow: none;
   color: #999;
   line-height: 16px;
-  font-weight:bold;
+  font-weight: bold;
 }
 
 .thin_area{
@@ -462,9 +462,9 @@ p.time {
 }
 
 .gitlab_pagination {
-  span a { color:$link_color; }
+  span a { color: $link_color; }
   .prev, .next, .current, .page a {
-    padding:10px;
+    padding: 10px;
   }
   .current {
     border-bottom:2px solid $style_color;
@@ -474,7 +474,7 @@ p.time {
 // Fixes alignment on notes.
 .new_note {
   label {
-    text-align:left;
+    text-align: left;
   }
 }
 
@@ -486,7 +486,7 @@ li.note {
       border-bottom:none !important;
     }
     .file {
-      padding-left:20px;
+      padding-left: 20px;
       background:url("icon-attachment.png") no-repeat left center;
     }
   }
@@ -494,7 +494,7 @@ li.note {
 
 .markdown {
   img {
-    max-width:100%;
+    max-width: 100%;
   }
 }
 
@@ -509,14 +509,14 @@ li.note {
 }
 
 .remember_me {
-  text-align:left;
+  text-align: left;
 
   input {
-    margin:0;
+    margin: 0;
   }
 
   span {
-    padding-left:5px;
+    padding-left: 5px;
   }
 }
 
@@ -530,10 +530,10 @@ li.note {
   .data {
     a {
       h1 {
-        line-height:48px;
-        font-size:48px;
-        padding:20px;
-        text-align:center;
+        line-height: 48px;
+        font-size: 48px;
+        padding: 20px;
+        text-align: center;
       }
     }
   }
@@ -541,12 +541,12 @@ li.note {
 
 .rss-icon {
   img {
-    width:24px;
-    vertical-align:top;
+    width: 24px;
+    vertical-align: top;
   }
 
   strong {
-    line-height:24px;
+    line-height: 24px;
   }
 }
 
@@ -556,7 +556,7 @@ li.note {
 .chzn-container-single .chzn-single {
   background:#FFF;
   border: 1px solid #bbb;
-  box-shadow:none;
+  box-shadow: none;
 }
 .chzn-container-active .chzn-single {
   background:#fff;
@@ -565,7 +565,7 @@ li.note {
 
 .supp_diff_link,
 .mr_show_all_commits {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .merge_request,
@@ -586,11 +586,11 @@ li.note {
 
 .git_error_tips {
   @extend .span6;
-  text-align:left;
-  margin-top:40px;
+  text-align: left;
+  margin-top: 40px;
   pre {
-    background:white;
-    border:none;
+    background: white;
+    border: none;
     font-size: 12px;
   }
 }
@@ -605,15 +605,15 @@ li.note {
 }
 
 .oauth_select_holder {
-  padding:20px;
+  padding: 20px;
   img {
-    padding:5px;
-    margin-right:10px;
+    padding: 5px;
+    margin-right: 10px;
   }
   .active {
     img {
       border:1px solid #ccc;
-      background:$hover;
+      background: $hover;
       @include border-radius(5px);
     }
   }
@@ -634,23 +634,23 @@ li.note {
 
 pre {
   &.clean {
-    background:none;
-    border:none;
-    margin:0;
-    padding:0;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
   }
 }
 
 .milestone .progress {
   margin-bottom: 0;
-  margin-top:4px;
+  margin-top: 4px;
 }
 
 .float-link {
-  float:left;
-  margin-right:15px;
+  float: left;
+  margin-right: 15px;
   .s16 {
-    margin-right:5px;
+    margin-right: 5px;
   }
 }
 

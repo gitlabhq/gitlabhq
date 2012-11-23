@@ -5,11 +5,11 @@
 
 h1, h2, h3, h4, h5, h6 { margin: 0; }
 h3, h4, h5, h6 { line-height: 36px; }
-h5 { font-size:14px; }
+h5 { font-size: 14px; }
 
 h3.page_title {
   color:#456;
-  font-size:20px;
+  font-size: 20px;
   font-weight: normal;
   line-height: 28px;
 }
@@ -37,7 +37,7 @@ a {
   outline: none;
   color: $link_color;
   &:hover {
-    text-decoration:none;
+    text-decoration: none;
     color: $blue_link;
   }
 
@@ -53,24 +53,24 @@ a {
   }
 
   &.lined {
-    text-decoration:underline;
-    &:hover { text-decoration:underline; }
+    text-decoration: underline;
+    &:hover { text-decoration: underline; }
   }
 
   &.gray {
-    color:gray;
+    color: gray;
   }
 
   &.supp_diff_link {
-    text-align:center;
+    text-align: center;
     padding:20px 0;
     background:#f1f1f1;
-    width:100%;
-    float:left;
+    width: 100%;
+    float: left;
   }
 
   &.neib  {
-    margin-right:15px;
+    margin-right: 15px;
   }
 }
 

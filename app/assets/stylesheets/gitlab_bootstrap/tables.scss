@@ -3,11 +3,11 @@ table {
   @extend .table-striped;
   @include solid_shade;
   border:1px solid #bbb;
-  width:100%;
+  width: 100%;
 
   &.low {
     td {
-      line-height:18px;
+      line-height: 18px;
     }
   }
 
@@ -32,7 +32,7 @@ table {
 
   td {
     border-color:#f1f1f1;
-    line-height:28px;
+    line-height: 28px;
 
     .s16 {
       margin-top: 5px;
@@ -53,10 +53,10 @@ table {
   }
 
   &.lite {
-    border:none;
-    box-shadow:none;
+    border: none;
+    box-shadow: none;
     tr, td {
-      border:none;
+      border: none;
       background:none !important;
     }
   }
