@@ -14,7 +14,7 @@
     color:#fff;
     text-shadow: 0 1px 1px #268;
     &:hover {
-      background:$blue_link;
+      background: $blue_link;
       color:#fff;
     }
 
@@ -30,7 +30,7 @@
     color:#fff;
     text-shadow: 0 1px 1px #268;
     &:hover {
-      background:$blue_link;
+      background: $blue_link;
       color:#fff;
     }
 
@@ -60,12 +60,12 @@
   }
 
   &.cancel-btn {
-    float:right;
+    float: right;
   }
 
   &.wide {
-    padding-left:30px;
-    padding-right:30px;
+    padding-left: 30px;
+    padding-right: 30px;
   }
 
   &.danger {
@@ -92,19 +92,19 @@
   }
 
   &.very_small {
-    font-size:11px;
+    font-size: 11px;
     padding:2px 6px;
     line-height: 16px;
-    margin:2px;
+    margin: 2px;
   }
 
   &.grouped {
-    margin-right:7px;
-    float:left;
+    margin-right: 7px;
+    float: left;
   }
 
   &.padded {
-    margin-right:3px;
+    margin-right: 3px;
     padding:4px 10px 4px;
   }
 }

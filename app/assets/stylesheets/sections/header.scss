@@ -5,7 +5,7 @@
 header {
   &.navbar-gitlab {
     .navbar-inner {
-      height:45px;
+      height: 45px;
       padding: 5px;
       background: #F1F1F1;
 
@@ -24,8 +24,8 @@ header {
     }
   }
 
-  z-index:10;
-  /*height:60px;*/
+  z-index: 10;
+  /*height: 60px;*/
 
   /**
    *
@@ -33,24 +33,24 @@ header {
    *
    */
   .app_logo {
-    width:170px;
-    float:left;
+    width: 170px;
+    float: left;
     a {
-      float:left;
+      float: left;
       padding: 0px;
 
       h1 {
-        width:90px;
+        width: 90px;
         background: url('logo_dark.png') no-repeat 0px 2px;
-        float:left;
-        margin-left:2px;
-        font-size:30px;
-        line-height:48px;
-        font-weight:normal;
-        color:$style_color;
+        float: left;
+        margin-left: 2px;
+        font-size: 30px;
+        line-height: 48px;
+        font-weight: normal;
+        color: $style_color;
         text-shadow: 0 1px 1px #FFF;
-        padding-left:45px;
-        height:40px;
+        padding-left: 45px;
+        height: 40px;
         font-family: 'Korolev', sans-serif;
       }
     }
@@ -62,14 +62,14 @@ header {
    *
    */
   .project_name {
-    position:relative;
-    float:left;
-    margin:0;
-    margin-right:30px;
-    font-size:30px;
-    line-height:48px;
-    font-weight:normal;
-    color:$style_color;
+    position: relative;
+    float: left;
+    margin: 0;
+    margin-right: 30px;
+    font-size: 30px;
+    line-height: 48px;
+    font-weight: normal;
+    color: $style_color;
     text-shadow: 0 1px 1px #FFF;
     font-family: 'Korolev', sans-serif;
   }
@@ -81,7 +81,7 @@ header {
    */
   .search {
     margin-right: 45px;
-    margin-left:10px;
+    margin-left: 10px;
     margin-top: 2px;
 
     .search-input {
@@ -89,11 +89,11 @@ header {
       background-image: url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
-      padding-left:25px;
+      padding-left: 25px;
       font-size: 13px;
       @include border-radius(3px);
       border:1px solid #c6c6c6;
-      box-shadow:none;
+      box-shadow: none;
       &:focus {
         @extend .span3;
       }
@@ -122,7 +122,7 @@ header {
       width: 28px;
       height: 28px;
       display: block;
-      top:1px;
+      top: 1px;
       &:after {
         content: " ";
         display: block;

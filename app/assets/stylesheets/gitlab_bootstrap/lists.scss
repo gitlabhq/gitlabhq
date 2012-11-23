@@ -14,7 +14,7 @@ ul {
 
     &.smoke { background-color:#f5f5f5; }
     &:hover {
-      background:$hover;
+      background: $hover;
       border-bottom:1px solid #ADF;
     }
     &:last-child { border:none }
@@ -22,11 +22,11 @@ ul {
 
     p {
       padding-top: 1px;
-      margin:0;
+      margin: 0;
       color:#222;
       img {
-        position:relative;
-        top:3px;
+        position: relative;
+        top: 3px;
       }
     }
   }
@@ -35,7 +35,7 @@ ul {
 ol, ul {
   &.styled {
     li {
-      padding:2px;
+      padding: 2px;
     }
   }
 }
