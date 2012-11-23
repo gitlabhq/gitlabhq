@@ -8,8 +8,6 @@ describe "Projects" do
       visit new_project_path
 
       fill_in 'project_name', with: 'Awesome'
-      find("#project_path").value.should == 'awesome'
-      find("#project_code").value.should == 'awesome'
     end
   end
 
@@ -53,7 +51,6 @@ describe "Projects" do
       visit edit_project_path(@project)
 
       fill_in 'project_name', with: 'Awesome'
-      fill_in 'project_code', with: 'gitlabhq'
       click_button "Save"
       @project = @project.reload
     end

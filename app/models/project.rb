@@ -86,7 +86,7 @@ class Project < ActiveRecord::Base
 
     def create_by_user(params, user)
       namespace_id = params.delete(:namespace_id)
-      namespace_id ||= user.namespace_id
+      namespace_id ||= user.namespace.try(:id)
 
       project = Project.new params
 
@@ -222,6 +222,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def move_repo
+  # For compatibility with old code
+  def code
+    path
   end
 end

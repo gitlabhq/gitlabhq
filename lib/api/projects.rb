@@ -40,8 +40,7 @@ module Gitlab
       post do
         params[:code] ||= params[:name]
         params[:path] ||= params[:name]
-        attrs = attributes_for_keys [:code,
-                                    :path,
+        attrs = attributes_for_keys [:path,
                                     :name,
                                     :description,
                                     :default_branch,
