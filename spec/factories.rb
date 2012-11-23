@@ -12,6 +12,7 @@ FactoryGirl.define do
   factory :user, aliases: [:author, :assignee, :owner] do
     email { Faker::Internet.email }
     name
+    username 'john'
     password "123456"
     password_confirmation { password }
 

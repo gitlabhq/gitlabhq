@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121123104937) do
+ActiveRecord::Schema.define(:version => 20121123164910) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(:version => 20121123104937) do
 
   create_table "namespaces", :force => true do |t|
     t.string   "name",       :null => false
-    t.string   "code",       :null => false
+    t.string   "path",       :null => false
     t.integer  "owner_id",   :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
@@ -111,7 +111,6 @@ ActiveRecord::Schema.define(:version => 20121123104937) do
     t.datetime "created_at",                               :null => false
     t.datetime "updated_at",                               :null => false
     t.boolean  "private_flag",           :default => true, :null => false
-    t.string   "code"
     t.integer  "owner_id"
     t.string   "default_branch"
     t.boolean  "issues_enabled",         :default => true, :null => false

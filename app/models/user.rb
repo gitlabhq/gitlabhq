@@ -69,7 +69,8 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
 
-  delegate :code, to: :namespace, allow_nil: true, prefix: true
+  delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :id, to: :namespace, allow_nil: true, prefix: true
 
   # Scopes
   scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }
@@ -121,7 +122,7 @@ class User < ActiveRecord::Base
 
   def namespaces
     namespaces = []
-    namespaces << self.namespace
+    namespaces << self.namespace if self.namespace
     namespaces = namespaces + Group.all if admin
     namespaces
   end

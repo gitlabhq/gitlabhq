@@ -5,7 +5,7 @@ class Admin::ProjectsController < AdminController
     @projects = Project.scoped
     @projects = @projects.where(namespace_id: params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
-    @projects = @projects.includes(:namespace).order("namespaces.code, projects.name ASC").page(params[:page]).per(20)
+    @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(20)
   end
 
   def show

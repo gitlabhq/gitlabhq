@@ -19,13 +19,6 @@
         .input-prepend
           %strong
             = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
-    .clearfix
-      = f.label :code do
-        URL
-      .input
-        .input-prepend
-          %span.add-on= web_app_url
-          = f.text_field :code, placeholder: "example"
 
     - unless @project.new_record? || @project.heads.empty?
       .clearfix

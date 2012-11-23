@@ -27,7 +27,7 @@ class Project < ActiveRecord::Base
   include Authority
   include Team
 
-  attr_accessible :name, :path, :description, :code, :default_branch, :issues_enabled,
+  attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
 
   attr_accessible :namespace_id, as: :admin
@@ -58,15 +58,15 @@ class Project < ActiveRecord::Base
   # Validations
   validates :owner, presence: true
   validates :description, length: { within: 0..2000 }
-  validates :name, uniqueness: true, presence: true, length: { within: 0..255 }
-  validates :path, uniqueness: true, presence: true, length: { within: 0..255 },
-            format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
-                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
-  validates :code, presence: true, uniqueness: true, length: { within: 1..255 },
+  validates :name, presence: true, length: { within: 0..255 }
+  validates :path, presence: true, length: { within: 0..255 },
             format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+
+  validates_uniqueness_of :name, scope: :namespace_id
+  validates_uniqueness_of :path, scope: :namespace_id
 
   validate :check_limit, :repo_name
 
@@ -81,20 +81,23 @@ class Project < ActiveRecord::Base
     end
 
     def search query
-      where("projects.name LIKE :query OR projects.code LIKE :query OR projects.path LIKE :query", query: "%#{query}%")
+      where("projects.name LIKE :query OR projects.path LIKE :query", query: "%#{query}%")
     end
 
     def create_by_user(params, user)
-      namespace_id = params.delete(:namespace_id) || namespace.try(:id)
+      namespace_id = params.delete(:namespace_id)
+      namespace_id ||= current_user.namespace_id
 
       project = Project.new params
 
       Project.transaction do
 
-        # Build gitlab-hq code from GitLab HQ name
+        # Parametrize path for project
         #
-        slug = project.name.dup.parameterize
-        project.code = project.path = slug
+        # Ex.
+        #  'GitLab HQ'.parameterize => "gitlab-hq"
+        #
+        project.path = project.name.dup.parameterize
 
         project.owner = user
         project.namespace_id = namespace_id
@@ -149,14 +152,14 @@ class Project < ActiveRecord::Base
 
   def to_param
     if namespace
-      namespace.code + "/" + code
+      namespace.path + "/" + path
     else
-      code
+      path
     end
   end
 
   def web_url
-    [Gitlab.config.url, code].join("/")
+    [Gitlab.config.url, path].join("/")
   end
 
   def common_notes
@@ -213,7 +216,7 @@ class Project < ActiveRecord::Base
 
   def path_with_namespace
     if namespace
-      namespace.code + '/' + path
+      namespace.path + '/' + path
     else
       path
     end

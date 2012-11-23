@@ -1,13 +1,11 @@
 class ProjectObserver < ActiveRecord::Observer
-  def before_save(project)
+  def after_save(project)
+    project.update_repository
+
     # Move repository if namespace changed
     if project.namespace_id_changed? and not project.new_record?
       move_project(project)
     end
-  end
-
-  def after_save(project)
-    project.update_repository
   end
 
   def after_destroy(project)
@@ -27,8 +25,8 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def move_project(project)
-    old_dir = Namespace.find_by_id(project.namespace_id_was).try(:code) || ''
-    new_dir = Namespace.find_by_id(project.namespace_id).try(:code) || ''
+    old_dir = Namespace.find_by_id(project.namespace_id_was).try(:path) || ''
+    new_dir = Namespace.find_by_id(project.namespace_id).try(:path) || ''
 
     # Create new dir if missing
     new_dir_path = File.join(Gitlab.config.git_base_path, new_dir)
