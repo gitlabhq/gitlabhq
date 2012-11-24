@@ -226,4 +226,18 @@ class Project < ActiveRecord::Base
   def code
     path
   end
+
+  def transfer(new_namespace)
+    Project.transaction do
+      old_namespace = namespace
+      self.namespace = new_namespace
+
+      old_dir = old_namespace.try(:path) || ''
+      new_dir = new_namespace.try(:path) || ''
+
+      Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
+
+      save!
+    end
+  end
 end
