@@ -12,11 +12,11 @@
 
 
 @mixin box-shadow($shadow) {
-  -webkit-box-shadow: $radius;
-  -moz-box-shadow: $radius;
-  -ms-box-shadow: $radius;
-  -o-box-shadow: $radius;
-  box-shadow: $radius;
+  -webkit-box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+  -ms-box-shadow: $shadow;
+  -o-box-shadow: $shadow;
+  box-shadow: $shadow;
 }
 
 @mixin border-radius($radius) {
@@ -25,6 +25,13 @@
   -ms-border-radius: $radius;
   -o-border-radius: $radius;
   border-radius: $radius;
+}
+
+@mixin linear-gradient($from, $to) {
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
+  background-image: -webkit-linear-gradient($from, $to);
+  background-image: -moz-linear-gradient($from, $to);
+  background-image: -o-linear-gradient($from, $to);
 }
 
 @mixin round-borders-bottom($radius) {
@@ -43,10 +50,7 @@
 }
 
 @mixin bg-gradient($from, $to) {
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
-  background-image: -webkit-linear-gradient($from, $to);
-  background-image: -moz-linear-gradient($from, $to);
-  background-image: -o-linear-gradient($from, $to);
+  @include linear-gradient($from, $to);
 }
 
 @mixin bg-light-gray-gradient {
