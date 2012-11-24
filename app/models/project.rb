@@ -34,7 +34,7 @@ class Project < ActiveRecord::Base
   attr_accessor :error_code
 
   # Relations
-  belongs_to :group, foreign_key: "namespace_id", conditions: 'type = Group'
+  belongs_to :group, foreign_key: "namespace_id", conditions: "type = 'Group'"
   belongs_to :namespace
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
