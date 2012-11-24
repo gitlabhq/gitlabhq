@@ -12,7 +12,8 @@ class Namespace < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
-  after_save :ensure_dir_exist
+  after_create :ensure_dir_exist
+  after_update :move_dir
 
   scope :root, where('type IS NULL')
 
@@ -31,5 +32,11 @@ class Namespace < ActiveRecord::Base
   def ensure_dir_exist
     namespace_dir_path = File.join(Gitlab.config.git_base_path, path)
     Dir.mkdir(namespace_dir_path) unless File.exists?(namespace_dir_path)
+  end
+
+  def move_dir
+    old_path = File.join(Gitlab.config.git_base_path, path_was)
+    new_path = File.join(Gitlab.config.git_base_path, path)
+    system("mv #{old_path} #{new_path}")
   end
 end
