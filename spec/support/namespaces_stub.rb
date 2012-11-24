@@ -5,6 +5,10 @@ class Namespace
   def ensure_dir_exist
     true
   end
+
+  def move_dir
+    true
+  end
 end
 
 class Gitlab::ProjectMover

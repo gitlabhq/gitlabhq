@@ -30,6 +30,7 @@
 #  locked_at              :datetime
 #  extern_uid             :string(255)
 #  provider               :string(255)
+#  username               :string(255)
 #
 
 require 'spec_helper'

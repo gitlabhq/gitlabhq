@@ -9,14 +9,13 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
-#  code                   :string(255)
 #  owner_id               :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
-#  group_id               :integer
+#  namespace_id           :integer
 #
 
 require 'spec_helper'
