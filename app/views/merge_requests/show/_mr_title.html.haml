@@ -13,9 +13,14 @@
           = "MERGED"
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to project_merge_request_path(@project, @merge_request, format: :patch), class: "btn grouped" do
-          %i.icon-download-alt
-          Get Patch
+        .left.btn-group
+          %a.btn.grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+            %i.icon-download-alt
+            Download as
+            %span.caret
+          %ul.dropdown-menu
+            %li= link_to "Email Patches", project_merge_request_path(@project, @merge_request, format: :patch)
+            %li= link_to "Plain Diff",    project_merge_request_path(@project, @merge_request, format: :diff)
 
         = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {closed: true }, status_only: true), method: :put, class: "btn grouped danger", title: "Close merge request"
 
