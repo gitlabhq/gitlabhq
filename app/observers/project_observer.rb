@@ -4,7 +4,10 @@ class ProjectObserver < ActiveRecord::Observer
 
     # Move repository if namespace changed
     if project.namespace_id_changed? and not project.new_record?
-      move_project(project)
+      old_dir = Namespace.find_by_id(project.namespace_id_was).try(:path) || ''
+      new_dir = Namespace.find_by_id(project.namespace_id).try(:path) || ''
+
+      Gitlab::ProjectMover.new(project, old_dir, new_dir).execute
     end
   end
 
@@ -22,21 +25,5 @@ class ProjectObserver < ActiveRecord::Observer
 
   def log_info message
     Gitlab::AppLogger.info message
-  end
-
-  def move_project(project)
-    old_dir = Namespace.find_by_id(project.namespace_id_was).try(:path) || ''
-    new_dir = Namespace.find_by_id(project.namespace_id).try(:path) || ''
-
-    # Create new dir if missing
-    new_dir_path = File.join(Gitlab.config.git_base_path, new_dir)
-    Dir.mkdir(new_dir_path) unless File.exists?(new_dir_path)
-
-    old_path = File.join(Gitlab.config.git_base_path, old_dir, "#{project.path}.git")
-    new_path = File.join(new_dir_path, "#{project.path}.git")
-
-    `mv #{old_path} #{new_path}`
-
-    log_info "Project #{project.name} was moved from #{old_path} to #{new_path}"
   end
 end

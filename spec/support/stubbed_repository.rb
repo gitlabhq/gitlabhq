@@ -28,10 +28,4 @@ module StubbedRepository
   end
 end
 
-class Namespace
-  def ensure_dir_exist
-    true
-  end
-end
-
 Project.send(:include, StubbedRepository)
