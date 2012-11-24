@@ -1,7 +1,5 @@
 class ProjectObserver < ActiveRecord::Observer
   def after_save(project)
-    project.update_repository
-
     # Move repository if namespace changed
     if project.namespace_id_changed? and not project.new_record?
       old_dir = Namespace.find_by_id(project.namespace_id_was).try(:path) || ''
@@ -9,6 +7,9 @@ class ProjectObserver < ActiveRecord::Observer
 
       Gitlab::ProjectMover.new(project, old_dir, new_dir).execute
     end
+
+    # Update gitolite
+    project.update_repository
   end
 
   def after_destroy(project)

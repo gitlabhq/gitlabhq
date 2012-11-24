@@ -3,6 +3,8 @@
 # Used for moving project repositories from one subdir to another
 module Gitlab
   class ProjectMover
+    class ProjectMoveError < StandardError; end
+
     attr_reader :project, :old_dir, :new_dir
 
     def initialize(project, old_dir, new_dir)
@@ -23,7 +25,9 @@ module Gitlab
         log_info "Project #{project.name} was moved from #{old_path} to #{new_path}"
         true
       else
-        log_info "Error! Project #{project.name} cannot be moved from #{old_path} to #{new_path}"
+        message = "Project #{project.name} cannot be moved from #{old_path} to #{new_path}"
+        log_info "Error! #{message}"
+        raise ProjectMoveError.new(message)
         false
       end
     end

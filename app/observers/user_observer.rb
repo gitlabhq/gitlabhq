@@ -12,8 +12,12 @@ class UserObserver < ActiveRecord::Observer
   end
 
   def after_save user
-    if user.username_changed? and user.namespace
-      user.namespace.update_attributes(path: user.username)
+    if user.username_changed?
+      if user.namespace
+        user.namespace.update_attributes(path: user.username)
+      else
+        user.create_namespace!(path: user.username, name: user.name)
+      end
     end
   end
 
