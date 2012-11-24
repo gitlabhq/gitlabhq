@@ -4,6 +4,7 @@ class GroupsController < ApplicationController
 
   before_filter :group
   before_filter :projects
+  before_filter :add_project_abilities
 
   def show
     @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)

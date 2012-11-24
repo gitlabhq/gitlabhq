@@ -64,9 +64,8 @@ class ApplicationController < ActionController::Base
 
   def project
     id = params[:project_id] || params[:id]
-    id = id.split("/") if id.include?("/")
 
-    @project ||= current_user.projects.find_by_path(id)
+    @project ||= current_user.projects.find_with_namespace(id)
     @project || render_404
   end
 

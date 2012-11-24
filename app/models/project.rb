@@ -84,6 +84,16 @@ class Project < ActiveRecord::Base
       where("projects.name LIKE :query OR projects.path LIKE :query", query: "%#{query}%")
     end
 
+    def find_with_namespace(id)
+      if id.include?("/")
+        id = id.split("/")
+        namespace_id = Namespace.find_by_path(id.first).id
+        where(namespace_id: namespace_id).find_by_path(id.last)
+      else
+        find_by_path(id)
+      end
+    end
+
     def create_by_user(params, user)
       namespace_id = params.delete(:namespace_id)
       namespace_id ||= user.namespace.try(:id)
