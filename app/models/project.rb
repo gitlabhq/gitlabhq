@@ -95,7 +95,6 @@ class Project < ActiveRecord::Base
 
     def create_by_user(params, user)
       namespace_id = params.delete(:namespace_id)
-      namespace_id ||= user.namespace.try(:id)
 
       project = Project.new params
 
@@ -109,7 +108,18 @@ class Project < ActiveRecord::Base
         project.path = project.name.dup.parameterize
 
         project.owner = user
-        project.namespace_id = namespace_id
+
+        # Apply namespace if user has access to it
+        # else fallback to user namespace
+        project.namespace_id = user.namespace_id
+
+        if namespace_id
+          group = Group.find_by_id(namespace_id)
+          if user.can? :manage_group, group
+            project.namespace_id = namespace_id
+          end
+        end
+
         project.save!
 
         # Add user as project master

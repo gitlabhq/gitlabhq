@@ -40,6 +40,7 @@ describe User do
     it { should have_one(:namespace) }
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:projects) }
+    it { should have_many(:groups) }
     it { should have_many(:my_own_projects).class_name('Project') }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }

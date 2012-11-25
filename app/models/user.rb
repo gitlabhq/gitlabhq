@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
 
   # Namespace for personal projects
   has_one :namespace, class_name: "Namespace", foreign_key: :owner_id, conditions: 'type IS NULL', dependent: :destroy
+  has_many :groups, class_name: "Group", foreign_key: :owner_id
 
   has_many :keys, dependent: :destroy
   has_many :projects, through: :users_projects
@@ -119,16 +120,5 @@ class User < ActiveRecord::Base
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
-  end
-
-  def namespaces
-    namespaces = []
-    namespaces << self.namespace if self.namespace
-    namespaces = namespaces + Group.all if admin
-    namespaces
-  end
-
-  def several_namespaces?
-    namespaces.size > 1
   end
 end
