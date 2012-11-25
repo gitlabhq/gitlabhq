@@ -84,7 +84,7 @@ li.merge_request {
 }
 
 .label_branch {
-  @include round-borders-all(4px);
+  @include border-radius(4px);
   padding: 2px 4px;
   border: none;
   font-size: 14px;
