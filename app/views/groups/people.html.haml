@@ -9,4 +9,6 @@
         = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
         %strong= user.name
         %span.cgray= user.email
+        - if @group.owner == user
+          %span.btn.btn-small.disabled.right Owner
 

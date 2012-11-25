@@ -30,6 +30,7 @@
 #  locked_at              :datetime
 #  extern_uid             :string(255)
 #  provider               :string(255)
+#  username               :string(255)
 #
 
 class User < ActiveRecord::Base
@@ -38,12 +39,16 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name,
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
                   :extern_uid, :provider, :as => [:default, :admin]
   attr_accessible :projects_limit, :as => :admin
 
   attr_accessor :force_random_password
+
+  # Namespace for personal projects
+  has_one :namespace, class_name: "Namespace", foreign_key: :owner_id, conditions: 'type IS NULL', dependent: :destroy
+  has_many :groups, class_name: "Group", foreign_key: :owner_id
 
   has_many :keys, dependent: :destroy
   has_many :projects, through: :users_projects
@@ -60,10 +65,13 @@ class User < ActiveRecord::Base
   validates :bio, length: { within: 0..255 }
   validates :extern_uid, :allow_blank => true, :uniqueness => {:scope => :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
+  validates :username, presence: true
 
   before_validation :generate_password, on: :create
   before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
+
+  delegate :path, to: :namespace, allow_nil: true, prefix: true
 
   # Scopes
   scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }

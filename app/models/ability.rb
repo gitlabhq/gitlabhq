@@ -7,6 +7,7 @@ class Ability
       when "Note" then note_abilities(object, subject)
       when "Snippet" then snippet_abilities(object, subject)
       when "MergeRequest" then merge_request_abilities(object, subject)
+      when "Group" then group_abilities(object, subject)
       else []
       end
     end
@@ -57,6 +58,16 @@ class Ability
         :accept_mr,
         :admin_wiki
       ] if project.master_access_for?(user) || project.owner == user
+
+      rules.flatten
+    end
+
+    def group_abilities user, group
+      rules = []
+
+      rules << [
+        :manage_group
+      ] if group.owner == user
 
       rules.flatten
     end

@@ -1,8 +1,9 @@
 admin = User.create(
-  :email => "admin@local.host",
-  :name => "Administrator",
-  :password => "5iveL!fe",
-  :password_confirmation => "5iveL!fe"
+  email: "admin@local.host",
+  name: "Administrator",
+  username: 'root',
+  password: "5iveL!fe",
+  password_confirmation: "5iveL!fe"
 )
 
 admin.projects_limit = 10000

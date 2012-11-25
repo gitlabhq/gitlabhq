@@ -38,11 +38,7 @@ module Gitlab
       # Example Request
       #   POST /projects
       post do
-        params[:code] ||= params[:name]
-        params[:path] ||= params[:name]
-        attrs = attributes_for_keys [:code,
-                                    :path,
-                                    :name,
+        attrs = attributes_for_keys [:name,
                                     :description,
                                     :default_branch,
                                     :issues_enabled,

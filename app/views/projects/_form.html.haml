@@ -9,48 +9,45 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-
   %fieldset
     %legend  Advanced settings:
-    .clearfix
+    .control-group
       = f.label :path do
         Path
-      .input
-        .input-prepend
-          %strong
-            = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
-    .clearfix
-      = f.label :code do
-        URL
-      .input
-        .input-prepend
-          %span.add-on= web_app_url
-          = f.text_field :code, placeholder: "example"
+      .controls
+        = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
 
-    - unless @project.new_record? || @project.heads.empty?
+    .control-group
+      = f.label :namespace_id do
+        %span Namespace
+      .controls
+        = f.select :namespace_id, namespaces_options(@project.namespace_id), {}, {class: 'chosen'}
+        &nbsp;
+        %span.cred Be careful. Changing project namespace can have unintended side effects
+
+    - unless @project.heads.empty?
       .clearfix
         = f.label :default_branch, "Default Branch"
         .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
 
-  - unless @project.new_record?
-    %fieldset
-      %legend Features:
+  %fieldset
+    %legend Features:
 
-      .clearfix
-        = f.label :issues_enabled, "Issues"
-        .input= f.check_box :issues_enabled
+    .clearfix
+      = f.label :issues_enabled, "Issues"
+      .input= f.check_box :issues_enabled
 
-      .clearfix
-        = f.label :merge_requests_enabled, "Merge Requests"
-        .input= f.check_box :merge_requests_enabled
+    .clearfix
+      = f.label :merge_requests_enabled, "Merge Requests"
+      .input= f.check_box :merge_requests_enabled
 
-      .clearfix
-        = f.label :wall_enabled, "Wall"
-        .input= f.check_box :wall_enabled
+    .clearfix
+      = f.label :wall_enabled, "Wall"
+      .input= f.check_box :wall_enabled
 
-      .clearfix
-        = f.label :wiki_enabled, "Wiki"
-        .input= f.check_box :wiki_enabled
+    .clearfix
+      = f.label :wiki_enabled, "Wiki"
+      .input= f.check_box :wiki_enabled
 
   %br
 

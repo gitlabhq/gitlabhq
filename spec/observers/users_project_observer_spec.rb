@@ -2,9 +2,7 @@ require 'spec_helper'
 
 describe UsersProjectObserver do
   let(:user) { create(:user) }
-  let(:project) { create(:project,
-                         code: "Fuu",
-                         path: "Fuu" ) }
+  let(:project) { create(:project) }
   let(:users_project) { create(:users_project,
                                project: project,
                                user: user )}

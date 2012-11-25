@@ -13,8 +13,8 @@
 
 require 'spec_helper'
 
-describe Group do
-  let!(:group) { create(:group) }
+describe Namespace do
+  let!(:namespace) { create(:namespace) }
 
   it { should have_many :projects }
   it { should validate_presence_of :name }
@@ -22,4 +22,14 @@ describe Group do
   it { should validate_presence_of :path }
   it { should validate_uniqueness_of(:path) }
   it { should validate_presence_of :owner }
+
+  describe "Mass assignment" do
+    it { should allow_mass_assignment_of(:name) }
+    it { should allow_mass_assignment_of(:path) }
+  end
+
+  describe "Respond to" do
+    it { should respond_to(:human_name) }
+    it { should respond_to(:to_param) }
+  end
 end
