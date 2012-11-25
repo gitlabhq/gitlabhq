@@ -38,6 +38,12 @@ module Gitlab
       config.admin_all_repo!
     end
 
+    def update_repositories projects
+      config.apply do |config|
+        config.update_projects(projects)
+      end
+    end
+
     alias_method :create_repository, :update_repository
   end
 end
