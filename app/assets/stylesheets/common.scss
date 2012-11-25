@@ -374,12 +374,12 @@ p.time {
       height: 100%;
     }
     .bar-success {
+      @include linear-gradient(#62C462, #51A351);
       background-color: #468847;
-      @include bg-gradient(#62C462, #51A351);
     }
     .bar-danger {
+      @include linear-gradient(#EE5F5B, #BD362F);
       background-color: #B94A48;
-      @include bg-gradient(#EE5F5B, #BD362F);
     }
   }
   .upvotes {

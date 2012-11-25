@@ -34,10 +34,6 @@
   background-image: -o-linear-gradient($from, $to);
 }
 
-@mixin bg-gradient($from, $to) {
-  @include linear-gradient($from, $to);
-}
-
 @mixin bg-light-gray-gradient {
   background: #f1f1f1;
   background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #f5f5f5), to(#e1e1e1));
