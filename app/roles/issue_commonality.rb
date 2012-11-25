@@ -18,7 +18,7 @@ module IssueCommonality
     scope :closed, where(closed: true)
     scope :of_group, ->(group) { where(project_id: group.project_ids) }
     scope :assigned, ->(u) { where(assignee_id: u.id)}
-    scope :recent, order("created_at DESC")
+    scope :recent, order('created_at DESC')
 
     delegate :name,
              :email,

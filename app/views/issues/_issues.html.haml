@@ -6,10 +6,11 @@
     .row
       .span7= paginate @issues, remote: true, theme: "gitlab"
       .span3.right
-        %span.cgray.right 
+        %span.cgray.right
           %span.issue_counter #{@issues.total_count}
           issues for this filter
+          - if params[:milestone_id].present?
+            = link_to 'Print', project_issues_path(@project, :print, milestone_id: params[:milestone_id]), target: '_blank'
 - else
   %li
     %h4.nothing_here_message Nothing to show here
-
