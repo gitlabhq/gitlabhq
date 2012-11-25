@@ -259,4 +259,14 @@ class Project < ActiveRecord::Base
       save!
     end
   end
+
+  def name_with_namespace
+    @name_with_namespace ||= begin
+                               if namespace
+                                 namespace.human_name + " / " + name
+                               else
+                                 name
+                               end
+                             end
+  end
 end
