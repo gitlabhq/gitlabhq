@@ -34,8 +34,16 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
+    namespace_id = params[:project].delete(:namespace_id)
+
+    if namespace_id
+      namespace = Namespace.find(namespace_id)
+      project.transfer(namespace)
+    end
+
     respond_to do |format|
       if project.update_attributes(params[:project])
+        flash[:notice] = 'Project was successfully updated.'
         format.html { redirect_to edit_project_path(project), notice: 'Project was successfully updated.' }
         format.js
       else

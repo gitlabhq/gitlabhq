@@ -26,6 +26,18 @@ module Account
     is_admin?
   end
 
+  def abilities
+    @abilities ||= begin
+                     abilities = Six.new
+                     abilities << Ability
+                     abilities
+                   end
+  end
+
+  def can? action, subject
+    abilities.allowed?(self, action, subject)
+  end
+
   def last_activity_project
     projects.first
   end
@@ -69,5 +81,28 @@ module Account
 
   def projects_sorted_by_activity
     projects.order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC")
+  end
+
+  def namespaces
+    namespaces = []
+
+    # Add user account namespace
+    namespaces << self.namespace if self.namespace
+
+    # Add groups you can manage
+    namespaces += if admin
+                    Group.all
+                  else
+                    groups.all
+                  end
+    namespaces
+  end
+
+  def several_namespaces?
+    namespaces.size > 1
+  end
+
+  def namespace_id
+    namespace.try :id
   end
 end

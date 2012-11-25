@@ -12,7 +12,11 @@
     - projects.each do |project|
       %li.wll
         = link_to project_path(project), class: dom_class(project) do
-          %strong.project_name= truncate(project.name, length: 25)
+          - if project.namespace
+            = project.namespace.human_name
+            \/
+          %strong.project_name
+            = truncate(project.name, length: 25)
           %span.arrow
             &rarr;
           %span.last_activity

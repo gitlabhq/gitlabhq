@@ -12,6 +12,7 @@ FactoryGirl.define do
   factory :user, aliases: [:author, :assignee, :owner] do
     email { Faker::Internet.email }
     name
+    username { Faker::Internet.user_name }
     password "123456"
     password_confirmation { password }
 
@@ -25,13 +26,19 @@ FactoryGirl.define do
   factory :project do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    code { name.downcase.gsub(/\s/, '_') }
     owner
   end
 
   factory :group do
     sequence(:name) { |n| "group#{n}" }
-    code { name.downcase.gsub(/\s/, '_') }
+    path { name.downcase.gsub(/\s/, '_') }
+    owner
+    type 'Group'
+  end
+
+  factory :namespace do
+    sequence(:name) { |n| "group#{n}" }
+    path { name.downcase.gsub(/\s/, '_') }
     owner
   end
 

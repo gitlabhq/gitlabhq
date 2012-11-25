@@ -6,7 +6,7 @@ module Gitlab
 
     def user_project
       if @project ||= current_user.projects.find_by_id(params[:id]) ||
-                      current_user.projects.find_by_code(params[:id])
+                      current_user.projects.find_by_path(params[:id])
       else
         not_found!
       end

@@ -126,7 +126,7 @@ module Gitlab
     end
 
     def update_project_config(project, conf)
-      repo_name = project.path
+      repo_name = project.path_with_namespace
 
       repo = if conf.has_repo?(repo_name)
                conf.get_repo(repo_name)

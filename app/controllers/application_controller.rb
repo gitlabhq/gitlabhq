@@ -63,7 +63,9 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    @project ||= current_user.projects.find_by_code(params[:project_id] || params[:id])
+    id = params[:project_id] || params[:id]
+
+    @project ||= current_user.projects.find_with_namespace(id)
     @project || render_404
   end
 
