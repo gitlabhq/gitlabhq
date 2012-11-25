@@ -90,11 +90,11 @@
     %p becomes
     = markdown %Q{```ruby\nrequire 'redcarpet'\nmarkdown = Redcarpet.new("Hello World!")\nputs markdown.to_html\n```}
 
-    %h4 Automatic table of contents (TOC)
+    %h4 Table of contents (TOC) generation
 
     %p
-      GFM can create a table of contents (TOC) from all headers.
-      To use this feature you must add <code>~toc~</code> <strong>anywhere <em>at the first line</em> of your content</strong>. Note that the TOC will always appear in the top above enything else.
+      GFM can automatically generate a TOC from the headers in the text.
+      To have the TOC generated just place <code>~toc~</code> on the first line.
 
     %pre= %Q{~toc~\n# Header 1\n## Header 2\n# Header 1}
     %p becomes
