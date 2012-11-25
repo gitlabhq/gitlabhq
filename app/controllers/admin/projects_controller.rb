@@ -47,9 +47,8 @@ class Admin::ProjectsController < AdminController
 
   def project
     id = params[:project_id] || params[:id]
-    id = id.split("/") if id.include?("/")
 
-    @project ||= Project.find_by_path(id)
+    @project = Project.find_with_namespace(id)
     @project || render_404
   end
 end

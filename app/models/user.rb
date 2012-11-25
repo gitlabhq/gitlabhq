@@ -72,7 +72,6 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
-  delegate :id, to: :namespace, allow_nil: true, prefix: true
 
   # Scopes
   scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }
