@@ -31,7 +31,6 @@ namespace :gitlab do
 
     Project.where('namespace_id IS NOT NULL').find_each(batch_size: 500) do |project|
       next unless project.group
-      next if project.empty_repo?
 
       group = project.group
 
