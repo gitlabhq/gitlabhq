@@ -105,7 +105,8 @@ tr.line_notes_row {
       padding: 7px 10px;
     }
     a.line_note_reply_link {
-      @include round-borders-all(4px);
+      border: 1px solid #eaeaea;
+      @include border-radius(4px);
       padding: 3px 10px;
       margin-left: 5px;
       color: white;

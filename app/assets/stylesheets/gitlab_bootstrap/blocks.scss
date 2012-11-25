@@ -61,7 +61,10 @@
 .ui-box {
   background: #F9F9F9;
   margin-bottom: 25px;
-  @include round-borders-all(4px);
+
+  border: 1px solid #eaeaea;
+  @include border-radius(4px);
+  
   border-color: #CCC;
   @include solid_shade;
 
@@ -75,8 +78,9 @@
 
   h5, .title {
     padding: 0 10px;
-    @include round-borders-top(4px);
+    @include border-radius(4px 4px 0 0);
     @include bg-gray-gradient;
+    border-top: 1px solid #eaeaea;
     border-bottom: 1px solid #bbb;
 
     &.small {
@@ -104,7 +108,7 @@
 
   .bottom {
     @include bg-gray-gradient;
-    @include round-borders-bottom(4px);
+    @include border-radius(0 0 4px 4px);
     border-bottom: none;
     border-top: 1px solid #bbb;
   }
@@ -137,12 +141,12 @@
   li, .wll {
     padding: 10px;
     &:first-child {
-      @include round-borders-top(4px);
+      @include border-radius(4px 4px 0 0);
       border-top: none;
     }
 
     &:last-child {
-      @include round-borders-bottom(4px);
+      @include border-radius(0 0 4px 4px);
       border: none;
     }
   }

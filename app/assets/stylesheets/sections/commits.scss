@@ -295,9 +295,8 @@
 }
 
 .label_commit {
-  @include round-borders-all(4px);
+  @include border-radius(4px);
   padding: 2px 4px;
-  border: none;
   font-size: 13px;
   background: #474D57;
   color: #fff;

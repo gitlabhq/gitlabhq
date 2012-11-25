@@ -34,21 +34,6 @@
   background-image: -o-linear-gradient($from, $to);
 }
 
-@mixin round-borders-bottom($radius) {
-  border-top: 1px solid #eaeaea;
-  @include border-radius(0 0 $radius $radius);
-}
-
-@mixin round-borders-top($radius) {
-  border-top: 1px solid #eaeaea;
-  @include border-radius($radius $radius 0 0);
-}
-
-@mixin round-borders-all($radius) {
-  border: 1px solid #eaeaea;
-  @include border-radius($radius);
-}
-
 @mixin bg-gradient($from, $to) {
   @include linear-gradient($from, $to);
 }
