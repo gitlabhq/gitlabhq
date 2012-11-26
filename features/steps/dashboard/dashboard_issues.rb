@@ -7,6 +7,7 @@ class DashboardIssues < Spinach::FeatureSteps
     issues.each do |issue|
       page.should have_content(issue.title[0..10])
       page.should have_content(issue.project.name)
+      page.should have_link(issue.project.name)
     end
   end
 
