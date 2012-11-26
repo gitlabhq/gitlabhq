@@ -150,4 +150,19 @@ class Commit
   def parents_count
     parents && parents.count || 0
   end
+
+  # Shows the diff between the commit's parent and the commit.
+  #
+  # Cuts out the header and stats from #to_patch and returns only the diff.
+  def to_diff
+    # see Grit::Commit#show
+    patch = to_patch
+
+    # discard lines before the diff
+    lines = patch.split("\n")
+    while !lines.first.start_with?("diff --git") do
+      lines.shift
+    end
+    lines.join("\n")
+  end
 end
