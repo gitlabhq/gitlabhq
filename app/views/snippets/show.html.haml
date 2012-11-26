@@ -7,24 +7,5 @@
     = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn small right"
 
 %br
-
-%div
-  .file_holder
-    .file_title
-      %i.icon-file
-      %strong= @snippet.file_name
-      %span.options
-        = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn very_small", target: "_blank"
-    .file_content.code
-      - unless @snippet.content.empty?
-        %div{class: current_user.dark_scheme ? "black" : "white"}
-          = preserve do
-            = raw Pygments.highlight(@snippet.content, formatter: :gitlab)
-      - else
-        %h4.nothing_here_message Empty file
-
-
-.clearfix
-
-%div#notes
-  = render "notes/notes_with_form", tid: @snippet.id, tt: "snippet"
+%div= render 'blob'
+%div#notes= render "notes/notes_with_form", tid: @snippet.id, tt: "snippet"
