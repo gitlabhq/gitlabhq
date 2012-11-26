@@ -44,7 +44,7 @@ class Namespace < ActiveRecord::Base
 
   def ensure_dir_exist
     namespace_dir_path = File.join(Gitlab.config.git_base_path, path)
-    Dir.mkdir(namespace_dir_path) unless File.exists?(namespace_dir_path)
+    Dir.mkdir(namespace_dir_path, 0770) unless File.exists?(namespace_dir_path)
   end
 
   def move_dir
