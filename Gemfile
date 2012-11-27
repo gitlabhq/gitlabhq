@@ -11,7 +11,6 @@ end
 gem "rails", "3.2.9"
 
 # Supported DBs
-gem "sqlite3", group: :sqlite
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
