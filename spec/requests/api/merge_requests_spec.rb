@@ -26,9 +26,9 @@ describe Gitlab::API do
     end
   end
 
-  describe "GET /projects/:id/merge_request/:merge_request_id" do
+  describe "GET /projects/:id/merge_requests/:merge_request_id" do
     it "should return merge_request" do
-      get api("/projects/#{project.path}/merge_request/#{merge_request.id}", user)
+      get api("/projects/#{project.path}/merge_requests/#{merge_request.id}", user)
       response.status.should == 200
       json_response['title'].should == merge_request.title
     end
@@ -43,17 +43,17 @@ describe Gitlab::API do
     end
   end
 
-  describe "PUT /projects/:id/merge_request/:merge_request_id" do
+  describe "PUT /projects/:id/merge_requests/:merge_request_id" do
     it "should return merge_request" do
-      put api("/projects/#{project.path}/merge_request/#{merge_request.id}", user), title: "New title"
+      put api("/projects/#{project.path}/merge_requests/#{merge_request.id}", user), title: "New title"
       response.status.should == 200
       json_response['title'].should == 'New title'
     end
   end
 
-  describe "POST /projects/:id/merge_request/:merge_request_id/comments" do
+  describe "POST /projects/:id/merge_requests/:merge_request_id/comments" do
     it "should return comment" do
-      post api("/projects/#{project.path}/merge_request/#{merge_request.id}/comments", user), note: "My comment"
+      post api("/projects/#{project.path}/merge_requests/#{merge_request.id}/comments", user), note: "My comment"
       response.status.should == 201
       json_response['note'].should == 'My comment'
     end
