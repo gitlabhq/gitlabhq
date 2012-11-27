@@ -40,7 +40,7 @@ class Admin::ProjectsController < AdminController
   def destroy
     @project.destroy
 
-    redirect_to projects_url, notice: 'Project was successfully deleted.'
+    redirect_to admin_projects_path, notice: 'Project was successfully deleted.'
   end
 
   protected
