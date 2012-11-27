@@ -1,7 +1,7 @@
 table {
   @extend .table;
   @extend .table-striped;
-  @include solid_shade;
+  @include solid-shade;
   border: 1px solid #bbb;
   width: 100%;
 
