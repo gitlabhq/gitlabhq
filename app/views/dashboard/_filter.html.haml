@@ -1,6 +1,6 @@
 = form_tag dashboard_filter_path(entity), method: 'get' do
   %fieldset.dashboard-search-filter
-    = search_field_tag "search", nil, { placeholder: 'Search', class: 'search-text-input' }
+    = search_field_tag "search", params[:search], { placeholder: 'Search', class: 'search-text-input' }
     = button_tag type: 'submit', class: 'btn' do
       %i.icon-search
 
@@ -8,7 +8,7 @@
     %legend Status:
     %ul.nav.nav-pills.nav-stacked
       %li{class: ("active" if !params[:status])}
-        = link_to dashboard_filter_path(entity) do
+        = link_to dashboard_filter_path(entity, status: nil) do
           Open
       %li{class: ("active" if params[:status] == 'closed')}
         = link_to dashboard_filter_path(entity, status: 'closed') do
