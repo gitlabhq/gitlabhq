@@ -95,8 +95,8 @@
         pre {
           padding:0;
           margin:0;
-          background:none;
           border:none;
+          border-radius: 0;
         }
       }
     }
@@ -142,8 +142,8 @@
         table-layout: fixed;
 
         pre {
-          background: none;
           border: none;
+          border-radius: 0;
           font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
           font-size: 12px !important;
           line-height: 16px !important;

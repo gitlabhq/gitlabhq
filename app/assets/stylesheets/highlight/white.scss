@@ -1,6 +1,8 @@
-.white .lines .highlight {
-  background: white;
-  pre { color: #333; }
+.white .highlight {
+  pre {
+    background-color: #fff;
+    color: #333;
+  }
 
   .hll { display: block; background-color: $hover }
   .c { color: #888888; font-style: italic } /* Comment */
