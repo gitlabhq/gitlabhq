@@ -96,7 +96,7 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.projects.map{ |p| { label: p.name, url: project_path(p) } }
+    projects = current_user.projects.map{ |p| { label: p.name_with_namespace, url: project_path(p) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },
