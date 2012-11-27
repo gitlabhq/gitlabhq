@@ -5,7 +5,7 @@
 .file_holder {
   border: 1px solid #BBB;
   margin-bottom: 1em;
-  @include solid_shade;
+  @include solid-shade;
 
   .file_title {
     border-bottom: 1px solid #bbb;
