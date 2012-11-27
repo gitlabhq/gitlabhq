@@ -1,7 +1,5 @@
 class UserObserver < ActiveRecord::Observer
   def after_create(user)
-    user.create_namespace(path: user.username, name: user.name)
-
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
     Notify.new_user_email(user.id, user.password).deliver
