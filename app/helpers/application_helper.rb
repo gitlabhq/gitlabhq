@@ -126,6 +126,10 @@ module ApplicationHelper
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
 
+  def user_color_scheme_class
+    current_user.dark_scheme ? :black : :white
+  end
+
   def show_last_push_widget?(event)
     event &&
       event.last_push_to_non_root? &&

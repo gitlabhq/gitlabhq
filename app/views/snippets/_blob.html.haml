@@ -6,8 +6,7 @@
       = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn very_small", target: "_blank"
   .file_content.code
     - unless @snippet.content.empty?
-      %div{class: current_user.dark_scheme ? "black" : "white"}
-        :preserve
-          #{raw @snippet.colorize(formatter: :gitlab)}
+      %div{class: user_color_scheme_class}
+        = raw @snippet.colorize(formatter: :gitlab)
     - else
       %p.nothing_here_message Empty file
