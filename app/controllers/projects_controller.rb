@@ -34,11 +34,16 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
-    namespace_id = params[:project].delete(:namespace_id)
-
-    if namespace_id.present? and namespace_id.to_i != project.namespace_id
-      namespace = Namespace.find(namespace_id)
-      project.transfer(namespace)
+    if params[:project].has_key?(:namespace_id)
+      namespace_id = params[:project].delete(:namespace_id)
+      if namespace_id == Namespace.global_id and project.namespace.present?
+        # Transfer to global namespace from anyone
+        project.transfer(nil)
+      elsif namespace_id.present? and namespace_id.to_i != project.namespace_id
+        # Transfer to someone namespace
+        namespace = Namespace.find(namespace_id)
+        project.transfer(namespace)
+      end
     end
 
     respond_to do |format|

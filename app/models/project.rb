@@ -111,12 +111,14 @@ class Project < ActiveRecord::Base
 
         # Apply namespace if user has access to it
         # else fallback to user namespace
-        project.namespace_id = user.namespace_id
+        if namespace_id != Namespace.global_id
+          project.namespace_id = user.namespace_id
 
-        if namespace_id
-          group = Group.find_by_id(namespace_id)
-          if user.can? :manage_group, group
-            project.namespace_id = namespace_id
+          if namespace_id
+            group = Group.find_by_id(namespace_id)
+            if user.can? :manage_group, group
+              project.namespace_id = namespace_id
+            end
           end
         end
 
@@ -254,11 +256,15 @@ class Project < ActiveRecord::Base
       old_dir = old_namespace.try(:path) || ''
       new_dir = new_namespace.try(:path) || ''
 
-      old_repo = File.join(old_dir, self.path)
-
-      git_host.move_repository(old_repo, self.path_with_namespace, self)
+      old_repo = if old_dir.present?
+                   File.join(old_dir, self.path)
+                 else
+                   self.path
+                 end
 
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
+
+      git_host.move_repository(old_repo, self.path_with_namespace, self)
 
       save!
     end

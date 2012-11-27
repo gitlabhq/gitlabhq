@@ -84,6 +84,7 @@ module ApplicationHelper
             end
 
     options = [
+      ["Global", [['/', Namespace.global_id]] ],
       ["Groups", groups.map {|g| [g.human_name, g.id]} ],
       [ "Users", users.map {|u| [u.human_name, u.id]} ]
     ]

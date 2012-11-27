@@ -35,6 +35,10 @@ class Namespace < ActiveRecord::Base
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
   end
 
+  def self.global_id
+    'GLN'
+  end
+
   def to_param
     path
   end
@@ -51,6 +55,9 @@ class Namespace < ActiveRecord::Base
   def move_dir
     old_path = File.join(Gitlab.config.git_base_path, path_was)
     new_path = File.join(Gitlab.config.git_base_path, path)
+    if File.exists?(new_path)
+      raise "Already exists"
+    end
     system("mv #{old_path} #{new_path}")
   end
 

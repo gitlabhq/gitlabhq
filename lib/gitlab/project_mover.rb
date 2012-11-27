@@ -21,6 +21,10 @@ module Gitlab
       old_path = File.join(Gitlab.config.git_base_path, old_dir, "#{project.path}.git")
       new_path = File.join(new_dir_path, "#{project.path}.git")
 
+      if File.exists? new_path
+        raise ProjectMoveError.new("Destination #{new_path} already exists")
+      end
+
       if system("mv #{old_path} #{new_path}")
         log_info "Project #{project.name} was moved from #{old_path} to #{new_path}"
         true

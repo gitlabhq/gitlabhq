@@ -83,7 +83,7 @@ module Repository
   end
 
   def path_to_repo
-    File.join(Gitlab.config.git_base_path, namespace_dir, "#{path}.git")
+    File.join(Gitlab.config.git_base_path, "#{path_with_namespace}.git")
   end
 
   def namespace_dir
@@ -165,7 +165,7 @@ module Repository
 
     # Build file path
     file_name = self.path + "-" + commit.id.to_s + ".tar.gz"
-    storage_path = Rails.root.join("tmp", "repositories", self.path)
+    storage_path = Rails.root.join("tmp", "repositories", self.path_with_namespace)
     file_path = File.join(storage_path, file_name)
 
     # Put files into a directory before archiving

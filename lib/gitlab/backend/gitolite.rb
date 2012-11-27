@@ -23,7 +23,7 @@ module Gitlab
     end
 
     def update_repository project
-      config.update_project!(project.path, project)
+      config.update_project!(project)
     end
 
     def move_repository(old_repo, new_repo, project)

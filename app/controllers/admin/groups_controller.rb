@@ -22,6 +22,7 @@ class Admin::GroupsController < AdminController
 
   def create
     @group = Group.new(params[:group])
+    @group.path = @group.name.dup.parameterize if @group.name
     @group.owner = current_user
 
     if @group.save
