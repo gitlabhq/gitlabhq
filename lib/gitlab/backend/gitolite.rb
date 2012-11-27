@@ -26,10 +26,10 @@ module Gitlab
       config.update_project!(project)
     end
 
-    def move_repository(old_repo, new_repo, project)
+    def move_repository(old_repo, project)
       config.apply do |config|
         config.clean_repo(old_repo)
-        config.update_project(new_repo, project)
+        config.update_project(project)
       end
     end
 

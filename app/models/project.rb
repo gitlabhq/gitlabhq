@@ -264,7 +264,7 @@ class Project < ActiveRecord::Base
 
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
-      git_host.move_repository(old_repo, self.path_with_namespace, self)
+      git_host.move_repository(old_repo, self)
 
       save!
     end
