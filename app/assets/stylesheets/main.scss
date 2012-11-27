@@ -2,8 +2,16 @@
 $baseFontSize: 13px !default;
 $baseLineHeight: 18px !default;
 
+// BOOTSTRAP
+// ------------------
 @import "bootstrap";
-@import "bootstrap-responsive";
+
+// BOOTSTRAP RESPONSIVE
+// ------------------
+@import "bootstrap/responsive-utilities";
+@import "bootstrap/responsive-1200px-min";
+
+// FONT AWESOME
 @import 'font-awesome';
 
 /** GitLab colors **/
