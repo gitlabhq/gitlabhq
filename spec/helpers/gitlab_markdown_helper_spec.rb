@@ -329,9 +329,11 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave code blocks untouched" do
-      markdown("\n    some code from $#{snippet.id}\n    here too\n").should == "<div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div>"
+      helper.stub(:user_color_scheme_class).and_return(:white)
 
-      markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == "<div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div>"
+      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should == "<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div></div>"
+
+      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == "<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div></div>"
     end
 
     it "should leave inline code untouched" do
