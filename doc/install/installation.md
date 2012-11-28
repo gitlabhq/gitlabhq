@@ -171,6 +171,11 @@ and ensure you have followed all of the above steps carefully.
     # Copy unicorn config
     #
     sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
+    
+    # Copy resque config
+    #
+    sudo -u gitlab cp config/resque.yml.example config/resque.yml
+
 
 #### Install gems
 
