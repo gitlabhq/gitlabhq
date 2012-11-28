@@ -69,8 +69,8 @@ class Profile < Spinach::FeatureSteps
   end
 
   Then "I should see the theme change immediately" do
-    page.should have_selector('body.ui_color')
-    page.should_not have_selector('body.ui_basic')
+    page.should have_selector('body.ui-color')
+    page.should_not have_selector('body.ui-basic')
   end
 
   Then "I should receive feedback that the changes were saved" do

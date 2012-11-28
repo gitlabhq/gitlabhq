@@ -29,26 +29,26 @@ class ProjectTeamManagement < Spinach::FeatureSteps
 
   Then 'I should see "Mike" in team list as "Reporter"' do
     user = User.find_by_name("Mike")
-    role_id = find(".user_#{user.id} #team_member_project_access").value
+    role_id = find(".user-#{user.id} #team_member_project_access").value
     role_id.should == UsersProject.access_roles["Reporter"].to_s
   end
 
   Given 'I should see "Sam" in team list as "Developer"' do
     user = User.find_by_name("Sam")
-    role_id = find(".user_#{user.id} #team_member_project_access").value
+    role_id = find(".user-#{user.id} #team_member_project_access").value
     role_id.should == UsersProject.access_roles["Developer"].to_s
   end
 
   And 'I change "Sam" role to "Reporter"' do
     user = User.find_by_name("Sam")
-    within ".user_#{user.id}" do
+    within ".user-#{user.id}" do
       select "Reporter", :from => "team_member_project_access"
     end
   end
 
   And 'I should see "Sam" in team list as "Reporter"' do
     user = User.find_by_name("Sam")
-    role_id = find(".user_#{user.id} #team_member_project_access").value
+    role_id = find(".user-#{user.id} #team_member_project_access").value
     role_id.should == UsersProject.access_roles["Reporter"].to_s
   end
 
