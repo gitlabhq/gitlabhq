@@ -40,14 +40,6 @@ module ApplicationHelper
     end
   end
 
-  def request_protocol
-    request.ssl? ? "https" : "http"
-  end
-
-  def web_app_url
-    "#{request_protocol}://#{Gitlab.config.web_host}/"
-  end
-
   def last_commit(project)
     if project.repo_exists?
       time_ago_in_words(project.commit.committed_date) + " ago"
