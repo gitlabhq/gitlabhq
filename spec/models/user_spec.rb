@@ -58,6 +58,7 @@ describe User do
   end
 
   describe 'validations' do
+    it { should validate_presence_of(:username) }
     it { should validate_presence_of(:projects_limit) }
     it { should validate_numericality_of(:projects_limit) }
     it { should allow_value(0).for(:projects_limit) }

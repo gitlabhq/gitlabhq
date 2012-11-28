@@ -59,7 +59,7 @@ class Project < ActiveRecord::Base
   validates :description, length: { within: 0..2000 }
   validates :name, presence: true, length: { within: 0..255 }
   validates :path, presence: true, length: { within: 0..255 },
-            format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
+            format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }

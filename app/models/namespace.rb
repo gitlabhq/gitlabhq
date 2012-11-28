@@ -19,7 +19,7 @@ class Namespace < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
   validates :path, uniqueness: true, presence: true, length: { within: 1..255 },
-            format: { with: /\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/,
+            format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :owner, presence: true
 
