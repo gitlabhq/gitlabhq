@@ -28,7 +28,7 @@ $ ->
         return false
 
       $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live 'click', (e) ->
-        History.pushState(null, null, $(@).attr('href'))
+        History.pushState(null, null, decodeURIComponent($(@).attr('href')))
         return false
 
       History.Adapter.bind window, 'statechange', ->
