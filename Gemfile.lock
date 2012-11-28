@@ -26,10 +26,10 @@ GIT
 
 GIT
   remote: https://github.com/gitlabhq/grit_ext.git
-  revision: 212fd40bea61f3c6a167223768e7295dc32bbc10
-  ref: 212fd40bea61f3c6a167223768e7295dc32bbc10
+  revision: 8e6afc2da821354774aa4d1ee8a1aa2082f84a3e
+  ref: 8e6afc2da821354774aa4d1ee8a1aa2082f84a3e
   specs:
-    grit_ext (0.6.0)
+    grit_ext (0.6.1)
       charlock_holmes (~> 0.6.9)
 
 GIT
