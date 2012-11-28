@@ -145,5 +145,9 @@ class Settings < Settingslogic
     def disable_gravatar?
       app['disable_gravatar'] || false
     end
+
+    def no_repo_limit?
+      app['no_repo_limit'] || false
+    end
   end
 end

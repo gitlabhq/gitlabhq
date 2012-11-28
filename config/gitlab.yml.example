@@ -24,6 +24,7 @@ app:
   # backup_path: "/vol/backups"   # default: Rails.root + backups/
   # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
   # disable_gravatar: true        # default: false - Disable user avatars from Gravatar.com
+  # no_repo_limit: true           # default: false - Do not limit number of repositories user can create
 
 
 #

@@ -37,9 +37,11 @@
   %br
   %h4.nothing_here_message
     - if current_user.can_create_project?
-      You can create up to
-      = current_user.projects_limit
-      projects. Click on button below to add a new one
+      - unless Gitlab.config.no_repo_limit?
+        You can create up to
+        = current_user.projects_limit
+        projects.
+      Click on button below to add a new one
       .link_holder
         = link_to new_project_path, class: "btn primary" do
           New Project »

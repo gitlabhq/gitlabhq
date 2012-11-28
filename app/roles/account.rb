@@ -19,6 +19,7 @@ module Account
   end
 
   def can_create_project?
+    return true if Gitlab.config.no_repo_limit?
     projects_limit > my_own_projects.count
   end
 

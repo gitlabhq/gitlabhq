@@ -65,12 +65,12 @@
           Personal projects:
           %small.right
             %span= current_user.my_own_projects.count
-            of
-            %span= current_user.projects_limit
-        .padded
-          .progress
-            .bar{style: "width: #{current_user.projects_limit_percent}%;"}
-
+            - unless Gitlab.config.no_repo_limit?
+              of
+              %span= current_user.projects_limit
+              .padded
+                .progress
+                  .bar{style: "width: #{current_user.projects_limit_percent}%;"}
       %fieldset
         %legend
           SSH public keys:
