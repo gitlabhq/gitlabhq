@@ -3,8 +3,8 @@ window.Projects = ->
     slug = slugify $(@).val()
     $('#project_code, #project_path').val slug
 
-  $('.new_project, .edit_project').on 'ajax:before', ->
-    $('.project_new_holder, .project_edit_holder').hide()
+  $('.new-project, .edit-project').on 'ajax:before', ->
+    $('.project-new-holder, .project-edit-holder').hide()
     $('.save-project-loader').show()
 
   $('form #project_default_branch').chosen()
@@ -12,7 +12,7 @@ window.Projects = ->
 
 $ ->
   # Git clone panel switcher
-  scope = $ '.project_clone_holder'
+  scope = $ '.project-clone-holder'
   if scope.length > 0
     $('a, button', scope).click ->
       $('a, button', scope).removeClass 'active'

@@ -5,13 +5,13 @@
         - project.errors.full_messages.each do |msg|
           %li= msg
 
-  .clearfix.project_name_holder
+  .clearfix.project-name-holder
     = f.label :name do
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
 
-  %fieldset.adv_settings
+  %fieldset.adv-settings
     %legend Advanced settings:
     .clearfix
       = f.label :path do
@@ -34,7 +34,7 @@
           .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
 
   - unless project.new_record?
-    %fieldset.adv_settings
+    %fieldset.adv-settings
       %legend Features:
 
       .clearfix

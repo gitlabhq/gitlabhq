@@ -29,7 +29,7 @@ module EventsHelper
 
     return nil unless event_image_path
 
-    content_tag :div, class: 'event_icon' do
+    content_tag :div, class: 'event-icon' do
       image_tag event_image_path
     end
   end
@@ -45,8 +45,8 @@ module EventsHelper
                  'inactive'
                end
 
-    content_tag :div, class: "filter_icon #{inactive}" do
-      link_to dashboard_path(event_filter: filter), class: 'has_tooltip', 'data-original-title' => tooltip do
+    content_tag :div, class: "filter-icon #{inactive}" do
+      link_to dashboard_path(event_filter: filter), class: 'has-tooltip', 'data-original-title' => tooltip do
         image_tag "event_filter_#{key}.png"
       end
     end

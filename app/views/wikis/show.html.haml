@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   = @wiki.title
   %span.right
     = link_to pages_project_wikis_path(@project), class: "btn small grouped" do
@@ -10,8 +10,8 @@
         %i.icon-edit
         Edit
 %br
-.file_holder
-  .file_content.wiki
+.file-holder
+  .file-content.wiki
     = preserve do
       = markdown @wiki.content
 
@@ -21,4 +21,4 @@
     Delete this page
 
 %hr
-.wiki_notes#notes= render "notes/notes_with_form", tid: @wiki.id, tt: "wiki"
+.wiki-notes#notes= render "notes/notes_with_form", tid: @wiki.id, tt: "wiki"

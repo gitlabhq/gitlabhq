@@ -1,22 +1,22 @@
 %header.navbar.navbar-static-top.navbar-gitlab
   .navbar-inner
     .container
-      %div.app_logo
+      %div.app-logo
         = link_to root_path, class: "home", title: "Home" do
           %h1 GITLAB
         %span.separator
-      %h1.project_name= title
+      %h1.project-name= title
       %ul.nav
         - if current_user.is_admin?
           %li
-            = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
+            = link_to admin_root_path, title: "Admin area", class: 'has-bottom-tooltip', 'data-original-title' => 'Admin area' do
               %i.icon-cogs
         - if current_user.can_create_project?
           %li
-            = link_to new_project_path, title: "Create New Project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
+            = link_to new_project_path, title: "Create New Project", class: 'has-bottom-tooltip', 'data-original-title' => 'New project'  do
               %i.icon-plus
         %li
-          = link_to profile_path, title: "Your Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
+          = link_to profile_path, title: "Your Profile", class: 'has-bottom-tooltip', 'data-original-title' => 'Your profile'  do
             %i.icon-user
         %span.separator
         %li

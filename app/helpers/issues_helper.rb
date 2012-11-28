@@ -9,7 +9,7 @@ module IssuesHelper
 
     tm = project.team_member_by_id(issue.assignee_id)
     if tm
-      link_to issue.assignee_name, project_team_member_path(project, tm), class: "author_link"
+      link_to issue.assignee_name, project_team_member_path(project, tm), class: "author-link"
     else
       issue.assignee_name
     end
@@ -20,7 +20,7 @@ module IssuesHelper
 
     tm = project.team_member_by_id(issue.author_id)
     if tm
-      link_to issue.author_name, project_team_member_path(project, tm), class: "author_link"
+      link_to issue.author_name, project_team_member_path(project, tm), class: "author-link"
     else
       issue.author_name
     end

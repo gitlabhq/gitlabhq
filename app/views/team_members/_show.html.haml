@@ -1,6 +1,6 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%tr{id: dom_id(member), class: "team_member_row user_#{user.id}"}
+%tr{id: dom_id(member), class: "team-member-row user-#{user.id}"}
   %td.span6
     = link_to project_team_member_path(@project, member), title: user.name, class: "dark" do
       = image_tag gravatar_icon(user.email, 40), class: "avatar s32"
@@ -18,7 +18,7 @@
       - elsif user.blocked
         %span.btn.disabled.blocked Blocked
       - elsif allow_admin
-        = link_to project_team_member_path(project_id: @project, id: member.id), confirm: remove_from_team_message(@project, member), method: :delete, class: "very_small btn danger" do
+        = link_to project_team_member_path(project_id: @project, id: member.id), confirm: remove_from_team_message(@project, member), method: :delete, class: "tiny btn danger" do
           %i.icon-minus.icon-white
 
     - if allow_admin

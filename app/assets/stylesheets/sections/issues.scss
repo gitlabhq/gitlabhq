@@ -1,71 +1,71 @@
-.issue_form_box {
-  @extend .main_box;
-  .issue_title {
-    @extend .top_box_content;
+.issue-form-box {
+  @extend .main-box;
+  .issue-title {
+    @extend .top-box-content;
     .clearfix {
-      margin-bottom:0px;
+      margin-bottom: 0px;
       input {
         @extend .span8;
       }
     }
   }
-  .issue_middle_block {
-    @extend .middle_box_content;
-    height:30px;
-    .issue_assignee {
+  .issue-middle-block {
+    @extend .middle-box-content;
+    height: 30px;
+    .issue-assignee {
       @extend .span6;
-      float:left;
+      float: left;
     }
-    .issue_milestone {
+    .issue-milestone {
       @extend .span4;
-      float:left;
+      float: left;
     }
   }
-  .issue_description {
-    @extend .bottom_box_content;
+  .issue-description {
+    @extend .bottom-box-content;
   }
 }
 
-.issues_table {
+.issues-table {
   .issue {
-    padding:7px 10px;
+    padding: 7px 10px;
 
-    .issue_check {
-      float:left;
+    .issue-check {
+      float: left;
       padding: 8px 0;
       padding-right: 8px;
       min-width: 15px;
     }
 
     p {
-      padding-top:0;
-      padding-bottom:2px;
+      padding-top: 0;
+      padding-bottom: 2px;
     }
 
     img.avatar {
-      width:32px;
-      margin-top:1px;
+      width: 32px;
+      margin-top: 1px;
     }
   }
 }
 
-input.check_all_issues {
-  float:left;
+input.check-all-issues {
+  float: left;
   padding: 0;
-  margin:0;
+  margin: 0;
   margin-right: 10px;
   position: relative;
   top: 8px;
   height: 22px;
 }
 
-.issues_content {
+.issues-content {
   .title {
     height: 40px;
   }
 }
 
-.btn.close_issue {
+.btn.close-issue {
   color: #B94A48;
   font-weight: bold;
   @include shade;
@@ -73,7 +73,7 @@ input.check_all_issues {
     color: #B94A48;
   }
 }
-.btn.reopen_issue {
+.btn.reopen-issue {
   color: #468847;
   font-weight: bold;
   @include shade;
@@ -82,44 +82,44 @@ input.check_all_issues {
   }
 }
 
-@media (min-width: 800px) { .issues_filters select { width:160px; }  }
-@media (min-width: 1000px) { .issues_filters select { width:200px; }  }
-@media (min-width: 1200px) { .issues_filters select { width:220px; }  }
+@media (min-width: 800px) { .issues-filters select { width: 160px; }  }
+@media (min-width: 1000px) { .issues-filters select { width: 200px; }  }
+@media (min-width: 1200px) { .issues-filters select { width: 220px; }  }
 
 
 #issues-table-holder {
-  .issues_filters {
+  .issues-filters {
     form {
-      padding:0;
-      margin:0;
+      padding: 0;
+      margin: 0;
       margin-top:7px
     }
   }
 
-  .issues_bulk_update {
+  .issues-bulk-update {
     margin: 0;
     form {
-      padding:0;
-      margin:0;
+      padding: 0;
+      margin: 0;
       margin-top:7px
     }
-    .update_selected_issues {
-      position:relative;
+    .update-selected-issues {
+      position: relative;
       top:-2px;
-      margin-left:4px;
-      float:left;
+      margin-left: 4px;
+      float: left;
     }
 
-    .update_issues_text {
-      padding:3px;
+    .update-issues-text {
+      padding: 3px;
       line-height: 18px;
-      float:left;
+      float: left;
     }
   }
 }
 
-#update_status {
-  width:100px;
+#update-status {
+  width: 100px;
 }
 
 
@@ -136,11 +136,11 @@ input.check_all_issues {
  */
 
 .ui-datepicker {
-  border:none;
-  box-shadow:none;
+  border: none;
+  box-shadow: none;
   .ui-datepicker-header {
-    @include solid_shade;
-    margin-bottom:10px;
-    border:1px solid #bbb;
+    @include solid-shade;
+    margin-bottom: 10px;
+    border: 1px solid #bbb;
   }
 }

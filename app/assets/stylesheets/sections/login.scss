@@ -1,13 +1,13 @@
 /* Login Page */
 body.login-page{ 
   padding-top: 10%;
-  background:#f1f1f1;
+  background: #f1f1f1;
 }
 
 .login-box{
   width: 304px;
   position: relative;
-  border-radius: 5px;
+  @include border-radius(5px);
   margin: auto;
   padding: 20px;
   background: white;
@@ -18,25 +18,15 @@ body.login-page{
   display: block;
 }
 
-.login-box input.text{background-color: #f1f1f1; font-size: 16px; border-radius: 0; padding: 14px 10px; width: 280px}
+.login-box input.text{background-color: #f1f1f1; font-size: 16px; @include border-radius(0); padding: 14px 10px; width: 280px}
 
 .login-box input.text.top{
-  -webkit-border-top-left-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  -moz-border-radius-topright: 5px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  margin-bottom:0px;
+  @include border-radius(5px 5px 0 0);
+  margin-bottom: 0px;
 }
 
 .login-box input.text.bottom{
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+  @include border-radius(0 0 5px 5px);
   border-top: 0;
   margin-bottom: 20px;
 }

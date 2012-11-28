@@ -1,4 +1,4 @@
-= form_for [@project, @merge_request], html: { class: "new_merge_request form-horizontal" } do |f|
+= form_for [@project, @merge_request], html: { class: "new-merge-request form-horizontal" } do |f|
   -if @merge_request.errors.any?
     .alert-message.block-message.error
       %ul
@@ -10,36 +10,36 @@
 
   .row
     .span5
-      .mr_branch_box
+      .mr-branch-box
         %h5 From (Head Branch)
         .body
           .padded= f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
-      .mr_source_commit
+      .mr-source-commit
 
     .span2
-      %center= image_tag "merge.png", class: 'mr_direction_tip'
+      %center= image_tag "merge.png", class: 'mr-direction-tip'
     .span5
-      .mr_branch_box
+      .mr-branch-box
         %h5 To (Base Branch)
         .body
           .padded= f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
-      .mr_target_commit
+      .mr-target-commit
 
   %h4.cdark 2. Fill info
 
   .clearfix
-    .merge_requests_form_box
-      .top_box_content
+    .merge-requests-form-box
+      .top-box-content
         = f.label :title do
           %strong= "Title *"
         .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5
-      .merge_requests_middle_box
-        .merge_requests_assignee
+      .merge-requests-middle-box
+        .merge-requests-assignee
           = f.label :assignee_id do
             %i.icon-user
             Assign to
           .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
-        .merge_requests_milestone
+        .merge-requests-milestone
           = f.label :milestone_id do
             %i.icon-time
             Milestone

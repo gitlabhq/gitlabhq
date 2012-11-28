@@ -2,8 +2,8 @@
   %td.tree-item-file-name
     = tree_icon(type)
     %strong= link_to truncate(tree_item.name, length: 40), project_tree_path(@project, tree_join(@id || @commit.id, tree_item.name))
-  %td.tree_time_ago.cgray
-    %span.log_loading.hide
+  %td.tree-time-ago.cgray
+    %span.log-loading.hide
       Loading commit data...
       = image_tag "ajax_loader_tree.gif", width: 14
-  %td.tree_commit{ colspan: 2 }
+  %td.tree-commit{ colspan: 2 }

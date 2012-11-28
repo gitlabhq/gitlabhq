@@ -7,9 +7,9 @@
       .span7= paginate @issues, remote: true, theme: "gitlab"
       .span3.right
         %span.cgray.right 
-          %span.issue_counter #{@issues.total_count}
+          %span.issue-counter #{@issues.total_count}
           issues for this filter
 - else
   %li
-    %h4.nothing_here_message Nothing to show here
+    %h4.nothing-here-message Nothing to show here
 

@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Issue ##{@issue.id}
 
   %small
@@ -8,9 +8,9 @@
   %span.right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       - if @issue.closed
-        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
+        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped reopen-issue"
       - else
-        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
+        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn grouped close-issue", title: "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       = link_to edit_project_issue_path(@project, @issue), class: "btn grouped" do
         %i.icon-edit
@@ -19,28 +19,28 @@
 .right
   .span3#votes= render 'votes/votes_block', votable: @issue
 
-.back_link
+.back-link
   = link_to project_issues_path(@project) do
     &larr; To issues list
 
 
-.main_box
-  .top_box_content
+.main-box
+  .top-box-content
     %h4
       - if @issue.closed
-        .alert-message.error.status_info Closed
+        .alert-message.error.status-info Closed
       - else
-        .alert-message.success.status_info Open
+        .alert-message.success.status-info Open
       = gfm escape_once(@issue.title)
 
-  .middle_box_content
+  .middle-box-content
     %cite.cgray Created by
-    = image_tag gravatar_icon(@issue.author_email), width: 16, class: "lil_av"
+    = image_tag gravatar_icon(@issue.author_email), width: 16, class: "lil-av"
     %strong.author= link_to_issue_author(@issue)
 
     - if @issue.assignee
       %cite.cgray and currently assigned to
-      = image_tag gravatar_icon(@issue.assignee_email), width: 16, class: "lil_av"
+      = image_tag gravatar_icon(@issue.assignee_email), width: 16, class: "lil-av"
       %strong.author= link_to_issue_assignee(@issue)
 
     - if @issue.milestone
@@ -56,9 +56,9 @@
         &nbsp;
 
   - if @issue.description.present?
-    .bottom_box_content
+    .bottom-box-content
       = preserve do
         = markdown @issue.description
 
 
-.issue_notes.voting_notes#notes= render "notes/notes_with_form", tid: @issue.id, tt: "issue"
+.issue-notes.voting-notes#notes= render "notes/notes_with_form", tid: @issue.id, tt: "issue"

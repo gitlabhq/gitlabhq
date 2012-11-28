@@ -1,6 +1,6 @@
 .profile_avatar_holder
   = image_tag gravatar_icon(@user.email, 90)
-%h3.page_title
+%h3.page-title
   = @user.name
   %br
   %small
@@ -8,7 +8,7 @@
 
 %hr
 
-= form_for @user, url: profile_update_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
+= form_for @user, url: profile_update_path, method: :put, html: { class: "edit-user form-horizontal" }  do |f|
   -if @user.errors.any?
     %div.alert-message.block-message.error
       %ul

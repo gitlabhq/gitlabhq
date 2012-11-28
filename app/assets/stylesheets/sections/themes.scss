@@ -5,18 +5,18 @@
   }
 }
 
-.themes_opts {
-  padding-left:20px;
+.themes-opts {
+  padding-left: 20px;
 
   label {
-    width:175px;
-    margin-right:40px;
+    width: 175px;
+    margin-right: 40px;
 
     .prev {
       @extend .thumbnail;
-      height:30px;
-      width:175px;
-      margin-bottom:10px;
+      height: 30px;
+      width: 175px;
+      margin-bottom: 10px;
 
       &.classic {
         background: #31363e;
@@ -41,18 +41,18 @@
   }
 }
 
-.code_highlight_opts {
-  padding-left:20px;
+.code-highlight-opts {
+  padding-left: 20px;
 
   label {
-    width:220px;
-    margin-right:40px;
+    width: 220px;
+    margin-right: 40px;
 
     .prev {
       @extend .thumbnail;
-      height:151px;
-      width:220px;
-      margin-bottom:10px;
+      height: 151px;
+      width: 220px;
+      margin-bottom: 10px;
     }
   }
 }

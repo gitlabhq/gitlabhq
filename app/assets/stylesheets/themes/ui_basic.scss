@@ -3,7 +3,7 @@
  * during web app restyle or theme select.
  *
  */
-.ui_basic {
+.ui-basic {
   /*
    * Common styles
    *
@@ -11,12 +11,12 @@
   a {
     color: $link_color;
     &:hover {
-      text-decoration:none;
-      color: $blue_link;
+      text-decoration: none;
+      color: $primary_color;
     }
   }
 
-  .app_logo {
+  .app-logo {
     .separator {
       margin-left: 0;
       margin-right: 0;

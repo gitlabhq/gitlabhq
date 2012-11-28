@@ -26,7 +26,7 @@
 
     -# remove button
     - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
-      = link_to [@project, note], confirm: 'Are you sure?', method: :delete, remote: true, class: "cred delete-note btn very_small" do
+      = link_to [@project, note], confirm: 'Are you sure?', method: :delete, remote: true, class: "cred delete-note btn tiny" do
         %i.icon-trash
         Remove
 

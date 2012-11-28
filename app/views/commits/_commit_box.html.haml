@@ -15,7 +15,7 @@
           %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
       = link_to project_tree_path(@project, @commit), class: "browse-button primary grouped" do
         %strong Browse Code »
-    %h3.commit-title.page_title
+    %h3.commit-title.page-title
       = gfm escape_once(@commit.title)
     - if @commit.description.present?
       %pre.commit-description
@@ -38,7 +38,7 @@
       .span6.right
         .sha-block
           %span.cgray commit
-          %code.label_commit= @commit.id
+          %code.label-commit= @commit.id
         .sha-block
           %span.cgray= pluralize(@commit.parents.count, "parent")
           - @commit.parents.each do |parent|

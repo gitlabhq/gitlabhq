@@ -1,11 +1,11 @@
-.projects_box
+.projects-box
   %h5
     Projects
     %small
       (#{projects.total_count})
     - if current_user.can_create_project?
       %span.right
-        = link_to new_project_path, class: "btn very_small info" do
+        = link_to new_project_path, class: "btn tiny info" do
           %i.icon-plus
           New Project
   %ul.unstyled
@@ -15,11 +15,11 @@
           - if project.namespace
             = project.namespace.human_name
             \/
-          %strong.project_name
+          %strong.project-name
             = truncate(project.name, length: 25)
           %span.arrow
             &rarr;
-          %span.last_activity
+          %span.last-activity
             %strong Last activity:
             %span= project_last_activity(project)
   .bottom= paginate projects, theme: "gitlab"

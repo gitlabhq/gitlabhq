@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Issues
   %small (assigned to you)
   %small.right #{@issues.total_count} issues
@@ -14,10 +14,10 @@
         %div.ui-box
           - @project = group[0]
           %h5= link_to(@project.name, project_path(@project))
-          %ul.unstyled.issues_table
+          %ul.unstyled.issues-table
             - group[1].each do |issue|
               = render(partial: 'issues/show', locals: {issue: issue})
       %hr
       = paginate @issues, theme: "gitlab"
     - else
-      %p.nothing_here_message Nothing to show here
+      %p.nothing-here-message Nothing to show here

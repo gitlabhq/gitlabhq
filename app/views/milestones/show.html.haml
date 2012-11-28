@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Milestone ##{@milestone.id}
   %small
     = @milestone.expires_at
@@ -13,21 +13,21 @@
         %i.icon-edit
         Edit
 
-.back_link
+.back-link
   = link_to project_milestones_path(@project) do
     &larr; To milestones list
 
-.main_box
-  .top_box_content
+.main-box
+  .top-box-content
     %h5
       - if @milestone.closed
-        .alert-message.error.status_info Closed
+        .alert-message.error.status-info Closed
       - else
-        .alert-message.success.status_info Open
+        .alert-message.success.status-info Open
       = gfm escape_once(@milestone.title)
       %small.right= @milestone.expires_at
 
-  .middle_box_content
+  .middle-box-content
     %h5
       Progress:
       %small
@@ -39,7 +39,7 @@
 
 
   - if @milestone.description.present?
-    .bottom_box_content
+    .bottom-box-content
       = preserve do
         = markdown @milestone.description
 

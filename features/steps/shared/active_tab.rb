@@ -2,7 +2,7 @@ module SharedActiveTab
   include Spinach::DSL
 
   def ensure_active_main_tab(content)
-    page.find('ul.main_menu li.active').should have_content(content)
+    page.find('ul.main-menu li.active').should have_content(content)
   end
 
   def ensure_active_sub_tab(content)
@@ -10,7 +10,7 @@ module SharedActiveTab
   end
 
   And 'no other main tabs should be active' do
-    page.should have_selector('ul.main_menu li.active', count: 1)
+    page.should have_selector('ul.main-menu li.active', count: 1)
   end
 
   And 'no other sub tabs should be active' do

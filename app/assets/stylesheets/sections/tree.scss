@@ -1,14 +1,14 @@
 .tree-holder {
   .tree-content-holder {
-    float:left;
-    width:100%;
+    float: left;
+    width: 100%;
   }
 
-  .tree_progress {
-    display:none;
-    margin:20px;
+  .tree-progress {
+    display: none;
+    margin: 20px;
     &.loading {
-      display:block;
+      display: block;
     }
   }
 
@@ -18,20 +18,20 @@
       &:hover {
         td {
           background: $hover;
-          border-top:1px solid #ADF;
-          border-bottom:1px solid #ADF;
+          border-top: 1px solid #ADF;
+          border-bottom: 1px solid #ADF;
         }
-        cursor:pointer;
+        cursor: pointer;
       }
     }
   }
 
   .tree-item {
     .tree-item-file-name {
-      vertical-align:middle;
+      vertical-align: middle;
       a {
         &:hover {
-          color:$blue_link;
+          color: $primary_color;
         }
       }
 
@@ -48,12 +48,12 @@
       padding: 2px 10px;
     }
     td {
-      line-height:20px;
-      background:#fafafa;
+      line-height: 20px;
+      background: #fafafa;
     }
   }
 
-  .tree_author {
+  .tree-author {
     padding-right: 8px;
 
     img.avatar {
@@ -62,7 +62,7 @@
     }
   }
 
-  .tree_commit {
+  .tree-commit {
     color: gray;
 
     .tree-commit-link {
@@ -86,7 +86,7 @@
 .tree-btn-group {
   .btn {
     margin-right:-3px;
-    padding:2px 10px;
+    padding: 2px 10px;
   }
 }
 

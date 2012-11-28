@@ -8,18 +8,18 @@
     %li= link
 
 .clear
-%div.tree_progress
+%div.tree-progress
 
 %div#tree-content-holder.tree-content-holder
   - if tree.is_blob?
     = render "tree/blob", blob: tree
   - else
-    %table#tree-slider{class: "table_#{@hex_path} tree-table" }
+    %table#tree-slider{class: "table-#{@hex_path} tree-table" }
       %thead
         %th Name
         %th Last Update
         %th Last Commit
-        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
+        %th= link_to "history", project_commits_path(@project, @id), class: "btn tiny right"
 
       - if tree.up_dir?
         %tr.tree-item

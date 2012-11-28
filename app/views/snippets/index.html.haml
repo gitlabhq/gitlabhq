@@ -2,7 +2,7 @@
 
 - if can? current_user, :write_snippet, @project
   .alert-message.block-message
-    = link_to new_project_snippet_path(@project), class: "btn small add_new right", title: "New Snippet" do
+    = link_to new_project_snippet_path(@project), class: "btn small add-new right", title: "New Snippet" do
       Add new snippet
     Share code pastes with others if it can't be in a git repository
     %br
@@ -18,4 +18,4 @@
   - if @snippets.fresh.empty?
     %tr
       %td{colspan: 3}
-        %h3.nothing_here_message Nothing here.
+        %h3.nothing-here-message Nothing here.

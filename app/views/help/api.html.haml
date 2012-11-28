@@ -1,5 +1,5 @@
-%h3.page_title API
-.back_link
+%h3.page-title API
+.back-link
   = link_to help_path do
     &larr; to index
 %br
@@ -24,73 +24,73 @@
 
 .tab-content
   .tab-pane.active#README
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         README
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "README.md"))
 
   .tab-pane#projects
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Projects
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "projects.md"))
 
   .tab-pane#snippets
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Projects Snippets
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "snippets.md"))
 
   .tab-pane#repositories
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Projects
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "repositories.md"))
 
   .tab-pane#users
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Users
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "users.md"))
 
   .tab-pane#session
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Session
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "session.md"))
 
   .tab-pane#issues
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Issues
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "issues.md"))
 
   .tab-pane#milestones
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
         Milestones
-      .file_content.wiki
+      .file-content.wiki
         = preserve do
           = markdown File.read(Rails.root.join("doc", "api", "milestones.md"))

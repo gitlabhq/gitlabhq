@@ -1,21 +1,21 @@
 - too_big = diff.diff.lines.count > 1000
 - if too_big
-  %a.supp_diff_link Diff suppressed. Click to show
+  %a.supp-diff-link Diff suppressed. Click to show
 
 %table{class: "#{'hide' if too_big}"}
   - each_diff_line(diff.diff.lines.to_a, index) do |line, type, line_code, line_new, line_old|
-    %tr.line_holder{ id: line_code }
+    %tr.line-holder{ id: line_code }
       - if type == "match"
-        %td.old_line= "..."
-        %td.new_line= "..."
-        %td.line_content.matched= line
+        %td.old-line= "..."
+        %td.new-line= "..."
+        %td.line-content.matched= line
       - else
-        %td.old_line
+        %td.old-line
           = link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", id: line_code
           - if @comments_allowed
             = render "notes/per_line_note_link", line_code: line_code
-        %td.new_line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", id: line_code
-        %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
+        %td.new-line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", id: line_code
+        %td.line-content{class: "noteable-line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
 
         - if @comments_allowed
           - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)

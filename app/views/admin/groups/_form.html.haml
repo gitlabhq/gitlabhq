@@ -2,7 +2,7 @@
   - if @group.errors.any?
     .alert-message.block-message.error
       %span= @group.errors.full_messages.first
-  .clearfix.group_name_holder
+  .group-name-holder.clearfix
     = f.label :name do
       Group name is
     .input

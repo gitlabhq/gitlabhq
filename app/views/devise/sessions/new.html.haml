@@ -7,7 +7,7 @@
     = f.password_field :password, :class => "text bottom", :placeholder => "Password"
     - if devise_mapping.rememberable?
       .clearfix.inputs-list
-        %label.checkbox.remember_me{:for => "user_remember_me"}
+        %label.checkbox.remember-me{:for => "user_remember_me"}
           = f.check_box :remember_me
           %span Remember me
     %br/

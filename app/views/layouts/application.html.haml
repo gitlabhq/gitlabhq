@@ -5,7 +5,7 @@
     = render "layouts/flash"
     = render "layouts/head_panel", title: "Dashboard"
     .container
-      %ul.main_menu
+      %ul.main-menu
         = nav_link(path: 'dashboard#index', html_options: {class: 'home'}) do
           = link_to "Home", root_path, title: "Home"
         = nav_link(path: 'dashboard#issues') do

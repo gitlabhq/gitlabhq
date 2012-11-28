@@ -1,5 +1,5 @@
 = render 'admin/shared/projects_head'
-%h3.page_title
+%h3.page-title
   Group: #{@group.name}
   = link_to edit_admin_group_path(@group), class: "btn right" do
     %i.icon-edit
@@ -44,7 +44,7 @@
         .clearfix
 
 
-= form_tag project_update_admin_group_path(@group), class: "bulk_import", method: :put  do
+= form_tag project_update_admin_group_path(@group), class: "bulk-import", method: :put  do
   %fieldset
     %legend Move projects to group
     .clearfix

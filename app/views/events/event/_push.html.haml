@@ -1,6 +1,6 @@
 .event-title
-  %span.author_name= link_to_author event
-  %span.event_label.pushed #{event.push_action_name} #{event.ref_type}
+  %span.author-name= link_to_author event
+  %span.event-label.pushed #{event.push_action_name} #{event.ref_type}
   - if event.rm_ref?
     %strong= event.ref_name
   - else
@@ -12,7 +12,7 @@
 - if event.push_with_commits?
   - project = event.project
   .event-body
-    %ul.unstyled.event_commits
+    %ul.unstyled.event-commits
       - few_commits = event.commits[0...2]
       - few_commits.each do |commit|
         = render "events/commit", commit: commit, project: project

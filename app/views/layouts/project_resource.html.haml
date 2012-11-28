@@ -5,7 +5,7 @@
     = render "layouts/flash"
     = render "layouts/head_panel", title: @project.name
     .container
-      %ul.main_menu
+      %ul.main-menu
         = nav_link(html_options: {class: "home #{project_tab_class}"}) do
           = link_to @project.path, project_path(@project), title: "Project"
 

@@ -5,7 +5,7 @@
     %p To prevent performance issue we rejected diff information.
     %p
       But if you still want to see diff
-      = link_to "click this link", project_commit_path(@project, @commit, force_show_diff: true), class: "underlined_link"
+      = link_to "click this link", project_commit_path(@project, @commit, force_show_diff: true), class: "underlined-link"
 
 %p.cgray
   Showing #{pluralize(diffs.count, "changed file")}
@@ -18,8 +18,8 @@
     - file = (@commit.tree / diff.new_path)
     - file = (@commit.prev_commit.tree / diff.old_path) unless file
     - next unless file
-    .diff_file{id: "diff-#{i}"}
-      .diff_file_header
+    .diff-file{id: "diff-#{i}"}
+      .diff-file-header
         - if diff.deleted_file
           %span= diff.old_path
 
@@ -32,12 +32,12 @@
           - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
             %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
-          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn very_small right view-commit'} do
+          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn tiny right view-commit'} do
             View file @
             %span.commit-short-id= @commit.short_id(6)
 
         %br/
-      .diff_file_content
+      .diff-file-content
         -# Skipp all non non-supported blobs
         - next unless file.respond_to?('text?')
         - if file.text?
@@ -45,17 +45,17 @@
         - elsif file.image?
           - old_file = (@commit.prev_commit.tree / diff.old_path)
           - if diff.renamed_file || diff.new_file || diff.deleted_file
-            .diff_file_content_image
+            .diff-file-content-image
               .image{class: image_diff_class(diff)}
                 %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
                 %div.image-info= "#{number_to_human_size file.size}"
           - else
-            .diff_file_content_image.img_compared
-              .image.diff_removed
+            .diff-file-content-image.img-compared
+              .image.diff-removed
                 %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
                 %div.image-info= "#{number_to_human_size file.size}"
-              .image.diff_added
+              .image.diff-added
                 %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
                 %div.image-info= "#{number_to_human_size file.size}"
         - else
-          %p.nothing_here_message No preview for this file type
+          %p.nothing-here-message No preview for this file type
