@@ -62,7 +62,7 @@ describe "Gitlab Flavored Markdown" do
     it "should render title in refs#tree", js: true do
       visit project_tree_path(project, @branch_name)
 
-      within(".tree_commit") do
+      within(".tree-commit") do
         page.should have_link("##{issue.id}")
       end
     end
@@ -70,7 +70,7 @@ describe "Gitlab Flavored Markdown" do
     it "should render title in refs#blame" do
       visit project_blame_path(project, File.join(@branch_name, @test_file))
 
-      within(".blame_commit") do
+      within(".blame-commit") do
         page.should have_link("##{issue.id}")
       end
     end

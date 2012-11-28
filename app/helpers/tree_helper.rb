@@ -34,7 +34,7 @@ module TreeHelper
   end
 
   def tree_hex_class(content)
-    "file_#{hexdigest(content.name)}"
+    "file-#{hexdigest(content.name)}"
   end
 
   # Public: Determines if a given filename is compatible with GitHub::Markup.
