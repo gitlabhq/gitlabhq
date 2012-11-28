@@ -96,7 +96,7 @@ Setup:
 
     cd /home/git
     sudo -u git -H mkdir bin
-    sudo -u git sh -c '/bin/echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
+    sudo -u git sh -c 'printf "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
     sudo -u git sh -c 'gitolite/install -ln /home/git/bin'
 
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
