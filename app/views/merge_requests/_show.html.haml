@@ -5,7 +5,7 @@
 = render "merge_requests/show/commits"
 
 - if @commits.present?
-  %ul.nav.nav-tabs.mr_nav_tabs
+  %ul.nav.nav-tabs.mr-nav-tabs
     %li
       = link_to "#notes", "data-url" => project_merge_request_path(@project, @merge_request), class: "merge-notes-tab tab" do
         %i.icon-comment
@@ -15,7 +15,7 @@
         %i.icon-list-alt
         Diff
 
-.merge_request_notes.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+.merge-request-notes.voting-notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
   = render("notes/notes_with_form", tid: @merge_request.id, tt: "merge_request")
 .merge-request-diffs
   = render "merge_requests/show/diffs" if @diffs
@@ -32,9 +32,9 @@
       action: "#{controller.action_name}"
     });
 
-    $(".edit_merge_request").live("ajax:beforeSend", function() {
-      $('.can_be_merged').hide();
-      $('.merge_in_progress').show();
+    $(".edit-merge-request").live("ajax:beforeSend", function() {
+      $('.can-be-merged').hide();
+      $('.merge-in-progress').show();
     })
   })
 

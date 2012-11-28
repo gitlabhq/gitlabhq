@@ -18,10 +18,20 @@
 }
 
 @mixin linear-gradient($from, $to) {
+  background-color: mix($from, $to, 80%);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
   background-image: -webkit-linear-gradient($from, $to);
   background-image: -moz-linear-gradient($from, $to);
   background-image: -o-linear-gradient($from, $to);
+}
+
+// User select
+// For selecting text on the page
+@mixin user-select($select) {
+  -webkit-user-select: $select;
+  -moz-user-select: $select;
+  -o-user-select: $select;
+  user-select: $select;
 }
 
 /**

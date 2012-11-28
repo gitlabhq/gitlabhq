@@ -1,16 +1,16 @@
 .projects
   .activities.span8
     = render "events/event_last_push", event: @last_push
-    = link_to dashboard_path, class: 'btn very_small' do
+    = link_to dashboard_path, class: 'btn tiny' do
       &larr; To dashboard
     &nbsp;
     %span.cgray Events and projects are filtered in scope of group
     %hr
     = render 'shared/no_ssh'
     - if @events.any?
-      .content_list= render @events
+      .content-list= render @events
     - else
-      %h4.nothing_here_message Projects activity will be displayed here
+      %h4.nothing-here-message Projects activity will be displayed here
     .loading.hide
   .side
     = render "projects", projects: @projects

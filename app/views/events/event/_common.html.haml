@@ -1,6 +1,6 @@
 .event-title
-  %span.author_name= link_to_author event
-  %span.event_label{class: event.action_name}= event_action_name(event)
+  %span.author-name= link_to_author event
+  %span.event-label{class: event.action_name}= event_action_name(event)
   - if event.target
     = link_to [event.project, event.target] do
       %strong= truncate event.target_title

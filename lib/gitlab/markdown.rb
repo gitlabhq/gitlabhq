@@ -150,7 +150,7 @@ module Gitlab
     def reference_user(identifier)
       if user = @project.users.where(name: identifier).first
         member = @project.users_projects.where(user_id: user).first
-        link_to("@#{identifier}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+        link_to("@#{identifier}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team-member #{html_options[:class]}")) if member
       end
     end
 
@@ -162,7 +162,7 @@ module Gitlab
 
     def reference_merge_request(identifier)
       if merge_request = @project.merge_requests.where(id: identifier).first
-        link_to("!#{identifier}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
+        link_to("!#{identifier}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge-request #{html_options[:class]}"))
       end
     end
 

@@ -1,11 +1,11 @@
 = render "repositories/head"
-%h3.page_title
+%h3.page-title
   Deploy key:
   = @key.title
   %small
     created at
     = @key.created_at.stamp("Aug 21, 2011")
-.back_link
+.back-link
   = link_to project_deploy_keys_path(@project) do
     &larr; To keys list
 %hr

@@ -7,7 +7,7 @@ h1, h2, h3, h4, h5, h6 { margin: 0; }
 h3, h4, h5, h6 { line-height: 36px; }
 h5 { font-size: 14px; }
 
-h3.page_title {
+h3.page-title {
   color: #456;
   font-size: 20px;
   font-weight: normal;
@@ -61,7 +61,7 @@ a {
     color: gray;
   }
 
-  &.supp_diff_link {
+  &.supp-diff-link {
     text-align: center;
     padding: 20px 0;
     background: #f1f1f1;

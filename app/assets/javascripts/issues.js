@@ -1,20 +1,20 @@
 function switchToNewIssue(){
-  $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
+  $(".issues-content").hide("fade", { direction: "left" }, 150, function(){
     $('select#issue_assignee_id').chosen();
     $('select#issue_milestone_id').chosen();
     $("#new_issue_dialog").show("fade", { direction: "right" }, 150);
-    $('.top-tabs .add_new').hide();
+    $('.top-tabs .add-new').hide();
     disableButtonIfEmptyField("#issue_title", ".save-btn");
     GitLab.GfmAutoComplete.setup();
   });
 }
 
 function switchToEditIssue(){
-  $(".issues_content").hide("fade", { direction: "left" }, 150, function(){
+  $(".issues-content").hide("fade", { direction: "left" }, 150, function(){
     $('select#issue_assignee_id').chosen();
     $('select#issue_milestone_id').chosen();
     $("#edit_issue_dialog").show("fade", { direction: "right" }, 150);
-    $('.add_new').hide();
+    $('.add-new').hide();
     disableButtonIfEmptyField("#issue_title", ".save-btn");
     GitLab.GfmAutoComplete.setup();
   });
@@ -30,10 +30,10 @@ function switchFromEditIssue(){
 
 function backToIssues(){
   $("#edit_issue_dialog, #new_issue_dialog").hide("fade", { direction: "right" }, 150, function(){
-    $(".issues_content").show("fade", { direction: "left" }, 150, function() { 
+    $(".issues-content").show("fade", { direction: "left" }, 150, function() { 
       $("#edit_issue_dialog").html("");
       $("#new_issue_dialog").html("");
-      $('.add_new').show();
+      $('.add-new').show();
     });
   });
 }
@@ -80,7 +80,7 @@ function issuesPage(){
     updateNewIssueURL();
   });
 
-  $('body').on('ajax:success', '.close_issue, .reopen_issue, #new_issue', function(){
+  $('body').on('ajax:success', '.close-issue, .reopen-issue, #new_issue', function(){
     var t = $(this),
         totalIssues,
         reopen = t.hasClass('reopen_issue'),
@@ -88,11 +88,11 @@ function issuesPage(){
     if( this.id == 'new_issue' ){
       newIssue = true;
     }
-    $('.issue_counter, #new_issue').each(function(){
+    $('.issue-counter, #new_issue').each(function(){
       var issue = $(this);
       totalIssues = parseInt( $(this).html(), 10 );
 
-      if( newIssue || ( reopen && issue.closest('.main_menu').length ) ){
+      if( newIssue || ( reopen && issue.closest('.main-menu').length ) ){
         $(this).html( totalIssues+1 );
       }else {
         $(this).html( totalIssues-1 );
@@ -101,16 +101,16 @@ function issuesPage(){
 
   });
 
-  $(".check_all_issues").click(function () {
-    $('.selected_issue').attr('checked', this.checked);
+  $(".check-all-issues").click(function () {
+    $('.selected-issue').attr('checked', this.checked);
     issuesCheckChanged();
   });
 
-  $('.selected_issue').bind('change', issuesCheckChanged);
+  $('.selected-issue').bind('change', issuesCheckChanged);
 }
 
 function issuesCheckChanged() { 
-  var checked_issues = $('.selected_issue:checked');
+  var checked_issues = $('.selected-issue:checked');
 
   if(checked_issues.length > 0) { 
     var ids = []
@@ -118,12 +118,12 @@ function issuesCheckChanged() {
       ids.push($(value).attr("data-id"));
     })
     $('#update_issues_ids').val(ids);
-    $('.issues_filters').hide();
-    $('.issues_bulk_update').show();
+    $('.issues-filters').hide();
+    $('.issues-bulk-update').show();
   } else { 
     $('#update_issues_ids').val([]);
-    $('.issues_bulk_update').hide();
-    $('.issues_filters').show();
+    $('.issues-bulk-update').hide();
+    $('.issues-filters').show();
   }
 }
 

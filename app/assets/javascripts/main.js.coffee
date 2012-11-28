@@ -21,17 +21,17 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
       closest_submit.enable()
 
 $ ->
-  # Click a .one_click_select field, select the contents
-  $(".one_click_select").on 'click', -> $(@).select()
+  # Click a .one-click-select field, select the contents
+  $(".one-click-select").on 'click', -> $(@).select()
 
   # Initialize chosen selects
   $('select.chosen').chosen()
 
   # Initialize tooltips
-  $('.has_tooltip').tooltip()
+  $('.has-tooltip').tooltip()
 
   # Bottom tooltip
-  $('.has_bottom_tooltip').tooltip(placement: 'bottom')
+  $('.has-bottom_tooltip').tooltip(placement: 'bottom')
 
 
   # Disable form buttons while a form is submitting
@@ -58,7 +58,7 @@ $ ->
         e.preventDefault()
 
   # Commit show suppressed diff
-  $(".supp_diff_link").bind "click", ->
+  $(".supp-diff-link").bind "click", ->
     $(@).next('table').show()
     $(@).remove()
 

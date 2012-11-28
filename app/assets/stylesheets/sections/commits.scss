@@ -1,8 +1,8 @@
 .commit-box {
-  @extend .main_box;
+  @extend .main-box;
 
   .commit-head {
-    @extend .top_box_content;
+    @extend .top-box-content;
 
     .commit-title {
       line-height: 26px;
@@ -24,7 +24,7 @@
   }
 
   .commit-info {
-    @extend .middle_box_content;
+    @extend .middle-box-content;
     @extend .clearfix;
 
     .sha-block {
@@ -69,11 +69,11 @@
  * COMMIT SHOw
  *
  */
-.diff_file {
+.diff-file {
   border: 1px solid #CCC;
   margin-bottom: 1em;
 
-  .diff_file_header {
+  .diff-file-header {
     @extend .clearfix;
     padding: 5px 5px 5px 10px;
     color: #555;
@@ -104,7 +104,7 @@
       font-family: $monospace;
     }
   }
-  .diff_file_content {
+  .diff-file-content {
     overflow: auto;
     overflow-y: hidden;
     background: #fff;
@@ -128,7 +128,7 @@
       }
     }
   }
-  .diff_file_content_image {
+  .diff-file-content-image {
     background: #eee;
     text-align: center;
     .image {
@@ -140,13 +140,13 @@
         background: url('trans_bg.gif');
       }
 
-      &.diff_removed {
+      &.diff-removed {
         img{
           border: 1px solid #C00;
         }
       }
 
-      &.diff_added {
+      &.diff-added {
         img{
           border: 1px solid #0C0;
         }
@@ -157,7 +157,7 @@
       }
     }
 
-    &.img_compared {
+    &.img-compared {
       .image {
         max-width: 300px;
       }
@@ -165,7 +165,7 @@
   }
 }
 
-.diff_file_content{
+.diff-file-content{
   table {
     border: none;
     margin: 0px;
@@ -176,7 +176,7 @@
       }
     }
   }
-  .old_line, .new_line {
+  .old-line, .new-line {
     margin: 0px;
     padding: 0px;
     border: none;
@@ -188,9 +188,7 @@
     min-width: 35px;
     max-width: 35px;
     width: 35px;
-    moz-user-select: none;
-    -khtml-user-select: none;
-    user-select: none;
+    @include user-select(none);
     a {
       float: left;
       width: 35px;
@@ -201,7 +199,7 @@
       }
     }
   }
-  .line_content {
+  .line-content {
     white-space: pre;
     height: 14px;
     margin: 0px;
@@ -231,17 +229,17 @@
 .commit {
   @extend .wll;
 
-  .browse_code_link_holder {
+  .browse-code-link-holder {
     @extend .span2;
     float: right;
   }
 
-  .committed_ago {
+  .committed-ago {
     float: right;
     @extend .cgray;
   }
 
-  .notes_count {
+  .notes-count {
     float: right;
     margin: -6px 8px 6px;
   }
@@ -251,7 +249,7 @@
     color: $style_color;
   }
 
-  .commit_short_id {
+  .commit-short-id {
     float: left;
     @extend .lined;
     min-width: 65px;
@@ -266,7 +264,7 @@
   }
 }
 
-.diff_file_header a,
+.diff-file_header a,
 .file-stats a {
   color: $style_color;
 }
@@ -294,7 +292,7 @@
   }
 }
 
-.label_commit {
+.label-commit {
   @include border-radius(4px);
   padding: 2px 4px;
   font-size: 13px;

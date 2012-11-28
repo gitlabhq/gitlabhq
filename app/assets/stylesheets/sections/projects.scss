@@ -7,8 +7,8 @@
     @extend .span4;
     @extend .right;
 
-    .groups_box,
-    .projects_box {
+    .groups-box,
+    .projects-box {
       h5 {
         color: $style_color;
         font-size: 16px;
@@ -22,11 +22,11 @@
           padding: 0;
           a {
             display: block;
-            .group_name {
+            .group-name {
               font-size: 14px;
               line-height: 18px;
             }
-            .project_name {
+            .project-name {
               color: #4fa2bd;
               font-size: 14px;
               line-height: 18px;
@@ -36,7 +36,7 @@
               padding: 10px;
               margin: 0;
             }
-            .last_activity {
+            .last-activity {
               padding-top: 5px;
               display: block;
               span, strong {
@@ -53,9 +53,9 @@
   }
 }
 
-.new_project,
-.edit_project {
-  .project_name_holder {
+.new-project,
+.edit-project {
+  .project-name-holder {
     input,
     label {
       font-size: 16px;
@@ -71,12 +71,12 @@
       margin-bottom: 8px;
     }
   }
-  .adv_settings {
+  .adv-settings {
     h6 { margin-left: 40px; }
   }
 }
 
-.project_clone_panel {
+.project-clone-panel {
   @include border-radius(4px);
   @include bg-gray-gradient;
   padding: 4px 7px;
@@ -84,7 +84,7 @@
   margin-bottom: 20px;
 }
 
-.project_clone_holder {
+.project-clone-holder {
   input[type="text"],
   .btn {
     font-size: 12px;
@@ -106,7 +106,7 @@
     margin-bottom: 50px;
   }
   h3 {
-    @extend .page_title;
+    @extend .page-title;
   }
 
 }

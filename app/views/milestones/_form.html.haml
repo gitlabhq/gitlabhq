@@ -1,11 +1,11 @@
-%h3.page_title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
-.back_link
+%h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
+.back-link
   = link_to project_milestones_path(@project) do
     &larr; To milestones
 
 %hr
 
-= form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
+= form_for [@project, @milestone], html: {class: "new-milestone form-horizontal"}  do |f|
   -if @milestone.errors.any?
     .alert-message.block-message.error
       %ul

@@ -3,7 +3,7 @@
 $ ->
   if $('#tree-slider').length > 0
     # Show the "Loading commit data" for only the first element
-    $('span.log_loading:first').removeClass('hide')
+    $('span.log-loading:first').removeClass('hide')
 
     $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live "click", ->
       $("#tree-content-holder").hide("slide", { direction: "left" }, 150)
@@ -14,8 +14,8 @@ $ ->
 
     # Show/Hide the loading spinner
     $('#tree-slider .tree-item-file-name a, .breadcrumb a, .project-refs-form').live
-      "ajax:beforeSend": -> $('.tree_progress').addClass("loading")
-      "ajax:complete":   -> $('.tree_progress').removeClass("loading")
+      "ajax:beforeSend": -> $('.tree-progress').addClass("loading")
+      "ajax:complete":   -> $('.tree-progress').removeClass("loading")
 
     # Maintain forward/back history while browsing the file tree
     ((window) ->

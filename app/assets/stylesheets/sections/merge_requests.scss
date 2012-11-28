@@ -3,7 +3,7 @@
  *
  */
 
-.mr_branch_box {
+.mr-branch-box {
   @extend .ui-box;
   margin-bottom: 20px;
 
@@ -17,8 +17,8 @@
  * MR -> show: Automerge widget
  *
  */
-.automerge_widget {
-  &.can_be_merged {
+.automerge-widget {
+  &.can-be-merged {
     background: #DFF0D8;
   }
 
@@ -29,18 +29,18 @@
     }
   }
 
-  .accept_group {
+  .accept-group {
     float: left;
     border: 1px solid #ADA;
     padding: 2px;
     @include border-radius(5px);
     background: #CEB;
 
-    .accept_merge_request {
+    .accept-merge-request {
       font-size: 13px;
       float: left;
     }
-    .remove_branch_holder {
+    .remove-branch-holder {
       margin-left: 20px;
       margin-right: 10px;
       float: left;
@@ -51,12 +51,12 @@
   }
 
 
-  .how_to_merge_link {
+  .how-to-merge-link {
     @extend .primary;
   }
 }
 
-.mr_nav_tabs {
+.mr-nav-tabs {
   li {
     a {
       font-weight: bold;
@@ -66,7 +66,7 @@
   }
 }
 
-li.merge_request {
+li.merge-request {
   padding: 7px 10px;
   img.avatar {
     width: 32px;
@@ -78,12 +78,12 @@ li.merge_request {
   }
 }
 
-.merge_in_progress {
+.merge-in-progress {
   @extend .padded;
   @extend .append-bottom-10;
 }
 
-.label_branch {
+.label-branch {
   @include border-radius(4px);
   padding: 2px 4px;
   border: none;
@@ -93,21 +93,21 @@ li.merge_request {
   font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }
 
-.mr_source_commit,
-.mr_target_commit {
+.mr-source-commit,
+.mr-target-commit {
   .commit {
     margin: 0;
     padding: 0;
     padding: 5px;
     margin-bottom: 5px;
     .avatar { position:relative }
-    .row_title {
+    .row-title {
       color: #444;
     }
     .commit-author-name,
     .dash,
-    .committed_ago,
-    .browse_code_link_holder {
+    .committed-ago,
+    .browse-code-link-holder {
       display: none;
     }
     list-style: none;
@@ -117,20 +117,20 @@ li.merge_request {
   }
 }
 
-.mr_direction_tip {
+.mr-direction-tip {
   margin-top:40px
 }
 
-.merge_requests_form_box {
-  @extend .main_box;
-  .merge_requests_middle_box {
-    @extend .middle_box_content;
+.merge-requests-form-box {
+  @extend .main-box;
+  .merge-requests-middle-box {
+    @extend .middle-box_content;
     height: 30px;
-    .merge_requests_assignee {
+    .merge-requests-assignee {
       @extend .span6;
       float: left;
     }
-    .merge_requests_milestone {
+    .merge-requests-milestone {
       @extend .span4;
       float: left;
     }

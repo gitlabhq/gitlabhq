@@ -1,17 +1,17 @@
 .file-editor
   = form_tag(project_tree_path(@project, @id), method: :put, class: "form-horizontal") do
-    .file_holder
-      .file_title
+    .file-holder
+      .file-title
         %i.icon-file
-        %span.file_name
+        %span.file-name
           = @tree.path
           %small
             on
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_tree_path(@project, @id), class: "btn very_small cancel-btn", confirm: "Are you sure?"
-      .file_content.code
+            = link_to "Cancel", project_tree_path(@project, @id), class: "btn tiny cancel-btn", confirm: "Are you sure?"
+      .file-content.code
         %pre#editor= @tree.data
 
     .control-group.commit_message-group

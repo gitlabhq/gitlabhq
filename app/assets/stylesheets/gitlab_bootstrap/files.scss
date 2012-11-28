@@ -2,12 +2,12 @@
  * File content holder
  *
  */
-.file_holder {
+.file-holder {
   border: 1px solid #BBB;
   margin-bottom: 1em;
   @include solid-shade;
 
-  .file_title {
+  .file-title {
     border-bottom: 1px solid #bbb;
     @include bg-dark-gray-gradient;
     margin: 0;
@@ -23,7 +23,7 @@
       margin-top: -5px;
     }
 
-    .file_name {
+    .file-name {
       color: $style_color;
       font-size: 14px;
       text-shadow: 0 1px 1px #fff;
@@ -33,7 +33,7 @@
       }
     }
   }
-  .file_content {
+  .file-content {
     background: #fff;
     font-size: 11px;
 
@@ -51,7 +51,7 @@
       }
     }
 
-    &.image_file {
+    &.image-file {
       background: #eee;
       text-align: center;
       img {
@@ -60,7 +60,7 @@
       }
     }
 
-    &.blob_file {
+    &.blob-file {
 
     }
 
@@ -87,7 +87,7 @@
         padding: 5px;
       }
       .author,
-      .blame_commit {
+      .blame-commit {
         background: #f5f5f5;
         vertical-align: top;
       }
@@ -167,7 +167,7 @@
           background: none;
         }
 
-        pre.line_numbers {
+        pre.line-numbers {
           color: #666;
           padding: 10px 6px 10px 0;
           text-align: right;

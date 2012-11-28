@@ -23,7 +23,7 @@ var Pager = {
 
   append:
     function(count, html) {
-      $(".content_list").append(html);
+      $(".content-list").append(html);
       if(count > 0) {
         this.offset += count;
       } else { 

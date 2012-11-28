@@ -1,8 +1,8 @@
-.file_holder#README
-  .file_title
+.file-holder#README
+  .file-title
     %i.icon-file
     = readme.name
-  .file_content.wiki
+  .file-content.wiki
     - if gitlab_markdown?(readme.name)
       = preserve do
         = markdown(readme.data)

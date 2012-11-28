@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Merge Requests
   %small (authored by or assigned to you)
   %small.right #{@merge_requests.total_count} merge requests
@@ -15,4 +15,4 @@
   = paginate @merge_requests, theme: "gitlab"
 
 - else
-  %h3.nothing_here_message Nothing to show here
+  %h3.nothing-here-message Nothing to show here

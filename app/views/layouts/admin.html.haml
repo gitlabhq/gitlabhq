@@ -5,7 +5,7 @@
     = render "layouts/flash"
     = render "layouts/head_panel", title: "Admin area"
     .container
-      %ul.main_menu
+      %ul.main-menu
         = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
           = link_to "Stats", admin_root_path
         = nav_link(controller: [:projects, :groups]) do

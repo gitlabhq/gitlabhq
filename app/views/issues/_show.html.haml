@@ -1,7 +1,7 @@
 %li.wll{ id: dom_id(issue), class: issue_css_classes(issue), url: project_issue_path(issue.project, issue) }
   - if controller.controller_name == 'issues'
-    .issue_check
-      = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
+    .issue-check
+      = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected-issue", disabled: !can?(current_user, :modify_issue, issue)
   .right
     - issue.labels.each do |label|
       %span.label.label-tag.grouped
@@ -13,9 +13,9 @@
         = issue.notes.count
     - if can? current_user, :modify_issue, issue
       - if issue.closed
-        = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn small grouped reopen_issue", remote: true
+      = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn small grouped reopen-issue", remote: true
       - else
-        = link_to 'Close', project_issue_path(issue.project, issue, issue: {closed: true }, status_only: true), method: :put, class: "btn small grouped close_issue", remote: true
+        = link_to 'Close', project_issue_path(issue.project, issue, issue: {closed: true }, status_only: true), method: :put, class: "btn small grouped close-issue", remote: true
       = link_to edit_project_issue_path(issue.project, issue), class: "btn small edit-issue-link grouped", remote: true do
         %i.icon-edit
         Edit
@@ -25,7 +25,7 @@
   - else
     = image_tag "no_avatar.png", class: "avatar"
 
-  %p= link_to_gfm truncate(issue.title, length: 100), project_issue_path(issue.project, issue), class: "row_title"
+  %p= link_to_gfm truncate(issue.title, length: 100), project_issue_path(issue.project, issue), class: "row-title"
 
   %span.update-author
     %small.cdark= "##{issue.id}"

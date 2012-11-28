@@ -1,10 +1,10 @@
 - allow_admin = can? current_user, :admin_project, @project
 - user = @team_member.user
 
-.team_member_show
+.team-member-show
   - if can? current_user, :admin_project, @project
     = link_to 'Remove from team', project_team_member_path(project_id: @project, id: @team_member.id), confirm: 'Are you sure?', method: :delete, class: "right btn danger"
-  .profile_avatar_holder
+  .profile-avatar-holder
     = image_tag gravatar_icon(user.email, 60), class: "borders"
   %h3
     = user.name
@@ -12,7 +12,7 @@
       = user.email
 
   %hr
-  .back_link
+  .back-link
     %br
     = link_to project_team_index_path(@project), class: "" do
       &larr; To team list

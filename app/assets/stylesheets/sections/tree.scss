@@ -4,7 +4,7 @@
     width: 100%;
   }
 
-  .tree_progress {
+  .tree-progress {
     display: none;
     margin: 20px;
     &.loading {
@@ -53,7 +53,7 @@
     }
   }
 
-  .tree_author {
+  .tree-author {
     padding-right: 8px;
 
     img.avatar {
@@ -62,7 +62,7 @@
     }
   }
 
-  .tree_commit {
+  .tree-commit {
     color: gray;
 
     .tree-commit-link {

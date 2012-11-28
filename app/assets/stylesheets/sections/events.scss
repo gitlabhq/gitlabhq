@@ -2,7 +2,7 @@
  * Events labels
  *
  */
-.event_label {
+.event-label {
   &.pushed {
     padding: 0 2px;
   }
@@ -36,7 +36,7 @@
   .event-title {
     color: #333;
     font-weight: bold;
-    .author_name {
+    .author-name {
       color: #333;
     }
   }
@@ -52,7 +52,7 @@
   .avatar {
     width: 32px;
   }
-  .event_icon {
+  .event-icon {
     float: right;
     border: 1px solid #EEE;
     padding: 5px;
@@ -75,7 +75,7 @@
   &:last-child { border:none }
   .wll:hover { background:none }
 
-  .event_commits {
+  .event-commits {
     margin-top: 5px;
 
     li {
@@ -97,7 +97,7 @@
  * Push event widget
  *
  */
-.event_lp {
+.event-lp {
   color: #777;
   padding: 10px;
   min-height: 22px;
@@ -121,12 +121,12 @@
  * Event filter
  *
  */
-.event_filter {
+.event-filter {
   position: absolute;
   width: 40px;
   margin-left: -50px;
 
-  .filter_icon {
+  .filter-icon {
     float: left;
     border-left: 3px solid #4bc;
     padding: 7px;

@@ -5,7 +5,7 @@
     = render "layouts/flash"
     = render "layouts/head_panel", title: "#{@group.name}"
     .container
-      %ul.main_menu
+      %ul.main-menu
         = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
           = link_to "Home", group_path(@group), title: "Home"
         = nav_link(path: 'groups#issues') do

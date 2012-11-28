@@ -1,7 +1,7 @@
-.issue_form_box {
-  @extend .main_box;
-  .issue_title {
-    @extend .top_box_content;
+.issue-form-box {
+  @extend .main-box;
+  .issue-title {
+    @extend .top-box-content;
     .clearfix {
       margin-bottom: 0px;
       input {
@@ -9,28 +9,28 @@
       }
     }
   }
-  .issue_middle_block {
-    @extend .middle_box_content;
+  .issue-middle-block {
+    @extend .middle-box-content;
     height: 30px;
-    .issue_assignee {
+    .issue-assignee {
       @extend .span6;
       float: left;
     }
-    .issue_milestone {
+    .issue-milestone {
       @extend .span4;
       float: left;
     }
   }
-  .issue_description {
-    @extend .bottom_box_content;
+  .issue-description {
+    @extend .bottom-box-content;
   }
 }
 
-.issues_table {
+.issues-table {
   .issue {
     padding: 7px 10px;
 
-    .issue_check {
+    .issue-check {
       float: left;
       padding: 8px 0;
       padding-right: 8px;
@@ -49,7 +49,7 @@
   }
 }
 
-input.check_all_issues {
+input.check-all-issues {
   float: left;
   padding: 0;
   margin: 0;
@@ -59,13 +59,13 @@ input.check_all_issues {
   height: 22px;
 }
 
-.issues_content {
+.issues-content {
   .title {
     height: 40px;
   }
 }
 
-.btn.close_issue {
+.btn.close-issue {
   color: #B94A48;
   font-weight: bold;
   @include shade;
@@ -73,7 +73,7 @@ input.check_all_issues {
     color: #B94A48;
   }
 }
-.btn.reopen_issue {
+.btn.reopen-issue {
   color: #468847;
   font-weight: bold;
   @include shade;
@@ -82,13 +82,13 @@ input.check_all_issues {
   }
 }
 
-@media (min-width: 800px) { .issues_filters select { width: 160px; }  }
-@media (min-width: 1000px) { .issues_filters select { width: 200px; }  }
-@media (min-width: 1200px) { .issues_filters select { width: 220px; }  }
+@media (min-width: 800px) { .issues-filters select { width: 160px; }  }
+@media (min-width: 1000px) { .issues-filters select { width: 200px; }  }
+@media (min-width: 1200px) { .issues-filters select { width: 220px; }  }
 
 
 #issues-table-holder {
-  .issues_filters {
+  .issues-filters {
     form {
       padding: 0;
       margin: 0;
@@ -96,21 +96,21 @@ input.check_all_issues {
     }
   }
 
-  .issues_bulk_update {
+  .issues-bulk-update {
     margin: 0;
     form {
       padding: 0;
       margin: 0;
       margin-top:7px
     }
-    .update_selected_issues {
+    .update-selected-issues {
       position: relative;
       top:-2px;
       margin-left: 4px;
       float: left;
     }
 
-    .update_issues_text {
+    .update-issues-text {
       padding: 3px;
       line-height: 18px;
       float: left;
@@ -118,7 +118,7 @@ input.check_all_issues {
   }
 }
 
-#update_status {
+#update-status {
   width: 100px;
 }
 

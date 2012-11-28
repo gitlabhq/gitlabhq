@@ -32,7 +32,7 @@ header {
    * Logo holder
    *
    */
-  .app_logo {
+  .app-logo {
     width: 170px;
     float: left;
     a {
@@ -61,7 +61,7 @@ header {
    * Project / Area name
    *
    */
-  .project_name {
+  .project-name {
     position: relative;
     float: left;
     margin: 0;
@@ -240,7 +240,7 @@ header {
     .search-input::-webkit-input-placeholder {
       color: #666;
     }
-    .app_logo {
+    .app-logo {
       a {
         h1 {
           background: url('logo_white.png') no-repeat 0px 2px;
@@ -249,7 +249,7 @@ header {
         }
       }
     }
-    .project_name {
+    .project-name {
       color: #fff;
       text-shadow: 0 1px 1px #111;
     }

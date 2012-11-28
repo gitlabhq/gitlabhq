@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   User: #{@admin_user.name}
   - if @admin_user.blocked
     %small Blocked
@@ -68,7 +68,7 @@
 %br
 %h3 Add User to Projects
 %br
-= form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
+= form_tag team_update_admin_user_path(@admin_user), class: "bulk-import", method: :put  do
   %table
     %thead
       %tr

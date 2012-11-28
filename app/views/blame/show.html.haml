@@ -11,24 +11,24 @@
       %li= link
   .clear
 
-  .file_holder
-    .file_title
+  .file-holder
+    .file-title
       %i.icon-file
-      %span.file_name
+      %span.file-name
         = @tree.name
         %small= number_to_human_size @tree.size
       %span.options= render "tree/blob_actions"
-    .file_content.blame
+    .file-content.blame
       %table
         - @blame.each do |commit, lines|
           - commit = Commit.new(commit)
           - commit = CommitDecorator.decorate(commit)
           %tr
             %td.author= commit.author_link avatar: true, size: 16
-            %td.blame_commit
+            %td.blame-commit
               &nbsp;
               %code= link_to commit.short_id, project_commit_path(@project, commit)
-              = link_to_gfm truncate(commit.title, length: 30), project_commit_path(@project, commit), class: "row_title" rescue "--broken encoding"
+              = link_to_gfm truncate(commit.title, length: 30), project_commit_path(@project, commit), class: "row-title" rescue "--broken encoding"
             %td.lines
               = preserve do
                 %pre

@@ -5,7 +5,7 @@
     = render "layouts/flash"
     = render "layouts/head_panel", title: "Profile"
     .container
-      %ul.main_menu
+      %ul.main-menu
         = nav_link(path: 'profile#show', html_options: {class: 'home'}) do
           = link_to "Profile", profile_path
         = nav_link(path: 'profile#account') do

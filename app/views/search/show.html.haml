@@ -11,7 +11,7 @@
     Search results
     %small (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count})
   %hr
-  .search_results
+  .search-results
     .row
       .span6
         %table
@@ -30,7 +30,7 @@
             - if @projects.blank?
               %tr
                 %td
-                  %h4.nothing_here_message No Projects
+                  %h4.nothing-here-message No Projects
         %br
         %table
           %thead
@@ -49,7 +49,7 @@
             - if @merge_requests.blank?
               %tr
                 %td
-                  %h4.nothing_here_message No Merge Requests
+                  %h4.nothing-here-message No Merge Requests
       .span6
         %table
           %thead
@@ -68,7 +68,7 @@
             - if @issues.blank?
               %tr
                 %td
-                  %h4.nothing_here_message No Issues
+                  %h4.nothing-here-message No Issues
       .span6
         %table
           %thead
@@ -85,7 +85,7 @@
             - if @wiki_pages.blank?
               %tr
                 %td
-                  %h4.nothing_here_message No wiki pages
+                  %h4.nothing-here-message No wiki pages
   :javascript
     $(function() {
       $(".search_results .term").highlight("#{params[:search]}");

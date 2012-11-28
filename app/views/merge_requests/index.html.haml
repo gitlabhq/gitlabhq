@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Merge Requests
   - if can? current_user, :write_issue, @project
     = link_to new_project_merge_request_path(@project), class: "right btn", title: "New Merge Request" do
@@ -34,7 +34,7 @@
     = render @merge_requests
     - if @merge_requests.blank?
       %li
-        %h4.nothing_here_message Nothing to show here
+        %h4.nothing-here-message Nothing to show here
     - if @merge_requests.present?
       %li.bottom
         .row

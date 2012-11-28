@@ -26,7 +26,7 @@
 .underlined { border-bottom: 1px solid #CCC; }
 .no-borders { border: none; }
 .vlink { color: $link_color !important; }
-.underlined_link { text-decoration: underline; }
+.underlined-link { text-decoration: underline; }
 .borders { border: 1px solid #ccc; @include shade; }
 .hint { font-style: italic; color: #999; }
 .light { color: #888 }
@@ -73,11 +73,11 @@ img.avatar { float: left; margin-right: 12px; width: 40px; border: 1px solid #dd
 img.avatar.s16 { width: 16px; height: 16px; margin-right: 6px; }
 img.avatar.s24 { width: 24px; height: 24px; margin-right: 8px; }
 img.avatar.s32 { width: 32px; height: 32px; margin-right: 10px; }
-img.lil_av { padding-left: 4px; padding-right: 3px; }
+img.lil-av { padding-left: 4px; padding-right: 3px; }
 img.small { width: 80px; }
 
 /** HELPERS **/
-.nothing_here_message { text-align: center; padding: 20px; color: #777; }
+.nothing-here-message { text-align: center; padding: 20px; color: #777; }
 p.slead { color: #456; font-size: 16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
 
 /** FORMS **/

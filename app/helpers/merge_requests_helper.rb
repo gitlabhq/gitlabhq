@@ -4,7 +4,7 @@ module MergeRequestsHelper
 
     tm = project.team_member_by_id(merge_request.assignee_id)
     if tm
-      link_to merge_request.assignee_name, project_team_member_path(project, tm), class: "author_link"
+      link_to merge_request.assignee_name, project_team_member_path(project, tm), class: "author-link"
     else
       merge_request.assignee_name
     end
@@ -15,7 +15,7 @@ module MergeRequestsHelper
 
     tm = project.team_member_by_id(merge_request.author_id)
     if tm
-      link_to merge_request.author_name, project_team_member_path(project, tm), class: "author_link"
+      link_to merge_request.author_name, project_team_member_path(project, tm), class: "author-link"
     else
       merge_request.author_name
     end
@@ -33,7 +33,7 @@ module MergeRequestsHelper
   end
 
   def mr_css_classes mr
-    classes = "merge_request"
+    classes = "merge-request"
     classes << " closed" if mr.closed
     classes << " merged" if mr.merged?
     classes
