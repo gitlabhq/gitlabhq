@@ -30,6 +30,14 @@ describe Gitlab::API do
     end
   end
 
+  describe "POST /projects/:id/notes" do
+    it "should create a new wall note" do
+      post api("/projects/#{project.id}/notes", user), body: 'hi!'
+      response.status.should == 201
+      json_response['body'].should == 'hi!'
+    end
+  end
+
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
     context "when noteable is an Issue" do
       it "should return an array of issue notes" do

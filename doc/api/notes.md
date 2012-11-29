@@ -87,6 +87,22 @@ Parameters:
 
 ## New note
 
+### New wall note
+
+Create a new wall note.
+
+```
+POST /projects/:id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `body` (required) - The content of a note
+
+Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+
+
 ### New issue note
 
 Create a new issue note.

@@ -17,6 +17,24 @@ module Gitlab
         present paginate(@notes), with: Entities::Note
       end
 
+      # Create a new project wall note
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   body (required) - The content of a note
+      # Example Request:
+      #   POST /projects/:id/notes
+      post ":id/notes" do
+        @note = user_project.notes.new(note: params[:body])
+        @note.author = current_user
+
+        if @note.save
+          present @note, with: Entities::Note
+        else
+          not_found!
+        end
+      end
+
       NOTEABLE_TYPES.each do |noteable_type|
         noteables_str = noteable_type.to_s.underscore.pluralize
         noteable_id_str = "#{noteable_type.to_s.underscore}_id"
