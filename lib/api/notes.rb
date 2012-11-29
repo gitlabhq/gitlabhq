@@ -33,6 +33,21 @@ module Gitlab
           @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
           present paginate(@noteable.notes), with: Entities::Note
         end
+
+        # Get a single +noteable+ note
+        #
+        # Parameters:
+        #   id (required) - The ID or code name of a project
+        #   noteable_id (required) - The ID of an issue or snippet
+        #   note_id (required) - The ID of a note
+        # Example Request:
+        #   GET /projects/:id/issues/:noteable_id/notes/:note_id
+        #   GET /projects/:id/snippets/:noteable_id/notes/:note_id
+        get ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+          @note = @noteable.notes.find(params[:note_id])
+          present @note, with: Entities::Note
+        end
       end
     end
   end

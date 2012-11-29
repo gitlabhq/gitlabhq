@@ -32,7 +32,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
     context "when noteable is an Issue" do
-      it "should return an array of notes" do
+      it "should return an array of issue notes" do
         get api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
         response.status.should == 200
         json_response.should be_an Array
@@ -41,11 +41,29 @@ describe Gitlab::API do
     end
 
     context "when noteable is a Snippet" do
-      it "should return an array of notes" do
+      it "should return an array of snippet notes" do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
         response.status.should == 200
         json_response.should be_an Array
         json_response.first['body'].should == snippet_note.note
+      end
+    end
+  end
+
+  describe "GET /projects/:id/noteable/:noteable_id/notes/:note_id" do
+    context "when noteable is an Issue" do
+      it "should return an issue note by id" do
+        get api("/projects/#{project.id}/issues/#{issue.id}/notes/#{issue_note.id}", user)
+        response.status.should == 200
+        json_response['body'].should == issue_note.note
+      end
+    end
+
+    context "when noteable is a Snippet" do
+      it "should return a snippet note by id" do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}", user)
+        response.status.should == 200
+        json_response['body'].should == snippet_note.note
       end
     end
   end
