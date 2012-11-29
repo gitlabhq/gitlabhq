@@ -20,8 +20,7 @@ GET /projects/:id/notes
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "updated_at":"2012-11-27T19:16:44Z",
-    "created_at":"2012-11-27T19:16:44Z"
+    "created_at": "2012-11-27T19:16:44Z"
   }
 ]
 ```
