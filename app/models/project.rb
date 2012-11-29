@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
 
-  attr_accessible :namespace_id, as: :admin
+  attr_accessible :namespace_id, :owner_id, as: :admin
 
   attr_accessor :error_code
 

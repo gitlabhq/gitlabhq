@@ -4,7 +4,6 @@ class GroupsController < ApplicationController
 
   before_filter :group
   before_filter :projects
-  before_filter :add_project_abilities
 
   def show
     @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
@@ -45,7 +44,7 @@ class GroupsController < ApplicationController
   end
 
   def people
-    @users = group.users.all
+    @users = group.users
   end
 
   protected
@@ -55,7 +54,11 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= current_user.projects_sorted_by_activity.where(namespace_id: @group.id)
+    @projects ||= if can?(current_user, :manage_group, @group)
+                    @group.projects.all
+                  else
+                    current_user.projects_sorted_by_activity.where(namespace_id: @group.id)
+                  end
   end
 
   def project_ids

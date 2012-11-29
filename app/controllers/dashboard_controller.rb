@@ -5,7 +5,7 @@ class DashboardController < ApplicationController
   before_filter :event_filter, only: :index
 
   def index
-    @groups = Group.where(id: current_user.projects.pluck(:namespace_id))
+    @groups = current_user.accessed_groups
     @projects = @projects.page(params[:page]).per(30)
     @events = Event.in_projects(current_user.project_ids)
     @events = @event_filter.apply_filter(@events)

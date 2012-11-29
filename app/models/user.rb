@@ -123,4 +123,11 @@ class User < ActiveRecord::Base
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
   end
+
+  def accessed_groups
+    @accessed_groups ||= begin
+                           groups = Group.where(id: self.projects.pluck(:namespace_id)).all
+                           groups + self.groups
+                         end
+  end
 end

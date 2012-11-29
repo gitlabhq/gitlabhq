@@ -24,7 +24,7 @@ describe Group do
   it { should validate_presence_of :owner }
 
   describe :users do
-    it { group.users.should == [] }
+    it { group.users.should == [group.owner] }
   end
 
   describe :human_name do

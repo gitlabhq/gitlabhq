@@ -22,7 +22,7 @@
     - unless project.new_record?
       .clearfix
         = f.label :namespace_id
-        .input= f.select :namespace_id, namespaces_options, {}, {class: 'chosen'}
+        .input= f.select :namespace_id, namespaces_options(@project.namespace_id), {}, {class: 'chosen'}
 
       .clearfix
         = f.label :owner_id

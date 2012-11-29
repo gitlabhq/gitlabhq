@@ -13,7 +13,9 @@
 
 class Group < Namespace
   def users
-    User.joins(:users_projects).where(users_projects: {project_id: project_ids}).uniq
+    users = User.joins(:users_projects).where(users_projects: {project_id: project_ids})
+    users = users << owner
+    users.uniq
   end
 
   def human_name

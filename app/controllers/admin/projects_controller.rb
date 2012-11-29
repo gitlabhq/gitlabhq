@@ -24,13 +24,9 @@ class Admin::ProjectsController < AdminController
   end
 
   def update
-    owner_id = params[:project].delete(:owner_id)
+    status = ProjectUpdateContext.new(project, current_user, params).execute(:admin)
 
-    if owner_id
-      @project.owner = User.find(owner_id)
-    end
-
-    if @project.update_attributes(params[:project], as: :admin)
+    if status
       redirect_to [:admin, @project], notice: 'Project was successfully updated.'
     else
       render action: "edit"

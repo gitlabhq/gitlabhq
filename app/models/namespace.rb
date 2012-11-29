@@ -53,12 +53,14 @@ class Namespace < ActiveRecord::Base
   end
 
   def move_dir
-    old_path = File.join(Gitlab.config.git_base_path, path_was)
-    new_path = File.join(Gitlab.config.git_base_path, path)
-    if File.exists?(new_path)
-      raise "Already exists"
+    if path_changed?
+      old_path = File.join(Gitlab.config.git_base_path, path_was)
+      new_path = File.join(Gitlab.config.git_base_path, path)
+      if File.exists?(new_path)
+        raise "Already exists"
+      end
+      system("mv #{old_path} #{new_path}")
     end
-    system("mv #{old_path} #{new_path}")
   end
 
   def rm_dir

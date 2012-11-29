@@ -55,9 +55,10 @@ describe Namespace do
   describe :move_dir do
     before do
       @namespace = create :namespace
+      @namespace.stub(path_changed?: true)
     end
 
-    it "should raise error when called directly" do
+    it "should raise error when dirtory exists" do
       expect { @namespace.move_dir }.to raise_error("Already exists")
     end
 

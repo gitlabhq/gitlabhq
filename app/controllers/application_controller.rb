@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :set_current_user_for_observers
+  before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
 
   protect_from_forgery
@@ -65,11 +66,17 @@ class ApplicationController < ActionController::Base
   def project
     id = params[:project_id] || params[:id]
 
-    @project ||= current_user.projects.find_with_namespace(id)
-    @project || render_404
+    @project = Project.find_with_namespace(id)
+
+    if @project and can?(current_user, :read_project, @project)
+      @project
+    else
+      @project = nil
+      render_404
+    end
   end
 
-  def add_project_abilities
+  def add_abilities
     abilities << Ability
   end
 
