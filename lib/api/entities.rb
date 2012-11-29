@@ -14,7 +14,7 @@ module Gitlab
     end
 
     class Hook < Grape::Entity
-      expose :id, :url
+      expose :id, :url, :created_at
     end
 
     class Project < Grape::Entity
@@ -61,7 +61,7 @@ module Gitlab
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key
+      expose :id, :title, :key, :created_at
     end
 
     class MergeRequest < Grape::Entity
