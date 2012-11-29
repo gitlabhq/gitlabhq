@@ -127,7 +127,8 @@ class User < ActiveRecord::Base
   def accessed_groups
     @accessed_groups ||= begin
                            groups = Group.where(id: self.projects.pluck(:namespace_id)).all
-                           groups + self.groups
+                           groups = groups + self.groups
+                           groups.uniq
                          end
   end
 end

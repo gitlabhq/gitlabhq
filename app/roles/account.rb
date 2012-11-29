@@ -80,7 +80,7 @@ module Account
   end
 
   def projects_sorted_by_activity
-    projects.order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC")
+    projects.sorted_by_activity
   end
 
   def namespaces

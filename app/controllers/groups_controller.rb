@@ -54,10 +54,12 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= if can?(current_user, :manage_group, @group)
-                    @group.projects.all
-                  else
-                    current_user.projects_sorted_by_activity.where(namespace_id: @group.id)
+    @projects ||= begin
+                    if can?(current_user, :manage_group, @group)
+                      @group.projects
+                    else
+                      current_user.projects.where(namespace_id: @group.id)
+                    end.sorted_by_activity.all
                   end
   end
 

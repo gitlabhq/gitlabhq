@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
   scope :public_only, where(private_flag: false)
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
   scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
-  scope :authorized_for, ->(user) { joins(:users_projects) { where(user_id: user.id) } }
+  scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
 
   class << self
     def active
@@ -284,5 +284,10 @@ class Project < ActiveRecord::Base
     when 'merge_request' then
       merge_requests
     end
+  end
+
+  def self.authorized_for user
+    projects = includes(:users_projects, :namespace)
+    projects = projects.where("users_projects.user_id = :user_id or projects.owner_id = :user_id or namespaces.owner_id = :user_id", user_id: user.id)
   end
 end
