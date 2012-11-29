@@ -20,8 +20,7 @@ GET /projects/:id/notes
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "updated_at":"2012-11-27T19:16:44Z",
-    "created_at":"2012-11-27T19:16:44Z"
+    "created_at": "2012-11-27T19:16:44Z"
   }
 ]
 ```
@@ -87,6 +86,22 @@ Parameters:
 + `note_id` (required) - The ID of an snippet note
 
 ## New note
+
+### New wall note
+
+Create a new wall note.
+
+```
+POST /projects/:id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `body` (required) - The content of a note
+
+Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+
 
 ### New issue note
 
