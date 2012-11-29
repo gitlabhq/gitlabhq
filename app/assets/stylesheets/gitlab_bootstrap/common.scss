@@ -24,7 +24,7 @@
 .lborder { border-left:1px solid #eee }
 .no-padding { padding:0 !important; }
 .underlined { border-bottom: 1px solid #CCC; }
-.no-borders { border:none; }
+.no-borders { border: none; }
 .vlink { color: $link_color !important; }
 .underlined_link { text-decoration: underline; }
 .borders { border: 1px solid #ccc; @include shade; }
@@ -32,32 +32,32 @@
 .light { color: #888 }
 
 /** PILLS & TABS**/
-.nav-pills a:hover { background-color:#888; }
+.nav-pills a:hover { background-color: #888; }
 .nav-pills .active a { background-color: $style_color; }
-.nav-tabs > li > a, .nav-pills > li > a { color:$style_color; }
+.nav-tabs > li > a, .nav-pills > li > a { color: $style_color; }
 .nav.nav-tabs {
   li {
     > a {
-      padding:8px 20px;
+      padding: 8px 20px;
       margin-right: 7px;
       line-height: 19px;
       border-color: #EEE;
-      color:#888;
+      color: #888;
       border-bottom: 1px solid #ddd;
       .badge {
         background-color: #eee;
-        color:#888;
-        text-shadow:0 1px 1px #fff;
+        color: #888;
+        text-shadow: 0 1px 1px #fff;
       }
       i[class^="icon-"] {
-        line-height:14px;
+        line-height: 14px;
       }
     }
     &.active {
       > a {
         border-color: #CCC;
         border-bottom: 1px solid #fff;
-        color:#333;
+        color: #333;
       }
     }
   }
@@ -69,25 +69,25 @@
 .alert-message.error { @extend .alert-error; }
 
 /** AVATARS **/
-img.avatar { float:left; margin-right:12px; width:40px; border:1px solid #ddd; padding:1px; }
-img.avatar.s16 { width:16px; height:16px; margin-right:6px; }
-img.avatar.s24 { width:24px; height:24px; margin-right:8px; }
-img.avatar.s32 { width:32px; height:32px; margin-right:10px; }
-img.lil_av { padding-left: 4px; padding-right:3px; }
+img.avatar { float: left; margin-right: 12px; width: 40px; border: 1px solid #ddd; padding: 1px; }
+img.avatar.s16 { width: 16px; height: 16px; margin-right: 6px; }
+img.avatar.s24 { width: 24px; height: 24px; margin-right: 8px; }
+img.avatar.s32 { width: 32px; height: 32px; margin-right: 10px; }
+img.lil_av { padding-left: 4px; padding-right: 3px; }
 img.small { width: 80px; }
 
 /** HELPERS **/
-.nothing_here_message { text-align:center; padding:20px; color:#777; }
-p.slead { color:#456; font-size:16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
+.nothing_here_message { text-align: center; padding: 20px; color: #777; }
+p.slead { color: #456; font-size: 16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
 
 /** FORMS **/
 input[type='search'].search-text-input {
   background-image: url("icon-search.png");
   background-repeat: no-repeat;
   background-position: 10px;
-  padding-left:25px;
+  padding-left: 25px;
   @include border-radius(4px);
-  border:1px solid #ccc;
+  border: 1px solid #ccc;
 }
 
 fieldset legend { font-size: 17px; }
