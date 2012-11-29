@@ -11,6 +11,10 @@ class AdminActiveTab < Spinach::FeatureSteps
     ensure_active_main_tab('Projects')
   end
 
+  Then 'the active main tab should be Groups' do
+    ensure_active_main_tab('Groups')
+  end
+
   Then 'the active main tab should be Users' do
     ensure_active_main_tab('Users')
   end
