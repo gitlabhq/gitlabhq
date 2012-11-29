@@ -19,5 +19,6 @@ module Gitlab
     mount Milestones
     mount Session
     mount MergeRequests
+    mount Notes
   end
 end

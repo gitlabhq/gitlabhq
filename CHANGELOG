@@ -1,4 +1,7 @@
 v 3.2.0
+  - [API] create notes for snippets and issues
+  - [API] list notes for snippets and issues
+  - [API] list project wall notes
   - Remove project code - use path instead
   - added username field to user
   - rake task to fill usernames based on emails create namespaces for users
@@ -10,7 +13,7 @@ v 3.2.0
   - Fixes commit patches getting escaped (see #2036)
   - Support diff and patch generation for commits and merge request
   - MergeReqest doesn't generate a temporary file for the patch any more
-  - Update the UI to allow downloading Patch or Diff 
+  - Update the UI to allow downloading Patch or Diff
 
 v 3.1.0
   - Updated gems
@@ -48,7 +51,7 @@ v 3.0.0
   - Fixed bug with gitolite keys
   - UI improved
   - Increased perfomance of application
-  - Show user avatar in last commit when browsing Files 
+  - Show user avatar in last commit when browsing Files
   - Refactored Gitlab::Merge
   - Use Font Awsome for icons
   - Separate observing of Note and MergeRequestsa

@@ -70,8 +70,15 @@ module Gitlab
     end
 
     class Note < Grape::Entity
+      expose :id
+      expose :note, as: :body
       expose :author, using: Entities::UserBasic
+      expose :updated_at, :created_at
+    end
+
+    class MRNote < Grape::Entity
       expose :note
+      expose :author, using: Entities::UserBasic
     end
   end
 end
