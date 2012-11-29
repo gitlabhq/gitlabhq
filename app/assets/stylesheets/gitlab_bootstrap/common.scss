@@ -34,6 +34,7 @@
 /** PILLS & TABS**/
 .nav-pills a:hover { background-color: #888; }
 .nav-pills .active a { background-color: $style_color; }
+.nav-pills > .active > a > i[class^="icon-"] { background: inherit; }
 .nav-tabs > li > a, .nav-pills > li > a { color: $style_color; }
 .nav.nav-tabs {
   li {
@@ -77,7 +78,15 @@ img.lil_av { padding-left: 4px; padding-right: 3px; }
 img.small { width: 80px; }
 
 /** HELPERS **/
-.nothing_here_message { text-align: center; padding: 20px; color: #777; }
+.nothing_here_message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 36px;
+}
+
 p.slead { color: #456; font-size: 16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
 
 /** FORMS **/

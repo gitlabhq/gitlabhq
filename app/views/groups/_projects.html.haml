@@ -9,6 +9,8 @@
           %i.icon-plus
           New Project
   %ul.unstyled
+    - if projects.blank?
+      %p.nothing_here_message This groups has no projects yet
     - projects.each do |project|
       %li.wll
         = link_to project_path(project), class: dom_class(project) do

@@ -4,6 +4,7 @@
   %body{class: "#{app_theme} project"}
     = render "layouts/flash"
     = render "layouts/head_panel", title: @project.name
+    = render 'shared/no_ssh'
     .container
       %ul.main_menu
         = nav_link(html_options: {class: "home #{project_tab_class}"}) do

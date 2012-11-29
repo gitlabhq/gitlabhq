@@ -602,6 +602,10 @@ li.note {
   margin-bottom: 10px;
   background: #FEE;
   padding-left: 20px;
+
+  &.centered {
+    text-align: center;
+  }
 }
 
 .oauth_select_holder {
