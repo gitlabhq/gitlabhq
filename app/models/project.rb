@@ -216,10 +216,6 @@ class Project < ActiveRecord::Base
     last_event.try(:created_at) || updated_at
   end
 
-  def wiki_notes
-    Note.where(noteable_id: wikis.pluck(:id), noteable_type: 'Wiki', project_id: self.id)
-  end
-
   def project_id
     self.id
   end

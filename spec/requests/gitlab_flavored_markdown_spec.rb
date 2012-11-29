@@ -197,18 +197,6 @@ describe "Gitlab Flavored Markdown" do
 
       page.should have_link("##{issue.id}")
     end
-
-    it "should render in wikis#index", js: true do
-      visit project_wiki_path(project, :index)
-      fill_in "Title", with: 'Test title'
-      fill_in "Content", with: '[link test](test)'
-      click_on "Save"
-
-      fill_in "note_note", with: "see ##{issue.id}"
-      click_button "Add Comment"
-
-      page.should have_link("##{issue.id}")
-    end
   end
 
 
