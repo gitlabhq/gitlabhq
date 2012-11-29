@@ -75,5 +75,10 @@ module Gitlab
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
     end
+
+    class MRNote < Grape::Entity
+      expose :note
+      expose :author, using: Entities::UserBasic
+    end
   end
 end
