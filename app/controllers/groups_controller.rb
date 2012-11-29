@@ -47,7 +47,12 @@ class GroupsController < ApplicationController
   end
 
   def people
-    @users = group.users
+    @project = group.projects.find(params[:project_id]) if params[:project_id]
+    @users = @project ? @project.users : group.users
+
+    if @project
+      @team_member = @project.users_projects.new
+    end
   end
 
   protected
