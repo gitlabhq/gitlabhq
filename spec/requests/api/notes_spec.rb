@@ -67,4 +67,24 @@ describe Gitlab::API do
       end
     end
   end
+
+  describe "POST /projects/:id/noteable/:noteable_id/notes" do
+    context "when noteable is an Issue" do
+      it "should create a new issue note" do
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
+        response.status.should == 201
+        json_response['body'].should == 'hi!'
+        json_response['author']['email'].should == user.email
+      end
+    end
+
+    context "when noteable is a Snippet" do
+      it "should create a new snippet note" do
+        post api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user), body: 'hi!'
+        response.status.should == 201
+        json_response['body'].should == 'hi!'
+        json_response['author']['email'].should == user.email
+      end
+    end
+  end
 end

@@ -48,6 +48,28 @@ module Gitlab
           @note = @noteable.notes.find(params[:note_id])
           present @note, with: Entities::Note
         end
+
+        # Create a new +noteable+ note
+        #
+        # Parameters:
+        #   id (required) - The ID or code name of a project
+        #   noteable_id (required) - The ID of an issue or snippet
+        #   body (required) - The content of a note
+        # Example Request:
+        #   POST /projects/:id/issues/:noteable_id/notes
+        #   POST /projects/:id/snippets/:noteable_id/notes
+        post ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
+          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+          @note = @noteable.notes.new(note: params[:body])
+          @note.author = current_user
+          @note.project = user_project
+
+          if @note.save
+            present @note, with: Entities::Note
+          else
+            not_found!
+          end
+        end
       end
     end
   end
