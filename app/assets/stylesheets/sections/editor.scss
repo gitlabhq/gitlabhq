@@ -1,7 +1,7 @@
 .file-editor {
   #editor{
     border: none;
-    border-radius: 0;
+    @include border-radius(0);
     height: 500px;
     margin: 0;
     padding: 0;
