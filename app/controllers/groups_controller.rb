@@ -5,6 +5,9 @@ class GroupsController < ApplicationController
   before_filter :group
   before_filter :projects
 
+  # Authorize
+  before_filter :authorize_read_group!
+
   def show
     @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push
@@ -54,16 +57,17 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= begin
-                    if can?(current_user, :manage_group, @group)
-                      @group.projects
-                    else
-                      current_user.projects.where(namespace_id: @group.id)
-                    end.sorted_by_activity.all
-                  end
+    @projects ||= group.projects.authorized_for(current_user).sorted_by_activity
   end
 
   def project_ids
     projects.map(&:id)
+  end
+
+  # Dont allow unauthorized access to group
+  def authorize_read_group!
+    unless projects.present? or can?(current_user, :manage_group, @group)
+      return render_404
+    end
   end
 end

@@ -5,8 +5,10 @@ class DashboardController < ApplicationController
   before_filter :event_filter, only: :index
 
   def index
-    @groups = current_user.accessed_groups
+    @groups = current_user.authorized_groups
+
     @projects = @projects.page(params[:page]).per(30)
+
     @events = Event.in_projects(current_user.project_ids)
     @events = @event_filter.apply_filter(@events)
     @events = @events.limit(20).offset(params[:offset] || 0)
@@ -43,7 +45,7 @@ class DashboardController < ApplicationController
   protected
 
   def projects
-    @projects = current_user.projects_sorted_by_activity
+    @projects = current_user.authorized_projects.sorted_by_activity
   end
 
   def event_filter

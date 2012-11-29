@@ -124,11 +124,15 @@ class User < ActiveRecord::Base
     end
   end
 
-  def accessed_groups
-    @accessed_groups ||= begin
+  def authorized_groups
+    @authorized_groups ||= begin
                            groups = Group.where(id: self.projects.pluck(:namespace_id)).all
                            groups = groups + self.groups
                            groups.uniq
                          end
+  end
+
+  def authorized_projects
+    Project.authorized_for(self)
   end
 end

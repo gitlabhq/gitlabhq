@@ -76,6 +76,11 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
 
   class << self
+    def authorized_for user
+      projects = includes(:users_projects, :namespace)
+      projects = projects.where("users_projects.user_id = :user_id or projects.owner_id = :user_id or namespaces.owner_id = :user_id", user_id: user.id)
+    end
+
     def active
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end
@@ -284,10 +289,5 @@ class Project < ActiveRecord::Base
     when 'merge_request' then
       merge_requests
     end
-  end
-
-  def self.authorized_for user
-    projects = includes(:users_projects, :namespace)
-    projects = projects.where("users_projects.user_id = :user_id or projects.owner_id = :user_id or namespaces.owner_id = :user_id", user_id: user.id)
   end
 end
