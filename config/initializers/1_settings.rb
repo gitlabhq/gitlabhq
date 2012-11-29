@@ -128,6 +128,12 @@ class Settings < Settingslogic
       false
     end
 
+    def omniauth_allow_single_sign_on?
+      omniauth && omniauth['allow_single_sign_on']
+    rescue Settingslogic::MissingSetting
+      false
+    end
+
     def omniauth_providers
       (omniauth_enabled? && omniauth['providers']) || {}
     end
