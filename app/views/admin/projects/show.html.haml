@@ -28,13 +28,22 @@
   %tr
     %td
       %b
+        Namespace:
+    %td
+      - if @project.namespace
+        = @project.namespace.human_name
+      - else
+        Global
+  %tr
+    %td
+      %b
         Path:
     %td
       %code= @project.path_to_repo
   %tr
     %td
       %b
-        Owner:
+        Created by:
     %td
       = @project.owner_name || '(deleted)'
   %tr

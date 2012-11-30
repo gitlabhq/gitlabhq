@@ -292,4 +292,8 @@ class Project < ActiveRecord::Base
       merge_requests
     end
   end
+
+  def namespace_owner
+    namespace.try(:owner)
+  end
 end

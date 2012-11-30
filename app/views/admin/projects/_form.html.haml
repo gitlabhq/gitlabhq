@@ -24,10 +24,6 @@
         = f.label :namespace_id
         .input= f.select :namespace_id, namespaces_options(@project.namespace_id), {}, {class: 'chosen'}
 
-      .clearfix
-        = f.label :owner_id
-        .input= f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
-
       - if project.repo_exists?
         .clearfix
           = f.label :default_branch, "Default Branch"

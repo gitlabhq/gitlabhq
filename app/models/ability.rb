@@ -18,7 +18,7 @@ class Ability
       # Rules based on role in project
       if project.master_access_for?(user)
         # TODO: replace with master rules.
-        # Only allow project administration for owners
+        # Only allow project administration for namespace owners
         rules << project_admin_rules
 
       elsif project.dev_access_for?(user)
@@ -31,15 +31,20 @@ class Ability
         rules << project_guest_rules
       end
 
-      # If user own project namespace (Ex. group owner or account owner)
-      if project.namespace && project.namespace.owner == user
-        rules << project_admin_rules
+      if project.namespace
+        # If user own project namespace
+        # (Ex. group owner or account owner)
+        if project.namespace.owner == user
+          rules << project_admin_rules
+        end
+      else
+        # For compatibility with global projects
+        # use projects.owner_id
+        if project.owner == user
+          rules << project_admin_rules
+        end
       end
 
-      # If user was set as direct project owner
-      if project.owner == user
-        rules << project_admin_rules
-      end
 
       rules.flatten
     end

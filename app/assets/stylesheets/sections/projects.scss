@@ -94,6 +94,7 @@
   }
 
   input[type="text"] {
+    @extend .monospace;
     border: 1px solid #BBB;
     box-shadow: none;
     margin-left: -1px;
