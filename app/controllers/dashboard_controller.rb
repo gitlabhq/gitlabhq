@@ -7,6 +7,15 @@ class DashboardController < ApplicationController
   def index
     @groups = current_user.authorized_groups
 
+    @projects = case params[:scope]
+                when 'personal' then
+                  @projects.personal(current_user)
+                when 'joined' then
+                  @projects.joined(current_user)
+                else
+                  @projects
+                end
+
     @projects = @projects.page(params[:page]).per(30)
 
     @events = Event.in_projects(current_user.project_ids)
