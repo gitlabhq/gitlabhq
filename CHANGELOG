@@ -1,7 +1,7 @@
 v 3.2.0
-  - [API] create notes for snippets and issues
-  - [API] list notes for snippets and issues
-  - [API] list project wall notes
+  - [API] list, create issue notes
+  - [API] list, create snippet notes
+  - [API] list, create wall notes
   - Remove project code - use path instead
   - added username field to user
   - rake task to fill usernames based on emails create namespaces for users
