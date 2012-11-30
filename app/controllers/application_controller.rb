@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   def reject_blocked!
     if current_user && current_user.blocked
       sign_out current_user
-      flash[:alert] = "Your account was blocked"
+      flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
       redirect_to new_user_session_path
     end
   end
@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for resource
     if resource.is_a?(User) && resource.respond_to?(:blocked) && resource.blocked
       sign_out resource
-      flash[:alert] = "Your account was blocked"
+      flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
       new_user_session_path
     else
       super
