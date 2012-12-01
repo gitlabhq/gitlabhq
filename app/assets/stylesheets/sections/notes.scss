@@ -123,7 +123,9 @@ tr.line_notes_row {
   }
 }
 
-.line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.line_notes_row, .per_line_form {
+  font-family: $default_font;
+}
 
 .per_line_form {
   background: #f5f5f5;
@@ -172,8 +174,8 @@ td .line_note_link {
   }
 }
 
-.diff_file_content tr.line_holder:hover > td { background: $hover !important; }
-.diff_file_content tr.line_holder:hover > td .line_note_link {
+.file .content tr.line_holder:hover > td { background: $hover !important; }
+.file .content tr.line_holder:hover > td .line_note_link {
   opacity: 1.0;
   filter: alpha(opacity=100);
 }

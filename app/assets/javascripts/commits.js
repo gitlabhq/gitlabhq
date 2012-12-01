@@ -57,3 +57,24 @@ var CommitsList = {
       });
     }
 }
+
+var ImageInfo = function(file){
+  $('.wrap:has(.image-info)', file).each($.proxy(function(index, frame){
+    this.setImageInfo($('img', frame), $('.image-info', frame));
+  }, this));
+};
+
+ImageInfo.prototype.setImageInfo = function(img, imageInfo){
+  var domImg = img.get(0);
+  if(domImg.complete){
+    imageInfo.append(this.formatImageInfo(domImg.naturalWidth, domImg.naturalHeight));
+  }else{
+    img.on('load', $.proxy(function(){
+      imageInfo.append(this.formatImageInfo(domImg.naturalWidth, domImg.naturalHeight));
+    }, this));
+  }
+};
+
+ImageInfo.prototype.formatImageInfo = function(w, h){
+  return ' | ' + '<b>W:</b> ' + w + 'px | <b>H:</b> ' + h + 'px';
+};

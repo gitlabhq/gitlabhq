@@ -281,7 +281,7 @@ var PerLineNotes = {
        * Shows the note form below the line.
        * Sets some hidden fields in the form.
        */
-      $(".diff_file_content").on("click", ".line_note_link, .line_note_reply_link", function(e) {
+      $(".file .content").on("click", ".line_note_link, .line_note_reply_link", function(e) {
         var form = $(".per_line_form");
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).data("lineCode"));
@@ -297,7 +297,7 @@ var PerLineNotes = {
        * Removes the actual note from view.
        * Removes the reply button if the last note for that line has been removed.
        */
-      $(".diff_file_content").on("ajax:success", ".delete-note", function() {
+      $(".file .content").on("ajax:success", ".delete-note", function() {
         var trNote = $(this).closest("tr");
         trNote.fadeOut(function() {
           $(this).remove();
