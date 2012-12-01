@@ -40,13 +40,13 @@ ul.notes {
     .discussion-body {
       margin-left: 50px;
 
-      .diff_file,
+      .file,
       .discussion-hidden,
       .notes {
         @extend .borders;
         background-color: #F9F9F9;
       }
-      .diff_file .notes {
+      .file .notes {
         /* reset */
         background: inherit;
         border: none;
@@ -109,7 +109,7 @@ ul.notes {
   }
 }
 
-.diff_file .notes_holder {
+.file .notes_holder {
   font-family: $sansFontFamily;
   font-size: 13px;
   line-height: 18px;
@@ -133,8 +133,6 @@ ul.notes {
     margin-top: 8px;
   }
 }
-
-
 
 /**
  * Actions for Discussions/Notes
@@ -171,7 +169,7 @@ ul.notes {
     }
   }
 }
-.diff_file .note .note-actions {
+.file .note .note-actions {
   right: 0;
   top: 0;
 }
@@ -182,7 +180,7 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
-.diff_file tr.line_holder {
+.file tr.line_holder {
   .add-diff-note {
     background: url("diff_note_add.png") no-repeat left 0;
     height: 22px;
@@ -212,8 +210,6 @@ ul.notes {
   }
 }
 
-
-
 /**
  * Note Form
  */
@@ -222,7 +218,12 @@ ul.notes {
 .reply-btn {
   @extend .save-btn;
 }
-.diff_file,
+.file .content tr.line_holder:hover > td { background: $hover !important; }
+.file .content tr.line_holder:hover > td .line_note_link {
+  opacity: 1.0;
+  filter: alpha(opacity=100);
+}
+.file,
 .discussion {
   .new_note {
     margin: 8px 5px 8px 0;
