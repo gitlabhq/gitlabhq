@@ -17,6 +17,18 @@ module Gitlab
         present paginate(@notes), with: Entities::Note
       end
 
+      # Get a single project wall note
+      #
+      # Parameters:
+      #   id (required) - The ID or code name of a project
+      #   note_id (required) - The ID of a note
+      # Example Request:
+      #   GET /projects/:id/notes/:note_id
+      get ":id/notes/:note_id" do
+        @note = user_project.common_notes.find(params[:note_id])
+        present @note, with: Entities::Note
+      end
+
       # Create a new project wall note
       #
       # Parameters:
