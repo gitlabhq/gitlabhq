@@ -33,6 +33,11 @@ $ ->
   # Bottom tooltip
   $('.has_bottom_tooltip').tooltip(placement: 'bottom')
 
+  # Flash
+  if (flash = $("#flash-container")).length > 0
+    flash.click -> $(@).slideUp("slow")
+    flash.slideDown "slow"
+    setTimeout (-> flash.slideUp("slow")), 3000
 
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
