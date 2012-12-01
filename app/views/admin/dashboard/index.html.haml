@@ -1,5 +1,29 @@
 .admin_dash.row
-  .span4
+  .span3
+    .ui-box
+      %h5 Projects
+      .data.padded
+        = link_to admin_projects_path do
+          %h1= Project.count
+        %hr
+        = link_to 'New Project', new_project_path, class: "btn small"
+  .span3
+    .ui-box
+      %h5 Groups
+      .data.padded
+        = link_to admin_groups_path do
+          %h1= Group.count
+        %hr
+        = link_to 'New Group', new_admin_group_path, class: "btn small"
+  .span3
+    .ui-box
+      %h5 Users
+      .data.padded
+        = link_to admin_users_path do
+          %h1= User.count
+        %hr
+        = link_to 'New User', new_admin_user_path, class: "btn small"
+  .span3
     .ui-box
       %h5
         Resque Workers
@@ -19,32 +43,13 @@
           %p
             %strong Resque status unknown
 
-
-  .span4
-    .ui-box
-      %h5 Projects
-      .data.padded
-        = link_to admin_projects_path do
-          %h1= Project.count
-        %hr
-        = link_to 'New Project', new_admin_project_path, class: "btn small"
-  .span4
-    .ui-box
-      %h5 Users
-      .data.padded
-        = link_to admin_users_path do
-          %h1= User.count
-        %hr
-        = link_to 'New User', new_admin_user_path, class: "btn small"
-
-
 .row
   .span6
     %h3 Latest projects
     %hr
     - @projects.each do |project|
       %p
-        = link_to project.name, [:admin, project]
+        = link_to project.name_with_namespace, [:admin, project]
   .span6
     %h3 Latest users
     %hr

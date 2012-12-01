@@ -13,7 +13,12 @@ describe UserObserver do
   end
 
   context 'when a new user is created' do
-    let(:user) { double(:user, id: 42, password: 'P@ssword!', name: 'John', email: 'u@mail.local') }
+    let(:user) { double(:user, id: 42,
+                        password: 'P@ssword!',
+                        name: 'John',
+                        email: 'u@mail.local',
+                        username: 'root',
+                        create_namespace: true) }
     let(:notification) { double :notification }
 
     it 'sends an email' do

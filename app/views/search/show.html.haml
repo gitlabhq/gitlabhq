@@ -23,7 +23,7 @@
               %tr
                 %td
                   = link_to project do
-                    %strong.term= project.name
+                    %strong.term= project.name_with_namespace
                     %small.cgray
                       last activity at
                       = project.last_activity_date.stamp("Aug 25, 2011")

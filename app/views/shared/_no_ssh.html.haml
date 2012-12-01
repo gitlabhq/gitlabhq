@@ -1,3 +1,3 @@
 - if current_user.require_ssh_key?
-  %p.error_message
-    You won't be able to pull or push project code until you #{link_to 'add an SSH key', new_key_path} to your profile
+  %p.error_message.centered
+    You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_key_path} to your profile

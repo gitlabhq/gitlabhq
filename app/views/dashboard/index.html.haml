@@ -2,7 +2,6 @@
   .projects
     .activities.span8
       = render "events/event_last_push", event: @last_push
-      = render 'shared/no_ssh'
 
       .event_filter
         = event_filter_link EventFilter.push, 'Push events'

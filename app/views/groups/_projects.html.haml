@@ -3,7 +3,14 @@
     Projects
     %small
       (#{projects.count})
+    - if can? current_user, :manage_group, @group
+      %span.right
+        = link_to new_project_path(namespace_id: @group.id), class: "btn very_small info" do
+          %i.icon-plus
+          New Project
   %ul.unstyled
+    - if projects.blank?
+      %p.nothing_here_message This groups has no projects yet
     - projects.each do |project|
       %li.wll
         = link_to project_path(project), class: dom_class(project) do

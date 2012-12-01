@@ -1,4 +1,3 @@
-= render 'admin/shared/projects_head'
 %h3.page_title
   Group: #{@group.name}
   = link_to edit_admin_group_path(@group), class: "btn right" do
@@ -20,9 +19,9 @@
   %tr
     %td
       %b
-        Code:
+        Path:
     %td
-      = @group.code
+      %span.monospace= File.join(Gitlab.config.git_base_path, @group.path)
   %tr
     %td
       %b
@@ -43,10 +42,14 @@
           = link_to 'Remove from group', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
         .clearfix
 
-%br
-%h3 Add new project
-%br
+
 = form_tag project_update_admin_group_path(@group), class: "bulk_import", method: :put  do
-  = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
-  .form-actions
-    = submit_tag 'Add', class: "btn primary"
+  %fieldset
+    %legend Move projects to group
+    .clearfix
+      = label_tag :project_ids do
+        Projects
+      .input
+        = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+    .form-actions
+      = submit_tag 'Add', class: "btn primary"

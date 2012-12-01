@@ -1,6 +1,9 @@
 class ProjectObserver < ActiveRecord::Observer
-  def after_save(project)
+  def after_create(project)
     project.update_repository
+  end
+
+  def after_save(project)
   end
 
   def after_destroy(project)

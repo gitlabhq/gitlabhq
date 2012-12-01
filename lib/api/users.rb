@@ -38,7 +38,7 @@ module Gitlab
       #   POST /users
       post do
         authenticated_as_admin!
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username]
         user = User.new attrs, as: :admin
         if user.save
           present user, with: Entities::User

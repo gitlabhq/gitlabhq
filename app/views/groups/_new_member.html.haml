@@ -1,0 +1,18 @@
+= form_for @team_member, as: :team_member, url: project_team_members_path(@project, @team_member) do |f|
+  %fieldset
+    %legend= "New Team member(s) for #{@project.name}"
+
+    %h6 1. Choose people you want in the team
+    .clearfix
+      = f.label :user_ids, "People"
+      .input= select_tag(:user_ids, options_from_collection_for_select(User.not_in_project(@project).all, :id, :name), {data: {placeholder: "Select users"}, class: "chosen xxlarge", multiple: true})
+
+    %h6 2. Set access level for them
+    .clearfix
+      = f.label :project_access, "Project Access"
+      .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select chosen"
+
+    .form-actions
+      = hidden_field_tag :redirect_to, people_group_path(@group, project_id: @project.id)
+      = f.submit 'Add', class: "btn save-btn"
+

@@ -21,7 +21,11 @@ class TeamMembersController < ProjectResourceController
       params[:project_access]
     )
 
-    redirect_to project_team_index_path(@project)
+    if params[:redirect_to]
+      redirect_to params[:redirect_to]
+    else
+      redirect_to project_team_index_path(@project)
+    end
   end
 
   def update

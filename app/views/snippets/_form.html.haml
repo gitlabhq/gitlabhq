@@ -1,27 +1,27 @@
-%h3= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
+%h3.page_title
+  = @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 %hr
 = form_for [@project, @snippet] do |f|
-  %table.no-borders
-    -if @snippet.errors.any?
-      .alert-message.block-message.error
-        %ul
-          - @snippet.errors.full_messages.each do |msg|
-            %li= msg
+  -if @snippet.errors.any?
+    .alert-message.block-message.error
+      %ul
+        - @snippet.errors.full_messages.each do |msg|
+          %li= msg
 
-    .clearfix
-      = f.label :title
-      .input= f.text_field :title, placeholder: "Example Snippet"
-    .clearfix
-      = f.label :file_name
-      .input= f.text_field :file_name, placeholder: "example.rb"
-    .clearfix
-      = f.label "Lifetime"
-      .input= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
-    .clearfix
-      = f.label :content, "Code"
-      .input= f.text_area :content, class: "span8"
+  .clearfix
+    = f.label :title
+    .input= f.text_field :title, placeholder: "Example Snippet"
+  .clearfix
+    = f.label :file_name
+    .input= f.text_field :file_name, placeholder: "example.rb"
+  .clearfix
+    = f.label "Lifetime"
+    .input= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
+  .clearfix
+    = f.label :content, "Code"
+    .input= f.text_area :content, class: "span8"
 
-  .actions
+  .form-actions
     = f.submit 'Save', class: "primary btn"
     = link_to "Cancel", project_snippets_path(@project), class: " btn"
     - unless @snippet.new_record?

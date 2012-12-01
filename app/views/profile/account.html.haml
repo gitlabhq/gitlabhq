@@ -8,6 +8,7 @@
           = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
 
 
+
 %fieldset
   %legend
     Private token
@@ -41,14 +42,28 @@
 
       .clearfix
         = f.label :password
-        .input= f.password_field :password
+        .input= f.password_field :password, required: true
       .clearfix
         = f.label :password_confirmation
-        .input= f.password_field :password_confirmation
-    .actions
-      = f.submit 'Save', class: "btn save-btn"
+        .input
+          = f.password_field :password_confirmation, required: true
+      .clearfix
+        .input
+          = f.submit 'Save password', class: "btn save-btn"
 
 
 
+%fieldset
+  %legend
+    Username
+    %small.right
+      Changing your username can have unintended side effects!
+  = form_for @user, url: profile_update_path,  method: :put do |f|
+    .padded
+      = f.label :username
+      .input
+        = f.text_field :username, required: true
+      .input
+        = f.submit 'Save username', class: "btn save-btn"
 
 

@@ -1,11 +1,7 @@
 # Databases:
 
-GitLab use mysql as default database but you are free to use PostgreSQL or SQLite.
+GitLab use MySQL as default database but you are free to use PostgreSQL.
 
-
-## SQLite
-
-    sudo apt-get install -y sqlite3 libsqlite3-dev 
 
 ## MySQL
 
@@ -47,9 +43,6 @@ GitLab use mysql as default database but you are free to use PostgreSQL or SQLit
 
 #### Select the database you want to use
 
-    # SQLite
-    sudo -u gitlab cp config/database.yml.sqlite config/database.yml
-
     # Mysql
     sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
@@ -61,11 +54,7 @@ GitLab use mysql as default database but you are free to use PostgreSQL or SQLit
 #### Install gems 
 
     # mysql
-    sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
+    sudo -u gitlab -H bundle install --without development test postgres  --deployment
 
     # or postgres
-    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
-
-    # or sqlite
-    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
-
+    sudo -u gitlab -H bundle install --without development test mysql --deployment

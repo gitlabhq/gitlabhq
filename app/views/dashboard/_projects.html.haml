@@ -8,11 +8,23 @@
         = link_to new_project_path, class: "btn very_small info" do
           %i.icon-plus
           New Project
+  %ul.nav.nav-projects-tabs
+    = nav_tab :scope, nil do
+      = link_to "All", dashboard_path
+    = nav_tab :scope, 'personal' do
+      = link_to "Personal", dashboard_path(scope: 'personal')
+    = nav_tab :scope, 'joined' do
+      = link_to "Joined", dashboard_path(scope: 'joined')
+
   %ul.unstyled
     - projects.each do |project|
       %li.wll
         = link_to project_path(project), class: dom_class(project) do
-          %strong.project_name= truncate(project.name, length: 25)
+          - if project.namespace
+            = project.namespace.human_name
+            \/
+          %strong.project_name
+            = truncate(project.name, length: 25)
           %span.arrow
             &rarr;
           %span.last_activity

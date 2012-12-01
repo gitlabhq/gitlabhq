@@ -6,11 +6,10 @@
     &nbsp;
     %span.cgray Events and projects are filtered in scope of group
     %hr
-    = render 'shared/no_ssh'
     - if @events.any?
       .content_list= render @events
     - else
-      %h4.nothing_here_message Projects activity will be displayed here
+      %p.nothing_here_message Projects activity will be displayed here
     .loading.hide
   .side
     = render "projects", projects: @projects

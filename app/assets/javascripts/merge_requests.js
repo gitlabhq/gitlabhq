@@ -14,14 +14,6 @@ var MergeRequest = {
       $(".mr_show_all_commits").bind("click", function() { 
         self.showAllCommits();
       });
-
-      $(".line_note_link, .line_note_reply_link").live("click", function(e) {
-        var form = $(".per_line_form");
-        $(this).parent().parent().after(form);
-        form.find("#note_line_code").val($(this).attr("line_code"));
-        form.show();
-        return false;
-      });
     },
 
   initMergeWidget: 

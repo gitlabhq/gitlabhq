@@ -1,6 +1,6 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head"
+  = render "layouts/head", title: "Admin area"
   %body{class: "#{app_theme} admin"}
     = render "layouts/flash"
     = render "layouts/head_panel", title: "Admin area"
@@ -8,8 +8,10 @@
       %ul.main_menu
         = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
           = link_to "Stats", admin_root_path
-        = nav_link(controller: [:projects, :groups]) do
+        = nav_link(controller: :projects) do
           = link_to "Projects", admin_projects_path
+        = nav_link(controller: :groups) do
+          = link_to "Groups", admin_groups_path
         = nav_link(controller: :users) do
           = link_to "Users", admin_users_path
         = nav_link(controller: :logs) do

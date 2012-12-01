@@ -1,0 +1,33 @@
+= form_tag dashboard_filter_path(entity), method: 'get' do
+  %fieldset.dashboard-search-filter
+    = search_field_tag "search", params[:search], { placeholder: 'Search', class: 'search-text-input' }
+    = button_tag type: 'submit', class: 'btn' do
+      %i.icon-search
+
+  %fieldset
+    %legend Status:
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: ("active" if !params[:status])}
+        = link_to dashboard_filter_path(entity, status: nil) do
+          Open
+      %li{class: ("active" if params[:status] == 'closed')}
+        = link_to dashboard_filter_path(entity, status: 'closed') do
+          Closed
+      %li{class: ("active" if params[:status] == 'all')}
+        = link_to dashboard_filter_path(entity, status: 'all') do
+          All
+
+  %fieldset
+    %legend Projects:
+    %ul.nav.nav-pills.nav-stacked
+      - @projects.each do |project|
+        - unless entities_per_project(project, entity).zero?
+          %li{class: ("active" if params[:project_id] == project.id.to_s)}
+            = link_to dashboard_filter_path(entity, project_id: project.id) do
+              = project.name_with_namespace
+              %small.right= entities_per_project(project, entity)
+
+  %fieldset
+    %hr
+    = link_to "Reset", dashboard_filter_path(entity), class: 'btn right'
+

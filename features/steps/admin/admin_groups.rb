@@ -9,8 +9,7 @@ class AdminGroups < Spinach::FeatureSteps
 
   And 'submit form with new group info' do
     fill_in 'group_name', :with => 'gitlab'
-    fill_in 'group_code', :with => 'gitlab'
-    click_button "Save group"
+    click_button "Create group"
   end
 
   Then 'I should see newly created group' do

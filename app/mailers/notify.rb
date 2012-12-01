@@ -89,14 +89,6 @@ class Notify < ActionMailer::Base
     mail(to: recipient(recipient_id), subject: subject)
   end
 
-  def note_wiki_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @wiki = @note.noteable
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for wiki"))
-  end
-
-
 
   #
   # Project
@@ -105,7 +97,7 @@ class Notify < ActionMailer::Base
   def project_access_granted_email(user_project_id)
     @users_project = UsersProject.find user_project_id
     @project = @users_project.project
-    mail(to: @users_project.user.email, 
+    mail(to: @users_project.user.email,
          subject: subject("access to project was granted"))
   end
 

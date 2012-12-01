@@ -1,7 +1,7 @@
 - if event.allowed?
   %div.event-item
     = event_image(event)
-    = image_tag gravatar_icon(event.author_email), class: "avatar"
+    = image_tag gravatar_icon(event.author_email), class: "avatar s24"
 
     - if event.push?
       = render "events/event/push", event: event

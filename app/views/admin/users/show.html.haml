@@ -24,6 +24,12 @@
   %tr
     %td
       %b
+        Username:
+    %td
+      = @admin_user.username
+  %tr
+    %td
+      %b
         Admin:
         %td= check_box_tag "admin", 1, @admin_user.admin, disabled: :disabled
   %tr

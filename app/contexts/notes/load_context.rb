@@ -19,8 +19,6 @@ module Notes
                when "wall"
                  # this is the only case, where the order is DESC
                  project.common_notes.order("created_at DESC, id DESC").limit(50)
-               when "wiki"
-                 project.wiki_notes.limit(20)
                end
 
       @notes = if after_id

@@ -11,7 +11,6 @@ end
 gem "rails", "3.2.9"
 
 # Supported DBs
-gem "sqlite3", group: :sqlite
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
@@ -27,7 +26,7 @@ gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref:
 gem "omniauth-ldap", git: "https://github.com/gitlabhq/omniauth-ldap.git",  ref: 'f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e'
 gem 'yaml_db',       git: "https://github.com/gitlabhq/yaml_db.git",        ref: '98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
-gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '212fd40bea61f3c6a167223768e7295dc32bbc10'
+gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
 
 # Gitolite client (for work with gitolite-admin repo)
 gem "gitolite", '1.1.0'
@@ -105,7 +104,7 @@ group :assets do
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
-  gem "raphael-rails",    "2.1.0"
+  gem "raphael-rails",    "1.5.2"
   gem 'bootstrap-sass',   "2.2.1.1"
   gem "font-awesome-sass-rails", "~> 2.0.0"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
@@ -139,7 +138,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist'
+  gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '5c2e092001074a8cf09f332d3714e9ba150bc8ca'
 end
 
 group :test do

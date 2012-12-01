@@ -1,6 +1,6 @@
 /** Branch/tag selector **/
 .project-refs-form {
-  margin:0;
+  margin: 0;
   span {
     background:none !important;
     position:static !important;
@@ -9,7 +9,7 @@
   }
 }
 .project-refs-select {
-  width:120px;
+  width: 120px;
 }
 
 .project-refs-form .chzn-container {
@@ -21,10 +21,10 @@
   .chzn-drop {
     min-width: 400px;
     .chzn-results {
-      max-height:300px;
+      max-height: 300px;
     }
     .chzn-search input {
-      min-width:365px;
+      min-width: 365px;
     }
   }
 }
@@ -33,21 +33,19 @@
 .chzn-container {
   .chzn-search {
     input:focus {
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
+      @include box-shadow(none);
     }
   }
 
   .chzn-drop {
-    margin:7px 0;
+    margin: 7px 0;
     min-width: 200px;
     border: 1px solid #bbb;
-    border-radius:0;
+    @include border-radius(0);
 
     .chzn-results {
       margin-top: 5px;
-      max-height:300px;
+      max-height: 300px;
 
       .group-result {
         color: $style_color;
@@ -55,7 +53,7 @@
         padding: 8px;
       }
       .active-result {
-        border-radius: 0;
+        @include border-radius(0);
 
         &.highlighted {
           background: $hover;
@@ -71,7 +69,7 @@
     .chzn-search {
       @include bg-gray-gradient;
       input {
-        min-width:165px;
+        min-width: 165px;
         border-color: #CCC;
       }
     }
@@ -81,8 +79,8 @@
     @include bg-light-gray-gradient;
 
     div {
-      background:transparent;
-      border-left:none;
+      background: transparent;
+      border-left: none;
     }
 
     span {

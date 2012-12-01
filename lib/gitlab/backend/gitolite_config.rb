@@ -83,7 +83,11 @@ module Gitlab
 
     def destroy_project(project)
       FileUtils.rm_rf(project.path_to_repo)
-      conf.rm_repo(project.path)
+      conf.rm_repo(project.path_with_namespace)
+    end
+
+    def clean_repo repo_name
+      conf.rm_repo(repo_name)
     end
 
     def destroy_project!(project)
@@ -105,18 +109,18 @@ module Gitlab
     end
 
     # update or create
-    def update_project(repo_name, project)
+    def update_project(project)
       repo = update_project_config(project, conf)
       conf.add_repo(repo, true)
     end
 
-    def update_project!(repo_name, project)
+    def update_project!( project)
       apply do |config|
-        config.update_project(repo_name, project)
+        config.update_project(project)
       end
     end
 
-    # Updates many projects and uses project.path as the repo path
+    # Updates many projects and uses project.path_with_namespace as the repo path
     # An order of magnitude faster than update_project
     def update_projects(projects)
       projects.each do |project|
@@ -126,7 +130,7 @@ module Gitlab
     end
 
     def update_project_config(project, conf)
-      repo_name = project.path
+      repo_name = project.path_with_namespace
 
       repo = if conf.has_repo?(repo_name)
                conf.get_repo(repo_name)

@@ -9,14 +9,13 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
-#  code                   :string(255)
 #  owner_id               :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
-#  group_id               :integer
+#  namespace_id           :integer
 #
 
 require 'spec_helper'
@@ -24,6 +23,7 @@ require 'spec_helper'
 describe Project do
   describe "Associations" do
     it { should belong_to(:group) }
+    it { should belong_to(:namespace) }
     it { should belong_to(:owner).class_name('User') }
     it { should have_many(:users) }
     it { should have_many(:events).dependent(:destroy) }
@@ -40,6 +40,7 @@ describe Project do
   end
 
   describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:namespace_id) }
     it { should_not allow_mass_assignment_of(:owner_id) }
     it { should_not allow_mass_assignment_of(:private_flag) }
   end
@@ -58,9 +59,6 @@ describe Project do
 
     it { should ensure_length_of(:description).is_within(0..2000) }
 
-    it { should validate_presence_of(:code) }
-    it { should validate_uniqueness_of(:code) }
-    it { should ensure_length_of(:code).is_within(1..255) }
     # TODO: Formats
 
     it { should validate_presence_of(:owner) }
@@ -151,7 +149,7 @@ describe Project do
   end
 
   it "returns the full web URL for this repo" do
-    project = Project.new(code: "somewhere")
+    project = Project.new(path: "somewhere")
     project.web_url.should == "#{Gitlab.config.url}/somewhere"
   end
 
@@ -162,7 +160,7 @@ describe Project do
     end
 
     it "should be invalid repo" do
-      project = Project.new(name: "ok_name", path: "/INVALID_PATH/", code: "NEOK")
+      project = Project.new(name: "ok_name", path: "/INVALID_PATH/", path: "NEOK")
       project.valid_repo?.should be_false
     end
   end

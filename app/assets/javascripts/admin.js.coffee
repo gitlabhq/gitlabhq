@@ -10,3 +10,8 @@ $ ->
   $('.log-tabs a').click (e) ->
     e.preventDefault()
     $(this).tab('show')
+
+  $('.log-bottom').click (e) ->
+    e.preventDefault()
+    visible_log = $(".file_content:visible")
+    visible_log.animate({ scrollTop: visible_log.find('ol').height() }, "fast")
