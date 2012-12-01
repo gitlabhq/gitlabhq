@@ -57,9 +57,9 @@ module CommitsHelper
 
   def image_diff_class(diff)
     if diff.deleted_file
-      "diff_removed"
+      "deleted"
     elsif diff.new_file
-      "diff_added"
+      "added"
     else
       nil
     end

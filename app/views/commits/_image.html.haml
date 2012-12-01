@@ -1,0 +1,19 @@
+- if diff.renamed_file || diff.new_file || diff.deleted_file
+  .image
+    %span.wrap
+      .frame{class: image_diff_class(diff)}
+        %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+      %p.image-info= "#{number_to_human_size file.size}"
+- else
+  .image
+    %div.two-up.view
+      %span.wrap
+        .frame.deleted
+          %a{href: project_tree_path(@project, tree_join(@commit.id, diff.old_path))}
+            %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+        %p.image-info= "#{number_to_human_size old_file.size}"
+      %span.wrap
+        .frame.added
+          %a{href: project_tree_path(@project, tree_join(@commit.id, diff.new_path))}
+            %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+        %p.image-info= "#{number_to_human_size file.size}"

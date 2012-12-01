@@ -69,11 +69,11 @@
  * COMMIT SHOw
  *
  */
-.diff_file {
+.file {
   border: 1px solid #CCC;
   margin-bottom: 1em;
 
-  .diff_file_header {
+  .header {
     @extend .clearfix;
     padding: 5px 5px 5px 10px;
     color: #555;
@@ -85,32 +85,37 @@
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
+    a{
+      color: $style_color;
+    }
+    
     > span {
-      font-family: $monospace;
+      font-family: $monospace_font;
       font-size: 14px;
       line-height: 30px;
     }
 
-    a.view-commit{
+    a.view-file{
       font-weight: bold;
     }
 
     .commit-short-id{
-      font-family: $monospace;
+      font-family: $monospace_font;
       font-size: smaller;
     }
 
     .file-mode{
-      font-family: $monospace;
+      font-family: $monospace_font;
     }
   }
-  .diff_file_content {
+  .content {
     overflow: auto;
     overflow-y: hidden;
-    background: #fff;
+//    background: #eee;
+    background: #FFF;
     color: #333;
     font-size: 12px;
-    font-family: $monospace;
+    font-family: $monospace_font;
     .old{
       span.idiff{
         background-color: #FAA;
@@ -127,101 +132,106 @@
         line-height: 18px;
       }
     }
+    
+    
+//    REVISE
+
+    table {
+      border: none;
+      margin: 0px;
+      padding: 0px;
+      tr {
+        td {
+          font-size: 12px;
+        }
+      }
+    }
+    .old_line, .new_line {
+      margin: 0px;
+      padding: 0px;
+      border: none;
+      background: #EEE;
+      color: #666;
+      padding: 0px 5px;
+      border-right: 1px solid #ccc;
+      text-align: right;
+      min-width: 35px;
+      max-width: 35px;
+      width: 35px;
+      @include user-select(none);
+      a {
+        float: left;
+        width: 35px;
+        font-weight: normal;
+        color: #666;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .line_content {
+      white-space: pre;
+      height: 14px;
+      margin: 0px;
+      padding: 0px;
+      border: none;
+      &.new {
+        background: #CFD;
+      }
+      &.old {
+        background: #FDD;
+      }
+      &.matched {
+        color: #ccc;
+        background: #fafafa;
+      }
+    }
+//    END REVISE
+    
   }
-  .diff_file_content_image {
+  .image {
     background: #eee;
     text-align: center;
-    .image {
+    padding: 30px;
+    .wrap{
       display: inline-block;
-      margin: 50px;
+    }
+    
+    .frame {
+      display: inline-block;
+      padding: 1px;
       max-width: 400px;
-
+      background-color: #fff;
+      line-height: 0;
       img{
         background: url('trans_bg.gif');
       }
-
-      &.diff_removed {
-        img{
-          border: 1px solid #C00;
-        }
+      &.deleted {
+        border: 1px solid $deleted;
       }
 
-      &.diff_added {
-        img{
-          border: 1px solid #0C0;
-        }
-      }
-
-      .image-info{
-        margin: 5px 0 0 0;
+      &.added {
+        border: 1px solid $added;
       }
     }
-
-    &.img_compared {
-      .image {
+    .image-info{
+      font-size: 10px;
+      margin: 5px 0 0 0;
+      font-family: $default_font;
+      color: grey;
+    }
+    
+    .view.two-up {
+      .frame {
         max-width: 300px;
       }
     }
   }
 }
 
-.diff_file_content{
-  table {
-    border: none;
-    margin: 0px;
-    padding: 0px;
-    tr {
-      td {
-        font-size: 12px;
-      }
-    }
-  }
-  .old_line, .new_line {
-    margin: 0px;
-    padding: 0px;
-    border: none;
-    background: #EEE;
-    color: #666;
-    padding: 0px 5px;
-    border-right: 1px solid #ccc;
-    text-align: right;
-    min-width: 35px;
-    max-width: 35px;
-    width: 35px;
-    moz-user-select: none;
-    -khtml-user-select: none;
-    user-select: none;
-    a {
-      float: left;
-      width: 35px;
-      font-weight: normal;
-      color: #666;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-  .line_content {
-    white-space: pre;
-    height: 14px;
-    margin: 0px;
-    padding: 0px;
-    border: none;
-    &.new {
-      background: #CFD;
-    }
-    &.old {
-      background: #FDD;
-    }
-    &.matched {
-      color: #ccc;
-      background: #fafafa;
-    }
-  }
-}
-
 /** COMMIT BLOCK **/
-.commit-title{display: block;}
+.commit-title{
+  display: block;}
 .commit-title{margin-bottom: 10px}
 .commit-author, .commit-committer{display: block;color: #999; font-weight: normal; font-style: italic;}
 .commit-author strong, .commit-committer strong{font-weight: bold; font-style: normal;}
@@ -255,7 +265,7 @@
     float: left;
     @extend .lined;
     min-width: 65px;
-    font-family: $monospace;
+    font-family: $monospace_font;
   }
 
   .commit-author-name {
@@ -266,7 +276,6 @@
   }
 }
 
-.diff_file_header a,
 .file-stats a {
   color: $style_color;
 }
@@ -300,5 +309,5 @@
   font-size: 13px;
   background: #474D57;
   color: #fff;
-  font-family: $monospace;
+  font-family: $monospace_font;
 }
