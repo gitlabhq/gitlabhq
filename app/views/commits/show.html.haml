@@ -5,13 +5,13 @@
     = breadcrumbs
 
 %div{id: dom_id(@project)}
-  #commits_list= render "commits"
+  #commits-list= render "commits"
 .clear
 .loading{ style: "display:none;"}
 
 - if @commits.count == @limit
   :javascript
     $(function(){
-      CommitsList.init("#{@ref}", #{@limit});
+      CommitList.init("#{@ref}", #{@limit});
     });
 
