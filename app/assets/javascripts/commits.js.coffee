@@ -9,7 +9,7 @@ class CommitsList
     $('.loading').show()
     
   @hideProgress: ->
-    $('.loading').show()
+    $('.loading').hide()
   
   @init: (ref, limit) ->
     $(".day-commits-table li.commit").live 'click', (event) ->
