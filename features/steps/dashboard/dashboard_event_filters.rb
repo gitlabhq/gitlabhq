@@ -4,15 +4,27 @@ class EventFilters < Spinach::FeatureSteps
   include SharedProject
 
   Then 'I should see push event' do
-    page.find('span.pushed').should have_content('pushed')
+    page.has_selector?('span.pushed').should be_true
+  end
+  
+  Then 'I should not see push event' do
+    page.has_selector?('span.pushed').should be_false
   end
 
   Then 'I should see new member event' do
-    page.find('span.joined').should have_content('joined')
+    page.has_selector?('span.joined').should be_true
+  end
+
+  And 'I should not see new member event' do
+    page.has_selector?('span.joined').should be_false
   end
 
   Then 'I should see merge request event' do
-    page.find('span.merged').should have_content('merged')
+    page.has_selector?('span.merged').should be_true
+  end
+
+  And 'I should not see merge request event' do
+    page.has_selector?('span.merged').should be_false
   end
 
   And 'this project has push event' do
@@ -57,6 +69,18 @@ class EventFilters < Spinach::FeatureSteps
       target_type: "MergeRequest",
       author_id: @user.id
     )    
+  end
+
+  When 'I click "push" event filter' do
+    click_link("push_event_filter")
+  end
+
+  When 'I click "team" event filter' do
+    click_link("team_event_filter")
+  end
+
+  When 'I click "merge" event filter' do
+    click_link("merged_event_filter")
   end
 
 end
