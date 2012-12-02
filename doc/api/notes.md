@@ -57,6 +57,19 @@ Parameters:
 
 ## Single note
 
+### Single wall note
+
+Get a wall note.
+
+```
+GET /projects/:id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID or code name of a project
++ `note_id` (required) - The ID of a wall note
+
 ### Single issue note
 
 Get an issue note.

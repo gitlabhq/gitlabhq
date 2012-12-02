@@ -25,7 +25,7 @@ The API uses JSON to serialize data. You don't need to specify `.json` at the en
 When listing resources you can pass the following parameters:
 
 + `page` (default: `1`) - page number
-+ `per_page` (default: `20`, max: `100`) - how many items to list per page
++ `per_page` (default: `20`, max: `100`) - number of items to list per page
 
 ## Contents
 
@@ -36,3 +36,4 @@ When listing resources you can pass the following parameters:
 + [Repositories](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/repositories.md)
 + [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
 + [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
++ [Notes](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/notes.md)
