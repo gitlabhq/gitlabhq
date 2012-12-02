@@ -48,6 +48,15 @@
       %cite.cgray and attached to milestone
       %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
+    %div
+      - need_a_comma = @issue.generic_issue_field_values.length
+      - @issue.generic_issue_field_values.each do |issue_field_value|
+        %cite.cgray= issue_field_value.generic_issue_field.title + ':'
+        %strong= issue_field_value.title
+        - need_a_comma = need_a_comma - 1
+        - if need_a_comma > 0
+          ,
+
     .right
       - @issue.labels.each do |label|
         %span.label.label-issue

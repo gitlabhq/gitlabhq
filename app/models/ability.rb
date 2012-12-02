@@ -88,6 +88,7 @@ class Ability
         :modify_merge_request,
         :admin_issue,
         :admin_milestone,
+        :admin_generic_issue_fields,
         :admin_snippet,
         :admin_team_member,
         :admin_merge_request,

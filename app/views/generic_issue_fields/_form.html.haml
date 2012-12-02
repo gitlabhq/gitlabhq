@@ -1,0 +1,19 @@
+%div.issue-form-holder
+  %h3.page_title= @generic_issue_field.new_record? ? "New Issue Field" : "Edit Issue Field"
+  = form_for [@project, @generic_issue_field], html: {class: "new_generic_issue_field form-vertical"} do |f|
+    .clearfix
+      = f.label :title do
+        %strong
+        Title:
+      .input
+        = f.text_field :title, autofocus: true
+    .clearfix
+      = f.label :generic_issue_field_values_string do
+        %strong
+        Values:
+      .input
+        = f.text_area :generic_issue_field_values_string, autofocus: true
+    .actions
+      = f.submit 'Submit', class: "btn save-btn"
+      = link_to "Cancel", project_generic_issue_fields_path(@project), class: 'btn cancel-btn'
+     
