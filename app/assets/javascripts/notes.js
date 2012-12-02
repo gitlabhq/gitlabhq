@@ -63,18 +63,19 @@ var NoteList = {
 
       // reply to diff notes
       $(document).on("click",
-                     ".js-diff-note-reply-button",
-                     NoteList.replyToDiffNote);
+                     ".js-discussion-reply-button",
+                     NoteList.replyToDiscussionNote);
 
       // hide diff note form
       $(document).on("click",
-                     ".js-hide-diff-note-form",
-                     NoteList.removeDiffNoteForm);
+                     ".js-close-discussion-note-form",
+                     NoteList.removeDiscussionNoteForm);
 
-      // do some diff note specific housekeeping when removing a diff note
+      // do some specific housekeeping when removing a diff or discussion note
       $(document).on("click",
-                     ".diff_file .js-note-delete",
-                     NoteList.removeDiffNote);
+                     ".diff_file .js-note-delete," +
+                     ".discussion .js-note-delete",
+                     NoteList.removeDiscussionNote);
 
       // remove a note (in general)
       $(document).on("click",
@@ -102,14 +103,14 @@ var NoteList = {
    */
   addDiffNote: function(e) {
     // find the form
-    var form = $(".js-note-forms .js-diff-note-form");
+    var form = $(".js-note-forms .js-discussion-note-form");
     var row = $(this).closest("tr");
     var nextRow = row.next();
 
     // does it already have notes?
     if (nextRow.is(".notes_holder")) {
-      $.proxy(NoteList.replyToDiffNote,
-              nextRow.find(".js-diff-note-reply-button")
+      $.proxy(NoteList.replyToDiscussionNote,
+              nextRow.find(".js-discussion-reply-button")
              ).call();
     } else {
       // add a notes row and insert the form
@@ -117,7 +118,7 @@ var NoteList = {
       form.clone().appendTo(row.next().find(".notes_content"));
 
       // show the form
-      NoteList.setupDiffNoteForm($(this), row.next().find("form"));
+      NoteList.setupDiscussionNoteForm($(this), row.next().find("form"));
     }
 
     e.preventDefault();
@@ -131,11 +132,15 @@ var NoteList = {
    *
    * Note: must be called before removeNote()
    */
-  removeDiffNote: function() {
+  removeDiscussionNote: function() {
     var notes = $(this).closest(".notes");
 
     // check if this is the last note for this line
     if (notes.find(".note").length === 1) {
+      // for discussions
+      notes.closest(".discussion").remove();
+
+      // for diff lines
       notes.closest("tr").remove();
     }
   },
@@ -146,15 +151,15 @@ var NoteList = {
    * Shows the reply button again.
    * Removes the form and if necessary it's temporary row.
    */
-  removeDiffNoteForm: function(e) {
+  removeDiscussionNoteForm: function(e) {
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
     // show the reply button (will only work for replys)
-    form.prev(".js-diff-note-reply-button").show();
+    form.prev(".js-discussion-reply-button").show();
 
     if (row.is(".js-temp-notes-holder")) {
-      // remove temporary row
+      // remove temporary row for diff lines
       row.remove();
     } else {
       // only remove the form
@@ -179,10 +184,9 @@ var NoteList = {
    *
    * Shows the note form below the notes.
    */
-  replyToDiffNote: function() {
+  replyToDiscussionNote: function() {
     // find the form
-    var form = $(".js-note-forms .js-diff-note-form");
-
+    var form = $(".js-note-forms .js-discussion-note-form");
 
     // hide reply button
     $(this).hide();
@@ -190,7 +194,7 @@ var NoteList = {
     form.clone().insertAfter($(this));
 
     // show the form
-    NoteList.setupDiffNoteForm($(this), $(this).next("form"));
+    NoteList.setupDiscussionNoteForm($(this), $(this).next("form"));
   },
 
   /**
@@ -201,7 +205,7 @@ var NoteList = {
    * Note: "this" must have the "discussionId", "lineCode", "noteableType" and
    *       "noteableId" data attributes set.
    */
-  setupDiffNoteForm: function(data_holder, form) {
+  setupDiscussionNoteForm: function(data_holder, form) {
     // setup note target
     form.attr("rel", data_holder.data("discussionId"));
     form.find("#note_line_code").val(data_holder.data("lineCode"));
@@ -210,10 +214,10 @@ var NoteList = {
 
     // setup interaction
     disableButtonIfEmptyField(form.find(".js-note-text"), form.find(".js-comment-button"));
-    setupGfmAutoComplete();
+    GitLab.GfmAutoComplete.setup();
 
     // cleanup after successfully creating a diff note
-    form.on("ajax:success", NoteList.removeDiffNoteForm);
+    form.on("ajax:success", NoteList.removeDiscussionNoteForm);
 
     form.show();
   },
@@ -249,11 +253,11 @@ var NoteList = {
       this.bottom_id = newNoteIds.last();
       $("#notes-list").html(html);
 
-      // init infinite scrolling
-      this.initLoadMore();
-
-      // init getting new notes
       if (this.reversed) {
+        // init infinite scrolling
+        this.initLoadMore();
+
+        // init getting new notes
         this.initRefreshNew();
       }
     },
@@ -377,9 +381,9 @@ var NoteList = {
   appendNewNote:
     function(id, html) {
       if (this.reversed) {
-        $("#new-notes-list").prepend(html);
+        $("#notes-list").prepend(html);
       } else {
-        $("#new-notes-list").append(html);
+        $("#notes-list").append(html);
       }
       this.updateVotes();
     },

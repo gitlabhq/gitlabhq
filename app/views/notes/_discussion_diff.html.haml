@@ -1,10 +1,11 @@
 - diff = note.diff
 .diff_file_header
-  %i.icon-file
   - if diff.deleted_file
-    %span{id: "#{diff.a_path}"}= diff.a_path
+    %span= diff.old_path
   - else
-    %span{id: "#{diff.b_path}"}= diff.b_path
+    %span= diff.new_path
+    - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+      %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
   %br/
 .diff_file_content
   %table

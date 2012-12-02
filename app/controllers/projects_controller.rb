@@ -75,7 +75,10 @@ class ProjectsController < ProjectResourceController
 
   def wall
     return render_404 unless @project.wall_enabled
-    @note = Note.new
+
+    @target_type = :wall
+    @target_id = nil
+    @note = @project.notes.new
 
     respond_to do |format|
       format.html

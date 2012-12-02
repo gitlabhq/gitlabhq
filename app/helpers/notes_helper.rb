@@ -1,7 +1,12 @@
 module NotesHelper
    # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)
-    !@mixed_targets || (@target.class.name == note.noteable_type && !note.for_diff_line?)
+    @target_type.camelize == note.noteable_type && !note.for_diff_line?
+  end
+
+  def note_target_fields
+    hidden_field_tag(:target_type, @target_type) +
+    hidden_field_tag(:target_id, @target_id)
   end
 
   def link_to_commit_diff_line_note(note)

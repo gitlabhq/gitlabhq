@@ -6,13 +6,11 @@ class NotesController < ProjectResourceController
   respond_to :js
 
   def index
-    @target_note = Note.new(noteable_type: params[:target_type].camelize,
-                            noteable_id: params[:target_id])
-    @target = @target_note.noteable
     @notes = Notes::LoadContext.new(project, current_user, params).execute
+    @target_type = params[:target_type].camelize
+    @target_id = params[:target_id]
 
     if params[:target_type] == "merge_request"
-      @mixed_targets = true
       @discussions   = discussions_from_notes
     end
 
@@ -21,6 +19,8 @@ class NotesController < ProjectResourceController
 
   def create
     @note = Notes::CreateContext.new(project, current_user, params).execute
+    @target_type = params[:target_type].camelize
+    @target_id = params[:target_id]
 
     respond_to do |format|
       format.html {redirect_to :back}
@@ -58,7 +58,7 @@ class NotesController < ProjectResourceController
       next if discussion_ids.include?(note.discussion_id)
 
       # don't group notes for the main target
-      if for_main_target?(note)
+      if note_for_main_target?(note)
         discussions << [note]
       else
         discussions << discussion_notes_for(note)
@@ -70,7 +70,7 @@ class NotesController < ProjectResourceController
   end
 
   # Helps to distinguish e.g. commit notes in mr notes list
-  def for_main_target?(note)
-    !@mixed_targets || (@target.class.name == note.noteable_type && !note.for_diff_line?)
+  def note_for_main_target?(note)
+    @target_type.camelize == note.noteable_type && !note.for_diff_line?
   end
 end

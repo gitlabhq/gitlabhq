@@ -30,11 +30,13 @@
           ago
   .discussion-body
     - if note.for_diff_line?
-      .diff_file.content
-        = render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
+      .content
+        .diff_file= render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
     - else
-      .notes.content
-        = render discussion_notes
+      .content
+        .notes{ rel: discussion_notes.first.discussion_id }
+          = render discussion_notes
+        = render "notes/discussion_reply_button", note: discussion_notes.first
 
     -# will be shown when the other one is hidden
     .discussion-hidden.content.hide

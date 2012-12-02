@@ -1,4 +1,4 @@
-- if @note.line_code
-  = render "create_diff_note", note: @note
-- else
+- if note_for_main_target?(@note)
   = render "create_common_note", note: @note
+- else
+  = render "create_discussion_note", note: @note

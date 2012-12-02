@@ -21,6 +21,9 @@ class MergeRequestsController < ProjectResourceController
   end
 
   def show
+    @target_type = :merge_request
+    @target_id = @merge_request.id
+
     respond_to do |format|
       format.html
       format.js

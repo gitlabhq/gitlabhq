@@ -46,9 +46,12 @@ ul.notes {
         @extend .borders;
         background-color: #F9F9F9;
       }
-      .diff_file .note {
-        border-bottom: 0px;
-        padding: 0px;
+      .diff_file .notes {
+        /* reset */
+        background: inherit;
+        border: none;
+        @include box-shadow(none);
+
       }
       .discussion-hidden .note {
         @extend .cgray;
@@ -58,6 +61,9 @@ ul.notes {
       .notes .note {
         border-color: #ddd;
         padding: 8px;
+      }
+      .reply-btn {
+        margin-top: 8px;
       }
     }
   }
@@ -92,7 +98,7 @@ ul.notes {
   }
 }
 
-.diff_file tr.notes_holder {
+.diff_file .notes_holder {
   font-family: $sansFontFamily;
   font-size: 13px;
   line-height: 18px;
@@ -112,38 +118,9 @@ ul.notes {
     }
   }
 
-  .comment-btn {
+  .reply-btn {
     margin-top: 8px;
   }
-
-  // TODO: start cleanup
-  form {
-    // hide it by default
-    display: none;
-    margin: 8px 0;
-
-    .note_actions {
-      margin:0;
-      padding-top: 10px;
-
-      .buttons {
-        float:left;
-        width:300px;
-      }
-      .options {
-        .labels {
-          float:left;
-          padding-left:10px;
-          label {
-            padding: 6px 0;
-            margin: 0;
-            width:120px;
-          }
-        }
-      }
-    }
-  }
-  // TODO: end cleanup
 }
 
 /**
@@ -185,6 +162,7 @@ ul.notes {
   top: 0;
 }
 
+// TODO: start cleaup
 .issue_notes,
 .wiki_notes {
   .note_content {
@@ -193,6 +171,7 @@ ul.notes {
   }
 }
 
+/* for loading indicator */
 .notes-status {
   margin: 18px;
 }
@@ -205,6 +184,7 @@ p.notify_controls input{
 p.notify_controls span{
   font-weight: 700;
 }
+// TODO: end cleaup
 
 /**
  * add line note button on the side of diffs
@@ -242,8 +222,37 @@ p.notify_controls span{
  * Note Forms
  */
 
-.comment-btn {
+.comment-btn,
+.reply-btn {
   @extend .save-btn;
+}
+.new_discussion_note {
+  // hide it by default
+  display: none;
+  margin: 8px 5px 8px 0;
+
+  // TODO: start cleanup
+  .note_actions {
+    margin:0;
+    padding-top: 10px;
+
+    .buttons {
+      float:left;
+      width:300px;
+    }
+    .options {
+      .labels {
+        float:left;
+        padding-left:10px;
+        label {
+          padding: 6px 0;
+          margin: 0;
+          width:120px;
+        }
+      }
+    }
+  }
+  // TODO: end cleanup
 }
 .new_note {
   textarea {
@@ -251,46 +260,10 @@ p.notify_controls span{
     width:99%;
     font-size:14px;
   }
-}
-.note-forms {
-  .new_diff_note {
-    display: none;
-  }
-}
 
-
-#new_note {
+  // TODO: start cleanup
   .attach_holder {
     display:none;
-  }
-}
-
-.preview_note {
-  margin: 2px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  min-height: 60px;
-  background:#f5f5f5;
-}
-
-form.new_note {
-  .input-file {
-    font: 500px monospace;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    padding: 0;
-    margin: 0;
-  }
-
-  .note_advanced_opts {
-    h6 {
-      line-height: 32px;
-      padding-right: 15px;
-    }
   }
 
   .attachments {
@@ -301,17 +274,16 @@ form.new_note {
     margin:0 0 5px !important;
 
     .input_file {
-      .file_upload {
-        position: absolute;
-        right: 14px;
-        top: 7px;
-      }
-
       .file_name {
         line-height: 30px;
         width: 240px;
         height: 28px;
         overflow: hidden;
+      }
+      .file_upload {
+        position: absolute;
+        right:14px;
+        top:7px;
       }
       .input-file {
         width: 260px;
@@ -320,9 +292,41 @@ form.new_note {
       }
     }
   }
+  .input-file {
+    font: 500px monospace;
+    opacity:0;
+    filter: alpha(opacity=0);
+    position: absolute;
+    z-index: 1;
+    top:0;
+    right:0;
+    padding:0;
+    margin: 0;
+  }
+  .note_advanced_opts {
+    h6 {
+      line-height: 32px;
+      padding-right: 15px;
+    }
+  }
+  .note-text {
+    border: 1px solid #aaa;
+    box-shadow:none;
+  }
+  // TODO: end cleanup
 }
 
-.note-text {
-  border: 1px solid #aaa;
-  box-shadow: none;
+// hide the new discussion note form template
+.note-forms {
+  .new_discussion_note {
+    display: none;
+  }
+}
+
+.preview_note {
+  margin: 2px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  min-height: 60px;
+  background:#f5f5f5;
 }

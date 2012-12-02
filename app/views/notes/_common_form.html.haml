@@ -1,13 +1,16 @@
 .note-form-holder
   = form_for [@project, @note], remote: "true", multipart: true do |f|
+
+    = note_target_fields
+    = f.hidden_field :noteable_id
+    = f.hidden_field :noteable_type
+
     %h3.page_title Leave a comment
     -if @note.errors.any?
       .alert-message.block-message.error
         - @note.errors.full_messages.each do |msg|
           %div= msg
 
-    = f.hidden_field :noteable_id
-    = f.hidden_field :noteable_type
     = f.text_area :note, size: 255, class: 'js-note-text js-gfm-input'
     #preview-note.preview_note.hide
     .hint

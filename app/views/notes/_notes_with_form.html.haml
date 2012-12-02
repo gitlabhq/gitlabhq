@@ -1,13 +1,11 @@
 %ul#notes-list.notes
-%ul#new-notes-list.notes
-.notes-status
 
 - if can? current_user, :write_note, @project
   .note-forms.js-note-forms
     = render "notes/common_form"
-    = render "notes/diff_note_form"
+    = render "notes/discussion_note_form"
 
 :javascript
   $(function(){
-    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
+    NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");
   });

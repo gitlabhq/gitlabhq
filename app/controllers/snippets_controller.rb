@@ -50,6 +50,8 @@ class SnippetsController < ProjectResourceController
 
   def show
     @note = @project.notes.new(noteable: @snippet)
+    @target_type = :snippet
+    @target_id = @snippet.id
   end
 
   def destroy
