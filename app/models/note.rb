@@ -32,11 +32,10 @@ class Note < ActiveRecord::Base
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
-  validates :project, presence: true
-  validates :note, presence: true, length: { within: 0..5000 }
+  validates :note, :project, presence: true
   validates :attachment, file_size: { maximum: 10.megabytes.to_i }
 
-  mount_uploader  :attachment, AttachmentUploader
+  mount_uploader :attachment, AttachmentUploader
 
   # Scopes
   scope :common, ->{ where(noteable_id: nil) }

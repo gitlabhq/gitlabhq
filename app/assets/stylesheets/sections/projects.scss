@@ -74,6 +74,12 @@
   .adv_settings {
     h6 { margin-left: 40px; }
   }
+
+  fieldset.features {
+    .control-label {
+      font-weight: bold;
+    }
+  }
 }
 
 .project_clone_panel {

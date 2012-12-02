@@ -30,24 +30,32 @@
         = f.label :default_branch, "Default Branch"
         .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
 
-  %fieldset
+  %fieldset.features
     %legend Features:
 
-    .clearfix
-      = f.label :issues_enabled, "Issues"
-      .input= f.check_box :issues_enabled
+    .control-group
+      = f.label :issues_enabled, "Issues", class: 'control-label'
+      .controls
+        = f.check_box :issues_enabled
+        %span.descr Lightweight issue tracking system for this project
 
-    .clearfix
-      = f.label :merge_requests_enabled, "Merge Requests"
-      .input= f.check_box :merge_requests_enabled
+    .control-group
+      = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
+      .controls
+        = f.check_box :merge_requests_enabled
+        %span.descr Submit changes to be merged upstream.
 
-    .clearfix
-      = f.label :wall_enabled, "Wall"
-      .input= f.check_box :wall_enabled
+    .control-group
+      = f.label :wall_enabled, "Wall", class: 'control-label'
+      .controls
+        = f.check_box :wall_enabled
+        %span.descr Simple chat system for broadcasting inside project
 
-    .clearfix
-      = f.label :wiki_enabled, "Wiki"
-      .input= f.check_box :wiki_enabled
+    .control-group
+      = f.label :wiki_enabled, "Wiki", class: 'control-label'
+      .controls
+        = f.check_box :wiki_enabled
+        %span.descr Pages for project documentation
 
   %br
 

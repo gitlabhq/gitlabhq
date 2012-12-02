@@ -15,7 +15,7 @@
     %span.cred.right
       keep it secret!
   .padded
-    = form_for @user, url: profile_reset_private_token_path, method: :put do |f|
+    = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
       .data
         %p.slead
           Private token used to access application resources without authentication.
@@ -31,7 +31,7 @@
 
 %fieldset
   %legend Password
-  = form_for @user, url: profile_password_path, method: :put do |f|
+  = form_for @user, url: update_password_profile_path, method: :put do |f|
     .padded
       %p.slead After successful password update you will be redirected to login page where you should login with new password
       -if @user.errors.any?
@@ -53,16 +53,24 @@
 
 
 
-%fieldset
+%fieldset.update-username
   %legend
     Username
-    %small.right
+    %small.cred.right
       Changing your username can have unintended side effects!
-  = form_for @user, url: profile_update_path,  method: :put do |f|
+  = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
     .padded
       = f.label :username
       .input
         = f.text_field :username, required: true
+        &nbsp;
+        %span.loading-gif.hide= image_tag "ajax_loader.gif"
+        %span.update-success.cgreen.hide
+          %i.icon-ok
+          Saved
+        %span.update-failed.cred.hide
+          %i.icon-ok
+          Failed
       .input
         = f.submit 'Save username', class: "btn save-btn"
 

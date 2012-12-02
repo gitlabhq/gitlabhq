@@ -43,7 +43,7 @@
         - if file.text?
           = render "commits/text_file", diff: diff, index: i
         - elsif file.image?
-          - old_file = (@commit.prev_commit.tree / diff.old_path)
+          - old_file = (@commit.prev_commit.tree / diff.old_path) if !@commit.prev_commit.nil?
           - if diff.renamed_file || diff.new_file || diff.deleted_file
             .diff_file_content_image
               .image{class: image_diff_class(diff)}

@@ -1,4 +1,5 @@
 v 4.0.0
+  - [API] expose created date for hooks and SSH keys
   - [API] list, create issue notes
   - [API] list, create snippet notes
   - [API] list, create wall notes

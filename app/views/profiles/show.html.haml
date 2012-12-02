@@ -8,7 +8,7 @@
 
 %hr
 
-= form_for @user, url: profile_update_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
+= form_for @user, url: profile_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
   -if @user.errors.any?
     %div.alert-message.block-message.error
       %ul
@@ -39,9 +39,9 @@
 
           - if Gitlab.config.omniauth_enabled? && @user.provider?
             %li
-              %p.hint
+              %p
                 You can login through #{@user.provider.titleize}!
-                = link_to "click here to change", profile_account_path
+                = link_to "click here to change", account_profile_path
 
   .row
     .span7

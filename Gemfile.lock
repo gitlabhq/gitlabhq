@@ -183,7 +183,7 @@ GEM
       mime-types (~> 1.19)
       pygments.rb (>= 0.2.13)
     github-markup (0.7.4)
-    gitlab_meta (3.1)
+    gitlab_meta (4.0)
     gitolite (1.1.0)
       gratr19 (~> 0.4.4.1)
       grit (~> 2.5.0)
@@ -470,7 +470,7 @@ DEPENDENCIES
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
-  gitlab_meta (= 3.1)
+  gitlab_meta (= 4.0)
   gitolite (= 1.1.0)
   grack!
   grape (~> 0.2.1)
