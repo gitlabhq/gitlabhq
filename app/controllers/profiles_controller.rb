@@ -1,5 +1,6 @@
-class ProfileController < ApplicationController
+class ProfilesController < ApplicationController
   before_filter :user
+  layout 'profile'
 
   def show
   end
@@ -7,8 +8,15 @@ class ProfileController < ApplicationController
   def design
   end
 
+  def account
+  end
+
   def update
-    @user.update_attributes(params[:user])
+    if @user.update_attributes(params[:user])
+      flash[:notice] = "Profile was successfully updated"
+    else
+      flash[:alert] = "Failed to update profile"
+    end
 
     respond_to do |format|
       format.html { redirect_to :back }
@@ -19,7 +27,7 @@ class ProfileController < ApplicationController
   def token
   end
 
-  def password_update
+  def update_password
     params[:user].reject!{ |k, v| k != "password" && k != "password_confirmation"}
 
     if @user.update_attributes(params[:user])
@@ -31,12 +39,23 @@ class ProfileController < ApplicationController
   end
 
   def reset_private_token
-    current_user.reset_authentication_token!
-    redirect_to profile_account_path
+    if current_user.reset_authentication_token!
+      flash[:notice] = "Token was successfully updated"
+    end
+
+    redirect_to account_profile_path
   end
 
   def history
     @events = current_user.recent_events.page(params[:page]).per(20)
+  end
+
+  def update_username
+    @user.update_attributes(username: params[:user][:username])
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   private
