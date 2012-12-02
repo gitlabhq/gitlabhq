@@ -1,5 +1,0 @@
-- if note.valid?
-  :plain
-    NoteList.appendNewDiscussionNote("#{note.discussion_id}",
-                                      "#{escape_javascript(render "notes/diff_notes_with_reply", notes: [note])}",
-                                      "#{escape_javascript(render "notes/note", note: note)}");

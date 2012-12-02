@@ -1,18 +1,15 @@
 - unless @notes.blank?
+  var notesHtml = "#{escape_javascript(render 'notes/notes')}";
   - new_note_ids = @notes.map(&:id)
   - if loading_more_notes?
-    :plain
-      NoteList.appendMoreNotes(#{new_note_ids}, "#{escape_javascript(render 'notes/notes')}");
+    NoteList.appendMoreNotes(#{new_note_ids}, notesHtml);
 
   - elsif loading_new_notes?
-    :plain
-      NoteList.replaceNewNotes(#{new_note_ids}, "#{escape_javascript(render 'notes/notes')}");
+    NoteList.replaceNewNotes(#{new_note_ids}, notesHtml);
 
   - else
-    :plain
-      NoteList.setContent(#{new_note_ids}, "#{escape_javascript(render 'notes/notes')}");
+    NoteList.setContent(#{new_note_ids}, notesHtml);
 
 - else
   - if loading_more_notes?
-    :plain
-      NoteList.finishedLoadingMore();
+    NoteList.finishedLoadingMore();

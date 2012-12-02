@@ -1,10 +1,10 @@
 .js-main-target-form
 - if can? current_user, :write_note, @project
-  = render "notes/common_form"
+  = render "notes/form"
 
 %ul#new-notes-list.reversed.notes
 %ul#notes-list.reversed.notes
-.notes-status
+.notes-busy.js-notes-busy
 
 :javascript
   $(function(){
