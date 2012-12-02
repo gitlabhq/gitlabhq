@@ -79,7 +79,7 @@ class Note < ActiveRecord::Base
   end
 
   def discussion_id
-    @discussion_id ||= [noteable_type, noteable_id, line_code].join.underscore.to_sym
+    @discussion_id ||= [:discussion, noteable_type.underscore, noteable_id, line_code].join("-").to_sym
   end
 
   # Returns true if this is a downvote note,

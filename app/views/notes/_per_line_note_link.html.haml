@@ -1,6 +1,6 @@
 = link_to "",
           "#",
-          id: "line-note-#{line_code}",
-          class: "line_note_link",
+          id: "add-diff-line-note-#{line_code}",
+          class: "line_note_link js-note-add-to-diff-line",
           data: @comments_target.merge({ line_code: line_code }),
-          title: "Add comment on line #{line_code[/[0-9]+$/]}"
+          title: "Add a comment to this line"

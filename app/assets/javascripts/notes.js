@@ -20,7 +20,7 @@ var NoteList = {
       // get initial set of notes
       this.getContent();
 
-      $("#notes-list, #new-notes-list").on("ajax:success", ".delete-note", function() {
+      $("#notes-list, #new-notes-list").on("ajax:success", ".js-note-delete", function() {
         $(this).closest('li').fadeOut(function() {
           $(this).remove();
           NoteList.updateVotes();
@@ -275,16 +275,23 @@ var NoteList = {
 var PerLineNotes = {
   init:
     function() {
+      $(".per_line_form .hide-button").on("click", function(){
+        $(this).closest(".per_line_form").hide();
+        return false;
+      });
+
       /**
        * Called when clicking on the "add note" or "reply" button for a diff line.
        *
        * Shows the note form below the line.
        * Sets some hidden fields in the form.
        */
-      $(".diff_file_content").on("click", ".line_note_link, .line_note_reply_link", function(e) {
+      $(".diff_file_content").on("click", ".js-note-add-to-diff-line", function(e) {
         var form = $(".per_line_form");
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).data("lineCode"));
+        form.find("#note_noteable_type").val($(this).data("noteableType"));
+        form.find("#note_noteable_id").val($(this).data("noteableId"));
         form.show();
         e.preventDefault();
       });
@@ -297,7 +304,7 @@ var PerLineNotes = {
        * Removes the actual note from view.
        * Removes the reply button if the last note for that line has been removed.
        */
-      $(".diff_file_content").on("ajax:success", ".delete-note", function() {
+      $(".diff_file_content").on("ajax:success", ".js-note-delete", function() {
         var trNote = $(this).closest("tr");
         trNote.fadeOut(function() {
           $(this).remove();

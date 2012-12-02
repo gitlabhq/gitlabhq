@@ -15,3 +15,7 @@
   - if loading_more_notes?
     :plain
       NoteList.finishedLoadingMore();
+
+- if @has_diff
+  :plain
+    PerLineNotes.init();

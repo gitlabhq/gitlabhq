@@ -1,10 +1,10 @@
 %tr.line_notes_row.reply
   %td{colspan: 3}
-    = link_to "#",
-              class: "line_note_reply_link",
+    = link_to "javascript:;",
+              class: "line_note_reply_link js-note-add-to-diff-line",
               data: { line_code:     note.line_code,
                       noteable_type: note.noteable_type,
                       noteable_id:   note.noteable_id },
-              title: "Add note for this line" do
+              title: "Add a comment to this line" do
       %i.icon-comment
       Reply

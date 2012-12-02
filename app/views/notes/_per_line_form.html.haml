@@ -17,7 +17,7 @@
             .note_actions
               .buttons
                 = f.submit 'Add Comment', class: "btn save-btn submit_note submit_inline_note", id: "submit_note"
-                = link_to "Cancel", "#", class: "btn hide-button"
+                = link_to "Cancel", "javascript:;", class: "btn hide-button"
               .options
                 %h6.left Notify via email:
                 .labels
@@ -29,11 +29,3 @@
                     = label_tag :notify_author do
                       = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
                       %span Commit author
-
-:javascript
-  $(function(){
-    $(".per_line_form .hide-button").bind("click", function(){
-      $('.per_line_form').hide();
-      return false;
-    });
-  });
