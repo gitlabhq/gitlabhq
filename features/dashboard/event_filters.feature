@@ -9,6 +9,23 @@ Feature: Event filters
 
   Scenario: I should see all events
     Then I should see push event
-    Then I should see new member event
-    Then I should see merge request event
+    And I should see new member event
+    And I should see merge request event
 
+  Scenario: I should see only pushed events
+    When I click "push" event filter 
+    Then I should see push event
+    And I should not see new member event
+    And I should not see merge request event
+
+  Scenario: I should see only joined events
+    When I click "team" event filter
+    Then I should see new member event
+    And I should not see push event
+    And I should not see merge request event
+
+  Scenario: I should see only merged events
+    When I click "merge" event filter
+    Then I should see merge request event
+    And I should not see push event
+    And I should not see new member event
