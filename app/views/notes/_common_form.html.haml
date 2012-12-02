@@ -1,49 +1,49 @@
-.note-form-holder
-  = form_for [@project, @note], remote: "true", multipart: true do |f|
+= form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note js-new-note-form" } do |f|
 
-    = note_target_fields
-    = f.hidden_field :noteable_id
-    = f.hidden_field :noteable_type
+  = note_target_fields
+  = f.hidden_field :line_code
+  = f.hidden_field :noteable_id
+  = f.hidden_field :noteable_type
 
-    %h3.page_title Leave a comment
-    -if @note.errors.any?
-      .alert-message.block-message.error
-        - @note.errors.full_messages.each do |msg|
-          %div= msg
+  - if @note.errors.any?
+    .alert-message.block-message.error
+      - @note.errors.full_messages.each do |msg|
+        %div= msg
 
-    .js-toggler-container
-      = f.text_area :note, size: 255, class: 'note_text turn-on js-note-text js-gfm-input'
-      .note_preview.js-note-preview.hide.turn-off
+  .note_text_and_preview.js-toggler-container
+    %a.js-note-preview-button.js-toggler-target.turn-on{ href: "javascript:;", data: {title: "Preview", url: preview_project_notes_path(@project)} }
+      %i.icon-eye-open
+    %a.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;", data: {title: "Edit"} }
+      %i.icon-edit
 
-      .hint
-        .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
-      .clearfix
+    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
+    .note_preview.js-note-preview.turn-off
 
-      .buttons
-        = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
-        %button.btn.grouped.js-note-preview-button.js-toggler-target.turn-on{ data: {url: preview_project_notes_path(@project)} }
-          Preview
-        %button.btn.grouped.js-note-preview-button.js-toggler-target.turn-off
-          Edit
+  .buttons
+    = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
+    %a.btn.grouped.js-close-discussion-note-form Cancel
+  .hint
+    .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+  .clearfix
 
-    .note_advanced_opts
-      .attachments.right
-        %h6.left Attachment:
-        %span.file_name File name...
+  .note_options
+    .attachments.right
+      %h6.left Attachment:
+      %span.file_name File name...
 
-        .input.input_file
-          %a.file_upload.btn.small Upload File
-          = f.file_field :attachment, class: "input-file"
-        %span.hint Any file less than 10 MB
+      .input.input_file
+        %a.file_upload.btn.small Upload File
+        = f.file_field :attachment, class: "input-file"
+      %span.hint Any file less than 10 MB
 
-      .notify_opts.right
-        %h6.left Notify via email:
-        = label_tag :notify do
-          = check_box_tag :notify, 1, @note.noteable_type != "Commit"
-          %span Project team
+    .notify_opts.right
+      %h6.left Notify via email:
+      = label_tag :notify do
+        = check_box_tag :notify, 1, !@note.for_commit?
+        %span Project team
 
-        - if @note.notify_only_author?(current_user)
-          = label_tag :notify_author do
-            = check_box_tag :notify_author, 1 , @note.noteable_type == "Commit"
-            %span Commit author
+      - if @note.notify_only_author?(current_user)
+        = label_tag :notify_author do
+          = check_box_tag :notify_author, 1 , !@note.for_commit?
+          %span Commit author
   .clearfix

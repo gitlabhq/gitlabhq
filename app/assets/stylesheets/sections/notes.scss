@@ -239,46 +239,51 @@ p.notify_controls span{
 .reply-btn {
   @extend .save-btn;
 }
-.new_discussion_note {
-  // hide it by default
-  display: none;
-  margin: 8px 5px 8px 0;
-
-  // TODO: start cleanup
-  .note_actions {
-    margin:0;
-    padding-top: 10px;
-
-    .buttons {
-      float:left;
-      width:300px;
-    }
-    .options {
-      .labels {
-        float:left;
-        padding-left:10px;
-        label {
-          padding: 6px 0;
-          margin: 0;
-          width:120px;
-        }
-      }
-    }
+.diff_file,
+.discussion {
+  .new_note {
+    margin: 8px 5px 8px 0;
   }
-  // TODO: end cleanup
 }
 .new_note {
-  textarea {
-    height:80px;
-    width:99%;
-    font-size:14px;
+  display: none;
+
+  .buttons {
+    float: left;
+    margin-top: 8px;
+  }
+  .note_options {
+    h6 {
+      line-height: 32px;
+      padding-right: 15px;
+    }
+  }
+  .note_text_and_preview {
+    // makes the "absolute" position for links relative to this
+    position: relative;
+
+    // preview/edit buttons
+    > a {
+      font-size: 24px;
+      padding: 4px;
+      position: absolute;
+      right: 0;
+    }
+    .note_preview {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      @include border-radius(4px);
+      min-height: 80px;
+      padding: 4px 6px;
+    }
+    .note_text {
+      font-size: 14px;
+      height: 80px;
+      width: 98.6%;
+    }
   }
 
   // TODO: start cleanup
-  .attach_holder {
-    display:none;
-  }
-
   .attachments {
     position: relative;
     width: 350px;
@@ -316,32 +321,5 @@ p.notify_controls span{
     padding:0;
     margin: 0;
   }
-  .note_advanced_opts {
-    h6 {
-      line-height: 32px;
-      padding-right: 15px;
-    }
-  }
-  .note_preview {
-    margin: 2px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    min-height: 60px;
-    background:#f5f5f5;
-  }
-  .note_text {
-    border: 1px solid #aaa;
-    box-shadow: none;
-  }
   // TODO: end cleanup
-}
-
-// hide the new discussion note form template
-#note-forms {
-  .note-form-holder {
-    margin-top: 5px;
-  }
-  .new_discussion_note {
-    display: none;
-  }
 }

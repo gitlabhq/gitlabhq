@@ -1,10 +1,9 @@
 %ul#notes-list.notes
 .notes-status
 
+.js-main-target-form
 - if can? current_user, :write_note, @project
-  #note-forms.js-note-forms
-    = render "notes/common_form"
-    = render "notes/discussion_note_form"
+  = render "notes/common_form"
 
 :javascript
   $(function(){

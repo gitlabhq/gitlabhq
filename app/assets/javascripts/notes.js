@@ -16,21 +16,21 @@ var NoteList = {
     NoteList.reversed = $("#notes-list").is(".reversed");
     NoteList.target_params = "target_type=" + NoteList.target_type + "&target_id=" + NoteList.target_id;
 
+    NoteList.setupMainTargetNoteForm();
+
     if(NoteList.reversed) {
-      var form = $("#new_note");
-      form.find(".buttons, .note_advanced_opts").hide();
+      var form = $(".js-main-target-form");
+      form.find(".buttons, .note_options").hide();
       var textarea = form.find(".js-note-text");
       textarea.css("height", "40px");
       textarea.on("focus", function(){
         textarea.css("height", "80px");
-        form.find(".buttons, .note_advanced_opts").show();
+        form.find(".buttons, .note_options").show();
       });
     }
 
     // get initial set of notes
     NoteList.getContent();
-
-    disableButtonIfEmptyField(".js-note-text", ".js-comment-button");
 
     $("#note_attachment").change(function(e){
       var val = $('.input-file').val();
@@ -70,10 +70,7 @@ var NoteList = {
                     NoteList.removeNote);
 
     // clean up previews for forms
-    $(document).on("ajax:complete", ".note-form-holder", function(){
-      //$(this).find('.js-note-preview-button').text('Preview');
-      //$(this).find('.js-note-preview').hide();
-
+    $(document).on("ajax:complete", ".js-main-target-form", function(){
       $(this).find('.error').remove();
       $(this).find('.js-note-text').val("");
       $(this).show();
@@ -93,8 +90,10 @@ var NoteList = {
    * Sets up the form and shows it.
    */
   addDiffNote: function(e) {
+    e.preventDefault();
+
     // find the form
-    var form = $(".js-note-forms .js-discussion-note-form");
+    var form = $(".js-new-note-form");
     var row = $(this).closest("tr");
     var nextRow = row.next();
 
@@ -111,8 +110,6 @@ var NoteList = {
       // show the form
       NoteList.setupDiscussionNoteForm($(this), row.next().find("form"));
     }
-
-    e.preventDefault();
   },
 
   /**
@@ -123,21 +120,23 @@ var NoteList = {
    * Note: uses the Toggler behavior to toggle preview/edit views/buttons
    */
   previewNote: function(e) {
+    e.preventDefault();
+
     var form = $(this).closest("form");
     var preview = form.find('.js-note-preview');
-    var note_text = form.find('.js-note-text').val();
+    var noteText = form.find('.js-note-text').val();
 
-    if(note_text.trim().length === 0) {
+    console.log("preview", noteText);
+
+    if(noteText.trim().length === 0) {
       preview.text('Nothing to preview.');
-    } else if($(this).data('url')) {
+    } else {
       preview.text('Loading...');
-      $.post($(this).data('url'), {note: note_text})
+      $.post($(this).data('url'), {note: noteText})
         .success(function(previewData) {
           preview.html(previewData);
         });
     }
-
-    e.preventDefault();
   },
 
   /**
@@ -168,6 +167,8 @@ var NoteList = {
    * Removes the form and if necessary it's temporary row.
    */
   removeDiscussionNoteForm: function(e) {
+    e.preventDefault();
+
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
@@ -181,8 +182,6 @@ var NoteList = {
       // only remove the form
       form.remove();
     }
-
-    e.preventDefault();
   },
 
   /**
@@ -202,7 +201,7 @@ var NoteList = {
    */
   replyToDiscussionNote: function() {
     // find the form
-    var form = $(".js-note-forms .js-discussion-note-form");
+    var form = $(".js-new-note-form");
 
     // hide reply button
     $(this).hide();
@@ -213,27 +212,83 @@ var NoteList = {
     NoteList.setupDiscussionNoteForm($(this), $(this).next("form"));
   },
 
+
   /**
-   * Shows the diff line form and does some setup.
+   * Helper for inserting and setting up note forms.
+   */
+
+
+  /**
+   * Shows the diff/discussion form and does some setup on it.
    *
    * Sets some hidden fields in the form.
    *
-   * Note: "this" must have the "discussionId", "lineCode", "noteableType" and
-   *       "noteableId" data attributes set.
+   * Note: dataHolder must have the "discussionId", "lineCode", "noteableType"
+   *       and "noteableId" data attributes set.
    */
-  setupDiscussionNoteForm: function(data_holder, form) {
+  setupDiscussionNoteForm: function(dataHolder, form) {
     // setup note target
-    form.attr("rel", data_holder.data("discussionId"));
-    form.find("#note_line_code").val(data_holder.data("lineCode"));
-    form.find("#note_noteable_type").val(data_holder.data("noteableType"));
-    form.find("#note_noteable_id").val(data_holder.data("noteableId"));
+    form.attr("rel", dataHolder.data("discussionId"));
+    form.find("#note_line_code").val(dataHolder.data("lineCode"));
+    form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
+    form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
 
-    // setup interaction
-    disableButtonIfEmptyField(form.find(".js-note-text"), form.find(".js-comment-button"));
-    GitLab.GfmAutoComplete.setup();
+    NoteList.setupNoteForm(form);
 
-    // cleanup after successfully creating a diff note
+    // cleanup after successfully creating a diff/discussion note
     form.on("ajax:success", NoteList.removeDiscussionNoteForm);
+  },
+
+  /**
+   * Shows the main form and does some setup on it.
+   *
+   * Sets some hidden fields in the form.
+   */
+  setupMainTargetNoteForm: function() {
+    // find the form
+    var form = $(".js-new-note-form");
+    // insert the form after the button
+    form.clone().replaceAll($(".js-main-target-form"));
+
+    form = form.prev("form");
+
+    // show the form
+    NoteList.setupNoteForm(form);
+
+    // fix classes
+    form.removeClass("js-new-note-form");
+    form.addClass("js-main-target-form");
+
+    // remove unnecessary fields and buttons
+    form.find("#note_line_code").remove();
+    form.find(".js-close-discussion-note-form").remove();
+  },
+
+  /**
+   * General note form setup.
+   *
+   * * deactivates the submit button when text is empty
+   * * hides the preview button when text is empty
+   * * setup GFM auto complete
+   * * show the form
+   */
+  setupNoteForm: function(form) {
+    disableButtonIfEmptyField(form.find(".js-note-text"), form.find(".js-comment-button"));
+
+    // setup preview buttons
+    $(".js-note-edit-button, .js-note-preview-button").tooltip({ placement: 'left' });
+
+    previewButton = $(".js-note-preview-button");
+    previewButton.hide();
+    form.find(".js-note-text").on("input", function() {
+      if ($(this).val().trim() !== "") {
+        previewButton.fadeIn();
+      } else {
+        previewButton.fadeOut();
+      }
+    });
+
+    GitLab.GfmAutoComplete.setup();
 
     form.show();
   },
