@@ -679,3 +679,16 @@ h1.http_status_code {
   font-weight: normal;
   color: #456;
 }
+
+.control-group {
+  .controls {
+    span {
+      &.descr {
+        position: relative;
+        top: 2px;
+        left: 5px;
+        color: #666;
+      }
+    }
+  }
+}
