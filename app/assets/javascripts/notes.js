@@ -58,12 +58,6 @@ var NoteList = {
                     ".js-close-discussion-note-form",
                     NoteList.removeDiscussionNoteForm);
 
-    // do some specific housekeeping when removing a diff or discussion note
-    $(document).on("click",
-                    ".diff_file .js-note-delete," +
-                    ".discussion .js-note-delete",
-                    NoteList.removeDiscussionNote);
-
     // remove a note (in general)
     $(document).on("click",
                     ".js-note-delete",
@@ -96,9 +90,6 @@ var NoteList = {
       previewContainer.removeClass("on");
     }
     form.find(".js-note-text").val("").trigger("input");
-
-    // re-enable submit button
-    form.find(".js-comment-button").enable();
   },
 
   /**
@@ -144,8 +135,6 @@ var NoteList = {
     var preview = form.find('.js-note-preview');
     var noteText = form.find('.js-note-text').val();
 
-    console.log("preview", noteText);
-
     if(noteText.trim().length === 0) {
       preview.text('Nothing to preview.');
     } else {
@@ -158,35 +147,12 @@ var NoteList = {
   },
 
   /**
-   * Called in response to deleting a note on a diff line.
-   *
-   * Removes the actual note from view.
-   * Removes the whole notes row if the last note for that line is being removed.
-   *
-   * Note: must be called before removeNote()
-   */
-  removeDiscussionNote: function() {
-    var notes = $(this).closest(".notes");
-
-    // check if this is the last note for this line
-    if (notes.find(".note").length === 1) {
-      // for discussions
-      notes.closest(".discussion").remove();
-
-      // for diff lines
-      notes.closest("tr").remove();
-    }
-  },
-
-  /**
    * Called in response to "cancel" on a diff note form.
    * 
    * Shows the reply button again.
    * Removes the form and if necessary it's temporary row.
    */
-  removeDiscussionNoteForm: function(e) {
-    e.preventDefault();
-
+  removeDiscussionNoteForm: function() {
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
@@ -206,9 +172,22 @@ var NoteList = {
    * Called in response to deleting a note of any kind.
    *
    * Removes the actual note from view.
+   * Removes the whole discussion if the last note is being removed.
    */
   removeNote: function() {
-    $(this).closest(".note").remove();
+    var note = $(this).closest(".note");
+    var notes = note.closest(".notes");
+
+    // check if this is the last note for this line
+    if (notes.find(".note").length === 1) {
+      // for discussions
+      notes.closest(".discussion").remove();
+
+      // for diff lines
+      notes.closest("tr").remove();
+    }
+
+    note.remove();
     NoteList.updateVotes();
   },
 
@@ -274,6 +253,7 @@ var NoteList = {
 
     NoteList.setupNoteForm(form);
 
+    form.find(".js-note-text").focus();
   },
 
   /**
@@ -312,16 +292,18 @@ var NoteList = {
   setupNoteForm: function(form) {
     disableButtonIfEmptyField(form.find(".js-note-text"), form.find(".js-comment-button"));
 
-    // setup preview buttons
-    $(".js-note-edit-button, .js-note-preview-button").tooltip({ placement: 'left' });
+    form.removeClass("js-new-note-form");
 
-    previewButton = $(".js-note-preview-button");
-    previewButton.hide();
+    // setup preview buttons
+    form.find(".js-note-edit-button, .js-note-preview-button")
+        .tooltip({ placement: 'left' });
+
+    previewButton = form.find(".js-note-preview-button");
     form.find(".js-note-text").on("input", function() {
       if ($(this).val().trim() !== "") {
-        previewButton.fadeIn();
+        previewButton.removeClass("turn-off").addClass("turn-on");
       } else {
-        previewButton.fadeOut();
+        previewButton.removeClass("turn-on").addClass("turn-off");
       }
     });
 
@@ -344,8 +326,8 @@ var NoteList = {
     $.ajax({
       url: NoteList.notes_path,
       data: NoteList.target_params,
-      complete: function(){ $('.notes-status').removeClass("loading")},
-      beforeSend: function() { $('.notes-status').addClass("loading") },
+      complete: function(){ $('.js-notes-busy').removeClass("loading")},
+      beforeSend: function() { $('.js-notes-busy').addClass("loading") },
       dataType: "script"
     });
   },
@@ -404,8 +386,8 @@ var NoteList = {
     $.ajax({
       url: NoteList.notes_path,
       data: NoteList.target_params + "&loading_more=1&" + (NoteList.reversed ? "before_id" : "after_id") + "=" + NoteList.bottom_id,
-      complete: function(){ $('.notes-status').removeClass("loading")},
-      beforeSend: function() { $('.notes-status').addClass("loading") },
+      complete: function(){ $('.js-notes-busy').removeClass("loading")},
+      beforeSend: function() { $('.js-notes-busy').addClass("loading") },
       dataType: "script"
     });
   },

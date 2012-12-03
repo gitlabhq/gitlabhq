@@ -6,7 +6,7 @@
   = f.hidden_field :noteable_type
 
   .note_text_and_preview.js-toggler-container
-    %a.js-note-preview-button.js-toggler-target.turn-on{ href: "javascript:;", data: {title: "Preview", url: preview_project_notes_path(@project)} }
+    %a.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", data: {title: "Preview", url: preview_project_notes_path(@project)} }
       %i.icon-eye-open
     %a.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;", data: {title: "Edit"} }
       %i.icon-edit
@@ -37,7 +37,7 @@
         = check_box_tag :notify, 1, !@note.for_commit?
         %span Project team
 
-      - if @note.notify_only_author?(current_user)
+      - if @note.notify_only_author?(current_user) # FIXME: put in JS
         = label_tag :notify_author do
           = check_box_tag :notify_author, 1 , !@note.for_commit?
           %span Commit author

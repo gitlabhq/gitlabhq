@@ -135,9 +135,12 @@ ul.notes {
   }
 }
 
+
+
 /**
- * Discussion/Note Actions
+ * Actions for Discussions/Notes
  */
+
 .discussion,
 .note {
   &.note:hover {
@@ -174,33 +177,12 @@ ul.notes {
   top: 0;
 }
 
-// TODO: start cleaup
-.issue_notes,
-.wiki_notes {
-  .note_content {
-    float: left;
-    width: 400px;
-  }
-}
 
-/* for loading indicator */
-.notes-status {
-  margin: 18px;
-}
-
-
-p.notify_controls input{
-  margin: 5px;
-}
-
-p.notify_controls span{
-  font-weight: 700;
-}
-// TODO: end cleaup
 
 /**
- * line note button on the side of diffs
+ * Line note button on the side of diffs
  */
+
 .diff_file tr.line_holder {
   .add-diff-note {
     background: url("diff_note_add.png") no-repeat left 0;
@@ -231,8 +213,10 @@ p.notify_controls span{
   }
 }
 
+
+
 /**
- * Note Forms
+ * Note Form
  */
 
 .comment-btn,
@@ -257,6 +241,46 @@ p.notify_controls span{
       line-height: 32px;
       padding-right: 15px;
     }
+
+    // TODO: start cleanup
+    .attachments {
+      position: relative;
+      width: 350px;
+      height: 50px;
+      overflow: hidden;
+      margin:0 0 5px !important;
+
+      .input_file {
+        .file_name {
+          line-height: 30px;
+          width: 240px;
+          height: 28px;
+          overflow: hidden;
+        }
+        .file_upload {
+          position: absolute;
+          right:14px;
+          top:7px;
+        }
+        .input-file {
+          width: 260px;
+          height: 41px;
+          float: right;
+        }
+      }
+    }
+    .input-file {
+      font: 500px monospace;
+      opacity:0;
+      filter: alpha(opacity=0);
+      position: absolute;
+      z-index: 1;
+      top:0;
+      right:0;
+      padding:0;
+      margin: 0;
+    }
+    // TODO: end cleanup
   }
   .note_text_and_preview {
     // makes the "absolute" position for links relative to this
@@ -282,44 +306,9 @@ p.notify_controls span{
       width: 98.6%;
     }
   }
+}
 
-  // TODO: start cleanup
-  .attachments {
-    position: relative;
-    width: 350px;
-    height: 50px;
-    overflow: hidden;
-    margin:0 0 5px !important;
-
-    .input_file {
-      .file_name {
-        line-height: 30px;
-        width: 240px;
-        height: 28px;
-        overflow: hidden;
-      }
-      .file_upload {
-        position: absolute;
-        right:14px;
-        top:7px;
-      }
-      .input-file {
-        width: 260px;
-        height: 41px;
-        float: right;
-      }
-    }
-  }
-  .input-file {
-    font: 500px monospace;
-    opacity:0;
-    filter: alpha(opacity=0);
-    position: absolute;
-    z-index: 1;
-    top:0;
-    right:0;
-    padding:0;
-    margin: 0;
-  }
-  // TODO: end cleanup
+/* loading indicator */
+.notes-busy {
+  margin: 18px;
 }
