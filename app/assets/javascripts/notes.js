@@ -32,12 +32,6 @@ var NoteList = {
     // get initial set of notes
     NoteList.getContent();
 
-    $("#note_attachment").change(function(e){
-      var val = $('.input-file').val();
-      var filename = val.replace(/^.*[\\\/]/, '');
-      $(".file_name").text(filename);
-    });
-
     // add a new diff note
     $(document).on("click",
                     ".js-add-diff-note-button",
@@ -53,6 +47,11 @@ var NoteList = {
                     ".js-note-preview-button",
                     NoteList.previewNote);
 
+    // update the file name when an attachment is selected
+    $(document).on("change",
+                   ".js-note-attachment-input",
+                   NoteList.updateFormAttachment);
+
     // hide diff note form
     $(document).on("click",
                     ".js-close-discussion-note-form",
@@ -63,34 +62,21 @@ var NoteList = {
                     ".js-note-delete",
                     NoteList.removeNote);
 
-    // clean up previews for main target form
+    // reset main target form after submit
     $(document).on("ajax:complete",
                    ".js-main-target-form",
-                   NoteList.cleanupMainTargetForm);
+                   NoteList.resetMainTargetForm);
+
+
+    $(document).on("click",
+      ".js-choose-note-attachment-button",
+      NoteList.chooseNoteAttachment);
   },
 
 
   /**
-   * Event handlers
+   * When clicking on buttons
    */
-
-
-  /**
-   *
-   */
-  cleanupMainTargetForm: function(){
-    var form = $(this);
-
-    // remove validation errors
-    form.find(".js-errors").remove();
-
-    // reset text and preview
-    var previewContainer = form.find(".js-toggler-container.note_text_and_preview");
-    if (previewContainer.is(".on")) {
-      previewContainer.removeClass("on");
-    }
-    form.find(".js-note-text").val("").trigger("input");
-  },
 
   /**
    * Called when clicking on the "add a comment" button on the side of a diff line.
@@ -119,6 +105,17 @@ var NoteList = {
       // show the form
       NoteList.setupDiscussionNoteForm($(this), row.next().find("form"));
     }
+  },
+
+  /**
+   * Called when clicking the "Choose File" button.
+   * 
+   * Opesn the file selection dialog.
+   */
+  chooseNoteAttachment: function() {
+    var form = $(this).closest("form");
+
+    form.find(".js-note-attachment-input").click();
   },
 
   /**
@@ -306,6 +303,11 @@ var NoteList = {
         previewButton.removeClass("turn-on").addClass("turn-off");
       }
     });
+
+    // remove notify commit author checkbox for non-commit notes
+    if (form.find("#note_noteable_type").val() !== "Commit") {
+      form.find(".js-notify-commit-author").remove();
+    }
 
     GitLab.GfmAutoComplete.setup();
 
@@ -497,6 +499,41 @@ var NoteList = {
    */
   appendNewWallNote: function(id, html) {
     $("#new-notes-list").prepend(html);
+  },
+
+  /**
+   * Called in response the main target form has been successfully submitted.
+   *
+   * Removes any errors.
+   * Resets text and preview.
+   * Resets buttons.
+   */
+  resetMainTargetForm: function(){
+    var form = $(this);
+
+    // remove validation errors
+    form.find(".js-errors").remove();
+
+    // reset text and preview
+    var previewContainer = form.find(".js-toggler-container.note_text_and_preview");
+    if (previewContainer.is(".on")) {
+      previewContainer.removeClass("on");
+    }
+    form.find(".js-note-text").val("").trigger("input");
+  },
+
+  /**
+   * Called after an attachment file has been selected.
+   *
+   * Updates the file name for the selected attachment.
+   */
+  updateFormAttachment: function() {
+    var form = $(this).closest("form");
+
+    // get only the basename
+    var filename = $(this).val().replace(/^.*[\\\/]/, '');
+
+    form.find(".js-attachment-filename").text(filename);
   },
 
   /**

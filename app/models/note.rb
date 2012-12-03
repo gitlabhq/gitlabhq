@@ -140,24 +140,6 @@ class Note < ActiveRecord::Base
     @notify_author ||= false
   end
 
-  # Check if we can notify commit author
-  # with email about our comment
-  #
-  # If commit author email exist in project
-  # and commit author is not passed user we can
-  # send email to him
-  #
-  # params:
-  #   user - current user
-  #
-  # return:
-  #   Boolean
-  #
-  def notify_only_author?(user)
-    for_commit? && commit_author &&
-      commit_author.email != user.email
-  end
-
   # Returns true if this is an upvote note,
   # otherwise false is returned
   def upvote?

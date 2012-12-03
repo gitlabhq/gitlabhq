@@ -22,23 +22,22 @@
   .clearfix
 
   .note_options
-    .attachments.right
-      %h6.left Attachment:
-      %span.file_name File name...
+    .attachment
+      %h6 Attachment:
+      .file_name.js-attachment-filename File name...
+      %a.choose-btn.btn.small.js-choose-note-attachment-button Choose File ...
+      .hint Any file up to 10 MB
 
-      .input.input_file
-        %a.file_upload.btn.small Upload File
-        = f.file_field :attachment, class: "input-file"
-      %span.hint Any file less than 10 MB
+      = f.file_field :attachment, class: "js-note-attachment-input"
 
-    .notify_opts.right
-      %h6.left Notify via email:
+    .notify_options
+      %h6 Notify via email:
       = label_tag :notify do
         = check_box_tag :notify, 1, !@note.for_commit?
-        %span Project team
+        Project team
 
-      - if @note.notify_only_author?(current_user) # FIXME: put in JS
+      .js-notify-commit-author
         = label_tag :notify_author do
           = check_box_tag :notify_author, 1 , !@note.for_commit?
-          %span Commit author
+          Commit author
   .clearfix

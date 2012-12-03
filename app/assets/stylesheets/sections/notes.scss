@@ -227,6 +227,11 @@ ul.notes {
 .discussion {
   .new_note {
     margin: 8px 5px 8px 0;
+
+    .note_options {
+      // because of the smaller width and the extra "cancel" button
+      margin-top: 8px;
+    }
   }
 }
 .new_note {
@@ -236,51 +241,39 @@ ul.notes {
     float: left;
     margin-top: 8px;
   }
+  .clearfix {
+    margin-bottom: 0;
+  }
   .note_options {
     h6 {
-      line-height: 32px;
-      padding-right: 15px;
+      @extend .left;
+      line-height: 20px;
+      padding-right: 16px;
+      padding-bottom: 16px;
+    }
+    label {
+      padding: 0;
     }
 
-    // TODO: start cleanup
-    .attachments {
+    .attachment {
+      @extend .right;
       position: relative;
       width: 350px;
       height: 50px;
-      overflow: hidden;
       margin:0 0 5px !important;
 
-      .input_file {
-        .file_name {
-          line-height: 30px;
-          width: 240px;
-          height: 28px;
-          overflow: hidden;
-        }
-        .file_upload {
-          position: absolute;
-          right:14px;
-          top:7px;
-        }
-        .input-file {
-          width: 260px;
-          height: 41px;
-          float: right;
-        }
+      // hide the actual file field
+      input {
+        display: none;
+      }
+
+      .choose-btn {
+        float: right;
       }
     }
-    .input-file {
-      font: 500px monospace;
-      opacity:0;
-      filter: alpha(opacity=0);
-      position: absolute;
-      z-index: 1;
-      top:0;
-      right:0;
-      padding:0;
-      margin: 0;
+    .notify_options {
+      @extend .right;
     }
-    // TODO: end cleanup
   }
   .note_text_and_preview {
     // makes the "absolute" position for links relative to this
