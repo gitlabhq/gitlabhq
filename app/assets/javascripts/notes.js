@@ -69,12 +69,10 @@ var NoteList = {
                     ".js-note-delete",
                     NoteList.removeNote);
 
-    // clean up previews for forms
-    $(document).on("ajax:complete", ".js-main-target-form", function(){
-      $(this).find('.error').remove();
-      $(this).find('.js-note-text').val("");
-      $(this).show();
-    });
+    // clean up previews for main target form
+    $(document).on("ajax:complete",
+                   ".js-main-target-form",
+                   NoteList.cleanupMainTargetForm);
   },
 
 
@@ -82,6 +80,26 @@ var NoteList = {
    * Event handlers
    */
 
+
+  /**
+   *
+   */
+  cleanupMainTargetForm: function(){
+    var form = $(this);
+
+    // remove validation errors
+    form.find(".js-errors").remove();
+
+    // reset text and preview
+    var previewContainer = form.find(".js-toggler-container.note_text_and_preview");
+    if (previewContainer.is(".on")) {
+      previewContainer.removeClass("on");
+    }
+    form.find(".js-note-text").val("").trigger("input");
+
+    // re-enable submit button
+    form.find(".js-comment-button").enable();
+  },
 
   /**
    * Called when clicking on the "add a comment" button on the side of a diff line.
@@ -219,6 +237,27 @@ var NoteList = {
 
 
   /**
+   * Called in response to creating a note failing validation.
+   *
+   * Adds the rendered errors to the respective form.
+   * If "discussionId" is null or undefined, the main target form is assumed.
+   */
+  errorsOnForm: function(errorsHtml, discussionId) {
+    // find the form
+    if (discussionId) {
+      var form = $("form[rel='"+discussionId+"']");
+    } else {
+      var form = $(".js-main-target-form");
+    }
+
+    form.find(".js-errors").remove();
+    form.prepend(errorsHtml);
+
+    form.find(".js-note-text").focus();
+  },
+
+
+  /**
    * Shows the diff/discussion form and does some setup on it.
    *
    * Sets some hidden fields in the form.
@@ -235,8 +274,6 @@ var NoteList = {
 
     NoteList.setupNoteForm(form);
 
-    // cleanup after successfully creating a diff/discussion note
-    form.on("ajax:success", NoteList.removeDiscussionNoteForm);
   },
 
   /**
@@ -449,19 +486,26 @@ var NoteList = {
 
   /**
    * Adds a single discussion note to #notes-list.
+   *
+   * Also removes the corresponding form.
    */
   appendNewDiscussionNote: function(discussionId, diffRowHtml, noteHtml) {
+    var form = $("form[rel='"+discussionId+"']");
+    var row = form.closest("tr");
+
     // is this the first note of discussion?
-    var row = $("form[rel='"+discussionId+"']").closest("tr");
     if (row.is(".js-temp-notes-holder")) {
-      // insert the note and the reply button after it
+      // insert the note and the reply button after the temp row
       row.after(diffRowHtml);
-      // will be added again below
+      // remove the note (will be added again below)
       row.next().find(".note").remove();
     }
 
     // append new note to all matching discussions
     $(".notes[rel='"+discussionId+"']").append(noteHtml);
+
+    // cleanup after successfully creating a diff/discussion note
+    $.proxy(NoteList.removeDiscussionNoteForm, form).call();
   },
 
   /**

@@ -5,11 +5,6 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
 
-  - if @note.errors.any?
-    .alert-message.block-message.error
-      - @note.errors.full_messages.each do |msg|
-        %div= msg
-
   .note_text_and_preview.js-toggler-container
     %a.js-note-preview-button.js-toggler-target.turn-on{ href: "javascript:;", data: {title: "Preview", url: preview_project_notes_path(@project)} }
       %i.icon-eye-open
