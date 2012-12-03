@@ -21,13 +21,12 @@
       - else
         %cite.cgray started a discussion
     %div
-      - if discussion_notes.size > 1
-        - last_note = discussion_notes.last
-        last updated by
-        = link_to last_note.author_name, project_team_member_path(@project, @project.team_member_by_id(last_note.author)), class: "note-author"
-        %span.discussion-last-update
-          = time_ago_in_words(last_note.updated_at)
-          ago
+      - last_note = discussion_notes.last
+      last updated by
+      = link_to last_note.author_name, project_team_member_path(@project, @project.team_member_by_id(last_note.author)), class: "note-author"
+      %span.discussion-last-update
+        = time_ago_in_words(last_note.updated_at)
+        ago
   .discussion-body
     - if note.for_diff_line?
       .content
