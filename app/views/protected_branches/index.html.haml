@@ -39,10 +39,13 @@
               - if branch.name == @project.root_ref
                 %span.label default
           %td
-            = link_to project_commit_path(@project, branch.commit.id) do
-              = truncate branch.commit.id.to_s, length: 10
-            = time_ago_in_words(branch.commit.committed_date)
-            ago
+            - if branch.commit
+              = link_to project_commit_path(@project, branch.commit.id) do
+                = truncate branch.commit.id.to_s, length: 10
+              = time_ago_in_words(branch.commit.committed_date)
+              ago
+            - else
+              (branch was removed from repository)
           %td
             - if can? current_user, :admin_project, @project
               = link_to 'Unprotect', [@project, branch], confirm: 'Are you sure?', method: :delete, class: "danger btn small"
