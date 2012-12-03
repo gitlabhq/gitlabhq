@@ -1,0 +1,13 @@
+%li.wll
+  - if can?(current_user, :admin_generic_issue_fields, @project)
+    .right
+      = link_to edit_project_generic_issue_field_path(generic_issue_field.project, generic_issue_field), class: "btn edit-issue-link grouped" do
+        %i.icon-edit
+        Edit
+      = link_to 'Delete', project_generic_issue_field_path(@project, generic_issue_field), method: :delete, class: "btn grouped close_issue", title: "Delete Issue Field"
+
+  %strong
+    = generic_issue_field.title
+  %div
+    = generic_issue_field.generic_issue_field_values.collect{ |v| v.title}.join(" / ")
+

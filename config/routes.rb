@@ -199,6 +199,7 @@ Gitlab::Application.routes.draw do
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones
+    resources :generic_issue_fields
     resources :labels, only: [:index]
     resources :issues do
       collection do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121123164910) do
+ActiveRecord::Schema.define(:version => 20121129201441) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -23,6 +23,25 @@ ActiveRecord::Schema.define(:version => 20121123164910) do
     t.datetime "updated_at",  :null => false
     t.integer  "action"
     t.integer  "author_id"
+  end
+
+  create_table "generic_issue_field_values", :force => true do |t|
+    t.integer "generic_issue_field_id", :null => false
+    t.string  "title",                  :null => false
+    t.string  "description"
+  end
+
+  create_table "generic_issue_fields", :force => true do |t|
+    t.integer "project_id",    :null => false
+    t.string  "title",         :null => false
+    t.string  "description"
+    t.integer "default_value"
+    t.boolean "mandatory"
+  end
+
+  create_table "issue_generic_issue_field_values", :force => true do |t|
+    t.integer "issue_id",                     :null => false
+    t.integer "generic_issue_field_value_id", :null => false
   end
 
   create_table "issues", :force => true do |t|

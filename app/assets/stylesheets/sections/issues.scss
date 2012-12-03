@@ -11,14 +11,13 @@
   }
   .issue_middle_block {
     @extend .middle_box_content;
-    height: 30px;
     .issue_assignee {
       @extend .span6;
-      float: left;
     }
     .issue_milestone {
       @extend .span4;
-      float: left;
+    }
+    .issue_generic_issue_fields {
     }
   }
   .issue_description {

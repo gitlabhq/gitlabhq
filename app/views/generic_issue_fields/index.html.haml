@@ -1,0 +1,20 @@
+= render "issues/head"
+
+%h3.page_title
+  Issue fields
+  - if can?(current_user, :admin_generic_issue_fields, @project)
+    .right
+      .span5
+        = link_to new_project_generic_issue_field_path(@project), class: "right btn", title: "New Issue Field", id: "new_generic_issue_field_link" do
+          .icon-plus
+            New Issue Field
+%br
+%div.ui-box
+  %ul.unstyled.labels-table
+    - @generic_issue_fields.each do |generic_issue_field|
+      = render 'generic_issue_field', generic_issue_field: generic_issue_field
+
+    - unless @generic_issue_fields.present?
+      %li
+        %h3.nothing_here_message Nothing to show here
+

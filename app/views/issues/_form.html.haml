@@ -24,6 +24,13 @@
             %i.icon-time
             Milestone
           .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+        .issue_generic_issue_fields
+          - @project.generic_issue_fields.each do |generic_issue_field|
+            .issue_generic_issue_field
+              = f.label generic_issue_field.symbol_for_field_value_id do
+                = generic_issue_field.title
+              - items = generic_issue_field.generic_issue_field_values.collect { |p| [p.title, p.id] }
+              .input= f.select(generic_issue_field.symbol_for_field_value_id, items, {}, {class: 'chosen'})
 
       .issue_description
         .clearfix
