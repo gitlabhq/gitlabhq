@@ -79,18 +79,6 @@ describe "Issues" do
       page.should have_content 'foobar2'
       page.should_not have_content 'gitlab'
     end
-
-    it "should return all results if term has been cleared" do
-      visit project_issues_path(project)
-      fill_in "issue_search", with: "foobar"
-      # Reset the search field and trigger loading the issues
-      fill_in "issue_search", with: ""
-      page.execute_script("$('#issue_search').keyup();");
-
-      page.should have_content 'foobar'
-      page.should have_content 'foobar2'
-      page.should have_content 'gitlab'
-    end
   end
 
   describe "Filter issue" do
