@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121203154450) do
+ActiveRecord::Schema.define(:version => 20121203160507) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.integer  "milestone_id"
   end
 
+  add_index "issues", ["assignee_id"], :name => "index_issues_on_assignee_id"
+  add_index "issues", ["author_id"], :name => "index_issues_on_author_id"
+  add_index "issues", ["milestone_id"], :name => "index_issues_on_milestone_id"
   add_index "issues", ["project_id"], :name => "index_issues_on_project_id"
 
   create_table "keys", :force => true do |t|
@@ -55,6 +58,8 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.string   "identifier"
     t.integer  "project_id"
   end
+
+  add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
     t.string   "target_branch",                                          :null => false
@@ -73,6 +78,9 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.integer  "milestone_id"
   end
 
+  add_index "merge_requests", ["assignee_id"], :name => "index_merge_requests_on_assignee_id"
+  add_index "merge_requests", ["author_id"], :name => "index_merge_requests_on_author_id"
+  add_index "merge_requests", ["milestone_id"], :name => "index_merge_requests_on_milestone_id"
   add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
 
   create_table "milestones", :force => true do |t|
@@ -94,6 +102,8 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.string   "type"
   end
 
+  add_index "namespaces", ["owner_id"], :name => "index_namespaces_on_owner_id"
+
   create_table "notes", :force => true do |t|
     t.text     "note"
     t.string   "noteable_id"
@@ -108,6 +118,7 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
 
   add_index "notes", ["noteable_id"], :name => "index_notes_on_noteable_id"
   add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
+  add_index "notes", ["project_id"], :name => "index_notes_on_project_id"
 
   create_table "projects", :force => true do |t|
     t.string   "name"
@@ -124,6 +135,9 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.boolean  "wiki_enabled",           :default => true, :null => false
     t.integer  "namespace_id"
   end
+
+  add_index "projects", ["namespace_id"], :name => "index_projects_on_namespace_id"
+  add_index "projects", ["owner_id"], :name => "index_projects_on_owner_id"
 
   create_table "protected_branches", :force => true do |t|
     t.integer  "project_id", :null => false
@@ -143,6 +157,8 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.string   "project_url"
   end
 
+  add_index "services", ["project_id"], :name => "index_services_on_project_id"
+
   create_table "snippets", :force => true do |t|
     t.string   "title"
     t.text     "content"
@@ -153,6 +169,8 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.string   "file_name"
     t.datetime "expires_at"
   end
+
+  add_index "snippets", ["project_id"], :name => "index_snippets_on_project_id"
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"
@@ -213,6 +231,8 @@ ActiveRecord::Schema.define(:version => 20121203154450) do
     t.datetime "updated_at",                    :null => false
     t.integer  "project_access", :default => 0, :null => false
   end
+
+  add_index "users_projects", ["project_id"], :name => "index_users_projects_on_project_id"
 
   create_table "web_hooks", :force => true do |t|
     t.string   "url"
