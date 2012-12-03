@@ -11,6 +11,7 @@ class Admin::GroupsController < AdminController
     @projects = Project.scoped
     @projects = @projects.not_in_group(@group) if @group.projects.present?
     @projects = @projects.all
+    @projects.reject!(&:empty_repo?)
   end
 
   def new

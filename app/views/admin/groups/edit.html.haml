@@ -1,3 +1,19 @@
-%h3.page_title Edit Group
-%br
-= render 'form'
+%h3.page_title Rename Group
+%hr
+.alert
+  Renaming group can have unintended side effects.
+  %br
+  Renaming group will rename directory for all related projects
+= form_for [:admin, @group] do |f|
+  - if @group.errors.any?
+    .alert-message.block-message.error
+      %span= @group.errors.full_messages.first
+  .clearfix.group_name_holder
+    = f.label :name do
+      Group name is
+    .input
+      = f.text_field :name, placeholder: "Example Group", class: "xxlarge"
+
+  .form-actions
+    = f.submit 'Rename group', class: "btn save-btn"
+    = link_to  'Cancel', admin_groups_path, class: "btn cancel-btn"

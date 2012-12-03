@@ -22,7 +22,10 @@
     - unless project.new_record?
       .clearfix
         = f.label :namespace_id
-        .input= f.select :namespace_id, namespaces_options(@project.namespace_id), {}, {class: 'chosen'}
+        .input
+          = f.select :namespace_id, namespaces_options(@project.namespace_id), {}, {class: 'chosen'}
+          &nbsp;
+          %span.cred Be careful. Changing project namespace can have unintended side effects
 
       - if project.repo_exists?
         .clearfix
