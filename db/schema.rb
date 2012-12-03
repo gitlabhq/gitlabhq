@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121123164910) do
+ActiveRecord::Schema.define(:version => 20121203154450) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -24,6 +24,11 @@ ActiveRecord::Schema.define(:version => 20121123164910) do
     t.integer  "action"
     t.integer  "author_id"
   end
+
+  add_index "events", ["action"], :name => "index_events_on_action"
+  add_index "events", ["author_id"], :name => "index_events_on_author_id"
+  add_index "events", ["project_id"], :name => "index_events_on_project_id"
+  add_index "events", ["target_type"], :name => "index_events_on_target_type"
 
   create_table "issues", :force => true do |t|
     t.string   "title"
