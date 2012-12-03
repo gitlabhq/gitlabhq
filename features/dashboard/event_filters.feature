@@ -44,7 +44,7 @@ Feature: Event filters
     Then I should see push event
     And I should see new member event
     And I should not see merge request event
-    When I click "push" event
+    When I click "push" event filter
     Then I should not see push event
     And I should see new member event
     And I should not see merge request event
