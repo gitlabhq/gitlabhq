@@ -1,3 +1,4 @@
+= javascript_include_tag 'dashboard'
 - if @projects.any?
   .projects
     .activities.span8
@@ -45,6 +46,8 @@
     - else
       If you will be added to project - it will be displayed here
 
-
 :javascript
-  $(function(){ Pager.init(20); });
+  $(function(){ 
+    dashboardPage();
+    Pager.init(20);
+  });

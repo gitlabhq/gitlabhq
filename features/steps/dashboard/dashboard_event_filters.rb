@@ -4,27 +4,27 @@ class EventFilters < Spinach::FeatureSteps
   include SharedProject
 
   Then 'I should see push event' do
-    page.has_selector?('span.pushed').should be_true
+    page.should have_selector('span.pushed')
   end
   
   Then 'I should not see push event' do
-    page.has_selector?('span.pushed').should be_false
+    page.should_not have_selector('span.pushed')
   end
 
   Then 'I should see new member event' do
-    page.has_selector?('span.joined').should be_true
+    page.should have_selector('span.joined')
   end
 
   And 'I should not see new member event' do
-    page.has_selector?('span.joined').should be_false
+    page.should_not have_selector('span.joined')
   end
 
   Then 'I should see merge request event' do
-    page.has_selector?('span.merged').should be_true
+    page.should have_selector('span.merged')
   end
 
   And 'I should not see merge request event' do
-    page.has_selector?('span.merged').should be_false
+    page.should_not have_selector('span.merged')
   end
 
   And 'this project has push event' do

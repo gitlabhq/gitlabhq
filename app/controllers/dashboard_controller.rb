@@ -58,7 +58,8 @@ class DashboardController < ApplicationController
   end
 
   def event_filter
-    @event_filter ||= EventFilter.new(params[:event_filter])
+    filters = cookies['event_filter'].split(',') if cookies['event_filter']
+    @event_filter ||= EventFilter.new(filters)
   end
 
   def dashboard_filter items

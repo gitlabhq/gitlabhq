@@ -36,9 +36,6 @@ module EventsHelper
 
   def event_filter_link key, tooltip
     key = key.to_s
-
-    filter = @event_filter.options key
-
     inactive = if @event_filter.active? key
                  nil
                else
@@ -46,7 +43,7 @@ module EventsHelper
                end
 
     content_tag :div, class: "filter_icon #{inactive}" do
-      link_to dashboard_path(event_filter: filter), class: 'has_tooltip', id: "#{key}_event_filter", 'data-original-title' => tooltip do
+      link_to dashboard_path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
         image_tag "event_filter_#{key}.png"
       end
     end
