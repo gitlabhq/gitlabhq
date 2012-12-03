@@ -47,10 +47,11 @@
   .span6
     %table.milestone-issue-filter
       %thead
-        %th
-          %ul.nav.nav-pills
-            %li.active= link_to('Open Issues', '#')
-            %li=link_to('All Issues', '#')
+        %tr
+          %th
+            %ul.nav.nav-pills
+              %li.active= link_to('Open Issues', '#')
+              %li= link_to('All Issues', '#')
       - @issues.each do |issue|
         %tr{data: {closed: issue.closed}}
           %td
@@ -62,10 +63,11 @@
   .span6
     %table.milestone-merge-requests-filter
       %thead
-        %th
-          %ul.nav.nav-pills
-            %li.active= link_to('Open Merge Requests', '#')
-            %li=link_to('All Merge Requests', '#')
+        %tr
+          %th
+            %ul.nav.nav-pills
+              %li.active= link_to('Open Merge Requests', '#')
+              %li= link_to('All Merge Requests', '#')
       - @merge_requests.each do |merge_request|
         %tr{data: {closed: merge_request.closed}}
           %td
