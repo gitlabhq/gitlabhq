@@ -65,11 +65,13 @@
           Personal projects:
           %small.right
             %span= current_user.my_own_projects.count
-            of
-            %span= current_user.projects_limit
+            - if current_user.show_project_limit?
+              of
+              %span= current_user.projects_limit
         .padded
-          .progress
-            .bar{style: "width: #{current_user.projects_limit_percent}%;"}
+          - if current_user.show_project_limit?
+            .progress
+              .bar{style: "width: #{current_user.projects_limit_percent}%;"}
 
       %fieldset
         %legend
