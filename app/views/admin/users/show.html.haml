@@ -76,7 +76,7 @@
         %th Project Access:
 
     %tr
-      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
       %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
 
     %tr
@@ -101,7 +101,7 @@
     - @admin_user.users_projects.each do |tm|
       - project = tm.project
       %tr
-        %td= link_to project.name, admin_project_path(project)
+        %td= link_to project.name_with_namespace, admin_project_path(project)
         %td= tm.project_access_human
         %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
         %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn small danger"
