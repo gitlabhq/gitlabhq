@@ -1,15 +1,19 @@
+require "net/ldap"
+
+# assumes ldap login is present in User.username
+# flow in general:
+#   * find user either by email or username (using provided login)
+#   * if ldap enabled and user provider is ldap, authenticate over ldap
+#   * else validate plain password
 module Grack
   class Auth < Rack::Auth::Basic
     attr_accessor :user, :project
 
     def valid?
-      # Authentication with username and password
+      # Authentication
       login, password = @auth.credentials
-
       self.user = User.find_by_email(login) || User.find_by_username(login)
-
-      return false unless user.try(:valid_password?, password)
-
+      return false unless authenticate_user(user, password)
       email = user.email
 
       # Set GL_USER env variable
@@ -76,10 +80,47 @@ module Grack
 
     def abilities
       @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
+        abilities = Six.new
+        abilities << Ability
+        abilities
+      end
+    end
+
+    private
+
+    def authenticate_user(user, password)
+      return false unless user
+
+      if user.provider == "ldap" && Gitlab.config.ldap_enabled?
+        authenticate_user_from_ldap(user, password)
+      else
+        authenticate_user_with_plain_password(user, password)
+      end
+    end
+
+    def authenticate_user_with_plain_password(user, password)
+      user.valid_password?(password)
+    end
+
+    def authenticate_user_from_ldap(user, password)
+      gl = Gitlab.config
+      return false unless gl.ldap_enabled?
+
+      ldap = Net::LDAP.new(
+          host: gl.ldap['host'],
+          port: gl.ldap['port'],
+          auth: {
+              method: :simple,
+              username: gl.ldap['bind_dn'],
+              password: gl.ldap['password']
+          }
+      )
+
+      ldap.bind_as(
+          :base => gl.ldap['base'],
+          :filter => Net::LDAP::Filter.eq(gl.ldap['uid'], user.username),
+          :password => password
+      )
     end
   end# Auth
 end# Grack
