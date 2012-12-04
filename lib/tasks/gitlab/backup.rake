@@ -1,3 +1,10 @@
+# This is not a full backup solution!
+# Restoring files from this backup might not yield a working app.
+# Consider backing up:
+#  - repositories by copying the contents of git/repositories directory
+#  - attachments
+#  - gitlab user ssh key
+
 require 'active_record/fixtures'
 
 namespace :gitlab do
