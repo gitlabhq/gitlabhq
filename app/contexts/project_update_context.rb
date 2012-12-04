@@ -2,7 +2,7 @@ class ProjectUpdateContext < BaseContext
   def execute(role = :default)
     namespace_id = params[:project].delete(:namespace_id)
 
-    if namespace_id.present?
+    if can?(current_user, :change_namespace, project) && namespace_id.present?
       if namespace_id == Namespace.global_id
         if project.namespace.present?
           # Transfer to global namespace from anyone

@@ -17,9 +17,7 @@ class Ability
 
       # Rules based on role in project
       if project.master_access_for?(user)
-        # TODO: replace with master rules.
-        # Only allow project administration for namespace owners
-        rules << project_admin_rules
+        rules << project_master_rules
 
       elsif project.dev_access_for?(user)
         rules << project_dev_rules
@@ -93,13 +91,15 @@ class Ability
         :admin_merge_request,
         :admin_note,
         :accept_mr,
-        :admin_wiki
+        :admin_wiki,
+        :admin_project
       ]
     end
 
     def project_admin_rules
       project_master_rules + [
-        :admin_project
+        :change_namespace,
+        :rename_project
       ]
     end
 
