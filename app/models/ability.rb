@@ -99,7 +99,8 @@ class Ability
     def project_admin_rules
       project_master_rules + [
         :change_namespace,
-        :rename_project
+        :rename_project,
+        :remove_project
       ]
     end
 
