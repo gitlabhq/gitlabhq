@@ -1,139 +1,193 @@
-var commits = {},
-    comms = {},
-    pixelsX = [],
-    pixelsY = [],
-    mmax = Math.max,
-    mtime = 0,
-    mspace = 0,
-    parents = {},
-    ii = 0,
-    colors = ["#000"];
+!function(){
 
-function initGraph(){
-  commits = chunk1.commits;
-  ii = commits.length;
-  for (var i = 0; i < ii; i++) {
-      for (var j = 0, jj = commits[i].parents.length; j < jj; j++) {
-          parents[commits[i].parents[j][0]] = true;
+  var BranchGraph = function(days, commits){
+    
+    this.days = days || {};
+    this.commits = commits || {};
+    this.comms = {};
+    this.pixelsX = [];
+    this.pixelsY = [];
+    this.mtime = 0;
+    this.mspace = 0;
+    this.parents = {};
+    this.ii = 0;
+    this.colors = ["#000"];
+    
+    this.prepareData();
+  };
+  
+  BranchGraph.prototype.prepareData = function(){
+    ii = this.commits.length;
+    for (var i = 0; i < ii; i++) {
+      for (var j = 0, jj = this.commits[i].parents.length; j < jj; j++) {
+        this.parents[this.commits[i].parents[j][0]] = true;
       }
-      mtime = Math.max(mtime, commits[i].time);
-      mspace = Math.max(mspace, commits[i].space);
-  }
-  mtime = mtime + 4;
-  mspace = mspace + 10;
-  for (i = 0; i < ii; i++) {
-      if (commits[i].id in parents) {
-          commits[i].isParent = true;
-      }
-      comms[commits[i].id] = commits[i];
-  }
-  for (var k = 0; k < mspace; k++) {
-      colors.push(Raphael.getColor());
-  }
-}
-
-function branchGraph(holder) {
-    var ch = mspace * 20 + 20, cw = mtime * 20 + 20,
-        r = Raphael("holder", cw, ch),
-        top = r.set();
-    var cuday = 0, cumonth = "";
-    r.rect(0, 0, days.length * 20 + 80, 30).attr({fill: "#222"});
-    r.rect(0, 30, days.length * 20 + 80, 20).attr({fill: "#444"});
-
-    for (mm = 0; mm < days.length; mm++) {
-        if(days[mm] != null){
-            if(cuday != days[mm][0]){
-                r.text(10 + mm * 20, 40, days[mm][0]).attr({font: "14px Fontin-Sans, Arial", fill: "#DDD"});
-                cuday = days[mm][0]
-            }
-            if(cumonth != days[mm][1]){
-                r.text(10 + mm * 20, 15, days[mm][1]).attr({font: "14px Fontin-Sans, Arial", fill: "#EEE"});
-                cumonth = days[mm][1]
-            }
-
-        }
+      this.mtime = Math.max(this.mtime, this.commits[i].time);
+      this.mspace = Math.max(this.mspace, this.commits[i].space);
     }
+    this.mtime = this.mtime + 4;
+    this.mspace = this.mspace + 10;
     for (i = 0; i < ii; i++) {
-        var x = 10 + 20 * commits[i].time,
-            y = 70 + 20 * commits[i].space;
-        r.circle(x, y, 3).attr({fill: colors[commits[i].space], stroke: "none"});
-        if (commits[i].refs != null && commits[i].refs != "") {
-            var longrefs = commits[i].refs
-            var shortrefs = commits[i].refs;
-            if (shortrefs.length > 15){
-              shortrefs = shortrefs.substr(0,13) + "...";
-            }
-            var t = r.text(x+5, y+5, shortrefs).attr({font: "12px Fontin-Sans, Arial", fill: "#666",
-            title: longrefs, cursor: "pointer", rotation: "90"});
-
-            var textbox = t.getBBox();
-            t.translate(textbox.height/-4,textbox.width/2);
-        }
-        for (var j = 0, jj = commits[i].parents.length; j < jj; j++) {
-            var c = comms[commits[i].parents[j][0]];
-            if (c) {
-                var cx = 10 + 20 * c.time,
-                    cy = 70 + 20 * c.space;
-                if (c.space == commits[i].space) {
-                    r.path("M" + (x - 5) + "," + (y + .0001) + "L" + (15 + 20 * c.time) + "," + (y + .0001))
-                    .attr({stroke: colors[c.space], "stroke-width": 2});
-
-                } else if (c.space < commits[i].space) {
-                    r.path(["M", x - 5, y + .0001, "l-5-2,0,4,5,-2C", x - 5, y, x - 17, y + 2, x - 20, y - 5, "L", cx, y - 5, cx, cy])
-                    .attr({stroke: colors[commits[i].space], "stroke-width": 2});
-                } else {
-                    r.path(["M", x - 3, y + 6, "l-4,3,4,2,0,-5L", x - 10, y + 20, "L", x - 10, cy, cx, cy])
-                    .attr({stroke: colors[c.space], "stroke-width": 2});
-                }
-            }
-        }
-        (function (c, x, y) {
-            top.push(r.circle(x, y, 10).attr({fill: "#000", opacity: 0, cursor: "pointer"})
-            .click(function(){
-              location.href = location.href.replace("graph", "commits/" + c.id);
-            })
-            .hover(function () {
-                var s = r.text(100, 100,c.author + "\n \n" +c.id + "\n \n" + c.message).attr({fill: "#fff"});
-                this.popup = r.popupit(x, y + 5, s, 0);
-                top.push(this.popup.insertBefore(this));
-            }, function () {
-                this.popup && this.popup.remove() && delete this.popup;
-            }));
-        }(commits[i], x, y));
+      if (this.commits[i].id in this.parents) {
+        this.commits[i].isParent = true;
+      }
+      this.comms[this.commits[i].id] = this.commits[i];
     }
-    top.toFront();
-    var hw = holder.offsetWidth,
-        hh = holder.offsetHeight,
-        v = r.rect(hw - 8, 0, 4, Math.pow(hh, 2) / ch, 2).attr({fill: "#000", opacity: 0}),
-        h = r.rect(0, hh - 8, Math.pow(hw, 2) / cw, 4, 2).attr({fill: "#000", opacity: 0}),
-        bars = r.set(v, h),
-        drag,
-        dragger = function (e) {
+    for (var k = 0; k < this.mspace; k++) {
+      this.colors.push(Raphael.getColor());
+    }
+  };
+
+  BranchGraph.prototype.buildGraph = function(holder){
+    var ch = this.mspace * 20 + 20
+      , cw = this.mtime * 20 + 20
+      , r = Raphael("holder", cw, ch)
+      , top = r.set()
+      , cuday = 0
+      , cumonth = "";
+    
+    r.rect(0, 0, this.days.length * 20 + 80, 30).attr({fill: "#222"});
+    r.rect(0, 30, this.days.length * 20 + 80, 20).attr({fill: "#444"});
+    
+    for (mm = 0; mm < this.days.length; mm++) {
+      if(this.days[mm] != null){
+        if(cuday != this.days[mm][0]){
+          r.text(10 + mm * 20, 40, this.days[mm][0]).attr({
+            font: "14px Fontin-Sans, Arial",
+            fill: "#DDD"
+          });
+          cuday = this.days[mm][0];
+        }
+        if(cumonth != this.days[mm][1]){
+          r.text(10 + mm * 20, 15, this.days[mm][1]).attr({
+            font: "14px Fontin-Sans, Arial", 
+            fill: "#EEE"
+          });
+          cumonth = this.days[mm][1];
+        }
+      }
+    }
+    
+    for (i = 0; i < ii; i++) {
+      var x = 10 + 20 * this.commits[i].time
+        , y = 70 + 20 * this.commits[i].space;
+      r.circle(x, y, 3).attr({
+        fill: this.colors[this.commits[i].space], 
+        stroke: "none"
+      });
+      if (this.commits[i].refs != null && this.commits[i].refs != "") {
+        var longrefs = this.commits[i].refs
+          , shortrefs = this.commits[i].refs;
+        if (shortrefs.length > 15){
+          shortrefs = shortrefs.substr(0,13) + "...";
+        }
+        var t = r.text(x+5, y+5, shortrefs).attr({
+          font: "12px Fontin-Sans, Arial", fill: "#666",
+          title: longrefs, cursor: "pointer", rotation: "90"
+        });
+
+        var textbox = t.getBBox();
+        t.translate(textbox.height/-4, textbox.width/2);
+      }
+      for (var j = 0, jj = this.commits[i].parents.length; j < jj; j++) {
+        var c = this.comms[this.commits[i].parents[j][0]];
+        if (c) {
+          var cx = 10 + 20 * c.time
+            , cy = 70 + 20 * c.space;
+          if (c.space == this.commits[i].space) {
+            r.path("M" + (x - 5) + "," + (y + .0001) + "L" + (15 + 20 * c.time) + "," + (y + .0001))
+            .attr({
+              stroke: this.colors[c.space], 
+              "stroke-width": 2
+            });
+
+          } else if (c.space < this.commits[i].space) {
+            r.path(["M", x - 5, y + .0001, "l-5-2,0,4,5,-2C", x - 5, y, x - 17, y + 2, x - 20, y - 5, "L", cx, y - 5, cx, cy])
+            .attr({
+              stroke: this.colors[this.commits[i].space], 
+              "stroke-width": 2
+            });
+          } else {
+            r.path(["M", x - 3, y + 6, "l-4,3,4,2,0,-5L", x - 10, y + 20, "L", x - 10, cy, cx, cy])
+            .attr({
+              stroke: this.colors[c.space], 
+              "stroke-width": 2
+            });
+          }
+        }
+      }
+      (function (c, x, y) {
+        top.push(r.circle(x, y, 10).attr({
+          fill: "#000", 
+          opacity: 0, 
+          cursor: "pointer"
+        })
+        .click(function(){
+          location.href = location.href.replace("graph", "commits/" + c.id);
+        })
+        .hover(function () {
+          // Create empty node to convert entities to character
+          var m = $('<div />').html(c.message).text()
+            , s = r.text(100, 100, c.author + "\n \n" + c.id + "\n \n" + m).attr({
+            fill: "#fff"
+          });
+          this.popup = r.popupit(x, y + 5, s, 0);
+          top.push(this.popup.insertBefore(this));
+        }, function () {
+          this.popup && this.popup.remove() && delete this.popup;
+        }));
+      }(this.commits[i], x, y));
+    
+      top.toFront();
+      var hw = holder.offsetWidth
+        , hh = holder.offsetHeight
+        , v = r.rect(hw - 8, 0, 4, Math.pow(hh, 2) / ch, 2).attr({
+          fill: "#000", 
+          opacity: 0
+        })
+        , h = r.rect(0, hh - 8, Math.pow(hw, 2) / cw, 4, 2).attr({
+          fill: "#000", 
+          opacity: 0
+        })
+        , bars = r.set(v, h)
+        , drag
+        , dragger = function (event) {
             if (drag) {
-                e = e || window.event;
-                holder.scrollLeft = drag.sl - (e.clientX - drag.x);
-                holder.scrollTop = drag.st - (e.clientY - drag.y);
+              event = event || window.event;
+              holder.scrollLeft = drag.sl - (event.clientX - drag.x);
+              holder.scrollTop = drag.st - (event.clientY - drag.y);
             }
         };
-    holder.onmousedown = function (e) {
-        e = e || window.event;
-        drag = {x: e.clientX, y: e.clientY, st: holder.scrollTop, sl: holder.scrollLeft};
+      holder.onmousedown = function (event) {
+        event = event || window.event;
+        drag = {
+          x: event.clientX, 
+          y: event.clientY, 
+          st: holder.scrollTop, 
+          sl: holder.scrollLeft
+        };
         document.onmousemove = dragger;
         bars.animate({opacity: .5}, 300);
-    };
-    document.onmouseup = function () {
+      };
+      document.onmouseup = function () {
         drag = false;
         document.onmousemove = null;
         bars.animate({opacity: 0}, 300);
-    };
-    holder.scrollLeft = cw;
-};
+      };
+      holder.scrollLeft = cw;
+    }
+  };
+  
+  this.BranchGraph = BranchGraph;
+  
+}(this);
 Raphael.fn.popupit = function (x, y, set, dir, size) {
     dir = dir == null ? 2 : dir;
     size = size || 5;
     x = Math.round(x);
     y = Math.round(y);
-    var bb = set.getBBox(),
+    var mmax = Math.max,
+        bb = set.getBBox(),
         w = Math.round(bb.width / 2),
         h = Math.round(bb.height / 2),
         dx = [0, w + size * 2, 0, -w - size * 2],

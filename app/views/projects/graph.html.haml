@@ -2,13 +2,14 @@
 %br
 .graph_holder
   %h4
-    %small You can move around the graph by using arrow keys.
+    %small You can move around the graph by using the arrow keys.
   #holder.graph
+
 :javascript
-  var chunk1={commits:#{@commits_json}};
-  var days=#{@days_json};
-  initGraph();
+  var commits = #{@commits_json}
+    , days = #{@days_json};
+  var branch_graph = new BranchGraph(days, commits);
   $(function(){
-    branchGraph($("#holder")[0]);
+    branch_graph.buildGraph($("#holder")[0]);
     GraphNav.init();
   });
