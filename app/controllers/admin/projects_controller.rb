@@ -10,7 +10,7 @@ class Admin::ProjectsController < AdminController
   end
 
   def show
-    @users = User.scoped
+    @users = User.active
     @users = @users.not_in_project(@project) if @project.users.present?
     @users = @users.all
   end
