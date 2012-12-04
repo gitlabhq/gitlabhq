@@ -30,4 +30,7 @@
           %span.last_activity
             %strong Last activity:
             %span= project_last_activity(project)
+    - if projects.blank?
+      %li.wll
+        %h3.nothing_here_message There are no projects here.
   .bottom= paginate projects, theme: "gitlab"

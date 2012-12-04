@@ -7,6 +7,8 @@ class DashboardController < ApplicationController
   def index
     @groups = current_user.authorized_groups
 
+    @has_authorized_projects = @projects.count > 0
+
     @projects = case params[:scope]
                 when 'personal' then
                   @projects.personal(current_user)
