@@ -122,21 +122,9 @@ Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wik
 and ensure you have followed all of the above steps carefully.
 
 
-# 5. Mysql database
+# 5. Database
 
-    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
-
-    # Login to MySQL
-    $ mysql -u root -p
-
-    # Create the GitLab production database
-    mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
-
-    # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
-
-    # Grant proper permissions to the MySQL User
-    mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+See doc/install/databases.md
 
 
 # 6. GitLab
@@ -161,12 +149,6 @@ and ensure you have followed all of the above steps carefully.
     # Rename config files
     #
     sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
-
-    # Copy mysql db config
-    #
-    # make sure to update username/password in config/database.yml
-    #
-    sudo -u gitlab cp config/database.yml.mysql config/database.yml
 
     # Copy unicorn config
     #
@@ -268,8 +250,6 @@ You can login via web using admin generated with setup:
 
 
 # Advanced setup tips:
-
-_Checkout databases.md for PostgreSQL_
 
 ## Customizing Resque's Redis connection
 
