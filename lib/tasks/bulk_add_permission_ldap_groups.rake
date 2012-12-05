@@ -39,9 +39,9 @@ task :add_or_remove_users_from_project_teams_using_ldap_groups => :environment  
     project.group.try(:name).tap do |group_name|
       if ldap_groups[group_name]
         ldap_groups[group_name].tap do |ids|
-          user_ids = ids[0]
-          admin_ids = ids[1]
-          rejected_ids = ids[2]
+          user_ids = ids[:user_ids]
+          admin_ids = ids[:admin_ids]
+          rejected_ids = ids[:rejected_ids]
         end
       else
         get_ldap_group_dn(gl, ldap, group_name) do |group_dn|
@@ -51,7 +51,7 @@ task :add_or_remove_users_from_project_teams_using_ldap_groups => :environment  
           admin_ids = admins.select {|user| ldap_users.include?(user)}.map(&:id)
           rejected_ids = (all_user_ids - user_ids) + (all_admins_ids - admin_ids)
 
-          ldap_groups[group_name] = [user_ids, admin_ids, rejected_ids]
+          ldap_groups[group_name] = {user_ids: user_ids, admin_ids: admin_ids, rejected_ids: rejected_ids}
         end
       end
     end
