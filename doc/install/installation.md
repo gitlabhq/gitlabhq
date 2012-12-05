@@ -1,6 +1,7 @@
-_This installation guide created for Debian/Ubuntu and properly tested._
+This installation guide was created for Debian/Ubuntu and tested on it.
 
-_Checkout requirements before setup_
+Please read doc/install/requirements.md for hardware andplatform requirements.
+
 
 
 ### IMPORTANT
