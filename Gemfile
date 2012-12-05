@@ -32,7 +32,7 @@ gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref:
 gem "gitolite", '1.1.0'
 
 # Syntax highlighter
-gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", ref: '4db80c599067e2d5f23c5c243bf85b8ca0368ad4'
+gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
 
 # Language detection
 gem "github-linguist", "~> 2.3.4" , require: "linguist"

@@ -45,8 +45,8 @@ GIT
 
 GIT
   remote: https://github.com/gitlabhq/pygments.rb.git
-  revision: 4db80c599067e2d5f23c5c243bf85b8ca0368ad4
-  ref: 4db80c599067e2d5f23c5c243bf85b8ca0368ad4
+  revision: db1da0343adf86b49bdc3add04d02d2e80438d38
+  branch: master
   specs:
     pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
