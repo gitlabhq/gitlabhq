@@ -11,6 +11,36 @@ bundle exec rake gitlab:app:setup
 ```
 
 
+### Gather Information about GitLab Installation
+
+This command gathers information about your GitLab installation. These can be used in issue reports.
+
+```
+bundle exec rake gitlab:app:info
+```
+
+Example output:
+
+```
+Gitlab information
+Version:  4.0.0pre
+Resivion: 8022628
+
+System information
+System:   Debian6.0.6
+Home:   /home/gitlab
+User:   gitlab
+Ruby:   ruby-1.9.3-p286
+Gems:   1.8.24
+
+Gitolite information
+Version:  v3.04-4-g4524f01
+Admin URI:  git@localhost:gitolite-admin
+Base Path:  /home/git/repositories/
+Hook Path:  /home/git/.gitolite/hooks/
+Git:    /usr/bin/git
+```
+
 ### Check GitLab installation status
 
 [Trouble-Shooting-Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
