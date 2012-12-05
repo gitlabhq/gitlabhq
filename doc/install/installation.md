@@ -83,21 +83,21 @@ Add your users to groups:
 
 Generate key:
 
-    sudo -H -u gitlab ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
+    sudo -u gitlab -H ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
 
 
 # 4. Gitolite
 
 Clone GitLab's fork of the Gitolite source code:
 
-    sudo -H -u git git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
+    sudo -u git -H git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup:
 
     cd /home/git
     sudo -u git -H mkdir bin
-    sudo -u git sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
-    sudo -u git sh -c 'gitolite/install -ln /home/git/bin'
+    sudo -u git -H sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
+    sudo -u git -H sh -c 'gitolite/install -ln /home/git/bin'
 
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 0444 /home/git/gitlab.pub
@@ -107,7 +107,7 @@ Setup:
 
 Permissions:
 
-    sudo chmod -R g+rwX /home/git/repositories/
+    sudo chmod -R ug+rwXs /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
     # clone admin repo to add localhost to known_hosts
@@ -135,11 +135,11 @@ See doc/install/databases.md
 #### Get source code
 
     # Get gitlab code. Use this for stable setup
-    sudo -H -u gitlab git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -u gitlab -H git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
 
     # Skip this for stable setup.
     # Master branch (recent changes, less stable)
-    sudo -H -u gitlab git clone -b master https://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -u gitlab -H git clone -b master https://github.com/gitlabhq/gitlabhq.git gitlab
 
 
 #### Copy configs
@@ -148,11 +148,11 @@ See doc/install/databases.md
 
     # Rename config files
     #
-    sudo -u gitlab cp config/gitlab.yml.example config/gitlab.yml
+    sudo -u gitlab -H cp config/gitlab.yml.example config/gitlab.yml
 
     # Copy unicorn config
     #
-    sudo -u gitlab cp config/unicorn.rb.example config/unicorn.rb
+    sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
 #### Install gems
 
@@ -172,7 +172,7 @@ Git requires a username and email in order to be able to do that.
 
 #### Setup application
 
-    sudo -u gitlab bundle exec rake gitlab:app:setup RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 
 #### Setup GitLab hooks
@@ -184,7 +184,7 @@ Git requires a username and email in order to be able to do that.
 
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:app:status RAILS_ENV=production
 
 
     # OUTPUT EXAMPLE
