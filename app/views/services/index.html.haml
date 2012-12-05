@@ -9,7 +9,7 @@
         GitLab CI
         %small Continuous integration server from GitLab
       .right
-        - if @gitlab_ci_service.active
+        - if @gitlab_ci_service.try(:active)
           %small.cgreen Enabled
         - else
           %small.cgray Disabled

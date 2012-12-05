@@ -72,7 +72,7 @@ module TabHelper
       return "active" if current_page?(controller: "projects", action: action, id: @project)
     end
 
-    if ['snippets', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
+    if ['snippets', 'services', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
      "active"
     end
   end
