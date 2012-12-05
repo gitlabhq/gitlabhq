@@ -26,7 +26,7 @@
           &nbsp;
           %span.cred Be careful. Changing project namespace can have unintended side effects
         - else
-          %a.btn.btn-small.disabled= @project.namespace.try(:human_name) || "/"
+          %a.btn.disabled= @project.namespace.try(:human_name) || "/"
           &nbsp;
           %span.cred Only owner can change project namespace.
 
@@ -69,5 +69,6 @@
     = f.submit 'Save', class: "btn save-btn"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
-      .right
-        = link_to 'Remove', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger"
+      - if can?(current_user, :remove_project, @project)
+        .right
+          = link_to 'Remove', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
