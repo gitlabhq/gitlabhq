@@ -31,7 +31,8 @@
   .middle_box_content,
   .bottom_box_content {
     padding: 15px;
-    overflow: auto; 
+    word-wrap: break-word;
+
     pre {
       background: none !important;
       margin: 0;
