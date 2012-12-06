@@ -6,7 +6,7 @@ namespace :gitlab do
       puts ""
       puts "Gitlab information".yellow
       puts "Version:\t#{Gitlab::Version}"
-      puts "Resivion:\t#{Gitlab::Revision}"
+      puts "Revision:\t#{Gitlab::Revision}"
 
       # check which os is running
       if Kernel.system('lsb_release > /dev/null 2>&1')
