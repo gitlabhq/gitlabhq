@@ -11,42 +11,55 @@ bundle exec rake gitlab:app:setup
 ```
 
 
-### Gather Information about GitLab Installation
+### Gather information about GitLab and the system it runs on
 
-This command gathers information about your GitLab installation. These can be used in issue reports.
+This command gathers information about your GitLab installation and the System
+it runs on. These may be useful when asking for help or reporting issues.
 
 ```
-bundle exec rake gitlab:app:info
+bundle exec rake gitlab:env:info
 ```
 
 Example output:
 
 ```
-Gitlab information
-Version:  4.0.0pre
-Resivion: 8022628
-
 System information
-System:   Debian6.0.6
-Home:   /home/gitlab
-User:   gitlab
-Ruby:   ruby-1.9.3-p286
-Gems:   1.8.24
+System:         Debian 6.0.6
+Current User:   gitlab
+Using RVM:      yes
+RVM Version:    1.17.2
+Ruby Version:   ruby-1.9.3-p327
+Gem Version:    1.8.24
+Bundler Version:1.2.3
+Rake Version:   10.0.1
+
+GitLab information
+Version:        3.1.0
+Resivion:       fd5141d
+Directory:      /home/gitlab/gitlab
+DB Adapter:     mysql2
+URL:            http://localhost:3000
+HTTP Clone URL: http://localhost:3000/some-project.git
+SSH Clone URL:  git@localhost:some-project.git
+Using LDAP:     no
+Using Omniauth: no
 
 Gitolite information
-Version:  v3.04-4-g4524f01
-Admin URI:  git@localhost:gitolite-admin
-Base Path:  /home/git/repositories/
-Hook Path:  /home/git/.gitolite/hooks/
-Git:    /usr/bin/git
+Version:        v3.04-4-g4524f01
+Admin URI:      git@localhost:gitolite-admin
+Admin Key:      gitlab
+Repositories:   /home/git/repositories/
+Hooks:          /home/git/.gitolite/hooks/
+Git:            /usr/bin/git
 ```
+
 
 ### Check GitLab installation status
 
 [Trouble-Shooting-Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
 
 ```
-bundle exec rake gitlab:app:status
+bundle exec rake gitlab:check
 ```
 
 Example output:
