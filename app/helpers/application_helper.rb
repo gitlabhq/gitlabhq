@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'uri'
 
 module ApplicationHelper
 
@@ -36,9 +37,9 @@ module ApplicationHelper
     if Gitlab.config.disable_gravatar? || user_email.blank?
       'no_avatar.png'
     else
-      gravatar_prefix = request.ssl? ? "https://secure" : "http://www"
+      gravatar_url = request.ssl? ? Gitlab.config.gravatar_ssl_url : Gitlab.config.gravatar_url
       user_email.strip!
-      "#{gravatar_prefix}.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=mm"
+      sprintf(gravatar_url, {:hash => Digest::MD5.hexdigest(user_email.downcase), :email => URI.escape(user_email), :size => size})
     end
   end
 

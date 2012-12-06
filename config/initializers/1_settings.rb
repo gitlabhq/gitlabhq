@@ -145,5 +145,14 @@ class Settings < Settingslogic
     def disable_gravatar?
       app['disable_gravatar'] || false
     end
+
+    def gravatar_url
+      app['gravatar_url'] || 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+    end
+
+    def gravatar_ssl_url
+      app['gravatar_ssl_url'] || 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+    end
+
   end
 end
