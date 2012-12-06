@@ -16,7 +16,7 @@
       = f.label :path do
         Git Clone
       .input
-        .input-prepend
+        .input-prepend.input-append
           %span.add-on= Gitlab.config.ssh_path
           = f.text_field :path, placeholder: "example_project", disabled: !@project.new_record?
           %span.add-on= ".git"
