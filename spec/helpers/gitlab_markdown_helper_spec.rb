@@ -82,6 +82,7 @@ describe GitlabMarkdownHelper do
 
     describe "referencing a team member" do
       let(:actual)   { "@#{user.name} you are right." }
+      let(:actual_w_spaces) { "@{#{user.name}} you are rigth." }
       let(:expected) { project_team_member_path(project, member) }
 
       before do
@@ -100,6 +101,21 @@ describe GitlabMarkdownHelper do
       it "should link using name with underscores" do
         user.update_attributes(name: "ping_pong_king")
         gfm(actual).should match(expected)
+      end
+
+      it "should link using name with space" do
+        user.update_attributes(name: "King Kong")
+        gfm(actual_w_spaces).should match(expected)
+      end
+
+      it "should link using name with space and dots" do
+        user.update_attributes(name: "King.alpha Kong")
+        gfm(actual_w_spaces).should match(expected)
+      end
+
+      it "should link using name with space and underscore" do
+        user.update_attributes(name: "King_alpha Kong")
+        gfm(actual_w_spaces).should match(expected)
       end
 
       it "should link with adjacent text" do
