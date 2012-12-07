@@ -9,5 +9,8 @@
 :javascript
   var branch_graph;
   $(function(){
-    branch_graph = new BranchGraph($("#holder"), '#{url_for :controller => 'projects', :action => 'graph'}');
+    branch_graph = new BranchGraph($("#holder"), {
+      url: '#{url_for controller: 'projects', action: 'graph', format: :json}',
+      commit_url: '#{url_for controller: 'projects', action: 'show'}/commits/%s'
+    });
   });

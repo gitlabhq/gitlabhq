@@ -18,11 +18,11 @@ module Gitlab
         @days = index_commits
       end
       
-      def to_json
+      def to_json(*args)
         {
           days: @days.compact.map { |d| [d.day, d.strftime("%b")] },
           commits: @commits.map(&:to_graph_hash)
-        }.to_json
+        }.to_json(*args)
       end
     
     protected
