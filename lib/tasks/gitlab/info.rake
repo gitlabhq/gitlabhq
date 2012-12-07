@@ -15,11 +15,17 @@ namespace :gitlab do
       os_name = os_name.gsub(/\n/, '')
 
       # check if there is an RVM environment
-      m, rvm_version = `rvm --version`.match(/rvm ([\d\.]+) /).to_a
+      if Kernel.system('rvm --version > /dev/null 2>&1')
+        m, rvm_version = `rvm --version`.match(/rvm ([\d\.]+) /).to_a
+      end
       # check Bundler version
-      m, bunder_version = `bundle --version`.match(/Bundler version ([\d\.]+)/).to_a
+      if Kernel.system('bundle --version > /dev/null 2>&1')
+        m, bunder_version = `bundle --version`.match(/Bundler version ([\d\.]+)/).to_a
+      end
       # check Bundler version
-      m, rake_version = `rake --version`.match(/rake, version ([\d\.]+)/).to_a
+      if Kernel.system('rake --version > /dev/null 2>&1')
+        m, rake_version = `rake --version`.match(/rake, version ([\d\.]+)/).to_a
+      end
 
       puts ""
       puts "System information".yellow
