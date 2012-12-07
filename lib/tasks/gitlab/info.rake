@@ -1,36 +1,38 @@
 namespace :gitlab do
   namespace :env do
     desc "GITLAB | Show information about GitLab and its environment"
-    task :info => :environment  do
+    task info: :environment  do
 
       # check which OS is running
-      if Kernel.system('lsb_release > /dev/null 2>&1')
-        os_name = `lsb_release -irs`
-      elsif File.exists?('/etc/system-release') && File.readable?('/etc/system-release')
-        os_name = File.read('/etc/system-release')
-      elsif File.exists?('/etc/debian_version') && File.readable?('/etc/debian_version')
-        debian_version = File.read('/etc/debian_version')
-        os_name = "Debian #{debian_version}"
-      end
-      os_name = os_name.gsub(/\n/, '')
+      os_name = run("lsb_release -irs")
+      os_name ||= if File.readable?('/etc/system-release')
+                    File.read('/etc/system-release')
+                  end
+      os_name ||= if File.readable?('/etc/debian_version')
+                    debian_version = File.read('/etc/debian_version')
+                    "Debian #{debian_version}"
+                  end
+      os_name.squish!
 
       # check if there is an RVM environment
-      m, rvm_version = `rvm --version`.match(/rvm ([\d\.]+) /).to_a
+      rvm_version = run_and_match("rvm --version", /[\d\.]+/).try(:to_s)
+      # check Gem version
+      gem_version = run("gem --version")
       # check Bundler version
-      m, bunder_version = `bundle --version`.match(/Bundler version ([\d\.]+)/).to_a
+      bunder_version = run_and_match("bundle --version", /[\d\.]+/).try(:to_s)
       # check Bundler version
-      m, rake_version = `rake --version`.match(/rake, version ([\d\.]+)/).to_a
+      rake_version = run_and_match("rake --version", /[\d\.]+/).try(:to_s)
 
       puts ""
       puts "System information".yellow
-      puts "System:\t\t#{os_name}"
+      puts "System:\t\t#{os_name || "unknown".red}"
       puts "Current User:\t#{`whoami`}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".green : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
-      puts "Ruby Version:\t#{ENV['RUBY_VERSION']}"
-      puts "Gem Version:\t#{`gem --version`}"
-      puts "Bundler Version:#{bunder_version}"
-      puts "Rake Version:\t#{rake_version}"
+      puts "Ruby Version:\t#{ENV['RUBY_VERSION'] || "unknown".red}"
+      puts "Gem Version:\t#{gem_version || "unknown".red}"
+      puts "Bundler Version:#{bunder_version || "unknown".red}"
+      puts "Rake Version:\t#{rake_version || "unknown".red}"
 
 
       # check database adapter
@@ -61,19 +63,35 @@ namespace :gitlab do
       gitolite_version_file = "#{Gitlab.config.git_base_path}/../gitolite/src/VERSION"
       if File.exists?(gitolite_version_file) && File.readable?(gitolite_version_file)
         gitolite_version = File.read(gitolite_version_file)
-      else
-        gitolite_version = 'unknown'
       end
 
       puts ""
       puts "Gitolite information".yellow
-      puts "Version:\t#{gitolite_version}"
+      puts "Version:\t#{gitolite_version || "unknown".red}"
       puts "Admin URI:\t#{Gitlab.config.gitolite_admin_uri}"
       puts "Admin Key:\t#{Gitlab.config.gitolite_admin_key}"
       puts "Repositories:\t#{Gitlab.config.git_base_path}"
       puts "Hooks:\t\t#{Gitlab.config.git_hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.path}"
 
+    end
+
+
+    # Helper methods
+
+    # Runs the given command and matches the output agains the given RegExp
+    def run_and_match(command, regexp)
+      run(command).try(:match, regexp)
+    end
+
+    # Runs the given command
+    #
+    # Returns nil if the command was not found
+    # Returns the output of the command otherwise
+    def run(command)
+      unless `#{command} 2>/dev/null`.blank?
+        `#{command}`
+      end
     end
   end
 end
