@@ -146,9 +146,14 @@ do so with caution!
     # Copy the example GitLab config
     sudo -u gitlab -H cp config/gitlab.yml.example config/gitlab.yml
 
+    # Make sure to change "localhost" to the fully-qualified domain name of your
+    # host serving GitLab where necessary
+    sudo -u gitlab -H vim config/gitlab.yml
+
     # Copy the example Unicorn config
     sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
+**Important Note**
 Make sure to edit both files to match your setup.
 
 ## Install Gems
