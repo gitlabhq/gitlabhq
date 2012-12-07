@@ -185,7 +185,11 @@ for the email)
 
 ## Check Application Status
 
-Just to check we didn't miss anything.
+Check if GitLab  and its environment is configured correctly:
+
+    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+
+To make sure you didn't miss anything run a more thorough check with:
 
     sudo -u gitlab -H bundle exec rake gitlab:app:status RAILS_ENV=production
 
