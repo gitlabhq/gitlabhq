@@ -29,6 +29,6 @@
         git remote add origin #{@project.url_to_repo}
         git push -u origin master
 
-  - if can? current_user, :admin_project, @project
+  - if can? current_user, :remove_project, @project
     .prepend-top-20
       = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger right"
