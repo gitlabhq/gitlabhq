@@ -1,22 +1,34 @@
 !function(){
 
-  var BranchGraph = function(days, commits){
+  var BranchGraph = function(element, url){
+    this.element = element;
+    this.url = url;
     
-    this.days = days || {};
-    this.commits = commits || {};
     this.comms = {};
-    this.pixelsX = [];
-    this.pixelsY = [];
     this.mtime = 0;
     this.mspace = 0;
     this.parents = {};
-    this.ii = 0;
     this.colors = ["#000"];
     
-    this.prepareData();
+    this.load();
   };
   
-  BranchGraph.prototype.prepareData = function(){
+  BranchGraph.prototype.load = function(){
+    $.ajax({
+      url: this.url,
+      method: 'get',
+      dataType: 'json',
+      success: $.proxy(function(data){
+        $('.loading', this.element).hide();
+        this.prepareData(data.days, data.commits);
+        this.buildGraph(this.element.get(0));
+      }, this)
+    });
+  },
+  
+  BranchGraph.prototype.prepareData = function(days, commits){
+    this.days = days;
+    this.commits = commits;
     ii = this.commits.length;
     for (var i = 0; i < ii; i++) {
       for (var j = 0, jj = this.commits[i].parents.length; j < jj; j++) {
@@ -25,8 +37,8 @@
       this.mtime = Math.max(this.mtime, this.commits[i].time);
       this.mspace = Math.max(this.mspace, this.commits[i].space);
     }
-    this.mtime = this.mtime + 4;
-    this.mspace = this.mspace + 10;
+    this.mtime += 4;
+    this.mspace += 10;
     for (i = 0; i < ii; i++) {
       if (this.commits[i].id in this.parents) {
         this.commits[i].isParent = true;
@@ -41,10 +53,13 @@
   BranchGraph.prototype.buildGraph = function(holder){
     var ch = this.mspace * 20 + 20
       , cw = this.mtime * 20 + 20
-      , r = Raphael("holder", cw, ch)
+      , r = Raphael(holder, cw, ch)
       , top = r.set()
       , cuday = 0
-      , cumonth = "";
+      , cumonth = ""
+      , r;
+    
+    this.raphael = r;
     
     r.rect(0, 0, this.days.length * 20 + 80, 30).attr({fill: "#222"});
     r.rect(0, 30, this.days.length * 20 + 80, 20).attr({fill: "#444"});
@@ -116,66 +131,79 @@
           }
         }
       }
-      (function (c, x, y) {
-        top.push(r.circle(x, y, 10).attr({
-          fill: "#000", 
-          opacity: 0, 
-          cursor: "pointer"
-        })
-        .click(function(){
-          location.href = location.href.replace("graph", "commits/" + c.id);
-        })
-        .hover(function () {
-          // Create empty node to convert entities to character
-          var m = $('<div />').html(c.message).text()
-            , s = r.text(100, 100, c.author + "\n \n" + c.id + "\n \n" + m).attr({
-            fill: "#fff"
-          });
-          this.popup = r.popupit(x, y + 5, s, 0);
-          top.push(this.popup.insertBefore(this));
-        }, function () {
-          this.popup && this.popup.remove() && delete this.popup;
-        }));
-      }(this.commits[i], x, y));
-    
-      top.toFront();
-      var hw = holder.offsetWidth
-        , hh = holder.offsetHeight
-        , v = r.rect(hw - 8, 0, 4, Math.pow(hh, 2) / ch, 2).attr({
-          fill: "#000", 
-          opacity: 0
-        })
-        , h = r.rect(0, hh - 8, Math.pow(hw, 2) / cw, 4, 2).attr({
-          fill: "#000", 
-          opacity: 0
-        })
-        , bars = r.set(v, h)
-        , drag
-        , dragger = function (event) {
-            if (drag) {
-              event = event || window.event;
-              holder.scrollLeft = drag.sl - (event.clientX - drag.x);
-              holder.scrollTop = drag.st - (event.clientY - drag.y);
-            }
-        };
-      holder.onmousedown = function (event) {
-        event = event || window.event;
-        drag = {
-          x: event.clientX, 
-          y: event.clientY, 
-          st: holder.scrollTop, 
-          sl: holder.scrollLeft
-        };
-        document.onmousemove = dragger;
-        bars.animate({opacity: .5}, 300);
-      };
-      document.onmouseup = function () {
-        drag = false;
-        document.onmousemove = null;
-        bars.animate({opacity: 0}, 300);
-      };
-      holder.scrollLeft = cw;
+      this.appendAnchor(top, this.commits[i], x, y);
     }
+    top.toFront();
+    var hw = holder.offsetWidth
+      , hh = holder.offsetHeight
+      , v = r.rect(hw - 8, 0, 4, Math.pow(hh, 2) / ch, 2).attr({
+        fill: "#000", 
+        opacity: 0
+      })
+      , h = r.rect(0, hh - 8, Math.pow(hw, 2) / cw, 4, 2).attr({
+        fill: "#000", 
+        opacity: 0
+      })
+      , bars = r.set(v, h)
+      , drag
+      , dragger = function (event) {
+          if (drag) {
+            event = event || window.event;
+            holder.scrollLeft = drag.sl - (event.clientX - drag.x);
+            holder.scrollTop = drag.st - (event.clientY - drag.y);
+          }
+      };
+    holder.onmousedown = function (event) {
+      event = event || window.event;
+      drag = {
+        x: event.clientX, 
+        y: event.clientY, 
+        st: holder.scrollTop, 
+        sl: holder.scrollLeft
+      };
+      document.onmousemove = dragger;
+      bars.animate({opacity: .5}, 300);
+    };
+    document.onmouseup = function () {
+      drag = false;
+      document.onmousemove = null;
+      bars.animate({opacity: 0}, 300);
+    };
+      
+    $(window).on('keydown', function(event){
+      if(event.keyCode == 37){
+        holder.scrollLeft -= 50; 
+      }
+      if(event.keyCode == 39){
+        // right
+        holder.scrollLeft += 50; 
+      }
+    });
+      
+      
+    holder.scrollLeft = cw;
+  };
+  
+  BranchGraph.prototype.appendAnchor = function(top, c, x, y) {
+    var r = this.raphael;
+    top.push(r.circle(x, y, 10).attr({
+      fill: "#000", 
+      opacity: 0, 
+      cursor: "pointer"
+    })
+    .click(function(){
+      location.href = location.href.replace("graph", "commits/" + c.id);
+    })
+    .hover(function () {
+      // Create empty node to convert entities to character
+      var s = r.text(100, 100, c.author + "\n \n" + c.id + "\n \n" + c.message).attr({
+        fill: "#fff"
+      });
+      this.popup = r.popupit(x, y + 5, s, 0);
+      top.push(this.popup.insertBefore(this));
+    }, function () {
+      this.popup && this.popup.remove() && delete this.popup;
+    }));
   };
   
   this.BranchGraph = BranchGraph;

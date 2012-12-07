@@ -28,7 +28,7 @@ module Gitlab
         h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
         h[:id]      = sha
         h[:date]    = date
-        h[:message] = escape_once(message)
+        h[:message] = message
         h[:login]   = author.email
         h
       end

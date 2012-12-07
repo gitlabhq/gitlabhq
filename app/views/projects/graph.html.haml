@@ -4,12 +4,10 @@
   %h4
     %small You can move around the graph by using the arrow keys.
   #holder.graph
+    .loading
 
 :javascript
-  var commits = #{@commits_json}
-    , days = #{@days_json};
-  var branch_graph = new BranchGraph(days, commits);
+  var branch_graph;
   $(function(){
-    branch_graph.buildGraph($("#holder")[0]);
-    GraphNav.init();
+    branch_graph = new BranchGraph($("#holder"), '#{url_for :controller => 'projects', :action => 'graph'}');
   });

@@ -17,16 +17,15 @@ module Gitlab
         @commits = collect_commits
         @days = index_commits
       end
-
-      def days_json
-        @days_json = @days.compact.map { |d| [d.day, d.strftime("%b")] }.to_json
+      
+      def to_json
+        {
+          days: @days.compact.map { |d| [d.day, d.strftime("%b")] },
+          commits: @commits.map(&:to_graph_hash)
+        }.to_json
       end
-
-      def commits_json
-        @commits_json = @commits.map(&:to_graph_hash).to_json
-      end
-
-      protected
+    
+    protected
 
       # Get commits from repository
       #

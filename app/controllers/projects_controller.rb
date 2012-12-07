@@ -83,9 +83,19 @@ class ProjectsController < ProjectResourceController
   end
 
   def graph
-    graph = Gitlab::Graph::JsonBuilder.new(project)
+    
+    respond_to do |format|
+      format.html
+      format.json do
+        graph = Gitlab::Graph::JsonBuilder.new(project)
+        #@days_json, @commits_json = graph.days_json, graph.commits_json
+        render :text => graph.to_json
+      end
+    end
+    
+    
 
-    @days_json, @commits_json = graph.days_json, graph.commits_json
+    
   end
 
   def destroy
