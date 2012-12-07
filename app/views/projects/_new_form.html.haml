@@ -27,3 +27,6 @@
         .input-prepend
           %span.add-on= web_app_url
           = f.text_field :code, placeholder: "example"
+    .clearfix
+      = f.label :private_flag, "Private"
+      .input= f.check_box :private_flag
