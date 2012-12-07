@@ -38,7 +38,24 @@ Make sure your system is up-to-date:
 
 Install the required packages:
 
-    sudo apt-get install -y wget curl build-essential checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev zlib1g-dev libicu-dev redis-server openssh-server git-core python2.7 libyaml-dev postfix
+    sudo apt-get install -y wget curl build-essential checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev zlib1g-dev libicu-dev redis-server openssh-server git-core libyaml-dev postfix
+
+Make sure you have the right version of Python installed.
+
+    # Install Python
+    sudo apt-get install python
+
+    # Make sure that Python is 2.x (3.x is not supported at the moment)
+    python --version
+
+    # If it's Python 3 you might need to install Python 2 separately
+    sudo apt-get install python2.7
+
+    # Make sure you can access Python via `python2`
+    python2 --version
+
+    # If you get a "command not found" error create a link to the python binary
+    sudo ln -s /usr/bin/python /usr/bin/python2
 
 
 # 2. Ruby
