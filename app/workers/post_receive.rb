@@ -2,9 +2,6 @@ class PostReceive
   @queue = :post_receive
 
   def self.perform(repo_path, oldrev, newrev, ref, identifier)
-    repo_path = repo_path.gsub(Gitlab.config.git_base_path, "")
-    repo_path = repo_path.gsub(/.git$/, "")
-
     project = Project.find_with_namespace(repo_path)
     return false if project.nil?
 
