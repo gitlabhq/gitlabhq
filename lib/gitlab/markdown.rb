@@ -26,14 +26,18 @@ module Gitlab
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
     REFERENCE_PATTERN = %r{
-      (\W)?           # Prefix (1)
-      (               # Reference (2)
-        @([\w\._]+)   # User name (3)
-        |[#!$](\d+)   # Issue/MR/Snippet ID (4)
-        |([\h]{6,40}) # Commit ID (5)
+      (?<prefix>\W)?                         # Prefix
+      (                                      # Reference
+         @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
+        |\#(?<issue>\d+)                     # Issue ID
+        |!(?<merge_request>\d+)              # MR ID
+        |\$(?<snippet>\d+)                   # Snippet ID
+        |(?<commit>[\h]{6,40})               # Commit ID
       )
-      (\W)?           # Suffix (6)
+      (?<suffix>\W)?                         # Suffix
     }x.freeze
+
+    TYPES = [:user, :issue, :merge_request, :snippet, :commit].freeze
 
     EMOJI_PATTERN = %r{(:(\S+):)}.freeze
 
@@ -95,16 +99,16 @@ module Gitlab
     def parse_references(text)
       # parse reference links
       text.gsub!(REFERENCE_PATTERN) do |match|
-        prefix     = $1 || ''
-        reference  = $2
-        identifier = $3 || $4 || $5
-        suffix     = $6 || ''
+        prefix     = $~[:prefix]
+        suffix     = $~[:suffix]
+        type       = TYPES.select{|t| !$~[t].nil?}.first
+        identifier = $~[type]
 
         # Avoid HTML entities
-        if prefix.ends_with?('&') || suffix.starts_with?(';')
+        if prefix && suffix && prefix[0] == '&' && suffix[-1] == ';'
           match
-        elsif ref_link = reference_link(reference, identifier)
-          prefix + ref_link + suffix
+        elsif ref_link = reference_link(type, identifier)
+          "#{prefix}#{ref_link}#{suffix}"
         else
           match
         end
@@ -137,19 +141,12 @@ module Gitlab
     # identifier - Object identifier (Issue ID, SHA hash, etc.)
     #
     # Returns string rendered by the processing method
-    def reference_link(reference, identifier)
-      case reference
-      when /^@/  then reference_user(identifier)
-      when /^#/  then reference_issue(identifier)
-      when /^!/  then reference_merge_request(identifier)
-      when /^\$/ then reference_snippet(identifier)
-      when /^\h/ then reference_commit(identifier)
-      end
+    def reference_link(type, identifier)
+      send("reference_#{type}", identifier)
     end
 
     def reference_user(identifier)
-      if user = @project.users.where(name: identifier).first
-        member = @project.users_projects.where(user_id: user).first
+      if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
         link_to("@#{identifier}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end

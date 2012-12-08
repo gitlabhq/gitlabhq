@@ -89,6 +89,8 @@ class ProjectsController < ProjectResourceController
   end
 
   def destroy
+    return access_denied! unless can?(current_user, :remove_project, project)
+
     # Disable the UsersProject update_repository call, otherwise it will be
     # called once for every person removed from the project
     UsersProject.skip_callback(:destroy, :after, :update_repository)

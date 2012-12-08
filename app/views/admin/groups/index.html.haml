@@ -15,7 +15,6 @@
     %th Name
     %th Path
     %th Projects
-    %th Edit
     %th.cred Danger Zone!
 
   - @groups.each do |group|
@@ -23,6 +22,7 @@
       %td= link_to group.name, [:admin, group]
       %td= group.path
       %td= group.projects.count
-      %td= link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn small"
-      %td.bgred= link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn small danger"
+      %td.bgred
+        = link_to 'Rename', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn small"
+        = link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn small danger"
 = paginate @groups, theme: "admin"

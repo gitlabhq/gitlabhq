@@ -36,6 +36,10 @@ class Project < ActiveRecord::Base
   # Relations
   belongs_to :group, foreign_key: "namespace_id", conditions: "type = 'Group'"
   belongs_to :namespace
+
+  # TODO: replace owner with creator.
+  # With namespaces a project owner will be a namespace owner
+  # so this field makes sense only for global projects
   belongs_to :owner, class_name: "User"
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
@@ -295,5 +299,13 @@ class Project < ActiveRecord::Base
 
   def namespace_owner
     namespace.try(:owner)
+  end
+
+  def chief
+    if namespace
+      namespace_owner
+    else
+      owner
+    end
   end
 end

@@ -112,6 +112,10 @@ class ApplicationController < ActionController::Base
     render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
+  def render_403
+    render file: Rails.root.join("public", "403"), layout: false, status: "403"
+  end
+
   def require_non_empty_project
     redirect_to @project if @project.empty_repo?
   end

@@ -172,7 +172,7 @@ header {
     display: none;
     z-index: 100000;
     @include border-radius(4px);
-    width: 100px;
+    width: 130px;
     position: absolute;
     right: 5px;
     top: 38px;
@@ -181,7 +181,7 @@ header {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     a {
       color: #fff;
-      padding: 7px 10px;
+      padding: 12px 15px;
       display: block;
       text-shadow: none;
       border-bottom: 1px solid #666;
@@ -204,8 +204,8 @@ header {
     }
     &:last-child {
       @include border-radius(0 0 5px 5px);
-      border-bottom: 0; 
-    } 
+      border-bottom: 0;
+    }
   }
 
 

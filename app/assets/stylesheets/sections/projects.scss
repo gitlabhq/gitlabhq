@@ -4,7 +4,6 @@
   }
 
   .side {
-    @extend .span4;
     @extend .right;
 
     .groups_box,
@@ -116,4 +115,26 @@
     @extend .page_title;
   }
 
+}
+
+ul.nav.nav-projects-tabs {
+  @extend .nav-tabs;
+
+  padding-left: 8px;
+
+  li {
+    a {
+      padding: 4px 20px;
+      margin-top: 2px;
+      border-color: #DDD;
+      background-color: #EEE;
+      text-shadow: 0 1px 1px white;
+      color: #555;
+    }
+    &.active {
+      a {
+        font-weight: bold;
+      }
+    }
+  }
 }

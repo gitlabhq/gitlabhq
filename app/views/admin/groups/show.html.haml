@@ -1,8 +1,5 @@
 %h3.page_title
   Group: #{@group.name}
-  = link_to edit_admin_group_path(@group), class: "btn right" do
-    %i.icon-edit
-    Edit
 
 %br
 %table.zebra-striped
@@ -16,6 +13,10 @@
         Name:
     %td
       = @group.name
+      &nbsp;
+      = link_to edit_admin_group_path(@group), class: "btn btn-small right" do
+        %i.icon-edit
+        Rename
   %tr
     %td
       %b
@@ -28,24 +29,43 @@
         Owner:
     %td
       = @group.owner_name
-.ui-box
-  %h5
-    Projects
-    %small
-      (#{@group.projects.count})
-  %ul.unstyled
+      .right
+        = link_to "#", class: "btn btn-small change-owner-link" do
+          %i.icon-edit
+          Change owner
+        .change-owner-holder.hide
+          = form_for [:admin, @group] do |f|
+            = f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
+            = f.submit 'Save', class: "btn btn-small save-btn"
+            = link_to "Cancel", "#", class: "btn btn-small change-owner-cancel-link"
+
+%fieldset
+  %legend Projects (#{@group.projects.count})
+  %table
+    %thead
+      %tr
+        %th Project name
+        %th Path
+        %th Users
+        %th.cred Danger Zone!
     - @group.projects.each do |project|
-      %li.wll
-        %strong
-          = link_to project.name, [:admin, project]
-        .right
-          = link_to 'Remove from group', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
-        .clearfix
+      %tr
+        %td
+          = link_to project.name_with_namespace, [:admin, project]
+        %td
+          %span.monospace= project.path_with_namespace + ".git"
+        %td= project.users.count
+        %td.bgred
+          = link_to 'Transfer project to global namespace', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Remove project from group and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
 
 
 = form_tag project_update_admin_group_path(@group), class: "bulk_import", method: :put  do
   %fieldset
     %legend Move projects to group
+    .alert
+      You can move only projects with existing repos
+      %br
+      Group projects will be moved in group directory and will not be accessible by old path
     .clearfix
       = label_tag :project_ids do
         Projects
@@ -53,3 +73,17 @@
         = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
     .form-actions
       = submit_tag 'Add', class: "btn primary"
+
+:javascript
+  $(function(){
+    var modal = $('.change-owner-holder');
+    $('.change-owner-link').bind("click", function(){
+      $(this).hide();
+      modal.show();
+    });
+    $('.change-owner-cancel-link').bind("click", function(){
+      modal.hide();
+      $('.change-owner-link').show();
+    })
+  })
+

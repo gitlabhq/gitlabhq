@@ -100,17 +100,3 @@ input[type='search'].search-text-input {
 }
 
 fieldset legend { font-size: 17px; }
-
-ul.nav.nav-projects-tabs {
-  @extend .nav-tabs;
-
-  padding-left: 8px;
-
-  li {
-    a {
-      padding: 4px 20px;
-      margin-top: 2px;
-      border-color: #DDD;
-    }
-  }
-}

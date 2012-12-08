@@ -58,7 +58,7 @@ describe "Projects" do
 
   describe "DELETE /projects/:id" do
     before do
-      @project = create(:project)
+      @project = create(:project, owner: @user)
       @project.add_access(@user, :read, :admin)
       visit edit_project_path(@project)
     end

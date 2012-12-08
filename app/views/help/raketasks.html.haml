@@ -1,0 +1,55 @@
+%h3.page_title GitLab Rake Tasks
+.back_link
+  = link_to help_path do
+    &larr; to index
+%hr
+
+%p.slead
+  GitLab provides some specific rake tasks to enable special features or perform maintenance tasks.
+
+%ul.nav.nav-tabs.log-tabs
+  %li.active
+    = link_to "Features", "#features", 'data-toggle' => 'tab'
+  %li
+    = link_to "Maintenance", "#maintenance", 'data-toggle' => 'tab'
+  %li
+    = link_to "User Management", "#user_management", 'data-toggle' => 'tab'
+  %li
+    = link_to "Backup & Restore", "#backup_restore", 'data-toggle' => 'tab'
+
+.tab-content
+  .tab-pane.active#features
+    .file_holder
+      .file_title
+        %i.icon-file
+        Features
+      .file_content.wiki
+        = preserve do
+          = markdown File.read(Rails.root.join("doc", "raketasks", "features.md"))
+
+  .tab-pane#maintenance
+    .file_holder
+      .file_title
+        %i.icon-file
+        Maintenance
+      .file_content.wiki
+        = preserve do
+          = markdown File.read(Rails.root.join("doc", "raketasks", "maintenance.md"))
+
+  .tab-pane#user_management
+    .file_holder
+      .file_title
+        %i.icon-file
+        User Management
+      .file_content.wiki
+        = preserve do
+          = markdown File.read(Rails.root.join("doc", "raketasks", "user_management.md"))
+
+  .tab-pane#backup_restore
+    .file_holder
+      .file_title
+        %i.icon-file
+        Backup & Restore
+      .file_content.wiki
+        = preserve do
+          = markdown File.read(Rails.root.join("doc", "raketasks", "backup_restore.md"))
