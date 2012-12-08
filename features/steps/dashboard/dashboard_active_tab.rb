@@ -22,4 +22,8 @@ class DashboardActiveTab < Spinach::FeatureSteps
   Then 'the active main tab should be Help' do
     ensure_active_main_tab('Help')
   end
+
+  Then 'the active main tab should be About GitLab' do
+    ensure_active_main_tab('About GitLab')
+  end
 end

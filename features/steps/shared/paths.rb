@@ -49,6 +49,10 @@ module SharedPaths
     visit help_path
   end
 
+  Given 'I visit dashboard about page' do
+    visit about_path
+  end
+
   # ----------------------------------------
   # Profile
   # ----------------------------------------
