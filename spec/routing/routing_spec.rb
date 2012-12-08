@@ -33,6 +33,7 @@ end
 # help_system_hooks GET    /help/system_hooks(.:format) help#system_hooks
 #     help_markdown GET    /help/markdown(.:format)     help#markdown
 #          help_ssh GET    /help/ssh(.:format)          help#ssh
+#    help_raketasks GET    /help/raketasks(.:format)    help#raketasks
 describe HelpController, "routing" do
   it "to #index" do
     get("/help").should route_to('help#index')
@@ -64,6 +65,10 @@ describe HelpController, "routing" do
 
   it "to #ssh" do
     get("/help/ssh").should route_to('help#ssh')
+  end
+
+  it "to #raketasks" do
+    get("/help/raketasks").should route_to('help#raketasks')
   end
 end
 
