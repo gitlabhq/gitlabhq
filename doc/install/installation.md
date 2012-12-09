@@ -86,7 +86,7 @@ Create a user for GitLab:
     sudo adduser --disabled-login --gecos 'GitLab' gitlab
 
     # Add it to the git group
-    sudo addmod -a -G git gitlab
+    sudo usermod -a -G git gitlab
 
     # Generate the SSH key
     sudo -u gitlab -H ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
