@@ -202,9 +202,11 @@ class MergeRequest < ActiveRecord::Base
     false
   end
 
+  # Workaround for PostgreSQL: using integer ids on (text column) noteable_id in WHERE clause produces error
+  # see https://github.com/gitlabhq/gitlabhq/issues/1957
   def mr_and_commit_notes
     commit_ids = commits.map(&:id)
-    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND noteable_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
+    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND noteable_id IN (:commit_ids))", mr_id: id.to_s, commit_ids: commit_ids)
   end
 
   # Returns the raw diff for this merge request

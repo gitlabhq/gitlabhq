@@ -18,12 +18,19 @@ class Wiki < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   has_many :notes, as: :noteable, dependent: :destroy
-
+  has_many :notes, as: :noteable, dependent: :destroy
   validates :content, presence: true
   validates :user, presence: true
   validates :title, presence: true, length: 1..250
 
   before_update :set_slug
+
+  # Override accessor for "has_many :notes"
+  # Workaround for PostgreSQL: using integer ids on (text column) noteable_id in WHERE clause produces error
+  # see https://github.com/gitlabhq/gitlabhq/issues/1957
+  def notes
+    Note.where(noteable_id: id.to_s, noteable_type: self.class.name)
+  end
 
   def to_param
     slug
