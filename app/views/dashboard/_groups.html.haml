@@ -12,7 +12,7 @@
     - groups.each do |group|
       %li.wll
         = link_to group_path(id: group.path), class: dom_class(group) do
-          %strong.group_name= truncate(group.name, length: 25)
+          %strong.group_name= truncate(group.name, length: 35)
           %span.arrow
             &rarr;
           %span.last_activity

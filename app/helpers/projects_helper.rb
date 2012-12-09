@@ -8,11 +8,19 @@ module ProjectsHelper
   end
 
   def link_to_project project
-    link_to project.name, project
+    link_to project do
+      title = content_tag(:strong, project.name)
+
+      if project.namespace
+        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'tiny')
+        title = namespace + title
+      end
+
+      title
+    end
   end
 
   def tm_path team_member
     project_team_member_path(@project, team_member)
   end
 end
-
