@@ -7,7 +7,7 @@
     = link_to project_commits_path(event.project, event.ref_name) do
       %strong= event.ref_name
   at
-  %strong= link_to event.project.name, event.project
+  %strong= link_to_project event.project
 
 - if event.push_with_commits?
   - project = event.project
