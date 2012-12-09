@@ -18,7 +18,6 @@ class Wiki < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   has_many :notes, as: :noteable, dependent: :destroy
-  has_many :notes, as: :noteable, dependent: :destroy
   validates :content, presence: true
   validates :user, presence: true
   validates :title, presence: true, length: 1..250
