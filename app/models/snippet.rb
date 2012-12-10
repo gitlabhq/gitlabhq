@@ -21,7 +21,6 @@ class Snippet < ActiveRecord::Base
   belongs_to :project
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
-
   delegate :name, :email, to: :author, prefix: true
 
   validates :author, presence: true
@@ -34,6 +33,13 @@ class Snippet < ActiveRecord::Base
   scope :fresh, order("created_at DESC")
   scope :non_expired, where(["expires_at IS NULL OR expires_at > ?", Time.current])
   scope :expired, where(["expires_at IS NOT NULL AND expires_at < ?", Time.current])
+
+  # Override accessor for "has_many :notes"
+  # Workaround for PostgreSQL: using integer ids on (text column) noteable_id in WHERE clause produces error
+  # see https://github.com/gitlabhq/gitlabhq/issues/1957
+  def notes
+    Note.where(noteable_id: id.to_s, noteable_type: self.class.name)
+  end
 
   def self.content_types
     [
