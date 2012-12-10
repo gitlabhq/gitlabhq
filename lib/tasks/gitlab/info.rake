@@ -16,6 +16,8 @@ namespace :gitlab do
 
       # check if there is an RVM environment
       rvm_version = run_and_match("rvm --version", /[\d\.]+/).try(:to_s)
+      # check Ruby version
+      ruby_version = run_and_match("ruby --version", /[\d\.p]+/).try(:to_s)
       # check Gem version
       gem_version = run("gem --version")
       # check Bundler version
@@ -29,7 +31,7 @@ namespace :gitlab do
       puts "Current User:\t#{`whoami`}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".green : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
-      puts "Ruby Version:\t#{ENV['RUBY_VERSION'] || "unknown".red}"
+      puts "Ruby Version:\t#{ruby_version || "unknown".red}"
       puts "Gem Version:\t#{gem_version || "unknown".red}"
       puts "Bundler Version:#{bunder_version || "unknown".red}"
       puts "Rake Version:\t#{rake_version || "unknown".red}"
@@ -44,6 +46,9 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
+      omniauth_providers = Gitlab.config.omniauth_providers
+      omniauth_providers.map! { |provider| provider['name'] }
+
       puts ""
       puts "GitLab information".yellow
       puts "Version:\t#{Gitlab::Version}"
@@ -55,7 +60,7 @@ namespace :gitlab do
       puts "SSH Clone URL:\t#{ssh_clone_url}"
       puts "Using LDAP:\t#{Gitlab.config.ldap_enabled? ? "yes".green : "no"}"
       puts "Using Omniauth:\t#{Gitlab.config.omniauth_enabled? ? "yes".green : "no"}"
-      puts "Omniauth Providers:\t#{Gitlab.config.omniauth_providers}" if Gitlab.config.omniauth_enabled?
+      puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if Gitlab.config.omniauth_enabled?
 
 
 
