@@ -1,3 +1,9 @@
+## Usage & Configuration
+
+Do you have a question related to usage or configuration, please head over to the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq).
+
+
+
 ## Contribute to GitLab
 
 If you want to contribute to GitLab, follow this process:
