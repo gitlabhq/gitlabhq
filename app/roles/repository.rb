@@ -45,8 +45,22 @@ module Repository
   end
 
   def has_post_receive_file?
-    hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
-    File.exists?(hook_file)
+    !!hook_file
+  end
+
+  def valid_post_receive_file?
+    valid_hook_file == hook_file
+  end
+
+  def valid_hook_file
+    @valid_hook_file ||= File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
+  end
+
+  def hook_file
+    @hook_file ||= begin
+                     hook_path = File.join(path_to_repo, 'hooks', 'post-receive')
+                     File.read(hook_path) if File.exists?(hook_path)
+                   end
   end
 
   # Returns an Array of branch names

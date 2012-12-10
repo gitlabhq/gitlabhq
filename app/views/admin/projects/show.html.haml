@@ -4,14 +4,24 @@
     %i.icon-edit
     Edit
 
-- if !@project.has_post_receive_file? && @project.has_commits?
-  %br
-  .alert.alert-error
-    %span
-      %strong Important!
-      Project has commits but missing post-receive file.
-      %br
-      If you exported project manually - copy post-receive hook to bare repository
+- if @project.has_commits?
+  - if !@project.has_post_receive_file?
+    %br
+    .alert.alert-error
+      %span
+        %strong Project has commits but missing post-receive file.
+        %br
+        If you exported project manually - make a link of post-receive hook file from gitolite to project repository
+  - elsif !@project.valid_post_receive_file?
+    %br
+    .alert.alert-error
+      %span
+        %strong Project has invalid post-receive file.
+        %br
+        1. Make sure your gitolite instace has latest post-receive file.
+        %br
+        2. Make a link of post-receive hook file from gitolite to project repository
+
 
 %br
 %table.zebra-striped
@@ -53,7 +63,7 @@
     %td
       = check_box_tag :post_receive_file, 1, @project.has_post_receive_file?, disabled: true
 %br
-%h3
+%h5
   Team
   %small
     (#{@project.users_projects.count})
@@ -75,7 +85,7 @@
       %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
 
 %br
-%h3 Add new team member
+%h5 Add new team member
 %br
 = form_tag team_update_admin_project_path(@project), class: "bulk_import", method: :put  do
   %table.zebra-striped
