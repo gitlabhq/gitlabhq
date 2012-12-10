@@ -28,7 +28,7 @@ class Groups < Spinach::FeatureSteps
 
   Then 'I should see merge requests from this group assigned to me' do
     assigned_to_me(:merge_requests).each do |issue|
-      page.should have_content issue.title
+      page.should have_content issue.title[0..80]
     end
   end
 
