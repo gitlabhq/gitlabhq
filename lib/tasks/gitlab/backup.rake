@@ -113,16 +113,26 @@ namespace :gitlab do
     task :repo_dump => :environment do
       backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
       FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
+      # Gitlab repositories 
       puts "Dumping repositories:"
-      project = Project.all.map { |n| [n.path, n.path_to_repo] }
-      project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
-      project.each do |project|
-        print "- Dumping repository #{project.first}... "
-        if Kernel.system("cd #{project.second} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/#{project.first}.bundle --all > /dev/null 2>&1")
-          puts "[DONE]".green
+      Project.all.each do |project|
+        print "- Dumping repository #{project.name}... "
+        unless project.empty_repo?
+          if Kernel.system("cd #{project.path_to_repo} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/#{project.path}.bundle --all > /dev/null 2>&1")
+            puts "[DONE]".green
+          else
+            puts "[FAILED]".red
+          end
         else
-          puts "[FAILED]".red
+          puts "[SKIPPING]".yellow
         end
+      end
+      # Gitolite repositories
+      print "- Dumping repository gitolite-admin... "
+      if Kernel.system("cd #{File.join(Gitlab.config.git_base_path, "gitolite-admin.git")} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/gitolite-admin.bundle --all > /dev/null 2>&1")
+        puts "[DONE]".green
+      else
+        puts "[FAILED]".red
       end
     end
 
