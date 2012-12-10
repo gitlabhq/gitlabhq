@@ -1,9 +1,13 @@
 namespace :gitlab do
+  desc "GITLAB | Check the configuration of GitLab and its environment"
+  task check: %w{gitlab:env:check
+                 gitlab:app:check
+                 gitlab:gitolite:check
+                 gitlab:resque:check}
+
   namespace :app do
-    desc "GITLAB | Check GitLab installation status"
-    task :status => :environment  do
-      puts "\nStarting diagnostics".yellow
-      git_base_path = Gitlab.config.git_base_path
+    desc "GITLAB | Check the configuration of the GitLab Rails app"
+    task check: :environment  do
 
       print "config/database.yml............"
       if File.exists?(Rails.root.join "config", "database.yml")
@@ -20,6 +24,19 @@ namespace :gitlab do
         puts "missing".red
         return
       end
+    end
+  end
+
+  namespace :env do
+    desc "GITLAB | Check the configuration of the environment"
+    task check: :environment  do
+    end
+  end
+
+  namespace :gitolite do
+    desc "GITLAB | Check the configuration of Gitolite"
+    task check: :environment  do
+      git_base_path = Gitlab.config.git_base_path
 
       print "#{git_base_path}............"
       if File.exists?(git_base_path)
@@ -106,8 +123,12 @@ namespace :gitlab do
           end
         end
       end
+    end
+  end
 
-      puts "\nFinished".blue
+  namespace :resque do
+    desc "GITLAB | Check the configuration of Resque"
+    task check: :environment  do
     end
   end
 end
