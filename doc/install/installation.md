@@ -1,14 +1,19 @@
 This installation guide was created for Debian/Ubuntu and tested on it.
 
-Please read doc/install/requirements.md for hardware andplatform requirements.
+Please read `doc/install/requirements.md` for hardware and platform requirements.
 
 
-**Important Note**
+**Important Note:**
 The following steps have been known to work.
 If you deviate from this guide, do it with caution and make sure you don't
 violate any assumptions GitLab makes about its environment.
-If you find a bug/error in this guide please an issue or pull request following
-the contribution guide (see CONTRIBUTING.md).
+For things like AWS installation scripts, init scripts or config files for
+alternative web server have a look at the "Advanced Setup Tips" section.
+
+
+**Important Note:**
+If you find a bug/error in this guide please submit an issue or pull request
+following the contribution guide (see `CONTRIBUTING.md`).
 
 - - -
 
@@ -51,7 +56,7 @@ Make sure you have the right version of Python installed.
     # If it's Python 3 you might need to install Python 2 separately
     sudo apt-get install python2.7
 
-    # Make sure you can access Python via `python2`
+    # Make sure you can access Python via python2
     python2 --version
 
     # If you get a "command not found" error create a link to the python binary
@@ -100,7 +105,7 @@ Clone GitLab's fork of the Gitolite source code:
 
 Setup Gitolite with GitLab as its admin:
 
-**Important Note**
+**Important Note:**
 GitLab assumes *full and unshared* control over this Gitolite installation.
 
     # Add Gitolite scripts to $PATH
@@ -131,20 +136,20 @@ Fix the directory permissions for the repository:
     # If it succeeded without errors you can remove the cloned repo
     sudo rm -rf /tmp/gitolite-admin
 
-**Impornant Note**
-If you can't clone the `gitolite-admin` repository: **DO NOT PROCEED WITH INSTALLATION**
+**Important Note:**
+If you can't clone the `gitolite-admin` repository: **DO NOT PROCEED WITH INSTALLATION**!
 Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
 and make sure you have followed all of the above steps carefully.
 
 
 # 5. Database
 
-See doc/install/databases.md
+See `doc/install/databases.md`
 
 
 # 6. GitLab
 
-    We'll install GitLab into the gitlab user's home directory
+    # We'll install GitLab into home directory of the user "gitlab"
     cd /home/gitlab
 
 ## Clone the Source
@@ -152,7 +157,7 @@ See doc/install/databases.md
     # Clone the latest stable release
     sudo -u gitlab -H git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
 
-**Note***
+**Note:**
 You can change `stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
@@ -170,7 +175,7 @@ do so with caution!
     # Copy the example Unicorn config
     sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
-**Important Note**
+**Important Note:**
 Make sure to edit both files to match your setup.
 
 ## Install Gems
@@ -184,8 +189,8 @@ Make sure to edit both files to match your setup.
 ## Configure Git
 
 GitLab needs to be able to commit and push changes to Gitolite. In order to do
-that Git requires a username and email. (Please use the `email.from` address
-for the email)
+that Git requires a username and email. (We recommend using the same address
+used for the `email.from` setting in `config/gitlab.yml`)
 
     sudo -u gitlab -H git config --global user.name "GitLab"
     sudo -u gitlab -H git config --global user.email "gitlab@localhost"
@@ -202,7 +207,7 @@ for the email)
 
 ## Check Application Status
 
-Check if GitLab  and its environment is configured correctly:
+Check if GitLab and its environment is configured correctly:
 
     sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
@@ -210,25 +215,8 @@ To make sure you didn't miss anything run a more thorough check with:
 
     sudo -u gitlab -H bundle exec rake gitlab:app:status RAILS_ENV=production
 
-```
-# OUTPUT EXAMPLE
-Starting diagnostic
-config/database.yml............exists
-config/gitlab.yml............exists
-/home/git/repositories/............exists
-/home/git/repositories/ is writable?............YES
-remote: Counting objects: 603, done.
-remote: Compressing objects: 100% (466/466), done.
-remote: Total 603 (delta 174), reused 0 (delta 0)
-Receiving objects: 100% (603/603), 53.29 KiB, done.
-Resolving deltas: 100% (174/174), done.
-Can clone gitolite-admin?............YES
-UMASK for .gitolite.rc is 0007? ............YES
-/home/git/share/gitolite/hooks/common/post-receive exists? ............YES
-```
-
-If you are all green - congratulations! You run a GitLab now.
-But there are still a few steps to go.
+If you are all green: congratulations, you successfully installed GitLab!
+Although this is the case, there are still a few steps to go.
 
 
 ## Install Init Script
@@ -249,6 +237,10 @@ Start your GitLab instance:
 
 
 # 7. Nginx
+
+**Note:**
+If you can't or don't want to use Nginx as your web server, have a look at the
+"Advanced Setup Tips" section.
 
 ## Installation
     sudo apt-get install nginx
@@ -280,7 +272,7 @@ The setup has created an admin account for you. You can use it to log in:
     admin@local.host
     5iveL!fe
 
-**Important Note**
+**Important Note:**
 Please go over to your profile page and immediately chage the password, so
 nobody can access your GitLab by using this login information later on.
 
@@ -290,9 +282,9 @@ nobody can access your GitLab by using this login information later on.
 - - -
 
 
-# Advanced setup tips:
+# Advanced Setup Tips
 
-## Custom Redis connections
+## Custom Redis Connection
 
 If you'd like Resque to connect to a Redis server on a non-standard port or on
 a different host, you can configure its connection string via the
@@ -300,3 +292,9 @@ a different host, you can configure its connection string via the
 
     # example
     production: redis.example.tld:6379
+
+
+## User-contributed Configurations
+
+You can find things like  AWS installation scripts, init scripts or config files
+for alternative web server in our [recipes collection](https://github.com/gitlabhq/gitlab-recipes/).
