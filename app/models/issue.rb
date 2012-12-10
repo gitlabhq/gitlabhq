@@ -19,6 +19,7 @@
 class Issue < ActiveRecord::Base
   include IssueCommonality
   include Votes
+  include Noteable
 
   attr_accessible :title, :assignee_id, :closed, :position, :description,
                   :milestone_id, :label_list, :author_id_of_changes

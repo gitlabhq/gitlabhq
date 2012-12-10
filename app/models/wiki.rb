@@ -13,6 +13,8 @@
 #
 
 class Wiki < ActiveRecord::Base
+  include Noteable
+
   attr_accessible :title, :content, :slug
 
   belongs_to :project
