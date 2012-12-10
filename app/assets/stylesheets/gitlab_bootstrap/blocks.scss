@@ -65,7 +65,7 @@
 
   border: 1px solid #eaeaea;
   @include border-radius(4px);
-  
+
   border-color: #CCC;
   @include solid-shade;
 
@@ -83,6 +83,10 @@
     @include bg-gray-gradient;
     border-top: 1px solid #eaeaea;
     border-bottom: 1px solid #bbb;
+
+    > a {
+      text-shadow: 0 1px 1px #fff;
+    }
 
     &.small {
       line-height: 28px;
