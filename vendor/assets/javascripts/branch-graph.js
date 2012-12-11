@@ -90,7 +90,7 @@ function branchGraph(holder) {
         (function (c, x, y) {
             top.push(r.circle(x, y, 10).attr({fill: "#000", opacity: 0, cursor: "pointer"})
             .click(function(){
-              location.href = location.href.replace("graph", "commits/" + c.id);
+              location.href = location.href.replace("graph", "commit/" + c.id);
             })
             .hover(function () {
                 var s = r.text(100, 100,c.author + "\n \n" +c.id + "\n \n" + c.message).attr({fill: "#fff"});
