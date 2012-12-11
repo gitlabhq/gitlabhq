@@ -1,6 +1,6 @@
 class MergeRequestsController < ProjectResourceController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check]
+  before_filter :merge_request, only: [:edit, :update, :destroy, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
 
@@ -101,6 +101,13 @@ class MergeRequestsController < ProjectResourceController
   def branch_to
     @commit = project.commit(params[:ref])
     @commit = CommitDecorator.decorate(@commit)
+  end
+
+  def ci_status
+    status = project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
+    response = { status: status }
+
+    render json: response
   end
 
   protected

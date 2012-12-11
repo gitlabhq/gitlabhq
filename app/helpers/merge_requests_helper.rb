@@ -39,7 +39,7 @@ module MergeRequestsHelper
     classes
   end
 
-  def ci_status_path
-    @project.gitlab_ci_service.commit_badge_path(@merge_request.last_commit.sha)
+  def ci_build_details_path merge_request
+    merge_request.project.gitlab_ci_service.build_page(merge_request.last_commit.sha)
   end
 end

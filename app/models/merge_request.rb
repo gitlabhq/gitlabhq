@@ -220,4 +220,8 @@ class MergeRequest < ActiveRecord::Base
   def to_patch
     project.repo.git.format_patch({timeout: 30, raise: true, stdout: true}, "#{target_branch}..#{source_branch}")
   end
+
+  def last_commit_short_sha
+    @last_commit_short_sha ||= last_commit.sha[0..10]
+  end
 end

@@ -169,6 +169,7 @@ Gitlab::Application.routes.draw do
         get :diffs
         get :automerge
         get :automerge_check
+        get :ci_status
       end
 
       collection do
