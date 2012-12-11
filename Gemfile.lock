@@ -7,6 +7,16 @@ GIT
       rake (>= 0.8.7)
 
 GIT
+  remote: https://github.com/dlindahl/omniauth-cas.git
+  revision: 2162cf3adb5b15c2a8c47721534e936accdd3a51
+  ref: 2162cf3adb5b15c2a8c47721534e936accdd3a51
+  specs:
+    omniauth-cas (1.0.0)
+      addressable (~> 2.3)
+      nokogiri (~> 1.5)
+      omniauth (~> 1.1.0)
+
+GIT
   remote: https://github.com/gitlabhq/grack.git
   revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
   ref: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
@@ -490,6 +500,7 @@ DEPENDENCIES
   modernizr (= 2.6.2)
   mysql2
   omniauth (~> 1.1.1)
+  omniauth-cas!
   omniauth-github
   omniauth-google-oauth2
   omniauth-ldap!
