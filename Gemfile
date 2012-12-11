@@ -24,6 +24,7 @@ gem 'omniauth-github'
 # GITLAB patched libs
 gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'
 gem "omniauth-ldap", git: "https://github.com/gitlabhq/omniauth-ldap.git",  ref: 'f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e'
+gem "omniauth-cas",  git: "https://github.com/dlindahl/omniauth-cas.git",   ref: '2162cf3adb5b15c2a8c47721534e936accdd3a51'
 gem 'yaml_db',       git: "https://github.com/gitlabhq/yaml_db.git",        ref: '98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
 gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
