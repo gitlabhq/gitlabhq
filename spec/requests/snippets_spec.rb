@@ -48,11 +48,11 @@ describe "Snippets" do
       page.current_path.should == new_project_snippet_path(project)
     end
 
-    describe "fill in" do
+    describe "fill in", js: true do
       before do
         fill_in "snippet_title", with: "login function"
         fill_in "snippet_file_name", with: "test.rb"
-        fill_in "snippet_content", with: "def login; end"
+        page.execute_script("editor.insert('def login; end');")
       end
 
       it { expect { click_button "Save" }.to change {Snippet.count}.by(1) }
@@ -83,7 +83,6 @@ describe "Snippets" do
       before do
         fill_in "snippet_title", with: "login function"
         fill_in "snippet_file_name", with: "test.rb"
-        fill_in "snippet_content", with: "def login; end"
       end
 
       it { expect { click_button "Save" }.to_not change {Snippet.count} }
