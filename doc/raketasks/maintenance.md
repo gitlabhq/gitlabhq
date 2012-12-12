@@ -54,9 +54,18 @@ Git:            /usr/bin/git
 ```
 
 
-### Check GitLab installation status
+### Check GitLab configuration
 
-[Trouble-Shooting-Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
+Runs the following rake tasks:
+
+* gitlab:env:check
+* gitlab:gitolite:check
+* gitlab:resque:check
+* gitlab:app:check
+
+It will check that each component was setup according to the installation guide and suggest fixes for issues found.
+
+You may also have a look at our [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide).
 
 ```
 bundle exec rake gitlab:check
@@ -65,21 +74,68 @@ bundle exec rake gitlab:check
 Example output:
 
 ```
-config/database.yml............exists
-config/gitlab.yml............exists
-/home/git/repositories/............exists
-/home/git/repositories/ is writable?............YES
-Can clone gitolite-admin?............YES
-Can git commit?............YES
-UMASK for .gitolite.rc is 0007? ............YES
-/home/git/.gitolite/hooks/common/post-receive exists? ............YES
+Checking Environment ...
 
-Validating projects repositories:
-* abcd.....post-receive file ok
-* abcdtest.....post-receive file missing
+gitlab user is in git group? ... yes
+Has no "-e" in ~git/.profile ... yes
+Git configured for gitlab user? ... yes
+Has python2? ... yes
+python2 is supported version? ... yes
 
-Finished
+Checking Environment ... Finished
 
+Checking Gitolite ...
+
+Using recommended version ... yes
+Repo umask is 0007 in .gitolite.rc? ... yes
+Allow all Git config keys in .gitolite.rc ... yes
+Config directory exists? ... yes
+Config directory owned by git:git? ... yes
+Config directory access is drwxr-x---? ... yes
+Repo base directory exists? ... yes
+Repo base owned by git:git? ... yes
+Repo base access is drwsrws---? ... yes
+Can clone gitolite-admin? ... yes
+Can commit to gitolite-admin? ... yes
+post-receive hook exists? ... yes
+post-receive hook up-to-date? ... yes
+post-receive hooks in repos are links: ...
+GitLab ... ok
+Non-Ascii Files Test ... ok
+Touch Commit Test ... ok
+Without Master Test ... ok
+Git config in repos: ...
+GitLab ... ok
+Non-Ascii Files Test ... ok
+Touch Commit Test ... ok
+Without Master Test ... ok
+
+Checking Gitolite ... Finished
+
+Checking Resque ...
+
+Running? ... yes
+
+Checking Resque ... Finished
+
+Checking GitLab ...
+
+Database config exists? ... yes
+Database is not SQLite ... yes
+All migrations up? ... yes
+GitLab config exists? ... yes
+GitLab config not outdated? ... yes
+Log directory writable? ... yes
+Tmp directory writable? ... yes
+Init script exists? ... yes
+Init script up-to-date? ... yes
+Projects have satellites? ...
+GitLab ... yes
+Non-Ascii Files Test ... yes
+Touch Commit Test ... yes
+Without Master Test ... yes
+
+Checking GitLab ... Finished
 ```
 
 
