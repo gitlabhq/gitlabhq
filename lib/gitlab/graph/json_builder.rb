@@ -98,7 +98,7 @@ module Gitlab
         if leaves.empty?
           return
         end
-        space = find_free_space(leaves.last.time..leaves.first.time)
+        space = find_free_space(leaves, map)
         leaves.each{|l| l.space = space}
         # and mark it as reserved
         min_time = leaves.last.time
@@ -120,7 +120,7 @@ module Gitlab
 
         # Visit branching chains
         leaves.each do |l|
-          parents = l.parents.collect.select{|p| map.include? p.id and map[p.id].space == 0}
+          parents = l.parents.collect.select{|p| map.include? p.id and map[p.id].space.zero?}
           for p in parents
             place_chain(map[p.id], map, l.time)
           end
@@ -133,16 +133,27 @@ module Gitlab
         end
       end
 
-      def find_free_space(time_range)
+      def find_free_space(leaves, map)
+        time_range = leaves.last.time..leaves.first.time
         reserved = []
         for day in time_range
           reserved += @_reserved[day]
         end
-        space = 1
+        space = base_space(leaves, map)
         while reserved.include? space do
           space += 1
         end
         space
+      end
+
+      def base_space(leaves, map)
+        parents = []
+        leaves.each do |l|
+          parents.concat l.parents.collect.select{|p| map.include? p.id and map[p.id].space.nonzero?}
+        end
+
+        space = parents.map{|p| map[p.id].space}.max || 0
+        space += 1
       end
 
       # Takes most left subtree branch of commits
@@ -157,13 +168,13 @@ module Gitlab
         leaves.push(commit) if commit.space.zero?
 
         while true
-          parent = commit.parents.collect.select do |p|
-            map.include? p.id and map[p.id].space == 0
-          end
+          return leaves if commit.parents.count.zero?
+          return leaves unless map.include? commit.parents.first.id
 
-          return leaves if parent.count.zero?
+          commit = map[commit.parents.first.id]
 
-          commit = map[parent.first.id]
+          return leaves unless commit.space.zero?
+
           leaves.push(commit)
         end
       end
