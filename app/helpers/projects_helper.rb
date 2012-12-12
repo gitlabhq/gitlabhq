@@ -23,4 +23,12 @@ module ProjectsHelper
   def tm_path team_member
     project_team_member_path(@project, team_member)
   end
+
+  def project_title project
+    if project.group
+      project.name_with_namespace
+    else
+      project.name
+    end
+  end
 end
