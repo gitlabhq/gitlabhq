@@ -62,6 +62,7 @@ class User < ActiveRecord::Base
   has_many :assigned_issues, class_name: "Issue", foreign_key: :assignee_id, dependent: :destroy
   has_many :assigned_merge_requests, class_name: "MergeRequest", foreign_key: :assignee_id, dependent: :destroy
 
+  validates :name, presence: true
   validates :bio, length: { within: 0..255 }
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
