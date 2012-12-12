@@ -32,14 +32,23 @@ The GitLab installation consists of setting up th following components:
 
 # 1. Packages / Dependencies
 
-*Keep in mind that `sudo` is not installed on Debian by default. You should install it as root:*
+`sudo` is not installed on Debian by default. If you don't have it you'll need
+to install it first.
 
-    apt-get update && apt-get upgrade && apt-get install sudo
+    # run as root
+    apt-get update && apt-get upgrade && apt-get install sudo vim
 
 Make sure your system is up-to-date:
 
     sudo apt-get update
     sudo apt-get upgrade
+
+**Note:**
+Vim is an editor that is used here whenever there are files that need to be
+edited by hand. But, you can use any editor you like instead.
+
+    # Install vim
+    sudo apt-get install -y vim
 
 Install the required packages:
 
@@ -65,12 +74,18 @@ Make sure you have the right version of Python installed.
 
 # 2. Ruby
 
+Download and compile it:
+
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz
     tar xfvz ruby-1.9.3-p327.tar.gz
     cd ruby-1.9.3-p327
     ./configure
     make
     sudo make install
+
+Install the Bundler Gem:
+
+    sudo gem install bundler
 
 
 # 3. System Users
@@ -101,6 +116,7 @@ Create a user for GitLab:
 
 Clone GitLab's fork of the Gitolite source code:
 
+    cd /home/git
     sudo -u git -H git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup Gitolite with GitLab as its admin:
@@ -109,16 +125,15 @@ Setup Gitolite with GitLab as its admin:
 GitLab assumes *full and unshared* control over this Gitolite installation.
 
     # Add Gitolite scripts to $PATH
-    cd /home/git
-    sudo -u git -H mkdir bin
-    sudo -u git -H sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
+    sudo -u git -H mkdir /home/git/bin
+    sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/home/git/bin" "export PATH" >> /home/git/.profile'
     sudo -u git -H sh -c 'gitolite/install -ln /home/git/bin'
 
     # Copy the gitlab user's (public) SSH key ...
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 0444 /home/git/gitlab.pub
 
-    # ... and use it as the Gitolite admin key for setup
+    # ... and use it as the admin key for the Gitolite setup
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
 
 Fix the directory permissions for the repository:
@@ -183,7 +198,6 @@ Make sure to edit both files to match your setup.
     cd /home/gitlab/gitlab
 
     sudo gem install charlock_holmes --version '0.6.9'
-    sudo gem install bundler
     sudo -u gitlab -H bundle install --deployment --without development test 
 
 ## Configure Git
