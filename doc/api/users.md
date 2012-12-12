@@ -75,7 +75,7 @@ POST /users
 Parameters:
 + `email` (required)                  - Email
 + `password` (required)               - Password
-+ `name`                              - Name
++ `name` (required)                   - Name
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
