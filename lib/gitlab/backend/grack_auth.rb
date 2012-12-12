@@ -38,12 +38,12 @@ module Grack
     end
 
     def validate_get_request
-      true
+      can?(user, :download_code, project)
     end
 
     def validate_post_request
       if @request.path_info.end_with?('git-upload-pack')
-        can?(user, :push_code, project)
+        can?(user, :download_code, project)
       elsif @request.path_info.end_with?('git-receive-pack')
         action = if project.protected_branch?(current_ref)
                    :push_code_to_protected_branches
