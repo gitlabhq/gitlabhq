@@ -58,3 +58,12 @@
 @mixin solid-shade {
   @include box-shadow(0 0 0 3px #f1f1f1);
 }
+
+@mixin header-font {
+  color: $style_color;
+  text-shadow: 0 1px 1px #FFF;
+  font-family: 'Korolev', sans-serif;
+  font-size: 28px;
+  line-height: 48px;
+  font-weight: normal;
+}
