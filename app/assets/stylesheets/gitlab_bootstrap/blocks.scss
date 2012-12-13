@@ -41,6 +41,15 @@
     }
   }
 
+  .top_box_content {
+    .box-title {
+      color: $style_color;
+      font-size: 18px;
+      font-weight: normal;
+      line-height: 28px;
+    }
+  }
+
   .middle_box_content {
     @include border-radius(0);
     border: none;

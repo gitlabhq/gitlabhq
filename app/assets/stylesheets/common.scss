@@ -426,25 +426,21 @@ p.time {
 }
 
 .status_info {
-  font-size: 14px;
+  font-size: 18px;
   padding: 5px 15px;
-  line-height: 24px;
-  width: 60px;
+  line-height: 48px;
   text-align: center;
-  float: left;
-  margin-right: 20px;
+  float: right;
+  position: relative;
+  top: -15px;
+  left: 15px;
+  background: #F5F5F5;
 
   &.success {
-    background: #5BB75B;
-    color: white;
-    text-shadow: 0 1px #111;
-    border-color: #9A9;
   }
   &.error {
-    background: #DA4E49;
-    border-color: #BD362F;
-    color: white;
-    text-shadow: 0 1px #111;
+    color: #C32;
+    border-bottom: 5px solid #C32;
   }
 }
 

@@ -26,22 +26,16 @@
 
 .main_box
   .top_box_content
-    %h4
+    %h4.box-title
       - if @issue.closed
-        .alert-message.error.status_info Closed
-      - else
-        .alert-message.success.status_info Open
+        .error.status_info Closed
       = gfm escape_once(@issue.title)
 
   .middle_box_content
-    %cite.cgray Created by
-    = image_tag gravatar_icon(@issue.author_email), width: 16, class: "lil_av"
-    %strong.author= link_to_issue_author(@issue)
-
-    - if @issue.assignee
-      %cite.cgray and currently assigned to
-      = image_tag gravatar_icon(@issue.assignee_email), width: 16, class: "lil_av"
-      %strong.author= link_to_issue_assignee(@issue)
+    %cite.cgray
+      Created by #{link_to_member(@project, @issue.author)}
+      - if @issue.assignee
+        \ and currently assigned to #{link_to_member(@project, @issue.assignee)}
 
     - if @issue.milestone
       - milestone = @issue.milestone
