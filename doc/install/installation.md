@@ -15,6 +15,12 @@ alternative web server have a look at the "Advanced Setup Tips" section.
 If you find a bug/error in this guide please submit an issue or pull request
 following the contribution guide (see `CONTRIBUTING.md`).
 
+**Ubuntu 12.04 x64**
+If you use Ubuntu 12.04 x64 you can setup GitLab v4 with one line script. 
+Just replace gitlab.example.com with your domain name and run script as sudo user or root
+
+    curl https://raw.github.com/gitlabhq/gitlab-recipes/master/install/v4/ubuntu_server_1204.sh | sudo domain_var=gitlab.example.com sh
+
 - - -
 
 # Overview
