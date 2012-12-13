@@ -101,3 +101,14 @@ input[type='search'].search-text-input {
 }
 
 fieldset legend { font-size: 17px; }
+
+/** PAGINATION **/
+.gitlab_pagination {
+  span a { color: $link_color; }
+  .prev, .next, .current, .page a {
+    padding: 10px;
+  }
+  .current {
+    border-bottom: 2px solid $style_color;
+  }
+}
