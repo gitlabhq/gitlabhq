@@ -52,14 +52,14 @@ edited by hand. But, you can use any editor you like instead.
 
 Install the required packages:
 
-    sudo apt-get install -y wget curl build-essential checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev zlib1g-dev libicu-dev redis-server openssh-server git-core libyaml-dev postfix
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev  wget curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
     # Install Python
     sudo apt-get install python
 
-    # Make sure that Python is 2.x (3.x is not supported at the moment)
+    # Make sure that Python is 2.5+ (3.x is not supported at the moment)
     python --version
 
     # If it's Python 3 you might need to install Python 2 separately
@@ -136,10 +136,10 @@ GitLab assumes *full and unshared* control over this Gitolite installation.
     # ... and use it as the admin key for the Gitolite setup
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
 
-Fix the directory permissions for the repository:
+Fix the directory permissions for the repositories:
 
     # Make sure the repositories dir is owned by git and it stays that way
-    sudo chmod -R ug+rwXs /home/git/repositories/
+    sudo chmod -R ug+rwXs,o-rwx /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
 ## Test if everything works so far
@@ -187,6 +187,12 @@ do so with caution!
     # host serving GitLab where necessary
     sudo -u gitlab -H vim config/gitlab.yml
 
+    # Make sure GitLab can write to the log/ and tmp/ directories
+    sudo chown -R gitlab log/
+    sudo chown -R gitlab tmp/
+    sudo chmod -R u+rwX  log/
+    sudo chmod -R u+rwX  tmp/
+
     # Copy the example Unicorn config
     sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -209,7 +215,7 @@ used for the `email.from` setting in `config/gitlab.yml`)
     sudo -u gitlab -H git config --global user.name "GitLab"
     sudo -u gitlab -H git config --global user.email "gitlab@localhost"
 
-## Setup GitLab hooks
+## Setup GitLab Hooks
 
     sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
     sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
@@ -227,7 +233,7 @@ Check if GitLab and its environment is configured correctly:
 
 To make sure you didn't miss anything run a more thorough check with:
 
-    sudo -u gitlab -H bundle exec rake gitlab:app:status RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If you are all green: congratulations, you successfully installed GitLab!
 Although this is the case, there are still a few steps to go.
@@ -248,6 +254,8 @@ Make GitLab start on boot:
 Start your GitLab instance:
 
     sudo service gitlab start
+    # or
+    sudo /etc/init.d/gitlab restart
 
 
 # 7. Nginx
