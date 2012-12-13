@@ -7,6 +7,12 @@ window.slugify = (text) ->
 window.ajaxGet = (url) ->
   $.ajax({type: "GET", url: url, dataType: "script"})
 
+window.errorMessage = (message) ->
+  ehtml = $("<p>")
+  ehtml.addClass("error_message")
+  ehtml.html(message)
+  ehtml
+
 # Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)

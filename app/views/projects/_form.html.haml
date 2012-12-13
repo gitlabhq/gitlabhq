@@ -22,7 +22,7 @@
         %span Namespace
       .controls
         - if can? current_user, :change_namespace, @project
-          = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+          = f.select :namespace_id, namespaces_options(@project.namespace_id || Namespace::global_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
           &nbsp;
           %span.cred Be careful. Changing project namespace can have unintended side effects
         - else

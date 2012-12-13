@@ -26,6 +26,8 @@ class Project < ActiveRecord::Base
   include Authority
   include Team
 
+  class TransferError < StandardError; end
+
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
 
@@ -101,7 +103,7 @@ class Project < ActiveRecord::Base
         namespace_id = Namespace.find_by_path(id.first).id
         where(namespace_id: namespace_id).find_by_path(id.last)
       else
-        find_by_path(id)
+        where(path: id, namespace_id: nil).last
       end
     end
 
@@ -270,12 +272,18 @@ class Project < ActiveRecord::Base
                    self.path
                  end
 
+      if Project.where(path: self.path, namespace_id: new_namespace.try(:id)).present?
+        raise TransferError.new("Project with same path in target namespace already exists")
+      end
+
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
       git_host.move_repository(old_repo, self)
 
       save!
     end
+  rescue Gitlab::ProjectMover::ProjectMoveError => ex
+    raise TransferError.new(ex.message)
   end
 
   def name_with_namespace

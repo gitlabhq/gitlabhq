@@ -46,6 +46,10 @@ class ProjectsController < ProjectResourceController
         format.js
       end
     end
+
+  rescue Project::TransferError => ex
+    @error = ex
+    render :update_failed
   end
 
   def show
