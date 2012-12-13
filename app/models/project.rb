@@ -251,6 +251,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def namespace?
+    ! namespace.nil?
+  end
+
   # For compatibility with old code
   def code
     path

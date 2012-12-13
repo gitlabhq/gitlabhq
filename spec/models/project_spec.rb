@@ -86,6 +86,7 @@ describe Project do
     it { should respond_to(:path_to_repo) }
     it { should respond_to(:valid_repo?) }
     it { should respond_to(:repo_exists?) }
+    it { should respond_to(:namespace?) }
 
     # Repository Role
     it { should respond_to(:tree) }
@@ -162,6 +163,19 @@ describe Project do
     it "should be invalid repo" do
       project = Project.new(name: "ok_name", path: "/INVALID_PATH/", path: "NEOK")
       project.valid_repo?.should be_false
+    end
+  end
+
+  describe :namespace? do
+    let(:project) { create(:project) }
+
+    it "should return true" do
+      project.namespace = Namespace.new(path: "some_namespace")
+      project.namespace?.should be_true
+    end
+
+    it "should return false" do
+      project.namespace?.should be_false
     end
   end
 
