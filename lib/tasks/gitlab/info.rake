@@ -84,7 +84,13 @@ namespace :gitlab do
 
     # Helper methods
 
-    # Runs the given command and matches the output agains the given RegExp
+    # Runs the given command and matches the output agains the given pattern
+    #
+    # Returns nil if nothing matched
+    # Retunrs the MatchData if the pattern matched
+    #
+    # see also #run
+    # see also String#match
     def run_and_match(command, regexp)
       run(command).try(:match, regexp)
     end
@@ -93,6 +99,8 @@ namespace :gitlab do
     #
     # Returns nil if the command was not found
     # Returns the output of the command otherwise
+    #
+    # see also #run_and_match
     def run(command)
       unless `#{command} 2>/dev/null`.blank?
         `#{command}`
