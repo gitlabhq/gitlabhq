@@ -18,6 +18,7 @@ GET /issues
     "assignee": null,
     "author": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -46,6 +47,7 @@ GET /issues
     },
     "assignee": {
       "id": 2,
+      "username": "jack_smith",
       "email": "jack@example.com",
       "name": "Jack Smith",
       "blocked": false,
@@ -53,6 +55,7 @@ GET /issues
     },
     "author": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -110,6 +113,7 @@ Parameters:
   },
   "assignee": {
     "id": 2,
+    "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
     "blocked": false,
@@ -117,6 +121,7 @@ Parameters:
   },
   "author": {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,

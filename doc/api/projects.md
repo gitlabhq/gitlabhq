@@ -17,6 +17,7 @@ GET /projects
     "default_branch": "master",
     "owner": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -38,6 +39,7 @@ GET /projects
     "default_branch": "api",
     "owner": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -75,6 +77,7 @@ Parameters:
   "default_branch": "api",
   "owner": {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,
@@ -141,6 +144,7 @@ Parameters:
 {
 
   "id": 1,
+  "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
   "blocked": false,

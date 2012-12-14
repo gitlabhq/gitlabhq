@@ -15,6 +15,7 @@ GET /projects/:id/notes
     "body": "The solution is rather tricky",
     "author": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,

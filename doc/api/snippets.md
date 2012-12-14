@@ -30,6 +30,7 @@ Parameters:
   "file_name": "add.rb",
   "author": {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,
