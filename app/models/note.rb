@@ -121,4 +121,12 @@ class Note < ActiveRecord::Base
   def downvote?
     note.start_with?('-1') || note.start_with?(':-1:')
   end
+
+  def noteable_type_name
+    if noteable_type.present?
+      noteable_type.downcase
+    else
+      "wall"
+    end
+  end
 end

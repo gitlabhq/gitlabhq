@@ -7,7 +7,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
   xml.updated @events.maximum(:updated_at).strftime("%Y-%m-%dT%H:%M:%SZ") if @events.any?
 
   @events.each do |event|
-    if event.allowed?
+    if event.proper?
       event = EventDecorator.decorate(event)
       xml.entry do
         event_link = event.feed_url

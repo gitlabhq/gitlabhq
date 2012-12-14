@@ -13,7 +13,8 @@
 #
 
 class Milestone < ActiveRecord::Base
-  attr_accessible :title, :description, :due_date, :closed
+  attr_accessible :title, :description, :due_date, :closed, :author_id_of_changes
+  attr_accessor :author_id_of_changes
 
   belongs_to :project
   has_many :issues
@@ -66,5 +67,9 @@ class Milestone < ActiveRecord::Base
 
   def open?
     !closed
+  end
+
+  def author_id
+    author_id_of_changes
   end
 end
