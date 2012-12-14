@@ -2,7 +2,7 @@ class ActivityObserver < ActiveRecord::Observer
   observe :issue, :merge_request, :note, :milestone
 
   def after_create(record)
-    event_author_id = record.author_id || record.author_id_of_changes
+    event_author_id = record.author_id
 
     # Skip status notes
     if record.kind_of?(Note) && record.note.include?("_Status changed to ")

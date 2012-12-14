@@ -34,15 +34,17 @@ describe ActivityObserver do
     it { @event.target.should == @issue }
   end
 
-  #describe "Issue commented" do
-    #before do
-      #@issue = create(:issue, project: project)
-      #@note = create(:note, noteable: @issue, project: project)
-      #@event = Event.last
-    #end
+  describe "Issue commented" do
+    before do
+      Note.observers.enable :activity_observer do
+        @issue = create(:issue, project: project)
+        @note = create(:note, noteable: @issue, project: project, author: @issue.author)
+        @event = Event.last
+      end
+    end
 
-    #it_should_be_valid_event
-    #it { @event.action.should == Event::Commented }
-    #it { @event.target.should == @note }
-  #end
+    it_should_be_valid_event
+    it { @event.action.should == Event::Commented }
+    it { @event.target.should == @note }
+  end
 end
