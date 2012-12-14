@@ -22,6 +22,7 @@ Parameters:
         "merged":false,
         "author":{
             "id":1,
+            "username": "admin",
             "email":"admin@local.host",
             "name":"Administrator",
             "blocked":false,
@@ -29,6 +30,7 @@ Parameters:
         },
         "assignee":{
             "id":1,
+            "username": "admin",
             "email":"admin@local.host",
             "name":"Administrator",
             "blocked":false,
@@ -62,6 +64,7 @@ Parameters:
     "merged":false,
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -69,6 +72,7 @@ Parameters:
     },
     "assignee":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -105,6 +109,7 @@ Parameters:
     "merged":false,
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -112,6 +117,7 @@ Parameters:
     },
     "assignee":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -150,6 +156,7 @@ Parameters:
     "merged":false,
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -157,6 +164,7 @@ Parameters:
     },
     "assignee":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -184,6 +192,7 @@ Will return created note with status `201 Created` on success, or `404 Not found
 {
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
