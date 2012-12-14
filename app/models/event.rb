@@ -15,6 +15,7 @@
 #
 
 class Event < ActiveRecord::Base
+  include NoteEvent
   include PushEvent
 
   attr_accessible :project, :action, :data, :author_id, :project_id,
@@ -58,12 +59,14 @@ class Event < ActiveRecord::Base
     end
   end
 
-  # Next events currently enabled for system
-  #  - push
-  #  - new issue
-  #  - merge request
-  def allowed?
-    push? || issue? || merge_request? || membership_changed? || note? || milestone?
+  def proper?
+    if push?
+      true
+    elsif membership_changed?
+      true
+    else
+      (issue? || merge_request? || note? || milestone?) && target
+    end
   end
 
   def project_name
