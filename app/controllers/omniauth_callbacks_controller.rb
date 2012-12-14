@@ -24,8 +24,28 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     sign_in_and_redirect @user
   end
 
-  private
+  def cas
+    oauth = request.env['omniauth.auth']
+    provider, uid = oauth['provider'], oauth['uid']
 
+    if current_user
+      # Change a logged-in user's authentication method:
+      current_user.extern_uid = uid
+      current_user.provider = provider
+      current_user.save
+      redirect_to profile_path
+    else
+      @user = User.find_or_new_for_omniauth(oauth)
+
+      if @user
+        sign_in_and_redirect @user
+      else
+        flash[:notice] = "There's no such user!"
+        redirect_to new_user_session_path
+      end
+    end
+  end
+  private
   def handle_omniauth
     oauth = request.env['omniauth.auth']
     provider, uid = oauth['provider'], oauth['uid']
