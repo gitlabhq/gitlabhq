@@ -105,4 +105,20 @@ module Account
   def namespace_id
     namespace.try :id
   end
+
+  def authorized_groups
+    @authorized_groups ||= begin
+                           groups = Group.where(id: self.projects.pluck(:namespace_id)).all
+                           groups = groups + self.groups
+                           groups.uniq
+                         end
+  end
+
+  def authorized_projects
+    Project.authorized_for(self)
+  end
+
+  def my_own_projects
+    Project.personal(self)
+  end
 end

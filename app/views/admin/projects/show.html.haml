@@ -47,9 +47,12 @@
   %tr
     %td
       %b
-        Path:
+        Owned by:
     %td
-      %code= @project.path_to_repo
+      - if @project.chief
+        = link_to @project.chief.name, admin_user_path(@project.chief)
+      - else
+        (deleted)
   %tr
     %td
       %b
@@ -59,9 +62,46 @@
   %tr
     %td
       %b
+        Created at:
+    %td
+      = @project.created_at.stamp("March 1, 1999")
+
+%table.zebra-striped
+  %thead
+    %tr
+      %th Repository
+      %th
+  %tr
+    %td
+      %b
+        FS Path:
+    %td
+      %code= @project.path_to_repo
+  %tr
+    %td
+      %b
+        Smart HTTP:
+    %td
+      = link_to @project.http_url_to_repo
+  %tr
+    %td
+      %b
+        SSH:
+    %td
+      = link_to @project.ssh_url_to_repo
+  %tr
+    %td
+      %b
+        Last commit at:
+    %td
+      = last_commit(@project)
+  %tr
+    %td
+      %b
         Post Receive File:
     %td
       = check_box_tag :post_receive_file, 1, @project.has_post_receive_file?, disabled: true
+
 %br
 %h5
   Team

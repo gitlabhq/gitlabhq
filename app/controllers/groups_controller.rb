@@ -49,6 +49,7 @@ class GroupsController < ApplicationController
   def people
     @project = group.projects.find(params[:project_id]) if params[:project_id]
     @users = @project ? @project.users : group.users
+    @users.sort_by!(&:name)
 
     if @project
       @team_member = @project.users_projects.new

@@ -4,7 +4,7 @@
       = Project.access_options.key(access).pluralize
       %small= members.size
     %ul.unstyled
-      - members.each do |up|
+      - members.sort_by(&:user_name).each do |up|
         = render(partial: 'team_members/show', locals: {member: up})
 
 

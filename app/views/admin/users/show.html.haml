@@ -40,6 +40,12 @@
   %tr
     %td
       %b
+        Created at:
+    %td
+      = @admin_user.created_at.stamp("March 1, 1999")
+  %tr
+    %td
+      %b
         Projects limit:
     %td
       = @admin_user.projects_limit

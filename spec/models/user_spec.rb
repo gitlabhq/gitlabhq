@@ -41,7 +41,6 @@ describe User do
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:projects) }
     it { should have_many(:groups) }
-    it { should have_many(:my_own_projects).class_name('Project') }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }
     it { should have_many(:recent_events).class_name('Event') }
@@ -115,5 +114,17 @@ describe User do
       user = create(:user)
       user.authentication_token.should_not be_blank
     end
+  end
+
+  describe 'projects and namespaces' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @user = create :user
+      @project = create :project, namespace: @user.namespace
+    end
+
+    it { @user.authorized_projects.should include(@project) }
+    it { @user.my_own_projects.should include(@project) }
+    it { @user.several_namespaces?.should be_false }
   end
 end
