@@ -100,6 +100,12 @@ input[type='search'].search-text-input {
   border: 1px solid #ccc;
 }
 
+input[type='text'].danger {
+  background: #F2DEDE!important;
+  border-color: #D66;
+  text-shadow: 0 1px 1px #fff
+}
+
 fieldset legend { font-size: 17px; }
 
 /** PAGINATION **/
