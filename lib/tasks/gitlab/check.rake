@@ -290,14 +290,15 @@ namespace :gitlab do
     end
 
     def check_gitlab_in_git_group
-      print "gitlab user is in git group? ... "
+      gitolite_ssh_user = Gitlab.config.ssh_user
+      print "gitlab user is in #{gitolite_ssh_user} group? ... "
 
       if run_and_match("id -rnG", /\Wgit\W/)
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "sudo usermod -a -G git gitlab"
+          "sudo usermod -a -G #{gitolite_ssh_user} gitlab"
         )
         for_more_information(
           see_installation_guide_section "System Users"
@@ -308,7 +309,8 @@ namespace :gitlab do
 
     # see https://github.com/gitlabhq/gitlabhq/issues/1059
     def check_issue_1056_shell_profile_error
-      print "Has no \"-e\" in ~git/.profile ... "
+      gitolite_ssh_user = Gitlab.config.ssh_user
+      print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
 
       profile_file = File.expand_path("~#{Gitlab.config.ssh_user}/.profile")
 
@@ -510,22 +512,23 @@ namespace :gitlab do
     end
 
     def check_dot_gitolite_user_and_group
-      print "Config directory owned by git:git? ... "
+      gitolite_ssh_user = Gitlab.config.ssh_user
+      print "Config directory owned by #{gitolite_ssh_user}:#{gitolite_ssh_user} ... "
 
-      gitolite_config_path = File.expand_path("~#{Gitlab.config.ssh_user}/.gitolite")
+      gitolite_config_path = File.expand_path("~#{gitolite_ssh_user}/.gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
       end
 
-      if `stat --printf %U #{gitolite_config_path}` == "git" && # user
-         `stat --printf %G #{gitolite_config_path}` == "git" #group
+      if `stat --printf %U #{gitolite_config_path}` == gitolite_ssh_user && # user
+         `stat --printf %G #{gitolite_config_path}` == gitolite_ssh_user #group
         puts "yes".green
       else
         puts "no".red
-        puts "#{gitolite_config_path} is not owned by git".red
+        puts "#{gitolite_config_path} is not owned by #{gitolite_ssh_user}".red
         try_fixing_it(
-          "sudo chown -R git:git #{gitolite_config_path}"
+          "sudo chown -R #{gitolite_ssh_user}:#{gitolite_ssh_user} #{gitolite_config_path}"
         )
         for_more_information(
           see_installation_guide_section "Gitolite"
@@ -614,6 +617,7 @@ namespace :gitlab do
       hook_file = "post-receive"
       gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
       gitolite_hook_file = File.join(gitolite_hooks_path, hook_file)
+      gitolite_ssh_user = Gitlab.config.ssh_user
 
       gitlab_hook_file = Rails.root.join.join("lib", "hooks", hook_file)
 
@@ -622,7 +626,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo -u git cp #{gitlab_hook_file} #{gitolite_hook_file}"
+          "sudo -u #{gitolite_ssh_user} cp #{gitlab_hook_file} #{gitolite_hook_file}"
         )
         for_more_information(
           see_installation_guide_section "Setup GitLab Hooks"
@@ -638,6 +642,7 @@ namespace :gitlab do
       gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
       gitolite_hook_file  = File.join(gitolite_hooks_path, hook_file)
       gitolite_hook_content = File.read(gitolite_hook_file)
+      gitolite_ssh_user = Gitlab.config.ssh_user
 
       unless File.exists?(gitolite_hook_file)
         puts "can't check because of previous errors".magenta
@@ -652,7 +657,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo -u git cp #{gitlab_hook_file} #{gitolite_hook_file}"
+          "sudo -u #{gitolite_ssh_user} cp #{gitlab_hook_file} #{gitolite_hook_file}"
         )
         for_more_information(
           see_installation_guide_section "Setup GitLab Hooks"
@@ -708,7 +713,8 @@ namespace :gitlab do
     end
 
     def check_repo_base_user_and_group
-      print "Repo base owned by git:git? ... "
+      gitolite_ssh_user = Gitlab.config.ssh_user
+      print "Repo base owned by #{gitolite_ssh_user}:#{gitolite_ssh_user}? ... "
 
       repo_base_path = Gitlab.config.git_base_path
       unless File.exists?(repo_base_path)
@@ -716,14 +722,14 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %U #{repo_base_path}` == "git" && # user
-         `stat --printf %G #{repo_base_path}` == "git" #group
+      if `stat --printf %U #{repo_base_path}` == gitolite_ssh_user && # user
+         `stat --printf %G #{repo_base_path}` == gitolite_ssh_user #group
         puts "yes".green
       else
         puts "no".red
-        puts "#{repo_base_path} is not owned by git".red
+        puts "#{repo_base_path} is not owned by #{gitolite_ssh_user}".red
         try_fixing_it(
-          "sudo chown -R git:git #{repo_base_path}"
+          "sudo chown -R #{gitolite_ssh_user}:#{gitolite_ssh_user} #{repo_base_path}"
         )
         for_more_information(
           see_installation_guide_section "Gitolite"
@@ -773,6 +779,7 @@ namespace :gitlab do
       hook_file = "post-receive"
       gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
       gitolite_hook_file  = File.join(gitolite_hooks_path, hook_file)
+      gitolite_ssh_user = Gitlab.config.ssh_user
 
       unless File.exists?(gitolite_hook_file)
         puts "can't check because of previous errors".magenta
@@ -792,7 +799,7 @@ namespace :gitlab do
         unless File.exists?(project_hook_file)
           puts "missing".red
           try_fixing_it(
-            "sudo -u git ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
           )
           for_more_information(
             "lib/support/rewrite-hooks.sh"
@@ -806,7 +813,7 @@ namespace :gitlab do
         else
           puts "not a link to Gitolite's hook".red
           try_fixing_it(
-            "sudo -u git ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
           )
           for_more_information(
             "lib/support/rewrite-hooks.sh"
@@ -860,7 +867,6 @@ namespace :gitlab do
         puts "yes".green
       else
         puts "no".red
-        puts "#{repo_base_path} is not owned by git".red
         try_fixing_it(
           "sudo service gitlab restart",
           "or",
