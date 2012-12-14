@@ -19,12 +19,19 @@ class Milestone < ActiveRecord::Base
   has_many :issues
   has_many :merge_requests
 
+  scope :active, where(closed: false)
+  scope :closed, where(closed: true)
+
   validates :title, presence: true
   validates :project, presence: true
   validates :closed, inclusion: { in: [true, false] }
 
-  def self.active
-    where("due_date > ? OR due_date IS NULL", Date.today)
+  def expired?
+    if due_date
+      due_date < Date.today
+    else
+      false
+    end
   end
 
   def participants
@@ -51,5 +58,13 @@ class Milestone < ActiveRecord::Base
 
   def expires_at
     "expires at #{due_date.stamp("Aug 21, 2011")}" if due_date
+  end
+
+  def can_be_closed?
+    issues.count > 0 && open? && issues.opened.count.zero?
+  end
+
+  def open?
+    !closed
   end
 end

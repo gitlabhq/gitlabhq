@@ -531,9 +531,14 @@ pre {
   }
 }
 
-.milestone .progress {
-  margin-bottom: 0;
-  margin-top: 4px;
+.milestone {
+  &.milestone-closed {
+    background: #eee;
+  }
+  .progress {
+    margin-bottom: 0;
+    margin-top: 4px;
+  }
 }
 
 .float-link {

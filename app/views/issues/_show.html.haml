@@ -28,7 +28,7 @@
   %p= link_to_gfm truncate(issue.title, length: 100), project_issue_path(issue.project, issue), class: "row_title"
 
   %span.update-author
-    %small.cdark= "##{issue.id}"
+    %span.cdark= "##{issue.id}"
     - if issue.assignee
       assigned to #{issue.assignee_name}
     - else
