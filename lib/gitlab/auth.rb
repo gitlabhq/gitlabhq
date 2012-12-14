@@ -20,12 +20,12 @@ module Gitlab
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
-      name = auth.info.name.force_encoding("utf-8")
-      email = auth.info.email.downcase unless auth.info.email.nil?
+      name = (auth.info.name||auth.uid).force_encoding("utf-8")
+      email = auth.info.email.blank? "#{auth.uid}@thoughtworks.com":auth.info.email
 
       ldap_prefix = ldap ? '(LDAP) ' : ''
-      raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
-        " address" if auth.info.email.blank?
+      #raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
+      #  " address" if auth.info.email.blank?
 
       log.info "#{ldap_prefix}Creating user from #{provider} login"\
         " {uid => #{uid}, name => #{name}, email => #{email}}"
