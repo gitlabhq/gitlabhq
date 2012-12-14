@@ -184,7 +184,7 @@ namespace :gitlab do
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
-        print "#{project.name.yellow} ... "
+        print "#{project.name_with_namespace.yellow} ... "
 
         if project.satellite.exists?
           puts "yes".green
@@ -752,7 +752,7 @@ namespace :gitlab do
       }
 
       Project.find_each(batch_size: 100) do |project|
-        print "#{project.name.yellow} ... "
+        print "#{project.name_with_namespace.yellow} ... "
 
         correct_options = options.map do |name, value|
           run("git --git-dir=\"#{project.path_to_repo}\" config --get #{name}").try(:chomp) == value
@@ -793,7 +793,7 @@ namespace :gitlab do
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
-        print "#{project.name.yellow} ... "
+        print "#{project.name_with_namespace.yellow} ... "
         project_hook_file = File.join(project.path_to_repo, "hooks", hook_file)
 
         unless File.exists?(project_hook_file)
