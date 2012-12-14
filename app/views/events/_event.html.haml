@@ -5,6 +5,8 @@
 
     - if event.push?
       = render "events/event/push", event: event
+    - if event.note?
+      = render "events/event/note", event: event
     - else
       = render "events/event/common", event: event
 

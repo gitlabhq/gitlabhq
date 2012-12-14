@@ -1,5 +1,5 @@
 class ActivityObserver < ActiveRecord::Observer
-  observe :issue, :merge_request
+  observe :issue, :merge_request, :note, :milestone
 
   def after_create(record)
     Event.create(
@@ -12,7 +12,7 @@ class ActivityObserver < ActiveRecord::Observer
   end
 
   def after_save(record)
-    if record.changed.include?("closed") 
+    if record.changed.include?("closed")
       Event.create(
         project: record.project,
         target_id: record.id,

@@ -14,6 +14,7 @@
 
 class Milestone < ActiveRecord::Base
   attr_accessible :title, :description, :due_date, :closed
+  attr_accessor :author_id
 
   belongs_to :project
   has_many :issues

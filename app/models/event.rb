@@ -63,7 +63,7 @@ class Event < ActiveRecord::Base
   #  - new issue
   #  - merge request
   def allowed?
-    push? || issue? || merge_request? || membership_changed?
+    push? || issue? || merge_request? || membership_changed? || note? || milestone?
   end
 
   def project_name
@@ -92,6 +92,14 @@ class Event < ActiveRecord::Base
 
   def reopened?
     action == self.class::Reopened
+  end
+
+  def milestone?
+    target_type == "Milestone"
+  end
+
+  def note?
+    target_type == "Note"
   end
 
   def issue?

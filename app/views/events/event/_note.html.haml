@@ -1,0 +1,16 @@
+.event-title
+  %span.author_name= link_to_author event
+  %span.event_label commented on #{event.target.noteable_type_name}
+  - if event.target and event.target.noteable_id
+    = link_to [event.project, event.target.noteable] do
+      %strong= truncate event.target.noteable_id
+  - else
+    %strong (deleted)
+  at
+  - if event.project
+    = link_to_project event.project
+  - else
+    = event.project_name
+
+.event-body
+  %p.hint= truncate event.target.note, length: 70
