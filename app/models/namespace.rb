@@ -48,14 +48,14 @@ class Namespace < ActiveRecord::Base
   end
 
   def ensure_dir_exist
-    namespace_dir_path = File.join(Gitlab.config.git_base_path, path)
+    namespace_dir_path = File.join(Gitlab.config.gitolite.repos_path, path)
     system("mkdir -m 770 #{namespace_dir_path}") unless File.exists?(namespace_dir_path)
   end
 
   def move_dir
     if path_changed?
-      old_path = File.join(Gitlab.config.git_base_path, path_was)
-      new_path = File.join(Gitlab.config.git_base_path, path)
+      old_path = File.join(Gitlab.config.gitolite.repos_path, path_was)
+      new_path = File.join(Gitlab.config.gitolite.repos_path, path)
       if File.exists?(new_path)
         raise "Already exists"
       end
@@ -64,7 +64,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def rm_dir
-    dir_path = File.join(Gitlab.config.git_base_path, path)
+    dir_path = File.join(Gitlab.config.gitolite.repos_path, path)
     system("rm -rf #{dir_path}")
   end
 end

@@ -195,7 +195,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [Gitlab.config.url, path_with_namespace].join("/")
+    [Gitlab.config.gitlab.url, path_with_namespace].join("/")
   end
 
   def common_notes
