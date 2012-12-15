@@ -21,7 +21,7 @@ module Gitlab
       provider = auth.provider
       uid = auth.info.uid || auth.uid
       name = (auth.info.name||auth.uid).force_encoding("utf-8")
-      email = auth.info.email.blank? "#{auth.uid}@thoughtworks.com":auth.info.email
+      email = auth.info.email.blank || "#{auth.uid}@thoughtworks.com"
 
       ldap_prefix = ldap ? '(LDAP) ' : ''
       #raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
