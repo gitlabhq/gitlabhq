@@ -173,17 +173,3 @@ Parameters:
 
 Will return updated issue with status `200 OK` on success, or `404 Not found` on fail.
 
-## Delete issue
-
-Delete existing project issue.
-
-```
-DELETE /projects/:id/issues/:issue_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `issue_id` (required) - The ID of a project's issue
-
-Status code `200` will be returned on success.
