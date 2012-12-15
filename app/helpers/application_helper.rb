@@ -34,7 +34,7 @@ module ApplicationHelper
   def gravatar_icon(user_email = '', size = nil)
     size = 40 if size.nil? || size <= 0
 
-    if Gitlab.config.disable_gravatar? || user_email.blank?
+    if !Gitlab.config.gravatar.enabled || user_email.blank?
       'no_avatar.png'
     else
       gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
