@@ -1,7 +1,11 @@
 .main_box
   .top_box_content
     %h4.box-title
-      - if @merge_request.closed
+      - if @merge_request.merged
+        .error.status_info
+          %i.icon-ok
+          Merged
+      - elsif @merge_request.closed
         .error.status_info Closed
       = gfm escape_once(@merge_request.title)
 
