@@ -179,7 +179,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo_name
-    denied_paths = %w(gitolite-admin groups projects dashboard help )
+    denied_paths = %w(gitolite-admin admin dashboard groups help profile projects search)
 
     if denied_paths.include?(path)
       errors.add(:path, "like #{path} is not allowed")
