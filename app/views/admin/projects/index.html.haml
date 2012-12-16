@@ -9,14 +9,15 @@
 
 %table
   %thead
-    %th
-      Name
-      %i.icon-sort-down
-    %th Path
-    %th Team Members
-    %th Last Commit
-    %th Edit
-    %th.cred Danger Zone!
+    %tr
+      %th
+        Name
+        %i.icon-sort-down
+      %th Path
+      %th Team Members
+      %th Last Commit
+      %th Edit
+      %th.cred Danger Zone!
 
   - @projects.each do |project|
     %tr

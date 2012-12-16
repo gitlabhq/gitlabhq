@@ -21,15 +21,16 @@
 
 %table
   %thead
-    %th Admin
-    %th
-      Name
-      %i.icon-sort-down
-    %th Username
-    %th Email
-    %th Projects
-    %th Edit
-    %th.cred Danger Zone!
+    %tr
+      %th Admin
+      %th
+        Name
+        %i.icon-sort-down
+      %th Username
+      %th Email
+      %th Projects
+      %th Edit
+      %th.cred Danger Zone!
 
   - @admin_users.each do |user|
     %tr
