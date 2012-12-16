@@ -18,4 +18,16 @@ module NoteEvent
   def note_target_id
     target.noteable_id
   end
+
+  def wall_note?
+    target.noteable_type.blank?
+  end
+
+  def note_target_type
+    if target.noteable_type.present?
+      target.noteable_type.titleize
+    else
+      "Wall"
+    end.downcase
+  end
 end
