@@ -66,6 +66,10 @@ describe User do
     it { should ensure_length_of(:bio).is_within(0..255) }
   end
 
+  describe 'modules' do
+    it { should include_module(Account) }
+  end
+
   describe "Respond to" do
     it { should respond_to(:is_admin?) }
     it { should respond_to(:identifier) }
@@ -114,17 +118,5 @@ describe User do
       user = create(:user)
       user.authentication_token.should_not be_blank
     end
-  end
-
-  describe 'projects and namespaces' do
-    before do
-      ActiveRecord::Base.observers.enable(:user_observer)
-      @user = create :user
-      @project = create :project, namespace: @user.namespace
-    end
-
-    it { @user.authorized_projects.should include(@project) }
-    it { @user.my_own_projects.should include(@project) }
-    it { @user.several_namespaces?.should be_false }
   end
 end
