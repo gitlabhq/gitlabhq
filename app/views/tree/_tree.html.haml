@@ -16,10 +16,11 @@
   - else
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
-        %th Name
-        %th Last Update
-        %th Last Commit
-        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
+        %tr
+          %th Name
+          %th Last Update
+          %th Last Commit
+          %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
 
       - if tree.up_dir?
         %tr.tree-item
