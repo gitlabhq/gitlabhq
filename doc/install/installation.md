@@ -117,7 +117,7 @@ Create a user for GitLab:
 Clone GitLab's fork of the Gitolite source code:
 
     cd /home/git
-    sudo -u git -H git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
+    sudo -u git -H git clone -b gl-v320 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup Gitolite with GitLab as its admin:
 
