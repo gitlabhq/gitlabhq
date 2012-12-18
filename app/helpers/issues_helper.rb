@@ -30,4 +30,10 @@ module IssuesHelper
       open: "open"
     }
   end
+
+  def labels_autocomplete_source
+    labels = @project.issues_labels.order('count DESC')
+    labels = labels.map{ |l| { label: l.name, value: l.name } }
+    labels.to_json
+  end
 end

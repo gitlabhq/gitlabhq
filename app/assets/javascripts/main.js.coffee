@@ -13,6 +13,12 @@ window.errorMessage = (message) ->
   ehtml.html(message)
   ehtml
 
+window.split = (val) ->
+  return val.split( /,\s*/ )
+
+window.extractLast = (term) ->
+  return split( term ).pop()
+
 # Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
