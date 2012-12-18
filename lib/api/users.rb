@@ -34,14 +34,59 @@ module Gitlab
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
       #   projects_limit                    - Number of projects user can create
+      #   extern_uid                        - External authentication provider UID
+      #   provider                          - External provider
+      #   bio                               - Bio
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
         user = User.new attrs, as: :admin
         if user.save
           present user, with: Entities::User
+        else
+          not_found!
+        end
+      end
+
+      # Update user. Available only for admin
+      #
+      # Parameters:
+      #   email                             - Email
+      #   name                              - Name
+      #   password                          - Password
+      #   skype                             - Skype ID
+      #   linkedin                          - Linkedin
+      #   twitter                           - Twitter account
+      #   projects_limit                    - Limit projects wich user can create
+      #   extern_uid                        - External authentication provider UID
+      #   provider                          - External provider
+      #   bio                               - Bio
+      # Example Request:
+      #   PUT /users/:id
+      put ":id" do
+        authenticated_as_admin!
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        user = User.find_by_id(params[:id])
+
+        if user && user.update_attributes(attrs)
+          present user, with: Entities::User
+        else
+          not_found!
+        end
+      end
+
+      # Delete user. Available only for admin
+      #
+      # Example Request:
+      #   DELETE /users/:id
+      delete ":id" do
+        authenticated_as_admin!
+        user = User.find_by_id(params[:id])
+
+        if user
+          user.destroy
         else
           not_found!
         end
