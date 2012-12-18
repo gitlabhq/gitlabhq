@@ -57,10 +57,15 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID or code name of a project
+      #   query         - Query string
       # Example Request:
       #   GET /projects/:id/members
       get ":id/members" do
-        @members = paginate user_project.users
+        if params[:query].present?
+          @members = paginate user_project.users.where("username LIKE ?", "%#{params[:query]}%")
+        else
+          @members = paginate user_project.users
+        end
         present @members, with: Entities::ProjectMember, project: user_project
       end
 
