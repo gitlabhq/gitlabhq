@@ -1,0 +1,15 @@
+class MoveNoteableCommitToOwnField < ActiveRecord::Migration
+  def up
+    add_column :notes, :commit_id, :string, null: true
+    add_column :notes, :new_noteable_id, :integer, null: true
+    Note.where(noteable_type: 'Commit').update_all('commit_id = noteable_id')
+    Note.where("noteable_type != 'Commit'").update_all('new_noteable_id = CAST (noteable_id AS INTEGER)')
+    remove_column :notes, :noteable_id
+    rename_column :notes, :new_noteable_id, :noteable_id
+  end
+
+  def down
+    remove_column :notes, :commit_id
+    remove_column :notes, :new_noteable_id
+  end
+end

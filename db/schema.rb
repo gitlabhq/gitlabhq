@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121205201726) do
+ActiveRecord::Schema.define(:version => 20121218164840) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -69,19 +69,19 @@ ActiveRecord::Schema.define(:version => 20121205201726) do
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                                          :null => false
-    t.string   "source_branch",                                          :null => false
-    t.integer  "project_id",                                             :null => false
+    t.string   "target_branch",                    :null => false
+    t.string   "source_branch",                    :null => false
+    t.integer  "project_id",                       :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
-    t.boolean  "closed",                              :default => false, :null => false
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
-    t.text     "st_commits",    :limit => 2147483647
-    t.text     "st_diffs",      :limit => 2147483647
-    t.boolean  "merged",                              :default => false, :null => false
-    t.integer  "state",                               :default => 1,     :null => false
+    t.boolean  "closed",        :default => false, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.text     "st_commits"
+    t.text     "st_diffs"
+    t.boolean  "merged",        :default => false, :null => false
+    t.integer  "state",         :default => 1,     :null => false
     t.integer  "milestone_id"
   end
 
@@ -124,7 +124,6 @@ ActiveRecord::Schema.define(:version => 20121205201726) do
 
   create_table "notes", :force => true do |t|
     t.text     "note"
-    t.string   "noteable_id"
     t.string   "noteable_type"
     t.integer  "author_id"
     t.datetime "created_at",    :null => false
@@ -132,10 +131,11 @@ ActiveRecord::Schema.define(:version => 20121205201726) do
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
+    t.string   "commit_id"
+    t.integer  "noteable_id"
   end
 
   add_index "notes", ["created_at"], :name => "index_notes_on_created_at"
-  add_index "notes", ["noteable_id"], :name => "index_notes_on_noteable_id"
   add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
   add_index "notes", ["project_id"], :name => "index_notes_on_project_id"
 
