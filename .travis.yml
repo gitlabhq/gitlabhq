@@ -1,4 +1,5 @@
 env:
+  - DB=postgresql
   - DB=mysql
 before_install:
   - sudo apt-get install libicu-dev -y
