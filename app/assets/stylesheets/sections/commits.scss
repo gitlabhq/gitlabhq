@@ -229,8 +229,6 @@
 
 /** COMMIT ROW **/
 .commit {
-  @extend .wll;
-
   .browse_code_link_holder {
     @extend .span2;
     float: right;

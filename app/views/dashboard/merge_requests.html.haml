@@ -10,11 +10,12 @@
   .span9
     - if @merge_requests.any?
       - @merge_requests.group_by(&:project).each do |group|
-        %ul.unstyled.ui-box
+        .ui-box
           - @project = group[0]
           %h5= link_to_project @project
-          - group[1].each do |merge_request|
-            = render(partial: 'merge_requests/merge_request', locals: {merge_request: merge_request})
+          %ul.well-list
+            - group[1].each do |merge_request|
+              = render(partial: 'merge_requests/merge_request', locals: {merge_request: merge_request})
       %hr
       = paginate @merge_requests, theme: "gitlab"
 

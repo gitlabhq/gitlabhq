@@ -152,19 +152,6 @@
     }
   }
 
-  li, .wll {
-    padding: 10px;
-    &:first-child {
-      @include border-radius(4px 4px 0 0);
-      border-top: none;
-    }
-
-    &:last-child {
-      @include border-radius(0 0 4px 4px);
-      border: none;
-    }
-  }
-
   .ui-box-body {
     padding: 10px;
   }

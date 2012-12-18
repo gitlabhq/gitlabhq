@@ -1,4 +1,4 @@
-%li.wll{ id: dom_id(issue), class: issue_css_classes(issue), url: project_issue_path(issue.project, issue) }
+%li{ id: dom_id(issue), class: issue_css_classes(issue), url: project_issue_path(issue.project, issue) }
   - if controller.controller_name == 'issues'
     .issue_check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)

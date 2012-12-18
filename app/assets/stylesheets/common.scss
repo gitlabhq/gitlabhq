@@ -281,33 +281,6 @@ p.time {
   border: 2px solid #ddd;
 }
 
-.leftbar {
-  h5, .title {
-    padding: 5px 10px;
-  }
-
-  h4 {
-    font-size: 14px;
-    padding: 2px 10px;
-    color: #666;
-    border-bottom: 1px solid #f1f1f1;
-  }
-  a:last-child h4 { border: none; }
-
-  a:hover {
-    h4 {
-      color: #111;
-      background: $hover;
-      border-color: #CCC;
-      .ico.project {
-        background-position:-209px -21px;
-      }
-    }
-  }
-  .bottom {
-    padding: 10px;
-  }
-}
 
 
 /* Fix for readme code (stopped it from being yellow) */
@@ -320,7 +293,6 @@ p.time {
     }
   }
 }
-
 
 .highlight_word {
   background: #EEDC94;

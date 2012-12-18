@@ -18,7 +18,7 @@
           = link_to project_milestones_path(@project, f: "all") do
             All
 
-    %ul.unstyled
+    %ul.well-list
       = render @milestones
 
       - if @milestones.present?

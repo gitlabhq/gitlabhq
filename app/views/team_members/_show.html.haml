@@ -1,6 +1,6 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%li.wll{id: dom_id(member), class: "team_member_row user_#{user.id}"}
+%li{id: dom_id(member), class: "team_member_row user_#{user.id}"}
   .row
     .span6
       = link_to project_team_member_path(@project, member), title: user.name, class: "dark" do

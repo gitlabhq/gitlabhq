@@ -30,7 +30,7 @@
         = hidden_field_tag :f, params[:f]
     .clearfix
 
-  %ul.unstyled
+  %ul.well-list
     = render @merge_requests
     - if @merge_requests.blank?
       %li
