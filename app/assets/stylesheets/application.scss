@@ -1,0 +1,47 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+ *= require jquery.ui.gitlab
+ *= require jquery.atwho
+ *= require chosen
+ *= require_self
+*/
+
+/**
+ * GitLab bootstrap:
+ */
+@import "gitlab_bootstrap.scss";
+
+@import "common.scss";
+@import "ref_select.scss";
+
+@import "sections/header.scss";
+@import "sections/nav.scss";
+@import "sections/commits.scss";
+@import "sections/issues.scss";
+@import "sections/projects.scss";
+@import "sections/snippets.scss";
+@import "sections/votes.scss";
+@import "sections/merge_requests.scss";
+@import "sections/graph.scss";
+@import "sections/events.scss";
+@import "sections/themes.scss";
+@import "sections/tree.scss";
+@import "sections/notes.scss";
+@import "sections/profile.scss";
+@import "sections/login.scss";
+@import "sections/editor.scss";
+
+@import "highlight/white.scss";
+@import "highlight/dark.scss";
+
+/**
+ * UI themes:
+ */
+@import "themes/ui_basic.scss";
+@import "themes/ui_mars.scss";
+@import "themes/ui_modern.scss";
+@import "themes/ui_gray.scss";
+@import "themes/ui_color.scss";
+
