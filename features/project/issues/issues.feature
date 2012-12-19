@@ -24,11 +24,9 @@ Feature: Project Issues
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
 
-  @javascript
   Scenario: I submit new unassigned issue
     Given I click link "New Issue"
     And I submit new issue "500 error on profile"
-    Given I click link "500 error on profile"
     Then I should see issue "500 error on profile"
 
   @javascript
@@ -56,15 +54,6 @@ Feature: Project Issues
     And I fill in issue search with "0.3"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
-
-  # TODO: find out solution for poltergeist/phantomjs or remove
-  # @javascript
-  # Scenario: I clear search
-  #  Given I click link "All"
-  #  And I fill in issue search with "Something"
-  #  And I fill in issue search with ""
-  #  Then I should see "Release 0.4" in issues
-  #  And I should see "Release 0.3" in issues
 
   @javascript
   Scenario: I create Issue with pre-selected milestone

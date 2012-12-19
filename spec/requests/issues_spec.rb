@@ -11,7 +11,7 @@ describe "Issues" do
     project.add_access(user2, :read, :write)
   end
 
-  describe "Edit issue", js: true do
+  describe "Edit issue" do
     let!(:issue) do
       create(:issue,
              author: @user,
