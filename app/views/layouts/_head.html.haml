@@ -4,7 +4,10 @@
     GitLab
     = " > #{title}" if defined?(title)
   = favicon_link_tag 'favicon.ico'
-  = stylesheet_link_tag    "application"
+  = stylesheet_link_tag "application"
+  /[if lte IE 9]
+    -# will only be recognized by IE<=9
+    = stylesheet_link_tag  "vendor", "main"
   = javascript_include_tag "application"
   -# Atom feed
   - if controller_name == 'projects' && action_name == 'index'
