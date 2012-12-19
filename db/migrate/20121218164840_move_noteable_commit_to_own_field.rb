@@ -15,7 +15,6 @@ class MoveNoteableCommitToOwnField < ActiveRecord::Migration
   end
 
   def down
-    remove_column :notes, :commit_id
-    remove_column :notes, :new_noteable_id
+    raise ActiveRecord::IrreversibleMigration
   end
 end
