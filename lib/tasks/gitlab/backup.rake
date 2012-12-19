@@ -113,48 +113,97 @@ namespace :gitlab do
     task :repo_dump => :environment do
       backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
       FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
+
       # Gitlab repositories 
       puts "Dumping repositories:"
       Project.all.each do |project|
-        print "- Dumping repository #{project.name}... "
+        print "- Dumping repository '#{project.path_with_namespace}.git'... "
         unless project.empty_repo?
-          if Kernel.system("cd #{project.path_to_repo} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/#{project.path}.bundle --all > /dev/null 2>&1")
+
+          namespace       = project.namespace? ? project.namespace.path : "/"
+          path_to_bundle  = File.join(backup_path_repo, project.path_with_namespace + ".bundle")
+          FileUtils.mkdir_p(File.join(backup_path_repo, namespace))
+
+          if Kernel.system("cd #{project.path_to_repo} > /dev/null 2>&1 && git bundle create #{path_to_bundle} --all > /dev/null 2>&1")
             puts "[DONE]".green
           else
             puts "[FAILED]".red
           end
+
         else
           puts "[SKIPPING]".yellow
         end
       end
-      # Gitolite repositories
-      print "- Dumping repository gitolite-admin... "
-      if Kernel.system("cd #{File.join(Gitlab.config.git_base_path, "gitolite-admin.git")} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/gitolite-admin.bundle --all > /dev/null 2>&1")
-        puts "[DONE]".green
-      else
-        puts "[FAILED]".red
-      end
-    end
 
-    task :repo_restore => :environment do
-      backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
-      puts "Restoring repositories:"
-      project = Project.all.map { |n| [n.path, n.path_to_repo] }
-      project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
-      project.each do |project|
-        print "- Restoring repository #{project.first}... "
-        FileUtils.rm_rf(project.second) if File.dirname(project.second) # delete old stuff
-        if Kernel.system("cd #{File.dirname(project.second)} > /dev/null 2>&1 && git clone --bare #{backup_path_repo}/#{project.first}.bundle #{project.first}.git > /dev/null 2>&1")
-          permission_commands = [
-            "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
-            "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}"
-          ]
-          permission_commands.each { |command| Kernel.system(command) }
+      # Non gitlab managed repositories
+      [ "gitolite-admin.git" ].each do |repository|
+        path_to_repo    = File.join(Gitlab.config.git_base_path, repository)
+        path_to_bundle  = File.join(backup_path_repo, repository + ".bundle")
+
+        print "- Dumping repository '#{repository}'... "
+        if Kernel.system("cd #{path_to_repo} > /dev/null 2>&1 && git bundle create #{path_to_bundle} --all > /dev/null 2>&1")
           puts "[DONE]".green
         else
           puts "[FAILED]".red
         end
       end
+    end
+
+    task :repo_restore => :environment do
+
+      backup_path_repo    = File.join(Gitlab.config.backup_path, "repositories")
+      repos_in_backup     = Dir.chdir(backup_path_repo) && Dir.glob("{*.bundle,*/*.bundle}")
+      permission_commands = [
+        "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
+        "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}"
+      ]
+
+      # Gitlab repositories 
+      puts "Restoring repositories:"
+      Project.all.each do |project|
+
+        print "- Restoring repository '#{project.path_with_namespace}.git'... "
+        FileUtils.rm_rf(project.path_to_repo) if File.dirname(project.path_to_repo)
+
+        if repos_in_backup.include?(project.path_with_namespace + ".bundle") # true: we can restore the repo from backup
+
+          namespace         = project.namespace? ? project.namespace.path : "/"
+          path_to_bundle    = File.join(backup_path_repo, project.path_with_namespace + ".bundle")
+          path_to_repo_base = File.join(Gitlab.config.git_base_path, namespace)
+
+          FileUtils.mkdir_p(project.path_to_repo) until Dir.exists?(path_to_repo_base)
+
+          if Kernel.system("git clone --bare #{path_to_bundle} #{project.path_to_repo} > /dev/null 2>&1")
+            puts "[DONE]".green
+          else
+            puts "[FAILED]".red
+          end
+
+        else # false: need to create a new empty repo
+          if Grit::Repo.init_bare(project.path_to_repo)
+            puts "[DONE]".green
+          else
+            puts "[FAILED]".red
+          end
+        end
+      end
+
+      # Non gitlab managed repositories
+      [ "gitolite-admin.git" ].each do |repository|
+        path_to_bundle        = File.join(backup_path_repo, repository + ".bundle")
+        path_to_restore_point = File.join(Gitlab.config.git_base_path, repository)
+
+        print "- Restoring repository '#{repository}'... "
+        FileUtils.rm_rf(path_to_restore_point) if File.dirname(path_to_restore_point)
+
+        if Kernel.system("git clone --bare #{path_to_bundle} #{path_to_restore_point} > /dev/null 2>&1")
+          puts "[DONE]".green
+        else
+          puts "[FAILED]".red
+        end
+      end
+      # Fixing repository permissions
+      permission_commands.each { |command| Kernel.system(command) }
     end
 
     ###################################### DB ######################################
