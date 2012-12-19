@@ -42,7 +42,7 @@ describe MergeRequest do
 
     before do
       merge_request.stub(:commits) { [merge_request.project.commit] }
-      create(:note, noteable: merge_request.commits.first)
+      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit')
       create(:note, noteable: merge_request)
     end
 
