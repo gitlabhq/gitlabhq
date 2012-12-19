@@ -36,4 +36,8 @@ module IssuesHelper
     labels = labels.map{ |l| { label: l.name, value: l.name } }
     labels.to_json
   end
+
+  def issues_active_milestones
+    @project.milestones.active.order("id desc").all
+  end
 end

@@ -27,7 +27,7 @@
           .left
             = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")
             = select_tag('update[assignee_id]', options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), prompt: "Assignee")
-            = select_tag('update[milestone_id]', options_from_collection_for_select(@project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), prompt: "Milestone")
+            = select_tag('update[milestone_id]', options_from_collection_for_select(issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
             = hidden_field_tag 'update[issues_ids]', []
             = hidden_field_tag :f, params[:f]
           = button_tag "Save", class: "btn update_selected_issues"
@@ -51,7 +51,7 @@
           = form_tag project_issues_path(@project), method: :get, class: :right  do
             = select_tag(:label_name, options_for_select(issue_tags, params[:label_name]), prompt: "Labels")
             = select_tag(:assignee_id, options_from_collection_for_select([unassigned_filter] + @project.users.all, "id", "name", params[:assignee_id]), prompt: "Assignee")
-            = select_tag(:milestone_id, options_from_collection_for_select([unassigned_filter] + @project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), prompt: "Milestone")
+            = select_tag(:milestone_id, options_from_collection_for_select([unassigned_filter] + issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
             = hidden_field_tag :f, params[:f]
         .clearfix
 
