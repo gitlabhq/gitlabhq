@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121205201726) do
+ActiveRecord::Schema.define(:version => 20121219095402) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -124,7 +124,6 @@ ActiveRecord::Schema.define(:version => 20121205201726) do
 
   create_table "notes", :force => true do |t|
     t.text     "note"
-    t.string   "noteable_id"
     t.string   "noteable_type"
     t.integer  "author_id"
     t.datetime "created_at",    :null => false
@@ -132,11 +131,14 @@ ActiveRecord::Schema.define(:version => 20121205201726) do
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
+    t.string   "commit_id"
+    t.integer  "noteable_id"
   end
 
+  add_index "notes", ["commit_id"], :name => "index_notes_on_commit_id"
   add_index "notes", ["created_at"], :name => "index_notes_on_created_at"
-  add_index "notes", ["noteable_id"], :name => "index_notes_on_noteable_id"
   add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
+  add_index "notes", ["project_id", "noteable_type"], :name => "index_notes_on_project_id_and_noteable_type"
   add_index "notes", ["project_id"], :name => "index_notes_on_project_id"
 
   create_table "projects", :force => true do |t|

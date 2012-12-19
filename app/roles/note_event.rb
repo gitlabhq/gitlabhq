@@ -1,6 +1,6 @@
 module NoteEvent
   def note_commit_id
-    target.noteable_id
+    target.commit_id
   end
 
   def note_short_commit_id
@@ -16,7 +16,11 @@ module NoteEvent
   end
 
   def note_target_id
-    target.noteable_id
+    if note_commit?
+      target.commit_id
+    else
+      target.noteable_id.to_s
+    end
   end
 
   def wall_note?

@@ -7,6 +7,7 @@
           %div= msg
 
     = f.hidden_field :noteable_id
+    = f.hidden_field :commit_id
     = f.hidden_field :noteable_type
     = f.text_area :note, size: 255, class: 'note-text js-gfm-input'
     #preview-note.preview_note.hide
