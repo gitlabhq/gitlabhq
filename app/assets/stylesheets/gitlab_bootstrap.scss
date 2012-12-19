@@ -1,0 +1,26 @@
+/** Override bootstrap variables **/
+$baseFontSize: 13px !default;
+$baseLineHeight: 18px !default;
+
+// BOOTSTRAP
+@import "bootstrap";
+@import "bootstrap/responsive-utilities";
+@import "bootstrap/responsive-1200px-min";
+
+@import "font-awesome";
+
+/**
+ * GitLab bootstrap.
+ * Overrides some styles of twitter bootstrap.
+ * Also give some common classes for GitLab app
+ */
+@import "gitlab_bootstrap/variables.scss";
+@import "gitlab_bootstrap/fonts.scss";
+@import "gitlab_bootstrap/mixins.scss";
+@import "gitlab_bootstrap/common.scss";
+@import "gitlab_bootstrap/typography.scss";
+@import "gitlab_bootstrap/buttons.scss";
+@import "gitlab_bootstrap/blocks.scss";
+@import "gitlab_bootstrap/files.scss";
+@import "gitlab_bootstrap/tables.scss";
+@import "gitlab_bootstrap/lists.scss";
