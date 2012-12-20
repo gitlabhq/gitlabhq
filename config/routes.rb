@@ -164,7 +164,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :merge_requests, constraints: {id: /\d+/} do
+    resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
       member do
         get :diffs
         get :automerge
@@ -200,9 +200,9 @@ Gitlab::Application.routes.draw do
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
-    resources :milestones
+    resources :milestones, except: [:destroy]
     resources :labels, only: [:index]
-    resources :issues do
+    resources :issues, except: [:destroy] do
       collection do
         post  :sort
         post  :bulk_update

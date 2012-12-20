@@ -32,7 +32,7 @@
       .top_box_content
         = f.label :title do
           %strong= "Title *"
-        .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5
+        .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
       .merge_requests_middle_box
         .merge_requests_assignee
           = f.label :assignee_id do

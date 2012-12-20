@@ -1,6 +1,6 @@
 class IssuesController < ProjectResourceController
   before_filter :module_enabled
-  before_filter :issue, only: [:edit, :update, :destroy, :show]
+  before_filter :issue, only: [:edit, :update, :show]
 
   # Allow read any issue
   before_filter :authorize_read_issue!
@@ -10,9 +10,6 @@ class IssuesController < ProjectResourceController
 
   # Allow modify issue
   before_filter :authorize_modify_issue!, only: [:edit, :update]
-
-  # Allow destroy issue
-  before_filter :authorize_admin_issue!, only: [:destroy]
 
   respond_to :js, :html
 
@@ -74,15 +71,6 @@ class IssuesController < ProjectResourceController
           render :edit
         end
       end
-    end
-  end
-
-  def destroy
-    @issue.destroy
-
-    respond_to do |format|
-      format.html { redirect_to project_issues_path }
-      format.js { render nothing: true }
     end
   end
 

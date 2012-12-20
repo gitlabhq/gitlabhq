@@ -62,7 +62,11 @@ class Milestone < ActiveRecord::Base
   end
 
   def can_be_closed?
-    issues.count > 0 && open? && issues.opened.count.zero?
+    open? && issues.opened.count.zero?
+  end
+
+  def is_empty?
+    total_items_count.zero?
   end
 
   def open?
