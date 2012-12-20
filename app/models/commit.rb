@@ -92,7 +92,7 @@ class Commit
         older = commits.last
 
         result[:same] = (younger.id == older.id)
-        result[:commits] = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
+        result[:commits] = project.repo.commits_between(older.id, younger.id).map {|c| Commit.new(c)}
         result[:diffs] = project.repo.diff(younger.id, older.id) rescue []
         result[:commit] = Commit.new(older)
       end
