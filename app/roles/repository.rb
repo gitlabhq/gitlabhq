@@ -97,7 +97,7 @@ module Repository
   end
 
   def path_to_repo
-    File.join(Gitlab.config.git_base_path, "#{path_with_namespace}.git")
+    File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
   end
 
   def namespace_dir
@@ -199,7 +199,7 @@ module Repository
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.url, "/", path_with_namespace, ".git"].join('')
+    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system

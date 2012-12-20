@@ -16,7 +16,7 @@ module Gitlab
     def ga_repo
       @ga_repo ||= ::Gitolite::GitoliteAdmin.new(
         File.join(config_tmp_dir,'gitolite'),
-        conf: Gitlab.config.gitolite_config_file
+        conf: Gitlab.config.gitolite.config_file
       )
     end
 
@@ -167,7 +167,7 @@ module Gitlab
     # Enable access to all repos for gitolite admin.
     # We use it for accept merge request feature
     def admin_all_repo
-      owner_name = Gitlab.config.gitolite_admin_key
+      owner_name = Gitlab.config.gitolite.admin_key
 
       # @ALL repos premission for gitolite owner
       repo_name = "@all"
@@ -189,7 +189,7 @@ module Gitlab
 
     def pull tmp_dir
       Dir.mkdir tmp_dir
-      `git clone #{Gitlab.config.gitolite_admin_uri} #{tmp_dir}/gitolite`
+      `git clone #{Gitlab.config.gitolite.admin_uri} #{tmp_dir}/gitolite`
 
       unless File.exists?(File.join(tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
         raise PullError, "unable to clone gitolite-admin repo"

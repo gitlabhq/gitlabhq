@@ -15,10 +15,10 @@ module Gitlab
 
     def execute
       # Create new dir if missing
-      new_dir_path = File.join(Gitlab.config.git_base_path, new_dir)
+      new_dir_path = File.join(Gitlab.config.gitolite.repos_path, new_dir)
       system("mkdir -m 770 #{new_dir_path}") unless File.exists?(new_dir_path)
 
-      old_path = File.join(Gitlab.config.git_base_path, old_dir, "#{project.path}.git")
+      old_path = File.join(Gitlab.config.gitolite.repos_path, old_dir, "#{project.path}.git")
       new_path = File.join(new_dir_path, "#{project.path}.git")
 
       if File.exists? new_path

@@ -43,7 +43,7 @@ describe ApplicationHelper do
     let(:user_email) { 'user@email.com' }
 
     it "should return a generic avatar path when Gravatar is disabled" do
-      Gitlab.config.stub(:disable_gravatar?).and_return(true)
+      Gitlab.config.gravatar.stub(:enabled).and_return(false)
       gravatar_icon(user_email).should == 'no_avatar.png'
     end
 
@@ -63,7 +63,7 @@ describe ApplicationHelper do
 
     it "should return custom gravatar path when gravatar_url is set" do
       stub!(:request).and_return(double(:ssl? => false))
-      Gitlab.config.stub(:gravatar_url).and_return('http://example.local/?s=%{size}&hash=%{hash}')
+      Gitlab.config.gravatar.stub(:plain_url).and_return('http://example.local/?s=%{size}&hash=%{hash}')
       gravatar_icon(user_email, 20).should == 'http://example.local/?s=20&hash=b58c6f14d292556214bd64909bcdb118'
     end
 

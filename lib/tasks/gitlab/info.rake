@@ -46,7 +46,7 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      omniauth_providers = Gitlab.config.omniauth_providers
+      omniauth_providers = Gitlab.config.omniauth.providers
       omniauth_providers.map! { |provider| provider['name'] }
 
       puts ""
@@ -55,17 +55,17 @@ namespace :gitlab do
       puts "Revision:\t#{Gitlab::Revision}"
       puts "Directory:\t#{Rails.root}"
       puts "DB Adapter:\t#{database_adapter}"
-      puts "URL:\t\t#{Gitlab.config.url}"
+      puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
-      puts "Using LDAP:\t#{Gitlab.config.ldap_enabled? ? "yes".green : "no"}"
-      puts "Using Omniauth:\t#{Gitlab.config.omniauth_enabled? ? "yes".green : "no"}"
-      puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if Gitlab.config.omniauth_enabled?
+      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".green : "no"}"
+      puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".green : "no"}"
+      puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if Gitlab.config.omniauth.enabled
 
 
 
       # check Gitolite version
-      gitolite_version_file = "#{Gitlab.config.git_base_path}/../gitolite/src/VERSION"
+      gitolite_version_file = "#{Gitlab.config.gitolite.repos_path}/../gitolite/src/VERSION"
       if File.exists?(gitolite_version_file) && File.readable?(gitolite_version_file)
         gitolite_version = File.read(gitolite_version_file)
       end
@@ -73,11 +73,11 @@ namespace :gitlab do
       puts ""
       puts "Gitolite information".yellow
       puts "Version:\t#{gitolite_version || "unknown".red}"
-      puts "Admin URI:\t#{Gitlab.config.gitolite_admin_uri}"
-      puts "Admin Key:\t#{Gitlab.config.gitolite_admin_key}"
-      puts "Repositories:\t#{Gitlab.config.git_base_path}"
-      puts "Hooks:\t\t#{Gitlab.config.git_hooks_path}"
-      puts "Git:\t\t#{Gitlab.config.git.path}"
+      puts "Admin URI:\t#{Gitlab.config.gitolite.admin_uri}"
+      puts "Admin Key:\t#{Gitlab.config.gitolite.admin_key}"
+      puts "Repositories:\t#{Gitlab.config.gitolite.repos_path}"
+      puts "Hooks:\t\t#{Gitlab.config.gitolite.hooks_path}"
+      puts "Git:\t\t#{Gitlab.config.git.bin_path}"
 
     end
 

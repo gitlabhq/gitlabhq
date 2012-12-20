@@ -8,7 +8,7 @@ namespace :gitlab do
       Rake::Task["gitlab:app:db_dump"].invoke
       Rake::Task["gitlab:app:repo_dump"].invoke
 
-      Dir.chdir(Gitlab.config.backup_path)
+      Dir.chdir(Gitlab.config.backup.path)
 
       # saving additional informations
       s = {}
@@ -17,7 +17,7 @@ namespace :gitlab do
       s[:gitlab_version]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
       s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
 
-      File.open("#{Gitlab.config.backup_path}/backup_information.yml", "w+") do |file|
+      File.open("#{Gitlab.config.backup.path}/backup_information.yml", "w+") do |file|
         file << s.to_yaml.gsub(/^---\n/,'')
       end
 
@@ -39,10 +39,10 @@ namespace :gitlab do
 
       # delete backups
       print "Deleting old backups... "
-      if Gitlab.config.backup_keep_time > 0
+      if Gitlab.config.backup.keep_time > 0
         file_list = Dir.glob("*_gitlab_backup.tar").map { |f| f.split(/_/).first.to_i }
         file_list.sort.each do |timestamp|
-          if Time.at(timestamp) < (Time.now - Gitlab.config.backup_keep_time)
+          if Time.at(timestamp) < (Time.now - Gitlab.config.backup.keep_time)
             %x{rm #{timestamp}_gitlab_backup.tar}
           end
         end
@@ -55,7 +55,7 @@ namespace :gitlab do
     # Restore backup of GitLab system
     desc "GITLAB | Restore a previously created backup"
     task :backup_restore => :environment do
-      Dir.chdir(Gitlab.config.backup_path)
+      Dir.chdir(Gitlab.config.backup.path)
 
       # check for existing backups in the backup dir
       file_list = Dir.glob("*_gitlab_backup.tar").each.map { |f| f.split(/_/).first.to_i }
@@ -111,7 +111,7 @@ namespace :gitlab do
     ################################# REPOSITORIES #################################
 
     task :repo_dump => :environment do
-      backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
+      backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
       FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
       puts "Dumping repositories:"
       project = Project.all.map { |n| [n.path, n.path_to_repo] }
@@ -127,7 +127,7 @@ namespace :gitlab do
     end
 
     task :repo_restore => :environment do
-      backup_path_repo = File.join(Gitlab.config.backup_path, "repositories")
+      backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
       puts "Restoring repositories:"
       project = Project.all.map { |n| [n.path, n.path_to_repo] }
       project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
@@ -136,8 +136,8 @@ namespace :gitlab do
         FileUtils.rm_rf(project.second) if File.dirname(project.second) # delete old stuff
         if Kernel.system("cd #{File.dirname(project.second)} > /dev/null 2>&1 && git clone --bare #{backup_path_repo}/#{project.first}.bundle #{project.first}.git > /dev/null 2>&1")
           permission_commands = [
-            "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
-            "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}"
+            "sudo chmod -R g+rwX #{Gitlab.config.gitolite.repos_path}",
+            "sudo chown -R #{Gitlab.config.gitolite.ssh_user}:#{Gitlab.config.gitolite.ssh_user} #{Gitlab.config.gitolite.repos_path}"
           ]
           permission_commands.each { |command| Kernel.system(command) }
           puts "[DONE]".green
@@ -150,7 +150,7 @@ namespace :gitlab do
     ###################################### DB ######################################
 
     task :db_dump => :environment do
-      backup_path_db = File.join(Gitlab.config.backup_path, "db")
+      backup_path_db = File.join(Gitlab.config.backup.path, "db")
       FileUtils.mkdir_p(backup_path_db) unless Dir.exists?(backup_path_db)
 
       puts "Dumping database tables:"
@@ -170,7 +170,7 @@ namespace :gitlab do
     end
 
     task :db_restore=> :environment do
-      backup_path_db = File.join(Gitlab.config.backup_path, "db")
+      backup_path_db = File.join(Gitlab.config.backup.path, "db")
 
       puts "Restoring database tables:"
       Rake::Task["db:reset"].invoke
