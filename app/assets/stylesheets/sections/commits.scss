@@ -300,3 +300,12 @@
   color: #fff;
   font-family: $monospace;
 }
+
+
+.commits-compare-switch{
+  background: url('switch_icon.png');
+  width: 16px;
+  height: 18px;
+  text-indent: -9999px;
+  display: inline-block;
+}
