@@ -32,8 +32,8 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   And 'I fill compare fields with refs' do
-    fill_in "from", with: "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
-    fill_in "to",   with: "8716fc78f3c65bbf7bcf7b574febd583bc5d2812"
+    fill_in "from", with: "8716fc78f3c65bbf7bcf7b574febd583bc5d2812"
+    fill_in "to",   with: "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
     click_button "Compare"
   end
 
