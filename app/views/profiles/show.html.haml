@@ -33,11 +33,11 @@
         %ul
           %li
             %p You can change your password on Account page
-          -unless Gitlab.config.disable_gravatar?
+          - if Gitlab.config.gravatar.enabled
             %li
               %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
 
-          - if Gitlab.config.omniauth_enabled? && @user.provider?
+          - if Gitlab.config.omniauth.enabled && @user.provider?
             %li
               %p
                 You can login through #{@user.provider.titleize}!

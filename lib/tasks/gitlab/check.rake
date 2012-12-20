@@ -90,7 +90,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_config_not_outdated
-      print "GitLab config not outdated? ... "
+      print "GitLab config outdated? ... "
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
       unless File.exists?(gitlab_config_file)
@@ -98,11 +98,12 @@ namespace :gitlab do
       end
 
       # omniauth or ldap could have been deleted from the file
-      if File.read(gitlab_config_file) =~ /^web:/
-        puts "yes".green
+      unless Gitlab.config.pre_40_config
+        puts "no".green
       else
-        puts "no".red
+        puts "yes".red
         try_fixing_it(
+          "Backup your config/gitlab.yml",
           "Copy config/gitlab.yml.example to config/gitlab.yml",
           "Update config/gitlab.yml to match your setup"
         )
@@ -268,7 +269,7 @@ namespace :gitlab do
 
       options = {
         "user.name"  => "GitLab",
-        "user.email" => Gitlab.config.email_from
+        "user.email" => Gitlab.config.gitlab.email_from
       }
       correct_options = options.map do |name, value|
         run("git config --global --get #{name}").try(:squish) == value
@@ -290,7 +291,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_in_git_group
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "gitlab user is in #{gitolite_ssh_user} group? ... "
 
       if run_and_match("id -rnG", /\Wgit\W/)
@@ -309,10 +310,10 @@ namespace :gitlab do
 
     # see https://github.com/gitlabhq/gitlabhq/issues/1059
     def check_issue_1056_shell_profile_error
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
 
-      profile_file = File.expand_path("~#{Gitlab.config.ssh_user}/.profile")
+      profile_file = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}/.profile")
 
       unless File.read(profile_file) =~ /^-e PATH/
         puts "yes".green
@@ -414,7 +415,7 @@ namespace :gitlab do
 
       test_path = "/tmp/gitlab_gitolite_admin_test"
       FileUtils.rm_rf(test_path)
-      `git clone -q #{Gitlab.config.gitolite_admin_uri} #{test_path}`
+      `git clone -q #{Gitlab.config.gitolite.admin_uri} #{test_path}`
       raise unless $?.success?
 
       puts "yes".green
@@ -423,7 +424,7 @@ namespace :gitlab do
       try_fixing_it(
         "Make sure the \"admin_uri\" is set correctly in config/gitlab.yml",
         "Try cloning it yourself with:",
-        "  git clone -q #{Gitlab.config.gitolite_admin_uri} /tmp/gitolite-admin",
+        "  git clone -q #{Gitlab.config.gitolite.admin_uri} /tmp/gitolite-admin",
         "Make sure Gitolite is installed correctly."
       )
       for_more_information(
@@ -452,7 +453,7 @@ namespace :gitlab do
       puts "no".red
       try_fixing_it(
         "Try committing to it yourself with:",
-        "  git clone -q #{Gitlab.config.gitolite_admin_uri} /tmp/gitolite-admin",
+        "  git clone -q #{Gitlab.config.gitolite.admin_uri} /tmp/gitolite-admin",
         "  touch foo",
         "  git add foo",
         "  git commit -m \"foo\"",
@@ -469,7 +470,7 @@ namespace :gitlab do
     def check_dot_gitolite_exists
       print "Config directory exists? ... "
 
-      gitolite_config_path = File.expand_path("~#{Gitlab.config.ssh_user}/.gitolite")
+      gitolite_config_path = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}/.gitolite")
 
       if File.directory?(gitolite_config_path)
         puts "yes".green
@@ -490,7 +491,7 @@ namespace :gitlab do
     def check_dot_gitolite_permissions
       print "Config directory access is drwxr-x---? ... "
 
-      gitolite_config_path = File.expand_path("~#{Gitlab.config.ssh_user}/.gitolite")
+      gitolite_config_path = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}/.gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
@@ -512,7 +513,7 @@ namespace :gitlab do
     end
 
     def check_dot_gitolite_user_and_group
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Config directory owned by #{gitolite_ssh_user}:#{gitolite_ssh_user} ... "
 
       gitolite_config_path = File.expand_path("~#{gitolite_ssh_user}/.gitolite")
@@ -615,9 +616,9 @@ namespace :gitlab do
       print "post-receive hook exists? ... "
 
       hook_file = "post-receive"
-      gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
+      gitolite_hooks_path = File.join(Gitlab.config.gitolite.hooks_path, "common")
       gitolite_hook_file = File.join(gitolite_hooks_path, hook_file)
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
 
       gitlab_hook_file = Rails.root.join.join("lib", "hooks", hook_file)
 
@@ -639,10 +640,10 @@ namespace :gitlab do
       print "post-receive hook up-to-date? ... "
 
       hook_file = "post-receive"
-      gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
+      gitolite_hooks_path = File.join(Gitlab.config.gitolite.hooks_path, "common")
       gitolite_hook_file  = File.join(gitolite_hooks_path, hook_file)
       gitolite_hook_content = File.read(gitolite_hook_file)
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
 
       unless File.exists?(gitolite_hook_file)
         puts "can't check because of previous errors".magenta
@@ -669,7 +670,7 @@ namespace :gitlab do
     def check_repo_base_exists
       print "Repo base directory exists? ... "
 
-      repo_base_path = Gitlab.config.git_base_path
+      repo_base_path = Gitlab.config.gitolite.repos_path
 
       if File.exists?(repo_base_path)
         puts "yes".green
@@ -691,7 +692,7 @@ namespace :gitlab do
     def check_repo_base_permissions
       print "Repo base access is drwsrws---? ... "
 
-      repo_base_path = Gitlab.config.git_base_path
+      repo_base_path = Gitlab.config.gitolite.repos_path
       unless File.exists?(repo_base_path)
         puts "can't check because of previous errors".magenta
         return
@@ -713,10 +714,10 @@ namespace :gitlab do
     end
 
     def check_repo_base_user_and_group
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Repo base owned by #{gitolite_ssh_user}:#{gitolite_ssh_user}? ... "
 
-      repo_base_path = Gitlab.config.git_base_path
+      repo_base_path = Gitlab.config.gitolite.repos_path
       unless File.exists?(repo_base_path)
         puts "can't check because of previous errors".magenta
         return
@@ -777,9 +778,9 @@ namespace :gitlab do
       print "post-receive hooks in repos are links: ... "
 
       hook_file = "post-receive"
-      gitolite_hooks_path = File.join(Gitlab.config.git_hooks_path, "common")
+      gitolite_hooks_path = File.join(Gitlab.config.gitolite.hooks_path, "common")
       gitolite_hook_file  = File.join(gitolite_hooks_path, hook_file)
-      gitolite_ssh_user = Gitlab.config.ssh_user
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
 
       unless File.exists?(gitolite_hook_file)
         puts "can't check because of previous errors".magenta
@@ -828,7 +829,7 @@ namespace :gitlab do
     ########################
 
     def gitolite_home
-      File.expand_path("~#{Gitlab.config.ssh_user}")
+      File.expand_path("~#{Gitlab.config.gitolite.ssh_user}")
     end
 
     def gitolite_version

@@ -27,7 +27,7 @@ namespace :gitlab do
     end
 
     print "\n\nMove projects from groups under groups dirs:".yellow
-    git_path = Gitlab.config.git_base_path
+    git_path = Gitlab.config.gitolite.repos_path
 
     Project.where('namespace_id IS NOT NULL').find_each(batch_size: 500) do |project|
       next unless project.group

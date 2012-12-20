@@ -3,11 +3,11 @@ class Notify < ActionMailer::Base
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
 
-  default_url_options[:host]     = Gitlab.config.web_host
-  default_url_options[:protocol] = Gitlab.config.web_protocol
-  default_url_options[:port]     = Gitlab.config.web_port if Gitlab.config.web_custom_port?
+  default_url_options[:host]     = Gitlab.config.gitlab.host
+  default_url_options[:protocol] = Gitlab.config.gitlab.protocol
+  default_url_options[:port]     = Gitlab.config.gitlab.port if Gitlab.config.gitlab_on_non_standard_port?
 
-  default from: Gitlab.config.email_from
+  default from: Gitlab.config.gitlab.email_from
 
 
 

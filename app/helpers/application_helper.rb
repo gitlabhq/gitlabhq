@@ -34,10 +34,10 @@ module ApplicationHelper
   def gravatar_icon(user_email = '', size = nil)
     size = 40 if size.nil? || size <= 0
 
-    if Gitlab.config.disable_gravatar? || user_email.blank?
+    if !Gitlab.config.gravatar.enabled || user_email.blank?
       'no_avatar.png'
     else
-      gravatar_url = request.ssl? ? Gitlab.config.gravatar_ssl_url : Gitlab.config.gravatar_url
+      gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
       sprintf(gravatar_url, {:hash => Digest::MD5.hexdigest(user_email.downcase), :email => URI.escape(user_email), :size => size})
     end
@@ -48,7 +48,7 @@ module ApplicationHelper
   end
 
   def web_app_url
-    "#{request_protocol}://#{Gitlab.config.web_host}/"
+    "#{request_protocol}://#{Gitlab.config.gitlab.host}/"
   end
 
   def last_commit(project)
