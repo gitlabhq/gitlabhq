@@ -1,6 +1,6 @@
 namespace :gitlab do
   desc "GITLAB | Enable usernames and namespaces for user projects"
-  task activate_namespaces: :environment do
+  task enable_namespaces: :environment do
     print "\nUsernames for users:".yellow
 
     User.find_each(batch_size: 500) do |user|
