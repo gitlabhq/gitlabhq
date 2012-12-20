@@ -192,7 +192,7 @@ namespace :gitlab do
         else
           puts "no".red
           try_fixing_it(
-            "sudo -u gitlab -H bundle exec rake gitlab:app:enable_automerge"
+            "sudo -u gitlab -H bundle exec rake gitlab:enable_automerge"
           )
           for_more_information(
             "doc/raketasks/maintenance.md "

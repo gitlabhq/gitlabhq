@@ -22,7 +22,7 @@ bundle exec rake gitlab:enable_namespaces
 This command will enable the auto merge feature. After this you will be able to **merge a merge request** via GitLab and use the **online editor**.
 
 ```
-bundle exec rake gitlab:app:enable_automerge
+bundle exec rake gitlab:enable_automerge
 ```
 
 Example output:
