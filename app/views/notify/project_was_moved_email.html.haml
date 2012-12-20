@@ -4,17 +4,17 @@
       %td{width: "21"}
       %td
         %h2
-          = "Project was moved in another location"
+          = "Project was moved to another location"
       %td{width: "21"}
     %tr
       %td{width: "21"}
       %td
         %p
-          Project is now accessible via next link
+          The project is now located under
           = link_to project_url(@project) do
             = @project.name_with_namespace
         %p
-          You may want to update your local repository with new remote:
+          To update the remote url in your local repository run:
         %br
         %table{border: "0", cellpadding: "0", cellspacing: "0", width: "558"}
           %tr
