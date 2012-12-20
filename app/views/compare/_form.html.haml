@@ -13,7 +13,8 @@
       = text_field_tag :from, params[:from], placeholder: "master", class: "xlarge"
       = "..."
       = text_field_tag :to, params[:to], placeholder: "aa8b4ef", class: "xlarge"
-      = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has_tooltip', title: 'Switch base of comparison'}
+      - if params[:to] && params[:from]
+        = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has_tooltip', title: 'Switch base of comparison'}
     - if @refs_are_same
       .alert
         %span Refs are the same
