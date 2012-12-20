@@ -31,6 +31,7 @@ class Notify < ActionMailer::Base
   def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id)
     @issue = Issue.find issue_id
     @issue_status = status
+    @project = @issue.project
     @updated_by = User.find updated_by_user_id
     mail(to: recipient(recipient_id),
         subject: subject("changed issue ##{@issue.id}", @issue.title))

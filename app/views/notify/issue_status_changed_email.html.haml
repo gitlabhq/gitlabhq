@@ -9,7 +9,7 @@
     %tr
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
       %td{align: "left", style: "padding: 20px 0 0;"}
-        %h2{style: "color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
+        %p{style: "color:#646464 !important; line-height: 26px; font-size: 16px; font-family: Helvetica, Arial, sans-serif; "}
           = "Issue ##{@issue.id}"
           = link_to_gfm truncate(@issue.title, length: 45), project_issue_url(@issue.project, @issue), title: @issue.title
         %br
