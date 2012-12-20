@@ -13,7 +13,7 @@ module Repository
   end
 
   def commit(commit_id = nil)
-    Commit.find_or_first(repo, commit_id, root_ref)
+    Commit.find_or_first(repo, commit_id, discover_default_branch)
   end
 
   def fresh_commits(n = 10)
