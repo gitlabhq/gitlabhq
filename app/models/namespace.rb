@@ -59,12 +59,19 @@ class Namespace < ActiveRecord::Base
       if File.exists?(new_path)
         raise "Already exists"
       end
-      system("mv #{old_path} #{new_path}")
+
+      if system("mv #{old_path} #{new_path}")
+        send_update_instructions
+      end
     end
   end
 
   def rm_dir
     dir_path = File.join(Gitlab.config.gitolite.repos_path, path)
     system("rm -rf #{dir_path}")
+  end
+
+  def send_update_instructions
+    projects.each(&:send_move_instructions)
   end
 end

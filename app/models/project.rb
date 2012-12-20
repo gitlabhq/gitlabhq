@@ -259,4 +259,10 @@ class Project < ActiveRecord::Base
       merge_requests
     end
   end
+
+  def send_move_instructions
+    self.users_projects.each do |member|
+      Notify.project_was_moved_email(member.id).deliver
+    end
+  end
 end

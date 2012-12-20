@@ -102,6 +102,12 @@ class Notify < ActionMailer::Base
   end
 
 
+  def project_was_moved_email(user_project_id)
+    @users_project = UsersProject.find user_project_id
+    @project = @users_project.project
+    mail(to: @users_project.user.email,
+         subject: subject("project was moved"))
+  end
 
   #
   # User

@@ -3,7 +3,8 @@ class ProjectObserver < ActiveRecord::Observer
     project.update_repository
   end
 
-  def after_save(project)
+  def after_update(project)
+    project.send_move_instructions if project.namespace_id_changed?
   end
 
   def after_destroy(project)
