@@ -90,7 +90,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_config_not_outdated
-      print "GitLab config not outdated? ... "
+      print "GitLab config outdated? ... "
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
       unless File.exists?(gitlab_config_file)
@@ -98,11 +98,12 @@ namespace :gitlab do
       end
 
       # omniauth or ldap could have been deleted from the file
-      if File.read(gitlab_config_file) =~ /^web:/
-        puts "yes".green
+      unless Gitlab.config.pre_40_config
+        puts "no".green
       else
-        puts "no".red
+        puts "yes".red
         try_fixing_it(
+          "Backup your config/gitlab.yml",
           "Copy config/gitlab.yml.example to config/gitlab.yml",
           "Update config/gitlab.yml to match your setup"
         )
