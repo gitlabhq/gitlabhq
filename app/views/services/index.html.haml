@@ -4,23 +4,27 @@
 
 %ul.unstyled.ui-box
   %li.wll
-    %h4
+    %h4.cgreen
       = link_to edit_project_service_path(@project, :gitlab_ci) do
         GitLab CI
         %small Continuous integration server from GitLab
       .right
         - if @gitlab_ci_service.try(:active)
-          %small.cgreen Enabled
+          %small.cgreen
+            %i.icon-ok
+            Enabled
         - else
-          %small.cgray Disabled
+          %small.cgray
+            %i.icon-off
+            Disabled
   %li.wll
-    %h4
+    %h4.cgray
       Jenkins CI
       %small An extendable open source continuous integration server
       .right
         %small Not implemented yet
   %li.wll
-    %h4
+    %h4.cgray
       Campfire
       %small Web-based group chat tool
       .right
