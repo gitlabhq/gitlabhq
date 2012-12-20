@@ -139,6 +139,16 @@ Checking GitLab ... Finished
 ```
 
 
+### (Re-)Create satellite repos
+
+This will create satellite repos for all your projects.
+If necessary, remove the `tmp/repo_satellites` directory and rerun the command below.
+
+```
+bundle exec rake gitlab:satellites:create
+```
+
+
 ### Rebuild each key at gitolite config
 
 This will send all users ssh public keys to gitolite and grant them access (based on their permission) to their projects.

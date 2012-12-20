@@ -12,4 +12,9 @@ namespace :gitlab do
 
     puts "Done!".green
   end
+
+  namespace :satellites do
+    desc "GITLAB | Create satellite repos"
+    task create: 'gitlab:enable_automerge'
+  end
 end
