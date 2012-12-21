@@ -15,7 +15,7 @@ API requests should be prefixed with `api` and the API version. The API version 
 Example of a valid API request:
 
 ```
-GET http://example.com/api/v2/projects?private_token=QVy1PB7sTxfy4pqfZM1U
+GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U
 ```
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
