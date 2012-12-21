@@ -8,7 +8,7 @@ module Gitlab
       # List merge requests
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #
       # Example:
       #   GET /projects/:id/merge_requests
@@ -22,7 +22,7 @@ module Gitlab
       # Show MR
       #
       # Parameters:
-      #   id (required)               - The ID or code name of a project
+      #   id (required)               - The ID of a project
       #   merge_request_id (required) - The ID of MR
       #
       # Example:
@@ -40,7 +40,7 @@ module Gitlab
       #
       # Parameters:
       #
-      #   id (required)            - The ID or code name of a project
+      #   id (required)            - The ID of a project
       #   source_branch (required) - The source branch
       #   target_branch (required) - The target branch
       #   assignee_id              - Assignee user ID
@@ -67,7 +67,7 @@ module Gitlab
       # Update MR
       #
       # Parameters:
-      #   id (required)               - The ID or code name of a project
+      #   id (required)               - The ID of a project
       #   merge_request_id (required) - ID of MR
       #   source_branch               - The source branch
       #   target_branch               - The target branch
@@ -95,7 +95,7 @@ module Gitlab
       # Post comment to merge request
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   merge_request_id (required) - ID of MR
       #   note (required) - Text of comment
       # Examples:

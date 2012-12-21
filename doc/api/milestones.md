@@ -8,7 +8,7 @@ GET /projects/:id/milestones
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ## Single milestone
 
@@ -20,7 +20,7 @@ GET /projects/:id/milestones/:milestone_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `milestone_id` (required) - The ID of a project milestone
 
 ## New milestone
@@ -33,7 +33,7 @@ POST /projects/:id/milestones
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `milestone_id` (required) - The ID of a project milestone
 + `title` (required) - The title of an milestone
 + `description` (optional) - The description of the milestone
@@ -49,7 +49,7 @@ PUT /projects/:id/milestones/:milestone_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `milestone_id` (required) - The ID of a project milestone
 + `title` (optional) - The title of a milestone
 + `description` (optional) - The description of a milestone

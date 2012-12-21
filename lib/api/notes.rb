@@ -9,7 +9,7 @@ module Gitlab
       # Get a list of project wall notes
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       # Example Request:
       #   GET /projects/:id/notes
       get ":id/notes" do
@@ -20,7 +20,7 @@ module Gitlab
       # Get a single project wall note
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   note_id (required) - The ID of a note
       # Example Request:
       #   GET /projects/:id/notes/:note_id
@@ -32,7 +32,7 @@ module Gitlab
       # Create a new project wall note
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   body (required) - The content of a note
       # Example Request:
       #   POST /projects/:id/notes
@@ -54,7 +54,7 @@ module Gitlab
         # Get a list of project +noteable+ notes
         #
         # Parameters:
-        #   id (required) - The ID or code name of a project
+        #   id (required) - The ID of a project
         #   noteable_id (required) - The ID of an issue or snippet
         # Example Request:
         #   GET /projects/:id/issues/:noteable_id/notes
@@ -67,7 +67,7 @@ module Gitlab
         # Get a single +noteable+ note
         #
         # Parameters:
-        #   id (required) - The ID or code name of a project
+        #   id (required) - The ID of a project
         #   noteable_id (required) - The ID of an issue or snippet
         #   note_id (required) - The ID of a note
         # Example Request:
@@ -82,7 +82,7 @@ module Gitlab
         # Create a new +noteable+ note
         #
         # Parameters:
-        #   id (required) - The ID or code name of a project
+        #   id (required) - The ID of a project
         #   noteable_id (required) - The ID of an issue or snippet
         #   body (required) - The content of a note
         # Example Request:
