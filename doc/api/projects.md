@@ -126,6 +126,7 @@ GET /projects/:id/members
 Parameters:
 
 + `id` (required) - The ID or code name of a project
++ `query`         - Query string
 
 ## Get project team member
 
