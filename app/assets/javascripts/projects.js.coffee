@@ -18,10 +18,3 @@ $ ->
   # Ref switcher
   $('.project-refs-select').on 'change', ->
     $(@).parents('form').submit()
-
-class @GraphNav
-  @init: ->
-    $('.graph svg').css 'position', 'relative'
-    $('body').bind 'keyup', (e) ->
-      $('.graph svg').animate(left: '+=400') if e.keyCode is 37 # left
-      $('.graph svg').animate(left: '-=400') if e.keyCode is 39 # right
