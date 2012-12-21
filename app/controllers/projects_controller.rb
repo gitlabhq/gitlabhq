@@ -58,12 +58,12 @@ class ProjectsController < ProjectResourceController
 
     respond_to do |format|
       format.html do
-         unless @project.empty_repo?
-           @last_push = current_user.recent_push(@project.id)
-           render :show
-         else
-           render "projects/empty"
-         end
+        unless @project.empty_repo?
+          @last_push = current_user.recent_push(@project.id)
+          render :show
+        else
+          render "projects/empty"
+        end
       end
       format.js
     end
@@ -87,9 +87,13 @@ class ProjectsController < ProjectResourceController
   end
 
   def graph
-    graph = Gitlab::Graph::JsonBuilder.new(project)
-
-    @days_json, @commits_json = graph.days_json, graph.commits_json
+    respond_to do |format|
+      format.html
+      format.json do
+        graph = Gitlab::Graph::JsonBuilder.new(project)
+        render :json => graph.to_json
+      end
+    end
   end
 
   def destroy
