@@ -17,7 +17,7 @@ module Gitlab
       # Get a list of project issues
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       # Example Request:
       #   GET /projects/:id/issues
       get ":id/issues" do
@@ -27,7 +27,7 @@ module Gitlab
       # Get a single project issue
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   issue_id (required) - The ID of a project issue
       # Example Request:
       #   GET /projects/:id/issues/:issue_id
@@ -39,7 +39,7 @@ module Gitlab
       # Create a new project issue
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   title (required) - The title of an issue
       #   description (optional) - The description of an issue
       #   assignee_id (optional) - The ID of a user to assign issue
@@ -62,7 +62,7 @@ module Gitlab
       # Update an existing issue
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   issue_id (required) - The ID of a project issue
       #   title (optional) - The title of an issue
       #   description (optional) - The description of an issue
@@ -88,7 +88,7 @@ module Gitlab
       # Delete a project issue (deprecated)
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   issue_id (required) - The ID of a project issue
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
