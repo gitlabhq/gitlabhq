@@ -10,7 +10,6 @@ GET /projects
 [
   {
     "id": 3,
-    "code": "rails",
     "name": "rails",
     "description": null,
     "path": "rails",
@@ -32,7 +31,6 @@ GET /projects
   },
   {
     "id": 5,
-    "code": "gitlab",
     "name": "gitlab",
     "description": null,
     "path": "gitlab",
@@ -70,7 +68,6 @@ Parameters:
 ```json
 {
   "id": 5,
-  "code": "gitlab",
   "name": "gitlab",
   "description": null,
   "path": "gitlab",
@@ -103,7 +100,6 @@ POST /projects
 Parameters:
 
 + `name` (required) - new project name
-+ `code` (optional) - new project code, uses project name if not set
 + `path` (optional) - new project path, uses project name if not set
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
