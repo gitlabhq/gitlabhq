@@ -13,7 +13,6 @@ GitLab.GfmAutoComplete =
     url: ''
     params:
       private_token: ''
-      page: 1
     template: '<li data-value="${username}">${username} <small>${name}</small></li>'
 
   # Add GFM auto-completion to all input fields, that accept GFM input.
@@ -29,30 +28,11 @@ GitLab.GfmAutoComplete =
     input.atWho '@',
       tpl: @Members.template
       callback: (query, callback) =>
-        (getMoreMembers = =>
-          $.getJSON(@Members.url, @Members.params).done (members) =>
-            # pick the data we need
-            newMembersData = $.map(members, (m) ->
-              username: m.username
-              name: m.name
-            )
+        request_params = $.extend({}, @Members.params, query: query)
+        $.getJSON(@Members.url, request_params).done (members) =>
+          new_members_data = $.map(members, (m) ->
+            username: m.username,
+            name: m.name
+          )
+          callback(new_members_data)
 
-            # add the new page of data to the rest
-            $.merge(@Members.data, newMembersData)
-
-            # show the pop-up with a copy of the current data
-            callback(@Members.data[..])
-
-            # are we past the last page?
-            if newMembersData.length is 0
-              # set static data and stop callbacks
-              input.atWho '@',
-                data: @Members.data
-                callback: null
-            else
-              # get next page
-              getMoreMembers()
-
-          # so the next callback requests the next page
-          @Members.params.page += 1
-        ).call()
