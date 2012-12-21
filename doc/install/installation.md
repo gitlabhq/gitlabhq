@@ -202,7 +202,7 @@ Git requires a username and email in order to be able to do that.
 
 Checking status:
 
-    sudo -u gitlab bundle exec rake gitlab:app:status RAILS_ENV=production
+    sudo -u gitlab bundle exec rake gitlab:app:check RAILS_ENV=production
 
 
     # OUTPUT EXAMPLE
