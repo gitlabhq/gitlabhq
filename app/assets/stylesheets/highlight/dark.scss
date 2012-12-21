@@ -1,8 +1,8 @@
 .black .highlight {
+  background-color: #333;
   pre {
-    background-color: #333;
     color: #eee;
-    float: left;
+    background: inherit;
   }
 
   .hll { display: block; background-color: darken($hover, 65%) }
