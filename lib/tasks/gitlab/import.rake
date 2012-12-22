@@ -23,6 +23,9 @@ namespace :gitlab do
         # Skip if group or user
         next if namespaces.include?(repo_name)
 
+        # skip if not git repo
+        next unless repo_name =~ /.git$/
+
         # skip gitolite admin
         next if repo_name == 'gitolite-admin.git'
 
