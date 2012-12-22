@@ -55,14 +55,3 @@ GitLab supports the following databases:
     # Try connecting to the new database with the new user
     sudo -u gitlab -H psql -d gitlabhq_production
 
-
-
-# Configure GitLab
-
-    # Mysql
-    sudo -u gitlab cp config/database.yml.mysql config/database.yml
-
-    # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
-
-Make sure to update username/password in config/database.yml.

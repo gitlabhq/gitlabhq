@@ -199,12 +199,27 @@ do so with caution!
 **Important Note:**
 Make sure to edit both files to match your setup.
 
+## Configure GitLab DB settings
+
+    # Mysql
+    sudo -u gitlab cp config/database.yml.mysql config/database.yml
+
+    # PostgreSQL
+    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
+
+Make sure to update username/password in config/database.yml.
+
 ## Install Gems
 
     cd /home/gitlab/gitlab
 
     sudo gem install charlock_holmes --version '0.6.9'
-    sudo -u gitlab -H bundle install --deployment --without development test 
+
+    # For mysql db
+    sudo -u gitlab -H bundle install --deployment --without development test postgres
+
+    # Or For postgres db
+    sudo -u gitlab -H bundle install --deployment --without development test mysql
 
 ## Configure Git
 
