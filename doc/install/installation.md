@@ -137,6 +137,12 @@ GitLab assumes *full and unshared* control over this Gitolite installation.
     # ... and use it as the admin key for the Gitolite setup
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
 
+Fix the directory permissions for the configuration directory:
+
+    # Make sure the Gitolite config dir is owned by git
+    sudo chmod 750 /home/git/.gitolite/
+    sudo chown -R git:git /home/git/.gitolite/
+
 Fix the directory permissions for the repositories:
 
     # Make sure the repositories dir is owned by git and it stays that way
