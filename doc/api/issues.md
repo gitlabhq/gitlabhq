@@ -78,7 +78,7 @@ GET /projects/:id/issues
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ## Single issue
 
@@ -90,7 +90,7 @@ GET /projects/:id/issues/:issue_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `issue_id` (required) - The ID of a project issue
 
 ```json
@@ -143,7 +143,7 @@ POST /projects/:id/issues
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `title` (required) - The title of an issue
 + `description` (optional) - The description of an issue
 + `assignee_id` (optional) - The ID of a user to assign issue
@@ -162,7 +162,7 @@ PUT /projects/:id/issues/:issue_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `issue_id` (required) - The ID of a project's issue
 + `title` (optional) - The title of an issue
 + `description` (optional) - The description of an issue

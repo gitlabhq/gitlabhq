@@ -8,7 +8,7 @@ GET /projects/:id/merge_requests
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ```json
 [
@@ -50,7 +50,7 @@ GET /projects/:id/merge_request/:merge_request_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `merge_request_id` (required) - The ID of MR
 
 ```json
@@ -92,7 +92,7 @@ POST /projects/:id/merge_requests
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `source_branch` (required) - The source branch
 + `target_branch` (required) - The target branch
 + `assignee_id`              - Assignee user ID
@@ -136,7 +136,7 @@ PUT /projects/:id/merge_request/:merge_request_id
 
 Parameters:
 
-+ `id` (required)               - The ID or code name of a project
++ `id` (required)               - The ID of a project
 + `merge_request_id` (required) - ID of MR
 + `source_branch`               - The source branch
 + `target_branch`               - The target branch
@@ -182,7 +182,7 @@ POST /projects/:id/merge_request/:merge_request_id/comments
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `merge_request_id` (required) - ID of MR
 + `note` (required) - Text of comment
 

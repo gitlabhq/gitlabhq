@@ -10,7 +10,6 @@ GET /projects
 [
   {
     "id": 3,
-    "code": "rails",
     "name": "rails",
     "description": null,
     "path": "rails",
@@ -32,7 +31,6 @@ GET /projects
   },
   {
     "id": 5,
-    "code": "gitlab",
     "name": "gitlab",
     "description": null,
     "path": "gitlab",
@@ -65,12 +63,11 @@ GET /projects/:id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ```json
 {
   "id": 5,
-  "code": "gitlab",
   "name": "gitlab",
   "description": null,
   "path": "gitlab",
@@ -103,7 +100,6 @@ POST /projects
 Parameters:
 
 + `name` (required) - new project name
-+ `code` (optional) - new project code, uses project name if not set
 + `path` (optional) - new project path, uses project name if not set
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
@@ -125,7 +121,7 @@ GET /projects/:id/members
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `query`         - Query string
 
 ## Get project team member
@@ -138,7 +134,7 @@ GET /projects/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `user_id` (required) - The ID of a user
 
 ```json
@@ -164,7 +160,7 @@ POST /projects/:id/members
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `user_id` (required) - The ID of a user to add
 + `access_level` (required) - Project access level
 
@@ -180,7 +176,7 @@ PUT /projects/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `user_id` (required) - The ID of a team member
 + `access_level` (required) - Project access level
 
@@ -196,7 +192,7 @@ DELETE /projects/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `user_id` (required) - The ID of a team member
 
 Status code `200` will be returned on success.
@@ -211,7 +207,7 @@ GET /projects/:id/hooks
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 Will return hooks with status `200 OK` on success, or `404 Not found` on fail.
 
@@ -225,7 +221,7 @@ GET /projects/:id/hooks/:hook_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `hook_id` (required) - The ID of a project hook
 
 Will return hook with status `200 OK` on success, or `404 Not found` on fail.
@@ -240,7 +236,7 @@ POST /projects/:id/hooks
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `url` (required) - The hook URL
 
 Will return status `201 Created` on success, or `404 Not found` on fail.
@@ -255,7 +251,7 @@ PUT /projects/:id/hooks/:hook_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `hook_id` (required) - The ID of a project hook
 + `url` (required) - The hook URL
 
@@ -272,7 +268,7 @@ DELETE /projects/:id/hooks
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `hook_id` (required) - The ID of hook to delete
 
 Will return status `200 OK` on success, or `404 Not found` on fail.
