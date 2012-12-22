@@ -1,7 +1,7 @@
 - grouper_project_members(@project).each do |access, members|
   %fieldset
     %legend
-      = Project.access_options.key(access).pluralize
+      = Project.access_options.key(access).try(:pluralize)
       %small= members.size
     %ul.unstyled
       - members.each do |up|
