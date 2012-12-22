@@ -64,6 +64,7 @@ describe Gitlab::API do
       post api("/projects", user), project
 
       project.each_pair do |k,v|
+        next if k == :path
         json_response[k.to_s].should == v
       end
     end

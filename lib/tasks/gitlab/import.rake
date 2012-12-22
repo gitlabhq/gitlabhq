@@ -15,15 +15,20 @@ namespace :gitlab do
       git_base_path = Gitlab.config.gitolite.repos_path
       repos_to_import = Dir.glob(git_base_path + '/*')
 
+      namespaces = Namespace.pluck(:path)
+
       repos_to_import.each do |repo_path|
         repo_name = File.basename repo_path
+
+        # Skip if group or user
+        next if namespaces.include?(repo_name)
 
         # skip gitolite admin
         next if repo_name == 'gitolite-admin.git'
 
         path = repo_name.sub(/\.git$/, '')
 
-        project = Project.find_by_path(path)
+        project = Project.find_with_namespace(path)
 
         puts "Processing #{repo_name}".yellow
 
@@ -34,8 +39,6 @@ namespace :gitlab do
 
           project_params = {
             :name => path,
-            :code => path,
-            :path => path,
           }
 
           project = Project.create_by_user(project_params, user)
