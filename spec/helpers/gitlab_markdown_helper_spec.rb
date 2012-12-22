@@ -85,7 +85,7 @@ describe GitlabMarkdownHelper do
       let(:expected) { project_team_member_path(project, member) }
 
       before do
-        project.users << user
+        project.add_access(user, :admin)
       end
 
       it "should link using a simple name" do
@@ -314,7 +314,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should handle references in lists" do
-      project.users << user
+      project.add_access(user, :admin)
 
       actual = "\n* dark: ##{issue.id}\n* light by @#{member.user.username}"
 

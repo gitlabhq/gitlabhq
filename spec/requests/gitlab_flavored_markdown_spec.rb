@@ -6,7 +6,7 @@ describe "Gitlab Flavored Markdown" do
   let(:merge_request) { create(:merge_request, project: project) }
   let(:fred) do
       u = create(:user, name: "fred")
-      project.users << u
+      project.add_access(u, :admin)
       u
   end
 

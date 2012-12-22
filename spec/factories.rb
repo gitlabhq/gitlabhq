@@ -45,6 +45,7 @@ FactoryGirl.define do
   factory :users_project do
     user
     project
+    project_access { UsersProject::MASTER }
   end
 
   factory :issue do
