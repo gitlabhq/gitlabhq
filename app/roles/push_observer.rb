@@ -98,7 +98,7 @@ module PushObserver
       user_name: user.name,
       repository: {
         name: name,
-        url: web_url,
+        url: url_to_repo,
         description: description,
         homepage: web_url,
       },

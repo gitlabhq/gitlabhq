@@ -91,7 +91,7 @@ describe Project, "Hooks" do
         subject { @data[:repository] }
 
         it { should include(name: project.name) }
-        it { should include(url: project.web_url) }
+        it { should include(url: project.url_to_repo) }
         it { should include(description: project.description) }
         it { should include(homepage: project.web_url) }
       end
