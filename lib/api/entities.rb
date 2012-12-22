@@ -18,7 +18,7 @@ module Gitlab
     end
 
     class Project < Grape::Entity
-      expose :id, :name, :description, :path, :default_branch
+      expose :id, :name, :description, :default_branch
       expose :owner, using: Entities::UserBasic
       expose :private_flag, as: :private
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at

@@ -12,7 +12,6 @@ GET /projects
     "id": 3,
     "name": "rails",
     "description": null,
-    "path": "rails",
     "default_branch": "master",
     "owner": {
       "id": 1,
@@ -33,7 +32,6 @@ GET /projects
     "id": 5,
     "name": "gitlab",
     "description": null,
-    "path": "gitlab",
     "default_branch": "api",
     "owner": {
       "id": 1,
@@ -70,7 +68,6 @@ Parameters:
   "id": 5,
   "name": "gitlab",
   "description": null,
-  "path": "gitlab",
   "default_branch": "api",
   "owner": {
     "id": 1,
@@ -100,7 +97,6 @@ POST /projects
 Parameters:
 
 + `name` (required) - new project name
-+ `path` (optional) - new project path, uses project name if not set
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional) - enabled by default

@@ -27,7 +27,6 @@ module Gitlab
       #
       # Parameters:
       #   name (required) - name for new project
-      #   path (optional) - path for new project, uses project name if not set
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
       #   issues_enabled (optional) - enabled by default
