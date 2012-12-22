@@ -1,6 +1,12 @@
 # # # # # # # # # # # # # # # # # # 
 # Gitlab application config file  #
 # # # # # # # # # # # # # # # # # #
+#
+# How to use:
+# 1. copy file as gitlab.yml
+# 2. Replace gitlab -> host with your domain
+# 3. Replace gitolite -> ssh_host with your domain
+# 4. Replace gitlab -> email_from
 
 #
 # 1. GitLab app settings
