@@ -47,7 +47,7 @@ module Account
   end
 
   def cared_merge_requests
-    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id).opened
+    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id)
   end
 
   def project_ids

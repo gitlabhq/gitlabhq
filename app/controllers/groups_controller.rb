@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
 
   # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests
+    @merge_requests = current_user.cared_merge_requests.opened
     @merge_requests = @merge_requests.of_group(@group).recent.page(params[:page]).per(20)
   end
 
