@@ -149,6 +149,23 @@ Fix the directory permissions for the repositories:
     sudo chmod -R ug+rwXs,o-rwx /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
+
+## Disable StrictHostKeyChecking for localhost and your domain
+
+    echo "Host localhost
+       StrictHostKeyChecking no
+       UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
+
+    echo "Host YOUR_DOMAIN_NAME
+       StrictHostKeyChecking no
+       UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
+
+    # If gitolite domain differs
+    echo "Host YOUR_GITOLITE_DOMAIN
+       StrictHostKeyChecking no
+       UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
+
+
 ## Test if everything works so far
 
     # Clone the admin repo so SSH adds localhost to known_hosts ...
