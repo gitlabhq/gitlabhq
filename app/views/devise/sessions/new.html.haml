@@ -3,7 +3,7 @@
 - else
   = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "login-box" }) do |f|
     = image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo"
-    = f.text_field :email, :class => "text top", :placeholder => "Email"
+    = f.email_field :email, :class => "text top", :placeholder => "Email", :autofocus => "autofocus"
     = f.password_field :password, :class => "text bottom", :placeholder => "Password"
     - if devise_mapping.rememberable?
       .clearfix.inputs-list

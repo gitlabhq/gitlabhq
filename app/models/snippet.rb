@@ -22,7 +22,7 @@ class Snippet < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
 
-  delegate :name, :email, to: :author, prefix: true
+  delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
   validates :project, presence: true

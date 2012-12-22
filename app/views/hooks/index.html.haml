@@ -22,22 +22,21 @@
 %hr
 
 -if @hooks.any?
-  %h3
-    Hooks
-    %small (#{@hooks.count})
+  %h3.page_title
+    Hooks (#{@hooks.count})
   %br
   %table
     %thead
       %tr
         %th URL
-        %th Method
         %th
     - @hooks.each do |hook|
       %tr
         %td
+          %span.badge.badge-info POST
           = link_to project_hook_path(@project, hook) do
             %strong= hook.url
-          = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn small right"
-        %td POST
         %td
-          = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "danger btn small right"
+          .right
+            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn small grouped"
+            = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "danger btn small grouped"

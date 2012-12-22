@@ -1,4 +1,15 @@
 v 4.0.0
+  - Reorganized settings
+  - Fixed commits compare
+  - Refactored scss
+  - Improve status checks
+  - Validates presence of User#name
+  - Fixed postgres support
+  - Removed sqlite support
+  - Modified post-receive hook
+  - Milestones can be closed now
+  - Show comment events on dashboard
+  - Quick add team members via group#people page
   - [API] expose created date for hooks and SSH keys
   - [API] list, create issue notes
   - [API] list, create snippet notes

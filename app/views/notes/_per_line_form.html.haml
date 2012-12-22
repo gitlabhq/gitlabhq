@@ -11,6 +11,7 @@
                   %div= msg
 
             = f.hidden_field :noteable_id
+            = f.hidden_field :commit_id
             = f.hidden_field :noteable_type
             = f.hidden_field :line_code
             = f.text_area :note,  size: 255, class: 'line-note-text js-gfm-input'

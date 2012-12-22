@@ -14,7 +14,7 @@ describe PostReceive do
     let(:key_id) { key.identifier }
 
     it "fetches the correct project" do
-      Project.should_receive(:find_by_path).with(project.path_with_namespace).and_return(project)
+      Project.should_receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
       PostReceive.perform(pwd(project), 'sha-old', 'sha-new', 'refs/heads/master', key_id)
     end
 
@@ -28,7 +28,7 @@ describe PostReceive do
     end
 
     it "asks the project to trigger all hooks" do
-      Project.stub(find_by_path: project)
+      Project.stub(find_with_namespace: project)
       project.should_receive(:execute_hooks)
       project.should_receive(:execute_services)
       project.should_receive(:update_merge_requests)
@@ -39,6 +39,6 @@ describe PostReceive do
   end
 
   def pwd(project)
-    File.join(Gitlab.config.git_base_path, project.path_with_namespace)
+    File.join(Gitlab.config.gitolite.repos_path, project.path_with_namespace)
   end
 end

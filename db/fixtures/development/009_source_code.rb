@@ -1,9 +1,10 @@
 root = Gitlab.config.git_base_path
 
 projects = [
-  { path: 'root/underscore.git', git: 'https://github.com/documentcloud/underscore.git' },
+  { path: 'underscore.git', git: 'https://github.com/documentcloud/underscore.git' },
   { path: 'diaspora.git', git: 'https://github.com/diaspora/diaspora.git' },
-  { path: 'rails.git', git: 'https://github.com/rails/rails.git' },
+  { path: 'brightbox/brightbox-cli.git', git: 'https://github.com/brightbox/brightbox-cli.git' },
+  { path: 'brightbox/puppet.git', git: 'https://github.com/brightbox/puppet.git' },
 ]
 
 projects.each do |project|
@@ -14,7 +15,7 @@ projects.each do |project|
 
   cmds = [
     "cd #{root} && sudo -u git -H git clone --bare #{project[:git]} ./#{project[:path]}",
-    "sudo cp ./lib/hooks/post-receive #{project_path}/hooks/post-receive",
+    "sudo ln -s ./lib/hooks/post-receive #{project_path}/hooks/post-receive",
     "sudo chown git:git -R #{project_path}",
     "sudo chmod 770 -R #{project_path}",
   ]

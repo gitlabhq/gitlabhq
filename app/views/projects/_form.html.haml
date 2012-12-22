@@ -17,19 +17,6 @@
       .controls
         = text_field_tag :ppath, @project.path_to_repo, class: "xxlarge", readonly: true
 
-    .control-group
-      = f.label :namespace_id do
-        %span Namespace
-      .controls
-        - if can? current_user, :change_namespace, @project
-          = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
-          &nbsp;
-          %span.cred Be careful. Changing project namespace can have unintended side effects
-        - else
-          %a.btn.disabled= @project.namespace.try(:human_name) || "/"
-          &nbsp;
-          %span.cred Only owner can change project namespace.
-
 
     - unless @project.heads.empty?
       .clearfix
@@ -62,6 +49,22 @@
       .controls
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
+
+
+  - if can? current_user, :change_namespace, @project
+    %fieldset.features
+      %legend Transfer:
+      .control-group
+        = f.label :namespace_id do
+          %span Namespace
+        .controls
+          = f.select :namespace_id, namespaces_options(@project.namespace_id || Namespace::global_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+          %br
+          %ul.prepend-top-10.cred
+            %li Be careful. Changing project namespace can have unintended side effects
+            %li You can transfer project only to namespaces you can manage
+            %li You will need to update your local repositories to point to the new location.
+
 
   %br
 

@@ -9,9 +9,9 @@
         Team
         %small
           (#{@users.size})
-      %ul.unstyled
+      %ul.well-list
         - @users.each do |user|
-          %li.wll
+          %li
             = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
             %strong= user.name
             %span.cgray= user.email

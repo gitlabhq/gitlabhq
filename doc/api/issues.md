@@ -18,6 +18,7 @@ GET /issues
     "assignee": null,
     "author": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -46,6 +47,7 @@ GET /issues
     },
     "assignee": {
       "id": 2,
+      "username": "jack_smith",
       "email": "jack@example.com",
       "name": "Jack Smith",
       "blocked": false,
@@ -53,6 +55,7 @@ GET /issues
     },
     "author": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -110,6 +113,7 @@ Parameters:
   },
   "assignee": {
     "id": 2,
+    "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
     "blocked": false,
@@ -117,6 +121,7 @@ Parameters:
   },
   "author": {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,
@@ -168,17 +173,3 @@ Parameters:
 
 Will return updated issue with status `200 OK` on success, or `404 Not found` on fail.
 
-## Delete issue
-
-Delete existing project issue.
-
-```
-DELETE /projects/:id/issues/:issue_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID or code name of a project
-+ `issue_id` (required) - The ID of a project's issue
-
-Status code `200` will be returned on success.

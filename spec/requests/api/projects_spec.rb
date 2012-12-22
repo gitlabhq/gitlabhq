@@ -117,6 +117,14 @@ describe Gitlab::API do
       json_response.count.should == 2
       json_response.first['email'].should == user.email
     end
+
+    it "finds team members with query string" do
+      get api("/projects/#{project.path}/members", user), query: user.username
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.count.should == 1
+      json_response.first['email'].should == user.email
+    end
   end
 
   describe "GET /projects/:id/members/:user_id" do

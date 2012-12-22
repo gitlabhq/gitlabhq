@@ -56,12 +56,12 @@ class User < ActiveRecord::Base
   has_many :issues, foreign_key: :author_id, dependent: :destroy
   has_many :notes, foreign_key: :author_id, dependent: :destroy
   has_many :merge_requests, foreign_key: :author_id, dependent: :destroy
-  has_many :my_own_projects, class_name: "Project", foreign_key: :owner_id
   has_many :events, class_name: "Event", foreign_key: :author_id, dependent: :destroy
   has_many :recent_events, class_name: "Event", foreign_key: :author_id, order: "id DESC"
   has_many :assigned_issues, class_name: "Issue", foreign_key: :assignee_id, dependent: :destroy
   has_many :assigned_merge_requests, class_name: "MergeRequest", foreign_key: :assignee_id, dependent: :destroy
 
+  validates :name, presence: true
   validates :bio, length: { within: 0..255 }
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
@@ -122,17 +122,5 @@ class User < ActiveRecord::Base
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
-  end
-
-  def authorized_groups
-    @authorized_groups ||= begin
-                           groups = Group.where(id: self.projects.pluck(:namespace_id)).all
-                           groups = groups + self.groups
-                           groups.uniq
-                         end
-  end
-
-  def authorized_projects
-    Project.authorized_for(self)
   end
 end

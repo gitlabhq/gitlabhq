@@ -245,6 +245,7 @@ describe MergeRequestsController, "routing" do
 
   it_behaves_like "RESTful project resources" do
     let(:controller) { 'merge_requests' }
+    let(:actions) { [:index, :create, :new, :edit, :show, :update] }
   end
 end
 
@@ -325,6 +326,7 @@ end
 describe MilestonesController, "routing" do
   it_behaves_like "RESTful project resources" do
     let(:controller) { 'milestones' }
+    let(:actions) { [:index, :create, :new, :edit, :show, :update] }
   end
 end
 
@@ -360,6 +362,7 @@ describe IssuesController, "routing" do
 
   it_behaves_like "RESTful project resources" do
     let(:controller) { 'issues' }
+    let(:actions) { [:index, :create, :new, :edit, :show, :update] }
   end
 end
 

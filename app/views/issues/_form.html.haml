@@ -1,18 +1,18 @@
 %div.issue-form-holder
   %h3.page_title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
-  = form_for [@project, @issue], remote: request.xhr? do |f|
+  = form_for [@project, @issue] do |f|
     -if @issue.errors.any?
       .alert-message.block-message.error
-        %ul
-          - @issue.errors.full_messages.each do |msg|
-            %li= msg
+        - @issue.errors.full_messages.each do |msg|
+          %span= msg
+          %br
     .issue_form_box
       .issue_title
         .clearfix
           = f.label :title do
             %strong= "Subject *"
           .input
-            = f.text_field :title, maxlength: 255, class: "xxlarge js-gfm-input", autofocus: true
+            = f.text_field :title, maxlength: 255, class: "xxlarge js-gfm-input", autofocus: true, required: true
       .issue_middle_block
         .issue_assignee
           = f.label :assignee_id do
@@ -47,11 +47,38 @@
       -else
         = f.submit 'Save changes', class: "save-btn btn"
 
-      - cancel_class = 'btn cancel-btn'
-      - if request.xhr?
-        = link_to "Cancel", "#back", onclick: "backToIssues();", class: cancel_class
-      - else
-        - if @issue.new_record?
-          = link_to "Cancel", project_issues_path(@project), class: cancel_class
-        - else
-          = link_to "Cancel", project_issue_path(@project, @issue), class: cancel_class
+      - cancel_path = @issue.new_record? ? project_issues_path(@project) : project_issue_path(@project, @issue)
+      = link_to "Cancel", cancel_path, class: 'btn cancel-btn'
+
+
+
+
+:javascript
+  $(function(){
+    $("#issue_label_list")
+      .bind( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+          $( this ).data( "autocomplete" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          response( $.ui.autocomplete.filter(
+            #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
+        },
+        focus: function() {
+          return false;
+        },
+        select: function(event, ui) {
+          var terms = split( this.value );
+          terms.pop();
+          terms.push( ui.item.value );
+          terms.push( "" );
+          this.value = terms.join( ", " );
+          return false;
+        }
+      });
+  });
+

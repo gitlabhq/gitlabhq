@@ -10,11 +10,6 @@
 /** COMMON CLASSES **/
 .left { float:left }
 .right { float:right!important }
-.width-50p { width:50% }
-.width-49p { width:49% }
-.width-30p { width:30% }
-.width-65p { width:65% }
-.width-100p { width:100% }
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-20 { margin-bottom:20px }
 .prepend-top-10 { margin-top:10px }
@@ -100,4 +95,21 @@ input[type='search'].search-text-input {
   border: 1px solid #ccc;
 }
 
+input[type='text'].danger {
+  background: #F2DEDE!important;
+  border-color: #D66;
+  text-shadow: 0 1px 1px #fff
+}
+
 fieldset legend { font-size: 17px; }
+
+/** PAGINATION **/
+.gitlab_pagination {
+  span a { color: $link_color; }
+  .prev, .next, .current, .page a {
+    padding: 10px;
+  }
+  .current {
+    border-bottom: 2px solid $style_color;
+  }
+}

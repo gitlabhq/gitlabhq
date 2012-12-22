@@ -16,7 +16,7 @@ class SnippetsController < ProjectResourceController
   respond_to :html
 
   def index
-    @snippets = @project.snippets
+    @snippets = @project.snippets.fresh
   end
 
   def new
@@ -60,7 +60,7 @@ class SnippetsController < ProjectResourceController
     redirect_to project_snippets_path(@project)
   end
 
-  def raw 
+  def raw
     send_data(
       @snippet.content,
       type: "text/plain",

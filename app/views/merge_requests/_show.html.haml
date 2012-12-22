@@ -2,6 +2,8 @@
 = render "merge_requests/show/how_to_merge"
 = render "merge_requests/show/mr_box"
 = render "merge_requests/show/mr_accept"
+- if @project.gitlab_ci?
+  = render "merge_requests/show/mr_ci"
 = render "merge_requests/show/commits"
 
 - if @commits.present?
@@ -28,6 +30,8 @@
     MergeRequest.init({
       url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
       check_enable: #{@merge_request.state == MergeRequest::UNCHECKED ? "true" : "false"},
+      url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
+      ci_enable: #{@project.gitlab_ci? ? "true" : "false"},
       current_state: "#{@merge_request.human_state}",
       action: "#{controller.action_name}"
     });

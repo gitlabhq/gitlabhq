@@ -1,6 +1,6 @@
 = render "projects/project_head"
 
-%h3
+%h3.page_title
   = @snippet.title
   %small= @snippet.file_name
   - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user

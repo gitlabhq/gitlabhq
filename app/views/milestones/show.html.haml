@@ -1,31 +1,41 @@
-%h3.page_title
-  Milestone ##{@milestone.id}
-  %small
-    = @milestone.expires_at
+.row
+  .span6
+    %h3.page_title
+      Milestone ##{@milestone.id}
+      %small
+        = @milestone.expires_at
+    .back_link
+      = link_to project_milestones_path(@project) do
+        &larr; To milestones list
+  .span6
+    .right
+      - unless  @milestone.closed
+        = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn small grouped", title: "New Issue" do
+          %i.icon-plus
+          New Issue
+        = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
+        - if can?(current_user, :admin_milestone, @project)
+          = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do
+            %i.icon-edit
+            Edit
 
-  %span.right
-    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn small grouped", title: "New Issue" do
-      %i.icon-plus
-      New Issue
-    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
-    - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do
-        %i.icon-edit
-        Edit
 
-.back_link
-  = link_to project_milestones_path(@project) do
-    &larr; To milestones list
+
+- if @milestone.can_be_closed?
+  %hr
+  %p
+    %span All issues for this milestone are closed. You may close milestone now.
+    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn small danger"
 
 .main_box
   .top_box_content
-    %h5
+    %h4.box-title
       - if @milestone.closed
-        .alert-message.error.status_info Closed
-      - else
-        .alert-message.success.status_info Open
+        .error.status_info Closed
+      - elsif @milestone.expired?
+        .error.status_info Expired
+
       = gfm escape_once(@milestone.title)
-      %small.right= @milestone.expires_at
 
   .middle_box_content
     %h5
@@ -34,6 +44,7 @@
         #{@milestone.closed_items_count} closed
         &ndash;
         #{@milestone.open_items_count} open
+      %span.right= @milestone.expires_at
     .progress.progress-info
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 
@@ -43,14 +54,16 @@
       = preserve do
         = markdown @milestone.description
 
+
 .row
   .span6
     %table.milestone-issue-filter
       %thead
-        %th
-          %ul.nav.nav-pills
-            %li.active= link_to('Open Issues', '#')
-            %li=link_to('All Issues', '#')
+        %tr
+          %th
+            %ul.nav.nav-pills
+              %li.active= link_to('Open Issues', '#')
+              %li=link_to('All Issues', '#')
       - @issues.each do |issue|
         %tr{data: {closed: issue.closed}}
           %td
@@ -62,10 +75,11 @@
   .span6
     %table.milestone-merge-requests-filter
       %thead
-        %th
-          %ul.nav.nav-pills
-            %li.active= link_to('Open Merge Requests', '#')
-            %li=link_to('All Merge Requests', '#')
+        %tr
+          %th
+            %ul.nav.nav-pills
+              %li.active= link_to('Open Merge Requests', '#')
+              %li=link_to('All Merge Requests', '#')
       - @merge_requests.each do |merge_request|
         %tr{data: {closed: merge_request.closed}}
           %td

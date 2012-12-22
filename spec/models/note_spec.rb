@@ -81,18 +81,18 @@ describe Note do
   describe "Commit notes" do
     before do
       @note = create(:note,
-                     noteable_id: commit.id,
+                     commit_id: commit.id,
                      noteable_type: "Commit")
     end
 
     it "should be accessible through #noteable" do
-      @note.noteable_id.should == commit.id
+      @note.commit_id.should == commit.id
       @note.noteable.should be_a(Commit)
       @note.noteable.should == commit
     end
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
+      @note.commit_id.should == commit.id
       @note.noteable == commit
     end
 
@@ -104,13 +104,13 @@ describe Note do
   describe "Pre-line commit notes" do
     before do
       @note = create(:note,
-                     noteable_id: commit.id,
+                     commit_id: commit.id,
                      noteable_type: "Commit",
                      line_code: "0_16_1")
     end
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
+      @note.commit_id.should == commit.id
       @note.noteable.id.should == commit.id
     end
 

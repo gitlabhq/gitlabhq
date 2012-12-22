@@ -229,8 +229,6 @@
 
 /** COMMIT ROW **/
 .commit {
-  @extend .wll;
-
   .browse_code_link_holder {
     @extend .span2;
     float: right;
@@ -301,4 +299,18 @@
   background: #474D57;
   color: #fff;
   font-family: $monospace;
+}
+
+
+.commits-compare-switch{
+  background: url("switch_icon.png") no-repeat center center;
+  width: 16px;
+  height: 18px;
+  text-indent: -9999px;
+  float: left;
+  margin-right: 9px;
+  border: 1px solid #DDD;
+  @include border-radius(4px);
+  padding: 4px;
+  background-color: #EEE;
 }

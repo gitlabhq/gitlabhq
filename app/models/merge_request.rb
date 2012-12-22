@@ -204,7 +204,7 @@ class MergeRequest < ActiveRecord::Base
 
   def mr_and_commit_notes
     commit_ids = commits.map(&:id)
-    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND noteable_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
+    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND commit_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
   end
 
   # Returns the raw diff for this merge request
@@ -219,5 +219,9 @@ class MergeRequest < ActiveRecord::Base
   # see "git format-patch"
   def to_patch
     project.repo.git.format_patch({timeout: 30, raise: true, stdout: true}, "#{target_branch}..#{source_branch}")
+  end
+
+  def last_commit_short_sha
+    @last_commit_short_sha ||= last_commit.sha[0..10]
   end
 end

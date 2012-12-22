@@ -26,6 +26,12 @@ var MergeRequest = {
           self.showState(data.state);
         }, "json");
       }
+
+      if(self.opts.ci_enable){
+        $.get(self.opts.url_to_ci_check, function(data){
+          self.showCiState(data.status);
+        }, "json");
+      }
     },
 
   initTabs:
@@ -79,6 +85,11 @@ var MergeRequest = {
       $(".automerge_widget." + state).show();
     },
 
+  showCiState:
+    function(state){
+      $(".ci_widget").hide();
+      $(".ci_widget.ci-" + state).show();
+    },
 
   loadDiff:
     function() { 

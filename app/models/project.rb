@@ -25,6 +25,9 @@ class Project < ActiveRecord::Base
   include PushObserver
   include Authority
   include Team
+  include NamespacedProject
+
+  class TransferError < StandardError; end
 
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
@@ -101,7 +104,7 @@ class Project < ActiveRecord::Base
         namespace_id = Namespace.find_by_path(id.first).id
         where(namespace_id: namespace_id).find_by_path(id.last)
       else
-        find_by_path(id)
+        where(path: id, namespace_id: nil).last
       end
     end
 
@@ -176,7 +179,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo_name
-    denied_paths = %w(gitolite-admin groups projects dashboard)
+    denied_paths = %w(gitolite-admin admin dashboard groups help profile projects search)
 
     if denied_paths.include?(path)
       errors.add(:path, "like #{path} is not allowed")
@@ -192,7 +195,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [Gitlab.config.url, path].join("/")
+    [Gitlab.config.gitlab.url, path_with_namespace].join("/")
   end
 
   def common_notes
@@ -200,15 +203,15 @@ class Project < ActiveRecord::Base
   end
 
   def build_commit_note(commit)
-    notes.new(noteable_id: commit.id, noteable_type: "Commit")
+    notes.new(commit_id: commit.id, noteable_type: "Commit")
   end
 
   def commit_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit", line_code: nil)
+    notes.where(commit_id: commit.id, noteable_type: "Commit", line_code: nil)
   end
 
   def commit_line_notes(commit)
-    notes.where(noteable_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
+    notes.where(commit_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
   end
 
   def public?
@@ -260,38 +263,6 @@ class Project < ActiveRecord::Base
     path
   end
 
-  def transfer(new_namespace)
-    Project.transaction do
-      old_namespace = namespace
-      self.namespace = new_namespace
-
-      old_dir = old_namespace.try(:path) || ''
-      new_dir = new_namespace.try(:path) || ''
-
-      old_repo = if old_dir.present?
-                   File.join(old_dir, self.path)
-                 else
-                   self.path
-                 end
-
-      Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
-
-      git_host.move_repository(old_repo, self)
-
-      save!
-    end
-  end
-
-  def name_with_namespace
-    @name_with_namespace ||= begin
-                               if namespace
-                                 namespace.human_name + " / " + name
-                               else
-                                 name
-                               end
-                             end
-  end
-
   def items_for entity
     case entity
     when 'issue' then
@@ -301,15 +272,9 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def namespace_owner
-    namespace.try(:owner)
-  end
-
-  def chief
-    if namespace
-      namespace_owner
-    else
-      owner
+  def send_move_instructions
+    self.users_projects.each do |member|
+      Notify.project_was_moved_email(member.id).deliver
     end
   end
 end

@@ -45,8 +45,22 @@ module Repository
   end
 
   def has_post_receive_file?
-    hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
-    File.exists?(hook_file)
+    !!hook_file
+  end
+
+  def valid_post_receive_file?
+    valid_hook_file == hook_file
+  end
+
+  def valid_hook_file
+    @valid_hook_file ||= File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
+  end
+
+  def hook_file
+    @hook_file ||= begin
+                     hook_path = File.join(path_to_repo, 'hooks', 'post-receive')
+                     File.read(hook_path) if File.exists?(hook_path)
+                   end
   end
 
   # Returns an Array of branch names
@@ -83,7 +97,7 @@ module Repository
   end
 
   def path_to_repo
-    File.join(Gitlab.config.git_base_path, "#{path_with_namespace}.git")
+    File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
   end
 
   def namespace_dir
@@ -185,7 +199,7 @@ module Repository
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.url, "/", path_with_namespace, ".git"].join('')
+    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system

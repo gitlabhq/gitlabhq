@@ -41,7 +41,6 @@ describe User do
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:projects) }
     it { should have_many(:groups) }
-    it { should have_many(:my_own_projects).class_name('Project') }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }
     it { should have_many(:recent_events).class_name('Event') }
@@ -65,6 +64,10 @@ describe User do
     it { should_not allow_value(-1).for(:projects_limit) }
 
     it { should ensure_length_of(:bio).is_within(0..255) }
+  end
+
+  describe 'modules' do
+    it { should include_module(Account) }
   end
 
   describe "Respond to" do

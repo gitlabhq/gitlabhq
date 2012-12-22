@@ -1,14 +1,19 @@
 This installation guide was created for Debian/Ubuntu and tested on it.
 
-Please read doc/install/requirements.md for hardware andplatform requirements.
+Please read `doc/install/requirements.md` for hardware and platform requirements.
 
 
-**Important Note**
+**Important Note:**
 The following steps have been known to work.
 If you deviate from this guide, do it with caution and make sure you don't
 violate any assumptions GitLab makes about its environment.
-If you find a bug/error in this guide please an issue or pull request following
-the contribution guide (see CONTRIBUTING.md).
+For things like AWS installation scripts, init scripts or config files for
+alternative web server have a look at the "Advanced Setup Tips" section.
+
+
+**Important Note:**
+If you find a bug/error in this guide please submit an issue or pull request
+following the contribution guide (see `CONTRIBUTING.md`).
 
 - - -
 
@@ -27,31 +32,40 @@ The GitLab installation consists of setting up th following components:
 
 # 1. Packages / Dependencies
 
-*Keep in mind that `sudo` is not installed on Debian by default. You should install it as root:*
+`sudo` is not installed on Debian by default. If you don't have it you'll need
+to install it first.
 
-    apt-get update && apt-get upgrade && apt-get install sudo
+    # run as root
+    apt-get update && apt-get upgrade && apt-get install sudo vim
 
 Make sure your system is up-to-date:
 
     sudo apt-get update
     sudo apt-get upgrade
 
+**Note:**
+Vim is an editor that is used here whenever there are files that need to be
+edited by hand. But, you can use any editor you like instead.
+
+    # Install vim
+    sudo apt-get install -y vim
+
 Install the required packages:
 
-    sudo apt-get install -y wget curl build-essential checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libreadline6-dev libc6-dev libssl-dev zlib1g-dev libicu-dev redis-server openssh-server git-core libyaml-dev postfix
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev  wget curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
     # Install Python
     sudo apt-get install python
 
-    # Make sure that Python is 2.x (3.x is not supported at the moment)
+    # Make sure that Python is 2.5+ (3.x is not supported at the moment)
     python --version
 
     # If it's Python 3 you might need to install Python 2 separately
     sudo apt-get install python2.7
 
-    # Make sure you can access Python via `python2`
+    # Make sure you can access Python via python2
     python2 --version
 
     # If you get a "command not found" error create a link to the python binary
@@ -60,12 +74,18 @@ Make sure you have the right version of Python installed.
 
 # 2. Ruby
 
+Download and compile it:
+
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz
     tar xfvz ruby-1.9.3-p327.tar.gz
     cd ruby-1.9.3-p327
     ./configure
     make
     sudo make install
+
+Install the Bundler Gem:
+
+    sudo gem install bundler
 
 
 # 3. System Users
@@ -96,30 +116,30 @@ Create a user for GitLab:
 
 Clone GitLab's fork of the Gitolite source code:
 
-    sudo -u git -H git clone -b gl-v304 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
+    cd /home/git
+    sudo -u git -H git clone -b gl-v320 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
 Setup Gitolite with GitLab as its admin:
 
-**Important Note**
+**Important Note:**
 GitLab assumes *full and unshared* control over this Gitolite installation.
 
     # Add Gitolite scripts to $PATH
-    cd /home/git
-    sudo -u git -H mkdir bin
-    sudo -u git -H sh -c 'echo -e "PATH=\$PATH:/home/git/bin\nexport PATH" >> /home/git/.profile'
+    sudo -u git -H mkdir /home/git/bin
+    sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/home/git/bin" "export PATH" >> /home/git/.profile'
     sudo -u git -H sh -c 'gitolite/install -ln /home/git/bin'
 
     # Copy the gitlab user's (public) SSH key ...
     sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
     sudo chmod 0444 /home/git/gitlab.pub
 
-    # ... and use it as the Gitolite admin key for setup
+    # ... and use it as the admin key for the Gitolite setup
     sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
 
-Fix the directory permissions for the repository:
+Fix the directory permissions for the repositories:
 
     # Make sure the repositories dir is owned by git and it stays that way
-    sudo chmod -R ug+rwXs /home/git/repositories/
+    sudo chmod -R ug+rwXs,o-rwx /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
 
 ## Test if everything works so far
@@ -131,20 +151,20 @@ Fix the directory permissions for the repository:
     # If it succeeded without errors you can remove the cloned repo
     sudo rm -rf /tmp/gitolite-admin
 
-**Impornant Note**
-If you can't clone the `gitolite-admin` repository: **DO NOT PROCEED WITH INSTALLATION**
+**Important Note:**
+If you can't clone the `gitolite-admin` repository: **DO NOT PROCEED WITH INSTALLATION**!
 Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
 and make sure you have followed all of the above steps carefully.
 
 
 # 5. Database
 
-See doc/install/databases.md
+See `doc/install/databases.md`
 
 
 # 6. GitLab
 
-    We'll install GitLab into the gitlab user's home directory
+    # We'll install GitLab into home directory of the user "gitlab"
     cd /home/gitlab
 
 ## Clone the Source
@@ -152,7 +172,7 @@ See doc/install/databases.md
     # Clone the latest stable release
     sudo -u gitlab -H git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
 
-**Note***
+**Note:**
 You can change `stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
@@ -167,10 +187,16 @@ do so with caution!
     # host serving GitLab where necessary
     sudo -u gitlab -H vim config/gitlab.yml
 
+    # Make sure GitLab can write to the log/ and tmp/ directories
+    sudo chown -R gitlab log/
+    sudo chown -R gitlab tmp/
+    sudo chmod -R u+rwX  log/
+    sudo chmod -R u+rwX  tmp/
+
     # Copy the example Unicorn config
     sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
-**Important Note**
+**Important Note:**
 Make sure to edit both files to match your setup.
 
 ## Install Gems
@@ -178,19 +204,18 @@ Make sure to edit both files to match your setup.
     cd /home/gitlab/gitlab
 
     sudo gem install charlock_holmes --version '0.6.9'
-    sudo gem install bundler
     sudo -u gitlab -H bundle install --deployment --without development test 
 
 ## Configure Git
 
 GitLab needs to be able to commit and push changes to Gitolite. In order to do
-that Git requires a username and email. (Please use the `email.from` address
-for the email)
+that Git requires a username and email. (We recommend using the same address
+used for the `email.from` setting in `config/gitlab.yml`)
 
     sudo -u gitlab -H git config --global user.name "GitLab"
     sudo -u gitlab -H git config --global user.email "gitlab@localhost"
 
-## Setup GitLab hooks
+## Setup GitLab Hooks
 
     sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
     sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
@@ -202,33 +227,16 @@ for the email)
 
 ## Check Application Status
 
-Check if GitLab  and its environment is configured correctly:
+Check if GitLab and its environment is configured correctly:
 
     sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 To make sure you didn't miss anything run a more thorough check with:
 
-    sudo -u gitlab -H bundle exec rake gitlab:app:status RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
 
-```
-# OUTPUT EXAMPLE
-Starting diagnostic
-config/database.yml............exists
-config/gitlab.yml............exists
-/home/git/repositories/............exists
-/home/git/repositories/ is writable?............YES
-remote: Counting objects: 603, done.
-remote: Compressing objects: 100% (466/466), done.
-remote: Total 603 (delta 174), reused 0 (delta 0)
-Receiving objects: 100% (603/603), 53.29 KiB, done.
-Resolving deltas: 100% (174/174), done.
-Can clone gitolite-admin?............YES
-UMASK for .gitolite.rc is 0007? ............YES
-/home/git/share/gitolite/hooks/common/post-receive exists? ............YES
-```
-
-If you are all green - congratulations! You run a GitLab now.
-But there are still a few steps to go.
+If you are all green: congratulations, you successfully installed GitLab!
+Although this is the case, there are still a few steps to go.
 
 
 ## Install Init Script
@@ -246,9 +254,15 @@ Make GitLab start on boot:
 Start your GitLab instance:
 
     sudo service gitlab start
+    # or
+    sudo /etc/init.d/gitlab restart
 
 
 # 7. Nginx
+
+**Note:**
+If you can't or don't want to use Nginx as your web server, have a look at the
+"Advanced Setup Tips" section.
 
 ## Installation
     sudo apt-get install nginx
@@ -280,7 +294,7 @@ The setup has created an admin account for you. You can use it to log in:
     admin@local.host
     5iveL!fe
 
-**Important Note**
+**Important Note:**
 Please go over to your profile page and immediately chage the password, so
 nobody can access your GitLab by using this login information later on.
 
@@ -290,9 +304,9 @@ nobody can access your GitLab by using this login information later on.
 - - -
 
 
-# Advanced setup tips:
+# Advanced Setup Tips
 
-## Custom Redis connections
+## Custom Redis Connection
 
 If you'd like Resque to connect to a Redis server on a non-standard port or on
 a different host, you can configure its connection string via the
@@ -300,3 +314,9 @@ a different host, you can configure its connection string via the
 
     # example
     production: redis.example.tld:6379
+
+
+## User-contributed Configurations
+
+You can find things like  AWS installation scripts, init scripts or config files
+for alternative web server in our [recipes collection](https://github.com/gitlabhq/gitlab-recipes/).

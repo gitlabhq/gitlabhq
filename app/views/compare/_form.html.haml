@@ -1,23 +1,30 @@
 %div
-  %p.slead
-    Fill input field with commit id like
-    %code.label_branch 4eedf23
-    or branch/tag name like
-    %code.label_branch master
-    and press compare button for commits list, code diff.
+  - unless params[:to]
+    %p.slead
+      Fill input field with commit id like
+      %code.label_branch 4eedf23
+      or branch/tag name like
+      %code.label_branch master
+      and press compare button for commits list, code diff.
 
-  %br
+    %br
 
   = form_tag project_compare_index_path(@project), method: :post do
     .clearfix
-      = text_field_tag :from, params[:from], placeholder: "master", class: "xlarge"
-      = "..."
-      = text_field_tag :to, params[:to], placeholder: "aa8b4ef", class: "xlarge"
+      .pull-left
+        - if params[:to] && params[:from]
+          = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has_tooltip', title: 'Switch base of comparison'}
+        = text_field_tag :from, params[:from], placeholder: "master", class: "xlarge"
+        = "..."
+        = text_field_tag :to, params[:to], placeholder: "aa8b4ef", class: "xlarge"
+      .pull-left
+        &nbsp;
+        = submit_tag "Compare", class: "btn primary wide commits-compare-btn"
     - if @refs_are_same
       .alert
         %span Refs are the same
-    .actions
-      = submit_tag "Compare", class: "btn primary wide commits-compare-btn"
+
+
 
 :javascript
   $(function() {

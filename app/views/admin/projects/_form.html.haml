@@ -19,43 +19,47 @@
       .input
         = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
 
-    - unless project.new_record?
+    - if project.repo_exists?
       .clearfix
-        = f.label :namespace_id
-        .input
-          = f.select :namespace_id, namespaces_options(@project.namespace_id, :all), {}, {class: 'chosen'}
-          &nbsp;
-          %span.cred Be careful. Changing project namespace can have unintended side effects
+        = f.label :default_branch, "Default Branch"
+        .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
 
-      - if project.repo_exists?
-        .clearfix
-          = f.label :default_branch, "Default Branch"
-          .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
+  %fieldset.adv_settings
+    %legend Features:
 
-  - unless project.new_record?
-    %fieldset.adv_settings
-      %legend Features:
+    .clearfix
+      = f.label :issues_enabled, "Issues"
+      .input= f.check_box :issues_enabled
 
-      .clearfix
-        = f.label :issues_enabled, "Issues"
-        .input= f.check_box :issues_enabled
+    .clearfix
+      = f.label :merge_requests_enabled, "Merge Requests"
+      .input= f.check_box :merge_requests_enabled
 
-      .clearfix
-        = f.label :merge_requests_enabled, "Merge Requests"
-        .input= f.check_box :merge_requests_enabled
+    .clearfix
+      = f.label :wall_enabled, "Wall"
+      .input= f.check_box :wall_enabled
 
-      .clearfix
-        = f.label :wall_enabled, "Wall"
-        .input= f.check_box :wall_enabled
+    .clearfix
+      = f.label :wiki_enabled, "Wiki"
+      .input= f.check_box :wiki_enabled
 
-      .clearfix
-        = f.label :wiki_enabled, "Wiki"
-        .input= f.check_box :wiki_enabled
+  %fieldset.features
+    %legend Transfer:
+    .control-group
+      = f.label :namespace_id do
+        %span Namespace
+      .controls
+        = f.select :namespace_id, namespaces_options(@project.namespace_id, :all), {}, {class: 'chosen'}
+        %br
+        %ul.prepend-top-10.cred
+          %li Be careful. Changing project namespace can have unintended side effects
+          %li You can transfer project only to namespaces you can manage
+          %li You will need to update your local repositories to point to the new location.
 
-  - unless project.new_record?
-    .actions
-      = f.submit 'Save Project', class: "btn save-btn"
-      = link_to 'Cancel', admin_projects_path, class: "btn cancel-btn"
+
+  .actions
+    = f.submit 'Save Project', class: "btn save-btn"
+    = link_to 'Cancel', admin_projects_path, class: "btn cancel-btn"
 
 
 

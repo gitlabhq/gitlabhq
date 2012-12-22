@@ -40,6 +40,12 @@
   %tr
     %td
       %b
+        Created at:
+    %td
+      = @admin_user.created_at.stamp("March 1, 1999")
+  %tr
+    %td
+      %b
         Projects limit:
     %td
       = @admin_user.projects_limit
@@ -66,7 +72,7 @@
         = @admin_user.twitter
 
 %br
-%h3 Add User to Projects
+%h5 Add User to Projects
 %br
 = form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
   %table
@@ -86,8 +92,22 @@
         %strong= link_to "here", help_permissions_path, class: "vlink"
 %br
 
+- if @admin_user.groups.present?
+  %h5 Owner of groups:
+  %br
+
+  %table.zebra-striped
+    %thead
+      %tr
+        %th Name
+
+    - @admin_user.groups.each do |group|
+      %tr
+        %td= link_to group.name, admin_group_path(group)
+
+
 - if @admin_user.projects.present?
-  %h3 Projects
+  %h5 Projects:
   %br
 
   %table.zebra-striped

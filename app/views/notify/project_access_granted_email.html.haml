@@ -1,14 +1,15 @@
 %td.content{align: "left", style: "font-family: Helvetica, Arial, sans-serif; padding: 20px 0 0;", valign: "top", width: "600"}
   %table{border: "0", cellpadding: "0", cellspacing: "0", style: "color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;", width: "600"}
     %tr
-      %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
-      %td{align: "left", style: "padding: 20px 0 0;"}
-        %h2{style: "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
+      %td{width: "21"}
+      %td
+        %h2{style: "color:#646464;" }
           = "You have been granted #{@users_project.project_access_human} access to project"
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
     %tr
-      %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
-      %td{align: "left", style: "padding: 20px 0 0;"}
-        %h2{style: "color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
-          = link_to_gfm truncate(@project.name, length: 45), project_url(@project), title: @project.name
+      %td{width: "21"}
+      %td
+        %h3
+          = link_to project_url(@project) do
+            = @project.name_with_namespace
         %br

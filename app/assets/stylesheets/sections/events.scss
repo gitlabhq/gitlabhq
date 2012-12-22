@@ -31,7 +31,6 @@
  *
  */
 .event-item {
-  min-height: 40px;
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
@@ -50,14 +49,18 @@
     }
   }
   .avatar {
-    width: 32px;
+    position: relative;
+    top: -3px;
   }
   .event_icon {
+    position: relative;
     float: right;
     border: 1px solid #EEE;
     padding: 5px;
     @include border-radius(5px);
     background: #F9F9F9;
+    margin-left: 10px;
+    top: -6px;
     img {
       width: 20px;
     }
@@ -71,9 +74,8 @@
     }
   }
 
-  padding: 15px 5px;
+  padding: 16px 5px;
   &:last-child { border:none }
-  .wll:hover { background:none }
 
   .event_commits {
     margin-top: 5px;
