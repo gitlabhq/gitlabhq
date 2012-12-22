@@ -116,7 +116,7 @@ namespace :gitlab do
         FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
         puts "Dumping repositories:"
         project = Project.all.map { |n| [n.path, n.path_to_repo] }
-        project << ["gitolite-admin.git", File.join(File.dirname(project.first.second), "gitolite-admin.git")]
+        project << ["gitolite-admin.git", File.join(Gitlab.config.git_base_path, "gitolite-admin.git")]
         project.each do |project|
           print "- Dumping repository #{project.first}... "
           if Kernel.system("cd #{project.second} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/#{project.first}.bundle --all > /dev/null 2>&1")
