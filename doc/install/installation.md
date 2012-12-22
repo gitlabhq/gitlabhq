@@ -36,7 +36,7 @@ The GitLab installation consists of setting up th following components:
 to install it first.
 
     # run as root
-    apt-get update && apt-get upgrade && apt-get install sudo vim
+    apt-get update && apt-get upgrade && apt-get install sudo
 
 Make sure your system is up-to-date:
 
