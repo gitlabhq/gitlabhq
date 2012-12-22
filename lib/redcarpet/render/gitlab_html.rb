@@ -13,10 +13,17 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     options = { options: {encoding: 'utf-8'} }
     options.merge!(lexer: language.downcase) if Pygments::Lexer.find(language)
 
+    # New lines are placed to fix an rendering issue
+    # with code wrapped inside <h1> tag for next case:
+    #
+    # # Title kinda h1
+    #
+    #     ruby code here
+    #
     <<-HTML
-       <div class="#{h.user_color_scheme_class}">
-         #{Pygments.highlight(code, options)}
-       </div>
+
+       <div class="#{h.user_color_scheme_class}">#{Pygments.highlight(code, options)}</div>
+
     HTML
   end
 
