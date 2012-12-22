@@ -18,7 +18,13 @@ module Gitlab
       end
 
       def create
-        `git clone #{project.url_to_repo} #{path}`
+        create_cmd = "git clone #{project.url_to_repo} #{path}"
+        if system(create_cmd)
+          true
+        else
+          Gitlab::GitLogger.error("Failed to create satellite for #{project.name_with_namespace}")
+          false
+        end
       end
 
       def exists?
