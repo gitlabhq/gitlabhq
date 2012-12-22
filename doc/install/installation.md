@@ -76,6 +76,7 @@ Make sure you have the right version of Python installed.
 
 Download and compile it:
 
+    mkdir /tmp/ruby && cd /tmp/ruby
     wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz
     tar xfvz ruby-1.9.3-p327.tar.gz
     cd ruby-1.9.3-p327
