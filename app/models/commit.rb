@@ -159,6 +159,8 @@ class Commit
     while !lines.first.start_with?("diff --git") do
       lines.shift
     end
+    lines.pop if lines.last =~ /^[\d.]+$/ # Git version
+    lines.pop if lines.last == "-- "      # end of diff
     lines.join("\n")
   end
 end
