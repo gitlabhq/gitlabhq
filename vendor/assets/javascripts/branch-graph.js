@@ -108,22 +108,10 @@
         fill: this.colors[this.commits[i].space], 
         stroke: "none"
       });
-      if (this.commits[i].refs != null && this.commits[i].refs != "") {
-        var longrefs = this.commits[i].refs
-          , shortrefs = this.commits[i].refs;
-        if (shortrefs.length > 15){
-          shortrefs = shortrefs.substr(0,13) + "...";
-        }
-        var t = r.text(x+5, y+8, shortrefs).attr({
-          font: "12px Monaco, Arial", 
-          fill: "#666",
-          title: longrefs, 
-          cursor: "pointer", 
-          rotation: "90"
-        });
-
-        var textbox = t.getBBox();
-        t.translate(textbox.height/-4, textbox.width/2);
+      
+      
+      if (this.commits[i].refs) {
+        this.appendLabel(x, y, this.commits[i].refs);
       }
       var c;
       for (var j = 0, jj = this.commits[i].parents.length; j < jj; j++) {
@@ -208,6 +196,45 @@
     });
   };
   
+  BranchGraph.prototype.appendLabel = function(x, y, refs){
+    var r = this.raphael
+      , shortrefs = refs
+      , text, textbox, rect;
+    
+    if (shortrefs.length > 15){
+      // Truncate if longer than 15 chars
+      shortrefs = shortrefs.substr(0,13) + "...";
+    }
+    
+    text = r.text(x+5, y+8, shortrefs).attr({
+      font: "12px Monaco, Arial", 
+      fill: "#FFF",
+      title: refs
+    });
+
+    textbox = text.getBBox();
+    text.transform([
+      't', textbox.height/-4, textbox.width/2 + 5,
+      'r90'
+    ]);
+    
+    // Create rectangle based on the size of the textbox
+    rect = r.rect(x, y, textbox.width + 15, textbox.height + 5, 4).attr({
+      fill: "#000",
+      "fill-opacity": .5,
+      stroke: "none"
+    });
+    
+    // Rotate and reposition rectangle over text
+    rect.transform([
+      'r', 90, x, y,
+      't', 5, -10
+    ]);
+    
+    // Set text to front
+    text.toFront();
+  };
+  
   BranchGraph.prototype.appendAnchor = function(top, c, x, y) {
     var r = this.raphael
       , options = this.options
@@ -252,6 +279,6 @@ Raphael.fn.tooltip = function (x, y, set, dir, size) {
           "l", 0, mmax(h - size, 0), (dir == 1) * size, size, (dir == 1) * -size, size, 0, mmax(h - size, 0), "a", size, size, 0, 0, 1, -size, size,
           "l", -mmax(w - size, 0), 0, "z"].join(",")
     , xy = [{x: x, y: y + size * 2 + h}, {x: x - size * 2 - w, y: y}, {x: x, y: y - size * 2 - h}, {x: x + size * 2 + w, y: y}][dir];
-  set.translate(xy.x - w - bb.x, xy.y - h - bb.y);
+  set.transform(['t', xy.x - w - bb.x, xy.y - h - bb.y]);
   return this.set(this.path(p).attr({fill: "#234", stroke: "none"}).insertBefore(set.node ? set : set[0]), set);
 };

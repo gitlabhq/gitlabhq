@@ -71,6 +71,12 @@ GIT
       http_parser.rb (~> 0.5.3)
       multi_json (~> 1.0)
 
+GIT
+  remote: https://github.com/koenpunt/raphael-rails.git
+  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
+  specs:
+    raphael-rails (2.1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -344,7 +350,6 @@ GEM
       thor (>= 0.14.6, < 2.0)
     raindrops (0.10.0)
     rake (10.0.1)
-    raphael-rails (1.5.2)
     rb-fsevent (0.9.2)
     rb-inotify (0.8.8)
       ffi (>= 0.5.0)
@@ -512,7 +517,7 @@ DEPENDENCIES
   rack-mini-profiler
   rails (= 3.2.9)
   rails-dev-tweaks
-  raphael-rails (= 1.5.2)
+  raphael-rails!
   rb-fsevent
   rb-inotify
   redcarpet (~> 2.2.2)
