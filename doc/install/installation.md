@@ -193,11 +193,14 @@ See `doc/install/databases.md`
 
 ## Clone the Source
 
-    # Clone the latest stable release
-    sudo -u gitlab -H git clone -b stable https://github.com/gitlabhq/gitlabhq.git gitlab
+    # Clone GitLab repository
+    sudo -u gitlab -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+   
+    # Checkout to stable release
+    sudo -u gitlab -H git checkout 4-0-stable
 
 **Note:**
-You can change `stable` to `master` if you want the *bleeding edge* version, but
+You can change `4-0-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
