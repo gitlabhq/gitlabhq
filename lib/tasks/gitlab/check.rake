@@ -189,6 +189,8 @@ namespace :gitlab do
 
         if project.satellite.exists?
           puts "yes".green
+        elsif project.empty_repo?
+          puts "can't create, repository is empty".magenta
         else
           puts "no".red
           try_fixing_it(
