@@ -1,7 +1,9 @@
 namespace :gitlab do
   desc "GITLAB | Enable usernames and namespaces for user projects"
   task enable_namespaces: :environment do
-    print "\nUsernames for users:".yellow
+    warn_user_is_not_gitlab
+
+    print "Generate usernames for users without one: "
 
     User.find_each(batch_size: 500) do |user|
       next if user.namespace
@@ -16,7 +18,8 @@ namespace :gitlab do
       end
     end
 
-    print "\n\nDirs for groups:".yellow
+    puts ""
+    print "Create directories for groups: "
 
     Group.find_each(batch_size: 500) do |group|
       if group.ensure_dir_exist
@@ -25,43 +28,44 @@ namespace :gitlab do
         print 'F'.red
       end
     end
+    puts ""
 
-    print "\n\nMove projects from groups under groups dirs:".yellow
     git_path = Gitlab.config.gitolite.repos_path
-
+    puts ""
+    puts "Move projects in groups into respective directories ... "
     Project.where('namespace_id IS NOT NULL').find_each(batch_size: 500) do |project|
       next unless project.group
 
       group = project.group
 
-      puts "\n"
-      print " * #{project.name}: "
+      print "#{project.name_with_namespace.yellow} ... "
 
       new_path = File.join(git_path, project.path_with_namespace + '.git')
 
       if File.exists?(new_path)
-        print "ok. already at #{new_path}".cyan
+        puts "already at #{new_path}".green
         next
       end
 
       old_path = File.join(git_path, project.path + '.git')
 
       unless File.exists?(old_path)
-        print "missing. not found at #{old_path}".red
+        puts "couldn't find it at #{old_path}".red
         next
       end
 
       begin
         Gitlab::ProjectMover.new(project, '', group.path).execute
-        print "ok. Moved to #{new_path}".green
+        puts "moved to #{new_path}".green
       rescue
-        print "Failed moving to #{new_path}".red
+        puts "failed moving to #{new_path}".red
       end
     end
 
-    print "\n\nRebuild gitolite:".yellow
+    puts ""
+    puts "Rebuild Gitolite ... "
     gitolite = Gitlab::Gitolite.new
     gitolite.update_repositories(Project.where('namespace_id IS NOT NULL'))
-    puts "\n"
+    puts "... #{"done".green}"
   end
 end
