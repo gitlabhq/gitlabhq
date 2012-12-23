@@ -48,7 +48,7 @@ namespace :gitlab do
           see_database_guide,
           "http://guides.rubyonrails.org/getting_started.html#configuring-a-database"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -65,7 +65,7 @@ namespace :gitlab do
           "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
           see_database_guide
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -85,7 +85,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "GitLab"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -110,7 +110,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "GitLab"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -129,7 +129,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Install Init Script"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -155,7 +155,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Install Init Script"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -171,7 +171,7 @@ namespace :gitlab do
         try_fixing_it(
           "sudo -u gitlab -H bundle exec rake db:migrate"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -199,7 +199,7 @@ namespace :gitlab do
           for_more_information(
             "doc/raketasks/maintenance.md "
           )
-          check_failed
+          fix_and_rerun
         end
       end
     end
@@ -220,7 +220,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "GitLab"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -240,7 +240,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "GitLab"
         )
-        check_failed
+        fix_and_rerun
       end
     end
   end
@@ -288,7 +288,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "GitLab"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -306,7 +306,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "System Users"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -330,7 +330,7 @@ namespace :gitlab do
           see_installation_guide_section("Gitolite"),
           "https://github.com/gitlabhq/gitlabhq/issues/1059"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -350,7 +350,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Packages / Dependencies"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -376,7 +376,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Packages / Dependencies"
         )
-        check_failed
+        fix_and_rerun
       end
     end
   end
@@ -432,7 +432,7 @@ namespace :gitlab do
       for_more_information(
         see_installation_guide_section "Gitolite"
       )
-      check_failed
+      fix_and_rerun
     end
 
     # assumes #check_can_clone_gitolite_admin has been run before
@@ -464,7 +464,7 @@ namespace :gitlab do
       for_more_information(
         see_installation_guide_section "Gitolite"
       )
-      check_failed
+      fix_and_rerun
     ensure
       FileUtils.rm_rf("/tmp/gitolite_gitlab_test")
     end
@@ -486,7 +486,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -510,7 +510,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -536,7 +536,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -581,7 +581,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -610,7 +610,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -634,7 +634,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Setup GitLab Hooks"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -665,7 +665,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Setup GitLab Hooks"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -687,7 +687,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -711,7 +711,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -737,7 +737,7 @@ namespace :gitlab do
         for_more_information(
           see_installation_guide_section "Gitolite"
         )
-        check_failed
+        fix_and_rerun
       end
     end
 
@@ -771,7 +771,7 @@ namespace :gitlab do
           for_more_information(
             "doc/raketasks/maintenance.md"
           )
-          check_failed
+          fix_and_rerun
         end
       end
     end
@@ -807,7 +807,7 @@ namespace :gitlab do
           for_more_information(
             "lib/support/rewrite-hooks.sh"
           )
-          check_failed
+          fix_and_rerun
           next
         end
 
@@ -821,7 +821,7 @@ namespace :gitlab do
           for_more_information(
             "lib/support/rewrite-hooks.sh"
           )
-          check_failed
+          fix_and_rerun
         end
       end
     end
@@ -879,7 +879,7 @@ namespace :gitlab do
           see_installation_guide_section("Install Init Script"),
           "see log/resque.log for possible errors"
         )
-        check_failed
+        fix_and_rerun
       end
     end
   end
@@ -888,7 +888,7 @@ namespace :gitlab do
   # Helper methods
   ##########################
 
-  def check_failed
+  def fix_and_rerun
     puts "  Please #{"fix the error above"} and rerun the checks.".red
   end
 
