@@ -66,6 +66,8 @@ omniauth:
   # Uncomment the lines and fill in the data of the auth provider you want to use
   # If your favorite auth provider is not listed you can user others:
   # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
+  # The 'app_id' and 'app_secret' parameters are always passed as the first two
+  # arguments, followed by optional 'args' which can be either a hash or an array.
   providers:
     # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
     #     app_secret: 'YOUR APP SECRET',
