@@ -43,11 +43,15 @@
         padding: 0 4px;
       }
       padding: 20px;
-      h1, h2 {
-        line-height: 46px;
-      }
-      h3, h4 {
-        line-height: 40px;
+
+      h1 { font-size: 26px; line-height: 46px; }
+      h2 { font-size: 22px; line-height: 42px; }
+      h3 { font-size: 20px; line-height: 40px; }
+      h4 { font-size: 18px; line-height: 32px; }
+      h5 { font-size: 16px; line-height: 26px; }
+
+      .white .highlight pre {
+        background: #f5f5f5;
       }
     }
 

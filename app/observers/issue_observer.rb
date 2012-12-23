@@ -16,7 +16,7 @@ class IssueObserver < ActiveRecord::Observer
     if status
       Note.create_status_change_note(issue, current_user, status)
       [issue.author, issue.assignee].compact.each do |recipient|
-        Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user)
+        Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id).deliver
       end
     end
   end

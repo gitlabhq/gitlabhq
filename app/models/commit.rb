@@ -87,14 +87,10 @@ class Commit
       last = project.commit(from.try(:strip))
 
       if first && last
-        commits = [first, last].sort_by(&:created_at)
-        younger = commits.first
-        older = commits.last
-
-        result[:same] = (younger.id == older.id)
-        result[:commits] = project.repo.commits_between(younger.id, older.id).map {|c| Commit.new(c)}
-        result[:diffs] = project.repo.diff(younger.id, older.id) rescue []
-        result[:commit] = Commit.new(older)
+        result[:same] = (first.id == last.id)
+        result[:commits] = project.repo.commits_between(last.id, first.id).map {|c| Commit.new(c)}
+        result[:diffs] = project.repo.diff(last.id, first.id) rescue []
+        result[:commit] = Commit.new(first)
       end
 
       result
@@ -163,6 +159,8 @@ class Commit
     while !lines.first.start_with?("diff --git") do
       lines.shift
     end
+    lines.pop if lines.last =~ /^[\d.]+$/ # Git version
+    lines.pop if lines.last == "-- "      # end of diff
     lines.join("\n")
   end
 end

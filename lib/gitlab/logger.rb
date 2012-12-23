@@ -14,6 +14,11 @@ module Gitlab
       logs = `tail -n 2000 #{path}`.split("\n")
     end
 
+    def self.read_latest_for filename
+      path = Rails.root.join("log", filename)
+      logs = `tail -n 2000 #{path}`.split("\n")
+    end
+
     def self.build
       new(Rails.root.join("log", file_name))
     end

@@ -7,12 +7,12 @@
     = link_to project_commits_path(event.project, event.ref_name) do
       %strong= event.ref_name
   at
-  %strong= link_to event.project.name, event.project
+  %strong= link_to_project event.project
 
 - if event.push_with_commits?
   - project = event.project
   .event-body
-    %ul.unstyled.event_commits
+    %ul.well-list.event_commits
       - few_commits = event.commits[0...2]
       - few_commits.each do |commit|
         = render "events/commit", commit: commit, project: project

@@ -42,8 +42,8 @@ RSpec.configure do |config|
     # ActiveRecord::Base.observers.enable(:all)
 
     # Use tmp dir for FS manipulations
-    Gitlab.config.stub(git_base_path: Rails.root.join('tmp', 'test-git-base-path'))
-    FileUtils.rm_rf Gitlab.config.git_base_path
-    FileUtils.mkdir_p Gitlab.config.git_base_path
+    Gitlab.config.gitolite.stub(repos_path: Rails.root.join('tmp', 'test-git-base-path'))
+    FileUtils.rm_rf Gitlab.config.gitolite.repos_path
+    FileUtils.mkdir_p Gitlab.config.gitolite.repos_path
   end
 end

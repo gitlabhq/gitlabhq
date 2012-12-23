@@ -38,7 +38,7 @@ module Gitlab
     end
 
     def url_to_repo path
-      Gitlab.config.ssh_path + "#{path}.git"
+      Gitlab.config.gitolite.ssh_path_prefix + "#{path}.git"
     end
 
     def enable_automerge

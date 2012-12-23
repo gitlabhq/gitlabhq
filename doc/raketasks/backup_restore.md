@@ -4,7 +4,7 @@ Creates a backup archive of the database and all repositories. This archive will
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
 
 ```
-bundle exec rake gitlab:app:backup_create
+bundle exec rake gitlab:backup:create
 ```
 
 Example output:
@@ -40,7 +40,7 @@ Deleting old backups... [SKIPPING]
 ### Restore a previously created backup
 
 ```
-bundle exec rake gitlab:app:backup_restore
+bundle exec rake gitlab:backup:restore
 ```
 
 Options:

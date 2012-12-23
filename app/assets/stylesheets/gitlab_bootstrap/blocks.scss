@@ -31,12 +31,22 @@
   .middle_box_content,
   .bottom_box_content {
     padding: 15px;
+    word-wrap: break-word;
 
     pre {
       background: none !important;
       margin: 0;
       border: none;
       padding: 0;
+    }
+  }
+
+  .top_box_content {
+    .box-title {
+      color: $style_color;
+      font-size: 18px;
+      font-weight: normal;
+      line-height: 28px;
     }
   }
 
@@ -64,7 +74,7 @@
 
   border: 1px solid #eaeaea;
   @include border-radius(4px);
-  
+
   border-color: #CCC;
   @include solid-shade;
 
@@ -82,6 +92,10 @@
     @include bg-gray-gradient;
     border-top: 1px solid #eaeaea;
     border-bottom: 1px solid #bbb;
+
+    > a {
+      text-shadow: 0 1px 1px #fff;
+    }
 
     &.small {
       line-height: 28px;
@@ -135,19 +149,6 @@
     &:hover {
       color: #444;
       text-decoration: underline;
-    }
-  }
-
-  li, .wll {
-    padding: 10px;
-    &:first-child {
-      @include border-radius(4px 4px 0 0);
-      border-top: none;
-    }
-
-    &:last-child {
-      @include border-radius(0 0 4px 4px);
-      border: none;
     }
   }
 

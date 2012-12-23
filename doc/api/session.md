@@ -13,6 +13,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
   "private_token": "dd34asd13as",

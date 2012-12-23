@@ -1,22 +1,27 @@
-%li{class: "milestone", id: dom_id(milestone) }
+%li{class: "milestone milestone-#{milestone.closed ? 'closed' : 'open'}", id: dom_id(milestone) }
   .right
-    - if can? current_user, :admin_milestone, milestone.project
+    - if can?(current_user, :admin_milestone, milestone.project) and milestone.open?
       = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn small edit-milestone-link grouped" do
         %i.icon-edit
         Edit
   %h4
     = link_to_gfm truncate(milestone.title, length: 100), project_milestone_path(milestone.project, milestone)
+    - if milestone.expired? and not milestone.closed
+      %span.cred (Expired)
     %small
       = milestone.expires_at
-  .row
-    .span4
-      .progress.progress-info
-        .bar{style: "width: #{milestone.percent_complete}%;"}
-    .span6
-      = link_to project_issues_path(milestone.project, milestone_id: milestone.id) do
-        = pluralize milestone.issues.count, 'Issue'
-      &nbsp;
-      = link_to project_merge_requests_path(milestone.project, milestone_id: milestone.id) do
-        = pluralize milestone.merge_requests.count, 'Merge Request'
-      &nbsp;
-      %span.light #{milestone.percent_complete}% complete
+  - if milestone.is_empty?
+    %span.muted Empty
+  - else
+    .row
+      .span4
+        .progress.progress-info
+          .bar{style: "width: #{milestone.percent_complete}%;"}
+      .span6
+        = link_to project_issues_path(milestone.project, milestone_id: milestone.id) do
+          = pluralize milestone.issues.count, 'Issue'
+        &nbsp;
+        = link_to project_merge_requests_path(milestone.project, milestone_id: milestone.id) do
+          = pluralize milestone.merge_requests.count, 'Merge Request'
+        &nbsp;
+        %span.light #{milestone.percent_complete}% complete

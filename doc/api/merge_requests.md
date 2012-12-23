@@ -8,7 +8,7 @@ GET /projects/:id/merge_requests
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ```json
 [
@@ -22,6 +22,7 @@ Parameters:
         "merged":false,
         "author":{
             "id":1,
+            "username": "admin",
             "email":"admin@local.host",
             "name":"Administrator",
             "blocked":false,
@@ -29,6 +30,7 @@ Parameters:
         },
         "assignee":{
             "id":1,
+            "username": "admin",
             "email":"admin@local.host",
             "name":"Administrator",
             "blocked":false,
@@ -48,7 +50,7 @@ GET /projects/:id/merge_request/:merge_request_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `merge_request_id` (required) - The ID of MR
 
 ```json
@@ -62,6 +64,7 @@ Parameters:
     "merged":false,
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -69,6 +72,7 @@ Parameters:
     },
     "assignee":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -88,7 +92,7 @@ POST /projects/:id/merge_requests
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `source_branch` (required) - The source branch
 + `target_branch` (required) - The target branch
 + `assignee_id`              - Assignee user ID
@@ -105,6 +109,7 @@ Parameters:
     "merged":false,
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -112,6 +117,7 @@ Parameters:
     },
     "assignee":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -130,7 +136,7 @@ PUT /projects/:id/merge_request/:merge_request_id
 
 Parameters:
 
-+ `id` (required)               - The ID or code name of a project
++ `id` (required)               - The ID of a project
 + `merge_request_id` (required) - ID of MR
 + `source_branch`               - The source branch
 + `target_branch`               - The target branch
@@ -150,6 +156,7 @@ Parameters:
     "merged":false,
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -157,6 +164,7 @@ Parameters:
     },
     "assignee":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,
@@ -174,7 +182,7 @@ POST /projects/:id/merge_request/:merge_request_id/comments
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `merge_request_id` (required) - ID of MR
 + `note` (required) - Text of comment
 
@@ -184,6 +192,7 @@ Will return created note with status `201 Created` on success, or `404 Not found
 {
     "author":{
         "id":1,
+        "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
         "blocked":false,

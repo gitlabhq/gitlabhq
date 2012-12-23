@@ -28,6 +28,7 @@ class UsersProject < ActiveRecord::Base
 
   validates :user, presence: true
   validates :user_id, uniqueness: { :scope => [:project_id], message: "already exists in project" }
+  validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
 
   delegate :name, :email, to: :user, prefix: true

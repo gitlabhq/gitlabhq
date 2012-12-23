@@ -1,26 +1,26 @@
-## Contribute to GitLab
+# Contact & support
 
-If you want to contribute to GitLab, follow this process:
+If you want quick help, head over to our [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq).
+Otherwise you can follow our [Issue Submission Guide](https://github.com/gitlabhq/gitlabhq/wiki/Issue-Submission-Guide) for a more systematic and thorough guide to solving your issues.
 
-1. Fork the project
-2. Create a feature branch
-3. Code
-4. Create a pull request
 
-We will only accept pull requests if:
 
-* Your code has proper tests and all tests pass
-* Your code can be merged w/o problems
-* It won't break existing functionality
-* It's quality code
-* We like it :)
+# Contribute to GitLab
 
-For examples of feedback on pull requests please look at the [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
+## Recipes
 
-## Installation
+We collect user submitted installation scripts and config file templates for platforms we don't support officially.
+We believe there is merit in allowing a certain amount of diversity.
+You can get and submit your solution to running/configuring GitLab with your favorite OS/distro, database, web server, cloud hoster, configuration management tool, etc.
 
-Install the Gitlab development in a virtual machine with the [Gitlab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm). Installing it in a virtual machine makes it much easier to set up all the dependencies for integration testing.
+Help us improve the collection of [GitLab Recipes](https://github.com/gitlabhq/gitlab-recipes/)
 
-## Running tests
 
-For more information on running the tests please read the [development tips](https://github.com/gitlabhq/gitlabhq/blob/master/doc/development.md)
+## Feature suggestions
+
+Follow the [Issue Submission Guide](https://github.com/gitlabhq/gitlabhq/wiki/Issue-Submission-Guide) and support other peoples ideas or propose your own.
+
+
+## Code
+
+Follow our [Developer Guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide) to set you up for hacking on GitLab.

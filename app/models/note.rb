@@ -19,7 +19,7 @@ require 'file_size_validator'
 
 class Note < ActiveRecord::Base
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
-                  :attachment, :line_code
+                  :attachment, :line_code, :commit_id
 
   attr_accessor :notify
   attr_accessor :notify_author
@@ -35,10 +35,14 @@ class Note < ActiveRecord::Base
   validates :line_code, format: { with: /\A\d+_\d+_\d+\Z/ }, allow_blank: true
   validates :attachment, file_size: { maximum: 10.megabytes.to_i }
 
+  validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
+  validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
-  scope :common, ->{ where(noteable_id: nil) }
+  scope :for_commits, ->{ where(noteable_type: "Commit") }
+  scope :common, ->{ where(noteable_id: nil, commit_id: nil) }
   scope :today, ->{ where("created_at >= :date", date: Date.today) }
   scope :last_week, ->{ where("created_at  >= :date", date: (Date.today - 7.days)) }
   scope :since, ->(day) { where("created_at  >= :date", date: (day)) }
@@ -122,7 +126,7 @@ class Note < ActiveRecord::Base
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.commit(noteable_id)
+      project.commit(commit_id)
     else
       super
     end
@@ -150,5 +154,13 @@ class Note < ActiveRecord::Base
 
   def votable?
     for_issue? || (for_merge_request? && !for_diff_line?)
+  end
+
+  def noteable_type_name
+    if noteable_type.present?
+      noteable_type.downcase
+    else
+      "wall"
+    end
   end
 end

@@ -114,7 +114,7 @@ module PushObserver
         id: commit.id,
         message: commit.safe_message,
         timestamp: commit.date.xmlschema,
-        url: "#{Gitlab.config.url}/#{path}/commits/#{commit.id}",
+        url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{commit.id}",
         author: {
           name: commit.author_name,
           email: commit.author_email

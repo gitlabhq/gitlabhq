@@ -1,6 +1,7 @@
 = form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note js-new-note-form" } do |f|
 
   = note_target_fields
+  = f.hidden_field :commit_id
   = f.hidden_field :line_code
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type

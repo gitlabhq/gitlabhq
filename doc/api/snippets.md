@@ -8,7 +8,7 @@ GET /projects/:id/snippets
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ## Single snippet
 
@@ -20,7 +20,7 @@ GET /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
 ```json
@@ -30,6 +30,7 @@ Parameters:
   "file_name": "add.rb",
   "author": {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,
@@ -51,7 +52,7 @@ GET /projects/:id/snippets/:snippet_id/raw
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
 ## New snippet
@@ -64,7 +65,7 @@ POST /projects/:id/snippets
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `title` (required) - The title of a snippet
 + `file_name` (required) - The name of a snippet file
 + `lifetime` (optional) - The expiration date of a snippet
@@ -82,7 +83,7 @@ PUT /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
 + `title` (optional) - The title of a snippet
 + `file_name` (optional) - The name of a snippet file
@@ -101,7 +102,7 @@ DELETE /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
 Status code `200` will be returned on success.

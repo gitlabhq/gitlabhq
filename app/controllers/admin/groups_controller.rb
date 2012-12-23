@@ -2,7 +2,7 @@ class Admin::GroupsController < AdminController
   before_filter :group, only: [:edit, :show, :update, :destroy, :project_update]
 
   def index
-    @groups = Group.scoped
+    @groups = Group.order('name ASC')
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page]).per(20)
   end
@@ -11,6 +11,7 @@ class Admin::GroupsController < AdminController
     @projects = Project.scoped
     @projects = @projects.not_in_group(@group) if @group.projects.present?
     @projects = @projects.all
+    @projects.reject!(&:empty_repo?)
   end
 
   def new

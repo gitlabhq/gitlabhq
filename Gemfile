@@ -32,7 +32,7 @@ gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref:
 gem "gitolite", '1.1.0'
 
 # Syntax highlighter
-gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", ref: '4db80c599067e2d5f23c5c243bf85b8ca0368ad4'
+gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
 
 # Language detection
 gem "github-linguist", "~> 2.3.4" , require: "linguist"
@@ -100,7 +100,7 @@ group :assets do
   gem "therubyracer"
 
   gem 'chosen-rails',     "0.9.8"
-  gem 'jquery-atwho-rails', "0.1.6"
+  gem 'jquery-atwho-rails', "0.1.7"
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
@@ -124,7 +124,7 @@ group :development, :test do
   gem "capybara"
   gem "pry"
   gem "awesome_print"
-  gem "database_cleaner"
+  gem "database_cleaner", ref: "f89c34300e114be99532f14c115b2799a3380ac6", git: "https://github.com/bmabey/database_cleaner.git"
   gem "launchy"
   gem 'factory_girl_rails'
 

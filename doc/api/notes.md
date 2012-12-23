@@ -15,6 +15,7 @@ GET /projects/:id/notes
     "body": "The solution is rather tricky",
     "author": {
       "id": 1,
+      "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
       "blocked": false,
@@ -27,7 +28,7 @@ GET /projects/:id/notes
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ### List issue notes
 
@@ -39,7 +40,7 @@ GET /projects/:id/issues/:issue_id/notes
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `issue_id` (required) - The ID of an issue
 
 ### List snippet notes
@@ -52,7 +53,7 @@ GET /projects/:id/snippets/:snippet_id/notes
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a snippet
 
 ## Single note
@@ -67,7 +68,7 @@ GET /projects/:id/notes/:note_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `note_id` (required) - The ID of a wall note
 
 ### Single issue note
@@ -80,7 +81,7 @@ GET /projects/:id/issues/:issue_id/:notes/:note_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `issue_id` (required) - The ID of a project issue
 + `note_id` (required) - The ID of an issue note
 
@@ -94,7 +95,7 @@ GET /projects/:id/issues/:snippet_id/:notes/:note_id
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project snippet
 + `note_id` (required) - The ID of an snippet note
 
@@ -110,7 +111,7 @@ POST /projects/:id/notes
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `body` (required) - The content of a note
 
 Will return created note with status `201 Created` on success, or `404 Not found` on fail.
@@ -126,7 +127,7 @@ POST /projects/:id/issues/:issue_id/notes
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `issue_id` (required) - The ID of an issue
 + `body` (required) - The content of a note
 
@@ -142,7 +143,7 @@ POST /projects/:id/snippets/:snippet_id/notes
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of an snippet
 + `body` (required) - The content of a note
 

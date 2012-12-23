@@ -6,11 +6,6 @@
   %span.label_branch= @merge_request.target_branch
 
   %span.right
-    - if @merge_request.merged?
-      %span.btn.small.disabled.grouped
-        %strong
-          %i.icon-ok
-          = "MERGED"
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
         .left.btn-group

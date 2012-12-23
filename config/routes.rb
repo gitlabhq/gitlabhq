@@ -14,10 +14,10 @@ Gitlab::Application.routes.draw do
 
   # Enable Grack support
   mount Grack::Bundle.new({
-    git_path:     Gitlab.config.git_bin_path,
-    project_root: Gitlab.config.git_base_path,
-    upload_pack:  Gitlab.config.git_upload_pack,
-    receive_pack: Gitlab.config.git_receive_pack
+    git_path:     Gitlab.config.git.bin_path,
+    project_root: Gitlab.config.gitolite.repos_path,
+    upload_pack:  Gitlab.config.gitolite.upload_pack,
+    receive_pack: Gitlab.config.gitolite.receive_pack
   }), at: '/:path', constraints: { path: /[-\/\w\.-]+\.git/ }
 
   #
@@ -164,11 +164,12 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :merge_requests, constraints: {id: /\d+/} do
+    resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
       member do
         get :diffs
         get :automerge
         get :automerge_check
+        get :ci_status
       end
 
       collection do
@@ -199,9 +200,9 @@ Gitlab::Application.routes.draw do
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
-    resources :milestones
+    resources :milestones, except: [:destroy]
     resources :labels, only: [:index]
-    resources :issues do
+    resources :issues, except: [:destroy] do
       collection do
         post  :sort
         post  :bulk_update

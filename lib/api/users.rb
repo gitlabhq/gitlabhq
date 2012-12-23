@@ -101,8 +101,6 @@ module Gitlab
         key = current_user.keys.find params[:id]
         key.delete
       end
-
-
     end
   end
 end

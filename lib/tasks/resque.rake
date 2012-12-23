@@ -1,12 +1,8 @@
 require 'resque/tasks'
 
-# Fix Exception
-# ActiveRecord::StatementInvalid
-# Error
-# PGError: ERROR: prepared statement "a3" already exists
 task "resque:setup" => :environment do
-  Resque.after_fork do |job|
-    ActiveRecord::Base.establish_connection
+  Resque.after_fork do
+    Resque.redis.client.reconnect
   end
 end
 

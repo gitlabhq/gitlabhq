@@ -1,5 +1,5 @@
 %h3.page_title
-  Users
+  Users (#{@admin_users.count})
   = link_to 'New User', new_admin_user_path, class: "btn small right"
 %br
 
@@ -21,13 +21,16 @@
 
 %table
   %thead
-    %th Admin
-    %th Name
-    %th Username
-    %th Email
-    %th Projects
-    %th Edit
-    %th.cred Danger Zone!
+    %tr
+      %th Admin
+      %th
+        Name
+        %i.icon-sort-down
+      %th Username
+      %th Email
+      %th Projects
+      %th Edit
+      %th.cred Danger Zone!
 
   - @admin_users.each do |user|
     %tr
@@ -38,10 +41,13 @@
       %td= user.users_projects.count
       %td= link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn small"
       %td.bgred
-        - if user.blocked
-          = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn small success"
+        - if user == current_user
+          %span.cred It's you!
         - else
-          = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small danger"
-        = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn small danger"
+          - if user.blocked
+            = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn small success"
+          - else
+            = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small danger"
+          = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn small danger"
 
 = paginate @admin_users, theme: "admin"

@@ -44,14 +44,9 @@ header {
         background: url('logo_dark.png') no-repeat 0px 2px;
         float: left;
         margin-left: 2px;
-        font-size: 30px;
-        line-height: 48px;
-        font-weight: normal;
-        color: $style_color;
-        text-shadow: 0 1px 1px #FFF;
         padding-left: 45px;
         height: 40px;
-        font-family: 'Korolev', sans-serif;
+        @include header-font;
       }
     }
   }
@@ -66,12 +61,7 @@ header {
     float: left;
     margin: 0;
     margin-right: 30px;
-    font-size: 30px;
-    line-height: 48px;
-    font-weight: normal;
-    color: $style_color;
-    text-shadow: 0 1px 1px #FFF;
-    font-family: 'Korolev', sans-serif;
+    @include header-font;
   }
 
   /**
@@ -172,7 +162,7 @@ header {
     display: none;
     z-index: 100000;
     @include border-radius(4px);
-    width: 100px;
+    width: 130px;
     position: absolute;
     right: 5px;
     top: 38px;
@@ -181,7 +171,7 @@ header {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
     a {
       color: #fff;
-      padding: 7px 10px;
+      padding: 12px 15px;
       display: block;
       text-shadow: none;
       border-bottom: 1px solid #666;
@@ -204,8 +194,8 @@ header {
     }
     &:last-child {
       @include border-radius(0 0 5px 5px);
-      border-bottom: 0; 
-    } 
+      border-bottom: 0;
+    }
   }
 
 

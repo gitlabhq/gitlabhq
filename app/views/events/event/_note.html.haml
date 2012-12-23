@@ -1,0 +1,25 @@
+.event-title
+  %span.author_name= link_to_author event
+  %span.event_label commented on #{event.note_target_type}
+  - if event.note_target
+    - if event.note_commit?
+      = link_to event.note_short_commit_id, project_commit_path(event.project, event.note_commit_id), class: "commit_short_id"
+    - else
+      = link_to [event.project, event.note_target] do
+        %strong= truncate event.note_target_id
+
+  - elsif event.wall_note?
+    -# nothing here
+  - else
+    %strong (deleted)
+  at
+  - if event.project
+    = link_to_project event.project
+  - else
+    = event.project_name
+
+.event-body
+  %span.hint
+    &nbsp;
+    %i.icon-comment
+    = truncate event.target.note, length: 70

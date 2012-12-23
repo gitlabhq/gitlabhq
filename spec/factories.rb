@@ -45,6 +45,7 @@ FactoryGirl.define do
   factory :users_project do
     user
     project
+    project_access { UsersProject::MASTER }
   end
 
   factory :issue do
@@ -100,7 +101,7 @@ FactoryGirl.define do
     factory :note_on_merge_request_line, traits: [:on_merge_request, :on_line]
 
     trait :on_commit do
-      noteable_id   "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+      commit_id     "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
       noteable_type "Commit"
     end
 
@@ -114,7 +115,7 @@ FactoryGirl.define do
     end
 
     trait :on_issue do
-      noteable_id 1
+      noteable_id   1
       noteable_type "Issue"
     end
   end

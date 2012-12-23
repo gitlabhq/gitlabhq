@@ -12,7 +12,7 @@ namespace :gitlab do
     desc "GITLAB | Import bare repositories from git_host -> base_path into GitLab project instance"
     task :repos => :environment do
 
-      git_base_path = Gitlab.config.git_base_path
+      git_base_path = Gitlab.config.gitolite.repos_path
       repos_to_import = Dir.glob(git_base_path + '/*')
 
       repos_to_import.each do |repo_path|

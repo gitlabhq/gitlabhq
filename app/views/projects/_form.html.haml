@@ -17,13 +17,6 @@
       .controls
         = text_field_tag :ppath, @project.path_to_repo, class: "xxlarge", readonly: true
 
-    .control-group
-      = f.label :namespace_id do
-        %span Namespace
-      .controls
-        = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
-        &nbsp;
-        %span.cred Be careful. Changing project namespace can have unintended side effects
 
     - unless @project.heads.empty?
       .clearfix
@@ -57,11 +50,28 @@
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
 
+
+  - if can? current_user, :change_namespace, @project
+    %fieldset.features
+      %legend Transfer:
+      .control-group
+        = f.label :namespace_id do
+          %span Namespace
+        .controls
+          = f.select :namespace_id, namespaces_options(@project.namespace_id || Namespace::global_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+          %br
+          %ul.prepend-top-10.cred
+            %li Be careful. Changing project namespace can have unintended side effects
+            %li You can transfer project only to namespaces you can manage
+            %li You will need to update your local repositories to point to the new location.
+
+
   %br
 
   .actions
     = f.submit 'Save', class: "btn save-btn"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
-      .right
-        = link_to 'Remove', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger"
+      - if can?(current_user, :remove_project, @project)
+        .right
+          = link_to 'Remove', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
