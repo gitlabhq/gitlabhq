@@ -4,25 +4,25 @@
  */
 .event_label {
   &.pushed {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.opened {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.closed {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.merged {
-    padding:0 2px;
+    padding: 0 2px;
   }
 
   &.left,
   &.joined {
-    padding:0 2px;
-    float:none;
+    padding: 0 2px;
+    float: none;
   }
 }
 
@@ -31,49 +31,51 @@
  *
  */
 .event-item {
-  min-height:40px;
-  border-bottom:1px solid #eee;
+  border-bottom: 1px solid #eee;
   .event-title {
-    color:#333;
+    color: #333;
     font-weight: bold;
     .author_name {
-      color:#333;
+      color: #333;
     }
   }
   .event-body {
     p {
-      color:#555;
+      color: #555;
       padding-top: 5px;
     }
     .event-info {
-      color:#666;
+      color: #666;
     }
   }
   .avatar {
-    width:32px;
+    position: relative;
+    top: -3px;
   }
   .event_icon {
+    position: relative;
     float: right;
     border: 1px solid #EEE;
     padding: 5px;
     @include border-radius(5px);
     background: #F9F9F9;
+    margin-left: 10px;
+    top: -6px;
     img {
-      width:20px;
+      width: 20px;
     }
   }
   ul {
-    margin-left:50px;
-    margin-bottom:5px;
+    margin-left: 50px;
+    margin-bottom: 5px;
     .avatar {
-      width:18px;
-      margin-top:3px;
+      width: 18px;
+      margin-top: 3px;
     }
   }
 
-  padding: 15px 5px;
+  padding: 16px 5px;
   &:last-child { border:none }
-  .wll:hover { background:none }
 
   .event_commits {
     margin-top: 5px;
@@ -81,9 +83,9 @@
     li {
       &.commit {
         background: transparent;
-        padding:3px;
-        border:none;
-        font-size:12px;
+        padding: 3px;
+        border: none;
+        font-size: 12px;
       }
       &.commits-stat {
         display: block;
@@ -98,15 +100,15 @@
  *
  */
 .event_lp {
-  color:#777;
-  padding:10px;
-  min-height:22px;
+  color: #777;
+  padding: 10px;
+  min-height: 22px;
   border-left: 5px solid #5AB9C3;
-  margin-bottom:20px;
-  background:#f9f9f9;
+  margin-bottom: 20px;
+  background: #f9f9f9;
 
   .avatar {
-    width:24px;
+    width: 24px;
   }
 
   .btn-new-mr {
@@ -133,7 +135,7 @@
     background: #f9f9f9;
     margin-bottom: 10px;
     img {
-      width:20px;
+      width: 20px;
     }
 
     &.inactive {

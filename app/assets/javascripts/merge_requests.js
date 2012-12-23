@@ -14,14 +14,6 @@ var MergeRequest = {
       $(".mr_show_all_commits").bind("click", function() { 
         self.showAllCommits();
       });
-
-      $(".line_note_link, .line_note_reply_link").live("click", function(e) {
-        var form = $(".per_line_form");
-        $(this).parent().parent().after(form);
-        form.find("#note_line_code").val($(this).attr("line_code"));
-        form.show();
-        return false;
-      });
     },
 
   initMergeWidget: 
@@ -32,6 +24,12 @@ var MergeRequest = {
       if($(".automerge_widget").length && self.opts.check_enable){
         $.get(self.opts.url_to_automerge_check, function(data){
           self.showState(data.state);
+        }, "json");
+      }
+
+      if(self.opts.ci_enable){
+        $.get(self.opts.url_to_ci_check, function(data){
+          self.showCiState(data.status);
         }, "json");
       }
     },
@@ -87,6 +85,11 @@ var MergeRequest = {
       $(".automerge_widget." + state).show();
     },
 
+  showCiState:
+    function(state){
+      $(".ci_widget").hide();
+      $(".ci_widget.ci-" + state).show();
+    },
 
   loadDiff:
     function() { 

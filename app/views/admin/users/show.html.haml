@@ -24,6 +24,12 @@
   %tr
     %td
       %b
+        Username:
+    %td
+      = @admin_user.username
+  %tr
+    %td
+      %b
         Admin:
         %td= check_box_tag "admin", 1, @admin_user.admin, disabled: :disabled
   %tr
@@ -31,6 +37,12 @@
       %b
         Blocked:
         %td= check_box_tag "blocked", 1, @admin_user.blocked, disabled: :disabled
+  %tr
+    %td
+      %b
+        Created at:
+    %td
+      = @admin_user.created_at.stamp("March 1, 1999")
   %tr
     %td
       %b
@@ -60,7 +72,7 @@
         = @admin_user.twitter
 
 %br
-%h3 Add User to Projects
+%h5 Add User to Projects
 %br
 = form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
   %table
@@ -70,7 +82,7 @@
         %th Project Access:
 
     %tr
-      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
       %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
 
     %tr
@@ -80,8 +92,22 @@
         %strong= link_to "here", help_permissions_path, class: "vlink"
 %br
 
+- if @admin_user.groups.present?
+  %h5 Owner of groups:
+  %br
+
+  %table.zebra-striped
+    %thead
+      %tr
+        %th Name
+
+    - @admin_user.groups.each do |group|
+      %tr
+        %td= link_to group.name, admin_group_path(group)
+
+
 - if @admin_user.projects.present?
-  %h3 Projects
+  %h5 Projects:
   %br
 
   %table.zebra-striped
@@ -95,7 +121,7 @@
     - @admin_user.users_projects.each do |tm|
       - project = tm.project
       %tr
-        %td= link_to project.name, admin_project_path(project)
+        %td= link_to project.name_with_namespace, admin_project_path(project)
         %td= tm.project_access_human
         %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
         %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn small danger"

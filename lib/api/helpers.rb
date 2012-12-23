@@ -5,13 +5,18 @@ module Gitlab
     end
 
     def user_project
-      if @project ||= current_user.projects.find_by_id(params[:id]) ||
-                      current_user.projects.find_by_code(params[:id])
-      else
-        not_found!
-      end
+      @project ||= find_project
+      @project || not_found!
+    end
 
-      @project
+    def find_project
+      project = Project.find_by_id(params[:id]) || Project.find_with_namespace(params[:id])
+
+      if project && can?(current_user, :read_project, project)
+        project
+      else
+        nil
+      end
     end
 
     def paginate(object)
@@ -30,6 +35,10 @@ module Gitlab
       unless abilities.allowed?(current_user, action, subject)
         forbidden!
       end
+    end
+
+    def can?(object, action, subject)
+      abilities.allowed?(object, action, subject)
     end
 
     def attributes_for_keys(keys)

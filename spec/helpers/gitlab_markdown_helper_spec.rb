@@ -3,7 +3,7 @@ require "spec_helper"
 describe GitlabMarkdownHelper do
   let!(:project) { create(:project) }
 
-  let(:user)          { create(:user, name: 'gfm') }
+  let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { CommitDecorator.decorate(project.commit) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, project: project) }
@@ -81,11 +81,11 @@ describe GitlabMarkdownHelper do
     end
 
     describe "referencing a team member" do
-      let(:actual)   { "@#{user.name} you are right." }
+      let(:actual)   { "@#{user.username} you are right." }
       let(:expected) { project_team_member_path(project, member) }
 
       before do
-        project.users << user
+        project.add_access(user, :admin)
       end
 
       it "should link using a simple name" do
@@ -103,18 +103,18 @@ describe GitlabMarkdownHelper do
       end
 
       it "should link with adjacent text" do
-        actual = "Mail the admin (@gfm)"
+        actual = "Mail the admin (@#{user.username})"
         gfm(actual).should match(expected)
       end
 
       it "should keep whitespace intact" do
-        actual   = "Yes, @#{user.name} is right."
-        expected = /Yes, <a.+>@#{user.name}<\/a> is right/
+        actual   = "Yes, @#{user.username} is right."
+        expected = /Yes, <a.+>@#{user.username}<\/a> is right/
         gfm(actual).should match(expected)
       end
 
       it "should not link with an invalid id" do
-        actual = expected = "@#{user.name.reverse} you are right."
+        actual = expected = "@#{user.username.reverse} you are right."
         gfm(actual).should == expected
       end
 
@@ -314,12 +314,12 @@ describe GitlabMarkdownHelper do
     end
 
     it "should handle references in lists" do
-      project.users << user
+      project.add_access(user, :admin)
 
-      actual = "\n* dark: ##{issue.id}\n* light by @#{member.user_name}"
+      actual = "\n* dark: ##{issue.id}\n* light by @#{member.user.username}"
 
       markdown(actual).should match(%r{<li>dark: <a.+>##{issue.id}</a></li>})
-      markdown(actual).should match(%r{<li>light by <a.+>@#{member.user_name}</a></li>})
+      markdown(actual).should match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
     end
 
     it "should handle references in <em>" do
@@ -329,9 +329,11 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave code blocks untouched" do
-      markdown("\n    some code from $#{snippet.id}\n    here too\n").should == "<div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div>"
+      helper.stub(:user_color_scheme_class).and_return(:white)
 
-      markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == "<div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div>"
+      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should include("<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div></div>")
+
+      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should include("<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div></div>")
     end
 
     it "should leave inline code untouched" do

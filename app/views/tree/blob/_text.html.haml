@@ -8,8 +8,7 @@
 - else
   .file_content.code
     - unless blob.empty?
-      %div{class: current_user.dark_scheme ? "black" : "white"}
-        = preserve do
-          = raw blob.colorize(formatter: :gitlab)
+      %div{class: user_color_scheme_class}
+        = raw blob.colorize(formatter: :gitlab)
     - else
-      %h4.nothing_here_message Empty file
+      %p.nothing_here_message Empty file

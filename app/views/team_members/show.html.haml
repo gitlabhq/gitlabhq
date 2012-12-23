@@ -6,7 +6,7 @@
     = link_to 'Remove from team', project_team_member_path(project_id: @project, id: @team_member.id), confirm: 'Are you sure?', method: :delete, class: "right btn danger"
   .profile_avatar_holder
     = image_tag gravatar_icon(user.email, 60), class: "borders"
-  %h3
+  %h3.page_title
     = user.name
     %small
       = user.email

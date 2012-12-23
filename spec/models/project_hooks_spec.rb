@@ -91,7 +91,7 @@ describe Project, "Hooks" do
         subject { @data[:repository] }
 
         it { should include(name: project.name) }
-        it { should include(url: project.web_url) }
+        it { should include(url: project.url_to_repo) }
         it { should include(description: project.description) }
         it { should include(homepage: project.web_url) }
       end
@@ -108,7 +108,7 @@ describe Project, "Hooks" do
           it { should include(id: @commit.id) }
           it { should include(message: @commit.safe_message) }
           it { should include(timestamp: @commit.date.xmlschema) }
-          it { should include(url: "#{Gitlab.config.url}/#{project.code}/commits/#{@commit.id}") }
+          it { should include(url: "#{Gitlab.config.gitlab.url}/#{project.code}/commit/#{@commit.id}") }
 
           context "with a author" do
             subject { @data[:commits].first[:author] }

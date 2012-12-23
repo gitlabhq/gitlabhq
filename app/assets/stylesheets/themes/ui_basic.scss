@@ -4,18 +4,6 @@
  *
  */
 .ui_basic {
-  /*
-   * Common styles
-   *
-   */
-  a {
-    color: $link_color;
-    &:hover {
-      text-decoration:none;
-      color: $blue_link;
-    }
-  }
-
   .app_logo {
     .separator {
       margin-left: 0;

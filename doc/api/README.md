@@ -15,7 +15,7 @@ API requests should be prefixed with `api` and the API version. The API version 
 Example of a valid API request:
 
 ```
-GET http://example.com/api/v2/projects?private_token=QVy1PB7sTxfy4pqfZM1U
+GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U
 ```
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
@@ -25,7 +25,7 @@ The API uses JSON to serialize data. You don't need to specify `.json` at the en
 When listing resources you can pass the following parameters:
 
 + `page` (default: `1`) - page number
-+ `per_page` (default: `20`, max: `100`) - how many items to list per page
++ `per_page` (default: `20`, max: `100`) - number of items to list per page
 
 ## Contents
 
@@ -36,3 +36,4 @@ When listing resources you can pass the following parameters:
 + [Repositories](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/repositories.md)
 + [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
 + [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
++ [Notes](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/notes.md)

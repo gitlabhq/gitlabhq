@@ -10,6 +10,7 @@ GET /users
 [
   {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,
@@ -23,6 +24,7 @@ GET /users
   },
   {
     "id": 2,
+    "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
     "blocked": false,
@@ -52,6 +54,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
   "blocked": false,
@@ -75,7 +78,8 @@ POST /users
 Parameters:
 + `email` (required)                  - Email
 + `password` (required)               - Password
-+ `name`                              - Name
++ `username` (required)               - Username
++ `name` (required)                   - Name
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
@@ -95,6 +99,7 @@ GET /user
 ```json
 {
   "id": 1,
+  "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
   "blocked": false,

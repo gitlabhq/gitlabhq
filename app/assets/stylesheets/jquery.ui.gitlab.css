@@ -1,0 +1,257 @@
+/* Interaction Cues
+----------------------------------*/
+.ui-state-disabled { cursor: default !important; }
+
+
+/* Icons
+----------------------------------*/
+
+/* states and images */
+.ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
+
+
+/* Misc visuals
+----------------------------------*/
+
+/* Overlays */
+.ui-widget-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+
+/*
+ * jQuery UI CSS Framework 1.8.7
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Theming/API
+ *
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?ctl=themeroller
+ */
+
+
+/* Component containers
+----------------------------------*/
+.ui-widget { font-family: Arial,sans-serif; font-size: 1.1em; }
+.ui-widget .ui-widget { font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Arial,sans-serif; font-size: 1em; }
+.ui-widget-content { border: 1px solid #CCC; background: #ffffff; color: #4F4F4F; }
+.ui-widget-content a { color: #4F4F4F; }
+.ui-widget-header { border: 1px solid #B6B6B6; color: #4F4F4F; font-weight: bold; }
+.ui-widget-header {
+	background: #ededed url(bg_fallback.png) 0 0 repeat-x; /* Old browsers */
+		background: -moz-linear-gradient(top, #ededed 0%, #c4c4c4 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#c4c4c4)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* Opera11.10+ */
+		background: -ms-linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* IE10+ */
+		background: linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* W3C */
+}
+.ui-widget-header a { color: #4F4F4F; }
+
+/* Interaction states
+----------------------------------*/
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { border: 1px solid #B6B6B6; font-weight: normal; color: #4F4F4F; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	background: #ededed url(bg_fallback.png) 0 0 repeat-x; /* Old browsers */
+		background: -moz-linear-gradient(top, #ededed 0%, #c4c4c4 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#c4c4c4)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* Opera11.10+ */
+		background: -ms-linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* IE10+ */
+		background: linear-gradient(top, #ededed 0%,#c4c4c4 100%); /* W3C */
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
+	-moz-box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
+	box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
+}
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited { color: #4F4F4F; text-decoration: none; }
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #9D9D9D; font-weight: normal; color: #313131; }
+.ui-state-hover a, .ui-state-hover a:hover { color: #313131; text-decoration: none; }
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+	outline: none;
+	color: #1c4257; border: 1px solid #7096ab;
+	background: #ededed url(bg_fallback.png) 0 -50px repeat-x; /* Old browsers */
+		background: -moz-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b9e0f5), color-stop(100%,#92bdd6)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #b9e0f5 0%,#92bdd6 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #b9e0f5 0%,#92bdd6 100%); /* Opera11.10+ */
+		background: -ms-linear-gradient(top, #b9e0f5 0%,#92bdd6 100%); /* IE10+ */
+		background: linear-gradient(top, #b9e0f5 0%,#92bdd6 100%); /* W3C */
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited { color: #313131; text-decoration: none; }
+.ui-widget :active { outline: none; }
+
+/* Interaction Cues
+----------------------------------*/
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight  { border: 1px solid #d2dbf4; background: #f4f8fd; color: #0d2054; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; border-radius: 0 !important; }
+.ui-state-highlight a, .ui-widget-content .ui-state-highlight a,.ui-widget-header .ui-state-highlight a { color: #363636; }
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error { border: 1px solid #e2d0d0; background: #fcf0f0; color: #280b0b; -moz-border-radius: 0 !important; -webkit-border-radius: 0 !important; border-radius: 0 !important; }
+.ui-state-error a, .ui-widget-content .ui-state-error a, .ui-widget-header .ui-state-error a { color: #cd0a0a; }
+.ui-state-error-text, .ui-widget-content .ui-state-error-text, .ui-widget-header .ui-state-error-text { color: #cd0a0a; }
+.ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary { font-weight: bold; }
+.ui-priority-secondary, .ui-widget-content .ui-priority-secondary,  .ui-widget-header .ui-priority-secondary { opacity: .7; filter:Alpha(Opacity=70); font-weight: normal; }
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled { opacity: .35; filter:Alpha(Opacity=35); background-image: none; }
+
+/* Icons
+----------------------------------*/
+
+/* states and images */
+.ui-icon { width: 16px; height: 16px; background-image: url(ui-icons_222222_256x240.png); }
+.ui-widget-content .ui-icon {background-image: url(ui-icons_222222_256x240.png); }
+.ui-widget-header .ui-icon {background-image: url(ui-icons_222222_256x240.png); }
+.ui-state-default .ui-icon { background-image: url(ui-icons_454545_256x240.png); }
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(ui-icons_454545_256x240.png); }
+.ui-state-active .ui-icon {background-image: url(ui-icons_454545_256x240.png); }
+.ui-state-highlight .ui-icon {background-image: url(ui-icons_454545_256x240.png); }
+.ui-state-error .ui-icon, .ui-state-error-text .ui-icon { background: url(icon_sprite.png) -16px 0 no-repeat !important; }
+.ui-state-highlight .ui-icon, .ui-state-error .ui-icon { margin-top: -1px; }
+
+
+/* Misc visuals
+----------------------------------*/
+
+/* Overlays */
+.ui-widget-overlay { background: #262b33; opacity: .70;filter:Alpha(Opacity=70); }
+.ui-widget-shadow { margin: -8px 0 0 -8px; padding: 8px; background: #000000; opacity: .30;filter:Alpha(Opacity=30); -moz-border-radius: 8px; -webkit-border-radius: 8px; border-radius: 8px; }
+/*
+ * jQuery UI Selectable 1.8.7
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Selectable#theming
+ */
+.ui-selectable-helper { position: absolute; z-index: 100; border:1px dotted black; }
+/*
+ * jQuery UI Autocomplete 1.8.7
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Autocomplete#theming
+ */
+.ui-autocomplete {
+  position: absolute; cursor: default; z-index: 3;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+}
+
+/* workarounds */
+* html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
+
+/*
+ * jQuery UI Menu 1.8.7
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Menu#theming
+ */
+.ui-menu {
+	list-style:none;
+	padding: 1px;
+	margin: 0;
+	display:block;
+	float: left;
+}
+.ui-menu .ui-menu {
+	margin-top: -3px;
+}
+.ui-menu .ui-menu-item {
+	margin:0;
+	padding: 0;
+	zoom: 1;
+	float: left;
+	clear: left;
+	width: 100%;
+}
+.ui-menu .ui-menu-item a {
+	text-decoration:none;
+	display:block;
+	padding:.2em .4em;
+	line-height:1.5;
+	zoom:1;
+  color: #666;
+  font-size: 13px;
+}
+.ui-menu .ui-menu-item a.ui-state-hover,
+.ui-menu .ui-menu-item a.ui-state-active {
+	font-weight: normal;
+	margin: -1px;
+	background: #D9EDF7;
+	color: #3A89A3;
+	text-shadow: 0px 1px 1px #fff;
+  border: none;
+  border: 1px solid #ADE;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/*
+ * jQuery UI Datepicker 1.8.7
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Datepicker#theming
+ */
+.ui-datepicker {
+  width: 17em;
+  padding: 0;
+  display: none;
+  border-color: #DDDDDD;
+  border: none;
+  box-shadow: none;
+}
+.ui-datepicker .ui-datepicker-header {
+  position:relative;
+  padding:.35em 0;
+  border: none;
+  border-bottom: 1px solid #B6B6B6;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  margin-bottom: 10px;
+  border: 1px solid #bbb;
+  -webkit-box-shadow: 0 0 0 3px #F1F1F1;
+  -moz-box-shadow: 0 0 0 3px #f1f1f1;
+  -ms-box-shadow: 0 0 0 3px #f1f1f1;
+  -o-box-shadow: 0 0 0 3px #f1f1f1;
+  box-shadow: 0 0 0 3px #F1F1F1;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position:absolute; top: 6px; width: 1.8em; height: 1.8em; }
+.ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover { border: 1px none; }
+.ui-datepicker .ui-datepicker-prev { left:2px; }
+.ui-datepicker .ui-datepicker-next { right:2px; }
+.ui-datepicker .ui-datepicker-prev span { background-position: 0px -32px !important; }
+.ui-datepicker .ui-datepicker-next span { background-position: -16px -32px !important; }
+.ui-datepicker .ui-datepicker-prev-hover span { background-position: 0px -48px !important; }
+.ui-datepicker .ui-datepicker-next-hover span { background-position: -16px -48px !important; }
+.ui-datepicker .ui-datepicker-prev span, .ui-datepicker .ui-datepicker-next span { display: block; position: absolute; left: 50%; margin-left: -8px; top: 50%; margin-top: -8px; background: url(icon_sprite.png) no-repeat; }
+.ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; font-size: 12px; text-shadow: 0 1px 0 rgba(255,255,255,0.6); }
+.ui-datepicker .ui-datepicker-title select { font-size:1em; margin:1px 0; }
+.ui-datepicker select.ui-datepicker-month-year {width: 100%;}
+.ui-datepicker select.ui-datepicker-month,
+.ui-datepicker select.ui-datepicker-year { width: 49%;}
+.ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
+.ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
+.ui-datepicker td { border: 0; padding: 1px; line-height: 24px; background-color: #FFF!important; }
+.ui-datepicker td span, .ui-datepicker td a { display: block; padding: .2em; text-align: right; text-decoration: none; }
+.ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
+.ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: .2em .6em .3em .6em; width:auto; overflow:visible; }
+.ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current { float:left; }
+.ui-datepicker table .ui-state-highlight { border-color: #ADE; }
+.ui-datepicker-calendar .ui-state-default { background: transparent; border-color: #FFF; }
+.ui-datepicker-calendar .ui-state-active { background: #D9EDF7; border-color: #ADE; color: #3A89A3; font-weight: bold; text-shadow: 0 1px 1px #fff; }

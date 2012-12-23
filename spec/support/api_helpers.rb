@@ -18,7 +18,7 @@ module ApiHelpers
   #
   # Returns the relative path to the requested API resource
   def api(path, user = nil)
-    "/api/#{Gitlab::API::VERSION}#{path}" +
+    "/api/#{Gitlab::API.version}#{path}" +
 
       # Normalize query string
       (path.index('?') ? '' : '?') +

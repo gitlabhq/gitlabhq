@@ -1,12 +1,10 @@
 - grouper_project_members(@project).each do |access, members|
-  %table.low
-    %thead
-      %tr
-        %th.span7
-          = Project.access_options.key(access).pluralize
-        %th
-    %tbody
-      - members.each do |up|
+  .ui-box
+    %h5
+      = Project.access_options.key(access).pluralize
+      %small= members.size
+    %ul.well-list
+      - members.sort_by(&:user_name).each do |up|
         = render(partial: 'team_members/show', locals: {member: up})
 
 

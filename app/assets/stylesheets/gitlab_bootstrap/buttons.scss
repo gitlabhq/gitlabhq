@@ -1,42 +1,42 @@
 .btn {
-  @include bg-gradient(#f7f7f7, #d5d5d5);
-  border-color:#aaa;
+  @include linear-gradient(#f7f7f7, #d5d5d5);
+  border-color: #aaa;
   &:hover {
     @include bg-gray-gradient;
-    border-color:#bbb;
-    color:#333;
+    border-color: #bbb;
+    color: #333;
   }
 
   &.primary {
-    background:#2a79A3;
-    @include bg-gradient(#47A7b7, #2585b5);
+    background: #2a79A3;
+    @include linear-gradient(#47A7b7, #2585b5);
     border-color: #2A79A3;
-    color:#fff;
+    color: #fff;
     text-shadow: 0 1px 1px #268;
     &:hover {
-      background:$blue_link;
-      color:#fff;
+      background: $primary_color;
+      color: #fff;
     }
 
     &.disabled {
-      color:#fff;
-      background:#29B;
+      color: #fff;
+      background: #29B;
     }
   }
 
   &.btn-info {
-    background:#5aB9C3;
-    border-color: $blue_link;
-    color:#fff;
+    background: #5aB9C3;
+    border-color: $primary_color;
+    color: #fff;
     text-shadow: 0 1px 1px #268;
     &:hover {
-      background:$blue_link;
-      color:#fff;
+      background: $primary_color;
+      color: #fff;
     }
 
     &.disabled {
-      color:#fff;
-      background:#29B;
+      color: #fff;
+      background: #29B;
     }
   }
 
@@ -49,8 +49,8 @@
     }
 
     &.disabled {
-      color:#fff;
-      background:#2b2;
+      color: #fff;
+      background: #2b2;
     }
   }
 
@@ -60,12 +60,12 @@
   }
 
   &.cancel-btn {
-    float:right;
+    float: right;
   }
 
   &.wide {
-    padding-left:30px;
-    padding-right:30px;
+    padding-left: 30px;
+    padding-right: 30px;
   }
 
   &.danger {
@@ -73,7 +73,7 @@
     border-color: #BD362F;
 
     &:hover {
-      color:#fff;
+      color: #fff;
       background: #EE4E49;
     }
   }
@@ -87,24 +87,24 @@
   }
 
   &.active {
-    border-color:#aaa;
-    background-color:#ccc;
+    border-color: #aaa;
+    background-color: #ccc;
   }
 
   &.very_small {
-    font-size:11px;
-    padding:2px 6px;
+    font-size: 11px;
+    padding: 2px 6px;
     line-height: 16px;
-    margin:2px;
+    margin: 2px;
   }
 
   &.grouped {
-    margin-right:7px;
-    float:left;
+    margin-right: 7px;
+    float: left;
   }
 
   &.padded {
-    margin-right:3px;
-    padding:4px 10px 4px;
+    margin-right: 3px;
+    padding: 4px 10px 4px;
   }
 }

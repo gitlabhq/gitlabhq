@@ -18,7 +18,13 @@ module Gitlab
       end
 
       def create
-        `git clone #{project.url_to_repo} #{path}`
+        create_cmd = "git clone #{project.url_to_repo} #{path}"
+        if system(create_cmd)
+          true
+        else
+          Gitlab::GitLogger.error("Failed to create satellite for #{project.name_with_namespace}")
+          false
+        end
       end
 
       def exists?
@@ -41,11 +47,11 @@ module Gitlab
       end
 
       def lock_file
-        Rails.root.join("tmp", "#{project.path}.lock")
+        Rails.root.join("tmp", "satellite_#{project.id}.lock")
       end
 
       def path
-        Rails.root.join("tmp", "repo_satellites", project.path)
+        Rails.root.join("tmp", "repo_satellites", project.path_with_namespace)
       end
 
       def repo

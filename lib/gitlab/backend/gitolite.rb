@@ -23,7 +23,14 @@ module Gitlab
     end
 
     def update_repository project
-      config.update_project!(project.path, project)
+      config.update_project!(project)
+    end
+
+    def move_repository(old_repo, project)
+      config.apply do |config|
+        config.clean_repo(old_repo)
+        config.update_project(project)
+      end
     end
 
     def remove_repository project
@@ -31,11 +38,17 @@ module Gitlab
     end
 
     def url_to_repo path
-      Gitlab.config.ssh_path + "#{path}.git"
+      Gitlab.config.gitolite.ssh_path_prefix + "#{path}.git"
     end
 
     def enable_automerge
       config.admin_all_repo!
+    end
+
+    def update_repositories projects
+      config.apply do |config|
+        config.update_projects(projects)
+      end
     end
 
     alias_method :create_repository, :update_repository

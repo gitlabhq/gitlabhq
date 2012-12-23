@@ -1,32 +1,34 @@
-= render 'shared/no_ssh'
 = render 'clone_panel'
 
 %div.git-empty
-  %h4 Git global setup:
-  %pre.dark
-    = preserve do
-      git config --global user.name "#{current_user.name}"
-      git config --global user.email "#{current_user.email}"
+  %fieldset
+    %legend Git global setup:
+    %pre.dark
+      = preserve do
+        git config --global user.name "#{current_user.name}"
+        git config --global user.email "#{current_user.email}"
 
-  %h4.prepend-top-20 Create Repository
-  %pre.dark
-    = preserve do
-      mkdir #{@project.path}
-      cd #{@project.path}
-      git init
-      touch README
-      git add README
-      git commit -m 'first commit'
-      git remote add origin #{@project.url_to_repo}
-      git push -u origin master
+  %fieldset
+    %legend Create Repository
+    %pre.dark
+      = preserve do
+        mkdir #{@project.path}
+        cd #{@project.path}
+        git init
+        touch README
+        git add README
+        git commit -m 'first commit'
+        git remote add origin #{@project.url_to_repo}
+        git push -u origin master
 
-  %h4.prepend-top-20 Existing Git Repo?
-  %pre.dark
-    = preserve do
-      cd existing_git_repo
-      git remote add origin #{@project.url_to_repo}
-      git push -u origin master
+  %fieldset
+    %legend Existing Git Repo?
+    %pre.dark
+      = preserve do
+        cd existing_git_repo
+        git remote add origin #{@project.url_to_repo}
+        git push -u origin master
 
-  - if can? current_user, :admin_project, @project
+  - if can? current_user, :remove_project, @project
     .prepend-top-20
       = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger right"

@@ -30,15 +30,17 @@
 #  locked_at              :datetime
 #  extern_uid             :string(255)
 #  provider               :string(255)
+#  username               :string(255)
 #
 
 require 'spec_helper'
 
 describe User do
   describe "Associations" do
+    it { should have_one(:namespace) }
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:projects) }
-    it { should have_many(:my_own_projects).class_name('Project') }
+    it { should have_many(:groups) }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }
     it { should have_many(:recent_events).class_name('Event') }
@@ -55,12 +57,17 @@ describe User do
   end
 
   describe 'validations' do
+    it { should validate_presence_of(:username) }
     it { should validate_presence_of(:projects_limit) }
     it { should validate_numericality_of(:projects_limit) }
     it { should allow_value(0).for(:projects_limit) }
     it { should_not allow_value(-1).for(:projects_limit) }
 
     it { should ensure_length_of(:bio).is_within(0..255) }
+  end
+
+  describe 'modules' do
+    it { should include_module(Account) }
   end
 
   describe "Respond to" do

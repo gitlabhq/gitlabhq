@@ -1,16 +1,19 @@
 %h3.page_title
-  Services &rarr; GitLab CI Integration
-
+  GitLab CI
+  %small Continuous integration server from GitLab
   .right
-    .thumbnail
-      - if @service.active
-        = image_tag 'service-gitlab-ci.png', class: 'small'
-      - else
-        = image_tag 'service-disabled-gitlab-ci.png', class: 'small'
+    - if @service.active
+      %small.cgreen Enabled
+    - else
+      %small.cgray Disabled
+
+
+
+.back_link
+  = link_to project_services_path(@project) do
+    &larr; to services
 
 %hr
-
-
 = form_for(@service, :as => :service, :url => project_service_path(@project, :gitlab_ci), :method => :put) do |f|
   - if @service.errors.any?
     .alert-message.block-message.error
@@ -25,7 +28,7 @@
       = f.check_box :active
 
   .control-group
-    = f.label :active, "Project URL", class: "control-label"
+    = f.label :project_url, "Project URL", class: "control-label"
     .controls
       = f.text_field :project_url, class: "input-xlarge", placeholder: "http://ci.gitlabhq.com/projects/3"
 

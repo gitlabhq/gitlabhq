@@ -4,9 +4,13 @@ module Grack
 
     def valid?
       # Authentication with username and password
-      email, password = @auth.credentials
-      self.user = User.find_by_email(email)
+      login, password = @auth.credentials
+
+      self.user = User.find_by_email(login) || User.find_by_username(login)
+
       return false unless user.try(:valid_password?, password)
+
+      email = user.email
 
       # Set GL_USER env variable
       ENV['GL_USER'] = email
@@ -18,8 +22,8 @@ module Grack
       @env['SCRIPT_NAME'] = ""
 
       # Find project by PATH_INFO from env
-      if m = /^\/([\w\.-]+)\.git/.match(@request.path_info).to_a
-        self.project = Project.find_by_path(m.last)
+      if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
+        self.project = Project.find_with_namespace(m.last)
         return false unless project
       end
 
@@ -34,12 +38,12 @@ module Grack
     end
 
     def validate_get_request
-      true
+      can?(user, :download_code, project)
     end
 
     def validate_post_request
       if @request.path_info.end_with?('git-upload-pack')
-        can?(user, :push_code, project)
+        can?(user, :download_code, project)
       elsif @request.path_info.end_with?('git-receive-pack')
         action = if project.protected_branch?(current_ref)
                    :push_code_to_protected_branches

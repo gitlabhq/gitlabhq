@@ -4,8 +4,6 @@ class CreateProject < Spinach::FeatureSteps
 
   And 'fill project form with valid data' do
     fill_in 'project_name', :with => 'NewProject'
-    fill_in 'project_code', :with => 'NPR'
-    fill_in 'project_path', :with => 'newproject'
     click_button "Create project"
   end
 

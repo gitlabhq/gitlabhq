@@ -103,4 +103,14 @@ class Dashboard < Spinach::FeatureSteps
       page.should have_link group.name
     end
   end
+
+  And 'group has a projects that does not belongs to me' do
+    @forbidden_project1 = create(:project, group: @group)
+    @forbidden_project2 = create(:project, group: @group)
+  end
+
+  Then 'I should see 1 project at group list' do
+    page.find('span.last_activity/span').should have_content('1')
+  end
+
 end

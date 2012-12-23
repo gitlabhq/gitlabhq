@@ -5,10 +5,10 @@
 
 .mr_branch_box {
   @extend .ui-box;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 
   .body {
-    background:#f1f1f1;
+    background: #f1f1f1;
   }
 
 }
@@ -23,31 +23,30 @@
   }
 
   form {
-    margin-bottom:0;
+    margin-bottom: 0;
     .clearfix {
-      margin-bottom:0;
+      margin-bottom: 0;
     }
   }
 
   .accept_group {
-    float:left;
+    float: left;
     border: 1px solid #ADA;
     padding: 2px;
     @include border-radius(5px);
-    border-radius: 5px;
     background: #CEB;
 
     .accept_merge_request {
-      font-size:13px;
-      float:left;
+      font-size: 13px;
+      float: left;
     }
     .remove_branch_holder {
-      margin-left:20px;
-      margin-right:10px;
-      float:left;
+      margin-left: 20px;
+      margin-right: 10px;
+      float: left;
     }
     label {
-      color:#444;
+      color: #444;
     }
   }
 
@@ -60,15 +59,15 @@
 .mr_nav_tabs {
   li {
     a {
-      font-weight:bold;
-      padding:8px 20px;
-      text-align:center;
+      font-weight: bold;
+      padding: 8px 20px;
+      text-align: center;
     }
   }
 }
 
 li.merge_request {
-  padding:7px 10px;
+  padding: 7px 10px;
   img.avatar {
     width: 32px;
     margin-top: 1px;
@@ -85,35 +84,35 @@ li.merge_request {
 }
 
 .label_branch {
-  @include round-borders-all(4px);
-  padding:2px 4px;
-  border:none;
-  font-size:14px;
+  @include border-radius(4px);
+  padding: 2px 4px;
+  border: none;
+  font-size: 14px;
   background: #474D57;
-  color:#fff;
+  color: #fff;
   font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }
 
 .mr_source_commit,
 .mr_target_commit {
   .commit {
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
     padding: 5px;
     margin-bottom: 5px;
     .avatar { position:relative }
     .row_title {
-      color:#444;
+      color: #444;
     }
     .commit-author-name,
     .dash,
     .committed_ago,
     .browse_code_link_holder {
-      display:none;
+      display: none;
     }
-    list-style:none;
+    list-style: none;
     &:hover {
-      background:none;
+      background: none;
     }
   }
 }
@@ -126,20 +125,14 @@ li.merge_request {
   @extend .main_box;
   .merge_requests_middle_box {
     @extend .middle_box_content;
-    height:30px;
+    height: 30px;
     .merge_requests_assignee {
       @extend .span6;
-      float:left;
+      float: left;
     }
     .merge_requests_milestone {
       @extend .span4;
-      float:left;
+      float: left;
     }
   }
-}
-
-.status-badge {
-  height: 32px;
-  width: 100%;
-  @include border-radius(5px);
 }

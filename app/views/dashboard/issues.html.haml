@@ -3,17 +3,21 @@
   %small (assigned to you)
   %small.right #{@issues.total_count} issues
 
-%br
-.clearfix
-- if @issues.any?
-  - @issues.group_by(&:project).each do |group|
-    %div.ui-box
-      - @project = group[0]
-      %h5= @project.name
-      %ul.unstyled.issues_table
-        - group[1].each do |issue|
-          = render(partial: 'issues/show', locals: {issue: issue})
-  %hr
-  = paginate @issues, theme: "gitlab"
-- else
-  %h3.nothing_here_message Nothing to show here
+%hr
+
+.row
+  .span3
+    = render 'filter', entity: 'issue'
+  .span9
+    - if @issues.any?
+      - @issues.group_by(&:project).each do |group|
+        %div.ui-box
+          - @project = group[0]
+          %h5= link_to_project @project
+          %ul.well-list.issues_table
+            - group[1].each do |issue|
+              = render(partial: 'issues/show', locals: {issue: issue})
+      %hr
+      = paginate @issues, theme: "gitlab"
+    - else
+      %p.nothing_here_message Nothing to show here

@@ -5,11 +5,11 @@
 
 h1, h2, h3, h4, h5, h6 { margin: 0; }
 h3, h4, h5, h6 { line-height: 36px; }
-h5 { font-size:14px; }
+h5 { font-size: 14px; }
 
 h3.page_title {
-  color:#456;
-  font-size:20px;
+  color: #456;
+  font-size: 20px;
   font-weight: normal;
   line-height: 28px;
 }
@@ -25,7 +25,7 @@ pre {
 
   &.dark {
     background: #333;
-    color:#f5f5f5;
+    color: #f5f5f5;
   }
 }
 
@@ -37,8 +37,8 @@ a {
   outline: none;
   color: $link_color;
   &:hover {
-    text-decoration:none;
-    color: $blue_link;
+    text-decoration: none;
+    color: $primary_color;
   }
 
   &.btn {
@@ -53,27 +53,31 @@ a {
   }
 
   &.lined {
-    text-decoration:underline;
-    &:hover { text-decoration:underline; }
+    text-decoration: underline;
+    &:hover { text-decoration: underline; }
   }
 
   &.gray {
-    color:gray;
+    color: gray;
   }
 
   &.supp_diff_link {
-    text-align:center;
-    padding:20px 0;
-    background:#f1f1f1;
-    width:100%;
-    float:left;
+    text-align: center;
+    padding: 20px 0;
+    background: #f1f1f1;
+    width: 100%;
+    float: left;
   }
 
   &.neib  {
-    margin-right:15px;
+    margin-right: 15px;
   }
 }
 
 a:focus {
   outline: none;
+}
+
+.monospace {
+  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }

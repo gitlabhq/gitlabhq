@@ -85,7 +85,7 @@ describe IssueObserver do
 
       it 'notification is delivered if the issue being closed' do
         issue.stub(:is_being_closed?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice
+        Notify.should_receive(:issue_status_changed_email).twice.and_return(stub(deliver: true))
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
         subject.after_update(issue)
@@ -104,7 +104,7 @@ describe IssueObserver do
         issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
         issue_without_assignee.stub(:is_being_closed?).and_return(true)
         issue_without_assignee.stub(:is_being_reopened?).and_return(false)
-        Notify.should_receive(:issue_status_changed_email).once
+        Notify.should_receive(:issue_status_changed_email).once.and_return(stub(deliver: true))
         Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'closed')
 
         subject.after_update(issue_without_assignee)
@@ -128,7 +128,7 @@ describe IssueObserver do
 
       it 'notification is delivered if the issue being reopened' do
         issue.stub(:is_being_reopened?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice
+        Notify.should_receive(:issue_status_changed_email).twice.and_return(stub(deliver: true))
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
 
         subject.after_update(issue)
@@ -147,7 +147,7 @@ describe IssueObserver do
         issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
         issue_without_assignee.stub(:is_being_closed?).and_return(false)
         issue_without_assignee.stub(:is_being_reopened?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).once
+        Notify.should_receive(:issue_status_changed_email).once.and_return(stub(deliver: true))
         Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'reopened')
 
         subject.after_update(issue_without_assignee)

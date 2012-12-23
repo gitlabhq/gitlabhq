@@ -9,48 +9,62 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-
   %fieldset
     %legend  Advanced settings:
-    .clearfix
+    .control-group
       = f.label :path do
-        Path
-      .input
-        .input-prepend
-          %strong
-            = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
-    .clearfix
-      = f.label :code do
-        URL
-      .input
-        .input-prepend
-          %span.add-on= web_app_url
-          = f.text_field :code, placeholder: "example"
+        Repository
+      .controls
+        = text_field_tag :ppath, @project.path_to_repo, class: "xxlarge", readonly: true
 
-    - unless @project.new_record? || @project.heads.empty?
+
+    - unless @project.heads.empty?
       .clearfix
         = f.label :default_branch, "Default Branch"
         .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
 
-  - unless @project.new_record?
-    %fieldset
-      %legend Features:
+  %fieldset.features
+    %legend Features:
 
-      .clearfix
-        = f.label :issues_enabled, "Issues"
-        .input= f.check_box :issues_enabled
+    .control-group
+      = f.label :issues_enabled, "Issues", class: 'control-label'
+      .controls
+        = f.check_box :issues_enabled
+        %span.descr Lightweight issue tracking system for this project
 
-      .clearfix
-        = f.label :merge_requests_enabled, "Merge Requests"
-        .input= f.check_box :merge_requests_enabled
+    .control-group
+      = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
+      .controls
+        = f.check_box :merge_requests_enabled
+        %span.descr Submit changes to be merged upstream.
 
-      .clearfix
-        = f.label :wall_enabled, "Wall"
-        .input= f.check_box :wall_enabled
+    .control-group
+      = f.label :wall_enabled, "Wall", class: 'control-label'
+      .controls
+        = f.check_box :wall_enabled
+        %span.descr Simple chat system for broadcasting inside project
 
-      .clearfix
-        = f.label :wiki_enabled, "Wiki"
-        .input= f.check_box :wiki_enabled
+    .control-group
+      = f.label :wiki_enabled, "Wiki", class: 'control-label'
+      .controls
+        = f.check_box :wiki_enabled
+        %span.descr Pages for project documentation
+
+
+  - if can? current_user, :change_namespace, @project
+    %fieldset.features
+      %legend Transfer:
+      .control-group
+        = f.label :namespace_id do
+          %span Namespace
+        .controls
+          = f.select :namespace_id, namespaces_options(@project.namespace_id || Namespace::global_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+          %br
+          %ul.prepend-top-10.cred
+            %li Be careful. Changing project namespace can have unintended side effects
+            %li You can transfer project only to namespaces you can manage
+            %li You will need to update your local repositories to point to the new location.
+
 
   %br
 
@@ -58,5 +72,6 @@
     = f.submit 'Save', class: "btn save-btn"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
-      .right
-        = link_to 'Remove', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger"
+      - if can?(current_user, :remove_project, @project)
+        .right
+          = link_to 'Remove', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"

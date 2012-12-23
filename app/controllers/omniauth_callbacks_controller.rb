@@ -1,5 +1,5 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  Gitlab.config.omniauth_providers.each do |provider|
+  Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
       handle_omniauth
     end

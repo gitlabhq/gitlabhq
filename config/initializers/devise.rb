@@ -4,7 +4,7 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = Gitlab.config.email_from
+  config.mailer_sender = Gitlab.config.gitlab.email_from
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -205,20 +205,18 @@ Devise.setup do |config|
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
 
-  gl = Gitlab.config
-
-  if gl.ldap_enabled?
+  if Gitlab.config.ldap.enabled
     config.omniauth :ldap,
-      :host     => gl.ldap['host'],
-      :base     => gl.ldap['base'],
-      :uid      => gl.ldap['uid'],
-      :port     => gl.ldap['port'],
-      :method   => gl.ldap['method'],
-      :bind_dn  => gl.ldap['bind_dn'],
-      :password => gl.ldap['password']
+      :host     => Gitlab.config.ldap['host'],
+      :base     => Gitlab.config.ldap['base'],
+      :uid      => Gitlab.config.ldap['uid'],
+      :port     => Gitlab.config.ldap['port'],
+      :method   => Gitlab.config.ldap['method'],
+      :bind_dn  => Gitlab.config.ldap['bind_dn'],
+      :password => Gitlab.config.ldap['password']
   end
 
-  gl.omniauth_providers.each do |gl_provider|
-    config.omniauth gl_provider['name'].to_sym, gl_provider['app_id'], gl_provider['app_secret']
+  Gitlab.config.omniauth.providers.each do |provider|
+    config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
   end
 end

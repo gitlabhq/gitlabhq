@@ -1,13 +1,13 @@
 table {
   @extend .table;
   @extend .table-striped;
-  @include solid_shade;
-  border:1px solid #bbb;
-  width:100%;
+  @include solid-shade;
+  border: 1px solid #bbb;
+  width: 100%;
 
   &.low {
     td {
-      line-height:18px;
+      line-height: 18px;
     }
   }
 
@@ -31,8 +31,8 @@ table {
   }
 
   td {
-    border-color:#f1f1f1;
-    line-height:28px;
+    border-color: #f1f1f1;
+    line-height: 28px;
 
     .s16 {
       margin-top: 5px;
@@ -40,11 +40,11 @@ table {
     }
 
     &:first-child {
-      border-left:1px solid #bbb;
+      border-left: 1px solid #bbb;
     }
 
     &:last-child {
-      border-right:1px solid #bbb;
+      border-right: 1px solid #bbb;
     }
   }
 
@@ -53,10 +53,10 @@ table {
   }
 
   &.lite {
-    border:none;
-    box-shadow:none;
+    border: none;
+    box-shadow: none;
     tr, td {
-      border:none;
+      border: none;
       background:none !important;
     }
   }

@@ -1,71 +1,51 @@
-# Databases:
+# Setup Database
 
-GitLab use mysql as default database but you are free to use PostgreSQL or SQLite.
+GitLab supports the following databases:
 
+* MySQL (preferred)
+* PostgreSQL
 
-## SQLite
-
-    sudo apt-get install -y sqlite3 libsqlite3-dev 
 
 ## MySQL
 
+    # Install the database packages
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
     # Login to MySQL
     $ mysql -u root -p
 
+    # Create a user for GitLab. (change $password to a real password)
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+
     # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
-    # Create the MySQL User change $password to a real password
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
-
-    # Grant proper permissions to the MySQL User
+    # Grant the GitLab user necessary permissopns on the table.
     mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
 
+    # Quit the database session
+    mysql> \q
+
+    # Try connecting to the new database with the new user
+    sudo -u gitlab -H mysql -u gitlab -p -D gitlabhq_production
 
 ## PostgreSQL
 
-    sudo apt-get install -y postgresql-9.1 postgresql-server-dev-9.1
+    # Install the database packages
+    sudo apt-get install -y postgresql-9.1 libpq-dev
 
-    # Connect to database server
+    # Login to PostgreSQL
     sudo -u postgres psql -d template1
 
-    # Add a user called gitlab. Change $password to a real password
+    # Create a user for GitLab. (change $password to a real password)
     template1=# CREATE USER gitlab WITH PASSWORD '$password';
 
     # Create the GitLab production database & grant all privileges on database
     template1=# CREATE DATABASE gitlabhq_production OWNER gitlab;
 
-    # Quit from PostgreSQL server
+    # Quit the database session
     template1=# \q
 
-    # Try connect to new database
-    sudo -u gitlab psql -d gitlabhq_production
-
-
-
-#### Select the database you want to use
-
-    # SQLite
-    sudo -u gitlab cp config/database.yml.sqlite config/database.yml
-
-    # Mysql
-    sudo -u gitlab cp config/database.yml.mysql config/database.yml
-
-    # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
-
-    # make sure to update username/password in config/database.yml
-
-#### Install gems 
-
-    # mysql
-    sudo -u gitlab -H bundle install --without development test sqlite postgres  --deployment
-
-    # or postgres
-    sudo -u gitlab -H bundle install --without development test sqlite mysql --deployment
-
-    # or sqlite
-    sudo -u gitlab -H bundle install --without development test mysql postgres  --deployment
+    # Try connecting to the new database with the new user
+    sudo -u gitlab -H psql -d gitlabhq_production
 

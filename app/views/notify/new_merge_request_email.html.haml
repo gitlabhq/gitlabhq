@@ -5,7 +5,8 @@
       %td{align: "left", style: "padding: 20px 0 0;"}
         %h2{style: "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
           = "New Merge Request !#{@merge_request.id}"
-          = link_to_gfm truncate(@merge_request.title, length: 16), project_merge_request_url(@merge_request.project, @merge_request)
+        %p{style: "color:#646464 !important; line-height: 26px; font-size: 16px; font-family: Helvetica, Arial, sans-serif; "}
+          = link_to_gfm truncate(@merge_request.title, length: 40), project_merge_request_url(@merge_request.project, @merge_request)
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
     %tr
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}

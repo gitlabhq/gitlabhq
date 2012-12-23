@@ -1,33 +1,53 @@
-/** LISTS **/
-
-ul {
-  /**
-   * List li block element #1
-   *
-   */
-  .wll {
+/**
+ * Well styled list
+ *
+ */
+.well-list {
+  margin: 0;
+  list-style: none;
+  li {
     background-color: #FFF;
-    padding: 10px 5px;
+    padding: 10px;
     min-height: 20px;
     border-bottom: 1px solid #eee;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-    &.smoke { background-color:#f5f5f5; }
-    &:hover {
-      background:$hover;
-      border-bottom:1px solid #ADF;
+    &.disabled {
+      color: #888;
     }
-    &:last-child { border:none }
+
+    &.smoke { background-color: #f5f5f5; }
+
+    &:hover {
+      background: $hover;
+      border-bottom: 1px solid #ADF;
+    }
+
+    &:first-child {
+      @include border-radius(4px 4px 0 0);
+      border-top: none;
+    }
+
+    &:last-child {
+      @include border-radius(0 0 4px 4px);
+      border: none;
+    }
+
     .author { color: #999; }
 
     p {
       padding-top: 1px;
-      margin:0;
-      color:#222;
+      margin: 0;
+      color: #222;
       img {
-        position:relative;
-        top:3px;
+        position: relative;
+        top: 3px;
       }
+    }
+
+    .well-title {
+      font-size: 14px;
+      line-height: 18px;
     }
   }
 }
@@ -35,7 +55,21 @@ ul {
 ol, ul {
   &.styled {
     li {
-      padding:2px;
+      padding: 2px;
     }
+  }
+}
+
+/** light list with border-bottom between li **/
+ul.bordered-list {
+  margin: 5px 0px;
+  padding: 0px;
+  li {
+    padding: 5px 0;
+    border-bottom: 1px solid #EEE;
+    overflow: hidden;
+    display: block;
+    margin: 0px;
+    &:last-child { border:none }
   }
 }

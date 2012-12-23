@@ -19,6 +19,3 @@
 - if can? current_user, :admin_wiki, @project
   = link_to project_wiki_path(@project, @wiki), confirm: "Are you sure you want to delete this page?", method: :delete do
     Delete this page
-
-%hr
-.wiki_notes#notes= render "notes/notes_with_form", tid: @wiki.id, tt: "wiki"

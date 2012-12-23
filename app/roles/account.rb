@@ -26,6 +26,18 @@ module Account
     is_admin?
   end
 
+  def abilities
+    @abilities ||= begin
+                     abilities = Six.new
+                     abilities << Ability
+                     abilities
+                   end
+  end
+
+  def can? action, subject
+    abilities.allowed?(self, action, subject)
+  end
+
   def last_activity_project
     projects.first
   end
@@ -35,7 +47,7 @@ module Account
   end
 
   def cared_merge_requests
-    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id).opened
+    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id)
   end
 
   def project_ids
@@ -68,6 +80,45 @@ module Account
   end
 
   def projects_sorted_by_activity
-    projects.order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC")
+    projects.sorted_by_activity
+  end
+
+  def namespaces
+    namespaces = []
+
+    # Add user account namespace
+    namespaces << self.namespace if self.namespace
+
+    # Add groups you can manage
+    namespaces += if admin
+                    Group.all
+                  else
+                    groups.all
+                  end
+    namespaces
+  end
+
+  def several_namespaces?
+    namespaces.size > 1
+  end
+
+  def namespace_id
+    namespace.try :id
+  end
+
+  def authorized_groups
+    @authorized_groups ||= begin
+                           groups = Group.where(id: self.projects.pluck(:namespace_id)).all
+                           groups = groups + self.groups
+                           groups.uniq
+                         end
+  end
+
+  def authorized_projects
+    Project.authorized_for(self)
+  end
+
+  def my_own_projects
+    Project.personal(self)
   end
 end

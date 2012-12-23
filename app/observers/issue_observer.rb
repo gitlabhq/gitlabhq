@@ -3,7 +3,7 @@ class IssueObserver < ActiveRecord::Observer
 
   def after_create(issue)
     if issue.assignee && issue.assignee != current_user
-      Notify.new_issue_email(issue.id).deliver 
+      Notify.new_issue_email(issue.id).deliver
     end
   end
 
@@ -14,9 +14,9 @@ class IssueObserver < ActiveRecord::Observer
     status = 'closed' if issue.is_being_closed?
     status = 'reopened' if issue.is_being_reopened?
     if status
-      Note.create_status_change_note(issue, current_user, status) 
-      [issue.author, issue.assignee].compact.each do |recipient| 
-        Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user)
+      Note.create_status_change_note(issue, current_user, status)
+      [issue.author, issue.assignee].compact.each do |recipient|
+        Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id).deliver
       end
     end
   end

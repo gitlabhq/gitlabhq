@@ -29,6 +29,7 @@ describe UsersProject do
     it { should validate_uniqueness_of(:user_id).scoped_to(:project_id).with_message(/already exists/) }
 
     it { should validate_presence_of(:project) }
+    it { should ensure_inclusion_of(:project_access).in_array(UsersProject.access_roles.values) }
   end
 
   describe "Delegate methods" do

@@ -45,8 +45,22 @@ module Repository
   end
 
   def has_post_receive_file?
-    hook_file = File.join(path_to_repo, 'hooks', 'post-receive')
-    File.exists?(hook_file)
+    !!hook_file
+  end
+
+  def valid_post_receive_file?
+    valid_hook_file == hook_file
+  end
+
+  def valid_hook_file
+    @valid_hook_file ||= File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
+  end
+
+  def hook_file
+    @hook_file ||= begin
+                     hook_path = File.join(path_to_repo, 'hooks', 'post-receive')
+                     File.read(hook_path) if File.exists?(hook_path)
+                   end
   end
 
   # Returns an Array of branch names
@@ -79,11 +93,15 @@ module Repository
   end
 
   def url_to_repo
-    git_host.url_to_repo(path)
+    git_host.url_to_repo(path_with_namespace)
   end
 
   def path_to_repo
-    File.join(Gitlab.config.git_base_path, "#{path}.git")
+    File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
+  end
+
+  def namespace_dir
+    namespace.try(:path) || ''
   end
 
   def update_repository
@@ -160,12 +178,12 @@ module Repository
     return nil unless commit
 
     # Build file path
-    file_name = self.code + "-" + commit.id.to_s + ".tar.gz"
-    storage_path = Rails.root.join("tmp", "repositories", self.code)
+    file_name = self.path + "-" + commit.id.to_s + ".tar.gz"
+    storage_path = Rails.root.join("tmp", "repositories", self.path_with_namespace)
     file_path = File.join(storage_path, file_name)
 
     # Put files into a directory before archiving
-    prefix = self.code + "/"
+    prefix = self.path + "/"
 
     # Create file if not exists
     unless File.exists?(file_path)
@@ -181,7 +199,7 @@ module Repository
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.url, "/", path, ".git"].join('')
+    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system

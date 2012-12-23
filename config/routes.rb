@@ -14,11 +14,11 @@ Gitlab::Application.routes.draw do
 
   # Enable Grack support
   mount Grack::Bundle.new({
-    git_path:     Gitlab.config.git_bin_path,
-    project_root: Gitlab.config.git_base_path,
-    upload_pack:  Gitlab.config.git_upload_pack,
-    receive_pack: Gitlab.config.git_receive_pack
-  }), at: '/:path', constraints: { path: /[\w\.-]+\.git/ }
+    git_path:     Gitlab.config.git.bin_path,
+    project_root: Gitlab.config.gitolite.repos_path,
+    upload_pack:  Gitlab.config.gitolite.upload_pack,
+    receive_pack: Gitlab.config.gitolite.receive_pack
+  }), at: '/:path', constraints: { path: /[-\/\w\.-]+\.git/ }
 
   #
   # Help
@@ -31,6 +31,7 @@ Gitlab::Application.routes.draw do
   get 'help/system_hooks' => 'help#system_hooks'
   get 'help/markdown'     => 'help#markdown'
   get 'help/ssh'          => 'help#ssh'
+  get 'help/raketasks'    => 'help#raketasks'
 
   #
   # Admin Area
@@ -49,7 +50,7 @@ Gitlab::Application.routes.draw do
         delete :remove_project
       end
     end
-    resources :projects, constraints: { id: /[^\/]+/ } do
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create] do
       member do
         get :team
         put :team_update
@@ -69,14 +70,18 @@ Gitlab::Application.routes.draw do
   #
   # Profile Area
   #
-  get "profile/account"             => "profile#account"
-  get "profile/history"             => "profile#history"
-  put "profile/password"            => "profile#password_update"
-  get "profile/token"               => "profile#token"
-  put "profile/reset_private_token" => "profile#reset_private_token"
-  get "profile"                     => "profile#show"
-  get "profile/design"              => "profile#design"
-  put "profile/update"              => "profile#update"
+  resource :profile, only: [:show, :update] do
+    member do
+      get :account
+      get :history
+      get :token
+      get :design
+
+      put :update_password
+      put :reset_private_token
+      put :update_username
+    end
+  end
 
   resources :keys
 
@@ -107,7 +112,7 @@ Gitlab::Application.routes.draw do
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /[^\/]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
       get "graph"
@@ -159,12 +164,12 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :merge_requests do
+    resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
       member do
         get :diffs
         get :automerge
         get :automerge_check
-        get :raw
+        get :ci_status
       end
 
       collection do
@@ -195,9 +200,9 @@ Gitlab::Application.routes.draw do
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
-    resources :milestones
+    resources :milestones, except: [:destroy]
     resources :labels, only: [:index]
-    resources :issues do
+    resources :issues, except: [:destroy] do
       collection do
         post  :sort
         post  :bulk_update

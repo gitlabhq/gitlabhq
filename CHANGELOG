@@ -1,3 +1,35 @@
+v 4.0.0
+  - Remove project code and path from API. Use id instead
+  - Return valid clonable url to repo for web hook
+  - Fixed backup issue 
+  - Reorganized settings
+  - Fixed commits compare
+  - Refactored scss
+  - Improve status checks
+  - Validates presence of User#name
+  - Fixed postgres support
+  - Removed sqlite support
+  - Modified post-receive hook
+  - Milestones can be closed now
+  - Show comment events on dashboard
+  - Quick add team members via group#people page
+  - [API] expose created date for hooks and SSH keys
+  - [API] list, create issue notes
+  - [API] list, create snippet notes
+  - [API] list, create wall notes
+  - Remove project code - use path instead
+  - added username field to user
+  - rake task to fill usernames based on emails create namespaces for users
+  - STI Group < Namespace
+  - Project has namespace_id
+  - Projects with namespaces also namespaced in gitolite and stored in subdir
+  - Moving project to group will move it under group namespace
+  - Ability to move project from namespaces to another
+  - Fixes commit patches getting escaped (see #2036)
+  - Support diff and patch generation for commits and merge request
+  - MergeReqest doesn't generate a temporary file for the patch any more
+  - Update the UI to allow downloading Patch or Diff
+
 v 3.1.0
   - Updated gems
   - Services: Gitlab CI integration
@@ -34,7 +66,7 @@ v 3.0.0
   - Fixed bug with gitolite keys
   - UI improved
   - Increased perfomance of application
-  - Show user avatar in last commit when browsing Files 
+  - Show user avatar in last commit when browsing Files
   - Refactored Gitlab::Merge
   - Use Font Awsome for icons
   - Separate observing of Note and MergeRequestsa

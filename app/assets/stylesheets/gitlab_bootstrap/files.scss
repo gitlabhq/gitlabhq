@@ -3,9 +3,9 @@
  *
  */
 .file_holder {
-  border:1px solid #BBB;
-  margin-bottom:1em;
-  @include solid_shade;
+  border: 1px solid #BBB;
+  margin-bottom: 1em;
+  @include solid-shade;
 
   .file_title {
     border-bottom: 1px solid #bbb;
@@ -16,47 +16,51 @@
     text-align: left;
     color: #666;
     padding: 9px 10px;
-    height:18px;
+    height: 18px;
 
     .options {
-      float:right;
+      float: right;
       margin-top: -5px;
     }
 
     .file_name {
-      color:$style_color;
-      font-size:14px;
+      color: $style_color;
+      font-size: 14px;
       text-shadow: 0 1px 1px #fff;
       small {
-        color:#999;
-        font-size:13px;
+        color: #999;
+        font-size: 13px;
       }
     }
   }
   .file_content {
-    background:#fff;
+    background: #fff;
     font-size: 11px;
 
     &.wiki {
       font-size: 13px;
       code {
-        padding:0 4px;
+        padding: 0 4px;
       }
-      padding:20px;
-      h1, h2 {
-        line-height: 46px;
-      }
-      h3, h4 {
-        line-height: 40px;
+      padding: 20px;
+
+      h1 { font-size: 26px; line-height: 46px; }
+      h2 { font-size: 22px; line-height: 42px; }
+      h3 { font-size: 20px; line-height: 40px; }
+      h4 { font-size: 18px; line-height: 32px; }
+      h5 { font-size: 16px; line-height: 26px; }
+
+      .white .highlight pre {
+        background: #f5f5f5;
       }
     }
 
     &.image_file {
-      background:#eee;
-      text-align:center;
+      background: #eee;
+      text-align: center;
       img {
-        padding:100px;
-        max-width:300px;
+        padding: 100px;
+        max-width: 300px;
       }
     }
 
@@ -69,60 +73,60 @@
      */
     &.blame {
       table {
-        border:none;
-        box-shadow:none;
-        margin:0;
+        border: none;
+        box-shadow: none;
+        margin: 0;
       }
       tr {
         border-bottom: 1px solid #eee;
       }
       td {
         &:first-child {
-          border-left:none;
+          border-left: none;
         }
         &:last-child {
-          border-right:none;
+          border-right: none;
         }
-        background:#fff;
-        padding:5px;
+        background: #fff;
+        padding: 5px;
       }
       .author,
       .blame_commit {
-        background:#f5f5f5;
-        vertical-align:top;
+        background: #f5f5f5;
+        vertical-align: top;
       }
       .lines {
         pre {
-          padding:0;
-          margin:0;
-          background:none;
-          border:none;
+          padding: 0;
+          margin: 0;
+          background: none;
+          border: none;
         }
       }
     }
 
     &.logs {
-      background:#eee;
+      background: #eee;
       max-height: 700px;
       overflow-y: auto;
 
       ol {
-        margin-left:40px;
+        margin-left: 40px;
         padding: 10px 0;
         border-left: 1px solid #CCC;
-        margin-bottom:0;
+        margin-bottom: 0;
         background: white;
         li {
-          color:#888;
+          color: #888;
           p {
-            margin:0;
-            color:#333;
-            line-height:24px;
+            margin: 0;
+            color: #333;
+            line-height: 24px;
             padding-left: 10px;
           }
 
           &:hover {
-            background:$hover;
+            background: $hover;
           }
         }
       }
@@ -142,8 +146,8 @@
         table-layout: fixed;
 
         pre {
-          background: none;
           border: none;
+          border-radius: 0;
           font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
           font-size: 12px !important;
           line-height: 16px !important;

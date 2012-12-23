@@ -1,12 +1,13 @@
 %tr
   %td
+    = image_tag gravatar_icon(snippet.author_email), class: "avatar s24"
     %a{href: project_snippet_path(snippet.project, snippet)}
       %strong= truncate(snippet.title, length: 60)
   %td
     = snippet.file_name
   %td
     %span.cgray
-      - if snippet.expires_at 
+      - if snippet.expires_at
         = snippet.expires_at.to_date.to_s(:short)
       - else
         Never

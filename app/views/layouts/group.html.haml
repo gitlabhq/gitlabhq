@@ -1,6 +1,6 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head"
+  = render "layouts/head", title: "#{@group.name}"
   %body{class: "#{app_theme} application"}
     = render "layouts/flash"
     = render "layouts/head_panel", title: "#{@group.name}"

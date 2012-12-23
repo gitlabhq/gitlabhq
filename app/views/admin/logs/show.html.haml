@@ -3,12 +3,20 @@
     = link_to "githost.log", "#githost", 'data-toggle' => 'tab'
   %li
     = link_to "application.log", "#application", 'data-toggle' => 'tab'
+  %li
+    = link_to "production.log", "#production", 'data-toggle' => 'tab'
+
+%p.light To prevent perfomance issues admin logs output the last 2000 lines
 .tab-content
   .tab-pane.active#githost
     .file_holder#README
       .file_title
         %i.icon-file
         githost.log
+        .right
+          = link_to '#', class: 'log-bottom' do
+            %i.icon-arrow-down
+            Scroll down
       .file_content.logs
         %ol
           - Gitlab::GitLogger.read_latest.each do |line|
@@ -19,8 +27,26 @@
       .file_title
         %i.icon-file
         application.log
+        .right
+          = link_to '#', class: 'log-bottom' do
+            %i.icon-arrow-down
+            Scroll down
       .file_content.logs
         %ol
           - Gitlab::AppLogger.read_latest.each do |line|
+            %li
+              %p= line
+  .tab-pane#production
+    .file_holder#README
+      .file_title
+        %i.icon-file
+        production.log
+        .right
+          = link_to '#', class: 'log-bottom' do
+            %i.icon-arrow-down
+            Scroll down
+      .file_content.logs
+        %ol
+          - Gitlab::Logger.read_latest_for('production.log').each do |line|
             %li
               %p= line

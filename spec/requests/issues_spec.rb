@@ -11,7 +11,7 @@ describe "Issues" do
     project.add_access(user2, :read, :write)
   end
 
-  describe "Edit issue", js: true do
+  describe "Edit issue" do
     let!(:issue) do
       create(:issue,
              author: @user,
@@ -79,18 +79,6 @@ describe "Issues" do
       page.should have_content 'foobar2'
       page.should_not have_content 'gitlab'
     end
-
-    it "should return all results if term has been cleared" do
-      visit project_issues_path(project)
-      fill_in "issue_search", with: "foobar"
-      # Reset the search field and trigger loading the issues
-      fill_in "issue_search", with: ""
-      page.execute_script("$('#issue_search').keyup();");
-
-      page.should have_content 'foobar'
-      page.should have_content 'foobar2'
-      page.should have_content 'gitlab'
-    end
   end
 
   describe "Filter issue" do
@@ -103,13 +91,13 @@ describe "Issues" do
                title: title)
       end
 
-      issue = Issue.first # with title 'foobar'
-      issue.milestone = create(:milestone, project: project)
-      issue.assignee = nil
-      issue.save
+      @issue = Issue.first # with title 'foobar'
+      @issue.milestone = create(:milestone, project: project)
+      @issue.assignee = nil
+      @issue.save
     end
 
-    let(:issue) { Issue.first }
+    let(:issue) { @issue }
 
     it "should allow filtering by issues with no specified milestone" do
       visit project_issues_path(project, milestone_id: '0')

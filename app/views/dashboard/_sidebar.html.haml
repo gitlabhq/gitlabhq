@@ -1,0 +1,14 @@
+- if @groups.present?
+  = render "groups", groups: @groups
+= render "projects", projects: @projects
+%div
+  %span.rss-icon
+    = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
+      = image_tag "rss_ui.png", title: "feed"
+      %strong News Feed
+
+%hr
+.gitlab-promo
+  = link_to "Homepage", "http://gitlabhq.com"
+  = link_to "Blog", "http://blog.gitlabhq.com"
+  = link_to "@gitlabhq", "https://twitter.com/gitlabhq"

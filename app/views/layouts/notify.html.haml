@@ -3,14 +3,7 @@
     %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
       %title
         GitLab
-      :css
-        .header h1 {color: #BBBBBB !important; font: bold 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;}
-        .header p {color: #c6c6c6; font: normal 12px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 18px;}
-        .content h2 {color:#646464 !important; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif;  }
-        .content p {color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif;}
-        .content a {color: #0eb6ce; text-decoration: none;}
-        .footer p {font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;}
-        .footer a {color: #0eb6ce; text-decoration: none;}
+
   %body{bgcolor: "#EAEAEA", style: "margin: 0; padding: 0; background: #EAEAEA"}
     %table{align: "center", border: "0", cellpadding: "0", cellspacing: "0", style: "padding: 35px 0; background: #EAEAEA;", width: "100%"}
       %tr
@@ -19,11 +12,11 @@
             %tr
               %td{style: "font-size: 0px;", width: "20"}
                 \ 
-              %td{align: "left", style: "padding: 18px 0 10px;", width: "580"}
-                %h1{style: "color: #BBBBBB; font: normal 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;"}
+              %td{align: "left", style: "padding: 10px 0", width: "580"}
+                %h1{style: "font-size: 24px; color: #BBBBBB; font: normal 22px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 32px;"}
                   GITLAB
                   - if @project
-                    | #{@project.name}
+                    &rarr; #{@project.name_with_namespace}
           %table{align: "center", bgcolor: "#fff", border: "0", cellpadding: "0", cellspacing: "0", style: "font-family: Helvetica, Arial, sans-serif; background: #fff;", width: "600"}
             %tr= yield
             %tr
@@ -35,5 +28,5 @@
                   %p{style: "font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;"}
                     You're receiving this notification because you are a member of the
                     - if @project
-                      #{@project.name} 
+                      #{@project.name_with_namespace}
                     project team.

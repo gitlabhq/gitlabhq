@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'uri'
 
 module ApplicationHelper
 
@@ -30,13 +31,15 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
-  def gravatar_icon(user_email = '', size = 40)
-    if Gitlab.config.disable_gravatar? || user_email.blank?
+  def gravatar_icon(user_email = '', size = nil)
+    size = 40 if size.nil? || size <= 0
+
+    if !Gitlab.config.gravatar.enabled || user_email.blank?
       'no_avatar.png'
     else
-      gravatar_prefix = request.ssl? ? "https://secure" : "http://www"
+      gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
-      "#{gravatar_prefix}.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=mm"
+      sprintf(gravatar_url, {:hash => Digest::MD5.hexdigest(user_email.downcase), :email => URI.escape(user_email), :size => size})
     end
   end
 
@@ -45,7 +48,7 @@ module ApplicationHelper
   end
 
   def web_app_url
-    "#{request_protocol}://#{Gitlab.config.web_host}/"
+    "#{request_protocol}://#{Gitlab.config.gitlab.host}/"
   end
 
   def last_commit(project)
@@ -75,7 +78,7 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.projects.map{ |p| { label: p.name, url: project_path(p) } }
+    projects = current_user.projects.map{ |p| { label: p.name_with_namespace, url: project_path(p) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },
@@ -92,6 +95,7 @@ module ApplicationHelper
       { label: "API Help", url: help_api_path },
       { label: "Markdown Help", url: help_markdown_path },
       { label: "SSH Keys Help", url: help_ssh_path },
+      { label: "Gitlab Rake Tasks Help", url: help_raketasks_path },
     ]
 
     project_nav = []
@@ -124,6 +128,10 @@ module ApplicationHelper
 
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
+  end
+
+  def user_color_scheme_class
+    current_user.dark_scheme ? :black : :white
   end
 
   def show_last_push_widget?(event)

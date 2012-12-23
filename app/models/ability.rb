@@ -7,6 +7,7 @@ class Ability
       when "Note" then note_abilities(object, subject)
       when "Snippet" then snippet_abilities(object, subject)
       when "MergeRequest" then merge_request_abilities(object, subject)
+      when "Group" then group_abilities(object, subject)
       else []
       end
     end
@@ -14,7 +15,40 @@ class Ability
     def project_abilities(user, project)
       rules = []
 
-      rules << [
+      # Rules based on role in project
+      if project.master_access_for?(user)
+        rules << project_master_rules
+
+      elsif project.dev_access_for?(user)
+        rules << project_dev_rules
+
+      elsif project.report_access_for?(user)
+        rules << project_report_rules
+
+      elsif project.guest_access_for?(user)
+        rules << project_guest_rules
+      end
+
+      if project.namespace
+        # If user own project namespace
+        # (Ex. group owner or account owner)
+        if project.namespace.owner == user
+          rules << project_admin_rules
+        end
+      else
+        # For compatibility with global projects
+        # use projects.owner_id
+        if project.owner == user
+          rules << project_admin_rules
+        end
+      end
+
+
+      rules.flatten
+    end
+
+    def project_guest_rules
+      [
         :read_project,
         :read_wiki,
         :read_issue,
@@ -26,28 +60,30 @@ class Ability
         :write_project,
         :write_issue,
         :write_note
-      ] if project.guest_access_for?(user)
+      ]
+    end
 
-      rules << [
+    def project_report_rules
+      project_guest_rules + [
         :download_code,
         :write_merge_request,
         :write_snippet
-      ] if project.report_access_for?(user)
+      ]
+    end
 
-      rules << [
+    def project_dev_rules
+      project_report_rules + [
         :write_wiki,
         :push_code
-      ] if project.dev_access_for?(user)
+      ]
+    end
 
-      rules << [
-        :push_code_to_protected_branches
-      ] if project.master_access_for?(user)
-
-      rules << [
+    def project_master_rules
+      project_dev_rules + [
+        :push_code_to_protected_branches,
         :modify_issue,
         :modify_snippet,
         :modify_merge_request,
-        :admin_project,
         :admin_issue,
         :admin_milestone,
         :admin_snippet,
@@ -55,8 +91,25 @@ class Ability
         :admin_merge_request,
         :admin_note,
         :accept_mr,
-        :admin_wiki
-      ] if project.master_access_for?(user) || project.owner == user
+        :admin_wiki,
+        :admin_project
+      ]
+    end
+
+    def project_admin_rules
+      project_master_rules + [
+        :change_namespace,
+        :rename_project,
+        :remove_project
+      ]
+    end
+
+    def group_abilities user, group
+      rules = []
+
+      rules << [
+        :manage_group
+      ] if group.owner == user
 
       rules.flatten
     end

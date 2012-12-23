@@ -8,13 +8,13 @@
         = link_to new_admin_group_path, class: "btn very_small info" do
           %i.icon-plus
           New Group
-  %ul.unstyled
+  %ul.well-list
     - groups.each do |group|
-      %li.wll
-        = link_to group_path(id: group.code), class: dom_class(group) do
-          %strong.group_name= truncate(group.name, length: 25)
+      %li
+        = link_to group_path(id: group.path), class: dom_class(group) do
+          %strong.well-title= truncate(group.name, length: 35)
           %span.arrow
             &rarr;
           %span.last_activity
             %strong Projects:
-            %span= group.projects.count
+            %span= group.projects.authorized_for(current_user).count

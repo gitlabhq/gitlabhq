@@ -8,7 +8,7 @@ GET /projects/:id/repository/branches
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ```json
 [
@@ -48,7 +48,7 @@ GET /projects/:id/repository/branches/:branch
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `branch` (required) - The name of the branch
 
 ```json
@@ -87,7 +87,7 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 
 ```json
 [
@@ -125,7 +125,7 @@ GET /projects/:id/repository/commits
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `ref_name` (optional) - The name of a repository branch or tag
 
 ```json
@@ -159,7 +159,7 @@ GET /projects/:id/repository/commits/:sha/blob
 
 Parameters:
 
-+ `id` (required) - The ID or code name of a project
++ `id` (required) - The ID of a project
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
 

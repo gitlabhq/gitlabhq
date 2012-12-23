@@ -4,50 +4,34 @@
   }
 
   .side {
-    @extend .span4;
     @extend .right;
 
     .groups_box,
     .projects_box {
-      h5 {
-        color:$style_color;
-        font-size:16px;
+      > h5 {
+        color: $style_color;
+        font-size: 16px;
         text-shadow: 0 1px 1px #fff;
         padding: 2px 10px;
-        line-height:32px;
-        font-size:14px;
+        line-height: 32px;
+        font-size: 14px;
       }
-      ul {
-        li {
-          padding:0;
-          a {
-            display:block;
-            .group_name {
-              font-size:14px;
-              line-height:18px;
-            }
-            .project_name {
-              color:#4fa2bd;
-              font-size:14px;
-              line-height:18px;
-            }
-            .arrow {
-              float:right;
-              padding:10px;
-              margin:0;
-            }
-            .last_activity {
-              padding-top:5px;
-              display:block;
-              span, strong {
-                font-size:12px;
-                color:#666;
-              }
-            }
+      .nav-projects-tabs li { padding: 0; }
+      .well-list {
+        .arrow {
+          float: right;
+          padding: 10px;
+          margin: 0;
+        }
+        .last_activity {
+          padding-top: 5px;
+          display: block;
+          span, strong {
+            font-size: 12px;
+            color: #666;
           }
         }
       }
-      @extend .leftbar;
       @extend .ui-box;
     }
   }
@@ -58,21 +42,27 @@
   .project_name_holder {
     input,
     label {
-      font-size:16px;
-      line-height:20px;
-      padding:8px;
+      font-size: 16px;
+      line-height: 20px;
+      padding: 8px;
     }
     label {
-      color:#888;
+      color: #888;
     }
     .btn {
-      padding:6px 10px;
-      margin-left:10px;
-      margin-bottom:8px;
+      padding: 6px 10px;
+      margin-left: 10px;
+      margin-bottom: 8px;
     }
   }
   .adv_settings {
-    h6 { margin-left:40px; }
+    h6 { margin-left: 40px; }
+  }
+
+  fieldset.features {
+    .control-label {
+      font-weight: bold;
+    }
   }
 }
 
@@ -81,19 +71,20 @@
   @include bg-gray-gradient;
   padding: 4px 7px;
   border: 1px solid #CCC;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 }
 
 .project_clone_holder {
   input[type="text"],
   .btn {
-    font-size:12px;
+    font-size: 12px;
     line-height: 18px;
     margin: 0;
     padding: 3px 10px;
   }
 
   input[type="text"] {
+    @extend .monospace;
     border: 1px solid #BBB;
     box-shadow: none;
     margin-left: -1px;
@@ -102,11 +93,33 @@
 
 .save-project-loader {
   img {
-    margin-top:50px;
-    margin-bottom:50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
   h3 {
     @extend .page_title;
   }
 
+}
+
+ul.nav.nav-projects-tabs {
+  @extend .nav-tabs;
+
+  padding-left: 8px;
+
+  li {
+    a {
+      padding: 4px 20px;
+      margin-top: 2px;
+      border-color: #DDD;
+      background-color: #EEE;
+      text-shadow: 0 1px 1px white;
+      color: #555;
+    }
+    &.active {
+      a {
+        font-weight: bold;
+      }
+    }
+  }
 }

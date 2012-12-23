@@ -36,4 +36,22 @@ class GitlabCiService < Service
   def commit_badge_path sha
     project_url + "/status?sha=#{sha}"
   end
+
+  def commit_status_path sha
+    project_url + "/builds/#{sha}/status.json?token=#{token}"
+  end
+
+  def commit_status sha
+    response = HTTParty.get(commit_status_path(sha))
+
+    if response.code == 200 and response["status"]
+      response["status"]
+    else
+      :error
+    end
+  end
+
+  def build_page sha
+    project_url + "/builds/#{sha}"
+  end
 end

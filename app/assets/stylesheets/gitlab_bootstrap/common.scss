@@ -10,11 +10,6 @@
 /** COMMON CLASSES **/
 .left { float:left }
 .right { float:right!important }
-.width-50p { width:50% }
-.width-49p { width:49% }
-.width-30p { width:30% }
-.width-65p { width:65% }
-.width-100p { width:100% }
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-20 { margin-bottom:20px }
 .prepend-top-10 { margin-top:10px }
@@ -24,40 +19,42 @@
 .lborder { border-left:1px solid #eee }
 .no-padding { padding:0 !important; }
 .underlined { border-bottom: 1px solid #CCC; }
-.no-borders { border:none; }
+.no-borders { border: none; }
 .vlink { color: $link_color !important; }
 .underlined_link { text-decoration: underline; }
 .borders { border: 1px solid #ccc; @include shade; }
 .hint { font-style: italic; color: #999; }
 .light { color: #888 }
+.tiny { font-weight: normal }
 
 /** PILLS & TABS**/
-.nav-pills a:hover { background-color:#888; }
+.nav-pills a:hover { background-color: #888; }
 .nav-pills .active a { background-color: $style_color; }
-.nav-tabs > li > a, .nav-pills > li > a { color:$style_color; }
+.nav-pills > .active > a > i[class^="icon-"] { background: inherit; }
+.nav-tabs > li > a, .nav-pills > li > a { color: $style_color; }
 .nav.nav-tabs {
   li {
     > a {
-      padding:8px 20px;
+      padding: 8px 20px;
       margin-right: 7px;
       line-height: 19px;
       border-color: #EEE;
-      color:#888;
+      color: #888;
       border-bottom: 1px solid #ddd;
       .badge {
         background-color: #eee;
-        color:#888;
-        text-shadow:0 1px 1px #fff;
+        color: #888;
+        text-shadow: 0 1px 1px #fff;
       }
       i[class^="icon-"] {
-        line-height:14px;
+        line-height: 14px;
       }
     }
     &.active {
       > a {
         border-color: #CCC;
         border-bottom: 1px solid #fff;
-        color:#333;
+        color: #333;
       }
     }
   }
@@ -69,25 +66,50 @@
 .alert-message.error { @extend .alert-error; }
 
 /** AVATARS **/
-img.avatar { float:left; margin-right:12px; width:40px; border:1px solid #ddd; padding:1px; }
-img.avatar.s16 { width:16px; height:16px; margin-right:6px; }
-img.avatar.s24 { width:24px; height:24px; margin-right:8px; }
-img.avatar.s32 { width:32px; height:32px; margin-right:10px; }
-img.lil_av { padding-left: 4px; padding-right:3px; }
+img.avatar { float: left; margin-right: 12px; width: 40px; border: 1px solid #ddd; padding: 1px; }
+img.avatar.s16 { width: 16px; height: 16px; margin-right: 6px; }
+img.avatar.s24 { width: 24px; height: 24px; margin-right: 8px; }
+img.avatar.s32 { width: 32px; height: 32px; margin-right: 10px; }
+img.lil_av { padding-left: 4px; padding-right: 3px; }
 img.small { width: 80px; }
 
 /** HELPERS **/
-.nothing_here_message { text-align:center; padding:20px; color:#777; }
-p.slead { color:#456; font-size:16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
+.nothing_here_message {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 36px;
+}
+
+p.slead { color: #456; font-size: 16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
 
 /** FORMS **/
 input[type='search'].search-text-input {
   background-image: url("icon-search.png");
   background-repeat: no-repeat;
   background-position: 10px;
-  padding-left:25px;
+  padding-left: 25px;
   @include border-radius(4px);
-  border:1px solid #ccc;
+  border: 1px solid #ccc;
+}
+
+input[type='text'].danger {
+  background: #F2DEDE!important;
+  border-color: #D66;
+  text-shadow: 0 1px 1px #fff
 }
 
 fieldset legend { font-size: 17px; }
+
+/** PAGINATION **/
+.gitlab_pagination {
+  span a { color: $link_color; }
+  .prev, .next, .current, .page a {
+    padding: 10px;
+  }
+  .current {
+    border-bottom: 2px solid $style_color;
+  }
+}

@@ -1,0 +1,13 @@
+= render "events/event_last_push", event: @last_push
+
+.event_filter
+  = event_filter_link EventFilter.push, 'Push events'
+  = event_filter_link EventFilter.merged, 'Merge events'
+  = event_filter_link EventFilter.comments, 'Comments'
+  = event_filter_link EventFilter.team, 'Team'
+
+- if @events.any?
+  .content_list= render @events
+- else
+  %p.nothing_here_message Projects activity will be displayed here
+.loading.hide

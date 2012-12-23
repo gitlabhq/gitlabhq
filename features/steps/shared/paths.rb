@@ -54,7 +54,7 @@ module SharedPaths
   end
 
   Given 'I visit profile account page' do
-    visit profile_account_path
+    visit account_profile_path
   end
 
   Given 'I visit profile SSH keys page' do
@@ -62,15 +62,11 @@ module SharedPaths
   end
 
   Given 'I visit profile design page' do
-    visit profile_design_path
+    visit design_profile_path
   end
 
   Given 'I visit profile history page' do
-    visit profile_history_path
-  end
-
-  Given 'I visit profile token page' do
-    visit profile_token_path
+    visit history_profile_path
   end
 
   # ----------------------------------------

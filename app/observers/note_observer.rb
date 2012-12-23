@@ -21,7 +21,7 @@ class NoteObserver < ActiveRecord::Observer
   # Notifies the whole team except the author of note
   def notify_team(note)
     # Note: wall posts are not "attached" to anything, so fall back to "Wall"
-    noteable_type = note.noteable_type || "Wall"
+    noteable_type = note.noteable_type.presence || "Wall"
     notify_method = "note_#{noteable_type.underscore}_email".to_sym
 
     if Notify.respond_to? notify_method

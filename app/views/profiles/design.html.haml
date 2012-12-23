@@ -1,0 +1,52 @@
+= form_for @user, url: profile_path, remote: true, method: :put do |f|
+  %fieldset.application-theme
+    %legend
+      Application theme
+      .update-feedback.hide
+        %i.icon-ok
+        Saved
+    .themes_opts
+      = label_tag do
+        .prev.default
+        = f.radio_button :theme_id, 1
+        Default
+
+      = label_tag do
+        .prev.classic
+        = f.radio_button :theme_id, 2
+        Classic
+
+      = label_tag do
+        .prev.modern
+        = f.radio_button :theme_id, 3
+        Modern
+
+      = label_tag do
+        .prev.gray
+        = f.radio_button :theme_id, 4
+        SlateGray
+
+      = label_tag do
+        .prev.violet
+        = f.radio_button :theme_id, 5
+        Violet
+    %br
+    .clearfix
+
+  %fieldset.code-preview-theme
+    %legend
+      Code preview theme
+      .update-feedback.hide
+        %i.icon-ok
+        Saved
+    .code_highlight_opts
+      = label_tag do
+        .prev
+          = image_tag "white.png"
+        = f.radio_button :dark_scheme, false
+        White code preview
+      = label_tag do
+        .prev
+          = image_tag "dark.png"
+        = f.radio_button :dark_scheme, true
+        Dark code preview

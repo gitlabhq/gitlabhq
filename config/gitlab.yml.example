@@ -1,55 +1,71 @@
-# # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # 
 # Gitlab application config file  #
 # # # # # # # # # # # # # # # # # #
+#
+# How to use:
+# 1. copy file as gitlab.yml
+# 2. Replace gitlab -> host with your domain
+# 3. Replace gitolite -> ssh_host with your domain
+# 4. Replace gitlab -> email_from
 
 #
-# 1. Common settings
+# 1. GitLab app settings
 # ==========================
 
-# Web application specific settings
-web:
+## GitLab settings
+gitlab:
+  ## Web server settings
   host: localhost
   port: 80
   https: false
 
-# Email used for notification
-# about new issues, comments
-email:
-  from: notify@localhost
+  ## Email settings
+  # Email address used in the "From" field in mails sent by GitLab
+  email_from: gitlab@localhost
 
-# Application specific settings
-# Like default project limit for user etc
-app:
+  ## Project settings
   default_projects_limit: 10
-  # backup_path: "/vol/backups"   # default: Rails.root + backups/
-  # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
-  # disable_gravatar: true        # default: false - Disable user avatars from Gravatar.com
+
+## Gravatar
+gravatar:
+  enabled: true                 # Use user avatar images from Gravatar.com (default: true)
+  # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
+  # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
+
 
 
 #
 # 2. Auth settings
 # ==========================
-ldap: 
+
+## LDAP settings
+ldap:
   enabled: false
   host: '_your_ldap_server'
   base: '_the_base_where_you_search_for_users'
   port: 636
   uid: 'sAMAccountName'
-  method: 'ssl' # plain
+  method: 'ssl' # "ssl" or "plain"
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
+## Omniauth settings
 omniauth:
   # Enable ability for users
-  # to login via twitter, google ..
+  # Allow logging in via Twitter, Google, etc. using Omniauth providers
   enabled: false
 
-  # IMPORTANT! 
-  # It allows user to login without having user account
+  # CAUTION!
+  # This allows users to login without having a user account first (default: false)
+  # User accounts will be created automatically when authentication was successful.
   allow_single_sign_on: false
+  # Locks down those users until they have been cleared by the admin (default: true)
   block_auto_created_users: true
 
-  # Auth providers 
+  ## Auth providers
+  # Uncomment the lines and fill in the data of the auth provider you want to use
+  # If your favorite auth provider is not listed you can user others:
+  # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
   providers:
     # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
     #     app_secret: 'YOUR APP SECRET',
@@ -60,29 +76,36 @@ omniauth:
     #     app_secret: 'YOUR APP SECRET' }
 
 
+
 #
-# 3. Advanced settings:
+# 3. Advanced settings
 # ==========================
 
-# Git Hosting configuration
-git_host:
+## Backup settings
+backup:
+  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+  # keep_time: 604800   # default: 0 (forever) (in seconds)
+
+## Gitolite settings
+gitolite:
   admin_uri: git@localhost:gitolite-admin
-  base_path: /home/git/repositories/
+  repos_path: /home/git/repositories/
   hooks_path: /home/git/.gitolite/hooks/
-  gitolite_admin_key: gitlab 
-  git_user: git
+  admin_key: gitlab
   upload_pack: true
   receive_pack: true
-  # host: localhost
+  ssh_user: git
+  ssh_host: localhost
+  # ssh_port: 22
   # config_file: gitolite.conf
-  # port: 22
 
-# Git settings
-# Use default values unless you understand it
+## Git settings
+# CAUTION!
+# Use the default values unless you really know what you are doing
 git:
-  path: /usr/bin/git
+  bin_path: /usr/bin/git
   # Max size of git object like commit, in bytes
   # This value can be increased if you have a very large commits
-  git_max_size: 5242880 # 5.megabytes
+  max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
-  git_timeout: 10
+  timeout: 10

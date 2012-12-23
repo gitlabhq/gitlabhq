@@ -3,16 +3,21 @@
   %small (authored by or assigned to you)
   %small.right #{@merge_requests.total_count} merge requests
 
-%br
-- if @merge_requests.any?
-  - @merge_requests.group_by(&:project).each do |group|
-    %ul.unstyled.ui-box
-      - @project = group[0]
-      %h5= @project.name
-      - group[1].each do |merge_request|
-        = render(partial: 'merge_requests/merge_request', locals: {merge_request: merge_request})
-  %hr
-  = paginate @merge_requests, theme: "gitlab"
+%hr
+.row
+  .span3
+    = render 'filter', entity: 'merge_request'
+  .span9
+    - if @merge_requests.any?
+      - @merge_requests.group_by(&:project).each do |group|
+        .ui-box
+          - @project = group[0]
+          %h5= link_to_project @project
+          %ul.well-list
+            - group[1].each do |merge_request|
+              = render(partial: 'merge_requests/merge_request', locals: {merge_request: merge_request})
+      %hr
+      = paginate @merge_requests, theme: "gitlab"
 
-- else
-  %h3.nothing_here_message Nothing to show here
+    - else
+      %h3.nothing_here_message Nothing to show here

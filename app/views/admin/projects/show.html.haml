@@ -1,18 +1,27 @@
-= render 'admin/shared/projects_head'
 %h3.page_title
-  Project: #{@admin_project.name}
-  = link_to edit_admin_project_path(@admin_project), class: "btn right" do
+  Project: #{@project.name_with_namespace}
+  = link_to edit_admin_project_path(@project), class: "btn right" do
     %i.icon-edit
     Edit
 
-- if !@admin_project.has_post_receive_file? && @admin_project.has_commits?
-  %br
-  .alert.alert-error
-    %span
-      %strong Important!
-      Project has commits but missing post-receive file.
-      %br
-      If you exported project manually - copy post-receive hook to bare repository
+- if @project.has_commits?
+  - if !@project.has_post_receive_file?
+    %br
+    .alert.alert-error
+      %span
+        %strong Project has commits but missing post-receive file.
+        %br
+        If you exported project manually - make a link of post-receive hook file from gitolite to project repository
+  - elsif !@project.valid_post_receive_file?
+    %br
+    .alert.alert-error
+      %span
+        %strong Project has invalid post-receive file.
+        %br
+        1. Make sure your gitolite instace has latest post-receive file.
+        %br
+        2. Make a link of post-receive hook file from gitolite to project repository
+
 
 %br
 %table.zebra-striped
@@ -25,36 +34,79 @@
       %b
         Name:
     %td
-      = @admin_project.name
+      = @project.name
   %tr
     %td
       %b
-        Code:
+        Namespace:
     %td
-      = @admin_project.code
+      - if @project.namespace
+        = @project.namespace.human_name
+      - else
+        Global
   %tr
     %td
       %b
-        Path:
+        Owned by:
     %td
-      = @admin_project.path
+      - if @project.chief
+        = link_to @project.chief.name, admin_user_path(@project.chief)
+      - else
+        (deleted)
   %tr
     %td
       %b
-        Owner:
+        Created by:
     %td
-      = @admin_project.owner_name || '(deleted)'
+      = @project.owner_name || '(deleted)'
+  %tr
+    %td
+      %b
+        Created at:
+    %td
+      = @project.created_at.stamp("March 1, 1999")
+
+%table.zebra-striped
+  %thead
+    %tr
+      %th Repository
+      %th
+  %tr
+    %td
+      %b
+        FS Path:
+    %td
+      %code= @project.path_to_repo
+  %tr
+    %td
+      %b
+        Smart HTTP:
+    %td
+      = link_to @project.http_url_to_repo
+  %tr
+    %td
+      %b
+        SSH:
+    %td
+      = link_to @project.ssh_url_to_repo
+  %tr
+    %td
+      %b
+        Last commit at:
+    %td
+      = last_commit(@project)
   %tr
     %td
       %b
         Post Receive File:
     %td
-      = check_box_tag :post_receive_file, 1, @admin_project.has_post_receive_file?, disabled: true
+      = check_box_tag :post_receive_file, 1, @project.has_post_receive_file?, disabled: true
+
 %br
-%h3
+%h5
   Team
   %small
-    (#{@admin_project.users_projects.count})
+    (#{@project.users_projects.count})
 %br
 %table.zebra-striped
   %thead
@@ -64,7 +116,7 @@
       %th Repository Access
       %th
 
-  - @admin_project.users_projects.each do |tm|
+  - @project.users_projects.each do |tm|
     %tr
       %td
         = link_to tm.user_name, admin_user_path(tm.user)
@@ -73,9 +125,9 @@
       %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
 
 %br
-%h3 Add new team member
+%h5 Add new team member
 %br
-= form_tag team_update_admin_project_path(@admin_project), class: "bulk_import", method: :put  do
+= form_tag team_update_admin_project_path(@project), class: "bulk_import", method: :put  do
   %table.zebra-striped
     %thead
       %tr

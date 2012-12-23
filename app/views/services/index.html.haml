@@ -1,15 +1,31 @@
 = render "projects/project_head"
 %h3.page_title Services
-%hr
+%br
 
-.row
-  .span6
-    .padded
-      %p.slead Continuous integration server from GitLab
-      .thumbnail.left
-        = link_to edit_project_service_path(@project, :gitlab_ci) do
-          - if @gitlab_ci_service.try :active
-            = image_tag 'service-gitlab-ci.png'
-          - else
-            = image_tag 'service-disabled-gitlab-ci.png'
-
+%ul.ui-box.well-list
+  %li
+    %h4.cgreen
+      = link_to edit_project_service_path(@project, :gitlab_ci) do
+        GitLab CI
+        %small Continuous integration server from GitLab
+      .right
+        - if @gitlab_ci_service.try(:active)
+          %small.cgreen
+            %i.icon-ok
+            Enabled
+        - else
+          %small.cgray
+            %i.icon-off
+            Disabled
+  %li.disabled
+    %h4
+      Jenkins CI
+      %small An extendable open source continuous integration server
+      .right
+        %small Not implemented yet
+  %li.disabled
+    %h4
+      Campfire
+      %small Web-based group chat tool
+      .right
+        %small Not implemented yet

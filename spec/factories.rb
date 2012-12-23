@@ -12,6 +12,7 @@ FactoryGirl.define do
   factory :user, aliases: [:author, :assignee, :owner] do
     email { Faker::Internet.email }
     name
+    username { Faker::Internet.user_name }
     password "123456"
     password_confirmation { password }
 
@@ -25,19 +26,26 @@ FactoryGirl.define do
   factory :project do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    code { name.downcase.gsub(/\s/, '_') }
     owner
   end
 
   factory :group do
     sequence(:name) { |n| "group#{n}" }
-    code { name.downcase.gsub(/\s/, '_') }
+    path { name.downcase.gsub(/\s/, '_') }
+    owner
+    type 'Group'
+  end
+
+  factory :namespace do
+    sequence(:name) { |n| "group#{n}" }
+    path { name.downcase.gsub(/\s/, '_') }
     owner
   end
 
   factory :users_project do
     user
     project
+    project_access { UsersProject::MASTER }
   end
 
   factory :issue do
@@ -63,7 +71,22 @@ FactoryGirl.define do
       closed true
     end
 
+    # pick 3 commits "at random" (from bcf03b5d~3 to bcf03b5d)
+    trait :with_diffs do
+      target_branch "bcf03b5d~3"
+      source_branch "bcf03b5d"
+      st_commits do
+        [Commit.new(project.repo.commit('bcf03b5d')),
+         Commit.new(project.repo.commit('bcf03b5d~1')),
+         Commit.new(project.repo.commit('bcf03b5d~2'))]
+      end
+      st_diffs do
+        project.repo.diff("bcf03b5d~3", "bcf03b5d")
+      end
+    end
+
     factory :closed_merge_request, traits: [:closed]
+    factory :merge_request_with_diffs, traits: [:with_diffs]
   end
 
   factory :note do

@@ -1,0 +1,82 @@
+.profile_avatar_holder
+  = image_tag gravatar_icon(@user.email, 90)
+%h3.page_title
+  = @user.name
+  %br
+  %small
+    = @user.email
+
+%hr
+
+= form_for @user, url: profile_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
+  -if @user.errors.any?
+    %div.alert-message.block-message.error
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+  .row
+    .span7
+      .control-group
+        = f.label :name, class: "control-label"
+        .controls
+          = f.text_field :name, class: "input-xlarge", required: true
+          %span.help-block Enter your name, so people you know can recognize you.
+      .control-group
+        = f.label :email, class: "control-label"
+        .controls
+          = f.text_field :email, class: "input-xlarge", required: true
+          %span.help-block We also use email for avatar detection.
+
+    .span5.right
+      %fieldset.tips
+        %legend Tips:
+        %ul
+          %li
+            %p You can change your password on Account page
+          - if Gitlab.config.gravatar.enabled
+            %li
+              %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
+
+          - if Gitlab.config.omniauth.enabled && @user.provider?
+            %li
+              %p
+                You can login through #{@user.provider.titleize}!
+                = link_to "click here to change", account_profile_path
+
+  .row
+    .span7
+      .control-group
+        = f.label :skype, class: "control-label"
+        .controls= f.text_field :skype, class: "input-xlarge"
+      .control-group
+        = f.label :linkedin, class: "control-label"
+        .controls= f.text_field :linkedin, class: "input-xlarge"
+      .control-group
+        = f.label :twitter, class: "control-label"
+        .controls= f.text_field :twitter, class: "input-xlarge"
+      .control-group
+        = f.label :bio, class: "control-label"
+        .controls
+          = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
+          %span.help-block Tell us about yourself in fewer than 250 characters.
+    .span5.right
+      %fieldset
+        %legend
+          Personal projects:
+          %small.right
+            %span= current_user.my_own_projects.count
+            of
+            %span= current_user.projects_limit
+        .padded
+          .progress
+            .bar{style: "width: #{current_user.projects_limit_percent}%;"}
+
+      %fieldset
+        %legend
+          SSH public keys:
+          %strong.right= link_to current_user.keys.count, keys_path
+        .padded
+          = link_to "Add Public Key", new_key_path, class: "btn small"
+
+  .form-actions
+    = f.submit 'Save', class: "btn save-btn"

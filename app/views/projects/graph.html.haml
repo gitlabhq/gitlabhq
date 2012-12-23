@@ -2,13 +2,15 @@
 %br
 .graph_holder
   %h4
-    %small You can move around the graph by using arrow keys.
+    %small You can move around the graph by using the arrow keys.
   #holder.graph
+    .loading.loading-gray
+
 :javascript
-  var chunk1={commits:#{@commits_json}};
-  var days=#{@days_json};
-  initGraph();
+  var branch_graph;
   $(function(){
-    branchGraph($("#holder")[0]);
-    GraphNav.init();
+    branch_graph = new BranchGraph($("#holder"), {
+      url: '#{url_for controller: 'projects', action: 'graph', format: :json}',
+      commit_url: '#{url_for controller: 'projects', action: 'show'}/commits/%s'
+    });
   });

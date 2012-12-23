@@ -6,14 +6,14 @@
 
     .commit-title {
       line-height: 26px;
-      margin:0;
+      margin: 0;
     }
 
     .commit-description {
       font-size: 14px;
       border: none;
       background-color: white;
-      padding-top:10px;
+      padding-top: 10px;
     }
 
     .browse-button {
@@ -28,9 +28,9 @@
     @extend .clearfix;
 
     .sha-block {
-      text-align:right;
+      text-align: right;
       &:first-child {
-        padding-bottom:6px;
+        padding-bottom: 6px;
       }
 
       a {
@@ -49,10 +49,10 @@
 
     .author a,
     .committer a {
-      font-size:14px;
-      line-height:22px;
-      text-shadow:0 1px 1px #fff;
-      color:#777;
+      font-size: 14px;
+      line-height: 22px;
+      text-shadow: 0 1px 1px #fff;
+      color: #777;
       &:hover {
         color: #999;
       }
@@ -70,15 +70,16 @@
  *
  */
 .diff_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
+  border: 1px solid #CCC;
+  margin-bottom: 1em;
 
   .diff_file_header {
     @extend .clearfix;
     padding: 5px 5px 5px 10px;
     color: #555;
-    border-bottom:1px solid #CCC;
+    border-bottom: 1px solid #CCC;
     background: #eee;
+    // TODO Replace with linear-gradient mixin
     background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
     background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
@@ -86,7 +87,7 @@
 
     > span {
       font-family: $monospace;
-      font-size:14px;
+      font-size: 14px;
       line-height: 30px;
     }
 
@@ -104,36 +105,36 @@
     }
   }
   .diff_file_content {
-    overflow:auto;
-    overflow-y:hidden;
-    background:#fff;
-    color:#333;
+    overflow: auto;
+    overflow-y: hidden;
+    background: #fff;
+    color: #333;
     font-size: 12px;
     font-family: $monospace;
     .old{
       span.idiff{
-        background-color:#FAA;
+        background-color: #FAA;
       }
     }
     .new{
       span.idiff{
-        background-color:#AFA;
+        background-color: #AFA;
       }
     }
 
     table {
       td {
-        line-height:18px;
+        line-height: 18px;
       }
     }
   }
   .diff_file_content_image {
-    background:#eee;
-    text-align:center;
+    background: #eee;
+    text-align: center;
     .image {
       display: inline-block;
-      margin:50px;
-      max-width:400px;
+      margin: 50px;
+      max-width: 400px;
 
       img{
         background: url('trans_bg.gif');
@@ -158,7 +159,7 @@
 
     &.img_compared {
       .image {
-        max-width:300px;
+        max-width: 300px;
       }
     }
   }
@@ -166,46 +167,46 @@
 
 .diff_file_content{
   table {
-    border:none;
-    margin:0px;
-    padding:0px;
+    border: none;
+    margin: 0px;
+    padding: 0px;
     tr {
       td {
-        font-size:12px;
+        font-size: 12px;
       }
     }
   }
   .old_line, .new_line {
-    margin:0px;
-    padding:0px;
-    border:none;
-    background:#EEE;
-    color:#666;
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    background: #EEE;
+    color: #666;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
-    text-align:right;
-    min-width:35px;
-    max-width:35px;
-    width:35px;
+    text-align: right;
+    min-width: 35px;
+    max-width: 35px;
+    width: 35px;
     moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
     a {
-      float:left;
-      width:35px;
-      font-weight:normal;
-      color:#666;
+      float: left;
+      width: 35px;
+      font-weight: normal;
+      color: #666;
       &:hover {
-        text-decoration:underline;
+        text-decoration: underline;
       }
     }
   }
   .line_content {
-    white-space:pre;
-    height:14px;
-    margin:0px;
-    padding:0px;
-    border:none;
+    white-space: pre;
+    height: 14px;
+    margin: 0px;
+    padding: 0px;
+    border: none;
     &.new {
       background: #CFD;
     }
@@ -213,8 +214,8 @@
       background: #FDD;
     }
     &.matched {
-      color:#ccc;
-      background:#fafafa;
+      color: #ccc;
+      background: #fafafa;
     }
   }
 }
@@ -228,32 +229,30 @@
 
 /** COMMIT ROW **/
 .commit {
-  @extend .wll;
-
   .browse_code_link_holder {
     @extend .span2;
-    float:right;
+    float: right;
   }
 
   .committed_ago {
-    float:right;
+    float: right;
     @extend .cgray;
   }
 
   .notes_count {
-    float:right;
+    float: right;
     margin: -6px 8px 6px;
   }
 
   code {
-    background:#FCEEC1;
-    color:$style_color;
+    background: #FCEEC1;
+    color: $style_color;
   }
 
   .commit_short_id {
-    float:left;
+    float: left;
     @extend .lined;
-    min-width:65px;
+    min-width: 65px;
     font-family: $monospace;
   }
 
@@ -294,11 +293,24 @@
 }
 
 .label_commit {
-  @include round-borders-all(4px);
-  padding:2px 4px;
-  border:none;
-  font-size:13px;
+  @include border-radius(4px);
+  padding: 2px 4px;
+  font-size: 13px;
   background: #474D57;
-  color:#fff;
+  color: #fff;
   font-family: $monospace;
+}
+
+
+.commits-compare-switch{
+  background: url("switch_icon.png") no-repeat center center;
+  width: 16px;
+  height: 18px;
+  text-indent: -9999px;
+  float: left;
+  margin-right: 9px;
+  border: 1px solid #DDD;
+  @include border-radius(4px);
+  padding: 4px;
+  background-color: #EEE;
 }

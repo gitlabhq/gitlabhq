@@ -1,27 +1,32 @@
-= render 'admin/shared/projects_head'
 %h3.page_title
-  Projects
-  = link_to 'New Project', new_admin_project_path, class: "btn small right"
+  Projects (#{@projects.count})
+  = link_to 'New Project', new_project_path, class: "btn small right"
 %br
 = form_tag admin_projects_path, method: :get, class: 'form-inline' do
+  = select_tag :namespace_id, namespaces_options(params[:namespace_id], :all), class: "chosen xlarge", prompt: "Project namespace"
   = text_field_tag :name, params[:name], class: "xlarge"
   = submit_tag "Search", class: "btn submit primary"
 
 %table
   %thead
-    %th Name
-    %th Path
-    %th Team Members
-    %th Last Commit
-    %th Edit
-    %th.cred Danger Zone!
-
-  - @admin_projects.each do |project|
     %tr
-      %td= link_to project.name, [:admin, project]
-      %td= project.path
+      %th
+        Name
+        %i.icon-sort-down
+      %th Path
+      %th Team Members
+      %th Last Commit
+      %th Edit
+      %th.cred Danger Zone!
+
+  - @projects.each do |project|
+    %tr
+      %td
+        = link_to project.name_with_namespace, [:admin, project]
+      %td
+        %span.monospace= project.path_with_namespace + ".git"
       %td= project.users_projects.count
       %td= last_commit(project)
       %td= link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn small"
       %td.bgred= link_to 'Destroy', [:admin, project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn small danger"
-= paginate @admin_projects, theme: "admin"
+= paginate @projects, theme: "admin"

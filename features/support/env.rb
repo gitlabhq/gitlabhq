@@ -32,7 +32,10 @@ end
 DatabaseCleaner.strategy = :truncation
 
 Spinach.hooks.before_scenario do
-  DatabaseCleaner.start
+  # Use tmp dir for FS manipulations
+  Gitlab.config.gitolite.stub(repos_path: Rails.root.join('tmp', 'test-git-base-path'))
+  FileUtils.rm_rf Gitlab.config.gitolite.repos_path
+  FileUtils.mkdir_p Gitlab.config.gitolite.repos_path
 end
 
 Spinach.hooks.after_scenario do

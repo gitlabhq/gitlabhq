@@ -4,30 +4,30 @@
  */
 #notes-list,
 #new-notes-list {
-  display:block;
-  list-style:none;
-  margin:0px;
-  padding:0px;
+  display: block;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
 }
 
 .issue_notes,
 .wiki_notes {
   .note_content {
-    float:left;
-    width:400px;
+    float: left;
+    width: 400px;
   }
 }
 
 /* Note textare */
 #note_note {
-  height:80px;
-  width:99%;
-  font-size:14px;
+  height: 80px;
+  width: 99%;
+  font-size: 14px;
 }
 
 #new_note {
   .attach_holder {
-    display:none;
+    display: none;
   }
 }
 
@@ -36,34 +36,34 @@
   border: 1px solid #ddd;
   padding: 10px;
   min-height: 60px;
-  background:#f5f5f5;
+  background: #f5f5f5;
 }
 
 .note {
   padding: 8px 0;
   overflow: hidden;
   display: block;
-  position:relative;
+  position: relative;
   img {float: left; margin-right: 10px;}
-  img.emoji {float:none;margin:0;}
+  img.emoji {float: none;margin: 0;}
   .note-author cite{font-style: italic;}
-  p { color:$style_color; }
+  p { color: $style_color; }
   .note-author { color: $style_color;}
 
-  .note-title { margin-left:45px; padding-top: 5px;}
+  .note-title { margin-left: 45px; padding-top: 5px;}
   .avatar {
-    margin-top:3px;
+    margin-top: 3px;
   }
 
   .delete-note {
-    display:none;
-    position:absolute;
-    right:0;
-    top:0;
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 
   &:hover {
-    .delete-note { display:block; }
+    .delete-note { display: block; }
   }
 }
 #notes-list:not(.reversed) .note,
@@ -94,30 +94,31 @@ p.notify_controls span{
 }
 
 tr.line_notes_row {
-  border-bottom:1px solid #DDD;
+  border-bottom: 1px solid #DDD;
   border-left: 7px solid #2A79A3;
 
   &.reply {
-    background:#eee;
+    background: #eee;
     border-left: 7px solid #2A79A3;
-    border-top:1px solid #ddd;
+    border-top: 1px solid #ddd;
     td {
-      padding:7px 10px;
+      padding: 7px 10px;
     }
     a.line_note_reply_link {
-      @include round-borders-all(4px);
+      border: 1px solid #eaeaea;
+      @include border-radius(4px);
       padding: 3px 10px;
-      margin-left:5px;
+      margin-left: 5px;
       color: white;
       background: #2A79A3;
       border-color: #2A79A3;
     }
   }
   ul {
-    margin:0;
+    margin: 0;
     li {
-      padding:0;
-      border:none;
+      padding: 0;
+      border: none;
     }
   }
 }
@@ -125,28 +126,28 @@ tr.line_notes_row {
 .line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 .per_line_form {
-  background:#f5f5f5;
-  border-top:1px solid #eee;
+  background: #f5f5f5;
+  border-top: 1px solid #eee;
   form {  margin: 0; }
   td {
-    border-bottom:1px solid #ddd;
+    border-bottom: 1px solid #ddd;
   }
   .note_actions {
-    margin:0;
+    margin: 0;
     padding-top: 10px;
 
     .buttons {
-      float:left;
-      width:300px;
+      float: left;
+      width: 300px;
     }
     .options {
       .labels {
-        float:left;
-        padding-left:10px;
+        float: left;
+        padding-left: 10px;
         label {
           padding: 6px 0;
           margin: 0;
-          width:120px;
+          width: 120px;
         }
       }
     }
@@ -154,13 +155,13 @@ tr.line_notes_row {
 }
 
 td .line_note_link {
-  position:absolute;
+  position: absolute;
   margin-left:-70px;
   margin-top:-10px;
-  z-index:10;
+  z-index: 10;
   background: url("comment_add.png") no-repeat left 0;
-  width:32px;
-  height:32px;
+  width: 32px;
+  height: 32px;
 
   opacity: 0.0;
   filter: alpha(opacity=0);
@@ -180,13 +181,13 @@ td .line_note_link {
 .new_note {
   .input-file {
     font: 500px monospace;
-    opacity:0;
+    opacity: 0;
     filter: alpha(opacity=0);
     position: absolute;
     z-index: 1;
-    top:0;
-    right:0;
-    padding:0;
+    top: 0;
+    right: 0;
+    padding: 0;
     margin: 0;
   }
 
@@ -198,24 +199,24 @@ td .line_note_link {
   }
 
   .attachments {
-    position:relative;
+    position: relative;
     width: 350px;
     height: 50px;
-    overflow:hidden;
+    overflow: hidden;
     margin:0 0 5px !important;
 
     .input_file {
       .file_upload {
         position: absolute;
-        right:14px;
-        top:7px;
+        right: 14px;
+        top: 7px;
       }
 
       .file_name {
-        line-height:30px;
-        width:240px;
-        height:28px;
-        overflow:hidden;
+        line-height: 30px;
+        width: 240px;
+        height: 28px;
+        overflow: hidden;
       }
       .input-file {
         width: 260px;
@@ -228,5 +229,5 @@ td .line_note_link {
 
 .note-text {
   border: 1px solid #aaa;
-  box-shadow:none;
+  box-shadow: none;
 }

@@ -9,14 +9,13 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
-#  code                   :string(255)
 #  owner_id               :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
-#  group_id               :integer
+#  namespace_id           :integer
 #
 
 require 'spec_helper'
@@ -24,6 +23,7 @@ require 'spec_helper'
 describe Project do
   describe "Associations" do
     it { should belong_to(:group) }
+    it { should belong_to(:namespace) }
     it { should belong_to(:owner).class_name('User') }
     it { should have_many(:users) }
     it { should have_many(:events).dependent(:destroy) }
@@ -40,6 +40,7 @@ describe Project do
   end
 
   describe "Mass assignment" do
+    it { should_not allow_mass_assignment_of(:namespace_id) }
     it { should_not allow_mass_assignment_of(:owner_id) }
     it { should_not allow_mass_assignment_of(:private_flag) }
   end
@@ -58,9 +59,6 @@ describe Project do
 
     it { should ensure_length_of(:description).is_within(0..2000) }
 
-    it { should validate_presence_of(:code) }
-    it { should validate_uniqueness_of(:code) }
-    it { should ensure_length_of(:code).is_within(1..255) }
     # TODO: Formats
 
     it { should validate_presence_of(:owner) }
@@ -131,6 +129,13 @@ describe Project do
     it { should respond_to(:execute_hooks) }
     it { should respond_to(:post_receive_data) }
     it { should respond_to(:trigger_post_receive) }
+
+    # Namespaced Project Role
+    it { should respond_to(:transfer) }
+    it { should respond_to(:name_with_namespace) }
+    it { should respond_to(:namespace_owner) }
+    it { should respond_to(:chief) }
+    it { should respond_to(:path_with_namespace) }
   end
 
   describe 'modules' do
@@ -138,11 +143,12 @@ describe Project do
     it { should include_module(PushObserver) }
     it { should include_module(Authority) }
     it { should include_module(Team) }
+    it { should include_module(NamespacedProject) }
   end
 
   it "should return valid url to repo" do
     project = Project.new(path: "somewhere")
-    project.url_to_repo.should == Gitlab.config.ssh_path + "somewhere.git"
+    project.url_to_repo.should == Gitlab.config.gitolite.ssh_path_prefix + "somewhere.git"
   end
 
   it "should return path to repo" do
@@ -151,20 +157,8 @@ describe Project do
   end
 
   it "returns the full web URL for this repo" do
-    project = Project.new(code: "somewhere")
-    project.web_url.should == "#{Gitlab.config.url}/somewhere"
-  end
-
-  describe :valid_repo? do
-    it "should be valid repo" do
-      project = create(:project)
-      project.valid_repo?.should be_true
-    end
-
-    it "should be invalid repo" do
-      project = Project.new(name: "ok_name", path: "/INVALID_PATH/", code: "NEOK")
-      project.valid_repo?.should be_false
-    end
+    project = Project.new(path: "somewhere")
+    project.web_url.should == "#{Gitlab.config.gitlab.url}/somewhere"
   end
 
   describe "last_activity methods" do
@@ -186,85 +180,6 @@ describe Project do
 
       it 'returns the project\'s last update date if it has no events' do
         project.last_activity_date.should == project.updated_at
-      end
-    end
-  end
-
-  describe "fresh commits" do
-    let(:project) { create(:project) }
-
-    it { project.fresh_commits(3).count.should == 3 }
-    it { project.fresh_commits.first.id.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a" }
-    it { project.fresh_commits.last.id.should == "f403da73f5e62794a0447aca879360494b08f678" }
-  end
-
-  describe "commits_between" do
-    let(:project) { create(:project) }
-
-    subject do
-      commits = project.commits_between("3a4b4fb4cde7809f033822a171b9feae19d41fff",
-                                        "8470d70da67355c9c009e4401746b1d5410af2e3")
-      commits.map { |c| c.id }
-    end
-
-    it { should have(3).elements }
-    it { should include("f0f14c8eaba69ebddd766498a9d0b0e79becd633") }
-    it { should_not include("bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a") }
-  end
-
-  describe "Git methods" do
-    let(:project) { create(:project) }
-
-    describe :repo do
-      it "should return valid repo" do
-        project.repo.should be_kind_of(Grit::Repo)
-      end
-
-      it "should return nil" do
-        lambda { Project.new(path: "invalid").repo }.should raise_error(Grit::NoSuchPathError)
-      end
-
-      it "should return nil" do
-        lambda { Project.new.repo }.should raise_error(TypeError)
-      end
-    end
-
-    describe :commit do
-      it "should return first head commit if without params" do
-        project.commit.id.should == project.repo.commits.first.id
-      end
-
-      it "should return valid commit" do
-        project.commit(ValidCommit::ID).should be_valid_commit
-      end
-
-      it "should return nil" do
-        project.commit("+123_4532530XYZ").should be_nil
-      end
-    end
-
-    describe :tree do
-      before do
-        @commit = project.commit(ValidCommit::ID)
-      end
-
-      it "should raise error w/o arguments" do
-        lambda { project.tree }.should raise_error
-      end
-
-      it "should return root tree for commit" do
-        tree = project.tree(@commit)
-        tree.contents.size.should == ValidCommit::FILES_COUNT
-        tree.contents.map(&:name).should == ValidCommit::FILES
-      end
-
-      it "should return root tree for commit with correct path" do
-        tree = project.tree(@commit, ValidCommit::C_FILE_PATH)
-        tree.contents.map(&:name).should == ValidCommit::C_FILES
-      end
-
-      it "should return root tree for commit with incorrect path" do
-        project.tree(@commit, "invalid_path").should be_nil
       end
     end
   end

@@ -34,10 +34,11 @@ module Gitlab
         extern_uid: uid,
         provider: provider,
         name: name,
+        username: email.match(/^[^@]*/)[0],
         email: email,
         password: password,
         password_confirmation: password,
-        projects_limit: Gitlab.config.default_projects_limit,
+        projects_limit: Gitlab.config.gitlab.default_projects_limit,
       }, as: :admin)
       if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
         @user.blocked = true

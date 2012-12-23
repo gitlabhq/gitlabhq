@@ -1,12 +1,20 @@
-.ui-box
-  %h5
-    People
-    %small
-      (#{@users.size})
-  %ul.unstyled
-    - @users.each do |user|
-      %li.wll
-        = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
-        %strong= user.name
-        %span.cgray= user.email
+.row
+  .span3
+    = render 'people_filter'
+  .span9
+    - if @project && can?(current_user, :manage_group, @group)
+      = render "new_member"
+    .ui-box
+      %h5
+        Team
+        %small
+          (#{@users.size})
+      %ul.well-list
+        - @users.each do |user|
+          %li
+            = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
+            %strong= user.name
+            %span.cgray= user.email
+            - if @group.owner == user
+              %span.btn.btn-small.disabled.right Group Owner
 

@@ -56,7 +56,7 @@ describe SystemHook do
       user = create(:user)
       project = create(:project)
       with_resque do
-        project.users << user
+        project.add_access(user, :admin)
       end
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_add_to_team/).once
     end
@@ -64,7 +64,7 @@ describe SystemHook do
     it "project_destroy hook" do
       user = create(:user)
       project = create(:project)
-      project.users << user
+      project.add_access(user, :admin)
       with_resque do
         project.users_projects.clear
       end

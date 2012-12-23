@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :set_current_user_for_observers
+  before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
 
   protect_from_forgery
@@ -34,7 +35,7 @@ class ApplicationController < ActionController::Base
   def reject_blocked!
     if current_user && current_user.blocked
       sign_out current_user
-      flash[:alert] = "Your account was blocked"
+      flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
       redirect_to new_user_session_path
     end
   end
@@ -42,7 +43,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for resource
     if resource.is_a?(User) && resource.respond_to?(:blocked) && resource.blocked
       sign_out resource
-      flash[:alert] = "Your account was blocked"
+      flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
       new_user_session_path
     else
       super
@@ -63,11 +64,19 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    @project ||= current_user.projects.find_by_code(params[:project_id] || params[:id])
-    @project || render_404
+    id = params[:project_id] || params[:id]
+
+    @project = Project.find_with_namespace(id)
+
+    if @project and can?(current_user, :read_project, @project)
+      @project
+    else
+      @project = nil
+      render_404
+    end
   end
 
-  def add_project_abilities
+  def add_abilities
     abilities << Ability
   end
 
@@ -101,6 +110,10 @@ class ApplicationController < ActionController::Base
 
   def render_404
     render file: Rails.root.join("public", "404"), layout: false, status: "404"
+  end
+
+  def render_403
+    render file: Rails.root.join("public", "403"), layout: false, status: "403"
   end
 
   def require_non_empty_project

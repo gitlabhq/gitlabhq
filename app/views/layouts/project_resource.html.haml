@@ -1,13 +1,15 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head"
+  = render "layouts/head", title: @project.name_with_namespace
   %body{class: "#{app_theme} project"}
     = render "layouts/flash"
-    = render "layouts/head_panel", title: @project.name
+    = render "layouts/head_panel", title: project_title(@project)
+    - if can?(current_user, :download_code, @project)
+      = render 'shared/no_ssh'
     .container
       %ul.main_menu
         = nav_link(html_options: {class: "home #{project_tab_class}"}) do
-          = link_to @project.code, project_path(@project), title: "Project"
+          = link_to @project.path, project_path(@project), title: "Project"
 
         - if @project.repo_exists?
           - if can? current_user, :download_code, @project

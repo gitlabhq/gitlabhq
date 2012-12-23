@@ -73,7 +73,6 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'I fill in issue search with ""' do
-    page.execute_script("$('.issue_search').val('').keyup();");
     fill_in 'issue_search', with: ""
   end
 
@@ -96,7 +95,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see selected milestone with title "v3.0"' do
-    issues_milestone_selector = "#milestone_id_chzn > a"
+    issues_milestone_selector = "#issue_milestone_id_chzn > a"
     page.find(issues_milestone_selector).should have_content("v3.0")
   end
 
@@ -107,7 +106,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see first assignee from "Shop" as selected assignee' do
-    issues_assignee_selector = "#assignee_id_chzn > a"
+    issues_assignee_selector = "#issue_assignee_id_chzn > a"
     project = Project.find_by_name "Shop"
     assignee_name = project.users.first.name
     page.find(issues_assignee_selector).should have_content(assignee_name)

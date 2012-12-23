@@ -1,6 +1,6 @@
 :javascript
   $(function() {
-    GitLab.GfmAutoComplete.Members.url = "#{ "/api/v2/projects/#{@project.code}/members" if @project }";
+    GitLab.GfmAutoComplete.Members.url = "#{ "/api/v3/projects/#{@project.id}/members" if @project }";
     GitLab.GfmAutoComplete.Members.params.private_token = "#{current_user.private_token}";
 
     GitLab.GfmAutoComplete.Emoji.data = #{raw emoji_autocomplete_source};

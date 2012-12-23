@@ -3,11 +3,11 @@ class Notify < ActionMailer::Base
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
 
-  default_url_options[:host]     = Gitlab.config.web_host
-  default_url_options[:protocol] = Gitlab.config.web_protocol
-  default_url_options[:port]     = Gitlab.config.web_port if Gitlab.config.web_custom_port?
+  default_url_options[:host]     = Gitlab.config.gitlab.host
+  default_url_options[:protocol] = Gitlab.config.gitlab.protocol
+  default_url_options[:port]     = Gitlab.config.gitlab.port if Gitlab.config.gitlab_on_non_standard_port?
 
-  default from: Gitlab.config.email_from
+  default from: Gitlab.config.gitlab.email_from
 
 
 
@@ -31,6 +31,7 @@ class Notify < ActionMailer::Base
   def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id)
     @issue = Issue.find issue_id
     @issue_status = status
+    @project = @issue.project
     @updated_by = User.find updated_by_user_id
     mail(to: recipient(recipient_id),
         subject: subject("changed issue ##{@issue.id}", @issue.title))
@@ -89,14 +90,6 @@ class Notify < ActionMailer::Base
     mail(to: recipient(recipient_id), subject: subject)
   end
 
-  def note_wiki_email(recipient_id, note_id)
-    @note = Note.find(note_id)
-    @wiki = @note.noteable
-    @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for wiki"))
-  end
-
-
 
   #
   # Project
@@ -105,11 +98,17 @@ class Notify < ActionMailer::Base
   def project_access_granted_email(user_project_id)
     @users_project = UsersProject.find user_project_id
     @project = @users_project.project
-    mail(to: @users_project.user.email, 
+    mail(to: @users_project.user.email,
          subject: subject("access to project was granted"))
   end
 
 
+  def project_was_moved_email(user_project_id)
+    @users_project = UsersProject.find user_project_id
+    @project = @users_project.project
+    mail(to: @users_project.user.email,
+         subject: subject("project was moved"))
+  end
 
   #
   # User

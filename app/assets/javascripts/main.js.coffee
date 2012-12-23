@@ -7,6 +7,18 @@ window.slugify = (text) ->
 window.ajaxGet = (url) ->
   $.ajax({type: "GET", url: url, dataType: "script"})
 
+window.errorMessage = (message) ->
+  ehtml = $("<p>")
+  ehtml.addClass("error_message")
+  ehtml.html(message)
+  ehtml
+
+window.split = (val) ->
+  return val.split( /,\s*/ )
+
+window.extractLast = (term) ->
+  return split( term ).pop()
+
 # Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
@@ -33,6 +45,11 @@ $ ->
   # Bottom tooltip
   $('.has_bottom_tooltip').tooltip(placement: 'bottom')
 
+  # Flash
+  if (flash = $("#flash-container")).length > 0
+    flash.click -> $(@).slideUp("slow")
+    flash.slideDown "slow"
+    setTimeout (-> flash.slideUp("slow")), 3000
 
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->

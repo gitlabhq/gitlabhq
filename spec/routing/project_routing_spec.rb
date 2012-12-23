@@ -208,7 +208,6 @@ end
 #           diffs_project_merge_request GET    /:project_id/merge_requests/:id/diffs(.:format)           merge_requests#diffs
 #       automerge_project_merge_request GET    /:project_id/merge_requests/:id/automerge(.:format)       merge_requests#automerge
 # automerge_check_project_merge_request GET    /:project_id/merge_requests/:id/automerge_check(.:format) merge_requests#automerge_check
-#             raw_project_merge_request GET    /:project_id/merge_requests/:id/raw(.:format)             merge_requests#raw
 #    branch_from_project_merge_requests GET    /:project_id/merge_requests/branch_from(.:format)         merge_requests#branch_from
 #      branch_to_project_merge_requests GET    /:project_id/merge_requests/branch_to(.:format)           merge_requests#branch_to
 #                project_merge_requests GET    /:project_id/merge_requests(.:format)                     merge_requests#index
@@ -231,10 +230,6 @@ describe MergeRequestsController, "routing" do
     get("/gitlabhq/merge_requests/1/automerge_check").should route_to('merge_requests#automerge_check', project_id: 'gitlabhq', id: '1')
   end
 
-  it "to #raw" do
-    get("/gitlabhq/merge_requests/1/raw").should route_to('merge_requests#raw', project_id: 'gitlabhq', id: '1')
-  end
-
   it "to #branch_from" do
     get("/gitlabhq/merge_requests/branch_from").should route_to('merge_requests#branch_from', project_id: 'gitlabhq')
   end
@@ -243,8 +238,14 @@ describe MergeRequestsController, "routing" do
     get("/gitlabhq/merge_requests/branch_to").should route_to('merge_requests#branch_to', project_id: 'gitlabhq')
   end
 
+  it "to #show" do
+    get("/gitlabhq/merge_requests/1.diff").should route_to('merge_requests#show', project_id: 'gitlabhq', id: '1', format: 'diff')
+    get("/gitlabhq/merge_requests/1.patch").should route_to('merge_requests#show', project_id: 'gitlabhq', id: '1', format: 'patch')
+  end
+
   it_behaves_like "RESTful project resources" do
     let(:controller) { 'merge_requests' }
+    let(:actions) { [:index, :create, :new, :edit, :show, :update] }
   end
 end
 
@@ -285,6 +286,7 @@ end
 describe CommitController, "routing" do
   it "to #show" do
     get("/gitlabhq/commit/4246fb").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb')
+    get("/gitlabhq/commit/4246fb.diff").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb', format: 'diff')
     get("/gitlabhq/commit/4246fb.patch").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb', format: 'patch')
     get("/gitlabhq/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
   end
@@ -324,6 +326,7 @@ end
 describe MilestonesController, "routing" do
   it_behaves_like "RESTful project resources" do
     let(:controller) { 'milestones' }
+    let(:actions) { [:index, :create, :new, :edit, :show, :update] }
   end
 end
 
@@ -359,6 +362,7 @@ describe IssuesController, "routing" do
 
   it_behaves_like "RESTful project resources" do
     let(:controller) { 'issues' }
+    let(:actions) { [:index, :create, :new, :edit, :show, :update] }
   end
 end
 

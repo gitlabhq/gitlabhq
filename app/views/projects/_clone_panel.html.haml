@@ -6,12 +6,12 @@
       .right
         - unless @project.empty_repo?
           - if can? current_user, :download_code, @project
-            = link_to archive_project_repository_path(@project), class: "btn grouped" do
+            = link_to archive_project_repository_path(@project), class: "btn-small btn grouped" do
               %i.icon-download-alt
               Download
           - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
-            = link_to new_project_merge_request_path(@project), title: "New Merge Request", class: "btn grouped" do
+            = link_to new_project_merge_request_path(@project), title: "New Merge Request", class: "btn-small btn grouped" do
               Merge Request
           - if @project.issues_enabled && can?(current_user, :write_issue, @project)
-            = link_to new_project_issue_path(@project), title: "New Issue", class: "btn grouped" do
+            = link_to new_project_issue_path(@project), title: "New Issue", class: "btn-small btn grouped" do
               Issue

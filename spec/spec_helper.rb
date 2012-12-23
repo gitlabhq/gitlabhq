@@ -40,5 +40,10 @@ RSpec.configure do |config|
     # !!! Observers disabled by default in tests
     ActiveRecord::Base.observers.disable(:all)
     # ActiveRecord::Base.observers.enable(:all)
+
+    # Use tmp dir for FS manipulations
+    Gitlab.config.gitolite.stub(repos_path: Rails.root.join('tmp', 'test-git-base-path'))
+    FileUtils.rm_rf Gitlab.config.gitolite.repos_path
+    FileUtils.mkdir_p Gitlab.config.gitolite.repos_path
   end
 end

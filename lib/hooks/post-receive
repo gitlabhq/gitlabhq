@@ -6,7 +6,6 @@
 while read oldrev newrev ref
 do
   # For every branch or tag that was pushed, create a Resque job in redis.
-  pwd=`pwd`
-  reponame=`basename "$pwd" | sed s/\.git$//`
-  env -i redis-cli rpush "resque:gitlab:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$reponame\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
+  repo_path=`pwd`
+  env -i redis-cli rpush "resque:gitlab:queue:post_receive" "{\"class\":\"PostReceive\",\"args\":[\"$repo_path\",\"$oldrev\",\"$newrev\",\"$ref\",\"$GL_USER\"]}" > /dev/null 2>&1
 done

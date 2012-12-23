@@ -5,9 +5,14 @@
         %span.btn.disabled.grouped
           %i.icon-comment
           = @notes_count
-      = link_to project_commit_path(@project, @commit, format: :patch), class: "btn small grouped" do
-        %i.icon-download-alt
-        Get Patch
+      .left.btn-group
+        %a.btn.small.grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+          %i.icon-download-alt
+          Download as
+          %span.caret
+        %ul.dropdown-menu
+          %li= link_to "Email Patches", project_commit_path(@project, @commit, format: :patch)
+          %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
       = link_to project_tree_path(@project, @commit), class: "browse-button primary grouped" do
         %strong Browse Code »
     %h3.commit-title.page_title

@@ -3,64 +3,40 @@
  *
  */
 ul.main_menu {
-  border-radius: 4px;
   margin: auto;
-  margin:30px 0;
-  border:1px solid #BBB;
-  height:37px;
-  @include bg-gray-gradient;
-  position:relative;
-  overflow:hidden;
-  @include shade;
+  margin: 30px 0;
+  margin-top: 10px;
+  border-bottom: 1px solid #DDD;
+  height: 37px;
+  position: relative;
+  overflow: hidden;
   .count {
     position: relative;
-	  top: -1px;
-	  display: inline-block;
-	  height: 15px;
-	  margin: 0 0 0 5px;
-	  padding: 0 8px 1px 8px;
-	  height: auto;
-	  font-size: 0.82em;
-	  line-height: 14px;
-	  text-align: center;
-	  color: #777;
-	  background: #f2f2f2;
-	  border-top: 1px solid #CCC;
-	  border-radius: 8px;
-	 -moz-border-radius: 8px;
+    top: -1px;
+    display: inline-block;
+    height: 15px;
+    margin: 0 0 0 5px;
+    padding: 0 8px 1px 8px;
+    height: auto;
+    font-size: 0.82em;
+    line-height: 14px;
+    text-align: center;
+    color: #777;
   }
   .label {
-    background:$hover;
-    text-shadow:none;
-    color:$style_color;
+    background: $hover;
+    text-shadow: none;
+    color: $style_color;
   }
   li {
     list-style-type: none;
     margin: 0;
     display: table-cell;
     width: 1%;
-    border-right: 1px solid #DDD;
-    border-left: 1px solid #EEE;
-    border-bottom:2px solid #CFCFCF;
-
-    &:first-child{
-      -webkit-border-top-left-radius: 4px;
-      -webkit-border-bottom-left-radius: 4px;
-      -moz-border-radius-topleft: 4px;
-      -moz-border-radius-bottomleft: 4px;
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
-      border-left: 0;
-    }
-
     &.active {
-      background-color:#D5D5D5;
-      border-right: 1px solid #BBB;
-      border-left: 1px solid #BBB;
-      border-radius: 0 0 1px 1px;
-      &:first-child{
-        border-bottom:none;
-        border-left:none;
+      border-bottom: 2px solid #474D57;
+      a {
+        color: $style_color;
       }
     }
 
@@ -68,10 +44,10 @@ ul.main_menu {
       a {
         background: url(home_icon.PNG) no-repeat center center;
         text-indent:-9999px;
-        min-width:20px;
+        min-width: 20px;
         img {
-          position:relative;
-          top:4px;
+          position: relative;
+          top: 4px;
         }
       }
     }
@@ -79,12 +55,12 @@ ul.main_menu {
   a {
     display: block;
     text-align: center;
-    font-weight:bold;
-    height:35px;
-    line-height:36px;
-    color: $style_color;
-    text-shadow:0 1px 1px white;
-    padding:0 10px;
+    font-weight: normal;
+    height: 35px;
+    line-height: 36px;
+    color: #777;
+    text-shadow: 0 1px 1px white;
+    padding: 0 10px;
   }
 }
 /*

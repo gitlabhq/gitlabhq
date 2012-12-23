@@ -2,9 +2,7 @@ require 'spec_helper'
 
 describe "Admin::Projects" do
   before do
-    @project = create(:project,
-                      name: "LeGiT",
-                      code: "LGT")
+    @project = create(:project)
     login_as :admin
   end
 
@@ -29,7 +27,7 @@ describe "Admin::Projects" do
     end
 
     it "should have project info" do
-      page.should have_content(@project.code)
+      page.should have_content(@project.path)
       page.should have_content(@project.name)
     end
   end
@@ -41,64 +39,24 @@ describe "Admin::Projects" do
     end
 
     it "should have project edit page" do
-      page.should have_content("Project name")
-      page.should have_content("URL")
+      page.should have_content("Edit project")
+      page.should have_button("Save Project")
     end
 
     describe "Update project" do
       before do
         fill_in "project_name", with: "Big Bang"
-        fill_in "project_code", with: "BB1"
         click_button "Save Project"
         @project.reload
       end
 
       it "should show page with  new data" do
-        page.should have_content("BB1")
         page.should have_content("Big Bang")
       end
 
       it "should change project entry" do
         @project.name.should == "Big Bang"
-        @project.code.should == "BB1"
       end
-    end
-  end
-
-  describe "GET /admin/projects/new" do
-    before do
-      visit admin_projects_path
-      click_link "New Project"
-    end
-
-    it "should be correct path" do
-      current_path.should == new_admin_project_path
-    end
-
-    it "should have labels for new project" do
-      page.should have_content("Project name is")
-      page.should have_content("Git Clone")
-      page.should have_content("URL")
-    end
-  end
-
-  describe "POST /admin/projects" do
-    before do
-      visit new_admin_project_path
-      fill_in 'project_name', with: 'NewProject'
-      fill_in 'project_code', with: 'NPR'
-      fill_in 'project_path', with: 'gitlabhq_1'
-      expect { click_button "Create project" }.to change { Project.count }.by(1)
-      @project = Project.last
-    end
-
-    it "should be correct path" do
-      current_path.should == admin_project_path(@project)
-    end
-
-    it "should show project" do
-      page.should have_content(@project.name)
-      page.should have_content(@project.path)
     end
   end
 

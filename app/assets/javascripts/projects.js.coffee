@@ -1,8 +1,4 @@
 window.Projects = ->
-  $('#project_name').on 'change', ->
-    slug = slugify $(@).val()
-    $('#project_code, #project_path').val slug
-
   $('.new_project, .edit_project').on 'ajax:before', ->
     $('.project_new_holder, .project_edit_holder').hide()
     $('.save-project-loader').show()
@@ -22,10 +18,3 @@ $ ->
   # Ref switcher
   $('.project-refs-select').on 'change', ->
     $(@).parents('form').submit()
-
-class @GraphNav
-  @init: ->
-    $('.graph svg').css 'position', 'relative'
-    $('body').bind 'keyup', (e) ->
-      $('.graph svg').animate(left: '+=400') if e.keyCode is 37 # left
-      $('.graph svg').animate(left: '-=400') if e.keyCode is 39 # right
