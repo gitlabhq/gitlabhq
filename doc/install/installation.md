@@ -195,6 +195,9 @@ See `doc/install/databases.md`
 
     # Clone GitLab repository
     sudo -u gitlab -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+
+    # Go to gitlab dir 
+    cd /home/gitlab/gitlab
    
     # Checkout to stable release
     sudo -u gitlab -H git checkout 4-0-stable
