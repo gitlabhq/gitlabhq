@@ -24,6 +24,12 @@ module Authority
     keys.map(&:identifier) + deploy_keys.map(&:identifier)
   end
 
+  def repository_contributor_name_keys
+    return users_projects.where("project_access = ?", UsersProject::REPORTER)
+           .collect { |user_project| user_project.user }
+           .collect { |user| [user.username, user.keys.map(&:identifier)] }
+  end
+
   def repository_writers
     keys = Key.joins({user: :users_projects}).
       where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::DEVELOPER)
