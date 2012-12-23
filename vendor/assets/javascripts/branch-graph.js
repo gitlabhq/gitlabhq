@@ -57,7 +57,9 @@
   
   BranchGraph.prototype.collectColors = function(){
     for (var k = 0; k < this.mspace; k++) {
-      this.colors.push(Raphael.getColor());
+      this.colors.push(Raphael.getColor(.8));
+      // Skipping a few colors in the spectrum to get more contrast between colors
+      Raphael.getColor();Raphael.getColor();
     }
   };
 
