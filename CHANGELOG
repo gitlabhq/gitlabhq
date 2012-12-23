@@ -1,4 +1,7 @@
 v 4.0.0
+  - Remove project code and path from API. Use id instead
+  - Return valid clonable url to repo for web hook
+  - Fixed backup issue 
   - Reorganized settings
   - Fixed commits compare
   - Refactored scss
