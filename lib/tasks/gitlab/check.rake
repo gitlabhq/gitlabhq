@@ -53,14 +53,14 @@ namespace :gitlab do
     end
 
     def check_database_is_not_sqlite
-      print "Database is not SQLite ... "
+      print "Database is SQLite ... "
 
       database_config_file = Rails.root.join("config", "database.yml")
 
       unless File.read(database_config_file) =~ /sqlite/
-        puts "yes".green
+        puts "no".green
       else
-        puts "no".red
+        puts "yes".red
         for_more_information(
           "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
           see_database_guide
@@ -189,6 +189,8 @@ namespace :gitlab do
 
         if project.satellite.exists?
           puts "yes".green
+        elsif project.empty_repo?
+          puts "can't create, repository is empty".magenta
         else
           puts "no".red
           try_fixing_it(
@@ -503,7 +505,6 @@ namespace :gitlab do
         puts "yes".green
       else
         puts "no".red
-        puts "#{gitolite_config_path} is not writable".red
         try_fixing_it(
           "sudo chmod 750 #{gitolite_config_path}"
         )
