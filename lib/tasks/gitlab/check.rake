@@ -908,29 +908,6 @@ namespace :gitlab do
     puts ""
   end
 
-  # Runs the given command
-  #
-  # Returns nil if the command was not found
-  # Returns the output of the command otherwise
-  #
-  # see also #run_and_match
-  def run(command)
-    unless `#{command} 2>/dev/null`.blank?
-      `#{command}`
-    end
-  end
-
-  # Runs the given command and matches the output agains the given pattern
-  #
-  # Returns nil if nothing matched
-  # Retunrs the MatchData if the pattern matched
-  #
-  # see also #run
-  # see also String#match
-  def run_and_match(command, pattern)
-    run(command).try(:match, pattern)
-  end
-
   def see_database_guide
     "doc/install/databases.md"
   end
@@ -950,20 +927,6 @@ namespace :gitlab do
     puts "  Try fixing it:".blue
     steps.each do |step|
       puts "  #{step}"
-    end
-  end
-
-  def warn_user_is_not_gitlab
-    unless @warned_user_not_gitlab
-      current_user = run("whoami").chomp
-      unless current_user == "gitlab"
-        puts "#{Colored.color(:black)+Colored.color(:on_yellow)} Warning #{Colored.extra(:clear)}"
-        puts "  You are running as user #{current_user.magenta}, we hope you know what you are doing."
-        puts "  Some tests may pass\/fail for the wrong reason."
-        puts "  For meaningful results you should run this as user #{"gitlab".magenta}."
-        puts ""
-      end
-      @warned_user_not_gitlab = true
     end
   end
 end
