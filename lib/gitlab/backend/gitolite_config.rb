@@ -151,6 +151,12 @@ module Gitlab
         repo.add_permission("-", pr_br.strip + "$ ", name_writers)
       end
 
+      # Add contributor permissions
+      project.repository_contributor_name_keys.each do |username, keys|
+        refex = "%s/.*" % Regexp.escape(username)
+        repo.add_permission("RW+", refex, keys) unless keys.blank?
+      end
+
       # Add read permissions
       repo.add_permission("R", "", name_readers) unless name_readers.blank?
 
