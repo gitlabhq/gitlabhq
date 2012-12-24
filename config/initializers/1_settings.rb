@@ -74,4 +74,4 @@ Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "t
 Settings['git'] ||= Settingslogic.new({})
 Settings.git['max_size']  ||= 5242880 # 5.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
-Settings.git['timeout']   ||= Settings.git_timeout : 10
+Settings.git['timeout']   ||= 10
