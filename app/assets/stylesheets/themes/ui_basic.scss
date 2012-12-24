@@ -4,21 +4,8 @@
  *
  */
 .ui_basic {
-  .app_logo {
-    .separator {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
   .separator {
-    float: left;
-    height: 60px;
-    width: 1px;
     background: white;
     border-left: 1px solid #DDD;
-    margin-top: -10px;
-    margin-left: 10px;
-    margin-right: 10px;
   }
 }

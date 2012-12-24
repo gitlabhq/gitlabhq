@@ -35,9 +35,14 @@ header {
   .app_logo {
     float: left;
     margin-right: 15px;
+    position: relative;
+    top: -5px;
+    padding-top: 5px;
+
     a {
       float: left;
       padding: 0px;
+      margin: 0 10px;
 
       h1 {
         background: url('logo_dark.png') no-repeat 0px 2px;
@@ -47,6 +52,9 @@ header {
         @include header-font;
         text-indent: -9999px;
       }
+    }
+    &:hover {
+      background-color: #EEE;
     }
   }
 
@@ -242,6 +250,24 @@ header {
       color: #fff;
       text-shadow: 0 1px 1px #111;
     }
+  }
+
+  .app_logo {
+    .separator {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .separator {
+    float: left;
+    height: 60px;
+    width: 1px;
+    background: white;
+    border-left: 1px solid #DDD;
+    margin-top: -10px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 

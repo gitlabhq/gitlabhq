@@ -46,21 +46,26 @@
     .app_logo {
       a {
         h1 {
-          background: url('logo_white.png') no-repeat 0px 2px;
+          background: url('logo_white.png') no-repeat center center;
           color: #eee;
           text-shadow: 0 1px 1px #111;
         }
       }
-      .separator {
-        display: none;
+      &:hover {
+        background-color: #41464e;
       }
-
     }
     .project_name {
       color: #eee;
       text-shadow: 0 1px 1px #111;
     }
   }
+
+  .separator {
+    background: #31363E;
+    border-left: 1px solid #666;
+  }
+
   /*
    *  End of Application Header
    *
