@@ -57,7 +57,7 @@ namespace :gitlab do
 
       database_config_file = Rails.root.join("config", "database.yml")
 
-      unless File.read(database_config_file) =~ /sqlite/
+      unless File.read(database_config_file) =~ /adapter:\s+sqlite/
         puts "no".green
       else
         puts "yes".red
@@ -317,7 +317,7 @@ namespace :gitlab do
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
 
-      profile_file = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}/.profile")
+      profile_file = File.join(gitolite_home, ".profile")
 
       unless File.read(profile_file) =~ /^-e PATH/
         puts "yes".green
@@ -474,7 +474,7 @@ namespace :gitlab do
     def check_dot_gitolite_exists
       print "Config directory exists? ... "
 
-      gitolite_config_path = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}/.gitolite")
+      gitolite_config_path = File.join(gitolite_home, ".gitolite")
 
       if File.directory?(gitolite_config_path)
         puts "yes".green
@@ -495,7 +495,7 @@ namespace :gitlab do
     def check_dot_gitolite_permissions
       print "Config directory access is drwxr-x---? ... "
 
-      gitolite_config_path = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}/.gitolite")
+      gitolite_config_path = File.join(gitolite_home, ".gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
@@ -519,7 +519,7 @@ namespace :gitlab do
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Config directory owned by #{gitolite_ssh_user}:#{gitolite_ssh_user} ... "
 
-      gitolite_config_path = File.expand_path("~#{gitolite_ssh_user}/.gitolite")
+      gitolite_config_path = File.join(gitolite_home, ".gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
@@ -645,7 +645,6 @@ namespace :gitlab do
       hook_file = "post-receive"
       gitolite_hooks_path = File.join(Gitlab.config.gitolite.hooks_path, "common")
       gitolite_hook_file  = File.join(gitolite_hooks_path, hook_file)
-      gitolite_hook_content = File.read(gitolite_hook_file)
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
 
       unless File.exists?(gitolite_hook_file)
@@ -653,6 +652,7 @@ namespace :gitlab do
         return
       end
 
+      gitolite_hook_content = File.read(gitolite_hook_file)
       gitlab_hook_file = Rails.root.join.join("lib", "hooks", hook_file)
       gitlab_hook_content = File.read(gitlab_hook_file)
 
