@@ -29,7 +29,7 @@ class Milestone < ActiveRecord::Base
 
   def expired?
     if due_date
-      due_date < Date.today
+      due_date.past?
     else
       false
     end
@@ -58,7 +58,13 @@ class Milestone < ActiveRecord::Base
   end
 
   def expires_at
-    "expires at #{due_date.stamp("Aug 21, 2011")}" if due_date
+    if due_date
+      if due_date.past?
+        "expired at #{due_date.stamp("Aug 21, 2011")}"
+      else
+        "expires at #{due_date.stamp("Aug 21, 2011")}"  
+      end
+    end  
   end
 
   def can_be_closed?
