@@ -24,7 +24,7 @@ module NamespacedProject
       save!
     end
   rescue Gitlab::ProjectMover::ProjectMoveError => ex
-    raise TransferError.new(ex.message)
+    raise Project::TransferError.new(ex.message)
   end
 
   def name_with_namespace
