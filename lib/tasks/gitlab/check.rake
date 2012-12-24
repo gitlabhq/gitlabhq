@@ -57,7 +57,7 @@ namespace :gitlab do
 
       database_config_file = Rails.root.join("config", "database.yml")
 
-      unless File.read(database_config_file) =~ /sqlite/
+      unless File.read(database_config_file) =~ /adapter:\s+sqlite/
         puts "no".green
       else
         puts "yes".red
