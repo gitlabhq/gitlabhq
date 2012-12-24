@@ -246,6 +246,7 @@ Make sure to update username/password in config/database.yml.
     sudo gem install charlock_holmes --version '0.6.9'
 
     # For mysql db
+    apt-get install libmysqlclient-dev
     sudo -u gitlab -H bundle install --deployment --without development test postgres
 
     # Or For postgres db
