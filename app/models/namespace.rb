@@ -27,9 +27,12 @@ class Namespace < ActiveRecord::Base
 
   after_create :ensure_dir_exist
   after_update :move_dir
+  after_commit :update_gitolite, on: :update, if: :require_update_gitolite
   after_destroy :rm_dir
 
   scope :root, where('type IS NULL')
+
+  attr_accessor :require_update_gitolite
 
   def self.search query
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
@@ -62,8 +65,16 @@ class Namespace < ActiveRecord::Base
 
       if system("mv #{old_path} #{new_path}")
         send_update_instructions
+        @require_update_gitolite = true
+      else
+        raise "Namespace move error #{old_path} #{new_path}"
       end
     end
+  end
+
+  def update_gitolite
+    @require_update_gitolite = false
+    projects.each(&:update_repository)
   end
 
   def rm_dir
