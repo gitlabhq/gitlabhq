@@ -645,7 +645,6 @@ namespace :gitlab do
       hook_file = "post-receive"
       gitolite_hooks_path = File.join(Gitlab.config.gitolite.hooks_path, "common")
       gitolite_hook_file  = File.join(gitolite_hooks_path, hook_file)
-      gitolite_hook_content = File.read(gitolite_hook_file)
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
 
       unless File.exists?(gitolite_hook_file)
@@ -653,6 +652,7 @@ namespace :gitlab do
         return
       end
 
+      gitolite_hook_content = File.read(gitolite_hook_file)
       gitlab_hook_file = Rails.root.join.join("lib", "hooks", hook_file)
       gitlab_hook_content = File.read(gitlab_hook_file)
 
