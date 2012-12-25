@@ -77,7 +77,7 @@ gem "acts-as-taggable-on", "2.3.3"
 gem "draper", "~> 0.18.0"
 
 # Background jobs
-gem "resque", "~> 1.23.0"
+gem "resque", git: "https://github.com/defunkt/resque.git", ref: "9ef4700306dd946a3ac000612428967ce0c32213"
 gem 'resque_mailer'
 
 # HTTP requests

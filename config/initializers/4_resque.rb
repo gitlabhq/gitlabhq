@@ -6,12 +6,11 @@ if File.exists?(config_file)
   Resque.redis = resque_config[Rails.env]
 end
 Resque.redis.namespace = 'resque:gitlab'
-# Queues
-Resque.watch_queue(PostReceive.instance_variable_get("@queue"))
+Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
 
 # Authentication
 require 'resque/server'
-class Authentication
+class ResqueAuthentication
   def initialize(app)
     @app = app
   end
@@ -23,9 +22,8 @@ class Authentication
   end
 end
 
-Resque::Server.use Authentication
+Resque::Server.use ResqueAuthentication
 
 # Mailer
 Resque::Mailer.excluded_environments = []
 
-Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
