@@ -112,7 +112,7 @@ Gitlab::Application.routes.draw do
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
       get "graph"
@@ -190,12 +190,12 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
     resources :commits, only: [:show], constraints: {id: /.+/}
     resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :blob,    only: [:show], constraints: {id: /.+/}
-    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
     match "/compare/:from...:to" => "compare#show", as: "compare",
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 

@@ -102,7 +102,7 @@ class Project < ActiveRecord::Base
       if id.include?("/")
         id = id.split("/")
         namespace_id = Namespace.find_by_path(id.first).id
-        where(namespace_id: namespace_id).find_by_path(id.last)
+        where(namespace_id: namespace_id).find_by_path(id.second)
       else
         where(path: id, namespace_id: nil).last
       end

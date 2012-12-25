@@ -33,6 +33,9 @@ module ExtractsPath
   #   extract_ref("v2.0.0/README.md")
   #   # => ['v2.0.0', 'README.md']
   #
+  #   extract_ref('/gitlab/vagrant/tree/master/app/models/project.rb')
+  #   # => ['master', 'app/models/project.rb']
+  #
   #   extract_ref('issues/1234/app/models/project.rb')
   #   # => ['issues/1234', 'app/models/project.rb']
   #
@@ -46,6 +49,13 @@ module ExtractsPath
     pair = ['', '']
 
     return pair unless @project
+
+    # Remove project, actions and all other staff from path
+    input.gsub!("/#{@project.path_with_namespace}", "")
+    input.gsub!(/^\/(tree|commits|blame|blob)\//, "") # remove actions
+    input.gsub!(/\?.*$/, "") # remove stamps suffix
+    input.gsub!(/.atom$/, "") # remove rss feed
+    input.gsub!(/\/edit$/, "") # remove edit route part
 
     if input.match(/^([[:alnum:]]{40})(.+)/)
       # If the ref appears to be a SHA, we're done, just split the string
@@ -98,7 +108,7 @@ module ExtractsPath
       request.format = :atom
     end
 
-    @ref, @path = extract_ref(params[:id])
+    @ref, @path = extract_ref(request.fullpath)
 
     @id = File.join(@ref, @path)
 

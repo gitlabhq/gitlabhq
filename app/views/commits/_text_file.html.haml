@@ -15,7 +15,7 @@
           - if @comments_allowed
             = render "notes/per_line_note_link", line_code: line_code
         %td.new_line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", id: line_code
-        %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
+        %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line)
 
         - if @comments_allowed
           - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
