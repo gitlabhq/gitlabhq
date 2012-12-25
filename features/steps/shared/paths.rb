@@ -21,6 +21,10 @@ module SharedPaths
     visit merge_requests_group_path(current_group)
   end
 
+  When 'I visit group people page' do
+    visit people_group_path(current_group)
+  end
+
   # ----------------------------------------
   # Dashboard
   # ----------------------------------------

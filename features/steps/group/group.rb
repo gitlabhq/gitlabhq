@@ -32,6 +32,25 @@ class Groups < Spinach::FeatureSteps
     end
   end
 
+  Given 'I have new user "John"' do
+    create(:user, name: "John")
+  end
+
+  When 'I select user "John" from list with role "Reporter"' do
+    user = User.find_by_name("John")
+    within "#new_team_member" do
+      select user.name, :from => "user_ids"
+      select "Reporter", :from => "project_access"
+    end
+    click_button "Add"
+  end
+
+  Then 'I should see user "John" in team list' do
+    user = User.find_by_name("John")
+    projects_with_access = find(".ui-box .well-list li")
+    projects_with_access.should have_content("John")
+  end
+
   Given 'project from group has issues assigned to me' do
     create :issue,
       project: project,

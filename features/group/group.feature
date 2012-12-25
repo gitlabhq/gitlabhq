@@ -17,3 +17,10 @@ Feature: Groups
     Given project from group has merge requests assigned to me
     When I visit group merge requests page
     Then I should see merge requests from this group assigned to me
+
+  Scenario: I should add user to projects in Group
+    Given I have new user "John"
+    When I visit group page
+    When I visit group people page
+    When I select user "John" from list with role "Reporter"
+    Then I should see user "John" in team list

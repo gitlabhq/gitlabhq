@@ -53,7 +53,16 @@ class GroupsController < ApplicationController
 
     if @project
       @team_member = @project.users_projects.new
+    else
+      @team_member = UsersProject.new
     end
+  end
+
+  def team_members
+    @group.projects.each do |p|
+      p.add_users_ids_to_team(params[:user_ids], params[:project_access])
+    end
+    redirect_to people_group_path(@group), notice: 'Users was successfully added.'
   end
 
   protected
