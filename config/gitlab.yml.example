@@ -1,4 +1,4 @@
-# # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # #
 # Gitlab application config file  #
 # # # # # # # # # # # # # # # # # #
 #
@@ -109,3 +109,13 @@ git:
   max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
   timeout: 10
+  git_timeout: 10
+
+#
+# 4. Other settings:
+# ==========================
+
+# Google Analytics
+analytics:
+  enabled: false
+  tracking_id: '_your_tracking_id'

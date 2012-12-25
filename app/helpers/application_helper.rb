@@ -160,4 +160,8 @@ module ApplicationHelper
     image_tag("authbuttons/#{file_name}",
               alt: "Sign in with #{provider.to_s.titleize}")
   end
+
+  def analytics_enable?
+    Gitlab.config.analytics.enabled and Rails.env.production?
+  end
 end
