@@ -19,7 +19,7 @@ following the contribution guide (see `CONTRIBUTING.md`).
 
 # Overview
 
-The GitLab installation consists of setting up th following components:
+The GitLab installation consists of setting up the following components:
 
 1. Packages / Dependencies
 2. Ruby
