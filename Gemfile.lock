@@ -126,6 +126,10 @@ GEM
     awesome_print (1.1.0)
     backports (2.6.5)
     bcrypt-ruby (3.0.1)
+    better_errors (0.3.2)
+      coderay (>= 1.0.0)
+      erubis (>= 2.7.0)
+    binding_of_caller (0.6.8)
     blankslate (3.1.2)
     bootstrap-sass (2.2.1.1)
       sass (~> 3.2)
@@ -464,6 +468,8 @@ DEPENDENCIES
   acts-as-taggable-on (= 2.3.3)
   annotate!
   awesome_print
+  better_errors
+  binding_of_caller
   bootstrap-sass (= 2.2.1.1)
   capybara
   carrierwave (~> 0.7.1)
