@@ -119,6 +119,15 @@ Gitlab::Application.routes.draw do
       get "files"
     end
 
+    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
+    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+    resources :commits, only: [:show], constraints: {id: /.+/}
+    resources :compare, only: [:index, :create]
+    resources :blame,   only: [:show], constraints: {id: /.+/}
+    resources :blob,    only: [:show], constraints: {id: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare",
+                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
+
     resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
         get :pages
@@ -190,14 +199,6 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
-    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-    resources :commits, only: [:show], constraints: {id: /.+/}
-    resources :compare, only: [:index, :create]
-    resources :blame,   only: [:show], constraints: {id: /.+/}
-    resources :blob,    only: [:show], constraints: {id: /.+/}
-    match "/compare/:from...:to" => "compare#show", as: "compare",
-                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones, except: [:destroy]
