@@ -33,6 +33,8 @@ class UsersProject < ActiveRecord::Base
 
   delegate :name, :email, to: :user, prefix: true
 
+  scope :in_project, ->(project) { where(project_id: project.id) }
+
   class << self
     def import_team(source_project, target_project)
       UsersProject.without_repository_callback do

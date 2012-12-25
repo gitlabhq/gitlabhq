@@ -82,6 +82,7 @@ class Project < ActiveRecord::Base
   scope :public_only, where(private_flag: false)
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
   scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
+  scope :in_group, ->(group) { where(namespace_id: group.id) }
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
