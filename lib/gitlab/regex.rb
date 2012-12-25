@@ -6,6 +6,10 @@ module Gitlab
       default_regex
     end
 
+    def project_name_regex
+      default_regex
+    end
+
     def path_regex
       default_regex
     end

@@ -64,7 +64,9 @@ class Project < ActiveRecord::Base
   # Validations
   validates :owner, presence: true
   validates :description, length: { within: 0..2000 }
-  validates :name, presence: true, length: { within: 0..255 }
+  validates :name, presence: true, length: { within: 0..255 },
+            format: { with: Gitlab::Regex.project_name_regex,
+                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :path, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
