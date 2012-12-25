@@ -61,7 +61,11 @@ module Gitlab
 
         # merge the source branch from Gitolite into the satellite
         # will raise CommandFailed when merge fails
-        repo.git.pull({raise: true, timeout: true, no_ff: true}, :origin, merge_request.source_branch)
+        if Gitlab.config.gitlab.merge_ff_only
+          repo.git.merge({raise: true, timeout: true, ff_only: true}, "origin/#{merge_request.source_branch}")
+        else
+          repo.git.pull({raise: true, timeout: true, no_ff: true}, :origin, merge_request.source_branch)
+        end
       rescue Grit::Git::CommandFailed => ex
         Gitlab::GitLogger.error(ex.message)
         false

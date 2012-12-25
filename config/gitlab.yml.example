@@ -26,6 +26,9 @@ gitlab:
   ## Project settings
   default_projects_limit: 10
 
+  ## Merge request behavior
+  merge_ff_only: false
+
 ## Gravatar
 gravatar:
   enabled: true                 # Use user avatar images from Gravatar.com (default: true)
