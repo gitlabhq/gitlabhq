@@ -92,6 +92,9 @@ module Gitlab
       # Note: this will only update remote branches (i.e. origin/*)
       def update_from_source!
         repo.git.fetch({timeout: true}, :origin)
+       if Gitlab.config.gitlab.add_merge_notes
+         repo.git.fetch({timeout: true, force: true}, :origin, "refs/notes/merge:refs/notes/merge")
+       end
       end
     end
   end

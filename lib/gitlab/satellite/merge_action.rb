@@ -26,6 +26,13 @@ module Gitlab
       def merge!
         in_locked_and_timed_satellite do |merge_repo|
           if merge_in_satellite!(merge_repo)
+            if Gitlab.config.gitlab.add_merge_notes
+              merge_repo.commits_between("origin/#{merge_request.target_branch}", merge_request.target_branch).each do |c|
+                merge_repo.git.notes({raise: true, timeout: true}, "--ref=merge", "add", "-f", "-m", "Merge-By: #{@user.name} <#{@user.email}>", c)
+              end
+              merge_repo.git.push({raise: true, timeout: true}, :origin, "refs/notes/merge:refs/notes/merge")
+            end
+
             # push merge back to Gitolite
             # will raise CommandFailed when push fails
             merge_repo.git.push({raise: true, timeout: true}, :origin, merge_request.target_branch)
