@@ -76,9 +76,9 @@
         %tr{class: "user_#{u.id}"}
           %td.name= link_to u.name, admin_user_path(u)
           %td.projects_access
-            - u.projects.in_group(@group).each do |p|
-              - u_p = u.users_projects.in_project(p).first
-              = "#{p.name} (#{link_to u_p.project_access_human, edit_admin_team_member_path(u_p) })".html_safe
+            - u.projects.in_group(@group).each do |project|
+              - u_p = u.users_projects.in_project(project).first
+              = "#{project.name} (#{link_to u_p.project_access_human, edit_admin_team_member_path(u_p) })".html_safe
       %tr
         %td.input= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
         %td= select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3"}

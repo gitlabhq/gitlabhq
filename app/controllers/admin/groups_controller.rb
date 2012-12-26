@@ -68,8 +68,8 @@ class Admin::GroupsController < AdminController
   end
 
   def project_teams_update
-    @group.projects.each do |p|
-      p.add_users_ids_to_team(params[:user_ids], params[:project_access])
+    @group.projects.each do |project|
+      project.add_users_ids_to_team(params[:user_ids], params[:project_access])
     end
     redirect_to [:admin, @group], notice: 'Users was successfully added.'
   end
