@@ -14,17 +14,6 @@ GIT
       rake (>= 0.8.7)
 
 GIT
-  remote: https://github.com/defunkt/resque.git
-  revision: 9ef4700306dd946a3ac000612428967ce0c32213
-  ref: 9ef4700306dd946a3ac000612428967ce0c32213
-  specs:
-    resque (2.0.0.pre.1)
-      json
-      redis-namespace (~> 1.0)
-      sinatra (>= 0.9.2)
-      vegas (~> 0.1.2)
-
-GIT
   remote: https://github.com/gitlabhq/grack.git
   revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
   ref: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
@@ -69,6 +58,17 @@ GIT
     pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
+
+GIT
+  remote: https://github.com/gitlabhq/resque.git
+  revision: 9ef4700306dd946a3ac000612428967ce0c32213
+  ref: 9ef4700306dd946a3ac000612428967ce0c32213
+  specs:
+    resque (2.0.0.pre.1)
+      json
+      redis-namespace (~> 1.0)
+      sinatra (>= 0.9.2)
+      vegas (~> 0.1.2)
 
 GIT
   remote: https://github.com/gitlabhq/yaml_db.git
