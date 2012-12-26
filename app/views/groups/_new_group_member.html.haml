@@ -1,4 +1,4 @@
-= form_for @team_member, as: :team_member, url: team_members_group_path(@group, @team_member) do |f|
+= form_for @team_member, as: :team_member, url: team_members_group_path(@group) do |f|
   %fieldset
     %legend= "New Team member(s) for projects in #{@group.name}"
 

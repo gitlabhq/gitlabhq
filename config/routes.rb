@@ -103,7 +103,7 @@ Gitlab::Application.routes.draw do
       get :merge_requests
       get :search
       get :people
-      put :team_members
+      post :team_members
     end
   end
 
