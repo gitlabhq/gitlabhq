@@ -11,7 +11,7 @@ namespace :gitlab do
     print "Creating satellites for ..."
     unless Project.count > 0
       puts "skipping, because you have no projects".magenta
-      return
+      next
     end
     puts ""
 
