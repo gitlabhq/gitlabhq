@@ -9,7 +9,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'I have group with projects' do
-    @group   = create(:group)
+    @group   = create(:group, owner: current_user)
     @project = create(:project, group: @group)
     @event   = create(:closed_issue_event, project: @project)
 
@@ -36,7 +36,7 @@ class Groups < Spinach::FeatureSteps
     create(:user, name: "John")
   end
 
-  When 'I select user "John" from list with role "Reporter"' do
+  And 'I select user "John" from list with role "Reporter"' do
     user = User.find_by_name("John")
     within "#new_team_member" do
       select user.name, :from => "user_ids"
@@ -46,8 +46,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   Then 'I should see user "John" in team list' do
-    user = User.find_by_name("John")
-    projects_with_access = find(".ui-box .well-list li")
+    projects_with_access = find(".ui-box .well-list")
     projects_with_access.should have_content("John")
   end
 
