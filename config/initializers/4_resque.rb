@@ -27,3 +27,5 @@ Resque::Server.use Authentication
 
 # Mailer
 Resque::Mailer.excluded_environments = []
+
+Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
