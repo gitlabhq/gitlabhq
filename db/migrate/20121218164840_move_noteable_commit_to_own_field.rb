@@ -5,7 +5,7 @@ class MoveNoteableCommitToOwnField < ActiveRecord::Migration
     Note.where(noteable_type: 'Commit').update_all('commit_id = noteable_id')
 
     if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
-      Note.where("noteable_type != 'Commit'").update_all('new_noteable_id = CAST (noteable_id AS INTEGER)')
+      Note.where("noteable_type != 'Commit'").update_all('new_noteable_id = CAST (CASE noteable_id WHEN \'\' THEN NULL ELSE noteable_id END AS INTEGER)')
     else
       Note.where("noteable_type != 'Commit'").update_all('new_noteable_id = noteable_id')
     end
