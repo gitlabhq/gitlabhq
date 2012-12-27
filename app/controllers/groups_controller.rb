@@ -53,7 +53,14 @@ class GroupsController < ApplicationController
 
     if @project
       @team_member = @project.users_projects.new
+    else
+      @team_member = UsersProject.new
     end
+  end
+
+  def team_members
+    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
+    redirect_to people_group_path(@group), notice: 'Users was successfully added.'
   end
 
   protected

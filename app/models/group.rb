@@ -12,6 +12,12 @@
 #
 
 class Group < Namespace
+  def add_users_to_project_teams(user_ids, project_access)
+    projects.each do |project|
+      project.add_users_ids_to_team(user_ids, project_access)
+    end
+  end
+
   def users
     users = User.joins(:users_projects).where(users_projects: {project_id: project_ids})
     users = users << owner

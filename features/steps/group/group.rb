@@ -9,7 +9,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'I have group with projects' do
-    @group   = create(:group)
+    @group   = create(:group, owner: current_user)
     @project = create(:project, group: @group)
     @event   = create(:closed_issue_event, project: @project)
 
@@ -30,6 +30,24 @@ class Groups < Spinach::FeatureSteps
     assigned_to_me(:merge_requests).each do |issue|
       page.should have_content issue.title
     end
+  end
+
+  Given 'I have new user "John"' do
+    create(:user, name: "John")
+  end
+
+  And 'I select user "John" from list with role "Reporter"' do
+    user = User.find_by_name("John")
+    within "#new_team_member" do
+      select user.name, :from => "user_ids"
+      select "Reporter", :from => "project_access"
+    end
+    click_button "Add"
+  end
+
+  Then 'I should see user "John" in team list' do
+    projects_with_access = find(".ui-box .well-list")
+    projects_with_access.should have_content("John")
   end
 
   Given 'project from group has issues assigned to me' do
