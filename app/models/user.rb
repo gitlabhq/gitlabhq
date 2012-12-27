@@ -77,7 +77,6 @@ class User < ActiveRecord::Base
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
   # Scopes
-  scope :not_in_project, ->(project) { where("id not in (:ids)", ids: project.users.map(&:id) ) }
   scope :admins, where(admin:  true)
   scope :blocked, where(blocked:  true)
   scope :active, where(blocked:  false)
@@ -90,6 +89,14 @@ class User < ActiveRecord::Base
       when "wop"; self.without_projects
       else
         self.active
+      end
+    end
+
+    def not_in_project(project)
+      if project.users.present?
+        where("id not in (:ids)", ids: project.users.map(&:id) )
+      else
+        scoped
       end
     end
 
