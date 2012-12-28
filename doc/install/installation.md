@@ -272,6 +272,12 @@ used for the `email.from` setting in `config/gitlab.yml`)
 
 ## Initialise Database and Activate Advanced Features
 
+    # For MySQL db
+    sudo gem install activerecord-mysql2-adapter
+    
+    # For postgres db
+    sudo gem install activerecord-pg-adapter
+    
     sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 
