@@ -52,7 +52,7 @@ edited by hand. But, you can use any editor you like instead.
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev  wget curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
@@ -77,8 +77,7 @@ Make sure you have the right version of Python installed.
 Download and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz
-    tar xfvz ruby-1.9.3-p327.tar.gz
+    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz | tar xz
     cd ruby-1.9.3-p327
     ./configure
     make
@@ -288,7 +287,7 @@ Although this is the case, there are still a few steps to go.
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -316,7 +315,7 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 
 Download an example site config:
 
-    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P /etc/nginx/sites-available/
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
