@@ -2,8 +2,8 @@
   .span3
     = render 'people_filter'
   .span9
-    - if @project && can?(current_user, :manage_group, @group)
-      = render "new_member"
+    - if can?(current_user, :manage_group, @group)
+      = render (@project ? "new_member" : "new_group_member")
     .ui-box
       %h5
         Team

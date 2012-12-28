@@ -64,7 +64,9 @@ class Project < ActiveRecord::Base
   # Validations
   validates :owner, presence: true
   validates :description, length: { within: 0..2000 }
-  validates :name, presence: true, length: { within: 0..255 }
+  validates :name, presence: true, length: { within: 0..255 },
+            format: { with: Gitlab::Regex.project_name_regex,
+                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :path, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
@@ -80,6 +82,7 @@ class Project < ActiveRecord::Base
   scope :public_only, where(private_flag: false)
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.projects.map(&:id) ) }
   scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
+  scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }

@@ -47,6 +47,7 @@ Gitlab::Application.routes.draw do
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
         put :project_update
+        put :project_teams_update
         delete :remove_project
       end
     end
@@ -102,6 +103,7 @@ Gitlab::Application.routes.draw do
       get :merge_requests
       get :search
       get :people
+      post :team_members
     end
   end
 
