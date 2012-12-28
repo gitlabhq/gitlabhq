@@ -51,8 +51,12 @@ class Namespace < ActiveRecord::Base
   end
 
   def ensure_dir_exist
+    dir_exists? || system("mkdir -m 770 #{namespace_dir_path}")
+  end
+
+  def dir_exists?
     namespace_dir_path = File.join(Gitlab.config.gitolite.repos_path, path)
-    system("mkdir -m 770 #{namespace_dir_path}") unless File.exists?(namespace_dir_path)
+    File.exists?(namespace_dir_path)
   end
 
   def move_dir

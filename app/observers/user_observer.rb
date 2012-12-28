@@ -14,7 +14,7 @@ class UserObserver < ActiveRecord::Observer
       if user.namespace
         user.namespace.update_attributes(path: user.username)
       else
-        user.create_namespace!(path: user.username, name: user.name)
+        user.create_namespace!(path: user.username, name: user.username)
       end
     end
   end
