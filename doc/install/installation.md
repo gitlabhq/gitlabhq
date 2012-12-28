@@ -245,6 +245,11 @@ Make sure to update username/password in config/database.yml.
 
     sudo gem install charlock_holmes --version '0.6.9'
 
+    # Install the postgreSQL dev package with header of PostgreSQL
+    sudo aptitude install libpq-dev
+
+    sudo gem install pg -v '0.14.1'
+
     # For postgres db
     sudo -u gitlab -H bundle install --deployment --without development test postgres
 
