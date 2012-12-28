@@ -245,10 +245,15 @@ Make sure to update username/password in config/database.yml.
 
     sudo gem install charlock_holmes --version '0.6.9'
 
-    # For mysql db
+    # Install the postgreSQL dev package with header of PostgreSQL
+    sudo aptitude install libpq-dev
+
+    sudo gem install pg -v '0.14.1'
+
+    # For postgres db
     sudo -u gitlab -H bundle install --deployment --without development test postgres
 
-    # Or For postgres db
+    # Or For mysql db
     sudo -u gitlab -H bundle install --deployment --without development test mysql
 
 ## Configure Git
@@ -267,6 +272,12 @@ used for the `email.from` setting in `config/gitlab.yml`)
 
 ## Initialise Database and Activate Advanced Features
 
+    # For MySQL db
+    sudo gem install activerecord-mysql2-adapter
+    
+    # For postgres db
+    sudo gem install activerecord-pg-adapter
+    
     sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 
