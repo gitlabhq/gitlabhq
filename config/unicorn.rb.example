@@ -59,6 +59,9 @@ after_fork do |server, worker|
   # sockets, e.g. db connection
 
   defined?(ActiveRecord::Base) and ActiveRecord::Base.establish_connection
-  # Redis and Memcached would go here but their connections are established
+
+  defined?(Resque) and Resque.redis.client.reconnect
+
+  # Memcached would go here but their connections are established
   # on demand, so the master never opens a socket
 end
