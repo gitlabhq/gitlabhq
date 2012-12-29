@@ -18,6 +18,9 @@ gitlab:
   host: localhost
   port: 80
   https: false
+  # uncomment and customize to run in non-root path
+  # note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
+  # relative_url_root: /gitlab
 
   ## Email settings
   # Email address used in the "From" field in mails sent by GitLab
