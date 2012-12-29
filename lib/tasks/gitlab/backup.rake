@@ -165,7 +165,7 @@ namespace :gitlab do
           print "#{tbl.yellow} ... "
           count = 1
           File.open(File.join(backup_path_db, tbl + ".yml"), "w+") do |file|
-            ActiveRecord::Base.connection.select_all("SELECT * FROM `#{tbl}`").each do |line|
+            ActiveRecord::Base.connection.select_all("SELECT * FROM #{tbl}").each do |line|
               line.delete_if{|k,v| v.blank?}
               output = {tbl + '_' + count.to_s => line}
               file << output.to_yaml.gsub(/^---\n/,'') + "\n"
