@@ -25,7 +25,8 @@ class Settings < Settingslogic
       [ gitlab.protocol,
         "://",
         gitlab.host,
-        custom_port
+        custom_port,
+        gitlab.relative_url_root
       ].join('')
     end
   end
@@ -45,6 +46,7 @@ Settings.gitlab['default_projects_limit'] ||=  10
 Settings.gitlab['host']       ||= 'localhost'
 Settings.gitlab['https']      ||= false
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
+Settings.gitlab['relative_url_root'] ||= ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)

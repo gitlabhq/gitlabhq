@@ -17,10 +17,6 @@ module Grack
       # Pass Gitolite update hook
       ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
 
-      # Need this patch due to the rails mount
-      @env['PATH_INFO'] = @request.path
-      @env['SCRIPT_NAME'] = ""
-
       # Find project by PATH_INFO from env
       if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
         self.project = Project.find_with_namespace(m.last)
