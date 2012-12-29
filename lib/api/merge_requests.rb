@@ -28,7 +28,7 @@ module Gitlab
       # Example:
       #   GET /projects/:id/merge_request/:merge_request_id
       #
-      get ":id/merge_request/:merge_request_id" do
+      get ":id/merge_requests/:merge_request_id" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
         authorize! :read_merge_request, merge_request
@@ -77,7 +77,7 @@ module Gitlab
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
-      put ":id/merge_request/:merge_request_id" do
+      put ":id/merge_requests/:merge_request_id" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
@@ -101,7 +101,7 @@ module Gitlab
       # Examples:
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
-      post ":id/merge_request/:merge_request_id/comments" do
+      post ":id/merge_requests/:merge_request_id/comments" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
         note.author = current_user
