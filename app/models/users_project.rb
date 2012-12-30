@@ -56,6 +56,25 @@ class UsersProject < ActiveRecord::Base
       false
     end
 
+    def truncate_teams(project_ids)
+      UsersProject.transaction do
+        users_projects = UsersProject.where(project_id: project_ids)
+        users_projects.each do |users_project|
+          users_project.skip_git = true
+          users_project.destroy
+        end
+        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
+      end
+
+      true
+    rescue
+      false
+    end
+
+    def truncate_team project
+      truncate_teams [project.id]
+    end
+
     def import_team(source_project, target_project)
       source_team = source_project.users_projects.all
       target_team = target_project.users_projects.all

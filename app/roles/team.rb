@@ -47,7 +47,8 @@ module Team
     UsersProject.bulk_delete(self, users_ids)
   end
 
+  # Remove all users from project team
   def truncate_team
-    UsersProject.bulk_delete(self, self.users.map(&:id))
+    UsersProject.truncate_team(self)
   end
 end

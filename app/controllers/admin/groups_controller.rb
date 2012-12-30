@@ -73,6 +73,8 @@ class Admin::GroupsController < AdminController
   end
 
   def destroy
+    @group.truncate_teams
+
     @group.destroy
 
     redirect_to admin_groups_path, notice: 'Group was successfully deleted.'

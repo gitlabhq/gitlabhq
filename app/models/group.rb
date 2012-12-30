@@ -29,4 +29,8 @@ class Group < Namespace
   def human_name
     name
   end
+
+  def truncate_teams
+    UsersProject.truncate_teams(project_ids)
+  end
 end
