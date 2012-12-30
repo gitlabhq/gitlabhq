@@ -71,13 +71,6 @@ GIT
       vegas (~> 0.1.2)
 
 GIT
-  remote: https://github.com/gitlabhq/yaml_db.git
-  revision: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
-  ref: 98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd
-  specs:
-    yaml_db (0.2.2)
-
-GIT
   remote: https://github.com/jonleighton/poltergeist.git
   revision: 5c2e092001074a8cf09f332d3714e9ba150bc8ca
   ref: 5c2e092001074a8cf09f332d3714e9ba150bc8ca
@@ -205,6 +198,7 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markup (0.7.4)
     gitlab_meta (4.0)
+    gitlab_yaml_db (1.0.0)
     gitolite (1.1.0)
       gratr19 (~> 0.4.4.1)
       grit (~> 2.5.0)
@@ -492,6 +486,7 @@ DEPENDENCIES
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
   gitlab_meta (= 4.0)
+  gitlab_yaml_db (= 1.0.0)
   gitolite (= 1.1.0)
   grack!
   grape (~> 0.2.1)
@@ -546,4 +541,3 @@ DEPENDENCIES
   uglifier (~> 1.3.0)
   unicorn (~> 4.4.0)
   webmock
-  yaml_db!
