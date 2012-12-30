@@ -34,19 +34,20 @@ module Team
   # with same access role by user ids
   def add_users_ids_to_team(users_ids, access_role)
     UsersProject.bulk_import(self, users_ids, access_role)
-    self.update_repository
   end
 
   # Update multiple project users
   # to same access role by user ids
   def update_users_ids_to_role(users_ids, access_role)
     UsersProject.bulk_update(self, users_ids, access_role)
-    self.update_repository
   end
 
   # Delete multiple users from project by user ids
   def delete_users_ids_from_team(users_ids)
     UsersProject.bulk_delete(self, users_ids)
-    self.update_repository
+  end
+
+  def truncate_team
+    UsersProject.bulk_delete(self, self.users.map(&:id))
   end
 end

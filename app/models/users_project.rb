@@ -23,11 +23,13 @@ class UsersProject < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  after_save :update_repository
-  after_destroy :update_repository
+  attr_accessor :skip_git
+
+  after_save :update_repository, unless: :skip_git?
+  after_destroy :update_repository, unless: :skip_git?
 
   validates :user, presence: true
-  validates :user_id, uniqueness: { :scope => [:project_id], message: "already exists in project" }
+  validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
 
@@ -36,76 +38,84 @@ class UsersProject < ActiveRecord::Base
   scope :in_project, ->(project) { where(project_id: project.id) }
 
   class << self
-    def import_team(source_project, target_project)
-      UsersProject.without_repository_callback do
-        UsersProject.transaction do
-          team = source_project.users_projects.all
-
-          team.each do |tm|
-            # Skip if user already present in team
-            next if target_project.users.include?(tm.user)
-
-            new_tm = tm.dup
-            new_tm.id = nil
-            new_tm.project_id = target_project.id
-            new_tm.save
+    def add_users_into_projects(project_ids, user_ids, project_access)
+      UsersProject.transaction do
+        project_ids.each do |project_id|
+          user_ids.each do |user_id|
+            users_project = UsersProject.new(project_access: project_access, user_id: user_id)
+            users_project.project_id = project_id
+            users_project.skip_git = true
+            users_project.save
           end
         end
+        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
 
-      target_project.update_repository
       true
     rescue
       false
     end
 
-    def without_repository_callback
-      UsersProject.skip_callback(:destroy, :after, :update_repository)
-      yield
-      UsersProject.set_callback(:destroy, :after, :update_repository)
+    def import_team(source_project, target_project)
+      source_team = source_project.users_projects.all
+      target_team = target_project.users_projects.all
+      target_user_ids = target_team.map(&:user_id)
+
+      source_team.reject! do |tm|
+        # Skip if user already present in team
+        target_user_ids.include?(tm.user_id)
+      end
+
+      source_team.map! do |tm|
+        new_tm = tm.dup
+        new_tm.id = nil
+        new_tm.project_id = target_project.id
+        new_tm.skip_git = true
+        new_tm
+      end
+
+      UsersProject.transaction do
+        source_team.each do |tm|
+          tm.save
+        end
+        target_project.update_repository
+      end
+
+      true
+    rescue
+      false
     end
 
     def bulk_delete(project, user_ids)
       UsersProject.transaction do
-        UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        UsersProject.where(user_id: user_ids, project_id: project.id).each do |users_project|
+          users_project.skip_git = true
           users_project.destroy
         end
+
+        project.update_repository
       end
     end
 
     def bulk_update(project, user_ids, project_access)
       UsersProject.transaction do
-        UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        UsersProject.where(user_id: user_ids, project_id: project.id).each do |users_project|
           users_project.project_access = project_access
+          users_project.skip_git = true
           users_project.save
         end
+        project.update_repository
       end
     end
 
+    # TODO: depreceate in future in favor of add_users_into_projects
     def bulk_import(project, user_ids, project_access)
-      UsersProject.transaction do
-        user_ids.each do |user_id|
-          users_project = UsersProject.new(
-            project_access: project_access,
-            user_id: user_id
-          )
-          users_project.project = project
-          users_project.save
-        end
-      end
+      add_users_into_projects([project.id], user_ids, project_access)
     end
 
+    # TODO: depreceate in future in favor of add_users_into_projects
     def user_bulk_import(user, project_ids, project_access)
-      UsersProject.transaction do
-        project_ids.each do |project_id|
-          users_project = UsersProject.new(
-            project_access: project_access,
-          )
-          users_project.project_id = project_id
-          users_project.user_id = user.id
-          users_project.save
-        end
-      end
+      add_users_into_projects(project_ids, [user.id], project_access)
     end
 
     def access_roles
@@ -132,5 +142,9 @@ class UsersProject < ActiveRecord::Base
 
   def repo_access_human
     self.class.access_roles.invert[self.project_access]
+  end
+
+  def skip_git?
+    !!@skip_git
   end
 end
