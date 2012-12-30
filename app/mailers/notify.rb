@@ -88,7 +88,7 @@ class Notify < ActionMailer::Base
   def note_wall_email(recipient_id, note_id)
     @note = Note.find(note_id)
     @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject)
+    mail(to: recipient(recipient_id), subject: subject("note on wall"))
   end
 
 
