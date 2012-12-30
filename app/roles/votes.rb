@@ -1,3 +1,10 @@
+# == Votes role
+#
+# Provides functionality to upvote/downvote entity
+# based on +1 and -1 notes
+#
+# Used for Issue and Merge Request
+#
 module Votes
   # Return the number of +1 comments (upvotes)
   def upvotes

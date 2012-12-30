@@ -1,4 +1,9 @@
+# == IssueCommonality role
+#
 # Contains common functionality shared between Issues and MergeRequests
+#
+# Used by Issue, MergeRequest
+#
 module IssueCommonality
   extend ActiveSupport::Concern
 

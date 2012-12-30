@@ -1,3 +1,9 @@
+# == Account role
+#
+# Describe behaviour of User in application
+#
+# Used by User
+#
 module Account
   # Returns a string for use as a Gitolite user identifier
   #

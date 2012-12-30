@@ -1,3 +1,10 @@
+# == Repository role
+#
+# Provides access to git repository resources like commits, branches etc..
+# Allows you to manage repository via gitolite interface(git_host)
+#
+# Used by Project
+#
 module Repository
   include GitHost
 

@@ -1,3 +1,12 @@
+# == Team role
+#
+# Provides functionality to manage project team
+#  - add user/users to project
+#  - update existing membership
+#  - remove users from project team
+#
+# Used by Project
+#
 module Team
   def team_member_by_name_or_email(name = nil, email = nil)
     user = users.where("name like ? or email like ?", name, email).first

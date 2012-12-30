@@ -1,3 +1,9 @@
+# == NoteEvent role
+#
+# Extends Event model functionality by providing extra methods related to comment events
+#
+# Used by Event
+#
 module NoteEvent
   def note_commit_id
     target.commit_id

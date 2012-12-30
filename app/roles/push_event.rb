@@ -1,3 +1,9 @@
+# == PushEvent role
+#
+# Extends Event model functionality by providing extra methods related to push events
+#
+# Used by Event
+#
 module PushEvent
   def valid_push?
     data[:ref]
@@ -58,7 +64,7 @@ module PushEvent
     @commits ||= data[:commits].map { |commit| project.commit(commit[:id]) }.reverse
   end
 
-  def commits_count 
+  def commits_count
     data[:total_commits_count] || commits.count || 0
   end
 
@@ -88,7 +94,7 @@ module PushEvent
     nil
   end
 
-  def push_with_commits? 
+  def push_with_commits?
     md_ref? && commits.any? && parent_commit && last_commit
   rescue Grit::NoSuchPathError
     false

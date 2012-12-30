@@ -1,3 +1,12 @@
+# == NamespacedProject role
+#
+# Provides extra functionality for Project related to namespaces like:
+#  - transfer project between namespaces
+#  - name, path including namespece
+#  - project owner based on namespace
+#
+# Used by Project
+#
 module NamespacedProject
   def transfer(new_namespace)
     Project.transaction do

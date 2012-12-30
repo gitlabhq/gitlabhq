@@ -1,3 +1,9 @@
+# == Authority role
+#
+# Control access to project repository based on users role in team
+#
+# Used by Project
+#
 module Authority
   # Compatible with all access rights
   # Should be rewrited for new access rights

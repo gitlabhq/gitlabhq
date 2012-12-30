@@ -1,6 +1,11 @@
-# Includes methods for handling Git Push events
+# == PushObserver role
 #
+# Includes methods to be triggered on push to project repository.
+#
+#
+# Used by Project
 # Triggered by PostReceive job
+#
 module PushObserver
   # This method will be called after each post receive and only if the provided
   # user is present in GitLab.
