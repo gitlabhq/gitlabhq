@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>post-receive</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            post-receive
+        </h1>
+        <ul class="files">
+            <li>lib/hooks/post-receive</li>
+            <li>Last modified: 2012-12-23 14:02:47 +0200</li>
+        </ul>
+    </div>
+
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>#!/usr/bin/env bash</p>
+
+<p># This file was placed here by GitLab. It makes sure that your pushed
+commits # will be processed properly.</p>
+
+<p>while read oldrev newrev ref do</p>
+
+<pre class="ruby"><span class="ruby-comment"># For every branch or tag that was pushed, create a Resque job in redis.</span>
+<span class="ruby-identifier">repo_path</span>=<span class="ruby-value">%xpwd`</span>
+<span class="ruby-identifier">env</span> <span class="ruby-operator">-</span><span class="ruby-identifier">i</span> <span class="ruby-identifier">redis</span><span class="ruby-operator">-</span><span class="ruby-identifier">cli</span> <span class="ruby-identifier">rpush</span> <span class="ruby-string">&quot;resque:gitlab:queue:post_receive&quot;</span> <span class="ruby-string">&quot;{\&quot;class\&quot;:\&quot;PostReceive\&quot;,\&quot;args\&quot;:[\&quot;$repo_path\&quot;,\&quot;$oldrev\&quot;,\&quot;$newrev\&quot;,\&quot;$ref\&quot;,\&quot;$GL_USER\&quot;]}&quot;</span> <span class="ruby-operator">&gt;</span> <span class="ruby-regexp">%rdev/</span><span class="ruby-identifier">ull</span> <span class="ruby-value">2</span><span class="ruby-operator">&gt;</span>&amp;<span class="ruby-value">1</span>
+</pre>
+
+<p>done</p>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+              </div>
+
+    </div>
+  </body>
+</html>

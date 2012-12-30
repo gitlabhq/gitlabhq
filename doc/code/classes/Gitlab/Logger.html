@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Logger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::Logger 
+            
+                <span class="parent">&lt; 
+                    
+                    Logger
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/logger_rb.html">lib/gitlab/logger.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-build">build</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-error">error</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-info">info</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-read_latest">read_latest</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-read_latest_for">read_latest_for</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-build">
+            
+              <b>build</b>()
+            
+            <a href="../../classes/Gitlab/Logger.html#method-c-build" name="method-c-build" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-build_source')" id="l_method-c-build_source">show</a>
+                
+              </p>
+              <div id="method-c-build_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/logger.rb, line 22</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">build</span>
+  <span class="ruby-identifier">new</span>(<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;log&quot;</span>, <span class="ruby-identifier">file_name</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-error">
+            
+              <b>error</b>(message)
+            
+            <a href="../../classes/Gitlab/Logger.html#method-c-error" name="method-c-error" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-error_source')" id="l_method-c-error_source">show</a>
+                
+              </p>
+              <div id="method-c-error_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/logger.rb, line 3</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">error</span>(<span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">build</span>.<span class="ruby-identifier">error</span>(<span class="ruby-identifier">message</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-info">
+            
+              <b>info</b>(message)
+            
+            <a href="../../classes/Gitlab/Logger.html#method-c-info" name="method-c-info" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-info_source')" id="l_method-c-info_source">show</a>
+                
+              </p>
+              <div id="method-c-info_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/logger.rb, line 7</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">info</span>(<span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">build</span>.<span class="ruby-identifier">info</span>(<span class="ruby-identifier">message</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-read_latest">
+            
+              <b>read_latest</b>()
+            
+            <a href="../../classes/Gitlab/Logger.html#method-c-read_latest" name="method-c-read_latest" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-read_latest_source')" id="l_method-c-read_latest_source">show</a>
+                
+              </p>
+              <div id="method-c-read_latest_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/logger.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">read_latest</span>
+  <span class="ruby-identifier">path</span> = <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;log&quot;</span>, <span class="ruby-identifier">file_name</span>)
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">build</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">path</span>)
+  <span class="ruby-identifier">logs</span> = <span class="ruby-node">%xtail -n 2000 #{path}`</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-read_latest_for">
+            
+              <b>read_latest_for</b>(filename)
+            
+            <a href="../../classes/Gitlab/Logger.html#method-c-read_latest_for" name="method-c-read_latest_for" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-read_latest_for_source')" id="l_method-c-read_latest_for_source">show</a>
+                
+              </p>
+              <div id="method-c-read_latest_for_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/logger.rb, line 17</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">read_latest_for</span> <span class="ruby-identifier">filename</span>
+  <span class="ruby-identifier">path</span> = <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;log&quot;</span>, <span class="ruby-identifier">filename</span>)
+  <span class="ruby-identifier">logs</span> = <span class="ruby-node">%xtail -n 2000 #{path}`</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                        </div>
+
+    </div>
+  </body>
+</html>    

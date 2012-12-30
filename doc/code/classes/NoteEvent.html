@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>NoteEvent</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            NoteEvent 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/note_event_rb.html">app/roles/note_event.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-note_commit-3F">note_commit?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_commit_id">note_commit_id</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_short_commit_id">note_short_commit_id</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_target">note_target</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_target_id">note_target_id</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_target_type">note_target_type</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>W</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-wall_note-3F">wall_note?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-note_commit-3F">
+            
+              <b>note_commit?</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-note_commit-3F" name="method-i-note_commit-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_commit-3F_source')" id="l_method-i-note_commit-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-note_commit-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_commit?</span>
+  <span class="ruby-identifier">target</span>.<span class="ruby-identifier">noteable_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Commit&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_commit_id">
+            
+              <b>note_commit_id</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-note_commit_id" name="method-i-note_commit_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_commit_id_source')" id="l_method-i-note_commit_id_source">show</a>
+                
+              </p>
+              <div id="method-i-note_commit_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_commit_id</span>
+  <span class="ruby-identifier">target</span>.<span class="ruby-identifier">commit_id</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_short_commit_id">
+            
+              <b>note_short_commit_id</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-note_short_commit_id" name="method-i-note_short_commit_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_short_commit_id_source')" id="l_method-i-note_short_commit_id_source">show</a>
+                
+              </p>
+              <div id="method-i-note_short_commit_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 6</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_short_commit_id</span>
+  <span class="ruby-identifier">note_commit_id</span>[<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-number">8</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_target">
+            
+              <b>note_target</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-note_target" name="method-i-note_target" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_target_source')" id="l_method-i-note_target_source">show</a>
+                
+              </p>
+              <div id="method-i-note_target_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 14</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_target</span>
+  <span class="ruby-identifier">target</span>.<span class="ruby-identifier">noteable</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_target_id">
+            
+              <b>note_target_id</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-note_target_id" name="method-i-note_target_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_target_id_source')" id="l_method-i-note_target_id_source">show</a>
+                
+              </p>
+              <div id="method-i-note_target_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_target_id</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">note_commit?</span>
+    <span class="ruby-identifier">target</span>.<span class="ruby-identifier">commit_id</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">target</span>.<span class="ruby-identifier">noteable_id</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_target_type">
+            
+              <b>note_target_type</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-note_target_type" name="method-i-note_target_type" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_target_type_source')" id="l_method-i-note_target_type_source">show</a>
+                
+              </p>
+              <div id="method-i-note_target_type_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_target_type</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">target</span>.<span class="ruby-identifier">noteable_type</span>.<span class="ruby-identifier">present?</span>
+    <span class="ruby-identifier">target</span>.<span class="ruby-identifier">noteable_type</span>.<span class="ruby-identifier">titleize</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-string">&quot;Wall&quot;</span>
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">downcase</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-wall_note-3F">
+            
+              <b>wall_note?</b>()
+            
+            <a href="../classes/NoteEvent.html#method-i-wall_note-3F" name="method-i-wall_note-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-wall_note-3F_source')" id="l_method-i-wall_note-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-wall_note-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/note_event.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">wall_note?</span>
+  <span class="ruby-identifier">target</span>.<span class="ruby-identifier">noteable_type</span>.<span class="ruby-identifier">blank?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

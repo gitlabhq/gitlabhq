@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>ProjectsController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            ProjectsController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ProjectResourceController.html">ProjectResourceController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/projects_controller_rb.html">app/controllers/projects_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-create">create</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-destroy">destroy</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-edit">edit</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-files">files</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-graph">graph</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-show">show</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update">update</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>W</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-wall">wall</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-create">
+            
+              <b>create</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-create" name="method-i-create" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-create_source')" id="l_method-i-create_source">show</a>
+                
+              </p>
+              <div id="method-i-create_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">create</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-constant">Project</span>.<span class="ruby-identifier">create_by_user</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:project</span>], <span class="ruby-identifier">current_user</span>)
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">flash</span>[<span class="ruby-value">:notice</span>] = <span class="ruby-string">'Project was successfully created.'</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">saved?</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">saved?</span>
+        <span class="ruby-identifier">redirect_to</span> <span class="ruby-ivar">@project</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">render</span> <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;new&quot;</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-destroy">
+            
+              <b>destroy</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-destroy" name="method-i-destroy" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-destroy_source')" id="l_method-i-destroy_source">show</a>
+                
+              </p>
+              <div id="method-i-destroy_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">destroy</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">access_denied!</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:remove_project</span>, <span class="ruby-identifier">project</span>)
+
+  <span class="ruby-comment"># Delete team first in order to prevent multiple gitolite calls</span>
+  <span class="ruby-identifier">project</span>.<span class="ruby-identifier">truncate_team</span>
+
+  <span class="ruby-identifier">project</span>.<span class="ruby-identifier">destroy</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> { <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">root_path</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-edit">
+            
+              <b>edit</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-edit" name="method-i-edit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-edit_source')" id="l_method-i-edit_source">show</a>
+                
+              </p>
+              <div id="method-i-edit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 17</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">edit</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-files">
+            
+              <b>files</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-files" name="method-i-files" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-files_source')" id="l_method-i-files_source">show</a>
+                
+              </p>
+              <div id="method-i-files_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">files</span>
+  <span class="ruby-ivar">@notes</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;attachment != 'NULL'&quot;</span>).<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at DESC&quot;</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">100</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-graph">
+            
+              <b>graph</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-graph" name="method-i-graph" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-graph_source')" id="l_method-i-graph_source">show</a>
+                
+              </p>
+              <div id="method-i-graph_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">graph</span>
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">json</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-identifier">graph</span> = <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">Graph</span><span class="ruby-operator">::</span><span class="ruby-constant">JsonBuilder</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project</span>)
+      <span class="ruby-identifier">render</span> <span class="ruby-value">:json</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">graph</span>.<span class="ruby-identifier">to_json</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new">
+            
+              <b>new</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-new" name="method-i-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_source')" id="l_method-i-new_source">show</a>
+                
+              </p>
+              <div id="method-i-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-constant">Project</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-show">
+            
+              <b>show</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-show" name="method-i-show" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-show_source')" id="l_method-i-show_source">show</a>
+                
+              </p>
+              <div id="method-i-show_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 55</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">show</span>
+  <span class="ruby-identifier">limit</span> = (<span class="ruby-identifier">params</span>[<span class="ruby-value">:limit</span>] <span class="ruby-operator">||</span> <span class="ruby-number">20</span>).<span class="ruby-identifier">to_i</span>
+  <span class="ruby-ivar">@events</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">events</span>.<span class="ruby-identifier">recent</span>.<span class="ruby-identifier">limit</span>(<span class="ruby-identifier">limit</span>).<span class="ruby-identifier">offset</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:offset</span>] <span class="ruby-operator">||</span> <span class="ruby-number">0</span>)
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">empty_repo?</span>
+        <span class="ruby-ivar">@last_push</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">recent_push</span>(<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">id</span>)
+        <span class="ruby-identifier">render</span> <span class="ruby-value">:show</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">render</span> <span class="ruby-string">&quot;projects/empty&quot;</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update">
+            
+              <b>update</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-update" name="method-i-update" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_source')" id="l_method-i-update_source">show</a>
+                
+              </p>
+              <div id="method-i-update_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update</span>
+  <span class="ruby-identifier">status</span> = <span class="ruby-constant">ProjectUpdateContext</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">params</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">status</span>
+      <span class="ruby-identifier">flash</span>[<span class="ruby-value">:notice</span>] = <span class="ruby-string">'Project was successfully updated.'</span>
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> { <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">edit_project_path</span>(<span class="ruby-identifier">project</span>), <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-string">'Project was successfully updated.'</span> }
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> { <span class="ruby-identifier">render</span> <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;edit&quot;</span> }
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">Project</span><span class="ruby-operator">::</span><span class="ruby-constant">TransferError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-ivar">@error</span> = <span class="ruby-identifier">ex</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-value">:update_failed</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-wall">
+            
+              <b>wall</b>()
+            
+            <a href="../classes/ProjectsController.html#method-i-wall" name="method-i-wall" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Wall</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-wall_source')" id="l_method-i-wall_source">show</a>
+                
+              </p>
+              <div id="method-i-wall_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/projects_controller.rb, line 80</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">wall</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wall_enabled</span>
+  <span class="ruby-ivar">@note</span> = <span class="ruby-constant">Note</span>.<span class="ruby-identifier">new</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Gitolite</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::Gitolite 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/backend/gitolite_rb.html">lib/gitlab/backend/gitolite.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">CLASS</span>
+          <a href="Gitolite/AccessDenied.html">Gitlab::Gitolite::AccessDenied</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-config">config</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-create_repository">create_repository</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-enable_automerge">enable_automerge</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-move_repository">move_repository</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-remove_key">remove_key</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-remove_repository">remove_repository</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-set_key">set_key</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update_repositories">update_repositories</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-update_repository">update_repository</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-url_to_repo">url_to_repo</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-config">
+            
+              <b>config</b>()
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-config" name="method-i-config" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-config_source')" id="l_method-i-config_source">show</a>
+                
+              </p>
+              <div id="method-i-config_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 7</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">config</span>
+  <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">GitoliteConfig</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-create_repository">
+            
+              <b>create_repository</b>(project)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-create_repository" name="method-i-create_repository" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-enable_automerge">
+            
+              <b>enable_automerge</b>()
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-enable_automerge" name="method-i-enable_automerge" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-enable_automerge_source')" id="l_method-i-enable_automerge_source">show</a>
+                
+              </p>
+              <div id="method-i-enable_automerge_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">enable_automerge</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">admin_all_repo!</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-move_repository">
+            
+              <b>move_repository</b>(old_repo, project)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-move_repository" name="method-i-move_repository" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-move_repository_source')" id="l_method-i-move_repository_source">show</a>
+                
+              </p>
+              <div id="method-i-move_repository_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">move_repository</span>(<span class="ruby-identifier">old_repo</span>, <span class="ruby-identifier">project</span>)
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">apply</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">clean_repo</span>(<span class="ruby-identifier">old_repo</span>)
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_project</span>(<span class="ruby-identifier">project</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-remove_key">
+            
+              <b>remove_key</b>(key_id, projects)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-remove_key" name="method-i-remove_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-remove_key_source')" id="l_method-i-remove_key_source">show</a>
+                
+              </p>
+              <div id="method-i-remove_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">remove_key</span> <span class="ruby-identifier">key_id</span>, <span class="ruby-identifier">projects</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">apply</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">rm_key</span>(<span class="ruby-identifier">key_id</span>)
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_projects</span>(<span class="ruby-identifier">projects</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-remove_repository">
+            
+              <b>remove_repository</b>(project)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-remove_repository" name="method-i-remove_repository" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-remove_repository_source')" id="l_method-i-remove_repository_source">show</a>
+                
+              </p>
+              <div id="method-i-remove_repository_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">remove_repository</span> <span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">destroy_project!</span>(<span class="ruby-identifier">project</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-set_key">
+            
+              <b>set_key</b>(key_id, key_content, projects)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-set_key" name="method-i-set_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-set_key_source')" id="l_method-i-set_key_source">show</a>
+                
+              </p>
+              <div id="method-i-set_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">set_key</span> <span class="ruby-identifier">key_id</span>, <span class="ruby-identifier">key_content</span>, <span class="ruby-identifier">projects</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">apply</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">write_key</span>(<span class="ruby-identifier">key_id</span>, <span class="ruby-identifier">key_content</span>)
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_projects</span>(<span class="ruby-identifier">projects</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_repositories">
+            
+              <b>update_repositories</b>(projects)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-update_repositories" name="method-i-update_repositories" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_repositories_source')" id="l_method-i-update_repositories_source">show</a>
+                
+              </p>
+              <div id="method-i-update_repositories_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 48</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_repositories</span> <span class="ruby-identifier">projects</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">apply</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_projects</span>(<span class="ruby-identifier">projects</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_repository">
+            
+              <b>update_repository</b>(project)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-update_repository" name="method-i-update_repository" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+            <div class="aka">
+              Also aliased as: <a href="Gitolite.html#method-i-create_repository">create_repository</a>
+            </div>
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_repository_source')" id="l_method-i-update_repository_source">show</a>
+                
+              </p>
+              <div id="method-i-update_repository_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_repository</span> <span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_project!</span>(<span class="ruby-identifier">project</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-url_to_repo">
+            
+              <b>url_to_repo</b>(path)
+            
+            <a href="../../classes/Gitlab/Gitolite.html#method-i-url_to_repo" name="method-i-url_to_repo" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-url_to_repo_source')" id="l_method-i-url_to_repo_source">show</a>
+                
+              </p>
+              <div id="method-i-url_to_repo_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">url_to_repo</span> <span class="ruby-identifier">path</span>
+  <span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">ssh_path_prefix</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{path}.git&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

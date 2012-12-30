@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>IssuesController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            IssuesController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ProjectResourceController.html">ProjectResourceController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/issues_controller_rb.html">app/controllers/issues_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-authorize_admin_issue-21">authorize_admin_issue!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authorize_modify_issue-21">authorize_modify_issue!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-bulk_update">bulk_update</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-create">create</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-edit">edit</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-index">index</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-issue">issue</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-issues_filtered">issues_filtered</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-module_enabled">module_enabled</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-search">search</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-show">show</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-sort">sort</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update">update</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-bulk_update">
+            
+              <b>bulk_update</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-bulk_update" name="method-i-bulk_update" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-bulk_update_source')" id="l_method-i-bulk_update_source">show</a>
+                
+              </p>
+              <div id="method-i-bulk_update_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">bulk_update</span>
+  <span class="ruby-identifier">result</span> = <span class="ruby-constant">IssuesBulkUpdateContext</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">params</span>).<span class="ruby-identifier">execute</span>
+  <span class="ruby-identifier">redirect_to</span> <span class="ruby-value">:back</span>, <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;#{result[:count]} issues updated&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-create">
+            
+              <b>create</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-create" name="method-i-create" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-create_source')" id="l_method-i-create_source">show</a>
+                
+              </p>
+              <div id="method-i-create_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">create</span>
+  <span class="ruby-ivar">@issue</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">issues</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:issue</span>])
+  <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">author</span> = <span class="ruby-identifier">current_user</span>
+  <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">save</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">valid?</span>
+        <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">project_issue_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@issue</span>)
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">render</span> <span class="ruby-value">:new</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-edit">
+            
+              <b>edit</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-edit" name="method-i-edit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-edit_source')" id="l_method-i-edit_source">show</a>
+                
+              </p>
+              <div id="method-i-edit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">edit</span>
+  <span class="ruby-identifier">respond_with</span>(<span class="ruby-ivar">@issue</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-index">
+            
+              <b>index</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-index" name="method-i-index" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-index_source')" id="l_method-i-index_source">show</a>
+                
+              </p>
+              <div id="method-i-index_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">index</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-identifier">issues_filtered</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-ivar">@issues</span>.<span class="ruby-identifier">page</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]).<span class="ruby-identifier">per</span>(<span class="ruby-number">20</span>)
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> <span class="ruby-comment"># index.html.erb</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">atom</span> { <span class="ruby-identifier">render</span> <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new">
+            
+              <b>new</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-new" name="method-i-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_source')" id="l_method-i-new_source">show</a>
+                
+              </p>
+              <div id="method-i-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 27</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new</span>
+  <span class="ruby-ivar">@issue</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">issues</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:issue</span>])
+  <span class="ruby-identifier">respond_with</span>(<span class="ruby-ivar">@issue</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-search">
+            
+              <b>search</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-search" name="method-i-search" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-search_source')" id="l_method-i-search_source">show</a>
+                
+              </p>
+              <div id="method-i-search_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">search</span>
+  <span class="ruby-identifier">terms</span> = <span class="ruby-identifier">params</span>[<span class="ruby-string">'terms'</span>]
+
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-identifier">issues_filtered</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-ivar">@issues</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;title LIKE ?&quot;</span>, <span class="ruby-node">&quot;%#{terms}%&quot;</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">terms</span>.<span class="ruby-identifier">blank?</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-ivar">@issues</span>.<span class="ruby-identifier">page</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]).<span class="ruby-identifier">per</span>(<span class="ruby-number">100</span>)
+
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">partial</span><span class="ruby-operator">:</span> <span class="ruby-string">'issues'</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-show">
+            
+              <b>show</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-show" name="method-i-show" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-show_source')" id="l_method-i-show_source">show</a>
+                
+              </p>
+              <div id="method-i-show_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">show</span>
+  <span class="ruby-ivar">@note</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">noteable</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@issue</span>)
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-sort">
+            
+              <b>sort</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-sort" name="method-i-sort" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-sort_source')" id="l_method-i-sort_source">show</a>
+                
+              </p>
+              <div id="method-i-sort_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 77</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">sort</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:admin_issue</span>, <span class="ruby-ivar">@project</span>)
+
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">issues</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-string">'issue'</span>])
+  <span class="ruby-ivar">@issues</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">issue</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">position</span> = <span class="ruby-identifier">params</span>[<span class="ruby-string">'issue'</span>].<span class="ruby-identifier">index</span>(<span class="ruby-identifier">issue</span>.<span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_s</span>) <span class="ruby-operator">+</span> <span class="ruby-number">1</span>
+    <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">save</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">nothing</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update">
+            
+              <b>update</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-update" name="method-i-update" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_source')" id="l_method-i-update_source">show</a>
+                
+              </p>
+              <div id="method-i-update_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 62</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update</span>
+  <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">update_attributes</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:issue</span>].<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">author_id_of_changes</span><span class="ruby-operator">:</span> <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">id</span>))
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">valid?</span>
+        <span class="ruby-identifier">redirect_to</span> [<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@issue</span>]
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">render</span> <span class="ruby-value">:edit</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_admin_issue-21">
+            
+              <b>authorize_admin_issue!</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-authorize_admin_issue-21" name="method-i-authorize_admin_issue-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_admin_issue-21_source')" id="l_method-i-authorize_admin_issue-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_admin_issue-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 114</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_admin_issue!</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:admin_issue</span>, <span class="ruby-ivar">@issue</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_modify_issue-21">
+            
+              <b>authorize_modify_issue!</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-authorize_modify_issue-21" name="method-i-authorize_modify_issue-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_modify_issue-21_source')" id="l_method-i-authorize_modify_issue-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_modify_issue-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 110</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_modify_issue!</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:modify_issue</span>, <span class="ruby-ivar">@issue</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-issue">
+            
+              <b>issue</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-issue" name="method-i-issue" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-issue_source')" id="l_method-i-issue_source">show</a>
+                
+              </p>
+              <div id="method-i-issue_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 106</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">issue</span>
+  <span class="ruby-ivar">@issue</span> <span class="ruby-operator">||=</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">issues</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>])
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-issues_filtered">
+            
+              <b>issues_filtered</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-issues_filtered" name="method-i-issues_filtered" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-issues_filtered_source')" id="l_method-i-issues_filtered_source">show</a>
+                
+              </p>
+              <div id="method-i-issues_filtered_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 122</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">issues_filtered</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-constant">IssuesListContext</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">params</span>).<span class="ruby-identifier">execute</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-module_enabled">
+            
+              <b>module_enabled</b>()
+            
+            <a href="../classes/IssuesController.html#method-i-module_enabled" name="method-i-module_enabled" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-module_enabled_source')" id="l_method-i-module_enabled_source">show</a>
+                
+              </p>
+              <div id="method-i-module_enabled_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/issues_controller.rb, line 118</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">module_enabled</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">issues_enabled</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

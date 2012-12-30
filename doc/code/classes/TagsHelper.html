@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>TagsHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            TagsHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/tags_helper_rb.html">app/helpers/tags_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-tag_list">tag_list</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-tag_path">tag_path</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-tag_list">
+            
+              <b>tag_list</b>(project)
+            
+            <a href="../classes/TagsHelper.html#method-i-tag_list" name="method-i-tag_list" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tag_list_source')" id="l_method-i-tag_list_source">show</a>
+                
+              </p>
+              <div id="method-i-tag_list_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tags_helper.rb, line 6</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tag_list</span> <span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">html</span> = <span class="ruby-string">''</span>
+  <span class="ruby-identifier">project</span>.<span class="ruby-identifier">tag_list</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tag</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">html</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">link_to</span> <span class="ruby-identifier">tag</span>, <span class="ruby-identifier">tag_path</span>(<span class="ruby-identifier">tag</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">html</span>.<span class="ruby-identifier">html_safe</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tag_path">
+            
+              <b>tag_path</b>(tag)
+            
+            <a href="../classes/TagsHelper.html#method-i-tag_path" name="method-i-tag_path" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tag_path_source')" id="l_method-i-tag_path_source">show</a>
+                
+              </p>
+              <div id="method-i-tag_path_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tags_helper.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tag_path</span> <span class="ruby-identifier">tag</span>
+  <span class="ruby-node">&quot;/tags/#{tag}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>WikisController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            WikisController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ProjectResourceController.html">ProjectResourceController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/wikis_controller_rb.html">app/controllers/wikis_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-create">create</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-destroy">destroy</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-edit">edit</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>H</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-history">history</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-pages">pages</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-show">show</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-create">
+            
+              <b>create</b>()
+            
+            <a href="../classes/WikisController.html#method-i-create" name="method-i-create" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-create_source')" id="l_method-i-create_source">show</a>
+                
+              </p>
+              <div id="method-i-create_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/wikis_controller.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">create</span>
+  <span class="ruby-ivar">@wiki</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:wiki</span>])
+  <span class="ruby-ivar">@wiki</span>.<span class="ruby-identifier">user</span> = <span class="ruby-identifier">current_user</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-ivar">@wiki</span>.<span class="ruby-identifier">save</span>
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> { <span class="ruby-identifier">redirect_to</span> [<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@wiki</span>], <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-string">'Wiki was successfully updated.'</span> }
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> { <span class="ruby-identifier">render</span> <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;edit&quot;</span> }
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-destroy">
+            
+              <b>destroy</b>()
+            
+            <a href="../classes/WikisController.html#method-i-destroy" name="method-i-destroy" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-destroy_source')" id="l_method-i-destroy_source">show</a>
+                
+              </p>
+              <div id="method-i-destroy_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/wikis_controller.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">destroy</span>
+  <span class="ruby-ivar">@wikis</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">slug</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">delete_all</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> { <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">project_wiki_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-value">:index</span>), <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Page was successfully deleted&quot;</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-edit">
+            
+              <b>edit</b>()
+            
+            <a href="../classes/WikisController.html#method-i-edit" name="method-i-edit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-edit_source')" id="l_method-i-edit_source">show</a>
+                
+              </p>
+              <div id="method-i-edit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/wikis_controller.rb, line 31</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">edit</span>
+  <span class="ruby-ivar">@wiki</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">slug</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at&quot;</span>).<span class="ruby-identifier">last</span>
+  <span class="ruby-ivar">@wiki</span> = <span class="ruby-constant">Wiki</span>.<span class="ruby-identifier">regenerate_from</span> <span class="ruby-ivar">@wiki</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-history">
+            
+              <b>history</b>()
+            
+            <a href="../classes/WikisController.html#method-i-history" name="method-i-history" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-history_source')" id="l_method-i-history_source">show</a>
+                
+              </p>
+              <div id="method-i-history_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/wikis_controller.rb, line 49</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">history</span>
+  <span class="ruby-ivar">@wikis</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">slug</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-pages">
+            
+              <b>pages</b>()
+            
+            <a href="../classes/WikisController.html#method-i-pages" name="method-i-pages" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-pages_source')" id="l_method-i-pages_source">show</a>
+                
+              </p>
+              <div id="method-i-pages_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/wikis_controller.rb, line 6</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">pages</span>
+  <span class="ruby-ivar">@wikis</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">group</span>(<span class="ruby-value">:slug</span>).<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-show">
+            
+              <b>show</b>()
+            
+            <a href="../classes/WikisController.html#method-i-show" name="method-i-show" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-show_source')" id="l_method-i-show_source">show</a>
+                
+              </p>
+              <div id="method-i-show_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/wikis_controller.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">show</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:old_page_id</span>]
+    <span class="ruby-ivar">@wiki</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:old_page_id</span>])
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@wiki</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">slug</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at&quot;</span>).<span class="ruby-identifier">last</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@note</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">noteable</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@wiki</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@wiki</span>
+    <span class="ruby-identifier">render</span> <span class="ruby-string">'show'</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:write_wiki</span>, <span class="ruby-ivar">@project</span>)
+      <span class="ruby-ivar">@wiki</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">wikis</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">slug</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>])
+      <span class="ruby-identifier">render</span> <span class="ruby-string">'edit'</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">render</span> <span class="ruby-string">'empty'</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

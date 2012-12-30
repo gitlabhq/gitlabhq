@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>connection_fix.rb</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            connection_fix.rb
+        </h1>
+        <ul class="files">
+            <li>config/initializers/connection_fix.rb</li>
+            <li>Last modified: 2012-07-02 23:07:19 +0300</li>
+        </ul>
+    </div>
+
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>from <a href="http://gist.github.com/238999">gist.github.com/238999</a></p>
+
+<p>If your workers are inactive for a long period of time, they’ll lose their
+MySQL connection.</p>
+
+<p>This hack ensures we re-connect whenever a connection is lost. Because,
+really. why not?</p>
+
+<p>Stick this in RAILS_ROOT/config/initializers/connection_fix.rb (or
+somewhere similar)</p>
+
+<p>From:</p>
+
+<pre>http://coderrr.wordpress.com/2009/01/08/activerecord-threading-issues-and-resolutions/</pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">MODULE</span>
+          <a href="../../../classes/ActiveRecord/ConnectionAdapters.html">ActiveRecord::ConnectionAdapters</a>
+        </li>
+      
+        <li>
+          <span class="type">CLASS</span>
+          <a href="../../../classes/ActiveRecord/ConnectionAdapters/Mysql2Adapter.html">ActiveRecord::ConnectionAdapters::Mysql2Adapter</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+              </div>
+
+    </div>
+  </body>
+</html>

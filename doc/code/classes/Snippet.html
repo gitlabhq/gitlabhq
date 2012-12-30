@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Snippet</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Snippet 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/snippet_rb.html">app/models/snippet.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<h2 id="label-Schema+Information">Schema Information</h2>
+
+<p>Table name: snippets</p>
+
+<pre>id         :integer          not null, primary key
+title      :string(255)
+content    :text
+author_id  :integer          not null
+project_id :integer          not null
+created_at :datetime         not null
+updated_at :datetime         not null
+file_name  :string(255)
+expires_at :datetime</pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-content_types">content_types</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-data">data</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-expired-3F">expired?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-mode">mode</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-name">name</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-size">size</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            Linguist::BlobHelper
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-content_types">
+            
+              <b>content_types</b>()
+            
+            <a href="../classes/Snippet.html#method-c-content_types" name="method-c-content_types" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-content_types_source')" id="l_method-c-content_types_source">show</a>
+                
+              </p>
+              <div id="method-c-content_types_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/snippet.rb, line 38</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">content_types</span>
+  [
+    <span class="ruby-string">&quot;.rb&quot;</span>, <span class="ruby-string">&quot;.py&quot;</span>, <span class="ruby-string">&quot;.pl&quot;</span>, <span class="ruby-string">&quot;.scala&quot;</span>, <span class="ruby-string">&quot;.c&quot;</span>, <span class="ruby-string">&quot;.cpp&quot;</span>, <span class="ruby-string">&quot;.java&quot;</span>,
+    <span class="ruby-string">&quot;.haml&quot;</span>, <span class="ruby-string">&quot;.html&quot;</span>, <span class="ruby-string">&quot;.sass&quot;</span>, <span class="ruby-string">&quot;.scss&quot;</span>, <span class="ruby-string">&quot;.xml&quot;</span>, <span class="ruby-string">&quot;.php&quot;</span>, <span class="ruby-string">&quot;.erb&quot;</span>,
+    <span class="ruby-string">&quot;.js&quot;</span>, <span class="ruby-string">&quot;.sh&quot;</span>, <span class="ruby-string">&quot;.coffee&quot;</span>, <span class="ruby-string">&quot;.yml&quot;</span>, <span class="ruby-string">&quot;.md&quot;</span>
+  ]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-data">
+            
+              <b>data</b>()
+            
+            <a href="../classes/Snippet.html#method-i-data" name="method-i-data" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-data_source')" id="l_method-i-data_source">show</a>
+                
+              </p>
+              <div id="method-i-data_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/snippet.rb, line 46</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">data</span>
+  <span class="ruby-identifier">content</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-expired-3F">
+            
+              <b>expired?</b>()
+            
+            <a href="../classes/Snippet.html#method-i-expired-3F" name="method-i-expired-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-expired-3F_source')" id="l_method-i-expired-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-expired-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/snippet.rb, line 62</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">expired?</span>
+  <span class="ruby-identifier">expires_at</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">expires_at</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">current</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-mode">
+            
+              <b>mode</b>()
+            
+            <a href="../classes/Snippet.html#method-i-mode" name="method-i-mode" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-mode_source')" id="l_method-i-mode_source">show</a>
+                
+              </p>
+              <div id="method-i-mode_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/snippet.rb, line 58</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">mode</span>
+  <span class="ruby-keyword">nil</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-name">
+            
+              <b>name</b>()
+            
+            <a href="../classes/Snippet.html#method-i-name" name="method-i-name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-name_source')" id="l_method-i-name_source">show</a>
+                
+              </p>
+              <div id="method-i-name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/snippet.rb, line 54</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">name</span>
+  <span class="ruby-identifier">file_name</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-size">
+            
+              <b>size</b>()
+            
+            <a href="../classes/Snippet.html#method-i-size" name="method-i-size" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-size_source')" id="l_method-i-size_source">show</a>
+                
+              </p>
+              <div id="method-i-size_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/snippet.rb, line 50</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">size</span>
+  <span class="ruby-number">0</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

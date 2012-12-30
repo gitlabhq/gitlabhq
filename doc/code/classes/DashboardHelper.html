@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>DashboardHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            DashboardHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/dashboard_helper_rb.html">app/helpers/dashboard_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-dashboard_filter_path">dashboard_filter_path</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-entities_per_project">entities_per_project</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-dashboard_filter_path">
+            
+              <b>dashboard_filter_path</b>(entity, options={})
+            
+            <a href="../classes/DashboardHelper.html#method-i-dashboard_filter_path" name="method-i-dashboard_filter_path" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-dashboard_filter_path_source')" id="l_method-i-dashboard_filter_path_source">show</a>
+                
+              </p>
+              <div id="method-i-dashboard_filter_path_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/dashboard_helper.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">dashboard_filter_path</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-identifier">options</span>={})
+  <span class="ruby-identifier">exist_opts</span> = {
+    <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:status</span>],
+    <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:project_id</span>],
+  }
+
+  <span class="ruby-identifier">options</span> = <span class="ruby-identifier">exist_opts</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)
+
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">entity</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-string">'issue'</span> <span class="ruby-keyword">then</span>
+    <span class="ruby-identifier">dashboard_issues_path</span>(<span class="ruby-identifier">options</span>)
+  <span class="ruby-keyword">when</span> <span class="ruby-string">'merge_request'</span>
+    <span class="ruby-identifier">dashboard_merge_requests_path</span>(<span class="ruby-identifier">options</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-entities_per_project">
+            
+              <b>entities_per_project</b>(project, entity)
+            
+            <a href="../classes/DashboardHelper.html#method-i-entities_per_project" name="method-i-entities_per_project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-entities_per_project_source')" id="l_method-i-entities_per_project_source">show</a>
+                
+              </p>
+              <div id="method-i-entities_per_project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/dashboard_helper.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">entities_per_project</span> <span class="ruby-identifier">project</span>, <span class="ruby-identifier">entity</span>
+  <span class="ruby-identifier">items</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">items_for</span>(<span class="ruby-identifier">entity</span>)
+
+  <span class="ruby-identifier">items</span> = <span class="ruby-keyword">case</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:status</span>]
+          <span class="ruby-keyword">when</span> <span class="ruby-string">'closed'</span>
+            <span class="ruby-identifier">items</span>.<span class="ruby-identifier">closed</span>
+          <span class="ruby-keyword">when</span> <span class="ruby-string">'all'</span>
+            <span class="ruby-identifier">items</span>
+          <span class="ruby-keyword">else</span>
+            <span class="ruby-identifier">items</span>.<span class="ruby-identifier">opened</span>
+          <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">items</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">assignee_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">id</span>).<span class="ruby-identifier">count</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>SearchContext</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            SearchContext 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/contexts/search_context_rb.html">app/contexts/search_context.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-execute">execute</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-result">result</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>params</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>project_ids</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(project_ids, params)
+            
+            <a href="../classes/SearchContext.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/contexts/search_context.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span>(<span class="ruby-identifier">project_ids</span>, <span class="ruby-identifier">params</span>)
+  <span class="ruby-ivar">@project_ids</span>, <span class="ruby-ivar">@params</span> = <span class="ruby-identifier">project_ids</span>, <span class="ruby-identifier">params</span>.<span class="ruby-identifier">dup</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-execute">
+            
+              <b>execute</b>()
+            
+            <a href="../classes/SearchContext.html#method-i-execute" name="method-i-execute" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-execute_source')" id="l_method-i-execute_source">show</a>
+                
+              </p>
+              <div id="method-i-execute_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/contexts/search_context.rb, line 8</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">execute</span>
+  <span class="ruby-identifier">query</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:search</span>]
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">result</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">query</span>.<span class="ruby-identifier">present?</span>
+
+  <span class="ruby-identifier">result</span>[<span class="ruby-value">:projects</span>] = <span class="ruby-constant">Project</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>).<span class="ruby-identifier">search</span>(<span class="ruby-identifier">query</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">10</span>)
+  <span class="ruby-identifier">result</span>[<span class="ruby-value">:merge_requests</span>] = <span class="ruby-constant">MergeRequest</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>).<span class="ruby-identifier">search</span>(<span class="ruby-identifier">query</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">10</span>)
+  <span class="ruby-identifier">result</span>[<span class="ruby-value">:issues</span>] = <span class="ruby-constant">Issue</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>).<span class="ruby-identifier">search</span>(<span class="ruby-identifier">query</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">10</span>)
+  <span class="ruby-identifier">result</span>[<span class="ruby-value">:wiki_pages</span>] = <span class="ruby-constant">Wiki</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>).<span class="ruby-identifier">search</span>(<span class="ruby-identifier">query</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">10</span>)
+  <span class="ruby-identifier">result</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-result">
+            
+              <b>result</b>()
+            
+            <a href="../classes/SearchContext.html#method-i-result" name="method-i-result" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-result_source')" id="l_method-i-result_source">show</a>
+                
+              </p>
+              <div id="method-i-result_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/contexts/search_context.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">result</span>
+  <span class="ruby-ivar">@result</span> <span class="ruby-operator">||=</span> {
+    <span class="ruby-identifier">projects</span><span class="ruby-operator">:</span> [],
+    <span class="ruby-identifier">merge_requests</span><span class="ruby-operator">:</span> [],
+    <span class="ruby-identifier">issues</span><span class="ruby-operator">:</span> [],
+    <span class="ruby-identifier">wiki_pages</span><span class="ruby-operator">:</span> []
+  }
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

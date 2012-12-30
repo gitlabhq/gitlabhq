@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Team</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            Team 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/team_rb.html">app/roles/team.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-add_user_id_to_team">add_user_id_to_team</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-add_user_to_team">add_user_to_team</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-add_users_ids_to_team">add_users_ids_to_team</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-add_users_to_team">add_users_to_team</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-delete_users_ids_from_team">delete_users_ids_from_team</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-team_member_by_id">team_member_by_id</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-team_member_by_name_or_email">team_member_by_name_or_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-truncate_team">truncate_team</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update_users_ids_to_role">update_users_ids_to_role</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-add_user_id_to_team">
+            
+              <b>add_user_id_to_team</b>(user_id, access_role)
+            
+            <a href="../classes/Team.html#method-i-add_user_id_to_team" name="method-i-add_user_id_to_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Add user to project with passed access role by user id</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-add_user_id_to_team_source')" id="l_method-i-add_user_id_to_team_source">show</a>
+                
+              </p>
+              <div id="method-i-add_user_id_to_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_user_id_to_team</span>(<span class="ruby-identifier">user_id</span>, <span class="ruby-identifier">access_role</span>)
+  <span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">create</span>(
+    <span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user_id</span>,
+    <span class="ruby-identifier">project_access</span><span class="ruby-operator">:</span> <span class="ruby-identifier">access_role</span>
+  )
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-add_user_to_team">
+            
+              <b>add_user_to_team</b>(user, access_role)
+            
+            <a href="../classes/Team.html#method-i-add_user_to_team" name="method-i-add_user_to_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Add user to project with passed access role</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-add_user_to_team_source')" id="l_method-i-add_user_to_team_source">show</a>
+                
+              </p>
+              <div id="method-i-add_user_to_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 14</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_user_to_team</span>(<span class="ruby-identifier">user</span>, <span class="ruby-identifier">access_role</span>)
+  <span class="ruby-identifier">add_user_id_to_team</span>(<span class="ruby-identifier">user</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">access_role</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-add_users_ids_to_team">
+            
+              <b>add_users_ids_to_team</b>(users_ids, access_role)
+            
+            <a href="../classes/Team.html#method-i-add_users_ids_to_team" name="method-i-add_users_ids_to_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Add multiple users to project with same access role by user ids</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-add_users_ids_to_team_source')" id="l_method-i-add_users_ids_to_team_source">show</a>
+                
+              </p>
+              <div id="method-i-add_users_ids_to_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 35</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_users_ids_to_team</span>(<span class="ruby-identifier">users_ids</span>, <span class="ruby-identifier">access_role</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">bulk_import</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">users_ids</span>, <span class="ruby-identifier">access_role</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-add_users_to_team">
+            
+              <b>add_users_to_team</b>(users, access_role)
+            
+            <a href="../classes/Team.html#method-i-add_users_to_team" name="method-i-add_users_to_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Add multiple users to project with same access role</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-add_users_to_team_source')" id="l_method-i-add_users_to_team_source">show</a>
+                
+              </p>
+              <div id="method-i-add_users_to_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_users_to_team</span>(<span class="ruby-identifier">users</span>, <span class="ruby-identifier">access_role</span>)
+  <span class="ruby-identifier">add_users_ids_to_team</span>(<span class="ruby-identifier">users</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:id</span>), <span class="ruby-identifier">access_role</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-delete_users_ids_from_team">
+            
+              <b>delete_users_ids_from_team</b>(users_ids)
+            
+            <a href="../classes/Team.html#method-i-delete_users_ids_from_team" name="method-i-delete_users_ids_from_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Delete multiple users from project by user ids</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-delete_users_ids_from_team_source')" id="l_method-i-delete_users_ids_from_team_source">show</a>
+                
+              </p>
+              <div id="method-i-delete_users_ids_from_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 46</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">delete_users_ids_from_team</span>(<span class="ruby-identifier">users_ids</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">bulk_delete</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">users_ids</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-team_member_by_id">
+            
+              <b>team_member_by_id</b>(user_id)
+            
+            <a href="../classes/Team.html#method-i-team_member_by_id" name="method-i-team_member_by_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Get <a href="Team.html">Team</a> Member record by user id</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-team_member_by_id_source')" id="l_method-i-team_member_by_id_source">show</a>
+                
+              </p>
+              <div id="method-i-team_member_by_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 8</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">team_member_by_id</span>(<span class="ruby-identifier">user_id</span>)
+  <span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">find_by_user_id</span>(<span class="ruby-identifier">user_id</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-team_member_by_name_or_email">
+            
+              <b>team_member_by_name_or_email</b>(name = nil, email = nil)
+            
+            <a href="../classes/Team.html#method-i-team_member_by_name_or_email" name="method-i-team_member_by_name_or_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-team_member_by_name_or_email_source')" id="l_method-i-team_member_by_name_or_email_source">show</a>
+                
+              </p>
+              <div id="method-i-team_member_by_name_or_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">team_member_by_name_or_email</span>(<span class="ruby-identifier">name</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">email</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">user</span> = <span class="ruby-identifier">users</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;name like ? or email like ?&quot;</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">email</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">user</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">user</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-truncate_team">
+            
+              <b>truncate_team</b>()
+            
+            <a href="../classes/Team.html#method-i-truncate_team" name="method-i-truncate_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Remove all users from project team</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-truncate_team_source')" id="l_method-i-truncate_team_source">show</a>
+                
+              </p>
+              <div id="method-i-truncate_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 51</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">truncate_team</span>
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">truncate_team</span>(<span class="ruby-keyword">self</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_users_ids_to_role">
+            
+              <b>update_users_ids_to_role</b>(users_ids, access_role)
+            
+            <a href="../classes/Team.html#method-i-update_users_ids_to_role" name="method-i-update_users_ids_to_role" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Update multiple project users to same access role by user ids</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_users_ids_to_role_source')" id="l_method-i-update_users_ids_to_role_source">show</a>
+                
+              </p>
+              <div id="method-i-update_users_ids_to_role_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/team.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_users_ids_to_role</span>(<span class="ruby-identifier">users_ids</span>, <span class="ruby-identifier">access_role</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">bulk_update</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">users_ids</span>, <span class="ruby-identifier">access_role</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

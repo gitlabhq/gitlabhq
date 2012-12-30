@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::GitoliteConfig</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::GitoliteConfig 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/backend/gitolite_config_rb.html">lib/gitlab/backend/gitolite_config.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">CLASS</span>
+          <a href="GitoliteConfig/PullError.html">Gitlab::GitoliteConfig::PullError</a>
+        </li>
+      
+        <li>
+          <span class="type">CLASS</span>
+          <a href="GitoliteConfig/PushError.html">Gitlab::GitoliteConfig::PushError</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-admin_all_repo">admin_all_repo</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-admin_all_repo-21">admin_all_repo!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-apply">apply</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-clean_repo">clean_repo</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-destroy_project">destroy_project</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-destroy_project-21">destroy_project!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-log">log</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-rm_key">rm_key</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update_project">update_project</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-update_project-21">update_project!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-update_project_config">update_project_config</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-update_projects">update_projects</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>W</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-write_key">write_key</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>conf</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>config_tmp_dir</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>ga_repo</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-admin_all_repo">
+            
+              <b>admin_all_repo</b>()
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-admin_all_repo" name="method-i-admin_all_repo" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Enable access to all repos for gitolite admin. We use it for accept merge
+request feature</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-admin_all_repo_source')" id="l_method-i-admin_all_repo_source">show</a>
+                
+              </p>
+              <div id="method-i-admin_all_repo_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 169</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">admin_all_repo</span>
+  <span class="ruby-identifier">owner_name</span> = <span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">admin_key</span>
+
+  <span class="ruby-comment"># @ALL repos premission for gitolite owner</span>
+  <span class="ruby-identifier">repo_name</span> = <span class="ruby-string">&quot;@all&quot;</span>
+  <span class="ruby-identifier">repo</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">has_repo?</span>(<span class="ruby-identifier">repo_name</span>)
+           <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">get_repo</span>(<span class="ruby-identifier">repo_name</span>)
+         <span class="ruby-keyword">else</span>
+           <span class="ruby-operator">::</span><span class="ruby-constant">Gitolite</span><span class="ruby-operator">::</span><span class="ruby-constant">Config</span><span class="ruby-operator">::</span><span class="ruby-constant">Repo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">repo_name</span>)
+         <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">add_permission</span>(<span class="ruby-string">&quot;RW+&quot;</span>, <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">owner_name</span>)
+  <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">add_repo</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-keyword">true</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-admin_all_repo-21">
+            
+              <b>admin_all_repo!</b>()
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-admin_all_repo-21" name="method-i-admin_all_repo-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-admin_all_repo-21_source')" id="l_method-i-admin_all_repo-21_source">show</a>
+                
+              </p>
+              <div id="method-i-admin_all_repo-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 184</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">admin_all_repo!</span>
+  <span class="ruby-identifier">apply</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">admin_all_repo</span> }
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-apply">
+            
+              <b>apply</b>()
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-apply" name="method-i-apply" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-apply_source')" id="l_method-i-apply_source">show</a>
+                
+              </p>
+              <div id="method-i-apply_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 23</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">apply</span>
+  <span class="ruby-constant">Timeout</span><span class="ruby-operator">::</span><span class="ruby-identifier">timeout</span>(<span class="ruby-number">30</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">'tmp'</span>, <span class="ruby-string">&quot;gitlabhq-gitolite.lock&quot;</span>), <span class="ruby-string">&quot;w+&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">begin</span>
+        <span class="ruby-comment"># Set exclusive lock</span>
+        <span class="ruby-comment"># to prevent race condition</span>
+        <span class="ruby-identifier">f</span>.<span class="ruby-identifier">flock</span>(<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">LOCK_EX</span>)
+
+        <span class="ruby-comment"># Pull gitolite-admin repo</span>
+        <span class="ruby-comment"># in tmp dir before do any changes</span>
+        <span class="ruby-identifier">pull</span>(<span class="ruby-identifier">config_tmp_dir</span>)
+
+        <span class="ruby-comment"># Build ga_repo object and @conf</span>
+        <span class="ruby-comment"># to access gitolite-admin configuration</span>
+        <span class="ruby-ivar">@conf</span> = <span class="ruby-identifier">ga_repo</span>.<span class="ruby-identifier">config</span>
+
+        <span class="ruby-comment"># Do any changes</span>
+        <span class="ruby-comment"># in gitolite-admin</span>
+        <span class="ruby-comment"># config here</span>
+        <span class="ruby-keyword">yield</span>(<span class="ruby-keyword">self</span>)
+
+        <span class="ruby-comment"># Save changes in</span>
+        <span class="ruby-comment"># gitolite-admin repo</span>
+        <span class="ruby-comment"># before push it</span>
+        <span class="ruby-identifier">ga_repo</span>.<span class="ruby-identifier">save</span>
+
+        <span class="ruby-comment"># Push gitolite-admin repo</span>
+        <span class="ruby-comment"># to apply all changes</span>
+        <span class="ruby-identifier">push</span>(<span class="ruby-identifier">config_tmp_dir</span>)
+      <span class="ruby-keyword">ensure</span>
+        <span class="ruby-comment"># Remove tmp dir</span>
+        <span class="ruby-comment"># removing the gitolite folder first is important to avoid</span>
+        <span class="ruby-comment"># NFS issues.</span>
+        <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config_tmp_dir</span>, <span class="ruby-string">'gitolite'</span>))
+
+        <span class="ruby-comment"># Remove parent tmp dir</span>
+        <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-identifier">config_tmp_dir</span>)
+
+        <span class="ruby-comment"># Unlock so other task can access</span>
+        <span class="ruby-comment"># gitolite configuration</span>
+        <span class="ruby-identifier">f</span>.<span class="ruby-identifier">flock</span>(<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">LOCK_UN</span>)
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">PullError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-identifier">log</span>(<span class="ruby-string">&quot;Pull error -&gt;  &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Gitolite</span><span class="ruby-operator">::</span><span class="ruby-constant">AccessDenied</span>, <span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>
+
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">PushError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-identifier">log</span>(<span class="ruby-string">&quot;Push error -&gt;  &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Gitolite</span><span class="ruby-operator">::</span><span class="ruby-constant">AccessDenied</span>, <span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>
+
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">Exception</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-identifier">log</span>(<span class="ruby-identifier">ex</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Gitolite</span><span class="ruby-operator">::</span><span class="ruby-constant">AccessDenied</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;gitolite timeout&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-clean_repo">
+            
+              <b>clean_repo</b>(repo_name)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-clean_repo" name="method-i-clean_repo" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-clean_repo_source')" id="l_method-i-clean_repo_source">show</a>
+                
+              </p>
+              <div id="method-i-clean_repo_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">clean_repo</span> <span class="ruby-identifier">repo_name</span>
+  <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">rm_repo</span>(<span class="ruby-identifier">repo_name</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-destroy_project">
+            
+              <b>destroy_project</b>(project)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-destroy_project" name="method-i-destroy_project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-destroy_project_source')" id="l_method-i-destroy_project_source">show</a>
+                
+              </p>
+              <div id="method-i-destroy_project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 84</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">destroy_project</span>(<span class="ruby-identifier">project</span>)
+  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-identifier">project</span>.<span class="ruby-identifier">path_to_repo</span>)
+  <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">rm_repo</span>(<span class="ruby-identifier">project</span>.<span class="ruby-identifier">path_with_namespace</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-destroy_project-21">
+            
+              <b>destroy_project!</b>(project)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-destroy_project-21" name="method-i-destroy_project-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-destroy_project-21_source')" id="l_method-i-destroy_project-21_source">show</a>
+                
+              </p>
+              <div id="method-i-destroy_project-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 93</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">destroy_project!</span>(<span class="ruby-identifier">project</span>)
+  <span class="ruby-identifier">apply</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">destroy_project</span>(<span class="ruby-identifier">project</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-log">
+            
+              <b>log</b>(message)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-log" name="method-i-log" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-log_source')" id="l_method-i-log_source">show</a>
+                
+              </p>
+              <div id="method-i-log_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 80</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">log</span> <span class="ruby-identifier">message</span>
+  <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">GitLogger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-identifier">message</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-rm_key">
+            
+              <b>rm_key</b>(user)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-rm_key" name="method-i-rm_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-rm_key_source')" id="l_method-i-rm_key_source">show</a>
+                
+              </p>
+              <div id="method-i-rm_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 105</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">rm_key</span>(<span class="ruby-identifier">user</span>)
+  <span class="ruby-identifier">key_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config_tmp_dir</span>, <span class="ruby-string">'gitolite/keydir'</span>, <span class="ruby-node">&quot;#{user}.pub&quot;</span>)
+  <span class="ruby-identifier">ga_key</span> = <span class="ruby-operator">::</span><span class="ruby-constant">Gitolite</span><span class="ruby-operator">::</span><span class="ruby-constant">SSHKey</span>.<span class="ruby-identifier">from_file</span>(<span class="ruby-identifier">key_path</span>)
+  <span class="ruby-identifier">ga_repo</span>.<span class="ruby-identifier">rm_key</span>(<span class="ruby-identifier">ga_key</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_project">
+            
+              <b>update_project</b>(project)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-update_project" name="method-i-update_project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>update or create</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_project_source')" id="l_method-i-update_project_source">show</a>
+                
+              </p>
+              <div id="method-i-update_project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 112</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_project</span>(<span class="ruby-identifier">project</span>)
+  <span class="ruby-identifier">repo</span> = <span class="ruby-identifier">update_project_config</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">conf</span>)
+  <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">add_repo</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-keyword">true</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_project-21">
+            
+              <b>update_project!</b>( project)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-update_project-21" name="method-i-update_project-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_project-21_source')" id="l_method-i-update_project-21_source">show</a>
+                
+              </p>
+              <div id="method-i-update_project-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 117</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_project!</span>( <span class="ruby-identifier">project</span>)
+  <span class="ruby-identifier">apply</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_project</span>(<span class="ruby-identifier">project</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_project_config">
+            
+              <b>update_project_config</b>(project, conf)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-update_project_config" name="method-i-update_project_config" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_project_config_source')" id="l_method-i-update_project_config_source">show</a>
+                
+              </p>
+              <div id="method-i-update_project_config_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 132</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_project_config</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">conf</span>)
+  <span class="ruby-identifier">repo_name</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">path_with_namespace</span>
+
+  <span class="ruby-identifier">repo</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">has_repo?</span>(<span class="ruby-identifier">repo_name</span>)
+           <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">get_repo</span>(<span class="ruby-identifier">repo_name</span>)
+         <span class="ruby-keyword">else</span>
+           <span class="ruby-operator">::</span><span class="ruby-constant">Gitolite</span><span class="ruby-operator">::</span><span class="ruby-constant">Config</span><span class="ruby-operator">::</span><span class="ruby-constant">Repo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">repo_name</span>)
+         <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">name_readers</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repository_readers</span>
+  <span class="ruby-identifier">name_writers</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repository_writers</span>
+  <span class="ruby-identifier">name_masters</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repository_masters</span>
+
+  <span class="ruby-identifier">pr_br</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">protected_branches</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:name</span>).<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;$ &quot;</span>)
+
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">clean_permissions</span>
+
+  <span class="ruby-comment"># Deny access to protected branches for writers</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">name_writers</span>.<span class="ruby-identifier">blank?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">pr_br</span>.<span class="ruby-identifier">blank?</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">add_permission</span>(<span class="ruby-string">&quot;-&quot;</span>, <span class="ruby-identifier">pr_br</span>.<span class="ruby-identifier">strip</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;$ &quot;</span>, <span class="ruby-identifier">name_writers</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># Add read permissions</span>
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">add_permission</span>(<span class="ruby-string">&quot;R&quot;</span>, <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">name_readers</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">name_readers</span>.<span class="ruby-identifier">blank?</span>
+
+  <span class="ruby-comment"># Add write permissions</span>
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">add_permission</span>(<span class="ruby-string">&quot;RW+&quot;</span>, <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">name_writers</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">name_writers</span>.<span class="ruby-identifier">blank?</span>
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">add_permission</span>(<span class="ruby-string">&quot;RW+&quot;</span>, <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">name_masters</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">name_masters</span>.<span class="ruby-identifier">blank?</span>
+
+  <span class="ruby-comment"># Add sharedRepository config</span>
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">set_git_config</span>(<span class="ruby-string">&quot;core.sharedRepository&quot;</span>, <span class="ruby-string">&quot;0660&quot;</span>)
+
+  <span class="ruby-identifier">repo</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_projects">
+            
+              <b>update_projects</b>(projects)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-update_projects" name="method-i-update_projects" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Updates many projects and uses project.path_with_namespace as the repo path
+An order of magnitude faster than <a
+href="GitoliteConfig.html#method-i-update_project">#update_project</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_projects_source')" id="l_method-i-update_projects_source">show</a>
+                
+              </p>
+              <div id="method-i-update_projects_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 125</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_projects</span>(<span class="ruby-identifier">projects</span>)
+  <span class="ruby-identifier">projects</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">project</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">repo</span> = <span class="ruby-identifier">update_project_config</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">conf</span>)
+    <span class="ruby-identifier">conf</span>.<span class="ruby-identifier">add_repo</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-keyword">true</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-write_key">
+            
+              <b>write_key</b>(id, key)
+            
+            <a href="../../classes/Gitlab/GitoliteConfig.html#method-i-write_key" name="method-i-write_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-write_key_source')" id="l_method-i-write_key_source">show</a>
+                
+              </p>
+              <div id="method-i-write_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/gitolite_config.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">write_key</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">key</span>)
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config_tmp_dir</span>, <span class="ruby-string">'gitolite/keydir'</span>,<span class="ruby-node">&quot;#{id}.pub&quot;</span>), <span class="ruby-string">'w'</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">key</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">%r\n/</span>,<span class="ruby-string">''</span>))
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

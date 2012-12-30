@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>GitlabCiService</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            GitlabCiService 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="Service.html">Service</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/gitlab_ci_service_rb.html">app/models/gitlab_ci_service.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<h2 id="label-Schema+Information">Schema Information</h2>
+
+<p>Table name: services</p>
+
+<pre>id          :integer          not null, primary key
+type        :string(255)
+title       :string(255)
+token       :string(255)
+project_id  :integer          not null
+created_at  :datetime         not null
+updated_at  :datetime         not null
+active      :boolean          default(FALSE), not null
+project_url :string(255)</pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-activated-3F">activated?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-build_page">build_page</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-commit_badge_path">commit_badge_path</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commit_status">commit_status</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commit_status_path">commit_status_path</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-compose_service_hook">compose_service_hook</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-activated-3F">
+            
+              <b>activated?</b>()
+            
+            <a href="../classes/GitlabCiService.html#method-i-activated-3F" name="method-i-activated-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-activated-3F_source')" id="l_method-i-activated-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-activated-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/gitlab_ci_service.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">activated?</span>
+  <span class="ruby-identifier">active</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-build_page">
+            
+              <b>build_page</b>(sha)
+            
+            <a href="../classes/GitlabCiService.html#method-i-build_page" name="method-i-build_page" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-build_page_source')" id="l_method-i-build_page_source">show</a>
+                
+              </p>
+              <div id="method-i-build_page_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/gitlab_ci_service.rb, line 54</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">build_page</span> <span class="ruby-identifier">sha</span>
+  <span class="ruby-identifier">project_url</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/builds/#{sha}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_badge_path">
+            
+              <b>commit_badge_path</b>(sha)
+            
+            <a href="../classes/GitlabCiService.html#method-i-commit_badge_path" name="method-i-commit_badge_path" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_badge_path_source')" id="l_method-i-commit_badge_path_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_badge_path_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/gitlab_ci_service.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_badge_path</span> <span class="ruby-identifier">sha</span>
+  <span class="ruby-identifier">project_url</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/status?sha=#{sha}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_status">
+            
+              <b>commit_status</b>(sha)
+            
+            <a href="../classes/GitlabCiService.html#method-i-commit_status" name="method-i-commit_status" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_status_source')" id="l_method-i-commit_status_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_status_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/gitlab_ci_service.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_status</span> <span class="ruby-identifier">sha</span>
+  <span class="ruby-identifier">response</span> = <span class="ruby-constant">HTTParty</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">commit_status_path</span>(<span class="ruby-identifier">sha</span>))
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">response</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">==</span> <span class="ruby-number">200</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">response</span>[<span class="ruby-string">&quot;status&quot;</span>]
+    <span class="ruby-identifier">response</span>[<span class="ruby-string">&quot;status&quot;</span>]
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-value">:error</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_status_path">
+            
+              <b>commit_status_path</b>(sha)
+            
+            <a href="../classes/GitlabCiService.html#method-i-commit_status_path" name="method-i-commit_status_path" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_status_path_source')" id="l_method-i-commit_status_path_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_status_path_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/gitlab_ci_service.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_status_path</span> <span class="ruby-identifier">sha</span>
+  <span class="ruby-identifier">project_url</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/builds/#{sha}/status.json?token=#{token}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-compose_service_hook">
+            
+              <b>compose_service_hook</b>()
+            
+            <a href="../classes/GitlabCiService.html#method-i-compose_service_hook" name="method-i-compose_service_hook" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-compose_service_hook_source')" id="l_method-i-compose_service_hook_source">show</a>
+                
+              </p>
+              <div id="method-i-compose_service_hook_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/gitlab_ci_service.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">compose_service_hook</span>
+  <span class="ruby-identifier">hook</span> = <span class="ruby-identifier">service_hook</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">build_service_hook</span>
+  <span class="ruby-identifier">hook</span>.<span class="ruby-identifier">url</span> = [<span class="ruby-identifier">project_url</span>, <span class="ruby-string">&quot;/build&quot;</span>, <span class="ruby-node">&quot;?token=#{token}&quot;</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;&quot;</span>)
+  <span class="ruby-identifier">hook</span>.<span class="ruby-identifier">save</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

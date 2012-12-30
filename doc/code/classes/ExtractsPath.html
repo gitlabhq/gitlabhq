@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>ExtractsPath</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            ExtractsPath 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/lib/extracts_path_rb.html">lib/extracts_path.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>Module providing methods for dealing with separating a tree-ish string and
+a file path string when combined in a request parameter</p>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">CLASS</span>
+          <a href="ExtractsPath/InvalidPathError.html">ExtractsPath::InvalidPathError</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-assign_ref_vars">assign_ref_vars</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-extract_ref">extract_ref</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-assign_ref_vars">
+            
+              <b>assign_ref_vars</b>()
+            
+            <a href="../classes/ExtractsPath.html#method-i-assign_ref_vars" name="method-i-assign_ref_vars" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Assigns common instance variables for views working with Git tree-ish
+objects</p>
+
+<p>Assignments are:</p>
+<ul><li>
+<p>@id     - A string representing the joined ref and path</p>
+</li><li>
+<p>@ref    - A string representing the ref (e.g., the branch, tag, or commit
+SHA)</p>
+</li><li>
+<p>@path   - A string representing the filesystem path</p>
+</li><li>
+<p>@commit - A <a href="CommitDecorator.html">CommitDecorator</a> representing
+the commit from the given ref</p>
+</li><li>
+<p>@tree   - A <a href="TreeDecorator.html">TreeDecorator</a> representing the
+tree at the given ref/path</p>
+</li></ul>
+
+<p>If the :id parameter appears to be requesting a specific response format,
+that will be handled as well.</p>
+
+<p>Automatically renders `not_found!` if a valid tree path could not be
+resolved (e.g., when a user inserts an invalid path or ref).</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-assign_ref_vars_source')" id="l_method-i-assign_ref_vars_source">show</a>
+                
+              </p>
+              <div id="method-i-assign_ref_vars_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/extracts_path.rb, line 104</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">assign_ref_vars</span>
+  <span class="ruby-comment"># Handle formats embedded in the id</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>].<span class="ruby-identifier">ends_with?</span>(<span class="ruby-string">'.atom'</span>)
+    <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r\.atom$/</span>, <span class="ruby-string">''</span>)
+    <span class="ruby-identifier">request</span>.<span class="ruby-identifier">format</span> = <span class="ruby-value">:atom</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@ref</span>, <span class="ruby-ivar">@path</span> = <span class="ruby-identifier">extract_ref</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">fullpath</span>)
+
+  <span class="ruby-ivar">@id</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@ref</span>, <span class="ruby-ivar">@path</span>)
+
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-ivar">@ref</span>))
+
+  <span class="ruby-ivar">@tree</span> = <span class="ruby-constant">Tree</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@commit</span>.<span class="ruby-identifier">tree</span>, <span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@ref</span>, <span class="ruby-ivar">@path</span>)
+  <span class="ruby-ivar">@tree</span> = <span class="ruby-constant">TreeDecorator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@tree</span>)
+
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidPathError</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@tree</span>.<span class="ruby-identifier">invalid?</span>
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">NoMethodError</span>, <span class="ruby-constant">InvalidPathError</span>
+  <span class="ruby-identifier">not_found!</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-extract_ref">
+            
+              <b>extract_ref</b>(input)
+            
+            <a href="../classes/ExtractsPath.html#method-i-extract_ref" name="method-i-extract_ref" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Given a string containing both a Git tree-ish, such as a branch or tag, and
+a filesystem path joined by forward slashes, attempts to separate the two.</p>
+
+<p>Expects a @project instance variable to contain the active project. This is
+used to check the input against a list of valid repository refs.</p>
+
+<p>Examples</p>
+
+<pre class="ruby"><span class="ruby-comment"># No @project available</span>
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">'master'</span>)
+<span class="ruby-comment"># =&gt; ['', '']</span>
+
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">'master'</span>)
+<span class="ruby-comment"># =&gt; ['master', '']</span>
+
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">&quot;f4b14494ef6abf3d144c28e4af0c20143383e062/CHANGELOG&quot;</span>)
+<span class="ruby-comment"># =&gt; ['f4b14494ef6abf3d144c28e4af0c20143383e062', 'CHANGELOG']</span>
+
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">&quot;v2.0.0/README.md&quot;</span>)
+<span class="ruby-comment"># =&gt; ['v2.0.0', 'README.md']</span>
+
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">'/gitlab/vagrant/tree/master/app/models/project.rb'</span>)
+<span class="ruby-comment"># =&gt; ['master', 'app/models/project.rb']</span>
+
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">'issues/1234/app/models/project.rb'</span>)
+<span class="ruby-comment"># =&gt; ['issues/1234', 'app/models/project.rb']</span>
+
+<span class="ruby-comment"># Given an invalid branch, we fall back to just splitting on the first slash</span>
+<span class="ruby-identifier">extract_ref</span>(<span class="ruby-string">'non/existent/branch/README.md'</span>)
+<span class="ruby-comment"># =&gt; ['non', 'existent/branch/README.md']</span>
+</pre>
+
+<p>Returns an Array where the first value is the tree-ish and the second is
+the path</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-extract_ref_source')" id="l_method-i-extract_ref_source">show</a>
+                
+              </p>
+              <div id="method-i-extract_ref_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/extracts_path.rb, line 48</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">extract_ref</span>(<span class="ruby-identifier">input</span>)
+  <span class="ruby-identifier">pair</span> = [<span class="ruby-string">''</span>, <span class="ruby-string">''</span>]
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">pair</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span>
+
+  <span class="ruby-comment"># Remove project, actions and all other staff from path</span>
+  <span class="ruby-identifier">input</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-node">&quot;/#{@project.path_with_namespace}&quot;</span>, <span class="ruby-string">&quot;&quot;</span>)
+  <span class="ruby-identifier">input</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r^\/(tree|commits|blame|blob)\//</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-comment"># remove actions</span>
+  <span class="ruby-identifier">input</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r\?.*$/</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-comment"># remove stamps suffix</span>
+  <span class="ruby-identifier">input</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r.atom$/</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-comment"># remove rss feed</span>
+  <span class="ruby-identifier">input</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r\/edit$/</span>, <span class="ruby-string">&quot;&quot;</span>) <span class="ruby-comment"># remove edit route part</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">input</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r^([[:alnum:]]{40})(.+)/</span>)
+    <span class="ruby-comment"># If the ref appears to be a SHA, we're done, just split the string</span>
+    <span class="ruby-identifier">pair</span> = <span class="ruby-identifier">$~</span>.<span class="ruby-identifier">captures</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-comment"># Otherwise, attempt to detect the ref using a list of the project's</span>
+    <span class="ruby-comment"># branches and tags</span>
+
+    <span class="ruby-comment"># Append a trailing slash if we only get a ref and no file path</span>
+    <span class="ruby-identifier">id</span> = <span class="ruby-identifier">input</span>
+    <span class="ruby-identifier">id</span> <span class="ruby-operator">+=</span> <span class="ruby-string">'/'</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">id</span>.<span class="ruby-identifier">ends_with?</span>(<span class="ruby-string">'/'</span>)
+
+    <span class="ruby-identifier">valid_refs</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">ref_names</span>
+    <span class="ruby-identifier">valid_refs</span>.<span class="ruby-identifier">select!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">id</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-node">&quot;#{v}/&quot;</span>) }
+
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">valid_refs</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">!=</span> <span class="ruby-number">1</span>
+      <span class="ruby-comment"># No exact ref match, so just try our best</span>
+      <span class="ruby-identifier">pair</span> = <span class="ruby-identifier">id</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r([^\/]+)(.*)/</span>).<span class="ruby-identifier">captures</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-comment"># Partition the string into the ref and the path, ignoring the empty first value</span>
+      <span class="ruby-identifier">pair</span> = <span class="ruby-identifier">id</span>.<span class="ruby-identifier">partition</span>(<span class="ruby-identifier">valid_refs</span>.<span class="ruby-identifier">first</span>)[<span class="ruby-number">1</span><span class="ruby-operator">..</span><span class="ruby-number">-1</span>]
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># Remove ending slashes from path</span>
+  <span class="ruby-identifier">pair</span>[<span class="ruby-number">1</span>].<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r^\/|\/$/</span>, <span class="ruby-string">''</span>)
+
+  <span class="ruby-identifier">pair</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

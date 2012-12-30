@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>UsersProject</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            UsersProject 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/users_project_rb.html">app/models/users_project.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<h2 id="label-Schema+Information">Schema Information</h2>
+
+<p>Table name: users_projects</p>
+
+<pre>id             :integer          not null, primary key
+user_id        :integer          not null
+project_id     :integer          not null
+created_at     :datetime         not null
+updated_at     :datetime         not null
+project_access :integer          default(0), not null</pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-access_roles">access_roles</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-add_users_into_projects">add_users_into_projects</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-bulk_delete">bulk_delete</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-bulk_import">bulk_import</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-bulk_update">bulk_update</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-import_team">import_team</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-project_access_human">project_access_human</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-repo_access_human">repo_access_human</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-role_access">role_access</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-skip_git-3F">skip_git?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-truncate_team">truncate_team</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-truncate_teams">truncate_teams</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update_repository">update_repository</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-user_bulk_import">user_bulk_import</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            <a href="GitHost.html">
+              GitHost
+            </a>
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+      <!-- Section constants -->
+      <div class="sectiontitle">Constants</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class="attr-name">GUEST</td>
+            <td>=</td>
+            <td class="attr-value">10</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">REPORTER</td>
+            <td>=</td>
+            <td class="attr-value">20</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">DEVELOPER</td>
+            <td>=</td>
+            <td class="attr-value">30</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">MASTER</td>
+            <td>=</td>
+            <td class="attr-value">40</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+      </table>
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>skip_git</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-access_roles">
+            
+              <b>access_roles</b>()
+            
+            <a href="../classes/UsersProject.html#method-c-access_roles" name="method-c-access_roles" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-access_roles_source')" id="l_method-c-access_roles_source">show</a>
+                
+              </p>
+              <div id="method-c-access_roles_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 140</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">access_roles</span>
+  {
+    <span class="ruby-string">&quot;Guest&quot;</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">GUEST</span>,
+    <span class="ruby-string">&quot;Reporter&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">REPORTER</span>,
+    <span class="ruby-string">&quot;Developer&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">DEVELOPER</span>,
+    <span class="ruby-string">&quot;Master&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">MASTER</span>
+  }
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-add_users_into_projects">
+            
+              <b>add_users_into_projects</b>(project_ids, user_ids, project_access)
+            
+            <a href="../classes/UsersProject.html#method-c-add_users_into_projects" name="method-c-add_users_into_projects" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-add_users_into_projects_source')" id="l_method-c-add_users_into_projects_source">show</a>
+                
+              </p>
+              <div id="method-c-add_users_into_projects_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_users_into_projects</span>(<span class="ruby-identifier">project_ids</span>, <span class="ruby-identifier">user_ids</span>, <span class="ruby-identifier">project_access</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">project_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">project_id</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">user_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user_id</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">users_project</span> = <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project_access</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_access</span>, <span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user_id</span>)
+        <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">project_id</span> = <span class="ruby-identifier">project_id</span>
+        <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">skip_git</span> = <span class="ruby-keyword">true</span>
+        <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">save</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">Gitolite</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">update_repositories</span>(<span class="ruby-constant">Project</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>))
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-bulk_delete">
+            
+              <b>bulk_delete</b>(project, user_ids)
+            
+            <a href="../classes/UsersProject.html#method-c-bulk_delete" name="method-c-bulk_delete" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-bulk_delete_source')" id="l_method-c-bulk_delete_source">show</a>
+                
+              </p>
+              <div id="method-c-bulk_delete_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 108</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">bulk_delete</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">user_ids</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user_ids</span>, <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project</span>.<span class="ruby-identifier">id</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">users_project</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">skip_git</span> = <span class="ruby-keyword">true</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">destroy</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">project</span>.<span class="ruby-identifier">update_repository</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-bulk_import">
+            
+              <b>bulk_import</b>(project, user_ids, project_access)
+            
+            <a href="../classes/UsersProject.html#method-c-bulk_import" name="method-c-bulk_import" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>TODO: depreceate in future in favor of <a
+href="UsersProject.html#method-c-add_users_into_projects">::add_users_into_projects</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-bulk_import_source')" id="l_method-c-bulk_import_source">show</a>
+                
+              </p>
+              <div id="method-c-bulk_import_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 131</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">bulk_import</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">user_ids</span>, <span class="ruby-identifier">project_access</span>)
+  <span class="ruby-identifier">add_users_into_projects</span>([<span class="ruby-identifier">project</span>.<span class="ruby-identifier">id</span>], <span class="ruby-identifier">user_ids</span>, <span class="ruby-identifier">project_access</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-bulk_update">
+            
+              <b>bulk_update</b>(project, user_ids, project_access)
+            
+            <a href="../classes/UsersProject.html#method-c-bulk_update" name="method-c-bulk_update" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-bulk_update_source')" id="l_method-c-bulk_update_source">show</a>
+                
+              </p>
+              <div id="method-c-bulk_update_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 119</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">bulk_update</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">user_ids</span>, <span class="ruby-identifier">project_access</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user_ids</span>, <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project</span>.<span class="ruby-identifier">id</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">users_project</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">project_access</span> = <span class="ruby-identifier">project_access</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">skip_git</span> = <span class="ruby-keyword">true</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">save</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">project</span>.<span class="ruby-identifier">update_repository</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-import_team">
+            
+              <b>import_team</b>(source_project, target_project)
+            
+            <a href="../classes/UsersProject.html#method-c-import_team" name="method-c-import_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-import_team_source')" id="l_method-c-import_team_source">show</a>
+                
+              </p>
+              <div id="method-c-import_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 78</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">import_team</span>(<span class="ruby-identifier">source_project</span>, <span class="ruby-identifier">target_project</span>)
+  <span class="ruby-identifier">source_team</span> = <span class="ruby-identifier">source_project</span>.<span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">all</span>
+  <span class="ruby-identifier">target_team</span> = <span class="ruby-identifier">target_project</span>.<span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">all</span>
+  <span class="ruby-identifier">target_user_ids</span> = <span class="ruby-identifier">target_team</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:user_id</span>)
+
+  <span class="ruby-identifier">source_team</span>.<span class="ruby-identifier">reject!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tm</span><span class="ruby-operator">|</span>
+    <span class="ruby-comment"># Skip if user already present in team</span>
+    <span class="ruby-identifier">target_user_ids</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">tm</span>.<span class="ruby-identifier">user_id</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">source_team</span>.<span class="ruby-identifier">map!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tm</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">new_tm</span> = <span class="ruby-identifier">tm</span>.<span class="ruby-identifier">dup</span>
+    <span class="ruby-identifier">new_tm</span>.<span class="ruby-identifier">id</span> = <span class="ruby-keyword">nil</span>
+    <span class="ruby-identifier">new_tm</span>.<span class="ruby-identifier">project_id</span> = <span class="ruby-identifier">target_project</span>.<span class="ruby-identifier">id</span>
+    <span class="ruby-identifier">new_tm</span>.<span class="ruby-identifier">skip_git</span> = <span class="ruby-keyword">true</span>
+    <span class="ruby-identifier">new_tm</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">source_team</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tm</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">tm</span>.<span class="ruby-identifier">save</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">target_project</span>.<span class="ruby-identifier">update_repository</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-truncate_team">
+            
+              <b>truncate_team</b>(project)
+            
+            <a href="../classes/UsersProject.html#method-c-truncate_team" name="method-c-truncate_team" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-truncate_team_source')" id="l_method-c-truncate_team_source">show</a>
+                
+              </p>
+              <div id="method-c-truncate_team_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 74</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">truncate_team</span> <span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">truncate_teams</span> [<span class="ruby-identifier">project</span>.<span class="ruby-identifier">id</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-truncate_teams">
+            
+              <b>truncate_teams</b>(project_ids)
+            
+            <a href="../classes/UsersProject.html#method-c-truncate_teams" name="method-c-truncate_teams" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-truncate_teams_source')" id="l_method-c-truncate_teams_source">show</a>
+                
+              </p>
+              <div id="method-c-truncate_teams_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">truncate_teams</span>(<span class="ruby-identifier">project_ids</span>)
+  <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">users_projects</span> = <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>)
+    <span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">users_project</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">skip_git</span> = <span class="ruby-keyword">true</span>
+      <span class="ruby-identifier">users_project</span>.<span class="ruby-identifier">destroy</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">Gitolite</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">update_repositories</span>(<span class="ruby-constant">Project</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">project_ids</span>))
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-user_bulk_import">
+            
+              <b>user_bulk_import</b>(user, project_ids, project_access)
+            
+            <a href="../classes/UsersProject.html#method-c-user_bulk_import" name="method-c-user_bulk_import" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>TODO: depreceate in future in favor of <a
+href="UsersProject.html#method-c-add_users_into_projects">::add_users_into_projects</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-user_bulk_import_source')" id="l_method-c-user_bulk_import_source">show</a>
+                
+              </p>
+              <div id="method-c-user_bulk_import_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 136</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">user_bulk_import</span>(<span class="ruby-identifier">user</span>, <span class="ruby-identifier">project_ids</span>, <span class="ruby-identifier">project_access</span>)
+  <span class="ruby-identifier">add_users_into_projects</span>(<span class="ruby-identifier">project_ids</span>, [<span class="ruby-identifier">user</span>.<span class="ruby-identifier">id</span>], <span class="ruby-identifier">project_access</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-project_access_human">
+            
+              <b>project_access_human</b>()
+            
+            <a href="../classes/UsersProject.html#method-i-project_access_human" name="method-i-project_access_human" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_access_human_source')" id="l_method-i-project_access_human_source">show</a>
+                
+              </p>
+              <div id="method-i-project_access_human_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 158</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_access_human</span>
+  <span class="ruby-constant">Project</span>.<span class="ruby-identifier">access_options</span>.<span class="ruby-identifier">key</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project_access</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-repo_access_human">
+            
+              <b>repo_access_human</b>()
+            
+            <a href="../classes/UsersProject.html#method-i-repo_access_human" name="method-i-repo_access_human" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-repo_access_human_source')" id="l_method-i-repo_access_human_source">show</a>
+                
+              </p>
+              <div id="method-i-repo_access_human_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 162</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">repo_access_human</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">access_roles</span>.<span class="ruby-identifier">invert</span>[<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project_access</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-role_access">
+            
+              <b>role_access</b>()
+            
+            <a href="../classes/UsersProject.html#method-i-role_access" name="method-i-role_access" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-role_access_source')" id="l_method-i-role_access_source">show</a>
+                
+              </p>
+              <div id="method-i-role_access_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 150</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">role_access</span>
+  <span class="ruby-identifier">project_access</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-skip_git-3F">
+            
+              <b>skip_git?</b>()
+            
+            <a href="../classes/UsersProject.html#method-i-skip_git-3F" name="method-i-skip_git-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-skip_git-3F_source')" id="l_method-i-skip_git-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-skip_git-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 166</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">skip_git?</span>
+  <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-ivar">@skip_git</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_repository">
+            
+              <b>update_repository</b>()
+            
+            <a href="../classes/UsersProject.html#method-i-update_repository" name="method-i-update_repository" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_repository_source')" id="l_method-i-update_repository_source">show</a>
+                
+              </p>
+              <div id="method-i-update_repository_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/users_project.rb, line 154</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_repository</span>
+  <span class="ruby-identifier">git_host</span>.<span class="ruby-identifier">update_repository</span>(<span class="ruby-identifier">project</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

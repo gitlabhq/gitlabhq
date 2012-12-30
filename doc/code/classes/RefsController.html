@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>RefsController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            RefsController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ProjectResourceController.html">ProjectResourceController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/refs_controller_rb.html">app/controllers/refs_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-define_tree_vars">define_tree_vars</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-logs_tree">logs_tree</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-ref">ref</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-switch">switch</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-logs_tree">
+            
+              <b>logs_tree</b>()
+            
+            <a href="../classes/RefsController.html#method-i-logs_tree" name="method-i-logs_tree" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-logs_tree_source')" id="l_method-i-logs_tree_source">show</a>
+                
+              </p>
+              <div id="method-i-logs_tree_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/refs_controller.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">logs_tree</span>
+  <span class="ruby-identifier">contents</span> = <span class="ruby-ivar">@tree</span>.<span class="ruby-identifier">contents</span>
+  <span class="ruby-ivar">@logs</span> = <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">content</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">file</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>] <span class="ruby-operator">?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>], <span class="ruby-identifier">content</span>.<span class="ruby-identifier">name</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">content</span>.<span class="ruby-identifier">name</span>
+    <span class="ruby-identifier">last_commit</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">commits</span>(<span class="ruby-ivar">@commit</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">file</span>, <span class="ruby-number">1</span>).<span class="ruby-identifier">last</span>
+    <span class="ruby-identifier">last_commit</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-identifier">last_commit</span>)
+    {
+      <span class="ruby-identifier">file_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">content</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">commit</span><span class="ruby-operator">:</span> <span class="ruby-identifier">last_commit</span>
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-switch">
+            
+              <b>switch</b>()
+            
+            <a href="../classes/RefsController.html#method-i-switch" name="method-i-switch" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-switch_source')" id="l_method-i-switch_source">show</a>
+                
+              </p>
+              <div id="method-i-switch_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/refs_controller.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">switch</span>
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-identifier">new_path</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:destination</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;tree&quot;</span>
+                   <span class="ruby-identifier">project_tree_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@ref</span>)
+                 <span class="ruby-keyword">else</span>
+                   <span class="ruby-identifier">project_commits_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@ref</span>)
+                 <span class="ruby-keyword">end</span>
+
+      <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">new_path</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-ivar">@ref</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:ref</span>]
+      <span class="ruby-identifier">define_tree_vars</span>
+      <span class="ruby-identifier">render</span> <span class="ruby-string">&quot;tree&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-define_tree_vars">
+            
+              <b>define_tree_vars</b>()
+            
+            <a href="../classes/RefsController.html#method-i-define_tree_vars" name="method-i-define_tree_vars" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-define_tree_vars_source')" id="l_method-i-define_tree_vars_source">show</a>
+                
+              </p>
+              <div id="method-i-define_tree_vars_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/refs_controller.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">define_tree_vars</span>
+  <span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>] = <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>].<span class="ruby-identifier">blank?</span>
+
+  <span class="ruby-ivar">@repo</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repo</span>
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-ivar">@ref</span>)
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-ivar">@commit</span>)
+  <span class="ruby-ivar">@tree</span> = <span class="ruby-constant">Tree</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@commit</span>.<span class="ruby-identifier">tree</span>, <span class="ruby-identifier">project</span>, <span class="ruby-ivar">@ref</span>, <span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>])
+  <span class="ruby-ivar">@tree</span> = <span class="ruby-constant">TreeDecorator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@tree</span>)
+  <span class="ruby-ivar">@hex_path</span> = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">SHA1</span>.<span class="ruby-identifier">hexdigest</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>] <span class="ruby-operator">||</span> <span class="ruby-string">&quot;&quot;</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>]
+    <span class="ruby-ivar">@logs_path</span> = <span class="ruby-identifier">logs_file_project_ref_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@ref</span>, <span class="ruby-identifier">params</span>[<span class="ruby-value">:path</span>])
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@logs_path</span> = <span class="ruby-identifier">logs_tree_project_ref_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@ref</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-ref">
+            
+              <b>ref</b>()
+            
+            <a href="../classes/RefsController.html#method-i-ref" name="method-i-ref" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ref_source')" id="l_method-i-ref_source">show</a>
+                
+              </p>
+              <div id="method-i-ref_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/refs_controller.rb, line 64</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">ref</span>
+  <span class="ruby-ivar">@ref</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:ref</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

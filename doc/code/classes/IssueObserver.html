@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>IssueObserver</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            IssueObserver 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Observer
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/observers/issue_observer_rb.html">app/observers/issue_observer.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-after_create">after_create</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-after_update">after_update</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-send_reassigned_email">send_reassigned_email</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-after_create">
+            
+              <b>after_create</b>(issue)
+            
+            <a href="../classes/IssueObserver.html#method-i-after_create" name="method-i-after_create" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-after_create_source')" id="l_method-i-after_create_source">show</a>
+                
+              </p>
+              <div id="method-i-after_create_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/observers/issue_observer.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">after_create</span>(<span class="ruby-identifier">issue</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">assignee</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">assignee</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">current_user</span>
+    <span class="ruby-constant">Notify</span>.<span class="ruby-identifier">new_issue_email</span>(<span class="ruby-identifier">issue</span>.<span class="ruby-identifier">id</span>).<span class="ruby-identifier">deliver</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-after_update">
+            
+              <b>after_update</b>(issue)
+            
+            <a href="../classes/IssueObserver.html#method-i-after_update" name="method-i-after_update" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-after_update_source')" id="l_method-i-after_update_source">show</a>
+                
+              </p>
+              <div id="method-i-after_update_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/observers/issue_observer.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">after_update</span>(<span class="ruby-identifier">issue</span>)
+  <span class="ruby-identifier">send_reassigned_email</span>(<span class="ruby-identifier">issue</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">is_being_reassigned?</span>
+
+  <span class="ruby-identifier">status</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-identifier">status</span> = <span class="ruby-string">'closed'</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">is_being_closed?</span>
+  <span class="ruby-identifier">status</span> = <span class="ruby-string">'reopened'</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">is_being_reopened?</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">status</span>
+    <span class="ruby-constant">Note</span>.<span class="ruby-identifier">create_status_change_note</span>(<span class="ruby-identifier">issue</span>, <span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">status</span>)
+    [<span class="ruby-identifier">issue</span>.<span class="ruby-identifier">author</span>, <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">assignee</span>].<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">recipient</span><span class="ruby-operator">|</span>
+      <span class="ruby-constant">Notify</span>.<span class="ruby-identifier">issue_status_changed_email</span>(<span class="ruby-identifier">recipient</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">status</span>, <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">id</span>).<span class="ruby-identifier">deliver</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-send_reassigned_email">
+            
+              <b>send_reassigned_email</b>(issue)
+            
+            <a href="../classes/IssueObserver.html#method-i-send_reassigned_email" name="method-i-send_reassigned_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-send_reassigned_email_source')" id="l_method-i-send_reassigned_email_source">show</a>
+                
+              </p>
+              <div id="method-i-send_reassigned_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/observers/issue_observer.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">send_reassigned_email</span>(<span class="ruby-identifier">issue</span>)
+  <span class="ruby-identifier">recipient_ids</span> = [<span class="ruby-identifier">issue</span>.<span class="ruby-identifier">assignee_id</span>, <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">assignee_id_was</span>].<span class="ruby-identifier">keep_if</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span> <span class="ruby-identifier">id</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">id</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">id</span> }
+
+  <span class="ruby-identifier">recipient_ids</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">recipient_id</span><span class="ruby-operator">|</span>
+    <span class="ruby-constant">Notify</span>.<span class="ruby-identifier">reassigned_issue_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">issue</span>.<span class="ruby-identifier">assignee_id_was</span>).<span class="ruby-identifier">deliver</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

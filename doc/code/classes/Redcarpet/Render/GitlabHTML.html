@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Redcarpet::Render::GitlabHTML</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Redcarpet::Render::GitlabHTML 
+            
+                <span class="parent">&lt; 
+                    
+                    Redcarpet::Render::HTML
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/redcarpet/render/gitlab_html_rb.html">lib/redcarpet/render/gitlab_html.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-block_code">block_code</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-postprocess">postprocess</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>h</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>template</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(template, options = {})
+            
+            <a href="../../../classes/Redcarpet/Render/GitlabHTML.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/redcarpet/render/gitlab_html.rb, line 6</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span>(<span class="ruby-identifier">template</span>, <span class="ruby-identifier">options</span> = {})
+  <span class="ruby-ivar">@template</span> = <span class="ruby-identifier">template</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@template</span>.<span class="ruby-identifier">instance_variable_get</span>(<span class="ruby-string">&quot;@project&quot;</span>)
+  <span class="ruby-keyword">super</span> <span class="ruby-identifier">options</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-block_code">
+            
+              <b>block_code</b>(code, language)
+            
+            <a href="../../../classes/Redcarpet/Render/GitlabHTML.html#method-i-block_code" name="method-i-block_code" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-block_code_source')" id="l_method-i-block_code_source">show</a>
+                
+              </p>
+              <div id="method-i-block_code_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/redcarpet/render/gitlab_html.rb, line 12</span>
+  <span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">block_code</span>(<span class="ruby-identifier">code</span>, <span class="ruby-identifier">language</span>)
+    <span class="ruby-identifier">options</span> = { <span class="ruby-identifier">options</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">encoding</span><span class="ruby-operator">:</span> <span class="ruby-string">'utf-8'</span>} }
+    <span class="ruby-identifier">options</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">lexer</span><span class="ruby-operator">:</span> <span class="ruby-identifier">language</span>.<span class="ruby-identifier">downcase</span>) <span class="ruby-keyword">if</span> <span class="ruby-constant">Pygments</span><span class="ruby-operator">::</span><span class="ruby-constant">Lexer</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">language</span>)
+
+    <span class="ruby-comment"># New lines are placed to fix an rendering issue</span>
+    <span class="ruby-comment"># with code wrapped inside &lt;h1&gt; tag for next case:</span>
+    <span class="ruby-comment">#</span>
+    <span class="ruby-comment"># # Title kinda h1</span>
+    <span class="ruby-comment">#</span>
+    <span class="ruby-comment">#     ruby code here</span>
+    <span class="ruby-comment">#</span>
+    <span class="ruby-string">&quot;
+       &lt;div class=&quot;#{h.user_color_scheme_class}&quot;&gt;#{Pygments.highlight(code, options)}&lt;/div&gt;
+
+&quot;</span>
+  <span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-postprocess">
+            
+              <b>postprocess</b>(full_document)
+            
+            <a href="../../../classes/Redcarpet/Render/GitlabHTML.html#method-i-postprocess" name="method-i-postprocess" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-postprocess_source')" id="l_method-i-postprocess_source">show</a>
+                
+              </p>
+              <div id="method-i-postprocess_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/redcarpet/render/gitlab_html.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">postprocess</span>(<span class="ruby-identifier">full_document</span>)
+  <span class="ruby-identifier">h</span>.<span class="ruby-identifier">gfm</span>(<span class="ruby-identifier">full_document</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

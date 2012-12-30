@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>RepositoriesController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            RepositoriesController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ProjectResourceController.html">ProjectResourceController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/repositories_controller_rb.html">app/controllers/repositories_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-archive">archive</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-branches">branches</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-show">show</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-stats">stats</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-tags">tags</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-archive">
+            
+              <b>archive</b>()
+            
+            <a href="../classes/RepositoriesController.html#method-i-archive" name="method-i-archive" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-archive_source')" id="l_method-i-archive_source">show</a>
+                
+              </p>
+              <div id="method-i-archive_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/repositories_controller.rb, line 24</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">archive</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:download_code</span>, <span class="ruby-ivar">@project</span>)
+    <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">and</span> <span class="ruby-keyword">return</span>
+  <span class="ruby-keyword">end</span>
+
+
+  <span class="ruby-identifier">file_path</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">archive_repo</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:ref</span>])
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">file_path</span>
+    <span class="ruby-comment"># Send file to user</span>
+    <span class="ruby-identifier">send_file</span> <span class="ruby-identifier">file_path</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">render_404</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-branches">
+            
+              <b>branches</b>()
+            
+            <a href="../classes/RepositoriesController.html#method-i-branches" name="method-i-branches" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-branches_source')" id="l_method-i-branches_source">show</a>
+                
+              </p>
+              <div id="method-i-branches_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/repositories_controller.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">branches</span>
+  <span class="ruby-ivar">@branches</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">branches</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-show">
+            
+              <b>show</b>()
+            
+            <a href="../classes/RepositoriesController.html#method-i-show" name="method-i-show" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-show_source')" id="l_method-i-show_source">show</a>
+                
+              </p>
+              <div id="method-i-show_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/repositories_controller.rb, line 7</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">show</span>
+  <span class="ruby-ivar">@activities</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">commits_with_refs</span>(<span class="ruby-number">20</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-stats">
+            
+              <b>stats</b>()
+            
+            <a href="../classes/RepositoriesController.html#method-i-stats" name="method-i-stats" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-stats_source')" id="l_method-i-stats_source">show</a>
+                
+              </p>
+              <div id="method-i-stats_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/repositories_controller.rb, line 19</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">stats</span>
+  <span class="ruby-ivar">@stats</span> = <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">GitStats</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">repo</span>, <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">root_ref</span>)
+  <span class="ruby-ivar">@graph</span> = <span class="ruby-ivar">@stats</span>.<span class="ruby-identifier">graph</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tags">
+            
+              <b>tags</b>()
+            
+            <a href="../classes/RepositoriesController.html#method-i-tags" name="method-i-tags" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tags_source')" id="l_method-i-tags_source">show</a>
+                
+              </p>
+              <div id="method-i-tags_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/repositories_controller.rb, line 15</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tags</span>
+  <span class="ruby-ivar">@tags</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">tags</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

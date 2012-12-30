@@ -1,0 +1,1266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Event</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Event 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/event_rb.html">app/models/event.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<h2 id="label-Schema+Information">Schema Information</h2>
+
+<p>Table name: events</p>
+
+<pre>id          :integer          not null, primary key
+target_type :string(255)
+target_id   :integer
+title       :string(255)
+data        :text
+project_id  :integer
+created_at  :datetime         not null
+updated_at  :datetime         not null
+action      :integer
+author_id   :integer</pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-action_name">action_name</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-author">author</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-changed_issue-3F">changed_issue?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-changed_merge_request-3F">changed_merge_request?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-closed-3F">closed?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-determine_action">determine_action</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-issue">issue</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-issue-3F">issue?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>J</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-joined-3F">joined?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-left-3F">left?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-membership_changed-3F">membership_changed?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-merge_request">merge_request</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-merge_request-3F">merge_request?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-merged-3F">merged?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-milestone-3F">milestone?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new_issue-3F">new_issue?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-new_merge_request-3F">new_merge_request?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note-3F">note?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-project_name">project_name</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-proper-3F">proper?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-push-3F">push?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-reopened-3F">reopened?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-target_title">target_title</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            <a href="NoteEvent.html">
+              NoteEvent
+            </a>
+          
+        </li>
+      
+        <li>
+          
+            <a href="PushEvent.html">
+              PushEvent
+            </a>
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+      <!-- Section constants -->
+      <div class="sectiontitle">Constants</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class="attr-name">Created</td>
+            <td>=</td>
+            <td class="attr-value">1</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Updated</td>
+            <td>=</td>
+            <td class="attr-value">2</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Closed</td>
+            <td>=</td>
+            <td class="attr-value">3</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Reopened</td>
+            <td>=</td>
+            <td class="attr-value">4</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Pushed</td>
+            <td>=</td>
+            <td class="attr-value">5</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Commented</td>
+            <td>=</td>
+            <td class="attr-value">6</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Merged</td>
+            <td>=</td>
+            <td class="attr-value">7</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Joined</td>
+            <td>=</td>
+            <td class="attr-value">8</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">Left</td>
+            <td>=</td>
+            <td class="attr-value">9</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+      </table>
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-determine_action">
+            
+              <b>determine_action</b>(record)
+            
+            <a href="../classes/Event.html#method-c-determine_action" name="method-c-determine_action" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-determine_action_source')" id="l_method-c-determine_action_source">show</a>
+                
+              </p>
+              <div id="method-c-determine_action_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">determine_action</span>(<span class="ruby-identifier">record</span>)
+  <span class="ruby-keyword">if</span> [<span class="ruby-constant">Issue</span>, <span class="ruby-constant">MergeRequest</span>].<span class="ruby-identifier">include?</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>
+    <span class="ruby-constant">Event</span><span class="ruby-operator">::</span><span class="ruby-constant">Created</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Note</span>
+    <span class="ruby-constant">Event</span><span class="ruby-operator">::</span><span class="ruby-constant">Commented</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-action_name">
+            
+              <b>action_name</b>()
+            
+            <a href="../classes/Event.html#method-i-action_name" name="method-i-action_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-action_name_source')" id="l_method-i-action_name_source">show</a>
+                
+              </p>
+              <div id="method-i-action_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 160</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">action_name</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">closed?</span>
+    <span class="ruby-string">&quot;closed&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">merged?</span>
+    <span class="ruby-string">&quot;merged&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">joined?</span>
+    <span class="ruby-string">'joined'</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">left?</span>
+    <span class="ruby-string">'left'</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-string">&quot;opened&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-author">
+            
+              <b>author</b>()
+            
+            <a href="../classes/Event.html#method-i-author" name="method-i-author" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-author_source')" id="l_method-i-author_source">show</a>
+                
+              </p>
+              <div id="method-i-author_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 156</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">author</span>
+  <span class="ruby-ivar">@author</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">author_id</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-changed_issue-3F">
+            
+              <b>changed_issue?</b>()
+            
+            <a href="../classes/Event.html#method-i-changed_issue-3F" name="method-i-changed_issue-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-changed_issue-3F_source')" id="l_method-i-changed_issue-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-changed_issue-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 131</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">changed_issue?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Issue&quot;</span> <span class="ruby-operator">&amp;&amp;</span>
+    [<span class="ruby-constant">Closed</span>, <span class="ruby-constant">Reopened</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">action</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-changed_merge_request-3F">
+            
+              <b>changed_merge_request?</b>()
+            
+            <a href="../classes/Event.html#method-i-changed_merge_request-3F" name="method-i-changed_merge_request-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-changed_merge_request-3F_source')" id="l_method-i-changed_merge_request-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-changed_merge_request-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 126</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">changed_merge_request?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;MergeRequest&quot;</span> <span class="ruby-operator">&amp;&amp;</span>
+    [<span class="ruby-constant">Closed</span>, <span class="ruby-constant">Reopened</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">action</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-closed-3F">
+            
+              <b>closed?</b>()
+            
+            <a href="../classes/Event.html#method-i-closed-3F" name="method-i-closed-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-closed-3F_source')" id="l_method-i-closed-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-closed-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 92</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">closed?</span>
+  <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">::</span><span class="ruby-constant">Closed</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-issue">
+            
+              <b>issue</b>()
+            
+            <a href="../classes/Event.html#method-i-issue" name="method-i-issue" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-issue_source')" id="l_method-i-issue_source">show</a>
+                
+              </p>
+              <div id="method-i-issue_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 148</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">issue</span>
+  <span class="ruby-identifier">target</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Issue&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-issue-3F">
+            
+              <b>issue?</b>()
+            
+            <a href="../classes/Event.html#method-i-issue-3F" name="method-i-issue-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-issue-3F_source')" id="l_method-i-issue-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-issue-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 108</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">issue?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Issue&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-joined-3F">
+            
+              <b>joined?</b>()
+            
+            <a href="../classes/Event.html#method-i-joined-3F" name="method-i-joined-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-joined-3F_source')" id="l_method-i-joined-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-joined-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 136</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">joined?</span>
+  <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Joined</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-left-3F">
+            
+              <b>left?</b>()
+            
+            <a href="../classes/Event.html#method-i-left-3F" name="method-i-left-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-left-3F_source')" id="l_method-i-left-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-left-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 140</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">left?</span>
+  <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Left</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-membership_changed-3F">
+            
+              <b>membership_changed?</b>()
+            
+            <a href="../classes/Event.html#method-i-membership_changed-3F" name="method-i-membership_changed-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-membership_changed-3F_source')" id="l_method-i-membership_changed-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-membership_changed-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 144</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">membership_changed?</span>
+  <span class="ruby-identifier">joined?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">left?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-merge_request">
+            
+              <b>merge_request</b>()
+            
+            <a href="../classes/Event.html#method-i-merge_request" name="method-i-merge_request" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-merge_request_source')" id="l_method-i-merge_request_source">show</a>
+                
+              </p>
+              <div id="method-i-merge_request_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 152</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">merge_request</span>
+  <span class="ruby-identifier">target</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;MergeRequest&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-merge_request-3F">
+            
+              <b>merge_request?</b>()
+            
+            <a href="../classes/Event.html#method-i-merge_request-3F" name="method-i-merge_request-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-merge_request-3F_source')" id="l_method-i-merge_request-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-merge_request-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 112</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">merge_request?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;MergeRequest&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-merged-3F">
+            
+              <b>merged?</b>()
+            
+            <a href="../classes/Event.html#method-i-merged-3F" name="method-i-merged-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-merged-3F_source')" id="l_method-i-merged-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-merged-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 88</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">merged?</span>
+  <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">::</span><span class="ruby-constant">Merged</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-milestone-3F">
+            
+              <b>milestone?</b>()
+            
+            <a href="../classes/Event.html#method-i-milestone-3F" name="method-i-milestone-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-milestone-3F_source')" id="l_method-i-milestone-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-milestone-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 100</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">milestone?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Milestone&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_issue-3F">
+            
+              <b>new_issue?</b>()
+            
+            <a href="../classes/Event.html#method-i-new_issue-3F" name="method-i-new_issue-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_issue-3F_source')" id="l_method-i-new_issue-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-new_issue-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_issue?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Issue&quot;</span> <span class="ruby-operator">&amp;&amp;</span>
+    <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Created</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_merge_request-3F">
+            
+              <b>new_merge_request?</b>()
+            
+            <a href="../classes/Event.html#method-i-new_merge_request-3F" name="method-i-new_merge_request-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_merge_request-3F_source')" id="l_method-i-new_merge_request-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-new_merge_request-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 121</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_merge_request?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;MergeRequest&quot;</span> <span class="ruby-operator">&amp;&amp;</span>
+    <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Created</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note-3F">
+            
+              <b>note?</b>()
+            
+            <a href="../classes/Event.html#method-i-note-3F" name="method-i-note-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note-3F_source')" id="l_method-i-note-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-note-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 104</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note?</span>
+  <span class="ruby-identifier">target_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Note&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project_name">
+            
+              <b>project_name</b>()
+            
+            <a href="../classes/Event.html#method-i-project_name" name="method-i-project_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_name_source')" id="l_method-i-project_name_source">show</a>
+                
+              </p>
+              <div id="method-i-project_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_name</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">project</span>
+    <span class="ruby-identifier">project</span>.<span class="ruby-identifier">name</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-string">&quot;(deleted project)&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-proper-3F">
+            
+              <b>proper?</b>()
+            
+            <a href="../classes/Event.html#method-i-proper-3F" name="method-i-proper-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-proper-3F_source')" id="l_method-i-proper-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-proper-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 62</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">proper?</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">push?</span>
+    <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">membership_changed?</span>
+    <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">else</span>
+    (<span class="ruby-identifier">issue?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">merge_request?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">note?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">milestone?</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">target</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-push-3F">
+            
+              <b>push?</b>()
+            
+            <a href="../classes/Event.html#method-i-push-3F" name="method-i-push-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-push-3F_source')" id="l_method-i-push-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-push-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 84</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">push?</span>
+  <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">::</span><span class="ruby-constant">Pushed</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">valid_push?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-reopened-3F">
+            
+              <b>reopened?</b>()
+            
+            <a href="../classes/Event.html#method-i-reopened-3F" name="method-i-reopened-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-reopened-3F_source')" id="l_method-i-reopened-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-reopened-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 96</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">reopened?</span>
+  <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">::</span><span class="ruby-constant">Reopened</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-target_title">
+            
+              <b>target_title</b>()
+            
+            <a href="../classes/Event.html#method-i-target_title" name="method-i-target_title" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-target_title_source')" id="l_method-i-target_title_source">show</a>
+                
+              </p>
+              <div id="method-i-target_title_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/event.rb, line 80</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">target_title</span>
+  <span class="ruby-identifier">target</span>.<span class="ruby-identifier">try</span> <span class="ruby-value">:title</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

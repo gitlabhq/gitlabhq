@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Grack::Auth</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Grack::Auth 
+            
+                <span class="parent">&lt; 
+                    
+                    Rack::Auth::Basic
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/backend/grack_auth_rb.html">lib/gitlab/backend/grack_auth.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-abilities">abilities</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-can-3F">can?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-current_ref">current_ref</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>V</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-valid-3F">valid?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-validate_get_request">validate_get_request</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-validate_post_request">validate_post_request</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>project</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>user</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-can-3F">
+            
+              <b>can?</b>(object, action, subject)
+            
+            <a href="../../classes/Grack/Auth.html#method-i-can-3F" name="method-i-can-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-can-3F_source')" id="l_method-i-can-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-can-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/grack_auth.rb, line 56</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">can?</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+  <span class="ruby-identifier">abilities</span>.<span class="ruby-identifier">allowed?</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-current_ref">
+            
+              <b>current_ref</b>()
+            
+            <a href="../../classes/Grack/Auth.html#method-i-current_ref" name="method-i-current_ref" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-current_ref_source')" id="l_method-i-current_ref_source">show</a>
+                
+              </p>
+              <div id="method-i-current_ref_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/grack_auth.rb, line 60</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">current_ref</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@env</span>[<span class="ruby-string">&quot;HTTP_CONTENT_ENCODING&quot;</span>] <span class="ruby-operator">=~</span> <span class="ruby-regexp">%rgzip/</span>
+    <span class="ruby-identifier">input</span> = <span class="ruby-constant">Zlib</span><span class="ruby-operator">::</span><span class="ruby-constant">GzipReader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@request</span>.<span class="ruby-identifier">body</span>).<span class="ruby-identifier">read</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">input</span> = <span class="ruby-ivar">@request</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-comment"># Need to reset seek point</span>
+  <span class="ruby-ivar">@request</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">rewind</span>
+  <span class="ruby-regexp">%rrefs\/heads\/([\w\.-]+)/</span>.<span class="ruby-identifier">match</span>(<span class="ruby-identifier">input</span>).<span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">first</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-valid-3F">
+            
+              <b>valid?</b>()
+            
+            <a href="../../classes/Grack/Auth.html#method-i-valid-3F" name="method-i-valid-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-valid-3F_source')" id="l_method-i-valid-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-valid-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/grack_auth.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">valid?</span>
+  <span class="ruby-comment"># Authentication with username and password</span>
+  <span class="ruby-identifier">login</span>, <span class="ruby-identifier">password</span> = <span class="ruby-ivar">@auth</span>.<span class="ruby-identifier">credentials</span>
+
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">find_by_email</span>(<span class="ruby-identifier">login</span>) <span class="ruby-operator">||</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">find_by_username</span>(<span class="ruby-identifier">login</span>)
+
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:valid_password?</span>, <span class="ruby-identifier">password</span>)
+
+  <span class="ruby-identifier">email</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>
+
+  <span class="ruby-comment"># Set GL_USER env variable</span>
+  <span class="ruby-constant">ENV</span>[<span class="ruby-string">'GL_USER'</span>] = <span class="ruby-identifier">email</span>
+  <span class="ruby-comment"># Pass Gitolite update hook</span>
+  <span class="ruby-constant">ENV</span>[<span class="ruby-string">'GL_BYPASS_UPDATE_HOOK'</span>] = <span class="ruby-string">&quot;true&quot;</span>
+
+  <span class="ruby-comment"># Find project by PATH_INFO from env</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">m</span> = <span class="ruby-regexp">%r^\/([\w\.\/-]+)\.git/</span>.<span class="ruby-identifier">match</span>(<span class="ruby-ivar">@request</span>.<span class="ruby-identifier">path_info</span>).<span class="ruby-identifier">to_a</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">project</span> = <span class="ruby-constant">Project</span>.<span class="ruby-identifier">find_with_namespace</span>(<span class="ruby-identifier">m</span>.<span class="ruby-identifier">last</span>)
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">project</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># Git upload and receive</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@request</span>.<span class="ruby-identifier">get?</span>
+    <span class="ruby-identifier">validate_get_request</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-ivar">@request</span>.<span class="ruby-identifier">post?</span>
+    <span class="ruby-identifier">validate_post_request</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">false</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-validate_get_request">
+            
+              <b>validate_get_request</b>()
+            
+            <a href="../../classes/Grack/Auth.html#method-i-validate_get_request" name="method-i-validate_get_request" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-validate_get_request_source')" id="l_method-i-validate_get_request_source">show</a>
+                
+              </p>
+              <div id="method-i-validate_get_request_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/grack_auth.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">validate_get_request</span>
+  <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">user</span>, <span class="ruby-value">:download_code</span>, <span class="ruby-identifier">project</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-validate_post_request">
+            
+              <b>validate_post_request</b>()
+            
+            <a href="../../classes/Grack/Auth.html#method-i-validate_post_request" name="method-i-validate_post_request" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-validate_post_request_source')" id="l_method-i-validate_post_request_source">show</a>
+                
+              </p>
+              <div id="method-i-validate_post_request_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/grack_auth.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">validate_post_request</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@request</span>.<span class="ruby-identifier">path_info</span>.<span class="ruby-identifier">end_with?</span>(<span class="ruby-string">'git-upload-pack'</span>)
+    <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">user</span>, <span class="ruby-value">:download_code</span>, <span class="ruby-identifier">project</span>)
+  <span class="ruby-keyword">elsif</span> <span class="ruby-ivar">@request</span>.<span class="ruby-identifier">path_info</span>.<span class="ruby-identifier">end_with?</span>(<span class="ruby-string">'git-receive-pack'</span>)
+    <span class="ruby-identifier">action</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">project</span>.<span class="ruby-identifier">protected_branch?</span>(<span class="ruby-identifier">current_ref</span>)
+               <span class="ruby-value">:push_code_to_protected_branches</span>
+             <span class="ruby-keyword">else</span>
+               <span class="ruby-value">:push_code</span>
+             <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">user</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">project</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">false</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-abilities">
+            
+              <b>abilities</b>()
+            
+            <a href="../../classes/Grack/Auth.html#method-i-abilities" name="method-i-abilities" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-abilities_source')" id="l_method-i-abilities_source">show</a>
+                
+              </p>
+              <div id="method-i-abilities_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/backend/grack_auth.rb, line 73</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">abilities</span>
+  <span class="ruby-ivar">@abilities</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">begin</span>
+                   <span class="ruby-identifier">abilities</span> = <span class="ruby-constant">Six</span>.<span class="ruby-identifier">new</span>
+                   <span class="ruby-identifier">abilities</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Ability</span>
+                   <span class="ruby-identifier">abilities</span>
+                 <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>GitlabMarkdownHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            GitlabMarkdownHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/gitlab_markdown_helper_rb.html">app/helpers/gitlab_markdown_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-link_to_gfm">link_to_gfm</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-markdown">markdown</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            <a href="Gitlab/Markdown.html">
+              Gitlab::Markdown
+            </a>
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-link_to_gfm">
+            
+              <b>link_to_gfm</b>(body, url, html_options = {})
+            
+            <a href="../classes/GitlabMarkdownHelper.html#method-i-link_to_gfm" name="method-i-link_to_gfm" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Use this in places where you would normally use link_to(gfm(…), …).</p>
+
+<p>It solves a problem occurring with nested links (i.e. “&lt;a&gt;outer text
+&lt;a&gt;gfm ref&lt;/a&gt; more outer text&lt;/a&gt;”). This will not be
+interpreted as intended. Browsers will parse something like “&lt;a&gt;outer
+text &lt;/a&gt;&lt;a&gt;gfm ref&lt;/a&gt; more outer text” (notice the last
+part is not linked any more). <a
+href="GitlabMarkdownHelper.html#method-i-link_to_gfm">#link_to_gfm</a>
+corrects that. It wraps all parts to explicitly produce the correct linking
+behavior (i.e. “&lt;a&gt;outer text &lt;/a&gt;&lt;a&gt;gfm
+ref&lt;/a&gt;&lt;a&gt; more outer text&lt;/a&gt;”).</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-link_to_gfm_source')" id="l_method-i-link_to_gfm_source">show</a>
+                
+              </p>
+              <div id="method-i-link_to_gfm_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/gitlab_markdown_helper.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">link_to_gfm</span>(<span class="ruby-identifier">body</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">html_options</span> = {})
+  <span class="ruby-keyword">return</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">body</span>.<span class="ruby-identifier">blank?</span>
+
+  <span class="ruby-identifier">gfm_body</span> = <span class="ruby-identifier">gfm</span>(<span class="ruby-identifier">escape_once</span>(<span class="ruby-identifier">body</span>), <span class="ruby-identifier">html_options</span>)
+
+  <span class="ruby-identifier">gfm_body</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r{&lt;a.*?&gt;.*?&lt;/a&gt;}</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">match</span><span class="ruby-operator">|</span>
+    <span class="ruby-node">&quot;&lt;/a&gt;#{match}#{link_to(&quot;&quot;, url, html_options)[0..-5]}&quot;</span> <span class="ruby-comment"># &quot;&lt;/a&gt;&quot;.length +1</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">link_to</span>(<span class="ruby-identifier">gfm_body</span>.<span class="ruby-identifier">html_safe</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">html_options</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-markdown">
+            
+              <b>markdown</b>(text)
+            
+            <a href="../classes/GitlabMarkdownHelper.html#method-i-markdown" name="method-i-markdown" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-markdown_source')" id="l_method-i-markdown_source">show</a>
+                
+              </p>
+              <div id="method-i-markdown_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/gitlab_markdown_helper.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">markdown</span>(<span class="ruby-identifier">text</span>)
+  <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@markdown</span>
+    <span class="ruby-identifier">gitlab_renderer</span> = <span class="ruby-constant">Redcarpet</span><span class="ruby-operator">::</span><span class="ruby-constant">Render</span><span class="ruby-operator">::</span><span class="ruby-constant">GitlabHTML</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>,
+                        <span class="ruby-comment"># see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-</span>
+                        <span class="ruby-identifier">filter_html</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-identifier">with_toc_data</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-identifier">hard_wrap</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)
+    <span class="ruby-ivar">@markdown</span> = <span class="ruby-constant">Redcarpet</span><span class="ruby-operator">::</span><span class="ruby-constant">Markdown</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">gitlab_renderer</span>,
+                    <span class="ruby-comment"># see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use</span>
+                    <span class="ruby-identifier">no_intra_emphasis</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">tables</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">fenced_code_blocks</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">autolink</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">strikethrough</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">lax_html_blocks</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">space_after_headers</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>,
+                    <span class="ruby-identifier">superscript</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@markdown</span>.<span class="ruby-identifier">render</span>(<span class="ruby-identifier">text</span>).<span class="ruby-identifier">html_safe</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

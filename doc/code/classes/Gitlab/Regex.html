@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Regex</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            Gitlab::Regex 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/regex_rb.html">lib/gitlab/regex.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-default_regex">default_regex</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-path_regex">path_regex</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-project_name_regex">project_name_regex</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-username_regex">username_regex</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-path_regex">
+            
+              <b>path_regex</b>()
+            
+            <a href="../../classes/Gitlab/Regex.html#method-i-path_regex" name="method-i-path_regex" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-path_regex_source')" id="l_method-i-path_regex_source">show</a>
+                
+              </p>
+              <div id="method-i-path_regex_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/regex.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">path_regex</span>
+  <span class="ruby-identifier">default_regex</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project_name_regex">
+            
+              <b>project_name_regex</b>()
+            
+            <a href="../../classes/Gitlab/Regex.html#method-i-project_name_regex" name="method-i-project_name_regex" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_name_regex_source')" id="l_method-i-project_name_regex_source">show</a>
+                
+              </p>
+              <div id="method-i-project_name_regex_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/regex.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_name_regex</span>
+  <span class="ruby-regexp">%r\A[a-zA-Z][a-zA-Z0-9_\-\. ]*\z/</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-username_regex">
+            
+              <b>username_regex</b>()
+            
+            <a href="../../classes/Gitlab/Regex.html#method-i-username_regex" name="method-i-username_regex" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-username_regex_source')" id="l_method-i-username_regex_source">show</a>
+                
+              </p>
+              <div id="method-i-username_regex_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/regex.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">username_regex</span>
+  <span class="ruby-identifier">default_regex</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-default_regex">
+            
+              <b>default_regex</b>()
+            
+            <a href="../../classes/Gitlab/Regex.html#method-i-default_regex" name="method-i-default_regex" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-default_regex_source')" id="l_method-i-default_regex_source">show</a>
+                
+              </p>
+              <div id="method-i-default_regex_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/regex.rb, line 19</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">default_regex</span>
+  <span class="ruby-regexp">%r\A[a-zA-Z][a-zA-Z0-9_\-\.]*\z/</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Satellite::EditFileAction</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::Satellite::EditFileAction 
+            
+                <span class="parent">&lt; 
+                    
+                    Action
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/gitlab/satellite/edit_file_action_rb.html">lib/gitlab/satellite/edit_file_action.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>GitLab server-side file update and commit</p>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-can_edit-3F">can_edit?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commit-21">commit!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>file_path</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>ref</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(user, project, ref, file_path)
+            
+            <a href="../../../classes/Gitlab/Satellite/EditFileAction.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/satellite/edit_file_action.rb, line 7</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span>(<span class="ruby-identifier">user</span>, <span class="ruby-identifier">project</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">file_path</span>)
+  <span class="ruby-keyword">super</span> <span class="ruby-identifier">user</span>, <span class="ruby-identifier">project</span>, <span class="ruby-identifier">git_timeout</span><span class="ruby-operator">:</span> <span class="ruby-number">10</span>.<span class="ruby-identifier">seconds</span>
+  <span class="ruby-ivar">@file_path</span> = <span class="ruby-identifier">file_path</span>
+  <span class="ruby-ivar">@ref</span> = <span class="ruby-identifier">ref</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-commit-21">
+            
+              <b>commit!</b>(content, commit_message, last_commit)
+            
+            <a href="../../../classes/Gitlab/Satellite/EditFileAction.html#method-i-commit-21" name="method-i-commit-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Updates the files content and creates a new commit for it</p>
+
+<p>Returns false if the ref has been updated while editing the file Returns
+false if commiting the change fails Returns false if pushing from the
+satellite to <a href="../Gitolite.html">Gitolite</a> failed or was rejected
+Returns true otherwise</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit-21_source')" id="l_method-i-commit-21_source">show</a>
+                
+              </p>
+              <div id="method-i-commit-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/satellite/edit_file_action.rb, line 19</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit!</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">commit_message</span>, <span class="ruby-identifier">last_commit</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can_edit?</span>(<span class="ruby-identifier">last_commit</span>)
+
+  <span class="ruby-identifier">in_locked_and_timed_satellite</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">repo</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">prepare_satellite!</span>(<span class="ruby-identifier">repo</span>)
+
+    <span class="ruby-comment"># create target branch in satellite at the corresponding commit from Gitolite</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">git</span>.<span class="ruby-identifier">checkout</span>({<span class="ruby-identifier">raise</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">timeout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">b</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>}, <span class="ruby-identifier">ref</span>, <span class="ruby-node">&quot;origin/#{ref}&quot;</span>)
+
+    <span class="ruby-comment"># update the file in the satellite's working dir</span>
+    <span class="ruby-identifier">file_path_in_satellite</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">repo</span>.<span class="ruby-identifier">working_dir</span>, <span class="ruby-identifier">file_path</span>)
+    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">file_path_in_satellite</span>, <span class="ruby-string">'w'</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">content</span>) }
+
+    <span class="ruby-comment"># commit the changes</span>
+    <span class="ruby-comment"># will raise CommandFailed when commit fails</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">git</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">raise</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">timeout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">a</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">m</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit_message</span>)
+
+
+    <span class="ruby-comment"># push commit back to Gitolite</span>
+    <span class="ruby-comment"># will raise CommandFailed when push fails</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">git</span>.<span class="ruby-identifier">push</span>({<span class="ruby-identifier">raise</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">timeout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>}, <span class="ruby-value">:origin</span>, <span class="ruby-identifier">ref</span>)
+
+    <span class="ruby-comment"># everything worked</span>
+    <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">Git</span><span class="ruby-operator">::</span><span class="ruby-constant">CommandFailed</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">GitLogger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>)
+  <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-can_edit-3F">
+            
+              <b>can_edit?</b>(last_commit)
+            
+            <a href="../../../classes/Gitlab/Satellite/EditFileAction.html#method-i-can_edit-3F" name="method-i-can_edit-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-can_edit-3F_source')" id="l_method-i-can_edit-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-can_edit-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/satellite/edit_file_action.rb, line 51</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">can_edit?</span>(<span class="ruby-identifier">last_commit</span>)
+  <span class="ruby-identifier">current_last_commit</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">last_commit_for</span>(<span class="ruby-identifier">ref</span>, <span class="ruby-identifier">file_path</span>).<span class="ruby-identifier">sha</span>
+  <span class="ruby-identifier">last_commit</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">current_last_commit</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

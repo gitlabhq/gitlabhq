@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>TreeHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            TreeHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/tree_helper_rb.html">app/helpers/tree_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-allowed_tree_edit-3F">allowed_tree_edit?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-breadcrumbs">breadcrumbs</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-gitlab_markdown-3F">gitlab_markdown?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-markup-3F">markup?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-plain_text_readme-3F">plain_text_readme?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-render_tree">render_tree</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-tree_hex_class">tree_hex_class</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-tree_icon">tree_icon</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-tree_join">tree_join</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-allowed_tree_edit-3F">
+            
+              <b>allowed_tree_edit?</b>()
+            
+            <a href="../classes/TreeHelper.html#method-i-allowed_tree_edit-3F" name="method-i-allowed_tree_edit-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-allowed_tree_edit-3F_source')" id="l_method-i-allowed_tree_edit-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-allowed_tree_edit-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 63</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">allowed_tree_edit?</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">protected_branch?</span> <span class="ruby-ivar">@ref</span>
+    <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:push_code_to_protected_branches</span>, <span class="ruby-ivar">@project</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:push_code</span>, <span class="ruby-ivar">@project</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-breadcrumbs">
+            
+              <b>breadcrumbs</b>()
+            
+            <a href="../classes/TreeHelper.html#method-i-breadcrumbs" name="method-i-breadcrumbs" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Breadcrumb links for a <a href="Project.html">Project</a> and, if
+applicable, a tree path</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-breadcrumbs_source')" id="l_method-i-breadcrumbs_source">show</a>
+                
+              </p>
+              <div id="method-i-breadcrumbs_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">breadcrumbs</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@ref</span>
+
+  <span class="ruby-comment"># Add the root project link and the arrow icon</span>
+  <span class="ruby-identifier">crumbs</span> = <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:li</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:span</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-keyword">class</span><span class="ruby-operator">:</span> <span class="ruby-string">'arrow'</span>) <span class="ruby-operator">+</span>
+    <span class="ruby-keyword ruby-title">link_to</span>(<span class="ruby-ivar">@project</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">project_commits_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@ref</span>))
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@path</span>
+    <span class="ruby-identifier">parts</span> = <span class="ruby-ivar">@path</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">'/'</span>)
+
+    <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">part</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">crumbs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:span</span>, <span class="ruby-string">'/'</span>, <span class="ruby-keyword">class</span><span class="ruby-operator">:</span> <span class="ruby-string">'divider'</span>)
+      <span class="ruby-keyword ruby-title">crumbs</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:li</span>) <span class="ruby-keyword">do</span>
+        <span class="ruby-comment"># The text is just the individual part, but the link needs all the parts before it</span>
+        <span class="ruby-identifier">link_to</span> <span class="ruby-identifier">part</span>, <span class="ruby-identifier">project_commits_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-identifier">tree_join</span>(<span class="ruby-ivar">@ref</span>, <span class="ruby-identifier">parts</span>[<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">i</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">'/'</span>)))
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">crumbs</span>.<span class="ruby-identifier">html_safe</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-gitlab_markdown-3F">
+            
+              <b>gitlab_markdown?</b>(filename)
+            
+            <a href="../classes/TreeHelper.html#method-i-gitlab_markdown-3F" name="method-i-gitlab_markdown-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-gitlab_markdown-3F_source')" id="l_method-i-gitlab_markdown-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-gitlab_markdown-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 50</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">gitlab_markdown?</span>(<span class="ruby-identifier">filename</span>)
+  <span class="ruby-identifier">filename</span>.<span class="ruby-identifier">end_with?</span>(*<span class="ruby-node">%w(.mdown .md .markdown)</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-markup-3F">
+            
+              <b>markup?</b>(filename)
+            
+            <a href="../classes/TreeHelper.html#method-i-markup-3F" name="method-i-markup-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Public: Determines if a given filename is compatible with GitHub::Markup.</p>
+
+<p>filename - Filename string to check</p>
+
+<p>Returns boolean</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-markup-3F_source')" id="l_method-i-markup-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-markup-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">markup?</span>(<span class="ruby-identifier">filename</span>)
+  <span class="ruby-identifier">filename</span>.<span class="ruby-identifier">end_with?</span>(*<span class="ruby-node">%w(.textile .rdoc .org .creole
+                         .mediawiki .rst .asciidoc .pod)</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-plain_text_readme-3F">
+            
+              <b>plain_text_readme?</b>(filename)
+            
+            <a href="../classes/TreeHelper.html#method-i-plain_text_readme-3F" name="method-i-plain_text_readme-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-plain_text_readme-3F_source')" id="l_method-i-plain_text_readme-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-plain_text_readme-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 54</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">plain_text_readme?</span> <span class="ruby-identifier">filename</span>
+  <span class="ruby-identifier">filename</span> <span class="ruby-operator">==</span> <span class="ruby-string">'README'</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-render_tree">
+            
+              <b>render_tree</b>(contents)
+            
+            <a href="../classes/TreeHelper.html#method-i-render_tree" name="method-i-render_tree" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Sorts a repository’s tree so that folders are before files and renders
+their corresponding partials</p>
+
+<p>contents - A Grit::Tree object for the current tree</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-render_tree_source')" id="l_method-i-render_tree_source">show</a>
+                
+              </p>
+              <div id="method-i-render_tree_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 6</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">render_tree</span>(<span class="ruby-identifier">contents</span>)
+  <span class="ruby-comment"># Render Folders before Files/Submodules</span>
+  <span class="ruby-identifier">folders</span>, <span class="ruby-identifier">files</span> = <span class="ruby-identifier">contents</span>.<span class="ruby-identifier">partition</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">Tree</span>) }
+
+  <span class="ruby-identifier">tree</span> = <span class="ruby-string">&quot;&quot;</span>
+
+  <span class="ruby-comment"># Render folders if we have any</span>
+  <span class="ruby-identifier">tree</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">render</span> <span class="ruby-identifier">partial</span><span class="ruby-operator">:</span> <span class="ruby-string">'tree/tree_item'</span>, <span class="ruby-identifier">collection</span><span class="ruby-operator">:</span> <span class="ruby-identifier">folders</span>, <span class="ruby-identifier">locals</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">type</span><span class="ruby-operator">:</span> <span class="ruby-string">'folder'</span>} <span class="ruby-keyword">if</span> <span class="ruby-identifier">folders</span>.<span class="ruby-identifier">present?</span>
+
+  <span class="ruby-identifier">files</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:url</span>)
+      <span class="ruby-comment"># Object is a Submodule</span>
+      <span class="ruby-identifier">tree</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">render</span> <span class="ruby-identifier">partial</span><span class="ruby-operator">:</span> <span class="ruby-string">'tree/submodule_item'</span>, <span class="ruby-identifier">object</span><span class="ruby-operator">:</span> <span class="ruby-identifier">f</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-comment"># Object is a Blob</span>
+      <span class="ruby-identifier">tree</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">render</span> <span class="ruby-identifier">partial</span><span class="ruby-operator">:</span> <span class="ruby-string">'tree/tree_item'</span>, <span class="ruby-identifier">object</span><span class="ruby-operator">:</span> <span class="ruby-identifier">f</span>, <span class="ruby-identifier">locals</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">type</span><span class="ruby-operator">:</span> <span class="ruby-string">'file'</span>}
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">tree</span>.<span class="ruby-identifier">html_safe</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tree_hex_class">
+            
+              <b>tree_hex_class</b>(content)
+            
+            <a href="../classes/TreeHelper.html#method-i-tree_hex_class" name="method-i-tree_hex_class" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tree_hex_class_source')" id="l_method-i-tree_hex_class_source">show</a>
+                
+              </p>
+              <div id="method-i-tree_hex_class_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tree_hex_class</span>(<span class="ruby-identifier">content</span>)
+  <span class="ruby-node">&quot;file_#{hexdigest(content.name)}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tree_icon">
+            
+              <b>tree_icon</b>(type)
+            
+            <a href="../classes/TreeHelper.html#method-i-tree_icon" name="method-i-tree_icon" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Return an image icon depending on the file type</p>
+
+<p>type - String type of the tree item; either ‘folder’ or ‘file’</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tree_icon_source')" id="l_method-i-tree_icon_source">show</a>
+                
+              </p>
+              <div id="method-i-tree_icon_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 31</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tree_icon</span>(<span class="ruby-identifier">type</span>)
+  <span class="ruby-identifier">image</span> = <span class="ruby-identifier">type</span> <span class="ruby-operator">==</span> <span class="ruby-string">'folder'</span> <span class="ruby-operator">?</span> <span class="ruby-string">'file_dir.png'</span> <span class="ruby-operator">:</span> <span class="ruby-string">'file_txt.png'</span>
+  <span class="ruby-identifier">image_tag</span>(<span class="ruby-identifier">image</span>, <span class="ruby-identifier">size</span><span class="ruby-operator">:</span> <span class="ruby-string">'16x16'</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tree_join">
+            
+              <b>tree_join</b>(*args)
+            
+            <a href="../classes/TreeHelper.html#method-i-tree_join" name="method-i-tree_join" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Simple shortcut to File.join</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tree_join_source')" id="l_method-i-tree_join_source">show</a>
+                
+              </p>
+              <div id="method-i-tree_join_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tree_helper.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tree_join</span>(*<span class="ruby-identifier">args</span>)
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(*<span class="ruby-identifier">args</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

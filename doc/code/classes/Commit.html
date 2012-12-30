@@ -1,0 +1,1077 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Commit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Commit 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/commit_rb.html">app/models/commit.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-author_email">author_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-author_name">author_name</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-commits">commits</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-commits_between">commits_between</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-commits_since">commits_since</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-commits_with_refs">commits_with_refs</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-committer_email">committer_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-committer_name">committer_name</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-compare">compare</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-created_at">created_at</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-different_committer-3F">different_committer?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-find_or_first">find_or_first</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-fresh_commits">fresh_commits</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-parents_count">parents_count</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-prev_commit">prev_commit</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-prev_commit_id">prev_commit_id</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-safe_message">safe_message</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-short_id">short_id</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-to_diff">to_diff</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            ActiveModel::Conversion
+          
+        </li>
+      
+        <li>
+          
+            <a href="StaticModel.html">
+              StaticModel
+            </a>
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+      <!-- Section constants -->
+      <div class="sectiontitle">Constants</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class="attr-name">DIFF_SAFE_SIZE</td>
+            <td>=</td>
+            <td class="attr-value">100</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"><p>Safe amount of files with diffs in one commit to render Used to prevent 500
+error on huge commits by suppressing diff</p></td>
+            </tr>
+          
+        
+      </table>
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>commit</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>head</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>refs</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-commits">
+            
+              <b>commits</b>(repo, ref, path = nil, limit = nil, offset = nil)
+            
+            <a href="../classes/Commit.html#method-c-commits" name="method-c-commits" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-commits_source')" id="l_method-c-commits_source">show</a>
+                
+              </p>
+              <div id="method-c-commits_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 62</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">path</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">limit</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">offset</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">log</span>(<span class="ruby-identifier">ref</span>, <span class="ruby-identifier">path</span>, <span class="ruby-identifier">max_count</span><span class="ruby-operator">:</span> <span class="ruby-identifier">limit</span>, <span class="ruby-identifier">skip</span><span class="ruby-operator">:</span> <span class="ruby-identifier">offset</span>)
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">limit</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">offset</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commits</span>(<span class="ruby-identifier">ref</span>, <span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commits</span>(<span class="ruby-identifier">ref</span>)
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">map</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">c</span>) }
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-commits_between">
+            
+              <b>commits_between</b>(repo, from, to)
+            
+            <a href="../classes/Commit.html#method-c-commits_between" name="method-c-commits_between" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-commits_between_source')" id="l_method-c-commits_between_source">show</a>
+                
+              </p>
+              <div id="method-c-commits_between_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits_between</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-identifier">from</span>, <span class="ruby-identifier">to</span>)
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commits_between</span>(<span class="ruby-identifier">from</span>, <span class="ruby-identifier">to</span>).<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">c</span>) }
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-commits_since">
+            
+              <b>commits_since</b>(repo, date)
+            
+            <a href="../classes/Commit.html#method-c-commits_since" name="method-c-commits_since" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-commits_since_source')" id="l_method-c-commits_since_source">show</a>
+                
+              </p>
+              <div id="method-c-commits_since_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 50</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits_since</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-identifier">date</span>)
+  <span class="ruby-identifier">commits</span> = <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">heads</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">h</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">log</span>(<span class="ruby-identifier">h</span>.<span class="ruby-identifier">name</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">since</span><span class="ruby-operator">:</span> <span class="ruby-identifier">date</span>).<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">c</span>, <span class="ruby-identifier">h</span>) }
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">uniq</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">id</span> }
+
+  <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">sort!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">y</span>.<span class="ruby-identifier">committed_date</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">committed_date</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">commits</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-commits_with_refs">
+            
+              <b>commits_with_refs</b>(repo, n = 20)
+            
+            <a href="../classes/Commit.html#method-c-commits_with_refs" name="method-c-commits_with_refs" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-commits_with_refs_source')" id="l_method-c-commits_with_refs_source">show</a>
+                
+              </p>
+              <div id="method-c-commits_with_refs_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits_with_refs</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-identifier">n</span> = <span class="ruby-number">20</span>)
+  <span class="ruby-identifier">commits</span> = <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">branches</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">ref</span><span class="ruby-operator">|</span> <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">ref</span>.<span class="ruby-identifier">commit</span>, <span class="ruby-identifier">ref</span>) }
+
+  <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">sort!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">y</span>.<span class="ruby-identifier">committed_date</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">committed_date</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">commits</span>[<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">n</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-compare">
+            
+              <b>compare</b>(project, from, to)
+            
+            <a href="../classes/Commit.html#method-c-compare" name="method-c-compare" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-compare_source')" id="l_method-c-compare_source">show</a>
+                
+              </p>
+              <div id="method-c-compare_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 76</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">compare</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">from</span>, <span class="ruby-identifier">to</span>)
+  <span class="ruby-identifier">result</span> = {
+    <span class="ruby-identifier">commits</span><span class="ruby-operator">:</span> [],
+    <span class="ruby-identifier">diffs</span><span class="ruby-operator">:</span> [],
+    <span class="ruby-identifier">commit</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>,
+    <span class="ruby-identifier">same</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>
+  }
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">result</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">from</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">to</span>
+
+  <span class="ruby-identifier">first</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">to</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:strip</span>))
+  <span class="ruby-identifier">last</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">from</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:strip</span>))
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">first</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">last</span>
+    <span class="ruby-identifier">result</span>[<span class="ruby-value">:same</span>] = (<span class="ruby-identifier">first</span>.<span class="ruby-identifier">id</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">last</span>.<span class="ruby-identifier">id</span>)
+    <span class="ruby-identifier">result</span>[<span class="ruby-value">:commits</span>] = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commits_between</span>(<span class="ruby-identifier">last</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">first</span>.<span class="ruby-identifier">id</span>).<span class="ruby-identifier">map</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">c</span>)}
+    <span class="ruby-identifier">result</span>[<span class="ruby-value">:diffs</span>] = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repo</span>.<span class="ruby-identifier">diff</span>(<span class="ruby-identifier">last</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">first</span>.<span class="ruby-identifier">id</span>) <span class="ruby-keyword">rescue</span> []
+    <span class="ruby-identifier">result</span>[<span class="ruby-value">:commit</span>] = <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">first</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">result</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-find_or_first">
+            
+              <b>find_or_first</b>(repo, commit_id = nil, root_ref)
+            
+            <a href="../classes/Commit.html#method-c-find_or_first" name="method-c-find_or_first" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-find_or_first_source')" id="l_method-c-find_or_first_source">show</a>
+                
+              </p>
+              <div id="method-c-find_or_first_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">find_or_first</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-identifier">commit_id</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">root_ref</span>)
+  <span class="ruby-identifier">commit</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">commit_id</span>
+             <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">commit_id</span>)
+           <span class="ruby-keyword">else</span>
+             <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commits</span>(<span class="ruby-identifier">root_ref</span>).<span class="ruby-identifier">first</span>
+           <span class="ruby-keyword">end</span>
+
+  <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">commit</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">commit</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-fresh_commits">
+            
+              <b>fresh_commits</b>(repo, n = 10)
+            
+            <a href="../classes/Commit.html#method-c-fresh_commits" name="method-c-fresh_commits" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-fresh_commits_source')" id="l_method-c-fresh_commits_source">show</a>
+                
+              </p>
+              <div id="method-c-fresh_commits_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 28</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">fresh_commits</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-identifier">n</span> = <span class="ruby-number">10</span>)
+  <span class="ruby-identifier">commits</span> = <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">heads</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">h</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commits</span>(<span class="ruby-identifier">h</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">n</span>).<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">c</span>, <span class="ruby-identifier">h</span>) }
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">uniq</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">id</span> }
+
+  <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">sort!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">y</span>.<span class="ruby-identifier">committed_date</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">x</span>.<span class="ruby-identifier">committed_date</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">commits</span>[<span class="ruby-number">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">n</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(raw_commit, head = nil)
+            
+            <a href="../classes/Commit.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 100</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span>(<span class="ruby-identifier">raw_commit</span>, <span class="ruby-identifier">head</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-identifier">raw_commit</span>
+  <span class="ruby-ivar">@head</span> = <span class="ruby-identifier">head</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-author_email">
+            
+              <b>author_email</b>()
+            
+            <a href="../classes/Commit.html#method-i-author_email" name="method-i-author_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-author_email_source')" id="l_method-i-author_email_source">show</a>
+                
+              </p>
+              <div id="method-i-author_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 117</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">author_email</span>
+  <span class="ruby-identifier">author</span>.<span class="ruby-identifier">email</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-author_name">
+            
+              <b>author_name</b>()
+            
+            <a href="../classes/Commit.html#method-i-author_name" name="method-i-author_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-author_name_source')" id="l_method-i-author_name_source">show</a>
+                
+              </p>
+              <div id="method-i-author_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 121</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">author_name</span>
+  <span class="ruby-identifier">author</span>.<span class="ruby-identifier">name</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-committer_email">
+            
+              <b>committer_email</b>()
+            
+            <a href="../classes/Commit.html#method-i-committer_email" name="method-i-committer_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-committer_email_source')" id="l_method-i-committer_email_source">show</a>
+                
+              </p>
+              <div id="method-i-committer_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 134</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">committer_email</span>
+  <span class="ruby-identifier">committer</span>.<span class="ruby-identifier">email</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-committer_name">
+            
+              <b>committer_name</b>()
+            
+            <a href="../classes/Commit.html#method-i-committer_name" name="method-i-committer_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-committer_name_source')" id="l_method-i-committer_name_source">show</a>
+                
+              </p>
+              <div id="method-i-committer_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 130</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">committer_name</span>
+  <span class="ruby-identifier">committer</span>.<span class="ruby-identifier">name</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-created_at">
+            
+              <b>created_at</b>()
+            
+            <a href="../classes/Commit.html#method-i-created_at" name="method-i-created_at" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-created_at_source')" id="l_method-i-created_at_source">show</a>
+                
+              </p>
+              <div id="method-i-created_at_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 113</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">created_at</span>
+  <span class="ruby-identifier">committed_date</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-different_committer-3F">
+            
+              <b>different_committer?</b>()
+            
+            <a href="../classes/Commit.html#method-i-different_committer-3F" name="method-i-different_committer-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Was this commit committed by a different person than the original author?</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-different_committer-3F_source')" id="l_method-i-different_committer-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-different_committer-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 126</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">different_committer?</span>
+  <span class="ruby-identifier">author_name</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">committer_name</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">author_email</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">committer_email</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-parents_count">
+            
+              <b>parents_count</b>()
+            
+            <a href="../classes/Commit.html#method-i-parents_count" name="method-i-parents_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-parents_count_source')" id="l_method-i-parents_count_source">show</a>
+                
+              </p>
+              <div id="method-i-parents_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 146</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">parents_count</span>
+  <span class="ruby-identifier">parents</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">parents</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">||</span> <span class="ruby-number">0</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-prev_commit">
+            
+              <b>prev_commit</b>()
+            
+            <a href="../classes/Commit.html#method-i-prev_commit" name="method-i-prev_commit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-prev_commit_source')" id="l_method-i-prev_commit_source">show</a>
+                
+              </p>
+              <div id="method-i-prev_commit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 138</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">prev_commit</span>
+  <span class="ruby-identifier">parents</span>.<span class="ruby-identifier">try</span> <span class="ruby-value">:first</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-prev_commit_id">
+            
+              <b>prev_commit_id</b>()
+            
+            <a href="../classes/Commit.html#method-i-prev_commit_id" name="method-i-prev_commit_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-prev_commit_id_source')" id="l_method-i-prev_commit_id_source">show</a>
+                
+              </p>
+              <div id="method-i-prev_commit_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 142</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">prev_commit_id</span>
+  <span class="ruby-identifier">prev_commit</span>.<span class="ruby-identifier">try</span> <span class="ruby-value">:id</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-safe_message">
+            
+              <b>safe_message</b>()
+            
+            <a href="../classes/Commit.html#method-i-safe_message" name="method-i-safe_message" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-safe_message_source')" id="l_method-i-safe_message_source">show</a>
+                
+              </p>
+              <div id="method-i-safe_message_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 109</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">safe_message</span>
+  <span class="ruby-ivar">@safe_message</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">message</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-short_id">
+            
+              <b>short_id</b>(length = 10)
+            
+            <a href="../classes/Commit.html#method-i-short_id" name="method-i-short_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-short_id_source')" id="l_method-i-short_id_source">show</a>
+                
+              </p>
+              <div id="method-i-short_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 105</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">short_id</span>(<span class="ruby-identifier">length</span> = <span class="ruby-number">10</span>)
+  <span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_s</span>[<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">length</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-to_diff">
+            
+              <b>to_diff</b>()
+            
+            <a href="../classes/Commit.html#method-i-to_diff" name="method-i-to_diff" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Shows the diff between the commit’s parent and the commit.</p>
+
+<p>Cuts out the header and stats from to_patch and returns only the diff.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_diff_source')" id="l_method-i-to_diff_source">show</a>
+                
+              </p>
+              <div id="method-i-to_diff_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/commit.rb, line 153</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">to_diff</span>
+  <span class="ruby-comment"># see Grit::Commit#show</span>
+  <span class="ruby-identifier">patch</span> = <span class="ruby-identifier">to_patch</span>
+
+  <span class="ruby-comment"># discard lines before the diff</span>
+  <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">patch</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+  <span class="ruby-keyword">while</span> <span class="ruby-operator">!</span><span class="ruby-identifier">lines</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;diff --git&quot;</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">shift</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">pop</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r^[\d.]+$/</span> <span class="ruby-comment"># Git version</span>
+  <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">pop</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;-- &quot;</span>      <span class="ruby-comment"># end of diff</span>
+  <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

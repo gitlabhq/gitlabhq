@@ -1,0 +1,703 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::APIHelpers</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            Gitlab::APIHelpers 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/api/helpers_rb.html">lib/api/helpers.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-attributes_for_keys">attributes_for_keys</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authenticate-21">authenticate!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authenticated_as_admin-21">authenticated_as_admin!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authorize-21">authorize!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-can-3F">can?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-current_user">current_user</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-find_project">find_project</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-forbidden-21">forbidden!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-not_allowed-21">not_allowed!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-not_found-21">not_found!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-paginate">paginate</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-render_api_error-21">render_api_error!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-unauthorized-21">unauthorized!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-user_project">user_project</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-attributes_for_keys">
+            
+              <b>attributes_for_keys</b>(keys)
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-attributes_for_keys" name="method-i-attributes_for_keys" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-attributes_for_keys_source')" id="l_method-i-attributes_for_keys_source">show</a>
+                
+              </p>
+              <div id="method-i-attributes_for_keys_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">attributes_for_keys</span>(<span class="ruby-identifier">keys</span>)
+  <span class="ruby-identifier">attrs</span> = {}
+  <span class="ruby-identifier">keys</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">attrs</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">params</span>[<span class="ruby-identifier">key</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">key</span>].<span class="ruby-identifier">present?</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">attrs</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authenticate-21">
+            
+              <b>authenticate!</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-authenticate-21" name="method-i-authenticate-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authenticate-21_source')" id="l_method-i-authenticate-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authenticate-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authenticate!</span>
+  <span class="ruby-identifier">unauthorized!</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">current_user</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authenticated_as_admin-21">
+            
+              <b>authenticated_as_admin!</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-authenticated_as_admin-21" name="method-i-authenticated_as_admin-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authenticated_as_admin-21_source')" id="l_method-i-authenticated_as_admin-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authenticated_as_admin-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authenticated_as_admin!</span>
+  <span class="ruby-identifier">forbidden!</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">is_admin?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize-21">
+            
+              <b>authorize!</b>(action, subject)
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-authorize-21" name="method-i-authorize-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize-21_source')" id="l_method-i-authorize-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 34</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize!</span> <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">abilities</span>.<span class="ruby-identifier">allowed?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+    <span class="ruby-identifier">forbidden!</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-can-3F">
+            
+              <b>can?</b>(object, action, subject)
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-can-3F" name="method-i-can-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-can-3F_source')" id="l_method-i-can-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-can-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">can?</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+  <span class="ruby-identifier">abilities</span>.<span class="ruby-identifier">allowed?</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-current_user">
+            
+              <b>current_user</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-current_user" name="method-i-current_user" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-current_user_source')" id="l_method-i-current_user_source">show</a>
+                
+              </p>
+              <div id="method-i-current_user_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 3</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">current_user</span>
+  <span class="ruby-ivar">@current_user</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">find_by_authentication_token</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:private_token</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;HTTP_PRIVATE_TOKEN&quot;</span>])
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-find_project">
+            
+              <b>find_project</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-find_project" name="method-i-find_project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-find_project_source')" id="l_method-i-find_project_source">show</a>
+                
+              </p>
+              <div id="method-i-find_project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">find_project</span>
+  <span class="ruby-identifier">project</span> = <span class="ruby-constant">Project</span>.<span class="ruby-identifier">find_by_id</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]) <span class="ruby-operator">||</span> <span class="ruby-constant">Project</span>.<span class="ruby-identifier">find_with_namespace</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>])
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">project</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:read_project</span>, <span class="ruby-identifier">project</span>)
+    <span class="ruby-identifier">project</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-forbidden-21">
+            
+              <b>forbidden!</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-forbidden-21" name="method-i-forbidden-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>error helpers</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-forbidden-21_source')" id="l_method-i-forbidden-21_source">show</a>
+                
+              </p>
+              <div id="method-i-forbidden-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 54</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">forbidden!</span>
+  <span class="ruby-identifier">render_api_error!</span>(<span class="ruby-string">'403 Forbidden'</span>, <span class="ruby-number">403</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-not_allowed-21">
+            
+              <b>not_allowed!</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-not_allowed-21" name="method-i-not_allowed-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-not_allowed-21_source')" id="l_method-i-not_allowed-21_source">show</a>
+                
+              </p>
+              <div id="method-i-not_allowed-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 69</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">not_allowed!</span>
+  <span class="ruby-identifier">render_api_error!</span>(<span class="ruby-string">'Method Not Allowed'</span>, <span class="ruby-number">405</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-not_found-21">
+            
+              <b>not_found!</b>(resource = nil)
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-not_found-21" name="method-i-not_found-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-not_found-21_source')" id="l_method-i-not_found-21_source">show</a>
+                
+              </p>
+              <div id="method-i-not_found-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 58</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">not_found!</span>(<span class="ruby-identifier">resource</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">message</span> = [<span class="ruby-string">&quot;404&quot;</span>]
+  <span class="ruby-identifier">message</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">resource</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">resource</span>
+  <span class="ruby-identifier">message</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;Not Found&quot;</span>
+  <span class="ruby-identifier">render_api_error!</span>(<span class="ruby-identifier">message</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">' '</span>), <span class="ruby-number">404</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-paginate">
+            
+              <b>paginate</b>(object)
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-paginate" name="method-i-paginate" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-paginate_source')" id="l_method-i-paginate_source">show</a>
+                
+              </p>
+              <div id="method-i-paginate_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 22</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">paginate</span>(<span class="ruby-identifier">object</span>)
+  <span class="ruby-identifier">object</span>.<span class="ruby-identifier">page</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]).<span class="ruby-identifier">per</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:per_page</span>].<span class="ruby-identifier">to_i</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-render_api_error-21">
+            
+              <b>render_api_error!</b>(message, status)
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-render_api_error-21" name="method-i-render_api_error-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-render_api_error-21_source')" id="l_method-i-render_api_error-21_source">show</a>
+                
+              </p>
+              <div id="method-i-render_api_error-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 73</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">render_api_error!</span>(<span class="ruby-identifier">message</span>, <span class="ruby-identifier">status</span>)
+  <span class="ruby-identifier">error!</span>({<span class="ruby-string">'message'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">message</span>}, <span class="ruby-identifier">status</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-unauthorized-21">
+            
+              <b>unauthorized!</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-unauthorized-21" name="method-i-unauthorized-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-unauthorized-21_source')" id="l_method-i-unauthorized-21_source">show</a>
+                
+              </p>
+              <div id="method-i-unauthorized-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 65</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">unauthorized!</span>
+  <span class="ruby-identifier">render_api_error!</span>(<span class="ruby-string">'401 Unauthorized'</span>, <span class="ruby-number">401</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-user_project">
+            
+              <b>user_project</b>()
+            
+            <a href="../../classes/Gitlab/APIHelpers.html#method-i-user_project" name="method-i-user_project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-user_project_source')" id="l_method-i-user_project_source">show</a>
+                
+              </p>
+              <div id="method-i-user_project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/api/helpers.rb, line 7</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">user_project</span>
+  <span class="ruby-ivar">@project</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">find_project</span>
+  <span class="ruby-ivar">@project</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">not_found!</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

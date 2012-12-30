@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Graph::Commit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::Graph::Commit 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/gitlab/graph/commit_rb.html">lib/gitlab/graph/commit.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-add_refs">add_refs</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-method_missing">method_missing</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-to_graph_hash">to_graph_hash</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            ActionView::Helpers::TagHelper
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>refs</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>space</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>time</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(commit)
+            
+            <a href="../../../classes/Gitlab/Graph/Commit.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/commit.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span>(<span class="ruby-identifier">commit</span>)
+  <span class="ruby-ivar">@_commit</span> = <span class="ruby-identifier">commit</span>
+  <span class="ruby-ivar">@time</span> = <span class="ruby-number">-1</span>
+  <span class="ruby-ivar">@space</span> = <span class="ruby-number">0</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-add_refs">
+            
+              <b>add_refs</b>(ref_cache, repo)
+            
+            <a href="../../../classes/Gitlab/Graph/Commit.html#method-i-add_refs" name="method-i-add_refs" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-add_refs_source')" id="l_method-i-add_refs_source">show</a>
+                
+              </p>
+              <div id="method-i-add_refs_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/commit.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_refs</span>(<span class="ruby-identifier">ref_cache</span>, <span class="ruby-identifier">repo</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">ref_cache</span>.<span class="ruby-identifier">empty?</span>
+    <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">refs</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ref</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">ref_cache</span>[<span class="ruby-identifier">ref</span>.<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">id</span>] <span class="ruby-operator">||=</span> []
+      <span class="ruby-identifier">ref_cache</span>[<span class="ruby-identifier">ref</span>.<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">id</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">ref</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-ivar">@refs</span> = <span class="ruby-identifier">ref_cache</span>[<span class="ruby-ivar">@_commit</span>.<span class="ruby-identifier">id</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">ref_cache</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-ivar">@_commit</span>.<span class="ruby-identifier">id</span>)
+  <span class="ruby-ivar">@refs</span> <span class="ruby-operator">||=</span> []
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-method_missing">
+            
+              <b>method_missing</b>(m, *args, &amp;block)
+            
+            <a href="../../../classes/Gitlab/Graph/Commit.html#method-i-method_missing" name="method-i-method_missing" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-method_missing_source')" id="l_method-i-method_missing_source">show</a>
+                
+              </p>
+              <div id="method-i-method_missing_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/commit.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">method_missing</span>(<span class="ruby-identifier">m</span>, *<span class="ruby-identifier">args</span>, &amp;<span class="ruby-identifier">block</span>)
+  <span class="ruby-ivar">@_commit</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">m</span>, *<span class="ruby-identifier">args</span>, &amp;<span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-to_graph_hash">
+            
+              <b>to_graph_hash</b>()
+            
+            <a href="../../../classes/Gitlab/Graph/Commit.html#method-i-to_graph_hash" name="method-i-to_graph_hash" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_graph_hash_source')" id="l_method-i-to_graph_hash_source">show</a>
+                
+              </p>
+              <div id="method-i-to_graph_hash_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/commit.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">to_graph_hash</span>
+  <span class="ruby-identifier">h</span> = {}
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:parents</span>] = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">collect</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+    [<span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>,<span class="ruby-number">0</span>,<span class="ruby-number">0</span>]
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:author</span>]  = <span class="ruby-identifier">author</span>.<span class="ruby-identifier">name</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:time</span>]    = <span class="ruby-identifier">time</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:space</span>]   = <span class="ruby-identifier">space</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:refs</span>]    = <span class="ruby-identifier">refs</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">r</span><span class="ruby-operator">|</span><span class="ruby-identifier">r</span>.<span class="ruby-identifier">name</span>}.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot; &quot;</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">refs</span>.<span class="ruby-identifier">nil?</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:id</span>]      = <span class="ruby-identifier">sha</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:date</span>]    = <span class="ruby-identifier">date</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:message</span>] = <span class="ruby-identifier">message</span>
+  <span class="ruby-identifier">h</span>[<span class="ruby-value">:login</span>]   = <span class="ruby-identifier">author</span>.<span class="ruby-identifier">email</span>
+  <span class="ruby-identifier">h</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

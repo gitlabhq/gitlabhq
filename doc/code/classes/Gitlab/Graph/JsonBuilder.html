@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Graph::JsonBuilder</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../../css/github.css" type="text/css" media="screen" />
+<script src="../../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::Graph::JsonBuilder 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../../files/lib/gitlab/graph/json_builder_rb.html">lib/gitlab/graph/json_builder.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-base_space">base_space</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-collect_commits">collect_commits</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-find_free_space">find_free_space</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-index_commits">index_commits</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-mark_reserved">mark_reserved</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-max_count">max_count</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-place_chain">place_chain</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-take_left_leaves">take_left_leaves</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-to_json">to_json</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>commits</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>days</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>ref_cache</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>repo</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-max_count">
+            
+              <b>max_count</b>()
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-c-max_count" name="method-c-max_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-max_count_source')" id="l_method-c-max_count_source">show</a>
+                
+              </p>
+              <div id="method-c-max_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 8</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">max_count</span>
+  <span class="ruby-ivar">@max_count</span> <span class="ruby-operator">||=</span> <span class="ruby-number">650</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(project)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span> <span class="ruby-identifier">project</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-identifier">project</span>
+  <span class="ruby-ivar">@repo</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">repo</span>
+  <span class="ruby-ivar">@ref_cache</span> = {}
+
+  <span class="ruby-ivar">@commits</span> = <span class="ruby-identifier">collect_commits</span>
+  <span class="ruby-ivar">@days</span> = <span class="ruby-identifier">index_commits</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-to_json">
+            
+              <b>to_json</b>(*args)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-to_json" name="method-i-to_json" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_json_source')" id="l_method-i-to_json_source">show</a>
+                
+              </p>
+              <div id="method-i-to_json_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 21</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">to_json</span>(*<span class="ruby-identifier">args</span>)
+  {
+    <span class="ruby-identifier">days</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@days</span>.<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">d</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">d</span>.<span class="ruby-identifier">day</span>, <span class="ruby-identifier">d</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-string">&quot;%b&quot;</span>)] },
+    <span class="ruby-identifier">commits</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@commits</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:to_graph_hash</span>)
+  }.<span class="ruby-identifier">to_json</span>(*<span class="ruby-identifier">args</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-base_space">
+            
+              <b>base_space</b>(leaves, map)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-base_space" name="method-i-base_space" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-base_space_source')" id="l_method-i-base_space_source">show</a>
+                
+              </p>
+              <div id="method-i-base_space_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 148</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">base_space</span>(<span class="ruby-identifier">leaves</span>, <span class="ruby-identifier">map</span>)
+  <span class="ruby-identifier">parents</span> = []
+  <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">parents</span>.<span class="ruby-identifier">concat</span> <span class="ruby-identifier">l</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">collect</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span> <span class="ruby-identifier">map</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">map</span>[<span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>].<span class="ruby-identifier">space</span>.<span class="ruby-identifier">nonzero?</span>}
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">space</span> = <span class="ruby-identifier">parents</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span> <span class="ruby-identifier">map</span>[<span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>].<span class="ruby-identifier">space</span>}.<span class="ruby-identifier">max</span> <span class="ruby-operator">||</span> <span class="ruby-number">0</span>
+  <span class="ruby-identifier">space</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-collect_commits">
+            
+              <b>collect_commits</b>()
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-collect_commits" name="method-i-collect_commits" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Get commits from repository</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-collect_commits_source')" id="l_method-i-collect_commits_source">show</a>
+                
+              </p>
+              <div id="method-i-collect_commits_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">collect_commits</span>
+  <span class="ruby-ivar">@commits</span> = <span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">Commit</span>.<span class="ruby-identifier">find_all</span>(<span class="ruby-identifier">repo</span>, <span class="ruby-keyword">nil</span>, {<span class="ruby-identifier">max_count</span><span class="ruby-operator">:</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">max_count</span>}).<span class="ruby-identifier">dup</span>
+
+  <span class="ruby-comment"># Decorate with app/models/commit.rb</span>
+  <span class="ruby-ivar">@commits</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">commit</span><span class="ruby-operator">|</span> <span class="ruby-operator">::</span><span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">commit</span>) }
+
+  <span class="ruby-comment"># Decorate with lib/gitlab/graph/commit.rb</span>
+  <span class="ruby-ivar">@commits</span>.<span class="ruby-identifier">map!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">commit</span><span class="ruby-operator">|</span> <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">Graph</span><span class="ruby-operator">::</span><span class="ruby-constant">Commit</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">commit</span>) }
+
+  <span class="ruby-comment"># add refs to each commit</span>
+  <span class="ruby-ivar">@commits</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">commit</span><span class="ruby-operator">|</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">add_refs</span>(<span class="ruby-identifier">ref_cache</span>, <span class="ruby-identifier">repo</span>) }
+
+  <span class="ruby-ivar">@commits</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-find_free_space">
+            
+              <b>find_free_space</b>(leaves, map)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-find_free_space" name="method-i-find_free_space" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-find_free_space_source')" id="l_method-i-find_free_space_source">show</a>
+                
+              </p>
+              <div id="method-i-find_free_space_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 135</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">find_free_space</span>(<span class="ruby-identifier">leaves</span>, <span class="ruby-identifier">map</span>)
+  <span class="ruby-identifier">time_range</span> = <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">time</span><span class="ruby-operator">..</span><span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">time</span>
+  <span class="ruby-identifier">reserved</span> = []
+  <span class="ruby-keyword">for</span> <span class="ruby-identifier">day</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">time_range</span>
+    <span class="ruby-identifier">reserved</span> <span class="ruby-operator">+=</span> <span class="ruby-ivar">@_reserved</span>[<span class="ruby-identifier">day</span>]
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">space</span> = <span class="ruby-identifier">base_space</span>(<span class="ruby-identifier">leaves</span>, <span class="ruby-identifier">map</span>)
+  <span class="ruby-keyword">while</span> <span class="ruby-identifier">reserved</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">space</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">space</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">space</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-index_commits">
+            
+              <b>index_commits</b>()
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-index_commits" name="method-i-index_commits" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Method is adding time and space on the list of commits. As well as returns
+date list corelated with time set on commits.</p>
+
+<p>@param [Array&lt;Graph::Commit&gt;] comits to index</p>
+
+<p>@return [Array&lt;TimeDate&gt;] list of commit dates corelated with time on
+commits</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-index_commits_source')" id="l_method-i-index_commits_source">show</a>
+                
+              </p>
+              <div id="method-i-index_commits_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 54</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">index_commits</span>
+  <span class="ruby-identifier">days</span>, <span class="ruby-identifier">heads</span> = [], []
+  <span class="ruby-identifier">map</span> = {}
+
+  <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">reverse</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">c</span>,<span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">c</span>.<span class="ruby-identifier">time</span> = <span class="ruby-identifier">i</span>
+    <span class="ruby-identifier">days</span>[<span class="ruby-identifier">i</span>] = <span class="ruby-identifier">c</span>.<span class="ruby-identifier">committed_date</span>
+    <span class="ruby-identifier">map</span>[<span class="ruby-identifier">c</span>.<span class="ruby-identifier">id</span>] = <span class="ruby-identifier">c</span>
+    <span class="ruby-identifier">heads</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">refs</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">c</span>.<span class="ruby-identifier">refs</span>.<span class="ruby-identifier">nil?</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">heads</span>.<span class="ruby-identifier">select!</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">h</span><span class="ruby-operator">|</span> <span class="ruby-identifier">h</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">Head</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">h</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span>}
+  <span class="ruby-comment"># sort heads so the master is top and current branches are closer</span>
+  <span class="ruby-identifier">heads</span>.<span class="ruby-identifier">sort!</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">a</span>,<span class="ruby-identifier">b</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">a</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;master&quot;</span>
+      <span class="ruby-number">-1</span>
+    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">b</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;master&quot;</span>
+      <span class="ruby-number">1</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">b</span>.<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">committed_date</span> <span class="ruby-operator">&lt;=&gt;</span> <span class="ruby-identifier">a</span>.<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">committed_date</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@_reserved</span> = {}
+  <span class="ruby-identifier">days</span>.<span class="ruby-identifier">each_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+    <span class="ruby-ivar">@_reserved</span>[<span class="ruby-identifier">i</span>] = []
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">heads</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">h</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">map</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">h</span>.<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">id</span> <span class="ruby-keyword">then</span>
+      <span class="ruby-identifier">place_chain</span>(<span class="ruby-identifier">map</span>[<span class="ruby-identifier">h</span>.<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">id</span>], <span class="ruby-identifier">map</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">days</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-mark_reserved">
+            
+              <b>mark_reserved</b>(time_range, space)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-mark_reserved" name="method-i-mark_reserved" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-mark_reserved_source')" id="l_method-i-mark_reserved_source">show</a>
+                
+              </p>
+              <div id="method-i-mark_reserved_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 129</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">mark_reserved</span>(<span class="ruby-identifier">time_range</span>, <span class="ruby-identifier">space</span>)
+  <span class="ruby-keyword">for</span> <span class="ruby-identifier">day</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">time_range</span>
+    <span class="ruby-ivar">@_reserved</span>[<span class="ruby-identifier">day</span>].<span class="ruby-identifier">push</span>(<span class="ruby-identifier">space</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-place_chain">
+            
+              <b>place_chain</b>(commit, map, parent_time = nil)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-place_chain" name="method-i-place_chain" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Add space mark on commit and its parents</p>
+
+<p>@param [Graph::Commit] the commit object. @param
+[Hash&lt;String,Graph::Commit&gt;] map of commits</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-place_chain_source')" id="l_method-i-place_chain_source">show</a>
+                
+              </p>
+              <div id="method-i-place_chain_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 95</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">place_chain</span>(<span class="ruby-identifier">commit</span>, <span class="ruby-identifier">map</span>, <span class="ruby-identifier">parent_time</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">leaves</span> = <span class="ruby-identifier">take_left_leaves</span>(<span class="ruby-identifier">commit</span>, <span class="ruby-identifier">map</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">empty?</span>
+    <span class="ruby-keyword">return</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">space</span> = <span class="ruby-identifier">find_free_space</span>(<span class="ruby-identifier">leaves</span>, <span class="ruby-identifier">map</span>)
+  <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span> <span class="ruby-identifier">l</span>.<span class="ruby-identifier">space</span> = <span class="ruby-identifier">space</span>}
+  <span class="ruby-comment"># and mark it as reserved</span>
+  <span class="ruby-identifier">min_time</span> = <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">time</span>
+  <span class="ruby-identifier">parents</span> = <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">collect</span>
+  <span class="ruby-identifier">parents</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">map</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>
+      <span class="ruby-identifier">parent</span> = <span class="ruby-identifier">map</span>[<span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>]
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">time</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">min_time</span>
+        <span class="ruby-identifier">min_time</span> = <span class="ruby-identifier">parent</span>.<span class="ruby-identifier">time</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">parent_time</span>.<span class="ruby-identifier">nil?</span>
+    <span class="ruby-identifier">max_time</span> = <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">time</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">max_time</span> = <span class="ruby-identifier">parent_time</span> <span class="ruby-operator">-</span> <span class="ruby-number">1</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">mark_reserved</span>(<span class="ruby-identifier">min_time</span><span class="ruby-operator">..</span><span class="ruby-identifier">max_time</span>, <span class="ruby-identifier">space</span>)
+
+  <span class="ruby-comment"># Visit branching chains</span>
+  <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">parents</span> = <span class="ruby-identifier">l</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">collect</span>.<span class="ruby-identifier">select</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">p</span><span class="ruby-operator">|</span> <span class="ruby-identifier">map</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">map</span>[<span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>].<span class="ruby-identifier">space</span>.<span class="ruby-identifier">zero?</span>}
+    <span class="ruby-keyword">for</span> <span class="ruby-identifier">p</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">parents</span>
+      <span class="ruby-identifier">place_chain</span>(<span class="ruby-identifier">map</span>[<span class="ruby-identifier">p</span>.<span class="ruby-identifier">id</span>], <span class="ruby-identifier">map</span>, <span class="ruby-identifier">l</span>.<span class="ruby-identifier">time</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-take_left_leaves">
+            
+              <b>take_left_leaves</b>(commit, map)
+            
+            <a href="../../../classes/Gitlab/Graph/JsonBuilder.html#method-i-take_left_leaves" name="method-i-take_left_leaves" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Takes most left subtree branch of commits which don’t have space mark yet.</p>
+
+<p>@param [Graph::Commit] the commit object. @param
+[Hash&lt;String,Graph::Commit&gt;] map of commits</p>
+
+<p>@return [Array&lt;Graph::Commit&gt;] list of branch commits</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-take_left_leaves_source')" id="l_method-i-take_left_leaves_source">show</a>
+                
+              </p>
+              <div id="method-i-take_left_leaves_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/graph/json_builder.rb, line 165</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">take_left_leaves</span>(<span class="ruby-identifier">commit</span>, <span class="ruby-identifier">map</span>)
+  <span class="ruby-identifier">leaves</span> = []
+  <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">commit</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">space</span>.<span class="ruby-identifier">zero?</span>
+
+  <span class="ruby-keyword">while</span> <span class="ruby-keyword">true</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">leaves</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">count</span>.<span class="ruby-identifier">zero?</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">leaves</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">map</span>.<span class="ruby-identifier">include?</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">id</span>
+
+    <span class="ruby-identifier">commit</span> = <span class="ruby-identifier">map</span>[<span class="ruby-identifier">commit</span>.<span class="ruby-identifier">parents</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">id</span>]
+
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">leaves</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">space</span>.<span class="ruby-identifier">zero?</span>
+
+    <span class="ruby-identifier">leaves</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">commit</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::ProjectMover</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::ProjectMover 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/project_mover_rb.html">lib/gitlab/project_mover.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">CLASS</span>
+          <a href="ProjectMover/ProjectMoveError.html">Gitlab::ProjectMover::ProjectMoveError</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-execute">execute</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-log_info">log_info</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>new_dir</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>old_dir</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>project</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(project, old_dir, new_dir)
+            
+            <a href="../../classes/Gitlab/ProjectMover.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/project_mover.rb, line 10</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">old_dir</span>, <span class="ruby-identifier">new_dir</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-identifier">project</span>
+  <span class="ruby-ivar">@old_dir</span> = <span class="ruby-identifier">old_dir</span>
+  <span class="ruby-ivar">@new_dir</span> = <span class="ruby-identifier">new_dir</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-execute">
+            
+              <b>execute</b>()
+            
+            <a href="../../classes/Gitlab/ProjectMover.html#method-i-execute" name="method-i-execute" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-execute_source')" id="l_method-i-execute_source">show</a>
+                
+              </p>
+              <div id="method-i-execute_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/project_mover.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">execute</span>
+  <span class="ruby-comment"># Create new dir if missing</span>
+  <span class="ruby-identifier">new_dir_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">repos_path</span>, <span class="ruby-identifier">new_dir</span>)
+  <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;mkdir -m 770 #{new_dir_path}&quot;</span>) <span class="ruby-keyword">unless</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">new_dir_path</span>)
+
+  <span class="ruby-identifier">old_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">repos_path</span>, <span class="ruby-identifier">old_dir</span>, <span class="ruby-node">&quot;#{project.path}.git&quot;</span>)
+  <span class="ruby-identifier">new_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">new_dir_path</span>, <span class="ruby-node">&quot;#{project.path}.git&quot;</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-identifier">new_path</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ProjectMoveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;Destination #{new_path} already exists&quot;</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;mv #{old_path} #{new_path}&quot;</span>)
+    <span class="ruby-identifier">log_info</span> <span class="ruby-node">&quot;Project #{project.name} was moved from #{old_path} to #{new_path}&quot;</span>
+    <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">message</span> = <span class="ruby-node">&quot;Project #{project.name} cannot be moved from #{old_path} to #{new_path}&quot;</span>
+    <span class="ruby-identifier">log_info</span> <span class="ruby-node">&quot;Error! #{message}&quot;</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ProjectMoveError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">message</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-log_info">
+            
+              <b>log_info</b>(message)
+            
+            <a href="../../classes/Gitlab/ProjectMover.html#method-i-log_info" name="method-i-log_info" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-log_info_source')" id="l_method-i-log_info_source">show</a>
+                
+              </p>
+              <div id="method-i-log_info_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/project_mover.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">log_info</span> <span class="ruby-identifier">message</span>
+  <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">AppLogger</span>.<span class="ruby-identifier">info</span> <span class="ruby-identifier">message</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

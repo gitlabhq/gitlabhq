@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Key</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Key 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/key_rb.html">app/models/key.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-fingerprintable_key">fingerprintable_key</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-is_deploy_key">is_deploy_key</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-last_deploy-3F">last_deploy?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-projects">projects</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-set_identifier">set_identifier</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-strip_white_space">strip_white_space</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-unique_key">unique_key</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-fingerprintable_key">
+            
+              <b>fingerprintable_key</b>()
+            
+            <a href="../classes/Key.html#method-i-fingerprintable_key" name="method-i-fingerprintable_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-fingerprintable_key_source')" id="l_method-i-fingerprintable_key_source">show</a>
+                
+              </p>
+              <div id="method-i-fingerprintable_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">fingerprintable_key</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">key</span> <span class="ruby-comment"># Don't test if there is no key.</span>
+  <span class="ruby-comment"># `ssh-keygen -lf /dev/stdin &lt;&lt;&lt; &quot;#{key}&quot;` errors with: redirection unexpected</span>
+  <span class="ruby-identifier">file</span> = <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">'key_file'</span>)
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">puts</span> <span class="ruby-identifier">key</span>
+    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">rewind</span>
+    <span class="ruby-identifier">fingerprint_output</span> = <span class="ruby-node">%xssh-keygen -lf #{file.path} 2&gt;&amp;1`</span> <span class="ruby-comment"># Catch stderr.</span>
+  <span class="ruby-keyword">ensure</span>
+    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">close</span>
+    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">unlink</span> <span class="ruby-comment"># deletes the temp file</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">add</span>(<span class="ruby-value">:key</span>, <span class="ruby-string">&quot;can't be fingerprinted&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">fingerprint_output</span>.<span class="ruby-identifier">match</span>(<span class="ruby-string">&quot;failed&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-is_deploy_key">
+            
+              <b>is_deploy_key</b>()
+            
+            <a href="../classes/Key.html#method-i-is_deploy_key" name="method-i-is_deploy_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-is_deploy_key_source')" id="l_method-i-is_deploy_key_source">show</a>
+                
+              </p>
+              <div id="method-i-is_deploy_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 67</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">is_deploy_key</span>
+  <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">project_id</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-last_deploy-3F">
+            
+              <b>last_deploy?</b>()
+            
+            <a href="../classes/Key.html#method-i-last_deploy-3F" name="method-i-last_deploy-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-last_deploy-3F_source')" id="l_method-i-last_deploy-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-last_deploy-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 80</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">last_deploy?</span>
+  <span class="ruby-constant">Key</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">identifier</span><span class="ruby-operator">:</span> <span class="ruby-identifier">identifier</span>).<span class="ruby-identifier">count</span> <span class="ruby-operator">==</span> <span class="ruby-number">0</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-projects">
+            
+              <b>projects</b>()
+            
+            <a href="../classes/Key.html#method-i-projects" name="method-i-projects" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>projects that has this key</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-projects_source')" id="l_method-i-projects_source">show</a>
+                
+              </p>
+              <div id="method-i-projects_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">projects</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">is_deploy_key</span>
+    [<span class="ruby-identifier">project</span>]
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">user</span>.<span class="ruby-identifier">projects</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-set_identifier">
+            
+              <b>set_identifier</b>()
+            
+            <a href="../classes/Key.html#method-i-set_identifier" name="method-i-set_identifier" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-set_identifier_source')" id="l_method-i-set_identifier_source">show</a>
+                
+              </p>
+              <div id="method-i-set_identifier_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">set_identifier</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">is_deploy_key</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">identifier</span> = <span class="ruby-node">&quot;deploy_#{Digest::MD5.hexdigest(key)}&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">identifier</span> = <span class="ruby-node">&quot;#{user.identifier}_#{Time.now.to_i}&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-strip_white_space">
+            
+              <b>strip_white_space</b>()
+            
+            <a href="../classes/Key.html#method-i-strip_white_space" name="method-i-strip_white_space" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-strip_white_space_source')" id="l_method-i-strip_white_space_source">show</a>
+                
+              </p>
+              <div id="method-i-strip_white_space_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">strip_white_space</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">key</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">key</span>.<span class="ruby-identifier">strip</span> <span class="ruby-keyword">unless</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">key</span>.<span class="ruby-identifier">blank?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-unique_key">
+            
+              <b>unique_key</b>()
+            
+            <a href="../classes/Key.html#method-i-unique_key" name="method-i-unique_key" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-unique_key_source')" id="l_method-i-unique_key_source">show</a>
+                
+              </p>
+              <div id="method-i-unique_key_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/key.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">unique_key</span>
+  <span class="ruby-identifier">query</span> = <span class="ruby-constant">Key</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">key</span><span class="ruby-operator">:</span> <span class="ruby-identifier">key</span>)
+  <span class="ruby-identifier">query</span> = <span class="ruby-identifier">query</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">'(project_id IS NULL OR project_id = ?)'</span>, <span class="ruby-identifier">project_id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">project_id</span>
+  <span class="ruby-keyword">if</span> (<span class="ruby-identifier">query</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">0</span>)
+    <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">add</span> <span class="ruby-value">:key</span>, <span class="ruby-string">'already exist.'</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

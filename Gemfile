@@ -118,6 +118,9 @@ group :development do
   # Better errors handler
   gem 'better_errors'
   gem 'binding_of_caller'
+
+  # Docs generator
+  gem "sdoc"
 end
 
 group :development, :test do

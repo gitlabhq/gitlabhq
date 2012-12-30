@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::Markdown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            Gitlab::Markdown 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/markdown_rb.html">lib/gitlab/markdown.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>Custom parser for GitLab-flavored <a href="Markdown.html">Markdown</a></p>
+
+<p>It replaces references in the text with links to the appropriate items in
+GitLab.</p>
+
+<p>Supported reference formats are:</p>
+
+<pre>* @foo for team members
+* #123 for issues
+* !123 for merge requests
+* $123 for snippets
+* 123456 for commits</pre>
+
+<p>It also parses Emoji codes to insert images. See <a
+href="http://www.emoji-cheat-sheet.com/">www.emoji-cheat-sheet.com/</a> for
+a list of the supported icons.</p>
+
+<p>Examples</p>
+
+<pre class="ruby"><span class="ruby-operator">&gt;&gt;</span> <span class="ruby-identifier">gfm</span>(<span class="ruby-string">&quot;Hey @david, can you fix this?&quot;</span>)
+=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;Hey &lt;a href=&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">gitlab</span><span class="ruby-operator">/</span><span class="ruby-identifier">team_members</span><span class="ruby-operator">/</span><span class="ruby-value">1</span><span class="ruby-string">&quot;&gt;@david&lt;/a&gt;, can you fix this?&quot;</span>
+
+<span class="ruby-operator">&gt;&gt;</span> <span class="ruby-identifier">gfm</span>(<span class="ruby-node">&quot;Commit 35d5f7c closes #1234&quot;</span>)
+=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;Commit &lt;a href=&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">gitlab</span><span class="ruby-operator">/</span><span class="ruby-identifier">commits</span><span class="ruby-operator">/</span><span class="ruby-value">35</span><span class="ruby-identifier">d5f7c</span><span class="ruby-string">&quot;&gt;35d5f7c&lt;/a&gt; closes &lt;a href=&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">gitlab</span><span class="ruby-operator">/</span><span class="ruby-identifier">issues</span><span class="ruby-operator">/</span><span class="ruby-value">1234</span><span class="ruby-node">&quot;&gt;#1234&lt;/a&gt;&quot;</span>
+
+<span class="ruby-operator">&gt;&gt;</span> <span class="ruby-identifier">gfm</span>(<span class="ruby-string">&quot;:trollface:&quot;</span>)
+=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;&lt;img alt=\&quot;:trollface:\&quot; class=\&quot;emoji\&quot; src=\&quot;/images/trollface.png&quot;</span> <span class="ruby-identifier">title</span>=\<span class="ruby-string">&quot;:trollface:\&quot; /&gt;
+</span></pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-gfm">gfm</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+      <!-- Section constants -->
+      <div class="sectiontitle">Constants</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class="attr-name">REFERENCE_PATTERN</td>
+            <td>=</td>
+            <td class="attr-value">%r{
+(?&lt;prefix&gt;\W)?                         # Prefix
+(                                      # Reference
+@(?&lt;user&gt;[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
+|\#(?&lt;issue&gt;\d+)                     # Issue ID
+|!(?&lt;merge_request&gt;\d+)              # MR ID
+|\$(?&lt;snippet&gt;\d+)                   # Snippet ID
+|(?&lt;commit&gt;[\h]{6,40})               # Commit ID
+)
+(?&lt;suffix&gt;\W)?                         # Suffix
+}x.freeze</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">TYPES</td>
+            <td>=</td>
+            <td class="attr-value">[:user, :issue, :merge_request, :snippet, :commit].freeze</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">EMOJI_PATTERN</td>
+            <td>=</td>
+            <td class="attr-value">%r{(:(\S+):)}.freeze</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+      </table>
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [R]
+            </td>
+            <td class='attr-name'>html_options</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-gfm">
+            
+              <b>gfm</b>(text, html_options = {})
+            
+            <a href="../../classes/Gitlab/Markdown.html#method-i-gfm" name="method-i-gfm" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Public: Parse the provided text with GitLab-Flavored <a
+href="Markdown.html">Markdown</a></p>
+
+<p>text         - the source text <a
+href="Markdown.html#attribute-i-html_options">#html_options</a> - extra
+options for the reference links as given to link_to</p>
+
+<p>Note: reference links will only be generated if @project is set</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-gfm_source')" id="l_method-i-gfm_source">show</a>
+                
+              </p>
+              <div id="method-i-gfm_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/markdown.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">gfm</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">html_options</span> = {})
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">text</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">text</span>.<span class="ruby-identifier">nil?</span>
+
+  <span class="ruby-comment"># Duplicate the string so we don't alter the original, then call to_str</span>
+  <span class="ruby-comment"># to cast it back to a String instead of a SafeBuffer. This is required</span>
+  <span class="ruby-comment"># for gsub calls to work as we need them to.</span>
+  <span class="ruby-identifier">text</span> = <span class="ruby-identifier">text</span>.<span class="ruby-identifier">dup</span>.<span class="ruby-identifier">to_str</span>
+
+  <span class="ruby-ivar">@html_options</span> = <span class="ruby-identifier">html_options</span>
+
+  <span class="ruby-comment"># Extract pre blocks so they are not altered</span>
+  <span class="ruby-comment"># from http://github.github.com/github-flavored-markdown/</span>
+  <span class="ruby-identifier">extractions</span> = {}
+  <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r{&lt;pre&gt;.*?&lt;/pre&gt;|&lt;code&gt;.*?&lt;/code&gt;}</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">match</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">md5</span> = <span class="ruby-constant">Digest</span><span class="ruby-operator">::</span><span class="ruby-constant">MD5</span>.<span class="ruby-identifier">hexdigest</span>(<span class="ruby-identifier">match</span>)
+    <span class="ruby-identifier">extractions</span>[<span class="ruby-identifier">md5</span>] = <span class="ruby-identifier">match</span>
+    <span class="ruby-node">&quot;{gfm-extraction-#{md5}}&quot;</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># TODO: add popups with additional information</span>
+
+  <span class="ruby-identifier">text</span> = <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">text</span>)
+
+  <span class="ruby-comment"># Insert pre block extractions</span>
+  <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r\{gfm-extraction-(\h{32})\}/</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">extractions</span>[<span class="ruby-node">$1</span>]
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">sanitize</span> <span class="ruby-identifier">text</span>.<span class="ruby-identifier">html_safe</span>, <span class="ruby-identifier">attributes</span><span class="ruby-operator">:</span> <span class="ruby-constant">ActionView</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">sanitized_allowed_attributes</span> <span class="ruby-operator">+</span> <span class="ruby-node">%w(id class)</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

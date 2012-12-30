@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Notes::LoadContext</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Notes::LoadContext 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="../BaseContext.html">BaseContext</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/app/contexts/notes/load_context_rb.html">app/contexts/notes/load_context.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-execute">execute</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-execute">
+            
+              <b>execute</b>()
+            
+            <a href="../../classes/Notes/LoadContext.html#method-i-execute" name="method-i-execute" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-execute_source')" id="l_method-i-execute_source">show</a>
+                
+              </p>
+              <div id="method-i-execute_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/contexts/notes/load_context.rb, line 3</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">execute</span>
+  <span class="ruby-identifier">target_type</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:target_type</span>]
+  <span class="ruby-identifier">target_id</span>   = <span class="ruby-identifier">params</span>[<span class="ruby-value">:target_id</span>]
+  <span class="ruby-identifier">after_id</span>    = <span class="ruby-identifier">params</span>[<span class="ruby-value">:after_id</span>]
+  <span class="ruby-identifier">before_id</span>   = <span class="ruby-identifier">params</span>[<span class="ruby-value">:before_id</span>]
+
+
+  <span class="ruby-ivar">@notes</span> = <span class="ruby-keyword">case</span> <span class="ruby-identifier">target_type</span>
+           <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;commit&quot;</span>
+             <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit_notes</span>(<span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">target_id</span>)).<span class="ruby-identifier">fresh</span>.<span class="ruby-identifier">limit</span>(<span class="ruby-number">20</span>)
+           <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;issue&quot;</span>
+             <span class="ruby-identifier">project</span>.<span class="ruby-identifier">issues</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">target_id</span>).<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">inc_author</span>.<span class="ruby-identifier">fresh</span>.<span class="ruby-identifier">limit</span>(<span class="ruby-number">20</span>)
+           <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;merge_request&quot;</span>
+             <span class="ruby-identifier">project</span>.<span class="ruby-identifier">merge_requests</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">target_id</span>).<span class="ruby-identifier">mr_and_commit_notes</span>.<span class="ruby-identifier">inc_author</span>.<span class="ruby-identifier">fresh</span>.<span class="ruby-identifier">limit</span>(<span class="ruby-number">20</span>)
+           <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;snippet&quot;</span>
+             <span class="ruby-identifier">project</span>.<span class="ruby-identifier">snippets</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">target_id</span>).<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">fresh</span>
+           <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;wall&quot;</span>
+             <span class="ruby-comment"># this is the only case, where the order is DESC</span>
+             <span class="ruby-identifier">project</span>.<span class="ruby-identifier">common_notes</span>.<span class="ruby-identifier">order</span>(<span class="ruby-string">&quot;created_at DESC, id DESC&quot;</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">50</span>)
+           <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@notes</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">after_id</span>
+             <span class="ruby-ivar">@notes</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;id &gt; ?&quot;</span>, <span class="ruby-identifier">after_id</span>)
+           <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">before_id</span>
+             <span class="ruby-ivar">@notes</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;id &lt; ?&quot;</span>, <span class="ruby-identifier">before_id</span>)
+           <span class="ruby-keyword">else</span>
+             <span class="ruby-ivar">@notes</span>
+           <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>PushObserver</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            PushObserver 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/push_observer_rb.html">app/roles/push_observer.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>Includes methods for handling Git Push events</p>
+
+<p>Triggered by <a href="PostReceive.html">PostReceive</a> job</p>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-execute_hooks">execute_hooks</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-execute_services">execute_services</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>O</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-observe_push">observe_push</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-post_receive_data">post_receive_data</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-push_to_branch-3F">push_to_branch?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-trigger_post_receive">trigger_post_receive</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update_merge_requests">update_merge_requests</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-execute_hooks">
+            
+              <b>execute_hooks</b>(data)
+            
+            <a href="../classes/PushObserver.html#method-i-execute_hooks" name="method-i-execute_hooks" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-execute_hooks_source')" id="l_method-i-execute_hooks_source">show</a>
+                
+              </p>
+              <div id="method-i-execute_hooks_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">execute_hooks</span>(<span class="ruby-identifier">data</span>)
+  <span class="ruby-identifier">hooks</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">hook</span><span class="ruby-operator">|</span> <span class="ruby-identifier">hook</span>.<span class="ruby-identifier">execute</span>(<span class="ruby-identifier">data</span>) }
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-execute_services">
+            
+              <b>execute_services</b>(data)
+            
+            <a href="../classes/PushObserver.html#method-i-execute_services" name="method-i-execute_services" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-execute_services_source')" id="l_method-i-execute_services_source">show</a>
+                
+              </p>
+              <div id="method-i-execute_services_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 56</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">execute_services</span>(<span class="ruby-identifier">data</span>)
+  <span class="ruby-identifier">services</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">service</span><span class="ruby-operator">|</span>
+
+    <span class="ruby-comment"># Call service hook only if it is active</span>
+    <span class="ruby-identifier">service</span>.<span class="ruby-identifier">execute</span>(<span class="ruby-identifier">data</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">service</span>.<span class="ruby-identifier">active</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-observe_push">
+            
+              <b>observe_push</b>(data)
+            
+            <a href="../classes/PushObserver.html#method-i-observe_push" name="method-i-observe_push" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-observe_push_source')" id="l_method-i-observe_push_source">show</a>
+                
+              </p>
+              <div id="method-i-observe_push_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 43</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">observe_push</span>(<span class="ruby-identifier">data</span>)
+  <span class="ruby-constant">Event</span>.<span class="ruby-identifier">create</span>(
+    <span class="ruby-identifier">project</span><span class="ruby-operator">:</span> <span class="ruby-keyword">self</span>,
+    <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-constant">Event</span><span class="ruby-operator">::</span><span class="ruby-constant">Pushed</span>,
+    <span class="ruby-identifier">data</span><span class="ruby-operator">:</span> <span class="ruby-identifier">data</span>,
+    <span class="ruby-identifier">author_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:user_id</span>]
+  )
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-post_receive_data">
+            
+              <b>post_receive_data</b>(oldrev, newrev, ref, user)
+            
+            <a href="../classes/PushObserver.html#method-i-post_receive_data" name="method-i-post_receive_data" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Produce a hash of post-receive data</p>
+
+<p>data = {</p>
+
+<pre>before: String,
+after: String,
+ref: String,
+user_id: String,
+user_name: String,
+repository: {
+  name: String,
+  url: String,
+  description: String,
+  homepage: String,
+},
+commits: Array,
+total_commits_count: Fixnum</pre>
+
+<p>}</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-post_receive_data_source')" id="l_method-i-post_receive_data_source">show</a>
+                
+              </p>
+              <div id="method-i-post_receive_data_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 82</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">post_receive_data</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">user</span>)
+
+  <span class="ruby-identifier">push_commits</span> = <span class="ruby-identifier">commits_between</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>)
+
+  <span class="ruby-comment"># Total commits count</span>
+  <span class="ruby-identifier">push_commits_count</span> = <span class="ruby-identifier">push_commits</span>.<span class="ruby-identifier">size</span>
+
+  <span class="ruby-comment"># Get latest 20 commits ASC</span>
+  <span class="ruby-identifier">push_commits_limited</span> = <span class="ruby-identifier">push_commits</span>.<span class="ruby-identifier">last</span>(<span class="ruby-number">20</span>)
+
+  <span class="ruby-comment"># Hash to be passed as post_receive_data</span>
+  <span class="ruby-identifier">data</span> = {
+    <span class="ruby-identifier">before</span><span class="ruby-operator">:</span> <span class="ruby-identifier">oldrev</span>,
+    <span class="ruby-identifier">after</span><span class="ruby-operator">:</span> <span class="ruby-identifier">newrev</span>,
+    <span class="ruby-identifier">ref</span><span class="ruby-operator">:</span> <span class="ruby-identifier">ref</span>,
+    <span class="ruby-identifier">user_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">id</span>,
+    <span class="ruby-identifier">user_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">name</span>,
+    <span class="ruby-identifier">repository</span><span class="ruby-operator">:</span> {
+      <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">url</span><span class="ruby-operator">:</span> <span class="ruby-identifier">url_to_repo</span>,
+      <span class="ruby-identifier">description</span><span class="ruby-operator">:</span> <span class="ruby-identifier">description</span>,
+      <span class="ruby-identifier">homepage</span><span class="ruby-operator">:</span> <span class="ruby-identifier">web_url</span>,
+    },
+    <span class="ruby-identifier">commits</span><span class="ruby-operator">:</span> [],
+    <span class="ruby-identifier">total_commits_count</span><span class="ruby-operator">:</span> <span class="ruby-identifier">push_commits_count</span>
+  }
+
+  <span class="ruby-comment"># For perfomance purposes maximum 20 latest commits</span>
+  <span class="ruby-comment"># will be passed as post receive hook data.</span>
+  <span class="ruby-comment">#</span>
+  <span class="ruby-identifier">push_commits_limited</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">commit</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">data</span>[<span class="ruby-value">:commits</span>] <span class="ruby-operator">&lt;&lt;</span> {
+      <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">id</span>,
+      <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">safe_message</span>,
+      <span class="ruby-identifier">timestamp</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">date</span>.<span class="ruby-identifier">xmlschema</span>,
+      <span class="ruby-identifier">url</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{commit.id}&quot;</span>,
+      <span class="ruby-identifier">author</span><span class="ruby-operator">:</span> {
+        <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">author_name</span>,
+        <span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">author_email</span>
+      }
+    }
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">data</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-push_to_branch-3F">
+            
+              <b>push_to_branch?</b>(ref, oldrev)
+            
+            <a href="../classes/PushObserver.html#method-i-push_to_branch-3F" name="method-i-push_to_branch-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-push_to_branch-3F_source')" id="l_method-i-push_to_branch-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-push_to_branch-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">push_to_branch?</span> <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">oldrev</span>
+  <span class="ruby-identifier">ref_parts</span> = <span class="ruby-identifier">ref</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">'/'</span>)
+
+  <span class="ruby-comment"># Return if this is not a push to a branch (e.g. new commits)</span>
+  <span class="ruby-operator">!</span>(<span class="ruby-identifier">ref_parts</span>[<span class="ruby-number">1</span>] <span class="ruby-operator">!~</span> <span class="ruby-regexp">%rheads/</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">oldrev</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;00000000000000000000000000000000&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-trigger_post_receive">
+            
+              <b>trigger_post_receive</b>(oldrev, newrev, ref, user)
+            
+            <a href="../classes/PushObserver.html#method-i-trigger_post_receive" name="method-i-trigger_post_receive" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>This method will be called after each post receive and only if the provided
+user is present in GitLab.</p>
+
+<p>All callbacks for post receive should be placed here.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-trigger_post_receive_source')" id="l_method-i-trigger_post_receive_source">show</a>
+                
+              </p>
+              <div id="method-i-trigger_post_receive_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">trigger_post_receive</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">user</span>)
+  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">post_receive_data</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">user</span>)
+
+  <span class="ruby-comment"># Create push event</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">observe_push</span>(<span class="ruby-identifier">data</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">push_to_branch?</span> <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">oldrev</span>
+    <span class="ruby-comment"># Close merged MR</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_merge_requests</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">user</span>)
+
+    <span class="ruby-comment"># Execute web hooks</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">execute_hooks</span>(<span class="ruby-identifier">data</span>.<span class="ruby-identifier">dup</span>)
+
+    <span class="ruby-comment"># Execute project services</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">execute_services</span>(<span class="ruby-identifier">data</span>.<span class="ruby-identifier">dup</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># Create satellite</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">satellite</span>.<span class="ruby-identifier">create</span> <span class="ruby-keyword">unless</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">satellite</span>.<span class="ruby-identifier">exists?</span>
+
+  <span class="ruby-comment"># Discover the default branch, but only if it hasn't already been set to</span>
+  <span class="ruby-comment"># something else</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">default_branch</span>.<span class="ruby-identifier">nil?</span>
+    <span class="ruby-identifier">update_attributes</span>(<span class="ruby-identifier">default_branch</span><span class="ruby-operator">:</span> <span class="ruby-identifier">discover_default_branch</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_merge_requests">
+            
+              <b>update_merge_requests</b>(oldrev, newrev, ref, user)
+            
+            <a href="../classes/PushObserver.html#method-i-update_merge_requests" name="method-i-update_merge_requests" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_merge_requests_source')" id="l_method-i-update_merge_requests_source">show</a>
+                
+              </p>
+              <div id="method-i-update_merge_requests_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_observer.rb, line 128</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_merge_requests</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>, <span class="ruby-identifier">ref</span>, <span class="ruby-identifier">user</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">ref</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%rheads/</span>
+  <span class="ruby-identifier">branch_name</span> = <span class="ruby-identifier">ref</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;refs/heads/&quot;</span>, <span class="ruby-string">&quot;&quot;</span>)
+  <span class="ruby-identifier">c_ids</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">commits_between</span>(<span class="ruby-identifier">oldrev</span>, <span class="ruby-identifier">newrev</span>).<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:id</span>)
+
+  <span class="ruby-comment"># Update code for merge requests</span>
+  <span class="ruby-identifier">mrs</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">merge_requests</span>.<span class="ruby-identifier">opened</span>.<span class="ruby-identifier">find_all_by_branch</span>(<span class="ruby-identifier">branch_name</span>).<span class="ruby-identifier">all</span>
+  <span class="ruby-identifier">mrs</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">merge_request</span><span class="ruby-operator">|</span> <span class="ruby-identifier">merge_request</span>.<span class="ruby-identifier">reload_code</span>; <span class="ruby-identifier">merge_request</span>.<span class="ruby-identifier">mark_as_unchecked</span> }
+
+  <span class="ruby-comment"># Close merge requests</span>
+  <span class="ruby-identifier">mrs</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">merge_requests</span>.<span class="ruby-identifier">opened</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">target_branch</span><span class="ruby-operator">:</span> <span class="ruby-identifier">branch_name</span>).<span class="ruby-identifier">all</span>
+  <span class="ruby-identifier">mrs</span> = <span class="ruby-identifier">mrs</span>.<span class="ruby-identifier">select</span>(&amp;<span class="ruby-value">:last_commit</span>).<span class="ruby-identifier">select</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">mr</span><span class="ruby-operator">|</span> <span class="ruby-identifier">c_ids</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">mr</span>.<span class="ruby-identifier">last_commit</span>.<span class="ruby-identifier">id</span>) }
+  <span class="ruby-identifier">mrs</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">merge_request</span><span class="ruby-operator">|</span> <span class="ruby-identifier">merge_request</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">user</span>.<span class="ruby-identifier">id</span>) }
+
+  <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    
