@@ -3,7 +3,7 @@ class Admin::UsersController < AdminController
     @admin_users = User.scoped
     @admin_users = @admin_users.filter(params[:filter])
     @admin_users = @admin_users.search(params[:name]) if params[:name].present?
-    @admin_users = @admin_users.order("name ASC").page(params[:page])
+    @admin_users = @admin_users.alphabetically.page(params[:page])
   end
 
   def show

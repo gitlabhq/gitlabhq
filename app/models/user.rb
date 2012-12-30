@@ -80,6 +80,7 @@ class User < ActiveRecord::Base
   scope :admins, where(admin:  true)
   scope :blocked, where(blocked:  true)
   scope :active, where(blocked:  false)
+  scope :alphabetically, order('name ASC')
 
   class << self
     def filter filter_name

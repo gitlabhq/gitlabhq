@@ -78,7 +78,8 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.projects.map{ |p| { label: p.name_with_namespace, url: project_path(p) } }
+    projects = current_user.authorized_projects.map { |p| { label: p.name_with_namespace, url: project_path(p) } }
+    groups = current_user.authorized_groups.map { |group| { label: "<group> #{group.name}", url: group_path(group) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },
@@ -113,7 +114,7 @@ module ApplicationHelper
       ]
     end
 
-    [projects, default_nav, project_nav, help_nav].flatten.to_json
+    [groups, projects, default_nav, project_nav, help_nav].flatten.to_json
   end
 
   def emoji_autocomplete_source
