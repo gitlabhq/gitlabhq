@@ -25,21 +25,25 @@ module Authority
   end
 
   def repository_readers
-    keys = Key.joins({user: :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::REPORTER)
-    keys.map(&:identifier) + deploy_keys.map(&:identifier)
+    repository_members[UsersProject::REPORTER]
   end
 
   def repository_writers
-    keys = Key.joins({user: :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::DEVELOPER)
-    keys.map(&:identifier)
+    repository_members[UsersProject::DEVELOPER]
   end
 
   def repository_masters
-    keys = Key.joins({user: :users_projects}).
-      where("users_projects.project_id = ? AND users_projects.project_access = ?", id, UsersProject::MASTER)
-    keys.map(&:identifier)
+    repository_members[UsersProject::MASTER]
+  end
+
+  def repository_members
+    keys = Hash.new {|h,k| h[k] = [] }
+    UsersProject.select("keys.identifier, project_access").
+        joins(user: :keys).where(project_id: id).
+        each {|row| keys[row.project_access] << [row.identifier] }
+
+    keys[UsersProject::REPORTER] += deploy_keys.pluck(:identifier)
+    keys
   end
 
   def allow_read_for?(user)
