@@ -40,17 +40,6 @@ GIT
       charlock_holmes (~> 0.6.9)
 
 GIT
-  remote: https://github.com/gitlabhq/omniauth-ldap.git
-  revision: f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e
-  ref: f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e
-  specs:
-    omniauth-ldap (1.0.2)
-      net-ldap (~> 0.2.2)
-      omniauth (~> 1.0)
-      pyu-ruby-sasl (~> 0.0.3.1)
-      rubyntlm (~> 0.1.1)
-
-GIT
   remote: https://github.com/gitlabhq/pygments.rb.git
   revision: db1da0343adf86b49bdc3add04d02d2e80438d38
   branch: master
@@ -198,6 +187,11 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markup (0.7.4)
     gitlab_meta (4.0)
+    gitlab_omniauth-ldap (1.0.2)
+      net-ldap (~> 0.2.2)
+      omniauth (~> 1.0)
+      pyu-ruby-sasl (~> 0.0.3.1)
+      rubyntlm (~> 0.1.1)
     gitlab_yaml_db (1.0.0)
     gitolite (1.1.0)
       gratr19 (~> 0.4.4.1)
@@ -486,6 +480,7 @@ DEPENDENCIES
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
   gitlab_meta (= 4.0)
+  gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
   gitolite (= 1.1.0)
   grack!
@@ -508,7 +503,6 @@ DEPENDENCIES
   omniauth (~> 1.1.1)
   omniauth-github
   omniauth-google-oauth2
-  omniauth-ldap!
   omniauth-twitter
   pg
   poltergeist!
