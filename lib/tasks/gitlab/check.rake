@@ -693,7 +693,7 @@ namespace :gitlab do
     end
 
     def check_repo_base_permissions
-      print "Repo base access is drwsrws---? ... "
+      print "Repo base access is drwxrws---? ... "
 
       repo_base_path = Gitlab.config.gitolite.repos_path
       unless File.exists?(repo_base_path)
@@ -701,13 +701,15 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %a #{repo_base_path}` == "6770"
+      if `stat --printf %a #{repo_base_path}` == "2770"
         puts "yes".green
       else
         puts "no".red
         puts "#{repo_base_path} is not writable".red
         try_fixing_it(
-          "sudo chmod -R ug+rwXs,o-rwx #{repo_base_path}"
+          "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
+          "sudo chmod -R u-s #{repo_base_path}",
+          "find -type d #{repo_base_path} -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
           see_installation_guide_section "Gitolite"
