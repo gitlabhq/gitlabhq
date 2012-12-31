@@ -146,8 +146,9 @@ Fix the directory permissions for the configuration directory:
 Fix the directory permissions for the repositories:
 
     # Make sure the repositories dir is owned by git and it stays that way
-    sudo chmod -R ug+rwXs,o-rwx /home/git/repositories/
+    sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
+    find -type d /home/git/repositories -print0 | sudo xargs -0 chmod g+s 
 
 
 ## Disable StrictHostKeyChecking for localhost and your domain
