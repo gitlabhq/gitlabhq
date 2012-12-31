@@ -118,10 +118,10 @@ namespace :gitlab do
       task :create => :environment do
         backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
         FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
-        puts "Dumping repositories ..."
+        puts "Dumping repositories ...".blue
 
         Project.find_each(:batch_size => 1000) do |project|
-          print "#{project.path_with_namespace} ... "
+          print " * #{project.path_with_namespace} ... "
 
           if project.empty_repo?
             puts "[SKIPPED]".cyan
@@ -174,9 +174,9 @@ namespace :gitlab do
         backup_path_db = File.join(Gitlab.config.backup.path, "db")
         FileUtils.mkdir_p(backup_path_db) unless Dir.exists?(backup_path_db)
 
-        puts "Dumping database tables ... "
+        puts "Dumping database tables ... ".blue
         ActiveRecord::Base.connection.tables.each do |tbl|
-          print "#{tbl.yellow} ... "
+          print " * #{tbl.yellow} ... "
           count = 1
           File.open(File.join(backup_path_db, tbl + ".yml"), "w+") do |file|
             ActiveRecord::Base.connection.select_all("SELECT * FROM `#{tbl}`").each do |line|
