@@ -119,35 +119,49 @@ namespace :gitlab do
         backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
         FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
         puts "Dumping repositories ..."
-        project = Project.all.map { |n| [n.path, n.path_to_repo] }
-        project << ["gitolite-admin.git", File.join(Gitlab.config.git_base_path, "gitolite-admin.git")]
-        project.each do |project|
-          print "#{project.first.yellow} ... "
-          if Kernel.system("cd #{project.second} > /dev/null 2>&1 && git bundle create #{backup_path_repo}/#{project.first}.bundle --all > /dev/null 2>&1")
-            puts "done".green
+
+        Project.find_each(:batch_size => 1000) do |project|
+          print "#{project.path_with_namespace} ... "
+
+          if project.empty_repo?
+            puts "[SKIPPED]".cyan
+            next
+          end
+
+          # Create namespace dir if missing
+          FileUtils.mkdir_p(File.join(backup_path_repo, project.namespace.path)) if project.namespace
+
+          # Build a destination path for backup
+          path_to_bundle  = File.join(backup_path_repo, project.path_with_namespace + ".bundle")
+
+          if Kernel.system("cd #{project.path_to_repo} > /dev/null 2>&1 && git bundle create #{path_to_bundle} --all > /dev/null 2>&1")
+            puts "[DONE]".green
           else
-            puts "failed".red
+            puts "[FAILED]".red
           end
         end
       end
 
       task :restore => :environment do
         backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
+        repos_path = Gitlab.config.gitolite.repos_path
+
         puts "Restoring repositories ... "
-        project = Project.all.map { |n| [n.path, n.path_to_repo] }
-        project << ["gitolite-admin.git", File.join(Gitlab.config.git_base_path, "gitolite-admin.git")]
-        project.each do |project|
-          print "#{project.first.yellow} ... "
-          FileUtils.rm_rf(project.second) if File.dirname(project.second) # delete old stuff
-          if Kernel.system("cd #{File.dirname(project.second)} > /dev/null 2>&1 && git clone --bare #{backup_path_repo}/#{project.first}.bundle #{project.first}.git > /dev/null 2>&1")
-            permission_commands = [
-              "sudo chmod -R g+rwX #{Gitlab.config.git_base_path}",
-              "sudo chown -R #{Gitlab.config.ssh_user}:#{Gitlab.config.ssh_user} #{Gitlab.config.git_base_path}"
-            ]
-            permission_commands.each { |command| Kernel.system(command) }
-            puts "done".green
+
+        Project.find_each(:batch_size => 1000) do |project|
+          print "#{project.path_with_namespace} ... "
+
+          if project.namespace
+            project.namespace.ensure_dir_exist
+          end
+
+          # Build a backup path
+          path_to_bundle  = File.join(backup_path_repo, project.path_with_namespace + ".bundle")
+
+          if Kernel.system("git clone --bare #{path_to_bundle} #{project.path_to_repo} > /dev/null 2>&1")
+            puts "[DONE]".green
           else
-            puts "failed".red
+            puts "[FAILED]".red
           end
         end
       end
