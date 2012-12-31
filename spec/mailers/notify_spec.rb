@@ -60,7 +60,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /new issue ##{issue.id} \| #{issue.title} \| #{project.name}/
+            should have_subject /#{project.name} \| new issue ##{issue.id} \| #{issue.title}/
           end
 
           it 'contains a link to the new issue' do

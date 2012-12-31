@@ -2,7 +2,7 @@
   %table{border: "0", cellpadding: "0", cellspacing: "0", style: "color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;", width: "600"}
     %tr
       %td{width: "21"}
-      %td{align: "left", style: "padding: 20px 0 0;"}
+      %td
         %h2{style: "color:#646464; font-weight: normal;"}
           - if @note.for_diff_line?
             = link_to "New comment on diff", diffs_project_merge_request_url(@merge_request.project, @merge_request, anchor: "note_#{@note.id}")

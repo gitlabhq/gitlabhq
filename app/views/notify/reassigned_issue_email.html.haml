@@ -2,7 +2,7 @@
   %table{border: "0", cellpadding: "0", cellspacing: "0", style: "color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;", width: "600"}
     %tr
       %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
-      %td{align: "left", style: "padding: 20px 0 0;"}
+      %td
         %h2{style: "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
           = "Reassigned Issue ##{@issue.id}"
           = link_to_gfm truncate(@issue.title, length: 30), project_issue_url(@issue.project, @issue)

@@ -13,10 +13,10 @@
               %td{style: "font-size: 0px;", width: "20"}
                 \ 
               %td{align: "left", style: "padding: 10px 0", width: "580"}
-                %h1{style: "font-size: 24px; color: #BBBBBB; font: normal 22px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 32px;"}
+                %h1{style: "color: #BBBBBB; font: normal 20px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 32px;"}
                   GITLAB
                   - if @project
-                    &rarr; #{@project.name_with_namespace}
+                    \/ #{@project.name_with_namespace}
           %table{align: "center", bgcolor: "#fff", border: "0", cellpadding: "0", cellspacing: "0", style: "font-family: Helvetica, Arial, sans-serif; background: #fff;", width: "600"}
             %tr= yield
             %tr
