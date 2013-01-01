@@ -30,6 +30,17 @@ describe Event do
     it { should respond_to(:commits) }
   end
 
+  describe "Save" do
+    let(:event) { create(:event) }
+    let(:project) { create(:project) }
+
+    it "should touch associated project" do
+      event.stub(project: project)
+      event.project.should_receive(:touch)
+      event.save!
+    end
+  end
+
   describe "Push event" do
     before do
       project = create(:project)

@@ -230,7 +230,8 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_event.try(:created_at) || updated_at
+    # touched when any associated event is saved
+    updated_at
   end
 
   def project_id
