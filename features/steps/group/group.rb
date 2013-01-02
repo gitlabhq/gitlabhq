@@ -3,7 +3,7 @@ class Groups < Spinach::FeatureSteps
   include SharedPaths
 
   Then 'I should see projects list' do
-    current_user.projects.each do |project|
+    current_user.authorized_projects.each do |project|
       page.should have_link project.name
     end
   end
@@ -71,7 +71,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   def project
-    current_group.projects.first
+    current_group.authorized_projects.first
   end
 
   def assigned_to_me key
