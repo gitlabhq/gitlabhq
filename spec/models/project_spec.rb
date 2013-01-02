@@ -163,22 +163,18 @@ describe Project do
 
   describe "last_activity methods" do
     let(:project)    { create(:project) }
-    let(:last_event) { double(created_at: Time.now) }
+    let(:last_event) { create(:event) }
 
     describe "last_activity" do
-      it "should alias last_activity to last_event"do
+      it "should alias last_activity to last_event" do
         project.stub(last_event: last_event)
         project.last_activity.should == last_event
       end
     end
 
-    describe 'last_activity_date' do
-      it 'returns the creation date of the project\'s last event if present' do
-        project.stub(last_event: last_event)
-        project.last_activity_date.should == last_event.created_at
-      end
-
-      it 'returns the project\'s last update date if it has no events' do
+    describe "last_activity_date" do
+      it "should alias last_activity_date to updated_at" do
+        project.stub(updated_at: Time.now)
         project.last_activity_date.should == project.updated_at
       end
     end
