@@ -6,10 +6,7 @@ describe UserObserver do
   it 'calls #after_create when new users are created' do
     new_user = build(:user)
     subject.should_receive(:after_create).with(new_user)
-
-    User.observers.enable :user_observer do
-      new_user.save
-    end
+    new_user.save
   end
 
   context 'when a new user is created' do

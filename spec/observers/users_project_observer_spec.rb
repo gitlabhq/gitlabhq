@@ -11,9 +11,7 @@ describe UsersProjectObserver do
   describe "#after_commit" do
     it "should called when UsersProject created" do
       subject.should_receive(:after_commit).once
-      UsersProject.observers.enable :users_project_observer do
-        create(:users_project)
-      end
+      create(:users_project)
     end
 
     it "should send email to user" do
@@ -36,9 +34,7 @@ describe UsersProjectObserver do
   describe "#after_update" do
     it "should called when UsersProject updated" do
       subject.should_receive(:after_commit).once
-      UsersProject.observers.enable :users_project_observer do
-        create(:users_project).update_attribute(:project_access, UsersProject::MASTER)
-      end
+      create(:users_project).update_attribute(:project_access, UsersProject::MASTER)
     end
 
     it "should send email to user" do
@@ -47,19 +43,14 @@ describe UsersProjectObserver do
     end
     it "should not called after UsersProject destroyed" do
       subject.should_not_receive(:after_commit)
-      UsersProject.observers.enable :users_project_observer do
-        users_project.destroy
-      end
+      users_project.destroy
     end
   end
 
   describe "#after_destroy" do
     it "should called when UsersProject destroyed" do
       subject.should_receive(:after_destroy)
-
-      UsersProject.observers.enable :users_project_observer do
-        create(:users_project).destroy
-      end
+      create(:users_project).destroy
     end
 
     it "should create new event" do

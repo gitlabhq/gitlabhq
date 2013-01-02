@@ -5,6 +5,7 @@ describe Gitlab::ProjectMover do
 
   before do
     FileUtils.rm_rf base_path if File.exists? base_path
+    FileUtils.mkdir_p base_path
 
     Gitlab.config.gitolite.stub(repos_path: base_path)
 
