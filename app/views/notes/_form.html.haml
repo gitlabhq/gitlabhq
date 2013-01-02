@@ -7,9 +7,9 @@
   = f.hidden_field :noteable_type
 
   .note_text_and_preview.js-toggler-container
-    %a.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", data: {title: "Preview", url: preview_project_notes_path(@project)} }
+    %a.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", title: "Preview", data: {url: preview_project_notes_path(@project)} }
       %i.icon-eye-open
-    %a.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;", data: {title: "Edit"} }
+    %a.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;", title: "Edit" }
       %i.icon-edit
 
     = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'

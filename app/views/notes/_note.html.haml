@@ -6,7 +6,7 @@
         Link here
       &nbsp;
       - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
-        = link_to project_note_path(@project, note), method: :delete, confirm: 'Are you sure?', remote: true, class: "danger js-note-delete" do
+        = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, confirm: 'Are you sure?', remote: true, class: "danger js-note-delete" do
           %i.icon-remove-circle
     = image_tag gravatar_icon(note.author.email), class: "avatar s32"
     = link_to note.author_name, project_team_member_path(@project, @project.team_member_by_id(note.author)), class: "note-author"
