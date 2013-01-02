@@ -65,10 +65,6 @@ describe User do
     it { should ensure_length_of(:bio).is_within(0..255) }
   end
 
-  describe 'modules' do
-    it { should include_module(Account) }
-  end
-
   describe "Respond to" do
     it { should respond_to(:is_admin?) }
     it { should respond_to(:identifier) }

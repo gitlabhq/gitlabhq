@@ -20,7 +20,7 @@
 #
 
 require Rails.root.join("app/models/commit")
-require Rails.root.join("app/roles/static_model")
+require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
   include IssueCommonality

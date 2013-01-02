@@ -15,9 +15,6 @@
 #
 
 class Event < ActiveRecord::Base
-  include NoteEvent
-  include PushEvent
-
   attr_accessible :project, :action, :data, :author_id, :project_id,
                   :target_id, :target_type
 
