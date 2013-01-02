@@ -76,7 +76,7 @@
         %tr{class: "user_#{u.id}"}
           %td.name= link_to u.name, admin_user_path(u)
           %td.projects_access
-            - u.projects.in_namespace(@group).each do |project|
+            - u.authorized_projects.in_namespace(@group).each do |project|
               - u_p = u.users_projects.in_project(project).first
               %span
                 = project.name

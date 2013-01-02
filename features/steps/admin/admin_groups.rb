@@ -56,6 +56,4 @@ class AdminGroups < Spinach::FeatureSteps
   def current_group
     @group ||= Group.first
   end
-
 end
-

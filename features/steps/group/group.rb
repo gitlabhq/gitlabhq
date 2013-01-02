@@ -71,7 +71,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   def project
-    current_group.authorized_projects.first
+    current_group.projects.first
   end
 
   def assigned_to_me key

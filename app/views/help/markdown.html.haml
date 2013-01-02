@@ -1,6 +1,6 @@
 %h3.page_title GitLab Flavored Markdown
 .back_link
-  = link_to help_path do 
+  = link_to help_path do
     &larr; to index
 %hr
 
@@ -120,7 +120,7 @@
         for commits
 
     -# this example will only be shown if the user has a project with at least one issue
-    - if @project = current_user.projects.first
+    - if @project = current_user.authorized_projects.first
       - if issue = @project.issues.first
         %p For example in your #{link_to @project.name, project_path(@project)} project, writing:
         %pre= "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
