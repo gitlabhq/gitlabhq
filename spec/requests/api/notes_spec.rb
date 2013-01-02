@@ -4,7 +4,7 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let!(:project) { create(:project, owner: user) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, project: project, author: user) }
   let!(:snippet) { create(:snippet, project: project, author: user) }
   let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }

@@ -5,7 +5,7 @@ describe "Projects" do
 
   describe "GET /projects/show" do
     before do
-      @project = create(:project, owner: @user)
+      @project = create(:project, namespace: @user.namespace)
       @project.add_access(@user, :read)
 
       visit project_path(@project)
@@ -37,7 +37,7 @@ describe "Projects" do
 
   describe "PUT /projects/:id" do
     before do
-      @project = create(:project, owner: @user)
+      @project = create(:project, namespace: @user.namespace)
       @project.add_access(@user, :admin, :read)
 
       visit edit_project_path(@project)
@@ -58,7 +58,7 @@ describe "Projects" do
 
   describe "DELETE /projects/:id" do
     before do
-      @project = create(:project, owner: @user)
+      @project = create(:project, namespace: @user.namespace)
       @project.add_access(@user, :read, :admin)
       visit edit_project_path(@project)
     end

@@ -69,7 +69,7 @@ module Account
 
   def projects_limit_percent
     return 100 if projects_limit.zero?
-    (my_own_projects.count.to_f / projects_limit) * 100
+    (personal_projects.count.to_f / projects_limit) * 100
   end
 
   def recent_push project_id = nil

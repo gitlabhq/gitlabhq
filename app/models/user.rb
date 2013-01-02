@@ -187,4 +187,9 @@ class User < ActiveRecord::Base
                   (projects.namespace_id IS NULL AND projects.creator_id = :user_id)",
                   namespaces: namespaces.map(&:id), user_id: self.id)
   end
+
+  # Team membership in personal projects
+  def tm_in_personal_projects
+    personal_projects.users_projects.where(user_id: self.id)
+  end
 end

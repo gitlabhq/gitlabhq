@@ -4,7 +4,7 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user) { create(:user ) }
-  let!(:project) { create(:project, owner: user) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:merge_request) { create(:merge_request, author: user, assignee: user, project: project, title: "Test") }
   before { project.add_access(user, :read) }
 

@@ -29,20 +29,9 @@ class Ability
         rules << project_guest_rules
       end
 
-      if project.namespace
-        # If user own project namespace
-        # (Ex. group owner or account owner)
-        if project.namespace.owner == user
-          rules << project_admin_rules
-        end
-      else
-        # For compatibility with global projects
-        # use projects.owner_id
-        if project.owner == user
-          rules << project_admin_rules
-        end
+      if project.owner == user
+        rules << project_admin_rules
       end
-
 
       rules.flatten
     end

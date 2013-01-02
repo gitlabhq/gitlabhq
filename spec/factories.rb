@@ -37,7 +37,7 @@ FactoryGirl.define do
   end
 
   factory :namespace do
-    sequence(:name) { |n| "group#{n}" }
+    sequence(:name) { |n| "namespace#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     owner
   end

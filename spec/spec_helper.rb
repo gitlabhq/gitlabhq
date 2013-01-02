@@ -38,7 +38,7 @@ RSpec.configure do |config|
     stub_gitolite!
 
     # !!! Observers disabled by default in tests
-    ActiveRecord::Base.observers.disable(:all)
+    #ActiveRecord::Base.observers.disable(:all)
     # ActiveRecord::Base.observers.enable(:all)
 
     # Use tmp dir for FS manipulations
