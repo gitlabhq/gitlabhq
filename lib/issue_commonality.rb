@@ -68,5 +68,4 @@ module IssueCommonality
   def is_being_reopened?
     closed_changed? && !closed
   end
-
 end
