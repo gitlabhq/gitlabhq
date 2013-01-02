@@ -15,6 +15,7 @@
         %i.icon-sort-down
       %th Path
       %th Team Members
+      %th Owner
       %th Last Commit
       %th Edit
       %th.cred Danger Zone!
@@ -26,6 +27,8 @@
       %td
         %span.monospace= project.path_with_namespace + ".git"
       %td= project.users_projects.count
+      %td
+        = link_to project.chief.name, [:admin, project.chief]
       %td= last_commit(project)
       %td= link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn small"
       %td.bgred= link_to 'Destroy', [:admin, project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn small danger"

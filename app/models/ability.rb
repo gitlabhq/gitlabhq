@@ -107,9 +107,12 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      rules << [
-        :manage_group
-      ] if group.owner == user
+      # Only group owner and administrators can manage group
+      if group.owner == user || user.admin?
+        rules << [
+          :manage_group
+        ]
+      end
 
       rules.flatten
     end
