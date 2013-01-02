@@ -95,17 +95,17 @@ FactoryGirl.define do
     author
 
     factory :note_on_commit, traits: [:on_commit]
-    factory :note_on_commit_line, traits: [:on_commit, :on_line]
+    factory :note_on_commit_diff, traits: [:on_commit, :on_diff]
     factory :note_on_issue, traits: [:on_issue], aliases: [:votable_note]
     factory :note_on_merge_request, traits: [:on_merge_request]
-    factory :note_on_merge_request_line, traits: [:on_merge_request, :on_line]
+    factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
 
     trait :on_commit do
       commit_id     "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
       noteable_type "Commit"
     end
 
-    trait :on_line do
+    trait :on_diff do
       line_code "0_184_184"
     end
 
