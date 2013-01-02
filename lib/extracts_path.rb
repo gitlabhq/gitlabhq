@@ -51,7 +51,7 @@ module ExtractsPath
     return pair unless @project
 
     # Remove project, actions and all other staff from path
-    input.gsub!("/#{@project.path_with_namespace}", "")
+    input.gsub!(/^\/#{Regexp.escape(@project.path_with_namespace)}/, "")
     input.gsub!(/^\/(tree|commits|blame|blob)\//, "") # remove actions
     input.gsub!(/\?.*$/, "") # remove stamps suffix
     input.gsub!(/.atom$/, "") # remove rss feed
@@ -108,7 +108,9 @@ module ExtractsPath
       request.format = :atom
     end
 
-    @ref, @path = extract_ref(request.fullpath)
+    path = request.fullpath.dup
+
+    @ref, @path = extract_ref(path)
 
     @id = File.join(@ref, @path)
 
