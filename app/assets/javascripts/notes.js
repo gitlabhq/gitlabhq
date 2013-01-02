@@ -244,6 +244,7 @@ var NoteList = {
   setupDiscussionNoteForm: function(dataHolder, form) {
     // setup note target
     form.attr("rel", dataHolder.data("discussionId"));
+    form.find("#note_commit_id").val(dataHolder.data("commitId"));
     form.find("#note_line_code").val(dataHolder.data("lineCode"));
     form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
     form.find("#note_noteable_id").val(dataHolder.data("noteableId"));

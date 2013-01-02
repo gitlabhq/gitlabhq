@@ -23,7 +23,7 @@ class CommitController < ProjectResourceController
 
     @comments_allowed = @reply_allowed = true
     @comments_target  = { noteable_type: 'Commit',
-                          noteable_id: @commit.id }
+                          commit_id: @commit.id }
 
     respond_to do |format|
       format.html do
