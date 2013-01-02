@@ -25,7 +25,7 @@ module Account
   end
 
   def can_create_project?
-    projects_limit > my_own_projects.count
+    projects_limit > personal_projects.count
   end
 
   def can_create_group?
@@ -56,10 +56,6 @@ module Account
     MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id)
   end
 
-  def project_ids
-    projects.map(&:id)
-  end
-
   # Remove user from all projects and
   # set blocked attribute to true
   def block
@@ -86,22 +82,7 @@ module Account
   end
 
   def projects_sorted_by_activity
-    projects.sorted_by_activity
-  end
-
-  def namespaces
-    namespaces = []
-
-    # Add user account namespace
-    namespaces << self.namespace if self.namespace
-
-    # Add groups you can manage
-    namespaces += if admin
-                    Group.all
-                  else
-                    groups.all
-                  end
-    namespaces
+    authorized_projects.sorted_by_activity
   end
 
   def several_namespaces?
@@ -110,21 +91,5 @@ module Account
 
   def namespace_id
     namespace.try :id
-  end
-
-  def authorized_groups
-    @authorized_groups ||= begin
-                           groups = Group.where(id: self.projects.pluck(:namespace_id)).all
-                           groups = groups + self.groups
-                           groups.uniq
-                         end
-  end
-
-  def authorized_projects
-    Project.authorized_for(self)
-  end
-
-  def my_own_projects
-    Project.personal(self)
   end
 end

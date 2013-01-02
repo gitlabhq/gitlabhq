@@ -32,7 +32,7 @@ class Project < ActiveRecord::Base
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
 
-  attr_accessible :namespace_id, :owner_id, as: :admin
+  attr_accessible :namespace_id, :creator_id, as: :admin
 
   attr_accessor :error_code
 
@@ -40,10 +40,10 @@ class Project < ActiveRecord::Base
   belongs_to :group, foreign_key: "namespace_id", conditions: "type = 'Group'"
   belongs_to :namespace
 
-  # TODO: replace owner with creator.
-  # With namespaces a project owner will be a namespace owner
-  # so this field makes sense only for global projects
-  belongs_to :owner, class_name: "User"
+  belongs_to :creator,
+    class_name: "User",
+    foreign_key: "creator_id"
+
   has_many :users,          through: :users_projects
   has_many :events,         dependent: :destroy
   has_many :merge_requests, dependent: :destroy
@@ -62,7 +62,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   # Validations
-  validates :owner, presence: true
+  validates :creator, presence: true
   validates :description, length: { within: 0..2000 }
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
@@ -89,8 +89,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def authorized_for user
-      projects = includes(:users_projects, :namespace)
-      projects = projects.where("users_projects.user_id = :user_id or projects.owner_id = :user_id or namespaces.owner_id = :user_id", user_id: user.id)
+      raise "DERECATED"
     end
 
     def active
@@ -104,8 +103,10 @@ class Project < ActiveRecord::Base
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")
-        namespace_id = Namespace.find_by_path(id.first).id
-        where(namespace_id: namespace_id).find_by_path(id.second)
+        namespace = Namespace.find_by_path(id.first)
+        return nil unless namespace
+
+        where(namespace_id: namespace.id).find_by_path(id.second)
       else
         where(path: id, namespace_id: nil).last
       end
@@ -125,7 +126,7 @@ class Project < ActiveRecord::Base
         #
         project.path = project.name.dup.parameterize
 
-        project.owner = user
+        project.creator = user
 
         # Apply namespace if user has access to it
         # else fallback to user namespace
@@ -174,8 +175,8 @@ class Project < ActiveRecord::Base
   end
 
   def check_limit
-    unless owner.can_create_project?
-      errors[:base] << ("Your own projects limit is #{owner.projects_limit}! Please contact administrator to increase it")
+    unless creator.can_create_project?
+      errors[:base] << ("Your own projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
     end
   rescue
     errors[:base] << ("Can't check your ability to create project")
@@ -266,6 +267,14 @@ class Project < ActiveRecord::Base
   def send_move_instructions
     self.users_projects.each do |member|
       Notify.project_was_moved_email(member.id).deliver
+    end
+  end
+
+  def owner
+    if namespace
+      namespace_owner
+    else
+      creator
     end
   end
 end

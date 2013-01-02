@@ -70,7 +70,7 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= group.projects.authorized_for(current_user).sorted_by_activity
+    @projects ||= current_user.authorized_projects.where(namespace_id: group.id).sorted_by_activity
   end
 
   def project_ids

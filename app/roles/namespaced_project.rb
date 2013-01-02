@@ -50,14 +50,6 @@ module NamespacedProject
     namespace.try(:owner)
   end
 
-  def chief
-    if namespace
-      namespace_owner
-    else
-      owner
-    end
-  end
-
   def path_with_namespace
     if namespace
       namespace.path + '/' + path

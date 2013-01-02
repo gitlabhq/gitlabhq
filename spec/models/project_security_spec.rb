@@ -8,7 +8,7 @@ describe Project do
       @u1 = create(:user)
       @u2 = create(:user)
       @u3 = create(:user)
-      @u4 = @p1.chief
+      @u4 = @p1.owner
 
       @abilities = Six.new
       @abilities << Ability

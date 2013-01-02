@@ -17,4 +17,4 @@
             &rarr;
           %span.last_activity
             %strong Projects:
-            %span= group.projects.authorized_for(current_user).count
+            %span= current_user.authorized_projects.where(namespace_id: group.id).count

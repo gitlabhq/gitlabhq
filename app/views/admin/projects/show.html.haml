@@ -49,8 +49,8 @@
       %b
         Owned by:
     %td
-      - if @project.chief
-        = link_to @project.chief.name, admin_user_path(@project.chief)
+      - if @project.owner
+        = link_to @project.owner_name, admin_user_path(@project.owner)
       - else
         (deleted)
   %tr
@@ -58,7 +58,7 @@
       %b
         Created by:
     %td
-      = @project.owner_name || '(deleted)'
+      = @project.creator.try(:name) || '(deleted)'
   %tr
     %td
       %b

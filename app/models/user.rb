@@ -51,7 +51,6 @@ class User < ActiveRecord::Base
   has_many :groups, class_name: "Group", foreign_key: :owner_id
 
   has_many :keys, dependent: :destroy
-  has_many :projects, through: :users_projects
   has_many :users_projects, dependent: :destroy
   has_many :issues, foreign_key: :author_id, dependent: :destroy
   has_many :notes, foreign_key: :author_id, dependent: :destroy
@@ -82,6 +81,9 @@ class User < ActiveRecord::Base
   scope :active, where(blocked:  false)
   scope :alphabetically, order('name ASC')
 
+  #
+  # Class methods
+  #
   class << self
     def filter filter_name
       case filter_name
@@ -126,9 +128,63 @@ class User < ActiveRecord::Base
     end
   end
 
+  #
+  # Instance methods
+  #
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
+  end
+
+
+  # Namespaces user has access to
+  def namespaces
+    namespaces = []
+
+    # Add user account namespace
+    namespaces << self.namespace if self.namespace
+
+    # Add groups you can manage
+    namespaces += if admin
+                    Group.all
+                  else
+                    groups.all
+                  end
+    namespaces
+  end
+
+  # Groups where user is an owner
+  def owned_groups
+    groups
+  end
+
+  # Groups user has access to
+  def authorized_groups
+    @authorized_groups ||= begin
+                           groups = Group.where(id: self.authorized_projects.pluck(:namespace_id)).all
+                           groups = groups + self.groups
+                           groups.uniq
+                         end
+  end
+
+
+  # Projects user has access to
+  def authorized_projects
+    project_ids = users_projects.pluck(:project_id)
+    project_ids = project_ids | owned_projects.pluck(:id)
+    Project.where(id: project_ids)
+  end
+
+  # Projects in user namespace
+  def personal_projects
+    Project.personal(self)
+  end
+
+  # Projects where user is an owner
+  def owned_projects
+    Project.where("(projects.namespace_id IN (:namespaces)) OR
+                  (projects.namespace_id IS NULL AND projects.creator_id = :user_id)",
+                  namespaces: namespaces.map(&:id), user_id: self.id)
   end
 end
