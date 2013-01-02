@@ -62,12 +62,12 @@ class Notify < ActionMailer::Base
   # Note
   #
 
-  def note_commit_email(recipient_id, note_id)
+  def note_commit_email(commit_autor_email, note_id)
     @note = Note.find(note_id)
     @commit = @note.noteable
     @commit = CommitDecorator.decorate(@commit)
     @project = @note.project
-    mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
+    mail(to: recipient(commit_autor_email), subject: subject("note for commit #{@commit.short_id}", @commit.title))
   end
 
   def note_issue_email(recipient_id, note_id)
