@@ -9,7 +9,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
-#  owner_id               :integer
+#  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
