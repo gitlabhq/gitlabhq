@@ -21,7 +21,7 @@
 require "grit"
 
 class Project < ActiveRecord::Base
-  include GitHost
+  include Gitolited
 
   class TransferError < StandardError; end
 
@@ -408,7 +408,7 @@ class Project < ActiveRecord::Base
 
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
-      git_host.move_repository(old_repo, self)
+      gitolite.move_repository(old_repo, self)
 
       save!
     end
@@ -670,7 +670,7 @@ class Project < ActiveRecord::Base
   end
 
   def url_to_repo
-    git_host.url_to_repo(path_with_namespace)
+    gitolite.url_to_repo(path_with_namespace)
   end
 
   def path_to_repo
@@ -682,11 +682,11 @@ class Project < ActiveRecord::Base
   end
 
   def update_repository
-    git_host.update_repository(self)
+    gitolite.update_repository(self)
   end
 
   def destroy_repository
-    git_host.remove_repository(self)
+    gitolite.remove_repository(self)
   end
 
   def repo_exists?

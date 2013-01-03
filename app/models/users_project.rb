@@ -11,7 +11,7 @@
 #
 
 class UsersProject < ActiveRecord::Base
-  include GitHost
+  include Gitolited
 
   GUEST     = 10
   REPORTER  = 20
@@ -152,7 +152,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def update_repository
-    git_host.update_repository(project)
+    gitolite.update_repository(project)
   end
 
   def project_access_human

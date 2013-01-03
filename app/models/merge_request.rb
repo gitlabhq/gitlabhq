@@ -23,8 +23,7 @@ require Rails.root.join("app/models/commit")
 require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
-  include IssueCommonality
-  include Votes
+  include Issuable
 
   attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch, :milestone_id,
                   :author_id_of_changes

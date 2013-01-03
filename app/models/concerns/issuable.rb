@@ -1,10 +1,10 @@
-# == IssueCommonality role
+# == Issuable concern
 #
 # Contains common functionality shared between Issues and MergeRequests
 #
 # Used by Issue, MergeRequest
 #
-module IssueCommonality
+module Issuable
   extend ActiveSupport::Concern
 
   included do
@@ -67,5 +67,36 @@ module IssueCommonality
 
   def is_being_reopened?
     closed_changed? && !closed
+  end
+
+  # Return the number of +1 comments (upvotes)
+  def upvotes
+    notes.select(&:upvote?).size
+  end
+
+  def upvotes_in_percent
+    if votes_count.zero?
+      0
+    else
+      100.0 / votes_count * upvotes
+    end
+  end
+
+  # Return the number of -1 comments (downvotes)
+  def downvotes
+    notes.select(&:downvote?).size
+  end
+
+  def downvotes_in_percent
+    if votes_count.zero?
+      0
+    else
+      100.0 - upvotes_in_percent
+    end
+  end
+
+  # Return the total number of votes
+  def votes_count
+    upvotes + downvotes
   end
 end
