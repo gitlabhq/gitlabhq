@@ -42,7 +42,21 @@ class UsersProject < ActiveRecord::Base
   scope :in_project, ->(project) { where(project_id: project.id) }
 
   class << self
-    def add_users_into_projects(project_ids, user_ids, project_access)
+
+    # Add users to project teams with passed access option
+    #
+    # access can be an integer representing a access code
+    # or symbol like :master representing role
+    #
+    def add_users_into_projects(project_ids, user_ids, access)
+      project_access = if @roles.has_key?(access)
+                         @roles[access]
+                       elsif @roles.values.include?(access)
+                         access
+                       else
+                         raise "Non valid access"
+                       end
+
       UsersProject.transaction do
         project_ids.each do |project_id|
           user_ids.each do |user_id|
@@ -139,6 +153,15 @@ class UsersProject < ActiveRecord::Base
     # TODO: depreceate in future in favor of add_users_into_projects
     def user_bulk_import(user, project_ids, project_access)
       add_users_into_projects(project_ids, [user.id], project_access)
+    end
+
+    def roles_hash
+      {
+        guest: GUEST,
+        reporter: REPORTER,
+        developer: DEVELOPER,
+        master: MASTER
+      }
     end
 
     def access_roles

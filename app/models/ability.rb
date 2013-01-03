@@ -15,17 +15,19 @@ class Ability
     def project_abilities(user, project)
       rules = []
 
+      team = project.team
+
       # Rules based on role in project
-      if project.master_access_for?(user)
+      if team.masters.include?(user)
         rules << project_master_rules
 
-      elsif project.dev_access_for?(user)
+      elsif team.developers.include?(user)
         rules << project_dev_rules
 
-      elsif project.report_access_for?(user)
+      elsif team.reporters.include?(user)
         rules << project_report_rules
 
-      elsif project.guest_access_for?(user)
+      elsif team.guests.include?(user)
         rules << project_guest_rules
       end
 

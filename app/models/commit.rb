@@ -83,8 +83,8 @@ class Commit
 
       return result unless from && to
 
-      first = project.commit(to.try(:strip))
-      last = project.commit(from.try(:strip))
+      first = project.repository.commit(to.try(:strip))
+      last = project.repository.commit(from.try(:strip))
 
       if first && last
         result[:same] = (first.id == last.id)

@@ -14,9 +14,9 @@
         - if @project.repo_exists?
           - if can? current_user, :download_code, @project
             = nav_link(controller: %w(tree blob blame)) do
-              = link_to 'Files', project_tree_path(@project, @ref || @project.root_ref)
+              = link_to 'Files', project_tree_path(@project, @ref || @repository.root_ref)
             = nav_link(controller: %w(commit commits compare repositories protected_branches)) do
-              = link_to "Commits", project_commits_path(@project, @ref || @project.root_ref)
+              = link_to "Commits", project_commits_path(@project, @ref || @repository.root_ref)
             = nav_link(path: 'projects#graph') do
               = link_to "Network", graph_project_path(@project)
 

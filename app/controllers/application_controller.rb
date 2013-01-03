@@ -76,6 +76,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def repository
+    @repository ||= project.repository
+  rescue Grit::NoSuchPathError
+    nil
+  end
+
   def add_abilities
     abilities << Ability
   end

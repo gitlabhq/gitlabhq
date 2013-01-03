@@ -9,7 +9,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
-#  owner_id               :integer
+#  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
@@ -75,7 +75,6 @@ class Project < ActiveRecord::Base
   validate :check_limit, :repo_name
 
   # Scopes
-  scope :public_only, where(private_flag: false)
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
   scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
@@ -162,6 +161,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def team
+    @team ||= Team.new(self)
+  end
+
+  def repository
+    @repository ||= Repository.new(path_with_namespace, default_branch)
+  end
+
   def git_error?
     error_code == :gitolite
   end
@@ -198,10 +205,6 @@ class Project < ActiveRecord::Base
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
   end
 
-  def common_notes
-    notes.where(noteable_type: ["", nil]).inc_author_project
-  end
-
   def build_commit_note(commit)
     notes.new(commit_id: commit.id, noteable_type: "Commit")
   end
@@ -212,14 +215,6 @@ class Project < ActiveRecord::Base
 
   def commit_line_notes(commit)
     notes.where(commit_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
-  end
-
-  def public?
-    !private_flag
-  end
-
-  def private?
-    private_flag
   end
 
   def last_activity
@@ -284,33 +279,6 @@ class Project < ActiveRecord::Base
     users_projects.find_by_user_id(user_id)
   end
 
-  # Add user to project
-  # with passed access role
-  def add_user_to_team(user, access_role)
-    add_user_id_to_team(user.id, access_role)
-  end
-
-  # Add multiple users to project
-  # with same access role
-  def add_users_to_team(users, access_role)
-    add_users_ids_to_team(users.map(&:id), access_role)
-  end
-
-  # Add user to project
-  # with passed access role by user id
-  def add_user_id_to_team(user_id, access_role)
-    users_projects.create(
-      user_id: user_id,
-      project_access: access_role
-    )
-  end
-
-  # Add multiple users to project
-  # with same access role by user ids
-  def add_users_ids_to_team(users_ids, access_role)
-    UsersProject.bulk_import(self, users_ids, access_role)
-  end
-
   # Update multiple project users
   # to same access role by user ids
   def update_users_ids_to_role(users_ids, access_role)
@@ -320,30 +288,6 @@ class Project < ActiveRecord::Base
   # Delete multiple users from project by user ids
   def delete_users_ids_from_team(users_ids)
     UsersProject.bulk_delete(self, users_ids)
-  end
-
-  # Remove all users from project team
-  def truncate_team
-    UsersProject.truncate_team(self)
-  end
-
-  # Compatible with all access rights
-  # Should be rewrited for new access rights
-  def add_access(user, *access)
-    access = if access.include?(:admin)
-               { project_access: UsersProject::MASTER }
-             elsif access.include?(:write)
-               { project_access: UsersProject::DEVELOPER }
-             else
-               { project_access: UsersProject::REPORTER }
-             end
-    opts = { user: user }
-    opts.merge!(access)
-    users_projects.create(opts)
-  end
-
-  def reset_access(user)
-    users_projects.where(project_id: self.id, user_id: user.id).destroy if self.id
   end
 
   def repository_readers
@@ -366,26 +310,6 @@ class Project < ActiveRecord::Base
 
     keys[UsersProject::REPORTER] += deploy_keys.pluck(:identifier)
     keys
-  end
-
-  def allow_read_for?(user)
-    !users_projects.where(user_id: user.id).empty?
-  end
-
-  def guest_access_for?(user)
-    !users_projects.where(user_id: user.id).empty?
-  end
-
-  def report_access_for?(user)
-    !users_projects.where(user_id: user.id, project_access: [UsersProject::REPORTER, UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
-  end
-
-  def dev_access_for?(user)
-    !users_projects.where(user_id: user.id, project_access: [UsersProject::DEVELOPER, UsersProject::MASTER]).empty?
-  end
-
-  def master_access_for?(user)
-    !users_projects.where(user_id: user.id, project_access: [UsersProject::MASTER]).empty?
   end
 
   def transfer(new_namespace)
@@ -586,95 +510,19 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repo_exists? || !has_commits?
-  end
-
-  def commit(commit_id = nil)
-    Commit.find_or_first(repo, commit_id, root_ref)
-  end
-
-  def fresh_commits(n = 10)
-    Commit.fresh_commits(repo, n)
-  end
-
-  def commits_with_refs(n = 20)
-    Commit.commits_with_refs(repo, n)
-  end
-
-  def commits_since(date)
-    Commit.commits_since(repo, date)
-  end
-
-  def commits(ref, path = nil, limit = nil, offset = nil)
-    Commit.commits(repo, ref, path, limit, offset)
-  end
-
-  def last_commit_for(ref, path = nil)
-    commits(ref, path, 1).first
-  end
-
-  def commits_between(from, to)
-    Commit.commits_between(repo, from, to)
+    !repository || repository.empty_repo?
   end
 
   def satellite
     @satellite ||= Gitlab::Satellite::Satellite.new(self)
   end
 
-  def has_post_receive_file?
-    !!hook_file
-  end
-
-  def valid_post_receive_file?
-    valid_hook_file == hook_file
-  end
-
-  def valid_hook_file
-    @valid_hook_file ||= File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
-  end
-
-  def hook_file
-    @hook_file ||= begin
-                     hook_path = File.join(path_to_repo, 'hooks', 'post-receive')
-                     File.read(hook_path) if File.exists?(hook_path)
-                   end
-  end
-
-  # Returns an Array of branch names
-  def branch_names
-    repo.branches.collect(&:name).sort
-  end
-
-  # Returns an Array of Branches
-  def branches
-    repo.branches.sort_by(&:name)
-  end
-
-  # Returns an Array of tag names
-  def tag_names
-    repo.tags.collect(&:name).sort.reverse
-  end
-
-  # Returns an Array of Tags
-  def tags
-    repo.tags.sort_by(&:name).reverse
-  end
-
-  # Returns an Array of branch and tag names
-  def ref_names
-    [branch_names + tag_names].flatten
-  end
-
   def repo
-    @repo ||= Grit::Repo.new(path_to_repo)
+    repository.raw
   end
 
   def url_to_repo
     gitolite.url_to_repo(path_with_namespace)
-  end
-
-  def path_to_repo
-    File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
   end
 
   def namespace_dir
@@ -690,19 +538,9 @@ class Project < ActiveRecord::Base
   end
 
   def repo_exists?
-    @repo_exists ||= (repo && !repo.branches.empty?)
+    @repo_exists ||= (repository && repository.branches.present?)
   rescue
     @repo_exists = false
-  end
-
-  def heads
-    @heads ||= repo.heads
-  end
-
-  def tree(fcommit, path = nil)
-    fcommit = commit if fcommit == :head
-    tree = fcommit.tree
-    path ? (tree / path) : tree
   end
 
   def open_branches
@@ -714,61 +552,8 @@ class Project < ActiveRecord::Base
     end.sort_by(&:name)
   end
 
-  # Discovers the default branch based on the repository's available branches
-  #
-  # - If no branches are present, returns nil
-  # - If one branch is present, returns its name
-  # - If two or more branches are present, returns the one that has a name
-  #   matching root_ref (default_branch or 'master' if default_branch is nil)
-  def discover_default_branch
-    if branch_names.length == 0
-      nil
-    elsif branch_names.length == 1
-      branch_names.first
-    else
-      branch_names.select { |v| v == root_ref }.first
-    end
-  end
-
-  def has_commits?
-    !!commit
-  rescue Grit::NoSuchPathError
-    false
-  end
-
-  def root_ref
-    default_branch || "master"
-  end
-
   def root_ref?(branch)
-    root_ref == branch
-  end
-
-  # Archive Project to .tar.gz
-  #
-  # Already packed repo archives stored at
-  # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
-  #
-  def archive_repo(ref)
-    ref = ref || self.root_ref
-    commit = self.commit(ref)
-    return nil unless commit
-
-    # Build file path
-    file_name = self.path + "-" + commit.id.to_s + ".tar.gz"
-    storage_path = Rails.root.join("tmp", "repositories", self.path_with_namespace)
-    file_path = File.join(storage_path, file_name)
-
-    # Put files into a directory before archiving
-    prefix = self.path + "/"
-
-    # Create file if not exists
-    unless File.exists?(file_path)
-      FileUtils.mkdir_p storage_path
-      file = self.repo.archive_to_file(ref, prefix,  file_path)
-    end
-
-    file_path
+    repository.root_ref == branch
   end
 
   def ssh_url_to_repo

@@ -5,19 +5,19 @@ class RepositoriesController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    @activities = @project.commits_with_refs(20)
+    @activities = @repository.commits_with_refs(20)
   end
 
   def branches
-    @branches = @project.branches
+    @branches = @repository.branches
   end
 
   def tags
-    @tags = @project.tags
+    @tags = @repository.tags
   end
 
   def stats
-    @stats = Gitlab::GitStats.new(@project.repo, @project.root_ref)
+    @stats = Gitlab::GitStats.new(@repository.raw, @repository.root_ref)
     @graph = @stats.graph
   end
 
@@ -27,7 +27,7 @@ class RepositoriesController < ProjectResourceController
     end
 
 
-    file_path = @project.archive_repo(params[:ref])
+    file_path = @repository.archive_repo(params[:ref])
 
     if file_path
       # Send file to user

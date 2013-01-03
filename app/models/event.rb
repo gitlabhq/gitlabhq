@@ -110,26 +110,6 @@ class Event < ActiveRecord::Base
     target_type == "MergeRequest"
   end
 
-  def new_issue?
-    target_type == "Issue" &&
-      action == Created
-  end
-
-  def new_merge_request?
-    target_type == "MergeRequest" &&
-      action == Created
-  end
-
-  def changed_merge_request?
-    target_type == "MergeRequest" &&
-      [Closed, Reopened].include?(action)
-  end
-
-  def changed_issue?
-    target_type == "Issue" &&
-      [Closed, Reopened].include?(action)
-  end
-
   def joined?
     action == Joined
   end
