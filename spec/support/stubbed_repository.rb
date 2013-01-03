@@ -1,6 +1,6 @@
 # Stubs out all Git repository access done by models so that specs can run
 # against fake repositories without Grit complaining that they don't exist.
-module StubbedRepository
+class Project
   def path_to_repo
     if new_record? || path == 'newproject'
       # There are a couple Project specs and features that expect the Project's
@@ -27,5 +27,3 @@ module StubbedRepository
     end
   end
 end
-
-Project.send(:include, StubbedRepository)

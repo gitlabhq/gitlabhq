@@ -133,14 +133,6 @@ describe Project do
     it { should respond_to(:path_with_namespace) }
   end
 
-  describe 'modules' do
-    it { should include_module(Repository) }
-    it { should include_module(PushObserver) }
-    it { should include_module(Authority) }
-    it { should include_module(Team) }
-    it { should include_module(NamespacedProject) }
-  end
-
   it "should return valid url to repo" do
     project = Project.new(path: "somewhere")
     project.url_to_repo.should == Gitlab.config.gitolite.ssh_path_prefix + "somewhere.git"
