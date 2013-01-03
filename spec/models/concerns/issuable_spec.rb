@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issue, "IssueCommonality" do
+describe Issue, "Issuable" do
   let(:issue) { create(:issue) }
 
   describe "Associations" do
