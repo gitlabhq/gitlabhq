@@ -20,4 +20,8 @@ class Service < ActiveRecord::Base
   has_one :service_hook
 
   validates :project_id, presence: true
+
+  def activated?
+    active
+  end
 end

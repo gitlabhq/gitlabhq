@@ -23,10 +23,6 @@ class GitlabCiService < Service
 
   after_save :compose_service_hook, if: :activated?
 
-  def activated?
-    active
-  end
-
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.url = [project_url, "/build", "?token=#{token}"].join("")

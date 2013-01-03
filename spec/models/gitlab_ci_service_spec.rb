@@ -42,5 +42,9 @@ describe GitlabCiService do
     describe :commit_status_path do
       it { @service.commit_status_path("2ab7834c").should == "http://ci.gitlab.org/projects/2/builds/2ab7834c/status.json?token=verySecret"}
     end
+
+    describe :build_page do
+      it { @service.build_page("2ab7834c").should == "http://ci.gitlab.org/projects/2/builds/2ab7834c"}
+    end
   end
 end
