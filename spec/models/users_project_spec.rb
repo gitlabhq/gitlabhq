@@ -69,4 +69,45 @@ describe UsersProject do
       it { @project_1.users.should_not include(@user_2) }
     end
   end
+
+  describe :add_users_into_projects do
+    before do
+      @project_1 = create :project
+      @project_2 = create :project
+
+      @user_1 = create :user
+      @user_2 = create :user
+
+      UsersProject.add_users_into_projects(
+        [@project_1.id, @project_2.id],
+        [@user_1.id, @user_2.id],
+        UsersProject::MASTER
+      )
+    end
+
+    it { @project_1.users.should include(@user_1) }
+    it { @project_1.users.should include(@user_2) }
+
+
+    it { @project_2.users.should include(@user_1) }
+    it { @project_2.users.should include(@user_2) }
+  end
+
+  describe :truncate_teams do
+    before do
+      @project_1 = create :project
+      @project_2 = create :project
+
+      @user_1 = create :user
+      @user_2 = create :user
+
+      @project_1.add_access @user_1, :write
+      @project_2.add_access @user_2, :read
+
+      UsersProject.truncate_teams([@project_1.id, @project_2.id])
+    end
+
+    it { @project_1.users.should be_empty }
+    it { @project_2.users.should be_empty }
+  end
 end

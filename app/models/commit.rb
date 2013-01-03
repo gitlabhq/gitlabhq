@@ -11,7 +11,7 @@ class Commit
   attr_accessor :commit, :head, :refs
 
   delegate  :message, :authored_date, :committed_date, :parents, :sha,
-            :date, :committer, :author, :message, :diffs, :tree, :id,
+            :date, :committer, :author, :diffs, :tree, :id,
             :to_patch, to: :commit
 
   class << self
