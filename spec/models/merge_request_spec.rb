@@ -33,8 +33,7 @@ describe MergeRequest do
   end
 
   describe 'modules' do
-    it { should include_module(IssueCommonality) }
-    it { should include_module(Votes) }
+    it { should include_module(Issuable) }
   end
 
   describe "#mr_and_commit_notes" do

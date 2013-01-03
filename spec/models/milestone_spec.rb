@@ -40,6 +40,7 @@ describe Milestone do
     end
 
     it "should count closed issues" do
+      IssueObserver.current_user = issue.author
       issue.update_attributes(closed: true)
       milestone.issues << issue
       milestone.percent_complete.should == 100

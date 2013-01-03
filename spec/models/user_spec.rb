@@ -162,6 +162,7 @@ describe User do
 
   describe 'filter' do
     before do
+      User.delete_all
       @user = create :user
       @admin = create :user, admin: true
       @blocked = create :user, blocked: true
@@ -175,6 +176,7 @@ describe User do
 
   describe :not_in_project do
     before do
+      User.delete_all
       @user = create :user
       @project = create :project
     end
