@@ -10,7 +10,7 @@
 #
 
 class ProtectedBranch < ActiveRecord::Base
-  include GitHost
+  include Gitolited
 
   attr_accessible :name
 
@@ -22,7 +22,7 @@ class ProtectedBranch < ActiveRecord::Base
   after_destroy :update_repository
 
   def update_repository
-    git_host.update_repository(project)
+    gitolite.update_repository(project)
   end
 
   def commit

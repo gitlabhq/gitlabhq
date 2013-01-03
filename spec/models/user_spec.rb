@@ -65,10 +65,6 @@ describe User do
     it { should ensure_length_of(:bio).is_within(0..255) }
   end
 
-  describe 'modules' do
-    it { should include_module(Account) }
-  end
-
   describe "Respond to" do
     it { should respond_to(:is_admin?) }
     it { should respond_to(:identifier) }
@@ -184,5 +180,15 @@ describe User do
     end
 
     it { User.not_in_project(@project).should == [@user, @project.owner] }
+  end
+
+  describe 'normal user' do
+    let(:user) { create(:user, name: 'John Smith') }
+
+    it { user.is_admin?.should be_false }
+    it { user.require_ssh_key?.should be_true }
+    it { user.can_create_group?.should be_false }
+    it { user.can_create_project?.should be_true }
+    it { user.first_name.should == 'John' }
   end
 end
