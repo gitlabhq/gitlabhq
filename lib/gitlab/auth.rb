@@ -20,6 +20,7 @@ module Gitlab
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
+      uid.force_encoding("utf-8")
       name = auth.info.name.force_encoding("utf-8")
       email = auth.info.email.downcase unless auth.info.email.nil?
 
