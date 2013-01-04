@@ -25,6 +25,10 @@
 
     &:last-child {
       border-bottom: none;
+
+      &.bottom {
+        background: #f5f5f5;
+      }
     }
 
     .author { color: #999; }

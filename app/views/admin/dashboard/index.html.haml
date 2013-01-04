@@ -1,7 +1,7 @@
 .admin_dash.row
   .span3
     .ui-box
-      %h5 Projects
+      %h5.title Projects
       .data.padded
         = link_to admin_projects_path do
           %h1= Project.count
@@ -9,7 +9,7 @@
         = link_to 'New Project', new_project_path, class: "btn small"
   .span3
     .ui-box
-      %h5 Groups
+      %h5.title Groups
       .data.padded
         = link_to admin_groups_path do
           %h1= Group.count
@@ -17,7 +17,7 @@
         = link_to 'New Group', new_admin_group_path, class: "btn small"
   .span3
     .ui-box
-      %h5 Users
+      %h5.title Users
       .data.padded
         = link_to admin_users_path do
           %h1= User.count
@@ -25,7 +25,7 @@
         = link_to 'New User', new_admin_user_path, class: "btn small"
   .span3
     .ui-box
-      %h5
+      %h5.title
         Resque Workers
       .data.padded
         - if @resque_accessible

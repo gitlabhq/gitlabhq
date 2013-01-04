@@ -79,12 +79,43 @@
   }
 
   .title {
-    padding: 0 10px;
     @include bg-gray-gradient;
     border-bottom: 1px solid #CCC;
+    color: #456;
+    font-size: 16px;
+    text-shadow: 0 1px 1px #fff;
+    padding: 0px 10px;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: normal;
 
     > a {
       text-shadow: 0 1px 1px #fff;
+    }
+
+    form {
+      margin-bottom: 0;
+      margin-top: 3px;
+    }
+
+    .nav-pills {
+      > li {
+        > a {
+          padding: 13px;
+          margin: 0;
+          font-size: 13px;
+        }
+        &.active {
+          > a {
+            background: #D5D5D5;
+            color: $style_color;
+            @include border-radius(0);
+            border-radius: 0;
+            border-left: 1px solid #CCC;
+            border-right: 1px solid #CCC;
+          }
+        }
+      }
     }
   }
 

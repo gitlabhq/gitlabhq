@@ -98,6 +98,8 @@ class Commit
   end
 
   def initialize(raw_commit, head = nil)
+    raise "Nil as raw commit passed" unless raw_commit
+
     @commit = raw_commit
     @head = head
   end
@@ -136,7 +138,11 @@ class Commit
   end
 
   def prev_commit
-    parents.try :first
+    @prev_commit ||= if parents.present?
+                       Commit.new(parents.first)
+                     else
+                       nil
+                     end
   end
 
   def prev_commit_id

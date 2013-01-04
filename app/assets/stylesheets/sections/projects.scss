@@ -8,14 +8,8 @@
 
     .groups_box,
     .projects_box {
-      > h5 {
-        color: #456;
-        font-size: 16px;
-        text-shadow: 0 1px 1px #fff;
+      > .title {
         padding: 2px 15px;
-        line-height: 36px;
-        font-size: 14px;
-        font-weight: normal;
       }
       .nav-projects-tabs li { padding: 0; }
       .well-list {

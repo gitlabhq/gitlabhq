@@ -5,7 +5,7 @@
     - if can?(current_user, :manage_group, @group)
       = render (@project ? "new_member" : "new_group_member")
     .ui-box
-      %h5
+      %h5.title
         Team
         %small
           (#{@users.size})

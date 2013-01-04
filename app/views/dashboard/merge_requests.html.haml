@@ -12,7 +12,8 @@
       - @merge_requests.group_by(&:project).each do |group|
         .ui-box
           - @project = group[0]
-          %h5= link_to_project @project
+          %h5.title
+            = link_to_project @project
           %ul.well-list
             - group[1].each do |merge_request|
               = render(partial: 'merge_requests/merge_request', locals: {merge_request: merge_request})

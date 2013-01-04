@@ -30,7 +30,7 @@
             = select_tag('update[milestone_id]', options_from_collection_for_select(issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
             = hidden_field_tag 'update[issues_ids]', []
             = hidden_field_tag :f, params[:f]
-          = button_tag "Save", class: "btn update_selected_issues"
+          = button_tag "Save", class: "btn update_selected_issues btn-small save-btn"
       .issues_filters
         .left
           %ul.nav.nav-pills.left

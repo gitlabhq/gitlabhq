@@ -61,31 +61,25 @@ input.check_all_issues {
 
 #issues-table-holder {
   .issues_filters {
-    form {
-      padding: 0;
-      margin: 0;
-      margin-top:7px
-    }
   }
 
   .issues_bulk_update {
     margin: 0;
     form {
-      padding: 0;
-      margin: 0;
-      margin-top:7px
+      float:left;
     }
     .update_selected_issues {
       position: relative;
-      top:-2px;
+      top:5px;
       margin-left: 4px;
       float: left;
     }
 
     .update_issues_text {
       padding: 3px;
-      line-height: 18px;
+      line-height: 28px;
       float: left;
+      color: #479;
     }
   }
 }
