@@ -84,7 +84,6 @@ describe Project do
     it { should respond_to(:satellite) }
     it { should respond_to(:update_repository) }
     it { should respond_to(:destroy_repository) }
-    it { should respond_to(:archive_repo) }
 
     # Authority Role
     it { should respond_to(:reset_access) }
@@ -93,14 +92,6 @@ describe Project do
     it { should respond_to(:report_access_for?) }
     it { should respond_to(:dev_access_for?) }
     it { should respond_to(:master_access_for?) }
-
-    # Team Role
-    it { should respond_to(:team_member_by_name_or_email) }
-    it { should respond_to(:team_member_by_id) }
-    it { should respond_to(:add_user_to_team) }
-    it { should respond_to(:add_users_to_team) }
-    it { should respond_to(:add_user_id_to_team) }
-    it { should respond_to(:add_users_ids_to_team) }
 
     # Project Push Role
     it { should respond_to(:observe_push) }
@@ -251,6 +242,35 @@ describe Project do
       end
 
       it { @project.to_param.should == "gitlab-ci" }
+    end
+  end
+
+  describe "#empty_repo?" do
+    let(:project) { create(:project) }
+
+    it "should return true if the repo doesn't exist" do
+      project.stub(repo_exists?: false, has_commits?: true)
+      project.should be_empty_repo
+    end
+
+    it "should return true if the repo has commits" do
+      project.stub(repo_exists?: true, has_commits?: false)
+      project.should be_empty_repo
+    end
+
+    it "should return false if the repo exists and has commits" do
+      project.stub(repo_exists?: true, has_commits?: true)
+      project.should_not be_empty_repo
+    end
+  end
+
+  describe :repository do
+    it "should return valid repo" do
+      project.repository.should be_kind_of(Repository)
+    end
+
+    it "should return nil" do
+      Project.new(path: "invalid").repository.should be_nil
     end
   end
 end

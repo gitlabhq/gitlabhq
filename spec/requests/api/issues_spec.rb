@@ -6,7 +6,7 @@ describe Gitlab::API do
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, author: user, assignee: user, project: project) }
-  before { project.add_access(user, :read) }
+  before { project.team << [user, :reporter] }
 
   describe "GET /issues" do
     context "when unauthenticated" do

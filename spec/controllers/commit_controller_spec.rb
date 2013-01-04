@@ -3,12 +3,12 @@ require 'spec_helper'
 describe CommitController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
-  let(:commit)  { project.last_commit_for("master") }
+  let(:commit)  { project.repository.last_commit_for("master") }
 
   before do
     sign_in(user)
 
-    project.add_access(user, :read, :admin)
+    project.team << [user, :master]
   end
 
   describe "#show" do
