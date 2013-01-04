@@ -34,6 +34,8 @@
     = preserve do
       = markdown(note.note)
     - if note.attachment.url
+      - if note.attachment.image?
+        = image_tag note.attachment.url, class: 'thumbnail span4'
       .right
         %div.file
           = link_to note.attachment_identifier, note.attachment.url, target: "_blank"

@@ -1,8 +1,14 @@
 = render "commits/commit_box"
+
+%p.right
+  This commit has
+  %span.cgreen #{@commit.stats.additions} additions
+  and
+  %span.cred #{@commit.stats.deletions} deletions
+
 = render "commits/diffs", diffs: @commit.diffs
 = render "notes/notes_with_form", tid: @commit.id, tt: "commit"
 = render "notes/per_line_form"
-
 
 :javascript
   $(function(){
@@ -19,7 +25,7 @@
           , h = event.currentTarget.naturalHeight;
         $('.image.diff_added .image-info', this).append(' | <b>W:</b> ' + w + 'px | <b>H:</b> ' + h + 'px');
       }, this));
-      
+
     });
-    
+
   });
