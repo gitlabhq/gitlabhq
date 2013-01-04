@@ -40,7 +40,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/tree/master" do
-      subject { project_tree_path(project, project.root_ref) }
+      subject { project_tree_path(project, project.repository.root_ref) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -51,7 +51,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/commits/master" do
-      subject { project_commits_path(project, project.root_ref, limit: 1) }
+      subject { project_commits_path(project, project.repository.root_ref, limit: 1) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
