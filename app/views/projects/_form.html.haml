@@ -39,6 +39,12 @@
         %span.descr Submit changes to be merged upstream.
 
     .control-group
+      = f.label :merge_request_for_developers_enabled, "Merge Requests for developers", class: 'control-label'
+      .controls
+        = f.check_box :merge_request_for_developers_enabled
+        %span.descr Also developers can close merge request
+
+    .control-group
       = f.label :wall_enabled, "Wall", class: 'control-label'
       .controls
         = f.check_box :wall_enabled

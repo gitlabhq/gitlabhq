@@ -22,7 +22,7 @@ class Ability
         rules << project_master_rules
 
       elsif team.developers.include?(user)
-        rules << project_dev_rules
+        rules << project_dev_rules(project)
 
       elsif team.reporters.include?(user)
         rules << project_report_rules
@@ -62,10 +62,11 @@ class Ability
       ]
     end
 
-    def project_dev_rules
+    def project_dev_rules(project=nil)
       project_report_rules + [
         :write_wiki,
-        :push_code
+        :push_code,
+        (:accept_mr if project.try(:merge_request_for_developers_enabled?))
       ]
     end
 
