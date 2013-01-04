@@ -83,12 +83,12 @@ class MergeRequestsController < ProjectResourceController
   end
 
   def branch_from
-    @commit = project.commit(params[:ref])
+    @commit = @repository.commit(params[:ref])
     @commit = CommitDecorator.decorate(@commit)
   end
 
   def branch_to
-    @commit = project.commit(params[:ref])
+    @commit = @repository.commit(params[:ref])
     @commit = CommitDecorator.decorate(@commit)
   end
 

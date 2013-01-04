@@ -10,7 +10,7 @@ describe Gitlab::API do
   let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
   let!(:snippet_note) { create(:note, noteable: snippet, project: project, author: user) }
   let!(:wall_note) { create(:note, project: project, author: user) }
-  before { project.add_access(user, :read) }
+  before { project.team << [user, :reporter] }
 
   describe "GET /projects/:id/notes" do
     context "when unauthenticated" do

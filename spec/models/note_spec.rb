@@ -4,7 +4,6 @@
 #
 #  id            :integer          not null, primary key
 #  note          :text
-#  noteable_id   :string(255)
 #  noteable_type :string(255)
 #  author_id     :integer
 #  created_at    :datetime         not null
@@ -12,6 +11,8 @@
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
+#  commit_id     :string(255)
+#  noteable_id   :integer
 #
 
 require 'spec_helper'
@@ -76,7 +77,7 @@ describe Note do
   end
 
   let(:project) { create(:project) }
-  let(:commit) { project.commit }
+  let(:commit) { project.repository.commit }
 
   describe "Commit notes" do
     before do

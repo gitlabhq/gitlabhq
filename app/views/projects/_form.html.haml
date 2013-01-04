@@ -15,13 +15,13 @@
       = f.label :path do
         Repository
       .controls
-        = text_field_tag :ppath, @project.path_to_repo, class: "xxlarge", readonly: true
+        = text_field_tag :ppath, @repository.path_to_repo, class: "xxlarge", readonly: true
 
 
-    - unless @project.heads.empty?
+    - unless @repository.heads.empty?
       .clearfix
         = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, @project.heads.map(&:name), {}, style: "width:210px;")
+        .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
   %fieldset.features
     %legend Features:

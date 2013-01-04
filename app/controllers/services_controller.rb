@@ -26,7 +26,7 @@ class ServicesController < ProjectResourceController
   end
 
   def test
-    commits = project.commits(project.default_branch, nil, 3)
+    commits = project.repository.commits(project.default_branch, nil, 3)
     data = project.post_receive_data(commits.last.id, commits.first.id, "refs/heads/#{project.default_branch}", current_user)
 
     @service = project.gitlab_ci_service

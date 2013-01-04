@@ -1,74 +1,17 @@
-.commit-box {
-  @extend .main_box;
-
-  .commit-head {
-    @extend .top_box_content;
-
-    .commit-title {
-      line-height: 26px;
-      margin: 0;
-    }
-
-    .commit-description {
-      font-size: 14px;
-      border: none;
-      background-color: white;
-      padding-top: 10px;
-    }
-
-    .browse-button {
-      @extend .btn;
-      @extend .btn-small;
-      float: right;
-    }
-  }
-
-  .commit-info {
-    @extend .middle_box_content;
-    @extend .clearfix;
-
-    .sha-block {
-      text-align: right;
-      &:first-child {
-        padding-bottom: 6px;
-      }
-
-      a {
-        border-bottom: 1px solid #aaa;
-        margin-left: 9px;
-      }
-    }
-
-    &.merge-commit .sha-block {
-      clear: right;
-    }
-
-    .committer {
-      padding-left: 32px;
-    }
-
-    .author a,
-    .committer a {
-      font-size: 14px;
-      line-height: 22px;
-      text-shadow: 0 1px 1px #fff;
-      color: #777;
-      &:hover {
-        color: #999;
-      }
-    }
-
-    .avatar {
-      margin-right: 10px;
-    }
-  }
-}
-
 /**
  *
  * COMMIT SHOw
  *
  */
+.commit-committer-link,
+.commit-author-link {
+  font-size: 13px;
+  color: #555;
+  &:hover {
+    color: #999;
+  }
+}
+
 .diff_file {
   border: 1px solid #CCC;
   margin-bottom: 1em;
@@ -254,13 +197,6 @@
     @extend .lined;
     min-width: 65px;
     font-family: $monospace;
-  }
-
-  .commit-author-name {
-    color: #777;
-    &:hover {
-      color: #999;
-    }
   }
 }
 

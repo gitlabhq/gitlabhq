@@ -38,7 +38,7 @@ module StaticModel
   end
 
   def ==(other)
-    if other.is_a? StaticModel
+    if other.is_a? ::StaticModel
       id == other.id
     else
       super

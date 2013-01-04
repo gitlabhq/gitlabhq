@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Project, "Hooks" do
   let(:project) { create(:project) }
+
   before do
     @key = create(:key, user: project.owner)
     @user = @key.user
@@ -70,8 +71,9 @@ describe Project, "Hooks" do
 
     context "when gathering commit data" do
       before do
-        @oldrev, @newrev, @ref = project.fresh_commits(2).last.sha, project.fresh_commits(2).first.sha, 'refs/heads/master'
-        @commit = project.fresh_commits(2).first
+        @oldrev, @newrev, @ref = project.repository.fresh_commits(2).last.sha,
+          project.repository.fresh_commits(2).first.sha, 'refs/heads/master'
+        @commit = project.repository.fresh_commits(2).first
 
         # Fill nil/empty attributes
         project.description = "This is a description"

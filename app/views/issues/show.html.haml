@@ -24,14 +24,14 @@
     &larr; To issues list
 
 
-.main_box
-  .top_box_content
+.ui-box.ui-box-show
+  .ui-box-head
     %h4.box-title
       - if @issue.closed
         .error.status_info Closed
       = gfm escape_once(@issue.title)
 
-  .middle_box_content
+  .ui-box-body
     %cite.cgray
       Created by #{link_to_member(@project, @issue.author)}
       - if @issue.assignee
@@ -44,13 +44,13 @@
 
     .right
       - @issue.labels.each do |label|
-        %span.label.label-issue
+        %span
           %i.icon-tag
           = label.name
         &nbsp;
 
   - if @issue.description.present?
-    .bottom_box_content
+    .ui-box-bottom
       = preserve do
         = markdown @issue.description
 

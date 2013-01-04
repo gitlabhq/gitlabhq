@@ -2,6 +2,7 @@ require Rails.root.join('lib', 'gitlab', 'graph', 'json_builder')
 
 class ProjectsController < ProjectResourceController
   skip_before_filter :project, only: [:new, :create]
+  skip_before_filter :repository, only: [:new, :create]
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
@@ -58,7 +59,7 @@ class ProjectsController < ProjectResourceController
 
     respond_to do |format|
       format.html do
-        unless @project.empty_repo?
+        if @project.repository && !@project.repository.empty?
           @last_push = current_user.recent_push(@project.id)
           render :show
         else

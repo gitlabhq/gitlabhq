@@ -114,15 +114,15 @@ module SharedPaths
   end
 
   Given "I visit my project's files page" do
-    visit project_tree_path(@project, @project.root_ref)
+    visit project_tree_path(@project, root_ref)
   end
 
   Given "I visit my project's commits page" do
-    visit project_commits_path(@project, @project.root_ref, {limit: 5})
+    visit project_commits_path(@project, root_ref, {limit: 5})
   end
 
   Given "I visit my project's commits page for a specific path" do
-    visit project_commits_path(@project, @project.root_ref + "/app/models/project.rb", {limit: 5})
+    visit project_commits_path(@project, root_ref + "/app/models/project.rb", {limit: 5})
   end
 
   Given 'I visit my project\'s commits stats page' do
@@ -174,7 +174,7 @@ module SharedPaths
   end
 
   Given 'I visit project commits page' do
-    visit project_commits_path(@project, @project.root_ref, {limit: 5})
+    visit project_commits_path(@project, root_ref, {limit: 5})
   end
 
   Given 'I visit project commits page for stable branch' do
@@ -182,7 +182,7 @@ module SharedPaths
   end
 
   Given 'I visit project source page' do
-    visit project_tree_path(@project, @project.root_ref)
+    visit project_tree_path(@project, root_ref)
   end
 
   Given 'I visit blob file from repo' do
@@ -239,5 +239,9 @@ module SharedPaths
 
   Given 'I visit project wiki page' do
     visit project_wiki_path(@project, :index)
+  end
+
+  def root_ref
+    @project.repository.root_ref
   end
 end

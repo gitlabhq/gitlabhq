@@ -42,7 +42,34 @@ class UsersProject < ActiveRecord::Base
   scope :in_project, ->(project) { where(project_id: project.id) }
 
   class << self
-    def add_users_into_projects(project_ids, user_ids, project_access)
+
+    # Add users to project teams with passed access option
+    #
+    # access can be an integer representing a access code
+    # or symbol like :master representing role
+    #
+    # Ex.
+    #   add_users_into_projects(
+    #     project_ids,
+    #     user_ids,
+    #     UsersProject::MASTER
+    #   )
+    #
+    #   add_users_into_projects(
+    #     project_ids,
+    #     user_ids,
+    #     :master
+    #   )
+    #
+    def add_users_into_projects(project_ids, user_ids, access)
+      project_access = if roles_hash.has_key?(access)
+                         roles_hash[access]
+                       elsif roles_hash.values.include?(access.to_i)
+                         access
+                       else
+                         raise "Non valid access"
+                       end
+
       UsersProject.transaction do
         project_ids.each do |project_id|
           user_ids.each do |user_id|
@@ -79,36 +106,6 @@ class UsersProject < ActiveRecord::Base
       truncate_teams [project.id]
     end
 
-    def import_team(source_project, target_project)
-      source_team = source_project.users_projects.all
-      target_team = target_project.users_projects.all
-      target_user_ids = target_team.map(&:user_id)
-
-      source_team.reject! do |tm|
-        # Skip if user already present in team
-        target_user_ids.include?(tm.user_id)
-      end
-
-      source_team.map! do |tm|
-        new_tm = tm.dup
-        new_tm.id = nil
-        new_tm.project_id = target_project.id
-        new_tm.skip_git = true
-        new_tm
-      end
-
-      UsersProject.transaction do
-        source_team.each do |tm|
-          tm.save
-        end
-        target_project.update_repository
-      end
-
-      true
-    rescue
-      false
-    end
-
     def bulk_delete(project, user_ids)
       UsersProject.transaction do
         UsersProject.where(user_id: user_ids, project_id: project.id).each do |users_project|
@@ -131,14 +128,13 @@ class UsersProject < ActiveRecord::Base
       end
     end
 
-    # TODO: depreceate in future in favor of add_users_into_projects
-    def bulk_import(project, user_ids, project_access)
-      add_users_into_projects([project.id], user_ids, project_access)
-    end
-
-    # TODO: depreceate in future in favor of add_users_into_projects
-    def user_bulk_import(user, project_ids, project_access)
-      add_users_into_projects(project_ids, [user.id], project_access)
+    def roles_hash
+      {
+        guest: GUEST,
+        reporter: REPORTER,
+        developer: DEVELOPER,
+        master: MASTER
+      }
     end
 
     def access_roles

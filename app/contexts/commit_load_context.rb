@@ -9,7 +9,7 @@ class CommitLoadContext < BaseContext
       status: :ok
     }
 
-    commit = project.commit(params[:id])
+    commit = project.repository.commit(params[:id])
 
     if commit
       commit = CommitDecorator.decorate(commit)

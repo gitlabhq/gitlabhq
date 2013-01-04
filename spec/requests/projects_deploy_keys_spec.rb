@@ -5,7 +5,7 @@ describe "Projects", "DeployKeys" do
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write, :admin)
+    project.team << [@user, :master]
   end
 
   describe "GET /keys" do

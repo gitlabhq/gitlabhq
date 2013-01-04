@@ -82,7 +82,7 @@ module Gitlab
     end
 
     def destroy_project(project)
-      FileUtils.rm_rf(project.path_to_repo)
+      FileUtils.rm_rf(project.repository.path_to_repo)
       conf.rm_repo(project.path_with_namespace)
     end
 
@@ -138,9 +138,9 @@ module Gitlab
                ::Gitolite::Config::Repo.new(repo_name)
              end
 
-      name_readers = project.repository_readers
-      name_writers = project.repository_writers
-      name_masters = project.repository_masters
+      name_readers = project.team.repository_readers
+      name_writers = project.team.repository_writers
+      name_masters = project.team.repository_masters
 
       pr_br = project.protected_branches.map(&:name).join("$ ")
 

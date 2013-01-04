@@ -35,10 +35,6 @@ describe GitlabCiService do
       )
     end
 
-    describe :commit_badge_path do
-      it { @service.commit_badge_path("2ab7834c").should == "http://ci.gitlab.org/projects/2/status?sha=2ab7834c"}
-    end
-
     describe :commit_status_path do
       it { @service.commit_status_path("2ab7834c").should == "http://ci.gitlab.org/projects/2/builds/2ab7834c/status.json?token=verySecret"}
     end

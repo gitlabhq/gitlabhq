@@ -28,7 +28,7 @@
 
 :javascript
   $(function() {
-    var availableTags = #{@project.ref_names.to_json};
+    var availableTags = #{@project.repository.ref_names.to_json};
 
     $("#from, #to").autocomplete({
       source: availableTags,

@@ -10,6 +10,7 @@ class Admin::ProjectsController < AdminController
   end
 
   def show
+    @repository = @project.repository
     @users = User.active
     @users = @users.not_in_project(@project) if @project.users.present?
     @users = @users.all
@@ -19,7 +20,7 @@ class Admin::ProjectsController < AdminController
   end
 
   def team_update
-    @project.add_users_ids_to_team(params[:user_ids], params[:project_access])
+    @project.team.add_users_ids(params[:user_ids], params[:project_access])
 
     redirect_to [:admin, @project], notice: 'Project was successfully updated.'
   end
@@ -36,7 +37,7 @@ class Admin::ProjectsController < AdminController
 
   def destroy
     # Delete team first in order to prevent multiple gitolite calls
-    @project.truncate_team
+    @project.team.truncate
 
     @project.destroy
 

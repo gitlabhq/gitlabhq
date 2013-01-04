@@ -257,7 +257,7 @@ module Gitlab
         per_page = params[:per_page] || 20
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
-        commits = user_project.commits(ref, nil, per_page, page * per_page)
+        commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
         present CommitDecorator.decorate(commits), with: Entities::RepoCommit
       end
 
@@ -375,10 +375,10 @@ module Gitlab
 
         ref = params[:sha]
 
-        commit = user_project.commit ref
+        commit = user_project.repository.commit ref
         not_found! "Commit" unless commit
 
-        tree = Tree.new commit.tree, user_project, ref, params[:filepath]
+        tree = Tree.new commit.tree, ref, params[:filepath]
         not_found! "File" unless tree.try(:tree)
 
         content_type tree.mime_type

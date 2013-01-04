@@ -27,8 +27,8 @@
     %span All issues for this milestone are closed. You may close milestone now.
     = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn small danger"
 
-.main_box
-  .top_box_content
+.ui-box.ui-box-show
+  .ui-box-head
     %h4.box-title
       - if @milestone.closed
         .error.status_info Closed
@@ -37,7 +37,7 @@
 
       = gfm escape_once(@milestone.title)
 
-  .middle_box_content
+  .ui-box-body
     %h5
       Progress:
       %small

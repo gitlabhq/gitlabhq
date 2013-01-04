@@ -7,7 +7,7 @@ describe Gitlab::API do
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:milestone) { create(:milestone, project: project) }
 
-  before { project.add_access(user, :read) }
+  before { project.team << [user, :developer] }
 
   describe "GET /projects/:id/milestones" do
     it "should return project milestones" do

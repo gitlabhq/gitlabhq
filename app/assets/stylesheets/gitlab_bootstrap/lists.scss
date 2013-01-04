@@ -23,14 +23,12 @@
       border-bottom: 1px solid #ADF;
     }
 
-    &:first-child {
-      @include border-radius(4px 4px 0 0);
-      border-top: none;
-    }
-
     &:last-child {
-      @include border-radius(0 0 4px 4px);
-      border: none;
+      border-bottom: none;
+
+      &.bottom {
+        background: #f5f5f5;
+      }
     }
 
     .author { color: #999; }

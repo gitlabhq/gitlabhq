@@ -4,7 +4,6 @@
 #
 #  id            :integer          not null, primary key
 #  note          :text
-#  noteable_id   :string(255)
 #  noteable_type :string(255)
 #  author_id     :integer
 #  created_at    :datetime         not null
@@ -12,6 +11,8 @@
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
+#  commit_id     :string(255)
+#  noteable_id   :integer
 #
 
 require 'carrierwave/orm/activerecord'
@@ -42,7 +43,7 @@ class Note < ActiveRecord::Base
 
   # Scopes
   scope :for_commits, ->{ where(noteable_type: "Commit") }
-  scope :common, ->{ where(noteable_id: nil, commit_id: nil) }
+  scope :common, ->{ where(noteable_type: ["", nil]) }
   scope :today, ->{ where("created_at >= :date", date: Date.today) }
   scope :last_week, ->{ where("created_at  >= :date", date: (Date.today - 7.days)) }
   scope :since, ->(day) { where("created_at  >= :date", date: (day)) }
@@ -70,7 +71,7 @@ class Note < ActiveRecord::Base
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.commit(commit_id)
+      project.repository.commit(commit_id)
     else
       super
     end

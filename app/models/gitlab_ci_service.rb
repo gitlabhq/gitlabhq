@@ -29,10 +29,6 @@ class GitlabCiService < Service
     hook.save
   end
 
-  def commit_badge_path sha
-    project_url + "/status?sha=#{sha}"
-  end
-
   def commit_status_path sha
     project_url + "/builds/#{sha}/status.json?token=#{token}"
   end

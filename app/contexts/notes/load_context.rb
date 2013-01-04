@@ -9,7 +9,7 @@ module Notes
 
       @notes = case target_type
                when "commit"
-                 project.commit_notes(project.commit(target_id)).fresh.limit(20)
+                 project.commit_notes(project.repository.commit(target_id)).fresh.limit(20)
                when "issue"
                  project.issues.find(target_id).notes.inc_author.fresh.limit(20)
                when "merge_request"
@@ -18,7 +18,7 @@ module Notes
                  project.snippets.find(target_id).notes.fresh
                when "wall"
                  # this is the only case, where the order is DESC
-                 project.common_notes.order("created_at DESC, id DESC").limit(50)
+                 project.notes.common.inc_author_project.order("created_at DESC, id DESC").limit(50)
                end
 
       @notes = if after_id

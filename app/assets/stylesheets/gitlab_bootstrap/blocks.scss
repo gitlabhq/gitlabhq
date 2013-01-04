@@ -1,23 +1,24 @@
 /**
  * ===================================
- * Contain 3 main UI block elements:
- *   .main_box - for show pages
- *   .ui-box   - for simple block & widgets
+ * Contain UI block elements:
+ *   .ui-box   - for any block & widgets
  * ===================================
  */
 
 /**
- *  UI box element
- *  contains top, middle, bottom blocks
+ * UI Block
  *
  */
-.main_box {
-  @extend .borders;
-  @extend .prepend-top-20;
-  @extend .append-bottom-20;
-  border-width: 1px;
+.ui-box {
+  background: #F9F9F9;
+  margin-bottom: 25px;
+  border: 1px solid #CCC;
   @include solid-shade;
 
+  &.ui-box-show {
+    margin:20px 0;
+    background: #FFF;
+  }
 
   img { max-width: 100%; }
 
@@ -27,9 +28,9 @@
     }
   }
 
-  .top_box_content,
-  .middle_box_content,
-  .bottom_box_content {
+  .ui-box-head,
+  .ui-box-body,
+  .ui-box-bottom {
     padding: 15px;
     word-wrap: break-word;
 
@@ -39,19 +40,25 @@
       border: none;
       padding: 0;
     }
+
+    .clearfix {
+      margin: 0;
+    }
   }
 
-  .top_box_content {
+  .ui-box-head {
     .box-title {
       color: $style_color;
       font-size: 18px;
       font-weight: normal;
       line-height: 28px;
     }
+    h3 {
+      margin: 0;
+    }
   }
 
-  .middle_box_content {
-    @include border-radius(0);
+  .ui-box-body {
     border: none;
     font-size: 12px;
     background-color: #f5f5f5;
@@ -59,24 +66,9 @@
     border-top: 1px solid #eee;
   }
 
-  .bottom_box_content {
+  .ui-box-bottom {
     border-top: 1px solid #eee;
   }
-}
-
-/**
- * Big UI Block for show page content
- *
- */
-.ui-box {
-  background: #F9F9F9;
-  margin-bottom: 25px;
-
-  border: 1px solid #eaeaea;
-  @include border-radius(4px);
-
-  border-color: #CCC;
-  @include solid-shade;
 
   &.white {
     background: #fff;
@@ -86,45 +78,45 @@
     margin: 0;
   }
 
-  h5, .title {
-    padding: 0 10px;
-    @include border-radius(4px 4px 0 0);
+  .title {
     @include bg-gray-gradient;
-    border-top: 1px solid #eaeaea;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid #CCC;
+    color: #456;
+    font-size: 16px;
+    text-shadow: 0 1px 1px #fff;
+    padding: 0px 10px;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: normal;
 
     > a {
       text-shadow: 0 1px 1px #fff;
     }
 
-    &.small {
-      line-height: 28px;
-      font-size: 14px;
-      line-height: 28px;
-      text-shadow: 0 1px 1px white;
-    }
-
     form {
-      padding: 9px 0;
-      margin: 0px;
+      margin-bottom: 0;
+      margin-top: 3px;
     }
 
     .nav-pills {
-      li {
-        padding: 3px 0;
-        &.active a { background-color: $style_color; }
-        a {
-          @include border-radius(7px);
+      > li {
+        > a {
+          padding: 13px;
+          margin: 0;
+          font-size: 13px;
+        }
+        &.active {
+          > a {
+            background: #D5D5D5;
+            color: $style_color;
+            @include border-radius(0);
+            border-radius: 0;
+            border-left: 1px solid #CCC;
+            border-right: 1px solid #CCC;
+          }
         }
       }
     }
-  }
-
-  .bottom {
-    @include bg-gray-gradient;
-    @include border-radius(0 0 4px 4px);
-    border-bottom: none;
-    border-top: 1px solid #bbb;
   }
 
   &.padded {
@@ -143,6 +135,7 @@
       color: #777;
     }
   }
+
   .row_title {
     font-weight: bold;
     color: #444;
@@ -150,9 +143,5 @@
       color: #444;
       text-decoration: underline;
     }
-  }
-
-  .ui-box-body {
-    padding: 10px;
   }
 }

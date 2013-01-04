@@ -4,7 +4,7 @@ module MergeRequestsHelper
       event.project,
       merge_request: {
         source_branch: event.branch_name,
-        target_branch: event.project.root_ref,
+        target_branch: event.project.repository.root_ref,
         title: event.branch_name.titleize
       }
     )

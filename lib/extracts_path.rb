@@ -68,7 +68,7 @@ module ExtractsPath
       id = input
       id += '/' unless id.ends_with?('/')
 
-      valid_refs = @project.ref_names
+      valid_refs = @project.repository.ref_names
       valid_refs.select! { |v| id.start_with?("#{v}/") }
 
       if valid_refs.length != 1
@@ -114,9 +114,9 @@ module ExtractsPath
 
     @id = File.join(@ref, @path)
 
-    @commit = CommitDecorator.decorate(@project.commit(@ref))
+    @commit = CommitDecorator.decorate(@project.repository.commit(@ref))
 
-    @tree = Tree.new(@commit.tree, @project, @ref, @path)
+    @tree = Tree.new(@commit.tree, @ref, @path)
     @tree = TreeDecorator.new(@tree)
 
     raise InvalidPathError if @tree.invalid?

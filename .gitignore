@@ -24,3 +24,4 @@ db/data.yml
 .DS_Store
 .chef
 vendor/bundle/*
+rails_best_practices_output.html

@@ -36,7 +36,7 @@
           %td
             = link_to project_commits_path(@project, branch.name) do
               %strong= branch.name
-              - if branch.name == @project.root_ref
+              - if @project.root_ref?(branch.name)
                 %span.label default
           %td
             - if branch.commit

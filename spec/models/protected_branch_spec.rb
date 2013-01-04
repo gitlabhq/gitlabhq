@@ -44,7 +44,7 @@ describe ProtectedBranch do
     let(:branch) { create(:protected_branch) }
 
     it 'commits itself to its project' do
-      branch.project.should_receive(:commit).with(branch.name)
+      branch.project.repository.should_receive(:commit).with(branch.name)
       branch.commit
     end
   end

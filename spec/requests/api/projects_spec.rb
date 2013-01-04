@@ -11,7 +11,7 @@ describe Gitlab::API do
   let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
-  before { project.add_access(user, :read) }
+  before { project.team << [user, :reporter] }
 
   describe "GET /projects" do
     context "when unauthenticated" do
@@ -226,14 +226,14 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/repository/commits" do
     context "authorized user" do
-      before { project.add_access(user2, :read) }
+      before { project.team << [user2, :reporter] }
 
       it "should return project commits" do
         get api("/projects/#{project.id}/repository/commits", user)
         response.status.should == 200
 
         json_response.should be_an Array
-        json_response.first['id'].should == project.commit.id
+        json_response.first['id'].should == project.repository.commit.id
       end
     end
 

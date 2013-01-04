@@ -13,7 +13,7 @@ class DashboardIssues < Spinach::FeatureSteps
 
   And 'I have assigned issues' do
     project = create :project
-    project.add_access(@user, :read, :write)
+    project.team << [@user, :master]
 
     2.times { create :issue, author: @user, assignee: @user, project: project }
   end

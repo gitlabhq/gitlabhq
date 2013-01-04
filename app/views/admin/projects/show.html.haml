@@ -4,15 +4,15 @@
     %i.icon-edit
     Edit
 
-- if @project.has_commits?
-  - if !@project.has_post_receive_file?
+- if @repository && @repository.has_commits?
+  - if !@repository.has_post_receive_file?
     %br
     .alert.alert-error
       %span
         %strong Project has commits but missing post-receive file.
         %br
         If you exported project manually - make a link of post-receive hook file from gitolite to project repository
-  - elsif !@project.valid_post_receive_file?
+  - elsif !@repository.valid_post_receive_file?
     %br
     .alert.alert-error
       %span
@@ -65,42 +65,43 @@
         Created at:
     %td
       = @project.created_at.stamp("March 1, 1999")
-
-%table.zebra-striped
-  %thead
     %tr
-      %th Repository
-      %th
-  %tr
-    %td
-      %b
-        FS Path:
-    %td
-      %code= @project.path_to_repo
-  %tr
-    %td
-      %b
-        Smart HTTP:
-    %td
-      = link_to @project.http_url_to_repo
-  %tr
-    %td
-      %b
-        SSH:
-    %td
-      = link_to @project.ssh_url_to_repo
-  %tr
-    %td
-      %b
-        Last commit at:
-    %td
-      = last_commit(@project)
-  %tr
-    %td
-      %b
-        Post Receive File:
-    %td
-      = check_box_tag :post_receive_file, 1, @project.has_post_receive_file?, disabled: true
+      %td
+        %b
+          Smart HTTP:
+      %td
+        = link_to @project.http_url_to_repo
+    %tr
+      %td
+        %b
+          SSH:
+      %td
+        = link_to @project.ssh_url_to_repo
+
+- if @repository
+  %table.zebra-striped
+    %thead
+      %tr
+        %th Repository
+        %th
+    %tr
+      %td
+        %b
+          FS Path:
+      %td
+        %code= @repository.path_to_repo
+    %tr
+      %td
+        %b
+          Last commit at:
+      %td
+        = last_commit(@project)
+    %tr
+      %td
+        %b
+          Post Receive File:
+      %td
+        = check_box_tag :post_receive_file, 1, @repository.has_post_receive_file?, disabled: true
 
 %br
 %h5

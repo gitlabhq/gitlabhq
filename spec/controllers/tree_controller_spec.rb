@@ -7,7 +7,7 @@ describe TreeController do
   before do
     sign_in(user)
 
-    project.add_access(user, :read, :admin)
+    project.team << [user, :master]
 
     project.stub(:branches).and_return(['master', 'foo/bar/baz'])
     project.stub(:tags).and_return(['v1.0.0', 'v2.0.0'])

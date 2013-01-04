@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Commit do
-  let(:commit) { create(:project).commit }
+  let(:commit) { create(:project).repository.commit }
 
   describe CommitDecorator do
     let(:decorator) { CommitDecorator.new(commit) }
