@@ -49,6 +49,12 @@ GIT
       yajl-ruby (~> 1.1.0)
 
 GIT
+  remote: https://github.com/gitlabhq/raphael-rails.git
+  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
+  specs:
+    raphael-rails (2.1.0)
+
+GIT
   remote: https://github.com/gitlabhq/resque.git
   revision: 9ef4700306dd946a3ac000612428967ce0c32213
   ref: 9ef4700306dd946a3ac000612428967ce0c32213
@@ -70,12 +76,6 @@ GIT
       faye-websocket (~> 0.4, >= 0.4.4)
       http_parser.rb (~> 0.5.3)
       multi_json (~> 1.0)
-
-GIT
-  remote: https://github.com/koenpunt/raphael-rails.git
-  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
-  specs:
-    raphael-rails (2.1.0)
 
 GEM
   remote: http://rubygems.org/
