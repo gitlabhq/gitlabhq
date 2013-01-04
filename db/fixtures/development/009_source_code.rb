@@ -7,7 +7,7 @@ projects = [
   { path: 'brightbox/puppet.git',        git: 'https://github.com/brightbox/puppet.git' },
   { path: 'gitlab/gitlabhq.git',        git: 'https://github.com/gitlabhq/gitlabhq.git' },
   { path: 'gitlab/gitlab-ci.git',       git: 'https://github.com/gitlabhq/gitlab-ci.git' },
-  { path: 'gitlab/gitlab-recipres.git', git: 'https://github.com/gitlabhq/gitlab-recipes.git' },
+  { path: 'gitlab/gitlab-recipes.git', git: 'https://github.com/gitlabhq/gitlab-recipes.git' },
 ]
 
 projects.each do |project|
