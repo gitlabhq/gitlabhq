@@ -97,11 +97,6 @@ describe Project do
     project.url_to_repo.should == Gitlab.config.gitolite.ssh_path_prefix + "somewhere.git"
   end
 
-  it "should return path to repo" do
-    project = Project.new(path: "somewhere")
-    project.path_to_repo.should == Rails.root.join("tmp", "repositories", "somewhere")
-  end
-
   it "returns the full web URL for this repo" do
     project = Project.new(path: "somewhere")
     project.web_url.should == "#{Gitlab.config.gitlab.url}/somewhere"
@@ -229,32 +224,15 @@ describe Project do
     end
   end
 
-  describe "#empty_repo?" do
+  describe :repository do
     let(:project) { create(:project) }
 
-    it "should return true if the repo doesn't exist" do
-      project.stub(repo_exists?: false, has_commits?: true)
-      project.should be_empty_repo
-    end
-
-    it "should return true if the repo has commits" do
-      project.stub(repo_exists?: true, has_commits?: false)
-      project.should be_empty_repo
-    end
-
-    it "should return false if the repo exists and has commits" do
-      project.stub(repo_exists?: true, has_commits?: true)
-      project.should_not be_empty_repo
-    end
-  end
-
-  describe :repository do
     it "should return valid repo" do
       project.repository.should be_kind_of(Repository)
     end
 
     it "should return nil" do
-      Project.new(path: "invalid").repository.should be_nil
+      Project.new(path: "empty").repository.should be_nil
     end
   end
 end

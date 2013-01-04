@@ -77,7 +77,7 @@ describe Note do
   end
 
   let(:project) { create(:project) }
-  let(:commit) { project.commit }
+  let(:commit) { project.repository.commit }
 
   describe "Commit notes" do
     before do

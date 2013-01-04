@@ -30,7 +30,7 @@ describe Repository do
     end
 
     it "returns non-master when master exists but default branch is set to something else" do
-      repository.default_branch = 'stable'
+      repository.root_ref = 'stable'
       repository.should_receive(:branch_names).at_least(:once).and_return([stable, master])
       repository.discover_default_branch.should == 'stable'
     end
