@@ -22,7 +22,7 @@ class TreeController < ProjectResourceController
   end
 
   def edit
-    @last_commit = @project.last_commit_for(@ref, @path).sha
+    @last_commit = @project.repository.last_commit_for(@ref, @path).sha
   end
 
   def update

@@ -5,7 +5,7 @@
     = link_to project_commits_path(@project, commit.head.name) do
       %strong
         = commit.head.name
-      - if commit.head.name == @project.root_ref
+      - if @project.root_ref?(commit.head.name)
         %span.label default
 
   %td

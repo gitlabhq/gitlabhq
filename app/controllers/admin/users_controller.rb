@@ -19,9 +19,9 @@ class Admin::UsersController < AdminController
   def team_update
     @admin_user = User.find(params[:id])
 
-    UsersProject.user_bulk_import(
-      @admin_user,
+    UsersProject.add_users_into_projects(
       params[:project_ids],
+      [@admin_user.id],
       params[:project_access]
     )
 

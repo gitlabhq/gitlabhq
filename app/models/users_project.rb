@@ -128,16 +128,6 @@ class UsersProject < ActiveRecord::Base
       end
     end
 
-    # TODO: depreceate in future in favor of add_users_into_projects
-    def bulk_import(project, user_ids, project_access)
-      add_users_into_projects([project.id], user_ids, project_access)
-    end
-
-    # TODO: depreceate in future in favor of add_users_into_projects
-    def user_bulk_import(user, project_ids, project_access)
-      add_users_into_projects(project_ids, [user.id], project_access)
-    end
-
     def roles_hash
       {
         guest: GUEST,
