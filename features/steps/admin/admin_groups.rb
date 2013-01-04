@@ -16,7 +16,7 @@ class AdminGroups < Spinach::FeatureSteps
     @project = create(:project, group: @group)
     @event   = create(:closed_issue_event, project: @project)
 
-    @project.add_access current_user, :admin
+    @project.team << [current_user, :master]
   end
 
   And 'Create gitlab user "John"' do

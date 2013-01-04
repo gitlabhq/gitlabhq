@@ -1,6 +1,7 @@
 class DashboardSearch < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include SharedProject
 
   Given 'I search for "Sho"' do
     fill_in "dashboard_search", with: "Sho"
@@ -9,11 +10,6 @@ class DashboardSearch < Spinach::FeatureSteps
 
   Then 'I should see "Shop" project link' do
     page.should have_link "Shop"
-  end
-
-  And 'I own project "Shop"' do
-    @project = create(:project, :name => "Shop")
-    @project.add_access(@user, :admin)
   end
 
   Given 'I search for "Contibuting"' do

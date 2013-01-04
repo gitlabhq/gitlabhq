@@ -7,8 +7,7 @@ describe "Issues" do
     login_as :user
     user2 = create(:user)
 
-    project.add_access(@user, :read, :write)
-    project.add_access(user2, :read, :write)
+    project.team << [[@user, user2], :developer]
   end
 
   describe "Edit issue" do

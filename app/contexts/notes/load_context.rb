@@ -9,7 +9,7 @@ module Notes
 
       @notes = case target_type
                when "commit"
-                 project.commit_notes(project.commit(target_id)).fresh.limit(20)
+                 project.commit_notes(project.repository.commit(target_id)).fresh.limit(20)
                when "issue"
                  project.issues.find(target_id).notes.inc_author.fresh.limit(20)
                when "merge_request"

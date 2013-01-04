@@ -16,10 +16,9 @@ class TeamMembersController < ProjectResourceController
   end
 
   def create
-    @project.add_users_ids_to_team(
-      params[:user_ids],
-      params[:project_access]
-    )
+    users = User.where(id: params[:user_ids])
+
+    @project.team << [users, params[:project_access]]
 
     if params[:redirect_to]
       redirect_to params[:redirect_to]
@@ -50,7 +49,7 @@ class TeamMembersController < ProjectResourceController
 
   def apply_import
     giver = Project.find(params[:source_project_id])
-    status = UsersProject.import_team(giver, project)
+    status = @project.team.import(giver)
     notice = status ? "Succesfully imported" : "Import failed"
 
     redirect_to project_team_members_path(project), notice: notice

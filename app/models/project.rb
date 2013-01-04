@@ -166,7 +166,13 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, default_branch)
+    if path
+      @repository ||= Repository.new(path_with_namespace, default_branch)
+    else
+      nil
+    end
+  rescue Grit::NoSuchPathError
+    nil
   end
 
   def git_error?
@@ -277,39 +283,6 @@ class Project < ActiveRecord::Base
   # Get Team Member record by user id
   def team_member_by_id(user_id)
     users_projects.find_by_user_id(user_id)
-  end
-
-  # Update multiple project users
-  # to same access role by user ids
-  def update_users_ids_to_role(users_ids, access_role)
-    UsersProject.bulk_update(self, users_ids, access_role)
-  end
-
-  # Delete multiple users from project by user ids
-  def delete_users_ids_from_team(users_ids)
-    UsersProject.bulk_delete(self, users_ids)
-  end
-
-  def repository_readers
-    repository_members[UsersProject::REPORTER]
-  end
-
-  def repository_writers
-    repository_members[UsersProject::DEVELOPER]
-  end
-
-  def repository_masters
-    repository_members[UsersProject::MASTER]
-  end
-
-  def repository_members
-    keys = Hash.new {|h,k| h[k] = [] }
-    UsersProject.select("keys.identifier, project_access").
-        joins(user: :keys).where(project_id: id).
-        each {|row| keys[row.project_access] << [row.identifier] }
-
-    keys[UsersProject::REPORTER] += deploy_keys.pluck(:identifier)
-    keys
   end
 
   def transfer(new_namespace)
@@ -441,7 +414,7 @@ class Project < ActiveRecord::Base
   #
   def post_receive_data(oldrev, newrev, ref, user)
 
-    push_commits = commits_between(oldrev, newrev)
+    push_commits = repository.commits_between(oldrev, newrev)
 
     # Total commits count
     push_commits_count = push_commits.size
@@ -488,7 +461,7 @@ class Project < ActiveRecord::Base
   def update_merge_requests(oldrev, newrev, ref, user)
     return true unless ref =~ /heads/
     branch_name = ref.gsub("refs/heads/", "")
-    c_ids = self.commits_between(oldrev, newrev).map(&:id)
+    c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
     # Update code for merge requests
     mrs = self.merge_requests.opened.find_all_by_branch(branch_name).all
@@ -510,7 +483,7 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repository || repository.empty_repo?
+    !repository || repository.empty?
   end
 
   def satellite

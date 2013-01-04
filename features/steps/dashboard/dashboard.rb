@@ -61,7 +61,7 @@ class Dashboard < Spinach::FeatureSteps
 
   And 'I own project "Shop"' do
     @project = create :project, name: 'Shop'
-    @project.add_access(@user, :admin)
+    @project.team << [@user, :master]
   end
 
   And 'I have group with projects' do
@@ -69,7 +69,7 @@ class Dashboard < Spinach::FeatureSteps
     @project = create(:project, group: @group)
     @event   = create(:closed_issue_event, project: @project)
 
-    @project.add_access current_user, :admin
+    @project.team << [current_user, :master]
   end
 
   And 'project "Shop" has push event' do

@@ -188,7 +188,7 @@ class User < ActiveRecord::Base
 
   # Team membership in personal projects
   def tm_in_personal_projects
-    personal_projects.users_projects.where(user_id: self.id)
+    UsersProject.where(project_id:  personal_projects.map(&:id), user_id: self.id)
   end
 
   # Returns a string for use as a Gitolite user identifier

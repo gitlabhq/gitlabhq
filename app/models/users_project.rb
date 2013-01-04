@@ -48,10 +48,23 @@ class UsersProject < ActiveRecord::Base
     # access can be an integer representing a access code
     # or symbol like :master representing role
     #
+    # Ex.
+    #   add_users_into_projects(
+    #     project_ids,
+    #     user_ids,
+    #     UsersProject::MASTER
+    #   )
+    #
+    #   add_users_into_projects(
+    #     project_ids,
+    #     user_ids,
+    #     :master
+    #   )
+    #
     def add_users_into_projects(project_ids, user_ids, access)
-      project_access = if @roles.has_key?(access)
-                         @roles[access]
-                       elsif @roles.values.include?(access)
+      project_access = if roles_hash.has_key?(access)
+                         roles_hash[access]
+                       elsif roles_hash.values.include?(access.to_i)
                          access
                        else
                          raise "Non valid access"
@@ -91,36 +104,6 @@ class UsersProject < ActiveRecord::Base
 
     def truncate_team project
       truncate_teams [project.id]
-    end
-
-    def import_team(source_project, target_project)
-      source_team = source_project.users_projects.all
-      target_team = target_project.users_projects.all
-      target_user_ids = target_team.map(&:user_id)
-
-      source_team.reject! do |tm|
-        # Skip if user already present in team
-        target_user_ids.include?(tm.user_id)
-      end
-
-      source_team.map! do |tm|
-        new_tm = tm.dup
-        new_tm.id = nil
-        new_tm.project_id = target_project.id
-        new_tm.skip_git = true
-        new_tm
-      end
-
-      UsersProject.transaction do
-        source_team.each do |tm|
-          tm.save
-        end
-        target_project.update_repository
-      end
-
-      true
-    rescue
-      false
     end
 
     def bulk_delete(project, user_ids)

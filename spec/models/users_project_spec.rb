@@ -48,10 +48,10 @@ describe UsersProject do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.add_access @user_1, :write
-      @project_2.add_access @user_2, :read
+      @project_1.team << [ @user_1, :developer ]
+      @project_2.team << [ @user_2, :reporter ]
 
-      @status = UsersProject.import_team(@project_1, @project_2)
+      @status = @project_2.team.import(@project_1)
     end
 
     it { @status.should be_true }
@@ -101,8 +101,8 @@ describe UsersProject do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.add_access @user_1, :write
-      @project_2.add_access @user_2, :read
+      @project_1.team << [ @user_1, :developer]
+      @project_2.team << [ @user_2, :reporter]
 
       UsersProject.truncate_teams([@project_1.id, @project_2.id])
     end

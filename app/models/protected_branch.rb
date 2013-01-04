@@ -26,6 +26,6 @@ class ProtectedBranch < ActiveRecord::Base
   end
 
   def commit
-    project.commit(self.name)
+    project.repository.commit(self.name)
   end
 end

@@ -204,7 +204,7 @@ class Event < ActiveRecord::Base
 
   # Max 20 commits from push DESC
   def commits
-    @commits ||= data[:commits].map { |commit| project.commit(commit[:id]) }.reverse
+    @commits ||= data[:commits].map { |commit| repository.commit(commit[:id]) }.reverse
   end
 
   def commits_count
@@ -225,14 +225,18 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def repository
+    project.repository
+  end
+
   def parent_commit
-    project.commit(commit_from)
+    repository.commit(commit_from)
   rescue => ex
     nil
   end
 
   def last_commit
-    project.commit(commit_to)
+    repository.commit(commit_to)
   rescue => ex
     nil
   end

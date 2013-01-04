@@ -53,7 +53,7 @@ module ApplicationHelper
 
   def last_commit(project)
     if project.repo_exists?
-      time_ago_in_words(project.commit.committed_date) + " ago"
+      time_ago_in_words(project.repository.commit.committed_date) + " ago"
     else
       "Never"
     end
@@ -102,7 +102,7 @@ module ApplicationHelper
     ]
 
     project_nav = []
-    if @project && !@project.new_record?
+    if @project && @project.repository && @project.repository.root_ref
       project_nav = [
         { label: "#{@project.name} Issues",   url: project_issues_path(@project) },
         { label: "#{@project.name} Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
@@ -142,6 +142,7 @@ module ApplicationHelper
       event.last_push_to_non_root? &&
       !event.rm_ref? &&
       event.project &&
+      event.project.repository &&
       event.project.merge_requests_enabled
   end
 

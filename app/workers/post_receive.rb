@@ -11,7 +11,7 @@ class PostReceive
 
     # Ignore push from non-gitlab users
     user = if identifier.eql? Gitlab.config.gitolite.admin_key
-      email = project.commit(newrev).author.email rescue nil
+      email = project.repository.commit(newrev).author.email rescue nil
       User.find_by_email(email) if email
     elsif /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
       User.find_by_email(identifier)

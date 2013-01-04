@@ -13,7 +13,7 @@
       .mr_branch_box
         %h5 From (Head Branch)
         .body
-          .padded= f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
+          .padded= f.select(:source_branch, @repository.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
       .mr_source_commit
 
     .span2
@@ -22,7 +22,7 @@
       .mr_branch_box
         %h5 To (Base Branch)
         .body
-          .padded= f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
+          .padded= f.select(:target_branch, @repository.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
       .mr_target_commit
 
   %h4.cdark 2. Fill info

@@ -13,9 +13,11 @@ class Repository
   attr_accessor :root_ref
 
   def initialize(path_with_namespace, root_ref = 'master')
-    @root_ref = root_ref
+    @root_ref = root_ref || "master"
     @path_with_namespace = path_with_namespace
-    @repo = Grit::Repo.new(path_to_repo)
+
+    # Init grit repo object
+    repo
   end
 
   def raw
@@ -24,6 +26,10 @@ class Repository
 
   def path_to_repo
     @path_to_repo ||= File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
+  end
+
+  def repo
+    @repo ||= Grit::Repo.new(path_to_repo)
   end
 
   def commit(commit_id = nil)
@@ -114,7 +120,7 @@ class Repository
     false
   end
 
-  def empty_repo?
+  def empty?
     !has_commits?
   end
 

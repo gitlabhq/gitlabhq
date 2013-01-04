@@ -71,7 +71,7 @@ class Note < ActiveRecord::Base
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.commit(commit_id)
+      project.repository.commit(commit_id)
     else
       super
     end

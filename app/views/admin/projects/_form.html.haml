@@ -22,7 +22,7 @@
     - if project.repo_exists?
       .clearfix
         = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, project.heads.map(&:name), {}, style: "width:210px;")
+        .input= f.select(:default_branch, repository.heads.map(&:name), {}, style: "width:210px;")
 
   %fieldset.adv_settings
     %legend Features:

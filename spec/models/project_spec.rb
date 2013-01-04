@@ -75,35 +75,19 @@ describe Project do
   end
 
   describe "Respond to" do
-    it { should respond_to(:public?) }
-    it { should respond_to(:private?) }
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:path_to_repo) }
     it { should respond_to(:valid_repo?) }
     it { should respond_to(:repo_exists?) }
 
     # Repository Role
-    it { should respond_to(:tree) }
-    it { should respond_to(:root_ref) }
-    it { should respond_to(:repo) }
-    it { should respond_to(:tags) }
-    it { should respond_to(:commit) }
-    it { should respond_to(:commits) }
-    it { should respond_to(:commits_between) }
-    it { should respond_to(:commits_with_refs) }
-    it { should respond_to(:commits_since) }
-    it { should respond_to(:commits_between) }
     it { should respond_to(:satellite) }
     it { should respond_to(:update_repository) }
     it { should respond_to(:destroy_repository) }
     it { should respond_to(:archive_repo) }
 
     # Authority Role
-    it { should respond_to(:add_access) }
     it { should respond_to(:reset_access) }
-    it { should respond_to(:repository_writers) }
-    it { should respond_to(:repository_masters) }
-    it { should respond_to(:repository_readers) }
     it { should respond_to(:allow_read_for?) }
     it { should respond_to(:guest_access_for?) }
     it { should respond_to(:report_access_for?) }
