@@ -1,3 +1,5 @@
+require "spec_helper"
+
 describe Repository do
   let(:project) { create(:project) }
   let(:repository) { project.repository }

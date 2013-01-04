@@ -1,5 +1,11 @@
+require "spec_helper"
+
 describe Team do
+  let(:team) { create(:project).team }
+
   describe "Respond to" do
+    subject { team }
+
     it { should respond_to(:developers) }
     it { should respond_to(:masters) }
     it { should respond_to(:reporters) }

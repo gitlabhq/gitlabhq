@@ -76,31 +76,15 @@ describe Project do
 
   describe "Respond to" do
     it { should respond_to(:url_to_repo) }
-    it { should respond_to(:path_to_repo) }
-    it { should respond_to(:valid_repo?) }
     it { should respond_to(:repo_exists?) }
-
-    # Repository Role
     it { should respond_to(:satellite) }
     it { should respond_to(:update_repository) }
     it { should respond_to(:destroy_repository) }
-
-    # Authority Role
-    it { should respond_to(:reset_access) }
-    it { should respond_to(:allow_read_for?) }
-    it { should respond_to(:guest_access_for?) }
-    it { should respond_to(:report_access_for?) }
-    it { should respond_to(:dev_access_for?) }
-    it { should respond_to(:master_access_for?) }
-
-    # Project Push Role
     it { should respond_to(:observe_push) }
     it { should respond_to(:update_merge_requests) }
     it { should respond_to(:execute_hooks) }
     it { should respond_to(:post_receive_data) }
     it { should respond_to(:trigger_post_receive) }
-
-    # Namespaced Project Role
     it { should respond_to(:transfer) }
     it { should respond_to(:name_with_namespace) }
     it { should respond_to(:namespace_owner) }

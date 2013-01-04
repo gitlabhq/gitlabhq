@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Project, "Hooks" do
   let(:project) { create(:project) }
+
   before do
     @key = create(:key, user: project.owner)
     @user = @key.user

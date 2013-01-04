@@ -6,26 +6,27 @@
         - @issue.errors.full_messages.each do |msg|
           %span= msg
           %br
-    .issue_form_box
-      .issue_title
+    .ui-box.ui-box-show
+      .ui-box-head
         .clearfix
           = f.label :title do
             %strong= "Subject *"
           .input
             = f.text_field :title, maxlength: 255, class: "xxlarge js-gfm-input", autofocus: true, required: true
-      .issue_middle_block
-        .issue_assignee
-          = f.label :assignee_id do
-            %i.icon-user
-            Assign to
-          .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
-        .issue_milestone
-          = f.label :milestone_id do
-            %i.icon-time
-            Milestone
-          .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+      .ui-box-body
+        .clearfix
+          .issue_assignee.pull-left
+            = f.label :assignee_id do
+              %i.icon-user
+              Assign to
+            .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+          .issue_milestone.pull-left
+            = f.label :milestone_id do
+              %i.icon-time
+              Milestone
+            .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
-      .issue_description
+      .ui-box-bottom
         .clearfix
           = f.label :label_list do
             %i.icon-tag
