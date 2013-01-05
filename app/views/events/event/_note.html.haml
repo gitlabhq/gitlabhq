@@ -19,7 +19,6 @@
     = event.project_name
 
 .event-body
-  %span.hint
-    &nbsp;
-    %i.icon-comment
+  %span.event-note
+    %i.icon-comment-alt
     = truncate event.target.note, length: 70

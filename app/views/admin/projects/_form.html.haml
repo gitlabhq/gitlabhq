@@ -11,18 +11,18 @@
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
 
-  %fieldset.adv_settings
-    %legend Advanced settings:
-    .clearfix
-      = f.label :path do
-        Path
-      .input
-        = text_field_tag :ppath, @project.path_to_repo, class: "xlarge", disabled: true
+  - if project.repo_exists?
+    %fieldset.adv_settings
+      %legend Advanced settings:
+      .clearfix
+        = f.label :path do
+          Path
+        .input
+          = text_field_tag :ppath, @project.repository.path_to_repo, class: "xlarge", disabled: true
 
-    - if project.repo_exists?
       .clearfix
         = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, repository.heads.map(&:name), {}, style: "width:210px;")
+        .input= f.select(:default_branch, @project.repository.heads.map(&:name), {}, style: "width:210px;")
 
   %fieldset.adv_settings
     %legend Features:
