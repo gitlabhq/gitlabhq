@@ -10,7 +10,16 @@ if defined?(PhusionPassenger)
   # https://github.com/redis/redis-rb/wiki/redis-rb-on-Phusion-Passenger
   #
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
-    # if we're in smart spawning mode, reconnect to Redis
-    Resque.redis.client.reconnect if forked
+    # do nothing if we're not in smart spawning mode
+    return unless forked
+
+    # reconnect to Redis
+    Resque.redis.client.reconnect
+
+    # reconnect to cache store unless :memory_store or :null_store is used
+    unless [ActiveSupport::Cache::MemoryStore,
+            ActiveSupport::Cache::NullStore].include? Rails.cache.class
+      Rails.cache.instance_variable_get(:@data).reset
+    end
   end
 end
