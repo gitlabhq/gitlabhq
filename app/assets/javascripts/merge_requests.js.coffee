@@ -35,7 +35,7 @@ class MergeRequest
       , 'json'
 
     if @opts.ci_enable
-      $.get self.opts.url_to_ci_check, (data) =>
+      $.get @opts.url_to_ci_check, (data) =>
         this.showCiState data.status
       , 'json'
 
