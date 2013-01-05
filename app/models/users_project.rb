@@ -106,28 +106,6 @@ class UsersProject < ActiveRecord::Base
       truncate_teams [project.id]
     end
 
-    def bulk_delete(project, user_ids)
-      UsersProject.transaction do
-        UsersProject.where(user_id: user_ids, project_id: project.id).each do |users_project|
-          users_project.skip_git = true
-          users_project.destroy
-        end
-
-        project.update_repository
-      end
-    end
-
-    def bulk_update(project, user_ids, project_access)
-      UsersProject.transaction do
-        UsersProject.where(user_id: user_ids, project_id: project.id).each do |users_project|
-          users_project.project_access = project_access
-          users_project.skip_git = true
-          users_project.save
-        end
-        project.update_repository
-      end
-    end
-
     def roles_hash
       {
         guest: GUEST,
@@ -145,10 +123,6 @@ class UsersProject < ActiveRecord::Base
         "Master"    => MASTER
       }
     end
-  end
-
-  def role_access
-    project_access
   end
 
   def update_repository

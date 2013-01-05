@@ -149,10 +149,6 @@ class Commit
     prev_commit.try :id
   end
 
-  def parents_count
-    parents && parents.count || 0
-  end
-
   # Shows the diff between the commit's parent and the commit.
   #
   # Cuts out the header and stats from #to_patch and returns only the diff.

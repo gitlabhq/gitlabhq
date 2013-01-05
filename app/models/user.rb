@@ -230,10 +230,6 @@ class User < ActiveRecord::Base
     abilities.allowed?(self, action, subject)
   end
 
-  def last_activity_project
-    projects.first
-  end
-
   def first_name
     name.split.first unless name.blank?
   end

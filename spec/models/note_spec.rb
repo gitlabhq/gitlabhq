@@ -34,12 +34,6 @@ describe Note do
     it { should validate_presence_of(:project) }
   end
 
-  describe "Scopes" do
-    it "should have a today named scope that returns ..." do
-      Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
-    end
-  end
-
   describe "Voting score" do
     let(:project) { create(:project) }
 

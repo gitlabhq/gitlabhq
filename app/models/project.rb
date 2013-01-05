@@ -83,10 +83,6 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
 
   class << self
-    def authorized_for user
-      raise "DERECATED"
-    end
-
     def active
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end
@@ -213,14 +209,6 @@ class Project < ActiveRecord::Base
 
   def build_commit_note(commit)
     notes.new(commit_id: commit.id, noteable_type: "Commit")
-  end
-
-  def commit_notes(commit)
-    notes.where(commit_id: commit.id, noteable_type: "Commit", line_code: nil)
-  end
-
-  def commit_line_notes(commit)
-    notes.where(commit_id: commit.id, noteable_type: "Commit").where("line_code IS NOT NULL")
   end
 
   def last_activity
