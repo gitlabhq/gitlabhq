@@ -108,7 +108,7 @@ group :assets do
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
-  gem "raphael-rails",    "1.5.2"
+  gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass',   "2.2.1.1"
   gem "font-awesome-sass-rails", "~> 2.0.0"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
