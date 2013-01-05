@@ -11,7 +11,7 @@ function initIssuesSearch() {
       last_terms = terms;
 
       if (terms.length >= 2 || terms.length == 0) {
-        $.get(href, { 'f': status, 'terms': terms, 'milestone_id': milestone_id }, function(response) {
+        $.get(href, { 'status': status, 'terms': terms, 'milestone_id': milestone_id }, function(response) {
           $('#issues-table').html(response);
         });
       }

@@ -54,10 +54,11 @@ input.check_all_issues {
   }
 }
 
-@media (min-width: 800px) { .issues_filters select { width: 160px; }  }
-@media (min-width: 1000px) { .issues_filters select { width: 200px; }  }
+@media (min-width: 800px)  { .issues_filters select { width: 160px; }  }
 @media (min-width: 1200px) { .issues_filters select { width: 220px; }  }
 
+@media (min-width: 800px)  { .issues_bulk_update select { width: 120px; }  }
+@media (min-width: 1200px) { .issues_bulk_update select { width: 160px; }  }
 
 #issues-table-holder {
   .issues_filters {
@@ -68,6 +69,7 @@ input.check_all_issues {
     form {
       float:left;
     }
+
     .update_selected_issues {
       position: relative;
       top:5px;
