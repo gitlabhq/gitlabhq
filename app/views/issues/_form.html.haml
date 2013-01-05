@@ -44,7 +44,7 @@
 
     .actions
       - if @issue.new_record?
-        = f.submit 'Submit new issue', class: "btn save-btn"
+        = f.submit 'Submit new issue', class: "btn success"
       -else
         = f.submit 'Save changes', class: "save-btn btn"
 

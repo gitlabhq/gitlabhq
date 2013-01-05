@@ -54,7 +54,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     fill_in "merge_request_title", :with => "Wiki Feature"
     select "master", :from => "merge_request_source_branch"
     select "stable", :from => "merge_request_target_branch"
-    click_button "Save"
+    click_button "Submit merge request"
   end
 
   Then 'I should see merge request "Wiki Feature"' do
