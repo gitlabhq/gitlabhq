@@ -6,7 +6,6 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     page.should have_content "Project Network Graph"
     within ".graph" do
       page.should have_content "master"
-      page.should have_content "scss_refactor..."
     end
   end
 

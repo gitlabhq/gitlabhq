@@ -16,7 +16,7 @@ class SnippetsController < ProjectResourceController
   respond_to :html
 
   def index
-    @snippets = @project.snippets.fresh
+    @snippets = @project.snippets.fresh.non_expired
   end
 
   def new
