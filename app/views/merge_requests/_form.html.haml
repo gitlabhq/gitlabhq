@@ -1,4 +1,4 @@
-= form_for [@project, @merge_request], html: { class: "new_merge_request form-horizontal" } do |f|
+= form_for [@project, @merge_request], html: { class: "#{controller.action_name}-merge-request form-horizontal" } do |f|
   -if @merge_request.errors.any?
     .alert-message.block-message.error
       %ul
@@ -61,8 +61,9 @@
 :javascript
   $(function(){
     disableButtonIfEmptyField("#merge_request_title", ".save-btn");
-    var source_branch = $("#merge_request_source_branch");
-    var target_branch = $("#merge_request_target_branch");
+
+    var source_branch = $("#merge_request_source_branch")
+      , target_branch = $("#merge_request_target_branch");
 
     $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
     $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });
