@@ -69,6 +69,8 @@ class MergeRequestsController < ProjectResourceController
       @merge_request.check_if_can_be_merged
     end
     render json: {state: @merge_request.human_state}
+  rescue Gitlab::SatelliteNotExistError
+    render json: {state: :no_satellite}
   end
 
   def automerge

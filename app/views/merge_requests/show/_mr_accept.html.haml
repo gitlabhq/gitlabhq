@@ -23,6 +23,11 @@
           .clearfix
 
 
+  .automerge_widget.no_satellite{style: "display:none"}
+    .alert.alert-error
+      %span
+        %strong This repository does not have satellite. Ask administrator to fix this issue
+
   .automerge_widget.cannot_be_merged{style: "display:none"}
     .alert.alert-info
       %span
@@ -40,6 +45,6 @@
     .alert.alert-info
       %strong This merge request already can not be merged. Try to reload page.
 
-  .merge_in_progress.hide
+  .merge-in-progress.hide
     %span.cgray Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;
     = image_tag "ajax_loader.gif"

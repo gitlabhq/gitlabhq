@@ -43,7 +43,7 @@
   }
 }
 
-.mr_nav_tabs {
+.merge-request .nav-tabs{
   li {
     a {
       font-weight: bold;
@@ -65,7 +65,7 @@ li.merge_request {
   }
 }
 
-.merge_in_progress {
+.merge-in-progress {
   @extend .padded;
   @extend .append-bottom-10;
 }
