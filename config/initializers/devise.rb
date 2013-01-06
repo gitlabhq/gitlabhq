@@ -210,6 +210,7 @@ Devise.setup do |config|
       :host     => Gitlab.config.ldap['host'],
       :base     => Gitlab.config.ldap['base'],
       :uid      => Gitlab.config.ldap['uid'],
+      :filter   => Gitlab.config.ldap['filter'],
       :port     => Gitlab.config.ldap['port'],
       :method   => Gitlab.config.ldap['method'],
       :bind_dn  => Gitlab.config.ldap['bind_dn'],
