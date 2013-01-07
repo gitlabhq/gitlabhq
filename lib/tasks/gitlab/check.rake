@@ -398,6 +398,7 @@ namespace :gitlab do
       check_dot_gitolite_user_and_group
       check_dot_gitolite_permissions
       check_repo_base_exists
+      check_repo_base_is_not_symlink
       check_repo_base_user_and_group
       check_repo_base_permissions
       check_can_clone_gitolite_admin
@@ -687,6 +688,26 @@ namespace :gitlab do
         )
         for_more_information(
           see_installation_guide_section "Gitolite"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_repo_base_is_not_symlink
+      print "Repo base directory is a symlink? ... "
+
+      repo_base_path = Gitlab.config.gitolite.repos_path
+      unless File.exists?(repo_base_path)
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+      unless File.symlink?(repo_base_path)
+        puts "no".green
+      else
+        puts "yes".red
+        try_fixing_it(
+          "Make sure it's set to the real directory in config/gitlab.yml"
         )
         fix_and_rerun
       end
