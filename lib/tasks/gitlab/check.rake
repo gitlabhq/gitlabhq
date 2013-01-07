@@ -256,7 +256,7 @@ namespace :gitlab do
       start_checking "Environment"
 
       check_gitlab_in_git_group
-      check_issue_1056_shell_profile_error
+      check_issue_1059_shell_profile_error
       check_gitlab_git_config
       check_python2_exists
       check_python2_version
@@ -313,7 +313,7 @@ namespace :gitlab do
     end
 
     # see https://github.com/gitlabhq/gitlabhq/issues/1059
-    def check_issue_1056_shell_profile_error
+    def check_issue_1059_shell_profile_error
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
 
