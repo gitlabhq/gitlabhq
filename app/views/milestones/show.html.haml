@@ -38,51 +38,46 @@
       = gfm escape_once(@milestone.title)
 
   .ui-box-body
-    %h5
+    %p
       Progress:
-      %small
-        #{@milestone.closed_items_count} closed
-        &ndash;
-        #{@milestone.open_items_count} open
+      #{@milestone.closed_items_count} closed
+      &ndash;
+      #{@milestone.open_items_count} open
       %span.right= @milestone.expires_at
     .progress.progress-info
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
   - if @milestone.description.present?
-    .bottom_box_content
+    .ui-box-bottom
       = preserve do
         = markdown @milestone.description
 
 
 .row
   .span6
-    %table.milestone-issue-filter
-      %thead
-        %tr
-          %th
-            %ul.nav.nav-pills
-              %li.active= link_to('Open Issues', '#')
-              %li=link_to('All Issues', '#')
-      - @issues.each do |issue|
-        %tr{data: {closed: issue.closed}}
-          %td
+    .ui-box.milestone-issue-filter
+      .title
+        %ul.nav.nav-pills
+          %li.active= link_to('Open Issues', '#')
+          %li=link_to('All Issues', '#')
+      %ul.well-list
+        - @issues.each do |issue|
+          %li{data: {closed: issue.closed}}
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
             = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
 
   .span6
-    %table.milestone-merge-requests-filter
-      %thead
-        %tr
-          %th
-            %ul.nav.nav-pills
-              %li.active= link_to('Open Merge Requests', '#')
-              %li=link_to('All Merge Requests', '#')
-      - @merge_requests.each do |merge_request|
-        %tr{data: {closed: merge_request.closed}}
-          %td
+    .ui-box.milestone-merge-requests-filter
+      .title
+        %ul.nav.nav-pills
+          %li.active= link_to('Open Merge Requests', '#')
+          %li=link_to('All Merge Requests', '#')
+      %ul.well-list
+        - @merge_requests.each do |merge_request|
+          %li{data: {closed: merge_request.closed}}
             = link_to [@project, merge_request] do
               %span.badge.badge-info ##{merge_request.id}
             &ndash;

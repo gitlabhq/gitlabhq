@@ -25,6 +25,7 @@
 /** PILLS & TABS**/
 .nav-pills {
   .active a {
+    background: $primary_color;
   }
 
   > li > a {
