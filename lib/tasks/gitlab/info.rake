@@ -15,7 +15,7 @@ namespace :gitlab do
       os_name ||= if File.readable?('/etc/SuSE-release')
                     File.read('/etc/SuSE-release')
                   end
-      os_name.squish!
+      os_name.try(:squish!)
 
       # check if there is an RVM environment
       rvm_version = run_and_match("rvm --version", /[\d\.]+/).try(:to_s)
