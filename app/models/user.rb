@@ -67,6 +67,8 @@ class User < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
 
+  validate :namespace_uniq, if: ->(user) { user.username_changed? }
+
   before_validation :generate_password, on: :create
   before_save :ensure_authentication_token
   alias_attribute :private_token, :authentication_token
@@ -135,6 +137,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def namespace_uniq
+    namespace_name = self.username
+    if Namespace.find_by_path(namespace_name)
+      self.errors.add :username, "already exist"
+    end
+  end
 
   # Namespaces user has access to
   def namespaces
