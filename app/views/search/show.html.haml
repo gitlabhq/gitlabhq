@@ -88,5 +88,5 @@
                   %h4.nothing_here_message No wiki pages
   :javascript
     $(function() {
-      $(".search_results .term").highlight("#{params[:search]}");
+      $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
     })
