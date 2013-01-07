@@ -12,6 +12,9 @@ namespace :gitlab do
                     debian_version = File.read('/etc/debian_version')
                     "Debian #{debian_version}"
                   end
+      os_name ||= if File.readable?('/etc/SuSE-release')
+                    File.read('/etc/SuSE-release')
+                  end
       os_name.squish!
 
       # check if there is an RVM environment
