@@ -4,9 +4,16 @@ var Pager = {
   disable:false,
 
   init:
-    function(limit) {
+    function(limit, preload) {
       this.limit=limit;
-      this.offset=limit;
+
+      if(preload) { 
+        this.offset = 0;
+        this.getOld();
+      } else { 
+        this.offset = limit;
+      }
+
       this.initLoadMore();
     },
 
