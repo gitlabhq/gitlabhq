@@ -544,7 +544,7 @@ namespace :gitlab do
 
     def check_gitolite_is_up_to_date
       print "Using recommended version ... "
-      if gitolite_version.try(:start_with?, "v3.04")
+      if gitolite_version.try(:start_with?, "v3.2")
         puts "yes".green
       else
         puts "no".red
