@@ -98,7 +98,7 @@ namespace :gitlab do
       end
 
       # omniauth or ldap could have been deleted from the file
-      unless Gitlab.config.pre_40_config
+      unless Gitlab.config['git_host']
         puts "no".green
       else
         puts "yes".red
