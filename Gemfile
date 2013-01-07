@@ -164,4 +164,5 @@ end
 
 group :production do
   gem "gitlab_meta", '4.0'
+  gem 'rb-inotify', require: linux_only('rb-inotify')
 end
