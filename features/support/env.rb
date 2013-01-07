@@ -1,7 +1,4 @@
-unless ENV['CI']
-  require 'simplecov'
-  SimpleCov.start 'rails'
-end
+require 'simplecov' unless ENV['CI']
 
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
