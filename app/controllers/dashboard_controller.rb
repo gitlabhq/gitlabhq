@@ -36,14 +36,14 @@ class DashboardController < ApplicationController
   # Get authored or assigned open merge requests
   def merge_requests
     @merge_requests = current_user.cared_merge_requests
-    @merge_requests = dashboard_filter(@merge_requests)
+    @merge_requests = FilterContext.new(@merge_requests, params).execute
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
     @issues = current_user.assigned_issues
-    @issues = dashboard_filter(@issues)
+    @issues = FilterContext.new(@issues, params).execute
     @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
@@ -61,24 +61,5 @@ class DashboardController < ApplicationController
 
   def event_filter
     @event_filter ||= EventFilter.new(params[:event_filter])
-  end
-
-  def dashboard_filter items
-    if params[:project_id]
-      items = items.where(project_id: params[:project_id])
-    end
-
-    if params[:search].present?
-      items = items.search(params[:search])
-    end
-
-    case params[:status]
-    when 'closed'
-      items.closed
-    when 'all'
-      items
-    else
-      items.opened
-    end
   end
 end

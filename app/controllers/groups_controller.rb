@@ -21,15 +21,16 @@ class GroupsController < ApplicationController
 
   # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests.opened
-    @merge_requests = @merge_requests.of_group(@group).recent.page(params[:page]).per(20)
+    @merge_requests = current_user.cared_merge_requests.of_group(@group)
+    @merge_requests = FilterContext.new(@merge_requests, params).execute
+    @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
-    @user   = current_user
-    @issues = current_user.assigned_issues.opened
-    @issues = @issues.of_group(@group).recent.page(params[:page]).per(20)
+    @issues = current_user.assigned_issues.of_group(@group)
+    @issues = FilterContext.new(@issues, params).execute
+    @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
     respond_to do |format|
@@ -44,6 +45,7 @@ class GroupsController < ApplicationController
     @projects       = result[:projects]
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
+    @wiki_pages     = result[:wiki_pages]
   end
 
   def people
