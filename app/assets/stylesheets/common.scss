@@ -117,34 +117,10 @@ span.update-author {
 }
 
 .label {
-  background-color: #474D57;
-
-  &.label-tag {
-    background: none;
-    border: none;
-    padding: 4px 6px;
-    color: #444;
-    text-shadow: 0 0 1px #fff;
-
-    &.grouped {
-      float: left;
-      margin-right: 6px;
-      padding: 6px;
-    }
-  }
-  &.label-issue {
-    background-color: #eee;
-    border: 1px solid #ccc;
-    padding: 4px 6px;
-    color: #444;
-    text-shadow: 0 0 1px #fff;
-
-    &.grouped {
-      float: left;
-      margin-right: 6px;
-      padding: 6px;
-    }
-  }
+  padding: 0px 4px;
+  font-size: 10px;
+  font-style: normal;
+  background-color: $link_color;
 
   &.label-success {
     background-color: #8D8;

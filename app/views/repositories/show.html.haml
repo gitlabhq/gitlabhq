@@ -1,11 +1,14 @@
-= render "branches_head"
-
-%table
-  %thead
-    %tr
-      %th Name
-      %th Last commit
-      %th
-  - @activities.each do |update|
-    = render "repositories/branch", branch: update.head
+= render "commits/head"
+.row
+  .span3
+    = render "filter"
+  .span9
+    %table
+      %thead
+        %tr
+          %th Name
+          %th Last commit
+          %th
+      - @activities.each do |update|
+        = render "repositories/branch", branch: update.head
 

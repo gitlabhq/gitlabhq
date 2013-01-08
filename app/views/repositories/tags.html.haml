@@ -26,7 +26,7 @@
         %td
           - if can? current_user, :download_code, @project
             = link_to archive_project_repository_path(@project, ref: tag.name) do
-              %i.icon-download
+              %i.icon-download-alt
               Download
 
 - else
