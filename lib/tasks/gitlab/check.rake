@@ -295,15 +295,16 @@ namespace :gitlab do
     end
 
     def check_gitlab_in_git_group
-      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
-      print "gitlab user is in #{gitolite_ssh_user} group? ... "
+      gitlab_user = Gitlab.config.gitlab.user
+      gitolite_group = Gitlab.config.gitolite.group
+      print "gitlab user '#{gitlab_user}' has git group '#{gitolite_group}'? ... "
 
-      if run_and_match("id -rnG", /\Wgit\W/)
+      if run_and_match("id -rnG", /^#{gitolite_group}\W|\W#{gitolite_group}\W|\W#{gitolite_group}$/)
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "sudo usermod -a -G #{gitolite_ssh_user} gitlab"
+          "sudo usermod -a -G #{gitolite_group} #{gitlab_user}"
         )
         for_more_information(
           see_installation_guide_section "System Users"

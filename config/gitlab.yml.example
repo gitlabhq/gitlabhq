@@ -29,6 +29,9 @@ gitlab:
   ## Project settings
   default_projects_limit: 10
 
+  ## Account used for GitLab installation ('gitlab' if undefined)
+  user: gitlab
+
 ## Gravatar
 gravatar:
   enabled: true                 # Use user avatar images from Gravatar.com (default: true)
@@ -100,6 +103,7 @@ gitolite:
   receive_pack: true
   ssh_user: git
   ssh_host: localhost
+  group: git # default: 'git' if undefined
   # ssh_port: 22
   # config_file: gitolite.conf
 
