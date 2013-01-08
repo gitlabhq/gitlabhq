@@ -32,6 +32,16 @@ module Gitlab
       end
     end
 
+    class Group < Grape::Entity
+      expose :id, :name, :path, :name, :owner_id, :type
+    end
+    
+    class GroupDetail < Grape::Entity
+      expose :id, :name, :path, :name, :owner_id, :type
+      expose :projects, using: Entities::Project
+    end
+
+    
     class RepoObject < Grape::Entity
       expose :name, :commit
       expose :protected do |repo, options|
