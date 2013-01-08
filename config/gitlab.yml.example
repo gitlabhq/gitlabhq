@@ -91,6 +91,7 @@ backup:
 
 ## Gitolite settings
 gitolite:
+  install_path: /home/git/gitolite/src/ # if not defined, defaults to 'repos_path/../gitolite/src/'
   admin_uri: git@localhost:gitolite-admin
   # repos_path must not be a symlink
   repos_path: /home/git/repositories/
