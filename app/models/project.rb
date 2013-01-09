@@ -26,7 +26,8 @@ class Project < ActiveRecord::Base
   class TransferError < StandardError; end
 
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
-                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
+                  :wall_enabled, :merge_requests_enabled, :merge_request_for_developers_enabled,
+                  :wiki_enabled, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
