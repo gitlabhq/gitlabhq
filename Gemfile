@@ -84,7 +84,6 @@ gem "draper", "~> 0.18.0"
 gem 'slim'
 gem 'sinatra', :require => nil
 gem 'sidekiq', '2.6.4'
-gem 'sidekiq_mailer'
 
 # HTTP requests
 gem "httparty"

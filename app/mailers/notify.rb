@@ -1,5 +1,5 @@
 class Notify < ActionMailer::Base
-  include Sidekiq::Mailer
+
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
 
