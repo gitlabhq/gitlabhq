@@ -38,6 +38,6 @@
 };
 eos
 %>
-<div class="white">
+<div class="<%= user_color_scheme_class%>">
   <%= raw Pygments::Lexer[:js].highlight(data_ex_str) %>
 </div>
