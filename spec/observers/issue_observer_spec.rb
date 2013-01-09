@@ -21,8 +21,7 @@ describe IssueObserver do
     end
 
     it 'sends an email to the assignee' do
-      Notify.should_receive(:new_issue_email).with(issue.id).
-        and_return(double(deliver: true))
+      Notify.should_receive(:new_issue_email).with(issue.id)
 
       subject.after_create(issue)
     end
@@ -71,6 +70,7 @@ describe IssueObserver do
     context 'a status "closed"' do
       it 'note is created if the issue is being closed' do
         issue.should_receive(:is_being_closed?).and_return(true)
+        Notify.should_receive(:issue_status_changed_email).twice
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
         subject.after_update(issue)
@@ -85,7 +85,7 @@ describe IssueObserver do
 
       it 'notification is delivered if the issue being closed' do
         issue.stub(:is_being_closed?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice.and_return(stub(deliver: true))
+        Notify.should_receive(:issue_status_changed_email).twice
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
         subject.after_update(issue)
@@ -104,7 +104,7 @@ describe IssueObserver do
         issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
         issue_without_assignee.stub(:is_being_closed?).and_return(true)
         issue_without_assignee.stub(:is_being_reopened?).and_return(false)
-        Notify.should_receive(:issue_status_changed_email).once.and_return(stub(deliver: true))
+        Notify.should_receive(:issue_status_changed_email).once
         Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'closed')
 
         subject.after_update(issue_without_assignee)
@@ -113,6 +113,7 @@ describe IssueObserver do
 
     context 'a status "reopened"' do
       it 'note is created if the issue is being reopened' do
+        Notify.should_receive(:issue_status_changed_email).twice
         issue.should_receive(:is_being_reopened?).and_return(true)
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
 
@@ -128,7 +129,7 @@ describe IssueObserver do
 
       it 'notification is delivered if the issue being reopened' do
         issue.stub(:is_being_reopened?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice.and_return(stub(deliver: true))
+        Notify.should_receive(:issue_status_changed_email).twice
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
 
         subject.after_update(issue)
@@ -147,7 +148,7 @@ describe IssueObserver do
         issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
         issue_without_assignee.stub(:is_being_closed?).and_return(false)
         issue_without_assignee.stub(:is_being_reopened?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).once.and_return(stub(deliver: true))
+        Notify.should_receive(:issue_status_changed_email).once
         Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'reopened')
 
         subject.after_update(issue_without_assignee)
@@ -164,8 +165,7 @@ describe IssueObserver do
     end
 
     def it_sends_a_reassigned_email_to(recipient)
-      Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id).
-        and_return(double(deliver: true))
+      Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id)
     end
 
     def it_does_not_send_a_reassigned_email_to(recipient)

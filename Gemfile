@@ -81,8 +81,9 @@ gem "acts-as-taggable-on", "2.3.3"
 gem "draper", "~> 0.18.0"
 
 # Background jobs
-gem "resque", git: "https://github.com/gitlabhq/resque.git", ref: "9ef4700306dd946a3ac000612428967ce0c32213"
-gem 'resque_mailer'
+gem 'slim'
+gem 'sinatra', :require => nil
+gem 'sidekiq', '2.6.4'
 
 # HTTP requests
 gem "httparty"
@@ -157,7 +158,6 @@ group :test do
   gem "simplecov", require: false
   gem "shoulda-matchers", "1.3.0"
   gem 'email_spec'
-  gem 'resque_spec'
   gem "webmock"
   gem 'test_after_commit'
 end

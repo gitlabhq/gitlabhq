@@ -871,7 +871,7 @@ namespace :gitlab do
 
 
   namespace :resque do
-    desc "GITLAB | Check the configuration of Resque"
+    desc "GITLAB | Check the configuration of Sidekiq"
     task check: :environment  do
       warn_user_is_not_gitlab
       start_checking "Resque"
@@ -888,7 +888,7 @@ namespace :gitlab do
     def check_resque_running
       print "Running? ... "
 
-      if run_and_match("ps aux | grep -i resque", /resque-[\d\.]+:.+$/)
+      if run_and_match("ps aux | grep -i sidekiq", /sidekiq-[\d\.]+:.+$/)
         puts "yes".green
       else
         puts "no".red
@@ -899,7 +899,7 @@ namespace :gitlab do
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
-          "see log/resque.log for possible errors"
+          "see log/sidekiq.log for possible errors"
         )
         fix_and_rerun
       end

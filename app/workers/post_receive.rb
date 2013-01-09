@@ -1,7 +1,9 @@
 class PostReceive
-  @queue = :post_receive
+  include Sidekiq::Worker
 
-  def self.perform(repo_path, oldrev, newrev, ref, identifier)
+  sidekiq_options queue: :post_receive
+
+  def perform(repo_path, oldrev, newrev, ref, identifier)
     repo_path.gsub!(Gitlab.config.gitolite.repos_path.to_s, "")
     repo_path.gsub!(/.git$/, "")
     repo_path.gsub!(/^\//, "")
