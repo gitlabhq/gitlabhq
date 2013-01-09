@@ -2,20 +2,20 @@ require 'resque/tasks'
 
 namespace :resque do
   task setup: :environment do
-    Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
+    #Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
   end
 
   desc "Resque | kill all workers (using -QUIT), god will take care of them"
   task :stop_workers => :environment do
-    pids = Array.new
+    #pids = Array.new
 
-    Resque.workers.each do |worker|
-      pids << worker.to_s.split(/:/).second
-    end
+    #Resque.workers.each do |worker|
+      #pids << worker.to_s.split(/:/).second
+    #end
 
-    if pids.size > 0
-      system("kill -QUIT #{pids.join(' ')}")
-    end
+    #if pids.size > 0
+      #system("kill -QUIT #{pids.join(' ')}")
+    #end
   end
 end
 

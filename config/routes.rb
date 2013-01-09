@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Gitlab::Application.routes.draw do
   #
   # Search
@@ -8,9 +10,10 @@ Gitlab::Application.routes.draw do
   require 'api'
   mount Gitlab::API => '/api'
 
-  # Optionally, enable Resque here
-  require 'resque/server'
-  mount Resque::Server => '/info/resque', as: 'resque'
+  constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
+  constraints constraint do
+    mount Sidekiq::Web, at: "/admin/workers", as: :sidekiq
+  end
 
   # Enable Grack support
   mount Grack::Bundle.new({
