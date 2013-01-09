@@ -158,7 +158,7 @@ Gitlab::Application.routes.draw do
     resources :deploy_keys
     resources :protected_branches, only: [:index, :create, :destroy]
 
-    resources :refs, only: [], path: "/" do
+    resources :refs, only: [] do
       collection do
         get "switch"
       end
