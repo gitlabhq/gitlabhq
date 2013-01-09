@@ -29,7 +29,7 @@
             %span You don`t have one yet. Click generate to fix it.
             = f.submit 'Generate', class: "btn success btn-build-token"
 
-- unless current_user.extern_uid?
+- unless Gitlab.config.ldap.enabled
   %fieldset
     %legend Password
     = form_for @user, url: update_password_profile_path, method: :put do |f|
