@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
