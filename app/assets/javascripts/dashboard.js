@@ -2,6 +2,12 @@
  * Init dashboard page
  *
  */
+
+$(function(){
+  Pager.init(20, true);
+  dashboardPage();
+});
+
 function dashboardPage(){ 
   $(".event_filter_link").bind('click',(function(){
     enableFilter(this.id);

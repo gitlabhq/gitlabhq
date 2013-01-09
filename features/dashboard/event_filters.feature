@@ -7,6 +7,7 @@ Feature: Event filters
     And this project has merge request event
     And I visit dashboard page
 
+  @javascript
   Scenario: I should see all events
     Then I should see push event
     And I should see new member event
