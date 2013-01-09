@@ -2,7 +2,7 @@ namespace :gitlab do
   desc "GITLAB | Check the configuration of GitLab and its environment"
   task check: %w{gitlab:env:check
                  gitlab:gitolite:check
-                 gitlab:resque:check
+                 gitlab:sidekiq:check
                  gitlab:app:check}
 
 
@@ -870,22 +870,22 @@ namespace :gitlab do
 
 
 
-  namespace :resque do
+  namespace :sidekiq do
     desc "GITLAB | Check the configuration of Sidekiq"
     task check: :environment  do
       warn_user_is_not_gitlab
-      start_checking "Resque"
+      start_checking "Sidekiq"
 
-      check_resque_running
+      check_sidekiq_running
 
-      finished_checking "Resque"
+      finished_checking "Sidekiq"
     end
 
 
     # Checks
     ########################
 
-    def check_resque_running
+    def check_sidekiq_running
       print "Running? ... "
 
       if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d\.\d\.\d.+$/)
@@ -893,9 +893,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo service gitlab restart",
-          "or",
-          "sudo /etc/init.d/gitlab restart"
+          "sudo -u gitlab -H bundle exec rake sidekiq:start"
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
