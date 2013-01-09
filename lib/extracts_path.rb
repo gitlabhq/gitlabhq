@@ -108,7 +108,7 @@ module ExtractsPath
       request.format = :atom
     end
 
-    path = request.fullpath.dup
+    path = CGI::unescape(request.fullpath.dup)
 
     @ref, @path = extract_ref(path)
 
