@@ -10,13 +10,20 @@ $(function(){
 
 function dashboardPage(){ 
   $(".event_filter_link").bind('click',(function(){
-    enableFilter(this.id);
+    toggleFilter($(this));
+    reloadActivities();
   }));
 }
 
-function enableFilter(sender_id){
+function reloadActivities(){
+  $('.content_list').html('');
+  Pager.init(20, true);
+}
+
+function toggleFilter(sender){
+  sender.parent().toggleClass('inactive');
   var event_filters = $.cookie('event_filter');
-  var filter = sender_id.split('_')[0];
+  var filter = sender.attr('id').split('_')[0];
   if (!event_filters) {
     event_filters = new Array();
   } else {
