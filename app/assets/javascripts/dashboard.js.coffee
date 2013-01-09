@@ -3,7 +3,8 @@ $ ->
 
 dashboardPage = ->
   Pager.init 20, true
-  $(".event_filter_link").bind "click", ->
+  $(".event_filter_link").bind "click", (event) ->
+    event.preventDefault()
     toggleFilter $(this)
     reloadActivities()
     
