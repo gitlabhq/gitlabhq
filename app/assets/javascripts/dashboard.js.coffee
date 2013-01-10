@@ -1,7 +1,4 @@
-$ ->
-  dashboardPage()
-
-dashboardPage = ->
+window.dashboardPage = ->
   Pager.init 20, true
   $(".event_filter_link").bind "click", (event) ->
     event.preventDefault()

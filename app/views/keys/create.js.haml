@@ -1,9 +1,0 @@
-- if @key.valid?
-  :plain
-    $("#new_key_dialog").dialog("close");
-    $("#keys-table .data").append("#{escape_javascript(render(partial: 'show', locals: {key: @key}))}");
-    $("#no_ssh_key_defined").hide();
-- else
-  :plain
-    $("#new_key_dialog").empty();
-    $("#new_key_dialog").append("#{escape_javascript(render('form'))}");
