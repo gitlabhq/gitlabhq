@@ -3,6 +3,16 @@ module Grack
     attr_accessor :user, :project
 
     def valid?
+      # Find project by PATH_INFO from env
+      if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
+        self.project = Project.find_with_namespace(m.last)
+        return false unless project
+      end
+
+      if @request.get? && project.public
+        return true
+      end
+
       # Authentication with username and password
       login, password = @auth.credentials
 
@@ -16,12 +26,6 @@ module Grack
       ENV['GL_USER'] = email
       # Pass Gitolite update hook
       ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
-
-      # Find project by PATH_INFO from env
-      if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
-        self.project = Project.find_with_namespace(m.last)
-        return false unless project
-      end
 
       # Git upload and receive
       if @request.get?

@@ -77,6 +77,13 @@
           SSH:
       %td
         = link_to @project.ssh_url_to_repo
+  - if @project.public
+    %tr.bgred
+      %td
+        %b
+          Public Read-Only Code access:
+      %td
+        = check_box_tag 'public', nil, @project.public
 
 - if @repository
   %table.zebra-striped

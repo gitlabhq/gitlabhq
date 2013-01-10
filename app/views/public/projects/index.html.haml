@@ -1,0 +1,14 @@
+%h3.page_title
+  Projects
+  %small Read-Only Access
+%hr
+
+%ul.well-list
+  - @projects.each do |project|
+    %li.clearfix
+      %h5
+        %i.icon-star.cgreen
+        = project.name_with_namespace
+        .right
+          %span.monospace.tiny
+            git clone #{project.http_url_to_repo}
