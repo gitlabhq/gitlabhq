@@ -44,6 +44,10 @@ module Gitlab
     def enable_automerge
       config.admin_all_repo!
     end
+    
+    def set_anonclone allowed
+      config.set_anonclone(allowed)
+    end
 
     def update_repositories projects
       config.apply do |config|

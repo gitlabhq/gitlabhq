@@ -9,6 +9,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
+#  anon_clone             :boolean          default(FALSE), not null
 #  owner_id               :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -30,7 +31,7 @@ class Project < ActiveRecord::Base
   class TransferError < StandardError; end
 
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
-                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
+                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, :anon_clone, as: [:default, :admin]
 
   attr_accessible :namespace_id, :owner_id, as: :admin
 
@@ -69,7 +70,7 @@ class Project < ActiveRecord::Base
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
-            :wiki_enabled, inclusion: { in: [true, false] }
+            :wiki_enabled, :anon_clone, inclusion: { in: [true, false] }
 
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id

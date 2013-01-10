@@ -201,6 +201,10 @@ module Repository
   def http_url_to_repo
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
+  
+  def gitd_url_to_repo
+    gitd_url = url_to_repo.gsub(/^.+@/,'git://')
+  end
 
   # Check if current branch name is marked as protected in the system
   def protected_branch? branch_name

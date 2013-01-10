@@ -330,6 +330,12 @@ Make sure to edit the config file to match your setup:
 
     sudo /etc/init.d/nginx restart
 
+# 8. Anonymous Git access (optional)
+
+Configure your git daemon instance to point to /home/git/repositories and
+ensure it executes as the same user as gitolite does to avoid any possible
+issues.
+
 
 # Done!
 

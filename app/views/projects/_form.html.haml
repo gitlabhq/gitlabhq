@@ -49,7 +49,12 @@
       .controls
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
-
+        
+    .control-group
+      = f.label :anon_clone, "Anonymous Git Clone", class: 'control-label'
+      .controls
+        = f.check_box :anon_clone
+        %span.descr Enables anonymous cloning of the repository over the git:// protocol
 
   - if can? current_user, :change_namespace, @project
     %fieldset.features

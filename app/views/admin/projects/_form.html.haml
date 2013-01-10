@@ -42,6 +42,10 @@
     .clearfix
       = f.label :wiki_enabled, "Wiki"
       .input= f.check_box :wiki_enabled
+      
+    .clearfix
+      = f.label :anon_clone, "Anonymous clone via Git Daemon protocol"
+      .input= f.check_box :anon_clone
 
   %fieldset.features
     %legend Transfer:
