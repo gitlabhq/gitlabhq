@@ -25,17 +25,51 @@
         = link_to 'New User', new_admin_user_path, class: "btn small"
 
 .row
-  .span6
-    %h3 Latest projects
+  .span4
+    %h4 Latest projects
     %hr
     - @projects.each do |project|
       %p
         = link_to project.name_with_namespace, [:admin, project]
-  .span6
-    %h3 Latest users
+        %span.light.right
+          = time_ago_in_words project.created_at
+          ago
+
+  .span4
+    %h4 Latest users
     %hr
     - @users.each do |user|
       %p
         = link_to [:admin, user] do
           = user.name
-          %small= user.email
+        %span.light.right
+          = time_ago_in_words user.created_at
+          ago
+
+  .span4
+    %h4 Stats
+    %hr
+    %p
+      Issues
+      %span.light.right
+        = Issue.count
+    %p
+      Merge Requests
+      %span.light.right
+        = MergeRequest.count
+    %p
+      Notes
+      %span.light.right
+        = Note.count
+    %p
+      Snippets
+      %span.light.right
+        = Snippet.count
+    %p
+      SSH Keys
+      %span.light.right
+        = Key.count
+    %p
+      Milestones
+      %span.light.right
+        = Milestone.count
