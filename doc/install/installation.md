@@ -280,9 +280,8 @@ To make sure you didn't miss anything run a more thorough check with:
 
     sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
 
-If you are all green: congratulations, you successfully installed GitLab!
-Although this is the case, there are still a few steps to go.
-
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
 
 ## Install Init Script
 
