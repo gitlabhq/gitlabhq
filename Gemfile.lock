@@ -174,7 +174,7 @@ GEM
       eventmachine (>= 0.12.0)
     ffaker (1.15.0)
     ffi (1.1.5)
-    font-awesome-sass-rails (2.0.0.0)
+    font-awesome-sass-rails (3.0.0.1)
       railties (>= 3.1.1)
       sass-rails (>= 3.1.1)
     foreman (0.60.2)
@@ -381,7 +381,7 @@ GEM
       rspec-mocks (~> 2.12.0)
     rubyntlm (0.1.1)
     rubyzip (0.9.9)
-    sass (3.2.3)
+    sass (3.2.5)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -488,7 +488,7 @@ DEPENDENCIES
   email_spec
   factory_girl_rails
   ffaker
-  font-awesome-sass-rails (~> 2.0.0)
+  font-awesome-sass-rails (~> 3.0.0)
   foreman
   gemoji (~> 1.2.1)
   git
