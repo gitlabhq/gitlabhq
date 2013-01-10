@@ -132,21 +132,25 @@
 .event_filter {
   position: absolute;
   width: 40px;
-  margin-left: -50px;
+  margin-left: -55px;
 
   .filter_icon {
-    float: left;
-    border-left: 3px solid #4bc;
-    padding: 7px;
-    background: #f9f9f9;
-    margin-bottom: 10px;
-    img {
-      width: 20px;
+    a {
+      text-align:center;
+      border-left: 3px solid #29B;
+      background: #f9f9f9;
+      margin-bottom: 10px;
+      float: left;
+      padding: 9px 7px;
+      font-size: 18px;
+      width: 26px;
     }
 
     &.inactive {
-      border-left: 3px solid #EEE;
-      opacity: 0.5;
+      a {
+        color: #DDD;
+        border-left: 3px solid #EEE;
+      }
     }
   }
 }
