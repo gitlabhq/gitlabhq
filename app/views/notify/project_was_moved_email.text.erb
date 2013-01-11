@@ -1,0 +1,8 @@
+Project was moved to another location
+          
+The project is now located under 
+<%= url_for(link_to project_url(@project)) %>
+          
+
+To update the remote url in your local repository run:
+  git remote set-url origin <%= @project.ssh_url_to_repo %>

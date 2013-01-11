@@ -1,0 +1,9 @@
+New comment for Issue <%= @issue.id %>
+
+<%= url_for(project_issue_url(@issue.project, @issue, anchor: "note_#{@note.id}")) %>
+
+
+Author: <%= @note.author_name %>
+
+<%= @note.note %>
+
