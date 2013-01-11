@@ -10,6 +10,11 @@
         %i.icon-edit
         Edit
 %br
+- if @wiki != @most_recent_wiki
+  .warning_message
+    This is an old version of this page.
+    You can view the #{link_to "most recent version", project_wiki_path(@project, @wiki)} or browse the #{link_to "history", history_project_wiki_path(@project, @wiki)}.
+
 .file_holder
   .file_content.wiki
     = preserve do

@@ -8,13 +8,12 @@ class WikisController < ProjectResourceController
   end
 
   def show
+    @most_recent_wiki = @project.wikis.where(slug: params[:id]).ordered.first
     if params[:version_id]
       @wiki = @project.wikis.find(params[:version_id])
     else
-      @wiki = @project.wikis.where(slug: params[:id]).ordered.first
+      @wiki = @most_recent_wiki
     end
-
-    @note = @project.notes.new(noteable: @wiki)
 
     if @wiki
       render 'show'

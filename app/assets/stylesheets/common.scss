@@ -446,6 +446,19 @@ li.note {
   }
 }
 
+.warning_message {
+  border-left: 4px solid #ed9;
+  color: #b90;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #ffffe6;
+  padding-left: 20px;
+
+  &.centered {
+    text-align: center;
+  }
+}
+
 .oauth_select_holder {
   padding: 20px;
   img {
