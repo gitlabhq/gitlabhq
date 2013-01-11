@@ -317,7 +317,7 @@ namespace :gitlab do
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
 
-      profile_file = File.join(gitolite_home, ".profile")
+      profile_file = File.join(gitolite_user_home, ".profile")
 
       unless File.read(profile_file) =~ /^-e PATH/
         puts "yes".green
@@ -475,7 +475,7 @@ namespace :gitlab do
     def check_dot_gitolite_exists
       print "Config directory exists? ... "
 
-      gitolite_config_path = File.join(gitolite_home, ".gitolite")
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
 
       if File.directory?(gitolite_config_path)
         puts "yes".green
@@ -496,7 +496,7 @@ namespace :gitlab do
     def check_dot_gitolite_permissions
       print "Config directory access is drwxr-x---? ... "
 
-      gitolite_config_path = File.join(gitolite_home, ".gitolite")
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
@@ -520,7 +520,7 @@ namespace :gitlab do
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Config directory owned by #{gitolite_ssh_user}:#{gitolite_ssh_user} ... "
 
-      gitolite_config_path = File.join(gitolite_home, ".gitolite")
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
@@ -559,7 +559,7 @@ namespace :gitlab do
     end
 
     def check_gitoliterc_git_config_keys
-      gitoliterc_path = File.join(gitolite_home, ".gitolite.rc")
+      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
 
       print "Allow all Git config keys in .gitolite.rc ... "
       option_name = if has_gitolite3?
@@ -588,7 +588,7 @@ namespace :gitlab do
     end
 
     def check_gitoliterc_repo_umask
-      gitoliterc_path = File.join(gitolite_home, ".gitolite.rc")
+      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
 
       print "Repo umask is 0007 in .gitolite.rc? ... "
       option_name = if has_gitolite3?
@@ -726,7 +726,6 @@ namespace :gitlab do
         puts "yes".green
       else
         puts "no".red
-        puts "#{repo_base_path} is not writable".red
         try_fixing_it(
           "sudo chmod -R ug+rwXs,o-rwx #{repo_base_path}"
         )
@@ -852,12 +851,12 @@ namespace :gitlab do
     # Helper methods
     ########################
 
-    def gitolite_home
+    def gitolite_user_home
       File.expand_path("~#{Gitlab.config.gitolite.ssh_user}")
     end
 
     def gitolite_version
-      gitolite_version_file = "#{gitolite_home}/gitolite/src/VERSION"
+      gitolite_version_file = "#{gitolite_user_home}/gitolite/src/VERSION"
       if File.readable?(gitolite_version_file)
         File.read(gitolite_version_file)
       end
