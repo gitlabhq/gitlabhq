@@ -1,0 +1,8 @@
+Hi <%= @user.name %>!
+          
+Administrator created account for you. Now you are a member of company GitLab application.
+          
+login.................. <%= @user.email %>
+password............... <%= @password %>
+
+Click here to login: <%= url_for(root_url) %>
