@@ -502,7 +502,7 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %a #{gitolite_config_path}` == "750"
+      if File.stat(gitolite_config_path).mode.to_s(8).ends_with?("750")
         puts "yes".green
       else
         puts "no".red
@@ -526,12 +526,11 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %U #{gitolite_config_path}` == gitolite_ssh_user && # user
-         `stat --printf %G #{gitolite_config_path}` == gitolite_ssh_user #group
+      if File.stat(gitolite_config_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(gitolite_config_path).gid == gid_for(gitolite_ssh_user)
         puts "yes".green
       else
         puts "no".red
-        puts "#{gitolite_config_path} is not owned by #{gitolite_ssh_user}".red
         try_fixing_it(
           "sudo chown -R #{gitolite_ssh_user}:#{gitolite_ssh_user} #{gitolite_config_path}"
         )
@@ -722,7 +721,7 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %a #{repo_base_path}` == "6770"
+      if File.stat(repo_base_path).mode.to_s(8).ends_with?("6770")
         puts "yes".green
       else
         puts "no".red
@@ -746,12 +745,11 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %U #{repo_base_path}` == gitolite_ssh_user && # user
-         `stat --printf %G #{repo_base_path}` == gitolite_ssh_user #group
+      if File.stat(repo_base_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(repo_base_path).gid == gid_for(gitolite_ssh_user)
         puts "yes".green
       else
         puts "no".red
-        puts "#{repo_base_path} is not owned by #{gitolite_ssh_user}".red
         try_fixing_it(
           "sudo chown -R #{gitolite_ssh_user}:#{gitolite_ssh_user} #{repo_base_path}"
         )
@@ -832,7 +830,8 @@ namespace :gitlab do
           next
         end
 
-        if run_and_match("stat --format %N #{project_hook_file}", /#{hook_file}.+->.+#{gitolite_hook_file}/)
+        if File.lstat(project_hook_file).symlink? &&
+            File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
           puts "ok".green
         else
           puts "not a link to Gitolite's hook".red

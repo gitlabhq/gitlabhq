@@ -45,6 +45,15 @@ namespace :gitlab do
     end
   end
 
+  def uid_for(user_name)
+    run("id -u #{user_name}").chomp.to_i
+  end
+
+  def gid_for(group_name)
+    group_line = File.read("/etc/group").lines.select{|l| l.start_with?("#{group_name}:")}.first
+    group_line.split(":")[2].to_i
+  end
+
   def warn_user_is_not_gitlab
     unless @warned_user_not_gitlab
       current_user = run("whoami").chomp
