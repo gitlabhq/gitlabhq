@@ -15,4 +15,4 @@
     = preserve do
       = markdown @wiki.content
 
-%p.time Last edited by #{@wiki.user.name}, #{time_ago_in_words @wiki.created_at} ago
+%p.time Last edited by #{link_to_member @project, @wiki.user}, #{time_ago_in_words @wiki.created_at} ago
