@@ -203,7 +203,7 @@ module Repository
   end
   
   def gitd_url_to_repo
-    gitd_url = url_to_repo.gsub(/^.+@/,'git://')
+    gitd_url = http_url_to_repo.gsub(/^.+:\/\//,'git://')
   end
 
   # Check if current branch name is marked as protected in the system
