@@ -1,5 +1,27 @@
 namespace :gitlab do
 
+  # Check which OS is running
+  #
+  # It will primarily use lsb_relase to determine the OS.
+  # It has fallbacks to Debian, SuSE and OS X.
+  def os_name
+    os_name = run("lsb_release -irs")
+    os_name ||= if File.readable?('/etc/system-release')
+                  File.read('/etc/system-release')
+                end
+    os_name ||= if File.readable?('/etc/debian_version')
+                  debian_version = File.read('/etc/debian_version')
+                  "Debian #{debian_version}"
+                end
+    os_name ||= if File.readable?('/etc/SuSE-release')
+                  File.read('/etc/SuSE-release')
+                end
+    os_name ||= if os_x_version = run("sw_vers -productVersion")
+                  "Mac OS X #{os_x_version}"
+                end
+    os_name.try(:squish!)
+  end
+
   # Runs the given command and matches the output agains the given pattern
   #
   # Returns nil if nothing matched
