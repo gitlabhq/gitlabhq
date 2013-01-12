@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
+  scope :public, where(public: true)
 
   class << self
     def active

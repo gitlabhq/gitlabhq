@@ -6,6 +6,6 @@ class Public::ProjectsController < ApplicationController
   layout 'public'
 
   def index
-    @projects = Project.where(public: true)
+    @projects = Project.public
   end
 end
