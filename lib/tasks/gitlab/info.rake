@@ -3,20 +3,6 @@ namespace :gitlab do
     desc "GITLAB | Show information about GitLab and its environment"
     task info: :environment  do
 
-      # check which OS is running
-      os_name = run("lsb_release -irs")
-      os_name ||= if File.readable?('/etc/system-release')
-                    File.read('/etc/system-release')
-                  end
-      os_name ||= if File.readable?('/etc/debian_version')
-                    debian_version = File.read('/etc/debian_version')
-                    "Debian #{debian_version}"
-                  end
-      os_name ||= if File.readable?('/etc/SuSE-release')
-                    File.read('/etc/SuSE-release')
-                  end
-      os_name.try(:squish!)
-
       # check if there is an RVM environment
       rvm_version = run_and_match("rvm --version", /[\d\.]+/).try(:to_s)
       # check Ruby version
