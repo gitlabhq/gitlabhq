@@ -129,11 +129,7 @@ module Gitlab
       end
     end
 
-    def update_project_config(project, conf)
-      update_project_config_anon(project, conf, project.anon_clone)
-    end
-
-    def update_project_config_anon(project, conf, anon_clone)
+    def update_project_config(project, conf, anon_clone = project.anon_clone)
       repo_name = project.path_with_namespace
 
       repo = if conf.has_repo?(repo_name)
