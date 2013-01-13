@@ -18,7 +18,7 @@
             %span.count= current_user.cared_merge_requests.opened.count
         = nav_link(path: 'search#show') do
           = link_to "Search", search_path
-        = nav_link(path: 'help#index') do
+        = nav_link(controller: :help) do
           = link_to "Help", help_path
 
       .content= yield

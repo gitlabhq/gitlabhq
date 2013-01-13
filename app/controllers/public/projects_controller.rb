@@ -7,5 +7,6 @@ class Public::ProjectsController < ApplicationController
 
   def index
     @projects = Project.public
+    @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(20)
   end
 end

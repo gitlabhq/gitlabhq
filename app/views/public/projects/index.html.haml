@@ -12,3 +12,6 @@
         .right
           %span.monospace.tiny
             git clone #{project.http_url_to_repo}
+
+
+= paginate @projects, theme: "admin"
