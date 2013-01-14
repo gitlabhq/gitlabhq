@@ -73,8 +73,8 @@ FactoryGirl.define do
 
     # pick 3 commits "at random" (from bcf03b5d~3 to bcf03b5d)
     trait :with_diffs do
-      target_branch "bcf03b5d~3"
-      source_branch "bcf03b5d"
+      target_branch "master" # pretend bcf03b5d~3
+      source_branch "stable" # pretend bcf03b5d
       st_commits do
         [Commit.new(project.repo.commit('bcf03b5d')),
          Commit.new(project.repo.commit('bcf03b5d~1')),

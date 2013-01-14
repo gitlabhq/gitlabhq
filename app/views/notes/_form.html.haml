@@ -39,6 +39,6 @@
 
       .js-notify-commit-author
         = label_tag :notify_author do
-          = check_box_tag :notify_author, 1 , !@note.for_commit?
+          = check_box_tag :notify_author, 1 , @note.for_commit?
           Commit author
   .clearfix
