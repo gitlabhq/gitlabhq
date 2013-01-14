@@ -20,16 +20,27 @@
       %span.options= render "tree/blob_actions"
     .file_content.blame
       %table
+        - current_line = 1
         - @blame.each do |commit, lines|
-          - commit = Commit.new(commit)
-          - commit = CommitDecorator.decorate(commit)
+          - commit = CommitDecorator.decorate(Commit.new(commit))
           %tr
-            %td.author= commit.author_link avatar: true, size: 16
-            %td.blame_commit
-              &nbsp;
-              %code= link_to commit.short_id, project_commit_path(@project, commit)
-              = link_to_gfm truncate(commit.title, length: 30), project_commit_path(@project, commit), class: "row_title" rescue "--broken encoding"
+            %td.blame-commit
+              %span.commit
+                = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
+                &nbsp;
+                = commit.author_link avatar: true, size: 16
+                &nbsp;
+                = link_to_gfm truncate(commit.title, length: 20), project_commit_path(@project, commit.id), class: "row_title"
+            %td.lines.blame-numbers
+              %pre
+                - if lines.empty?
+                  = current_line
+                  - current_line += 1
+                - else
+                  - lines.each do |line|
+                    = current_line
+                    - current_line += 1
             %td.lines
-              = preserve do
-                %pre
-                  = lines.join("\n")
+              %pre
+                - lines.each do |line|
+                  = line
