@@ -1,20 +1,23 @@
 %h3.page_title
   %span.cgray History for
-  = @wikis.last.title
+  = @wiki_pages.first.title
 %br
 %table
   %thead
     %tr
-      %th #
-      %th last edit
-      %th created by
+      %th Page version
+      %th Last updated
+      %th Updated by
   %tbody
-    - @wikis.each_with_index do |wiki_page, i|
+    - @wiki_pages.each_with_index do |wiki_page, i|
       %tr
-        %td= i + 1
         %td
-          = link_to wiki_page.created_at.to_s(:short), project_wiki_path(@project, wiki_page, old_page_id: wiki_page.id)
+          %strong
+            = link_to project_wiki_path(@project, wiki_page, version_id: wiki_page.id) do
+              Version
+              = @wiki_pages.count - i
+        %td
+          = wiki_page.created_at.to_s(:short)
           (#{time_ago_in_words(wiki_page.created_at)}
           ago)
-        %td= wiki_page.user.name
-
+        %td= link_to_member(@project, wiki_page.user)

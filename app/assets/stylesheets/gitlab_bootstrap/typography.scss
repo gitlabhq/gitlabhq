@@ -81,3 +81,22 @@ a:focus {
 .monospace {
   font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }
+
+/**
+ * Wiki typography
+ *
+ */
+.wiki {
+  font-size: 13px;
+
+  code { padding: 0 4px; }
+  p { font-size: 13px; }
+  h1 { font-size: 32px; line-height: 40px; margin: 10px 0;}
+  h2 { font-size: 26px; line-height: 40px; margin: 10px 0;}
+  h3 { font-size: 22px; line-height: 40px; margin: 10px 0;}
+  h4 { font-size: 18px; line-height: 20px; margin: 10px 0;}
+  h5 { font-size: 14px; line-height: 20px; margin: 10px 0;}
+  h6 { font-size: 12px; line-height: 20px; margin: 10px 0;}
+  .white .highlight pre { background: #f5f5f5; }
+  ul { margin: 0 0 9px 25px !important; }
+}

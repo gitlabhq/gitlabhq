@@ -25,6 +25,8 @@ class Wiki < ActiveRecord::Base
 
   before_update :set_slug
 
+  scope :ordered, order("created_at DESC")
+
   def to_param
     slug
   end

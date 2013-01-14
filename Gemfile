@@ -71,7 +71,6 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "thin", '~> 1.5.0'
 gem "unicorn", "~> 4.4.0"
 
 # Issue tags
@@ -111,7 +110,7 @@ group :assets do
   gem "modernizr",        "2.6.2"
   gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass',   "2.2.1.1"
-  gem "font-awesome-sass-rails", "~> 2.0.0"
+  gem "font-awesome-sass-rails", "~> 3.0.0"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 end
 

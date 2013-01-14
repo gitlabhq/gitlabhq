@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
                   :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
 
-  attr_accessible :namespace_id, :creator_id, as: :admin
+  attr_accessible :namespace_id, :creator_id, :public, as: :admin
 
   attr_accessor :error_code
 
@@ -81,8 +81,21 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
+  scope :public, where(public: true)
 
   class << self
+    def abandoned
+      project_ids = Event.select('max(created_at) as latest_date, project_id').
+        group('project_id').
+        having('latest_date < ?', 6.months.ago).map(&:project_id)
+
+      where(id: project_ids)
+    end
+
+    def with_push
+      includes(:events).where('events.action = ?', Event::Pushed)
+    end
+
     def active
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end

@@ -30,8 +30,17 @@ module EventsHelper
 
     content_tag :div, class: "filter_icon #{inactive}" do
       link_to dashboard_path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
-        image_tag "event_filter_#{key}.png"
+        content_tag :i, nil, class: icon_for_event[key]
       end
     end
+  end
+
+  def icon_for_event
+    {
+      EventFilter.push     => "icon-upload-alt",
+      EventFilter.merged   => "icon-check",
+      EventFilter.comments => "icon-comments",
+      EventFilter.team     => "icon-user",
+    }
   end
 end

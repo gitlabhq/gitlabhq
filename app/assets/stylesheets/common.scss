@@ -371,6 +371,7 @@ li.note {
         font-size: 48px;
         padding: 20px;
         text-align: center;
+        font-weight: normal;
       }
     }
   }
@@ -438,6 +439,19 @@ li.note {
   padding: 10px;
   margin-bottom: 10px;
   background: #FEE;
+  padding-left: 20px;
+
+  &.centered {
+    text-align: center;
+  }
+}
+
+.warning_message {
+  border-left: 4px solid #ed9;
+  color: #b90;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #ffffe6;
   padding-left: 20px;
 
   &.centered {
