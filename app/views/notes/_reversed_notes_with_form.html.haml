@@ -1,11 +1,12 @@
+.js-main-target-form
 - if can? current_user, :write_note, @project
-  = render "notes/common_form"
+  = render "notes/form"
 
-%ul.reversed#new-notes-list
-%ul.reversed#notes-list
-.notes-status
+%ul#new-notes-list.reversed.notes
+%ul#notes-list.reversed.notes
+.notes-busy.js-notes-busy
 
 :javascript
   $(function(){
-    NoteList.init("#{tid}", "#{tt}", "#{project_notes_path(@project)}");
+    NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");
   });

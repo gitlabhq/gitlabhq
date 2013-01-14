@@ -13,11 +13,17 @@ class CommitController < ProjectResourceController
     @commit = result[:commit]
     git_not_found! unless @commit
 
-    @suppress_diff    = result[:suppress_diff]
-    @note             = result[:note]
-    @line_notes       = result[:line_notes]
-    @notes_count      = result[:notes_count]
-    @comments_allowed = true
+    @suppress_diff = result[:suppress_diff]
+
+    @note        = result[:note]
+    @line_notes  = result[:line_notes]
+    @notes_count = result[:notes_count]
+    @target_type = :commit
+    @target_id   = @commit.id
+
+    @comments_allowed = @reply_allowed = true
+    @comments_target  = { noteable_type: 'Commit',
+                          commit_id: @commit.id }
 
     respond_to do |format|
       format.html do
