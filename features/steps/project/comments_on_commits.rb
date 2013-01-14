@@ -1,6 +1,6 @@
-class ProjectCommentCommit < Spinach::FeatureSteps
+class CommentsOnCommits < Spinach::FeatureSteps
   include SharedAuthentication
-  include SharedProject
   include SharedNote
   include SharedPaths
+  include SharedProject
 end
