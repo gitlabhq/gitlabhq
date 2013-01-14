@@ -21,15 +21,16 @@ class GroupsController < ApplicationController
 
   # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests.opened
-    @merge_requests = @merge_requests.of_group(@group).recent.page(params[:page]).per(20)
+    @merge_requests = current_user.cared_merge_requests.of_group(@group)
+    @merge_requests = FilterContext.new(@merge_requests, params).execute
+    @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
-    @user   = current_user
-    @issues = current_user.assigned_issues.opened
-    @issues = @issues.of_group(@group).recent.page(params[:page]).per(20)
+    @issues = current_user.assigned_issues.of_group(@group)
+    @issues = FilterContext.new(@issues, params).execute
+    @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
     respond_to do |format|
@@ -44,6 +45,7 @@ class GroupsController < ApplicationController
     @projects       = result[:projects]
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
+    @wiki_pages     = result[:wiki_pages]
   end
 
   def people
@@ -53,7 +55,14 @@ class GroupsController < ApplicationController
 
     if @project
       @team_member = @project.users_projects.new
+    else
+      @team_member = UsersProject.new
     end
+  end
+
+  def team_members
+    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
+    redirect_to people_group_path(@group), notice: 'Users was successfully added.'
   end
 
   protected
@@ -63,7 +72,7 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= group.projects.authorized_for(current_user).sorted_by_activity
+    @projects ||= current_user.authorized_projects.where(namespace_id: group.id).sorted_by_activity
   end
 
   def project_ids

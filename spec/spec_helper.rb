@@ -1,7 +1,5 @@
-unless ENV['CI']
-  require 'simplecov'
-  SimpleCov.start 'rails'
-end
+require 'simplecov' unless ENV['CI']
+
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= 'test'
@@ -11,6 +9,7 @@ require 'capybara/rails'
 require 'capybara/rspec'
 require 'webmock/rspec'
 require 'email_spec'
+require 'sidekiq/testing/inline'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -37,13 +36,10 @@ RSpec.configure do |config|
   config.before do
     stub_gitolite!
 
-    # !!! Observers disabled by default in tests
-    ActiveRecord::Base.observers.disable(:all)
-    # ActiveRecord::Base.observers.enable(:all)
-
     # Use tmp dir for FS manipulations
-    Gitlab.config.gitolite.stub(repos_path: Rails.root.join('tmp', 'test-git-base-path'))
-    FileUtils.rm_rf Gitlab.config.gitolite.repos_path
-    FileUtils.mkdir_p Gitlab.config.gitolite.repos_path
+    temp_repos_path = Rails.root.join('tmp', 'test-git-base-path')
+    Gitlab.config.gitolite.stub(repos_path: temp_repos_path)
+    FileUtils.rm_rf temp_repos_path
+    FileUtils.mkdir_p temp_repos_path
   end
 end

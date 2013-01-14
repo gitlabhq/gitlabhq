@@ -7,7 +7,7 @@ describe MergeRequestsController do
 
   before do
     sign_in(user)
-    project.add_access(user, :read, :admin)
+    project.team << [user, :master]
     MergeRequestsController.any_instance.stub(validates_merge_request: true)
   end
 

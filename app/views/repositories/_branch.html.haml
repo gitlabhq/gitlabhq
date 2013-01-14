@@ -8,7 +8,7 @@
       - else
         %i.icon-unlock
       %strong= truncate(branch.name, length: 60)
-      - if branch.name == @project.root_ref
+      - if branch.name == @repository.root_ref
         %span.label default
   %td
     = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
@@ -22,6 +22,6 @@
   %td
     - if can? current_user, :download_code, @project
       = link_to archive_project_repository_path(@project, ref: branch.name) do
-        %i.icon-download
+        %i.icon-download-alt
         Download
 

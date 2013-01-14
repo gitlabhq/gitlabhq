@@ -9,7 +9,7 @@ FactoryGirl.define do
 
   sequence(:url) { Faker::Internet.uri('http') }
 
-  factory :user, aliases: [:author, :assignee, :owner] do
+  factory :user, aliases: [:author, :assignee, :owner, :creator] do
     email { Faker::Internet.email }
     name
     username { Faker::Internet.user_name }
@@ -26,7 +26,7 @@ FactoryGirl.define do
   factory :project do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    owner
+    creator
   end
 
   factory :group do
@@ -37,7 +37,7 @@ FactoryGirl.define do
   end
 
   factory :namespace do
-    sequence(:name) { |n| "group#{n}" }
+    sequence(:name) { |n| "namespace#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     owner
   end

@@ -39,13 +39,4 @@ describe ProtectedBranch do
       branch.destroy
     end
   end
-
-  describe '#commit' do
-    let(:branch) { create(:protected_branch) }
-
-    it 'commits itself to its project' do
-      branch.project.should_receive(:commit).with(branch.name)
-      branch.commit
-    end
-  end
 end

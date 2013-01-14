@@ -8,16 +8,12 @@
 
     .groups_box,
     .projects_box {
-      > h5 {
-        color: $style_color;
-        font-size: 16px;
-        text-shadow: 0 1px 1px #fff;
-        padding: 2px 10px;
-        line-height: 32px;
-        font-size: 14px;
+      > .title {
+        padding: 2px 15px;
       }
       .nav-projects-tabs li { padding: 0; }
       .well-list {
+        li { padding: 15px; }
         .arrow {
           float: right;
           padding: 10px;
@@ -109,7 +105,7 @@ ul.nav.nav-projects-tabs {
 
   li {
     a {
-      padding: 4px 20px;
+      padding: 6px 25px;
       margin-top: 2px;
       border-color: #DDD;
       background-color: #EEE;

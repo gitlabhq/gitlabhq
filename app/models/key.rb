@@ -73,7 +73,7 @@ class Key < ActiveRecord::Base
     if is_deploy_key
       [project]
     else
-      user.projects
+      user.authorized_projects
     end
   end
 

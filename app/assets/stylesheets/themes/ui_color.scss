@@ -17,6 +17,15 @@
     &.navbar-gitlab {
       .navbar-inner {
         background: #657;
+        .app_logo {
+          &:hover {
+            background-color: #6A5A7A;
+          }
+        }
+        .separator {
+          background: #546;
+          border-left: 1px solid #706080;
+        }
       }
     }
   }

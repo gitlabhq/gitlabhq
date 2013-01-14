@@ -33,15 +33,14 @@ describe MergeRequest do
   end
 
   describe 'modules' do
-    it { should include_module(IssueCommonality) }
-    it { should include_module(Votes) }
+    it { should include_module(Issuable) }
   end
 
   describe "#mr_and_commit_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do
-      merge_request.stub(:commits) { [merge_request.project.commit] }
+      merge_request.stub(:commits) { [merge_request.project.repository.commit] }
       create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit')
       create(:note, noteable: merge_request)
     end

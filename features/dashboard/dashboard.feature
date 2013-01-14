@@ -5,6 +5,7 @@ Feature: Dashboard
     And project "Shop" has push event
     And I visit dashboard page
 
+  @javascript
   Scenario: I should see projects list
     Then I should see "New Project" link
     Then I should see "Shop" project link
@@ -26,11 +27,13 @@ Feature: Dashboard
     And I click "Create Merge Request" link
     Then I see prefilled new Merge Request page
 
+  @javascript
   Scenario: I should see User joined Project event
     Given user with name "John Doe" joined project "Shop"
     When I visit dashboard page
     Then I should see "John Doe joined project at Shop" event
 
+  @javascript
   Scenario: I should see User left Project event
     Given user with name "John Doe" joined project "Shop"
     And user with name "John Doe" left project "Shop"

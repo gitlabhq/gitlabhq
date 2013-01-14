@@ -7,6 +7,10 @@
     color: #333;
   }
 
+  &.btn-white {
+    background: #FFF;
+  }
+
   &.primary {
     background: #2a79A3;
     @include linear-gradient(#47A7b7, #2585b5);

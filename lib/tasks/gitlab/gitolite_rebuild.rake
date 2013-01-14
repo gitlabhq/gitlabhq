@@ -1,24 +1,27 @@
 namespace :gitlab do
   namespace :gitolite do
-    desc "GITLAB | Rebuild each project at gitolite config"
+    desc "GITLAB | Rebuild each project in Gitolite config"
     task :update_repos => :environment do
-      puts "Starting Projects"
+      warn_user_is_not_gitlab
+
+      puts "Rebuilding projects ... "
       Project.find_each(:batch_size => 100) do |project|
-        puts "\n=== #{project.name}"
+        puts "#{project.name_with_namespace.yellow} ... "
         project.update_repository
-        puts
+        puts "... #{"done".green}"
       end
-      puts "Done with projects"
     end
 
-    desc "GITLAB | Rebuild each key at gitolite config"
+    desc "GITLAB | Rebuild each user key in Gitolite config"
     task :update_keys => :environment  do
-      puts "Starting Key"
+      warn_user_is_not_gitlab
+
+      puts "Rebuilding keys ... "
       Key.find_each(:batch_size => 100) do |key|
+        puts "#{key.identifier.yellow} ... "
         Gitlab::Gitolite.new.set_key(key.identifier, key.key, key.projects)
-        print '.'
+        puts "... #{"done".green}"
       end
-      puts "Done with keys"
     end
   end
 end

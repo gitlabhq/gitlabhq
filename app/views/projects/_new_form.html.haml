@@ -7,7 +7,7 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-      = f.submit 'Create project', class: "btn primary project-submit"
+      = f.submit 'Create project', class: "btn success project-submit"
 
   - if current_user.several_namespaces?
     .clearfix

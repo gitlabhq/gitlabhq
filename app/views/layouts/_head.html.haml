@@ -1,8 +1,8 @@
 %head
   %meta{charset: "utf-8"}
   %title
+    = "#{title} | " if defined?(title)
     GitLab
-    = " > #{title}" if defined?(title)
   = favicon_link_tag 'favicon.ico'
   = stylesheet_link_tag    "application"
   = javascript_include_tag "application"

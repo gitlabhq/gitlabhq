@@ -1,9 +1,13 @@
+require 'simplecov' unless ENV['CI']
+
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 
 require 'rspec'
 require 'database_cleaner'
 require 'spinach/capybara'
+require 'sidekiq/testing/inline'
+
 
 %w(gitolite_stub stubbed_repository valid_commit).each do |f|
   require Rails.root.join('spec', 'support', f)

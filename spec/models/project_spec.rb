@@ -9,7 +9,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  private_flag           :boolean          default(TRUE), not null
-#  owner_id               :integer
+#  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
@@ -24,7 +24,7 @@ describe Project do
   describe "Associations" do
     it { should belong_to(:group) }
     it { should belong_to(:namespace) }
-    it { should belong_to(:owner).class_name('User') }
+    it { should belong_to(:creator).class_name('User') }
     it { should have_many(:users) }
     it { should have_many(:events).dependent(:destroy) }
     it { should have_many(:merge_requests).dependent(:destroy) }
@@ -41,7 +41,7 @@ describe Project do
 
   describe "Mass assignment" do
     it { should_not allow_mass_assignment_of(:namespace_id) }
-    it { should_not allow_mass_assignment_of(:owner_id) }
+    it { should_not allow_mass_assignment_of(:creator_id) }
     it { should_not allow_mass_assignment_of(:private_flag) }
   end
 
@@ -55,20 +55,15 @@ describe Project do
     it { should validate_presence_of(:path) }
     it { should validate_uniqueness_of(:path) }
     it { should ensure_length_of(:path).is_within(0..255) }
-    # TODO: Formats
-
     it { should ensure_length_of(:description).is_within(0..2000) }
-
-    # TODO: Formats
-
-    it { should validate_presence_of(:owner) }
+    it { should validate_presence_of(:creator) }
     it { should ensure_inclusion_of(:issues_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
 
     it "should not allow new projects beyond user limits" do
-      project.stub(:owner).and_return(double(can_create_project?: false, projects_limit: 1))
+      project.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 1))
       project.should_not be_valid
       project.errors[:base].first.should match(/Your own projects limit is 1/)
     end
@@ -80,80 +75,26 @@ describe Project do
   end
 
   describe "Respond to" do
-    it { should respond_to(:public?) }
-    it { should respond_to(:private?) }
     it { should respond_to(:url_to_repo) }
-    it { should respond_to(:path_to_repo) }
-    it { should respond_to(:valid_repo?) }
     it { should respond_to(:repo_exists?) }
-
-    # Repository Role
-    it { should respond_to(:tree) }
-    it { should respond_to(:root_ref) }
-    it { should respond_to(:repo) }
-    it { should respond_to(:tags) }
-    it { should respond_to(:commit) }
-    it { should respond_to(:commits) }
-    it { should respond_to(:commits_between) }
-    it { should respond_to(:commits_with_refs) }
-    it { should respond_to(:commits_since) }
-    it { should respond_to(:commits_between) }
     it { should respond_to(:satellite) }
     it { should respond_to(:update_repository) }
     it { should respond_to(:destroy_repository) }
-    it { should respond_to(:archive_repo) }
-
-    # Authority Role
-    it { should respond_to(:add_access) }
-    it { should respond_to(:reset_access) }
-    it { should respond_to(:repository_writers) }
-    it { should respond_to(:repository_masters) }
-    it { should respond_to(:repository_readers) }
-    it { should respond_to(:allow_read_for?) }
-    it { should respond_to(:guest_access_for?) }
-    it { should respond_to(:report_access_for?) }
-    it { should respond_to(:dev_access_for?) }
-    it { should respond_to(:master_access_for?) }
-
-    # Team Role
-    it { should respond_to(:team_member_by_name_or_email) }
-    it { should respond_to(:team_member_by_id) }
-    it { should respond_to(:add_user_to_team) }
-    it { should respond_to(:add_users_to_team) }
-    it { should respond_to(:add_user_id_to_team) }
-    it { should respond_to(:add_users_ids_to_team) }
-
-    # Project Push Role
     it { should respond_to(:observe_push) }
     it { should respond_to(:update_merge_requests) }
     it { should respond_to(:execute_hooks) }
     it { should respond_to(:post_receive_data) }
     it { should respond_to(:trigger_post_receive) }
-
-    # Namespaced Project Role
     it { should respond_to(:transfer) }
     it { should respond_to(:name_with_namespace) }
     it { should respond_to(:namespace_owner) }
-    it { should respond_to(:chief) }
+    it { should respond_to(:owner) }
     it { should respond_to(:path_with_namespace) }
-  end
-
-  describe 'modules' do
-    it { should include_module(Repository) }
-    it { should include_module(PushObserver) }
-    it { should include_module(Authority) }
-    it { should include_module(Team) }
-    it { should include_module(NamespacedProject) }
   end
 
   it "should return valid url to repo" do
     project = Project.new(path: "somewhere")
     project.url_to_repo.should == Gitlab.config.gitolite.ssh_path_prefix + "somewhere.git"
-  end
-
-  it "should return path to repo" do
-    project = Project.new(path: "somewhere")
-    project.path_to_repo.should == Rails.root.join("tmp", "repositories", "somewhere")
   end
 
   it "returns the full web URL for this repo" do
@@ -209,6 +150,89 @@ describe Project do
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a", "refs/heads/master", @key.user)
       @merge_request.reload
       @merge_request.last_commit.id.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+    end
+  end
+
+  describe :create_by_user do
+    before do
+      @user = create :user
+      @opts = {
+        name: "GitLab"
+      }
+    end
+
+    context 'user namespace' do
+      before do
+        @project = Project.create_by_user(@opts, @user)
+      end
+
+      it { @project.should be_valid }
+      it { @project.owner.should == @user }
+      it { @project.namespace.should == @user.namespace }
+    end
+
+    context 'user namespace' do
+      before do
+        @group = create :group, owner: @user
+        @opts.merge!(namespace_id: @group.id)
+        @project = Project.create_by_user(@opts, @user)
+      end
+
+      it { @project.should be_valid }
+      it { @project.owner.should == @user }
+      it { @project.namespace.should == @group }
+    end
+  end
+
+  describe :find_with_namespace do
+    context 'with namespace' do
+      before do
+        @group = create :group, name: 'gitlab'
+        @project = create(:project, name: 'gitlab-ci', namespace: @group)
+      end
+
+      it { Project.find_with_namespace('gitlab/gitlab-ci').should == @project }
+      it { Project.find_with_namespace('gitlab-ci').should be_nil }
+    end
+
+    context 'w/o namespace' do
+      before do
+        @project = create(:project, name: 'gitlab-ci')
+      end
+
+      it { Project.find_with_namespace('gitlab-ci').should == @project }
+      it { Project.find_with_namespace('gitlab/gitlab-ci').should be_nil }
+    end
+  end
+
+  describe :to_param do
+    context 'with namespace' do
+      before do
+        @group = create :group, name: 'gitlab'
+        @project = create(:project, name: 'gitlab-ci', namespace: @group)
+      end
+
+      it { @project.to_param.should == "gitlab/gitlab-ci" }
+    end
+
+    context 'w/o namespace' do
+      before do
+        @project = create(:project, name: 'gitlab-ci')
+      end
+
+      it { @project.to_param.should == "gitlab-ci" }
+    end
+  end
+
+  describe :repository do
+    let(:project) { create(:project) }
+
+    it "should return valid repo" do
+      project.repository.should be_kind_of(Repository)
+    end
+
+    it "should return nil" do
+      Project.new(path: "empty").repository.should be_nil
     end
   end
 end

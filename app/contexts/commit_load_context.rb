@@ -9,16 +9,16 @@ class CommitLoadContext < BaseContext
       status: :ok
     }
 
-    commit = project.commit(params[:id])
+    commit = project.repository.commit(params[:id])
 
     if commit
       commit = CommitDecorator.decorate(commit)
-      line_notes = project.commit_line_notes(commit)
+      line_notes = project.notes.for_commit_id(commit.id).inline
 
       result[:commit] = commit
       result[:note] = project.build_commit_note(commit)
       result[:line_notes] = line_notes
-      result[:notes_count] = line_notes.count + project.commit_notes(commit).count
+      result[:notes_count] = project.notes.for_commit_id(commit.id).count
 
       begin
         result[:suppress_diff] = true if commit.diffs.size > Commit::DIFF_SAFE_SIZE && !params[:force_show_diff]

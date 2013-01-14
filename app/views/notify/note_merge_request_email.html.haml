@@ -1,23 +1,27 @@
 %td.content{align: "left", style: "font-family: Helvetica, Arial, sans-serif; padding: 20px 0 0;", valign: "top", width: "600"}
   %table{border: "0", cellpadding: "0", cellspacing: "0", style: "color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;", width: "600"}
     %tr
-      %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
-      %td{align: "left", style: "padding: 20px 0 0;"}
-        %h2{style: "color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; "}
-          = "New comment for Merge Request !#{@merge_request.id}"
-          = link_to_gfm truncate(@merge_request.title, length: 16), project_merge_request_url(@merge_request.project, @merge_request, anchor: "note_#{@note.id}")
-      %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
+      %td{width: "21"}
+      %td
+        %h2{style: "color:#646464; font-weight: normal;"}
+          - if @note.for_diff_line?
+            = link_to "New comment on diff", diffs_project_merge_request_url(@merge_request.project, @merge_request, anchor: "note_#{@note.id}")
+          - else
+            = link_to "New comment", project_merge_request_url(@merge_request.project, @merge_request, anchor: "note_#{@note.id}")
+          for Merge Request ##{@merge_request.id}
+          %cite "#{truncate(@merge_request.title, length: 20)}"
+      %td{width: "21"}
     %tr
-      %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
-      %td{style: "padding: 15px 0 15px;", valign: "top"}
-        %p{style: "color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif; "}
-          %a{href: "#", style: "color: #0eb6ce; text-decoration: none;"} #{@note.author_name}
+      %td{width: "21"}
+      %td
+        %p
+          %strong #{@note.author_name}
           left next message:
         %br
           %table{border: "0", cellpadding: "0", cellspacing: "0", width: "558"}
             %tr
               %td{valign: "top"}
-                %div{ style: "background:#f5f5f5; padding:20px;border:1px solid #ddd" }
+                %div{ style: "background:#f5f5f5; padding:10px 20px;border:1px solid #ddd" }
                   = markdown(@note.note)
-      %td{style: "font-size: 1px; line-height: 1px;", width: "21"}
+      %td{width: "21"}
 

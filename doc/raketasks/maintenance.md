@@ -7,7 +7,7 @@ Runs the following rake tasks:
 * gitlab:app:enable_automerge (see "Features")
 
 ```
-bundle exec rake gitlab:app:setup
+bundle exec rake gitlab:app:setup RAILS_ENV=production
 ```
 
 
@@ -17,7 +17,7 @@ This command gathers information about your GitLab installation and the System
 it runs on. These may be useful when asking for help or reporting issues.
 
 ```
-bundle exec rake gitlab:env:info
+bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
 Example output:
@@ -68,7 +68,7 @@ It will check that each component was setup according to the installation guide 
 You may also have a look at our [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide).
 
 ```
-bundle exec rake gitlab:check
+bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 Example output:
@@ -145,7 +145,7 @@ This will create satellite repos for all your projects.
 If necessary, remove the `tmp/repo_satellites` directory and rerun the command below.
 
 ```
-bundle exec rake gitlab:satellites:create
+bundle exec rake gitlab:satellites:create RAILS_ENV=production
 ```
 
 
@@ -154,7 +154,7 @@ bundle exec rake gitlab:satellites:create
 This will send all users ssh public keys to gitolite and grant them access (based on their permission) to their projects.
 
 ```
-bundle exec rake gitlab:gitolite:update_keys
+bundle exec rake gitlab:gitolite:update_keys RAILS_ENV=production
 ```
 
 
@@ -163,7 +163,7 @@ bundle exec rake gitlab:gitolite:update_keys
 This makes sure that all projects are present in gitolite and can be accessed.
 
 ```
-bundle exec rake gitlab:gitolite:update_repos
+bundle exec rake gitlab:gitolite:update_repos RAILS_ENV=production
 ```
 
 ### Import bare repositories into GitLab project instance

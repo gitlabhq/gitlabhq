@@ -8,8 +8,7 @@
     = image_tag gravatar_icon(user.email, 60), class: "borders"
   %h3.page_title
     = user.name
-    %small
-      = user.email
+    %small (@#{user.username})
 
   %hr
   .back_link

@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Gitlab::Application.routes.draw do
   #
   # Search
@@ -8,9 +10,10 @@ Gitlab::Application.routes.draw do
   require 'api'
   mount Gitlab::API => '/api'
 
-  # Optionally, enable Resque here
-  require 'resque/server'
-  mount Resque::Server => '/info/resque', as: 'resque'
+  constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
+  constraints constraint do
+    mount Sidekiq::Web, at: "/admin/sidekiq", as: :sidekiq
+  end
 
   # Enable Grack support
   mount Grack::Bundle.new({
@@ -18,7 +21,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.gitolite.repos_path,
     upload_pack:  Gitlab.config.gitolite.upload_pack,
     receive_pack: Gitlab.config.gitolite.receive_pack
-  }), at: '/:path', constraints: { path: /[-\/\w\.-]+\.git/ }
+  }), at: '/', constraints: lambda { |request| /[-\/\w\.-]+\.git\//.match(request.path_info) }
 
   #
   # Help
@@ -47,6 +50,7 @@ Gitlab::Application.routes.draw do
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
         put :project_update
+        put :project_teams_update
         delete :remove_project
       end
     end
@@ -102,6 +106,7 @@ Gitlab::Application.routes.draw do
       get :merge_requests
       get :search
       get :people
+      post :team_members
     end
   end
 
@@ -112,12 +117,21 @@ Gitlab::Application.routes.draw do
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
       get "graph"
       get "files"
     end
+
+    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
+    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+    resources :commits, only: [:show], constraints: {id: /.+/}
+    resources :compare, only: [:index, :create]
+    resources :blame,   only: [:show], constraints: {id: /.+/}
+    resources :blob,    only: [:show], constraints: {id: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare",
+                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
@@ -147,7 +161,7 @@ Gitlab::Application.routes.draw do
     resources :deploy_keys
     resources :protected_branches, only: [:index, :create, :destroy]
 
-    resources :refs, only: [], path: "/" do
+    resources :refs, only: [] do
       collection do
         get "switch"
       end
@@ -190,14 +204,6 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-    resources :commits, only: [:show], constraints: {id: /.+/}
-    resources :compare, only: [:index, :create]
-    resources :blame,   only: [:show], constraints: {id: /.+/}
-    resources :blob,    only: [:show], constraints: {id: /.+/}
-    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
-    match "/compare/:from...:to" => "compare#show", as: "compare",
-                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones, except: [:destroy]

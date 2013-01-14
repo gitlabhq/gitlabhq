@@ -1,67 +1,116 @@
 namespace :gitlab do
   desc "GITLAB | Enable usernames and namespaces for user projects"
   task enable_namespaces: :environment do
-    print "\nUsernames for users:".yellow
+    warn_user_is_not_gitlab
 
+    migrate_user_namespaces
+    migrate_groups
+    migrate_projects
+
+    puts "Rebuild Gitolite ... "
+    gitolite = Gitlab::Gitolite.new
+    gitolite.update_repositories(Project.where('namespace_id IS NOT NULL'))
+    puts "... #{"done".green}"
+  end
+
+  def migrate_user_namespaces
+    puts "\nGenerate usernames for users without one: ".blue
     User.find_each(batch_size: 500) do |user|
-      next if user.namespace
-
-      User.transaction do
-        username = user.email.match(/^[^@]*/)[0]
-        if user.update_attributes!(username: username)
-          print '.'.green
-        else
-          print 'F'.red
-        end
+      if user.namespace
+        print '-'.cyan
+        next
       end
-    end
 
-    print "\n\nDirs for groups:".yellow
+      username = if user.username.present?
+                   # if user already has username filled
+                   user.username
+                 else
+                   build_username(user)
+                 end
 
-    Group.find_each(batch_size: 500) do |group|
-      if group.ensure_dir_exist
-        print '.'.green
-      else
+      begin
+        User.transaction do
+          user.update_attributes!(username: username)
+          print '.'.green
+        end
+      rescue
         print 'F'.red
       end
     end
+    puts "\nDone"
+  end
 
-    print "\n\nMove projects from groups under groups dirs:".yellow
+  def build_username(user)
+    username = nil
+
+    # generate username
+    username = user.email.match(/^[^@]*/)[0]
+    username.gsub!("+", ".")
+
+    # return username if no mathes
+    return username unless User.find_by_username(username)
+
+    # look for same username
+    (1..10).each do |i|
+      suffixed_username = "#{username}#{i}"
+
+      return suffixed_username unless User.find_by_username(suffixed_username)
+    end
+  end
+
+  def migrate_groups
+    puts "\nCreate directories for groups: ".blue
+
+    Group.find_each(batch_size: 500) do |group|
+      begin
+        if group.dir_exists?
+          print '-'.cyan
+        else
+          if group.ensure_dir_exist
+            print '.'.green
+          else
+            print 'F'.red
+          end
+        end
+      rescue
+        print 'F'.red
+      end
+    end
+    puts "\nDone"
+  end
+
+  def migrate_projects
     git_path = Gitlab.config.gitolite.repos_path
-
+    puts "\nMove projects in groups into respective directories ... ".blue
     Project.where('namespace_id IS NOT NULL').find_each(batch_size: 500) do |project|
       next unless project.group
 
       group = project.group
 
-      puts "\n"
-      print " * #{project.name}: "
+      print "#{project.name_with_namespace.yellow} ... "
 
       new_path = File.join(git_path, project.path_with_namespace + '.git')
 
       if File.exists?(new_path)
-        print "ok. already at #{new_path}".cyan
+        puts "already at #{new_path}".green
         next
       end
 
       old_path = File.join(git_path, project.path + '.git')
 
       unless File.exists?(old_path)
-        print "missing. not found at #{old_path}".red
+        puts "couldn't find it at #{old_path}".red
         next
       end
 
       begin
         Gitlab::ProjectMover.new(project, '', group.path).execute
-        print "ok. Moved to #{new_path}".green
+        puts "moved to #{new_path}".green
       rescue
-        print "Failed moving to #{new_path}".red
+        puts "failed moving to #{new_path}".red
       end
     end
 
-    print "\n\nRebuild gitolite:".yellow
-    gitolite = Gitlab::Gitolite.new
-    gitolite.update_repositories(Project.where('namespace_id IS NOT NULL'))
-    puts "\n"
+    puts "\nDone"
   end
 end

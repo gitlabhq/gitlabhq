@@ -106,8 +106,8 @@
         %td= link_to group.name, admin_group_path(group)
 
 
-- if @admin_user.projects.present?
-  %h5 Projects:
+- if @admin_user.personal_projects.present?
+  %h5 Personal Projects:
   %br
 
   %table.zebra-striped
@@ -118,7 +118,7 @@
         %th
         %th
 
-    - @admin_user.users_projects.each do |tm|
+    - @admin_user.tm_in_personal_projects.each do |tm|
       - project = tm.project
       %tr
         %td= link_to project.name_with_namespace, admin_project_path(project)

@@ -19,8 +19,10 @@ config/gitlab.yml
 config/database.yml
 config/initializers/omniauth.rb
 config/unicorn.rb
+config/resque.yml
 db/data.yml
 .idea
 .DS_Store
 .chef
 vendor/bundle/*
+rails_best_practices_output.html

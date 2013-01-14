@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.9"
+gem "rails", "3.2.11"
 
 # Supported DBs
 gem "mysql2", group: :mysql
@@ -23,10 +23,14 @@ gem 'omniauth-github'
 
 # GITLAB patched libs
 gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'
-gem "omniauth-ldap", git: "https://github.com/gitlabhq/omniauth-ldap.git",  ref: 'f038dd852d7bd473a557e385d5d7c2fd5dc1dc2e'
-gem 'yaml_db',       git: "https://github.com/gitlabhq/yaml_db.git",        ref: '98e9a5dca43e3fedd3268c76a73af40d1bdf1dfd'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
 gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
+
+# LDAP Auth
+gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
+
+# Dump db to yml file. Mostly used to migrate from sqlite to mysql
+gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
 
 # Gitolite client (for work with gitolite-admin repo)
 gem "gitolite", '1.1.0'
@@ -77,8 +81,9 @@ gem "acts-as-taggable-on", "2.3.3"
 gem "draper", "~> 0.18.0"
 
 # Background jobs
-gem "resque", "~> 1.23.0"
-gem 'resque_mailer'
+gem 'slim'
+gem 'sinatra', :require => nil
+gem 'sidekiq', '2.6.4'
 
 # HTTP requests
 gem "httparty"
@@ -104,7 +109,7 @@ group :assets do
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
-  gem "raphael-rails",    "1.5.2"
+  gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass',   "2.2.1.1"
   gem "font-awesome-sass-rails", "~> 2.0.0"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
@@ -115,6 +120,14 @@ group :development do
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler'
+  # Better errors handler
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
+  gem 'rails_best_practices'
+
+  # Docs generator
+  gem "sdoc"
 end
 
 group :development, :test do
@@ -145,7 +158,6 @@ group :test do
   gem "simplecov", require: false
   gem "shoulda-matchers", "1.3.0"
   gem 'email_spec'
-  gem 'resque_spec'
   gem "webmock"
   gem 'test_after_commit'
 end

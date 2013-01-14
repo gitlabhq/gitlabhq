@@ -33,6 +33,9 @@ module ExtractsPath
   #   extract_ref("v2.0.0/README.md")
   #   # => ['v2.0.0', 'README.md']
   #
+  #   extract_ref('/gitlab/vagrant/tree/master/app/models/project.rb')
+  #   # => ['master', 'app/models/project.rb']
+  #
   #   extract_ref('issues/1234/app/models/project.rb')
   #   # => ['issues/1234', 'app/models/project.rb']
   #
@@ -47,6 +50,13 @@ module ExtractsPath
 
     return pair unless @project
 
+    # Remove project, actions and all other staff from path
+    input.gsub!(/^\/#{Regexp.escape(@project.path_with_namespace)}/, "")
+    input.gsub!(/^\/(tree|commits|blame|blob|refs)\//, "") # remove actions
+    input.gsub!(/\?.*$/, "") # remove stamps suffix
+    input.gsub!(/.atom$/, "") # remove rss feed
+    input.gsub!(/\/edit$/, "") # remove edit route part
+
     if input.match(/^([[:alnum:]]{40})(.+)/)
       # If the ref appears to be a SHA, we're done, just split the string
       pair = $~.captures
@@ -58,7 +68,7 @@ module ExtractsPath
       id = input
       id += '/' unless id.ends_with?('/')
 
-      valid_refs = @project.ref_names
+      valid_refs = @project.repository.ref_names
       valid_refs.select! { |v| id.start_with?("#{v}/") }
 
       if valid_refs.length != 1
@@ -98,13 +108,15 @@ module ExtractsPath
       request.format = :atom
     end
 
-    @ref, @path = extract_ref(params[:id])
+    path = CGI::unescape(request.fullpath.dup)
+
+    @ref, @path = extract_ref(path)
 
     @id = File.join(@ref, @path)
 
-    @commit = CommitDecorator.decorate(@project.commit(@ref))
+    @commit = CommitDecorator.decorate(@project.repository.commit(@ref))
 
-    @tree = Tree.new(@commit.tree, @project, @ref, @path)
+    @tree = Tree.new(@commit.tree, @ref, @path)
     @tree = TreeDecorator.new(@tree)
 
     raise InvalidPathError if @tree.invalid?

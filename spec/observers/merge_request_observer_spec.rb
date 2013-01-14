@@ -21,9 +21,7 @@ describe MergeRequestObserver do
     end
 
     it 'sends an email to the assignee' do
-      Notify.should_receive(:new_merge_request_email).with(mr.id).
-        and_return(double(deliver: true))
-
+      Notify.should_receive(:new_merge_request_email).with(mr.id)
       subject.after_create(mr)
     end
 
@@ -158,8 +156,7 @@ describe MergeRequestObserver do
     end
 
     def it_sends_a_reassigned_email_to(recipient)
-      Notify.should_receive(:reassigned_merge_request_email).with(recipient, mr.id, previous_assignee.id).
-        and_return(double(deliver: true))
+      Notify.should_receive(:reassigned_merge_request_email).with(recipient, mr.id, previous_assignee.id)
     end
 
     def it_does_not_send_a_reassigned_email_to(recipient)

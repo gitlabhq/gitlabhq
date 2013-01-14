@@ -23,53 +23,40 @@ describe SystemHook do
     end
 
     it "project_create hook" do
-      with_resque do
-        project = create(:project)
-      end
+      project = create(:project)
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_create/).once
     end
 
     it "project_destroy hook" do
       project = create(:project)
-      with_resque do
-        project.destroy
-      end
+      project.destroy
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_destroy/).once
     end
 
     it "user_create hook" do
-      with_resque do
-        create(:user)
-      end
+      create(:user)
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_create/).once
     end
 
     it "user_destroy hook" do
       user = create(:user)
-      with_resque do
-        user.destroy
-      end
+      user.destroy
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_destroy/).once
     end
 
     it "project_create hook" do
       user = create(:user)
       project = create(:project)
-      with_resque do
-        project.add_access(user, :admin)
-      end
+      project.team << [user, :master]
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_add_to_team/).once
     end
 
     it "project_destroy hook" do
       user = create(:user)
       project = create(:project)
-      project.add_access(user, :admin)
-      with_resque do
-        project.users_projects.clear
-      end
+      project.team << [user, :master]
+      project.users_projects.clear
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_remove_from_team/).once
     end
   end
-
 end

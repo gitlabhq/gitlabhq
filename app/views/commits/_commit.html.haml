@@ -14,8 +14,8 @@
       &nbsp;
 
     %span.notes_count
-      - notes = @project.commit_notes(commit) + @project.commit_line_notes(commit)
+      - notes = @project.notes.for_commit_id(commit.id)
       - if notes.any?
-        %span.btn.small.disabled.grouped
+        %span.btn.disabled.grouped
           %i.icon-comment
           = notes.count

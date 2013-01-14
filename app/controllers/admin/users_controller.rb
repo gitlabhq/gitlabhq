@@ -3,13 +3,13 @@ class Admin::UsersController < AdminController
     @admin_users = User.scoped
     @admin_users = @admin_users.filter(params[:filter])
     @admin_users = @admin_users.search(params[:name]) if params[:name].present?
-    @admin_users = @admin_users.order("name ASC").page(params[:page])
+    @admin_users = @admin_users.alphabetically.page(params[:page])
   end
 
   def show
     @admin_user = User.find(params[:id])
 
-    @projects = if @admin_user.projects.empty?
+    @projects = if @admin_user.authorized_projects.empty?
                Project
              else
                Project.without_user(@admin_user)
@@ -19,9 +19,9 @@ class Admin::UsersController < AdminController
   def team_update
     @admin_user = User.find(params[:id])
 
-    UsersProject.user_bulk_import(
-      @admin_user,
+    UsersProject.add_users_into_projects(
       params[:project_ids],
+      [@admin_user.id],
       params[:project_access]
     )
 
@@ -98,7 +98,7 @@ class Admin::UsersController < AdminController
 
   def destroy
     @admin_user = User.find(params[:id])
-    if @admin_user.my_own_projects.count > 0
+    if @admin_user.personal_projects.count > 0
       redirect_to admin_users_path, alert: "User is a project owner and can't be removed." and return
     end
     @admin_user.destroy

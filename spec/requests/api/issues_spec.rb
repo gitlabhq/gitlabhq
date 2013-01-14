@@ -4,9 +4,9 @@ describe Gitlab::API do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let!(:project) { create(:project, owner: user) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, author: user, assignee: user, project: project) }
-  before { project.add_access(user, :read) }
+  before { project.team << [user, :reporter] }
 
   describe "GET /issues" do
     context "when unauthenticated" do
@@ -28,7 +28,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/issues" do
     it "should return project issues" do
-      get api("/projects/#{project.path}/issues", user)
+      get api("/projects/#{project.id}/issues", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == issue.title
@@ -37,7 +37,7 @@ describe Gitlab::API do
 
   describe "GET /projects/:id/issues/:issue_id" do
     it "should return a project issue by id" do
-      get api("/projects/#{project.path}/issues/#{issue.id}", user)
+      get api("/projects/#{project.id}/issues/#{issue.id}", user)
       response.status.should == 200
       json_response['title'].should == issue.title
     end
@@ -45,7 +45,7 @@ describe Gitlab::API do
 
   describe "POST /projects/:id/issues" do
     it "should create a new project issue" do
-      post api("/projects/#{project.path}/issues", user),
+      post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2'
       response.status.should == 201
       json_response['title'].should == 'new issue'
@@ -56,7 +56,7 @@ describe Gitlab::API do
 
   describe "PUT /projects/:id/issues/:issue_id" do
     it "should update a project issue" do
-      put api("/projects/#{project.path}/issues/#{issue.id}", user),
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
         title: 'updated title', labels: 'label2', closed: 1
       response.status.should == 200
       json_response['title'].should == 'updated title'
@@ -67,7 +67,7 @@ describe Gitlab::API do
 
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "should delete a project issue" do
-      delete api("/projects/#{project.path}/issues/#{issue.id}", user)
+      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
       response.status.should == 405
     end
   end

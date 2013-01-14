@@ -33,8 +33,7 @@ describe Issue do
   end
 
   describe 'modules' do
-    it { should include_module(IssueCommonality) }
-    it { should include_module(Votes) }
+    it { should include_module(Issuable) }
   end
 
   subject { create(:issue) }

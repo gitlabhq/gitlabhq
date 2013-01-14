@@ -5,7 +5,7 @@ describe "Snippets" do
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write)
+    project.team << [@user, :developer]
   end
 
   describe "GET /snippets" do
@@ -26,7 +26,7 @@ describe "Snippets" do
       before do
         # admin access to remove snippet
         @user.users_projects.destroy_all
-        project.add_access(@user, :read, :write, :admin)
+        project.team << [@user, :master]
         visit edit_project_snippet_path(project, @snippet)
       end
 

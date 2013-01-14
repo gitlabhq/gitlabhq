@@ -40,6 +40,7 @@ describe Milestone do
     end
 
     it "should count closed issues" do
+      IssueObserver.current_user = issue.author
       issue.update_attributes(closed: true)
       milestone.issues << issue
       milestone.percent_complete.should == 100
@@ -61,5 +62,55 @@ describe Milestone do
       milestone.update_attributes(due_date: Date.tomorrow)
       milestone.expires_at.should be_present
     end
+  end
+
+  describe :expired? do
+    context "expired" do
+      before do
+        milestone.stub(due_date: Date.today.prev_year)
+      end
+
+      it { milestone.expired?.should be_true }
+    end
+
+    context "not expired" do
+      before do
+        milestone.stub(due_date: Date.today.next_year)
+      end
+
+      it { milestone.expired?.should be_false }
+    end
+  end
+
+  describe :percent_complete do
+    before do
+      milestone.stub(
+        closed_items_count: 3,
+        total_items_count: 4
+      )
+    end
+
+    it { milestone.percent_complete.should == 75 }
+  end
+
+  describe :items_count do
+    before do
+      milestone.issues << create(:issue)
+      milestone.issues << create(:issue, closed: true)
+      milestone.merge_requests << create(:merge_request)
+    end
+
+    it { milestone.closed_items_count.should == 1 }
+    it { milestone.open_items_count.should == 2 }
+    it { milestone.total_items_count.should == 3 }
+    it { milestone.is_empty?.should be_false }
+  end
+
+  describe :can_be_closed? do
+    it { milestone.can_be_closed?.should be_true }
+  end
+
+  describe :open? do
+    it { milestone.open?.should be_true }
   end
 end

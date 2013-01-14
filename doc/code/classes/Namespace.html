@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Namespace</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Namespace 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/namespace_rb.html">app/models/namespace.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<h2 id="label-Schema+Information">Schema Information</h2>
+
+<p>Table name: namespaces</p>
+
+<pre>id         :integer          not null, primary key
+name       :string(255)      not null
+path       :string(255)      not null
+owner_id   :integer          not null
+created_at :datetime         not null
+updated_at :datetime         not null
+type       :string(255)</pre>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-dir_exists-3F">dir_exists?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-ensure_dir_exist">ensure_dir_exist</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-global_id">global_id</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>H</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-human_name">human_name</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-move_dir">move_dir</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-namespace_full_path">namespace_full_path</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-rm_dir">rm_dir</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-search">search</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-send_update_instructions">send_update_instructions</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-to_param">to_param</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update_gitolite">update_gitolite</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-global_id">
+            
+              <b>global_id</b>()
+            
+            <a href="../classes/Namespace.html#method-c-global_id" name="method-c-global_id" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-global_id_source')" id="l_method-c-global_id_source">show</a>
+                
+              </p>
+              <div id="method-c-global_id_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">global_id</span>
+  <span class="ruby-string">'GLN'</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-search">
+            
+              <b>search</b>(query)
+            
+            <a href="../classes/Namespace.html#method-c-search" name="method-c-search" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-search_source')" id="l_method-c-search_source">show</a>
+                
+              </p>
+              <div id="method-c-search_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 37</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">search</span> <span class="ruby-identifier">query</span>
+  <span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;name LIKE :query OR path LIKE :query&quot;</span>, <span class="ruby-identifier">query</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;%#{query}%&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-dir_exists-3F">
+            
+              <b>dir_exists?</b>()
+            
+            <a href="../classes/Namespace.html#method-i-dir_exists-3F" name="method-i-dir_exists-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-dir_exists-3F_source')" id="l_method-i-dir_exists-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-dir_exists-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">dir_exists?</span>
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">namespace_full_path</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-ensure_dir_exist">
+            
+              <b>ensure_dir_exist</b>()
+            
+            <a href="../classes/Namespace.html#method-i-ensure_dir_exist" name="method-i-ensure_dir_exist" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ensure_dir_exist_source')" id="l_method-i-ensure_dir_exist_source">show</a>
+                
+              </p>
+              <div id="method-i-ensure_dir_exist_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">ensure_dir_exist</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">dir_exists?</span>
+    <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;mkdir -m 770 #{namespace_full_path}&quot;</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-human_name">
+            
+              <b>human_name</b>()
+            
+            <a href="../classes/Namespace.html#method-i-human_name" name="method-i-human_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-human_name_source')" id="l_method-i-human_name_source">show</a>
+                
+              </p>
+              <div id="method-i-human_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 49</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">human_name</span>
+  <span class="ruby-identifier">owner_name</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-move_dir">
+            
+              <b>move_dir</b>()
+            
+            <a href="../classes/Namespace.html#method-i-move_dir" name="method-i-move_dir" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-move_dir_source')" id="l_method-i-move_dir_source">show</a>
+                
+              </p>
+              <div id="method-i-move_dir_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 67</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">move_dir</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">path_changed?</span>
+    <span class="ruby-identifier">old_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">repos_path</span>, <span class="ruby-identifier">path_was</span>)
+    <span class="ruby-identifier">new_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">repos_path</span>, <span class="ruby-identifier">path</span>)
+    <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">new_path</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;Already exists&quot;</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;mv #{old_path} #{new_path}&quot;</span>)
+      <span class="ruby-identifier">send_update_instructions</span>
+      <span class="ruby-ivar">@require_update_gitolite</span> = <span class="ruby-keyword">true</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Namespace move error #{old_path} #{new_path}&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-namespace_full_path">
+            
+              <b>namespace_full_path</b>()
+            
+            <a href="../classes/Namespace.html#method-i-namespace_full_path" name="method-i-namespace_full_path" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-namespace_full_path_source')" id="l_method-i-namespace_full_path_source">show</a>
+                
+              </p>
+              <div id="method-i-namespace_full_path_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 63</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">namespace_full_path</span>
+  <span class="ruby-ivar">@namespace_full_path</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">repos_path</span>, <span class="ruby-identifier">path</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-rm_dir">
+            
+              <b>rm_dir</b>()
+            
+            <a href="../classes/Namespace.html#method-i-rm_dir" name="method-i-rm_dir" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-rm_dir_source')" id="l_method-i-rm_dir_source">show</a>
+                
+              </p>
+              <div id="method-i-rm_dir_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">rm_dir</span>
+  <span class="ruby-identifier">dir_path</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">Gitlab</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">gitolite</span>.<span class="ruby-identifier">repos_path</span>, <span class="ruby-identifier">path</span>)
+  <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;rm -rf #{dir_path}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-send_update_instructions">
+            
+              <b>send_update_instructions</b>()
+            
+            <a href="../classes/Namespace.html#method-i-send_update_instructions" name="method-i-send_update_instructions" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-send_update_instructions_source')" id="l_method-i-send_update_instructions_source">show</a>
+                
+              </p>
+              <div id="method-i-send_update_instructions_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 94</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">send_update_instructions</span>
+  <span class="ruby-identifier">projects</span>.<span class="ruby-identifier">each</span>(&amp;<span class="ruby-value">:send_move_instructions</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-to_param">
+            
+              <b>to_param</b>()
+            
+            <a href="../classes/Namespace.html#method-i-to_param" name="method-i-to_param" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-to_param_source')" id="l_method-i-to_param_source">show</a>
+                
+              </p>
+              <div id="method-i-to_param_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">to_param</span>
+  <span class="ruby-identifier">path</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update_gitolite">
+            
+              <b>update_gitolite</b>()
+            
+            <a href="../classes/Namespace.html#method-i-update_gitolite" name="method-i-update_gitolite" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_gitolite_source')" id="l_method-i-update_gitolite_source">show</a>
+                
+              </p>
+              <div id="method-i-update_gitolite_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/namespace.rb, line 84</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update_gitolite</span>
+  <span class="ruby-ivar">@require_update_gitolite</span> = <span class="ruby-keyword">false</span>
+  <span class="ruby-identifier">projects</span>.<span class="ruby-identifier">each</span>(&amp;<span class="ruby-value">:update_repository</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

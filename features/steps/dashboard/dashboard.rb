@@ -1,6 +1,7 @@
 class Dashboard < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include SharedProject
 
   Then 'I should see "New Project" link' do
     page.should have_link "New Project"
@@ -8,11 +9,6 @@ class Dashboard < Spinach::FeatureSteps
 
   Then 'I should see "Shop" project link' do
     page.should have_link "Shop"
-  end
-
-  Then 'I should see project "Shop" activity feed' do
-    project = Project.find_by_name("Shop")
-    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name}"
   end
 
   Then 'I should see last push widget' do
@@ -59,43 +55,12 @@ class Dashboard < Spinach::FeatureSteps
     page.should have_content "John Doe left project at Shop"
   end
 
-  And 'I own project "Shop"' do
-    @project = create :project, name: 'Shop'
-    @project.add_access(@user, :admin)
-  end
-
   And 'I have group with projects' do
     @group   = create(:group)
     @project = create(:project, group: @group)
     @event   = create(:closed_issue_event, project: @project)
 
-    @project.add_access current_user, :admin
-  end
-
-  And 'project "Shop" has push event' do
-    @project = Project.find_by_name("Shop")
-
-    data = {
-      before: "0000000000000000000000000000000000000000",
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/new_design",
-      user_id: @user.id,
-      user_name: @user.name,
-      repository: {
-        name: @project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
-
-    @event = Event.create(
-      project: @project,
-      action: Event::Pushed,
-      data: data,
-      author_id: @user.id
-    )
+    @project.team << [current_user, :master]
   end
 
   Then 'I should see groups list' do
@@ -112,5 +77,4 @@ class Dashboard < Spinach::FeatureSteps
   Then 'I should see 1 project at group list' do
     page.find('span.last_activity/span').should have_content('1')
   end
-
 end

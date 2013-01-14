@@ -7,7 +7,8 @@ describe ExtractsPath do
 
   before do
     @project = project
-    project.stub(:ref_names).and_return(['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0'])
+    project.stub(repository: stub(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0']))
+    project.stub(path_with_namespace: 'gitlab/gitlab-ci')
   end
 
   describe '#extract_ref' do
@@ -51,6 +52,25 @@ describe ExtractsPath do
 
       it "falls back to a primitive split for an invalid ref" do
         extract_ref('stable/CHANGELOG').should == ['stable', 'CHANGELOG']
+      end
+    end
+
+    context "with a fullpath" do
+      it "extracts a valid branch" do
+        extract_ref('/gitlab/gitlab-ci/tree/foo/bar/baz/CHANGELOG').should == ['foo/bar/baz', 'CHANGELOG']
+      end
+
+      it "extracts a valid tag" do
+        extract_ref('/gitlab/gitlab-ci/tree/v2.0.0/CHANGELOG').should == ['v2.0.0', 'CHANGELOG']
+      end
+
+      it "extracts a valid commit SHA" do
+        extract_ref('/gitlab/gitlab-ci/tree/f4b14494ef6abf3d144c28e4af0c20143383e062/CHANGELOG').should ==
+          ['f4b14494ef6abf3d144c28e4af0c20143383e062', 'CHANGELOG']
+      end
+
+      it "extracts a timestamp" do
+        extract_ref('/gitlab/gitlab-ci/tree/v2.0.0/CHANGELOG?_=12354435').should == ['v2.0.0', 'CHANGELOG']
       end
     end
   end

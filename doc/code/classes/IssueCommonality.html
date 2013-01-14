@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>IssueCommonality</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            IssueCommonality 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/issue_commonality_rb.html">app/roles/issue_commonality.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+    <div class="description">
+      
+<p>Contains common functionality shared between Issues and MergeRequests</p>
+
+    </div>
+  
+
+
+  
+
+
+  
+  
+
+
+  
+    <!-- Namespace -->
+    <div class="sectiontitle">Namespace</div>
+    <ul>
+      
+        <li>
+          <span class="type">MODULE</span>
+          <a href="IssueCommonality/ClassMethods.html">IssueCommonality::ClassMethods</a>
+        </li>
+      
+    </ul>
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-is_assigned-3F">is_assigned?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-is_being_closed-3F">is_being_closed?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-is_being_reassigned-3F">is_being_reassigned?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-is_being_reopened-3F">is_being_reopened?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new-3F">new?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-today-3F">today?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-is_assigned-3F">
+            
+              <b>is_assigned?</b>()
+            
+            <a href="../classes/IssueCommonality.html#method-i-is_assigned-3F" name="method-i-is_assigned-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-is_assigned-3F_source')" id="l_method-i-is_assigned-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-is_assigned-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/issue_commonality.rb, line 51</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">is_assigned?</span>
+  <span class="ruby-operator">!</span><span class="ruby-operator">!</span><span class="ruby-identifier">assignee_id</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-is_being_closed-3F">
+            
+              <b>is_being_closed?</b>()
+            
+            <a href="../classes/IssueCommonality.html#method-i-is_being_closed-3F" name="method-i-is_being_closed-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-is_being_closed-3F_source')" id="l_method-i-is_being_closed-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-is_being_closed-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/issue_commonality.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">is_being_closed?</span>
+  <span class="ruby-identifier">closed_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">closed</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-is_being_reassigned-3F">
+            
+              <b>is_being_reassigned?</b>()
+            
+            <a href="../classes/IssueCommonality.html#method-i-is_being_reassigned-3F" name="method-i-is_being_reassigned-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-is_being_reassigned-3F_source')" id="l_method-i-is_being_reassigned-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-is_being_reassigned-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/issue_commonality.rb, line 55</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">is_being_reassigned?</span>
+  <span class="ruby-identifier">assignee_id_changed?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-is_being_reopened-3F">
+            
+              <b>is_being_reopened?</b>()
+            
+            <a href="../classes/IssueCommonality.html#method-i-is_being_reopened-3F" name="method-i-is_being_reopened-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-is_being_reopened-3F_source')" id="l_method-i-is_being_reopened-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-is_being_reopened-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/issue_commonality.rb, line 63</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">is_being_reopened?</span>
+  <span class="ruby-identifier">closed_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">closed</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new-3F">
+            
+              <b>new?</b>()
+            
+            <a href="../classes/IssueCommonality.html#method-i-new-3F" name="method-i-new-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new-3F_source')" id="l_method-i-new-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-new-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/issue_commonality.rb, line 47</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new?</span>
+  <span class="ruby-identifier">today?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">created_at</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">updated_at</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-today-3F">
+            
+              <b>today?</b>()
+            
+            <a href="../classes/IssueCommonality.html#method-i-today-3F" name="method-i-today-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-today-3F_source')" id="l_method-i-today-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-today-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/issue_commonality.rb, line 43</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">today?</span>
+  <span class="ruby-constant">Date</span>.<span class="ruby-identifier">today</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">created_at</span>.<span class="ruby-identifier">to_date</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

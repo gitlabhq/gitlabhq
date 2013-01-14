@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>NamespacedProject</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            NamespacedProject 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/namespaced_project_rb.html">app/roles/namespaced_project.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-chief">chief</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-name_with_namespace">name_with_namespace</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-namespace_owner">namespace_owner</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-path_with_namespace">path_with_namespace</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-transfer">transfer</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-chief">
+            
+              <b>chief</b>()
+            
+            <a href="../classes/NamespacedProject.html#method-i-chief" name="method-i-chief" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-chief_source')" id="l_method-i-chief_source">show</a>
+                
+              </p>
+              <div id="method-i-chief_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/namespaced_project.rb, line 44</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">chief</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">namespace</span>
+    <span class="ruby-identifier">namespace_owner</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">owner</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-name_with_namespace">
+            
+              <b>name_with_namespace</b>()
+            
+            <a href="../classes/NamespacedProject.html#method-i-name_with_namespace" name="method-i-name_with_namespace" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-name_with_namespace_source')" id="l_method-i-name_with_namespace_source">show</a>
+                
+              </p>
+              <div id="method-i-name_with_namespace_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/namespaced_project.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">name_with_namespace</span>
+  <span class="ruby-ivar">@name_with_namespace</span> <span class="ruby-operator">||=</span> <span class="ruby-keyword">begin</span>
+                             <span class="ruby-keyword">if</span> <span class="ruby-identifier">namespace</span>
+                               <span class="ruby-identifier">namespace</span>.<span class="ruby-identifier">human_name</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; / &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">name</span>
+                             <span class="ruby-keyword">else</span>
+                               <span class="ruby-identifier">name</span>
+                             <span class="ruby-keyword">end</span>
+                           <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-namespace_owner">
+            
+              <b>namespace_owner</b>()
+            
+            <a href="../classes/NamespacedProject.html#method-i-namespace_owner" name="method-i-namespace_owner" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-namespace_owner_source')" id="l_method-i-namespace_owner_source">show</a>
+                
+              </p>
+              <div id="method-i-namespace_owner_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/namespaced_project.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">namespace_owner</span>
+  <span class="ruby-identifier">namespace</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:owner</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-path_with_namespace">
+            
+              <b>path_with_namespace</b>()
+            
+            <a href="../classes/NamespacedProject.html#method-i-path_with_namespace" name="method-i-path_with_namespace" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-path_with_namespace_source')" id="l_method-i-path_with_namespace_source">show</a>
+                
+              </p>
+              <div id="method-i-path_with_namespace_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/namespaced_project.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">path_with_namespace</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">namespace</span>
+    <span class="ruby-identifier">namespace</span>.<span class="ruby-identifier">path</span> <span class="ruby-operator">+</span> <span class="ruby-string">'/'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">path</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">path</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-transfer">
+            
+              <b>transfer</b>(new_namespace)
+            
+            <a href="../classes/NamespacedProject.html#method-i-transfer" name="method-i-transfer" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-transfer_source')" id="l_method-i-transfer_source">show</a>
+                
+              </p>
+              <div id="method-i-transfer_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/namespaced_project.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">transfer</span>(<span class="ruby-identifier">new_namespace</span>)
+  <span class="ruby-constant">Project</span>.<span class="ruby-identifier">transaction</span> <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">old_namespace</span> = <span class="ruby-identifier">namespace</span>
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">namespace</span> = <span class="ruby-identifier">new_namespace</span>
+
+    <span class="ruby-identifier">old_dir</span> = <span class="ruby-identifier">old_namespace</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:path</span>) <span class="ruby-operator">||</span> <span class="ruby-string">''</span>
+    <span class="ruby-identifier">new_dir</span> = <span class="ruby-identifier">new_namespace</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:path</span>) <span class="ruby-operator">||</span> <span class="ruby-string">''</span>
+
+    <span class="ruby-identifier">old_repo</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">old_dir</span>.<span class="ruby-identifier">present?</span>
+                 <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">old_dir</span>, <span class="ruby-keyword">self</span>.<span class="ruby-identifier">path</span>)
+               <span class="ruby-keyword">else</span>
+                 <span class="ruby-keyword">self</span>.<span class="ruby-identifier">path</span>
+               <span class="ruby-keyword">end</span>
+
+    <span class="ruby-keyword">if</span> <span class="ruby-constant">Project</span>.<span class="ruby-identifier">where</span>(<span class="ruby-identifier">path</span><span class="ruby-operator">:</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">path</span>, <span class="ruby-identifier">namespace_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">new_namespace</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:id</span>)).<span class="ruby-identifier">present?</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">TransferError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;Project with same path in target namespace already exists&quot;</span>)
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">ProjectMover</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">old_dir</span>, <span class="ruby-identifier">new_dir</span>).<span class="ruby-identifier">execute</span>
+
+    <span class="ruby-identifier">git_host</span>.<span class="ruby-identifier">move_repository</span>(<span class="ruby-identifier">old_repo</span>, <span class="ruby-keyword">self</span>)
+
+    <span class="ruby-identifier">save!</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">ProjectMover</span><span class="ruby-operator">::</span><span class="ruby-constant">ProjectMoveError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Project</span><span class="ruby-operator">::</span><span class="ruby-constant">TransferError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">ex</span>.<span class="ruby-identifier">message</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

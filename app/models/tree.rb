@@ -1,12 +1,13 @@
 class Tree
   include Linguist::BlobHelper
-  attr_accessor :path, :tree, :project, :ref
+
+  attr_accessor :path, :tree, :ref
 
   delegate  :contents, :basename, :name, :data, :mime_type,
             :mode, :size, :text?, :colorize, to: :tree
 
-  def initialize(raw_tree, project, ref = nil, path = nil)
-    @project, @ref, @path = project, ref, path
+  def initialize(raw_tree, ref = nil, path = nil)
+    @ref, @path = ref, path
     @tree = if path.present?
               raw_tree / path
             else

@@ -7,7 +7,7 @@ describe CommitsController do
   before do
     sign_in(user)
 
-    project.add_access(user, :read, :admin)
+    project.team << [user, :master]
   end
 
   describe "GET show" do

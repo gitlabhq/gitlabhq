@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::InlineDiff</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::InlineDiff 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/inline_diff_rb.html">lib/gitlab/inline_diff.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>#</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-_indexes_of_changed_lines">_indexes_of_changed_lines</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-processing">processing</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-replace_markers">replace_markers</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+      <!-- Section constants -->
+      <div class="sectiontitle">Constants</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class="attr-name">START</td>
+            <td>=</td>
+            <td class="attr-value">&quot;#!idiff-start!#&quot;</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+          <tr valign='top'>
+            <td class="attr-name">FINISH</td>
+            <td>=</td>
+            <td class="attr-value">&quot;#!idiff-finish!#&quot;</td>
+          </tr>
+          
+            <tr valign='top'>
+              <td>&nbsp;</td>
+              <td colspan="2" class="attr-desc"></td>
+            </tr>
+          
+        
+      </table>
+    
+
+
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-_indexes_of_changed_lines">
+            
+              <b>_indexes_of_changed_lines</b>(diff_arr)
+            
+            <a href="../../classes/Gitlab/InlineDiff.html#method-c-_indexes_of_changed_lines" name="method-c-_indexes_of_changed_lines" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-_indexes_of_changed_lines_source')" id="l_method-c-_indexes_of_changed_lines_source">show</a>
+                
+              </p>
+              <div id="method-c-_indexes_of_changed_lines_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/inline_diff.rb, line 42</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">_indexes_of_changed_lines</span> <span class="ruby-identifier">diff_arr</span>
+  <span class="ruby-identifier">chain_of_first_symbols</span> = <span class="ruby-string">&quot;&quot;</span>
+  <span class="ruby-identifier">diff_arr</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">chain_of_first_symbols</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">line</span>[<span class="ruby-number">0</span>]
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">chain_of_first_symbols</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp">%r[^\-\+]/</span>, <span class="ruby-node">&quot;#&quot;</span>)
+
+  <span class="ruby-identifier">offset</span> = <span class="ruby-number">0</span>
+  <span class="ruby-identifier">indexes</span> = []
+  <span class="ruby-keyword">while</span> <span class="ruby-identifier">index</span> = <span class="ruby-identifier">chain_of_first_symbols</span>.<span class="ruby-identifier">index</span>(<span class="ruby-node">&quot;#-+#&quot;</span>, <span class="ruby-identifier">offset</span>)
+    <span class="ruby-identifier">indexes</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">index</span>
+    <span class="ruby-identifier">offset</span> = <span class="ruby-identifier">index</span> <span class="ruby-operator">+</span> <span class="ruby-number">1</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">indexes</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-processing">
+            
+              <b>processing</b>(diff_arr)
+            
+            <a href="../../classes/Gitlab/InlineDiff.html#method-c-processing" name="method-c-processing" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-processing_source')" id="l_method-c-processing_source">show</a>
+                
+              </p>
+              <div id="method-c-processing_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/inline_diff.rb, line 8</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">processing</span> <span class="ruby-identifier">diff_arr</span>
+  <span class="ruby-identifier">indexes</span> = <span class="ruby-identifier">_indexes_of_changed_lines</span> <span class="ruby-identifier">diff_arr</span>
+
+  <span class="ruby-identifier">indexes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">index</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">first_line</span> = <span class="ruby-identifier">diff_arr</span>[<span class="ruby-identifier">index</span><span class="ruby-operator">+</span><span class="ruby-number">1</span>]
+    <span class="ruby-identifier">second_line</span> = <span class="ruby-identifier">diff_arr</span>[<span class="ruby-identifier">index</span><span class="ruby-operator">+</span><span class="ruby-number">2</span>]
+    <span class="ruby-identifier">max_length</span> = [<span class="ruby-identifier">first_line</span>.<span class="ruby-identifier">size</span>, <span class="ruby-identifier">second_line</span>.<span class="ruby-identifier">size</span>].<span class="ruby-identifier">max</span>
+
+    <span class="ruby-identifier">first_the_same_symbols</span> = <span class="ruby-number">0</span>
+    (<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">max_length</span> <span class="ruby-operator">+</span> <span class="ruby-number">1</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">first_the_same_symbols</span> = <span class="ruby-identifier">i</span> <span class="ruby-operator">-</span> <span class="ruby-number">1</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">first_line</span>[<span class="ruby-identifier">i</span>] <span class="ruby-operator">!=</span> <span class="ruby-identifier">second_line</span>[<span class="ruby-identifier">i</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">i</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">0</span>
+        <span class="ruby-keyword">break</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">first_token</span> = <span class="ruby-identifier">first_line</span>[<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-identifier">first_the_same_symbols</span>][<span class="ruby-number">1</span><span class="ruby-operator">..</span><span class="ruby-number">-1</span>]
+    <span class="ruby-identifier">diff_arr</span>[<span class="ruby-identifier">index</span><span class="ruby-operator">+</span><span class="ruby-number">1</span>].<span class="ruby-identifier">sub!</span>(<span class="ruby-identifier">first_token</span>, <span class="ruby-identifier">first_token</span> <span class="ruby-operator">+</span> <span class="ruby-constant">START</span>)
+    <span class="ruby-identifier">diff_arr</span>[<span class="ruby-identifier">index</span><span class="ruby-operator">+</span><span class="ruby-number">2</span>].<span class="ruby-identifier">sub!</span>(<span class="ruby-identifier">first_token</span>, <span class="ruby-identifier">first_token</span> <span class="ruby-operator">+</span> <span class="ruby-constant">START</span>)
+    <span class="ruby-identifier">last_the_same_symbols</span> = <span class="ruby-number">0</span>
+    (<span class="ruby-number">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">max_length</span> <span class="ruby-operator">+</span> <span class="ruby-number">1</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">last_the_same_symbols</span> = <span class="ruby-operator">-</span><span class="ruby-identifier">i</span>
+      <span class="ruby-identifier">shortest_line</span> = <span class="ruby-identifier">second_line</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">first_line</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">first_line</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">second_line</span>
+      <span class="ruby-keyword">if</span> ( <span class="ruby-identifier">first_line</span>[<span class="ruby-operator">-</span><span class="ruby-identifier">i</span>] <span class="ruby-operator">!=</span> <span class="ruby-identifier">second_line</span>[<span class="ruby-operator">-</span><span class="ruby-identifier">i</span>] ) <span class="ruby-operator">||</span> <span class="ruby-node">&quot;#{first_token}#{START}&quot;</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">shortest_line</span>[<span class="ruby-number">1</span><span class="ruby-operator">..</span><span class="ruby-operator">-</span><span class="ruby-identifier">i</span>].<span class="ruby-identifier">size</span>
+        <span class="ruby-keyword">break</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">last_the_same_symbols</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+    <span class="ruby-identifier">last_token</span> = <span class="ruby-identifier">first_line</span>[<span class="ruby-identifier">last_the_same_symbols</span><span class="ruby-operator">..</span><span class="ruby-number">-1</span>]
+    <span class="ruby-identifier">diff_arr</span>[<span class="ruby-identifier">index</span><span class="ruby-operator">+</span><span class="ruby-number">1</span>].<span class="ruby-identifier">sub!</span>(<span class="ruby-node">%r#{Regexp.escape(last_token)}$/</span>, <span class="ruby-constant">FINISH</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">last_token</span>)
+    <span class="ruby-identifier">diff_arr</span>[<span class="ruby-identifier">index</span><span class="ruby-operator">+</span><span class="ruby-number">2</span>].<span class="ruby-identifier">sub!</span>(<span class="ruby-node">%r#{Regexp.escape(last_token)}$/</span>, <span class="ruby-constant">FINISH</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">last_token</span>)
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">diff_arr</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-c-replace_markers">
+            
+              <b>replace_markers</b>(line)
+            
+            <a href="../../classes/Gitlab/InlineDiff.html#method-c-replace_markers" name="method-c-replace_markers" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-replace_markers_source')" id="l_method-c-replace_markers_source">show</a>
+                
+              </p>
+              <div id="method-c-replace_markers_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/inline_diff.rb, line 58</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">replace_markers</span> <span class="ruby-identifier">line</span>
+  <span class="ruby-identifier">line</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-constant">START</span>, <span class="ruby-string">&quot;&lt;span class='idiff'&gt;&quot;</span>)
+  <span class="ruby-identifier">line</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-constant">FINISH</span>, <span class="ruby-string">&quot;&lt;/span&gt;&quot;</span>)
+  <span class="ruby-identifier">line</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                        </div>
+
+    </div>
+  </body>
+</html>    

@@ -4,7 +4,6 @@
 #
 #  id            :integer          not null, primary key
 #  note          :text
-#  noteable_id   :string(255)
 #  noteable_type :string(255)
 #  author_id     :integer
 #  created_at    :datetime         not null
@@ -12,6 +11,8 @@
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
+#  commit_id     :string(255)
+#  noteable_id   :integer
 #
 
 require 'spec_helper'
@@ -31,12 +32,6 @@ describe Note do
   describe "Validation" do
     it { should validate_presence_of(:note) }
     it { should validate_presence_of(:project) }
-  end
-
-  describe "Scopes" do
-    it "should have a today named scope that returns ..." do
-      Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
-    end
   end
 
   describe "Voting score" do
@@ -74,6 +69,9 @@ describe Note do
       note.should be_downvote
     end
   end
+
+  let(:project) { create(:project) }
+  let(:commit) { project.repository.commit }
 
   describe "Commit notes" do
     let!(:note) { create(:note_on_commit, note: "+1 from me") }

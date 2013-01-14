@@ -15,9 +15,6 @@
 #
 
 class Event < ActiveRecord::Base
-  include NoteEvent
-  include PushEvent
-
   attr_accessible :project, :action, :data, :author_id, :project_id,
                   :target_id, :target_type
 
@@ -113,26 +110,6 @@ class Event < ActiveRecord::Base
     target_type == "MergeRequest"
   end
 
-  def new_issue?
-    target_type == "Issue" &&
-      action == Created
-  end
-
-  def new_merge_request?
-    target_type == "MergeRequest" &&
-      action == Created
-  end
-
-  def changed_merge_request?
-    target_type == "MergeRequest" &&
-      [Closed, Reopened].include?(action)
-  end
-
-  def changed_issue?
-    target_type == "Issue" &&
-      [Closed, Reopened].include?(action)
-  end
-
   def joined?
     action == Joined
   end
@@ -169,5 +146,144 @@ class Event < ActiveRecord::Base
     else
       "opened"
     end
+  end
+
+  def valid_push?
+    data[:ref]
+  rescue => ex
+    false
+  end
+
+  def tag?
+    data[:ref]["refs/tags"]
+  end
+
+  def branch?
+    data[:ref]["refs/heads"]
+  end
+
+  def new_branch?
+    commit_from =~ /^00000/
+  end
+
+  def new_ref?
+    commit_from =~ /^00000/
+  end
+
+  def rm_ref?
+    commit_to =~ /^00000/
+  end
+
+  def md_ref?
+    !(rm_ref? || new_ref?)
+  end
+
+  def commit_from
+    data[:before]
+  end
+
+  def commit_to
+    data[:after]
+  end
+
+  def ref_name
+    if tag?
+      tag_name
+    else
+      branch_name
+    end
+  end
+
+  def branch_name
+    @branch_name ||= data[:ref].gsub("refs/heads/", "")
+  end
+
+  def tag_name
+    @tag_name ||= data[:ref].gsub("refs/tags/", "")
+  end
+
+  # Max 20 commits from push DESC
+  def commits
+    @commits ||= data[:commits].map { |commit| repository.commit(commit[:id]) }.reverse
+  end
+
+  def commits_count
+    data[:total_commits_count] || commits.count || 0
+  end
+
+  def ref_type
+    tag? ? "tag" : "branch"
+  end
+
+  def push_action_name
+    if new_ref?
+      "pushed new"
+    elsif rm_ref?
+      "deleted"
+    else
+      "pushed to"
+    end
+  end
+
+  def repository
+    project.repository
+  end
+
+  def parent_commit
+    repository.commit(commit_from)
+  rescue => ex
+    nil
+  end
+
+  def last_commit
+    repository.commit(commit_to)
+  rescue => ex
+    nil
+  end
+
+  def push_with_commits?
+    md_ref? && commits.any? && parent_commit && last_commit
+  rescue Grit::NoSuchPathError
+    false
+  end
+
+  def last_push_to_non_root?
+    branch? && project.default_branch != branch_name
+  end
+
+  def note_commit_id
+    target.commit_id
+  end
+
+  def note_short_commit_id
+    note_commit_id[0..8]
+  end
+
+  def note_commit?
+    target.noteable_type == "Commit"
+  end
+
+  def note_target
+    target.noteable
+  end
+
+  def note_target_id
+    if note_commit?
+      target.commit_id
+    else
+      target.noteable_id.to_s
+    end
+  end
+
+  def wall_note?
+    target.noteable_type.blank?
+  end
+
+  def note_target_type
+    if target.noteable_type.present?
+      target.noteable_type.titleize
+    else
+      "Wall"
+    end.downcase
   end
 end

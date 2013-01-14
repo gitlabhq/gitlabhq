@@ -15,34 +15,25 @@ class Ability
     def project_abilities(user, project)
       rules = []
 
+      team = project.team
+
       # Rules based on role in project
-      if project.master_access_for?(user)
+      if team.masters.include?(user)
         rules << project_master_rules
 
-      elsif project.dev_access_for?(user)
+      elsif team.developers.include?(user)
         rules << project_dev_rules
 
-      elsif project.report_access_for?(user)
+      elsif team.reporters.include?(user)
         rules << project_report_rules
 
-      elsif project.guest_access_for?(user)
+      elsif team.guests.include?(user)
         rules << project_guest_rules
       end
 
-      if project.namespace
-        # If user own project namespace
-        # (Ex. group owner or account owner)
-        if project.namespace.owner == user
-          rules << project_admin_rules
-        end
-      else
-        # For compatibility with global projects
-        # use projects.owner_id
-        if project.owner == user
-          rules << project_admin_rules
-        end
+      if project.owner == user
+        rules << project_admin_rules
       end
-
 
       rules.flatten
     end
@@ -107,9 +98,12 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      rules << [
-        :manage_group
-      ] if group.owner == user
+      # Only group owner and administrators can manage group
+      if group.owner == user || user.admin?
+        rules << [
+          :manage_group
+        ]
+      end
 
       rules.flatten
     end

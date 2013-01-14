@@ -1,6 +1,6 @@
 - grouper_project_members(@project).each do |access, members|
   .ui-box
-    %h5
+    %h5.title
       = Project.access_options.key(access).pluralize
       %small= members.size
     %ul.well-list

@@ -13,7 +13,7 @@ Old path: `git@example.org:myrepo.git`
 New path: `git@example.org:username/myrepo.git` or `git@example.org:groupname/myrepo.git`
 
 ```
-bundle exec rake gitlab:enable_namespaces
+bundle exec rake gitlab:enable_namespaces RAILS_ENV=production
 ```
 
 
@@ -22,7 +22,7 @@ bundle exec rake gitlab:enable_namespaces
 This command will enable the auto merge feature. After this you will be able to **merge a merge request** via GitLab and use the **online editor**.
 
 ```
-bundle exec rake gitlab:enable_automerge
+bundle exec rake gitlab:enable_automerge RAILS_ENV=production
 ```
 
 Example output:

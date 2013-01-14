@@ -22,14 +22,16 @@ module Gitlab
         h[:parents] = self.parents.collect do |p|
           [p.id,0,0]
         end
-        h[:author]  = author.name
+        h[:author]  = {
+          name: author.name, 
+          email: author.email
+        }
         h[:time]    = time
         h[:space]   = space
         h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
         h[:id]      = sha
         h[:date]    = date
         h[:message] = message
-        h[:login]   = author.email
         h
       end
 

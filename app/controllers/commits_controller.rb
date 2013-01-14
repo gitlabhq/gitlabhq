@@ -9,10 +9,10 @@ class CommitsController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    @repo = @project.repo
+    @repo = @project.repository
     @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
 
-    @commits = @project.commits(@ref, @path, @limit, @offset)
+    @commits = @repo.commits(@ref, @path, @limit, @offset)
     @commits = CommitDecorator.decorate(@commits)
 
     respond_to do |format|

@@ -2,6 +2,7 @@
 
 GitLab is a free project and repository management application
 
+![CI](http://ci.gitlab.org/projects/1/status?ref=master)
 
 ## Application details
 
@@ -39,6 +40,6 @@ Email
 
 ## Contribute
 
-[Development Tips](https://github.com/gitlabhq/gitlabhq/blob/master/doc/development.md)
+[Developer Guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide)
 Want to help - send a pull request.
 We'll accept good pull requests.

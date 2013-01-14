@@ -31,7 +31,7 @@ module Gitlab
             merge_repo.git.push({raise: true, timeout: true}, :origin, merge_request.target_branch)
 
             # remove source branch
-            if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch)
+            if merge_request.should_remove_source_branch && !project.repository.root_ref?(merge_request.source_branch)
               # will raise CommandFailed when push fails
               merge_repo.git.push({raise: true, timeout: true}, :origin, ":#{merge_request.source_branch}")
             end

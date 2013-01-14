@@ -4,7 +4,7 @@ describe GitlabMarkdownHelper do
   let!(:project) { create(:project) }
 
   let(:user)          { create(:user, username: 'gfm') }
-  let(:commit)        { CommitDecorator.decorate(project.commit) }
+  let(:commit)        { CommitDecorator.decorate(project.repository.commit) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, project: project) }
   let(:snippet)       { create(:snippet, project: project) }
@@ -85,7 +85,7 @@ describe GitlabMarkdownHelper do
       let(:expected) { project_team_member_path(project, member) }
 
       before do
-        project.add_access(user, :admin)
+        project.team << [user, :master]
       end
 
       it "should link using a simple name" do
@@ -314,7 +314,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should handle references in lists" do
-      project.add_access(user, :admin)
+      project.team << [user, :master]
 
       actual = "\n* dark: ##{issue.id}\n* light by @#{member.user.username}"
 

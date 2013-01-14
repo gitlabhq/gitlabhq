@@ -2,6 +2,7 @@ require Rails.root.join('lib', 'gitlab', 'graph', 'json_builder')
 
 class ProjectsController < ProjectResourceController
   skip_before_filter :project, only: [:new, :create]
+  skip_before_filter :repository, only: [:new, :create]
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
@@ -58,7 +59,7 @@ class ProjectsController < ProjectResourceController
 
     respond_to do |format|
       format.html do
-        unless @project.empty_repo?
+        if @project.repository && !@project.repository.empty?
           @last_push = current_user.recent_push(@project.id)
           render :show
         else
@@ -102,11 +103,10 @@ class ProjectsController < ProjectResourceController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    # Disable the UsersProject update_repository call, otherwise it will be
-    # called once for every person removed from the project
-    UsersProject.skip_callback(:destroy, :after, :update_repository)
+    # Delete team first in order to prevent multiple gitolite calls
+    project.team.truncate
+
     project.destroy
-    UsersProject.set_callback(:destroy, :after, :update_repository)
 
     respond_to do |format|
       format.html { redirect_to root_path }

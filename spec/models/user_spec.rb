@@ -39,7 +39,6 @@ describe User do
   describe "Associations" do
     it { should have_one(:namespace) }
     it { should have_many(:users_projects).dependent(:destroy) }
-    it { should have_many(:projects) }
     it { should have_many(:groups) }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }
@@ -64,10 +63,6 @@ describe User do
     it { should_not allow_value(-1).for(:projects_limit) }
 
     it { should ensure_length_of(:bio).is_within(0..255) }
-  end
-
-  describe 'modules' do
-    it { should include_module(Account) }
   end
 
   describe "Respond to" do
@@ -118,5 +113,84 @@ describe User do
       user = create(:user)
       user.authentication_token.should_not be_blank
     end
+  end
+
+  describe 'projects' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @user = create :user
+      @project = create :project, namespace: @user.namespace
+    end
+
+    it { @user.authorized_projects.should include(@project) }
+    it { @user.owned_projects.should include(@project) }
+    it { @user.personal_projects.should include(@project) }
+  end
+
+  describe 'groups' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @user = create :user
+      @group = create :group, owner: @user
+    end
+
+    it { @user.several_namespaces?.should be_true }
+    it { @user.namespaces.should == [@user.namespace, @group] }
+    it { @user.authorized_groups.should == [@group] }
+    it { @user.owned_groups.should == [@group] }
+  end
+
+  describe 'namespaced' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @user = create :user
+      @project = create :project, namespace: @user.namespace
+    end
+
+    it { @user.several_namespaces?.should be_false }
+    it { @user.namespaces.should == [@user.namespace] }
+  end
+
+  describe 'blocking user' do
+    let(:user) { create(:user, name: 'John Smith') }
+
+    it "should block user" do
+      user.block
+      user.blocked.should be_true
+    end
+  end
+
+  describe 'filter' do
+    before do
+      User.delete_all
+      @user = create :user
+      @admin = create :user, admin: true
+      @blocked = create :user, blocked: true
+    end
+
+    it { User.filter("admins").should == [@admin] }
+    it { User.filter("blocked").should == [@blocked] }
+    it { User.filter("wop").should == [@user, @admin, @blocked] }
+    it { User.filter(nil).should == [@user, @admin] }
+  end
+
+  describe :not_in_project do
+    before do
+      User.delete_all
+      @user = create :user
+      @project = create :project
+    end
+
+    it { User.not_in_project(@project).should == [@user, @project.owner] }
+  end
+
+  describe 'normal user' do
+    let(:user) { create(:user, name: 'John Smith') }
+
+    it { user.is_admin?.should be_false }
+    it { user.require_ssh_key?.should be_true }
+    it { user.can_create_group?.should be_false }
+    it { user.can_create_project?.should be_true }
+    it { user.first_name.should == 'John' }
   end
 end

@@ -11,7 +11,7 @@
 #
 
 class UsersProject < ActiveRecord::Base
-  include GitHost
+  include Gitolited
 
   GUEST     = 10
   REPORTER  = 20
@@ -23,87 +23,96 @@ class UsersProject < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  after_save :update_repository
-  after_destroy :update_repository
+  attr_accessor :skip_git
+
+  after_save :update_repository, unless: :skip_git?
+  after_destroy :update_repository, unless: :skip_git?
 
   validates :user, presence: true
-  validates :user_id, uniqueness: { :scope => [:project_id], message: "already exists in project" }
+  validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
 
   delegate :name, :email, to: :user, prefix: true
 
+  scope :guests, where(project_access: GUEST)
+  scope :reporters, where(project_access: REPORTER)
+  scope :developers, where(project_access: DEVELOPER)
+  scope :masters, where(project_access: MASTER)
+  scope :in_project, ->(project) { where(project_id: project.id) }
+
   class << self
-    def import_team(source_project, target_project)
-      UsersProject.without_repository_callback do
-        UsersProject.transaction do
-          team = source_project.users_projects.all
 
-          team.each do |tm|
-            # Skip if user already present in team
-            next if target_project.users.include?(tm.user)
+    # Add users to project teams with passed access option
+    #
+    # access can be an integer representing a access code
+    # or symbol like :master representing role
+    #
+    # Ex.
+    #   add_users_into_projects(
+    #     project_ids,
+    #     user_ids,
+    #     UsersProject::MASTER
+    #   )
+    #
+    #   add_users_into_projects(
+    #     project_ids,
+    #     user_ids,
+    #     :master
+    #   )
+    #
+    def add_users_into_projects(project_ids, user_ids, access)
+      project_access = if roles_hash.has_key?(access)
+                         roles_hash[access]
+                       elsif roles_hash.values.include?(access.to_i)
+                         access
+                       else
+                         raise "Non valid access"
+                       end
 
-            new_tm = tm.dup
-            new_tm.id = nil
-            new_tm.project_id = target_project.id
-            new_tm.save
+      UsersProject.transaction do
+        project_ids.each do |project_id|
+          user_ids.each do |user_id|
+            users_project = UsersProject.new(project_access: project_access, user_id: user_id)
+            users_project.project_id = project_id
+            users_project.skip_git = true
+            users_project.save
           end
         end
+        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
 
-      target_project.update_repository
       true
     rescue
       false
     end
 
-    def without_repository_callback
-      UsersProject.skip_callback(:destroy, :after, :update_repository)
-      yield
-      UsersProject.set_callback(:destroy, :after, :update_repository)
-    end
-
-    def bulk_delete(project, user_ids)
+    def truncate_teams(project_ids)
       UsersProject.transaction do
-        UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
+        users_projects = UsersProject.where(project_id: project_ids)
+        users_projects.each do |users_project|
+          users_project.skip_git = true
           users_project.destroy
         end
+        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
+
+      true
+    rescue
+      false
     end
 
-    def bulk_update(project, user_ids, project_access)
-      UsersProject.transaction do
-        UsersProject.where(:user_id => user_ids, :project_id => project.id).each do |users_project|
-          users_project.project_access = project_access
-          users_project.save
-        end
-      end
+    def truncate_team project
+      truncate_teams [project.id]
     end
 
-    def bulk_import(project, user_ids, project_access)
-      UsersProject.transaction do
-        user_ids.each do |user_id|
-          users_project = UsersProject.new(
-            project_access: project_access,
-            user_id: user_id
-          )
-          users_project.project = project
-          users_project.save
-        end
-      end
-    end
-
-    def user_bulk_import(user, project_ids, project_access)
-      UsersProject.transaction do
-        project_ids.each do |project_id|
-          users_project = UsersProject.new(
-            project_access: project_access,
-          )
-          users_project.project_id = project_id
-          users_project.user_id = user.id
-          users_project.save
-        end
-      end
+    def roles_hash
+      {
+        guest: GUEST,
+        reporter: REPORTER,
+        developer: DEVELOPER,
+        master: MASTER
+      }
     end
 
     def access_roles
@@ -116,12 +125,8 @@ class UsersProject < ActiveRecord::Base
     end
   end
 
-  def role_access
-    project_access
-  end
-
   def update_repository
-    git_host.update_repository(project)
+    gitolite.update_repository(project)
   end
 
   def project_access_human
@@ -130,5 +135,9 @@ class UsersProject < ActiveRecord::Base
 
   def repo_access_human
     self.class.access_roles.invert[self.project_access]
+  end
+
+  def skip_git?
+    !!@skip_git
   end
 end

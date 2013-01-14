@@ -26,8 +26,14 @@
         %td
           - if can? current_user, :download_code, @project
             = link_to archive_project_repository_path(@project, ref: tag.name) do
-              %i.icon-download
+              %i.icon-download-alt
               Download
 
 - else
-  %h3 No tags
+  %h3.nothing_here_message
+    Repository has no tags yet.
+    %br
+    %small
+      Use git tag command to add a new one:
+      %br
+      %span.monospace git tag -a v1.4 -m 'version 1.4'

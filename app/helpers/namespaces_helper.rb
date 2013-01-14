@@ -1,6 +1,6 @@
 module NamespacesHelper
   def namespaces_options(selected = :current_user, scope = :default)
-    groups = current_user.namespaces.select {|n| n.type == 'Group'}
+    groups = current_user.owned_groups.select {|n| n.type == 'Group'}
 
     users = if scope == :all
               Namespace.root

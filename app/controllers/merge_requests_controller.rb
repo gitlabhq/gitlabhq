@@ -74,6 +74,8 @@ class MergeRequestsController < ProjectResourceController
       @merge_request.check_if_can_be_merged
     end
     render json: {state: @merge_request.human_state}
+  rescue Gitlab::SatelliteNotExistError
+    render json: {state: :no_satellite}
   end
 
   def automerge
@@ -88,12 +90,12 @@ class MergeRequestsController < ProjectResourceController
   end
 
   def branch_from
-    @commit = project.commit(params[:ref])
+    @commit = @repository.commit(params[:ref])
     @commit = CommitDecorator.decorate(@commit)
   end
 
   def branch_to
-    @commit = project.commit(params[:ref])
+    @commit = @repository.commit(params[:ref])
     @commit = CommitDecorator.decorate(@commit)
   end
 

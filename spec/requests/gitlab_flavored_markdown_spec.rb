@@ -6,7 +6,7 @@ describe "Gitlab Flavored Markdown" do
   let(:merge_request) { create(:merge_request, project: project) }
   let(:fred) do
       u = create(:user, name: "fred")
-      project.add_access(u, :admin)
+      project.team << [u, :master]
       u
   end
 
@@ -33,11 +33,11 @@ describe "Gitlab Flavored Markdown" do
     project.repo.gc_auto
   end
 
-  let(:commit) { project.commits(@branch_name).first }
+  let(:commit) { project.repository.commits(@branch_name).first }
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write)
+    project.team << [@user, :developer]
   end
 
   describe "for commits" do

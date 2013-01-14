@@ -70,4 +70,12 @@ module CommitsHelper
       escape_javascript(render 'commits/commit', commit: commit)
     end
   end
+
+  def diff_line_content(line)
+    if line.blank?
+      " &nbsp;"
+    else
+      line
+    end
+  end
 end

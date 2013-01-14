@@ -2,7 +2,7 @@ class UserObserver < ActiveRecord::Observer
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
-    Notify.new_user_email(user.id, user.password).deliver
+    Notify.delay.new_user_email(user.id, user.password)
   end
 
   def after_destroy user
@@ -14,7 +14,7 @@ class UserObserver < ActiveRecord::Observer
       if user.namespace
         user.namespace.update_attributes(path: user.username)
       else
-        user.create_namespace!(path: user.username, name: user.name)
+        user.create_namespace!(path: user.username, name: user.username)
       end
     end
   end

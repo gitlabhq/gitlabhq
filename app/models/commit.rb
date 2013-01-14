@@ -11,7 +11,7 @@ class Commit
   attr_accessor :commit, :head, :refs
 
   delegate  :message, :authored_date, :committed_date, :parents, :sha,
-            :date, :committer, :author, :message, :diffs, :tree, :id,
+            :date, :committer, :author, :diffs, :tree, :id, :stats,
             :to_patch, to: :commit
 
   class << self
@@ -83,8 +83,8 @@ class Commit
 
       return result unless from && to
 
-      first = project.commit(to.try(:strip))
-      last = project.commit(from.try(:strip))
+      first = project.repository.commit(to.try(:strip))
+      last = project.repository.commit(from.try(:strip))
 
       if first && last
         result[:same] = (first.id == last.id)
@@ -98,6 +98,8 @@ class Commit
   end
 
   def initialize(raw_commit, head = nil)
+    raise "Nil as raw commit passed" unless raw_commit
+
     @commit = raw_commit
     @head = head
   end
@@ -136,15 +138,15 @@ class Commit
   end
 
   def prev_commit
-    parents.try :first
+    @prev_commit ||= if parents.present?
+                       Commit.new(parents.first)
+                     else
+                       nil
+                     end
   end
 
   def prev_commit_id
     prev_commit.try :id
-  end
-
-  def parents_count
-    parents && parents.count || 0
   end
 
   # Shows the diff between the commit's parent and the commit.

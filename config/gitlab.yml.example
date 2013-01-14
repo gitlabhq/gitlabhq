@@ -1,6 +1,12 @@
 # # # # # # # # # # # # # # # # # # 
 # Gitlab application config file  #
 # # # # # # # # # # # # # # # # # #
+#
+# How to use:
+# 1. copy file as gitlab.yml
+# 2. Replace gitlab -> host with your domain
+# 3. Replace gitolite -> ssh_host with your domain
+# 4. Replace gitlab -> email_from
 
 #
 # 1. GitLab app settings
@@ -12,6 +18,9 @@ gitlab:
   host: localhost
   port: 80
   https: false
+  # uncomment and customize to run in non-root path
+  # note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
+  # relative_url_root: /gitlab
 
   ## Email settings
   # Email address used in the "From" field in mails sent by GitLab
@@ -83,6 +92,7 @@ backup:
 ## Gitolite settings
 gitolite:
   admin_uri: git@localhost:gitolite-admin
+  # repos_path must not be a symlink
   repos_path: /home/git/repositories/
   hooks_path: /home/git/.gitolite/hooks/
   admin_key: gitlab

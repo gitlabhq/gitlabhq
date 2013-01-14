@@ -56,10 +56,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I submit new merge request "Wiki Feature"' do
-    fill_in "merge_request_title", with: "Wiki Feature"
-    select "master", from: "merge_request_source_branch"
-    select "stable", from: "merge_request_target_branch"
-    click_button "Save"
+    fill_in "merge_request_title", :with => "Wiki Feature"
+    select "master", :from => "merge_request_source_branch"
+    select "stable", :from => "merge_request_target_branch"
+    click_button "Submit merge request"
   end
 
   And 'project "Shop" have "Bug NS-04" open merge request' do

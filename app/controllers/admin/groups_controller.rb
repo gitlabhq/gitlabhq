@@ -1,5 +1,5 @@
 class Admin::GroupsController < AdminController
-  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update]
+  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
 
   def index
     @groups = Group.order('name ASC')
@@ -12,6 +12,8 @@ class Admin::GroupsController < AdminController
     @projects = @projects.not_in_group(@group) if @group.projects.present?
     @projects = @projects.all
     @projects.reject!(&:empty_repo?)
+
+    @users = User.active
   end
 
   def new
@@ -65,7 +67,14 @@ class Admin::GroupsController < AdminController
     redirect_to :back, notice: 'Group was successfully updated.'
   end
 
+  def project_teams_update
+    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
+    redirect_to [:admin, @group], notice: 'Users was successfully added.'
+  end
+
   def destroy
+    @group.truncate_teams
+
     @group.destroy
 
     redirect_to admin_groups_path, notice: 'Group was successfully deleted.'

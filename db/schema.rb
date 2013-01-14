@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121219095402) do
+ActiveRecord::Schema.define(:version => 20130102143055) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -148,7 +148,7 @@ ActiveRecord::Schema.define(:version => 20121219095402) do
     t.datetime "created_at",                               :null => false
     t.datetime "updated_at",                               :null => false
     t.boolean  "private_flag",           :default => true, :null => false
-    t.integer  "owner_id"
+    t.integer  "creator_id"
     t.string   "default_branch"
     t.boolean  "issues_enabled",         :default => true, :null => false
     t.boolean  "wall_enabled",           :default => true, :null => false
@@ -157,8 +157,8 @@ ActiveRecord::Schema.define(:version => 20121219095402) do
     t.integer  "namespace_id"
   end
 
+  add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"
   add_index "projects", ["namespace_id"], :name => "index_projects_on_namespace_id"
-  add_index "projects", ["owner_id"], :name => "index_projects_on_owner_id"
 
   create_table "protected_branches", :force => true do |t|
     t.integer  "project_id", :null => false

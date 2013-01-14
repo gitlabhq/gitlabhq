@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>EventDecorator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            EventDecorator 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ApplicationDecorator.html">ApplicationDecorator</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/decorators/event_decorator_rb.html">app/decorators/event_decorator.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-feed_summary">feed_summary</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-feed_title">feed_title</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-feed_url">feed_url</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-feed_summary">
+            
+              <b>feed_summary</b>()
+            
+            <a href="../classes/EventDecorator.html#method-i-feed_summary" name="method-i-feed_summary" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-feed_summary_source')" id="l_method-i-feed_summary_source">show</a>
+                
+              </p>
+              <div id="method-i-feed_summary_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/event_decorator.rb, line 37</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">feed_summary</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">issue?</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">render</span> <span class="ruby-string">&quot;events/event_issue&quot;</span>, <span class="ruby-identifier">issue</span><span class="ruby-operator">:</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">issue</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">push?</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">render</span> <span class="ruby-string">&quot;events/event_push&quot;</span>, <span class="ruby-identifier">event</span><span class="ruby-operator">:</span> <span class="ruby-keyword">self</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-feed_title">
+            
+              <b>feed_title</b>()
+            
+            <a href="../classes/EventDecorator.html#method-i-feed_title" name="method-i-feed_title" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-feed_title_source')" id="l_method-i-feed_title_source">show</a>
+                
+              </p>
+              <div id="method-i-feed_title_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/event_decorator.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">feed_title</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">issue?</span>
+    <span class="ruby-node">&quot;#{self.author_name} #{self.action_name} issue ##{self.target_id}: #{self.issue_title} at #{self.project.name}&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">merge_request?</span>
+    <span class="ruby-node">&quot;#{self.author_name} #{self.action_name} MR ##{self.target_id}: #{self.merge_request_title} at #{self.project.name}&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">push?</span>
+    <span class="ruby-node">&quot;#{self.author_name} #{self.push_action_name} #{self.ref_type} #{self.ref_name} at #{self.project.name}&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">membership_changed?</span>
+    <span class="ruby-node">&quot;#{self.author_name} #{self.action_name} #{self.project.name}&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-string">&quot;&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-feed_url">
+            
+              <b>feed_url</b>()
+            
+            <a href="../classes/EventDecorator.html#method-i-feed_url" name="method-i-feed_url" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-feed_url_source')" id="l_method-i-feed_url_source">show</a>
+                
+              </p>
+              <div id="method-i-feed_url_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/event_decorator.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">feed_url</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">issue?</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">project_issue_url</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project</span>, <span class="ruby-keyword">self</span>.<span class="ruby-identifier">issue</span>)
+  <span class="ruby-keyword">elsif</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">merge_request?</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">project_merge_request_url</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project</span>, <span class="ruby-keyword">self</span>.<span class="ruby-identifier">merge_request</span>)
+
+  <span class="ruby-keyword">elsif</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">push?</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">push_with_commits?</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">commits_count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">1</span>
+        <span class="ruby-identifier">h</span>.<span class="ruby-identifier">project_compare_url</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project</span>, <span class="ruby-value">:from</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">parent_commit</span>.<span class="ruby-identifier">id</span>, <span class="ruby-value">:to</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">last_commit</span>.<span class="ruby-identifier">id</span>)
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">h</span>.<span class="ruby-identifier">project_commit_url</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project</span>, <span class="ruby-value">:id</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">last_commit</span>.<span class="ruby-identifier">id</span>)
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">h</span>.<span class="ruby-identifier">project_commits_url</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">project</span>, <span class="ruby-keyword">self</span>.<span class="ruby-identifier">ref_name</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

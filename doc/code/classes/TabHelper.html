@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>TabHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            TabHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/tab_helper_rb.html">app/helpers/tab_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-branches_tab_class">branches_tab_class</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-nav_link">nav_link</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-nav_tab">nav_tab</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-project_tab_class">project_tab_class</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-branches_tab_class">
+            
+              <b>branches_tab_class</b>()
+            
+            <a href="../classes/TabHelper.html#method-i-branches_tab_class" name="method-i-branches_tab_class" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-branches_tab_class_source')" id="l_method-i-branches_tab_class_source">show</a>
+                
+              </p>
+              <div id="method-i-branches_tab_class_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tab_helper.rb, line 80</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">branches_tab_class</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">current_page?</span>(<span class="ruby-identifier">branches_project_repository_path</span>(<span class="ruby-ivar">@project</span>)) <span class="ruby-operator">||</span>
+    <span class="ruby-identifier">current_controller?</span>(<span class="ruby-value">:protected_branches</span>) <span class="ruby-operator">||</span>
+    <span class="ruby-identifier">current_page?</span>(<span class="ruby-identifier">project_repository_path</span>(<span class="ruby-ivar">@project</span>))
+    <span class="ruby-string">'active'</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-nav_link">
+            
+              <b>nav_link</b>(options = {}, &amp;block)
+            
+            <a href="../classes/TabHelper.html#method-i-nav_link" name="method-i-nav_link" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Navigation link helper</p>
+
+<p>Returns an `li` element with an ‘active’ class if the supplied
+controller(s) and/or action(s) are currently active. The content of the
+element is the value passed to the block.</p>
+
+<p>options - The options hash used to determine if the element is “active”
+(default: {})</p>
+
+<pre>:controller   - One or more controller names to check (optional).
+:action       - One or more action names to check (optional).
+:path         - A shorthand path, such as 'dashboard#index', to check (optional).
+:html_options - Extra options to be passed to the list element (optional).</pre>
+
+<p>block   - An optional block that will become the contents of the returned</p>
+
+<pre>`li` element.</pre>
+
+<p>When both :controller and :action are specified, BOTH must match in order
+to be marked as active. When only one is given, either can match.</p>
+
+<p>Examples</p>
+
+<pre class="ruby"><span class="ruby-comment"># Assuming we're on TreeController#show</span>
+
+<span class="ruby-comment"># Controller matches, but action doesn't</span>
+<span class="ruby-identifier">nav_link</span>(<span class="ruby-identifier">controller</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">tree</span>, :<span class="ruby-identifier">refs</span>], <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">edit</span>) { <span class="ruby-string">&quot;Hello&quot;</span> }
+<span class="ruby-comment"># =&gt; '&lt;li&gt;Hello&lt;/li&gt;'</span>
+
+<span class="ruby-comment"># Controller matches</span>
+<span class="ruby-identifier">nav_link</span>(<span class="ruby-identifier">controller</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">tree</span>, :<span class="ruby-identifier">refs</span>]) { <span class="ruby-string">&quot;Hello&quot;</span> }
+<span class="ruby-comment"># =&gt; '&lt;li class=&quot;active&quot;&gt;Hello&lt;/li&gt;'</span>
+
+<span class="ruby-comment"># Shorthand path</span>
+<span class="ruby-identifier">nav_link</span>(<span class="ruby-identifier">path</span><span class="ruby-operator">:</span> <span class="ruby-string">'tree#show'</span>) { <span class="ruby-string">&quot;Hello&quot;</span> }
+<span class="ruby-comment"># =&gt; '&lt;li class=&quot;active&quot;&gt;Hello&lt;/li&gt;'</span>
+
+<span class="ruby-comment"># Supplying custom options for the list element</span>
+<span class="ruby-identifier">nav_link</span>(<span class="ruby-identifier">controller</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">tree</span>, <span class="ruby-identifier">html_options</span><span class="ruby-operator">:</span> {<span class="ruby-keyword">class</span><span class="ruby-operator">:</span> <span class="ruby-string">'home'</span>}) { <span class="ruby-string">&quot;Hello&quot;</span> }
+<span class="ruby-comment"># =&gt; '&lt;li class=&quot;home active&quot;&gt;Hello&lt;/li&gt;'</span>
+</pre>
+
+<p>Returns a list item element String</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-nav_link_source')" id="l_method-i-nav_link_source">show</a>
+                
+              </p>
+              <div id="method-i-nav_link_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tab_helper.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">nav_link</span>(<span class="ruby-identifier">options</span> = {}, &amp;<span class="ruby-identifier">block</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:path</span>)
+    <span class="ruby-identifier">c</span>, <span class="ruby-identifier">a</span>, <span class="ruby-identifier">_</span> = <span class="ruby-identifier">path</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">'#'</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">c</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:controller</span>)
+    <span class="ruby-identifier">a</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:action</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">c</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">a</span>
+    <span class="ruby-comment"># When given both options, make sure BOTH are active</span>
+    <span class="ruby-identifier">klass</span> = <span class="ruby-identifier">current_controller?</span>(*<span class="ruby-identifier">c</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">current_action?</span>(*<span class="ruby-identifier">a</span>) <span class="ruby-operator">?</span> <span class="ruby-string">'active'</span> <span class="ruby-operator">:</span> <span class="ruby-string">''</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-comment"># Otherwise check EITHER option</span>
+    <span class="ruby-identifier">klass</span> = <span class="ruby-identifier">current_controller?</span>(*<span class="ruby-identifier">c</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">current_action?</span>(*<span class="ruby-identifier">a</span>) <span class="ruby-operator">?</span> <span class="ruby-string">'active'</span> <span class="ruby-operator">:</span> <span class="ruby-string">''</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># Add our custom class into the html_options, which may or may not exist</span>
+  <span class="ruby-comment"># and which may or may not already have a :class key</span>
+  <span class="ruby-identifier">o</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:html_options</span>) <span class="ruby-operator">||</span> {}
+  <span class="ruby-identifier">o</span>[<span class="ruby-value">:class</span>] <span class="ruby-operator">||=</span> <span class="ruby-string">''</span>
+  <span class="ruby-identifier">o</span>[<span class="ruby-value">:class</span>] <span class="ruby-operator">+=</span> <span class="ruby-string">' '</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">klass</span>
+  <span class="ruby-identifier">o</span>[<span class="ruby-value">:class</span>].<span class="ruby-identifier">strip!</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
+    <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:li</span>, <span class="ruby-identifier">capture</span>(&amp;<span class="ruby-identifier">block</span>), <span class="ruby-identifier">o</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:li</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">o</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-nav_tab">
+            
+              <b>nav_tab</b>(key, value, &amp;block)
+            
+            <a href="../classes/TabHelper.html#method-i-nav_tab" name="method-i-nav_tab" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Use <a href="TabHelper.html#method-i-nav_tab">#nav_tab</a> for save
+controller/action  but different params</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-nav_tab_source')" id="l_method-i-nav_tab_source">show</a>
+                
+              </p>
+              <div id="method-i-nav_tab_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tab_helper.rb, line 89</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">nav_tab</span> <span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>, &amp;<span class="ruby-identifier">block</span>
+  <span class="ruby-identifier">o</span> = {}
+  <span class="ruby-identifier">o</span>[<span class="ruby-value">:class</span>] = <span class="ruby-string">&quot;&quot;</span>
+  <span class="ruby-identifier">o</span>[<span class="ruby-value">:class</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot; active&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">key</span>] <span class="ruby-operator">==</span> <span class="ruby-identifier">value</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
+    <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:li</span>, <span class="ruby-identifier">capture</span>(&amp;<span class="ruby-identifier">block</span>), <span class="ruby-identifier">o</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">content_tag</span>(<span class="ruby-value">:li</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">o</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project_tab_class">
+            
+              <b>project_tab_class</b>()
+            
+            <a href="../classes/TabHelper.html#method-i-project_tab_class" name="method-i-project_tab_class" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_tab_class_source')" id="l_method-i-project_tab_class_source">show</a>
+                
+              </p>
+              <div id="method-i-project_tab_class_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/tab_helper.rb, line 70</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_tab_class</span>
+  [<span class="ruby-value">:show</span>, <span class="ruby-value">:files</span>, <span class="ruby-value">:edit</span>, <span class="ruby-value">:update</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">action</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-string">&quot;active&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">current_page?</span>(<span class="ruby-identifier">controller</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;projects&quot;</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-identifier">action</span>, <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@project</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-keyword">if</span> [<span class="ruby-string">'snippets'</span>, <span class="ruby-string">'services'</span>, <span class="ruby-string">'hooks'</span>, <span class="ruby-string">'deploy_keys'</span>, <span class="ruby-string">'team_members'</span>].<span class="ruby-identifier">include?</span> <span class="ruby-identifier">controller</span>.<span class="ruby-identifier">controller_name</span>
+   <span class="ruby-string">&quot;active&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

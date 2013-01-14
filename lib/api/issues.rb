@@ -78,6 +78,7 @@ module Gitlab
 
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :closed]
         attrs[:label_list] = params[:labels] if params[:labels].present?
+        IssueObserver.current_user = current_user
         if @issue.update_attributes attrs
           present @issue, with: Entities::Issue
         else

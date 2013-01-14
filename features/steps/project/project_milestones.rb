@@ -50,12 +50,12 @@ class ProjectMilestones < Spinach::FeatureSteps
   end
 
   Then "I should see 3 issues" do
-    page.should have_selector('.milestone-issue-filter tbody tr', count: 4)
-    page.should have_selector('.milestone-issue-filter tbody tr.hide', count: 1)
+    page.should have_selector('.milestone-issue-filter .well-list li', count: 4)
+    page.should have_selector('.milestone-issue-filter .well-list li.hide', count: 1)
   end
 
   Then "I should see 4 issues" do
-    page.should have_selector('.milestone-issue-filter tbody tr', count: 4)
-    page.should_not have_selector('.milestone-issue-filter tbody tr.hide')
+    page.should have_selector('.milestone-issue-filter .well-list li', count: 4)
+    page.should_not have_selector('.milestone-issue-filter .well-list li.hide')
   end
 end
