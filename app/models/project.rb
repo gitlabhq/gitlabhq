@@ -84,6 +84,14 @@ class Project < ActiveRecord::Base
   scope :public, where(public: true)
 
   class << self
+    def abandoned
+      project_ids = Event.select('max(created_at) as latest_date, project_id').
+        group('project_id').
+        having('latest_date < ?', 6.months.ago).map(&:project_id)
+
+      where(id: project_ids)
+    end
+
     def active
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end

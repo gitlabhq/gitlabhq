@@ -21,6 +21,20 @@
           = label_tag :public_only, 'Public Only', class: 'control-label'
           .controls
             = check_box_tag :public_only, 1, params[:public_only]
+        .control-group
+          = label_tag :with_push, 'Not empty', class: 'control-label'
+          .controls
+            = check_box_tag :with_push, 1, params[:with_push]
+            &nbsp;
+            %span.light Projects with push events
+        .control-group
+          = label_tag :abandoned, 'Abandoned', class: 'control-label'
+          .controls
+            = check_box_tag :abandoned, 1, params[:abandoned]
+            &nbsp;
+            %span.light No activity over 6 month
+
+
 
         .form-actions
           = submit_tag "Search", class: "btn submit primary"
@@ -44,4 +58,4 @@
           %p.nothing_here_message 0 projects matches
         - else
           %li.bottom
-            = paginate @projects, theme: "admin"
+            = paginate @projects, theme: "gitlab"
