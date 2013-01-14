@@ -5,7 +5,7 @@ class Admin::ProjectsController < AdminController
     @projects = Project.scoped
     @projects = @projects.where(namespace_id: params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.where(public: true) if params[:public_only].present?
-    @projects = @projects.joins(:events).where('events.action = ?', Event::Pushed) if params[:with_push].present?
+    @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
     @projects = @projects.where(namespace_id: nil) if params[:namespace_id] == Namespace.global_id
     @projects = @projects.search(params[:name]) if params[:name].present?

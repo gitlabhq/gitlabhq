@@ -92,6 +92,10 @@ class Project < ActiveRecord::Base
       where(id: project_ids)
     end
 
+    def with_push
+      includes(:events).where('events.action = ?', Event::Pushed)
+    end
+
     def active
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end
