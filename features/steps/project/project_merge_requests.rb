@@ -103,6 +103,8 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I leave a comment on the diff page' do
+    find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185 .add-diff-note").click
+
     within('.js-temp-notes-holder') do
       fill_in "note_note", with: "One comment to rule them all"
       click_button "Add Comment"
@@ -122,7 +124,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   Then 'I should see a discussion has started on line 185' do
     mr = MergeRequest.find_by_title("Bug NS-05")
     first_commit = mr.commits.first
-    first_diff   = mr.diffs.first
+    first_diff   = first_commit.diffs.first
     page.should have_content "#{current_user.name} started a discussion on this merge request diff"
     page.should have_content "#{first_diff.b_path}:L185"
     page.should have_content "Line is wrong"
@@ -131,7 +133,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   Then 'I should see a discussion has started on commit bcf03b5de6c:L185' do
     mr = MergeRequest.find_by_title("Bug NS-05")
     first_commit = mr.commits.first
-    first_diff   = mr.diffs.first
+    first_diff   = first_commit.diffs.first
     page.should have_content "#{current_user.name} started a discussion on commit"
     page.should have_content first_commit.short_id(8)
     page.should have_content "#{first_diff.b_path}:L185"
@@ -141,10 +143,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   Then 'I should see a discussion has started on commit bcf03b5de6c' do
     mr = MergeRequest.find_by_title("Bug NS-05")
     first_commit = mr.st_commits.first
-    first_diff   = mr.diffs.first
-    page.should have_content "#{current_user.name} started a discussion on commit"
+    first_diff   = first_commit.diffs.first
+    page.should have_content "#{current_user.name} started a discussion on commit bcf03b5de6c"
     page.should have_content first_commit.short_id(8)
     page.should have_content "One comment to rule them all"
-    page.should_not have_content "#{first_diff.b_path}:L185"
+    page.should have_content "#{first_diff.b_path}:L185"
   end
 end

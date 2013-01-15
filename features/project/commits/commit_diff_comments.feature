@@ -84,8 +84,9 @@ Feature: Comments on commit diffs
     Then I should not see the diff comment form
     And I should see a discussion reply button
 
-  @javascript
-  Scenario: I can delete a discussion comment
-    Given I leave a diff comment like "Typo, please fix"
-    And I delete a diff comment
-    Then I should not see a diff comment saying "Typo, please fix"
+
+  #@wip @javascript
+  #Scenario: I can delete a discussion comment
+  #  Given I leave a diff comment like "Typo, please fix"
+  #  And I delete a diff comment
+  #  Then I should not see a diff comment saying "Typo, please fix"
