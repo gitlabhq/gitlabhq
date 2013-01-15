@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequestsController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
-  let(:merge_request) { create(:merge_request_with_diffs, project: project) }
+  let(:merge_request) { create(:merge_request_with_diffs, project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
 
   before do
     sign_in(user)
