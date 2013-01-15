@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "On the project wall", js: true do
   let!(:project) { create(:project) }
-  let!(:commit) { project.commit("bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a") }
+  let!(:commit) { project.repository.commit("bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a") }
 
   before do
     login_as :user
