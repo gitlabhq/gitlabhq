@@ -8,6 +8,7 @@ module SharedDiffNote
   end
 
   Given 'I delete a diff comment' do
+    sleep 1
     within(".diff_file") do
       first(".js-note-delete").trigger("click")
     end
@@ -25,6 +26,7 @@ module SharedDiffNote
       fill_in "note[note]", with: "Typo, please fix"
       #click_button("Add Comment")
       find(".js-comment-button").trigger("click")
+      sleep 0.05
     end
   end
 

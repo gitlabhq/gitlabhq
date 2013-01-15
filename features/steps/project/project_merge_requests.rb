@@ -103,21 +103,19 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I leave a comment on the diff page' do
-    within(:xpath, "//div[@class='note-form-holder']") do
+    within('.js-temp-notes-holder') do
       fill_in "note_note", with: "One comment to rule them all"
       click_button "Add Comment"
     end
   end
 
   And 'I leave a comment like "Line is wrong" on line 185 of the first file' do
-    save_and_open_page
-    within(:xpath, "//div[@class='diff_file'][1]") do
-      click_link "add-diff-line-note-0_185_185"
-    end
+    find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185 .add-diff-note").click
 
-    within(:xpath, "//div[@class='line-note-form-holder']") do
+    within(".js-temp-notes-holder") do
       fill_in "note_note", with: "Line is wrong"
       click_button "Add Comment"
+      sleep 0.05
     end
   end
 

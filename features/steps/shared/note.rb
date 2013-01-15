@@ -39,8 +39,6 @@ module SharedNote
     end
   end
 
-
-
   Then 'I should not see a comment saying "XML attached"' do
     page.should_not have_css(".note")
   end
@@ -112,5 +110,11 @@ module SharedNote
 
   Then 'I should see project wall note "my special test message"' do
     page.should have_content "my special test message"
+  end
+
+  Then 'I should see comment "XML attached"' do
+    within(".note") do
+      page.should have_content("XML attached")
+    end
   end
 end
