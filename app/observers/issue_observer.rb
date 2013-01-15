@@ -3,7 +3,7 @@ class IssueObserver < ActiveRecord::Observer
 
   def after_create(issue)
     if issue.assignee && issue.assignee != current_user
-      Notify.new_issue_email(issue.id).deliver
+      Notify.delay.new_issue_email(issue.id)
     end
   end
 
@@ -16,7 +16,7 @@ class IssueObserver < ActiveRecord::Observer
     if status
       Note.create_status_change_note(issue, current_user, status)
       [issue.author, issue.assignee].compact.each do |recipient|
-        Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id).deliver
+        Notify.delay.issue_status_changed_email(recipient.id, issue.id, status, current_user.id)
       end
     end
   end
@@ -27,7 +27,7 @@ class IssueObserver < ActiveRecord::Observer
     recipient_ids = [issue.assignee_id, issue.assignee_id_was].keep_if {|id| id && id != current_user.id }
 
     recipient_ids.each do |recipient_id|
-      Notify.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was).deliver
+      Notify.delay.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was)
     end
   end
 end

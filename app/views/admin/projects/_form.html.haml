@@ -44,6 +44,13 @@
       .input= f.check_box :wiki_enabled
 
   %fieldset.features
+    %legend Public mode:
+    .clearfix
+      = f.label :public do
+        %span Allow public http clone
+      .input= f.check_box :public
+
+  %fieldset.features
     %legend Transfer:
     .control-group
       = f.label :namespace_id do

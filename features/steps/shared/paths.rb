@@ -165,6 +165,11 @@ module SharedPaths
     visit project_path(project)
   end
 
+  When 'I visit edit project "Shop" page' do
+    project = Project.find_by_name("Shop")
+    visit edit_project_path(project)
+  end
+
   Given 'I visit project branches page' do
     visit branches_project_repository_path(@project)
   end

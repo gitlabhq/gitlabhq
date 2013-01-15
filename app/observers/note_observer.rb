@@ -11,7 +11,7 @@ class NoteObserver < ActiveRecord::Observer
       notify_team(note)
     elsif note.notify_author
       # Notify only author of resource
-      Notify.note_commit_email(note.commit_author.id, note.id).deliver
+      Notify.delay.note_commit_email(note.commit_author.id, note.id)
     else
       # Otherwise ignore it
       nil
@@ -26,7 +26,7 @@ class NoteObserver < ActiveRecord::Observer
 
     if Notify.respond_to? notify_method
       team_without_note_author(note).map do |u|
-        Notify.send(notify_method, u.id, note.id).deliver
+        Notify.delay.send(notify_method, u.id, note.id)
       end
     end
   end

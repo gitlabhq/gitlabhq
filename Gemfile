@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.10"
+gem "rails", "3.2.11"
 
 # Supported DBs
 gem "mysql2", group: :mysql
@@ -71,7 +71,6 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "thin", '~> 1.5.0'
 gem "unicorn", "~> 4.4.0"
 
 # Issue tags
@@ -81,8 +80,9 @@ gem "acts-as-taggable-on", "2.3.3"
 gem "draper", "~> 0.18.0"
 
 # Background jobs
-gem "resque", git: "https://github.com/gitlabhq/resque.git", ref: "9ef4700306dd946a3ac000612428967ce0c32213"
-gem 'resque_mailer'
+gem 'slim'
+gem 'sinatra', :require => nil
+gem 'sidekiq', '2.6.4'
 
 # HTTP requests
 gem "httparty"
@@ -110,7 +110,7 @@ group :assets do
   gem "modernizr",        "2.6.2"
   gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass',   "2.2.1.1"
-  gem "font-awesome-sass-rails", "~> 2.0.0"
+  gem "font-awesome-sass-rails", "~> 3.0.0"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 end
 
@@ -157,7 +157,6 @@ group :test do
   gem "simplecov", require: false
   gem "shoulda-matchers", "1.3.0"
   gem 'email_spec'
-  gem 'resque_spec'
   gem "webmock"
   gem 'test_after_commit'
 end

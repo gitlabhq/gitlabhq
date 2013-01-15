@@ -4,7 +4,6 @@ describe NoteObserver do
   subject { NoteObserver.instance }
 
   let(:team_without_author) { (1..2).map { |n| double :user, id: n } }
-  let(:delivery_success) { double deliver: true }
 
   describe '#after_create' do
     let(:note) { double :note }
@@ -45,13 +44,13 @@ describe NoteObserver do
       note.stub(:id).and_return(42)
       author = double :user, id: 1
       note.stub(:commit_author).and_return(author)
-      Notify.should_receive(:note_commit_email).and_return(delivery_success)
+      Notify.should_receive(:note_commit_email)
 
       subject.after_create(note)
     end
 
     it 'does not notify the author of a commit when not flagged to notify the author' do
-      Notify.should_not_receive(:note_commit_email)
+      notify.should_not_receive(:note_commit_email)
 
       subject.after_create(note)
     end
@@ -71,28 +70,28 @@ describe NoteObserver do
     context 'notifies team of a new note on' do
       it 'a commit' do
         note.stub(:noteable_type).and_return('Commit')
-        Notify.should_receive(:note_commit_email).twice.and_return(delivery_success)
+        notify.should_receive(:note_commit_email).twice
 
         subject.send(:notify_team, note)
       end
 
       it 'an issue' do
         note.stub(:noteable_type).and_return('Issue')
-        Notify.should_receive(:note_issue_email).twice.and_return(delivery_success)
+        notify.should_receive(:note_issue_email).twice
 
         subject.send(:notify_team, note)
       end
 
       it 'a wiki page' do
         note.stub(:noteable_type).and_return('Wiki')
-        Notify.should_receive(:note_wiki_email).twice.and_return(delivery_success)
+        notify.should_receive(:note_wiki_email).twice
 
         subject.send(:notify_team, note)
       end
 
       it 'a merge request' do
         note.stub(:noteable_type).and_return('MergeRequest')
-        Notify.should_receive(:note_merge_request_email).twice.and_return(delivery_success)
+        notify.should_receive(:note_merge_request_email).twice
 
         subject.send(:notify_team, note)
       end
@@ -100,16 +99,16 @@ describe NoteObserver do
       it 'a wall' do
         # Note: wall posts have #noteable_type of nil
         note.stub(:noteable_type).and_return(nil)
-        Notify.should_receive(:note_wall_email).twice.and_return(delivery_success)
+        notify.should_receive(:note_wall_email).twice
 
         subject.send(:notify_team, note)
       end
     end
 
     it 'does nothing for a new note on a snippet' do
-        note.stub(:noteable_type).and_return('Snippet')
+      note.stub(:noteable_type).and_return('Snippet')
 
-        subject.send(:notify_team, note).should be_nil
+      subject.send(:notify_team, note).should be_nil
     end
   end
 
@@ -124,5 +123,9 @@ describe NoteObserver do
     it 'returns the projects user without the note author included' do
       subject.send(:team_without_note_author, note).should == team_without_author
     end
+  end
+
+  def notify
+    Notify
   end
 end

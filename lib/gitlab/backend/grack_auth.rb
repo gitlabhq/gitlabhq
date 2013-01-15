@@ -2,42 +2,60 @@ module Grack
   class Auth < Rack::Auth::Basic
     attr_accessor :user, :project
 
-    def valid?
-      gl = Gitlab.config
+    def call(env)
+      @env = env
+      @request = Rack::Request.new(env)
+      @auth = Request.new(env)
 
-      # Authentication with username and password
-      login, password = @auth.credentials
-
-      self.user = User.find_by_email(login) || User.find_by_username(login)
-      self.user = nil unless user.try(:valid_password?, password)
-
-      # Check user against LDAP backend if user is not authenticated
-      # Only check with valid login and password to prevent anonymous bind results
-      if user.nil? && gl.ldap.enabled && !login.blank? && !password.blank?
-        require "omniauth-ldap"
-        ldap = OmniAuth::LDAP::Adaptor.new(gl.ldap)
-        ldap_user = ldap.bind_as(
-          filter: Net::LDAP::Filter.eq(ldap.uid, login),
-          size: 1,
-          password: password
-        )
-
-        if ldap_user
-          self.user = User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap')
-        end
-      end
-
-      return false unless user
-
-      # Set GL_USER env variable
-      ENV['GL_USER'] = user.email
       # Pass Gitolite update hook
       ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
 
-      # Find project by PATH_INFO from env
-      if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
-        self.project = Project.find_with_namespace(m.last)
-        return false unless project
+      # Need this patch due to the rails mount
+      @env['PATH_INFO'] = @request.path
+      @env['SCRIPT_NAME'] = ""
+
+      return render_not_found unless project
+      return unauthorized unless project.public || @auth.provided?
+      return bad_request if @auth.provided? && !@auth.basic?
+
+      if valid?
+        if @auth.provided?
+          @env['REMOTE_USER'] = @auth.username
+        end
+        return @app.call(env)
+      else
+        unauthorized
+      end
+    end
+
+    def valid?
+      if @auth.provided?
+        # Authentication with username and password
+        login, password = @auth.credentials
+        self.user = User.find_by_email(login) || User.find_by_username(login)
+        self.user = nil unless user.try(:valid_password?, password)
+
+        # Check user against LDAP backend if user is not authenticated
+        # Only check with valid login and password to prevent anonymous bind results
+        gl = Gitlab.config
+        if user.nil? && gl.ldap.enabled && !login.blank? && !password.blank?
+          require "omniauth-ldap"
+          ldap = OmniAuth::LDAP::Adaptor.new(gl.ldap)
+          ldap_user = ldap.bind_as(
+            filter: Net::LDAP::Filter.eq(ldap.uid, login),
+            size: 1,
+            password: password
+          )
+
+          if ldap_user
+            self.user = User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap')
+          end
+        end
+
+        return false unless user
+
+        # Set GL_USER env variable
+        ENV['GL_USER'] = user.email
       end
 
       # Git upload and receive
@@ -51,12 +69,12 @@ module Grack
     end
 
     def validate_get_request
-      can?(user, :download_code, project)
+      project.public || can?(user, :download_code, project)
     end
 
     def validate_post_request
       if @request.path_info.end_with?('git-upload-pack')
-        can?(user, :download_code, project)
+        project.public || can?(user, :download_code, project)
       elsif @request.path_info.end_with?('git-receive-pack')
         action = if project.protected_branch?(current_ref)
                    :push_code_to_protected_branches
@@ -83,6 +101,22 @@ module Grack
       # Need to reset seek point
       @request.body.rewind
       /refs\/heads\/([\w\.-]+)/.match(input).to_a.first
+    end
+
+    def project
+      unless instance_variable_defined? :@project
+        # Find project by PATH_INFO from env
+        if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
+          @project = Project.find_with_namespace(m.last)
+        end
+      end
+      return @project
+    end
+
+    PLAIN_TYPE = {"Content-Type" => "text/plain"}
+
+    def render_not_found
+      [404, PLAIN_TYPE, ["Not Found"]]
     end
 
     protected

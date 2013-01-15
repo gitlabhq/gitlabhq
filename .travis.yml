@@ -1,3 +1,4 @@
+language: ruby
 env:
   - DB=postgresql
   - DB=mysql
@@ -8,7 +9,7 @@ branches:
   only:
     - 'master'
 rvm:
-  - 1.9.2
+  - 1.9.3-p327
 services:
   - mysql
   - postgresql

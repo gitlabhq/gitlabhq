@@ -12,7 +12,7 @@ class RefsController < ProjectResourceController
     respond_to do |format|
       format.html do
         new_path = if params[:destination] == "tree"
-                     project_tree_path(@project, @ref)
+                     project_tree_path(@project, (@ref + "/" + params[:path]))
                    else
                      project_commits_path(@project, @ref)
                    end

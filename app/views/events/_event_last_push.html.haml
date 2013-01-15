@@ -1,7 +1,5 @@
 - if show_last_push_widget?(event)
   .event_lp
-    = image_tag "event_push.png"
-    &nbsp;
     %span You pushed to
     = link_to project_commits_path(event.project, event.ref_name) do
       %strong= truncate(event.ref_name, length: 28)

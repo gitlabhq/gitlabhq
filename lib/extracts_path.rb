@@ -52,7 +52,7 @@ module ExtractsPath
 
     # Remove project, actions and all other staff from path
     input.gsub!(/^\/#{Regexp.escape(@project.path_with_namespace)}/, "")
-    input.gsub!(/^\/(tree|commits|blame|blob)\//, "") # remove actions
+    input.gsub!(/^\/(tree|commits|blame|blob|refs)\//, "") # remove actions
     input.gsub!(/\?.*$/, "") # remove stamps suffix
     input.gsub!(/.atom$/, "") # remove rss feed
     input.gsub!(/\/edit$/, "") # remove edit route part
@@ -108,7 +108,7 @@ module ExtractsPath
       request.format = :atom
     end
 
-    path = request.fullpath.dup
+    path = CGI::unescape(request.fullpath.dup)
 
     @ref, @path = extract_ref(path)
 

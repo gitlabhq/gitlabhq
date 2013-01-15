@@ -1,3 +1,24 @@
+v 4.1.0
+  - Project public mode (only admin can set now)
+  - Public area with unauthorized access
+  - Load dashboard events with ajax
+  - remember dashboard filter in cookies
+  - replace resque with sidekiq
+  - fix routing issues
+  - cleanup rake tasks
+  - fix backup/restore
+  - scss cleanup
+  - show preview for note images 
+  - improved network-graph
+  - get rid of app/roles/
+  - added new classes Team, Repository
+  - Reduce amount of gitolite calls
+  - Ability to add user in all group projects
+  - remove derecated configs
+  - replaced Korolev font with open font
+  - restyled admin/dashboard page
+  - restyled admin/projects page
+
 v 4.0.0
   - Remove project code and path from API. Use id instead
   - Return valid clonable url to repo for web hook

@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Gitlab::Application.routes.draw do
   #
   # Search
@@ -8,9 +10,10 @@ Gitlab::Application.routes.draw do
   require 'api'
   mount Gitlab::API => '/api'
 
-  # Optionally, enable Resque here
-  require 'resque/server'
-  mount Resque::Server => '/info/resque', as: 'resque'
+  constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
+  constraints constraint do
+    mount Sidekiq::Web, at: "/admin/sidekiq", as: :sidekiq
+  end
 
   # Enable Grack support
   mount Grack::Bundle.new({
@@ -32,6 +35,15 @@ Gitlab::Application.routes.draw do
   get 'help/markdown'     => 'help#markdown'
   get 'help/ssh'          => 'help#ssh'
   get 'help/raketasks'    => 'help#raketasks'
+  get 'help/public_area'  => 'help#public_area'
+
+  #
+  # Public namespace
+  #
+  namespace :public do
+    resources :projects, only: [:index]
+    root to: "projects#index"
+  end
 
   #
   # Admin Area
@@ -158,7 +170,7 @@ Gitlab::Application.routes.draw do
     resources :deploy_keys
     resources :protected_branches, only: [:index, :create, :destroy]
 
-    resources :refs, only: [], path: "/" do
+    resources :refs, only: [] do
       collection do
         get "switch"
       end

@@ -2,7 +2,7 @@ namespace :gitlab do
   desc "GITLAB | Check the configuration of GitLab and its environment"
   task check: %w{gitlab:env:check
                  gitlab:gitolite:check
-                 gitlab:resque:check
+                 gitlab:sidekiq:check
                  gitlab:app:check}
 
 
@@ -317,7 +317,7 @@ namespace :gitlab do
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
 
-      profile_file = File.join(gitolite_home, ".profile")
+      profile_file = File.join(gitolite_user_home, ".profile")
 
       unless File.read(profile_file) =~ /^-e PATH/
         puts "yes".green
@@ -475,7 +475,7 @@ namespace :gitlab do
     def check_dot_gitolite_exists
       print "Config directory exists? ... "
 
-      gitolite_config_path = File.join(gitolite_home, ".gitolite")
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
 
       if File.directory?(gitolite_config_path)
         puts "yes".green
@@ -496,13 +496,13 @@ namespace :gitlab do
     def check_dot_gitolite_permissions
       print "Config directory access is drwxr-x---? ... "
 
-      gitolite_config_path = File.join(gitolite_home, ".gitolite")
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
       end
 
-      if `stat --printf %a #{gitolite_config_path}` == "750"
+      if File.stat(gitolite_config_path).mode.to_s(8).ends_with?("750")
         puts "yes".green
       else
         puts "no".red
@@ -520,18 +520,17 @@ namespace :gitlab do
       gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
       print "Config directory owned by #{gitolite_ssh_user}:#{gitolite_ssh_user} ... "
 
-      gitolite_config_path = File.join(gitolite_home, ".gitolite")
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
       unless File.exists?(gitolite_config_path)
         puts "can't check because of previous errors".magenta
         return
       end
 
-      if `stat --printf %U #{gitolite_config_path}` == gitolite_ssh_user && # user
-         `stat --printf %G #{gitolite_config_path}` == gitolite_ssh_user #group
+      if File.stat(gitolite_config_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(gitolite_config_path).gid == gid_for(gitolite_ssh_user)
         puts "yes".green
       else
         puts "no".red
-        puts "#{gitolite_config_path} is not owned by #{gitolite_ssh_user}".red
         try_fixing_it(
           "sudo chown -R #{gitolite_ssh_user}:#{gitolite_ssh_user} #{gitolite_config_path}"
         )
@@ -559,7 +558,7 @@ namespace :gitlab do
     end
 
     def check_gitoliterc_git_config_keys
-      gitoliterc_path = File.join(gitolite_home, ".gitolite.rc")
+      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
 
       print "Allow all Git config keys in .gitolite.rc ... "
       option_name = if has_gitolite3?
@@ -588,7 +587,7 @@ namespace :gitlab do
     end
 
     def check_gitoliterc_repo_umask
-      gitoliterc_path = File.join(gitolite_home, ".gitolite.rc")
+      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
 
       print "Repo umask is 0007 in .gitolite.rc? ... "
       option_name = if has_gitolite3?
@@ -722,11 +721,10 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %a #{repo_base_path}` == "6770"
+      if File.stat(repo_base_path).mode.to_s(8).ends_with?("6770")
         puts "yes".green
       else
         puts "no".red
-        puts "#{repo_base_path} is not writable".red
         try_fixing_it(
           "sudo chmod -R ug+rwXs,o-rwx #{repo_base_path}"
         )
@@ -747,12 +745,11 @@ namespace :gitlab do
         return
       end
 
-      if `stat --printf %U #{repo_base_path}` == gitolite_ssh_user && # user
-         `stat --printf %G #{repo_base_path}` == gitolite_ssh_user #group
+      if File.stat(repo_base_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(repo_base_path).gid == gid_for(gitolite_ssh_user)
         puts "yes".green
       else
         puts "no".red
-        puts "#{repo_base_path} is not owned by #{gitolite_ssh_user}".red
         try_fixing_it(
           "sudo chown -R #{gitolite_ssh_user}:#{gitolite_ssh_user} #{repo_base_path}"
         )
@@ -833,7 +830,8 @@ namespace :gitlab do
           next
         end
 
-        if run_and_match("stat --format %N #{project_hook_file}", /#{hook_file}.+->.+#{gitolite_hook_file}/)
+        if File.lstat(project_hook_file).symlink? &&
+            File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
           puts "ok".green
         else
           puts "not a link to Gitolite's hook".red
@@ -852,12 +850,12 @@ namespace :gitlab do
     # Helper methods
     ########################
 
-    def gitolite_home
+    def gitolite_user_home
       File.expand_path("~#{Gitlab.config.gitolite.ssh_user}")
     end
 
     def gitolite_version
-      gitolite_version_file = "#{gitolite_home}/gitolite/src/VERSION"
+      gitolite_version_file = "#{gitolite_user_home}/gitolite/src/VERSION"
       if File.readable?(gitolite_version_file)
         File.read(gitolite_version_file)
       end
@@ -870,36 +868,34 @@ namespace :gitlab do
 
 
 
-  namespace :resque do
-    desc "GITLAB | Check the configuration of Resque"
+  namespace :sidekiq do
+    desc "GITLAB | Check the configuration of Sidekiq"
     task check: :environment  do
       warn_user_is_not_gitlab
-      start_checking "Resque"
+      start_checking "Sidekiq"
 
-      check_resque_running
+      check_sidekiq_running
 
-      finished_checking "Resque"
+      finished_checking "Sidekiq"
     end
 
 
     # Checks
     ########################
 
-    def check_resque_running
+    def check_sidekiq_running
       print "Running? ... "
 
-      if run_and_match("ps aux | grep -i resque", /resque-[\d\.]+:.+$/)
+      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d\.\d\.\d.+$/)
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "sudo service gitlab restart",
-          "or",
-          "sudo /etc/init.d/gitlab restart"
+          "sudo -u gitlab -H bundle exec rake sidekiq:start"
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
-          "see log/resque.log for possible errors"
+          "see log/sidekiq.log for possible errors"
         )
         fix_and_rerun
       end
