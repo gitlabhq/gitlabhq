@@ -24,8 +24,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     sign_in_and_redirect @user
   end
 
+  def cas
+    handle_omniauth
+  end
   private
-
   def handle_omniauth
     oauth = request.env['omniauth.auth']
     provider, uid = oauth['provider'], oauth['uid']

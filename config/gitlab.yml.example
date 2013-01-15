@@ -77,7 +77,8 @@ omniauth:
     #     app_secret: 'YOUR APP SECRET'}
     # - { name: 'github', app_id: 'YOUR APP ID',
     #     app_secret: 'YOUR APP SECRET' }
-
+    # - { name: 'cas',
+    #     args: { host: 'YOUR CAS SERVER HOST', ssl: true, login_url: 'YOUR CAS SERVER LOGIN URL', logout_url: 'YOUR CAS SERVER LOGOUT URL', service_validate_url: 'YOUR CAS SERVICE VALIDATE URL'}}
 
 
 #

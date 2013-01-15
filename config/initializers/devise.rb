@@ -217,6 +217,6 @@ Devise.setup do |config|
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
-    config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+    config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
   end
 end
