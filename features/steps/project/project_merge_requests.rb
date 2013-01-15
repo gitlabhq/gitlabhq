@@ -110,6 +110,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I leave a comment like "Line is wrong" on line 185 of the first file' do
+    save_and_open_page
     within(:xpath, "//div[@class='diff_file'][1]") do
       click_link "add-diff-line-note-0_185_185"
     end

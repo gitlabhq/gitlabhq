@@ -6,8 +6,7 @@ describe "On the project wall", js: true do
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write)
-
+    project.team << [@user, :master]
     visit wall_project_path(project)
   end
 
