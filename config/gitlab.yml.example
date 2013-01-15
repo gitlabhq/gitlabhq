@@ -81,7 +81,6 @@ omniauth:
     #     args: { host: 'cas.thoughtworks.com', ssl: true, login_url: '/cas/login', logout_url: '/cas/logout', service_validate_url: '/cas/proxyValidate' }}
 
 
-
 #
 # 3. Advanced settings
 # ==========================
