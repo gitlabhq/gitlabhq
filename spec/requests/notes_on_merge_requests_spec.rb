@@ -116,8 +116,8 @@ describe "On a merge request diff", js: true, focus: true do
     describe "the note form" do
       # set up hidden fields correctly
       it { within(".js-temp-notes-holder") { find("#note_noteable_type").value.should == "MergeRequest" } }
-      it { within(".js-temp-notes-holder") { find("#note_noteable_id").value.should == "" } }
-      it { within(".js-temp-notes-holder") { find("#note_commit_id").value.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a" } }
+      it { within(".js-temp-notes-holder") { find("#note_noteable_id").value.should == merge_request.id.to_s } }
+      it { within(".js-temp-notes-holder") { find("#note_commit_id").value.should == "" } }
       it { within(".js-temp-notes-holder") { find("#note_line_code").value.should == "4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185" } }
 
       # buttons
@@ -125,8 +125,7 @@ describe "On a merge request diff", js: true, focus: true do
       it { should have_css(".js-close-discussion-note-form", text: "Cancel") }
 
       # notification options
-      it { should have_unchecked_field("Project team") }
-      it { should have_checked_field("Commit author") }
+      it { should have_checked_field("Project team") }
 
       it "shouldn't add a second form for same row" do
         find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder .js-add-diff-note-button").trigger("click")
