@@ -2,6 +2,7 @@ module SharedNote
   include Spinach::DSL
 
   Given 'I delete a comment' do
+    sleep 1
     first(".js-note-delete").trigger("click")
   end
 
@@ -15,6 +16,7 @@ module SharedNote
     within(".js-main-target-form") do
       fill_in "note[note]", with: "XML attached"
       click_button "Add Comment"
+      sleep 0.05
     end
   end
 
