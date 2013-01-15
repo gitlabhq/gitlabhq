@@ -41,8 +41,9 @@ describe NoteObserver do
 
     it 'notifies the author of a commit when flagged to notify the author' do
       note.stub(:notify_author).and_return(true)
+      note.stub(:noteable).and_return(double(author_email: 'test@test.com'))
       note.stub(:id).and_return(42)
-      author = double :user, id: 1
+      author = double :user, id: 1, email: 'test@test.com'
       note.stub(:commit_author).and_return(author)
       Notify.should_receive(:note_commit_email)
 

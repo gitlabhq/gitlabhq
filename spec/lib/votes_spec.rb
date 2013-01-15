@@ -1,13 +1,7 @@
 require 'spec_helper'
 
-describe Issue do
-  it { should include_module(Votes) }
-end
-
 describe MergeRequest do
   let(:merge_request) { FactoryGirl.create(:merge_request_with_diffs) }
-
-  it { should include_module(Votes) }
 
   describe "#upvotes" do
     it "with no notes has a 0/0 score" do

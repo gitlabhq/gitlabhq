@@ -191,7 +191,7 @@ describe Notify do
       let(:note) { create(:note, project: project, author: note_author) }
 
       before :each do
-          Note.stub(:find).with(note.id).and_return(note)
+        Note.stub(:find).with(note.id).and_return(note)
       end
 
       shared_examples 'a note email' do
@@ -233,9 +233,10 @@ describe Notify do
             commit.stub(:safe_message).and_return('some message')
           end
         end
+
         before(:each) { note.stub(:noteable).and_return(commit) }
 
-        subject { Notify.note_commit_email(recipient.id, note.id) }
+        subject { Notify.note_commit_email(recipient.email, note.id) }
 
         it_behaves_like 'a note email'
 
