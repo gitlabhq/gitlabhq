@@ -9,11 +9,13 @@ module CommitsHelper
     end
   end
 
-  def build_line_anchor(index, line_new, line_old)
-    "#{index}_#{line_old}_#{line_new}"
+  def build_line_anchor(diff, line_new, line_old)
+    "#{hexdigest(diff.new_path)}_#{line_old}_#{line_new}"
   end
 
-  def each_diff_line(diff_arr, index)
+  def each_diff_line(diff, index)
+    diff_arr = diff.diff.lines.to_a
+
     line_old = 1
     line_new = 1
     type = nil
@@ -39,7 +41,7 @@ module CommitsHelper
         next
       else
         type = identification_type(line)
-        line_code = build_line_anchor(index, line_new, line_old)
+        line_code = build_line_anchor(diff, line_new, line_old)
         yield(full_line, type, line_code, line_new, line_old)
       end
 

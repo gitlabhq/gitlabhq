@@ -12,8 +12,15 @@
     %div
       = link_to note.author_name, project_team_member_path(@project, @project.team_member_by_id(note.author)), class: "note-author"
       - if note.for_merge_request?
-        started a discussion on this merge request diff
-        = link_to_merge_request_diff_line_note(note)
+        - if note.diff
+          started a discussion on this merge request diff
+          = link_to_merge_request_diff_line_note(note)
+        - else
+          started
+          %strong
+            %i.icon-remove
+            outdated
+          discussion on this merge request diff
       - elsif note.for_commit?
         started a discussion on commit
         #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
@@ -29,8 +36,17 @@
         ago
   .discussion-body
     - if note.for_diff_line?
-      .content
-        .diff_file= render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
+      - if note.diff
+        .content
+          .diff_file= render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
+      - else
+        = link_to 'show outdated discussion', '#', class: 'js-show-outdated-discussion'
+        %div.hide.outdated-discussion
+          .content
+            .notes{ rel: discussion_notes.first.discussion_id }
+              = render discussion_notes
+
+
     - else
       .content
         .notes{ rel: discussion_notes.first.discussion_id }

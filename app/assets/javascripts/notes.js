@@ -71,6 +71,10 @@ var NoteList = {
     $(document).on("click",
       ".js-choose-note-attachment-button",
       NoteList.chooseNoteAttachment);
+
+    $(document).on("click",
+      ".js-show-outdated-discussion",
+      function(e) { $(this).next('.outdated-discussion').show(); e.preventDefault() });
   },
 
 

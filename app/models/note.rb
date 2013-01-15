@@ -33,7 +33,7 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
 
   validates :note, :project, presence: true
-  validates :line_code, format: { with: /\A\d+_\d+_\d+\Z/ }, allow_blank: true
+  validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
   validates :attachment, file_size: { maximum: 10.megabytes.to_i }
 
   validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
@@ -69,11 +69,17 @@ class Note < ActiveRecord::Base
   end
 
   def diff
-    noteable.diffs[diff_file_index]
+    if noteable.diffs.present?
+      noteable.diffs.select do |d|
+        if d.b_path
+          Digest::SHA1.hexdigest(d.b_path) == diff_file_index
+        end
+      end.first
+    end
   end
 
   def diff_file_index
-    line_code.split('_')[0].to_i
+    line_code.split('_')[0]
   end
 
   def diff_file_name
@@ -85,7 +91,7 @@ class Note < ActiveRecord::Base
   end
 
   def discussion_id
-    @discussion_id ||= [:discussion, noteable_type.underscore, noteable_id, line_code].join("-").to_sym
+    @discussion_id ||= [:discussion, noteable_type.try(:underscore), noteable_id, line_code].join("-").to_sym
   end
 
   # Returns true if this is a downvote note,

@@ -79,7 +79,7 @@ ul.notes {
       margin-top: 3px;
     }
     .attachment {
-      font-size: 16px;
+      font-size: 14px;
       margin-top: -20px;
 
       .icon-attachment {
@@ -92,7 +92,6 @@ ul.notes {
     }
     .note-body {
       margin-left: 45px;
-      padding-top: 5px;
     }
     .note-header {
       padding-bottom: 5px;
@@ -284,7 +283,7 @@ ul.notes {
       font-size: 24px;
       padding: 4px;
       position: absolute;
-      right: 0;
+      right: 10px;
     }
     .note_preview {
       background: #f5f5f5;
@@ -306,4 +305,10 @@ ul.notes {
 /* loading indicator */
 .notes-busy {
   margin: 18px;
+}
+
+.note-image-attach {
+  @extend .span4;
+  @extend .thumbnail;
+  margin-left: 45px;
 }

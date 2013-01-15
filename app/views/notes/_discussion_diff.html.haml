@@ -9,7 +9,7 @@
   %br/
 .diff_file_content
   %table
-    - each_diff_line(diff.diff.lines.to_a, note.diff_file_index) do |line, type, line_code, line_new, line_old|
+    - each_diff_line(diff, note.diff_file_index) do |line, type, line_code, line_new, line_old|
       %tr.line_holder{ id: line_code }
         - if type == "match"
           %td.old_line= "..."
