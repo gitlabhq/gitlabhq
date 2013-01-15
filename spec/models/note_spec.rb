@@ -98,7 +98,7 @@ describe Note do
   end
 
   describe "Commit diff line notes" do
-    let!(:note) { create(:note_on_commit_line, note: "+1 from me") }
+    let!(:note) { create(:note_on_commit_diff, note: "+1 from me") }
     let!(:commit) { note.noteable }
 
     it "should save a valid note" do
@@ -136,7 +136,7 @@ describe Note do
   end
 
   describe "Merge request diff line notes" do
-    let!(:note) { create(:note_on_merge_request_line, note: "+1 from me") }
+    let!(:note) { create(:note_on_merge_request_diff, note: "+1 from me") }
 
     it "should not be votable" do
       note.should_not be_votable
