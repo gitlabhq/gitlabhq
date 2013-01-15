@@ -73,8 +73,8 @@ FactoryGirl.define do
 
     # pick 3 commits "at random" (from bcf03b5d~3 to bcf03b5d)
     trait :with_diffs do
-      target_branch "bcf03b5d~3"
-      source_branch "bcf03b5d"
+      target_branch "master" # pretend bcf03b5d~3
+      source_branch "stable" # pretend bcf03b5d
       st_commits do
         [Commit.new(project.repo.commit('bcf03b5d')),
          Commit.new(project.repo.commit('bcf03b5d~1')),
@@ -92,6 +92,32 @@ FactoryGirl.define do
   factory :note do
     project
     note "Note"
+    author
+
+    factory :note_on_commit, traits: [:on_commit]
+    factory :note_on_commit_diff, traits: [:on_commit, :on_diff]
+    factory :note_on_issue, traits: [:on_issue], aliases: [:votable_note]
+    factory :note_on_merge_request, traits: [:on_merge_request]
+    factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
+
+    trait :on_commit do
+      commit_id     "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+      noteable_type "Commit"
+    end
+
+    trait :on_diff do
+      line_code "0_184_184"
+    end
+
+    trait :on_merge_request do
+      noteable_id   1
+      noteable_type "MergeRequest"
+    end
+
+    trait :on_issue do
+      noteable_id   1
+      noteable_type "Issue"
+    end
   end
 
   factory :event do

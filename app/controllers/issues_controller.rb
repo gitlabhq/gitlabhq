@@ -35,6 +35,8 @@ class IssuesController < ProjectResourceController
 
   def show
     @note = @project.notes.new(noteable: @issue)
+    @target_type = :issue
+    @target_id = @issue.id
 
     respond_to do |format|
       format.html

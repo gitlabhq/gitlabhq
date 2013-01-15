@@ -119,12 +119,14 @@
       }
     }
   }
-  .old_line, .new_line {
-    margin: 0px;
-    padding: 0px;
-    border: none;
-    background: #EEE;
-    color: #666;
+  .new_line,
+  .old_line,
+  .notes_line {
+    margin:0px;
+    padding:0px;
+    border:none;
+    background:#EEE;
+    color:#666;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
     text-align: right;
@@ -134,6 +136,7 @@
     moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+
     a {
       float: left;
       width: 35px;

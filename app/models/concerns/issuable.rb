@@ -69,18 +69,9 @@ module Issuable
     closed_changed? && !closed
   end
 
-  # Return the number of +1 comments (upvotes)
-  def upvotes
-    notes.select(&:upvote?).size
-  end
-
-  def upvotes_in_percent
-    if votes_count.zero?
-      0
-    else
-      100.0 / votes_count * upvotes
-    end
-  end
+  #
+  # Votes
+  #
 
   # Return the number of -1 comments (downvotes)
   def downvotes
@@ -92,6 +83,19 @@ module Issuable
       0
     else
       100.0 - upvotes_in_percent
+    end
+  end
+
+  # Return the number of +1 comments (upvotes)
+  def upvotes
+    notes.select(&:upvote?).size
+  end
+
+  def upvotes_in_percent
+    if votes_count.zero?
+      0
+    else
+      100.0 / votes_count * upvotes
     end
   end
 

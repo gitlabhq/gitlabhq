@@ -38,10 +38,10 @@
 
         %br/
       .diff_file_content
-        -# Skipp all non non-supported blobs
+        -# Skip all non-supported blobs
         - next unless file.respond_to?('text?')
         - if file.text?
-          = render "commits/text_file", diff: diff, index: i
+          = render "commits/text_diff", diff: diff, index: i
         - elsif file.image?
           - old_file = (@commit.prev_commit.tree / diff.old_path) if !@commit.prev_commit.nil?
           - if diff.renamed_file || diff.new_file || diff.deleted_file

@@ -12,19 +12,17 @@
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
           %i.icon-comment
-          Comments
+          Discussion
       %li.diffs-tab{data: {action: 'diffs'}}
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
           %i.icon-list-alt
           Diff
 
   .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
-    = render("notes/notes_with_form", tid: @merge_request.id, tt: "merge_request")
+    = render "notes/notes_with_form"
   .diffs.tab-content
     = render "merge_requests/show/diffs" if @diffs
   .status
-
-  = render "notes/per_line_form"
 
 :javascript
   var merge_request;
