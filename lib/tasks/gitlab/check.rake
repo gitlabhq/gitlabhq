@@ -567,7 +567,7 @@ namespace :gitlab do
                     else
                       # assume older version
                       # see https://github.com/sitaramc/gitolite/blob/v2.3/conf/example.gitolite.rc#L49
-                      "$GL_GITCONFIG_KEYS"
+                      "\\$GL_GITCONFIG_KEYS"
                     end
       option_value = ".*"
       if open(gitoliterc_path).grep(/#{option_name}\s*=[>]?\s*["']#{option_value}["']/).any?
@@ -596,7 +596,7 @@ namespace :gitlab do
                     else
                       # assume older version
                       # see https://github.com/sitaramc/gitolite/blob/v2.3/conf/example.gitolite.rc#L32
-                      "$REPO_UMASK"
+                      "\\$REPO_UMASK"
                     end
       option_value = "0007"
       if open(gitoliterc_path).grep(/#{option_name}\s*=[>]?\s*#{option_value}/).any?
