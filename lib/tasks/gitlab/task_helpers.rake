@@ -56,12 +56,13 @@ namespace :gitlab do
 
   def warn_user_is_not_gitlab
     unless @warned_user_not_gitlab
+      gitlab_user = Gitlab.config.gitlab.user
       current_user = run("whoami").chomp
-      unless current_user == "gitlab"
+      unless current_user == gitlab_user
         puts "#{Colored.color(:black)+Colored.color(:on_yellow)} Warning #{Colored.extra(:clear)}"
         puts "  You are running as user #{current_user.magenta}, we hope you know what you are doing."
         puts "  Things may work\/fail for the wrong reasons."
-        puts "  For correct results you should run this as user #{"gitlab".magenta}."
+        puts "  For correct results you should run this as user #{gitlab_user.magenta}."
         puts ""
       end
       @warned_user_not_gitlab = true
