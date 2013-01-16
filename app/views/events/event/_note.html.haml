@@ -19,6 +19,6 @@
     = event.project_name
 
 .event-body
+  %i.icon-comment-alt.event-note-icon
   %span.event-note
-    %i.icon-comment-alt
-    = gfm truncate(event.target.note, length: 70)
+    = markdown truncate(event.target.note, length: 70)
