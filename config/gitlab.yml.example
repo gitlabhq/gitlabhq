@@ -18,9 +18,12 @@ gitlab:
   host: localhost
   port: 80
   https: false
-  # uncomment and customize to run in non-root path
-  # note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
+  # Uncomment and customize to run in non-root path
+  # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
   # relative_url_root: /gitlab
+
+  # Uncomment and customize if you can't use the default user to run GitLab (default: 'gitlab')
+  # user: user123
 
   ## Email settings
   # Email address used in the "From" field in mails sent by GitLab
@@ -28,9 +31,6 @@ gitlab:
 
   ## Project settings
   default_projects_limit: 10
-
-  ## Account used for GitLab installation ('gitlab' if undefined)
-  user: gitlab
 
 ## Gravatar
 gravatar:
@@ -88,8 +88,9 @@ omniauth:
 # ==========================
 
 # GitLab Satellites
-satellites: 
-  path: /home/gitlab/gitlab-satellites/ 
+satellites:
+  # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
+  path: /home/gitlab/gitlab-satellites/
 
 ## Backup settings
 backup:
@@ -107,9 +108,11 @@ gitolite:
   receive_pack: true
   ssh_user: git
   ssh_host: localhost
-  group: git # default: 'git' if undefined
   # ssh_port: 22
   # config_file: gitolite.conf
+
+  # Uncomment and customize if you can't use the default group to own the repositories and run Gitolite (default: same as the 'ssh_user' above)
+  # owner_group: group123
 
 ## Git settings
 # CAUTION!
