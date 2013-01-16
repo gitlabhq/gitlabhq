@@ -1,0 +1,9 @@
+New comment for Merge Request <%= @merge_request.id %>
+
+<%= url_for(project_merge_request_url(@merge_request.project, @merge_request, anchor: "note_#{@note.id}")) %>
+      
+
+<%= @note.author_name %>
+                  
+<%= @note.note %>
+
