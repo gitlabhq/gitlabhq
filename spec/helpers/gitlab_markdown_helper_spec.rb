@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe GitlabMarkdownHelper do
+  include ApplicationHelper
+
   let!(:project) { create(:project) }
 
   let(:user)          { create(:user, username: 'gfm') }
@@ -338,6 +340,18 @@ describe GitlabMarkdownHelper do
 
     it "should leave inline code untouched" do
       markdown("\nDon't use `$#{snippet.id}` here.\n").should == "<p>Don&#39;t use <code>$#{snippet.id}</code> here.</p>\n"
+    end
+
+    it "should leave ref-like autolinks untouched" do
+      markdown("look at http://example.tld/#!#{merge_request.id}").should == "<p>look at <a href=\"http://example.tld/#!#{merge_request.id}\">http://example.tld/#!#{merge_request.id}</a></p>\n"
+    end
+
+    it "should leave ref-like href of 'manual' links untouched" do
+      markdown("why not [inspect !#{merge_request.id}](http://example.tld/#!#{merge_request.id})").should == "<p>why not <a href=\"http://example.tld/#!#{merge_request.id}\">inspect </a><a href=\"http://test.host/project60/merge_requests/#{merge_request.id}\" class=\"gfm gfm-merge_request \" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.id}</a><a href=\"http://example.tld/#!#{merge_request.id}\"></a></p>\n"
+    end
+
+    it "should leave ref-like src of images untouched" do
+      markdown("screen shot: ![some image](http://example.tld/#!#{merge_request.id})").should == "<p>screen shot: <img src=\"http://example.tld/#!#{merge_request.id}\" alt=\"some image\"></p>\n"
     end
 
     it "should generate absolute urls for refs" do

@@ -45,12 +45,11 @@ module Gitlab
 
       # Extract pre blocks so they are not altered
       # from http://github.github.com/github-flavored-markdown/
-      extractions = {}
-      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) do |match|
-        md5 = Digest::MD5.hexdigest(match)
-        extractions[md5] = match
-        "{gfm-extraction-#{md5}}"
-      end
+      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| extract_piece(match) }
+      # Extract links with probably parsable hrefs
+      text.gsub!(%r{<a.*?>.*?</a>}m) { |match| extract_piece(match) }
+      # Extract images with probably parsable src
+      text.gsub!(%r{<img.*?>}m) { |match| extract_piece(match) }
 
       # TODO: add popups with additional information
 
@@ -58,13 +57,25 @@ module Gitlab
 
       # Insert pre block extractions
       text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
-        extractions[$1]
+        insert_piece($1)
       end
 
       sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
     end
 
     private
+
+    def extract_piece(text)
+      @extractions ||= {}
+
+      md5 = Digest::MD5.hexdigest(text)
+      @extractions[md5] = text
+      "{gfm-extraction-#{md5}}"
+    end
+
+    def insert_piece(id)
+      @extractions[id]
+    end
 
     # Private: Parses text for references and emoji
     #
