@@ -1,6 +1,7 @@
 class ProjectUpdateContext < BaseContext
   def execute(role = :default)
     namespace_id = params[:project].delete(:namespace_id)
+    params[:project].delete(:public) unless can?(current_user, :change_public_mode, project)
 
     allowed_transfer = can?(current_user, :change_namespace, project) || role == :admin
 
