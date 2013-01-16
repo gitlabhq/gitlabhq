@@ -26,7 +26,7 @@ module GitlabMarkdownHelper
     unless @markdown
       gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
                           # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
-                          filter_html: true,
+                          filter_html: false,
                           with_toc_data: true,
                           hard_wrap: true)
       @markdown = Redcarpet::Markdown.new(gitlab_renderer,
@@ -44,3 +44,4 @@ module GitlabMarkdownHelper
     @markdown.render(text).html_safe
   end
 end
+

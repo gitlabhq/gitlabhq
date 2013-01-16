@@ -61,7 +61,7 @@ module Gitlab
         extractions[$1]
       end
 
-      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
+      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class), tags: ActionView::Base.sanitized_allowed_tags + %w(table tr td th)
     end
 
     private
@@ -76,6 +76,7 @@ module Gitlab
     def parse(text)
       parse_references(text) if @project
       parse_emoji(text)
+      text = parse_toc(text)
 
       text
     end
@@ -123,6 +124,35 @@ module Gitlab
         else
           match
         end
+      end
+    end
+
+    # If the user wants TOC we run a Render::HTML_TOC
+    # See http://dev.af83.com/2012/02/27/howto-extend-the-redcarpet2-markdown-lib.html
+    # TODO: Allow TOC to be placed in the middle of the document, not only at top
+    def parse_toc(text)
+      if text.lines.first.match("~toc~") != nil
+        html_text = text.dup.to_str
+
+        # First we must convert HTML headers back to Markdown headers
+        html_text.gsub!(/<h1[^>]*>/, "# ")
+        html_text.gsub!(/<h2[^>]*>/, "## ")
+        html_text.gsub!(/<h3[^>]*>/, "### ")
+        html_text.gsub!(/<h4[^>]*>/, "#### ")
+        html_text.gsub!(/<h5[^>]*>/, "##### ")
+        html_text.gsub!(/<h6[^>]*>/, "###### ")
+
+        html_text.gsub!(/<\/?h\d[^>]*>/, "")
+
+
+        html_toc = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC, space_after_headers: true)
+        toc = html_toc.render(html_text)
+
+        text["~toc~"]= ""
+
+        toc + text
+      else
+        text
       end
     end
 
