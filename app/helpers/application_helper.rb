@@ -156,4 +156,9 @@ module ApplicationHelper
     image_tag("authbuttons/#{file_name}",
               alt: "Sign in with #{provider.to_s.titleize}")
   end
+
+  def image_url(source)
+    root_url + path_to_image(source)
+  end
+  alias_method :url_to_image, :image_url
 end

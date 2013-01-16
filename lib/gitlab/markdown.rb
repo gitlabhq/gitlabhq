@@ -119,7 +119,7 @@ module Gitlab
       # parse emoji
       text.gsub!(EMOJI_PATTERN) do |match|
         if valid_emoji?($2)
-          image_tag("emoji/#{$2}.png", class: 'emoji', title: $1, alt: $1, size: "20x20")
+          image_tag(url_to_image("emoji/#{$2}.png"), class: 'emoji', title: $1, alt: $1, size: "20x20")
         else
           match
         end

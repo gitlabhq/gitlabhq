@@ -343,5 +343,9 @@ describe GitlabMarkdownHelper do
     it "should generate absolute urls for refs" do
       markdown("##{issue.id}").should include(project_issue_url(project, issue))
     end
+
+    it "should generate absolute urls for emoji" do
+      markdown(":smile:").should include("src=\"#{url_to_image("emoji/smile")}")
+    end
   end
 end
