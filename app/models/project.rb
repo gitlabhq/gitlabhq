@@ -444,6 +444,17 @@ class Project < ActiveRecord::Base
     # will be passed as post receive hook data.
     #
     push_commits_limited.each do |commit|
+      diffs = commit.diffs
+
+      files = {}
+      %w(added removed modified).each { |x| files[x.to_sym] = [] }
+
+      diffs.each do |diff|
+        files[:added] << diff.new_path if diff.new_file
+        files[:removed] << diff.old_path if diff.deleted_file
+        files[:modified] << diff.new_path if !diff.new_file or !diff.deleted_file
+      end
+
       data[:commits] << {
         id: commit.id,
         message: commit.safe_message,
@@ -452,6 +463,11 @@ class Project < ActiveRecord::Base
         author: {
           name: commit.author_name,
           email: commit.author_email
+        },
+        files: {
+          added: files[:added],
+          removed: files[:removed],
+          modified: files[:modified]
         }
       }
     end
