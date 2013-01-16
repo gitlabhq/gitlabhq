@@ -78,4 +78,5 @@ Settings.git['max_size']  ||= 5242880 # 5.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
 Settings.git['timeout']   ||= 10
 
+Settings['satellites'] ||= {}
 Settings.satellites['path']   ||= '/home/gitlab/gitlab/tmp/repo_satellites/'
