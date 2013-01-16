@@ -84,6 +84,10 @@ omniauth:
 # 3. Advanced settings
 # ==========================
 
+# GitLab Satellites
+satellites: 
+  path: /home/gitlab/gitlab-satellites/ 
+
 ## Backup settings
 backup:
   path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)

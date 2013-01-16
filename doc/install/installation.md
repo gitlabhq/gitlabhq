@@ -223,6 +223,9 @@ do so with caution!
     sudo chmod -R u+rwX  log/
     sudo chmod -R u+rwX  tmp/
 
+    # Make directory for satellites
+    sudo -u gitlab -H mkdir /home/gitlab/gitlab-satellites
+
     # Copy the example Unicorn config
     sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
