@@ -54,13 +54,18 @@ namespace :gitlab do
 
 
       # check Gitolite version
-      gitolite_version_file = "#{Gitlab.config.gitolite.repos_path}/../gitolite/src/VERSION"
+      gitolite_install_path = "#{Gitlab.config.gitolite.install_path}"
+      if Dir[gitolite_install_path] == [] 
+         gitolite_install_path = "#{Gitlab.config.gitolite.repos_path}/../gitolite/src/"
+      end
+      gitolite_version_file = "#{gitolite_install_path}/VERSION"
       if File.exists?(gitolite_version_file) && File.readable?(gitolite_version_file)
         gitolite_version = File.read(gitolite_version_file)
       end
 
       puts ""
       puts "Gitolite information".yellow
+      puts "Installation:\t#{gitolite_install_path}"
       puts "Version:\t#{gitolite_version || "unknown".red}"
       puts "Admin URI:\t#{Gitlab.config.gitolite.admin_uri}"
       puts "Admin Key:\t#{Gitlab.config.gitolite.admin_key}"
