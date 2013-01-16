@@ -444,10 +444,7 @@ class Project < ActiveRecord::Base
     # will be passed as post receive hook data.
     #
     push_commits_limited.each do |commit|
-      diffs = commit.diffs
-
-      files = {}
-      %w(added removed modified).each { |x| files[x.to_sym] = [] }
+      files, diffs = { added: [], removed: [], modified: [] }, commit.diffs
 
       diffs.each do |diff|
         files[:added] << diff.new_path if diff.new_file
@@ -464,12 +461,10 @@ class Project < ActiveRecord::Base
           name: commit.author_name,
           email: commit.author_email
         },
-        files: {
-          added: files[:added],
-          removed: files[:removed],
-          modified: files[:modified]
-        }
+        files: {}
       }
+
+      files.each { |key, value| data[:commits].last[:files][key] = value unless value.count.zero? }
     end
 
     data
