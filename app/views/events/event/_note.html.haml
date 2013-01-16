@@ -21,4 +21,4 @@
 .event-body
   %span.event-note
     %i.icon-comment-alt
-    = truncate event.target.note, length: 70
+    = gfm truncate(event.target.note, length: 70)
