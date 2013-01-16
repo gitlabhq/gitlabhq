@@ -50,6 +50,7 @@ Settings.gitlab['relative_url_root'] ||= ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
+Settings.gitlab['user']        ||= 'gitlab'
 
 Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']    ||= true
@@ -67,6 +68,7 @@ Settings.gitolite['upload_pack']  ||= (Settings.gitolite['upload_pack'] != false
 Settings.gitolite['ssh_host']     ||= (Settings.gitlab.host || 'localhost')
 Settings.gitolite['ssh_port']     ||= 22
 Settings.gitolite['ssh_user']     ||= 'git'
+Settings.gitolite['group']        ||= 'git'
 Settings.gitolite['ssh_path_prefix'] ||= Settings.send(:build_gitolite_ssh_path_prefix)
 
 Settings['backup'] ||= Settingslogic.new({})
