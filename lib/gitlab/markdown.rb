@@ -145,21 +145,25 @@ module Gitlab
       send("reference_#{type}", identifier)
     end
 
+    def score_out str, condition
+      condition ? content_tag(:del, str) : str
+    end
+
     def reference_user(identifier)
       if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
-        link_to("@#{identifier}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+        link_to(score_out("@#{identifier}", member.blocked?), project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end
 
     def reference_issue(identifier)
       if issue = @project.issues.where(id: identifier).first
-        link_to("##{identifier}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
+        link_to(score_out("##{identifier}", issue.closed?), project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
       end
     end
 
     def reference_merge_request(identifier)
       if merge_request = @project.merge_requests.where(id: identifier).first
-        link_to("!#{identifier}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
+        link_to(score_out("!#{identifier}", merge_request.closed?), project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
       end
     end
 
