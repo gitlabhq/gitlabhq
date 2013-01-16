@@ -15,7 +15,7 @@ class IssueObserver < ActiveRecord::Observer
     status = 'reopened' if issue.is_being_reopened?
     if status
       Note.create_status_change_note(issue, current_user, status)
-      [issue.author, issue.assignee].compact.each do |recipient|
+      [issue.author, issue.assignee].compact.uniq.each do |recipient|
         Notify.delay.issue_status_changed_email(recipient.id, issue.id, status, current_user.id)
       end
     end
