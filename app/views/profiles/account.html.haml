@@ -29,28 +29,28 @@
             %span You don`t have one yet. Click generate to fix it.
             = f.submit 'Generate', class: "btn success btn-build-token"
 
-%fieldset
-  %legend Password
-  = form_for @user, url: update_password_profile_path, method: :put do |f|
-    .padded
-      %p.slead After successful password update you will be redirected to login page where you should login with new password
-      -if @user.errors.any?
-        .alert-message.block-message.error
-          %ul
-            - @user.errors.full_messages.each do |msg|
-              %li= msg
+- unless Gitlab.config.ldap.enabled
+  %fieldset
+    %legend Password
+    = form_for @user, url: update_password_profile_path, method: :put do |f|
+      .padded
+        %p.slead After successful password update you will be redirected to login page where you should login with new password
+        -if @user.errors.any?
+          .alert-message.block-message.error
+            %ul
+              - @user.errors.full_messages.each do |msg|
+                %li= msg
 
-      .clearfix
-        = f.label :password
-        .input= f.password_field :password, required: true
-      .clearfix
-        = f.label :password_confirmation
-        .input
-          = f.password_field :password_confirmation, required: true
-      .clearfix
-        .input
-          = f.submit 'Save password', class: "btn save-btn"
-
+        .clearfix
+          = f.label :password
+          .input= f.password_field :password, required: true
+        .clearfix
+          = f.label :password_confirmation
+          .input
+            = f.password_field :password_confirmation, required: true
+        .clearfix
+          .input
+            = f.submit 'Save password', class: "btn save-btn"
 
 
 %fieldset.update-username
