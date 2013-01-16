@@ -152,8 +152,8 @@ module Gitlab
     end
 
     def reference_issue(identifier)
-      if issue = @project.issues.where(id: identifier).first
-        link_to("##{identifier}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
+      if issue = Issue.where(id: identifier).first
+        link_to("##{identifier}", project_issue_path(issue.project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
       end
     end
 
