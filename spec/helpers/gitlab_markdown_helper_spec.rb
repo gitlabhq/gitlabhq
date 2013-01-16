@@ -272,7 +272,7 @@ describe GitlabMarkdownHelper do
       groups[0].should match(/This should finally fix $/)
 
       # First issue link
-      groups[1].should match(/href="#{project_issue_path(project, issues[0])}"/)
+      groups[1].should match(/href="#{project_issue_url(project, issues[0])}"/)
       groups[1].should match(/##{issues[0].id}$/)
 
       # Internal commit link
@@ -280,7 +280,7 @@ describe GitlabMarkdownHelper do
       groups[2].should match(/ and /)
 
       # Second issue link
-      groups[3].should match(/href="#{project_issue_path(project, issues[1])}"/)
+      groups[3].should match(/href="#{project_issue_url(project, issues[1])}"/)
       groups[3].should match(/##{issues[1].id}$/)
 
       # Trailing commit link
@@ -338,6 +338,10 @@ describe GitlabMarkdownHelper do
 
     it "should leave inline code untouched" do
       markdown("\nDon't use `$#{snippet.id}` here.\n").should == "<p>Don&#39;t use <code>$#{snippet.id}</code> here.</p>\n"
+    end
+
+    it "should generate absolute urls for refs" do
+      markdown("##{issue.id}").should include(project_issue_url(project, issue))
     end
   end
 end
