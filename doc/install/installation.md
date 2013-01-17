@@ -361,6 +361,20 @@ a different host, you can configure its connection string via the
     # example
     production: redis.example.tld:6379
 
+## Custom SSH Connection
+
+If your ssh port is a non-standard port, you must configure the ssh config of 
+user *gitlab*.
+
+    sudo -u gitlab -H vim /home/gitlab/.ssh/config
+    
+    # Edit this file
+    host localhost
+        user git
+        port 888    # Your port number
+        hostname YOUR_SERVER_NAME or IP;     # e.g., source.example.com or 127.0.0.1;
+
+Of course, you should change the ssh port of `config\gitlab.yml` to your custom port.
 
 ## User-contributed Configurations
 
