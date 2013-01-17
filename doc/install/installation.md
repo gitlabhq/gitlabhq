@@ -139,7 +139,7 @@ GitLab assumes *full and unshared* control over this Gitolite installation.
 Fix the directory permissions for the configuration directory:
 
     # Make sure the Gitolite config dir is owned by git
-    sudo chmod 750 /home/git/.gitolite/
+    sudo chmod -R 750 /home/git/.gitolite/
     sudo chown -R git:git /home/git/.gitolite/
 
 Fix the directory permissions for the repositories:
