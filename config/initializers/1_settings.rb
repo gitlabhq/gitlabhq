@@ -324,7 +324,7 @@ Settings.gitlab['email_from'] ||= Settings.pre_40_config ? Settings.email_from :
 Settings.gitlab['url']        ||= Settings.pre_40_config ? Settings.url : Settings.send(:build_gitlab_url)
 
 Settings['gravatar'] ||= Settingslogic.new({})
-Settings.gravatar['enabled']    ||= Settings.pre_40_config ? !Settings.disable_gravatar? : true
+Settings.gravatar['enabled']      = Settings.pre_40_config ? !Settings.disable_gravatar? : true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= Settings.pre_40_config ? Settings.gravatar_url      : 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= Settings.pre_40_config ? Settings.gravatar_ssl_url  : 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 
