@@ -10,7 +10,7 @@
         Show discussion
     = image_tag gravatar_icon(note.author.email), class: "avatar s32"
     %div
-      = link_to note.author_name, project_team_member_path(@project, @project.team_member_by_id(note.author)), class: "note-author"
+      = link_to_member(@project, note.author, avatar: false)
       - if note.for_merge_request?
         - if note.diff
           started a discussion on this merge request diff
@@ -30,7 +30,7 @@
     %div
       - last_note = discussion_notes.last
       last updated by
-      = link_to last_note.author_name, project_team_member_path(@project, @project.team_member_by_id(last_note.author)), class: "note-author"
+      = link_to_member(@project, last_note.author, avatar: false)
       %span.discussion-last-update
         = time_ago_in_words(last_note.updated_at)
         ago
