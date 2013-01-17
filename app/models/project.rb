@@ -116,55 +116,6 @@ class Project < ActiveRecord::Base
       end
     end
 
-    def create_by_user(params, user)
-      namespace_id = params.delete(:namespace_id)
-
-      project = Project.new params
-
-      Project.transaction do
-
-        # Parametrize path for project
-        #
-        # Ex.
-        #  'GitLab HQ'.parameterize => "gitlab-hq"
-        #
-        project.path = project.name.dup.parameterize
-
-        project.creator = user
-
-        # Apply namespace if user has access to it
-        # else fallback to user namespace
-        if namespace_id != Namespace.global_id
-          project.namespace_id = user.namespace_id
-
-          if namespace_id
-            group = Group.find_by_id(namespace_id)
-            if user.can? :manage_group, group
-              project.namespace_id = namespace_id
-            end
-          end
-        end
-
-        project.save!
-
-        # Add user as project master
-        project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
-
-        # when project saved no team member exist so
-        # project repository should be updated after first user add
-        project.update_repository
-      end
-
-      project
-    rescue Gitlab::Gitolite::AccessDenied => ex
-      project.error_code = :gitolite
-      project
-    rescue => ex
-      project.error_code = :db
-      project.errors.add(:base, "Can't save project. Please try again later")
-      project
-    end
-
     def access_options
       UsersProject.access_roles
     end

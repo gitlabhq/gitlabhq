@@ -152,11 +152,8 @@ class User < ActiveRecord::Base
     namespaces << self.namespace if self.namespace
 
     # Add groups you can manage
-    namespaces += if admin
-                    Group.all
-                  else
-                    groups.all
-                  end
+    namespaces += groups.all
+
     namespaces
   end
 
@@ -232,6 +229,10 @@ class User < ActiveRecord::Base
                      abilities << Ability
                      abilities
                    end
+  end
+
+  def can_select_namespace?
+    several_namespaces? || admin
   end
 
   def can? action, subject

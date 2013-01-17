@@ -9,10 +9,10 @@
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
       = f.submit 'Create project', class: "btn success project-submit"
 
-  - if current_user.several_namespaces?
+  - if current_user.can_select_namespace?
     .clearfix
       = f.label :namespace_id do
-        %span.cgray Namespace
+        %span Namespace
       .input
         = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen'}
   %hr

@@ -43,7 +43,7 @@ module Gitlab
                                     :wall_enabled,
                                     :merge_requests_enabled,
                                     :wiki_enabled]
-        @project = Project.create_by_user(attrs, current_user)
+        @project = Projects::CreateContext.new(nil, attrs, current_user).execute
         if @project.saved?
           present @project, with: Entities::Project
         else

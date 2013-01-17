@@ -9,19 +9,11 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-  %fieldset
-    %legend  Advanced settings:
-    .control-group
-      = f.label :path do
-        Repository
-      .controls
-        = text_field_tag :ppath, @repository.path_to_repo, class: "xxlarge", readonly: true
+  - unless @repository.heads.empty?
+    .clearfix
+      = f.label :default_branch, "Default Branch"
+      .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
-
-    - unless @repository.heads.empty?
-      .clearfix
-        = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
   %fieldset.features
     %legend Features:
@@ -87,4 +79,4 @@
     - unless @project.new_record?
       - if can?(current_user, :remove_project, @project)
         .right
-          = link_to 'Remove', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
+          = link_to 'Remove Project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
