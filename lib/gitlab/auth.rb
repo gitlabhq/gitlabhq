@@ -44,6 +44,9 @@ module Gitlab
       if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
         @user.blocked = true
       end
+      # Check if user is in an LDAP group specified to be admins in gitlab.yml
+      gid = auth.info.gid.to_i
+      @user.admin = Gitlab.config.ldap['admin_gids'].includes?(gid)
       @user.save!
       @user
     end
