@@ -139,7 +139,7 @@ GitLab assumes *full and unshared* control over this Gitolite installation.
 Fix the directory permissions for the configuration directory:
 
     # Make sure the Gitolite config dir is owned by git
-    sudo chmod 750 /home/git/.gitolite/
+    sudo chmod -R 750 /home/git/.gitolite/
     sudo chown -R git:git /home/git/.gitolite/
 
 Fix the directory permissions for the repositories:
@@ -361,6 +361,21 @@ a different host, you can configure its connection string via the
     # example
     production: redis.example.tld:6379
 
+## Custom SSH Connection
+
+If your ssh port is a non-standard port, you must configure the ssh config of 
+user *gitlab*.
+
+    su gitlab
+    vim ~/.ssh/config
+    
+    # Edit this file
+    host localhost
+        user git
+        port 888    # Your port number
+        hostname YOUR_SERVER_NAME or IP;     # e.g., source.example.com or 127.0.0.1;
+
+Of course, you should change the ssh port of `config\gitlab.yml` to your custom port.
 
 ## User-contributed Configurations
 
