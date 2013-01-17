@@ -11,10 +11,14 @@ class Repository
 
   # Default branch in the repository
   attr_accessor :root_ref
+  
+  # Create repo with full path instead
+  attr_accessor :full_path
 
-  def initialize(path_with_namespace, root_ref = 'master')
+  def initialize(path_with_namespace, root_ref = 'master', full_path = nil)
     @root_ref = root_ref || "master"
     @path_with_namespace = path_with_namespace
+    @full_path = full_path
 
     # Init grit repo object
     repo
@@ -25,11 +29,15 @@ class Repository
   end
 
   def path_to_repo
-    @path_to_repo ||= File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
+    if @full_path
+      @path_to_repo = @full_path
+    else
+      @path_to_repo ||= File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
+    end
   end
 
   def repo
-    @repo ||= Grit::Repo.new(path_to_repo)
+      @repo ||= Grit::Repo.new(path_to_repo)
   end
 
   def commit(commit_id = nil)

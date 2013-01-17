@@ -181,7 +181,9 @@ class Project < ActiveRecord::Base
       nil
     end
   rescue Grit::NoSuchPathError
-    nil
+    self.satellite.create unless self.satellite.exists?
+    @repository ||= self.satellite.repo    
+    
   end
 
   def git_error?
@@ -341,6 +343,10 @@ class Project < ActiveRecord::Base
   #
   # All callbacks for post receive should be placed here.
   def trigger_post_receive(oldrev, newrev, ref, user)
+    
+    if self.satellite.exists?
+      self.satellite.update_from_source!
+    
     data = post_receive_data(oldrev, newrev, ref, user)
 
     # Create push event
