@@ -354,18 +354,15 @@ a different host, you can configure its connection string via the
 
 ## Custom SSH Connection
 
-If your ssh port is a non-standard port, you must configure the ssh config of 
-user *gitlab*.
-
-    sudo -u gitlab -H vim /home/gitlab/.ssh/config
+If you are running SSH on a non-standard port, you must change the gitlab user'S SSH config.
     
-    # Edit this file
-    host localhost
-        user git
-        port 888    # Your port number
-        hostname YOUR_SERVER_NAME or IP;     # e.g., source.example.com or 127.0.0.1;
+    # Add to /home/gitlab/.ssh/config
+    host localhost          # Give your setup a name (here: override localhost)
+        user git            # Your remote git user
+        port 2222           # Your port number
+        hostname 127.0.0.1; # Your server name or IP
 
-Of course, you should change the ssh port of `config\gitlab.yml` to your custom port.
+You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
 
 ## User-contributed Configurations
 
