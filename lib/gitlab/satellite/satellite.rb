@@ -65,6 +65,10 @@ module Gitlab
 
         @repo ||= Grit::Repo.new(path)
       end
+      
+      def repository
+        raise_no_satellite unless exists?
+        @repository ||= Repository.new(project.path_with_namespace,'master',path)
 
       private
 
