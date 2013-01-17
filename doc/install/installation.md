@@ -260,7 +260,7 @@ used for the `email.from` setting in `config/gitlab.yml`)
 
 ## Initialise Database and Activate Advanced Features
 
-    sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
 
 
 ## Install Init Script
