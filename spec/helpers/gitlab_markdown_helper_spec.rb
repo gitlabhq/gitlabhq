@@ -347,7 +347,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave ref-like href of 'manual' links untouched" do
-      markdown("why not [inspect !#{merge_request.id}](http://example.tld/#!#{merge_request.id})").should == "<p>why not <a href=\"http://example.tld/#!#{merge_request.id}\">inspect </a><a href=\"http://test.host/project60/merge_requests/#{merge_request.id}\" class=\"gfm gfm-merge_request \" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.id}</a><a href=\"http://example.tld/#!#{merge_request.id}\"></a></p>\n"
+      markdown("why not [inspect !#{merge_request.id}](http://example.tld/#!#{merge_request.id})").should == "<p>why not <a href=\"http://example.tld/#!#{merge_request.id}\">inspect </a><a href=\"#{project_merge_request_url(project, merge_request)}\" class=\"gfm gfm-merge_request \" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.id}</a><a href=\"http://example.tld/#!#{merge_request.id}\"></a></p>\n"
     end
 
     it "should leave ref-like src of images untouched" do
