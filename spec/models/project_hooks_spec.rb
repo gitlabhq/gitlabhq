@@ -111,6 +111,14 @@ describe Project, "Hooks" do
           it { should include(message: @commit.safe_message) }
           it { should include(timestamp: @commit.date.xmlschema) }
           it { should include(url: "#{Gitlab.config.gitlab.url}/#{project.code}/commit/#{@commit.id}") }
+          
+          its([:added]) { should be_an(Array) }
+          its([:added]) { should have(0).element }
+          its([:removed]) { should be_an(Array) }
+          its([:removed]) { should have(0).element }
+          its([:modified]) { should be_an(Array) }
+          its([:modified]) { should have(2).element }
+          its([:modified]) { should match_array(['app/assets/stylesheets/tree.scss', 'app/views/refs/_tree_item.html.haml']) }
 
           context "with a author" do
             subject { @data[:commits].first[:author] }
