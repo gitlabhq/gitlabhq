@@ -4,6 +4,7 @@
 
 * Jenkins CI integration service
 * Usability improvements
+* Notification improvements
 
 ### v4.2 February 22
 

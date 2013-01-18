@@ -57,7 +57,7 @@ module Gitlab
       end
 
       def path
-        Rails.root.join("tmp", "repo_satellites", project.path_with_namespace)
+        File.join(Gitlab.config.satellites.path, project.path_with_namespace)
       end
 
       def repo

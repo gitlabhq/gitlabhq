@@ -1,6 +1,6 @@
 .btn {
   @include linear-gradient(#f7f7f7, #d5d5d5);
-  border-color: #aaa;
+  border-color: #BBB;
   &:hover {
     @include bg-gray-gradient;
     border-color: #bbb;

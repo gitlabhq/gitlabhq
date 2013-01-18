@@ -1,5 +1,8 @@
 v 4.1.0
-  - Project public mode (only admin can set now)
+  - Discussions
+  - Satellites outside of tmp
+  - Line numbers for blame
+  - Project public mode
   - Public area with unauthorized access
   - Load dashboard events with ajax
   - remember dashboard filter in cookies

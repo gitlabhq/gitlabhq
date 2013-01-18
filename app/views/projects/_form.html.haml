@@ -50,6 +50,19 @@
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
 
+  - if can? current_user, :change_public_mode, @project
+    %fieldset.features
+      %legend
+        %i.icon-share
+        Public mode:
+      .control-group
+        = f.label :public, class: 'control-label' do
+          %span Public http clone
+        .controls
+          = f.check_box :public
+          %span.descr
+            If checked this project will be available for clone without any authentification. Also it will appears on #{link_to "Public page", public_root_path}
+
 
   - if can? current_user, :change_namespace, @project
     %fieldset.features

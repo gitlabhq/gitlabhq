@@ -39,16 +39,8 @@ module ApplicationHelper
     else
       gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
-      sprintf(gravatar_url, {:hash => Digest::MD5.hexdigest(user_email.downcase), :email => URI.escape(user_email), :size => size})
+      sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
     end
-  end
-
-  def request_protocol
-    request.ssl? ? "https" : "http"
-  end
-
-  def web_app_url
-    "#{request_protocol}://#{Gitlab.config.gitlab.host}/"
   end
 
   def last_commit(project)
@@ -164,4 +156,9 @@ module ApplicationHelper
     image_tag("authbuttons/#{file_name}",
               alt: "Sign in with #{provider.to_s.titleize}")
   end
+
+  def image_url(source)
+    root_url + path_to_image(source)
+  end
+  alias_method :url_to_image, :image_url
 end

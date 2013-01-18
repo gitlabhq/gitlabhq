@@ -40,7 +40,7 @@
     }
   }
   .event-body {
-    p {
+    .commit p {
       color: #555;
       padding-top: 5px;
     }
@@ -51,7 +51,14 @@
       padding-top: 5px;
       padding-left: 5px;
       display: inline-block;
+      color: #555;
+    }
+    .event-note-icon {
       color: #777;
+      float: left;
+      font-size: 16px;
+      line-height: 18px;
+      margin: 5px;
     }
   }
   .avatar {

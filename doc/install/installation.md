@@ -52,7 +52,7 @@ edited by hand. But, you can use any editor you like instead.
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev  wget curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
@@ -77,8 +77,7 @@ Make sure you have the right version of Python installed.
 Download and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz
-    tar xfvz ruby-1.9.3-p327.tar.gz
+    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz | tar xz
     cd ruby-1.9.3-p327
     ./configure
     make
@@ -150,20 +149,11 @@ Fix the directory permissions for the repositories:
     sudo chown -R git:git /home/git/repositories/
 
 
-## Disable StrictHostKeyChecking for localhost and your domain
+## Add domains to list to the list of known hosts
 
-    echo "Host localhost
-       StrictHostKeyChecking no
-       UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
-
-    echo "Host YOUR_DOMAIN_NAME
-       StrictHostKeyChecking no
-       UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
-
-    # If gitolite domain differs
-    echo "Host YOUR_GITOLITE_DOMAIN
-       StrictHostKeyChecking no
-       UserKnownHostsFile=/dev/null" | sudo tee -a /etc/ssh/ssh_config
+    sudo -u gitlab -H ssh git@localhost
+    sudo -u gitlab -H ssh git@YOUR_DOMAIN_NAME
+    sudo -u gitlab -H ssh git@YOUR_GITOLITE_DOMAIN_NAME
 
 
 ## Test if everything works so far
@@ -223,6 +213,9 @@ do so with caution!
     sudo chmod -R u+rwX  log/
     sudo chmod -R u+rwX  tmp/
 
+    # Make directory for satellites
+    sudo -u gitlab -H mkdir /home/gitlab/gitlab-satellites
+
     # Copy the example Unicorn config
     sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -267,14 +260,14 @@ used for the `email.from` setting in `config/gitlab.yml`)
 
 ## Initialise Database and Activate Advanced Features
 
-    sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
 
 
 ## Install Init Script
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab -P /etc/init.d/
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -315,7 +308,7 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 
 Download an example site config:
 
-    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab -P /etc/nginx/sites-available/
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
@@ -359,6 +352,17 @@ a different host, you can configure its connection string via the
     # example
     production: redis.example.tld:6379
 
+## Custom SSH Connection
+
+If you are running SSH on a non-standard port, you must change the gitlab user'S SSH config.
+    
+    # Add to /home/gitlab/.ssh/config
+    host localhost          # Give your setup a name (here: override localhost)
+        user git            # Your remote git user
+        port 2222           # Your port number
+        hostname 127.0.0.1; # Your server name or IP
+
+You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
 
 ## User-contributed Configurations
 

@@ -71,8 +71,15 @@ class Namespace < ActiveRecord::Base
       if File.exists?(new_path)
         raise "Already exists"
       end
-      
-      begin 
+
+
+      begin
+        # Remove satellite when moving repo
+        if path_was.present?
+          satellites_path = File.join(Gitlab.config.satellites.path, path_was)
+          FileUtils.rm_r( satellites_path, force: true )
+        end
+
         FileUtils.mv( old_path, new_path )
         send_update_instructions
         @require_update_gitolite = true

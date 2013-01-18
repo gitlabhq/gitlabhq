@@ -47,7 +47,7 @@
         - @projects.each do |project|
           %li
             - if project.public
-              %i.icon-unlock.cred
+              %i.icon-share
             - else
               %i.icon-lock.cgreen
             = link_to project.name_with_namespace, [:admin, project]
