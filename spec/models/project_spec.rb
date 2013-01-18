@@ -153,36 +153,6 @@ describe Project do
     end
   end
 
-  describe :create_by_user do
-    before do
-      @user = create :user
-      @opts = {
-        name: "GitLab"
-      }
-    end
-
-    context 'user namespace' do
-      before do
-        @project = Project.create_by_user(@opts, @user)
-      end
-
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @user.namespace }
-    end
-
-    context 'user namespace' do
-      before do
-        @group = create :group, owner: @user
-        @opts.merge!(namespace_id: @group.id)
-        @project = Project.create_by_user(@opts, @user)
-      end
-
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @group }
-    end
-  end
 
   describe :find_with_namespace do
     context 'with namespace' do

@@ -1,10 +1,14 @@
 module Projects
   class CreateContext < BaseContext
+    def initialize(user, params)
+      @current_user, @params = user, params.dup
+    end
+
     def execute
       # get namespace id
-      namespace_id = params[:project].delete(:namespace_id)
+      namespace_id = params.delete(:namespace_id)
 
-      @project = Project.new(params[:project])
+      @project = Project.new(params)
 
       # Parametrize path for project
       #
@@ -25,7 +29,7 @@ module Projects
         end
       else
         # Set current user namespace if namespace_id is nil
-        @project.namespace_id = current_user.id
+        @project.namespace_id = current_user.namespace_id
       end
 
       Project.transaction do
