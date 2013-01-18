@@ -4,12 +4,12 @@
     = link_to dashboard_path, class: 'btn very_small' do
       &larr; To dashboard
     &nbsp;
-    %span.cgray Events and projects are filtered in scope of group
+    %span.cgray You will only see events from projects in this group
     %hr
     - if @events.any?
       .content_list
     - else
-      %p.nothing_here_message Projects activity will be displayed here
+      %p.nothing_here_message Project activity will be displayed here
     .loading.hide
   .side.span4
     = render "projects", projects: @projects
