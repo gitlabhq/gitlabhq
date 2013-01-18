@@ -31,6 +31,7 @@ gitlab:
 
   ## Project settings
   default_projects_limit: 10
+  # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
 
 ## Gravatar
 gravatar:
