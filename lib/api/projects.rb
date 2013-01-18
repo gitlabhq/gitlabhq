@@ -33,8 +33,13 @@ module Gitlab
       #   wall_enabled (optional) - enabled by default
       #   merge_requests_enabled (optional) - enabled by default
       #   wiki_enabled (optional) - enabled by default
+      #   global_namespace (optional) - create repo in global namespace
+      #                                 instead of your private namespace
       # Example Request
       #   POST /projects
+      params do
+        optional :global_namespace, type: Boolean
+      end
       post do
         attrs = attributes_for_keys [:name,
                                     :description,
@@ -43,6 +48,11 @@ module Gitlab
                                     :wall_enabled,
                                     :merge_requests_enabled,
                                     :wiki_enabled]
+
+        if params[:global_namespace]
+          attrs[:namespace_id] = Namespace.global_id
+        end
+
         @project = Project.create_by_user(attrs, current_user)
         if @project.saved?
           present @project, with: Entities::Project
