@@ -35,7 +35,7 @@
 
 class User < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :lockable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable
+         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
