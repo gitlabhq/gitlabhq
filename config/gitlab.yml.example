@@ -28,8 +28,7 @@ gitlab:
   ## Email settings
   # Email address used in the "From" field in mails sent by GitLab
   email_from: gitlab@localhost
-  # Will be displayed on the about page
-  admin_email: admin@localhost
+  # Email address of your support contanct (default: same as email_from)
   support_email: support@localhost
 
   ## Project settings
