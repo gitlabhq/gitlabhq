@@ -461,10 +461,10 @@ class Project < ActiveRecord::Base
           name: commit.author_name,
           email: commit.author_email
         },
-        files: {}
+        added: files[:added],
+        removed: files[:removed],
+        modified: files[:modified]
       }
-
-      files.each { |key, value| data[:commits].last[:files][key] = value unless value.count.zero? }
     end
 
     data
