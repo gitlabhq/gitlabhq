@@ -8,6 +8,7 @@ class Ability
       when "Snippet" then snippet_abilities(object, subject)
       when "MergeRequest" then merge_request_abilities(object, subject)
       when "Group", "Namespace" then group_abilities(object, subject)
+      when "UserTeam" then user_team_abilities(object, subject)
       else []
       end
     end
@@ -109,6 +110,22 @@ class Ability
 
       rules.flatten
     end
+
+    def user_team_abilities user, team
+      rules = []
+
+      # Only group owner and administrators can manage group
+      if team.owner == user || team.admin?(user) || user.admin?
+        rules << [ :manage_user_team ]
+      end
+
+      if team.owner == user || user.admin?
+        rules << [ :admin_user_team ]
+      end
+
+      rules.flatten
+    end
+
 
     [:issue, :note, :snippet, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
