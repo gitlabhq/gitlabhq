@@ -26,7 +26,7 @@ Gitlab::Application.routes.draw do
   #
   # Help
   #
-  get 'help'                => 'help#index'
+  get 'help'                => 'about#index'
   get 'help/api'            => 'help#api'
   get 'help/markdown'       => 'help#markdown'
   get 'help/permissions'    => 'help#permissions'
