@@ -51,6 +51,19 @@ module Gitlab
       end
     end
 
+    class << self
+      def version
+        return @gitolite_version if @gitolite_version
+
+        gitolite_user_home = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}")
+        gitolite_version_file = "#{gitolite_user_home}/gitolite/src/VERSION"
+        @gitolite_version = if File.readable?(gitolite_version_file)
+                              File.read(gitolite_version_file)
+                            end
+        @gitolite_version ||= "unknown"
+      end
+     end
+
     alias_method :create_repository, :update_repository
   end
 end
