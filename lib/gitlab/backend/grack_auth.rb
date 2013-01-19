@@ -81,7 +81,7 @@ module Grack
       end
       # Need to reset seek point
       @request.body.rewind
-      /refs\/heads\/([\w\.-]+)/.match(input).to_a.first
+      /refs\/heads\/([\w\.-]+)/.match(input).to_a.last
     end
 
     def project
