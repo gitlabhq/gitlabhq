@@ -1,13 +1,11 @@
 class AboutController < ApplicationController
+
+  layout 'about'
+
   def index
-
-    # check Gitolite version
-    gitolite_home = File.expand_path("~#{Gitlab.config.gitolite.ssh_user}")
-    gitolite_version_file = "#{gitolite_home}/gitolite/src/VERSION"
-    @gitolite_version = if File.exists?(gitolite_version_file) && File.readable?(gitolite_version_file)
-                          File.read(gitolite_version_file)
-                        end
-    @gitolite_version ||= "unknown"
-
+    @contribution_guide = File.read(Rails.root.join("CONTRIBUTING.md"))
+    @gitlab_version = "#{Gitlab::Version.squish}@#{Gitlab::Revision}"
+    @gitolite_version = Gitlab::Gitolite.version
+    @ruby_version = "#{RUBY_ENGINE}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}"
   end
 end
