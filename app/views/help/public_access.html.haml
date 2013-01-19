@@ -5,12 +5,14 @@
 %hr
 
 %p
-  Public area - is part of application with public access.
-  %br
-  It used to list all projects with public read-only access.
-  %br
-  If you enable public http access to the project - it will appears there
-  %br
+  GitLab allows you to open selected projects to be accessed publicly.
+  These projects will be clonable
+  %em without any
+  authentication.
+  Also they will be listed on the #{link_to "public access directory", public_root_path}.
 
-  Follow #{link_to "this link", public_root_path} to visit Public Area
+%ol
+  %li Go to your project dashboard
+  %li Click on the "Edit" tab
+  %li Select "Public clone access"
 
