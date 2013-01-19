@@ -213,6 +213,31 @@ ActiveRecord::Schema.define(:version => 20130110172407) do
     t.string "name"
   end
 
+  create_table "user_team_project_relationships", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "user_team_id"
+    t.integer  "greatest_access"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "user_team_user_relationships", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "user_team_id"
+    t.boolean  "group_admin"
+    t.integer  "permission"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "user_teams", :force => true do |t|
+    t.string   "name"
+    t.string   "path"
+    t.integer  "owner_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "",    :null => false
     t.string   "encrypted_password",     :default => "",    :null => false
