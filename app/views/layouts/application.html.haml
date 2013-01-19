@@ -18,7 +18,7 @@
             %span.count= current_user.cared_merge_requests.opened.count
         = nav_link(path: 'search#show') do
           = link_to "Search", search_path
-        = nav_link(controller: :help) do
-          = link_to "Help", help_path
+        = nav_link(path: 'about#index') do
+          = link_to "About GitLab", about_path
 
       .content= yield

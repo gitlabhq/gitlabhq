@@ -26,6 +26,12 @@ pre {
   &.dark {
     background: #333;
     color: #f5f5f5;
+    a {
+      color: #E1E1E1;
+      &:hover {
+       color: #fff;
+      }
+    }
   }
 }
 

@@ -1,0 +1,78 @@
+%p.lead You are using GitLab. GitLab is an open source code hosting solution built around Git.
+
+
+
+%h2 About this Installation
+
+%div.row
+  - unless Gitlab.config.gitlab.admin_email.empty?
+    %div.span3
+      %p Admin E-Mail:
+      %pre.dark #{mail_to(Gitlab.config.gitlab.admin_email)}
+  %div.span3
+    %p GitLab Version:
+    %pre.dark #{link_to "#{Gitlab::Version.squish}@#{Gitlab::Revision}", "https://github.com/gitlabhq/gitlabhq/commit/#{Gitlab::Revision}"}
+  %div.span3
+    %p Gitolite Version:
+    %pre.dark #{@gitolite_version}
+  %div.span3
+    %p Ruby Version:
+    %pre.dark #{RUBY_ENGINE}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}
+
+
+
+%h2 Getting Help
+
+%div.row
+  - unless Gitlab.config.gitlab.support_email.empty?
+    %div.span3
+      %p Contact Local Support:
+      %pre.dark #{mail_to(Gitlab.config.gitlab.support_email)}
+  %div.span3
+    %p Use the Search in the top bar:
+    %pre.dark #{link_to "Toggle Search-bar", '#', :onclick => '$("#search").focus();'}
+  %div.span3
+    %p Ask in Support Forum:
+    %pre.dark #{link_to "GitLab @ Google Groups", 'https://groups.google.com/forum/#!forum/gitlabhq'}
+  %div.span3
+    %p Browse the known issues:
+    %pre.dark #{link_to "GitLab @ GitHub", 'https://github.com/gitlabhq/gitlabhq/issues'}
+
+%h4 Use the help pages:
+
+=render 'help/help_pages'
+
+
+
+%h2 Help us make GitLab more awesome
+
+#contribute.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#contribute", "data-toggle" => "collapse", :href => "#contribute_content"}
+        Contribution Guide
+    #contribute_content.accordion-body.collapse
+      .accordion-inner
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("CONTRIBUTING.md"))
+
+
+
+%h2 About GitLab
+
+%p Fast, secure and stable solution based on Rails &amp; Gitolite. Free and open-source. Distributed under the MIT License.
+
+%div.row
+  %div.span3
+    %p Visit the official Website:
+    %pre.dark #{link_to "gitlabhq.com", 'http://gitlabhq.com/'}
+  %div.span3
+    %p Follow us on Twitter:
+    %pre.dark #{link_to "GitLab @ twitter", 'https://twitter.com/gitlabhq'}
+  %div.span3
+    %p Visit the Support Forum:
+    %pre.dark #{link_to "GitLab @ Google Groups", 'https://groups.google.com/forum/#!forum/gitlabhq'}
+  %div.span3
+    %p Browse the known issues:
+    %pre.dark #{link_to "GitLab @ GitHub", 'https://github.com/gitlabhq/gitlabhq'}

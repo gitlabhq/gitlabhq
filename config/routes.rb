@@ -46,6 +46,11 @@ Gitlab::Application.routes.draw do
   end
 
   #
+  # About
+  #
+  get 'about'              => 'about#index'
+
+  #
   # Admin Area
   #
   namespace :admin do
