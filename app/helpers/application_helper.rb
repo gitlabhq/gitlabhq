@@ -83,15 +83,15 @@ module ApplicationHelper
     ]
 
     help_nav = [
-      { label: "Workflow Help", url: help_workflow_path },
-      { label: "Permissions Help", url: help_permissions_path },
-      { label: "Web Hooks Help", url: help_web_hooks_path },
-      { label: "System Hooks Help", url: help_system_hooks_path },
       { label: "API Help", url: help_api_path },
       { label: "Markdown Help", url: help_markdown_path },
+      { label: "Permissions Help", url: help_permissions_path },
       { label: "Public Access Help", url: help_public_access_path },
+      { label: "Rake Tasks Help", url: help_raketasks_path },
       { label: "SSH Keys Help", url: help_ssh_path },
-      { label: "Gitlab Rake Tasks Help", url: help_raketasks_path },
+      { label: "System Hooks Help", url: help_system_hooks_path },
+      { label: "Web Hooks Help", url: help_web_hooks_path },
+      { label: "Workflow Help", url: help_workflow_path },
     ]
 
     project_nav = []

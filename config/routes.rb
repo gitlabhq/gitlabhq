@@ -26,16 +26,16 @@ Gitlab::Application.routes.draw do
   #
   # Help
   #
-  get 'help'              => 'help#index'
-  get 'help/permissions'  => 'help#permissions'
-  get 'help/workflow'     => 'help#workflow'
-  get 'help/api'          => 'help#api'
-  get 'help/web_hooks'    => 'help#web_hooks'
-  get 'help/system_hooks' => 'help#system_hooks'
-  get 'help/markdown'     => 'help#markdown'
-  get 'help/ssh'          => 'help#ssh'
-  get 'help/raketasks'    => 'help#raketasks'
+  get 'help'                => 'help#index'
+  get 'help/api'            => 'help#api'
+  get 'help/markdown'       => 'help#markdown'
+  get 'help/permissions'    => 'help#permissions'
   get 'help/public_access'  => 'help#public_access'
+  get 'help/raketasks'      => 'help#raketasks'
+  get 'help/ssh'            => 'help#ssh'
+  get 'help/system_hooks'   => 'help#system_hooks'
+  get 'help/web_hooks'      => 'help#web_hooks'
+  get 'help/workflow'       => 'help#workflow'
 
   #
   # Public namespace
