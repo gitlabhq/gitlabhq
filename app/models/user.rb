@@ -45,18 +45,27 @@ class User < ActiveRecord::Base
   attr_accessor :force_random_password
 
   # Namespace for personal projects
-  has_one :namespace, class_name: "Namespace", foreign_key: :owner_id, conditions: 'type IS NULL', dependent: :destroy
-  has_many :groups, class_name: "Group", foreign_key: :owner_id
+  has_one :namespace,                 dependent: :destroy, foreign_key: :owner_id,    class_name: "Namespace", conditions: 'type IS NULL'
 
-  has_many :keys, dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :issues, foreign_key: :author_id, dependent: :destroy
-  has_many :notes, foreign_key: :author_id, dependent: :destroy
-  has_many :merge_requests, foreign_key: :author_id, dependent: :destroy
-  has_many :events, class_name: "Event", foreign_key: :author_id, dependent: :destroy
-  has_many :recent_events, class_name: "Event", foreign_key: :author_id, order: "id DESC"
-  has_many :assigned_issues, class_name: "Issue", foreign_key: :assignee_id, dependent: :destroy
-  has_many :assigned_merge_requests, class_name: "MergeRequest", foreign_key: :assignee_id, dependent: :destroy
+  has_many :keys,                     dependent: :destroy
+  has_many :users_projects,           dependent: :destroy
+  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
+  has_many :notes,                    dependent: :destroy, foreign_key: :author_id
+  has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
+  has_many :events,                   dependent: :destroy, foreign_key: :author_id,   class_name: "Event"
+  has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
+  has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+
+  has_many :groups,         class_name: "Group", foreign_key: :owner_id
+  has_many :recent_events,  class_name: "Event", foreign_key: :author_id, order: "id DESC"
+
+  has_many :projects,       through: :users_projects
+
+  has_many :user_team_user_relationships, dependent: :destroy
+
+  has_many :user_teams,                      through: :user_team_user_relationships
+  has_many :user_team_project_relationships, through: :user_teams
+  has_many :team_projects,                   through: :user_team_project_relationships
 
   validates :name, presence: true
   validates :bio, length: { within: 0..255 }
@@ -80,6 +89,8 @@ class User < ActiveRecord::Base
   scope :blocked, where(blocked:  true)
   scope :active, where(blocked:  false)
   scope :alphabetically, order('name ASC')
+  scope :in_team, ->(team){ where(id: team.member_ids) }
+  scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
 
   #
   # Class methods
