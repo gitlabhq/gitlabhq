@@ -130,6 +130,20 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  resources :teams do
+    member do
+      get :issues
+      get :merge_requests
+      get :search
+      post :delegate_projects
+      delete :relegate_project
+      put :update_access
+    end
+    collection do
+      get :search
+    end
+  end
+
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations }

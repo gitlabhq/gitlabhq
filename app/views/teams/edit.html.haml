@@ -1,0 +1,32 @@
+= render "team_head"
+
+%h3.page_title= "Edit Team #{@user_team.name}"
+%hr
+= form_for @user_team, url: teams_path do |f|
+  - if @user_team.errors.any?
+    .alert-message.block-message.error
+      %span= @user_team.errors.full_messages.first
+  .clearfix
+    = f.label :name do
+      Team name is
+    .input
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+
+  .clearfix
+    = f.label :path do
+      Team path is
+    .input
+      = f.text_field :path, placeholder: "opensource", class: "xxlarge left"
+  .clearfix
+    .input.span3.center
+      = f.submit 'Save team changes', class: "btn primary"
+    .input.span3.center
+      = link_to 'Delete team', team_path(@user_team), method: :delete, confirm: "You are shure?", class: "btn danger"
+  %hr
+  .padded
+    %ul
+      %li Team is kind of directory for several projects
+      %li All created teams are private
+      %li People within a team see only projects they have access to
+      %li All projects of team will be stored in team directory
+      %li You will be able to move existing projects into team
