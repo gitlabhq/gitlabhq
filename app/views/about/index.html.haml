@@ -1,78 +1,57 @@
-%p.lead You are using GitLab. GitLab is an open source code hosting solution built around Git.
+%section
+  %h2 You are using GitLab
+  %p
+    GitLab is a fast, secure and stable open source code hosting solution built on Ruby on Rails & Gitolite.
+    It's distributed under the MIT License.
+
+  .row
+    .span4
+      %strong GitLab version:
+      %pre= @gitlab_version
+    .span4
+      %strong Gitolite version:
+      %pre= @gitolite_version
+    .span4
+      %strong Ruby version:
+      %pre= @ruby_version
+
+%section
+  %h3 Getting Help
+
+  =render 'help/help_pages'
 
 
 
-%h2 About this Installation
+%section.row
+  .span12
+    %h3 Help us make GitLab more awesome
 
-%div.row
-  - unless Gitlab.config.gitlab.admin_email.empty?
-    %div.span3
-      %p Admin E-Mail:
-      %pre.dark #{mail_to(Gitlab.config.gitlab.admin_email)}
-  %div.span3
-    %p GitLab Version:
-    %pre.dark #{link_to "#{Gitlab::Version.squish}@#{Gitlab::Revision}", "https://github.com/gitlabhq/gitlabhq/commit/#{Gitlab::Revision}"}
-  %div.span3
-    %p Gitolite Version:
-    %pre.dark #{@gitolite_version}
-  %div.span3
-    %p Ruby Version:
-    %pre.dark #{RUBY_ENGINE}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}
+  .span8
+    .file_holder
+      .file_content.wiki
+        = preserve do
+          = markdown @contribution_guide
 
+  .span4
+    .ui-box
+      .title
+        %h5 Find us on the internet
+      %ul.well-list
+        %li
+          Visit our website
+          = link_to "gitlabhq.com", "http://gitlabhq.com/"
+        %li
+          Reach out to
+          = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+          on
+          %i.icon-twitter
+          Twitter
+        %li
+          Join the
+          = link_to "Support Forum", "https://groups.google.com/forum/#!forum/gitlabhq"
+        %li
+          Fork us on
+          = link_to "https://github.com/gitlabhq/gitlabhq" do
+            %i.icon-github
+            GitHub
 
-
-%h2 Getting Help
-
-%div.row
-  - unless Gitlab.config.gitlab.support_email.empty?
-    %div.span3
-      %p Contact Local Support:
-      %pre.dark #{mail_to(Gitlab.config.gitlab.support_email)}
-  %div.span3
-    %p Use the Search in the top bar:
-    %pre.dark #{link_to "Toggle Search-bar", '#', :onclick => '$("#search").focus();'}
-  %div.span3
-    %p Ask in Support Forum:
-    %pre.dark #{link_to "GitLab @ Google Groups", 'https://groups.google.com/forum/#!forum/gitlabhq'}
-  %div.span3
-    %p Browse the known issues:
-    %pre.dark #{link_to "GitLab @ GitHub", 'https://github.com/gitlabhq/gitlabhq/issues'}
-
-%h4 Use the help pages:
-
-=render 'help/help_pages'
-
-
-
-%h2 Help us make GitLab more awesome
-
-#contribute.accordion
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#contribute", "data-toggle" => "collapse", :href => "#contribute_content"}
-        Contribution Guide
-    #contribute_content.accordion-body.collapse
-      .accordion-inner
-        .file_content.wiki
-          = preserve do
-            = markdown File.read(Rails.root.join("CONTRIBUTING.md"))
-
-
-
-%h2 About GitLab
-
-%p Fast, secure and stable solution based on Rails &amp; Gitolite. Free and open-source. Distributed under the MIT License.
-
-%div.row
-  %div.span3
-    %p Visit the official Website:
-    %pre.dark #{link_to "gitlabhq.com", 'http://gitlabhq.com/'}
-  %div.span3
-    %p Follow us on Twitter:
-    %pre.dark #{link_to "GitLab @ twitter", 'https://twitter.com/gitlabhq'}
-  %div.span3
-    %p Visit the Support Forum:
-    %pre.dark #{link_to "GitLab @ Google Groups", 'https://groups.google.com/forum/#!forum/gitlabhq'}
-  %div.span3
-    %p Browse the known issues:
-    %pre.dark #{link_to "GitLab @ GitHub", 'https://github.com/gitlabhq/gitlabhq'}
