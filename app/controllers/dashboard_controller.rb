@@ -18,6 +18,8 @@ class DashboardController < ApplicationController
                   @projects
                 end
 
+    @teams = (UserTeam.with_member(current_user) + UserTeam.created_by(current_user)).uniq
+
     @projects = @projects.page(params[:page]).per(30)
 
     @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
