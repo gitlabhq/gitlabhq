@@ -1,0 +1,23 @@
+.teams_box
+  %h5.title
+    My Teams
+    %small
+      (#{teams.count})
+    %span.right
+      = link_to new_team_path, class: "btn very_small info" do
+        %i.icon-plus
+        New Team
+    %span.right
+      = link_to teams_path, class: "btn very_small info" do
+        %i.icon-user
+        All Teams
+  %ul.well-list
+    - teams.each do |team|
+      %li
+        = link_to team_path(id: team.path), class: dom_class(team) do
+          %strong.well-title= truncate(team.name, length: 35)
+          %span.arrow
+            &rarr;
+          %span.last_activity
+            %strong Projects:
+            %span= current_user.authorized_projects.in_team(team).count
