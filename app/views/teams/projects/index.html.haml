@@ -1,0 +1,34 @@
+= render "teams/team_head"
+
+%fieldset
+  %legend Projects (#{@user_team.projects.count})
+  = form_tag delegate_projects_team_path(@user_team), id: "team_projects", class: "bulk_import", method: :post  do
+    %table
+      %thead
+        %tr
+          %th Project name
+          %th Max access
+          %th
+      - @user_team.projects.each do |project|
+        %tr.project
+          %td
+            = link_to project.name_with_namespace, project
+          %td
+            %span= @user_team.human_max_project_access(project)
+            -# if current_user.can?(:manage_user_team, @user_team)
+              - relation = project.user_team_project_relationships.find_by_user_team_id(@user_team)
+              = form_for(relation, as: :project, url: team_project_path(@user_team, project)) do |f|
+                = f.select :greatest_access, options_for_select(UsersProject.access_roles, @user_team.max_project_access(project)), {}, class: "medium project-access-select span2"
+
+          - if current_user.can?(:admin_user_team, @user_team)
+            %td.bgred
+              -#= link_to 'Edit max access', edit_project_team_path(@user_team, project), class: "btn small"
+              = link_to 'Relegate', relegate_project_team_path(@user_team, project_id: project.id), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
+          - else
+            %td
+
+      - if @avaliable_projects.any?
+        %tr
+          %td= select_tag :project_ids, options_from_collection_for_select(@avaliable_projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+          %td= select_tag :greatest_project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3" }
+          %td= submit_tag 'Add', class: "btn primary"

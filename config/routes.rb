@@ -1,6 +1,7 @@
 require 'sidekiq/web'
 
 Gitlab::Application.routes.draw do
+
   #
   # Search
   #
@@ -141,6 +142,7 @@ Gitlab::Application.routes.draw do
     end
     scope module: :teams do
       resources :members
+      resources :projects, only: [:index, :show] do
       end
     end
     collection do
