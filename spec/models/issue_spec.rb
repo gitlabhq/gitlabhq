@@ -29,7 +29,7 @@ describe Issue do
   end
 
   describe "Validation" do
-    it { should ensure_length_of(:description).is_within(0..2000) }
+    it { should ensure_length_of(:description).is_within(0..10000) }
   end
 
   describe 'modules' do

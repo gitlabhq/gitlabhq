@@ -24,7 +24,7 @@ class Issue < ActiveRecord::Base
 
   acts_as_taggable_on :labels
 
-  validates :description, length: { within: 0..2000 }
+  validates :description, length: { within: 0..10000 }
 
   def self.open_for(user)
     opened.assigned(user)
