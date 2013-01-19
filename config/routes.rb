@@ -139,6 +139,10 @@ Gitlab::Application.routes.draw do
       delete :relegate_project
       put :update_access
     end
+    scope module: :teams do
+      resources :members
+      end
+    end
     collection do
       get :search
     end
