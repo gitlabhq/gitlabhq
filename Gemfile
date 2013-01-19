@@ -127,6 +127,9 @@ group :development do
 
   # Docs generator
   gem "sdoc"
+
+  # thin instead webrick
+  gem 'thin'
 end
 
 group :development, :test do
