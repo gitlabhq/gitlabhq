@@ -127,7 +127,7 @@ class Project < ActiveRecord::Base
   end
 
   def team
-    @team ||= Team.new(self)
+    @team ||= ProjectTeam.new(self)
   end
 
   def repository
