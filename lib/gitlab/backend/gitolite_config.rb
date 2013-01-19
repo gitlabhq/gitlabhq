@@ -6,6 +6,7 @@ module Gitlab
   class GitoliteConfig
     class PullError < StandardError; end
     class PushError < StandardError; end
+    class BrokenGitolite < StandardError; end
 
     attr_reader :config_tmp_dir, :ga_repo, :conf
 
@@ -70,6 +71,10 @@ module Gitlab
 
     rescue PushError => ex
       log("Push error ->  " + " " + ex.message)
+      raise Gitolite::AccessDenied, ex.message
+
+    rescue BrokenGitolite => ex
+      log("Gitolite error ->  " + " " + ex.message)
       raise Gitolite::AccessDenied, ex.message
 
     rescue Exception => ex
@@ -202,7 +207,15 @@ module Gitlab
       system('git commit -m "GitLab"') # git commit returns 0 on success, and 1 if there is nothing to commit
       raise "Git commit failed." unless [0,1].include? $?.exitstatus
 
-      if system('git push')
+      stdin, stdout, stderr = Open3.popen3('git push')
+      push_output = stderr.read
+      push_status = $?.to_i
+
+      if push_output =~ /remote\: FATAL/
+        raise BrokenGitolite, push_output
+      end
+
+      if push_status.zero?
         Dir.chdir(Rails.root)
       else
         raise PushError, "unable to push gitolite-admin repo"
