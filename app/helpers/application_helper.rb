@@ -89,6 +89,7 @@ module ApplicationHelper
       { label: "System Hooks Help", url: help_system_hooks_path },
       { label: "API Help", url: help_api_path },
       { label: "Markdown Help", url: help_markdown_path },
+      { label: "Public Access Help", url: help_public_access_path },
       { label: "SSH Keys Help", url: help_ssh_path },
       { label: "Gitlab Rake Tasks Help", url: help_raketasks_path },
     ]

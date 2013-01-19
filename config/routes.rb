@@ -35,7 +35,7 @@ Gitlab::Application.routes.draw do
   get 'help/markdown'     => 'help#markdown'
   get 'help/ssh'          => 'help#ssh'
   get 'help/raketasks'    => 'help#raketasks'
-  get 'help/public_area'  => 'help#public_area'
+  get 'help/public_access'  => 'help#public_access'
 
   #
   # Public namespace
