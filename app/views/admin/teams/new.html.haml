@@ -1,0 +1,21 @@
+%h3.page_title New Team
+%hr
+= form_for @team, url: admin_teams_path do |f|
+  - if @team.errors.any?
+    .alert-message.block-message.error
+      %span= @team.errors.full_messages.first
+  .clearfix
+    = f.label :name do
+      Team name is
+    .input
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+      &nbsp;
+      = f.submit 'Create team', class: "btn primary"
+  %hr
+  .padded
+    %ul
+      %li Team is kind of directory for several projects
+      %li All created teams are private
+      %li People within a team see only projects they have access to
+      %li All projects of team will be stored in team directory
+      %li You will be able to move existing projects into team
