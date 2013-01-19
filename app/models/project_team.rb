@@ -1,4 +1,4 @@
-class Team
+class ProjectTeam
   attr_accessor :project
 
   def initialize(project)
