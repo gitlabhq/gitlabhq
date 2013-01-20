@@ -205,6 +205,14 @@ class AdminTeams < Spinach::FeatureSteps
     find_in_list(".team_members", user).must_equal true
   end
 
+  When 'I click to "Add members" link' do
+    click_link "Add members"
+  end
+
+  When 'I click to "Add projects" link' do
+    click_link "Add projects"
+  end
+
   protected
 
   def current_team
