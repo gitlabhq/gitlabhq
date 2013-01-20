@@ -60,41 +60,6 @@ class Admin::TeamsController < Admin::ApplicationController
     redirect_to admin_user_teams_path, notice: 'UserTeam was successfully deleted.'
   end
 
-  def delegate_projects
-    unless params[:project_ids].blank?
-      project_ids = params[:project_ids]
-      access = params[:greatest_project_access]
-      @team.assign_to_projects(project_ids, access)
-    end
-
-    redirect_to admin_team_path(@team), notice: 'Projects was successfully added.'
-  end
-
-  def relegate_project
-    project = params[:project_id]
-    @team.resign_from_project(project)
-
-    redirect_to admin_team_path(@team), notice: 'Project was successfully removed.'
-  end
-
-  def add_members
-    unless params[:user_ids].blank?
-      user_ids = params[:user_ids]
-      access = params[:default_project_access]
-      is_admin = params[:group_admin]
-      @team.add_members(user_ids, access, is_admin)
-    end
-
-    redirect_to admin_team_path(@team), notice: 'Members was successfully added.'
-  end
-
-  def remove_member
-    member = params[:member_id]
-    @team.remove_member(member)
-
-    redirect_to admin_team_path(@team), notice: 'Member was successfully removed.'
-  end
-
   private
 
   def user_team
