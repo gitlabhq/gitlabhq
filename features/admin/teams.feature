@@ -17,7 +17,7 @@ Feature: Admin Teams
     When I visit admin teams page
     When I have clean "HardCoders" team
     And I visit "HardCoders" team page
-    #Then I should see only me in members table
+    When I click to "Add members" link
     When I select user "John" from user list as "Developer"
     And submit form with new team member info
     Then I should see "John" in teams members list as "Developer"
@@ -30,6 +30,7 @@ Feature: Admin Teams
     When I have "Shop" project
     And I visit "HardCoders" team page
     Then I should see empty projects table
+    When I click to "Add projects" link
     When I select project "Shop" with max access "Reporter"
     And submit form with new team project info
     Then I should see "Shop" project in projects list
@@ -43,6 +44,7 @@ Feature: Admin Teams
     When I have gitlab user "Jimm"
     And I visit "HardCoders" team page
     Then I should see members table without "Jimm" member
+    When I click to "Add members" link
     When I select user "Jimm" ub team members list as "Master"
     And submit form with new team member info
     Then I should see "Jimm" in teams members list as "Master"
