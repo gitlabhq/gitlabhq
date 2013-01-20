@@ -1,7 +1,6 @@
 require 'sidekiq/web'
 
 Gitlab::Application.routes.draw do
-
   #
   # Search
   #
