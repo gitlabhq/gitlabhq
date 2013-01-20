@@ -64,6 +64,10 @@ class UserTeam < ActiveRecord::Base
     Gitlab::UserTeamManager.remove_member_from_team(self, user)
   end
 
+  def update_membership(user, options)
+    Gitlab::UserTeamManager.update_team_user_membership(self, user, options)
+  end
+
   def max_project_access(project)
     user_team_project_relationships.find_by_project_id(project).greatest_access
   end

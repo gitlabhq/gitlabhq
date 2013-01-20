@@ -1,0 +1,16 @@
+%h3
+  Edit access #{@member.name} in #{@team.name} team
+
+%hr
+%table.zebra-striped
+  %tr
+    %td User:
+    %td= @member.name
+  %tr
+    %td Team:
+    %td= @team.name
+  %tr
+    %td Since:
+    %td= member_since(@team, @member).stamp("Nov 11, 2010")
+
+= render 'form'
