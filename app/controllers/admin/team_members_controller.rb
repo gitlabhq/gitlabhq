@@ -1,4 +1,4 @@
-class Admin::TeamMembersController < AdminController
+class Admin::TeamMembersController < Admin::ApplicationController
   def edit
     @admin_team_member = UsersProject.find(params[:id])
   end
