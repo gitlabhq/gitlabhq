@@ -50,7 +50,7 @@ class AdminTeams < Spinach::FeatureSteps
   When 'I select user "John" from user list as "Developer"' do
     @user ||= User.find_by_name("John")
     within "#team_members" do
-      select user.name, :from => "user_ids"
+      select @user.name, :from => "user_ids"
       select "Developer", :from => "default_project_access"
     end
   end
@@ -61,7 +61,7 @@ class AdminTeams < Spinach::FeatureSteps
 
   Then 'I should see "John" in teams members list as "Developer"' do
     @user ||= User.find_by_name("John")
-    find_in_list("#members_list .member", user).must_equal true
+    find_in_list("#members_list .member", @user).must_equal true
   end
 
   When 'I visit "John" user admin page' do
@@ -185,7 +185,7 @@ class AdminTeams < Spinach::FeatureSteps
   end
 
   Then 'I should be redirected to "HardCoders" team admin page' do
-    current_path.should admin_team_peth(UserTeam.find_by_name("HardCoders"))
+    current_path.should == admin_team_path(UserTeam.find_by_name("HardCoders"))
   end
 
   And 'I should not to see "Jimm" user in members list' do
