@@ -70,12 +70,6 @@ Gitlab::Application.routes.draw do
       end
     end
     resources :teams do #, constraints: { id: /[^\/]+/ } do end
-      member do
-        post :delegate_projects
-        delete :relegate_project
-        post :add_members
-        delete :remove_member
-      end
       scope module: :teams do
         resources :members, only: [:edit, :update, :destroy, :new, :create]
         resources :projects, only: [:edit, :update, :destroy, :new, :create]
