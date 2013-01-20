@@ -1,4 +1,4 @@
-class Admin::TeamsController < AdminController
+class Admin::TeamsController < Admin::ApplicationController
   before_filter :user_team,
                 only: [ :edit, :show, :update, :destroy,
                         :delegate_projects, :relegate_project,

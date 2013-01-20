@@ -1,4 +1,4 @@
-class Admin::UsersController < AdminController
+class Admin::UsersController < Admin::ApplicationController
   def index
     @admin_users = User.scoped
     @admin_users = @admin_users.filter(params[:filter])
