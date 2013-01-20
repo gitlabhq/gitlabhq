@@ -68,25 +68,26 @@
 
 %fieldset
   %legend Projects (#{@team.projects.count})
-  = form_tag delegate_projects_admin_team_path(@team), id: "assign_projects", class: "bulk_import", method: :post  do
-    %table#projects_list
-      %thead
-        %tr
-          %th Project name
-          %th Max access
-          %th.cred Danger Zone!
-      - @team.projects.each do |project|
-        %tr.project
-          %td
-            = link_to project.name_with_namespace, [:admin, project]
-          %td
-            %span= @team.human_max_project_access(project)
-          %td.bgred
-            = link_to 'Relegate', relegate_project_admin_team_path(@team, project_id: project.id), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
+  %table#projects_list
+    %thead
       %tr
-        %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
-        %td= select_tag :greatest_project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3" }
-        %td= submit_tag 'Add', class: "btn primary", id: :assign_projects_to_team
+        %th Project name
+        %th Max access
+        %th.cred Danger Zone!
+    - @team.projects.each do |project|
+      %tr.project
+        %td
+          = link_to project.name_with_namespace, [:admin, project]
+        %td
+          %span= @team.human_max_project_access(project)
+        %td.bgred
+          = link_to 'Edit', edit_admin_team_project_path(@team, project), class: "btn small"
+          &nbsp;
+          = link_to 'Relegate', admin_team_project_path(@team, project), confirm: 'Remove project from team. Are you sure?', method: :delete, class: "btn danger small"
+    %tr
+      %td
+      %td
+      %td= link_to 'Add projects', new_admin_team_project_path(@team), class: "btn primary", id: :assign_projects_to_team
 
 :javascript
   $(function(){
