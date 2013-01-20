@@ -3,7 +3,7 @@
 
 %fieldset
   %legend Members (#{@team.members.count})
-  = form_tag add_members_admin_team_path(@team), id: "team_members", class: "bulk_import", method: :post  do
+  = form_tag admin_team_members_path(@team), id: "team_members", class: "bulk_import", method: :post  do
     %table#members_list
       %thead
         %tr
