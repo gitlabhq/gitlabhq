@@ -77,6 +77,9 @@ Gitlab::Application.routes.draw do
         post :add_members
         delete :remove_member
       end
+      scope module: :teams do
+        resources :members, only: [:edit, :update, :destroy, :new, :create]
+      end
     end
     resources :team_members, only: [:edit, :update, :destroy]
     resources :hooks, only: [:index, :create, :destroy] do

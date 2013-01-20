@@ -22,6 +22,38 @@ module Gitlab
         update_team_users_access_in_project(team, project)
       end
 
+      def update_team_user_membership(team, member, options)
+        updates = {}
+
+        if options[:default_projects_access] && options[:default_projects_access] != team.default_projects_access(member)
+          updates[:permission] = options[:default_projects_access]
+        end
+
+        if options[:group_admin].to_s != team.admin?(member).to_s
+          updates[:group_admin] = options[:group_admin].present?
+        end
+
+        unless updates.blank?
+          user_team_relationship = team.user_team_user_relationships.find_by_user_id(member)
+          if user_team_relationship.update_attributes(updates)
+            if updates[:permission]
+              rebuild_project_permissions_to_member(team, member)
+            end
+            true
+          else
+            false
+          end
+        else
+          true
+        end
+      end
+
+      def rebuild_project_permissions_to_member(team, member)
+        team.projects.each do |project|
+          update_team_user_access_in_project(team, member, project)
+        end
+      end
+
       def update_team_users_access_in_project(team, project)
         members = team.members
         members.each do |member|
