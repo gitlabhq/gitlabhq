@@ -1,6 +1,6 @@
 %h3.page_title Rename Team
 %hr
-= form_for [:admin, @team] do |f|
+= form_for @team, url: admin_team_path(@team), method: :put do |f|
   - if @team.errors.any?
     .alert-message.block-message.error
       %span= @team.errors.full_messages.first
@@ -10,18 +10,13 @@
     .input
       = f.text_field :name, placeholder: "Example Team", class: "xxlarge"
 
-
-
   .clearfix.team_name_holder
     = f.label :path do
       %span.cred Team path is
     .input
       = f.text_field :path, placeholder: "example-team", class: "xxlarge danger"
       %ul.cred
-        %li Changing team path can have unintended side effects.
-        %li Renaming team path will rename directory for all related projects
         %li It will change web url for access team and team projects.
-        %li It will change the git path to repositories under this team.
 
   .form-actions
     = f.submit 'Rename team', class: "btn danger"
