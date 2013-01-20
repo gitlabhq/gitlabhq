@@ -78,6 +78,7 @@ Gitlab::Application.routes.draw do
       end
       scope module: :teams do
         resources :members, only: [:edit, :update, :destroy, :new, :create]
+        resources :projects, only: [:edit, :update, :destroy, :new, :create]
       end
     end
     resources :team_members, only: [:edit, :update, :destroy]
