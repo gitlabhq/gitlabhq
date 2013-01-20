@@ -48,6 +48,20 @@ module Gitlab
         end
       end
 
+      def update_project_greates_access(team, project, permission)
+        project_relation = team.user_team_project_relationships.find_by_project_id(project)
+        if permission != team.max_project_access(project)
+          if project_relation.update_attributes(greatest_access: permission)
+            update_team_users_access_in_project(team, project)
+            true
+          else
+            false
+          end
+        else
+          true
+        end
+      end
+
       def rebuild_project_permissions_to_member(team, member)
         team.projects.each do |project|
           update_team_user_access_in_project(team, member, project)
