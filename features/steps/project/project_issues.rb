@@ -73,22 +73,21 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'I fill in issue search with ""' do
-    page.execute_script("$('.issue_search').val('').keyup();");
     fill_in 'issue_search', with: ""
   end
 
   Given 'project "Shop" has milestone "v2.2"' do
     project = Project.find_by_name("Shop")
-    milestone = Factory :milestone, :title => "v2.2", :project => project
+    milestone = create(:milestone, :title => "v2.2", :project => project)
 
-    3.times { Factory :issue, :project => project, :milestone => milestone }
+    3.times { create(:issue, :project => project, :milestone => milestone) }
   end
 
   And 'project "Shop" has milestone "v3.0"' do
     project = Project.find_by_name("Shop")
-    milestone = Factory :milestone, :title => "v3.0", :project => project
+    milestone = create(:milestone, :title => "v3.0", :project => project)
 
-    3.times { Factory :issue, :project => project, :milestone => milestone }
+    3.times { create(:issue, :project => project, :milestone => milestone) }
   end
 
   When 'I select milestone "v3.0"' do
@@ -96,8 +95,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see selected milestone with title "v3.0"' do
-    issues_milestone_selector = "#issue_milestone_id_chzn/a"
-    wait_until { page.has_content?("Details") }
+    issues_milestone_selector = "#issue_milestone_id_chzn > a"
     page.find(issues_milestone_selector).should have_content("v3.0")
   end
 
@@ -108,8 +106,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see first assignee from "Shop" as selected assignee' do
-    issues_assignee_selector = "#issue_assignee_id_chzn/a"
-    wait_until { page.has_content?("Details") }
+    issues_assignee_selector = "#issue_assignee_id_chzn > a"
     project = Project.find_by_name "Shop"
     assignee_name = project.users.first.name
     page.find(issues_assignee_selector).should have_content(assignee_name)
@@ -117,18 +114,18 @@ class ProjectIssues < Spinach::FeatureSteps
 
   And 'project "Shop" have "Release 0.4" open issue' do
     project = Project.find_by_name("Shop")
-    Factory.create(:issue,
-      :title => "Release 0.4",
-      :project => project,
-      :author => project.users.first)
+    create(:issue,
+           :title => "Release 0.4",
+           :project => project,
+           :author => project.users.first)
   end
 
   And 'project "Shop" have "Release 0.3" closed issue' do
     project = Project.find_by_name("Shop")
-    Factory.create(:issue,
-      :title => "Release 0.3",
-      :project => project,
-      :author => project.users.first,
-      :closed => true)
+    create(:issue,
+           :title => "Release 0.3",
+           :project => project,
+           :author => project.users.first,
+           :closed => true)
   end
 end

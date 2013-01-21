@@ -1,29 +1,47 @@
-# # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # 
 # Gitlab application config file  #
 # # # # # # # # # # # # # # # # # #
+#
+# How to use:
+# 1. copy file as gitlab.yml
+# 2. Replace gitlab -> host with your domain
+# 3. Replace gitolite -> ssh_host with your domain
+# 4. Replace gitlab -> email_from
 
 #
-# 1. Common settings
+# 1. GitLab app settings
 # ==========================
 
-# Web application specific settings
-web:
+## GitLab settings
+gitlab:
+  ## Web server settings
   host: localhost
   port: 80
   https: false
+  # Uncomment and customize to run in non-root path
+  # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
+  # relative_url_root: /gitlab
 
-# Email used for notification
-# about new issues, comments
-email:
-  from: notify@localhost
+  # Uncomment and customize if you can't use the default user to run GitLab (default: 'gitlab')
+  # user: user123
 
-# Application specific settings
-# Like default project limit for user etc
-app:
+  ## Email settings
+  # Email address used in the "From" field in mails sent by GitLab
+  email_from: gitlab@localhost
+
+  # Email address of your support contanct (default: same as email_from)
+  support_email: support@localhost
+
+  ## Project settings
   default_projects_limit: 10
-  # backup_path: "/vol/backups"   # default: Rails.root + backups/
-  # backup_keep_time: 604800      # default: 0 (forever) (in seconds)
-  # disable_gravatar: true        # default: false - Disable user avatars from Gravatar.com
+  # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
+
+## Gravatar
+gravatar:
+  enabled: true                 # Use user avatar images from Gravatar.com (default: true)
+  # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
+  # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
+
 
 
 #
@@ -31,18 +49,25 @@ app:
 # ==========================
 omniauth:
   # Enable ability for users
-  # to login via twitter, google ..
+  # Allow logging in via Twitter, Google, etc. using Omniauth providers
   enabled: false
 
-  # IMPORTANT! 
-  # It allows user to login without having user account
+  # CAUTION!
+  # This allows users to login without having a user account first (default: false)
+  # User accounts will be created automatically when authentication was successful.
   allow_single_sign_on: false
+  # Locks down those users until they have been cleared by the admin (default: true)
   block_auto_created_users: true
   # Please note that ldap and shibboleth authentication methods need this settings:
   # allow_single_sign_on: true
   # block_auto_created_users: false
 
-  # Auth providers 
+  ## Auth providers
+  # Uncomment the lines and fill in the data of the auth provider you want to use
+  # If your favorite auth provider is not listed you can user others:
+  # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
+  # The 'app_id' and 'app_secret' parameters are always passed as the first two
+  # arguments, followed by optional 'args' which can be either a hash or an array.
   providers:
 
     google_oauth2:
@@ -78,28 +103,45 @@ omniauth:
         email: 'HTTP_SSOCONTACTMAIL'
       debug: false
 
+
 #
-# 3. Advanced settings:
+# 3. Advanced settings
 # ==========================
 
-# Git Hosting configuration
-git_host:
+# GitLab Satellites
+satellites:
+  # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
+  path: /home/gitlab/gitlab-satellites/
+
+## Backup settings
+backup:
+  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+  # keep_time: 604800   # default: 0 (forever) (in seconds)
+
+## Gitolite settings
+gitolite:
   admin_uri: git@localhost:gitolite-admin
-  base_path: /home/git/repositories/
+  # repos_path must not be a symlink
+  repos_path: /home/git/repositories/
   hooks_path: /home/git/.gitolite/hooks/
-  gitolite_admin_key: gitlab 
-  git_user: git
+  admin_key: gitlab
   upload_pack: true
   receive_pack: true
-  # host: localhost
-  # port: 22
+  ssh_user: git
+  ssh_host: localhost
+  # ssh_port: 22
+  # config_file: gitolite.conf
 
-# Git settings
-# Use default values unless you understand it
+  # Uncomment and customize if you can't use the default group to own the repositories and run Gitolite (default: same as the 'ssh_user' above)
+  # owner_group: group123
+
+## Git settings
+# CAUTION!
+# Use the default values unless you really know what you are doing
 git:
-  path: /usr/bin/git
+  bin_path: /usr/bin/git
   # Max size of git object like commit, in bytes
   # This value can be increased if you have a very large commits
-  git_max_size: 5242880 # 5.megabytes
+  max_size: 5242880 # 5.megabytes
   # Git timeout to read commit, in seconds
-  git_timeout: 10
+  timeout: 10

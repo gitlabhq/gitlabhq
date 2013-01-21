@@ -1,3 +1,21 @@
 %h3.page_title New Group
-%br
-= render 'form'
+%hr
+= form_for [:admin, @group] do |f|
+  - if @group.errors.any?
+    .alert-message.block-message.error
+      %span= @group.errors.full_messages.first
+  .clearfix
+    = f.label :name do
+      Group name is
+    .input
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+      &nbsp;
+      = f.submit 'Create group', class: "btn primary"
+  %hr
+  .padded
+    %ul
+      %li Group is kind of directory for several projects
+      %li All created groups are private
+      %li People within a group see only projects they have access to
+      %li All projects of group will be stored in group directory
+      %li You will be able to move existing projects into group

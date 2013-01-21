@@ -2,15 +2,15 @@
 #
 # Table name: issues
 #
-#  id           :integer         not null, primary key
+#  id           :integer          not null, primary key
 #  title        :string(255)
 #  assignee_id  :integer
 #  author_id    :integer
 #  project_id   :integer
-#  created_at   :datetime        not null
-#  updated_at   :datetime        not null
-#  closed       :boolean         default(FALSE), not null
-#  position     :integer         default(0)
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  closed       :boolean          default(FALSE), not null
+#  position     :integer          default(0)
 #  branch_name  :string(255)
 #  description  :text
 #  milestone_id :integer
@@ -29,20 +29,18 @@ describe Issue do
   end
 
   describe "Validation" do
-    it { should ensure_length_of(:description).is_within(0..2000) }
-    it { should ensure_inclusion_of(:closed).in_array([true, false]) }
+    it { should ensure_length_of(:description).is_within(0..10000) }
   end
 
   describe 'modules' do
-    it { should include_module(IssueCommonality) }
-    it { should include_module(Votes) }
+    it { should include_module(Issuable) }
   end
 
-  subject { Factory.create(:issue) }
+  subject { create(:issue) }
 
   describe '#is_being_reassigned?' do
     it 'returns true if the issue assignee has changed' do
-      subject.assignee = Factory(:user)
+      subject.assignee = create(:user)
       subject.is_being_reassigned?.should be_true
     end
     it 'returns false if the issue assignee has not changed' do
@@ -56,7 +54,7 @@ describe Issue do
       subject.is_being_closed?.should be_true
     end
     it 'returns false if the closed attribute has changed and is now false' do
-      issue = Factory.create(:closed_issue)
+      issue = create(:closed_issue)
       issue.closed = false
       issue.is_being_closed?.should be_false
     end
@@ -68,7 +66,7 @@ describe Issue do
 
   describe '#is_being_reopened?' do
     it 'returns true if the closed attribute has changed and is now false' do
-      issue = Factory.create(:closed_issue)
+      issue = create(:closed_issue)
       issue.closed = false
       issue.is_being_reopened?.should be_true
     end

@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe "Projects", "DeployKeys" do
-  let(:project) { Factory :project }
+  let(:project) { create(:project) }
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write, :admin)
+    project.team << [@user, :master]
   end
 
   describe "GET /keys" do
     before do
-      @key = Factory :key, project: project
+      @key = create(:key, project: project)
       visit project_deploy_keys_path(project)
     end
 
@@ -57,7 +57,7 @@ describe "Projects", "DeployKeys" do
 
   describe "Show page" do
     before do
-      @key = Factory :key, project: project
+      @key = create(:key, project: project)
       visit project_deploy_key_path(project, @key)
     end
 

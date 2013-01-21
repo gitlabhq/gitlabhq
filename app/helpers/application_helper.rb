@@ -1,4 +1,5 @@
 require 'digest/md5'
+require 'uri'
 
 module ApplicationHelper
 
@@ -30,27 +31,21 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
-  def gravatar_icon(user_email = '', size = 40)
-    if Gitlab.config.disable_gravatar? || user_email.blank?
+  def gravatar_icon(user_email = '', size = nil)
+    size = 40 if size.nil? || size <= 0
+
+    if !Gitlab.config.gravatar.enabled || user_email.blank?
       'no_avatar.png'
     else
-      gravatar_prefix = request.ssl? ? "https://secure" : "http://www"
+      gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
-      "#{gravatar_prefix}.gravatar.com/avatar/#{Digest::MD5.hexdigest(user_email.downcase)}?s=#{size}&d=identicon"
+      sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
     end
-  end
-
-  def request_protocol
-    request.ssl? ? "https" : "http"
-  end
-
-  def web_app_url
-    "#{request_protocol}://#{Gitlab.config.web_host}/"
   end
 
   def last_commit(project)
     if project.repo_exists?
-      time_ago_in_words(project.commit.committed_date) + " ago"
+      time_ago_in_words(project.repository.commit.committed_date) + " ago"
     else
       "Never"
     end
@@ -59,9 +54,11 @@ module ApplicationHelper
   end
 
   def grouped_options_refs(destination = :tree)
+    repository = @project.repository
+
     options = [
-      ["Branch", @project.branch_names ],
-      [ "Tag", @project.tag_names ]
+      ["Branch", repository.branch_names ],
+      [ "Tag", repository.tag_names ]
     ]
 
     # If reference is commit id -
@@ -75,7 +72,8 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.projects.map{ |p| { label: p.name, url: project_path(p) } }
+    projects = current_user.authorized_projects.map { |p| { label: p.name_with_namespace, url: project_path(p) } }
+    groups = current_user.authorized_groups.map { |group| { label: "<group> #{group.name}", url: group_path(group) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },
@@ -85,31 +83,33 @@ module ApplicationHelper
     ]
 
     help_nav = [
-      { label: "Workflow Help", url: help_workflow_path },
-      { label: "Permissions Help", url: help_permissions_path },
-      { label: "Web Hooks Help", url: help_web_hooks_path },
-      { label: "System Hooks Help", url: help_system_hooks_path },
       { label: "API Help", url: help_api_path },
       { label: "Markdown Help", url: help_markdown_path },
+      { label: "Permissions Help", url: help_permissions_path },
+      { label: "Public Access Help", url: help_public_access_path },
+      { label: "Rake Tasks Help", url: help_raketasks_path },
       { label: "SSH Keys Help", url: help_ssh_path },
+      { label: "System Hooks Help", url: help_system_hooks_path },
+      { label: "Web Hooks Help", url: help_web_hooks_path },
+      { label: "Workflow Help", url: help_workflow_path },
     ]
 
     project_nav = []
-    if @project && !@project.new_record?
+    if @project && @project.repository && @project.repository.root_ref
       project_nav = [
         { label: "#{@project.name} Issues",   url: project_issues_path(@project) },
-        { label: "#{@project.name} Commits",  url: project_commits_path(@project, @ref || @project.root_ref) },
+        { label: "#{@project.name} Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
         { label: "#{@project.name} Merge Requests", url: project_merge_requests_path(@project) },
         { label: "#{@project.name} Milestones", url: project_milestones_path(@project) },
         { label: "#{@project.name} Snippets", url: project_snippets_path(@project) },
         { label: "#{@project.name} Team",     url: project_team_index_path(@project) },
-        { label: "#{@project.name} Tree",     url: project_tree_path(@project, @ref || @project.root_ref) },
+        { label: "#{@project.name} Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
         { label: "#{@project.name} Wall",     url: wall_project_path(@project) },
         { label: "#{@project.name} Wiki",     url: project_wikis_path(@project) },
       ]
     end
 
-    [projects, default_nav, project_nav, help_nav].flatten.to_json
+    [groups, projects, default_nav, project_nav, help_nav].flatten.to_json
   end
 
   def emoji_autocomplete_source
@@ -130,11 +130,16 @@ module ApplicationHelper
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
 
+  def user_color_scheme_class
+    current_user.dark_scheme ? :black : :white
+  end
+
   def show_last_push_widget?(event)
     event &&
       event.last_push_to_non_root? &&
       !event.rm_ref? &&
       event.project &&
+      event.project.repository &&
       event.project.merge_requests_enabled
   end
 
@@ -156,4 +161,9 @@ module ApplicationHelper
     image_tag("authbuttons/#{file_name}",
               alt: "Sign in with #{provider.to_s.titleize}")
   end
+
+  def image_url(source)
+    root_url + path_to_image(source)
+  end
+  alias_method :url_to_image, :image_url
 end

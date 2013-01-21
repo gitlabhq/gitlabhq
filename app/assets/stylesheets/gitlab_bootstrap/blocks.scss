@@ -1,23 +1,24 @@
 /**
  * ===================================
- * Contain 3 main UI block elements:
- *   .main_box - for show pages
- *   .ui-box   - for simple block & widgets
+ * Contain UI block elements:
+ *   .ui-box   - for any block & widgets
  * ===================================
  */
 
 /**
- *  UI box element
- *  contains top, middle, bottom blocks
+ * UI Block
  *
  */
-.main_box {
-  @extend .borders;
-  @extend .prepend-top-20;
-  @extend .append-bottom-20;
-  border-width:1px;
-  @include solid_shade;
+.ui-box {
+  background: #F9F9F9;
+  margin-bottom: 25px;
+  border: 1px solid #CCC;
+  @include solid-shade;
 
+  &.ui-box-show {
+    margin:20px 0;
+    background: #FFF;
+  }
 
   img { max-width: 100%; }
 
@@ -27,86 +28,95 @@
     }
   }
 
-  .top_box_content,
-  .middle_box_content,
-  .bottom_box_content {
-    padding:15px;
+  .ui-box-head,
+  .ui-box-body,
+  .ui-box-bottom {
+    padding: 15px;
+    word-wrap: break-word;
 
     pre {
       background: none !important;
-      margin:0;
-      border:none;
-      padding:0;
+      margin: 0;
+      border: none;
+      padding: 0;
+    }
+
+    .clearfix {
+      margin: 0;
     }
   }
 
-  .middle_box_content {
-    border-radius:0;
-    border:none;
-    font-size:12px;
-    background-color:#f5f5f5;
-    border:none;
-    border-top:1px solid #eee;
+  .ui-box-head {
+    .box-title {
+      color: $style_color;
+      font-size: 18px;
+      font-weight: normal;
+      line-height: 28px;
+    }
+    h3 {
+      margin: 0;
+    }
   }
 
-  .bottom_box_content {
-    border-top:1px solid #eee;
+  .ui-box-body {
+    border: none;
+    font-size: 12px;
+    background-color: #f5f5f5;
+    border: none;
+    border-top: 1px solid #eee;
   }
-}
 
-/**
- * Big UI Block for show page content
- *
- */
-.ui-box {
-  background:#F9F9F9;
-  margin-bottom: 25px;
-  @include round-borders-all(4px);
-  border-color: #CCC;
-  @include solid_shade;
+  .ui-box-bottom {
+    border-top: 1px solid #eee;
+  }
 
   &.white {
-    background:#fff;
+    background: #fff;
   }
 
   ul {
-    margin:0;
+    margin: 0;
   }
 
-  h5, .title {
-    padding: 0 10px;
-    @include round-borders-top(4px);
+  .title {
     @include bg-gray-gradient;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid #CCC;
+    color: #456;
+    font-size: 16px;
+    text-shadow: 0 1px 1px #fff;
+    padding: 0px 10px;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: normal;
 
-    &.small {
-      line-height: 28px;
-      font-size: 14px;
-      line-height:28px;
-      text-shadow: 0 1px 1px white;
+    > a {
+      text-shadow: 0 1px 1px #fff;
     }
 
     form {
-      padding:9px 0;
-      margin:0px;
+      margin-bottom: 0;
+      margin-top: 3px;
     }
 
     .nav-pills {
-      li {
-        padding:3px 0;
-        &.active a { background-color:$style_color; }
-        a {
-          border-radius:7px;
+      > li {
+        > a {
+          padding: 13px;
+          margin: 0;
+          font-size: 13px;
+        }
+        &.active {
+          > a {
+            background: #D5D5D5;
+            color: $style_color;
+            @include border-radius(0);
+            border-radius: 0;
+            border-left: 1px solid #CCC;
+            border-right: 1px solid #CCC;
+          }
         }
       }
     }
-  }
-
-  .bottom {
-    @include bg-gray-gradient;
-    @include round-borders-bottom(4px);
-    border-bottom:none;
-    border-top: 1px solid #bbb;
   }
 
   &.padded {
@@ -116,38 +126,22 @@
       padding: 5px 20px;
     }
     .middle_title {
-      background:#f5f5f5;
+      background: #f5f5f5;
       margin:20px -20px;
       padding: 0 20px;
-      border-top:1px solid #eee;
-      border-bottom:1px solid #eee;
-      font-size:14px;
-      color:#777;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      color: #777;
     }
   }
+
   .row_title {
-    font-weight:bold;
-    color:#444;
+    font-weight: bold;
+    color: #444;
     &:hover {
-      color:#444;
-      text-decoration:underline;
+      color: #444;
+      text-decoration: underline;
     }
-  }
-
-  li, .wll {
-    padding:10px;
-    &:first-child {
-      @include round-borders-top(4px);
-      border-top:none;
-    }
-
-    &:last-child {
-      @include round-borders-bottom(4px);
-      border:none;
-    }
-  }
-
-  .ui-box-body {
-    padding:10px;
   }
 }

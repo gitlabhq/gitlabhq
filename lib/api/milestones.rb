@@ -7,7 +7,7 @@ module Gitlab
       # Get a list of project milestones
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       # Example Request:
       #   GET /projects/:id/milestones
       get ":id/milestones" do
@@ -19,7 +19,7 @@ module Gitlab
       # Get a single project milestone
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   milestone_id (required) - The ID of a project milestone
       # Example Request:
       #   GET /projects/:id/milestones/:milestone_id
@@ -33,7 +33,7 @@ module Gitlab
       # Create a new project milestone
       #
       # Parameters:
-      #   id (required) - The ID or code name of the project
+      #   id (required) - The ID of the project
       #   title (required) - The title of the milestone
       #   description (optional) - The description of the milestone
       #   due_date (optional) - The due date of the milestone
@@ -54,7 +54,7 @@ module Gitlab
       # Update an existing project milestone
       #
       # Parameters:
-      #   id (required) - The ID or code name of a project
+      #   id (required) - The ID of a project
       #   milestone_id (required) - The ID of a project milestone
       #   title (optional) - The title of a milestone
       #   description (optional) - The description of a milestone

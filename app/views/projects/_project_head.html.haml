@@ -21,6 +21,10 @@
       = link_to project_hooks_path(@project) do
         %span
         Hooks
+    = nav_link(controller: :services, html_options: {class: 'right'}) do
+      = link_to project_services_path(@project) do
+        %span
+        Services
     = nav_link(path: 'projects#edit', html_options: {class: 'right'}) do
       = link_to edit_project_path(@project), class: "stat-tab tab " do
         %i.icon-edit

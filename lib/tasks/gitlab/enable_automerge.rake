@@ -1,17 +1,46 @@
 namespace :gitlab do
-  namespace :app do
-    desc "GITLAB | Enable auto merge"
-    task :enable_automerge => :environment do
-      Gitlab::Gitolite.new.enable_automerge
+  desc "GITLAB | Enable auto merge"
+  task :enable_automerge => :environment do
+    warn_user_is_not_gitlab
 
-      Project.find_each do |project|
-        if project.repo_exists? && !project.satellite.exists?
-          puts "Creating satellite for #{project.name}...".green
-          project.satellite.create
-        end
+    puts "Updating repo permissions ..."
+    Gitlab::Gitolite.new.enable_automerge
+    puts "... #{"done".green}"
+    puts ""
+
+    print "Creating satellites for ..."
+    unless Project.count > 0
+      puts "skipping, because you have no projects".magenta
+      next
+    end
+    puts ""
+
+    Project.find_each(batch_size: 100) do |project|
+      print "#{project.name_with_namespace.yellow} ... "
+
+      unless project.repo_exists?
+        puts "skipping, because the repo is empty".magenta
+        next
       end
 
-      puts "Done!".green
+      if project.satellite.exists?
+        puts "exists already".green
+      else
+        puts ""
+        project.satellite.create
+
+        print "... "
+        if $?.success?
+          puts "created".green
+        else
+          puts "error".red
+        end
+      end
     end
+  end
+
+  namespace :satellites do
+    desc "GITLAB | Create satellite repos"
+    task create: 'gitlab:enable_automerge'
   end
 end

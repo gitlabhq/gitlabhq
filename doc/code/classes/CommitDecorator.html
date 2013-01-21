@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>CommitDecorator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            CommitDecorator 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ApplicationDecorator.html">ApplicationDecorator</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/decorators/commit_decorator_rb.html">app/decorators/commit_decorator.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-author_link">author_link</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-committer_link">committer_link</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-description">description</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-link_title">link_title</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-no_commit_message">no_commit_message</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-person_link">person_link</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-title">title</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-author_link">
+            
+              <b>author_link</b>(options = {})
+            
+            <a href="../classes/CommitDecorator.html#method-i-author_link" name="method-i-author_link" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns a link to the commit author. If the author has a matching user and
+is a member of the current @project it will link to the team member page.
+Otherwise it will link to the author email as specified in the commit.</p>
+
+<p>options:</p>
+
+<pre>avatar: true will prepend the avatar image
+size:   size of the avatar image in px</pre>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-author_link_source')" id="l_method-i-author_link_source">show</a>
+                
+              </p>
+              <div id="method-i-author_link_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">author_link</span>(<span class="ruby-identifier">options</span> = {})
+  <span class="ruby-identifier">person_link</span>(<span class="ruby-identifier">options</span>.<span class="ruby-identifier">merge</span> <span class="ruby-identifier">source</span><span class="ruby-operator">:</span> <span class="ruby-value">:author</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-committer_link">
+            
+              <b>committer_link</b>(options = {})
+            
+            <a href="../classes/CommitDecorator.html#method-i-committer_link" name="method-i-committer_link" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Just like <a
+href="CommitDecorator.html#method-i-author_link">author_link</a> but for
+the committer.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-committer_link_source')" id="l_method-i-committer_link_source">show</a>
+                
+              </p>
+              <div id="method-i-committer_link_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 57</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">committer_link</span>(<span class="ruby-identifier">options</span> = {})
+  <span class="ruby-identifier">person_link</span>(<span class="ruby-identifier">options</span>.<span class="ruby-identifier">merge</span> <span class="ruby-identifier">source</span><span class="ruby-operator">:</span> <span class="ruby-value">:committer</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-description">
+            
+              <b>description</b>()
+            
+            <a href="../classes/CommitDecorator.html#method-i-description" name="method-i-description" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns the commits description</p>
+
+<p>cut off, ellipses (`&amp;hellp;`) are prepended to the commit message.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-description_source')" id="l_method-i-description_source">show</a>
+                
+              </p>
+              <div id="method-i-description_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 34</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">description</span>
+  <span class="ruby-identifier">description</span> = <span class="ruby-identifier">safe_message</span>
+
+  <span class="ruby-identifier">title_end</span> = <span class="ruby-identifier">description</span>.<span class="ruby-identifier">index</span>(<span class="ruby-regexp">%r\n/</span>)
+  <span class="ruby-keyword">if</span> (<span class="ruby-operator">!</span><span class="ruby-identifier">title_end</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">description</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">80</span>) <span class="ruby-operator">||</span> (<span class="ruby-identifier">title_end</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">title_end</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">80</span>)
+    <span class="ruby-string">&quot;&amp;hellip;&quot;</span>.<span class="ruby-identifier">html_safe</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">description</span>[<span class="ruby-number">70</span><span class="ruby-operator">..</span><span class="ruby-number">-1</span>]
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">description</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp">%r\n/</span>, <span class="ruby-number">2</span>)[<span class="ruby-number">1</span>].<span class="ruby-identifier">try</span>(<span class="ruby-value">:chomp</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-link_title">
+            
+              <b>link_title</b>()
+            
+            <a href="../classes/CommitDecorator.html#method-i-link_title" name="method-i-link_title" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns a string describing the commit for use in a link title</p>
+
+<p>Example</p>
+
+<pre>&quot;Commit: Alex Denisov - Project git clone panel&quot;</pre>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-link_title_source')" id="l_method-i-link_title_source">show</a>
+                
+              </p>
+              <div id="method-i-link_title_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">link_title</span>
+  <span class="ruby-node">&quot;Commit: #{author_name} - #{title}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-title">
+            
+              <b>title</b>()
+            
+            <a href="../classes/CommitDecorator.html#method-i-title" name="method-i-title" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns the commits title.</p>
+
+<p>Usually, the commit title is the first line of the commit message. In case
+this first line is longer than 80 characters, it is cut off after 70
+characters and ellipses (`&amp;hellp;`) are appended.</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-title_source')" id="l_method-i-title_source">show</a>
+                
+              </p>
+              <div id="method-i-title_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">title</span>
+  <span class="ruby-identifier">title</span> = <span class="ruby-identifier">safe_message</span>
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">no_commit_message</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">title</span>.<span class="ruby-identifier">blank?</span>
+
+  <span class="ruby-identifier">title_end</span> = <span class="ruby-identifier">title</span>.<span class="ruby-identifier">index</span>(<span class="ruby-regexp">%r\n/</span>)
+  <span class="ruby-keyword">if</span> (<span class="ruby-operator">!</span><span class="ruby-identifier">title_end</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">title</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">80</span>) <span class="ruby-operator">||</span> (<span class="ruby-identifier">title_end</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">title_end</span> <span class="ruby-operator">&gt;</span> <span class="ruby-number">80</span>)
+    <span class="ruby-identifier">title</span>[<span class="ruby-number">0</span><span class="ruby-operator">..</span><span class="ruby-number">69</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;&amp;hellip;&quot;</span>.<span class="ruby-identifier">html_safe</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">title</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp">%r\n/</span>, <span class="ruby-number">2</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-no_commit_message">
+            
+              <b>no_commit_message</b>()
+            
+            <a href="../classes/CommitDecorator.html#method-i-no_commit_message" name="method-i-no_commit_message" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-no_commit_message_source')" id="l_method-i-no_commit_message_source">show</a>
+                
+              </p>
+              <div id="method-i-no_commit_message_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 63</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">no_commit_message</span>
+  <span class="ruby-string">&quot;--no commit message&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-person_link">
+            
+              <b>person_link</b>(options = {})
+            
+            <a href="../classes/CommitDecorator.html#method-i-person_link" name="method-i-person_link" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Private: Returns a link to a person. If the person has a matching user and
+is a member of the current @project it will link to the team member page.
+Otherwise it will link to the person email as specified in the commit.</p>
+
+<p>options:</p>
+
+<pre>source: one of :author or :committer
+avatar: true will prepend the avatar image
+size:   size of the avatar image in px</pre>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-person_link_source')" id="l_method-i-person_link_source">show</a>
+                
+              </p>
+              <div id="method-i-person_link_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/decorators/commit_decorator.rb, line 75</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">person_link</span>(<span class="ruby-identifier">options</span> = {})
+  <span class="ruby-identifier">source_name</span> = <span class="ruby-identifier">send</span> <span class="ruby-node">&quot;#{options[:source]}_name&quot;</span>.<span class="ruby-identifier">to_sym</span>
+  <span class="ruby-identifier">source_email</span> = <span class="ruby-identifier">send</span> <span class="ruby-node">&quot;#{options[:source]}_email&quot;</span>.<span class="ruby-identifier">to_sym</span>
+  <span class="ruby-identifier">text</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:avatar</span>]
+          <span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">h</span>.<span class="ruby-identifier">image_tag</span> <span class="ruby-identifier">h</span>.<span class="ruby-identifier">gravatar_icon</span>(<span class="ruby-identifier">source_email</span>, <span class="ruby-identifier">options</span>[<span class="ruby-value">:size</span>]), <span class="ruby-keyword">class</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;avatar #{&quot;s#{options[:size]}&quot; if options[:size]}&quot;</span>, <span class="ruby-keyword ruby-title">width</span><span class="ruby-operator">:</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:size</span>], <span class="ruby-identifier">alt</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&quot;</span>
+          <span class="ruby-node">%Q{#{avatar} &lt;span class=&quot;commit-#{options[:source]}-name&quot;&gt;#{source_name}&lt;/span&gt;}</span>
+        <span class="ruby-keyword">else</span>
+          <span class="ruby-identifier">source_name</span>
+        <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">team_member</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:team_member_by_name_or_email</span>, <span class="ruby-identifier">source_name</span>, <span class="ruby-identifier">source_email</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">team_member</span>.<span class="ruby-identifier">nil?</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">mail_to</span> <span class="ruby-identifier">source_email</span>, <span class="ruby-identifier">text</span>.<span class="ruby-identifier">html_safe</span>, <span class="ruby-keyword">class</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;commit-#{options[:source]}-link&quot;</span>
+  <span class="ruby-keyword ruby-title">else</span>
+    <span class="ruby-identifier">h</span>.<span class="ruby-identifier">link_to</span> <span class="ruby-identifier">text</span>, <span class="ruby-identifier">h</span>.<span class="ruby-identifier">project_team_member_path</span>(<span class="ruby-ivar">@project</span>, <span class="ruby-identifier">team_member</span>), <span class="ruby-keyword">class</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;commit-#{options[:source]}-link&quot;</span>
+  <span class="ruby-keyword ruby-title">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

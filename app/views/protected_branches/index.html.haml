@@ -1,48 +1,54 @@
-= render "repositories/branches_head"
+= render "commits/head"
+.row
+  .span3
+    = render "repositories/filter"
+  .span9
+    .alert
+      %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
+      %p This ability allows:
+      %ul
+        %li keep stable branches secured
+        %li forced code review before merge to protected branches
+      %p Read more about project permissions #{link_to "here", help_permissions_path, class: "vlink"}
 
-.alert
-  %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
-  %p This ability allows:
-  %ul
-    %li keep stable branches secured
-    %li forced code review before merge to protected branches
-  %p Read more about project permissions #{link_to "here", help_permissions_path, class: "vlink"}
+    - if can? current_user, :admin_project, @project
+      = form_for [@project, @protected_branch] do |f|
+        -if @protected_branch.errors.any?
+          .alert-message.block-message.error
+            %ul
+              - @protected_branch.errors.full_messages.each do |msg|
+                %li= msg
 
-- if can? current_user, :admin_project, @project
-  = form_for [@project, @protected_branch] do |f|
-    -if @protected_branch.errors.any?
-      .alert-message.block-message.error
-        %ul
-          - @protected_branch.errors.full_messages.each do |msg|
-            %li= msg
+        .entry.clearfix
+          = f.label :name, "Branch"
+          .span3
+            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
+          &nbsp;
+          = f.submit 'Protect', class: "primary btn"
 
-    .entry.clearfix
-      = f.label :name, "Branch"
-      .span3
-        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
-      &nbsp;
-      = f.submit 'Protect', class: "primary btn"
-
-- unless @branches.empty?
-  %table
-    %thead
-      %tr
-        %th Name
-        %th Last commit
-        %th
-    %tbody
-      - @branches.each do |branch|
-        %tr
-          %td
-            = link_to project_commits_path(@project, branch.name) do
-              %strong= branch.name
-              - if branch.name == @project.root_ref
-                %span.label default
-          %td
-            = link_to project_commit_path(@project, branch.commit.id) do
-              = truncate branch.commit.id.to_s, length: 10
-            = time_ago_in_words(branch.commit.committed_date)
-            ago
-          %td
-            - if can? current_user, :admin_project, @project
-              = link_to 'Unprotect', [@project, branch], confirm: 'Are you sure?', method: :delete, class: "danger btn small"
+    - unless @branches.empty?
+      %table
+        %thead
+          %tr
+            %th Name
+            %th Last commit
+            %th
+        %tbody
+          - @branches.each do |branch|
+            %tr
+              %td
+                = link_to project_commits_path(@project, branch.name) do
+                  %strong= branch.name
+                  - if @project.root_ref?(branch.name)
+                    %span.label default
+              %td
+                - if branch.commit
+                  = link_to project_commit_path(@project, branch.commit.id) do
+                    = truncate branch.commit.id.to_s, length: 10
+                  = time_ago_in_words(branch.commit.committed_date)
+                  ago
+                - else
+                  (branch was removed from repository)
+              %td
+                - if can? current_user, :admin_project, @project
+                  = link_to 'Unprotect', [@project, branch], confirm: 'Are you sure?', method: :delete, class: "danger btn small"

@@ -1,18 +1,18 @@
 require 'spec_helper'
 
 describe "Snippets" do
-  let(:project) { Factory :project }
+  let(:project) { create(:project) }
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write)
+    project.team << [@user, :developer]
   end
 
   describe "GET /snippets" do
     before do
-      @snippet = Factory :snippet,
-        author: @user,
-        project: project
+      @snippet = create(:snippet,
+                        author: @user,
+                        project: project)
 
       visit project_snippets_path(project)
     end
@@ -26,7 +26,7 @@ describe "Snippets" do
       before do
         # admin access to remove snippet
         @user.users_projects.destroy_all
-        project.add_access(@user, :read, :write, :admin)
+        project.team << [@user, :master]
         visit edit_project_snippet_path(project, @snippet)
       end
 
@@ -48,11 +48,11 @@ describe "Snippets" do
       page.current_path.should == new_project_snippet_path(project)
     end
 
-    describe "fill in" do
+    describe "fill in", js: true do
       before do
         fill_in "snippet_title", with: "login function"
         fill_in "snippet_file_name", with: "test.rb"
-        fill_in "snippet_content", with: "def login; end"
+        page.execute_script("editor.insert('def login; end');")
       end
 
       it { expect { click_button "Save" }.to change {Snippet.count}.by(1) }
@@ -68,9 +68,9 @@ describe "Snippets" do
 
   describe "Edit snippet" do
     before do
-      @snippet = Factory :snippet,
-        author: @user,
-        project: project
+      @snippet = create(:snippet,
+                        author: @user,
+                        project: project)
       visit project_snippet_path(project, @snippet)
       click_link "Edit"
     end
@@ -83,7 +83,6 @@ describe "Snippets" do
       before do
         fill_in "snippet_title", with: "login function"
         fill_in "snippet_file_name", with: "test.rb"
-        fill_in "snippet_content", with: "def login; end"
       end
 
       it { expect { click_button "Save" }.to_not change {Snippet.count} }

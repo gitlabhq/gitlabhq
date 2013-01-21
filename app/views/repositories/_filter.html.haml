@@ -1,0 +1,9 @@
+%ul.nav.nav-pills.nav-stacked
+  = nav_link(path: 'repositories#show') do
+    = link_to 'Recent', project_repository_path(@project)
+  = nav_link(path: 'protected_branches#index') do
+    = link_to project_protected_branches_path(@project) do
+      Protected
+      %i.icon-lock
+  = nav_link(path: 'repositories#branches') do
+    = link_to 'All branches', branches_project_repository_path(@project)

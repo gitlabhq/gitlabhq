@@ -14,45 +14,24 @@
    *
    */
   header {
-    background: #474D57 url('bg-header.png') repeat-x bottom;
-    box-shadow:none;
-    border-bottom: 1px solid #444;
 
-    .fbtn {
-      .btn {
-        i {
-          position: relative;
-          top: 1px;
-        }
-        margin-left:8px;
-        background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#31363E));
-        background-image: -webkit-linear-gradient(#595D63 6.6%, #31363E);
-        background-image: -moz-linear-gradient(#595D63 6.6%, #31363E);
-        background-image: -o-linear-gradient(#595D63 6.6%, #31363E);
-        font-size: 12px;
-        &:hover {
-          background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #595D63), to(#2C2F35));
-          background-image: -webkit-linear-gradient(#595D63 6.6%, #2C2F35);
-          background-image: -moz-linear-gradient(#595D63 6.6%, #202227);
-          background-image: -o-linear-gradient(#595D63 6.6%, #202227);
-          background-position:0 0;
-          color:#fff;
-          i { 
-            @extend .icon-white;
-          }
-        }
+    &.navbar-gitlab {
+      .navbar-inner {
+        background: #474D57 url('bg-header.png') repeat-x bottom;
+        border-bottom: 1px solid #444;
 
-        border: 1px solid #31363E;
-        color:#D6DADF;
-        text-shadow: 0 -1px 0 #000000;
+        .nav > li > a {
+          color: #eee;
+          text-shadow: 0 1px 0 #444;
+        }
       }
     }
+
     .search {
       float: right;
       margin-right: 45px;
       .search-input {
         border: 1px solid rgba(0, 0, 0, 0.7);
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 2px rgba(0, 0, 0, 0.4) inset;
         background-color: #D2D5DA;
         background-color: rgba(255, 255, 255, 0.5);
 
@@ -67,21 +46,26 @@
     .app_logo {
       a {
         h1 {
-          background: url('logo_white.png') no-repeat 0px -3px;
-          color:#fff;
+          background: url('logo_white.png') no-repeat center center;
+          color: #eee;
           text-shadow: 0 1px 1px #111;
         }
       }
-      .separator {
-        display:none;
+      &:hover {
+        background-color: #41464e;
       }
-
     }
     .project_name {
-      color:#fff;
+      color: #eee;
       text-shadow: 0 1px 1px #111;
     }
   }
+
+  .separator {
+    background: #31363E;
+    border-left: 1px solid #666;
+  }
+
   /*
    *  End of Application Header
    *

@@ -1,18 +1,20 @@
 = render "projects/project_head"
 %h3.page_title
   Team Members
-  %small (#{@project.users_projects.count})
-
-- if can? current_user, :admin_team_member, @project
-  %p.slead
+  (#{@project.users_projects.count})
+  %small
     Read more about project permissions
     %strong= link_to "here", help_permissions_path, class: "vlink"
 
+  - if can? current_user, :admin_team_member, @project
     %span.right
       = link_to import_project_team_members_path(@project), class: "btn small grouped", title: "Import team from another project" do
         Import team from another project
       = link_to new_project_team_member_path(@project), class: "btn success small grouped", title: "New Team Member" do
         New Team Member
+%hr
 
-    .clearfix
-= render partial: "team_members/team", locals: {project: @project}
+
+.clearfix
+%div.team-table
+  = render partial: "team_members/team", locals: {project: @project}

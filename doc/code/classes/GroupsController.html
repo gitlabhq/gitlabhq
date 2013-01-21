@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>GroupsController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            GroupsController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ApplicationController.html">ApplicationController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/groups_controller_rb.html">app/controllers/groups_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-authorize_read_group-21">authorize_read_group!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-group">group</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-issues">issues</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-merge_requests">merge_requests</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-people">people</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-project_ids">project_ids</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-projects">projects</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-search">search</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-show">show</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-team_members">team_members</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-issues">
+            
+              <b>issues</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-issues" name="method-i-issues" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Get only assigned issues</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-issues_source')" id="l_method-i-issues_source">show</a>
+                
+              </p>
+              <div id="method-i-issues_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">issues</span>
+  <span class="ruby-ivar">@user</span>   = <span class="ruby-identifier">current_user</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">assigned_issues</span>.<span class="ruby-identifier">opened</span>
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-ivar">@issues</span>.<span class="ruby-identifier">of_group</span>(<span class="ruby-ivar">@group</span>).<span class="ruby-identifier">recent</span>.<span class="ruby-identifier">page</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]).<span class="ruby-identifier">per</span>(<span class="ruby-number">20</span>)
+  <span class="ruby-ivar">@issues</span> = <span class="ruby-ivar">@issues</span>.<span class="ruby-identifier">includes</span>(<span class="ruby-value">:author</span>, <span class="ruby-value">:project</span>)
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">atom</span> { <span class="ruby-identifier">render</span> <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-merge_requests">
+            
+              <b>merge_requests</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-merge_requests" name="method-i-merge_requests" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Get authored or assigned open merge requests</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-merge_requests_source')" id="l_method-i-merge_requests_source">show</a>
+                
+              </p>
+              <div id="method-i-merge_requests_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 23</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">merge_requests</span>
+  <span class="ruby-ivar">@merge_requests</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">cared_merge_requests</span>.<span class="ruby-identifier">opened</span>
+  <span class="ruby-ivar">@merge_requests</span> = <span class="ruby-ivar">@merge_requests</span>.<span class="ruby-identifier">of_group</span>(<span class="ruby-ivar">@group</span>).<span class="ruby-identifier">recent</span>.<span class="ruby-identifier">page</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:page</span>]).<span class="ruby-identifier">per</span>(<span class="ruby-number">20</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-people">
+            
+              <b>people</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-people" name="method-i-people" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-people_source')" id="l_method-i-people_source">show</a>
+                
+              </p>
+              <div id="method-i-people_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 49</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">people</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-identifier">group</span>.<span class="ruby-identifier">projects</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:project_id</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:project_id</span>]
+  <span class="ruby-ivar">@users</span> = <span class="ruby-ivar">@project</span> <span class="ruby-operator">?</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">users</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">group</span>.<span class="ruby-identifier">users</span>
+  <span class="ruby-ivar">@users</span>.<span class="ruby-identifier">sort_by!</span>(&amp;<span class="ruby-value">:name</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@project</span>
+    <span class="ruby-ivar">@team_member</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">users_projects</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@team_member</span> = <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-search">
+            
+              <b>search</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-search" name="method-i-search" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-search_source')" id="l_method-i-search_source">show</a>
+                
+              </p>
+              <div id="method-i-search_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">search</span>
+  <span class="ruby-identifier">result</span> = <span class="ruby-constant">SearchContext</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project_ids</span>, <span class="ruby-identifier">params</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-ivar">@projects</span>       = <span class="ruby-identifier">result</span>[<span class="ruby-value">:projects</span>]
+  <span class="ruby-ivar">@merge_requests</span> = <span class="ruby-identifier">result</span>[<span class="ruby-value">:merge_requests</span>]
+  <span class="ruby-ivar">@issues</span>         = <span class="ruby-identifier">result</span>[<span class="ruby-value">:issues</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-show">
+            
+              <b>show</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-show" name="method-i-show" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-show_source')" id="l_method-i-show_source">show</a>
+                
+              </p>
+              <div id="method-i-show_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">show</span>
+  <span class="ruby-ivar">@events</span> = <span class="ruby-constant">Event</span>.<span class="ruby-identifier">in_projects</span>(<span class="ruby-identifier">project_ids</span>).<span class="ruby-identifier">limit</span>(<span class="ruby-number">20</span>).<span class="ruby-identifier">offset</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:offset</span>] <span class="ruby-operator">||</span> <span class="ruby-number">0</span>)
+  <span class="ruby-ivar">@last_push</span> = <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">recent_push</span>
+
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">atom</span> { <span class="ruby-identifier">render</span> <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-team_members">
+            
+              <b>team_members</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-team_members" name="method-i-team_members" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-team_members_source')" id="l_method-i-team_members_source">show</a>
+                
+              </p>
+              <div id="method-i-team_members_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">team_members</span>
+  <span class="ruby-ivar">@group</span>.<span class="ruby-identifier">add_users_to_project_teams</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:user_ids</span>], <span class="ruby-identifier">params</span>[<span class="ruby-value">:project_access</span>])
+  <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">people_group_path</span>(<span class="ruby-ivar">@group</span>), <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-string">'Users was successfully added.'</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_read_group-21">
+            
+              <b>authorize_read_group!</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-authorize_read_group-21" name="method-i-authorize_read_group-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Dont allow unauthorized access to group</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_read_group-21_source')" id="l_method-i-authorize_read_group-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_read_group-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 81</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_read_group!</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">projects</span>.<span class="ruby-identifier">present?</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:manage_group</span>, <span class="ruby-ivar">@group</span>)
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-group">
+            
+              <b>group</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-group" name="method-i-group" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-group_source')" id="l_method-i-group_source">show</a>
+                
+              </p>
+              <div id="method-i-group_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 68</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">group</span>
+  <span class="ruby-ivar">@group</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Group</span>.<span class="ruby-identifier">find_by_path</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>])
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project_ids">
+            
+              <b>project_ids</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-project_ids" name="method-i-project_ids" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_ids_source')" id="l_method-i-project_ids_source">show</a>
+                
+              </p>
+              <div id="method-i-project_ids_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 76</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_ids</span>
+  <span class="ruby-identifier">projects</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:id</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-projects">
+            
+              <b>projects</b>()
+            
+            <a href="../classes/GroupsController.html#method-i-projects" name="method-i-projects" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-projects_source')" id="l_method-i-projects_source">show</a>
+                
+              </p>
+              <div id="method-i-projects_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/groups_controller.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">projects</span>
+  <span class="ruby-ivar">@projects</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">group</span>.<span class="ruby-identifier">projects</span>.<span class="ruby-identifier">authorized_for</span>(<span class="ruby-identifier">current_user</span>).<span class="ruby-identifier">sorted_by_activity</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

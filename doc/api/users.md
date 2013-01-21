@@ -10,6 +10,7 @@ GET /users
 [
   {
     "id": 1,
+    "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
     "blocked": false,
@@ -23,6 +24,7 @@ GET /users
   },
   {
     "id": 2,
+    "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
     "blocked": false,
@@ -52,6 +54,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
   "blocked": false,
@@ -74,14 +77,13 @@ POST /users
 
 Parameters:
 + `email` (required)                  - Email
-+ `name` (required)                   - Name
 + `password` (required)               - Password
-+ `password_confirmation` (required)  - Password confirmation
++ `username` (required)               - Username
++ `name` (required)                   - Name
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
-+ `projects_limit`                    - Limit projects wich user can create
-
++ `projects_limit`                    - Number of projects user can create
 
 Will return created user with status `201 Created` on success, or `404 Not
 found` on fail.
@@ -97,6 +99,7 @@ GET /user
 ```json
 {
   "id": 1,
+  "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
   "blocked": false,

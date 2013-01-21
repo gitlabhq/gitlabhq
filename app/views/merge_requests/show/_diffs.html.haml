@@ -1,8 +1,10 @@
 - if @merge_request.valid_diffs?
   = render "commits/diffs", diffs: @diffs
 - elsif @merge_request.broken_diffs?
-  %h4.nothing_here_message 
+  %h4.nothing_here_message
     Can't load diff.
-    You can #{link_to "download MR patch", raw_project_merge_request_path(@project, @merge_request), class: "vlink"} instead.
+    You can
+    = link_to "download it", project_merge_request_path(@project, @merge_request), format: :diff, class: "vlink"
+    instead.
 - else
   %h4.nothing_here_message Nothing to merge

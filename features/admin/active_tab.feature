@@ -12,6 +12,11 @@ Feature: Admin active tab
     Then the active main tab should be Projects
     And no other main tabs should be active
 
+  Scenario: On Admin Groups
+    Given I visit admin groups page
+    Then the active main tab should be Groups
+    And no other main tabs should be active
+
   Scenario: On Admin Users
     Given I visit admin users page
     Then the active main tab should be Users

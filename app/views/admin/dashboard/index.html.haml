@@ -1,47 +1,75 @@
 .admin_dash.row
   .span4
     .ui-box
-      %h5
-        Resque Workers
-      .data.padded
-        = link_to admin_resque_path do
-          %h1{class: @workers.present? ? "cgreen" : "cred"}
-            = @workers.count
-        %hr
-        %p
-          %strong{class: @pending_jobs > 0 ? "cred" : "cgreen"}
-            #{@pending_jobs} post receive jobs waiting
-
-  .span4
-    .ui-box
-      %h5 Projects
+      %h5.title Projects
       .data.padded
         = link_to admin_projects_path do
           %h1= Project.count
         %hr
-        = link_to 'New Project', new_admin_project_path, class: "btn small"
+        = link_to 'New Project', new_project_path, class: "btn small"
   .span4
     .ui-box
-      %h5 Users
+      %h5.title Groups
+      .data.padded
+        = link_to admin_groups_path do
+          %h1= Group.count
+        %hr
+        = link_to 'New Group', new_admin_group_path, class: "btn small"
+  .span4
+    .ui-box
+      %h5.title Users
       .data.padded
         = link_to admin_users_path do
           %h1= User.count
         %hr
         = link_to 'New User', new_admin_user_path, class: "btn small"
 
-
 .row
-  .span6
-    %h3 Latest projects
+  .span4
+    %h4 Latest projects
     %hr
     - @projects.each do |project|
       %p
-        = link_to project.name, [:admin, project]
-  .span6
-    %h3 Latest users
+        = link_to project.name_with_namespace, [:admin, project]
+        %span.light.right
+          = time_ago_in_words project.created_at
+          ago
+
+  .span4
+    %h4 Latest users
     %hr
     - @users.each do |user|
       %p
-        = link_to [:admin, user] do 
+        = link_to [:admin, user] do
           = user.name
-          %small= user.email
+        %span.light.right
+          = time_ago_in_words user.created_at
+          ago
+
+  .span4
+    %h4 Stats
+    %hr
+    %p
+      Issues
+      %span.light.right
+        = Issue.count
+    %p
+      Merge Requests
+      %span.light.right
+        = MergeRequest.count
+    %p
+      Notes
+      %span.light.right
+        = Note.count
+    %p
+      Snippets
+      %span.light.right
+        = Snippet.count
+    %p
+      SSH Keys
+      %span.light.right
+        = Key.count
+    %p
+      Milestones
+      %span.light.right
+        = Milestone.count

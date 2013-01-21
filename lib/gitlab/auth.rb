@@ -4,8 +4,10 @@ module Gitlab
     def find_or_new_for_omniauth(auth)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
+      uid = uid.to_s.force_encoding("utf-8")
       name = auth.info.name.force_encoding("utf-8")
       email = auth.info.email.downcase unless auth.info.email.nil?
+      username = auth.info.username
 
       if @user = User.find_by_provider_and_extern_uid(provider, uid)
         @user
@@ -31,6 +33,7 @@ module Gitlab
           provider: provider,
           name: name,
           email: email,
+          username: username, # email.match(/^[^@]*/)[0],
           password: password,
           password_confirmation: password,
           projects_limit: Gitlab.config.default_projects_limit,

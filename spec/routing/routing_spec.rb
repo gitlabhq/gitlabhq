@@ -33,6 +33,7 @@ end
 # help_system_hooks GET    /help/system_hooks(.:format) help#system_hooks
 #     help_markdown GET    /help/markdown(.:format)     help#markdown
 #          help_ssh GET    /help/ssh(.:format)          help#ssh
+#    help_raketasks GET    /help/raketasks(.:format)    help#raketasks
 describe HelpController, "routing" do
   it "to #index" do
     get("/help").should route_to('help#index')
@@ -65,6 +66,10 @@ describe HelpController, "routing" do
   it "to #ssh" do
     get("/help/ssh").should route_to('help#ssh')
   end
+
+  it "to #raketasks" do
+    get("/help/raketasks").should route_to('help#raketasks')
+  end
 end
 
 # errors_githost GET    /errors/githost(.:format) errors#githost
@@ -82,37 +87,25 @@ end
 #                     profile GET    /profile(.:format)                     profile#show
 #              profile_design GET    /profile/design(.:format)              profile#design
 #              profile_update PUT    /profile/update(.:format)              profile#update
-describe ProfileController, "routing" do
+describe ProfilesController, "routing" do
   it "to #account" do
-    get("/profile/account").should route_to('profile#account')
+    get("/profile/account").should route_to('profiles#account')
   end
 
   it "to #history" do
-    get("/profile/history").should route_to('profile#history')
-  end
-
-  it "to #password_update" do
-    put("/profile/password").should route_to('profile#password_update')
-  end
-
-  it "to #token" do
-    get("/profile/token").should route_to('profile#token')
+    get("/profile/history").should route_to('profiles#history')
   end
 
   it "to #reset_private_token" do
-    put("/profile/reset_private_token").should route_to('profile#reset_private_token')
+    put("/profile/reset_private_token").should route_to('profiles#reset_private_token')
   end
 
   it "to #show" do
-    get("/profile").should route_to('profile#show')
+    get("/profile").should route_to('profiles#show')
   end
 
   it "to #design" do
-    get("/profile/design").should route_to('profile#design')
-  end
-
-  it "to #update" do
-    put("/profile/update").should route_to('profile#update')
+    get("/profile/design").should route_to('profiles#design')
   end
 end
 

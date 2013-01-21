@@ -7,23 +7,14 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-      = f.submit 'Create project', class: "btn primary project-submit"
+      = f.submit 'Create project', class: "btn success project-submit"
 
+  - if current_user.can_select_namespace?
+    .clearfix
+      = f.label :namespace_id do
+        %span Namespace
+      .input
+        = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen'}
   %hr
-  %div.adv_settings
-    %h6 Advanced settings:
-    .clearfix
-      = f.label :path do
-        Git Clone
-      .input
-        .input-prepend
-          %span.add-on= Gitlab.config.ssh_path
-          = f.text_field :path, placeholder: "example_project", disabled: !@project.new_record?
-          %span.add-on= ".git"
-    .clearfix
-      = f.label :code do
-        URL
-      .input
-        .input-prepend
-          %span.add-on= web_app_url
-          = f.text_field :code, placeholder: "example"
+  %p.padded
+    All created project are private. You choose who can see project and commit to repository.

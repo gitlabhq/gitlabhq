@@ -1,0 +1,41 @@
+= render "commits/head"
+.row
+  .span5
+    %h4
+      Stats:
+    %p
+      %b Total commits:
+      %span= @stats.commits_count
+    %p
+      %b Total files in #{@repository.root_ref}:
+      %span= @stats.files_count
+    %p
+      %b Authors:
+      %span= @stats.authors_count
+
+    %br
+    %div#activity-chart
+  .span7
+    %h4 Top 50 Committers:
+    %ol.styled
+      - @stats.authors[0...50].each do |author|
+        %li
+          = image_tag gravatar_icon(author.email, 16), class: 'avatar s16'
+          = author.name
+          %small.light= author.email
+          .right
+            = author.commits
+
+
+:javascript
+  $(function(){
+    var labels = [#{@graph.labels.to_json}];
+    var commits = [#{@graph.commits.join(', ')}];
+    var r = Raphael('activity-chart');
+    r.text(160, 10, "Commit activity for last #{@graph.weeks} weeks").attr({ font: "13px sans-serif" });
+    r.barchart(
+      10, 10, 400, 160,
+      [commits],
+      {colors:["#456"]}
+    ).label(labels, true);
+  })

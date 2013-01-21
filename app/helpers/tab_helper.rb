@@ -72,7 +72,7 @@ module TabHelper
       return "active" if current_page?(controller: "projects", action: action, id: @project)
     end
 
-    if ['snippets', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
+    if ['snippets', 'services', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
      "active"
     end
   end
@@ -82,6 +82,19 @@ module TabHelper
       current_controller?(:protected_branches) ||
       current_page?(project_repository_path(@project))
       'active'
+    end
+  end
+
+  # Use nav_tab for save controller/action  but different params
+  def nav_tab key, value, &block
+    o = {}
+    o[:class] = ""
+    o[:class] << " active" if params[key] == value
+
+    if block_given?
+      content_tag(:li, capture(&block), o)
+    else
+      content_tag(:li, nil, o)
     end
   end
 end

@@ -24,24 +24,18 @@
     &larr; To issues list
 
 
-.main_box
-  .top_box_content
-    %h4
+.ui-box.ui-box-show
+  .ui-box-head
+    %h4.box-title
       - if @issue.closed
-        .alert-message.error.status_info Closed
-      - else
-        .alert-message.success.status_info Open
+        .error.status_info Closed
       = gfm escape_once(@issue.title)
 
-  .middle_box_content
-    %cite.cgray Created by
-    = image_tag gravatar_icon(@issue.author_email), width: 16, class: "lil_av"
-    %strong.author= link_to_issue_author(@issue)
-
-    - if @issue.assignee
-      %cite.cgray and currently assigned to
-      = image_tag gravatar_icon(@issue.assignee_email), width: 16, class: "lil_av"
-      %strong.author= link_to_issue_assignee(@issue)
+  .ui-box-body
+    %cite.cgray
+      Created by #{link_to_member(@project, @issue.author)}
+      - if @issue.assignee
+        \ and currently assigned to #{link_to_member(@project, @issue.assignee)}
 
     - if @issue.milestone
       - milestone = @issue.milestone
@@ -50,15 +44,16 @@
 
     .right
       - @issue.labels.each do |label|
-        %span.label.label-issue
+        %span.label
           %i.icon-tag
           = label.name
         &nbsp;
 
   - if @issue.description.present?
-    .bottom_box_content
-      = preserve do
-        = markdown @issue.description
+    .ui-box-bottom
+      .wiki
+        = preserve do
+          = markdown @issue.description
 
 
-.issue_notes.voting_notes#notes= render "notes/notes_with_form", tid: @issue.id, tt: "issue"
+.voting_notes#notes= render "notes/notes_with_form"

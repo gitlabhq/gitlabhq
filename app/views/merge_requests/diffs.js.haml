@@ -1,7 +1,2 @@
 :plain
-  $(".merge-request-diffs").html("#{escape_javascript(render(partial: "merge_requests/show/diffs"))}");
-
-  $(function(){
-    PerLineNotes.init();
-  });
-
+  merge_request.$(".diffs").html("#{escape_javascript(render(partial: "merge_requests/show/diffs"))}");

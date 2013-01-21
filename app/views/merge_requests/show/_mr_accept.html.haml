@@ -9,19 +9,24 @@
       %span
         = form_for [:automerge, @project, @merge_request], remote: true, method: :get do |f|
           %p
-            You can accept this request automatically. 
-            If you still want to do it manually - 
+            You can accept this request automatically.
+            If you still want to do it manually -
             %strong= link_to "click here", "#", class: "how_to_merge_link vlink", title: "How To Merge"
             for instructions
           .accept_group
-            = f.submit "Accept Merge Request", class: "btn small success accept_merge_request"
-            - unless @project.root_ref? @merge_request.source_branch 
+            = f.submit "Accept Merge Request", class: "btn success accept_merge_request"
+            - unless @project.root_ref? @merge_request.source_branch
               .remove_branch_holder
-                = label_tag :should_remove_source_branch, class: "checkbox" do 
+                = label_tag :should_remove_source_branch, class: "checkbox" do
                   = check_box_tag :should_remove_source_branch
                   Remove source-branch
           .clearfix
-             
+
+
+  .automerge_widget.no_satellite{style: "display:none"}
+    .alert.alert-error
+      %span
+        %strong This repository does not have satellite. Ask administrator to fix this issue
 
   .automerge_widget.cannot_be_merged{style: "display:none"}
     .alert.alert-info
@@ -40,6 +45,6 @@
     .alert.alert-info
       %strong This merge request already can not be merged. Try to reload page.
 
-  .merge_in_progress.hide
+  .merge-in-progress.hide
     %span.cgray Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;
     = image_tag "ajax_loader.gif"

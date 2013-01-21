@@ -1,0 +1,32 @@
+/**
+ * This file represent some UI that can be changed
+ * during web app restyle or theme select.
+ *
+ * Next items should be placed there
+ * - link colors
+ * - header restyles
+ *
+ */
+.ui_color {
+  /*
+   *  Application Header
+   *
+   */
+  header {
+    @extend .header-dark;
+    &.navbar-gitlab {
+      .navbar-inner {
+        background: #657;
+        .app_logo {
+          &:hover {
+            background-color: #6A5A7A;
+          }
+        }
+        .separator {
+          background: #546;
+          border-left: 1px solid #706080;
+        }
+      }
+    }
+  }
+}

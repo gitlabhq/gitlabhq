@@ -1,22 +1,22 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head"
+  = render "layouts/head", title: "Profile"
   %body{class: "#{app_theme} profile"}
     = render "layouts/flash"
     = render "layouts/head_panel", title: "Profile"
     .container
       %ul.main_menu
-        = nav_link(path: 'profile#show', html_options: {class: 'home'}) do
+        = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
           = link_to "Profile", profile_path
-        = nav_link(path: 'profile#account') do
-          = link_to "Account", profile_account_path
+        = nav_link(path: 'profiles#account') do
+          = link_to "Account", account_profile_path
         = nav_link(controller: :keys) do
           = link_to keys_path do
             SSH Keys
             %span.count= current_user.keys.count
-        = nav_link(path: 'profile#design') do
-          = link_to "Design", profile_design_path
-        = nav_link(path: 'profile#history') do
-          = link_to "History", profile_history_path
+        = nav_link(path: 'profiles#design') do
+          = link_to "Design", design_profile_path
+        = nav_link(path: 'profiles#history') do
+          = link_to "History", history_profile_path
 
       .content= yield

@@ -1,8 +1,8 @@
 class Admin::GroupsController < AdminController
-  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update]
+  before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
 
   def index
-    @groups = Group.scoped
+    @groups = Group.order('name ASC')
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page]).per(20)
   end
@@ -11,6 +11,9 @@ class Admin::GroupsController < AdminController
     @projects = Project.scoped
     @projects = @projects.not_in_group(@group) if @group.projects.present?
     @projects = @projects.all
+    @projects.reject!(&:empty_repo?)
+
+    @users = User.active
   end
 
   def new
@@ -22,6 +25,7 @@ class Admin::GroupsController < AdminController
 
   def create
     @group = Group.new(params[:group])
+    @group.path = @group.name.dup.parameterize if @group.name
     @group.owner = current_user
 
     if @group.save
@@ -48,20 +52,29 @@ class Admin::GroupsController < AdminController
 
   def project_update
     project_ids = params[:project_ids]
-    Project.where(id: project_ids).update_all(group_id: @group.id)
+
+    Project.where(id: project_ids).each do |project|
+      project.transfer(@group)
+    end
 
     redirect_to :back, notice: 'Group was successfully updated.'
   end
 
   def remove_project
     @project = Project.find(params[:project_id])
-    @project.group_id = nil
-    @project.save
+    @project.transfer(nil)
 
     redirect_to :back, notice: 'Group was successfully updated.'
   end
 
+  def project_teams_update
+    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
+    redirect_to [:admin, @group], notice: 'Users was successfully added.'
+  end
+
   def destroy
+    @group.truncate_teams
+
     @group.destroy
 
     redirect_to admin_groups_path, notice: 'Group was successfully deleted.'
@@ -70,6 +83,6 @@ class Admin::GroupsController < AdminController
   private
 
   def group
-    @group = Group.find_by_code(params[:id])
+    @group = Group.find_by_path(params[:id])
   end
 end

@@ -1,0 +1,18 @@
+%h3.page_title Public Access
+.back_link
+  = link_to help_path do
+    &larr; to index
+%hr
+
+%p
+  GitLab allows you to open selected projects to be accessed publicly.
+  These projects will be clonable
+  %em without any
+  authentication.
+  Also they will be listed on the #{link_to "public access directory", public_root_path}.
+
+%ol
+  %li Go to your project dashboard
+  %li Click on the "Edit" tab
+  %li Select "Public clone access"
+

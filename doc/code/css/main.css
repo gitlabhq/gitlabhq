@@ -1,0 +1,333 @@
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background: #FFF;
+  color: #000;
+  margin: 0px;
+  font-size: 0.82em;
+  line-height: 1.25em;
+}
+
+a {
+  color: #00F;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #333;
+  background: #FE8;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+h1 {
+    font-size: 2.1em;
+    font-weight: normal;
+    line-height: 1.2em;
+    margin: 1.4em 0 0.7em 0;
+}
+
+h2 {
+    font-size: 1.6em;
+    margin: 1.8em 0 0.8em 0;
+    font-weight: normal;
+    line-height: 1.2em;
+}
+
+h3 {
+    font-size: 1.4em;
+    color:#555;
+    margin: 1.4em 0 0.7em 0;
+    font-weight: normal;
+}
+
+h4 {
+    margin: 1.4em 0 0.5em 0;
+    font-size: 1em;
+}
+
+table
+{
+    margin-bottom: 1em;
+}
+
+td, th
+{
+    padding: 0 0.7em 0.3em 0;
+}
+
+th
+{
+    font-weight: bold;
+}
+
+.clear
+{
+    clear: both;
+    width: 0; height: 0;
+}
+
+dt
+{
+    margin-bottom: 0.3em;
+    font-weight: bold;
+}
+
+dd
+{
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+
+dd p
+{
+    margin-top: 0.6em;
+}
+
+li
+{
+    margin: 0 0 0.5em 2em;
+}
+
+ul li
+{
+    list-style: disc;
+}
+
+ol li
+{
+    list-style: decimal;
+}
+
+.banner
+{
+    background: #EDF3FE;
+    border-bottom: 1px solid #ccc;
+    padding: 1em 2em 0.5em 2em;
+}
+.banner h1
+{
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.banner h1 .type
+{
+    font-size: 0.833em;
+    display:block;
+}
+
+.banner h1 .type,
+.banner h1 .parent
+{
+    color: #666;
+}
+
+.banner ul
+{
+    margin-top: 0.3em;
+    margin-bottom: 0;
+    font-size: 0.85em;
+}
+
+.banner li
+{
+    list-style: none;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+
+pre 
+{
+    margin-bottom: 1em;
+}
+
+.methods dt
+{
+    width: 1em;
+    font-size: 1.5em;
+    color:#AAA;
+    position: absolute;
+    font-weight: normal;
+    margin: 0;
+}
+
+.methods dd
+{
+    margin-left: 2.5em;
+    min-height: 1.8em;
+    -height: 1.8em;
+    padding-bottom: 0.8em;
+}
+
+
+.methods ul li
+{
+    margin-right: 0.7em;
+    margin-left: 0;
+    list-style: none;
+    display: inline;
+}
+
+#content {
+  margin: 2em;
+  margin-left: 3.5em;
+  margin-right: 3.5em;
+}
+
+
+.sectiontitle {
+  margin-top: 2em;
+  margin-bottom: 1.3em;
+  margin-left: -1.2em;
+  font-size: 1.2em;
+  padding: 0 0 0.25em 0;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+}
+
+.contenttitle {
+  margin-top: 4em;
+  margin-bottom: 1.3em;
+  margin-left: -0.9em;
+  font-size: 1.6em;
+  padding: 0 0 0.25em 0;
+  font-weight: bold;
+}
+
+.attr-rw {
+  padding-right: 1em;
+  text-align: center;
+  color: #055;
+}
+
+.attr-name {
+  font-weight: bold;
+  padding-right: 1em;
+}
+
+.attr-desc {
+}
+
+tt {
+  font-size: 1.15em;
+}
+
+.attr-value {
+  font-family: monospace;
+  padding-left: 1em;
+  font-size: 1.15em;
+}
+
+.dyn-source {
+  display: none;
+  background: #fffde8;
+  color: #000;
+  border: #ffe0bb dotted 1px;
+  margin: 0.5em 2em 0.5em 0;
+  padding: 0.5em;
+}
+
+.dyn-source .cmt {
+  color: #00F;
+  font-style: italic;
+}
+
+.dyn-source .kw {
+  color: #070;
+  font-weight: bold;
+}
+
+.description pre {
+  padding: 0.5em;
+  border: #ffe0bb dotted 1px;
+  background: #fffde8;
+}
+
+.method {
+    margin-bottom: 2em;
+}
+.method .description,
+.method .sourcecode
+{
+    margin-left: 1.2em;
+}
+.method h4
+{
+    border-bottom: 1px dotted #999;
+    padding: 0 0 0.2em 0;
+    margin-bottom: 0.8em;
+    font-size: 1.1em;
+    color:#333;
+}
+.method .method-title {
+    border-bottom: 1px dotted #666;
+    padding: 0 0 0.15em 0;
+    margin: 0 0 0.5em 0;
+    font-size: 1.2em;
+    line-height: 1.25em;
+    position: relative;
+}
+
+.method .method-title a.permalink {
+  position: absolute;
+  font-size: 0.75em;
+  right: 0;
+}
+
+.method .sourcecode p.source-link {
+  text-indent: 0em;
+  margin-top: 0.5em;
+}
+
+.method .aka {
+  margin-top: 0.3em;
+  margin-left: 1em;
+  font-style: italic;
+  text-indent: 2em;
+}
+
+.method .source-link
+{
+    font-size: 0.85em;
+}
+
+.ruby-constant {
+  color: teal;
+}
+.ruby-keyword {
+  color: #000;
+  font-weight: bold
+}
+.ruby-title {
+  color: #900;
+  font-weight: bold;
+}
+.ruby-ivar {
+  color: teal;
+}
+.ruby-operator {
+  color: #000;
+  font-weight: bold
+}
+.ruby-identifier {
+  color: #000;
+}
+.ruby-string,
+.ruby-node {
+  color: #D14;
+}
+.ruby-comment {
+  color: #998;
+  font-style: italic;
+}
+.ruby-regexp {
+  color: #009926;
+}
+.ruby-value {
+  color: #990073;
+}
+.ruby-number {
+  color: #40A070;
+}

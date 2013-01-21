@@ -1,0 +1,942 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>ApplicationController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            ApplicationController 
+            
+                <span class="parent">&lt; 
+                    
+                    ActionController::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/application_controller_rb.html">app/controllers/application_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-abilities">abilities</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-access_denied-21">access_denied!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-add_abilities">add_abilities</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-after_sign_in_path_for">after_sign_in_path_for</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authorize_code_access-21">authorize_code_access!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authorize_project-21">authorize_project!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-can-3F">can?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-dev_tools">dev_tools</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-git_not_found-21">git_not_found!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-log_exception">log_exception</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-method_missing">method_missing</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-no_cache_headers">no_cache_headers</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-not_found-21">not_found!</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-project">project</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-reject_blocked-21">reject_blocked!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-render_403">render_403</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-render_404">render_404</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-require_non_empty_project">require_non_empty_project</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-set_current_user_for_observers">set_current_user_for_observers</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-abilities">
+            
+              <b>abilities</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-abilities" name="method-i-abilities" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-abilities_source')" id="l_method-i-abilities_source">show</a>
+                
+              </p>
+              <div id="method-i-abilities_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 58</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">abilities</span>
+  <span class="ruby-ivar">@abilities</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Six</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-access_denied-21">
+            
+              <b>access_denied!</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-access_denied-21" name="method-i-access_denied-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-access_denied-21_source')" id="l_method-i-access_denied-21_source">show</a>
+                
+              </p>
+              <div id="method-i-access_denied-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 91</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">access_denied!</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-string">&quot;errors/access_denied&quot;</span>, <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;errors&quot;</span>, <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-number">404</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-add_abilities">
+            
+              <b>add_abilities</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-add_abilities" name="method-i-add_abilities" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-add_abilities_source')" id="l_method-i-add_abilities_source">show</a>
+                
+              </p>
+              <div id="method-i-add_abilities_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 79</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">add_abilities</span>
+  <span class="ruby-identifier">abilities</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Ability</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-after_sign_in_path_for">
+            
+              <b>after_sign_in_path_for</b>(resource)
+            
+            <a href="../classes/ApplicationController.html#method-i-after_sign_in_path_for" name="method-i-after_sign_in_path_for" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-after_sign_in_path_for_source')" id="l_method-i-after_sign_in_path_for_source">show</a>
+                
+              </p>
+              <div id="method-i-after_sign_in_path_for_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 43</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">after_sign_in_path_for</span> <span class="ruby-identifier">resource</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">resource</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">User</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">resource</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:blocked</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">resource</span>.<span class="ruby-identifier">blocked</span>
+    <span class="ruby-identifier">sign_out</span> <span class="ruby-identifier">resource</span>
+    <span class="ruby-identifier">flash</span>[<span class="ruby-value">:alert</span>] = <span class="ruby-string">&quot;Your account is blocked. Retry when an admin unblock it.&quot;</span>
+    <span class="ruby-identifier">new_user_session_path</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">super</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_code_access-21">
+            
+              <b>authorize_code_access!</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-authorize_code_access-21" name="method-i-authorize_code_access-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_code_access-21_source')" id="l_method-i-authorize_code_access-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_code_access-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 87</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_code_access!</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">access_denied!</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:download_code</span>, <span class="ruby-identifier">project</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_project-21">
+            
+              <b>authorize_project!</b>(action)
+            
+            <a href="../classes/ApplicationController.html#method-i-authorize_project-21" name="method-i-authorize_project-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_project-21_source')" id="l_method-i-authorize_project-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_project-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 83</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_project!</span>(<span class="ruby-identifier">action</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">access_denied!</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">project</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-can-3F">
+            
+              <b>can?</b>(object, action, subject)
+            
+            <a href="../classes/ApplicationController.html#method-i-can-3F" name="method-i-can-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-can-3F_source')" id="l_method-i-can-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-can-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 62</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">can?</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+  <span class="ruby-identifier">abilities</span>.<span class="ruby-identifier">allowed?</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">action</span>, <span class="ruby-identifier">subject</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-dev_tools">
+            
+              <b>dev_tools</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-dev_tools" name="method-i-dev_tools" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-dev_tools_source')" id="l_method-i-dev_tools_source">show</a>
+                
+              </p>
+              <div id="method-i-dev_tools_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 129</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">dev_tools</span>
+  <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniProfiler</span>.<span class="ruby-identifier">authorize_request</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-git_not_found-21">
+            
+              <b>git_not_found!</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-git_not_found-21" name="method-i-git_not_found-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-git_not_found-21_source')" id="l_method-i-git_not_found-21_source">show</a>
+                
+              </p>
+              <div id="method-i-git_not_found-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">git_not_found!</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-string">&quot;errors/git_not_found&quot;</span>, <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;errors&quot;</span>, <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-number">404</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-log_exception">
+            
+              <b>log_exception</b>(exception)
+            
+            <a href="../classes/ApplicationController.html#method-i-log_exception" name="method-i-log_exception" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-log_exception_source')" id="l_method-i-log_exception_source">show</a>
+                
+              </p>
+              <div id="method-i-log_exception_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">log_exception</span>(<span class="ruby-identifier">exception</span>)
+  <span class="ruby-identifier">application_trace</span> = <span class="ruby-constant">ActionDispatch</span><span class="ruby-operator">::</span><span class="ruby-constant">ExceptionWrapper</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">env</span>, <span class="ruby-identifier">exception</span>).<span class="ruby-identifier">application_trace</span>
+  <span class="ruby-identifier">application_trace</span>.<span class="ruby-identifier">map!</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;  #{t}\n&quot;</span> }
+  <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">error</span> <span class="ruby-node">&quot;\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-method_missing">
+            
+              <b>method_missing</b>(method_sym, *arguments, &amp;block)
+            
+            <a href="../classes/ApplicationController.html#method-i-method_missing" name="method-i-method_missing" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-method_missing_source')" id="l_method-i-method_missing_source">show</a>
+                
+              </p>
+              <div id="method-i-method_missing_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 103</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">method_missing</span>(<span class="ruby-identifier">method_sym</span>, *<span class="ruby-identifier">arguments</span>, &amp;<span class="ruby-identifier">block</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">method_sym</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r^authorize_(.*)!$/</span>
+    <span class="ruby-identifier">authorize_project!</span>(<span class="ruby-node">$1</span>.<span class="ruby-identifier">to_sym</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">super</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-no_cache_headers">
+            
+              <b>no_cache_headers</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-no_cache_headers" name="method-i-no_cache_headers" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-no_cache_headers_source')" id="l_method-i-no_cache_headers_source">show</a>
+                
+              </p>
+              <div id="method-i-no_cache_headers_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 123</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">no_cache_headers</span>
+  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Cache-Control&quot;</span>] = <span class="ruby-string">&quot;no-cache, no-store, max-age=0, must-revalidate&quot;</span>
+  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Pragma&quot;</span>] = <span class="ruby-string">&quot;no-cache&quot;</span>
+  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Expires&quot;</span>] = <span class="ruby-string">&quot;Fri, 01 Jan 1990 00:00:00 GMT&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-not_found-21">
+            
+              <b>not_found!</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-not_found-21" name="method-i-not_found-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-not_found-21_source')" id="l_method-i-not_found-21_source">show</a>
+                
+              </p>
+              <div id="method-i-not_found-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 95</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">not_found!</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-string">&quot;errors/not_found&quot;</span>, <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;errors&quot;</span>, <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-number">404</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project">
+            
+              <b>project</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-project" name="method-i-project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_source')" id="l_method-i-project_source">show</a>
+                
+              </p>
+              <div id="method-i-project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 66</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project</span>
+  <span class="ruby-identifier">id</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:project_id</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>]
+
+  <span class="ruby-ivar">@project</span> = <span class="ruby-constant">Project</span>.<span class="ruby-identifier">find_with_namespace</span>(<span class="ruby-identifier">id</span>)
+
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@project</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:read_project</span>, <span class="ruby-ivar">@project</span>)
+    <span class="ruby-ivar">@project</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@project</span> = <span class="ruby-keyword">nil</span>
+    <span class="ruby-identifier">render_404</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-reject_blocked-21">
+            
+              <b>reject_blocked!</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-reject_blocked-21" name="method-i-reject_blocked-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-reject_blocked-21_source')" id="l_method-i-reject_blocked-21_source">show</a>
+                
+              </p>
+              <div id="method-i-reject_blocked-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 35</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">reject_blocked!</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">current_user</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">blocked</span>
+    <span class="ruby-identifier">sign_out</span> <span class="ruby-identifier">current_user</span>
+    <span class="ruby-identifier">flash</span>[<span class="ruby-value">:alert</span>] = <span class="ruby-string">&quot;Your account is blocked. Retry when an admin unblock it.&quot;</span>
+    <span class="ruby-identifier">redirect_to</span> <span class="ruby-identifier">new_user_session_path</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-render_403">
+            
+              <b>render_403</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-render_403" name="method-i-render_403" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-render_403_source')" id="l_method-i-render_403_source">show</a>
+                
+              </p>
+              <div id="method-i-render_403_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 115</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">render_403</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">file</span><span class="ruby-operator">:</span> <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-string">&quot;403&quot;</span>), <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>, <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;403&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-render_404">
+            
+              <b>render_404</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-render_404" name="method-i-render_404" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-render_404_source')" id="l_method-i-render_404_source">show</a>
+                
+              </p>
+              <div id="method-i-render_404_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 111</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">render_404</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">file</span><span class="ruby-operator">:</span> <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-string">&quot;404&quot;</span>), <span class="ruby-identifier">layout</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>, <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;404&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-require_non_empty_project">
+            
+              <b>require_non_empty_project</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-require_non_empty_project" name="method-i-require_non_empty_project" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-require_non_empty_project_source')" id="l_method-i-require_non_empty_project_source">show</a>
+                
+              </p>
+              <div id="method-i-require_non_empty_project_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 119</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">require_non_empty_project</span>
+  <span class="ruby-identifier">redirect_to</span> <span class="ruby-ivar">@project</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">empty_repo?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-set_current_user_for_observers">
+            
+              <b>set_current_user_for_observers</b>()
+            
+            <a href="../classes/ApplicationController.html#method-i-set_current_user_for_observers" name="method-i-set_current_user_for_observers" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-set_current_user_for_observers_source')" id="l_method-i-set_current_user_for_observers_source">show</a>
+                
+              </p>
+              <div id="method-i-set_current_user_for_observers_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/application_controller.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">set_current_user_for_observers</span>
+  <span class="ruby-constant">MergeRequestObserver</span>.<span class="ruby-identifier">current_user</span> = <span class="ruby-identifier">current_user</span>
+  <span class="ruby-constant">IssueObserver</span>.<span class="ruby-identifier">current_user</span> = <span class="ruby-identifier">current_user</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

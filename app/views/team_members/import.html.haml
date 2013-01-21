@@ -9,7 +9,7 @@
   %p.slead Choose project you want to use as team source:
   .padded
     = label_tag :source_project_id, "Project"
-    .input= select_tag(:source_project_id, options_from_collection_for_select(current_user.projects, :id, :name), prompt: "Select project", class: "chosen xxlarge", required: true)
+    .input= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "Select project", class: "chosen xxlarge", required: true)
 
   .actions
     = submit_tag 'Import', class: "btn save-btn"

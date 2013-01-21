@@ -4,28 +4,6 @@ module IssuesHelper
     project_issues_path project, params
   end
 
-  def link_to_issue_assignee(issue)
-    project = issue.project
-
-    tm = project.team_member_by_id(issue.assignee_id)
-    if tm
-      link_to issue.assignee_name, project_team_member_path(project, tm), class: "author_link"
-    else
-      issue.assignee_name
-    end
-  end
-
-  def link_to_issue_author(issue)
-    project = issue.project
-
-    tm = project.team_member_by_id(issue.author_id)
-    if tm
-      link_to issue.author_name, project_team_member_path(project, tm), class: "author_link"
-    else
-      issue.author_name
-    end
-  end
-
   def issue_css_classes issue
     classes = "issue"
     classes << " closed" if issue.closed
@@ -51,5 +29,15 @@ module IssuesHelper
       to_me: "assigned-to-me",
       open: "open"
     }
+  end
+
+  def labels_autocomplete_source
+    labels = @project.issues_labels.order('count DESC')
+    labels = labels.map{ |l| { label: l.name, value: l.name } }
+    labels.to_json
+  end
+
+  def issues_active_milestones
+    @project.milestones.active.order("id desc").all
   end
 end

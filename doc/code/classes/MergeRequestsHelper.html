@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>MergeRequestsHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            MergeRequestsHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/merge_requests_helper_rb.html">app/helpers/merge_requests_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-ci_build_details_path">ci_build_details_path</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-mr_css_classes">mr_css_classes</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new_mr_path_from_push_event">new_mr_path_from_push_event</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-ci_build_details_path">
+            
+              <b>ci_build_details_path</b>(merge_request)
+            
+            <a href="../classes/MergeRequestsHelper.html#method-i-ci_build_details_path" name="method-i-ci_build_details_path" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ci_build_details_path_source')" id="l_method-i-ci_build_details_path_source">show</a>
+                
+              </p>
+              <div id="method-i-ci_build_details_path_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/merge_requests_helper.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">ci_build_details_path</span> <span class="ruby-identifier">merge_request</span>
+  <span class="ruby-identifier">merge_request</span>.<span class="ruby-identifier">project</span>.<span class="ruby-identifier">gitlab_ci_service</span>.<span class="ruby-identifier">build_page</span>(<span class="ruby-identifier">merge_request</span>.<span class="ruby-identifier">last_commit</span>.<span class="ruby-identifier">sha</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-mr_css_classes">
+            
+              <b>mr_css_classes</b>(mr)
+            
+            <a href="../classes/MergeRequestsHelper.html#method-i-mr_css_classes" name="method-i-mr_css_classes" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-mr_css_classes_source')" id="l_method-i-mr_css_classes_source">show</a>
+                
+              </p>
+              <div id="method-i-mr_css_classes_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/merge_requests_helper.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">mr_css_classes</span> <span class="ruby-identifier">mr</span>
+  <span class="ruby-identifier">classes</span> = <span class="ruby-string">&quot;merge_request&quot;</span>
+  <span class="ruby-identifier">classes</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot; closed&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">mr</span>.<span class="ruby-identifier">closed</span>
+  <span class="ruby-identifier">classes</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot; merged&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">mr</span>.<span class="ruby-identifier">merged?</span>
+  <span class="ruby-identifier">classes</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_mr_path_from_push_event">
+            
+              <b>new_mr_path_from_push_event</b>(event)
+            
+            <a href="../classes/MergeRequestsHelper.html#method-i-new_mr_path_from_push_event" name="method-i-new_mr_path_from_push_event" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_mr_path_from_push_event_source')" id="l_method-i-new_mr_path_from_push_event_source">show</a>
+                
+              </p>
+              <div id="method-i-new_mr_path_from_push_event_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/merge_requests_helper.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_mr_path_from_push_event</span>(<span class="ruby-identifier">event</span>)
+  <span class="ruby-identifier">new_project_merge_request_path</span>(
+    <span class="ruby-identifier">event</span>.<span class="ruby-identifier">project</span>,
+    <span class="ruby-identifier">merge_request</span><span class="ruby-operator">:</span> {
+      <span class="ruby-identifier">source_branch</span><span class="ruby-operator">:</span> <span class="ruby-identifier">event</span>.<span class="ruby-identifier">branch_name</span>,
+      <span class="ruby-identifier">target_branch</span><span class="ruby-operator">:</span> <span class="ruby-identifier">event</span>.<span class="ruby-identifier">project</span>.<span class="ruby-identifier">root_ref</span>,
+      <span class="ruby-identifier">title</span><span class="ruby-operator">:</span> <span class="ruby-identifier">event</span>.<span class="ruby-identifier">branch_name</span>.<span class="ruby-identifier">titleize</span>
+    }
+  )
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

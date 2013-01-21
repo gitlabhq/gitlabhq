@@ -1,0 +1,17 @@
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head", title: "Public Projects"
+  %body{class: "#{app_theme} application"}
+    %header.navbar.navbar-static-top.navbar-gitlab
+      .navbar-inner
+        .container
+          %div.app_logo
+            %span.separator
+            = link_to root_path, class: "home" do
+              %h1 GITLAB
+            %span.separator
+            %h1.project_name Public Projects
+    .container
+      .content
+        .prepend-top-20
+          = yield

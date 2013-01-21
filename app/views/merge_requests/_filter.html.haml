@@ -1,0 +1,20 @@
+= form_tag project_issues_path(@project), method: 'get' do
+  %fieldset
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: ("active" if (params[:f] == 'open' || !params[:f]))}
+        = link_to project_merge_requests_path(@project, f: 'open', milestone_id: params[:milestone_id]) do
+          Open
+      %li{class: ("active" if params[:f] == "closed")}
+        = link_to project_merge_requests_path(@project, f: "closed", milestone_id: params[:milestone_id]) do
+          Closed
+      %li{class: ("active" if params[:f] == 'assigned-to-me')}
+        = link_to project_merge_requests_path(@project, f: 'assigned-to-me', milestone_id: params[:milestone_id]) do
+          Assigned To Me
+      %li{class: ("active" if params[:f] == 'all')}
+        = link_to project_merge_requests_path(@project, f: 'all', milestone_id: params[:milestone_id]) do
+          All
+
+  %fieldset
+    %hr
+    = link_to "Reset", project_merge_requests_path(@project), class: 'btn right'
+

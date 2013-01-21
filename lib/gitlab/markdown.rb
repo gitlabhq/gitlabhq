@@ -25,18 +25,6 @@ module Gitlab
   #   >> gfm(":trollface:")
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
-    REFERENCE_PATTERN = %r{
-      (\W)?           # Prefix (1)
-      (               # Reference (2)
-        @([\w\._]+)   # User name (3)
-        |[#!$](\d+)   # Issue/MR/Snippet ID (4)
-        |([\h]{6,40}) # Commit ID (5)
-      )
-      (\W)?           # Suffix (6)
-    }x.freeze
-
-    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
-
     attr_reader :html_options
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -57,12 +45,11 @@ module Gitlab
 
       # Extract pre blocks so they are not altered
       # from http://github.github.com/github-flavored-markdown/
-      extractions = {}
-      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) do |match|
-        md5 = Digest::MD5.hexdigest(match)
-        extractions[md5] = match
-        "{gfm-extraction-#{md5}}"
-      end
+      text.gsub!(%r{<pre>.*?</pre>|<code>.*?</code>}m) { |match| extract_piece(match) }
+      # Extract links with probably parsable hrefs
+      text.gsub!(%r{<a.*?>.*?</a>}m) { |match| extract_piece(match) }
+      # Extract images with probably parsable src
+      text.gsub!(%r{<img.*?>}m) { |match| extract_piece(match) }
 
       # TODO: add popups with additional information
 
@@ -70,13 +57,25 @@ module Gitlab
 
       # Insert pre block extractions
       text.gsub!(/\{gfm-extraction-(\h{32})\}/) do
-        extractions[$1]
+        insert_piece($1)
       end
 
       sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
     end
 
     private
+
+    def extract_piece(text)
+      @extractions ||= {}
+
+      md5 = Digest::MD5.hexdigest(text)
+      @extractions[md5] = text
+      "{gfm-extraction-#{md5}}"
+    end
+
+    def insert_piece(id)
+      @extractions[id]
+    end
 
     # Private: Parses text for references and emoji
     #
@@ -92,30 +91,46 @@ module Gitlab
       text
     end
 
+    REFERENCE_PATTERN = %r{
+      (?<prefix>\W)?                         # Prefix
+      (                                      # Reference
+         @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
+        |\#(?<issue>\d+)                     # Issue ID
+        |!(?<merge_request>\d+)              # MR ID
+        |\$(?<snippet>\d+)                   # Snippet ID
+        |(?<commit>[\h]{6,40})               # Commit ID
+      )
+      (?<suffix>\W)?                         # Suffix
+    }x.freeze
+
+    TYPES = [:user, :issue, :merge_request, :snippet, :commit].freeze
+
     def parse_references(text)
       # parse reference links
       text.gsub!(REFERENCE_PATTERN) do |match|
-        prefix     = $1 || ''
-        reference  = $2
-        identifier = $3 || $4 || $5
-        suffix     = $6 || ''
+        prefix     = $~[:prefix]
+        suffix     = $~[:suffix]
+        type       = TYPES.select{|t| !$~[t].nil?}.first
+        identifier = $~[type]
 
         # Avoid HTML entities
-        if prefix.ends_with?('&') || suffix.starts_with?(';')
+        if prefix && suffix && prefix[0] == '&' && suffix[-1] == ';'
           match
-        elsif ref_link = reference_link(reference, identifier)
-          prefix + ref_link + suffix
+        elsif ref_link = reference_link(type, identifier)
+          "#{prefix}#{ref_link}#{suffix}"
         else
           match
         end
       end
     end
 
+    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
+
     def parse_emoji(text)
       # parse emoji
       text.gsub!(EMOJI_PATTERN) do |match|
         if valid_emoji?($2)
-          image_tag("emoji/#{$2}.png", size: "20x20", class: 'emoji', title: $1, alt: $1)
+          image_tag(url_to_image("emoji/#{$2}.png"), class: 'emoji', title: $1, alt: $1, size: "20x20")
         else
           match
         end
@@ -137,44 +152,37 @@ module Gitlab
     # identifier - Object identifier (Issue ID, SHA hash, etc.)
     #
     # Returns string rendered by the processing method
-    def reference_link(reference, identifier)
-      case reference
-      when /^@/  then reference_user(identifier)
-      when /^#/  then reference_issue(identifier)
-      when /^!/  then reference_merge_request(identifier)
-      when /^\$/ then reference_snippet(identifier)
-      when /^\h/ then reference_commit(identifier)
-      end
+    def reference_link(type, identifier)
+      send("reference_#{type}", identifier)
     end
 
     def reference_user(identifier)
-      if user = @project.users.where(name: identifier).first
-        member = @project.users_projects.where(user_id: user).first
-        link_to("@#{identifier}", project_team_member_path(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+      if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
+        link_to("@#{identifier}", project_team_member_url(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end
 
     def reference_issue(identifier)
       if issue = @project.issues.where(id: identifier).first
-        link_to("##{identifier}", project_issue_path(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
+        link_to("##{identifier}", project_issue_url(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
       end
     end
 
     def reference_merge_request(identifier)
       if merge_request = @project.merge_requests.where(id: identifier).first
-        link_to("!#{identifier}", project_merge_request_path(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
+        link_to("!#{identifier}", project_merge_request_url(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
       end
     end
 
     def reference_snippet(identifier)
       if snippet = @project.snippets.where(id: identifier).first
-        link_to("$#{identifier}", project_snippet_path(@project, snippet), html_options.merge(title: "Snippet: #{snippet.title}", class: "gfm gfm-snippet #{html_options[:class]}"))
+        link_to("$#{identifier}", project_snippet_url(@project, snippet), html_options.merge(title: "Snippet: #{snippet.title}", class: "gfm gfm-snippet #{html_options[:class]}"))
       end
     end
 
     def reference_commit(identifier)
-      if @project.valid_repo? && commit = @project.commit(identifier)
-        link_to(identifier, project_commit_path(@project, commit), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
+      if @project.valid_repo? && commit = @project.repository.commit(identifier)
+        link_to(identifier, project_commit_url(@project, commit), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
     end
   end

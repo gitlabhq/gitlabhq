@@ -6,12 +6,12 @@
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
-  .main_box
-    .top_box_content
+  .ui-box.ui-box-show
+    .ui-box-head
       = f.label :title
       .input= f.text_field :title, class: 'span8'
       = f.hidden_field :slug
-    .middle_box_content
+    .ui-box-body
       .input
         %span.cgray
           Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
@@ -19,9 +19,9 @@
           %code [Link Title](page-slug)
           \.
 
-    .bottom_box_content
+    .ui-box-bottom
       = f.label :content
-      .input= f.text_area :content, class: 'span8 gfm-input'
+      .input= f.text_area :content, class: 'span8 js-gfm-input'
   .actions
     = f.submit 'Save', class: "save-btn btn"
     = link_to "Cancel", project_wiki_path(@project, :index), class: "btn cancel-btn"

@@ -1,0 +1,60 @@
+.application-theme, .code-preview-theme {
+  .update-feedback {
+    color: #468847;
+    float: right;
+  }
+}
+
+.themes_opts {
+  padding-left: 20px;
+
+  label {
+    width: 175px;
+    margin-right: 40px;
+
+    .prev {
+      @extend .thumbnail;
+      height: 30px;
+      width: 175px;
+      margin-bottom: 10px;
+
+      &.classic {
+        background: #31363e;
+      }
+
+      &.default {
+        background: #f1f1f1;
+      }
+
+      &.modern {
+        background: #567;
+      }
+
+      &.gray {
+        background: #708090;
+      }
+
+      &.violet {
+        background: #657;
+      }
+    }
+  }
+}
+
+.code_highlight_opts {
+  padding-left: 20px;
+
+  label {
+    width: 220px;
+    margin-right: 40px;
+
+    .prev {
+      @extend .thumbnail;
+      height: 151px;
+      width: 220px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+

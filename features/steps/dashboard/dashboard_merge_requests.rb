@@ -11,13 +11,13 @@ class DashboardMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I have authored merge requests' do
-    project1 = Factory :project
-    project2 = Factory :project
+    project1 = create :project
+    project2 = create :project
 
-    project1.add_access(@user, :read, :write)
-    project2.add_access(@user, :read, :write)
+    project1.team << [@user, :master]
+    project2.team << [@user, :master]
 
-    merge_request1 = Factory :merge_request, :author => @user, :project => project1
-    merge_request2 = Factory :merge_request, :author => @user, :project => project2
+    merge_request1 = create :merge_request, author: @user, project: project1
+    merge_request2 = create :merge_request, author: @user, project: project2
   end
 end

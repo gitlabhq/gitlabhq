@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>MergeRequestsController</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            MergeRequestsController 
+            
+                <span class="parent">&lt; 
+                    
+                    <a href="ProjectResourceController.html">ProjectResourceController</a>
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/controllers/merge_requests_controller_rb.html">app/controllers/merge_requests_controller.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-authorize_admin_merge_request-21">authorize_admin_merge_request!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authorize_modify_merge_request-21">authorize_modify_merge_request!</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-automerge">automerge</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-automerge_check">automerge_check</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-branch_from">branch_from</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-branch_to">branch_to</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-ci_status">ci_status</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-create">create</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-define_show_vars">define_show_vars</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-diffs">diffs</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-edit">edit</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-index">index</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-merge_request">merge_request</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-module_enabled">module_enabled</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>S</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-show">show</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-update">update</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>V</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-validates_merge_request">validates_merge_request</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-automerge">
+            
+              <b>automerge</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-automerge" name="method-i-automerge" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-automerge_source')" id="l_method-i-automerge_source">show</a>
+                
+              </p>
+              <div id="method-i-automerge_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 74</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">automerge</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">access_denied!</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:accept_mr</span>, <span class="ruby-ivar">@project</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">open?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">can_be_merged?</span>
+    <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">should_remove_source_branch</span> = <span class="ruby-identifier">params</span>[<span class="ruby-value">:should_remove_source_branch</span>]
+    <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">automerge!</span>(<span class="ruby-identifier">current_user</span>)
+    <span class="ruby-ivar">@status</span> = <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-ivar">@status</span> = <span class="ruby-keyword">false</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-automerge_check">
+            
+              <b>automerge_check</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-automerge_check" name="method-i-automerge_check" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-automerge_check_source')" id="l_method-i-automerge_check_source">show</a>
+                
+              </p>
+              <div id="method-i-automerge_check_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 67</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">automerge_check</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">unchecked?</span>
+    <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">check_if_can_be_merged</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">state</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">human_state</span>}
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-branch_from">
+            
+              <b>branch_from</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-branch_from" name="method-i-branch_from" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-branch_from_source')" id="l_method-i-branch_from_source">show</a>
+                
+              </p>
+              <div id="method-i-branch_from_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 85</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">branch_from</span>
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:ref</span>])
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-ivar">@commit</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-branch_to">
+            
+              <b>branch_to</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-branch_to" name="method-i-branch_to" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-branch_to_source')" id="l_method-i-branch_to_source">show</a>
+                
+              </p>
+              <div id="method-i-branch_to_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 90</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">branch_to</span>
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:ref</span>])
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-ivar">@commit</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-ci_status">
+            
+              <b>ci_status</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-ci_status" name="method-i-ci_status" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ci_status_source')" id="l_method-i-ci_status_source">show</a>
+                
+              </p>
+              <div id="method-i-ci_status_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 95</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">ci_status</span>
+  <span class="ruby-identifier">status</span> = <span class="ruby-identifier">project</span>.<span class="ruby-identifier">gitlab_ci_service</span>.<span class="ruby-identifier">commit_status</span>(<span class="ruby-identifier">merge_request</span>.<span class="ruby-identifier">last_commit</span>.<span class="ruby-identifier">sha</span>)
+  <span class="ruby-identifier">response</span> = { <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-identifier">status</span> }
+
+  <span class="ruby-identifier">render</span> <span class="ruby-identifier">json</span><span class="ruby-operator">:</span> <span class="ruby-identifier">response</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-create">
+            
+              <b>create</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-create" name="method-i-create" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-create_source')" id="l_method-i-create_source">show</a>
+                
+              </p>
+              <div id="method-i-create_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">create</span>
+  <span class="ruby-ivar">@merge_request</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">merge_requests</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:merge_request</span>])
+  <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">author</span> = <span class="ruby-identifier">current_user</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">save</span>
+    <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">reload_code</span>
+    <span class="ruby-identifier">redirect_to</span> [<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@merge_request</span>], <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-string">'Merge request was successfully created.'</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">render</span> <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;new&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-diffs">
+            
+              <b>diffs</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-diffs" name="method-i-diffs" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-diffs_source')" id="l_method-i-diffs_source">show</a>
+                
+              </p>
+              <div id="method-i-diffs_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 30</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">diffs</span>
+  <span class="ruby-ivar">@diffs</span> = <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">diffs</span>
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">last_commit</span>
+
+  <span class="ruby-ivar">@comments_allowed</span> = <span class="ruby-keyword">true</span>
+  <span class="ruby-ivar">@line_notes</span> = <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">where</span>(<span class="ruby-string">&quot;line_code is not null&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-edit">
+            
+              <b>edit</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-edit" name="method-i-edit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-edit_source')" id="l_method-i-edit_source">show</a>
+                
+              </p>
+              <div id="method-i-edit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 42</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">edit</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-index">
+            
+              <b>index</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-index" name="method-i-index" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-index_source')" id="l_method-i-index_source">show</a>
+                
+              </p>
+              <div id="method-i-index_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">index</span>
+  <span class="ruby-ivar">@merge_requests</span> = <span class="ruby-constant">MergeRequestsLoadContext</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">project</span>, <span class="ruby-identifier">current_user</span>, <span class="ruby-identifier">params</span>).<span class="ruby-identifier">execute</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new">
+            
+              <b>new</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-new" name="method-i-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_source')" id="l_method-i-new_source">show</a>
+                
+              </p>
+              <div id="method-i-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 38</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new</span>
+  <span class="ruby-ivar">@merge_request</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">merge_requests</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:merge_request</span>])
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-show">
+            
+              <b>show</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-show" name="method-i-show" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-show_source')" id="l_method-i-show_source">show</a>
+                
+              </p>
+              <div id="method-i-show_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">show</span>
+  <span class="ruby-identifier">respond_to</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">format</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">html</span>
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">js</span>
+
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">diff</span>  { <span class="ruby-identifier">render</span> <span class="ruby-identifier">text</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">to_diff</span> }
+    <span class="ruby-identifier">format</span>.<span class="ruby-identifier">patch</span> { <span class="ruby-identifier">render</span> <span class="ruby-identifier">text</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">to_patch</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-update">
+            
+              <b>update</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-update" name="method-i-update" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-update_source')" id="l_method-i-update_source">show</a>
+                
+              </p>
+              <div id="method-i-update_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 57</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">update</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">update_attributes</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:merge_request</span>].<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">author_id_of_changes</span><span class="ruby-operator">:</span> <span class="ruby-identifier">current_user</span>.<span class="ruby-identifier">id</span>))
+    <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">reload_code</span>
+    <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">mark_as_unchecked</span>
+    <span class="ruby-identifier">redirect_to</span> [<span class="ruby-ivar">@project</span>, <span class="ruby-ivar">@merge_request</span>], <span class="ruby-identifier">notice</span><span class="ruby-operator">:</span> <span class="ruby-string">'Merge request was successfully updated.'</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">render</span> <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;edit&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_admin_merge_request-21">
+            
+              <b>authorize_admin_merge_request!</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-authorize_admin_merge_request-21" name="method-i-authorize_admin_merge_request-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_admin_merge_request-21_source')" id="l_method-i-authorize_admin_merge_request-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_admin_merge_request-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 112</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_admin_merge_request!</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:admin_merge_request</span>, <span class="ruby-ivar">@merge_request</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authorize_modify_merge_request-21">
+            
+              <b>authorize_modify_merge_request!</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-authorize_modify_merge_request-21" name="method-i-authorize_modify_merge_request-21" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authorize_modify_merge_request-21_source')" id="l_method-i-authorize_modify_merge_request-21_source">show</a>
+                
+              </p>
+              <div id="method-i-authorize_modify_merge_request-21_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 108</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authorize_modify_merge_request!</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">can?</span>(<span class="ruby-identifier">current_user</span>, <span class="ruby-value">:modify_merge_request</span>, <span class="ruby-ivar">@merge_request</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-define_show_vars">
+            
+              <b>define_show_vars</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-define_show_vars" name="method-i-define_show_vars" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-define_show_vars_source')" id="l_method-i-define_show_vars_source">show</a>
+                
+              </p>
+              <div id="method-i-define_show_vars_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 129</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">define_show_vars</span>
+  <span class="ruby-comment"># Build a note object for comment form</span>
+  <span class="ruby-ivar">@note</span> = <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">notes</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">noteable</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@merge_request</span>)
+
+  <span class="ruby-comment"># Get commits from repository</span>
+  <span class="ruby-comment"># or from cache if already merged</span>
+  <span class="ruby-ivar">@commits</span> = <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">commits</span>
+  <span class="ruby-ivar">@commits</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-ivar">@commits</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-merge_request">
+            
+              <b>merge_request</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-merge_request" name="method-i-merge_request" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-merge_request_source')" id="l_method-i-merge_request_source">show</a>
+                
+              </p>
+              <div id="method-i-merge_request_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 104</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">merge_request</span>
+  <span class="ruby-ivar">@merge_request</span> <span class="ruby-operator">||=</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">merge_requests</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">params</span>[<span class="ruby-value">:id</span>])
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-module_enabled">
+            
+              <b>module_enabled</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-module_enabled" name="method-i-module_enabled" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-module_enabled_source')" id="l_method-i-module_enabled_source">show</a>
+                
+              </p>
+              <div id="method-i-module_enabled_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">module_enabled</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">render_404</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">merge_requests_enabled</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-validates_merge_request">
+            
+              <b>validates_merge_request</b>()
+            
+            <a href="../classes/MergeRequestsController.html#method-i-validates_merge_request" name="method-i-validates_merge_request" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-validates_merge_request_source')" id="l_method-i-validates_merge_request_source">show</a>
+                
+              </p>
+              <div id="method-i-validates_merge_request_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/controllers/merge_requests_controller.rb, line 120</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">validates_merge_request</span>
+  <span class="ruby-comment"># Show git not found page if target branch doesnt exist</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">git_not_found!</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@project</span>.<span class="ruby-identifier">repo</span>.<span class="ruby-identifier">heads</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:name</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">target_branch</span>)
+
+  <span class="ruby-comment"># Show git not found page if source branch doesnt exist</span>
+  <span class="ruby-comment"># and there is no saved commits between source &amp; target branch</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">git_not_found!</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@project</span>.<span class="ruby-identifier">repo</span>.<span class="ruby-identifier">heads</span>.<span class="ruby-identifier">map</span>(&amp;<span class="ruby-value">:name</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">source_branch</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">commits</span>.<span class="ruby-identifier">blank?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

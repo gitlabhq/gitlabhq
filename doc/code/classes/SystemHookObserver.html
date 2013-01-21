@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>SystemHookObserver</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            SystemHookObserver 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Observer
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/observers/system_hook_observer_rb.html">app/observers/system_hook_observer.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-after_create">after_create</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-after_destroy">after_destroy</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-after_create">
+            
+              <b>after_create</b>(model)
+            
+            <a href="../classes/SystemHookObserver.html#method-i-after_create" name="method-i-after_create" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-after_create_source')" id="l_method-i-after_create_source">show</a>
+                
+              </p>
+              <div id="method-i-after_create_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/observers/system_hook_observer.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">after_create</span>(<span class="ruby-identifier">model</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Project</span>
+    <span class="ruby-constant">SystemHook</span>.<span class="ruby-identifier">all_hooks_fire</span>({
+      <span class="ruby-identifier">event_name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;project_create&quot;</span>,
+      <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">path</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">path</span>,
+      <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">id</span>,
+      <span class="ruby-identifier">owner_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">owner</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">owner_email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">owner</span>.<span class="ruby-identifier">email</span>,
+      <span class="ruby-identifier">created_at</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">created_at</span>
+    })
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">User</span> 
+    <span class="ruby-constant">SystemHook</span>.<span class="ruby-identifier">all_hooks_fire</span>({
+      <span class="ruby-identifier">event_name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;user_create&quot;</span>,
+      <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">email</span>,
+      <span class="ruby-identifier">created_at</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">created_at</span>
+    })
+
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">UsersProject</span>
+    <span class="ruby-constant">SystemHook</span>.<span class="ruby-identifier">all_hooks_fire</span>({
+      <span class="ruby-identifier">event_name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;user_add_to_team&quot;</span>,
+      <span class="ruby-identifier">project_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">project</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">project_path</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">project</span>.<span class="ruby-identifier">path</span>,
+      <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">project_id</span>,
+      <span class="ruby-identifier">user_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">user</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">user_email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>,
+      <span class="ruby-identifier">project_access</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">repo_access_human</span>,
+      <span class="ruby-identifier">created_at</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">created_at</span>
+    })
+
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-after_destroy">
+            
+              <b>after_destroy</b>(model)
+            
+            <a href="../classes/SystemHookObserver.html#method-i-after_destroy" name="method-i-after_destroy" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-after_destroy_source')" id="l_method-i-after_destroy_source">show</a>
+                
+              </p>
+              <div id="method-i-after_destroy_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/observers/system_hook_observer.rb, line 38</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">after_destroy</span>(<span class="ruby-identifier">model</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Project</span>
+    <span class="ruby-constant">SystemHook</span>.<span class="ruby-identifier">all_hooks_fire</span>({
+      <span class="ruby-identifier">event_name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;project_destroy&quot;</span>,
+      <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">path</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">path</span>,
+      <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">id</span>,
+      <span class="ruby-identifier">owner_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">owner</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">owner_email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">owner</span>.<span class="ruby-identifier">email</span>,
+    })
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">User</span>
+    <span class="ruby-constant">SystemHook</span>.<span class="ruby-identifier">all_hooks_fire</span>({
+      <span class="ruby-identifier">event_name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;user_destroy&quot;</span>,
+      <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">email</span>
+    })
+
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">UsersProject</span>
+    <span class="ruby-constant">SystemHook</span>.<span class="ruby-identifier">all_hooks_fire</span>({
+      <span class="ruby-identifier">event_name</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;user_remove_from_team&quot;</span>,
+      <span class="ruby-identifier">project_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">project</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">project_path</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">project</span>.<span class="ruby-identifier">path</span>,
+      <span class="ruby-identifier">project_id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">project_id</span>,
+      <span class="ruby-identifier">user_name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">user</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">user_email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>,
+      <span class="ruby-identifier">project_access</span><span class="ruby-operator">:</span> <span class="ruby-identifier">model</span>.<span class="ruby-identifier">repo_access_human</span>
+    })
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

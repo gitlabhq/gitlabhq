@@ -2,10 +2,9 @@
   %span.author_name= link_to_author event
   %span.event_label{class: event.action_name}= event_action_name(event)
   - if event.target
-    = link_to [event.project, event.target] do
-      %strong= truncate event.target_title
+    %strong= link_to_gfm truncate(event.target_title), [event.project, event.target]
   - else
-    %strong= truncate event.target_title
+    %strong= gfm truncate(event.target_title)
   at
   - if event.project
     = link_to_project event.project

@@ -1,0 +1,35 @@
+- if @merge_request.open? && @commits.any?
+  .ci_widget.ci-success{style: "display:none"}
+    .alert.alert-success
+      %i.icon-ok
+      %strong CI build passed
+      for #{@merge_request.last_commit_short_sha}.
+      = link_to "Build page", ci_build_details_path(@merge_request)
+
+
+  .ci_widget.ci-failed{style: "display:none"}
+    .alert.alert-error
+      %i.icon-remove
+      %strong CI build failed
+      for #{@merge_request.last_commit_short_sha}.
+      = link_to "Build page", ci_build_details_path(@merge_request)
+
+  - [:running, :pending].each do |status|
+    .ci_widget{class: "ci-#{status}", style: "display:none"}
+      .alert
+        %i.icon-time
+        %strong CI build #{status}
+        for #{@merge_request.last_commit_short_sha}.
+        = link_to "Build page", ci_build_details_path(@merge_request)
+
+  .ci_widget
+    .alert-message
+      %strong
+        %i.icon-refresh
+        Checking for CI status for #{@merge_request.last_commit_short_sha}
+
+  .ci_widget.ci-error{style: "display:none"}
+    .alert.alert-error
+      %i.icon-remove
+      %strong Cannot connect to CI server. Please check your setting
+

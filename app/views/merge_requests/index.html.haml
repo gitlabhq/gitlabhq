@@ -1,37 +1,35 @@
+- if can? current_user, :write_merge_request, @project
+  = link_to new_project_merge_request_path(@project), class: "right btn primary", title: "New Merge Request" do
+    %i.icon-plus
+    New Merge Request
 %h3.page_title
   Merge Requests
-  - if can? current_user, :write_issue, @project
-    = link_to new_project_merge_request_path(@project), class: "right btn", title: "New Merge Request" do
-      New Merge Request
 
 %br
 
 
-.ui-box
-  .title
-    %ul.nav.nav-pills
-      %li{class: ("active" if (params[:f] == 'open' || !params[:f]))}
-        = link_to project_merge_requests_path(@project, f: 'open') do
-          Open
-      %li{class: ("active" if params[:f] == "closed")}
-        = link_to project_merge_requests_path(@project, f: "closed") do
-          Closed
-      %li{class: ("active" if params[:f] == 'assigned-to-me')}
-        = link_to project_merge_requests_path(@project, f: 'assigned-to-me') do
-          To Me
-      %li{class: ("active" if params[:f] == 'all')}
-        = link_to project_merge_requests_path(@project, f: 'all') do
-          All
+.row
+  .span3
+    = render 'filter'
+  .span9
+    .ui-box
+      .title
+        = form_tag project_merge_requests_path(@project), id: "merge_requests_search_form", method: :get, class: :left  do
+          = select_tag(:assignee_id, options_from_collection_for_select([unassigned_filter] + @project.users.all, "id", "name", params[:assignee_id]), prompt: "Assignee")
+          = select_tag(:milestone_id, options_from_collection_for_select([unassigned_filter] + @project.milestones.order("id desc").all, "id", "title", params[:milestone_id]), prompt: "Milestone")
+          = hidden_field_tag :f, params[:f]
+        .clearfix
 
-  %ul.unstyled
-    = render @merge_requests
-    - if @merge_requests.blank?
-      %li
-        %h4.nothing_here_message Nothing to show here
-    - if @merge_requests.present?
-      %li.bottom
-        .row
-          .span7= paginate @merge_requests, theme: "gitlab"
-          .span4.right
-            %span.cgray.right #{@merge_requests.total_count} merge requests for this filter
+      %ul.well-list
+        = render @merge_requests
+        - if @merge_requests.blank?
+          %li
+            %h4.nothing_here_message Nothing to show here
+        - if @merge_requests.present?
+          %li.bottom
+            .left= paginate @merge_requests, theme: "gitlab"
+            .right
+              %span.cgray.right #{@merge_requests.total_count} merge requests for this filter
 
+:javascript
+  $(merge_requestsPage);

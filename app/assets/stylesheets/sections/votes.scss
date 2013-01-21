@@ -1,0 +1,43 @@
+.votes {
+  font-size: 13px;
+  line-height: 15px;
+  .progress {
+    height: 4px;
+    margin: 0;
+    .bar {
+      float: left;
+      height: 100%;
+    }
+    .bar-success {
+      @include linear-gradient(#62C462, #51A351);
+      background-color: #468847;
+    }
+    .bar-danger {
+      @include linear-gradient(#EE5F5B, #BD362F);
+      background-color: #B94A48;
+    }
+  }
+  .upvotes {
+    display: inline-block;
+    color: #468847;
+  }
+  .downvotes {
+    display: inline-block;
+    color: #B94A48;
+  }
+}
+.votes-block {
+  margin: 14px 6px 6px 0;
+  .downvotes {
+    float: right;
+  }
+}
+.votes-inline {
+  display: inline-block;
+  margin: 0 8px;
+  .progress {
+    display: inline-block;
+    padding: 0 0 2px;
+    width: 45px;
+  }
+}

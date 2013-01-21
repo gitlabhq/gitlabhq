@@ -1,58 +1,30 @@
-.issue_form_box {
-  @extend .main_box;
-  .issue_title {
-    @extend .top_box_content;
-    .clearfix {
-      margin-bottom:0px;
-      input {
-        @extend .span8;
-      }
-    }
-  }
-  .issue_middle_block {
-    @extend .middle_box_content;
-    height:30px;
-    .issue_assignee {
-      @extend .span6;
-      float:left;
-    }
-    .issue_milestone {
-      @extend .span4;
-      float:left;
-    }
-  }
-  .issue_description {
-    @extend .bottom_box_content;
-  }
-}
-
 .issues_table {
   .issue {
-    padding:7px 10px;
+    padding: 10px;
 
     .issue_check {
-      float:left;
+      float: left;
       padding: 8px 0;
       padding-right: 8px;
       min-width: 15px;
     }
 
     p {
-      padding-top:0;
-      padding-bottom:2px;
+      padding-top: 0;
+      padding-bottom: 2px;
     }
 
     img.avatar {
-      width:32px;
-      margin-top:4px;
+      width: 32px;
+      margin-top: 1px;
     }
   }
 }
 
 input.check_all_issues {
-  float:left;
+  float: left;
   padding: 0;
-  margin:0;
+  margin: 0;
   margin-right: 10px;
   position: relative;
   top: 8px;
@@ -82,65 +54,38 @@ input.check_all_issues {
   }
 }
 
-@media (min-width: 800px) { .issues_filters select { width:160px; }  }
-@media (min-width: 1000px) { .issues_filters select { width:200px; }  }
-@media (min-width: 1200px) { .issues_filters select { width:220px; }  }
+@media (min-width: 800px)  { .issues_filters select { width: 160px; }  }
+@media (min-width: 1200px) { .issues_filters select { width: 220px; }  }
 
+@media (min-width: 800px)  { .issues_bulk_update select { width: 120px; }  }
+@media (min-width: 1200px) { .issues_bulk_update select { width: 160px; }  }
 
 #issues-table-holder {
   .issues_filters {
-    form {
-      padding:0;
-      margin:0;
-      margin-top:7px
-    }
   }
 
   .issues_bulk_update {
     margin: 0;
     form {
-      padding:0;
-      margin:0;
-      margin-top:7px
-    }
-    .update_selected_issues {
-      position:relative;
-      top:-2px;
-      margin-left:4px;
       float:left;
     }
 
+    .update_selected_issues {
+      position: relative;
+      top:5px;
+      margin-left: 4px;
+      float: left;
+    }
+
     .update_issues_text {
-      padding:3px;
-      line-height: 18px;
-      float:left;
+      padding: 3px;
+      line-height: 28px;
+      float: left;
+      color: #479;
     }
   }
 }
 
 #update_status {
-  width:100px;
-}
-
-
-/**
- * Milestones list
- *
- */
-.milestone {
-  @extend .wll;
-}
-
-/**
- *  Fix milestone calendar
- */
-
-.ui-datepicker {
-  border:none;
-  box-shadow:none;
-  .ui-datepicker-header {
-    @include solid_shade;
-    margin-bottom:10px;
-    border:1px solid #bbb;
-  }
+  width: 100px;
 }

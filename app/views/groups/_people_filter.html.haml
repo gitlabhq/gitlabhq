@@ -1,0 +1,14 @@
+= form_tag people_group_path(@group), method: 'get' do
+  %fieldset
+    %legend Projects:
+    %ul.nav.nav-pills.nav-stacked
+      - @projects.each do |project|
+        %li{class: ("active" if params[:project_id] == project.id.to_s)}
+          = link_to people_group_path(@group, project_id: project.id) do
+            = project.name_with_namespace
+            %small.right= project.users.count
+
+  %fieldset
+    %hr
+    = link_to "Reset", people_group_path(@group), class: 'btn right'
+

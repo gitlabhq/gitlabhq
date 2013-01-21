@@ -1,48 +1,59 @@
-= form_for [@project, @merge_request], html: { class: "new_merge_request form-horizontal" } do |f|
+= form_for [@project, @merge_request], html: { class: "#{controller.action_name}-merge-request form-horizontal" } do |f|
   -if @merge_request.errors.any?
     .alert-message.block-message.error
       %ul
         - @merge_request.errors.full_messages.each do |msg|
           %li= msg
 
-  %h4.cdark 1. Select Branches
-  %br
+  %fieldset
+    %legend 1. Select Branches
 
-  .row
-    .span5
-      .mr_branch_box
-        %h5 From (Head Branch)
-        .body
-          .padded= f.select(:source_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
-      .mr_source_commit
+    .row
+      .span5
+        .mr_branch_box
+          %h5.cgray From (Head Branch)
+          .body
+            .padded= f.select(:source_branch, @repository.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
+        .mr_source_commit
 
-    .span2
-      %center= image_tag "merge.png", class: 'mr_direction_tip'
-    .span5
-      .mr_branch_box
-        %h5 To (Base Branch)
-        .body
-          .padded= f.select(:target_branch, @project.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
-      .mr_target_commit
+      .span2
+        %center= image_tag "merge.png", class: 'mr_direction_tip'
+      .span5
+        .mr_branch_box
+          %h5.cgray To (Base Branch)
+          .body
+            .padded= f.select(:target_branch, @repository.heads.map(&:name), { include_blank: "Select branch" }, {class: 'chosen span4'})
+        .mr_target_commit
 
-  %h4.cdark 2. Fill info
+  %fieldset
+    %legend 2. Fill info
 
-  .clearfix
-    .main_box
-      .top_box_content
-        = f.label :title do 
-          %strong= "Title *"
-        .input= f.text_field :title, class: "input-xxlarge pad gfm-input", maxlength: 255, rows: 5
-      .middle_box_content
-        = f.label :assignee_id do 
-          %i.icon-user 
-          Assign to
-        .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+    .ui-box.ui-box-show
+      .ui-box-head
+        .clearfix
+          = f.label :title do
+            %strong= "Title *"
+          .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
+      .ui-box-body
+        .clearfix
+          .left
+            = f.label :assignee_id do
+              %i.icon-user
+              Assign to
+            .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+          .left
+            = f.label :milestone_id do
+              %i.icon-time
+              Milestone
+            .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
   .control-group
 
   .form-actions
-    = f.submit 'Save', class: "btn save-btn"
+    - if @merge_request.new_record?
+      = f.submit 'Submit merge request', class: "btn success"
+    -else
+      = f.submit 'Save changes', class: "save-btn btn"
     - if @merge_request.new_record?
       = link_to project_merge_requests_path(@project), class: "btn cancel-btn" do
         Cancel
@@ -53,8 +64,9 @@
 :javascript
   $(function(){
     disableButtonIfEmptyField("#merge_request_title", ".save-btn");
-    var source_branch = $("#merge_request_source_branch");
-    var target_branch = $("#merge_request_target_branch");
+
+    var source_branch = $("#merge_request_source_branch")
+      , target_branch = $("#merge_request_target_branch");
 
     $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
     $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });

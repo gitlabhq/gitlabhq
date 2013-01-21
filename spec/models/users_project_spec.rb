@@ -2,12 +2,12 @@
 #
 # Table name: users_projects
 #
-#  id             :integer         not null, primary key
-#  user_id        :integer         not null
-#  project_id     :integer         not null
-#  created_at     :datetime        not null
-#  updated_at     :datetime        not null
-#  project_access :integer         default(0), not null
+#  id             :integer          not null, primary key
+#  user_id        :integer          not null
+#  project_id     :integer          not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  project_access :integer          default(0), not null
 #
 
 require 'spec_helper'
@@ -29,6 +29,7 @@ describe UsersProject do
     it { should validate_uniqueness_of(:user_id).scoped_to(:project_id).with_message(/already exists/) }
 
     it { should validate_presence_of(:project) }
+    it { should ensure_inclusion_of(:project_access).in_array(UsersProject.access_roles.values) }
   end
 
   describe "Delegate methods" do
@@ -47,10 +48,10 @@ describe UsersProject do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.add_access @user_1, :write
-      @project_2.add_access @user_2, :read
+      @project_1.team << [ @user_1, :developer ]
+      @project_2.team << [ @user_2, :reporter ]
 
-      @status = UsersProject.import_team(@project_1, @project_2)
+      @status = @project_2.team.import(@project_1)
     end
 
     it { @status.should be_true }
@@ -67,5 +68,46 @@ describe UsersProject do
       it { @project_1.users.should include(@user_1) }
       it { @project_1.users.should_not include(@user_2) }
     end
+  end
+
+  describe :add_users_into_projects do
+    before do
+      @project_1 = create :project
+      @project_2 = create :project
+
+      @user_1 = create :user
+      @user_2 = create :user
+
+      UsersProject.add_users_into_projects(
+        [@project_1.id, @project_2.id],
+        [@user_1.id, @user_2.id],
+        UsersProject::MASTER
+      )
+    end
+
+    it { @project_1.users.should include(@user_1) }
+    it { @project_1.users.should include(@user_2) }
+
+
+    it { @project_2.users.should include(@user_1) }
+    it { @project_2.users.should include(@user_2) }
+  end
+
+  describe :truncate_teams do
+    before do
+      @project_1 = create :project
+      @project_2 = create :project
+
+      @user_1 = create :user
+      @user_2 = create :user
+
+      @project_1.team << [ @user_1, :developer]
+      @project_2.team << [ @user_2, :reporter]
+
+      UsersProject.truncate_teams([@project_1.id, @project_2.id])
+    end
+
+    it { @project_1.users.should be_empty }
+    it { @project_2.users.should be_empty }
   end
 end

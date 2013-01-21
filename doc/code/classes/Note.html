@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Note</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Note 
+            
+                <span class="parent">&lt; 
+                    
+                    ActiveRecord::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/models/note_rb.html">app/models/note.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-commit_author">commit_author</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-c-create_status_change_note">create_status_change_note</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-downvote-3F">downvote?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-for_commit-3F">for_commit?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-for_diff_line-3F">for_diff_line?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-noteable">noteable</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-noteable_type_name">noteable_type_name</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-notify_only_author-3F">notify_only_author?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-upvote-3F">upvote?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>notify</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>notify_author</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-create_status_change_note">
+            
+              <b>create_status_change_note</b>(noteable, author, status)
+            
+            <a href="../classes/Note.html#method-c-create_status_change_note" name="method-c-create_status_change_note" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-create_status_change_note_source')" id="l_method-c-create_status_change_note_source">show</a>
+                
+              </p>
+              <div id="method-c-create_status_change_note_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">self</span>.<span class="ruby-identifier">create_status_change_note</span>(<span class="ruby-identifier">noteable</span>, <span class="ruby-identifier">author</span>, <span class="ruby-identifier">status</span>)
+  <span class="ruby-identifier">create</span>({
+    <span class="ruby-identifier">noteable</span><span class="ruby-operator">:</span> <span class="ruby-identifier">noteable</span>,
+    <span class="ruby-identifier">project</span><span class="ruby-operator">:</span> <span class="ruby-identifier">noteable</span>.<span class="ruby-identifier">project</span>,
+    <span class="ruby-identifier">author</span><span class="ruby-operator">:</span> <span class="ruby-identifier">author</span>,
+    <span class="ruby-identifier">note</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;_Status changed to #{status}_&quot;</span>
+  }, <span class="ruby-identifier">without_protection</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_author">
+            
+              <b>commit_author</b>()
+            
+            <a href="../classes/Note.html#method-i-commit_author" name="method-i-commit_author" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_author_source')" id="l_method-i-commit_author_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_author_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 109</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_author</span>
+  <span class="ruby-ivar">@commit_author</span> <span class="ruby-operator">||=</span>
+    <span class="ruby-identifier">project</span>.<span class="ruby-identifier">users</span>.<span class="ruby-identifier">find_by_email</span>(<span class="ruby-identifier">noteable</span>.<span class="ruby-identifier">author_email</span>) <span class="ruby-operator">||</span>
+    <span class="ruby-identifier">project</span>.<span class="ruby-identifier">users</span>.<span class="ruby-identifier">find_by_name</span>(<span class="ruby-identifier">noteable</span>.<span class="ruby-identifier">author_name</span>)
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-keyword">nil</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-downvote-3F">
+            
+              <b>downvote?</b>()
+            
+            <a href="../classes/Note.html#method-i-downvote-3F" name="method-i-downvote-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true if this is a downvote note, otherwise false is returned</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-downvote-3F_source')" id="l_method-i-downvote-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-downvote-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 125</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">downvote?</span>
+  <span class="ruby-identifier">note</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">'-1'</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">note</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">':-1:'</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-for_commit-3F">
+            
+              <b>for_commit?</b>()
+            
+            <a href="../classes/Note.html#method-i-for_commit-3F" name="method-i-for_commit-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-for_commit-3F_source')" id="l_method-i-for_commit-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-for_commit-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 101</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">for_commit?</span>
+  <span class="ruby-identifier">noteable_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;Commit&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-for_diff_line-3F">
+            
+              <b>for_diff_line?</b>()
+            
+            <a href="../classes/Note.html#method-i-for_diff_line-3F" name="method-i-for_diff_line-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-for_diff_line-3F_source')" id="l_method-i-for_diff_line-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-for_diff_line-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 105</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">for_diff_line?</span>
+  <span class="ruby-identifier">line_code</span>.<span class="ruby-identifier">present?</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-noteable">
+            
+              <b>noteable</b>()
+            
+            <a href="../classes/Note.html#method-i-noteable" name="method-i-noteable" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>override to return commits, which are not active record</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-noteable_source')" id="l_method-i-noteable_source">show</a>
+                
+              </p>
+              <div id="method-i-noteable_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 71</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">noteable</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">for_commit?</span>
+    <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">commit_id</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">super</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-comment"># Temp fix to prevent app crash</span>
+<span class="ruby-comment"># if note commit id doesnt exist</span>
+<span class="ruby-keyword">rescue</span>
+  <span class="ruby-keyword">nil</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-noteable_type_name">
+            
+              <b>noteable_type_name</b>()
+            
+            <a href="../classes/Note.html#method-i-noteable_type_name" name="method-i-noteable_type_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-noteable_type_name_source')" id="l_method-i-noteable_type_name_source">show</a>
+                
+              </p>
+              <div id="method-i-noteable_type_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 129</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">noteable_type_name</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">noteable_type</span>.<span class="ruby-identifier">present?</span>
+    <span class="ruby-identifier">noteable_type</span>.<span class="ruby-identifier">downcase</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-string">&quot;wall&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-notify_only_author-3F">
+            
+              <b>notify_only_author?</b>(user)
+            
+            <a href="../classes/Note.html#method-i-notify_only_author-3F" name="method-i-notify_only_author-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Check if we can notify commit author with email about our comment</p>
+
+<p>If commit author email exist in project and commit author is not passed
+user we can send email to him</p>
+
+<p>params:</p>
+
+<pre>user - current user</pre>
+
+<p>return:</p>
+
+<pre>Boolean</pre>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-notify_only_author-3F_source')" id="l_method-i-notify_only_author-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-notify_only_author-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 96</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">notify_only_author?</span>(<span class="ruby-identifier">user</span>)
+  <span class="ruby-identifier">for_commit?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">commit_author</span> <span class="ruby-operator">&amp;&amp;</span>
+    <span class="ruby-identifier">commit_author</span>.<span class="ruby-identifier">email</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-upvote-3F">
+            
+              <b>upvote?</b>()
+            
+            <a href="../classes/Note.html#method-i-upvote-3F" name="method-i-upvote-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Returns true if this is an upvote note, otherwise false is returned</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-upvote-3F_source')" id="l_method-i-upvote-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-upvote-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/models/note.rb, line 119</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">upvote?</span>
+  <span class="ruby-identifier">note</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">'+1'</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">note</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">':+1:'</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

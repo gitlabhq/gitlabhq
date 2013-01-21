@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Gitlab::API do
   include ApiHelpers
 
-  let(:user)  { Factory :user }
-  let(:admin) {Factory :admin}
-  let(:key)   { Factory :key, user: user }
+  let(:user)  { create(:user) }
+  let(:admin) { create(:admin) }
+  let(:key)   { create(:key, user: user) }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -42,14 +42,44 @@ describe Gitlab::API do
     end
 
     it "should create user" do
-      expect{
-        post api("/users", admin), Factory.attributes(:user)
-      }.to change{User.count}.by(1)
+      expect {
+        post api("/users", admin), attributes_for(:user, projects_limit: 3)
+      }.to change { User.count }.by(1)
     end
 
     it "shouldn't available for non admin users" do
-      post api("/users", user), Factory.attributes(:user)
+      post api("/users", user), attributes_for(:user)
       response.status.should == 403
+    end
+  end
+
+  describe "GET /users/sign_up" do
+    before do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
+    end
+    it "should redirect to sign in page if signup is disabled" do
+      get "/users/sign_up"
+      response.status.should == 302
+      response.should redirect_to(new_user_session_path)
+    end
+  end
+
+  describe "GET /users/sign_up" do
+    before do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+    end
+    it "should return sign up page if signup is enabled" do
+      get "/users/sign_up"
+      response.status.should == 200
+    end
+    it "should create a new user account" do
+      visit new_user_registration_path
+      fill_in "user_name", with: "Name Surname"
+      fill_in "user_username", with: "Great"
+      fill_in "user_email", with: "name@mail.com"
+      fill_in "user_password", with: "password1234"
+      fill_in "user_password_confirmation", with: "password1234"
+      expect { click_button "Sign up" }.to change {User.count}.by(1)
     end
   end
 
@@ -103,7 +133,7 @@ describe Gitlab::API do
     end
 
     it "should create ssh key" do
-      key_attrs = Factory.attributes :key
+      key_attrs = attributes_for :key
       expect {
         post api("/user/keys", user), key_attrs
       }.to change{ user.keys.count }.by(1)

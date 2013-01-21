@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: snippets
+#
+#  id         :integer          not null, primary key
+#  title      :string(255)
+#  content    :text
+#  author_id  :integer          not null
+#  project_id :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  file_name  :string(255)
+#  expires_at :datetime
+#
+
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
@@ -7,7 +22,7 @@ class Snippet < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
 
-  delegate :name, :email, to: :author, prefix: true
+  delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
   validates :project, presence: true
@@ -48,19 +63,3 @@ class Snippet < ActiveRecord::Base
     expires_at && expires_at < Time.current
   end
 end
-
-# == Schema Information
-#
-# Table name: snippets
-#
-#  id         :integer         not null, primary key
-#  title      :string(255)
-#  content    :text
-#  author_id  :integer         not null
-#  project_id :integer         not null
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#  file_name  :string(255)
-#  expires_at :datetime
-#
-

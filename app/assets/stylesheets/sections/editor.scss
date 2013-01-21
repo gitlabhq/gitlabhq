@@ -1,14 +1,48 @@
 .file-editor {
   #editor{
+    border: none;
+    @include border-radius(0);
     height: 500px;
-    width: 100%;
+    margin: 0;
+    padding: 0;
     position: relative;
+    width: 100%;
   }
-  .editor-commit-comment {
-    padding-top:20px;
+
+  .cancel-btn {
+    color: #B94A48;
+    &:hover {
+      color: #B94A48;
+    }
+  }
+  .commit-button-annotation {
+    @extend .alert;
+    @extend .alert-info;
+    display: inline-block;
+    margin: 0;
+    padding: 2px;
+
+    > * {
+      float: left;
+    }
+
+    .commit-btn {
+      @extend .save-btn;
+    }
+    .message {
+      display: inline-block;
+      margin: 5px 8px 0 8px;
+    }
+  }
+  .commit_message-group {
+    margin-top: 20px;
+
+    label {
+      font-size: 16px;
+      line-height: 20px;
+    }
     textarea {
-      width: 50%;
-      margin-left: 20px;
+      @extend .span8;
     }
   }
 }

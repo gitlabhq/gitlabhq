@@ -1,0 +1,16 @@
+%h3.page_title
+  Projects
+  %small with read-only access
+%hr
+
+%ul.unstyled
+  - @projects.each do |project|
+    %li.clearfix
+      %h5
+        %i.icon-share
+        = project.name_with_namespace
+        .right
+          %pre.dark.tiny git clone #{project.http_url_to_repo}
+
+
+= paginate @projects, theme: "admin"

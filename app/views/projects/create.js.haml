@@ -1,11 +1,10 @@
 - if @project.saved?
   :plain
-    location.href = "#{project_path(@project, notice: 'Project was successfully created.')}";
+    location.href = "#{project_path(@project)}";
 - else
-  - if @project.git_error?
-    location.href = "#{errors_githost_path}";
-  -else 
   :plain
     $('.project_new_holder').show();
     $("#new_project").replaceWith("#{escape_javascript(render('new_form'))}");
-    $('.ajax_loader').hide();
+    $('.save-project-loader').hide();
+    new Projects();
+    $('select.chosen').chosen()

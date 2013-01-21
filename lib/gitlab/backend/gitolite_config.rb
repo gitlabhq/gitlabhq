@@ -6,6 +6,7 @@ module Gitlab
   class GitoliteConfig
     class PullError < StandardError; end
     class PushError < StandardError; end
+    class BrokenGitolite < StandardError; end
 
     attr_reader :config_tmp_dir, :ga_repo, :conf
 
@@ -14,7 +15,10 @@ module Gitlab
     end
 
     def ga_repo
-      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(File.join(config_tmp_dir,'gitolite'))
+      @ga_repo ||= ::Gitolite::GitoliteAdmin.new(
+        File.join(config_tmp_dir,'gitolite'),
+        conf: Gitlab.config.gitolite.config_file
+      )
     end
 
     def apply
@@ -69,6 +73,10 @@ module Gitlab
       log("Push error ->  " + " " + ex.message)
       raise Gitolite::AccessDenied, ex.message
 
+    rescue BrokenGitolite => ex
+      log("Gitolite error ->  " + " " + ex.message)
+      raise Gitolite::AccessDenied, ex.message
+
     rescue Exception => ex
       log(ex.class.name + " " + ex.message)
       raise Gitolite::AccessDenied.new("gitolite timeout")
@@ -79,8 +87,12 @@ module Gitlab
     end
 
     def destroy_project(project)
-      FileUtils.rm_rf(project.path_to_repo)
-      conf.rm_repo(project.path)
+      FileUtils.rm_rf(project.repository.path_to_repo)
+      conf.rm_repo(project.path_with_namespace)
+    end
+
+    def clean_repo repo_name
+      conf.rm_repo(repo_name)
     end
 
     def destroy_project!(project)
@@ -102,18 +114,18 @@ module Gitlab
     end
 
     # update or create
-    def update_project(repo_name, project)
+    def update_project(project)
       repo = update_project_config(project, conf)
       conf.add_repo(repo, true)
     end
 
-    def update_project!(repo_name, project)
+    def update_project!( project)
       apply do |config|
-        config.update_project(repo_name, project)
+        config.update_project(project)
       end
     end
 
-    # Updates many projects and uses project.path as the repo path
+    # Updates many projects and uses project.path_with_namespace as the repo path
     # An order of magnitude faster than update_project
     def update_projects(projects)
       projects.each do |project|
@@ -123,7 +135,7 @@ module Gitlab
     end
 
     def update_project_config(project, conf)
-      repo_name = project.path
+      repo_name = project.path_with_namespace
 
       repo = if conf.has_repo?(repo_name)
                conf.get_repo(repo_name)
@@ -131,9 +143,9 @@ module Gitlab
                ::Gitolite::Config::Repo.new(repo_name)
              end
 
-      name_readers = project.repository_readers
-      name_writers = project.repository_writers
-      name_masters = project.repository_masters
+      name_readers = project.team.repository_readers
+      name_writers = project.team.repository_writers
+      name_masters = project.team.repository_masters
 
       pr_br = project.protected_branches.map(&:name).join("$ ")
 
@@ -160,7 +172,7 @@ module Gitlab
     # Enable access to all repos for gitolite admin.
     # We use it for accept merge request feature
     def admin_all_repo
-      owner_name = Gitlab.config.gitolite_admin_key
+      owner_name = Gitlab.config.gitolite.admin_key
 
       # @ALL repos premission for gitolite owner
       repo_name = "@all"
@@ -182,7 +194,7 @@ module Gitlab
 
     def pull tmp_dir
       Dir.mkdir tmp_dir
-      `git clone #{Gitlab.config.gitolite_admin_uri} #{tmp_dir}/gitolite`
+      `git clone #{Gitlab.config.gitolite.admin_uri} #{tmp_dir}/gitolite`
 
       unless File.exists?(File.join(tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
         raise PullError, "unable to clone gitolite-admin repo"
@@ -190,14 +202,40 @@ module Gitlab
     end
 
     def push tmp_dir
-      Dir.chdir(File.join(tmp_dir, "gitolite"))
-      system('git add -A')
-      system('git commit -am "GitLab"')
-      if system('git push')
-        Dir.chdir(Rails.root)
+      output, status = popen('git add -A')
+      raise "Git add failed." unless status.zero?
+
+      # git commit returns 0 on success, and 1 if there is nothing to commit
+      output, status = popen('git commit -m "GitLab"')
+      raise "Git add failed." unless [0,1].include?(status)
+
+      output, status = popen('git push')
+
+      if output =~ /remote\: FATAL/
+        raise BrokenGitolite, output
+      end
+
+      if status.zero? || output =~ /Everything up\-to\-date/
+        return true
       else
         raise PushError, "unable to push gitolite-admin repo"
       end
+    end
+
+    def popen(cmd)
+      path = File.join(config_tmp_dir,'gitolite')
+      vars = { "PWD" => path }
+      options = { :chdir => path }
+
+      @cmd_output = ""
+      @cmd_status = 0
+      Open3.popen3(vars, cmd, options) do |stdin, stdout, stderr, wait_thr|
+        @cmd_status = wait_thr.value.exitstatus
+        @cmd_output << stdout.read
+        @cmd_output << stderr.read
+      end
+
+      return @cmd_output, @cmd_status
     end
   end
 end

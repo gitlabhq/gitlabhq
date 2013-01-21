@@ -5,27 +5,35 @@
       %tr
         %th Name
         %th Last commit
-        %th Updated at
         %th
     - @tags.each do |tag|
       - commit = Commit.new(tag.commit)
       - commit = CommitDecorator.decorate(commit)
       %tr
         %td
-          %strong= link_to tag.name, project_commits_path(@project, tag.name), class: ""
+          %strong
+            = link_to project_commits_path(@project, tag.name), class: "" do
+              %i.icon-tag
+              = tag.name
+          %small.light= truncate(tag.message || '', length: 70)
         %td
-          = link_to project_commit_path(@project, commit.id) do
-            %code= commit.short_id
-          = image_tag gravatar_icon(commit.author_email), class: "", width: 16
-          = gfm escape_once(truncate(commit.title, length: 40))
-        %td
-          %span.update-author.right
+          = image_tag gravatar_icon(commit.author_email), class: "avatar s16"
+          = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
+            = commit.short_id
+          %span.light
             = time_ago_in_words(commit.committed_date)
             ago
-            &nbsp;
         %td
           - if can? current_user, :download_code, @project
-            = link_to "Download", archive_project_repository_path(@project, ref: tag.name), class: "visible_link download_repo_link"
+            = link_to archive_project_repository_path(@project, ref: tag.name) do
+              %i.icon-download-alt
+              Download
 
 - else
-  %h3 No tags
+  %h3.nothing_here_message
+    Repository has no tags yet.
+    %br
+    %small
+      Use git tag command to add a new one:
+      %br
+      %span.monospace git tag -a v1.4 -m 'version 1.4'

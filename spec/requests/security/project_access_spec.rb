@@ -22,10 +22,10 @@ describe "Application access" do
 
     before do
       # full access
-      project.users_projects.create(user: master, project_access: UsersProject::MASTER)
+      project.team << [master, :master]
 
       # readonly
-      project.users_projects.create(user: reporter, project_access: UsersProject::REPORTER)
+      project.team << [reporter, :reporter]
     end
 
     describe "GET /project_code" do
@@ -40,7 +40,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/tree/master" do
-      subject { project_tree_path(project, project.root_ref) }
+      subject { project_tree_path(project, project.repository.root_ref) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -51,7 +51,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/commits/master" do
-      subject { project_commits_path(project, project.root_ref, limit: 1) }
+      subject { project_commits_path(project, project.repository.root_ref, limit: 1) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -62,7 +62,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/commit/:sha" do
-      subject { project_commit_path(project, project.commit) }
+      subject { project_commit_path(project, project.repository.commit) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -107,7 +107,7 @@ describe "Application access" do
 
     describe "GET /project_code/blob" do
       before do
-        commit = project.commit
+        commit = project.repository.commit
         path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
         @blob_path = project_blob_path(project, File.join(commit.id, path))
       end

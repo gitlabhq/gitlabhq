@@ -4,7 +4,7 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   include SharedPaths
 
   Then 'I see project commits' do
-    commit = @project.commit
+    commit = @project.repository.commit
     page.should have_content(@project.name)
     page.should have_content(commit.message)
     page.should have_content(commit.id.to_s[0..5])
@@ -15,7 +15,7 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   Then 'I see commits atom feed' do
-    commit = CommitDecorator.decorate(@project.commit)
+    commit = CommitDecorator.decorate(@project.repository.commit)
     page.response_headers['Content-Type'].should have_content("application/atom+xml")
     page.body.should have_selector("title", :text => "Recent commits to #{@project.name}")
     page.body.should have_selector("author email", :text => commit.author_email)
@@ -32,8 +32,8 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   And 'I fill compare fields with refs' do
-    fill_in "from", with: "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
-    fill_in "to",   with: "8716fc78f3c65bbf7bcf7b574febd583bc5d2812"
+    fill_in "from", with: "8716fc78f3c65bbf7bcf7b574febd583bc5d2812"
+    fill_in "to",   with: "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
     click_button "Compare"
   end
 
@@ -41,5 +41,21 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     page.should have_content "Compare View"
     page.should have_content "Commits (1)"
     page.should have_content "Showing 2 changed files"
+  end
+
+  Then 'I see breadcrumb links' do
+    page.should have_selector('ul.breadcrumb')
+    page.should have_selector('ul.breadcrumb span.divider', count: 3)
+    page.should have_selector('ul.breadcrumb a', count: 4)
+
+    find('ul.breadcrumb li:first a')['href'].should match(/#{@project.path_with_namespace}\/commits\/master\z/)
+    find('ul.breadcrumb li:last a')['href'].should match(%r{master/app/models/project\.rb\z})
+  end
+
+  Then 'I see commits stats' do
+    page.should have_content 'Stats'
+    page.should have_content 'Committers'
+    page.should have_content 'Total commits'
+    page.should have_content 'Authors'
   end
 end

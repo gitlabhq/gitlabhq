@@ -1,10 +1,31 @@
+# == Schema Information
+#
+# Table name: merge_requests
+#
+#  id            :integer          not null, primary key
+#  target_branch :string(255)      not null
+#  source_branch :string(255)      not null
+#  project_id    :integer          not null
+#  author_id     :integer
+#  assignee_id   :integer
+#  title         :string(255)
+#  closed        :boolean          default(FALSE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  st_commits    :text(2147483647)
+#  st_diffs      :text(2147483647)
+#  merged        :boolean          default(FALSE), not null
+#  state         :integer          default(1), not null
+#  milestone_id  :integer
+#
+
 require Rails.root.join("app/models/commit")
+require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
-  include IssueCommonality
-  include Votes
+  include Issuable
 
-  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch,
+  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch, :milestone_id,
                   :author_id_of_changes
 
   attr_accessor :should_remove_source_branch
@@ -24,6 +45,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.find_all_by_branch(branch_name)
     where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+  end
+
+  def self.find_all_by_milestone(milestone)
+    where("milestone_id = :milestone_id", milestone_id: milestone)
   end
 
   def human_state
@@ -60,7 +85,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    self.state = if Gitlab::Merge.new(self, self.author).can_be_merged?
+    self.state = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
                    CAN_BE_MERGED
                  else
                    CANNOT_BE_MERGED
@@ -167,7 +192,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user)
-    if Gitlab::Merge.new(self, current_user).merge! && self.unmerged_commits.empty?
+    if Gitlab::Satellite::MergeAction.new(current_user, self).merge! && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end
@@ -176,41 +201,26 @@ class MergeRequest < ActiveRecord::Base
     false
   end
 
-  def to_raw
-    FileUtils.mkdir_p(Rails.root.join("tmp", "patches"))
-    patch_path = Rails.root.join("tmp", "patches", "merge_request_#{self.id}.patch")
-
-    from = commits.last.id
-    to = source_branch
-
-    project.repo.git.run('', "format-patch" , " > #{patch_path.to_s}", {}, ["#{from}..#{to}", "--stdout"])
-
-    patch_path
-  end
-
   def mr_and_commit_notes
     commit_ids = commits.map(&:id)
-    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND noteable_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
+    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND commit_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
+  end
+
+  # Returns the raw diff for this merge request
+  #
+  # see "git diff"
+  def to_diff
+    project.repo.git.native(:diff, {timeout: 30, raise: true}, "#{target_branch}...#{source_branch}")
+  end
+
+  # Returns the commit as a series of email patches.
+  #
+  # see "git format-patch"
+  def to_patch
+    project.repo.git.format_patch({timeout: 30, raise: true, stdout: true}, "#{target_branch}..#{source_branch}")
+  end
+
+  def last_commit_short_sha
+    @last_commit_short_sha ||= last_commit.sha[0..10]
   end
 end
-
-# == Schema Information
-#
-# Table name: merge_requests
-#
-#  id            :integer         not null, primary key
-#  target_branch :string(255)     not null
-#  source_branch :string(255)     not null
-#  project_id    :integer         not null
-#  author_id     :integer
-#  assignee_id   :integer
-#  title         :string(255)
-#  closed        :boolean         default(FALSE), not null
-#  created_at    :datetime        not null
-#  updated_at    :datetime        not null
-#  st_commits    :text(4294967295
-#  st_diffs      :text(4294967295
-#  merged        :boolean         default(FALSE), not null
-#  state         :integer         default(1), not null
-#
-

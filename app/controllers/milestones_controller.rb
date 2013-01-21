@@ -12,11 +12,12 @@ class MilestonesController < ProjectResourceController
 
   def index
     @milestones = case params[:f]
-                  when 'all'; @project.milestones
-                  else @project.milestones.active
+                  when 'all'; @project.milestones.order("closed, due_date DESC")
+                  when 'closed'; @project.milestones.closed.order("due_date DESC")
+                  else @project.milestones.active.order("due_date ASC")
                   end
 
-    @milestones = @milestones.includes(:project).order("due_date")
+    @milestones = @milestones.includes(:project)
     @milestones = @milestones.page(params[:page]).per(20)
   end
 
@@ -31,7 +32,8 @@ class MilestonesController < ProjectResourceController
 
   def show
     @issues = @milestone.issues
-    @users = @milestone.participants
+    @users = UserDecorator.decorate(@milestone.participants)
+    @merge_requests = @milestone.merge_requests
 
     respond_to do |format|
       format.html
@@ -41,6 +43,7 @@ class MilestonesController < ProjectResourceController
 
   def create
     @milestone = @project.milestones.new(params[:milestone])
+    @milestone.author_id_of_changes = current_user.id
 
     if @milestone.save
       redirect_to project_milestone_path(@project, @milestone)
@@ -50,7 +53,7 @@ class MilestonesController < ProjectResourceController
   end
 
   def update
-    @milestone.update_attributes(params[:milestone])
+    @milestone.update_attributes(params[:milestone].merge(author_id_of_changes: current_user.id))
 
     respond_to do |format|
       format.js

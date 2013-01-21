@@ -1,7 +1,8 @@
-%h3= @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
+%h3.page_title
+  = @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 %hr
-= form_for [@project, @snippet] do |f|
-  %table.no-borders
+.snippet-form-holder
+  = form_for [@project, @snippet] do |f|
     -if @snippet.errors.any?
       .alert-message.block-message.error
         %ul
@@ -10,19 +11,31 @@
 
     .clearfix
       = f.label :title
-      .input= f.text_field :title, placeholder: "Example Snippet"
-    .clearfix
-      = f.label :file_name
-      .input= f.text_field :file_name, placeholder: "example.rb"
+      .input= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
     .clearfix
       = f.label "Lifetime"
       .input= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
     .clearfix
-      = f.label :content, "Code"
-      .input= f.text_area :content, class: "span8"
+      .file-editor
+        = f.label :file_name, "File"
+        .input
+          .file_holder.snippet
+            .file_title
+              = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true
+            .file_content.code
+              %pre#editor= @snippet.content
+              = f.hidden_field :content, class: 'snippet-file-content'
 
-  .actions
-    = f.submit 'Save', class: "primary btn"
-    = link_to "Cancel", project_snippets_path(@project), class: " btn"
-    - unless @snippet.new_record?
-      .right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+    .form-actions
+      = f.submit 'Save', class: "save-btn btn"
+      = link_to "Cancel", project_snippets_path(@project), class: " btn"
+      - unless @snippet.new_record?
+        .right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+
+
+:javascript
+  var editor = ace.edit("editor");
+  $(".snippet-form-holder form").submit(function(){
+    $(".snippet-file-content").val(editor.getValue());
+  });
+

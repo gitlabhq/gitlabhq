@@ -1,11 +1,15 @@
-User.seed(:id, [
-  { :id => 2, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 3, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 4, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 5, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 6, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 7, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 8, :name => Faker::Internet.user_name, :email => Faker::Internet.email},
-  { :id => 9, :name => Faker::Internet.user_name, :email => Faker::Internet.email}
-])
-
+Gitlab::Seeder.quiet do
+  (2..300).each  do |i|
+    begin
+      User.seed(:id, [{
+        id: i,
+        username: Faker::Internet.user_name,
+        name: Faker::Name.name,
+        email: Faker::Internet.email,
+      }])
+      print '.'
+    rescue ActiveRecord::RecordNotSaved
+      print 'F'
+    end
+  end
+end

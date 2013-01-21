@@ -1,132 +1,108 @@
-.commit-box {
-  @extend .main_box;
-
-  .commit-head {
-    @extend .top_box_content;
-
-    .commit-title {
-      line-height: 26px;
-      margin:0;
-    }
-
-    .commit-description {
-      font-size: 14px;
-      border: none;
-      background-color: white;
-      padding-top:10px;
-    }
-
-    .browse-button {
-      @extend .btn;
-      @extend .btn-small;
-      float: right;
-    }
-  }
-
-  .commit-info {
-    @extend .middle_box_content;
-    @extend .clearfix;
-
-    .sha-block {
-      text-align:right;
-      &:first-child {
-        padding-bottom:6px;
-      }
-
-      a {
-        border-bottom: 1px solid #aaa;
-        margin-left: 9px;
-      }
-    }
-
-    &.merge-commit .sha-block {
-      clear: right;
-    }
-
-    .committer {
-      padding-left: 32px;
-    }
-
-    .author,
-    .committer {
-      font-size:14px;
-      line-height:22px;
-      text-shadow:0 1px 1px #fff;
-      color:#777;
-    }
-
-    .avatar {
-      margin-right: 10px;
-    }
-  }
-}
-
 /**
  *
  * COMMIT SHOw
  *
  */
+.commit-committer-link,
+.commit-author-link {
+  font-size: 13px;
+  color: #555;
+  &:hover {
+    color: #999;
+  }
+}
+
 .diff_file {
-  border:1px solid #CCC;
-  margin-bottom:1em;
+  border: 1px solid #CCC;
+  margin-bottom: 1em;
 
   .diff_file_header {
-    padding:7px 5px;
-    border-bottom:1px solid #CCC;
+    @extend .clearfix;
+    padding: 5px 5px 5px 10px;
+    color: #555;
+    border-bottom: 1px solid #CCC;
     background: #eee;
+    // TODO Replace with linear-gradient mixin
     background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
     background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
-    span {
-      font-size:14px;
+    > span {
+      font-family: $monospace;
+      font-size: 14px;
+      line-height: 30px;
+    }
+
+    a.view-commit{
+      font-weight: bold;
+    }
+
+    .commit-short-id{
+      font-family: $monospace;
+      font-size: smaller;
+    }
+
+    .file-mode{
+      font-family: $monospace;
     }
   }
   .diff_file_content {
-    overflow:auto;
-    overflow-y:hidden;
-    background:#fff;
-    color:#333;
+    overflow: auto;
+    overflow-y: hidden;
+    background: #fff;
+    color: #333;
     font-size: 12px;
-    font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+    font-family: $monospace;
     .old{
       span.idiff{
-        background-color:#FAA;
+        background-color: #FAA;
       }
     }
     .new{
       span.idiff{
-        background-color:#AFA;
+        background-color: #AFA;
       }
     }
 
     table {
       td {
-        line-height:18px;
+        line-height: 18px;
       }
     }
   }
   .diff_file_content_image {
-    background:#eee;
-    text-align:center;
-    img {
-      margin:50px;
-      padding:1px;
-      max-width:400px;
+    background: #eee;
+    text-align: center;
+    .image {
+      display: inline-block;
+      margin: 50px;
+      max-width: 400px;
 
-      &.diff_image_removed {
-        border: 1px solid #C00;
+      img{
+        background: url('trans_bg.gif');
       }
 
-      &.diff_image_added {
-        border: 1px solid #0C0;;
+      &.diff_removed {
+        img{
+          border: 1px solid #C00;
+        }
+      }
+
+      &.diff_added {
+        img{
+          border: 1px solid #0C0;
+        }
+      }
+
+      .image-info{
+        margin: 5px 0 0 0;
       }
     }
 
     &.img_compared {
-      img {
-        max-width:300px;
+      .image {
+        max-width: 300px;
       }
     }
   }
@@ -134,16 +110,18 @@
 
 .diff_file_content{
   table {
-    border:none;
-    margin:0px;
-    padding:0px;
+    border: none;
+    margin: 0px;
+    padding: 0px;
     tr {
       td {
-        font-size:12px;
+        font-size: 12px;
       }
     }
   }
-  .old_line, .new_line {
+  .new_line,
+  .old_line,
+  .notes_line {
     margin:0px;
     padding:0px;
     border:none;
@@ -151,29 +129,30 @@
     color:#666;
     padding: 0px 5px;
     border-right: 1px solid #ccc;
-    text-align:right;
-    min-width:35px;
-    max-width:35px;
-    width:35px;
+    text-align: right;
+    min-width: 35px;
+    max-width: 35px;
+    width: 35px;
     moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+
     a {
-      float:left;
-      width:35px;
-      font-weight:normal;
-      color:#666;
+      float: left;
+      width: 35px;
+      font-weight: normal;
+      color: #666;
       &:hover {
-        text-decoration:underline;
+        text-decoration: underline;
       }
     }
   }
   .line_content {
-    white-space:pre;
-    height:14px;
-    margin:0px;
-    padding:0px;
-    border:none;
+    white-space: pre;
+    height: 14px;
+    margin: 0px;
+    padding: 0px;
+    border: none;
     &.new {
       background: #CFD;
     }
@@ -181,8 +160,8 @@
       background: #FDD;
     }
     &.matched {
-      color:#ccc;
-      background:#fafafa;
+      color: #ccc;
+      background: #fafafa;
     }
   }
 }
@@ -196,62 +175,81 @@
 
 /** COMMIT ROW **/
 .commit {
-  @extend .wll;
-
   .browse_code_link_holder {
     @extend .span2;
-    float:right;
+    float: right;
   }
 
   .committed_ago {
-    float:right;
+    float: right;
     @extend .cgray;
   }
 
   .notes_count {
-    float:right;
+    float: right;
     margin: -6px 8px 6px;
   }
 
   code {
-    background:#FCEEC1;
-    color:$style_color;
+    background: #FCEEC1;
+    color: $style_color;
   }
 
   .commit_short_id {
-    float:left;
+    float: left;
     @extend .lined;
-    min-width:65px;
-    font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
-  }
-
-  .commit-author-name {
-    color: #777;
+    min-width: 65px;
+    font-family: $monospace;
   }
 }
 
 .diff_file_header a,
-.file_stats a {
-  color:$style_color;
+.file-stats a {
+  color: $style_color;
 }
 
-.file_stats {
-  span {
-    img {
-      width:14px;
-      float:left;
-      margin-right:6px;
-      padding:2px 0;
+.file-stats {
+  .new-file{
+    i{
+      color: #1BCF00;
+    }
+  }
+  .renamed-file{
+    i{
+      color: #FE9300;
+    }
+  }
+  .deleted-file{
+    i{
+      color: #FF0000;
+    }
+  }
+  .edit-file{
+    i{
+      color: #555;
     }
   }
 }
 
 .label_commit {
-  @include round-borders-all(4px);
-  padding:2px 4px;
-  border:none;
-  font-size:13px;
+  @include border-radius(4px);
+  padding: 2px 4px;
+  font-size: 13px;
   background: #474D57;
-  color:#fff;
-  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+  color: #fff;
+  font-family: $monospace;
+}
+
+
+.commits-compare-switch{
+  background: url("switch_icon.png") no-repeat center center;
+  width: 16px;
+  height: 18px;
+  text-indent: -9999px;
+  float: left;
+  margin-right: 9px;
+  border: 1px solid #DDD;
+  @include border-radius(4px);
+  padding: 4px;
+  background-color: #EEE;
 }

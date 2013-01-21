@@ -1,32 +1,34 @@
-.main_box
-  .top_box_content
-    %h4
-      - if @merge_request.closed
-        .alert-message.error.status_info Closed
-      - else
-        .alert-message.success.status_info Open
+.ui-box.ui-box-show
+  .ui-box-head
+    %h4.box-title
+      - if @merge_request.merged
+        .error.status_info
+          %i.icon-ok
+          Merged
+      - elsif @merge_request.closed
+        .error.status_info Closed
       = gfm escape_once(@merge_request.title)
 
-  .middle_box_content
+  .ui-box-body
     %div
-      %cite.cgray Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by
-      = image_tag gravatar_icon(@merge_request.author_email), width: 16, class: "lil_av"
-      %strong.author= link_to_merge_request_author(@merge_request)
-
-      - if @merge_request.assignee
-        %cite.cgray and currently assigned to
-        = image_tag gravatar_icon(@merge_request.assignee_email), width: 16, class: "lil_av"
-        %strong.author= link_to_merge_request_assignee(@merge_request)
+      %cite.cgray
+        Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by #{link_to_member(@project, @merge_request.author)}
+        - if @merge_request.assignee
+          \, currently assigned to #{link_to_member(@project, @merge_request.assignee)}
+      - if @merge_request.milestone
+        - milestone = @merge_request.milestone
+        %cite.cgray and attached to milestone
+        %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
 
   - if @merge_request.closed
-    .bottom_box_content
+    .ui-box-bottom
       - if @merge_request.merged?
         %span
-          Merged by #{@merge_request.merge_event.author_name}
+          Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
           %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
       - elsif @merge_request.closed_event
         %span
-          Closed by #{@merge_request.closed_event.author_name}
+          Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
           %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
 

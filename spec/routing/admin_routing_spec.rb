@@ -78,14 +78,6 @@ describe Admin::ProjectsController, "routing" do
     get("/admin/projects").should route_to('admin/projects#index')
   end
 
-  it "to #create" do
-    post("/admin/projects").should route_to('admin/projects#create')
-  end
-
-  it "to #new" do
-    get("/admin/projects/new").should route_to('admin/projects#new')
-  end
-
   it "to #edit" do
     get("/admin/projects/gitlab/edit").should route_to('admin/projects#edit', id: 'gitlab')
   end

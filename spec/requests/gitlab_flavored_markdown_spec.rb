@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe "Gitlab Flavored Markdown" do
-  let(:project) { Factory :project }
-  let(:issue) { Factory :issue, project: project }
-  let(:merge_request) { Factory :merge_request, project: project }
+  let(:project) { create(:project) }
+  let(:issue) { create(:issue, project: project) }
+  let(:merge_request) { create(:merge_request, project: project) }
   let(:fred) do
-      u = Factory :user, name: "fred"
-      project.users << u
+      u = create(:user, name: "fred")
+      project.team << [u, :master]
       u
   end
 
@@ -19,7 +19,7 @@ describe "Gitlab Flavored Markdown" do
     @test_file = "gfm_test_file"
     i.add(@test_file, "foo\nbar\n")
     # add commit with gfm
-    i.commit("fix ##{issue.id}\n\nask @#{fred.name} for details", head: @branch_name)
+    i.commit("fix ##{issue.id}\n\nask @#{fred.username} for details", head: @branch_name)
 
     # add test tag
     @tag_name = "gfm-test-tag"
@@ -33,11 +33,11 @@ describe "Gitlab Flavored Markdown" do
     project.repo.gc_auto
   end
 
-  let(:commit) { project.commits(@branch_name).first }
+  let(:commit) { project.repository.commits(@branch_name).first }
 
   before do
     login_as :user
-    project.add_access(@user, :read, :write)
+    project.team << [@user, :developer]
   end
 
   describe "for commits" do
@@ -56,7 +56,7 @@ describe "Gitlab Flavored Markdown" do
     it "should render description in commits#show" do
       visit project_commit_path(project, commit)
 
-      page.should have_link("@#{fred.name}")
+      page.should have_link("@#{fred.username}")
     end
 
     it "should render title in refs#tree", js: true do
@@ -67,22 +67,17 @@ describe "Gitlab Flavored Markdown" do
       end
     end
 
-    it "should render title in refs#blame" do
-      visit project_blame_path(project, File.join(@branch_name, @test_file))
+    # @wip
+    #it "should render title in refs#blame" do
+      #visit project_blame_path(project, File.join(@branch_name, @test_file))
 
-      within(".blame_commit") do
-        page.should have_link("##{issue.id}")
-      end
-    end
+      #within(".blame_commit") do
+        #page.should have_link("##{issue.id}")
+      #end
+    #end
 
     it "should render title in repositories#branches" do
       visit branches_project_repository_path(project)
-
-      page.should have_link("##{issue.id}")
-    end
-
-    it "should render title in repositories#tags" do
-      visit tags_project_repository_path(project)
 
       page.should have_link("##{issue.id}")
     end
@@ -90,16 +85,16 @@ describe "Gitlab Flavored Markdown" do
 
   describe "for issues" do
     before do
-      @other_issue = Factory :issue,
+      @other_issue = create(:issue,
+                            author: @user,
+                            assignee: @user,
+                            project: project)
+      @issue = create(:issue,
                       author: @user,
                       assignee: @user,
-                      project: project
-      @issue = Factory :issue,
-                author: @user,
-                assignee: @user,
-                project: project,
-                title: "fix ##{@other_issue.id}",
-                description: "ask @#{fred.name} for details"
+                      project: project,
+                      title: "fix ##{@other_issue.id}",
+                      description: "ask @#{fred.username} for details")
     end
 
     it "should render subject in issues#index" do
@@ -117,16 +112,16 @@ describe "Gitlab Flavored Markdown" do
     it "should render details in issues#show" do
       visit project_issue_path(project, @issue)
 
-      page.should have_link("@#{fred.name}")
+      page.should have_link("@#{fred.username}")
     end
   end
 
 
   describe "for merge requests" do
     before do
-      @merge_request = Factory :merge_request,
-                        project: project,
-                        title: "fix ##{issue.id}"
+      @merge_request = create(:merge_request,
+                              project: project,
+                              title: "fix ##{issue.id}")
     end
 
     it "should render title in merge_requests#index" do
@@ -145,10 +140,10 @@ describe "Gitlab Flavored Markdown" do
 
   describe "for milestones" do
     before do
-      @milestone = Factory :milestone,
-                    project: project,
-                    title: "fix ##{issue.id}",
-                    description: "ask @#{fred.name} for details"
+      @milestone = create(:milestone,
+                          project: project,
+                          title: "fix ##{issue.id}",
+                          description: "ask @#{fred.username} for details")
     end
 
     it "should render title in milestones#index" do
@@ -166,7 +161,7 @@ describe "Gitlab Flavored Markdown" do
     it "should render description in milestones#show" do
       visit project_milestone_path(project, @milestone)
 
-      page.should have_link("@#{fred.name}")
+      page.should have_link("@#{fred.username}")
     end
   end
 
@@ -198,18 +193,6 @@ describe "Gitlab Flavored Markdown" do
 
     it "should render in projects#wall", js: true do
       visit wall_project_path(project)
-      fill_in "note_note", with: "see ##{issue.id}"
-      click_button "Add Comment"
-
-      page.should have_link("##{issue.id}")
-    end
-
-    it "should render in wikis#index", js: true do
-      visit project_wiki_path(project, :index)
-      fill_in "Title", with: 'Test title'
-      fill_in "Content", with: '[link test](test)'
-      click_on "Save"
-
       fill_in "note_note", with: "see ##{issue.id}"
       click_button "Add Comment"
 

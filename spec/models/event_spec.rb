@@ -2,14 +2,14 @@
 #
 # Table name: events
 #
-#  id          :integer         not null, primary key
+#  id          :integer          not null, primary key
 #  target_type :string(255)
 #  target_id   :integer
 #  title       :string(255)
 #  data        :text
 #  project_id  :integer
-#  created_at  :datetime        not null
-#  updated_at  :datetime        not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #  action      :integer
 #  author_id   :integer
 #
@@ -32,7 +32,7 @@ describe Event do
 
   describe "Push event" do
     before do
-      project = Factory :project
+      project = create(:project)
       @user = project.owner
 
       data = {
@@ -59,7 +59,7 @@ describe Event do
     end
 
     it { @event.push?.should be_true }
-    it { @event.allowed?.should be_true }
+    it { @event.proper?.should be_true }
     it { @event.new_branch?.should be_true }
     it { @event.tag?.should be_false }
     it { @event.branch_name.should == "master" }

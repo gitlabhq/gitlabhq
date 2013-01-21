@@ -1,37 +1,36 @@
-class Group < ActiveRecord::Base
-  attr_accessible :code, :name, :owner_id
+# == Schema Information
+#
+# Table name: namespaces
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)      not null
+#  path       :string(255)      not null
+#  owner_id   :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  type       :string(255)
+#
 
-  has_many :projects
-  belongs_to :owner, class_name: "User"
-
-  validates :name, presence: true, uniqueness: true
-  validates :code, presence: true, uniqueness: true
-  validates :owner, presence: true
-
-  delegate :name, to: :owner, allow_nil: true, prefix: true
-
-  def self.search query
-    where("name LIKE :query OR code LIKE :query", query: "%#{query}%")
-  end
-
-  def to_param
-    code
+class Group < Namespace
+  def add_users_to_project_teams(user_ids, project_access)
+    UsersProject.add_users_into_projects(
+      projects.map(&:id),
+      user_ids,
+      project_access
+    )
   end
 
   def users
-    User.joins(:users_projects).where(users_projects: {project_id: project_ids}).uniq
+    users = User.joins(:users_projects).where(users_projects: {project_id: project_ids})
+    users = users << owner
+    users.uniq
+  end
+
+  def human_name
+    name
+  end
+
+  def truncate_teams
+    UsersProject.truncate_teams(project_ids)
   end
 end
-
-# == Schema Information
-#
-# Table name: groups
-#
-#  id         :integer         not null, primary key
-#  name       :string(255)     not null
-#  code       :string(255)     not null
-#  owner_id   :integer         not null
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#
-

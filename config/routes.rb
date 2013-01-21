@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Gitlab::Application.routes.draw do
   #
   # Search
@@ -8,29 +10,40 @@ Gitlab::Application.routes.draw do
   require 'api'
   mount Gitlab::API => '/api'
 
-  # Optionally, enable Resque here
-  require 'resque/server'
-  mount Resque::Server => '/info/resque', as: 'resque'
+  constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
+  constraints constraint do
+    mount Sidekiq::Web, at: "/admin/sidekiq", as: :sidekiq
+  end
 
   # Enable Grack support
   mount Grack::Bundle.new({
-    git_path:     Gitlab.config.git_bin_path,
-    project_root: Gitlab.config.git_base_path,
-    upload_pack:  Gitlab.config.git_upload_pack,
-    receive_pack: Gitlab.config.git_receive_pack
-  }), at: '/:path', constraints: { path: /[\w-]+\.git/ }
+    git_path:     Gitlab.config.git.bin_path,
+    project_root: Gitlab.config.gitolite.repos_path,
+    upload_pack:  Gitlab.config.gitolite.upload_pack,
+    receive_pack: Gitlab.config.gitolite.receive_pack
+  }), at: '/', constraints: lambda { |request| /[-\/\w\.-]+\.git\//.match(request.path_info) }
 
   #
   # Help
   #
-  get 'help'              => 'help#index'
-  get 'help/permissions'  => 'help#permissions'
-  get 'help/workflow'     => 'help#workflow'
-  get 'help/api'          => 'help#api'
-  get 'help/web_hooks'    => 'help#web_hooks'
-  get 'help/system_hooks' => 'help#system_hooks'
-  get 'help/markdown'     => 'help#markdown'
-  get 'help/ssh'          => 'help#ssh'
+  get 'help'                => 'help#index'
+  get 'help/api'            => 'help#api'
+  get 'help/markdown'       => 'help#markdown'
+  get 'help/permissions'    => 'help#permissions'
+  get 'help/public_access'  => 'help#public_access'
+  get 'help/raketasks'      => 'help#raketasks'
+  get 'help/ssh'            => 'help#ssh'
+  get 'help/system_hooks'   => 'help#system_hooks'
+  get 'help/web_hooks'      => 'help#web_hooks'
+  get 'help/workflow'       => 'help#workflow'
+
+  #
+  # Public namespace
+  #
+  namespace :public do
+    resources :projects, only: [:index]
+    root to: "projects#index"
+  end
 
   #
   # Admin Area
@@ -46,10 +59,11 @@ Gitlab::Application.routes.draw do
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
         put :project_update
+        put :project_teams_update
         delete :remove_project
       end
     end
-    resources :projects, constraints: { id: /[^\/]+/ } do
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create] do
       member do
         get :team
         put :team_update
@@ -69,14 +83,18 @@ Gitlab::Application.routes.draw do
   #
   # Profile Area
   #
-  get "profile/account"             => "profile#account"
-  get "profile/history"             => "profile#history"
-  put "profile/password"            => "profile#password_update"
-  get "profile/token"               => "profile#token"
-  put "profile/reset_private_token" => "profile#reset_private_token"
-  get "profile"                     => "profile#show"
-  get "profile/design"              => "profile#design"
-  put "profile/update"              => "profile#update"
+  resource :profile, only: [:show, :update] do
+    member do
+      get :account
+      get :history
+      get :token
+      get :design
+
+      put :update_password
+      put :reset_private_token
+      put :update_username
+    end
+  end
 
   resources :keys
 
@@ -97,22 +115,32 @@ Gitlab::Application.routes.draw do
       get :merge_requests
       get :search
       get :people
+      post :team_members
     end
   end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations }
 
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /[^\/]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
       get "graph"
       get "files"
     end
+
+    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
+    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+    resources :commits, only: [:show], constraints: {id: /.+/}
+    resources :compare, only: [:index, :create]
+    resources :blame,   only: [:show], constraints: {id: /.+/}
+    resources :blob,    only: [:show], constraints: {id: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare",
+                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
@@ -128,14 +156,21 @@ Gitlab::Application.routes.draw do
       member do
         get "branches"
         get "tags"
+        get "stats"
         get "archive"
+      end
+    end
+
+    resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+      member do
+        get :test
       end
     end
 
     resources :deploy_keys
     resources :protected_branches, only: [:index, :create, :destroy]
 
-    resources :refs, only: [], path: "/" do
+    resources :refs, only: [] do
       collection do
         get "switch"
       end
@@ -152,12 +187,12 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :merge_requests do
+    resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
       member do
         get :diffs
         get :automerge
         get :automerge_check
-        get :raw
+        get :ci_status
       end
 
       collection do
@@ -178,19 +213,11 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-    resources :commits, only: [:show], constraints: {id: /.+/}
-    resources :compare, only: [:index, :create]
-    resources :blame,   only: [:show], constraints: {id: /.+/}
-    resources :blob,    only: [:show], constraints: {id: /.+/}
-    resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
-    match "/compare/:from...:to" => "compare#show", as: "compare",
-                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :team, controller: 'team_members', only: [:index]
-    resources :milestones
+    resources :milestones, except: [:destroy]
     resources :labels, only: [:index]
-    resources :issues do
+    resources :issues, except: [:destroy] do
       collection do
         post  :sort
         post  :bulk_update

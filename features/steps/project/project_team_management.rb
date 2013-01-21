@@ -74,28 +74,28 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   And 'gitlab user "Mike"' do
-    Factory :user, :name => "Mike"
+    create(:user, :name => "Mike")
   end
 
   And 'gitlab user "Sam"' do
-    Factory :user, :name => "Sam"
+    create(:user, :name => "Sam")
   end
 
   And '"Sam" is "Shop" developer' do
     user = User.find_by_name("Sam")
     project = Project.find_by_name("Shop")
-    project.add_access(user, :write)
+    project.team << [user, :developer]
   end
 
   Given 'I own project "Website"' do
-    @project = Factory :project, :name => "Website"
-    @project.add_access(@user, :admin)
+    @project = create(:project, :name => "Website")
+    @project.team << [@user, :master]
   end
 
   And '"Mike" is "Website" reporter' do
     user = User.find_by_name("Mike")
     project = Project.find_by_name("Website")
-    project.add_access(user, :read)
+    project.team << [user, :reporter]
   end
 
   And 'I click link "Import team from another project"' do

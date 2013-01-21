@@ -11,7 +11,12 @@ module Gitlab
     def self.read_latest
       path = Rails.root.join("log", file_name)
       self.build unless File.exist?(path)
-      logs = File.read(path).split("\n")
+      logs = `tail -n 2000 #{path}`.split("\n")
+    end
+
+    def self.read_latest_for filename
+      path = Rails.root.join("log", filename)
+      logs = `tail -n 2000 #{path}`.split("\n")
     end
 
     def self.build

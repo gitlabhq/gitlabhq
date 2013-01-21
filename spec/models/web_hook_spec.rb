@@ -2,12 +2,13 @@
 #
 # Table name: web_hooks
 #
-#  id         :integer         not null, primary key
+#  id         :integer          not null, primary key
 #  url        :string(255)
 #  project_id :integer
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#  type       :string(255)     default("ProjectHook")
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  type       :string(255)      default("ProjectHook")
+#  service_id :integer
 #
 
 require 'spec_helper'
@@ -39,8 +40,8 @@ describe ProjectHook do
 
   describe "execute" do
     before(:each) do
-      @project_hook = Factory :project_hook
-      @project = Factory :project
+      @project_hook = create(:project_hook)
+      @project = create(:project)
       @project.hooks << [@project_hook]
       @data = { before: 'oldrev', after: 'newrev', ref: 'ref'}
 

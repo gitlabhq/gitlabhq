@@ -2,13 +2,3 @@
   - if @issue.valid?
     :plain
       $("##{dom_id(@issue)}").fadeOut();
-- else
-  - if @issue.valid?
-    :plain
-      updatePage();
-      switchFromEditIssue();
-  - else
-    :plain
-      $("#edit_issue_dialog").empty();
-      $("#edit_issue_dialog").append("#{escape_javascript(render('form'))}");
-      $('select#issue_assignee_id').chosen();

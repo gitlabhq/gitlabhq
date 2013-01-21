@@ -1,0 +1,46 @@
+%h3.page_title
+  GitLab CI
+  %small Continuous integration server from GitLab
+  .right
+    - if @service.active
+      %small.cgreen Enabled
+    - else
+      %small.cgray Disabled
+
+
+
+.back_link
+  = link_to project_services_path(@project) do
+    &larr; to services
+
+%hr
+= form_for(@service, :as => :service, :url => project_service_path(@project, :gitlab_ci), :method => :put) do |f|
+  - if @service.errors.any?
+    .alert-message.block-message.error
+      %ul
+        - @service.errors.full_messages.each do |msg|
+          %li= msg
+
+
+  .control-group
+    = f.label :active, "Active", class: "control-label"
+    .controls
+      = f.check_box :active
+
+  .control-group
+    = f.label :project_url, "Project URL", class: "control-label"
+    .controls
+      = f.text_field :project_url, class: "input-xlarge", placeholder: "http://ci.gitlabhq.com/projects/3"
+
+  .control-group
+    = f.label :token, class: "control-label" do
+      CI Project token
+    .controls
+      = f.text_field :token, class: "input-xlarge", placeholder: "GitLab CI project specific token"
+
+
+  .form-actions
+    = f.submit 'Save', class: 'btn save-btn'
+    &nbsp;
+    - if @service.valid? && @service.active
+      = link_to 'Test settings', test_project_service_path(@project), class: 'btn btn-small'

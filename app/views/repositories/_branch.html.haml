@@ -3,19 +3,25 @@
 %tr
   %td
     = link_to project_commits_path(@project, branch.name) do
+      - if @project.protected_branch? branch.name
+        %i.icon-lock
+      - else
+        %i.icon-unlock
       %strong= truncate(branch.name, length: 60)
-      - if branch.name == @project.root_ref
+      - if branch.name == @repository.root_ref
         %span.label default
   %td
-    = link_to project_commit_path(@project, commit) do
-      %code= commit.short_id
-
-    = image_tag gravatar_icon(commit.author_email), class: "", width: 16
-    = gfm escape_once(truncate(commit.title, length: 40))
-    %span.update-author.right
+    = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
+      = commit.short_id
+    = image_tag gravatar_icon(commit.author_email), class: "avatar s16"
+    %span.light
+      = gfm escape_once(truncate(commit.title, length: 40))
+    %span
       = time_ago_in_words(commit.committed_date)
       ago
   %td
     - if can? current_user, :download_code, @project
-      = link_to "Download", archive_project_repository_path(@project, ref: branch.name), class: "visible_link download_repo_link"
+      = link_to archive_project_repository_path(@project, ref: branch.name) do
+        %i.icon-download-alt
+        Download
 

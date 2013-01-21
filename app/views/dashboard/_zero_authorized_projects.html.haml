@@ -1,0 +1,12 @@
+%h3.nothing_here_message
+  There are no projects you have access to.
+  %br
+  - if current_user.can_create_project?
+    You can create up to
+    = current_user.projects_limit
+    projects. Click on button below to add a new one
+    .link_holder
+      = link_to new_project_path, class: "btn primary" do
+        New Project »
+  - else
+    If you will be added to project - it will be displayed here

@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>PushEvent</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            PushEvent 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/push_event_rb.html">app/roles/push_event.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-branch-3F">branch?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-branch_name">branch_name</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-commit_from">commit_from</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commit_to">commit_to</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commits">commits</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commits_count">commits_count</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>L</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-last_commit">last_commit</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-last_push_to_non_root-3F">last_push_to_non_root?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>M</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-md_ref-3F">md_ref?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new_branch-3F">new_branch?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-new_ref-3F">new_ref?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-parent_commit">parent_commit</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-push_action_name">push_action_name</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-push_with_commits-3F">push_with_commits?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-ref_name">ref_name</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-ref_type">ref_type</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-rm_ref-3F">rm_ref?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>T</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-tag-3F">tag?</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-tag_name">tag_name</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>V</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-valid_push-3F">valid_push?</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-branch-3F">
+            
+              <b>branch?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-branch-3F" name="method-i-branch-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-branch-3F_source')" id="l_method-i-branch-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-branch-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">branch?</span>
+  <span class="ruby-identifier">data</span>[<span class="ruby-value">:ref</span>][<span class="ruby-string">&quot;refs/heads&quot;</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-branch_name">
+            
+              <b>branch_name</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-branch_name" name="method-i-branch_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-branch_name_source')" id="l_method-i-branch_name_source">show</a>
+                
+              </p>
+              <div id="method-i-branch_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 48</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">branch_name</span>
+  <span class="ruby-ivar">@branch_name</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:ref</span>].<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;refs/heads/&quot;</span>, <span class="ruby-string">&quot;&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_from">
+            
+              <b>commit_from</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-commit_from" name="method-i-commit_from" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_from_source')" id="l_method-i-commit_from_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_from_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_from</span>
+  <span class="ruby-identifier">data</span>[<span class="ruby-value">:before</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_to">
+            
+              <b>commit_to</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-commit_to" name="method-i-commit_to" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_to_source')" id="l_method-i-commit_to_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_to_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_to</span>
+  <span class="ruby-identifier">data</span>[<span class="ruby-value">:after</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commits">
+            
+              <b>commits</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-commits" name="method-i-commits" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Max 20 commits from push DESC</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commits_source')" id="l_method-i-commits_source">show</a>
+                
+              </p>
+              <div id="method-i-commits_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 57</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits</span>
+  <span class="ruby-ivar">@commits</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:commits</span>].<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">commit</span><span class="ruby-operator">|</span> <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">commit</span>[<span class="ruby-value">:id</span>]) }.<span class="ruby-identifier">reverse</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commits_count">
+            
+              <b>commits_count</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-commits_count" name="method-i-commits_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commits_count_source')" id="l_method-i-commits_count_source">show</a>
+                
+              </p>
+              <div id="method-i-commits_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits_count</span> 
+  <span class="ruby-identifier">data</span>[<span class="ruby-value">:total_commits_count</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">||</span> <span class="ruby-number">0</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-last_commit">
+            
+              <b>last_commit</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-last_commit" name="method-i-last_commit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-last_commit_source')" id="l_method-i-last_commit_source">show</a>
+                
+              </p>
+              <div id="method-i-last_commit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 85</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">last_commit</span>
+  <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">commit_to</span>)
+<span class="ruby-keyword">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-keyword">nil</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-last_push_to_non_root-3F">
+            
+              <b>last_push_to_non_root?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-last_push_to_non_root-3F" name="method-i-last_push_to_non_root-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-last_push_to_non_root-3F_source')" id="l_method-i-last_push_to_non_root-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-last_push_to_non_root-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 97</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">last_push_to_non_root?</span>
+  <span class="ruby-identifier">branch?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">project</span>.<span class="ruby-identifier">default_branch</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">branch_name</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-md_ref-3F">
+            
+              <b>md_ref?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-md_ref-3F" name="method-i-md_ref-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-md_ref-3F_source')" id="l_method-i-md_ref-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-md_ref-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 28</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">md_ref?</span>
+  <span class="ruby-operator">!</span>(<span class="ruby-identifier">rm_ref?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">new_ref?</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_branch-3F">
+            
+              <b>new_branch?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-new_branch-3F" name="method-i-new_branch-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_branch-3F_source')" id="l_method-i-new_branch-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-new_branch-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_branch?</span>
+  <span class="ruby-identifier">commit_from</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r^00000/</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_ref-3F">
+            
+              <b>new_ref?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-new_ref-3F" name="method-i-new_ref-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_ref-3F_source')" id="l_method-i-new_ref-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-new_ref-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_ref?</span>
+  <span class="ruby-identifier">commit_from</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r^00000/</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-parent_commit">
+            
+              <b>parent_commit</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-parent_commit" name="method-i-parent_commit" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-parent_commit_source')" id="l_method-i-parent_commit_source">show</a>
+                
+              </p>
+              <div id="method-i-parent_commit_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 79</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">parent_commit</span>
+  <span class="ruby-identifier">project</span>.<span class="ruby-identifier">commit</span>(<span class="ruby-identifier">commit_from</span>)
+<span class="ruby-keyword">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-keyword">nil</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-push_action_name">
+            
+              <b>push_action_name</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-push_action_name" name="method-i-push_action_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-push_action_name_source')" id="l_method-i-push_action_name_source">show</a>
+                
+              </p>
+              <div id="method-i-push_action_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 69</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">push_action_name</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">new_ref?</span>
+    <span class="ruby-string">&quot;pushed new&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">rm_ref?</span>
+    <span class="ruby-string">&quot;deleted&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-string">&quot;pushed to&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-push_with_commits-3F">
+            
+              <b>push_with_commits?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-push_with_commits-3F" name="method-i-push_with_commits-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-push_with_commits-3F_source')" id="l_method-i-push_with_commits-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-push_with_commits-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 91</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">push_with_commits?</span> 
+  <span class="ruby-identifier">md_ref?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">any?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">parent_commit</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">last_commit</span>
+<span class="ruby-keyword">rescue</span> <span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">NoSuchPathError</span>
+  <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-ref_name">
+            
+              <b>ref_name</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-ref_name" name="method-i-ref_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ref_name_source')" id="l_method-i-ref_name_source">show</a>
+                
+              </p>
+              <div id="method-i-ref_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 40</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">ref_name</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">tag?</span>
+    <span class="ruby-identifier">tag_name</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">branch_name</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-ref_type">
+            
+              <b>ref_type</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-ref_type" name="method-i-ref_type" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-ref_type_source')" id="l_method-i-ref_type_source">show</a>
+                
+              </p>
+              <div id="method-i-ref_type_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 65</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">ref_type</span>
+  <span class="ruby-identifier">tag?</span> <span class="ruby-operator">?</span> <span class="ruby-string">&quot;tag&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-string">&quot;branch&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-rm_ref-3F">
+            
+              <b>rm_ref?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-rm_ref-3F" name="method-i-rm_ref-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-rm_ref-3F_source')" id="l_method-i-rm_ref-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-rm_ref-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 24</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">rm_ref?</span>
+  <span class="ruby-identifier">commit_to</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">%r^00000/</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tag-3F">
+            
+              <b>tag?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-tag-3F" name="method-i-tag-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tag-3F_source')" id="l_method-i-tag-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-tag-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 8</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tag?</span>
+  <span class="ruby-identifier">data</span>[<span class="ruby-value">:ref</span>][<span class="ruby-string">&quot;refs/tags&quot;</span>]
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-tag_name">
+            
+              <b>tag_name</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-tag_name" name="method-i-tag_name" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-tag_name_source')" id="l_method-i-tag_name_source">show</a>
+                
+              </p>
+              <div id="method-i-tag_name_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">tag_name</span>
+  <span class="ruby-ivar">@tag_name</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">data</span>[<span class="ruby-value">:ref</span>].<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;refs/tags/&quot;</span>, <span class="ruby-string">&quot;&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-valid_push-3F">
+            
+              <b>valid_push?</b>()
+            
+            <a href="../classes/PushEvent.html#method-i-valid_push-3F" name="method-i-valid_push-3F" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-valid_push-3F_source')" id="l_method-i-valid_push-3F_source">show</a>
+                
+              </p>
+              <div id="method-i-valid_push-3F_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/push_event.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">valid_push?</span>
+  <span class="ruby-identifier">data</span>[<span class="ruby-value">:ref</span>]
+<span class="ruby-keyword">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">ex</span>
+  <span class="ruby-keyword">false</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

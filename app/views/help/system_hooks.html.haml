@@ -5,9 +5,10 @@
 %hr
 
 %p.slead
-  Your GitLab instance can perform HTTP POST request on next event: create_project, delete_project, create_user, delete_user, change_team_member.
+  Your GitLab instance can perform HTTP POST requests on the following events: create_project, delete_project, create_user, delete_user, change_team_member.
   %br
-  System Hooks can be used for logging or change information in LDAP server.
+  %br
+  System Hooks can be used, e.g. for logging or changing information in a LDAP server.
   %br
 %h5 Hooks request example:
 = render "admin/hooks/data_ex"

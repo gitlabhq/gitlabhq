@@ -1,57 +1,31 @@
-body {  color: #666; text-align: center; font-family: arial, sans-serif; margin:0; padding:0; }
-h1 { font-size: 48px; color: #444; line-height: 1.5em; }
+body {
+  color: #666;
+  text-align: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  sans-serif;
+  margin:0;
+  width: 800px;
+  margin: auto;
+  font-size: 14px;
+}
+h1 {
+  font-size: 56px;
+  line-height: 100px;
+  font-weight: normal;
+  color: #456;
+}
 h2 { font-size: 24px; color: #666; line-height: 1.5em; }
 
-.alert-message {
-  position: relative;
-  padding: 7px 15px;
-  margin-bottom: 18px;
-  color: #404040;
-  background-color: #eedc94;
-  background-repeat: repeat-x;
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
-  background-image: -moz-linear-gradient(top, #fceec1, #eedc94);
-  background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
-  background-image: -webkit-linear-gradient(top, #fceec1, #eedc94);
-  background-image: -o-linear-gradient(top, #fceec1, #eedc94);
-  background-image: linear-gradient(top, #fceec1, #eedc94);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFCEEC1', endColorstr='#FFEEDC94', GradientType=0);
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  border-color: #eedc94 #eedc94 #e4c652;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) fadein(rgba(0, 0, 0, 0.1), 15%);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  border-width: 1px;
-  border-style: solid;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-.alert-message .close {
-  margin-top: 1px;
-  *margin-top: 0;
-}
-.alert-message a {
-  font-weight: bold;
-  color: #404040;
-}
-.alert-message.danger p a, .alert-message.error p a, .alert-message.success p a, .alert-message.info p a {
-  color: #404040;
-}
-.alert-message h5 {
-  line-height: 18px;
-}
-.alert-message p {
-  margin-bottom: 0;
-}
-.alert-message div {
-  margin-top: 5px;
-  margin-bottom: 2px;
+h3 {
+  color: #456;
+  font-size: 20px;
+  font-weight: normal;
   line-height: 28px;
 }
 
-.alert-message.block-message.error {
-  background: #FDDFDE;
-  border-color: #FBC7C6;
+hr {
+  margin: 18px 0;
+  border: 0;
+  border-top: 1px solid #EEE;
+  border-bottom: 1px solid white;
 }
-

@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Votes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            Votes 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/roles/votes_rb.html">app/roles/votes.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-downvotes">downvotes</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-downvotes_in_percent">downvotes_in_percent</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>U</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-upvotes">upvotes</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-upvotes_in_percent">upvotes_in_percent</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>V</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-votes_count">votes_count</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-downvotes">
+            
+              <b>downvotes</b>()
+            
+            <a href="../classes/Votes.html#method-i-downvotes" name="method-i-downvotes" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Return the number of -1 comments (downvotes)</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-downvotes_source')" id="l_method-i-downvotes_source">show</a>
+                
+              </p>
+              <div id="method-i-downvotes_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/votes.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">downvotes</span>
+  <span class="ruby-identifier">notes</span>.<span class="ruby-identifier">select</span>(&amp;<span class="ruby-value">:downvote?</span>).<span class="ruby-identifier">size</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-downvotes_in_percent">
+            
+              <b>downvotes_in_percent</b>()
+            
+            <a href="../classes/Votes.html#method-i-downvotes_in_percent" name="method-i-downvotes_in_percent" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-downvotes_in_percent_source')" id="l_method-i-downvotes_in_percent_source">show</a>
+                
+              </p>
+              <div id="method-i-downvotes_in_percent_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/votes.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">downvotes_in_percent</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">votes_count</span>.<span class="ruby-identifier">zero?</span>
+    <span class="ruby-number">0</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-number">100.0</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">upvotes_in_percent</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-upvotes">
+            
+              <b>upvotes</b>()
+            
+            <a href="../classes/Votes.html#method-i-upvotes" name="method-i-upvotes" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Return the number of +1 comments (upvotes)</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-upvotes_source')" id="l_method-i-upvotes_source">show</a>
+                
+              </p>
+              <div id="method-i-upvotes_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/votes.rb, line 3</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">upvotes</span>
+  <span class="ruby-identifier">notes</span>.<span class="ruby-identifier">select</span>(&amp;<span class="ruby-value">:upvote?</span>).<span class="ruby-identifier">size</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-upvotes_in_percent">
+            
+              <b>upvotes_in_percent</b>()
+            
+            <a href="../classes/Votes.html#method-i-upvotes_in_percent" name="method-i-upvotes_in_percent" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-upvotes_in_percent_source')" id="l_method-i-upvotes_in_percent_source">show</a>
+                
+              </p>
+              <div id="method-i-upvotes_in_percent_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/votes.rb, line 7</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">upvotes_in_percent</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">votes_count</span>.<span class="ruby-identifier">zero?</span>
+    <span class="ruby-number">0</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-number">100.0</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">votes_count</span> * <span class="ruby-identifier">upvotes</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-votes_count">
+            
+              <b>votes_count</b>()
+            
+            <a href="../classes/Votes.html#method-i-votes_count" name="method-i-votes_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Return the total number of votes</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-votes_count_source')" id="l_method-i-votes_count_source">show</a>
+                
+              </p>
+              <div id="method-i-votes_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/roles/votes.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">votes_count</span>
+  <span class="ruby-identifier">upvotes</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">downvotes</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

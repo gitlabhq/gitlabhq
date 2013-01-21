@@ -45,5 +45,5 @@
     $( ".datepicker" ).datepicker({
       dateFormat: "yy-mm-dd",
       onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
-    });
+    }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));
   });

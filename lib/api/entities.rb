@@ -1,12 +1,12 @@
 module Gitlab
   module Entities
     class User < Grape::Entity
-      expose :id, :email, :name, :bio, :skype, :linkedin, :twitter,
+      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
              :dark_scheme, :theme_id, :blocked, :created_at
     end
 
     class UserBasic < Grape::Entity
-      expose :id, :email, :name, :blocked, :created_at
+      expose :id, :username, :email, :name, :blocked, :created_at
     end
 
     class UserLogin < UserBasic
@@ -14,14 +14,15 @@ module Gitlab
     end
 
     class Hook < Grape::Entity
-      expose :id, :url
+      expose :id, :url, :created_at
     end
 
     class Project < Grape::Entity
-      expose :id, :code, :name, :description, :path, :default_branch
+      expose :id, :name, :description, :default_branch
       expose :owner, using: Entities::UserBasic
       expose :private_flag, as: :private
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
+      expose :namespace
     end
 
     class ProjectMember < UserBasic
@@ -61,7 +62,24 @@ module Gitlab
     end
 
     class SSHKey < Grape::Entity
-      expose :id, :title, :key
+      expose :id, :title, :key, :created_at
+    end
+
+    class MergeRequest < Grape::Entity
+      expose :id, :target_branch, :source_branch, :project_id, :title, :closed, :merged
+      expose :author, :assignee, using: Entities::UserBasic
+    end
+
+    class Note < Grape::Entity
+      expose :id
+      expose :note, as: :body
+      expose :author, using: Entities::UserBasic
+      expose :created_at
+    end
+
+    class MRNote < Grape::Entity
+      expose :note
+      expose :author, using: Entities::UserBasic
     end
   end
 end

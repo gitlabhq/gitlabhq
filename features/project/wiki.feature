@@ -7,9 +7,3 @@ Feature: Project Wiki
   Scenario: Add new page
     Given I create Wiki page
     Then I should see newly created wiki page
-
-  @javascript
-  Scenario: I comment wiki page
-    Given I create Wiki page
-    And I leave a comment like "XML attached"
-    Then I should see comment "XML attached"

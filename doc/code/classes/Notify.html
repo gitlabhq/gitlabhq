@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Notify</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Notify 
+            
+                <span class="parent">&lt; 
+                    
+                    ActionMailer::Base
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/mailers/notify_rb.html">app/mailers/notify.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-issue_status_changed_email">issue_status_changed_email</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-new_issue_email">new_issue_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-new_merge_request_email">new_merge_request_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-new_user_email">new_user_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_commit_email">note_commit_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_issue_email">note_issue_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_merge_request_email">note_merge_request_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-note_wall_email">note_wall_email</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>P</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-project_access_granted_email">project_access_granted_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-project_was_moved_email">project_was_moved_email</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>R</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-reassigned_issue_email">reassigned_issue_email</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-reassigned_merge_request_email">reassigned_merge_request_email</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+    <!-- Includes -->
+    <div class="sectiontitle">Included Modules</div>
+    <ul>
+      
+        <li>
+          
+            Resque::Mailer
+          
+        </li>
+      
+    </ul>
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-issue_status_changed_email">
+            
+              <b>issue_status_changed_email</b>(recipient_id, issue_id, status, updated_by_user_id)
+            
+            <a href="../classes/Notify.html#method-i-issue_status_changed_email" name="method-i-issue_status_changed_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-issue_status_changed_email_source')" id="l_method-i-issue_status_changed_email_source">show</a>
+                
+              </p>
+              <div id="method-i-issue_status_changed_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">issue_status_changed_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">issue_id</span>, <span class="ruby-identifier">status</span>, <span class="ruby-identifier">updated_by_user_id</span>)
+  <span class="ruby-ivar">@issue</span> = <span class="ruby-constant">Issue</span>.<span class="ruby-identifier">find</span> <span class="ruby-identifier">issue_id</span>
+  <span class="ruby-ivar">@issue_status</span> = <span class="ruby-identifier">status</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-ivar">@updated_by</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">find</span> <span class="ruby-identifier">updated_by_user_id</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>),
+      <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;changed issue ##{@issue.id}&quot;</span>, <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">title</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_issue_email">
+            
+              <b>new_issue_email</b>(issue_id)
+            
+            <a href="../classes/Notify.html#method-i-new_issue_email" name="method-i-new_issue_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p><a href="Issue.html">Issue</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_issue_email_source')" id="l_method-i-new_issue_email_source">show</a>
+                
+              </p>
+              <div id="method-i-new_issue_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 19</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_issue_email</span>(<span class="ruby-identifier">issue_id</span>)
+  <span class="ruby-ivar">@issue</span> = <span class="ruby-constant">Issue</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">issue_id</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">assignee_email</span>, <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;new issue ##{@issue.id}&quot;</span>, <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">title</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_merge_request_email">
+            
+              <b>new_merge_request_email</b>(merge_request_id)
+            
+            <a href="../classes/Notify.html#method-i-new_merge_request_email" name="method-i-new_merge_request_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p>Merge Request</p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_merge_request_email_source')" id="l_method-i-new_merge_request_email_source">show</a>
+                
+              </p>
+              <div id="method-i-new_merge_request_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 47</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_merge_request_email</span>(<span class="ruby-identifier">merge_request_id</span>)
+  <span class="ruby-ivar">@merge_request</span> = <span class="ruby-constant">MergeRequest</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">merge_request_id</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">assignee_email</span>, <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;new merge request !#{@merge_request.id}&quot;</span>, <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">title</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-new_user_email">
+            
+              <b>new_user_email</b>(user_id, password)
+            
+            <a href="../classes/Notify.html#method-i-new_user_email" name="method-i-new_user_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p><a href="User.html">User</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-new_user_email_source')" id="l_method-i-new_user_email_source">show</a>
+                
+              </p>
+              <div id="method-i-new_user_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 118</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">new_user_email</span>(<span class="ruby-identifier">user_id</span>, <span class="ruby-identifier">password</span>)
+  <span class="ruby-ivar">@user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">user_id</span>)
+  <span class="ruby-ivar">@password</span> = <span class="ruby-identifier">password</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@user</span>.<span class="ruby-identifier">email</span>, <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-string">&quot;Account was created for you&quot;</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_commit_email">
+            
+              <b>note_commit_email</b>(recipient_id, note_id)
+            
+            <a href="../classes/Notify.html#method-i-note_commit_email" name="method-i-note_commit_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p><a href="Note.html">Note</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_commit_email_source')" id="l_method-i-note_commit_email_source">show</a>
+                
+              </p>
+              <div id="method-i-note_commit_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 66</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_commit_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@note</span> = <span class="ruby-constant">Note</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">noteable</span>
+  <span class="ruby-ivar">@commit</span> = <span class="ruby-constant">CommitDecorator</span>.<span class="ruby-identifier">decorate</span>(<span class="ruby-ivar">@commit</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>), <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;note for commit #{@commit.short_id}&quot;</span>, <span class="ruby-ivar">@commit</span>.<span class="ruby-identifier">title</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_issue_email">
+            
+              <b>note_issue_email</b>(recipient_id, note_id)
+            
+            <a href="../classes/Notify.html#method-i-note_issue_email" name="method-i-note_issue_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_issue_email_source')" id="l_method-i-note_issue_email_source">show</a>
+                
+              </p>
+              <div id="method-i-note_issue_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 74</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_issue_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@note</span> = <span class="ruby-constant">Note</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@issue</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">noteable</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>), <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;note for issue ##{@issue.id}&quot;</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_merge_request_email">
+            
+              <b>note_merge_request_email</b>(recipient_id, note_id)
+            
+            <a href="../classes/Notify.html#method-i-note_merge_request_email" name="method-i-note_merge_request_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_merge_request_email_source')" id="l_method-i-note_merge_request_email_source">show</a>
+                
+              </p>
+              <div id="method-i-note_merge_request_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 81</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_merge_request_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@note</span> = <span class="ruby-constant">Note</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@merge_request</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">noteable</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>), <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;note for merge request !#{@merge_request.id}&quot;</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-note_wall_email">
+            
+              <b>note_wall_email</b>(recipient_id, note_id)
+            
+            <a href="../classes/Notify.html#method-i-note_wall_email" name="method-i-note_wall_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-note_wall_email_source')" id="l_method-i-note_wall_email_source">show</a>
+                
+              </p>
+              <div id="method-i-note_wall_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 88</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">note_wall_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@note</span> = <span class="ruby-constant">Note</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">note_id</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@note</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>), <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project_access_granted_email">
+            
+              <b>project_access_granted_email</b>(user_project_id)
+            
+            <a href="../classes/Notify.html#method-i-project_access_granted_email" name="method-i-project_access_granted_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              <p><a href="Project.html">Project</a></p>
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_access_granted_email_source')" id="l_method-i-project_access_granted_email_source">show</a>
+                
+              </p>
+              <div id="method-i-project_access_granted_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_access_granted_email</span>(<span class="ruby-identifier">user_project_id</span>)
+  <span class="ruby-ivar">@users_project</span> = <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">find</span> <span class="ruby-identifier">user_project_id</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@users_project</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@users_project</span>.<span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>,
+       <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-string">&quot;access to project was granted&quot;</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-project_was_moved_email">
+            
+              <b>project_was_moved_email</b>(user_project_id)
+            
+            <a href="../classes/Notify.html#method-i-project_was_moved_email" name="method-i-project_was_moved_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-project_was_moved_email_source')" id="l_method-i-project_was_moved_email_source">show</a>
+                
+              </p>
+              <div id="method-i-project_was_moved_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 107</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">project_was_moved_email</span>(<span class="ruby-identifier">user_project_id</span>)
+  <span class="ruby-ivar">@users_project</span> = <span class="ruby-constant">UsersProject</span>.<span class="ruby-identifier">find</span> <span class="ruby-identifier">user_project_id</span>
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@users_project</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-ivar">@users_project</span>.<span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>,
+       <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-string">&quot;project was moved&quot;</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-reassigned_issue_email">
+            
+              <b>reassigned_issue_email</b>(recipient_id, issue_id, previous_assignee_id)
+            
+            <a href="../classes/Notify.html#method-i-reassigned_issue_email" name="method-i-reassigned_issue_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-reassigned_issue_email_source')" id="l_method-i-reassigned_issue_email_source">show</a>
+                
+              </p>
+              <div id="method-i-reassigned_issue_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">reassigned_issue_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">issue_id</span>, <span class="ruby-identifier">previous_assignee_id</span>)
+  <span class="ruby-ivar">@issue</span> = <span class="ruby-constant">Issue</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">issue_id</span>)
+  <span class="ruby-ivar">@previous_assignee</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">previous_assignee_id</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>), <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;changed issue ##{@issue.id}&quot;</span>, <span class="ruby-ivar">@issue</span>.<span class="ruby-identifier">title</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-reassigned_merge_request_email">
+            
+              <b>reassigned_merge_request_email</b>(recipient_id, merge_request_id, previous_assignee_id)
+            
+            <a href="../classes/Notify.html#method-i-reassigned_merge_request_email" name="method-i-reassigned_merge_request_email" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-reassigned_merge_request_email_source')" id="l_method-i-reassigned_merge_request_email_source">show</a>
+                
+              </p>
+              <div id="method-i-reassigned_merge_request_email_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/mailers/notify.rb, line 53</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">reassigned_merge_request_email</span>(<span class="ruby-identifier">recipient_id</span>, <span class="ruby-identifier">merge_request_id</span>, <span class="ruby-identifier">previous_assignee_id</span>)
+  <span class="ruby-ivar">@merge_request</span> = <span class="ruby-constant">MergeRequest</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">merge_request_id</span>)
+  <span class="ruby-ivar">@previous_assignee</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">User</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">previous_assignee_id</span>)
+  <span class="ruby-ivar">@project</span> = <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">project</span>
+  <span class="ruby-identifier">mail</span>(<span class="ruby-identifier">to</span><span class="ruby-operator">:</span> <span class="ruby-identifier">recipient</span>(<span class="ruby-identifier">recipient_id</span>), <span class="ruby-identifier">subject</span><span class="ruby-operator">:</span> <span class="ruby-identifier">subject</span>(<span class="ruby-node">&quot;changed merge request !#{@merge_request.id}&quot;</span>, <span class="ruby-ivar">@merge_request</span>.<span class="ruby-identifier">title</span>))
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

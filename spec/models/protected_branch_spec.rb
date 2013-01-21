@@ -2,11 +2,11 @@
 #
 # Table name: protected_branches
 #
-#  id         :integer         not null, primary key
-#  project_id :integer         not null
-#  name       :string(255)     not null
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
+#  id         :integer          not null, primary key
+#  project_id :integer          not null
+#  name       :string(255)      not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 
 require 'spec_helper'
@@ -37,15 +37,6 @@ describe ProtectedBranch do
       branch.save
       branch.should_receive(:update_repository)
       branch.destroy
-    end
-  end
-
-  describe '#commit' do
-    let(:branch) { create(:protected_branch) }
-
-    it 'commits itself to its project' do
-      branch.project.should_receive(:commit).with(branch.name)
-      branch.commit
     end
   end
 end

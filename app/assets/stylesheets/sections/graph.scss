@@ -1,10 +1,10 @@
 .graph_holder { 
   border: 1px solid #aaa;
-  padding:1px;
+  padding: 1px;
 
 
   h4 { 
-    padding:0 10px;
+    padding: 0 10px;
     border-bottom: 1px solid #bbb;
     @include bg-gray-gradient;
   }

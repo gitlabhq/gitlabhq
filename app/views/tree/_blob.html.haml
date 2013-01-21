@@ -2,7 +2,7 @@
   .file_title
     %i.icon-file
     %span.file_name
-      = blob.name.force_encoding('utf-8')
+      = blob.name
       %small= number_to_human_size blob.size
     %span.options= render "tree/blob_actions"
   - if blob.text?

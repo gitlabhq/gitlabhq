@@ -1,17 +1,3 @@
-/**
- * MR form
- *
- */
-
-.mr_branch_box {
-  @extend .ui-box;
-  margin-bottom:20px;
-
-  .body {
-    background:#f1f1f1;
-  }
-
-}
 
 /**
  * MR -> show: Automerge widget
@@ -23,31 +9,31 @@
   }
 
   form {
-    margin-bottom:0;
+    margin-bottom: 0;
     .clearfix {
-      margin-bottom:0;
+      margin-bottom: 0;
     }
   }
 
   .accept_group {
-    float:left;
+    float: left;
     border: 1px solid #ADA;
     padding: 2px;
     @include border-radius(5px);
-    border-radius: 5px;
     background: #CEB;
 
     .accept_merge_request {
-      font-size:13px;
-      float:left;
+      font-size: 13px;
+      float: left;
     }
     .remove_branch_holder {
-      margin-left:20px;
-      margin-right:10px;
-      float:left;
+      margin-left: 20px;
+      margin-right: 10px;
+      float: left;
     }
     label {
-      color:#444;
+      color: #444;
+      text-align: left
     }
   }
 
@@ -57,21 +43,21 @@
   }
 }
 
-.mr_nav_tabs {
+.merge-request .nav-tabs{
   li {
     a {
-      font-weight:bold;
-      padding:8px 20px;
-      text-align:center;
+      font-weight: bold;
+      padding: 8px 20px;
+      text-align: center;
     }
   }
 }
 
 li.merge_request {
-  padding:7px 10px;
+  padding: 10px;
   img.avatar {
     width: 32px;
-    margin-top: 4px;
+    margin-top: 1px;
   }
   p {
     padding: 0px;
@@ -79,41 +65,41 @@ li.merge_request {
   }
 }
 
-.merge_in_progress {
+.merge-in-progress {
   @extend .padded;
   @extend .append-bottom-10;
 }
 
 .label_branch {
-  @include round-borders-all(4px);
-  padding:2px 4px;
-  border:none;
-  font-size:14px;
+  @include border-radius(4px);
+  padding: 2px 4px;
+  border: none;
+  font-size: 14px;
   background: #474D57;
-  color:#fff;
+  color: #fff;
   font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }
 
 .mr_source_commit,
 .mr_target_commit {
   .commit {
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
     padding: 5px;
     margin-bottom: 5px;
     .avatar { position:relative }
     .row_title {
-      color:#444;
+      color: #444;
     }
     .commit-author-name,
     .dash,
     .committed_ago,
     .browse_code_link_holder {
-      display:none;
+      display: none;
     }
-    list-style:none;
+    list-style: none;
     &:hover {
-      background:none;
+      background: none;
     }
   }
 }

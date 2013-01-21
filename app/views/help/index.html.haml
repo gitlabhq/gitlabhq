@@ -9,28 +9,70 @@
   %br
   Fast, secure and stable solution based on Ruby on Rails & Gitolite.
 
-%hr
+%br
 
-%h3 Help
+.row
+  .span4
+    .ui-box
+      .title
+        %h5 Quick help
+      %ul.well-list
+        %li
+          Email your
+          = mail_to Gitlab.config.gitlab.support_email, "support contact"
+        %li
+          Use the
+          = link_to "search bar", '#', onclick: "$("#search").focus();"
+          on the top of this page
+        %li
+          Ask in our
+          = link_to "support forum", "https://groups.google.com/forum/#!forum/gitlabhq"
+        %li
+          Browse our
+          = link_to "issue tracker", "https://github.com/gitlabhq/gitlabhq/issues"
+  .span4
+    .ui-box
+      .title
+        %h5 User documentation
+      %ul.well-list
+        %li
+          %strong= link_to "Workflow", help_workflow_path
+          %p Learn how to use Git and GitLab together.
 
-%ol
-  %li
-    %h5= link_to "Workflow", help_workflow_path
+        %li
+          %strong= link_to "SSH keys", help_ssh_path
+          %p Setup secure access to your projects.
 
-  %li
-    %h5= link_to "Permissions", help_permissions_path
+        %li
+          %strong= link_to "GitLab Markdown", help_markdown_path
+          %p Learn what you can do with GitLab's advanced formatting system.
 
-  %li
-    %h5= link_to "Web Hooks", help_web_hooks_path
+        %li
+          %strong= link_to "Permissions", help_permissions_path
+          %p Get familiar with GitLab's permission levels.
 
-  %li
-    %h5= link_to "System Hooks", help_system_hooks_path
+        %li
+          %strong= link_to "API", help_api_path
+          %p Explore how you can access GitLab via a simple and powerful API.
 
-  %li
-    %h5= link_to "API", help_api_path
+        %li
+          %strong= link_to "Web Hooks", help_web_hooks_path
+          %p Let GitLab notify you when new code has been pushed to your project.
 
-  %li
-    %h5= link_to "GitLab Markdown", help_markdown_path
+  .span4
+    .ui-box
+      .title
+        %h5 Admin documentation
+      %ul.well-list
 
-  %li
-    %h5= link_to "SSH keys", help_ssh_path
+        %li
+          %strong= link_to "Rake Tasks", help_raketasks_path
+          %p Explore what GitLab has in store for you to make administration easier.
+
+        %li
+          %strong= link_to "System Hooks", help_system_hooks_path
+          %p Let GitLab notify you when certain management tasks need to be carried out.
+
+        %li
+          %strong= link_to "Public Access", help_public_access_path
+          %p Learn how you can allow public access to a project.

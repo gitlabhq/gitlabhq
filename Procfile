@@ -1,2 +1,2 @@
-web: bundle exec rails s -p $PORT
-worker: bundle exec rake environment resque:work QUEUE=* VVERBOSE=1
+web: bundle exec unicorn_rails -p $PORT
+worker: bundle exec sidekiq -q post_receive,mailer,system_hook,common,default

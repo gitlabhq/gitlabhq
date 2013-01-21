@@ -8,8 +8,9 @@
 
 - if @commits.present?
   %div.ui-box
-    %h5.small Commits (#{@commits.count})
-    %ul.unstyled= render @commits
+    %h5.title
+      Commits (#{@commits.count})
+    %ul.well-list= render @commits
 
   - unless @diffs.empty?
     %h4 Diff

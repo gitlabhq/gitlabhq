@@ -23,6 +23,7 @@ describe "Admin::Users" do
       @password = "123ABC"
       visit new_admin_user_path
       fill_in "user_name", with: "Big Bang"
+      fill_in "user_username", with: "bang"
       fill_in "user_email", with: "bigbang@mail.com"
       fill_in "user_password", with: @password
       fill_in "user_password_confirmation", with: @password
@@ -40,7 +41,7 @@ describe "Admin::Users" do
     end
 
     it "should call send mail" do
-      Notify.should_receive(:new_user_email).and_return(stub(deliver: true))
+      Notify.should_receive(:new_user_email)
 
       User.observers.enable :user_observer do
         click_button "Save"
@@ -48,15 +49,26 @@ describe "Admin::Users" do
     end
 
     it "should send valid email to user with email & password" do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
       User.observers.enable :user_observer do
-        with_resque do
-          click_button "Save"
-        end
+        click_button "Save"
         user = User.last
         email = ActionMailer::Base.deliveries.last
         email.subject.should have_content("Account was created")
         email.body.should have_content(user.email)
         email.body.should have_content(@password)
+      end
+    end
+
+    it "should send valid email to user with email without password when signup is enabled" do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+      User.observers.enable :user_observer do
+        click_button "Save"
+        user = User.last
+        email = ActionMailer::Base.deliveries.last
+        email.subject.should have_content("Account was created")
+        email.body.should have_content(user.email)
+        email.body.should_not have_content(@password)
       end
     end
   end
@@ -76,7 +88,7 @@ describe "Admin::Users" do
 
   describe "GET /admin/users/:id/edit" do
     before do
-      @simple_user = Factory :user
+      @simple_user = create(:user)
       visit admin_users_path
       click_link "edit_user_#{@simple_user.id}"
     end
@@ -107,13 +119,13 @@ describe "Admin::Users" do
     end
   end
 
-  describe "Add new project" do 
-    before do 
-      @new_project = Factory :project
+  describe "Add new project" do
+    before do
+      @new_project = create(:project)
       visit admin_user_path(@user)
     end
 
-    it "should create new user" do 
+    it "should create new user" do
       select @new_project.name, from: "project_ids"
       expect { click_button "Add" }.to change { UsersProject.count }.by(1)
       page.should have_content @new_project.name

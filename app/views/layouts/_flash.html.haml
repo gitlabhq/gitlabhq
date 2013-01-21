@@ -1,17 +1,3 @@
-- if alert || notice
-  - text = alert || notice
-  %div{style: "display:none", id: "flash_container"}
-    %center
-      %h4= text
-  :javascript
-    $(function(){
-      $("#flash_container").slideDown("slow");
-      $("#flash_container").click(function(){
-        $(this).slideUp("slow");
-      });
-      setTimeout("hideFlash()",3000);
-    });
-
-    function hideFlash(){
-      $("#flash_container").slideUp("slow");
-    }
+- if text = alert || notice
+  #flash-container
+    %h4= text

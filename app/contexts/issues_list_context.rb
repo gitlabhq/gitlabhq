@@ -4,7 +4,7 @@ class IssuesListContext < BaseContext
   attr_accessor :issues
 
   def execute
-    @issues = case params[:f]
+    @issues = case params[:status]
               when issues_filter[:all] then @project.issues
               when issues_filter[:closed] then @project.issues.closed
               when issues_filter[:to_me] then @project.issues.opened.assigned(current_user)

@@ -1,16 +1,26 @@
 class PostReceive
-  @queue = :post_receive
+  include Sidekiq::Worker
 
-  def self.perform(reponame, oldrev, newrev, ref, identifier)
-    project = Project.find_by_path(reponame)
+  sidekiq_options queue: :post_receive
+
+  def perform(repo_path, oldrev, newrev, ref, identifier)
+    repo_path.gsub!(Gitlab.config.gitolite.repos_path.to_s, "")
+    repo_path.gsub!(/.git$/, "")
+    repo_path.gsub!(/^\//, "")
+
+    project = Project.find_with_namespace(repo_path)
     return false if project.nil?
 
     # Ignore push from non-gitlab users
-    if /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
-      return false unless user = User.find_by_email(identifier)
+    user = if identifier.eql? Gitlab.config.gitolite.admin_key
+      email = project.repository.commit(newrev).author.email rescue nil
+      User.find_by_email(email) if email
+    elsif /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
+      User.find_by_email(identifier)
     else
-      return false unless user = Key.find_by_identifier(identifier).try(:user)
+      Key.find_by_identifier(identifier).try(:user)
     end
+    return false unless user
 
     project.trigger_post_receive(oldrev, newrev, ref, user)
   end

@@ -1,6 +1,6 @@
-%h1 Git Error
+%h1.http_status_code 500
+%h3.page_title GitLab was unable to access your Gitolite system.
 %hr
-%h2 GitLab was unable to access your Gitolite system.
 
 .git_error_tips
   %h4 Tips for Administrator:
@@ -15,11 +15,11 @@
       %p
         Diagnostic tool:
         %pre
-          bundle exec rake gitlab:app:status RAILS_ENV=production
+          bundle exec rake gitlab:check RAILS_ENV=production
     %li
       %p
         Permissions:
       %pre
         = preserve do
-          sudo chmod -R 770 #{Gitlab.config.git_base_path}
-          sudo chown -R git:git #{Gitlab.config.git_base_path}
+          sudo chown -R git:git #{Gitlab.config.gitolite.repos_path}
+          sudo chmod -R ug+rwXs #{Gitlab.config.gitolite.repos_path}

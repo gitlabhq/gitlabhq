@@ -3,12 +3,10 @@
 
 - if @issues.present?
   %li.bottom
-    .row
-      .span7= paginate @issues, remote: true, theme: "gitlab"
-      .span3.right
-        %span.cgray.right 
-          %span.issue_counter #{@issues.total_count}
-          issues for this filter
+    .left= paginate @issues, remote: true, theme: "gitlab"
+    .right
+      %span.issue_counter #{@issues.total_count}
+      issues for this filter
 - else
   %li
     %h4.nothing_here_message Nothing to show here

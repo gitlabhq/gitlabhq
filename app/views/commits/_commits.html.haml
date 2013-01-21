@@ -1,6 +1,6 @@
 - @commits.group_by { |c| c.committed_date.to_date }.each do |day, commits|
   %div.ui-box
-    %h5.small
+    %h5.title
       %i.icon-calendar
       = day.stamp("28 Aug, 2010")
-    %ul.unstyled= render commits
+    %ul.well-list= render commits

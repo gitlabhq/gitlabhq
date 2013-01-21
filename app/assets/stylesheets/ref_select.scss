@@ -1,6 +1,6 @@
 /** Branch/tag selector **/
 .project-refs-form {
-  margin:0;
+  margin: 0;
   span {
     background:none !important;
     position:static !important;
@@ -9,7 +9,7 @@
   }
 }
 .project-refs-select {
-  width:120px;
+  width: 120px;
 }
 
 .project-refs-form .chzn-container {
@@ -19,39 +19,12 @@
   margin-right: 10px;
 
   .chzn-drop {
-    margin:7px 0;
     min-width: 400px;
-    border: 2px solid $blue_link;
-    @include border-radius(4px);
-
     .chzn-results {
-      max-height:300px;
-
-      .group-result {
-        color: $blue_link;
-      }
-      .active-result {
-        &.highlighted {
-          background: $blue_link;
-        }
-      }
+      max-height: 300px;
     }
-
     .chzn-search input {
-      min-width:365px;
-    }
-  }
-
-  .chzn-single {
-    @include bg-gray-gradient;
-
-    div {
-      background:transparent;
-      border-left:none;
-    }
-
-    span {
-      font-weight: normal;
+      min-width: 365px;
     }
   }
 }
@@ -60,9 +33,58 @@
 .chzn-container {
   .chzn-search {
     input:focus {
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
+      @include box-shadow(none);
+    }
+  }
+
+  .chzn-drop {
+    margin: 7px 0;
+    min-width: 200px;
+    border: 1px solid #bbb;
+    @include border-radius(0);
+
+    .chzn-results {
+      margin-top: 5px;
+      max-height: 300px;
+
+      .group-result {
+        color: $style_color;
+        border-bottom: 1px solid #EEE;
+        padding: 8px;
+      }
+      .active-result {
+        @include border-radius(0);
+
+        &.highlighted {
+          background: $hover;
+          color: $style_color;
+        }
+        &.result-selected {
+          background: #EEE;
+          border-left: 4px solid #CCC;
+        }
+      }
+    }
+
+    .chzn-search {
+      @include bg-gray-gradient;
+      input {
+        min-width: 165px;
+        border-color: #CCC;
+      }
+    }
+  }
+
+  .chzn-single {
+    @include bg-light-gray-gradient;
+
+    div {
+      background: transparent;
+      border-left: none;
+    }
+
+    span {
+      font-weight: normal;
     }
   }
 }

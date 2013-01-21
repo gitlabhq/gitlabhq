@@ -1,8 +1,8 @@
 - if @project.valid?
   :plain
-    location.href = "#{edit_project_path(@project, notice: 'Project was successfully updated.')}";
+    location.href = "#{edit_project_path(@project)}";
 - else
   :plain
     $('.project_edit_holder').show();
     $(".edit_project").replaceWith("#{escape_javascript(render('form'))}");
-    $('.ajax_loader').hide();
+    $('.save-project-loader').hide();

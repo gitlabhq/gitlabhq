@@ -10,15 +10,14 @@
         %i.icon-edit
         Edit
 %br
+- if @wiki != @most_recent_wiki
+  .warning_message
+    This is an old version of this page.
+    You can view the #{link_to "most recent version", project_wiki_path(@project, @wiki)} or browse the #{link_to "history", history_project_wiki_path(@project, @wiki)}.
+
 .file_holder
   .file_content.wiki
     = preserve do
       = markdown @wiki.content
 
-%p.time Last edited by #{@wiki.user.name}, #{time_ago_in_words @wiki.created_at} ago
-- if can? current_user, :admin_wiki, @project
-  = link_to project_wiki_path(@project, @wiki), confirm: "Are you sure you want to delete this page?", method: :delete do
-    Delete this page
-
-%hr
-.wiki_notes#notes= render "notes/notes_with_form", tid: @wiki.id, tt: "wiki"
+%p.time Last edited by #{link_to_member @project, @wiki.user}, #{time_ago_in_words @wiki.created_at} ago

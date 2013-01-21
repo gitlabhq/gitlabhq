@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Gitlab::GitStats</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../css/github.css" type="text/css" media="screen" />
+<script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Class</span> 
+            Gitlab::GitStats 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/gitlab/git_stats_rb.html">lib/gitlab/git_stats.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>A</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-authors">authors</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-authors_count">authors_count</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-build_graph">build_graph</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-collect_authors">collect_authors</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-commits_count">commits_count</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>F</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-files_count">files_count</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>G</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-graph">graph</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>N</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-c-new">new</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+      <!-- Section attributes -->
+      <div class="sectiontitle">Attributes</div>
+      <table border='0' cellpadding='5'>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>ref</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+          <tr valign='top'>
+            <td class='attr-rw'>
+              [RW]
+            </td>
+            <td class='attr-name'>repo</td>
+            <td class='attr-desc'></td>
+          </tr>
+        
+      </table>
+    
+
+
+    <!-- Methods -->
+    
+      <div class="sectiontitle">Class Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-c-new">
+            
+              <b>new</b>(repo, ref)
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-c-new" name="method-c-new" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-c-new_source')" id="l_method-c-new_source">show</a>
+                
+              </p>
+              <div id="method-c-new_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">initialize</span> <span class="ruby-identifier">repo</span>, <span class="ruby-identifier">ref</span>
+  <span class="ruby-ivar">@repo</span>, <span class="ruby-ivar">@ref</span> = <span class="ruby-identifier">repo</span>, <span class="ruby-identifier">ref</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                  
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-authors">
+            
+              <b>authors</b>()
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-authors" name="method-i-authors" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authors_source')" id="l_method-i-authors_source">show</a>
+                
+              </p>
+              <div id="method-i-authors_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authors</span>
+  <span class="ruby-ivar">@authors</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">collect_authors</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-authors_count">
+            
+              <b>authors_count</b>()
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-authors_count" name="method-i-authors_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-authors_count_source')" id="l_method-i-authors_count_source">show</a>
+                
+              </p>
+              <div id="method-i-authors_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 22</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">authors_count</span>
+  <span class="ruby-identifier">authors</span>.<span class="ruby-identifier">size</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commits_count">
+            
+              <b>commits_count</b>()
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-commits_count" name="method-i-commits_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commits_count_source')" id="l_method-i-commits_count_source">show</a>
+                
+              </p>
+              <div id="method-i-commits_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commits_count</span>
+  <span class="ruby-ivar">@commits_count</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">commit_count</span>(<span class="ruby-identifier">ref</span>)
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-files_count">
+            
+              <b>files_count</b>()
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-files_count" name="method-i-files_count" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-files_count_source')" id="l_method-i-files_count_source">show</a>
+                
+              </p>
+              <div id="method-i-files_count_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 17</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">files_count</span>
+  <span class="ruby-identifier">args</span> = [<span class="ruby-identifier">ref</span>, <span class="ruby-string">'-r'</span>, <span class="ruby-string">'--name-only'</span> ]
+  <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">git</span>.<span class="ruby-identifier">run</span>(<span class="ruby-keyword">nil</span>, <span class="ruby-string">'ls-tree'</span>, <span class="ruby-keyword">nil</span>, {}, <span class="ruby-identifier">args</span>).<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>).<span class="ruby-identifier">count</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-graph">
+            
+              <b>graph</b>()
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-graph" name="method-i-graph" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-graph_source')" id="l_method-i-graph_source">show</a>
+                
+              </p>
+              <div id="method-i-graph_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 26</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">graph</span>
+  <span class="ruby-ivar">@graph</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">build_graph</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+              
+      <div class="sectiontitle">Instance Protected methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-build_graph">
+            
+              <b>build_graph</b>(n = 4)
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-build_graph" name="method-i-build_graph" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-build_graph_source')" id="l_method-i-build_graph_source">show</a>
+                
+              </p>
+              <div id="method-i-build_graph_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 54</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">build_graph</span> <span class="ruby-identifier">n</span> = <span class="ruby-number">4</span>
+  <span class="ruby-identifier">from</span>, <span class="ruby-identifier">to</span> = (<span class="ruby-constant">Date</span>.<span class="ruby-identifier">today</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">n</span>.<span class="ruby-identifier">weeks</span>), <span class="ruby-constant">Date</span>.<span class="ruby-identifier">today</span>
+  <span class="ruby-identifier">args</span> = [<span class="ruby-string">'--all'</span>, <span class="ruby-node">&quot;--since=#{from.to_s(:date)}&quot;</span>, <span class="ruby-string">'--format=%ad'</span> ]
+  <span class="ruby-identifier">rev_list</span> = <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">git</span>.<span class="ruby-identifier">run</span>(<span class="ruby-keyword">nil</span>, <span class="ruby-string">'rev-list'</span>, <span class="ruby-keyword">nil</span>, {}, <span class="ruby-identifier">args</span>).<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+
+  <span class="ruby-identifier">commits_dates</span> = <span class="ruby-identifier">rev_list</span>.<span class="ruby-identifier">values_at</span>(* <span class="ruby-identifier">rev_list</span>.<span class="ruby-identifier">each_index</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">i</span>.<span class="ruby-identifier">odd?</span>})
+  <span class="ruby-identifier">commits_dates</span> = <span class="ruby-identifier">commits_dates</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">date_str</span><span class="ruby-operator">|</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">date_str</span>).<span class="ruby-identifier">to_date</span>.<span class="ruby-identifier">to_s</span>(<span class="ruby-value">:date</span>) }
+
+  <span class="ruby-identifier">commits_per_day</span> = <span class="ruby-identifier">from</span>.<span class="ruby-identifier">upto</span>(<span class="ruby-identifier">to</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">day</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">commits_dates</span>.<span class="ruby-identifier">count</span>(<span class="ruby-identifier">day</span>.<span class="ruby-identifier">to_date</span>.<span class="ruby-identifier">to_s</span>(<span class="ruby-value">:date</span>))
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(
+    <span class="ruby-identifier">labels</span><span class="ruby-operator">:</span> <span class="ruby-identifier">from</span>.<span class="ruby-identifier">upto</span>(<span class="ruby-identifier">to</span>).<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">day</span><span class="ruby-operator">|</span> <span class="ruby-identifier">day</span>.<span class="ruby-identifier">stamp</span>(<span class="ruby-string">'Aug 23'</span>) },
+    <span class="ruby-identifier">commits</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commits_per_day</span>,
+    <span class="ruby-identifier">weeks</span><span class="ruby-operator">:</span> <span class="ruby-identifier">n</span>
+  )
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-collect_authors">
+            
+              <b>collect_authors</b>()
+            
+            <a href="../../classes/Gitlab/GitStats.html#method-i-collect_authors" name="method-i-collect_authors" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-collect_authors_source')" id="l_method-i-collect_authors_source">show</a>
+                
+              </p>
+              <div id="method-i-collect_authors_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File lib/gitlab/git_stats.rb, line 32</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">collect_authors</span>
+  <span class="ruby-identifier">shortlog</span> = <span class="ruby-identifier">repo</span>.<span class="ruby-identifier">git</span>.<span class="ruby-identifier">shortlog</span>({<span class="ruby-identifier">e</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">s</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span> }, <span class="ruby-identifier">ref</span>)
+
+  <span class="ruby-identifier">authors</span> = []
+
+  <span class="ruby-identifier">lines</span> = <span class="ruby-identifier">shortlog</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\n&quot;</span>)
+
+  <span class="ruby-identifier">lines</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">data</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&quot;\t&quot;</span>)
+    <span class="ruby-identifier">commits</span> = <span class="ruby-identifier">data</span>.<span class="ruby-identifier">first</span>
+    <span class="ruby-identifier">author</span> = <span class="ruby-constant">Grit</span><span class="ruby-operator">::</span><span class="ruby-constant">Actor</span>.<span class="ruby-identifier">from_string</span>(<span class="ruby-identifier">data</span>.<span class="ruby-identifier">last</span>)
+
+    <span class="ruby-identifier">authors</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">OpenStruct</span>.<span class="ruby-identifier">new</span>(
+      <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">author</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">author</span>.<span class="ruby-identifier">email</span>,
+      <span class="ruby-identifier">commits</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commits</span>.<span class="ruby-identifier">to_i</span>
+    )
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">authors</span>.<span class="ruby-identifier">sort_by</span>(&amp;<span class="ruby-value">:commits</span>).<span class="ruby-identifier">reverse</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

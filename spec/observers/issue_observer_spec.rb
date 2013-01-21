@@ -16,13 +16,12 @@ describe IssueObserver do
       subject.should_receive(:after_create)
 
       Issue.observers.enable :issue_observer do
-        Factory.create(:issue, project: Factory.create(:project))
+        create(:issue, project: create(:project))
       end
     end
 
     it 'sends an email to the assignee' do
-      Notify.should_receive(:new_issue_email).with(issue.id).
-        and_return(double(deliver: true))
+      Notify.should_receive(:new_issue_email).with(issue.id)
 
       subject.after_create(issue)
     end
@@ -43,7 +42,7 @@ describe IssueObserver do
     end
 
     it 'is called when an issue is changed' do
-      changed = Factory.create(:issue, project: Factory.create(:project))
+      changed = create(:issue, project: create(:project))
       subject.should_receive(:after_update)
 
       Issue.observers.enable :issue_observer do
@@ -71,6 +70,7 @@ describe IssueObserver do
     context 'a status "closed"' do
       it 'note is created if the issue is being closed' do
         issue.should_receive(:is_being_closed?).and_return(true)
+        Notify.should_receive(:issue_status_changed_email).twice
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
 
         subject.after_update(issue)
@@ -113,6 +113,7 @@ describe IssueObserver do
 
     context 'a status "reopened"' do
       it 'note is created if the issue is being reopened' do
+        Notify.should_receive(:issue_status_changed_email).twice
         issue.should_receive(:is_being_reopened?).and_return(true)
         Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
 
@@ -164,8 +165,7 @@ describe IssueObserver do
     end
 
     def it_sends_a_reassigned_email_to(recipient)
-      Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id).
-        and_return(double(deliver: true))
+      Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id)
     end
 
     def it_does_not_send_a_reassigned_email_to(recipient)

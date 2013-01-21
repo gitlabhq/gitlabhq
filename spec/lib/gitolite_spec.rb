@@ -16,7 +16,7 @@ describe Gitlab::Gitolite do
   it { should respond_to :create_repository }
   it { should respond_to :remove_repository }
 
-  it { gitolite.url_to_repo('diaspora').should == Gitlab.config.ssh_path + "diaspora.git" }
+  it { gitolite.url_to_repo('diaspora').should == Gitlab.config.gitolite.ssh_path_prefix + "diaspora.git" }
 
   it "should call config update" do
     gitolite_config.should_receive(:update_project!)

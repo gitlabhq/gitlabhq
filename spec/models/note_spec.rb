@@ -2,16 +2,17 @@
 #
 # Table name: notes
 #
-#  id            :integer         not null, primary key
+#  id            :integer          not null, primary key
 #  note          :text
-#  noteable_id   :string(255)
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime        not null
-#  updated_at    :datetime        not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
+#  commit_id     :string(255)
+#  noteable_id   :integer
 #
 
 require 'spec_helper'
@@ -33,96 +34,119 @@ describe Note do
     it { should validate_presence_of(:project) }
   end
 
-  describe "Scopes" do
-    it "should have a today named scope that returns ..." do
-      Note.today.where_values.should == ["created_at >= '#{Date.today}'"]
-    end
-  end
-
   describe "Voting score" do
-    let(:project) { Factory(:project) }
+    let(:project) { create(:project) }
 
     it "recognizes a neutral note" do
-      note = Factory(:note, note: "This is not a +1 note")
+      note = create(:votable_note, note: "This is not a +1 note")
       note.should_not be_upvote
       note.should_not be_downvote
     end
 
     it "recognizes a neutral emoji note" do
-      note = build(:note, note: "I would :+1: this, but I don't want to")
+      note = build(:votable_note, note: "I would :+1: this, but I don't want to")
       note.should_not be_upvote
       note.should_not be_downvote
     end
 
     it "recognizes a +1 note" do
-      note = Factory(:note, note: "+1 for this")
+      note = create(:votable_note, note: "+1 for this")
       note.should be_upvote
     end
 
     it "recognizes a +1 emoji as a vote" do
-      note = build(:note, note: ":+1: for this")
+      note = build(:votable_note, note: ":+1: for this")
       note.should be_upvote
     end
 
     it "recognizes a -1 note" do
-      note = Factory(:note, note: "-1 for this")
+      note = create(:votable_note, note: "-1 for this")
       note.should be_downvote
     end
 
     it "recognizes a -1 emoji as a vote" do
-      note = build(:note, note: ":-1: for this")
+      note = build(:votable_note, note: ":-1: for this")
       note.should be_downvote
     end
   end
 
   let(:project) { create(:project) }
-  let(:commit) { project.commit }
+  let(:commit) { project.repository.commit }
 
   describe "Commit notes" do
-    before do
-      @note = Factory :note,
-        noteable_id: commit.id,
-        noteable_type: "Commit"
-    end
+    let!(:note) { create(:note_on_commit, note: "+1 from me") }
+    let!(:commit) { note.noteable }
 
     it "should be accessible through #noteable" do
-      @note.noteable_id.should == commit.id
-      @note.noteable.should be_a(Commit)
-      @note.noteable.should == commit
+      note.commit_id.should == commit.id
+      note.noteable.should be_a(Commit)
+      note.noteable.should == commit
     end
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
-      @note.noteable == commit
+      note.commit_id.should == commit.id
+      note.noteable == commit
     end
 
     it "should be recognized by #for_commit?" do
-      @note.should be_for_commit
+      note.should be_for_commit
+    end
+
+    it "should not be votable" do
+      note.should_not be_votable
     end
   end
 
-  describe "Pre-line commit notes" do
-    before do
-      @note = Factory :note,
-        noteable_id: commit.id,
-        noteable_type: "Commit",
-        line_code: "0_16_1"
-    end
+  describe "Commit diff line notes" do
+    let!(:note) { create(:note_on_commit_diff, note: "+1 from me") }
+    let!(:commit) { note.noteable }
 
     it "should save a valid note" do
-      @note.noteable_id.should == commit.id
-      @note.noteable.id.should == commit.id
+      note.commit_id.should == commit.id
+      note.noteable.id.should == commit.id
     end
 
     it "should be recognized by #for_diff_line?" do
-      @note.should be_for_diff_line
+      note.should be_for_diff_line
+    end
+
+    it "should be recognized by #for_commit_diff_line?" do
+      note.should be_for_commit_diff_line
+    end
+
+    it "should not be votable" do
+      note.should_not be_votable
+    end
+  end
+
+  describe "Issue notes" do
+    let!(:note) { create(:note_on_issue, note: "+1 from me") }
+
+    it "should not be votable" do
+      note.should be_votable
+    end
+  end
+
+  describe "Merge request notes" do
+    let!(:note) { create(:note_on_merge_request, note: "+1 from me") }
+
+    it "should not be votable" do
+      note.should be_votable
+    end
+  end
+
+  describe "Merge request diff line notes" do
+    let!(:note) { create(:note_on_merge_request_diff, note: "+1 from me") }
+
+    it "should not be votable" do
+      note.should_not be_votable
     end
   end
 
   describe '#create_status_change_note' do
-    let(:project)  { Factory.create(:project) }
-    let(:thing)    { Factory.create(:issue, project: project) }
-    let(:author)   { Factory(:user) }
+    let(:project)  { create(:project) }
+    let(:thing)    { create(:issue, project: project) }
+    let(:author)   { create(:user) }
     let(:status)   { 'new_status' }
 
     subject { Note.create_status_change_note(thing, author, status) }
@@ -141,10 +165,10 @@ describe Note do
   describe :authorization do
     before do
       @p1 = create(:project)
-      @p2 = Factory :project
-      @u1 = Factory :user
-      @u2 = Factory :user
-      @u3 = Factory :user
+      @p2 = create(:project)
+      @u1 = create(:user)
+      @u2 = create(:user)
+      @u3 = create(:user)
       @abilities = Six.new
       @abilities << Ability
     end

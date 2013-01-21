@@ -3,7 +3,7 @@ module LoginHelpers
   #
   # role - User role (e.g., :admin, :user)
   def login_as(role)
-    @user = Factory(role)
+    @user = create(role)
     login_with(@user)
   end
 

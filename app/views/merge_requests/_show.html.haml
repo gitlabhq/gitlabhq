@@ -1,40 +1,39 @@
-= render "merge_requests/show/mr_title"
-= render "merge_requests/show/how_to_merge"
-= render "merge_requests/show/mr_box"
-= render "merge_requests/show/mr_accept"
-= render "merge_requests/show/commits"
+.merge-request
+  = render "merge_requests/show/mr_title"
+  = render "merge_requests/show/how_to_merge"
+  = render "merge_requests/show/mr_box"
+  = render "merge_requests/show/mr_accept"
+  - if @project.gitlab_ci?
+    = render "merge_requests/show/mr_ci"
+  = render "merge_requests/show/commits"
 
-- if @commits.present?
-  %ul.nav.nav-tabs.mr_nav_tabs
-    %li
-      = link_to "#notes", "data-url" => project_merge_request_path(@project, @merge_request), class: "merge-notes-tab tab" do
-        %i.icon-comment
-        Comments
-    %li
-      = link_to "#diffs", "data-url" => diffs_project_merge_request_path(@project, @merge_request), class: "merge-diffs-tab tab" do
-        %i.icon-list-alt
-        Diff
+  - if @commits.present?
+    %ul.nav.nav-tabs
+      %li.notes-tab{data: {action: 'notes'}}
+        = link_to project_merge_request_path(@project, @merge_request) do
+          %i.icon-comment
+          Discussion
+      %li.diffs-tab{data: {action: 'diffs'}}
+        = link_to diffs_project_merge_request_path(@project, @merge_request) do
+          %i.icon-list-alt
+          Diff
 
-.merge_request_notes.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
-  = render("notes/notes_with_form", tid: @merge_request.id, tt: "merge_request")
-.merge-request-diffs
-  = render "merge_requests/show/diffs" if @diffs
-.status
-
-= render "notes/per_line_form"
+  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+    = render "notes/notes_with_form"
+  .diffs.tab-content
+    = render "merge_requests/show/diffs" if @diffs
+  .status
 
 :javascript
+  var merge_request;
   $(function(){
-    MergeRequest.init({
+    merge_request = new MergeRequest({
       url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
       check_enable: #{@merge_request.state == MergeRequest::UNCHECKED ? "true" : "false"},
+      url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
+      ci_enable: #{@project.gitlab_ci? ? "true" : "false"},
       current_state: "#{@merge_request.human_state}",
       action: "#{controller.action_name}"
     });
-
-    $(".edit_merge_request").live("ajax:beforeSend", function() {
-      $('.can_be_merged').hide();
-      $('.merge_in_progress').show();
-    })
-  })
+  });
 

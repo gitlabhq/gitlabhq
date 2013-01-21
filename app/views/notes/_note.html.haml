@@ -1,40 +1,37 @@
-%li{id: dom_id(note), class: "note"}
-  = image_tag gravatar_icon(note.author.email), class: "avatar s32"
-  %div.note-author
-    %strong= note.author_name
-    = link_to "##{dom_id(note)}", name: dom_id(note) do
-      %cite.cgray
-        = time_ago_in_words(note.updated_at)
-        ago
+%li{ id: dom_id(note), class: dom_class(note), data: { discussion: note.discussion_id } }
+  .note-header
+    .note-actions
+      = link_to "##{dom_id(note)}", name: dom_id(note) do
+        %i.icon-link
+        Link here
+      &nbsp;
+      - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
+        = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, confirm: 'Are you sure you want to remove comment?', remote: true, class: "danger js-note-delete" do
+          %i.icon-trash.cred
+    = image_tag gravatar_icon(note.author.email), class: "avatar s32"
+    = link_to_member(@project, note.author, avatar: false)
+    %span.note-last-update
+      = time_ago_in_words(note.updated_at)
+      ago
 
-    - unless note_for_main_target?(note)
-      - if note.for_commit?
-        %span.cgray
-          on #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
-          = link_to_commit_diff_line_note(note) if note.for_diff_line?
+    - if note.upvote?
+      %span.vote.upvote.label.label-success
+        %i.icon-thumbs-up
+        \+1
+    - if note.downvote?
+      %span.vote.downvote.label.label-error
+        %i.icon-thumbs-down
+        \-1
 
-    -# only show vote if it's a note for the main target
-    - if note_for_main_target?(note)
-      - if note.upvote?
-        %span.vote.upvote.label.label-success
-          %i.icon-thumbs-up
-          \+1
-      - if note.downvote?
-        %span.vote.downvote.label.label-error
-          %i.icon-thumbs-down
-          \-1
 
-    -# remove button
-    - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
-      = link_to [@project, note], confirm: 'Are you sure?', method: :delete, remote: true, class: "cred delete-note btn very_small" do
-        %i.icon-trash
-        Remove
-
-  %div.note-title
+  .note-body
     = preserve do
       = markdown(note.note)
-    - if note.attachment.url
-      .right
-        %div.file
-          = link_to note.attachment_identifier, note.attachment.url, target: "_blank"
+  - if note.attachment.url
+    - if note.attachment.image?
+      = image_tag note.attachment.url, class: 'note-image-attach'
+    .attachment.right
+      = link_to note.attachment.url, target: "_blank" do
+        %i.icon-attachment
+        = note.attachment_identifier
   .clear

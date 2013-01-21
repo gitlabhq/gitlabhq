@@ -6,47 +6,42 @@
           - @admin_user.errors.full_messages.each do |msg|
             %li= msg
 
-    .row
-      .span7
-        .ui-box
-          %br
-          .clearfix
-            = f.label :name
-            .input
-              = f.text_field :name
-              %span.help-inline * required
-          .clearfix
-            = f.label :email
-            .input
-              = f.text_field :email
-              %span.help-inline * required
-          %hr
-          -if f.object.new_record?
-            .clearfix
-              = f.label :force_random_password do
-                %span Generate random password
-              .input= f.check_box :force_random_password, {}, true, nil
-          
-          %div.password-fields
-            .clearfix
-              = f.label :password
-              .input= f.password_field :password, disabled: f.object.force_random_password 
-            .clearfix
-              = f.label :password_confirmation
-              .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
-          %hr
-          .clearfix
-            = f.label :skype
-            .input= f.text_field :skype
-          .clearfix
-            = f.label :linkedin
-            .input= f.text_field :linkedin
-          .clearfix
-            = f.label :twitter
-            .input= f.text_field :twitter
-      .span5
-        .ui-box
-          %br
+    %fieldset
+      %legend Account
+      .clearfix
+        = f.label :name
+        .input
+          = f.text_field :name, required: true
+          %span.help-inline * required
+      .clearfix
+        = f.label :username
+        .input
+          = f.text_field :username, required: true
+          %span.help-inline * required
+      .clearfix
+        = f.label :email
+        .input
+          = f.text_field :email, required: true
+          %span.help-inline * required
+
+    %fieldset
+      %legend Password
+      .clearfix
+        = f.label :password
+        .input= f.password_field :password, disabled: f.object.force_random_password
+      .clearfix
+        = f.label :password_confirmation
+        .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
+      -if f.object.new_record?
+        .clearfix
+          = f.label :force_random_password do
+            %span Generate random password
+          .input= f.check_box :force_random_password, {}, true, nil
+
+    %fieldset
+      %legend Access
+      .row
+        .span8
           .clearfix
             = f.label :projects_limit
             .input= f.number_field :projects_limit
@@ -55,23 +50,27 @@
             = f.label :admin do
               %strong.cred Administrator
             .input= f.check_box :admin
+        .span4
           - unless @admin_user.new_record?
-            %hr
-            .padded.cred
+            .alert.alert-error
               - if @admin_user.blocked
-                %span
-                  This user is blocked and is not able to login to GitLab
-                  .clearfix
-                    = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn small right"
+                %p This user is blocked and is not able to login to GitLab
+                = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn small"
               - else
-                %span
-                  Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                  .clearfix
-                    = link_to 'Block User', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small right danger"
+                %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
+                = link_to 'Block User', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small danger"
+    %fieldset
+      %legend Profile
+      .clearfix
+        = f.label :skype
+        .input= f.text_field :skype
+      .clearfix
+        = f.label :linkedin
+        .input= f.text_field :linkedin
+      .clearfix
+        = f.label :twitter
+        .input= f.text_field :twitter
 
-    .row
-      .span6
-      .span6
     .actions
       = f.submit 'Save', class: "btn save-btn"
       - if @admin_user.new_record?

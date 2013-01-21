@@ -1,26 +1,28 @@
 - user = member.user
 - allow_admin = can? current_user, :admin_project, @project
-%tr{id: dom_id(member), class: "team_member_row user_#{user.id}"}
-  %td.span6
-    = link_to project_team_member_path(@project, member), title: user.name, class: "dark" do
-      = image_tag gravatar_icon(user.email, 40), class: "avatar s32"
-    = link_to project_team_member_path(@project, member), title: user.name, class: "dark" do
-      %strong= truncate(user.name, lenght: 40)
-      %br
-      %small.cgray= user.email
+%li{id: dom_id(member), class: "team_member_row user_#{user.id}"}
+  .row
+    .span6
+      = link_to project_team_member_path(@project, member), title: user.name, class: "dark" do
+        = image_tag gravatar_icon(user.email, 40), class: "avatar s32"
+      = link_to project_team_member_path(@project, member), title: user.name, class: "dark" do
+        %strong= truncate(user.name, lenght: 40)
+        %br
+        %small.cgray= user.email
 
-  %td.span5
-    .right
-      - if current_user == user
-        %span.btn.disabled This is you!
-      - if @project.owner == user
-        %span.btn.disabled.success Owner
-      - elsif user.blocked
-        %span.btn.disabled.blocked Blocked
-      - elsif allow_admin
-        = link_to project_team_member_path(project_id: @project, id: member.id), confirm: remove_from_team_message(@project, member), method: :delete, class: "very_small btn danger" do
-          %i.icon-minus.icon-white
+    .span5.right
+      - if allow_admin
+        .left
+          = form_for(member, as: :team_member, url: project_team_member_path(@project, member)) do |f|
+            = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, class: "medium project-access-select span2"
+      .right
+        - if current_user == user
+          %span.btn.disabled This is you!
+        - if @project.namespace_owner == user
+          %span.btn.disabled.success Owner
+        - elsif user.blocked
+          %span.btn.disabled.blocked Blocked
+        - elsif allow_admin
+          = link_to project_team_member_path(project_id: @project, id: member.id), confirm: remove_from_team_message(@project, member), method: :delete, class: "very_small btn danger" do
+            %i.icon-minus.icon-white
 
-    - if allow_admin
-      = form_for(member, as: :team_member, url: project_team_member_path(@project, member)) do |f|
-        = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, class: "medium project-access-select span2"

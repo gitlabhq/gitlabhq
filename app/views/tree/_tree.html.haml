@@ -3,9 +3,13 @@
     %span.arrow
     = link_to project_tree_path(@project, @ref) do
       = @project.name
-  - tree.breadcrumbs(6) do |link|
+  - tree.breadcrumbs(6) do |title, path|
     \/
-    %li= link
+    %li
+      - if path
+        = link_to truncate(title, length: 40), project_tree_path(@project, path)
+      - else
+        = link_to title, '#'
 
 .clear
 %div.tree_progress
@@ -16,16 +20,17 @@
   - else
     %table#tree-slider{class: "table_#{@hex_path} tree-table" }
       %thead
-        %th Name
-        %th Last Update
-        %th Last Commit
-        %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
+        %tr
+          %th Name
+          %th Last Update
+          %th Last Commit
+          %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
 
       - if tree.up_dir?
         %tr.tree-item
           %td.tree-item-file-name
             = image_tag "file_empty.png", size: '16x16'
-            = link_to "..", tree.up_dir_path
+            = link_to "..", project_tree_path(@project, tree.up_dir_path)
           %td
           %td
           %td

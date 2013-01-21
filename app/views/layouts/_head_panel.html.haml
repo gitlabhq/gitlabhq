@@ -1,39 +1,38 @@
-/ Page Header
-%header.top_panel_holder
-  .container
-    .top_panel_content
+%header.navbar.navbar-static-top.navbar-gitlab
+  .navbar-inner
+    .container
       %div.app_logo
-        = link_to root_path, class: "home", title: "Home" do
-          %h1
-            GITLAB
+        %span.separator
+        = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
+          %h1 GITLAB
         %span.separator
       %h1.project_name= title
-      .search
-        = form_tag search_path, method: :get do |f|
-          = text_field_tag "search", nil, placeholder: "Search", class: "search-input"
-      .fbtn
+      %ul.nav
         - if current_user.is_admin?
-          = link_to admin_root_path, class: "btn small", title: "Admin area" do
-            %i.icon-cog
-            Admin
+          %li
+            = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
+              %i.icon-cogs
         - if current_user.can_create_project?
-          = link_to new_project_path, class: "btn small", title: "Create New Project" do
-            %i.icon-plus
-            Project
-      .account-box
-        = link_to profile_path, class: "pic" do
-          = image_tag gravatar_icon(current_user.email)
-        .account-links
-          = link_to profile_path, class: "username" do
-            My profile
-          = link_to 'Logout', destroy_user_session_path, class: "logout", method: :delete
+          %li
+            = link_to new_project_path, title: "Create New Project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
+              %i.icon-plus
+        %li
+          = link_to profile_path, title: "Your Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
+            %i.icon-user
+        %li.separator
+        %li
+          = render "layouts/search"
+        %li
+          .account-box
+            = link_to profile_path, class: "pic" do
+              = image_tag gravatar_icon(current_user.email)
+            .account-links
+              = link_to profile_path, class: "username" do
+                %i.icon-user.icon-white
+                My profile
+              = link_to destroy_user_session_path, class: "logout", method: :delete do
+                %i.icon-signout.icon-white
+                Logout
+
 
 = render "layouts/init_auto_complete"
-
-:javascript
-  $(function(){
-    $("#search").autocomplete({
-      source: #{raw search_autocomplete_source},
-      select: function(event, ui) { location.href = ui.item.url }
-    });
-  });

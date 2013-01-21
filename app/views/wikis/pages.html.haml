@@ -4,15 +4,17 @@
   %thead
     %tr
       %th Title
-      %th slug
-      %th created by
+      %th Slug
+      %th Last updated
+      %th Updated by
   %tbody
-    - @wikis.each_with_index do |wiki_page, i|
+    - @wiki_pages.each do |wiki_page|
       %tr
         %td
-          = link_to wiki_page.title, project_wiki_path(@project, wiki_page, old_page_id: wiki_page.id)
-          (#{time_ago_in_words(wiki_page.created_at)}
-          ago)
+          %strong= link_to wiki_page.title, project_wiki_path(@project, wiki_page)
         %td= wiki_page.slug
-        %td= wiki_page.user.name
-
+        %td
+          = wiki_page.created_at.to_s(:short) do
+            (#{time_ago_in_words(wiki_page.created_at)}
+            ago)
+        %td= link_to_member(@project, wiki_page.user)

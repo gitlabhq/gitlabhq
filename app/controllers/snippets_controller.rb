@@ -16,7 +16,7 @@ class SnippetsController < ProjectResourceController
   respond_to :html
 
   def index
-    @snippets = @project.snippets
+    @snippets = @project.snippets.fresh.non_expired
   end
 
   def new
@@ -50,6 +50,8 @@ class SnippetsController < ProjectResourceController
 
   def show
     @note = @project.notes.new(noteable: @snippet)
+    @target_type = :snippet
+    @target_id = @snippet.id
   end
 
   def destroy
@@ -60,7 +62,7 @@ class SnippetsController < ProjectResourceController
     redirect_to project_snippets_path(@project)
   end
 
-  def raw 
+  def raw
     send_data(
       @snippet.content,
       type: "text/plain",

@@ -1,5 +1,16 @@
+# == Schema Information
+#
+# Table name: protected_branches
+#
+#  id         :integer          not null, primary key
+#  project_id :integer          not null
+#  name       :string(255)      not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class ProtectedBranch < ActiveRecord::Base
-  include GitHost
+  include Gitolited
 
   attr_accessible :name
 
@@ -11,22 +22,10 @@ class ProtectedBranch < ActiveRecord::Base
   after_destroy :update_repository
 
   def update_repository
-    git_host.update_repository(project)
+    gitolite.update_repository(project)
   end
 
   def commit
-    project.commit(self.name)
+    project.repository.commit(self.name)
   end
 end
-
-# == Schema Information
-#
-# Table name: protected_branches
-#
-#  id         :integer         not null, primary key
-#  project_id :integer         not null
-#  name       :string(255)     not null
-#  created_at :datetime        not null
-#  updated_at :datetime        not null
-#
-

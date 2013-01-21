@@ -4,9 +4,8 @@
       %strong= link_to "Browse Code »", project_tree_path(@project, commit), class: "right"
   %p
     = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
-    %strong.commit-author-name= commit.author_name
-    %span.dash &ndash;
-    = image_tag gravatar_icon(commit.author_email), class: "avatar", width: 16
+    = commit.author_link avatar: true, size: 24
+    &nbsp;
     = link_to_gfm truncate(commit.title, length: 50), project_commit_path(@project, commit.id), class: "row_title"
 
     %span.committed_ago
@@ -15,8 +14,8 @@
       &nbsp;
 
     %span.notes_count
-      - notes = @project.commit_notes(commit) + @project.commit_line_notes(commit)
+      - notes = @project.notes.for_commit_id(commit.id)
       - if notes.any?
-        %span.btn.small.disabled.grouped
+        %span.btn.disabled.grouped
           %i.icon-comment
           = notes.count

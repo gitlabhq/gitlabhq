@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>CommitsHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../css/github.css" type="text/css" media="screen" />
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body>     
+    <div class="banner">
+        
+        <h1>
+            <span class="type">Module</span> 
+            CommitsHelper 
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../files/app/helpers/commits_helper_rb.html">app/helpers/commits_helper.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+  
+
+
+  
+
+
+  
+  
+
+
+  
+
+
+  
+    <!-- Method ref -->
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+      
+        <dt>B</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-build_line_anchor">build_line_anchor</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>C</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-commit_to_html">commit_to_html</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>D</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-diff_line_content">diff_line_content</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>E</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-each_diff_line">each_diff_line</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+        <dt>I</dt>
+        <dd>
+          <ul>
+            
+              
+              <li>
+                <a href="#method-i-identification_type">identification_type</a>,
+              </li>
+            
+              
+              <li>
+                <a href="#method-i-image_diff_class">image_diff_class</a>
+              </li>
+            
+          </ul>
+        </dd>
+      
+    </dl>
+  
+
+  
+
+
+
+  
+
+    
+
+    
+
+    
+
+
+    
+
+
+    <!-- Methods -->
+        
+      <div class="sectiontitle">Instance Public methods</div>
+      
+        <div class="method">
+          <div class="title method-title" id="method-i-build_line_anchor">
+            
+              <b>build_line_anchor</b>(index, line_new, line_old)
+            
+            <a href="../classes/CommitsHelper.html#method-i-build_line_anchor" name="method-i-build_line_anchor" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-build_line_anchor_source')" id="l_method-i-build_line_anchor_source">show</a>
+                
+              </p>
+              <div id="method-i-build_line_anchor_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/commits_helper.rb, line 12</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">build_line_anchor</span>(<span class="ruby-identifier">index</span>, <span class="ruby-identifier">line_new</span>, <span class="ruby-identifier">line_old</span>)
+  <span class="ruby-node">&quot;#{index}_#{line_old}_#{line_new}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-commit_to_html">
+            
+              <b>commit_to_html</b>(commit)
+            
+            <a href="../classes/CommitsHelper.html#method-i-commit_to_html" name="method-i-commit_to_html" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-commit_to_html_source')" id="l_method-i-commit_to_html_source">show</a>
+                
+              </p>
+              <div id="method-i-commit_to_html_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/commits_helper.rb, line 68</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">commit_to_html</span> <span class="ruby-identifier">commit</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">commit</span>.<span class="ruby-identifier">model</span>
+    <span class="ruby-identifier">escape_javascript</span>(<span class="ruby-identifier">render</span> <span class="ruby-string">'commits/commit'</span>, <span class="ruby-identifier">commit</span><span class="ruby-operator">:</span> <span class="ruby-identifier">commit</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-diff_line_content">
+            
+              <b>diff_line_content</b>(line)
+            
+            <a href="../classes/CommitsHelper.html#method-i-diff_line_content" name="method-i-diff_line_content" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-diff_line_content_source')" id="l_method-i-diff_line_content_source">show</a>
+                
+              </p>
+              <div id="method-i-diff_line_content_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/commits_helper.rb, line 74</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">diff_line_content</span>(<span class="ruby-identifier">line</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">blank?</span>
+    <span class="ruby-string">&quot; &amp;nbsp;&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">line</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-each_diff_line">
+            
+              <b>each_diff_line</b>(diff_arr, index)
+            
+            <a href="../classes/CommitsHelper.html#method-i-each_diff_line" name="method-i-each_diff_line" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-each_diff_line_source')" id="l_method-i-each_diff_line_source">show</a>
+                
+              </p>
+              <div id="method-i-each_diff_line_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/commits_helper.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">each_diff_line</span>(<span class="ruby-identifier">diff_arr</span>, <span class="ruby-identifier">index</span>)
+  <span class="ruby-identifier">line_old</span> = <span class="ruby-number">1</span>
+  <span class="ruby-identifier">line_new</span> = <span class="ruby-number">1</span>
+  <span class="ruby-identifier">type</span> = <span class="ruby-keyword">nil</span>
+
+  <span class="ruby-identifier">lines_arr</span> = <span class="ruby-operator">::</span><span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">InlineDiff</span>.<span class="ruby-identifier">processing</span> <span class="ruby-identifier">diff_arr</span>
+  <span class="ruby-identifier">lines_arr</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r^\-\-\- \/dev\/null/</span>)
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r^\+\+\+ \/dev\/null/</span>)
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r^\-\-\- a/</span>)
+    <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r^\+\+\+ b/</span>)
+
+    <span class="ruby-identifier">full_line</span> = <span class="ruby-identifier">html_escape</span>(<span class="ruby-identifier">line</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">%r\n/</span>, <span class="ruby-string">''</span>))
+    <span class="ruby-identifier">full_line</span> = <span class="ruby-operator">::</span><span class="ruby-constant">Gitlab</span><span class="ruby-operator">::</span><span class="ruby-constant">InlineDiff</span>.<span class="ruby-identifier">replace_markers</span> <span class="ruby-identifier">full_line</span>
+
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r^@@ -/</span>)
+      <span class="ruby-identifier">type</span> = <span class="ruby-string">&quot;match&quot;</span>
+
+      <span class="ruby-identifier">line_old</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r\-[0-9]*/</span>)[<span class="ruby-number">0</span>].<span class="ruby-identifier">to_i</span>.<span class="ruby-identifier">abs</span> <span class="ruby-keyword">rescue</span> <span class="ruby-number">0</span>
+      <span class="ruby-identifier">line_new</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">%r\+[0-9]*/</span>)[<span class="ruby-number">0</span>].<span class="ruby-identifier">to_i</span>.<span class="ruby-identifier">abs</span> <span class="ruby-keyword">rescue</span> <span class="ruby-number">0</span>
+
+      <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">line_old</span> <span class="ruby-operator">==</span> <span class="ruby-number">1</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">line_new</span> <span class="ruby-operator">==</span> <span class="ruby-number">1</span> <span class="ruby-comment">#top of file</span>
+      <span class="ruby-keyword">yield</span>(<span class="ruby-identifier">full_line</span>, <span class="ruby-identifier">type</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-keyword">nil</span>)
+      <span class="ruby-keyword">next</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">type</span> = <span class="ruby-identifier">identification_type</span>(<span class="ruby-identifier">line</span>)
+      <span class="ruby-identifier">line_code</span> = <span class="ruby-identifier">build_line_anchor</span>(<span class="ruby-identifier">index</span>, <span class="ruby-identifier">line_new</span>, <span class="ruby-identifier">line_old</span>)
+      <span class="ruby-keyword">yield</span>(<span class="ruby-identifier">full_line</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">line_code</span>, <span class="ruby-identifier">line_new</span>, <span class="ruby-identifier">line_old</span>)
+    <span class="ruby-keyword">end</span>
+
+
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>[<span class="ruby-number">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;+&quot;</span>
+      <span class="ruby-identifier">line_new</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">line</span>[<span class="ruby-number">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;-&quot;</span>
+      <span class="ruby-identifier">line_old</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">line_new</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+      <span class="ruby-identifier">line_old</span> <span class="ruby-operator">+=</span> <span class="ruby-number">1</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-identification_type">
+            
+              <b>identification_type</b>(line)
+            
+            <a href="../classes/CommitsHelper.html#method-i-identification_type" name="method-i-identification_type" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-identification_type_source')" id="l_method-i-identification_type_source">show</a>
+                
+              </p>
+              <div id="method-i-identification_type_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/commits_helper.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">identification_type</span>(<span class="ruby-identifier">line</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">line</span>[<span class="ruby-number">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;+&quot;</span>
+    <span class="ruby-string">&quot;new&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">line</span>[<span class="ruby-number">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;-&quot;</span>
+    <span class="ruby-string">&quot;old&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+        
+        <div class="method">
+          <div class="title method-title" id="method-i-image_diff_class">
+            
+              <b>image_diff_class</b>(diff)
+            
+            <a href="../classes/CommitsHelper.html#method-i-image_diff_class" name="method-i-image_diff_class" class="permalink">Link</a>
+          </div>
+          
+          
+            <div class="description">
+              
+            </div>
+          
+          
+          
+          
+          
+            
+            <div class="sourcecode">
+              
+              <p class="source-link">
+                Source: 
+                <a href="javascript:toggleSource('method-i-image_diff_class_source')" id="l_method-i-image_diff_class_source">show</a>
+                
+              </p>
+              <div id="method-i-image_diff_class_source" class="dyn-source">
+                <pre><span class="ruby-comment"># File app/helpers/commits_helper.rb, line 58</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword ruby-title">image_diff_class</span>(<span class="ruby-identifier">diff</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">diff</span>.<span class="ruby-identifier">deleted_file</span>
+    <span class="ruby-string">&quot;diff_removed&quot;</span>
+  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">diff</span>.<span class="ruby-identifier">new_file</span>
+    <span class="ruby-string">&quot;diff_added&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+              </div>
+            </div>
+            
+          </div>
+                    </div>
+
+    </div>
+  </body>
+</html>    

@@ -1,232 +1,314 @@
 /**
  * Notes
- *
  */
-#notes-list,
-#new-notes-list {
-  display:block;
-  list-style:none;
-  margin:0px;
-  padding:0px;
-}
-
-.issue_notes,
-.wiki_notes {
-  .note_content {
-    float:left;
-    width:400px;
-  }
-}
-
-/* Note textare */
-#note_note {
-  height:80px;
-  width:99%;
-  font-size:14px;
-}
-
-#new_note {
-  .attach_holder {
-    display:none;
-  }
-}
-
-.preview_note {
-  margin: 2px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  min-height: 60px;
-  background:#f5f5f5;
-}
-
-.note {
-  padding: 8px 0;
-  overflow: hidden;
+ul.notes {
   display: block;
-  position:relative;
-  img {float: left; margin-right: 10px;}
-  img.emoji {float:none;margin:0;}
-  .note-author cite{font-style: italic;}
-  p { color:$style_color; }
-  .note-author { color: $style_color;}
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
 
-  .note-title { margin-left:45px; padding-top: 5px;}
-  .avatar {
-    margin-top:3px;
-  }
+  .discussion-header,
+  .note-header {
+    @extend .cgray;
+    padding-top: 5px;
+    padding-bottom: 15px;
 
-  .delete-note {
-    display:none;
-    position:absolute;
-    right:0;
-    top:0;
-  }
-
-  &:hover {
-    .delete-note { display:block; }
-  }
-}
-#notes-list:not(.reversed) .note,
-#new-notes-list:not(.reversed) .note {
-  border-bottom: 1px solid #eee;
-}
-#notes-list.reversed .note,
-#new-notes-list.reversed .note {
-  border-top: 1px solid #eee;
-}
-
-/* mark vote notes */
-.voting_notes .note {
-  padding: 8px 0;
-}
-
-.notes-status {
-  margin: 18px;
-}
-
-
-p.notify_controls input{
-  margin: 5px;
-}
-
-p.notify_controls span{
-  font-weight: 700;
-}
-
-tr.line_notes_row {
-  border-bottom:1px solid #DDD;
-  border-left: 7px solid #2A79A3;
-
-  &.reply {
-    background:#eee;
-    border-left: 7px solid #2A79A3;
-    border-top:1px solid #ddd;
-    td {
-      padding:7px 10px;
+    .avatar {
+      float: left;
+      margin-right: 10px;
     }
-    a.line_note_reply_link {
-      @include round-borders-all(4px);
-      padding: 3px 10px;
-      margin-left:5px;
-      color: white;
-      background: #2A79A3;
-      border-color: #2A79A3;
-    }
-  }
-  ul {
-    margin:0;
-    li {
-      padding:0;
-      border:none;
-    }
-  }
-}
 
-.line_notes_row,  .per_line_form { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
-
-.per_line_form {
-  background:#f5f5f5;
-  border-top:1px solid #eee;
-  form {  margin: 0; }
-  td {
-    border-bottom:1px solid #ddd;
-  }
-  .note_actions {
-    margin:0;
-    padding-top: 10px;
-
-    .buttons {
-      float:left;
-      width:300px;
+    .discussion-last-update,
+    .note-last-update {
+      font-style: italic;
     }
-    .options {
-      .labels {
-        float:left;
-        padding-left:10px;
-        label {
-          padding: 6px 0;
-          margin: 0;
-          width:120px;
-        }
+    .author {
+      color: $style_color;
+      font-weight: bold;
+      &:hover {
+        color: $primary_color;
       }
     }
   }
-}
 
-td .line_note_link {
-  position:absolute;
-  margin-left:-70px;
-  margin-top:-10px;
-  z-index:10;
-  background: url("comment_add.png") no-repeat left 0;
-  width:32px;
-  height:32px;
-
-  opacity: 0.0;
-  filter: alpha(opacity=0);
-
-  &:hover {
-    opacity: 1.0;
-    filter: alpha(opacity=100);
-  }
-}
-
-.diff_file_content tr.line_holder:hover > td { background: $hover !important; }
-.diff_file_content tr.line_holder:hover > td .line_note_link {
-  opacity: 1.0;
-  filter: alpha(opacity=100);
-}
-
-.new_note {
-  .input-file {
-    font: 500px monospace;
-    opacity:0;
-    filter: alpha(opacity=0);
-    position: absolute;
-    z-index: 1;
-    top:0;
-    right:0;
-    padding:0;
-    margin: 0;
-  }
-
-  .note_advanced_opts {
-    h6 {
-      line-height: 32px;
-      padding-right: 15px;
-    }
-  }
-
-  .attachments {
+  .discussion {
+    padding: 8px 0;
+    overflow: hidden;
+    display: block;
     position:relative;
-    width: 350px;
-    height: 50px;
-    overflow:hidden;
-    margin:0 0 5px !important;
 
-    .input_file {
-      .file_upload {
-        position: absolute;
-        right:14px;
-        top:7px;
+    .discussion-body {
+      margin-left: 50px;
+
+      .diff_file,
+      .discussion-hidden,
+      .notes {
+        @extend .borders;
+        background-color: #F9F9F9;
+      }
+      .diff_file .notes {
+        /* reset */
+        background: inherit;
+        border: none;
+        @include box-shadow(none);
+
+      }
+      .discussion-hidden .note {
+        @extend .cgray;
+        padding: 8px;
+        text-align: center;
+      }
+      .notes .note {
+        border-color: #ddd;
+        padding: 8px;
+      }
+      .reply-btn {
+        margin-top: 8px;
+      }
+    }
+  }
+
+  .note {
+    padding: 8px 0;
+    overflow: hidden;
+    display: block;
+    position:relative;
+    p { color: $style_color; }
+
+    .avatar {
+      margin-top: 3px;
+    }
+    .attachment {
+      font-size: 14px;
+      margin-top: -20px;
+
+      .icon-attachment {
+        @extend .icon-paper-clip;
+        font-size: 24px;
+        position: relative;
+        text-align: right;
+        top: 6px;
+      }
+    }
+    .note-body {
+      margin-left: 45px;
+    }
+    .note-header {
+      padding-bottom: 5px;
+    }
+  }
+
+  // paint top or bottom borders depending on notes direction
+  &:not(.reversed) .note,
+  &:not(.reversed) .discussion {
+    border-bottom: 1px solid #eee;
+  }
+  &.reversed .note,
+  &.reversed .discussion {
+    border-top: 1px solid #eee;
+  }
+}
+
+.diff_file .notes_holder {
+  font-family: $sansFontFamily;
+  font-size: 13px;
+  line-height: 18px;
+
+  td {
+    border: 1px solid #ddd;
+    border-left: none;
+
+    &.notes_line {
+      text-align: center;
+      padding: 10px 0;
+    }
+    &.notes_content {
+      background-color: $white;
+      border-width: 1px 0;
+      padding-top: 0;
+    }
+  }
+
+  .reply-btn {
+    margin-top: 8px;
+  }
+}
+
+
+
+/**
+ * Actions for Discussions/Notes
+ */
+
+.discussion,
+.note {
+  &.note:hover {
+    .note-actions { display: block; }
+  }
+  .discussion-header:hover {
+    .discussion-actions { display: block; }
+  }
+
+  .discussion-actions,
+  .note-actions {
+    display: none;
+    float: right;
+
+    [class^="icon-"],
+    [class*="icon-"] {
+      font-size: 16px;
+      line-height: 16px;
+      vertical-align: middle;
+    }
+
+    a {
+      @extend .cgray;
+
+      &:hover {
+        color: $primary_color;
+        &.danger { @extend .cred; }
+      }
+    }
+  }
+}
+.diff_file .note .note-actions {
+  right: 0;
+  top: 0;
+}
+
+
+
+/**
+ * Line note button on the side of diffs
+ */
+
+.diff_file tr.line_holder {
+  .add-diff-note {
+    background: url("diff_note_add.png") no-repeat left 0;
+    height: 22px;
+    margin-left: -65px;
+    position: absolute;
+    width: 22px;
+    z-index: 10;
+
+    // "hide" it by default
+    opacity: 0.0;
+    filter: alpha(opacity=0);
+
+    &:hover {
+      opacity: 1.0;
+      filter: alpha(opacity=100);
+    }
+  }
+
+  // "show" the icon also if we just hover somwhere over the line
+  &:hover > td {
+    background: $hover !important;
+
+    .add-diff-note {
+      opacity: 1.0;
+      filter: alpha(opacity=100);
+    }
+  }
+}
+
+
+
+/**
+ * Note Form
+ */
+
+.comment-btn,
+.reply-btn {
+  @extend .save-btn;
+}
+.diff_file,
+.discussion {
+  .new_note {
+    margin: 8px 5px 8px 0;
+
+    .note_options {
+      // because of the smaller width and the extra "cancel" button
+      margin-top: 8px;
+    }
+  }
+}
+.new_note {
+  display: none;
+
+  .buttons {
+    float: left;
+    margin-top: 8px;
+  }
+  .clearfix {
+    margin-bottom: 0;
+  }
+  .note_options {
+    h6 {
+      @extend .left;
+      line-height: 20px;
+      padding-right: 16px;
+      padding-bottom: 16px;
+    }
+    label {
+      padding: 0;
+    }
+
+    .attachment {
+      @extend .right;
+      position: relative;
+      width: 350px;
+      height: 50px;
+      margin:0 0 5px !important;
+
+      // hide the actual file field
+      input {
+        display: none;
       }
 
-      .file_name {
-        line-height:30px;
-        width:240px;
-        height:28px;
-        overflow:hidden;
-      }
-      .input-file {
-        width: 260px;
-        height: 41px;
+      .choose-btn {
         float: right;
       }
     }
+    .notify_options {
+      @extend .right;
+    }
+  }
+  .note_text_and_preview {
+    // makes the "absolute" position for links relative to this
+    position: relative;
+
+    // preview/edit buttons
+    > a {
+      font-size: 24px;
+      padding: 4px;
+      position: absolute;
+      right: 10px;
+    }
+    .note_preview {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      @include border-radius(4px);
+      min-height: 80px;
+      padding: 4px 6px;
+    }
+    .note_text {
+      border: 1px solid #DDD;
+      box-shadow: none;
+      font-size: 14px;
+      height: 80px;
+      width: 98.6%;
+    }
   }
 }
 
-.note-text {
-  border: 1px solid #aaa;
-  box-shadow:none;
+/* loading indicator */
+.notes-busy {
+  margin: 18px;
+}
+
+.note-image-attach {
+  @extend .span4;
+  @extend .thumbnail;
+  margin-left: 45px;
 }
