@@ -1,19 +1,8 @@
-%h3
-  Edit access
-  %small
-    = @admin_team_member.project.name
-    &ndash;
-    = @admin_team_member.user_name
+%p.slead
+  Edit access for
+  = link_to @admin_team_member.user_name, admin_user_path(@admin_team_member)
+  in
+  = link_to @admin_team_member.project.name_with_namespace, admin_project_path(@admin_team_member)
 
 %hr
-%table.zebra-striped
-  %tr
-    %td User:
-    %td= @admin_team_member.user_name
-  %tr
-    %td Project:
-    %td= @admin_team_member.project.name
-  %tr
-    %td Since:
-    %td= @admin_team_member.updated_at.stamp("Nov 11, 2010")
 = render 'form'

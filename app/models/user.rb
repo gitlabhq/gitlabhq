@@ -191,9 +191,9 @@ class User < ActiveRecord::Base
                   namespaces: namespaces.map(&:id), user_id: self.id)
   end
 
-  # Team membership in personal projects
-  def tm_in_personal_projects
-    UsersProject.where(project_id:  personal_projects.map(&:id), user_id: self.id)
+  # Team membership in authorized projects
+  def tm_in_authorized_projects
+    UsersProject.where(project_id:  authorized_projects.map(&:id), user_id: self.id)
   end
 
   # Returns a string for use as a Gitolite user identifier

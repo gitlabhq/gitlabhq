@@ -57,13 +57,13 @@ class Ability
     def project_report_rules
       project_guest_rules + [
         :download_code,
-        :write_merge_request,
         :write_snippet
       ]
     end
 
     def project_dev_rules
       project_report_rules + [
+        :write_merge_request,
         :write_wiki,
         :push_code
       ]

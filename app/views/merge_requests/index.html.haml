@@ -1,4 +1,4 @@
-- if can? current_user, :write_issue, @project
+- if can? current_user, :write_merge_request, @project
   = link_to new_project_merge_request_path(@project), class: "right btn primary", title: "New Merge Request" do
     %i.icon-plus
     New Merge Request
@@ -10,7 +10,7 @@
 
 .row
   .span3
-    = render 'filter', entity: 'issue'
+    = render 'filter'
   .span9
     .ui-box
       .title
