@@ -51,6 +51,10 @@ class MergeRequest
     this.$('.nav-tabs').on 'click', 'li', (event) =>
       this.activateTab($(event.currentTarget).data('action'))
 
+    this.$('.accept_merge_request').on 'click', ->
+      $('.automerge_widget.can_be_merged').hide()
+      $('.merge-in-progress').show()
+
   activateTab: (action) ->
     this.$('.nav-tabs li').removeClass 'active'
     this.$('.tab-content').hide()

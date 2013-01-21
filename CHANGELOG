@@ -18,7 +18,7 @@ v 4.1.0
   - added new classes Team, Repository
   - Reduce amount of gitolite calls
   - Ability to add user in all group projects
-  - remove derecated configs
+  - remove deprecated configs
   - replaced Korolev font with open font
   - restyled admin/dashboard page
   - restyled admin/projects page
