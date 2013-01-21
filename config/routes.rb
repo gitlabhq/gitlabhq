@@ -68,6 +68,9 @@ Gitlab::Application.routes.draw do
         get :team
         put :team_update
       end
+      scope module: :projects do
+        resources :members, only: [:edit, :update, :destroy]
+      end
     end
     resources :teams do #, constraints: { id: /[^\/]+/ } do end
       scope module: :teams do
@@ -75,7 +78,6 @@ Gitlab::Application.routes.draw do
         resources :projects, only: [:edit, :update, :destroy, :new, :create]
       end
     end
-    resources :team_members, only: [:edit, :update, :destroy]
     resources :hooks, only: [:index, :create, :destroy] do
       get :test
     end
