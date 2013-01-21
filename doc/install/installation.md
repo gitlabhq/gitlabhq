@@ -190,10 +190,10 @@ See `doc/install/databases.md`
     cd /home/gitlab/gitlab
    
     # Checkout to stable release
-    sudo -u gitlab -H git checkout 4-0-stable
+    sudo -u gitlab -H git checkout 4-1-stable
 
 **Note:**
-You can change `4-0-stable` to `master` if you want the *bleeding edge* version, but
+You can change `4-1-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
