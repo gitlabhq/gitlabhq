@@ -1,6 +1,6 @@
 - url = submodule_item.url(@ref) rescue ''
 - name = submodule_item.basename
-- return unless url
+- return '' unless url
 %tr{ class: "tree-item", url: url }
   %td.tree-item-file-name
     = image_tag "submodule.png"
