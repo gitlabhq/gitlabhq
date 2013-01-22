@@ -2,7 +2,6 @@
 #
 # Automatically sets the layout and ensures an administrator is logged in
 class Admin::Teams::ApplicationController < Admin::ApplicationController
-  before_filter :user_team
 
   private
 

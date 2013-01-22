@@ -2,7 +2,7 @@
   %h5.title
     My Teams
     %small
-      (#{teams.count})
+      (#{@teams.count})
     %span.right
       = link_to new_team_path, class: "btn very_small info" do
         %i.icon-plus
@@ -12,7 +12,7 @@
         %i.icon-user
         All Teams
   %ul.well-list
-    - teams.each do |team|
+    - @teams.each do |team|
       %li
         = link_to team_path(id: team.path), class: dom_class(team) do
           %strong.well-title= truncate(team.name, length: 35)
@@ -20,4 +20,7 @@
             &rarr;
           %span.last_activity
             %strong Projects:
-            %span= current_user.authorized_projects.in_team(team).count
+            %span= team.projects.count
+          %span.last_activity
+            %strong Members:
+            %span= team.members.count

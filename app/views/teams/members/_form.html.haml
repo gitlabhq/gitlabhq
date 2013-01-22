@@ -1,23 +1,20 @@
-%h3.page_title
-  = "New Team member(s)"
-%hr
-= form_for @team_member, as: :team_member, url: project_team_members_path(@project, @team_member) do |f|
-  -if @team_member.errors.any?
+= form_tag admin_team_member_path(@team, @member), method: :put do
+  -if @member.errors.any?
     .alert-message.block-message.error
       %ul
-        - @team_member.errors.full_messages.each do |msg|
+        - @member.errors.full_messages.each do |msg|
           %li= msg
 
-  %h6 1. Choose people you want in the team
   .clearfix
-    = f.label :user_ids, "People"
-    .input= select_tag(:user_ids, options_from_collection_for_select(User.active.not_in_project(@project).alphabetically, :id, :name), {data: {placeholder: "Select users"}, class: "chosen xxlarge", multiple: true})
-
-  %h6 2. Set access level for them
+    %label Default access for Team projects:
+    .input
+      = select_tag :default_project_access, options_for_select(UserTeam.access_roles, @team.default_projects_access(@member)), class: "project-access-select chosen span3"
   .clearfix
-    = f.label :project_access, "Project Access"
-    .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select chosen"
+    %label Team admin?
+    .input
+      = check_box_tag :group_admin, true, @team.admin?(@member)
 
+  %br
   .actions
-    = f.submit 'Save', class: "btn save-btn"
-    = link_to "Cancel", project_team_index_path(@project), class: "btn cancel-btn"
+    = submit_tag 'Save', class: "btn primary"
+    = link_to 'Cancel', :back, class: "btn"

@@ -1,58 +1,53 @@
 class Teams::MembersController < Teams::ApplicationController
-  # Authorize
+
   skip_before_filter :authorize_manage_user_team!, only: [:index]
 
   def index
-    @members = @user_team.members
-  end
-
-  def show
-    @team_member = @user_team.members.find(params[:id])
-    @events = @team_member.recent_events.limit(7)
+    @members = user_team.members
   end
 
   def new
-    @team_member = @user_team.members.new
+    @users = User.active
+    @users = @users.not_in_team(user_team) if user_team.members.any?
+    @users = UserDecorator.decorate @users
   end
 
   def create
-    users = User.where(id: params[:user_ids])
-
-    @project.team << [users, params[:default_project_access]]
-
-    if params[:redirect_to]
-      redirect_to params[:redirect_to]
-    else
-      redirect_to project_team_index_path(@project)
+    unless params[:user_ids].blank?
+      user_ids = params[:user_ids]
+      access = params[:default_project_access]
+      is_admin = params[:group_admin]
+      user_team.add_members(user_ids, access, is_admin)
     end
+
+    redirect_to team_path(user_team), notice: 'Members was successfully added into Team of users.'
+  end
+
+  def edit
+    team_member
   end
 
   def update
-    @team_member = @user_team.members.find(params[:id])
-    @team_member.update_attributes(params[:team_member])
-
-    unless @team_member.valid?
-      flash[:alert] = "User should have at least one role"
+    options = {default_projects_access: params[:default_project_access], group_admin: params[:group_admin]}
+    if user_team.update_membership(team_member, options)
+      redirect_to team_path(user_team), notice: "Membership for #{team_member.name} was successfully updated in Team of users."
+    else
+      render :edit
     end
-    redirect_to team_member_path(@project)
   end
 
   def destroy
-    @team_member = project.users_projects.find(params[:id])
-    @team_member.destroy
-
-    respond_to do |format|
-      format.html { redirect_to project_team_index_path(@project) }
-      format.js { render nothing: true }
+    if user_team.remove_member(team_member)
+      redirect_to team_path(user_team), notice: "Member #{team_member.name} was successfully removed from Team of users."
+    else
+      redirect_to team_members(user_team), notice: "Something is wrong."
     end
   end
 
-  def apply_import
-    giver = Project.find(params[:source_project_id])
-    status = @project.team.import(giver)
-    notice = status ? "Succesfully imported" : "Import failed"
+  protected
 
-    redirect_to project_team_members_path(project), notice: notice
+  def team_member
+    @member ||= user_team.members.find(params[:id])
   end
 
 end

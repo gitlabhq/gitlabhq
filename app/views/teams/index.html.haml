@@ -3,7 +3,7 @@
   %small
     list of all teams
 
-  = link_to 'New Team', new_team_path, class: "btn small right"
+  = link_to 'New Team', new_team_path, class: "btn success small right"
   %br
 
 = form_tag search_teams_path, method: :get, class: 'form-inline' do
@@ -32,6 +32,7 @@
       %td= link_to team.owner.name, team_member_path(team, team.owner)
       %td
         - if current_user.can?(:manage_user_team, team)
-          - if team.owner == current_user
+          - if current_user.can?(:admin_user_team, team)
             = link_to "Destroy", team_path(team), method: :delete, confirm: "You are shure?", class: "danger btn small right"
+            &nbsp;
           = link_to "Edit", edit_team_path(team), class: "btn small right"

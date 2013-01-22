@@ -1,22 +1,22 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "#{@user_team.name}"
+  = render "layouts/head", title: "#{@team.name}"
   %body{class: "#{app_theme} application"}
     = render "layouts/flash"
-    = render "layouts/head_panel", title: "#{@user_team.name}"
+    = render "layouts/head_panel", title: "#{@team.name}"
     .container
       %ul.main_menu
         = nav_link(path: 'teams#show', html_options: {class: 'home'}) do
-          = link_to "Home", team_path(@user_team), title: "Home"
+          = link_to "Home", team_path(@team), title: "Home"
         = nav_link(path: 'teams#issues') do
-          = link_to issues_team_path(@user_team) do
+          = link_to issues_team_path(@team) do
             Issues
-            %span.count= Issue.opened.of_user_team(@user_team).count
+            %span.count= Issue.opened.of_user_team(@team).count
         = nav_link(path: 'teams#merge_requests') do
-          = link_to merge_requests_team_path(@user_team) do
+          = link_to merge_requests_team_path(@team) do
             Merge Requests
-            %span.count= MergeRequest.opened.of_user_team(@user_team).count
+            %span.count= MergeRequest.opened.of_user_team(@team).count
         = nav_link(path: 'teams#search') do
-          = link_to "Search", search_team_path(@user_team)
+          = link_to "Search", search_team_path(@team)
 
       .content= yield

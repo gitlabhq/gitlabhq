@@ -1,4 +1,4 @@
-- grouped_user_team_members(@user_team).each do |access, members|
+- grouped_user_team_members(@team).each do |access, members|
   .ui-box
     %h5.title
       = Project.access_options.key(access).pluralize

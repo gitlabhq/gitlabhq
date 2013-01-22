@@ -24,12 +24,12 @@ class Admin::TeamsController < Admin::ApplicationController
   end
 
   def create
-    user_team = UserTeam.new(params[:user_team])
-    user_team.path = user_team.name.dup.parameterize if user_team.name
-    user_team.owner = current_user
+    @team = UserTeam.new(params[:user_team])
+    @team.path = @team.name.dup.parameterize if @team.name
+    @team.owner = current_user
 
-    if user_team.save
-      redirect_to admin_team_path(user_team), notice: 'UserTeam was successfully created.'
+    if @team.save
+      redirect_to admin_team_path(@team), notice: 'Team of users was successfully created.'
     else
       render action: "new"
     end
@@ -44,7 +44,7 @@ class Admin::TeamsController < Admin::ApplicationController
     end
 
     if user_team.update_attributes(user_team_params)
-      redirect_to admin_team_path(user_team), notice: 'UserTeam was successfully updated.'
+      redirect_to admin_team_path(user_team), notice: 'Team of users was successfully updated.'
     else
       render action: "edit"
     end
@@ -53,7 +53,7 @@ class Admin::TeamsController < Admin::ApplicationController
   def destroy
     user_team.destroy
 
-    redirect_to admin_user_teams_path, notice: 'UserTeam was successfully deleted.'
+    redirect_to admin_user_teams_path, notice: 'Team of users was successfully deleted.'
   end
 
   protected
