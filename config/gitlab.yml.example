@@ -101,6 +101,7 @@ omniauth:
       name_field:  'HTTP_SSONAME'
       info_fields:
         email: 'HTTP_SSOCONTACTMAIL'
+        username: 'HTTP_SSOUNIXNAME'
       debug: false
 
 
