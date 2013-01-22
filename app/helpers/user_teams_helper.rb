@@ -19,7 +19,7 @@ module UserTeamsHelper
     team.user_team_user_relationships.sort_by(&:permission).reverse.group_by(&:permission)
   end
 
-  def remove_from_team_message(team, member)
+  def remove_from_user_team_message(team, member)
     "You are going to remove #{member.name} from #{team.name}. Are you sure?"
   end
 
