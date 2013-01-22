@@ -1,19 +1,19 @@
 %ul.nav.nav-tabs
   = nav_link(path: 'teams#show') do
-    = link_to team_path(@user_team), class: "activities-tab tab" do
+    = link_to team_path(@team), class: "activities-tab tab" do
       %i.icon-home
       Show
   = nav_link(controller: [:members]) do
-    = link_to team_members_path(@user_team), class: "team-tab tab" do
+    = link_to team_members_path(@team), class: "team-tab tab" do
       %i.icon-user
       Members
   = nav_link(controller: [:projects]) do
-    = link_to team_projects_path(@user_team), class: "team-tab tab" do
+    = link_to team_projects_path(@team), class: "team-tab tab" do
       %i.icon-briefcase
       Projects
 
-  - if can? current_user, :manage_user_team, @user_team
+  - if can? current_user, :admin_user_team, @team
     = nav_link(path: 'teams#edit', html_options: {class: 'right'}) do
-      = link_to edit_team_path(@user_team), class: "stat-tab tab " do
+      = link_to edit_team_path(@team), class: "stat-tab tab " do
         %i.icon-edit
-        Edit
+        Edit Team

@@ -1,30 +1,26 @@
 class TeamsController < ApplicationController
-  respond_to :html
+  # Authorize
+  before_filter :authorize_manage_user_team!
+  before_filter :authorize_admin_user_team!
+
+  # Skip access control on public section
+  skip_before_filter :authorize_manage_user_team!, only: [:index, :show, :new, :destroy, :create, :search, :issues, :merge_requests]
+  skip_before_filter :authorize_admin_user_team!, only: [:index, :show, :new, :create, :search, :issues, :merge_requests]
+
   layout 'user_team',       only: [:show, :edit, :update, :destroy, :issues, :merge_requests, :search]
 
-  before_filter :user_team, only: [:show, :edit, :update, :destroy, :issues, :merge_requests, :search]
-  before_filter :projects,  only: [:show, :edit, :update, :destroy, :issues, :merge_requests, :search]
-
-  # Authorize
-  before_filter :authorize_manage_user_team!, only: [:edit, :update]
-  before_filter :authorize_admin_user_team!, only: [:destroy]
-
   def index
-    @teams = UserTeam.all
+    @teams = UserTeam.order('name ASC')
   end
 
   def show
-    @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
-
-    respond_to do |format|
-      format.html
-      format.js
-      format.atom { render layout: false }
-    end
+    user_team
+    projects
+    @events = Event.in_projects(user_team.project_ids).limit(20).offset(params[:offset] || 0)
   end
 
   def edit
-
+    user_team
   end
 
   def update
@@ -58,56 +54,37 @@ class TeamsController < ApplicationController
 
   # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = MergeRequest.of_user_team(@user_team)
+    @merge_requests = MergeRequest.of_user_team(user_team)
     @merge_requests = FilterContext.new(@merge_requests, params).execute
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
-    @issues = Issue.of_user_team(@user_team)
+    @issues = Issue.of_user_team(user_team)
     @issues = FilterContext.new(@issues, params).execute
     @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
-
-    respond_to do |format|
-      format.html
-      format.atom { render layout: false }
-    end
   end
 
   def search
-    result = SearchContext.new(project_ids, params).execute
+    result = SearchContext.new(user_team.project_ids, params).execute
 
     @projects       = result[:projects]
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
     @wiki_pages     = result[:wiki_pages]
+    @teams          = result[:teams]
   end
 
   protected
-
-  def user_team
-    @user_team ||= UserTeam.find_by_path(params[:id])
-  end
 
   def projects
     @projects ||= user_team.projects.sorted_by_activity
   end
 
-  def project_ids
-    projects.map(&:id)
+  def user_team
+    @team ||= UserTeam.find_by_path(params[:id])
   end
 
-  def authorize_manage_user_team!
-    unless user_team.present? or can?(current_user, :manage_user_team, user_team)
-      return render_404
-    end
-  end
-
-  def authorize_admin_user_team!
-    unless user_team.owner == current_user || current_user.admin?
-      return render_404
-    end
-  end
 end

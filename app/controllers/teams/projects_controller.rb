@@ -8,9 +8,12 @@ class Teams::ProjectsController < Teams::ApplicationController
   end
 
   def new
-    @projects = Project.scoped
-    @projects = @projects.without_team(user_team) if user_team.projects.any?
+    user_team
+    @avaliable_projects = Project.scoped
+    @avaliable_projects = @avaliable_projects.without_team(user_team) if user_team.projects.any?
     #@projects.reject!(&:empty_repo?)
+
+    redirect_to team_projects_path(user_team), notice: "No avalible projects." unless @avaliable_projects.any?
   end
 
   def create
@@ -20,7 +23,7 @@ class Teams::ProjectsController < Teams::ApplicationController
       user_team.assign_to_projects(project_ids, access)
     end
 
-    redirect_to admin_team_path(user_team), notice: 'Projects was successfully added.'
+    redirect_to team_projects_path(user_team), notice: 'Team of users was successfully assgned to projects.'
   end
 
   def edit
@@ -29,7 +32,7 @@ class Teams::ProjectsController < Teams::ApplicationController
 
   def update
     if user_team.update_project_access(team_project, params[:greatest_project_access])
-      redirect_to admin_team_path(user_team), notice: 'Membership was successfully updated.'
+      redirect_to team_projects_path(user_team), notice: 'Access was successfully updated.'
     else
       render :edit
     end
@@ -37,13 +40,13 @@ class Teams::ProjectsController < Teams::ApplicationController
 
   def destroy
     user_team.resign_from_project(team_project)
-    redirect_to admin_team_path(user_team), notice: 'Project was successfully removed.'
+    redirect_to team_projects_path(user_team), notice: 'Team of users was successfully reassigned from project.'
   end
 
   private
 
   def team_project
-    @project ||= @team.projects.find_by_path(params[:id])
+    @project ||= user_team.projects.find_with_namespace(params[:id])
   end
 
 end

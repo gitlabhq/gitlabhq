@@ -4,6 +4,7 @@ class TeamMembersController < ProjectResourceController
   before_filter :authorize_admin_project!, except: [:index, :show]
 
   def index
+    @teams = UserTeam.scoped
   end
 
   def show

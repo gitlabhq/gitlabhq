@@ -1,6 +1,6 @@
 = render "team_head"
 
-= form_tag search_team_path(@user_team), method: :get, class: 'form-inline' do |f|
+= form_tag search_team_path(@team), method: :get, class: 'form-inline' do |f|
   .padded
     = label_tag :search do
       %strong Looking for
