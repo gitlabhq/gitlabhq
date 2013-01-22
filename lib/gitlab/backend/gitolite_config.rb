@@ -8,10 +8,11 @@ module Gitlab
     class PushError < StandardError; end
     class BrokenGitolite < StandardError; end
 
-    attr_reader :config_tmp_dir, :ga_repo, :conf
+    attr_reader :config_tmp_dir, :tmp_dir, :ga_repo, :conf
 
-    def config_tmp_dir
-      @config_tmp_dir ||= Rails.root.join('tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+    def initialize
+      @tmp_dir = Rails.root.join("tmp").to_s
+      @config_tmp_dir = File.join(@tmp_dir,"gitlabhq-gitolite-#{Time.now.to_i}")
     end
 
     def ga_repo
@@ -23,7 +24,7 @@ module Gitlab
 
     def apply
       Timeout::timeout(30) do
-        File.open(Rails.root.join('tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
+        File.open(File.join(tmp_dir, "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
             # Set exclusive lock
             # to prevent race condition
@@ -31,7 +32,7 @@ module Gitlab
 
             # Pull gitolite-admin repo
             # in tmp dir before do any changes
-            pull(config_tmp_dir)
+            pull
 
             # Build ga_repo object and @conf
             # to access gitolite-admin configuration
@@ -49,7 +50,7 @@ module Gitlab
 
             # Push gitolite-admin repo
             # to apply all changes
-            push(config_tmp_dir)
+            push
           ensure
             # Remove tmp dir
             # removing the gitolite folder first is important to avoid
@@ -192,16 +193,20 @@ module Gitlab
 
     private
 
-    def pull tmp_dir
-      Dir.mkdir tmp_dir
-      `git clone #{Gitlab.config.gitolite.admin_uri} #{tmp_dir}/gitolite`
+    def pull
+      # Create config tmp dir like "RAILS_ROOT/tmp/gitlabhq-gitolite-132545"
+      Dir.mkdir config_tmp_dir
 
-      unless File.exists?(File.join(tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
+      # Clone gitolite-admin repo into tmp dir
+      popen("git clone #{Gitlab.config.gitolite.admin_uri} #{config_tmp_dir}/gitolite", tmp_dir)
+
+      # Ensure file with config presents after cloning
+      unless File.exists?(File.join(config_tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
         raise PullError, "unable to clone gitolite-admin repo"
       end
     end
 
-    def push tmp_dir
+    def push
       output, status = popen('git add -A')
       raise "Git add failed." unless status.zero?
 
@@ -222,8 +227,8 @@ module Gitlab
       end
     end
 
-    def popen(cmd)
-      path = File.join(config_tmp_dir,'gitolite')
+    def popen(cmd, path = nil)
+      path ||= File.join(config_tmp_dir,'gitolite')
       vars = { "PWD" => path }
       options = { :chdir => path }
 
@@ -239,4 +244,3 @@ module Gitlab
     end
   end
 end
-
