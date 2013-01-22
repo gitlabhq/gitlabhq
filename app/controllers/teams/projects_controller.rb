@@ -1,4 +1,7 @@
 class Teams::ProjectsController < Teams::ApplicationController
+
+  skip_before_filter :authorize_manage_user_team!, only: [:index]
+
   def index
     @projects = user_team.projects
     @avaliable_projects = current_user.admin? ? Project.without_team(user_team) : (Project.personal(current_user) + current_user.projects).uniq

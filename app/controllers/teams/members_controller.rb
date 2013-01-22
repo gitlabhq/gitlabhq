@@ -1,6 +1,6 @@
 class Teams::MembersController < Teams::ApplicationController
   # Authorize
-  before_filter :authorize_manage_user_team!, only: [:new, :edit]
+  skip_before_filter :authorize_manage_user_team!, only: [:index]
 
   def index
     @members = @user_team.members
