@@ -1,7 +1,7 @@
 = render "projects/project_head"
 %h3.page_title
   Team Members
-  (#{@project.users_projects.count})
+  (#{@project.users.count})
   %small
     Read more about project permissions
     %strong= link_to "here", help_permissions_path, class: "vlink"
