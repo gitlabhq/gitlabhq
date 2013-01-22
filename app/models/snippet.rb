@@ -28,7 +28,7 @@ class Snippet < ActiveRecord::Base
   validates :project, presence: true
   validates :title, presence: true, length: { within: 0..255 }
   validates :file_name, presence: true, length: { within: 0..255 }
-  validates :content, presence: true, length: { within: 0..10000 }
+  validates :content, presence: true
 
   # Scopes
   scope :fresh, order("created_at DESC")
