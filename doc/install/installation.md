@@ -260,7 +260,7 @@ used for the `email.from` setting in `config/gitlab.yml`)
 
 ## Initialise Database and Activate Advanced Features
 
-    sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
+    sudo -u gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production
 
 
 ## Install Init Script
@@ -273,6 +273,13 @@ Download the init script (will be /etc/init.d/gitlab):
 Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
+    
+
+## Start Your GitLab Instance
+
+    sudo service gitlab start
+    # or
+    sudo /etc/init.d/gitlab restart
 
 
 ## Check Application Status
@@ -287,12 +294,6 @@ To make sure you didn't miss anything run a more thorough check with:
 
 If all items are green, then congratulations on successfully installing GitLab!
 However there are still a few steps left.
-
-## Start Your GitLab Instance
-
-    sudo service gitlab start
-    # or
-    sudo /etc/init.d/gitlab restart
 
 
 # 7. Nginx
