@@ -1,0 +1,44 @@
+.row
+  .span8
+    %h3.page_title
+      = image_tag gravatar_icon(@user.email, 90), class: "avatar s90"
+      = @user.name
+      %span.light (@#{@user.username})
+    .clearfix
+    %hr
+    %h5 Recent events
+    = render @events
+  .span4
+    .ui-box
+      %h5.title Profile
+      %ul.well-list
+        %li
+          %strong Email
+          %span.right= mail_to @user.email
+        - unless @user.skype.blank?
+          %li
+            %strong Skype
+            %span.right= @user.skype
+        - unless @user.linkedin.blank?
+          %li
+            %strong LinkedIn
+            %span.right= @user.linkedin
+        - unless @user.twitter.blank?
+          %li
+            %strong Twitter
+            %span.right= @user.twitter
+        - unless @user.bio.blank?
+          %li
+            %strong Bio
+            %span.right= @user.bio
+    .ui-box
+      %h5.title Projects
+      %ul.well-list
+        - @projects.each do |project|
+          %li
+            = link_to project_path(project), class: dom_class(project) do
+              - if project.namespace
+                = project.namespace.human_name
+                \/
+              %strong.well-title
+                = truncate(project.name, length: 45)
