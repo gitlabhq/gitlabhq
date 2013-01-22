@@ -56,6 +56,7 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
+
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
         put :project_update
@@ -63,26 +64,31 @@ Gitlab::Application.routes.draw do
         delete :remove_project
       end
     end
+
+    resources :teams, constraints: { id: /[^\/]+/ } do
+      scope module: :teams do
+        resources :members,   only: [:edit, :update, :destroy, :new, :create]
+        resources :projects,  only: [:edit, :update, :destroy, :new, :create], constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
+      end
+    end
+
+    resources :hooks, only: [:index, :create, :destroy] do
+      get :test
+    end
+
+    resource :logs, only: [:show]
+    resource :resque, controller: 'resque', only: [:show]
+
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create] do
       member do
         get :team
         put :team_update
       end
-      scope module: :projects do
+      scope module: :projects, constraints: { id: /[^\/]+/ } do
         resources :members, only: [:edit, :update, :destroy]
       end
     end
-    resources :teams do #, constraints: { id: /[^\/]+/ } do end
-      scope module: :teams do
-        resources :members, only: [:edit, :update, :destroy, :new, :create]
-        resources :projects, only: [:edit, :update, :destroy, :new, :create]
-      end
-    end
-    resources :hooks, only: [:index, :create, :destroy] do
-      get :test
-    end
-    resource :logs, only: [:show]
-    resource :resque, controller: 'resque', only: [:show]
+
     root to: "dashboard#index"
   end
 
@@ -116,7 +122,6 @@ Gitlab::Application.routes.draw do
   get "dashboard/issues"         => "dashboard#issues"
   get "dashboard/merge_requests" => "dashboard#merge_requests"
 
-
   #
   # Groups Area
   #
@@ -130,19 +135,18 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  resources :teams do
+  #
+  # Teams Area
+  #
+  resources :teams, constraints: { id: /[^\/]+/ } do
     member do
       get :issues
       get :merge_requests
       get :search
-      post :delegate_projects
-      delete :relegate_project
-      put :update_access
     end
     scope module: :teams do
-      resources :members
-      resources :projects, only: [:index, :show] do
-      end
+      resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
     end
     collection do
       get :search
