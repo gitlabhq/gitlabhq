@@ -29,7 +29,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def update
-    status = Projects::UpdateContext.new(project, current_user, params).execute(:admin)
+    status = ::Projects::UpdateContext.new(project, current_user, params).execute(:admin)
 
     if status
       redirect_to [:admin, @project], notice: 'Project was successfully updated.'
