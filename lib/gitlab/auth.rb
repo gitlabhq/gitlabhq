@@ -7,7 +7,7 @@ module Gitlab
       uid = uid.to_s.force_encoding("utf-8")
       name = auth.info.name.force_encoding("utf-8")
       email = auth.info.email.downcase unless auth.info.email.nil?
-      username = auth.info.username
+      username = auth.info.username || email.match(/^[^@]*/)[0]
 
       if @user = User.find_by_provider_and_extern_uid(provider, uid)
         @user
@@ -33,7 +33,7 @@ module Gitlab
           provider: provider,
           name: name,
           email: email,
-          username: username, # email.match(/^[^@]*/)[0],
+          username: username,
           password: password,
           password_confirmation: password,
           projects_limit: Gitlab.config.default_projects_limit,
