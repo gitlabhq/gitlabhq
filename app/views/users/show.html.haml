@@ -3,7 +3,10 @@
     %h3.page_title
       = image_tag gravatar_icon(@user.email, 90), class: "avatar s90"
       = @user.name
-      %span.light (@#{@user.username})
+      %br
+      %small @#{@user.username}
+      %br
+      %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     .clearfix
     %hr
     %h5 Recent events
@@ -31,14 +34,4 @@
           %li
             %strong Bio
             %span.right= @user.bio
-    .ui-box
-      %h5.title Projects
-      %ul.well-list
-        - @projects.each do |project|
-          %li
-            = link_to project_path(project), class: dom_class(project) do
-              - if project.namespace
-                = project.namespace.human_name
-                \/
-              %strong.well-title
-                = truncate(project.name, length: 45)
+    = render 'projects'

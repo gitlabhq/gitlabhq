@@ -21,6 +21,10 @@ class Team
     end
   end
 
+  def get_tm user_id
+    project.users_projects.find_by_user_id(user_id)
+  end
+
   def add_user(user, access)
     add_users_ids([user.id], access)
   end
