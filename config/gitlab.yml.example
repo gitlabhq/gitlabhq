@@ -29,7 +29,7 @@ gitlab:
   # Email address used in the "From" field in mails sent by GitLab
   email_from: gitlab@localhost
 
-  # Email address of your support contanct (default: same as email_from)
+  # Email address of your support contact (default: same as email_from)
   support_email: support@localhost
 
   ## Project settings
