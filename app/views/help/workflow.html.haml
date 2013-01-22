@@ -1,40 +1,38 @@
-%h3.page_title Workflow
-.back_link
-  = link_to help_path do
-    &larr; to index
-%hr
+= render layout: 'help/layout' do
+  %h3.page_title Workflow
+  %br
 
-%ol.help
-  %li
-    %p Clone project
-    .bash
-      %pre.dark
-        git clone git@example.com:project-name.git
+  %ol.help
+    %li
+      %p Clone project
+      .bash
+        %pre.dark
+          git clone git@example.com:project-name.git
 
-  %li
-    %p Create branch with your feature
-    .bash
-      %pre.dark
-        git checkout -b $feature_name
+    %li
+      %p Create branch with your feature
+      .bash
+        %pre.dark
+          git checkout -b $feature_name
 
-  %li
-    %p Write code. Commit changes
-    .bash
-      %pre.dark
-        git commit -am "My feature is ready"
+    %li
+      %p Write code. Commit changes
+      .bash
+        %pre.dark
+          git commit -am "My feature is ready"
 
-  %li
-    %p Push your branch to GitLab
-    .bash
-      %pre.dark
-        git push origin $feature_name
+    %li
+      %p Push your branch to GitLab
+      .bash
+        %pre.dark
+          git push origin $feature_name
 
-  %li
-    %p Review your code on Commits page
+    %li
+      %p Review your code on Commits page
 
-  %li
-    %p Create a merge request
+    %li
+      %p Create a merge request
 
-  %li
-    %p Your team lead will review code &amp; merge it to main branch
+    %li
+      %p Your team lead will review code &amp; merge it to main branch
 
