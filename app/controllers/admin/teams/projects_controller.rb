@@ -1,6 +1,4 @@
 class Admin::Teams::ProjectsController < Admin::Teams::ApplicationController
-  before_filter :team_project, only: [:edit, :destroy, :update]
-
   def new
     @projects = Project.scoped
     @projects = @projects.without_team(@team) if @team.projects.any?
@@ -18,10 +16,11 @@ class Admin::Teams::ProjectsController < Admin::Teams::ApplicationController
   end
 
   def edit
+    team_project
   end
 
   def update
-    if @team.update_project_access(@project, params[:greatest_project_access])
+    if @team.update_project_access(team_project, params[:greatest_project_access])
       redirect_to admin_team_path(@team), notice: 'Membership was successfully updated.'
     else
       render :edit
@@ -29,14 +28,14 @@ class Admin::Teams::ProjectsController < Admin::Teams::ApplicationController
   end
 
   def destroy
-    @team.resign_from_project(@project)
+    @team.resign_from_project(team_project)
     redirect_to admin_team_path(@team), notice: 'Project was successfully removed.'
   end
 
-  private
+  protected
 
   def team_project
-    @project = @team.projects.find_by_path(params[:id])
+    @project ||= @team.projects.find_by_path(params[:id])
   end
 
 end
