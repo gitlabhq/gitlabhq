@@ -1,14 +1,12 @@
-%h3 System hooks
-.back_link
-  = link_to :back do
-    &larr; back
-%hr
+= render layout: 'help/layout' do
+  %h3.page_title System hooks
+  %br
 
-%p.slead
-  Your GitLab instance can perform HTTP POST requests on the following events: create_project, delete_project, create_user, delete_user, change_team_member.
-  %br
-  %br
-  System Hooks can be used, e.g. for logging or changing information in a LDAP server.
-  %br
-%h5 Hooks request example:
-= render "admin/hooks/data_ex"
+  %p.slead
+    Your GitLab instance can perform HTTP POST requests on the following events: create_project, delete_project, create_user, delete_user, change_team_member.
+    %br
+    %br
+    System Hooks can be used, e.g. for logging or changing information in a LDAP server.
+    %br
+  %h5 Hooks request example:
+  = render "admin/hooks/data_ex"
