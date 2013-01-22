@@ -29,6 +29,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def update
+    project.creator = current_user unless project.creator
+
     status = ::Projects::UpdateContext.new(project, current_user, params).execute(:admin)
 
     if status
