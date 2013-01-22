@@ -1,0 +1,37 @@
+.row
+  .span8
+    %h3.page_title
+      = image_tag gravatar_icon(@user.email, 90), class: "avatar s90"
+      = @user.name
+      %br
+      %small @#{@user.username}
+      %br
+      %small member since #{@user.created_at.stamp("Nov 12, 2031")}
+    .clearfix
+    %hr
+    %h5 Recent events
+    = render @events
+  .span4
+    .ui-box
+      %h5.title Profile
+      %ul.well-list
+        %li
+          %strong Email
+          %span.right= mail_to @user.email
+        - unless @user.skype.blank?
+          %li
+            %strong Skype
+            %span.right= @user.skype
+        - unless @user.linkedin.blank?
+          %li
+            %strong LinkedIn
+            %span.right= @user.linkedin
+        - unless @user.twitter.blank?
+          %li
+            %strong Twitter
+            %span.right= @user.twitter
+        - unless @user.bio.blank?
+          %li
+            %strong Bio
+            %span.right= @user.bio
+    = render 'projects'

@@ -1,3 +1,7 @@
+v 4.2.0
+  - User show page. Via /u/username
+  - Show help contents on pages for better navigation
+
 v 4.1.0
   - Optional Sign-Up
   - Discussions
