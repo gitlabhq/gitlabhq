@@ -17,7 +17,7 @@ class WebHook < ActiveRecord::Base
   attr_accessible :url
 
   # HTTParty timeout
-  default_timeout 10
+  default_timeout 60
 
   validates :url, presence: true,
                   format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
@@ -25,12 +25,12 @@ class WebHook < ActiveRecord::Base
   def execute(data)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
-      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
+      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json", "Content-Length" => "0" })
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       WebHook.post(post_url,
                    body: data.to_json,
-                   headers: {"Content-Type" => "application/json"},
+                   headers: {"Content-Type" => "application/json", "Content-Length" => "0"},
                    basic_auth: {username: parsed_url.user, password: parsed_url.password})
     end
   end
