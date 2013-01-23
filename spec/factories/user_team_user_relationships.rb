@@ -2,9 +2,9 @@
 
 FactoryGirl.define do
   factory :user_team_user_relationship do
-    user_id 1
-    user_team_id 1
+    user
+    user_team
     group_admin false
-    permission 1
+    permission { UsersProject::MASTER }
   end
 end
