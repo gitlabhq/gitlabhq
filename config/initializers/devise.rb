@@ -207,7 +207,7 @@ Devise.setup do |config|
 
   gl = Gitlab.config
 
-  gl.omniauth_providers.each_pair do |provider,args|
+  gl.omniauth.providers.each_pair do |provider,args|
     if Array == args.class
       # An Array from the configuration will be expanded.
       config.omniauth provider.to_sym, *args

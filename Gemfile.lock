@@ -520,11 +520,7 @@ DEPENDENCIES
   omniauth (~> 1.1.1)
   omniauth-github
   omniauth-google-oauth2
-<<<<<<< HEAD
-  omniauth-ldap!
   omniauth-shibboleth (~> 1.0.7)
-=======
->>>>>>> 28fd793ff15ff99011940fe927380ef3381b71c4
   omniauth-twitter
   pg
   poltergeist!
