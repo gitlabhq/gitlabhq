@@ -15,6 +15,7 @@
         %span Namespace
       .input
         = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen'}
+
   %hr
   %p.padded
     New projects are private by default. You choose who can see the project and commit to repository.

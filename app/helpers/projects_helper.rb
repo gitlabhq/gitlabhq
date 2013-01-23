@@ -3,6 +3,10 @@ module ProjectsHelper
     @project.users_projects.sort_by(&:project_access).reverse.group_by(&:project_access)
   end
 
+  def grouper_project_teams(project)
+    @project.user_team_project_relationships.sort_by(&:greatest_access).reverse.group_by(&:greatest_access)
+  end
+
   def remove_from_project_team_message(project, user)
     "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
