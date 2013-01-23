@@ -286,6 +286,7 @@ var PerLineNotes = {
         $(this).closest("tr").after(form);
         form.find("#note_line_code").val($(this).data("lineCode"));
         form.show();
+        form.find('.line-note-text').focus();
         e.preventDefault();
       });
 
