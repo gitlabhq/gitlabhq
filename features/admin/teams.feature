@@ -18,8 +18,6 @@ Feature: Admin Teams
     When I select user "John" from user list as "Developer"
     And submit form with new team member info
     Then I should see "John" in teams members list as "Developer"
-    When I visit "John" user admin page
-    Then I should see "HardCoders" team in teams table
 
   Scenario: Assign team to existing project
     When I visit admin teams page
