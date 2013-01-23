@@ -292,7 +292,7 @@ However there are still a few steps left.
 
     sudo service gitlab start
     # or
-    sudo /etc/init.d/gitlab restart
+    sudo /etc/init.d/gitlab start
 
 
 # 7. Nginx
@@ -302,7 +302,7 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 "Advanced Setup Tips" section.
 
 ## Installation
-    sudo apt-get install nginx
+    sudo apt-get -y install nginx
 
 ## Site Configuration
 
