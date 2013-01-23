@@ -121,7 +121,7 @@
       - if @project = current_user.authorized_projects.first
         - if issue = @project.issues.first
           %p For example in your #{link_to @project.name, project_path(@project)} project, writing:
-          %pre= "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
+          %pre= "This is related to ##{issue.id}. @#{current_user.username} is working on solving it."
           %p becomes:
-          = markdown "This is related to ##{issue.id}. @#{current_user.name} is working on solving it."
+          = markdown "This is related to ##{issue.id}. @#{current_user.username} is working on solving it."
         - @project = nil # Prevent this from bubbling up to page title
