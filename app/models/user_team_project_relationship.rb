@@ -10,6 +10,10 @@ class UserTeamProjectRelationship < ActiveRecord::Base
 
   scope :with_project, ->(project){ where(project_id: project.id) }
 
+  def team_name
+    user_team.name
+  end
+
   private
 
   def check_greatest_access

@@ -269,6 +269,18 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    scope module: :projects do
+      resources :teams, only: [] do
+        collection do
+          get :avaliable
+          post :assign
+        end
+        member do
+          delete :resign
+        end
+      end
+    end
+
     resources :notes, only: [:index, :create, :destroy] do
       collection do
         post :preview
