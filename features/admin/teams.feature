@@ -1,9 +1,6 @@
 Feature: Admin Teams
   Background:
     Given I sign in as an admin
-    #And there are projects in system
-    #And system has users
-    #And I have own project
     And Create gitlab user "John"
 
   Scenario: Create a team

@@ -30,11 +30,8 @@ class Admin::Teams::MembersController < Admin::Teams::ApplicationController
   end
 
   def destroy
-    if user_team.remove_member(team_member)
-      redirect_to admin_team_path(user_team), notice: "Member #{team_member.name} was successfully removed from Team of users."
-    else
-      redirect_to admin_team_members(user_team), notice: "Something is wrong."
-    end
+    user_team.remove_member(team_member)
+    redirect_to admin_team_path(user_team), notice: "Member #{team_member.name} was successfully removed from Team of users."
   end
 
   protected

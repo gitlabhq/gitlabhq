@@ -83,8 +83,7 @@ class AdminTeams < Spinach::FeatureSteps
   end
 
   Then 'I should see empty projects table' do
-    projects_list = find("#projects_list")
-    projects_list.has_content?("Relegate").must_equal false
+    page.has_no_css?("#projects_list").must_equal true
   end
 
   When 'I select project "Shop" with max access "Reporter"' do
@@ -177,11 +176,13 @@ class AdminTeams < Spinach::FeatureSteps
   end
 
   And 'I should see "Shop" in projects list' do
-
+    project = Project.find_by_name("Shop")
+    find_in_list("#projects_list .project", project).must_equal true
   end
 
   When 'I click on remove "Jimm" user link' do
-
+    user = User.find_by_name("Jimm")
+    click_link "remove_member_#{user.id}"
   end
 
   Then 'I should be redirected to "HardCoders" team admin page' do
@@ -189,15 +190,18 @@ class AdminTeams < Spinach::FeatureSteps
   end
 
   And 'I should not to see "Jimm" user in members list' do
-
+    user = User.find_by_name("Jimm")
+    find_in_list("#members_list .member", user).must_equal false
   end
 
   When 'I click on "Relegate" link on "Shop" project' do
-
+    project = Project.find_by_name("Shop")
+    click_link "relegate_project_#{project.id}"
   end
 
   Then 'I should see projects liston team page without "Shop" project' do
-
+    project = Project.find_by_name("Shop")
+    find_in_list("#projects_list .project", project).must_equal false
   end
 
   Then 'I should see "John" user with role "Reporter" in team table' do
