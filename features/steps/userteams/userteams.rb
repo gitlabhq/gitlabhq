@@ -175,7 +175,12 @@ class Userteams < Spinach::FeatureSteps
     end
 
     And 'I select user "John" from list with role "Reporter"' do
-      pending 'step not implemented'
+      user = User.find_by_name("John")
+      within "#team_members" do
+        select user.name, :from => "user_ids"
+        select "Reporter", :from => "default_project_access"
+      end
+      click_button "Add"
     end
 
     Then 'I should see user "John" in team list' do
@@ -185,7 +190,7 @@ class Userteams < Spinach::FeatureSteps
     end
 
     And 'I have my own project without teams' do
-      project = create :project, creator: current_user
+      @project = create :project, creator: current_user
     end
 
     And 'I visit my team page' do
@@ -197,27 +202,26 @@ class Userteams < Spinach::FeatureSteps
       click_link "Projects"
     end
 
+    And 'I click link "Assign project to Team"' do
+      click_link "Assign project to Team"
+    end
+
     Then 'I should see form with my own project in avaliable projects list' do
-      project = current_user.projects.first
       projects_select = find("#project_ids")
-      projects_select.should have_content(project.name)
+      projects_select.should have_content(@project.name)
     end
 
     When 'I submit form with selected project and max access' do
-      project = current_user.projects.first
-      within "#team_projects" do
-        select project.name, :from => "project_ids"
+      within "#assign_projects" do
+        select @project.name, :from => "project_ids"
         select "Reporter", :from => "greatest_project_access"
       end
       click_button "Add"
     end
 
     Then 'I should see my own project in team projects list' do
-      project = current_user.projects.first
-      projects = all("table .project")
-      projects.each do |project_row|
-        project_row.should have_content(project.name)
-      end
+      projects = find(".projects-table")
+      projects.should have_content(@project.name)
     end
 
     When 'I click link "New Team Member"' do
@@ -227,7 +231,7 @@ class Userteams < Spinach::FeatureSteps
   protected
 
   def current_team
-    @user_team ||= Team.first
+    @user_team ||= UserTeam.first
   end
 
   def project

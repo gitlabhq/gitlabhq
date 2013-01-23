@@ -52,7 +52,7 @@
           %th Team access
           %th.cred.span3 Danger Zone!
       - @team.members.each do |member|
-        %tr.member
+        %tr.member{ class: "user_#{member.id}"}
           %td
             = link_to [:admin, member] do
               = member.name
@@ -62,7 +62,7 @@
           %td.bgred
             = link_to 'Edit', edit_admin_team_member_path(@team, member), class: "btn small"
             &nbsp;
-            = link_to 'Remove', admin_team_member_path(@team, member), confirm: 'Remove member from team. Are you sure?', method: :delete, class: "btn danger small"
+            = link_to 'Remove', admin_team_member_path(@team, member), confirm: 'Remove member from team. Are you sure?', method: :delete, class: "btn danger small", id: "remove_member_#{member.id}"
 
 %fieldset
   %legend
@@ -84,7 +84,7 @@
           %td.bgred
             = link_to 'Edit', edit_admin_team_project_path(@team, project), class: "btn small"
             &nbsp;
-            = link_to 'Relegate', admin_team_project_path(@team, project), confirm: 'Remove project from team. Are you sure?', method: :delete, class: "btn danger small"
+            = link_to 'Relegate', admin_team_project_path(@team, project), confirm: 'Remove project from team. Are you sure?', method: :delete, class: "btn danger small", id: "relegate_project_#{project.id}"
 
 :javascript
   $(function(){

@@ -20,7 +20,7 @@ class Teams::MembersController < Teams::ApplicationController
       user_team.add_members(user_ids, access, is_admin)
     end
 
-    redirect_to team_path(user_team), notice: 'Members was successfully added into Team of users.'
+    redirect_to team_members_path(user_team), notice: 'Members was successfully added into Team of users.'
   end
 
   def edit
@@ -30,18 +30,15 @@ class Teams::MembersController < Teams::ApplicationController
   def update
     options = {default_projects_access: params[:default_project_access], group_admin: params[:group_admin]}
     if user_team.update_membership(team_member, options)
-      redirect_to team_path(user_team), notice: "Membership for #{team_member.name} was successfully updated in Team of users."
+      redirect_to team_members_path(user_team), notice: "Membership for #{team_member.name} was successfully updated in Team of users."
     else
       render :edit
     end
   end
 
   def destroy
-    if user_team.remove_member(team_member)
-      redirect_to team_path(user_team), notice: "Member #{team_member.name} was successfully removed from Team of users."
-    else
-      redirect_to team_members(user_team), notice: "Something is wrong."
-    end
+    user_team.remove_member(team_member)
+    redirect_to team_path(user_team), notice: "Member #{team_member.name} was successfully removed from Team of users."
   end
 
   protected

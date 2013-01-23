@@ -70,6 +70,7 @@ Feature: UserTeams
     And I have my own project without teams
     And I visit my team page
     When I click on link "Projects"
+    And I click link "Assign project to Team"
     Then I should see form with my own project in avaliable projects list
     When I submit form with selected project and max access
     Then I should see my own project in team projects list
