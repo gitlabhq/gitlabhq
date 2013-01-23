@@ -1,4 +1,4 @@
-- if Gitlab.config.omniauth.enabled? and not Gitlab.config.omniauth.allow_single_sign_on?
+- if Gitlab.config.omniauth.enabled and not Gitlab.config.omniauth.allow_single_sign_on
   %fieldset
     %legend Social Accounts
     .oauth_select_holder
@@ -29,7 +29,7 @@
             %span You don`t have one yet. Click generate to fix it.
             = f.submit 'Generate', class: "btn success btn-build-token"
 
-- if not Gitlab.config.omniauth.allow_single_sign_on?
+- if not Gitlab.config.omniauth.allow_single_sign_on
   %fieldset
     %legend Password
     = form_for @user, url: update_password_profile_path, method: :put do |f|
