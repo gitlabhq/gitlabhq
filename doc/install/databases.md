@@ -14,7 +14,8 @@ GitLab supports the following databases:
     # Login to MySQL
     $ mysql -u root -p
 
-    # Create a user for GitLab. (change $password to a real password)
+    # Create a user for GitLab.
+    # (Change $password to a real password)
     mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
 
     # Create the GitLab production database
