@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe GitlabMarkdownHelper do
   include ApplicationHelper
+  include IssuesHelper
 
   let!(:project) { create(:project) }
 

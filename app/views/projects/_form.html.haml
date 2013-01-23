@@ -25,6 +25,10 @@
         %span.descr Lightweight issue tracking system for this project
 
     .control-group
+      = f.label :issues_tracker, "Issues tracker", class: 'control-label'
+      .input= f.select(:issues_tracker, Project.issues_tracker.values, {}, { disabled: !@project.issues_enabled })
+
+    .control-group
       = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
       .controls
         = f.check_box :merge_requests_enabled
