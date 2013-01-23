@@ -17,7 +17,7 @@ class UserTeam < ActiveRecord::Base
 
   scope :with_member, ->(user){ joins(:user_team_user_relationships).where(user_team_user_relationships: {user_id: user.id}) }
   scope :with_project, ->(project){ joins(:user_team_project_relationships).where(user_team_project_relationships: {project_id: project})}
-  scope :without_project, ->(project){ where("id NOT IN (:ids)", ids: with_project(project))}
+  scope :without_project, ->(project){ where("id NOT IN (:ids)", ids: (a = with_project(project); a.blank? ? 0 : a))}
   scope :created_by, ->(user){ where(owner_id: user) }
 
   class << self
