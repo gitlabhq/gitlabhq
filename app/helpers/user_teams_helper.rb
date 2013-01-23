@@ -9,9 +9,9 @@ module UserTeamsHelper
 
     case entity
     when 'issue' then
-      issues_team_path(@user_team, options)
+      issues_team_path(@team, options)
     when 'merge_request'
-      merge_requests_team_path(@user_team, options)
+      merge_requests_team_path(@team, options)
     end
   end
 

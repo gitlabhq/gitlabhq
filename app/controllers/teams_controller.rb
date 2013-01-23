@@ -54,6 +54,7 @@ class TeamsController < ApplicationController
 
   # Get authored or assigned open merge requests
   def merge_requests
+    projects
     @merge_requests = MergeRequest.of_user_team(user_team)
     @merge_requests = FilterContext.new(@merge_requests, params).execute
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
@@ -61,6 +62,7 @@ class TeamsController < ApplicationController
 
   # Get only assigned issues
   def issues
+    projects
     @issues = Issue.of_user_team(user_team)
     @issues = FilterContext.new(@issues, params).execute
     @issues = @issues.recent.page(params[:page]).per(20)
