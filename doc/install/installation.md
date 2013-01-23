@@ -149,8 +149,9 @@ Fix the directory permissions for the repositories:
     sudo chown -R git:git /home/git/repositories/
 
 
-## Add domains to list to the list of known hosts
+## Add domains to the list of known hosts
 
+    # SSH into the following hosts so that they're added to known_hosts ...
     sudo -u gitlab -H ssh git@localhost
     sudo -u gitlab -H ssh git@YOUR_DOMAIN_NAME
     sudo -u gitlab -H ssh git@YOUR_GITOLITE_DOMAIN_NAME
