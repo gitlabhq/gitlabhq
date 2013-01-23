@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :user_team_project_relationship do
-    project_id 1
-    user_team_id 1
-    greatest_access 1
+    project
+    user_team
+    greatest_access { UsersProject::MASTER }
   end
 end

@@ -1,6 +1,6 @@
 #
 # * Filter merge requests
-# 
+#
 @merge_requestsPage = ->
   $('#assignee_id').chosen()
   $('#milestone_id').chosen()
@@ -8,16 +8,16 @@
     $(this).closest('form').submit()
 
 class MergeRequest
-  
+
   constructor: (@opts) ->
     this.$el = $('.merge-request')
     @diffs_loaded = false
     @commits_loaded = false
-    
+
     this.activateTab(@opts.action)
-    
+
     this.bindEvents()
-    
+
     this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
@@ -28,7 +28,7 @@ class MergeRequest
 
   initMergeWidget: ->
     this.showState( @opts.current_state )
-    
+
     if this.$('.automerge_widget').length and @opts.check_enable
       $.get @opts.url_to_automerge_check, (data) =>
         this.showState( data.state )
@@ -42,12 +42,12 @@ class MergeRequest
   bindEvents: ->
     this.$('.nav-tabs').on 'click', 'a', (event) =>
       a = $(event.currentTarget)
-      
+
       href = a.attr('href')
       History.replaceState {path: href}, document.title, href
-      
+
       event.preventDefault()
-      
+
     this.$('.nav-tabs').on 'click', 'li', (event) =>
       this.activateTab($(event.currentTarget).data('action'))
 
