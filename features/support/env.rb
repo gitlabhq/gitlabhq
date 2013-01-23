@@ -21,7 +21,6 @@ Dir["#{Rails.root}/features/steps/shared/*.rb"].each {|file| require file}
 include GitoliteStub
 
 WebMock.allow_net_connect!
-Spinach.config.save_and_open_page_on_failure = true
 #
 # JS driver
 #
