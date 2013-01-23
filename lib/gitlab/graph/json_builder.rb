@@ -16,6 +16,7 @@ module Gitlab
 
         @commits = collect_commits
         @days = index_commits
+        @space = 0
       end
 
       def to_json(*args)
@@ -97,8 +98,8 @@ module Gitlab
         if leaves.empty?
           return
         end
-        space = find_free_space(leaves, map)
-        leaves.each{|l| l.space = space}
+        @space = find_free_space(leaves, map)
+        leaves.each{|l| l.space = @space}
         # and mark it as reserved
         min_time = leaves.last.time
         parents = leaves.last.parents.collect
@@ -115,7 +116,7 @@ module Gitlab
         else
           max_time = parent_time - 1
         end
-        mark_reserved(min_time..max_time, space)
+        mark_reserved(min_time..max_time, @space)
 
         # Visit branching chains
         leaves.each do |l|
@@ -139,9 +140,10 @@ module Gitlab
           reserved += @_reserved[day]
         end
         space = base_space(leaves, map)
-        while reserved.include? space do
+        while (reserved.include? space) || (space == @space) do
           space += 1
         end
+
         space
       end
 
