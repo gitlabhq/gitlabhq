@@ -40,4 +40,31 @@ module IssuesHelper
   def issues_active_milestones
     @project.milestones.active.order("id desc").all
   end
+
+  def url_for_issue(issue_id)
+    if @project.issues_tracker ==  Project.issues_tracker.default_value
+      url = project_issue_url project_id: @project, id: issue_id
+    else
+      url = Settings[:issues_tracker][@project.issues_tracker]["issues_url"]
+      url.gsub(':id', issue_id.to_s).gsub(':project_id', @project.id.to_s)
+    end
+  end
+
+  def title_for_issue(issue_id)
+    if issue = @project.issues.where(id: issue_id).first
+      issue.title
+    else
+      ""
+    end
+  end
+
+  def issue_exists?(issue_id)
+    return false if @project.nil?
+
+    if @project.issues_tracker == Project.issues_tracker.default_value
+      @project.issues.where(id: issue_id).first.present?
+    else
+      true
+    end
+  end
 end

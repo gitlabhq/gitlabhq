@@ -7,6 +7,7 @@
 # 2. Replace gitlab -> host with your domain
 # 3. Replace gitlab -> email_from
 
+<<<<<<< HEAD
 production: &base
   #
   # 1. GitLab app settings
@@ -36,6 +37,11 @@ production: &base
     default_projects_limit: 10
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
     # username_changing_enabled: false # default: true - User can change her username/namespace
+
+  ## Available issues trackers
+  issues_tracker:
+    redmine:
+      issues_url: "http://redmine.sample/issues/:id"
 
   ## Gravatar
   gravatar:

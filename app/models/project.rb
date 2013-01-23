@@ -11,6 +11,7 @@
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
+#  issues_tracker         :string           not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
@@ -22,10 +23,11 @@ require "grit"
 
 class Project < ActiveRecord::Base
   include Gitolited
+  extend Enumerize
 
   class TransferError < StandardError; end
 
-  attr_accessible :name, :path, :description, :default_branch,
+  attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
     :issues_enabled, :wall_enabled, :merge_requests_enabled,
     :wiki_enabled, :public, :import_url, as: [:default, :admin]
 
@@ -92,6 +94,8 @@ class Project < ActiveRecord::Base
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
+
+  enumerize :issues_tracker, :in => (Settings[:issues_tracker].keys).append(:gitlab), :default => :gitlab
 
   class << self
     def abandoned
