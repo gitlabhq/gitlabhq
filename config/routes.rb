@@ -21,7 +21,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.gitolite.repos_path,
     upload_pack:  Gitlab.config.gitolite.upload_pack,
     receive_pack: Gitlab.config.gitolite.receive_pack
-  }), at: '/', constraints: lambda { |request| /[-\/\w\.-]+\.git\//.match(request.path_info) }
+  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }
 
   #
   # Help
@@ -56,6 +56,7 @@ Gitlab::Application.routes.draw do
         put :unblock
       end
     end
+
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
         put :project_update
@@ -63,18 +64,31 @@ Gitlab::Application.routes.draw do
         delete :remove_project
       end
     end
+
+    resources :teams, constraints: { id: /[^\/]+/ } do
+      scope module: :teams do
+        resources :members,   only: [:edit, :update, :destroy, :new, :create]
+        resources :projects,  only: [:edit, :update, :destroy, :new, :create], constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
+      end
+    end
+
+    resources :hooks, only: [:index, :create, :destroy] do
+      get :test
+    end
+
+    resource :logs, only: [:show]
+    resource :resque, controller: 'resque', only: [:show]
+
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create] do
       member do
         get :team
         put :team_update
       end
+      scope module: :projects, constraints: { id: /[^\/]+/ } do
+        resources :members, only: [:edit, :update, :destroy]
+      end
     end
-    resources :team_members, only: [:edit, :update, :destroy]
-    resources :hooks, only: [:index, :create, :destroy] do
-      get :test
-    end
-    resource :logs, only: [:show]
-    resource :resque, controller: 'resque', only: [:show]
+
     root to: "dashboard#index"
   end
 
@@ -108,7 +122,6 @@ Gitlab::Application.routes.draw do
   get "dashboard/issues"         => "dashboard#issues"
   get "dashboard/merge_requests" => "dashboard#merge_requests"
 
-
   #
   # Groups Area
   #
@@ -119,6 +132,24 @@ Gitlab::Application.routes.draw do
       get :search
       get :people
       post :team_members
+    end
+  end
+
+  #
+  # Teams Area
+  #
+  resources :teams, constraints: { id: /[^\/]+/ } do
+    member do
+      get :issues
+      get :merge_requests
+      get :search
+    end
+    scope module: :teams do
+      resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
+    end
+    collection do
+      get :search
     end
   end
 
@@ -235,6 +266,18 @@ Gitlab::Application.routes.draw do
         # from another project
         get :import
         post :apply_import
+      end
+    end
+
+    scope module: :projects do
+      resources :teams, only: [] do
+        collection do
+          get :avaliable
+          post :assign
+        end
+        member do
+          delete :resign
+        end
       end
     end
 

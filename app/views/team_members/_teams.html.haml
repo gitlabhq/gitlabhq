@@ -1,0 +1,16 @@
+- grouper_project_teams(@project).each do |access, teams|
+  .ui-box
+    %h5.title
+      = UserTeam.access_roles.key(access).pluralize
+      %small= teams.size
+    %ul.well-list
+      - teams.sort_by(&:team_name).each do |tofr|
+        = render(partial: 'team_members/show_team', locals: {team_rel: tofr})
+
+
+:javascript
+  $(function(){
+    $('.repo-access-select, .project-access-select').live("change", function() {
+      $(this.form).submit();
+    });
+  })
