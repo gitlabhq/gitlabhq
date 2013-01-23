@@ -121,7 +121,7 @@
           if (c.space == this.commits[i].space) {
             r.path([
               "M", x, y,
-              "L", x - 20 * (c.time + 1), y
+              "L", cx, cy
             ]).attr({
               stroke: this.colors[c.space], 
               "stroke-width": 2
