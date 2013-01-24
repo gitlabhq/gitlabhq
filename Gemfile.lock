@@ -309,6 +309,8 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.3.1)
+    pry-rails (0.2.2)
+      pry (>= 0.9.10)
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.1)
       railties (~> 3.1)
@@ -521,9 +523,9 @@ DEPENDENCIES
   omniauth-twitter
   pg
   poltergeist!
-  pry
+  pry-rails
   pygments.rb!
-  quiet_assets (~> 1.0.1)
+  quiet_assets
   rack-mini-profiler
   rails (= 3.2.11)
   rails-dev-tweaks

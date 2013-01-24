@@ -7,7 +7,6 @@ describe CommitController do
 
   before do
     sign_in(user)
-
     project.team << [user, :master]
   end
 
@@ -57,16 +56,16 @@ describe CommitController do
     describe "as patch" do
       include_examples "export as", :patch
       let(:format) { :patch }
+      
+      before do
+        get :show, project_id: project.code, id: commit.id, format: format
+      end
 
       it "should really be a git email patch" do
-        get :show, project_id: project.code, id: commit.id, format: format
-
         expect(response.body).to start_with("From #{commit.id}")
       end
 
       it "should contain a git diff" do
-        get :show, project_id: project.code, id: commit.id, format: format
-
         expect(response.body).to match(/^diff --git/)
       end
     end

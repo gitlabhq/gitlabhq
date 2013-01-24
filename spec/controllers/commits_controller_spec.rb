@@ -6,7 +6,6 @@ describe CommitsController do
 
   before do
     sign_in(user)
-
     project.team << [user, :master]
   end
 
@@ -14,8 +13,8 @@ describe CommitsController do
     context "as atom feed" do
       it "should render as atom" do
         get :show, project_id: project.path, id: "master.atom"
-        response.should be_success
-        response.content_type.should == 'application/atom+xml'
+        expect(response).to be_success
+        expect(response.content_type).to eq('application/atom+xml')
       end
     end
   end
