@@ -10,7 +10,7 @@
           New Project
   %ul.well-list
     - if projects.blank?
-      %p.nothing_here_message This groups has no projects yet
+      %p.nothing_here_message This team has no projects yet
     - projects.each do |project|
       %li
         = link_to project_path(project), class: dom_class(project) do
