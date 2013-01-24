@@ -20,7 +20,6 @@
             &rarr;
           %span.last_activity
             %strong Projects:
-            %span= team.projects.count
-          %span.last_activity
+            %span= "#{team.projects.count}, "
             %strong Members:
             %span= team.members.count

@@ -20,7 +20,7 @@
       %th Projects
       %th Members
       %th Owner
-      %th
+      %th.cred Danger Zone!
 
   - @teams.each do |team|
     %tr
@@ -30,9 +30,9 @@
       %td= link_to team.projects.count, team_projects_path(team)
       %td= link_to team.members.count, team_members_path(team)
       %td= link_to team.owner.name, team_member_path(team, team.owner)
-      %td
+      %td.bgred
         - if current_user.can?(:manage_user_team, team)
+          = link_to "Edit", edit_team_path(team), class: "btn small"
           - if current_user.can?(:admin_user_team, team)
-            = link_to "Destroy", team_path(team), method: :delete, confirm: "You are shure?", class: "danger btn small right"
+            = link_to "Destroy", team_path(team), method: :delete, confirm: "You are shure?", class: "danger btn small"
             &nbsp;
-          = link_to "Edit", edit_team_path(team), class: "btn small right"
