@@ -4,7 +4,7 @@ class Teams::ProjectsController < Teams::ApplicationController
 
   def index
     @projects = user_team.projects
-    @avaliable_projects = current_user.admin? ? Project.without_team(user_team) : (Project.personal(current_user) + current_user.projects).uniq
+    @avaliable_projects = current_user.admin? ? Project.without_team(user_team) : current_user.owned_projects.without_team(user_team)
   end
 
   def new
