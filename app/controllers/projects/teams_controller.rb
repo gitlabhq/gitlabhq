@@ -1,6 +1,6 @@
 class Projects::TeamsController < Projects::ApplicationController
 
-  def avaliable
+  def available
     @teams = current_user.is_admin? ? UserTeam.scoped : current_user.user_teams
     @teams = @teams.without_project(project)
     unless @teams.any?
