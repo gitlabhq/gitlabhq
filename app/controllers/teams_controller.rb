@@ -10,7 +10,7 @@ class TeamsController < ApplicationController
   layout 'user_team',       only: [:show, :edit, :update, :destroy, :issues, :merge_requests, :search]
 
   def index
-    @teams = UserTeam.order('name ASC')
+    @teams = current_user.user_teams.order('name ASC')
   end
 
   def show
