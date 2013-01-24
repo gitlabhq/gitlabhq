@@ -12,4 +12,8 @@ class UserTeamUserRelationship < ActiveRecord::Base
   def user_name
     user.name
   end
+
+  def access_human
+    UsersProject.access_roles.invert[permission]
+  end
 end
