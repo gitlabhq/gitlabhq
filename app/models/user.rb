@@ -91,6 +91,7 @@ class User < ActiveRecord::Base
   scope :alphabetically, order('name ASC')
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
+  scope :potential_team_members, ->(team) { team.members.any? ? active : active.not_in_team(team) }
 
   #
   # Class methods
