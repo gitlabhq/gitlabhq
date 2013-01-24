@@ -16,13 +16,19 @@ class Teams::ProjectsController < Teams::ApplicationController
   end
 
   def create
-    unless params[:project_ids].blank?
-      project_ids = params[:project_ids]
-      access = params[:greatest_project_access]
-      user_team.assign_to_projects(project_ids, access)
-    end
+    redirect_to :back if params[:project_ids].blank?
 
-    redirect_to team_projects_path(user_team), notice: 'Team of users was successfully assgned to projects.'
+    project_ids = params[:project_ids]
+    access = params[:greatest_project_access]
+
+    # Reject non-allowed projects
+    allowed_project_ids = current_user.owned_projects.map(&:id)
+    project_ids.select! { |id| allowed_project_ids.include?(id) }
+
+    # Assign projects to team
+    user_team.assign_to_projects(project_ids, access)
+
+    redirect_to team_projects_path(user_team), notice: 'Team of users was successfully assigned to projects.'
   end
 
   def edit
