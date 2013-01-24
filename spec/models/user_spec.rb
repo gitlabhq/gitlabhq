@@ -55,7 +55,7 @@ describe User do
     it { should allow_mass_assignment_of(:projects_limit).as(:admin) }
   end
 
-  describe 'validations' do
+  describe "Validations" do
     it { should validate_presence_of(:username) }
     it { should validate_presence_of(:projects_limit) }
     it { should validate_numericality_of(:projects_limit) }
@@ -75,17 +75,17 @@ describe User do
   describe '#identifier' do
     it "should return valid identifier" do
       user = build(:user, email: "test@mail.com")
-      user.identifier.should == "test_mail_com"
+      expect(user.identifier).to eq('test_mail_com')
     end
 
     it "should return identifier without + sign" do
       user = build(:user, email: "test+foo@mail.com")
-      user.identifier.should == "test_foo_mail_com"
+      expect(user.identifier).to eq('test_foo_mail_com')
     end
 
     it "should conform to Gitolite's required identifier pattern" do
       user = build(:user, email: "_test@example.com")
-      user.identifier.should == 'test_example_com'
+      expect(user.identifier).to eq('test_example_com')
     end
   end
 
@@ -98,20 +98,20 @@ describe User do
 
     it "should not generate password by default" do
       user = create(:user, password: 'abcdefg')
-      user.password.should == 'abcdefg'
+      expect(user.password).to eq('abcdefg')
     end
 
     it "should generate password when forcing random password" do
       Devise.stub(:friendly_token).and_return('123456789')
       user = create(:user, password: 'abcdefg', force_random_password: true)
-      user.password.should == '12345678'
+      expect(user.password).to eq('12345678')
     end
   end
 
   describe 'authentication token' do
     it "should have authentication token" do
       user = create(:user)
-      user.authentication_token.should_not be_blank
+      expect(user.authentication_token).to_not be_blank
     end
   end
 
@@ -122,9 +122,9 @@ describe User do
       @project = create :project, namespace: @user.namespace
     end
 
-    it { @user.authorized_projects.should include(@project) }
-    it { @user.owned_projects.should include(@project) }
-    it { @user.personal_projects.should include(@project) }
+    it { expect(@user.authorized_projects).to include(@project) }
+    it { expect(@user.owned_projects).to include(@project) }
+    it { expect(@user.personal_projects).to include(@project) }
   end
 
   describe 'groups' do
@@ -134,10 +134,10 @@ describe User do
       @group = create :group, owner: @user
     end
 
-    it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should == [@user.namespace, @group] }
-    it { @user.authorized_groups.should == [@group] }
-    it { @user.owned_groups.should == [@group] }
+    it { expect(@user.several_namespaces?).to be_true }
+    it { expect(@user.namespaces).to eq([@user.namespace, @group]) }
+    it { expect(@user.authorized_groups).to eq([@group]) }
+    it { expect(@user.owned_groups).to eq([@group]) }
   end
 
   describe 'namespaced' do
@@ -147,16 +147,17 @@ describe User do
       @project = create :project, namespace: @user.namespace
     end
 
-    it { @user.several_namespaces?.should be_false }
-    it { @user.namespaces.should == [@user.namespace] }
+    it { expect(@user.several_namespaces?).to be_false }
+    it { expect(@user.namespaces).to eq([@user.namespace]) }
   end
 
   describe 'blocking user' do
     let(:user) { create(:user, name: 'John Smith') }
+    
+    before { user.block }
 
     it "should block user" do
-      user.block
-      user.blocked.should be_true
+      expect(user.blocked).to be_true
     end
   end
 
@@ -168,10 +169,10 @@ describe User do
       @blocked = create :user, blocked: true
     end
 
-    it { User.filter("admins").should == [@admin] }
-    it { User.filter("blocked").should == [@blocked] }
-    it { User.filter("wop").should == [@user, @admin, @blocked] }
-    it { User.filter(nil).should == [@user, @admin] }
+    it { expect(User.filter("admins")).to eq([@admin]) }
+    it { expect(User.filter("blocked")).to eq([@blocked]) }
+    it { expect(User.filter("wop")).to eq([@user, @admin, @blocked]) }
+    it { expect(User.filter(nil)).to eq([@user, @admin]) }
   end
 
   describe :not_in_project do
@@ -181,16 +182,16 @@ describe User do
       @project = create :project
     end
 
-    it { User.not_in_project(@project).should == [@user, @project.owner] }
+    it { expect(User.not_in_project(@project)).to eq([@user, @project.owner]) }
   end
 
   describe 'normal user' do
     let(:user) { create(:user, name: 'John Smith') }
 
-    it { user.is_admin?.should be_false }
-    it { user.require_ssh_key?.should be_true }
-    it { user.can_create_group?.should be_false }
-    it { user.can_create_project?.should be_true }
-    it { user.first_name.should == 'John' }
+    it { expect(user.is_admin?).to be_false }
+    it { expect(user.require_ssh_key?).to be_true }
+    it { expect(user.can_create_group?).to be_false } 
+    it { expect(user.can_create_project?).to be_true }
+    it { expect(user.first_name).to eq('John') }
   end
 end
