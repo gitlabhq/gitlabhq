@@ -237,6 +237,7 @@ Make sure to update username/password in config/database.yml.
     cd /home/gitlab/gitlab
 
     sudo gem install charlock_holmes --version '0.6.9'
+    sudo gem install foreman
 
     # For MySQL (note, the option says "without")
     sudo -u gitlab -H bundle install --deployment --without development test postgres
@@ -263,17 +264,29 @@ used for the `email.from` setting in `config/gitlab.yml`)
     sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
 
 
-## Install Init Script
+## Setup startup script
 
-Download the init script (will be /etc/init.d/gitlab):
+There are multiple ways to automate GitLab's startup.
+
+### Foreman export
+
+Export `Procfile` to bluepill, inittab, runit or upstart (upstart example below, other export formats explained [here](http://ddollar.github.com/foreman/#EXPORT-FORMATS)):
+
+    sudo -u gitlab -H echo 'RAILS_ENV=production' > .env
+    sudo bundle exec foreman export upstart /etc/init -a gitlab -u gitlab -l /home/gitlab/gitlab/log
+
+### Initd
+
+Download the init script (will be `/etc/init.d/gitlab`):
 
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
+*note that if you are using CentOS you should use https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab-centos instead*
+
 Make GitLab start on boot:
-
+ 
     sudo update-rc.d gitlab defaults 21
-
 
 ## Check Application Status
 
@@ -291,9 +304,6 @@ However there are still a few steps left.
 ## Start Your GitLab Instance
 
     sudo service gitlab start
-    # or
-    sudo /etc/init.d/gitlab restart
-
 
 # 7. Nginx
 
