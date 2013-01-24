@@ -1,16 +1,12 @@
 .teams_box
   %h5.title
-    My Teams
+    Teams
     %small
       (#{@teams.count})
     %span.right
       = link_to new_team_path, class: "btn very_small info" do
         %i.icon-plus
         New Team
-    %span.right
-      = link_to teams_path, class: "btn very_small info" do
-        %i.icon-user
-        All Teams
   %ul.well-list
     - @teams.each do |team|
       %li

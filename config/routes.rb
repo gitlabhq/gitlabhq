@@ -272,7 +272,7 @@ Gitlab::Application.routes.draw do
     scope module: :projects do
       resources :teams, only: [] do
         collection do
-          get :avaliable
+          get :available
           post :assign
         end
         member do
