@@ -220,7 +220,7 @@ class User < ActiveRecord::Base
   end
 
   def can_create_group?
-    is_admin?
+    can_create_project?
   end
 
   def abilities
