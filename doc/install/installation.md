@@ -270,10 +270,12 @@ There are multiple ways to automate GitLab's startup.
 
 ### Foreman export
 
-Export `Procfile` to bluepill, inittab, runit or upstart (upstart example below, other export formats explained [here](http://ddollar.github.com/foreman/#EXPORT-FORMATS)):
+Export `Procfile` as upstart job using foreman:
 
     sudo -u gitlab -H echo 'RAILS_ENV=production' > .env
     sudo bundle exec foreman export upstart /etc/init -a gitlab -u gitlab -l /home/gitlab/gitlab/log
+
+*Besides upstart, you can also export for bluepill, inittab and runit using foreman. See [foreman's manual](http://ddollar.github.com/foreman/#EXPORT-FORMATS) for more info.*
 
 ### Initd
 
