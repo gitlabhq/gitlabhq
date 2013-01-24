@@ -7,8 +7,7 @@ class Teams::MembersController < Teams::ApplicationController
   end
 
   def new
-    @users = User.active
-    @users = @users.not_in_team(user_team) if user_team.members.any?
+    @users = User.potential_team_members(user_team)
     @users = UserDecorator.decorate @users
   end
 

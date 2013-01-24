@@ -6,13 +6,7 @@ class Admin::TeamsController < Admin::ApplicationController
   end
 
   def show
-    @projects = Project.scoped
-    @projects = @projects.without_team(user_team) if user_team.projects.any?
-    #@projects.reject!(&:empty_repo?)
-
-    @users = User.active
-    @users = @users.not_in_team(user_team) if user_team.members.any?
-    @users = UserDecorator.decorate @users
+    user_team
   end
 
   def new
