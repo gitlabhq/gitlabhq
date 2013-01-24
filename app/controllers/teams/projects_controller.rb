@@ -9,9 +9,8 @@ class Teams::ProjectsController < Teams::ApplicationController
 
   def new
     user_team
-    @avaliable_projects = Project.scoped
+    @avaliable_projects = current_user.owned_projects.scoped
     @avaliable_projects = @avaliable_projects.without_team(user_team) if user_team.projects.any?
-    #@projects.reject!(&:empty_repo?)
 
     redirect_to team_projects_path(user_team), notice: "No avalible projects." unless @avaliable_projects.any?
   end
