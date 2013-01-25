@@ -82,9 +82,7 @@ module Gitlab
         project_team_user.destroy if project_team_user.present?
 
         # project_team_user.project_access != granted_access
-        if granted_access > 0
-          UsersProject.add_users_into_projects([project.id], [user.id], granted_access)
-        end
+        project.team << [user, granted_access] if granted_access > 0
       end
 
       def max_teams_member_permission_in_project(user, project, teams = nil)
