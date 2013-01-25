@@ -1,0 +1,57 @@
+require 'bundler/capistrano'
+
+set :domain,         'set application domain here'
+set :db_adapter,     'mysql' # or postgres
+set :mount_point,    '/'
+set :application,    'gitlab'
+set :user,           'gitlab'
+set :rails_env,      'production'
+set :deploy_to,      "/home/#{user}/apps/#{application}"
+set :bundle_without, %w[development test] + (%w[mysql postgres] - db_adapter)
+set :asset_env,      "RAILS_GROUPS=assets RAILS_RELATIVE_URL_ROOT=#{mount_point}"
+
+set :use_sudo, false
+
+# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+set :scm,        :git
+set :repository, "git@#{domain}:#{application}.git"
+set :deploy_via, :remote_cache
+
+# Alternatively, you can deploy via copy, if you don't have gitlab in git
+#set :scm, :none
+#set :repository, '.'
+#set :deploy_via, :copy
+
+role :web, domain
+role :app, domain
+role :db,  domain, primary: true
+
+namespace :foreman do
+  desc 'Export the Procfile to Ubuntu upstart scripts'
+  task :export, roles: :app do
+    run "cd #{release_path} && sudo foreman export upstart /etc/init -f Procfile -a #{application} -u #{user} -l #{release_path}/log/foreman"
+  end
+
+  desc 'Start the application services'
+  task :start, roles: :app do
+    sudo "start #{application}"
+  end
+
+  desc 'Stop the application services'
+  task :stop, roles: :app do
+    sudo "stop #{application}"
+  end
+
+  desc 'Restart the application services'
+  task :restart, roles: :app do
+    run "sudo start #{application} || sudo restart #{application}"
+  end
+end
+
+after 'deploy:cold' do
+  run "cd #{release_path} && #{rake} gitlab:app:setup RAILS_ENV=#{rails_env}"
+  foreman.restart
+end
+
+after 'deploy:update', 'foreman:export'  # Export foreman scripts
+after 'deploy:update', 'foreman:restart' # Restart application scripts
