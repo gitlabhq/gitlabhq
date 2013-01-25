@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Team do
+describe ProjectTeam do
   let(:team) { create(:project).team }
 
   describe "Respond to" do

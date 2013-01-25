@@ -1,3 +1,5 @@
+- if @teams.present?
+  = render "teams", teams: @teams
 - if @groups.present?
   = render "groups", groups: @groups
 = render "projects", projects: @projects

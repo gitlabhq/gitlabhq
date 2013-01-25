@@ -105,6 +105,10 @@ module SharedPaths
     visit admin_groups_path
   end
 
+  When 'I visit admin teams page' do
+    visit admin_teams_path
+  end
+
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
