@@ -6,8 +6,6 @@
   .side {
     @extend .right;
 
-    .groups_box,
-    .teams_box,
     .projects_box {
       > .title {
         padding: 2px 15px;

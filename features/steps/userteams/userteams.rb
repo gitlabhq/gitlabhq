@@ -8,16 +8,16 @@ class Userteams < Spinach::FeatureSteps
     end
 
     Then 'I should see dashboard page without teams info block' do
-      page.has_no_css?(".teams_box").must_equal true
+      page.has_no_css?(".teams-box").must_equal true
     end
 
     When 'I have teams with my membership' do
-      team = create :user_team
+      team = create :user_team, owner: current_user
       team.add_member(current_user, UserTeam.access_roles["Master"], true)
     end
 
     Then 'I should see dashboard page with teams information block' do
-      page.should have_css(".teams_box")
+      page.should have_css(".teams-box")
     end
 
     When 'exist user teams' do
@@ -53,7 +53,7 @@ class Userteams < Spinach::FeatureSteps
     end
 
     When 'I have teams with projects and members' do
-      team = create :user_team
+      team = create :user_team, owner: current_user
       @project = create :project
       team.add_member(current_user, UserTeam.access_roles["Master"], true)
       team.assign_to_project(@project, UserTeam.access_roles["Master"])
@@ -92,7 +92,7 @@ class Userteams < Spinach::FeatureSteps
     end
 
     Given 'I have team with projects and members' do
-      team = create :user_team
+      team = create :user_team, owner: current_user
       project = create :project
       user = create :user
       team.add_member(current_user, UserTeam.access_roles["Master"], true)
@@ -190,11 +190,11 @@ class Userteams < Spinach::FeatureSteps
     end
 
     And 'I have my own project without teams' do
-      @project = create :project, creator: current_user
+      @project = create :project, namespace: current_user.namespace
     end
 
     And 'I visit my team page' do
-      team = UserTeam.last
+      team = UserTeam.where(owner_id: current_user.id).last
       visit team_path(team)
     end
 
@@ -213,7 +213,7 @@ class Userteams < Spinach::FeatureSteps
 
     When 'I submit form with selected project and max access' do
       within "#assign_projects" do
-        select @project.name, :from => "project_ids"
+        select @project.name_with_namespace, :from => "project_ids"
         select "Reporter", :from => "greatest_project_access"
       end
       click_button "Add"

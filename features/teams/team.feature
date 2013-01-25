@@ -14,13 +14,6 @@ Feature: UserTeams
     And I visit dashboard page
     Then I should see dashboard page with teams information block
 
-  Scenario: I should see all teams list
-    When exist user teams
-    And I visit dashboard page
-    And I click on "All teams" link
-    Then I should see "All teams" page
-    And I should see exist teams in teams list
-
   Scenario: I should can create new team
     When I have teams with my membership
     And I visit dashboard page
