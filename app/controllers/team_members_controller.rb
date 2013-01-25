@@ -39,7 +39,7 @@ class TeamMembersController < ProjectResourceController
   end
 
   def destroy
-    @user_project_relation = project.users_projects.find_by_user_id(params[:id])
+    @user_project_relation = project.users_projects.find_by_user_id(member)
     @user_project_relation.destroy
 
     respond_to do |format|
@@ -59,6 +59,6 @@ class TeamMembersController < ProjectResourceController
   protected
 
   def member
-    @member ||= User.find(params[:id])
+    @member ||= User.find_by_username(params[:id])
   end
 end
