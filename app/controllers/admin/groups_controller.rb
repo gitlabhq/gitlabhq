@@ -1,4 +1,4 @@
-class Admin::GroupsController < AdminController
+class Admin::GroupsController < Admin::ApplicationController
   before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
 
   def index

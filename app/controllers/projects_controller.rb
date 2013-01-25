@@ -19,7 +19,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def create
-    @project = Projects::CreateContext.new(current_user, params[:project]).execute
+    @project = ::Projects::CreateContext.new(current_user, params[:project]).execute
 
     respond_to do |format|
       flash[:notice] = 'Project was successfully created.' if @project.saved?
@@ -35,7 +35,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
-    status = Projects::UpdateContext.new(project, current_user, params).execute
+    status = ::Projects::UpdateContext.new(project, current_user, params).execute
 
     respond_to do |format|
       if status

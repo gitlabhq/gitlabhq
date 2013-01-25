@@ -3,7 +3,7 @@
     = link_to project_path(@project), class: "activities-tab tab" do
       %i.icon-home
       Show
-  = nav_link(controller: :team_members) do
+  = nav_link(controller: [:team_members, :teams]) do
     = link_to project_team_index_path(@project), class: "team-tab tab" do
       %i.icon-user
       Team
