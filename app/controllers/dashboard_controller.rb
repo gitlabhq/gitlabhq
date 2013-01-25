@@ -18,7 +18,7 @@ class DashboardController < ApplicationController
                   @projects
                 end
 
-    @teams = (UserTeam.with_member(current_user) + UserTeam.created_by(current_user)).uniq
+    @teams = current_user.authorized_teams
 
     @projects = @projects.page(params[:page]).per(30)
 

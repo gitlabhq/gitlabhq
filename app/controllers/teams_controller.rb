@@ -4,11 +4,9 @@ class TeamsController < ApplicationController
   before_filter :authorize_manage_user_team!, only: [:edit, :update]
   before_filter :authorize_admin_user_team!, only: [:destroy]
 
-  layout 'user_team', except: [:new, :create]
+  before_filter :user_team, except: [:new, :create]
 
-  def index
-    @teams = current_user.user_teams.order('name ASC')
-  end
+  layout 'user_team', except: [:new, :create]
 
   def show
     user_team
@@ -83,7 +81,6 @@ class TeamsController < ApplicationController
   end
 
   def user_team
-    @team ||= UserTeam.find_by_path(params[:id])
+    @team ||= current_user.authorized_teams.find_by_path(params[:id])
   end
-
 end

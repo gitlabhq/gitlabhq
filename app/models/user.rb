@@ -295,4 +295,15 @@ class User < ActiveRecord::Base
   def namespace_id
     namespace.try :id
   end
+
+  def authorized_teams
+    @authorized_teams ||= begin
+                            ids = []
+                            ids << UserTeam.with_member(self).pluck('user_teams.id')
+                            ids << UserTeam.created_by(self).pluck('user_teams.id')
+                            ids.flatten
+
+                            UserTeam.where(id: ids)
+                          end
+  end
 end
