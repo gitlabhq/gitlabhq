@@ -6,6 +6,7 @@ class GroupsController < ApplicationController
 
   # Authorize
   before_filter :authorize_read_group!, except: [:new, :create]
+  before_filter :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
   before_filter :projects, except: [:new, :create]
@@ -102,5 +103,9 @@ class GroupsController < ApplicationController
     unless projects.present? or can?(current_user, :manage_group, @group)
       return render_404
     end
+  end
+
+  def authorize_create_group!
+    can?(current_user, :create_group, nil)
   end
 end

@@ -232,7 +232,7 @@ class User < ActiveRecord::Base
   end
 
   def can_create_group?
-    can_create_project?
+    can?(:create_group, nil)
   end
 
   def abilities

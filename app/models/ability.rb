@@ -1,16 +1,25 @@
 class Ability
   class << self
-    def allowed(object, subject)
+    def allowed(user, subject)
+      return [] unless user.kind_of?(User)
+
       case subject.class.name
-      when "Project" then project_abilities(object, subject)
-      when "Issue" then issue_abilities(object, subject)
-      when "Note" then note_abilities(object, subject)
-      when "Snippet" then snippet_abilities(object, subject)
-      when "MergeRequest" then merge_request_abilities(object, subject)
-      when "Group", "Namespace" then group_abilities(object, subject)
-      when "UserTeam" then user_team_abilities(object, subject)
+      when "Project" then project_abilities(user, subject)
+      when "Issue" then issue_abilities(user, subject)
+      when "Note" then note_abilities(user, subject)
+      when "Snippet" then snippet_abilities(user, subject)
+      when "MergeRequest" then merge_request_abilities(user, subject)
+      when "Group", "Namespace" then group_abilities(user, subject)
+      when "UserTeam" then user_team_abilities(user, subject)
       else []
-      end
+      end.concat(global_abilities(user))
+    end
+
+    def global_abilities(user)
+      rules = []
+      rules << :create_group if user.can_create_group
+      rules << :create_team if user.can_create_team
+      rules
     end
 
     def project_abilities(user, project)
