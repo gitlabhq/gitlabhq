@@ -22,7 +22,7 @@ class Admin::Projects::MembersController < Admin::Projects::ApplicationControlle
   private
 
   def team_member
-    @member ||= project.users.find(params[:id])
+    @member ||= project.users.find_by_username(params[:id])
   end
 
   def team_member_relation
