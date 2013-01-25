@@ -79,12 +79,10 @@ module Gitlab
         granted_access = max_teams_member_permission_in_project(user, project)
 
         project_team_user = UsersProject.find_by_user_id_and_project_id(user.id, project.id)
+        project_team_user.destroy if project_team_user.present?
 
-        if project_team_user.present?
-          project_team_user.destroy
-        end
-
-        if project_team_user.blank? && granted_access > 0
+        # project_team_user.project_access != granted_access
+        if granted_access > 0
           UsersProject.add_users_into_projects([project.id], [user.id], granted_access)
         end
       end
