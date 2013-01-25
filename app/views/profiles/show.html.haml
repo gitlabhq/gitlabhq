@@ -47,6 +47,18 @@
               %p
                 You can login through #{@user.provider.titleize}!
                 = link_to "click here to change", account_profile_path
+          - if current_user.can_create_group?
+            %li
+              %p
+                Need a group for several dependent projects?
+                = link_to new_group_path, class: "btn very_small" do
+                  Create a group
+          - if current_user.can_create_team?
+            %li
+              %p
+                Want to share a team between projects?
+                = link_to new_team_path, class: "btn very_small" do
+                  Create a team
 
   .row
     .span7
@@ -79,7 +91,8 @@
       %fieldset
         %legend
           SSH public keys:
-          %strong.right= link_to current_user.keys.count, keys_path
+          %span.right
+            = link_to pluralize(current_user.keys.count, 'key'), keys_path
         .padded
           = link_to "Add Public Key", new_key_path, class: "btn small"
 
