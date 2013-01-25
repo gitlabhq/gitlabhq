@@ -1,13 +1,10 @@
 class TeamsController < ApplicationController
   # Authorize
-  before_filter :authorize_manage_user_team!
-  before_filter :authorize_admin_user_team!
+  before_filter :authorize_create_team!, only: [:new, :create]
+  before_filter :authorize_manage_user_team!, only: [:edit, :update]
+  before_filter :authorize_admin_user_team!, only: [:destroy]
 
-  # Skip access control on public section
-  skip_before_filter :authorize_manage_user_team!, only: [:index, :show, :new, :destroy, :create, :search, :issues, :merge_requests]
-  skip_before_filter :authorize_admin_user_team!, only: [:index, :show, :new, :create, :search, :issues, :merge_requests]
-
-  layout 'user_team',       only: [:show, :edit, :update, :destroy, :issues, :merge_requests, :search]
+  layout 'user_team', except: [:new, :create]
 
   def index
     @teams = current_user.user_teams.order('name ASC')

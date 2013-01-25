@@ -94,6 +94,10 @@ class ApplicationController < ActionController::Base
     return access_denied! unless can?(current_user, :download_code, project)
   end
 
+  def authorize_create_team!
+    return access_denied! unless can?(current_user, :create_team, nil)
+  end
+
   def authorize_manage_user_team!
     return access_denied! unless user_team.present? && can?(current_user, :manage_user_team, user_team)
   end

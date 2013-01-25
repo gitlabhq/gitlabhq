@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
                   :extern_uid, :provider, as: [:default, :admin]
-  attr_accessible :projects_limit, as: :admin
+  attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
 
   attr_accessor :force_random_password
 
