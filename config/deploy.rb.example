@@ -7,7 +7,7 @@ set :application,    'gitlab'
 set :user,           'gitlab'
 set :rails_env,      'production'
 set :deploy_to,      "/home/#{user}/apps/#{application}"
-set :bundle_without, %w[development test] + (%w[mysql postgres] - db_adapter)
+set :bundle_without, %w[development test] + (%w[mysql postgres] - [db_adapter])
 set :asset_env,      "RAILS_GROUPS=assets RAILS_RELATIVE_URL_ROOT=#{mount_point}"
 
 set :use_sudo, false
