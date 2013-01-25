@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130110172407) do
+ActiveRecord::Schema.define(:version => 20130125090214) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -267,6 +267,8 @@ ActiveRecord::Schema.define(:version => 20130110172407) do
     t.string   "extern_uid"
     t.string   "provider"
     t.string   "username"
+    t.boolean  "can_create_group",       :default => true,  :null => false
+    t.boolean  "can_create_team",        :default => true,  :null => false
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
