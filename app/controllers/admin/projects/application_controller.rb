@@ -6,6 +6,6 @@ class Admin::Projects::ApplicationController < Admin::ApplicationController
   protected
 
   def project
-    @project ||= Project.find_by_path(params[:project_id])
+    @project ||= Project.find_with_namespace(params[:project_id])
   end
 end
