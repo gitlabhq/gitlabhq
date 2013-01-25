@@ -80,6 +80,7 @@ module ApplicationHelper
       { label: "My SSH Keys", url: keys_path },
       { label: "My Dashboard", url: root_path },
       { label: "Admin Section", url: admin_root_path },
+      { label: "About GitLab", url: about_path },
     ]
 
     help_nav = [

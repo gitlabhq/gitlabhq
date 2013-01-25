@@ -1,4 +1,3 @@
 class HelpController < ApplicationController
-  def index
-  end
+  layout 'about'
 end

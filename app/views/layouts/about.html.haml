@@ -1,9 +1,9 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "Dashboard"
+  = render "layouts/head", title: "About GitLab"
   %body{class: "#{app_theme} application"}
     = render "layouts/flash"
-    = render "layouts/head_panel", title: "Dashboard"
+    = render "layouts/head_panel", title: "About GitLab"
     .container
       %ul.main_menu
         = nav_link(path: 'dashboard#index', html_options: {class: 'home'}) do

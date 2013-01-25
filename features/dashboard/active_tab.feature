@@ -22,7 +22,7 @@ Feature: Dashboard active tab
     Then the active main tab should be Search
     And no other main tabs should be active
 
-  Scenario: On Dashboard Help
-    Given I visit dashboard help page
-    Then the active main tab should be Help
+  Scenario: On Dashboard About GitLab
+    Given I visit dashboard about page
+    Then the active main tab should be About GitLab
     And no other main tabs should be active

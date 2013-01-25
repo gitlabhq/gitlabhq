@@ -19,6 +19,9 @@
         %li
           = link_to profile_path, title: "My Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
             %i.icon-user
+        %li
+          = link_to about_path, title: "About GitLab", class: 'has_bottom_tooltip', 'data-original-title' => 'About GitLab'  do
+            %i.icon-question-sign
         %li.separator
         %li
           = render "layouts/search"

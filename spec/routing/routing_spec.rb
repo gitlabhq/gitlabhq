@@ -72,6 +72,13 @@ describe HelpController, "routing" do
   end
 end
 
+#          about GET    /about(.:format)              about#index
+describe AboutController, "routing" do
+  it "to #index" do
+    get("/about").should route_to('about#index')
+  end
+end
+
 # errors_githost GET    /errors/githost(.:format) errors#githost
 describe ErrorsController, "routing" do
   it "to #githost" do

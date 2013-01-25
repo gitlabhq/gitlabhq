@@ -859,10 +859,7 @@ namespace :gitlab do
     end
 
     def gitolite_version
-      gitolite_version_file = "#{gitolite_user_home}/gitolite/src/VERSION"
-      if File.readable?(gitolite_version_file)
-        File.read(gitolite_version_file)
-      end
+      Gitlab::Gitolite.version
     end
 
     def has_gitolite3?

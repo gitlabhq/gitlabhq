@@ -1,0 +1,57 @@
+%section
+  %h2 You are using GitLab
+  %p
+    GitLab is a fast, secure and stable open source code hosting solution built on Ruby on Rails & Gitolite.
+    It's distributed under the MIT License.
+
+  .row
+    .span4
+      %strong GitLab version:
+      %pre= @gitlab_version
+    .span4
+      %strong Gitolite version:
+      %pre= @gitolite_version
+    .span4
+      %strong Ruby version:
+      %pre= @ruby_version
+
+%section
+  %h3 Getting Help
+
+  =render 'help/help_pages'
+
+
+
+%section.row
+  .span12
+    %h3 Help us make GitLab more awesome
+
+  .span8
+    .file_holder
+      .file_content.wiki
+        = preserve do
+          = markdown @contribution_guide
+
+  .span4
+    .ui-box
+      .title
+        %h5 Find us on the internet
+      %ul.well-list
+        %li
+          Visit our website
+          = link_to "gitlabhq.com", "http://gitlabhq.com/"
+        %li
+          Reach out to
+          = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+          on
+          %i.icon-twitter
+          Twitter
+        %li
+          Join the
+          = link_to "Support Forum", "https://groups.google.com/forum/#!forum/gitlabhq"
+        %li
+          Fork us on
+          = link_to "https://github.com/gitlabhq/gitlabhq" do
+            %i.icon-github
+            GitHub
+
