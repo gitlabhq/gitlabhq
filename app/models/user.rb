@@ -143,6 +143,11 @@ class User < ActiveRecord::Base
   #
   # Instance methods
   #
+
+  def to_param
+    username
+  end
+
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
