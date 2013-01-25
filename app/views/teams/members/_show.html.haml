@@ -18,7 +18,7 @@
         .left.span2
           %span
             Admin access
-            = check_box_tag :group_admin
+            = check_box_tag :group_admin, true, @team.admin?(user)
       .right
         - if current_user == user
           %span.btn.disabled This is you!
