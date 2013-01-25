@@ -233,6 +233,32 @@ module Gitlab
         present @branch, with: Entities::RepoObject
       end
 
+      # Protect a single branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   GET /projects/:id/repository/branches/:branch/protect
+      post ":id/repository/branches/:branch/protect" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        user_project.protected_branches.create(:name => @branch.name)
+        present @branch, with: Entities::RepoObject
+      end
+
+      # Unprotect a single branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   GET /projects/:id/repository/branches/:branch/unprotect
+      post ":id/repository/branches/:branch/unprotect" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        user_project.protected_branches.find_by_name(@branch.name).destroy
+        present @branch, with: Entities::RepoObject
+      end
+
       # Get a project repository tags
       #
       # Parameters:
