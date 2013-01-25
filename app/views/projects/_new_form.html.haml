@@ -15,12 +15,20 @@
         %span Namespace
       .input
         = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen'}
-  - elsif current_user.can_create_group?
-    .clearfix
-      .input.light
-        Need a group for several projects?
-        = link_to new_group_path, class: "btn very_small" do
-          Create a group
-  %hr
+
   %p.padded
     New projects are private by default. You choose who can see the project and commit to repository.
+  %hr
+
+  - if current_user.can_create_group?
+    .clearfix
+      .input.light
+        Need a group for several dependent projects?
+        = link_to new_group_path, class: "btn very_small" do
+          Create a group
+  - if current_user.can_create_team?
+    .clearfix
+      .input.light
+        Want to share a team between projects?
+        = link_to new_team_path, class: "btn very_small" do
+          Create a team

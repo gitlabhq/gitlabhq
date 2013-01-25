@@ -28,7 +28,7 @@ class TeamsController < ApplicationController
 
   def destroy
     user_team.destroy
-    redirect_to teams_path
+    redirect_to dashboard_path
   end
 
   def new
