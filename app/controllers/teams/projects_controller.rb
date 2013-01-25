@@ -23,7 +23,7 @@ class Teams::ProjectsController < Teams::ApplicationController
 
     # Reject non-allowed projects
     allowed_project_ids = current_user.owned_projects.map(&:id)
-    project_ids.select! { |id| allowed_project_ids.include?(id) }
+    project_ids.select! { |id| allowed_project_ids.include?(id.to_i) }
 
     # Assign projects to team
     user_team.assign_to_projects(project_ids, access)
