@@ -31,6 +31,20 @@
         .controls
           = f.text_field :email, class: "input-xlarge", required: true
           %span.help-block We also use email for avatar detection.
+      .control-group
+        = f.label :skype, class: "control-label"
+        .controls= f.text_field :skype, class: "input-xlarge"
+      .control-group
+        = f.label :linkedin, class: "control-label"
+        .controls= f.text_field :linkedin, class: "input-xlarge"
+      .control-group
+        = f.label :twitter, class: "control-label"
+        .controls= f.text_field :twitter, class: "input-xlarge"
+      .control-group
+        = f.label :bio, class: "control-label"
+        .controls
+          = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
+          %span.help-block Tell us about yourself in fewer than 250 characters.
 
     .span5.right
       %fieldset.tips
@@ -59,24 +73,6 @@
                 Want to share a team between projects?
                 = link_to new_team_path, class: "btn very_small" do
                   Create a team
-
-  .row
-    .span7
-      .control-group
-        = f.label :skype, class: "control-label"
-        .controls= f.text_field :skype, class: "input-xlarge"
-      .control-group
-        = f.label :linkedin, class: "control-label"
-        .controls= f.text_field :linkedin, class: "input-xlarge"
-      .control-group
-        = f.label :twitter, class: "control-label"
-        .controls= f.text_field :twitter, class: "input-xlarge"
-      .control-group
-        = f.label :bio, class: "control-label"
-        .controls
-          = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
-          %span.help-block Tell us about yourself in fewer than 250 characters.
-    .span5.right
       %fieldset
         %legend
           Personal projects:

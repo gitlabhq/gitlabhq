@@ -142,14 +142,10 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
-      get :search
     end
     scope module: :teams do
       resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
       resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
-    end
-    collection do
-      get :search
     end
   end
 

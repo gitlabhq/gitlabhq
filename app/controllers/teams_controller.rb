@@ -64,16 +64,6 @@ class TeamsController < ApplicationController
     @issues = @issues.includes(:author, :project)
   end
 
-  def search
-    result = SearchContext.new(user_team.project_ids, params).execute
-
-    @projects       = result[:projects]
-    @merge_requests = result[:merge_requests]
-    @issues         = result[:issues]
-    @wiki_pages     = result[:wiki_pages]
-    @teams          = result[:teams]
-  end
-
   protected
 
   def projects

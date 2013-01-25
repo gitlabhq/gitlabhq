@@ -19,18 +19,16 @@
             Merge Requests
             %span.count= MergeRequest.opened.of_user_team(@team).count
 
-        = nav_link(path: 'teams#search') do
-          = link_to "Search", search_team_path(@team)
-
         = nav_link(controller: [:members]) do
           = link_to team_members_path(@team), class: "team-tab tab" do
             Members
+            %span.count= @team.members.count
 
         - if can? current_user, :admin_user_team, @team
           = nav_link(controller: [:projects]) do
             = link_to team_projects_path(@team), class: "team-tab tab" do
-              %i.icon-briefcase
               Projects
+              %span.count= @team.projects.count
 
           = nav_link(path: 'teams#edit') do
             = link_to edit_team_path(@team), class: "stat-tab tab " do
