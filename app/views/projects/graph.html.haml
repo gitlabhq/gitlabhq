@@ -11,6 +11,6 @@
   $(function(){
     branch_graph = new BranchGraph($("#holder"), {
       url: '#{url_for controller: 'projects', action: 'graph', format: :json}',
-      commit_url: '#{url_for controller: 'projects', action: 'show'}/commits/%s'
+      commit_url: '#{url_for controller: 'projects', action: 'show'}/commit/%s'
     });
   });
