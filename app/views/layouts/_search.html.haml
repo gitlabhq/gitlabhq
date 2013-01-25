@@ -1,6 +1,8 @@
 .search
   = form_tag search_path, method: :get, class: 'navbar-form pull-left' do |f|
     = text_field_tag "search", nil, placeholder: "Search", class: "search-input"
+    = hidden_field_tag :group_id, @group.try(:id)
+    = hidden_field_tag :project_id, @project.try(:id)
 
 :javascript
   $(function(){
