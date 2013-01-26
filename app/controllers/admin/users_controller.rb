@@ -1,4 +1,6 @@
 class Admin::UsersController < Admin::ApplicationController
+  before_filter :admin_user, only: [:show, :edit, :update, :destroy]
+
   def index
     @admin_users = User.scoped
     @admin_users = @admin_users.filter(params[:filter])
@@ -7,11 +9,8 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def show
-    projects = if admin_user.authorized_projects.empty?
-               Project
-             else
-               Project.without_user(admin_user)
-             end.all
+    @projects = Project.scoped
+    @projects = @projects.without_user(admin_user) if admin_user.authorized_projects.empty?
   end
 
   def team_update
@@ -102,6 +101,6 @@ class Admin::UsersController < Admin::ApplicationController
   protected
 
   def admin_user
-    @admin_user ||= User.find_by_username(params[:id])
+    @admin_user ||= User.find_by_username!(params[:id])
   end
 end

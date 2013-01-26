@@ -49,7 +49,7 @@ Gitlab::Application.routes.draw do
   # Admin Area
   #
   namespace :admin do
-    resources :users do
+    resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
       member do
         put :team_update
         put :block
