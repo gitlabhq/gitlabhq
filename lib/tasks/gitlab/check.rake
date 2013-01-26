@@ -300,7 +300,7 @@ namespace :gitlab do
       gitolite_owner_group = Gitlab.config.gitolite.owner_group
       print "#{gitlab_user} user is in #{gitolite_owner_group} group? ... "
 
-      if run_and_match("id -rnG", /^#{gitolite_owner_group}\W|\W#{gitolite_owner_group}\W|\W#{gitolite_owner_group}$/)
+      if run_and_match("id -rnG", /^#{gitolite_owner_group}\W.*|.*\W#{gitolite_owner_group}\W.*|.*\W#{gitolite_owner_group}$/)
         puts "yes".green
       else
         puts "no".red
