@@ -10,7 +10,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def show
     @projects = Project.scoped
-    @projects = @projects.without_user(admin_user) if admin_user.authorized_projects.empty?
+    @projects = @projects.without_user(admin_user) if admin_user.authorized_projects.present?
   end
 
   def team_update
