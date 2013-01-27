@@ -34,4 +34,8 @@ class WebHook < ActiveRecord::Base
                    basic_auth: {username: parsed_url.user, password: parsed_url.password})
     end
   end
+
+  def async_execute(data)
+    Sidekiq::Client.enqueue(ProjectWebHookWorker, id, data)
+  end
 end
