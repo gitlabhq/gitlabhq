@@ -55,7 +55,9 @@ module ProjectsHelper
 
   def project_title project
     if project.group
-      project.name_with_namespace
+      content_tag :span do
+        link_to(project.group.name, group_path(project.group)) + " / " + project.name
+      end
     else
       project.name
     end
