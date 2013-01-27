@@ -1,5 +1,5 @@
 - diff = note.diff
-.diff_file_header
+.header
   - if diff.deleted_file
     %span= diff.old_path
   - else
@@ -7,7 +7,7 @@
     - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
       %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
   %br/
-.diff_file_content
+.content
   %table
     - each_diff_line(diff, note.diff_file_index) do |line, type, line_code, line_new, line_old|
       %tr.line_holder{ id: line_code }
