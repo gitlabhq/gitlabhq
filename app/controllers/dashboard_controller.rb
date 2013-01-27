@@ -1,26 +1,15 @@
 class DashboardController < ApplicationController
   respond_to :html
 
-  before_filter :projects
+  before_filter :load_projects
   before_filter :event_filter, only: :index
 
   def index
     @groups = current_user.authorized_groups
-
     @has_authorized_projects = @projects.count > 0
-
-    @projects = case params[:scope]
-                when 'personal' then
-                  @projects.personal(current_user)
-                when 'joined' then
-                  @projects.joined(current_user)
-                else
-                  @projects
-                end
-
     @teams = current_user.authorized_teams
-
-    @projects = @projects.page(params[:page]).per(30)
+    @projects_count = @projects.count
+    @projects = @projects.limit(20)
 
     @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
     @events = @event_filter.apply_filter(@events)
@@ -33,6 +22,19 @@ class DashboardController < ApplicationController
       format.js
       format.atom { render layout: false }
     end
+  end
+
+  def projects
+    @projects = case params[:scope]
+                when 'personal' then
+                  @projects.personal(current_user)
+                when 'joined' then
+                  @projects.joined(current_user)
+                else
+                  @projects
+                end
+
+    @projects = @projects.page(params[:page]).per(30)
   end
 
   # Get authored or assigned open merge requests
@@ -57,7 +59,7 @@ class DashboardController < ApplicationController
 
   protected
 
-  def projects
+  def load_projects
     @projects = current_user.authorized_projects.sorted_by_activity
   end
 

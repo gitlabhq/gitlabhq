@@ -8,6 +8,9 @@
       %ul.main_menu
         = nav_link(path: 'dashboard#index', html_options: {class: 'home'}) do
           = link_to "Home", root_path, title: "Home"
+        = nav_link(path: 'dashboard#projects') do
+          = link_to dashboard_projects_path do
+            Projects
         = nav_link(path: 'dashboard#issues') do
           = link_to dashboard_issues_path do
             Issues
