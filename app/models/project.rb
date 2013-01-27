@@ -340,7 +340,7 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data)
-    hooks.each { |hook| hook.execute(data) }
+    hooks.each { |hook| hook.async_execute(data) }
   end
 
   def execute_services(data)
