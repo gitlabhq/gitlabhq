@@ -10,7 +10,7 @@ describe "Dashboard Issues Feed" do
 
     describe "atom feed" do
       it "should render atom feed via private token" do
-        visit dashboard_issues_path(:atom, private_token: user.private_token)
+        visit issues_dashboard_path(:atom, private_token: user.private_token)
 
         page.response_headers['Content-Type'].should have_content("application/atom+xml")
         page.body.should have_selector("title", text: "#{user.name} issues")
