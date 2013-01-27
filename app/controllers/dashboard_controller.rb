@@ -2,9 +2,9 @@ class DashboardController < ApplicationController
   respond_to :html
 
   before_filter :load_projects
-  before_filter :event_filter, only: :index
+  before_filter :event_filter, only: :show
 
-  def index
+  def show
     @groups = current_user.authorized_groups
     @has_authorized_projects = @projects.count > 0
     @teams = current_user.authorized_teams

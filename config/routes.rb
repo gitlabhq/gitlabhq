@@ -118,10 +118,13 @@ Gitlab::Application.routes.draw do
   #
   # Dashboard Area
   #
-  get "dashboard"                => "dashboard#index"
-  get "dashboard/projects"       => "dashboard#projects"
-  get "dashboard/issues"         => "dashboard#issues"
-  get "dashboard/merge_requests" => "dashboard#merge_requests"
+  resource :dashboard, controller: "dashboard" do
+    member do
+      get :projects
+      get :issues
+      get :merge_requests
+    end
+  end
 
   #
   # Groups Area
@@ -285,5 +288,5 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  root to: "dashboard#index"
+  root to: "dashboard#show"
 end

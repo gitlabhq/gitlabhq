@@ -8,19 +8,20 @@
         %i.icon-plus
         New Project
 
+
 %hr
 .row
   .span3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
-        = link_to "All", dashboard_projects_path
+        = link_to "All", projects_dashboard_path
       = nav_tab :scope, 'personal' do
-        = link_to "Personal", dashboard_projects_path(scope: 'personal')
+        = link_to "Personal", projects_dashboard_path(scope: 'personal')
       = nav_tab :scope, 'joined' do
-        = link_to "Joined", dashboard_projects_path(scope: 'joined')
+        = link_to "Joined", projects_dashboard_path(scope: 'joined')
 
   .span9
-    = form_tag dashboard_projects_path, method: 'get' do
+    = form_tag projects_dashboard_path, method: 'get' do
       %fieldset.dashboard-search-filter
         = hidden_field_tag "scope", params[:scope]
         = search_field_tag "search", params[:search], { placeholder: 'Search', class: 'left input-xxlarge' }
@@ -29,16 +30,25 @@
 
     %ul.well-list
       - @projects.each do |project|
-        %li
-          = link_to project_path(project), class: dom_class(project) do
-            - if project.namespace
-              = project.namespace.human_name
-              \/
-            %strong.well-title
-              = truncate(project.name, length: 25)
-            %span.right.light
+        %li.clearfix
+          .left
+            = link_to project_path(project), class: dom_class(project) do
+              - if project.namespace
+                = project.namespace.human_name
+                \/
+              %strong.well-title
+                = truncate(project.name, length: 25)
+            %br
+            %small.light
               %strong Last activity:
               %span= project_last_activity(project)
+          .right.light
+            - if project.owner == current_user
+              %i.icon-wrench
+            - tm = project.team.get_tm(current_user.id)
+            - if tm
+              = tm.project_access_human
+
       - if @projects.blank?
         %li
           %h3.nothing_here_message There are no projects here.
