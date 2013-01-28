@@ -33,6 +33,11 @@ module Gitlab
 
     class RepoObject < Grape::Entity
       expose :name, :commit
+      expose :protected do |repo, options|
+        if options[:project]
+          options[:project].protected_branch? repo.name
+        end
+      end
     end
 
     class RepoCommit < Grape::Entity
