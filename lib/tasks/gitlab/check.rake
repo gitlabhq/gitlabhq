@@ -778,9 +778,11 @@ namespace :gitlab do
       }
 
       Project.find_each(batch_size: 100) do |project|
-        if project.repository
-          print "#{project.name_with_namespace.yellow} ... "
+        print "#{project.name_with_namespace.yellow} ... "
 
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
           correct_options = options.map do |name, value|
             run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
           end
@@ -821,8 +823,11 @@ namespace :gitlab do
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
-        if project.repository
-          print "#{project.name_with_namespace.yellow} ... "
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
           project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
 
           unless File.exists?(project_hook_file)
