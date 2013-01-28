@@ -4,7 +4,7 @@ class GitoliteWorker
 
   sidekiq_options queue: :gitolite
 
-  def perform(action, arg)
-    gitolite.send(action, arg)
+  def perform(action, *arg)
+    gitolite.send(action, *arg)
   end
 end
