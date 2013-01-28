@@ -29,7 +29,7 @@ role(:db, primary: true) { domain }
 namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
   task :export, roles: :app do
-    run "cd #{release_path} && sudo foreman export upstart /etc/init -f Procfile -a #{application} -u #{user} -l #{release_path}/log/foreman"
+    run "cd #{release_path} && sudo #{bundle_cmd} exec foreman export upstart /etc/init -f Procfile -a #{application} -u #{user} -l #{release_path}/log/foreman"
   end
 
   desc 'Start the application services'
