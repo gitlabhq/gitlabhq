@@ -1,3 +1,4 @@
 load 'deploy'
 load 'deploy/assets'
+require 'bundler/capistrano'
 load 'config/deploy'
