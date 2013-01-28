@@ -146,14 +146,14 @@ describe KeysController, "routing" do
   end
 end
 
-#                dashboard GET    /dashboard(.:format)                dashboard#index
+#                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests
-#                     root        /                                   dashboard#index
+#                     root        /                                   dashboard#show
 describe DashboardController, "routing" do
   it "to #index" do
-    get("/dashboard").should route_to('dashboard#index')
-    get("/").should route_to('dashboard#index')
+    get("/dashboard").should route_to('dashboard#show')
+    get("/").should route_to('dashboard#show')
   end
 
   it "to #issues" do

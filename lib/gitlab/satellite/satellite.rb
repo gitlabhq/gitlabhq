@@ -3,6 +3,8 @@ module Gitlab
 
   module Satellite
     class Satellite
+      include Gitlab::Popen
+
       PARKING_BRANCH = "__parking_branch"
 
       attr_accessor :project
@@ -24,8 +26,10 @@ module Gitlab
       end
 
       def create
-        create_cmd = "git clone #{project.url_to_repo} #{path}"
-        if system(create_cmd)
+        output, status = popen("git clone #{project.url_to_repo} #{path}",
+                               Gitlab.config.satellites.path)
+
+        if status.zero?
           true
         else
           Gitlab::GitLogger.error("Failed to create satellite for #{project.name_with_namespace}")
@@ -64,6 +68,10 @@ module Gitlab
         raise_no_satellite unless exists?
 
         @repo ||= Grit::Repo.new(path)
+      end
+
+      def destroy
+        FileUtils.rm_rf(path)
       end
 
       private

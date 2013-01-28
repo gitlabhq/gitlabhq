@@ -49,7 +49,7 @@ Gitlab::Application.routes.draw do
   # Admin Area
   #
   namespace :admin do
-    resources :users do
+    resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
       member do
         put :team_update
         put :block
@@ -84,7 +84,7 @@ Gitlab::Application.routes.draw do
         get :team
         put :team_update
       end
-      scope module: :projects, constraints: { id: /[^\/]+/ } do
+      scope module: :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
         resources :members, only: [:edit, :update, :destroy]
       end
     end
@@ -118,9 +118,13 @@ Gitlab::Application.routes.draw do
   #
   # Dashboard Area
   #
-  get "dashboard"                => "dashboard#index"
-  get "dashboard/issues"         => "dashboard#issues"
-  get "dashboard/merge_requests" => "dashboard#merge_requests"
+  resource :dashboard, controller: "dashboard" do
+    member do
+      get :projects
+      get :issues
+      get :merge_requests
+    end
+  end
 
   #
   # Groups Area
@@ -142,14 +146,10 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
-      get :search
     end
     scope module: :teams do
       resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
       resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
-    end
-    collection do
-      get :search
     end
   end
 
@@ -288,5 +288,5 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  root to: "dashboard#index"
+  root to: "dashboard#show"
 end

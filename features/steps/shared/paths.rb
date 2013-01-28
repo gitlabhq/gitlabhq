@@ -33,12 +33,16 @@ module SharedPaths
     visit dashboard_path
   end
 
+  Given 'I visit dashboard projects page' do
+    visit projects_dashboard_path
+  end
+
   Given 'I visit dashboard issues page' do
-    visit dashboard_issues_path
+    visit issues_dashboard_path
   end
 
   Given 'I visit dashboard merge requests page' do
-    visit dashboard_merge_requests_path
+    visit merge_requests_dashboard_path
   end
 
   Given 'I visit dashboard search page' do

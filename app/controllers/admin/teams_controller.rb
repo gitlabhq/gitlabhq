@@ -47,7 +47,7 @@ class Admin::TeamsController < Admin::ApplicationController
   def destroy
     user_team.destroy
 
-    redirect_to admin_user_teams_path, notice: 'Team of users was successfully deleted.'
+    redirect_to admin_teams_path, notice: 'Team of users was successfully deleted.'
   end
 
   protected

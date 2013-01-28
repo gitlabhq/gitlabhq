@@ -77,7 +77,7 @@ li.merge_request {
   font-size: 14px;
   background: #474D57;
   color: #fff;
-  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+  font-family: $monospace_font;
 }
 
 .mr_source_commit,

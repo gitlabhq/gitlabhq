@@ -74,6 +74,7 @@ module ApplicationHelper
   def search_autocomplete_source
     projects = current_user.authorized_projects.map { |p| { label: "project: #{p.name_with_namespace}", url: project_path(p) } }
     groups = current_user.authorized_groups.map { |group| { label: "group: #{group.name}", url: group_path(group) } }
+    teams = current_user.authorized_teams.map { |team| { label: "team: #{team.name}", url: team_path(team) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },

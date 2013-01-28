@@ -38,11 +38,14 @@ describe Project, "Hooks" do
         @project_hook = create(:project_hook)
         @project_hook_2 = create(:project_hook)
         project.hooks << [@project_hook, @project_hook_2]
+
+        stub_request(:post, @project_hook.url)
+        stub_request(:post, @project_hook_2.url)
       end
 
       it "executes multiple web hook" do
-        @project_hook.should_receive(:execute).once
-        @project_hook_2.should_receive(:execute).once
+        @project_hook.should_receive(:async_execute).once
+        @project_hook_2.should_receive(:async_execute).once
 
         project.trigger_post_receive('oldrev', 'newrev', 'refs/heads/master', @user)
       end

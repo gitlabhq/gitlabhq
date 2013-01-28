@@ -1,17 +1,12 @@
 class TeamsController < ApplicationController
   # Authorize
-  before_filter :authorize_manage_user_team!
-  before_filter :authorize_admin_user_team!
+  before_filter :authorize_create_team!, only: [:new, :create]
+  before_filter :authorize_manage_user_team!, only: [:edit, :update]
+  before_filter :authorize_admin_user_team!, only: [:destroy]
 
-  # Skip access control on public section
-  skip_before_filter :authorize_manage_user_team!, only: [:index, :show, :new, :destroy, :create, :search, :issues, :merge_requests]
-  skip_before_filter :authorize_admin_user_team!, only: [:index, :show, :new, :create, :search, :issues, :merge_requests]
+  before_filter :user_team, except: [:new, :create]
 
-  layout 'user_team',       only: [:show, :edit, :update, :destroy, :issues, :merge_requests, :search]
-
-  def index
-    @teams = current_user.user_teams.order('name ASC')
-  end
+  layout 'user_team', except: [:new, :create]
 
   def show
     user_team
@@ -33,7 +28,7 @@ class TeamsController < ApplicationController
 
   def destroy
     user_team.destroy
-    redirect_to teams_path
+    redirect_to dashboard_path
   end
 
   def new
@@ -69,16 +64,6 @@ class TeamsController < ApplicationController
     @issues = @issues.includes(:author, :project)
   end
 
-  def search
-    result = SearchContext.new(user_team.project_ids, params).execute
-
-    @projects       = result[:projects]
-    @merge_requests = result[:merge_requests]
-    @issues         = result[:issues]
-    @wiki_pages     = result[:wiki_pages]
-    @teams          = result[:teams]
-  end
-
   protected
 
   def projects
@@ -86,7 +71,6 @@ class TeamsController < ApplicationController
   end
 
   def user_team
-    @team ||= UserTeam.find_by_path(params[:id])
+    @team ||= current_user.authorized_teams.find_by_path(params[:id])
   end
-
 end

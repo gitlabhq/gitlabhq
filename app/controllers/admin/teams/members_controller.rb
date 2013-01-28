@@ -36,6 +36,6 @@ class Admin::Teams::MembersController < Admin::Teams::ApplicationController
   protected
 
   def team_member
-    @member ||= user_team.members.find(params[:id])
+    @member ||= user_team.members.find_by_username(params[:id])
   end
 end

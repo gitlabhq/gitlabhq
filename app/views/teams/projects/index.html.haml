@@ -1,5 +1,3 @@
-= render "teams/team_head"
-
 %h3.page_title
   Assigned projects (#{@team.projects.count})
   %small
@@ -13,22 +11,26 @@
 
 %hr
 
-%table.projects-table
-  %thead
-    %tr
-      %th Project name
-      %th Max access
-      - if current_user.can?(:admin_user_team, @team)
-        %th.span3
+- if @team.projects.present?
+  %table.projects-table
+    %thead
+      %tr
+        %th Project name
+        %th Max access
+        - if current_user.can?(:admin_user_team, @team)
+          %th.span3
 
-  - @team.projects.each do |project|
-    %tr.project
-      %td
-        = link_to project.name_with_namespace, project_path(project)
-      %td
-        %span= @team.human_max_project_access(project)
+    - @team.projects.each do |project|
+      %tr.project
+        %td
+          = link_to project.name_with_namespace, project_path(project)
+        %td
+          %span= @team.human_max_project_access(project)
 
-      - if current_user.can?(:admin_user_team, @team)
-        %td.bgred
-          = link_to 'Edit max access', edit_team_project_path(@team, project), class: "btn small"
-          = link_to 'Relegate', team_project_path(@team, project), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
+        - if current_user.can?(:admin_user_team, @team)
+          %td.bgred
+            = link_to 'Edit max access', edit_team_project_path(@team, project), class: "btn small"
+            = link_to 'Relegate', team_project_path(@team, project), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
+
+- else
+  %p.nothing_here_message This team has no projects yet

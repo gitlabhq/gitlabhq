@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
                   :extern_uid, :provider, as: [:default, :admin]
-  attr_accessible :projects_limit, as: :admin
+  attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
 
   attr_accessor :force_random_password
 
@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
   scope :alphabetically, order('name ASC')
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
-  scope :potential_team_members, ->(team) { team.members.any? ? active : active.not_in_team(team) }
+  scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
   # Class methods
@@ -143,6 +143,11 @@ class User < ActiveRecord::Base
   #
   # Instance methods
   #
+
+  def to_param
+    username
+  end
+
   def generate_password
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
@@ -294,5 +299,16 @@ class User < ActiveRecord::Base
 
   def namespace_id
     namespace.try :id
+  end
+
+  def authorized_teams
+    @authorized_teams ||= begin
+                            ids = []
+                            ids << UserTeam.with_member(self).pluck('user_teams.id')
+                            ids << UserTeam.created_by(self).pluck('user_teams.id')
+                            ids.flatten
+
+                            UserTeam.where(id: ids)
+                          end
   end
 end

@@ -9,9 +9,9 @@ module DashboardHelper
 
     case entity
     when 'issue' then
-      dashboard_issues_path(options)
+      issues_dashboard_path(options)
     when 'merge_request'
-      dashboard_merge_requests_path(options)
+      merge_requests_dashboard_path(options)
     end
   end
 
