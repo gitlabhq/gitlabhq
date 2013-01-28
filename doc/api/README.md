@@ -1,6 +1,6 @@
 # GitLab API
 
-All API requests require authentication. You need to pass a `private_token` parameter by url or header. You can find or reset your private token in your profile.
+All API requests require authentication. You need to pass a `private_token` parameter by url or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
 
 If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
 
@@ -17,6 +17,13 @@ Example of a valid API request:
 ```
 GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U
 ```
+
+Example for a valid API request using curl and authentication via header:
+
+```
+curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://example.com/api/v3/projects"
+```
+
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
 
