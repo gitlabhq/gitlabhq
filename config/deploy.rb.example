@@ -3,7 +3,7 @@ require 'bundler/capistrano'
 set :domain,         'set application domain here'
 set :db_adapter,     'mysql' # or postgres
 set :mount_point,    '/'
-set :application,    'gitlab'
+set :application,    'gitlabhq'
 set :user,           'gitlab'
 set :rails_env,      'production'
 set :deploy_to,      "/home/#{user}/apps/#{application}"
