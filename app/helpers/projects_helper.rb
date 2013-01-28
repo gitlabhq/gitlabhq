@@ -3,8 +3,12 @@ module ProjectsHelper
     @project.users_projects.sort_by(&:project_access).reverse.group_by(&:project_access)
   end
 
-  def remove_from_team_message(project, member)
-    "You are going to remove #{member.user_name} from #{project.name}. Are you sure?"
+  def grouper_project_teams(project)
+    @project.user_team_project_relationships.sort_by(&:greatest_access).reverse.group_by(&:greatest_access)
+  end
+
+  def remove_from_project_team_message(project, user)
+    "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
 
   def link_to_project project
@@ -51,7 +55,9 @@ module ProjectsHelper
 
   def project_title project
     if project.group
-      project.name_with_namespace
+      content_tag :span do
+        link_to(project.group.name, group_path(project.group)) + " / " + project.name
+      end
     else
       project.name
     end

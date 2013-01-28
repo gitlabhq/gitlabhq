@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130110172407) do
+ActiveRecord::Schema.define(:version => 20130125090214) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -213,6 +213,31 @@ ActiveRecord::Schema.define(:version => 20130110172407) do
     t.string "name"
   end
 
+  create_table "user_team_project_relationships", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "user_team_id"
+    t.integer  "greatest_access"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "user_team_user_relationships", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "user_team_id"
+    t.boolean  "group_admin"
+    t.integer  "permission"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "user_teams", :force => true do |t|
+    t.string   "name"
+    t.string   "path"
+    t.integer  "owner_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "",    :null => false
     t.string   "encrypted_password",     :default => "",    :null => false
@@ -242,6 +267,8 @@ ActiveRecord::Schema.define(:version => 20130110172407) do
     t.string   "extern_uid"
     t.string   "provider"
     t.string   "username"
+    t.boolean  "can_create_group",       :default => true,  :null => false
+    t.boolean  "can_create_team",        :default => true,  :null => false
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"

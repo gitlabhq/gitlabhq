@@ -88,7 +88,10 @@ module Gitlab
     end
 
     def destroy_project(project)
-      FileUtils.rm_rf(project.repository.path_to_repo)
+      # do rm-rf only if repository exists
+      if project.repository
+        FileUtils.rm_rf(project.repository.path_to_repo)
+      end
       conf.rm_repo(project.path_with_namespace)
     end
 

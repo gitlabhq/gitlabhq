@@ -1,0 +1,16 @@
+%h3
+  Edit max access in #{@project.name} for #{@team.name} team
+
+%hr
+%table.zebra-striped
+  %tr
+    %td Project:
+    %td= @project.name
+  %tr
+    %td Team:
+    %td= @team.name
+  %tr
+    %td Since:
+    %td= assigned_since(@team, @project).stamp("Nov 11, 2010")
+
+= render 'form'

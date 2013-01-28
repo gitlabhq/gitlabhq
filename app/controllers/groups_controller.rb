@@ -1,12 +1,31 @@
 class GroupsController < ApplicationController
   respond_to :html
-  layout 'group'
+  layout 'group', except: [:new, :create]
 
-  before_filter :group
-  before_filter :projects
+  before_filter :group, except: [:new, :create]
 
   # Authorize
-  before_filter :authorize_read_group!
+  before_filter :authorize_read_group!, except: [:new, :create]
+  before_filter :authorize_create_group!, only: [:new, :create]
+
+  # Load group projects
+  before_filter :projects, except: [:new, :create]
+
+  def new
+    @group = Group.new
+  end
+
+  def create
+    @group = Group.new(params[:group])
+    @group.path = @group.name.dup.parameterize if @group.name
+    @group.owner = current_user
+
+    if @group.save
+      redirect_to @group, notice: 'Group was successfully created.'
+    else
+      render action: "new"
+    end
+  end
 
   def show
     @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
@@ -84,5 +103,9 @@ class GroupsController < ApplicationController
     unless projects.present? or can?(current_user, :manage_group, @group)
       return render_404
     end
+  end
+
+  def authorize_create_group!
+    can?(current_user, :create_group, nil)
   end
 end

@@ -1,9 +1,9 @@
 xml.instruct!
 xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://search.yahoo.com/mrss/" do
   xml.title   "#{current_user.name} issues"
-  xml.link    :href => dashboard_issues_url(:atom, :private_token => current_user.private_token), :rel => "self", :type => "application/atom+xml"
-  xml.link    :href => dashboard_issues_url(:private_token => current_user.private_token), :rel => "alternate", :type => "text/html"
-  xml.id      dashboard_issues_url(:private_token => current_user.private_token)
+  xml.link    :href => issues_dashboard_url(:atom, :private_token => current_user.private_token), :rel => "self", :type => "application/atom+xml"
+  xml.link    :href => issues_dashboard_url(:private_token => current_user.private_token), :rel => "alternate", :type => "text/html"
+  xml.id      issues_dashboard_url(:private_token => current_user.private_token)
   xml.updated @issues.first.created_at.strftime("%Y-%m-%dT%H:%M:%SZ") if @issues.any?
 
   @issues.each do |issue|

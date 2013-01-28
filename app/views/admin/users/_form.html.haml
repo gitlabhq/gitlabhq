@@ -47,6 +47,14 @@
             .input= f.number_field :projects_limit
 
           .clearfix
+            = f.label :can_create_group
+            .input= f.check_box :can_create_group
+
+          .clearfix
+            = f.label :can_create_team
+            .input= f.check_box :can_create_team
+
+          .clearfix
             = f.label :admin do
               %strong.cred Administrator
             .input= f.check_box :admin
