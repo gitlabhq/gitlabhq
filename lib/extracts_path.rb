@@ -50,8 +50,6 @@ module ExtractsPath
 
     return pair unless @project
 
-    # Remove relative_url_root from path
-    input.gsub!(/^#{Gitlab.config.gitlab.relative_url_root}/, "")
     # Remove project, actions and all other staff from path
     input.gsub!(/^\/#{Regexp.escape(@project.path_with_namespace)}/, "")
     input.gsub!(/^\/(tree|commits|blame|blob|refs)\//, "") # remove actions
@@ -110,7 +108,9 @@ module ExtractsPath
       request.format = :atom
     end
 
-    path = CGI::unescape(request.fullpath.dup)
+    raw_path = "#{request.path_info}#{request.query_string.empty? ? '?'+request.query_string : ''}"
+
+    path = CGI::unescape(raw_path)
 
     @ref, @path = extract_ref(path)
 
