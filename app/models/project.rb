@@ -299,6 +299,9 @@ class Project < ActiveRecord::Base
   def trigger_post_receive(oldrev, newrev, ref, user)
     data = post_receive_data(oldrev, newrev, ref, user)
 
+    # Create satellite
+    self.satellite.create unless self.satellite.exists?
+
     # Create push event
     self.observe_push(data)
 
@@ -312,9 +315,6 @@ class Project < ActiveRecord::Base
       # Execute project services
       self.execute_services(data.dup)
     end
-
-    # Create satellite
-    self.satellite.create unless self.satellite.exists?
 
     # Discover the default branch, but only if it hasn't already been set to
     # something else
@@ -460,11 +460,17 @@ class Project < ActiveRecord::Base
   end
 
   def update_repository
-    gitolite.update_repository(self)
+    GitoliteWorker.perform_async(
+      :update_repository,
+      self.id
+    )
   end
 
   def destroy_repository
-    gitolite.remove_repository(self)
+    GitoliteWorker.perform_async(
+      :remove_repository,
+      self.path_with_namespace
+    )
   end
 
   def repo_exists?

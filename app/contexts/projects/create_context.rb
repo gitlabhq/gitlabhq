@@ -32,16 +32,10 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
-      Project.transaction do
-        @project.creator = current_user
-        @project.save!
+      @project.creator = current_user
 
-        # Add user as project master
-        @project.users_projects.create!(project_access: UsersProject::MASTER, user: current_user)
-
-        # when project saved no team member exist so
-        # project repository should be updated after first user add
-        @project.update_repository
+      if @project.save
+        @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
       end
 
       @project

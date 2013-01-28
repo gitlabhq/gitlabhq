@@ -129,7 +129,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def update_repository
-    gitolite.update_repository(project)
+    project.update_repository
   end
 
   def project_access_human

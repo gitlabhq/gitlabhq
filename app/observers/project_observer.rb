@@ -10,6 +10,7 @@ class ProjectObserver < ActiveRecord::Observer
   def after_destroy(project)
     log_info("Project \"#{project.name}\" was removed")
 
+    project.satellite.destroy
     project.destroy_repository
   end
 

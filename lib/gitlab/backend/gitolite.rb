@@ -22,7 +22,8 @@ module Gitlab
       end
     end
 
-    def update_repository project
+    def update_repository project_id
+      project = Project.find(project_id)
       config.update_project!(project)
     end
 
@@ -33,8 +34,15 @@ module Gitlab
       end
     end
 
-    def remove_repository project
-      config.destroy_project!(project)
+    # Remove repository from gitolite
+    #
+    # name - project path with namespace
+    #
+    # Ex.
+    #   remove_repository("gitlab/gitlab-ci")
+    #
+    def remove_repository(name)
+      config.destroy_project!(name)
     end
 
     def url_to_repo path
