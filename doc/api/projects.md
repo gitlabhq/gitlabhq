@@ -107,6 +107,18 @@ Parameters:
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.
 
+## Project access levels
+
+The project access levels are defined in the `user_project` class. Currently, 4 
+levels are recoginized:
+
+```
+  GUEST     = 10
+  REPORTER  = 20
+  DEVELOPER = 30
+  MASTER    = 40
+```
+
 ## List project team members
 
 Get a list of project team members.
