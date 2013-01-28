@@ -48,10 +48,27 @@ namespace :foreman do
   end
 end
 
+namespace :deploy do
+  desc 'Start the application services'
+  task :start, roles: :app do
+    foreman.start
+  end
+
+  desc 'Stop the application services'
+  task :stop, roles: :app do
+    foreman.stop
+  end
+
+  desc 'Restart the application services'
+  task :restart, roles: :app do
+    foreman.restart
+  end
+end
+
 after 'deploy:cold' do
   run "cd #{release_path} && #{rake} gitlab:app:setup RAILS_ENV=#{rails_env}"
   foreman.restart
 end
 
 after 'deploy:update', 'foreman:export'  # Export foreman scripts
-after 'deploy:update', 'foreman:restart' # Restart application scripts
+#after 'deploy:update', 'foreman:restart' # Restart application scripts
