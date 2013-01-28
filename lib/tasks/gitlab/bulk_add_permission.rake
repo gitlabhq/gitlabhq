@@ -7,9 +7,9 @@ namespace :gitlab do
 
       Project.find_each do |project|
         puts "Importing #{user_ids.size} users into #{project.code}"
-        UsersProject.bulk_import(project, user_ids, UsersProject::DEVELOPER)
+        UsersProject.add_users_into_projects(project, user_ids, UsersProject::DEVELOPER)
         puts "Importing #{admin_ids.size} admins into #{project.code}"
-        UsersProject.bulk_import(project, admin_ids, UsersProject::MASTER)
+        UsersProject.add_users_into_projects(project, admin_ids, UsersProject::MASTER)
       end
     end
 
@@ -18,7 +18,7 @@ namespace :gitlab do
       user = User.find_by_email args.email
       project_ids = Project.pluck(:id)
 
-      UsersProject.user_bulk_import(user, project_ids, UsersProject::DEVELOPER)
+      UsersProject.add_users_into_projects(user, project_ids, UsersProject::DEVELOPER)
     end
   end
 end
