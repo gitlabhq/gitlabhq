@@ -22,9 +22,9 @@ set :deploy_via, :remote_cache
 #set :repository, '.'
 #set :deploy_via, :copy
 
-role :web, domain
-role :app, domain
-role :db,  domain, primary: true
+role(:web)               { domain }
+role(:app)               { domain }
+role(:db, primary: true) { domain }
 
 namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
