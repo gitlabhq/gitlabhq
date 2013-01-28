@@ -22,7 +22,7 @@ class ProtectedBranch < ActiveRecord::Base
   after_destroy :update_repository
 
   def update_repository
-    gitolite.update_repository(project)
+    project.update_repository
   end
 
   def commit

@@ -82,8 +82,12 @@ class UsersProject < ActiveRecord::Base
             users_project.save
           end
         end
-        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
+
+      GitoliteWorker.perform_async(
+        :update_repositories,
+        project_ids
+      )
 
       true
     rescue
@@ -97,8 +101,12 @@ class UsersProject < ActiveRecord::Base
           users_project.skip_git = true
           users_project.destroy
         end
-        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
+
+      GitoliteWorker.perform_async(
+        :update_repositories,
+        project_ids
+      )
 
       true
     rescue
@@ -129,7 +137,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def update_repository
-    gitolite.update_repository(project)
+    project.update_repository
   end
 
   def project_access_human
