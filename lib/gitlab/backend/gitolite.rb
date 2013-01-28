@@ -22,7 +22,12 @@ module Gitlab
       end
     end
 
-    def update_repository project_id
+    # Update project config in gitolite by project id
+    #
+    # Ex.
+    #   update_repository(23)
+    #
+    def update_repository(project_id)
       project = Project.find(project_id)
       config.update_project!(project)
     end
@@ -45,18 +50,25 @@ module Gitlab
       config.destroy_project!(name)
     end
 
+    # Update projects configs in gitolite by project ids
+    #
+    # Ex.
+    #   update_repositories([1, 4, 6])
+    #
+    def update_repositories(project_ids)
+      projects = Project.where(id: project_ids)
+
+      config.apply do |config|
+        config.update_projects(projects)
+      end
+    end
+
     def url_to_repo path
       Gitlab.config.gitolite.ssh_path_prefix + "#{path}.git"
     end
 
     def enable_automerge
       config.admin_all_repo!
-    end
-
-    def update_repositories projects
-      config.apply do |config|
-        config.update_projects(projects)
-      end
     end
 
     alias_method :create_repository, :update_repository

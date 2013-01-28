@@ -20,6 +20,6 @@ describe Gitlab::Gitolite do
 
   it "should call config update" do
     gitolite_config.should_receive(:update_project!)
-    gitolite.update_repository project
+    gitolite.update_repository(project.id)
   end
 end
