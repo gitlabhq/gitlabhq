@@ -90,16 +90,6 @@ class ProjectsController < ProjectResourceController
     end
   end
 
-  def graph
-    respond_to do |format|
-      format.html
-      format.json do
-        graph = Gitlab::Graph::JsonBuilder.new(project)
-        render :json => graph.to_json
-      end
-    end
-  end
-
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
