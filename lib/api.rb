@@ -8,6 +8,10 @@ module Gitlab
       rack_response({'message' => '404 Not found'}.to_json, 404)
     end
 
+    rescue_from :all do
+      rack_response({'message' => '500 Internal Server Error'}, 500)
+    end
+
     format :json
     error_format :json
     helpers APIHelpers
