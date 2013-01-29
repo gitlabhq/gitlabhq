@@ -106,7 +106,8 @@ backup:
 ## Gitolite settings
 gitolite:
   admin_uri: git@localhost:gitolite-admin
-  # repos_path must not be a symlink
+
+  # REPOS_PATH MUST NOT BE A SYMLINK!!!
   repos_path: /home/git/repositories/
   hooks_path: /home/git/.gitolite/hooks/
   admin_key: gitlab
