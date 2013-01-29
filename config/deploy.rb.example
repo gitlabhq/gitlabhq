@@ -66,8 +66,8 @@ namespace :deploy do
 end
 
 after 'deploy:cold' do
-  run "cd #{release_path} && #{rake} gitlab:app:setup RAILS_ENV=#{rails_env}"
-  foreman.restart
+  run "cd #{release_path} && #{rake} gitlab:setup force=yes RAILS_ENV=#{rails_env}"
+  deploy.restart
 end
 
 after 'deploy:update', 'foreman:export'  # Export foreman scripts
