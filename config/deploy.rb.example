@@ -9,6 +9,7 @@ set :bundle_without, %w[development test] + (%w[mysql postgres] - [db_adapter])
 set :asset_env,      "RAILS_GROUPS=assets RAILS_RELATIVE_URL_ROOT=#{mount_point}"
 
 set :use_sudo, false
+default_run_options[:pty] = true
 
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
 set :scm,        :git
@@ -27,7 +28,8 @@ role(:db, primary: true) { domain }
 namespace :foreman do
   desc 'Export the Procfile to Ubuntu upstart scripts'
   task :export, roles: :app do
-    run "cd #{release_path} && sudo #{bundle_cmd} exec foreman export upstart /etc/init -f Procfile -a #{application} -u #{user} -l #{release_path}/log/foreman"
+    foreman_export = "foreman export upstart /etc/init -f Procfile -a #{application} -u #{user} -l #{shared_path}/log/foreman"
+    run "cd #{release_path} && #{sudo} #{fetch :bundle_cmd, 'bundle'} exec #{foreman_export}"
   end
 
   desc 'Start the application services'
