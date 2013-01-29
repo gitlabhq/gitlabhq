@@ -19,10 +19,10 @@
         - if current_user == user
           %span.btn.disabled This is you!
         - if @project.namespace_owner == user
-          %span.btn.disabled.success Owner
+          %span.btn.disabled.btn-success Owner
         - elsif user.blocked
           %span.btn.disabled.blocked Blocked
         - elsif allow_admin
-          = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "very_small btn btn-remove" do
+          = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn-tiny btn btn-remove" do
             %i.icon-minus.icon-white
 

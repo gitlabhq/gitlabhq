@@ -215,10 +215,10 @@ ul.notes {
  */
 
 .comment-btn {
-  @extend .create-btn;
+  @extend .btn-create;
 }
 .reply-btn {
-  @extend .primary;
+  @extend .btn-primary;
 }
 .file .content tr.line_holder:hover > td { background: $hover !important; }
 .file .content tr.line_holder:hover > td .line_note_link {

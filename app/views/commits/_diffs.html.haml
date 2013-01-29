@@ -33,7 +33,7 @@
             - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
               %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
-            = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn very_small right view-file'} do
+            = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn btn-tiny right view-file'} do
               View file @
               %span.commit-short-id= @commit.short_id(6)
 

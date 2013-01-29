@@ -129,7 +129,7 @@
       %td
         = link_to tm.name, admin_user_path(tm)
       %td= @project.project_access_human(tm)
-      %td= link_to 'Edit Access', edit_admin_project_member_path(@project, tm), class: "btn small"
+      %td= link_to 'Edit Access', edit_admin_project_member_path(@project, tm), class: "btn btn-small"
       %td= link_to 'Remove from team', admin_project_member_path(@project, tm), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove small"
 
 %br

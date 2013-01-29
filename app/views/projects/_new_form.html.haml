@@ -24,11 +24,11 @@
     .clearfix
       .input.light
         Need a group for several dependent projects?
-        = link_to new_group_path, class: "btn very_small" do
+        = link_to new_group_path, class: "btn btn-tiny" do
           Create a group
   - if current_user.can_create_team?
     .clearfix
       .input.light
         Want to share a project between team?
-        = link_to new_team_path, class: "btn very_small" do
+        = link_to new_team_path, class: "btn btn-tiny" do
           Create a team

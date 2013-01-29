@@ -10,7 +10,7 @@
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_tree_path(@project, @id), class: "btn very_small btn-cancel", confirm: "Are you sure?"
+            = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: "Are you sure?"
       .file_content.code
         %pre#editor= @tree.data
 

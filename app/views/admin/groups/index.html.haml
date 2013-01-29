@@ -4,7 +4,7 @@
     allows you to keep projects organized.
     Use groups for uniting related projects.
 
-  = link_to 'New Group', new_admin_group_path, class: "btn small right"
+  = link_to 'New Group', new_admin_group_path, class: "btn btn-small right"
 %br
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
   = text_field_tag :name, params[:name], class: "xlarge"
@@ -30,6 +30,6 @@
       %td
         = link_to group.owner_name, admin_user_path(group.owner_id)
       %td.bgred
-        = link_to 'Rename', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn small"
-        = link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn small btn-remove"
+        = link_to 'Rename', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn btn-small"
+        = link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
 = paginate @groups, theme: "admin"

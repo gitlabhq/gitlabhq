@@ -3,7 +3,7 @@
   %small
     simple Teams description
 
-  = link_to 'New Team', new_admin_team_path, class: "btn small right"
+  = link_to 'New Team', new_admin_team_path, class: "btn btn-small right"
   %br
 
 = form_tag admin_teams_path, method: :get, class: 'form-inline' do
@@ -32,7 +32,7 @@
       %td
         = link_to team.owner.name, admin_user_path(team.owner_id)
       %td.bgred
-        = link_to 'Rename', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn small"
-        = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn small btn-remove"
+        = link_to 'Rename', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
+        = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
 
 = paginate @teams, theme: "admin"

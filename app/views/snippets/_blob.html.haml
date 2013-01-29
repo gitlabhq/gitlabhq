@@ -3,7 +3,7 @@
     %i.icon-file
     %strong= @snippet.file_name
     %span.options
-      = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn very_small", target: "_blank"
+      = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn btn-tiny", target: "_blank"
   .file_content.code
     - unless @snippet.content.empty?
       %div{class: user_color_scheme_class}

@@ -29,7 +29,7 @@
 
         - if current_user.can?(:admin_user_team, @team)
           %td.bgred
-            = link_to 'Edit max access', edit_team_project_path(@team, project), class: "btn small"
+            = link_to 'Edit max access', edit_team_project_path(@team, project), class: "btn btn-small"
             = link_to 'Relegate', team_project_path(@team, project), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn btn-remove small"
 
 - else

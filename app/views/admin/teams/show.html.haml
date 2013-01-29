@@ -42,7 +42,7 @@
 %fieldset
   %legend
     Members (#{@team.members.count})
-    %span= link_to 'Add members', new_admin_team_member_path(@team), class: "btn btn-primary small right", id: :add_members_to_team
+    %span= link_to 'Add members', new_admin_team_member_path(@team), class: "btn btn-primary btn-small right", id: :add_members_to_team
   - if @team.members.any?
     %table#members_list
       %thead
@@ -60,14 +60,14 @@
           %td= @team.human_default_projects_access(member)
           %td= @team.admin?(member) ? "Admin" : "Member"
           %td.bgred
-            = link_to 'Edit', edit_admin_team_member_path(@team, member), class: "btn small"
+            = link_to 'Edit', edit_admin_team_member_path(@team, member), class: "btn btn-small"
             &nbsp;
-            = link_to 'Remove', admin_team_member_path(@team, member), confirm: 'Remove member from team. Are you sure?', method: :delete, class: "btn btn-remove small", id: "remove_member_#{member.id}"
+            = link_to 'Remove', admin_team_member_path(@team, member), confirm: 'Remove member from team. Are you sure?', method: :delete, class: "btn btn-remove btn-small", id: "remove_member_#{member.id}"
 
 %fieldset
   %legend
     Projects (#{@team.projects.count})
-    %span= link_to 'Add projects', new_admin_team_project_path(@team), class: "btn btn-primary small right", id: :assign_projects_to_team
+    %span= link_to 'Add projects', new_admin_team_project_path(@team), class: "btn btn-primary btn-small right", id: :assign_projects_to_team
   - if @team.projects.any?
     %table#projects_list
       %thead
@@ -82,7 +82,7 @@
           %td
             %span= @team.human_max_project_access(project)
           %td.bgred
-            = link_to 'Edit', edit_admin_team_project_path(@team, project), class: "btn small"
+            = link_to 'Edit', edit_admin_team_project_path(@team, project), class: "btn btn-small"
             &nbsp;
             = link_to 'Relegate', admin_team_project_path(@team, project), confirm: 'Remove project from team. Are you sure?', method: :delete, class: "btn btn-remove small", id: "relegate_project_#{project.id}"
 

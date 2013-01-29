@@ -123,5 +123,5 @@
       %tr
         %td= link_to project.name_with_namespace, admin_project_path(project)
         %td= tm.project_access_human
-        %td= link_to 'Edit Access', edit_admin_project_member_path(project, tm.user), class: "btn small"
-        %td= link_to 'Remove from team', admin_project_member_path(project, tm.user), confirm: 'Are you sure?', method: :delete, class: "btn small btn-remove"
+        %td= link_to 'Edit Access', edit_admin_project_member_path(project, tm.user), class: "btn btn-small"
+        %td= link_to 'Remove from team', admin_project_member_path(project, tm.user), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove"
