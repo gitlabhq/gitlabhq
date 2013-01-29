@@ -23,6 +23,6 @@
         - elsif user.blocked
           %span.btn.disabled.blocked Blocked
         - elsif allow_admin
-          = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "very_small btn danger" do
+          = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "very_small btn btn-remove" do
             %i.icon-minus.icon-white
 

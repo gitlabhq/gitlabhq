@@ -8,7 +8,7 @@
 
 = form_tag admin_teams_path, method: :get, class: 'form-inline' do
   = text_field_tag :name, params[:name], class: "xlarge"
-  = submit_tag "Search", class: "btn submit primary"
+  = submit_tag "Search", class: "btn submit btn-primary"
 
 %table
   %thead
@@ -33,6 +33,6 @@
         = link_to team.owner.name, admin_user_path(team.owner_id)
       %td.bgred
         = link_to 'Rename', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn small"
-        = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn small danger"
+        = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn small btn-remove"
 
 = paginate @teams, theme: "admin"

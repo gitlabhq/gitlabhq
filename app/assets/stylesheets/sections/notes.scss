@@ -214,9 +214,11 @@ ul.notes {
  * Note Form
  */
 
-.comment-btn,
+.comment-btn {
+  @extend .create-btn;
+}
 .reply-btn {
-  @extend .save-btn;
+  @extend .primary;
 }
 .file .content tr.line_holder:hover > td { background: $hover !important; }
 .file .content tr.line_holder:hover > td .line_note_link {

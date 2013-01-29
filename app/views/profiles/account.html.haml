@@ -24,7 +24,7 @@
         %p.cgray
           - if current_user.private_token
             = text_field_tag "token", current_user.private_token, class: "xxlarge large_text"
-            = f.submit 'Reset', confirm: "Are you sure?", class: "btn primary btn-build-token"
+            = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token"
           - else
             %span You don`t have one yet. Click generate to fix it.
             = f.submit 'Generate', class: "btn success btn-build-token"
@@ -49,7 +49,7 @@
           = f.password_field :password_confirmation, required: true
       .clearfix
         .input
-          = f.submit 'Save password', class: "btn save-btn"
+          = f.submit 'Save password', class: "btn btn-save"
 
 
 
@@ -75,6 +75,6 @@
           %li It will change web url for personal projects.
           %li It will change the git path to repositories for personal projects.
       .input
-        = f.submit 'Save username', class: "btn save-btn"
+        = f.submit 'Save username', class: "btn btn-save"
 
 

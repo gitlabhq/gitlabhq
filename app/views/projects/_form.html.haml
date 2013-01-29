@@ -77,9 +77,9 @@
   %br
 
   .actions
-    = f.submit 'Save', class: "btn save-btn"
+    = f.submit 'Save', class: "btn btn-save"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
       - if can?(current_user, :remove_project, @project)
         .right
-          = link_to 'Remove Project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
+          = link_to 'Remove Project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn btn-remove"

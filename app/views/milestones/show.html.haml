@@ -25,7 +25,7 @@
   %hr
   %p
     %span All issues for this milestone are closed. You may close milestone now.
-    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn small danger"
+    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn small btn-remove"
 
 .ui-box.ui-box-show
   .ui-box-head

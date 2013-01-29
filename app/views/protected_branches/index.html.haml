@@ -24,7 +24,7 @@
           .span3
             = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
           &nbsp;
-          = f.submit 'Protect', class: "primary btn"
+          = f.submit 'Protect', class: "btn-primary btn"
 
     - unless @branches.empty?
       %table

@@ -17,6 +17,6 @@
       = f.text_field :path, placeholder: "opensource", class: "xxlarge left"
   .clearfix
     .input.span3.center
-      = f.submit 'Save team changes', class: "btn primary"
+      = f.submit 'Save team changes', class: "btn btn-primary"
     .input.span3.center
-      = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn danger"
+      = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn btn-remove"

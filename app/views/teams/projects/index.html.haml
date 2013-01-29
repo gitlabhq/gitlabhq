@@ -6,7 +6,7 @@
 
   - if current_user.can?(:manage_user_team, @team) && @avaliable_projects.any?
     %span.right
-      = link_to new_team_project_path(@team), class: "btn success small grouped", title: "New Team Member" do
+      = link_to new_team_project_path(@team), class: "btn btn-primary small grouped", title: "New Team Member" do
         Assign project to Team
 
 %hr
@@ -30,7 +30,7 @@
         - if current_user.can?(:admin_user_team, @team)
           %td.bgred
             = link_to 'Edit max access', edit_team_project_path(@team, project), class: "btn small"
-            = link_to 'Relegate', team_project_path(@team, project), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
+            = link_to 'Relegate', team_project_path(@team, project), confirm: 'Remove project from team and move to global namespace. Are you sure?', method: :delete, class: "btn btn-remove small"
 
 - else
   %p.nothing_here_message This team has no projects yet
