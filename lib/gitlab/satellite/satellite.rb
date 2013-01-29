@@ -13,6 +13,10 @@ module Gitlab
         @project = project
       end
 
+      def log message
+        Gitlab::Satellite::Logger.error(message)
+      end
+
       def raise_no_satellite
         raise SatelliteNotExistError.new("Satellite doesn't exist")
       end
@@ -29,10 +33,13 @@ module Gitlab
         output, status = popen("git clone #{project.url_to_repo} #{path}",
                                Gitlab.config.satellites.path)
 
+        log("PID: #{project.id}: git clone #{project.url_to_repo} #{path}")
+        log("PID: #{project.id}: -> #{output}")
+
         if status.zero?
           true
         else
-          Gitlab::GitLogger.error("Failed to create satellite for #{project.name_with_namespace}")
+          log("Failed to create satellite for #{project.name_with_namespace}")
           false
         end
       end
