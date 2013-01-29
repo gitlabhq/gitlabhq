@@ -98,6 +98,10 @@
       margin-top: 3px;
     }
 
+    .btn-tiny {
+      @include box-shadow(0 0px 0px 1px #f1f1f1);
+    }
+
     .nav-pills {
       > li {
         > a {

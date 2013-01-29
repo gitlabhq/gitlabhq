@@ -1,9 +1,12 @@
 .btn {
-  @include linear-gradient(#f7f7f7, #d5d5d5);
+  @include linear-gradient(#f1f1f1, #e1e1e1);
+  text-shadow: 0 1px 1px #FFF;
   border-color: #BBB;
+
   &:hover {
-    @include bg-gray-gradient;
-    border-color: #bbb;
+    background: #f1f1f1;
+    @include linear-gradient(#fAfAfA, #f1f1f1);
+    border-color: #AAA;
     color: #333;
   }
 
