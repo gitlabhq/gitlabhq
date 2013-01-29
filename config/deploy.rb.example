@@ -34,17 +34,17 @@ namespace :foreman do
 
   desc 'Start the application services'
   task :start, roles: :app do
-    sudo "start #{application}"
+    run "#{sudo} service #{application} start"
   end
 
   desc 'Stop the application services'
   task :stop, roles: :app do
-    sudo "stop #{application}"
+    run "#{sudo} service #{application} stop"
   end
 
   desc 'Restart the application services'
   task :restart, roles: :app do
-    run "sudo start #{application} || sudo restart #{application}"
+    run "#{sudo} service #{application} restart"
   end
 end
 
