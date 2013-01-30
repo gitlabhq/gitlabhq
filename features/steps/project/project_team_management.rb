@@ -24,7 +24,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
       select user.name, :from => "user_ids"
       select "Reporter", :from => "project_access"
     end
-    click_button "Save"
+    click_button "Add users"
   end
 
   Then 'I should see "Mike" in team list as "Reporter"' do

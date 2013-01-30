@@ -19,5 +19,5 @@
     .input= select_tag :project_access, options_for_select(Project.access_options, @user_project_relation.project_access), class: "project-access-select chosen"
 
   .actions
-    = f.submit 'Save', class: "btn btn-save"
+    = f.submit 'Add users', class: "btn btn-create"
     = link_to "Cancel", project_team_index_path(@project), class: "btn btn-cancel"

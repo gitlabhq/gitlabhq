@@ -19,7 +19,7 @@
         - if current_user == user
           %span.btn.disabled This is you!
         - if @project.namespace_owner == user
-          %span.btn.disabled.btn-success Owner
+          %span.btn.disabled Owner
         - elsif user.blocked
           %span.btn.disabled.blocked Blocked
         - elsif allow_admin
