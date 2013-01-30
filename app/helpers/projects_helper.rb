@@ -43,7 +43,7 @@ module ProjectsHelper
     tm = project.team_member_by_id(author)
 
     if tm
-      link_to author_html, project_team_member_path(project, tm), class: "author_link"
+      link_to author_html, project_team_member_path(project, tm.user_username), class: "author_link"
     else
       author_html
     end.html_safe

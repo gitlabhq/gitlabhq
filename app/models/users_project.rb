@@ -33,7 +33,7 @@ class UsersProject < ActiveRecord::Base
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
 
-  delegate :name, :email, to: :user, prefix: true
+  delegate :name, :username, :email, to: :user, prefix: true
 
   scope :guests, where(project_access: GUEST)
   scope :reporters, where(project_access: REPORTER)
