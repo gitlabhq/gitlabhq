@@ -3,7 +3,7 @@ module Gitlab
   class Notes < Grape::API
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, Snippet]
+    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
 
     resource :projects do
       # Get a list of project wall notes
