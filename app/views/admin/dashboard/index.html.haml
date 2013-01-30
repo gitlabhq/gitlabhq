@@ -31,7 +31,7 @@
     - @projects.each do |project|
       %p
         = link_to project.name_with_namespace, [:admin, project]
-        %span.light.right
+        %span.light.pull-right
           = time_ago_in_words project.created_at
           ago
 
@@ -42,7 +42,7 @@
       %p
         = link_to [:admin, user] do
           = user.name
-        %span.light.right
+        %span.light.pull-right
           = time_ago_in_words user.created_at
           ago
 
@@ -51,25 +51,25 @@
     %hr
     %p
       Issues
-      %span.light.right
+      %span.light.pull-right
         = Issue.count
     %p
       Merge Requests
-      %span.light.right
+      %span.light.pull-right
         = MergeRequest.count
     %p
       Notes
-      %span.light.right
+      %span.light.pull-right
         = Note.count
     %p
       Snippets
-      %span.light.right
+      %span.light.pull-right
         = Snippet.count
     %p
       SSH Keys
-      %span.light.right
+      %span.light.pull-right
         = Key.count
     %p
       Milestones
-      %span.light.right
+      %span.light.pull-right
         = Milestone.count

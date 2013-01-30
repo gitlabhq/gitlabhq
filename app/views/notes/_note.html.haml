@@ -30,7 +30,7 @@
   - if note.attachment.url
     - if note.attachment.image?
       = image_tag note.attachment.url, class: 'note-image-attach'
-    .attachment.right
+    .attachment.pull-right
       = link_to note.attachment.url, target: "_blank" do
         %i.icon-attachment
         = note.attachment_identifier

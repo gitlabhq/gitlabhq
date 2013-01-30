@@ -3,5 +3,5 @@
     = render partial: 'shared/ref_switcher', locals: {destination: 'tree', path: params[:path]}
   = nav_link(controller: :refs) do
     = link_to 'Source', project_tree_path(@project, @ref)
-  %li.right
+  %li.pull-right
     = render "shared/clone_panel"

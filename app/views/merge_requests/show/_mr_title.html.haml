@@ -5,7 +5,7 @@
   &rarr;
   %span.label_branch= @merge_request.target_branch
 
-  %span.right
+  %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
         .left.btn-group
@@ -17,13 +17,13 @@
             %li= link_to "Email Patches", project_merge_request_path(@project, @merge_request, format: :patch)
             %li= link_to "Plain Diff",    project_merge_request_path(@project, @merge_request, format: :diff)
 
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {closed: true }, status_only: true), method: :put, class: "btn grouped danger", title: "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {closed: true }, status_only: true), method: :put, class: "btn grouped btn-close", title: "Close merge request"
 
         = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn grouped" do
           %i.icon-edit
           Edit
 
-.right
+.pull-right
   .span3#votes= render 'votes/votes_block', votable: @merge_request
 
 .back_link

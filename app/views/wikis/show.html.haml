@@ -1,6 +1,6 @@
 %h3.page_title
   = @wiki.title
-  %span.right
+  %span.pull-right
     = link_to pages_project_wikis_path(@project), class: "btn btn-small grouped" do
       Pages
     - if can? current_user, :write_wiki, @project

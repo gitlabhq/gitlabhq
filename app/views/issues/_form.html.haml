@@ -2,7 +2,7 @@
   %h3.page_title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
   = form_for [@project, @issue] do |f|
     -if @issue.errors.any?
-      .alert-message.block-message.error
+      .alert.alert-error
         - @issue.errors.full_messages.each do |msg|
           %span= msg
           %br

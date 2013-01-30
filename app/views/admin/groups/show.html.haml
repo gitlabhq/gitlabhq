@@ -14,7 +14,7 @@
     %td
       = @group.name
       &nbsp;
-      = link_to edit_admin_group_path(@group), class: "btn btn-small right" do
+      = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
         %i.icon-edit
         Rename
   %tr
@@ -29,7 +29,7 @@
         Owner:
     %td
       = @group.owner_name
-      .right
+      .pull-right
         = link_to "#", class: "btn btn-small change-owner-link" do
           %i.icon-edit
           Change owner

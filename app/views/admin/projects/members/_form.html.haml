@@ -1,6 +1,6 @@
 = form_for @team_member_relation, as: :team_member, url: admin_project_member_path(@project, @member)  do |f|
   -if @team_member_relation.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @team_member_relation.errors.full_messages.each do |msg|
           %li= msg

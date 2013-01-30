@@ -1,6 +1,6 @@
 = form_tag admin_team_project_path(@team, @project), method: :put do
   -if @project.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @project.errors.full_messages.each do |msg|
           %li= msg

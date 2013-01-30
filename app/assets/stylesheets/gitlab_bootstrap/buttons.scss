@@ -67,6 +67,7 @@
     @extend .btn-primary;
   }
 
+  &.btn-close,
   &.btn-remove {
     @extend .btn-danger;
     border-color: #BD362F;

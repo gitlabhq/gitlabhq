@@ -10,7 +10,7 @@
         %br
         %small.cgray= user.email
 
-    .span6.right
+    .span6.pull-right
       - if allow_admin
         .left.span2
           = form_for(member, as: :team_member, url: team_member_path(@team, user)) do |f|
@@ -19,7 +19,7 @@
           %span
             = check_box_tag :group_admin, true, @team.admin?(user)
             Admin access
-      .right
+      .pull-right
         - if current_user == user
           %span.btn.disabled This is you!
         - if @team.owner == user

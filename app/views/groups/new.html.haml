@@ -2,7 +2,7 @@
 %hr
 = form_for @group do |f|
   - if @group.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %span= @group.errors.full_messages.first
   .clearfix
     = f.label :name do

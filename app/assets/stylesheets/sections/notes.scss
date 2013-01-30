@@ -258,7 +258,7 @@ ul.notes {
     }
 
     .attachment {
-      @extend .right;
+      @extend .pull-right;
       position: relative;
       width: 350px;
       height: 50px;
@@ -274,7 +274,7 @@ ul.notes {
       }
     }
     .notify_options {
-      @extend .right;
+      @extend .pull-right;
     }
   }
   .note_text_and_preview {

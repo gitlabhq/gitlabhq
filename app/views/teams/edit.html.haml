@@ -2,7 +2,7 @@
 %hr
 = form_for @team, url: teams_path do |f|
   - if @team.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %span= @team.errors.full_messages.first
   .clearfix
     = f.label :name do

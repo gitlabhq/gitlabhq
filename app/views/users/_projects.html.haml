@@ -9,7 +9,7 @@
             \/
           %strong.well-title
             = truncate(project.name, length: 45)
-          %span.right.light
+          %span.pull-right.light
             - if project.owner == @user
               %i.icon-wrench
             - tm = project.team.get_tm(@user.id)

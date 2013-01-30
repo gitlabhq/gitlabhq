@@ -4,7 +4,7 @@
       = image_tag gravatar_icon(@user.email, 90), class: "avatar s90"
       = @user.name
       - if @user == current_user
-        .right
+        .pull-right
           = link_to profile_path, class: 'btn btn-small' do
             %i.icon-edit
             Edit Profile
