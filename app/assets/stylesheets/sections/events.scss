@@ -127,7 +127,7 @@
   .btn-new-mr {
     @extend .btn-info;
     @extend .small;
-    @extend .right;
+    @extend .pull-right;
     margin: -3px;
   }
 }

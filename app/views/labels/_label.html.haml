@@ -2,7 +2,7 @@
   %strong
     %i.icon-tag
     = label.name
-  .right
+  .pull-right
     = link_to project_issues_path(label_name: label.name) do
       %strong
         = pluralize(label.count, 'issue')

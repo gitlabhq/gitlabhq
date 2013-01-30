@@ -5,7 +5,7 @@
     %strong= link_to "here", help_permissions_path, class: "vlink"
 
   - if current_user.can?(:manage_user_team, @team) && @avaliable_projects.any?
-    %span.right
+    %span.pull-right
       = link_to new_team_project_path(@team), class: "btn btn-primary small grouped", title: "New Team Member" do
         Assign project to Team
 

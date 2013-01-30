@@ -9,7 +9,7 @@
   %nav.gitlab_pagination
     = prev_page_tag
     - each_page do |page|
-      - if page.left_outer? || page.right_outer? || page.inside_window?
+      - if page.left_outer? || page.pull-right_outer? || page.inside_window?
         = page_tag page
       - elsif !page.was_truncated?
         = gap_tag

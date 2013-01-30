@@ -6,7 +6,7 @@
     %strong= link_to "here", help_permissions_path, class: "vlink"
 
   - if can? current_user, :manage_user_team, @team
-    %span.right
+    %span.pull-right
       = link_to new_team_member_path(@team), class: "btn btn-primary small grouped", title: "New Team Member" do
         New Team Member
 %hr

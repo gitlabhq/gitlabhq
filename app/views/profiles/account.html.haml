@@ -12,7 +12,7 @@
 %fieldset
   %legend
     Private token
-    %span.cred.right
+    %span.cred.pull-right
       keep it secret!
   .padded
     = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
@@ -56,7 +56,7 @@
 %fieldset.update-username
   %legend
     Username
-    %small.cred.right
+    %small.cred.pull-right
       Changing your username can have unintended side effects!
   = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
     .padded

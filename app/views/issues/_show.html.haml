@@ -2,7 +2,7 @@
   - if controller.controller_name == 'issues'
     .issue_check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
-  .right
+  .pull-right
     - if issue.notes.any?
       %span.btn.btn-small.disabled.grouped
         %i.icon-comment

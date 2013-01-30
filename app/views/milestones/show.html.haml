@@ -8,7 +8,7 @@
       = link_to project_milestones_path(@project) do
         &larr; To milestones list
   .span6
-    .right
+    .pull-right
       - unless  @milestone.closed
         = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small grouped", title: "New Issue" do
           %i.icon-plus
@@ -43,7 +43,7 @@
       #{@milestone.closed_items_count} closed
       &ndash;
       #{@milestone.open_items_count} open
-      %span.right= @milestone.expires_at
+      %span.pull-right= @milestone.expires_at
     .progress.progress-info
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 
