@@ -86,8 +86,13 @@
 
 /** ALERT MESSAGES **/
 .alert-message { @extend .alert; }
-.alert-messag.success { @extend .alert-success; }
 .alert-message.error { @extend .alert-error; }
+
+.alert.alert-disabled {
+  background: #EEE;
+  color: #777;
+  border-color: #DDD;
+}
 
 /** AVATARS **/
 img.avatar { float: left; margin-right: 12px; width: 40px; border: 1px solid #ddd; padding: 1px; }

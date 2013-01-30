@@ -4,7 +4,7 @@
 .snippet-form-holder
   = form_for [@project, @snippet] do |f|
     -if @snippet.errors.any?
-      .alert-message.block-message.error
+      .alert.alert-error
         %ul
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
