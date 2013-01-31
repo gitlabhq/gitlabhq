@@ -122,7 +122,7 @@
           var cx = offsetX + 20 * c.time
             , cy = offsetY + 10 * c.space
             , psy = offsetY + 10 * ps;
-          if (c.space == this.commits[i].space) {
+          if (c.space == this.commits[i].space && c.space == ps) {
             r.path([
               "M", x, y,
               "L", cx, cy
