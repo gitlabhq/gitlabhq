@@ -218,7 +218,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
-        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject
+        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject, project: user_project
       end
 
       # Get a single branch
@@ -230,7 +230,43 @@ module Gitlab
       #   GET /projects/:id/repository/branches/:branch
       get ":id/repository/branches/:branch" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        present @branch, with: Entities::RepoObject
+        present @branch, with: Entities::RepoObject, project: user_project
+      end
+
+      # Protect a single branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   PUT /projects/:id/repository/branches/:branch/protect
+      put ":id/repository/branches/:branch/protect" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        protected = user_project.protected_branches.find_by_name(@branch.name)
+
+        unless protected
+          user_project.protected_branches.create(:name => @branch.name)
+        end
+
+        present @branch, with: Entities::RepoObject, project: user_project
+      end
+
+      # Unprotect a single branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   PUT /projects/:id/repository/branches/:branch/unprotect
+      put ":id/repository/branches/:branch/unprotect" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        protected = user_project.protected_branches.find_by_name(@branch.name)
+
+        if protected
+          protected.destroy
+        end
+
+        present @branch, with: Entities::RepoObject, project: user_project
       end
 
       # Get a project repository tags
