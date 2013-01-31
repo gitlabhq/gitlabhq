@@ -109,9 +109,9 @@ module Gitlab
                     end
 
             space = if commit.space >= parent.space then
-                      find_free_parent_space(range, map, parent.space, 1, commit.space, times)
+                      find_free_parent_space(range, parent.space, 1, commit.space, times)
                     else
-                      find_free_parent_space(range, map, parent.space, -1, parent.space, times)
+                      find_free_parent_space(range, parent.space, -1, parent.space, times)
                     end
 
             mark_reserved(range, space)
@@ -122,9 +122,9 @@ module Gitlab
         spaces
       end
 
-      def find_free_parent_space(range, map, space_base, space_step, space_default, times)
+      def find_free_parent_space(range, space_base, space_step, space_default, times)
         if is_overlap?(range, times, space_default) then
-          find_free_space(range, map, space_base, space_step)
+          find_free_space(range, space_base, space_step)
         else
           space_default
         end
@@ -152,17 +152,18 @@ module Gitlab
         if leaves.empty?
           return
         end
-        time_range = leaves.last.time..leaves.first.time
-        space = find_free_space(time_range, map, 1, 2)
-        leaves.each{|l| l.space = space}
         # and mark it as reserved
         min_time = leaves.last.time
+        max_space = 1
         parents = leaves.last.parents.collect
         parents.each do |p|
           if map.include? p.id
             parent = map[p.id]
             if parent.time < min_time
               min_time = parent.time
+            end
+            if max_space < parent.space then
+              max_space = parent.space
             end
           end
         end
@@ -171,6 +172,11 @@ module Gitlab
         else
           max_time = parent_time - 1
         end
+
+        time_range = leaves.last.time..leaves.first.time
+        space = find_free_space(time_range, max_space, 2)
+        leaves.each{|l| l.space = space}
+
         mark_reserved(min_time..max_time, space)
 
         # Visit branching chains
@@ -188,11 +194,12 @@ module Gitlab
         end
       end
 
-      def find_free_space(time_range, map, space_base, space_step)
+      def find_free_space(time_range, space_base, space_step)
         reserved = []
         for day in time_range
           reserved += @_reserved[day]
         end
+        reserved.uniq!
 
         space = space_base
         while reserved.include?(space) do
