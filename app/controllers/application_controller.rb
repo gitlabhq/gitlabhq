@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   def reject_blocked!
-    if current_user && current_user.blocked
+    if current_user && current_user.blocked?
       sign_out current_user
       flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
       redirect_to new_user_session_path
