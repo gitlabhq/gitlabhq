@@ -83,6 +83,54 @@ describe Gitlab::API do
     end
   end
 
+  describe "PUT /users/:id" do
+    before { admin }
+
+    it "should update user" do
+      put api("/users/#{user.id}", admin), {bio: 'new test bio'}
+      response.status.should == 200
+      json_response['bio'].should == 'new test bio'
+      user.reload.bio.should == 'new test bio'
+    end
+
+    it "should not allow invalid update" do
+      put api("/users/#{user.id}", admin), {email: 'invalid email'}
+      response.status.should == 404
+      user.reload.email.should_not == 'invalid email'
+    end
+
+    it "shouldn't available for non admin users" do
+      put api("/users/#{user.id}", user), attributes_for(:user)
+      response.status.should == 403
+    end
+
+    it "should return 404 for non-existing user" do
+      put api("/users/999999", admin), {bio: 'update should fail'}
+      response.status.should == 404
+    end
+  end
+
+  describe "DELETE /users/:id" do
+    before { admin }
+
+    it "should delete user" do
+      delete api("/users/#{user.id}", admin)
+      response.status.should == 200
+      expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+      json_response['email'].should == user.email
+    end
+
+    it "shouldn't available for non admin users" do
+      delete api("/users/#{user.id}", user)
+      response.status.should == 403
+    end
+
+    it "should return 404 for non-existing user" do
+      delete api("/users/999999", admin)
+      response.status.should == 404
+    end
+  end
+
   describe "GET /user" do
     it "should return current user" do
       get api("/user", user)
