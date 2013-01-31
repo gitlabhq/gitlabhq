@@ -1,0 +1,9 @@
+New comment for Commit <%= @commit.short_id %>
+
+<%= url_for(project_commit_url(@note.project, id: @commit.id, anchor: "note_#{@note.id}")) %>
+
+
+Author: <%= @note.author_name %>
+
+<%= @note.note %>
+
