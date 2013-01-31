@@ -9,8 +9,9 @@ module Gitlab
         @max_count ||= 650
       end
 
-      def initialize project
+      def initialize project, ref
         @project = project
+        @ref = ref
         @repo = project.repo
         @ref_cache = {}
 
@@ -66,9 +67,9 @@ module Gitlab
         heads.select!{|h| h.is_a? Grit::Head or h.is_a? Grit::Remote}
         # sort heads so the master is top and current branches are closer
         heads.sort! do |a,b|
-          if a.name == "master"
+          if a.name == @ref
             -1
-          elsif b.name == "master"
+          elsif b.name == @ref
             1
           else
             b.commit.committed_date <=> a.commit.committed_date
