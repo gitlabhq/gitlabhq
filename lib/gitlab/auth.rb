@@ -13,7 +13,9 @@ module Gitlab
         @user.update_attributes(:extern_uid => uid, :provider => provider)
         @user
       else
-        create_from_omniauth(auth, true)
+        if Gitlab.config.omniauth['allow_single_sign_on']
+          create_from_omniauth(auth, true)
+        end
       end
     end
 
@@ -41,7 +43,7 @@ module Gitlab
         password_confirmation: password,
         projects_limit: Gitlab.config.gitlab.default_projects_limit,
       }, as: :admin)
-      if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
+      if Gitlab.config.omniauth['block_auto_created_users']
         @user.blocked = true
       end
       @user.save!
