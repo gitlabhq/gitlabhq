@@ -14,6 +14,6 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     Gitlab::Graph::JsonBuilder.stub(max_count: 10)
 
     project = Project.find_by_name("Shop")
-    visit graph_project_path(project)
+    visit project_graph_path(project, "master")
   end
 end
