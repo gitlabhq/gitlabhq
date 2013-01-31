@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: user_team_user_relationships
+#
+#  id           :integer          not null, primary key
+#  user_id      :integer
+#  user_team_id :integer
+#  group_admin  :boolean
+#  permission   :integer
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
 class UserTeamUserRelationship < ActiveRecord::Base
   attr_accessible :group_admin, :permission, :user_id, :user_team_id
 
