@@ -42,7 +42,8 @@ gravatar:
   # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
   # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
 
-
+markdown:
+  hard_wrap: true # treat newlines in paragraphs as real line breaks when rendering html
 
 #
 # 2. Auth settings

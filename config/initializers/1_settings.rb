@@ -59,6 +59,9 @@ Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 
+Settings['markdown'] ||= Settingslogic.new({})
+Settings.markdown['hard_wrap'] = true if Settings.markdown['hard_wrap'].nil?
+
 Settings['gitolite'] ||= Settingslogic.new({})
 Settings.gitolite['admin_key']    ||= 'gitlab'
 Settings.gitolite['admin_uri']    ||= 'git@localhost:gitolite-admin'

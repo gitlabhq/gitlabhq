@@ -34,7 +34,7 @@ module GitlabMarkdownHelper
                           # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
                           filter_html: true,
                           with_toc_data: true,
-                          hard_wrap: true)
+                          hard_wrap: Gitlab.config.markdown.hard_wrap)
       @markdown = Redcarpet::Markdown.new(gitlab_renderer,
                       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
                       no_intra_emphasis: true,
