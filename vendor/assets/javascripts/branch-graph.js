@@ -260,7 +260,7 @@
       cursor: "pointer"
     })
     .click(function(){
-      window.location = options.commit_url.replace('%s', commit.id);
+      window.open(options.commit_url.replace('%s', commit.id), '_blank');
     })
     .hover(function(){
       this.tooltip = r.commitTooltip(x, y + 5, commit);
