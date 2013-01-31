@@ -15,6 +15,8 @@
           %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
       = link_to project_tree_path(@project, @commit), class: "btn btn-primary grouped" do
         %span Browse Code »
+      = link_to project_graph_path(@project, @commit), class: "btn btn-primary grouped" do
+        %span Network »
     %h3.commit-title.page_title
       = gfm escape_once(@commit.title)
     - if @commit.description.present?
