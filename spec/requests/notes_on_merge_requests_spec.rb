@@ -22,9 +22,9 @@ describe "On a merge request", js: true do
     it { within(".js-main-target-form") { should_not have_link("Cancel") } }
 
     # notifiactions
-    it { within(".js-main-target-form") { should have_checked_field("Project team") } }
-    it { within(".js-main-target-form") { should_not have_checked_field("Commit author") } }
-    it { within(".js-main-target-form") { should_not have_unchecked_field("Commit author") } }
+    it { within(".js-main-target-form") { should have_checked_field("Notify team via email") } }
+    it { within(".js-main-target-form") { should_not have_checked_field("Notify commit author") } }
+    it { within(".js-main-target-form") { should_not have_unchecked_field("Notify commit author") } }
 
     describe "without text" do
       it { within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) } }
@@ -125,7 +125,7 @@ describe "On a merge request diff", js: true, focus: true do
       it { should have_css(".js-close-discussion-note-form", text: "Cancel") }
 
       # notification options
-      it { should have_checked_field("Project team") }
+      it { should have_checked_field("Notify team via email") }
 
       it "shouldn't add a second form for same row" do
         find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder .js-add-diff-note-button").trigger("click")
