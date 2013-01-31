@@ -23,5 +23,5 @@
       = f.label :content
       .input= f.text_area :content, class: 'span8 js-gfm-input'
   .actions
-    = f.submit 'Save', class: "save-btn btn"
-    = link_to "Cancel", project_wiki_path(@project, :index), class: "btn cancel-btn"
+    = f.submit 'Save', class: "btn-save btn"
+    = link_to "Cancel", project_wiki_path(@project, :index), class: "btn btn-cancel"

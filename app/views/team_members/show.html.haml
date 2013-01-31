@@ -2,7 +2,7 @@
 
 .team_member_show
   - if can? current_user, :admin_project, @project
-    = link_to 'Remove from team', project_team_member_path(@project, @member), confirm: 'Are you sure?', method: :delete, class: "right btn danger"
+    = link_to 'Remove from team', project_team_member_path(@project, @member), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove pull-right"
   .profile_avatar_holder
     = image_tag gravatar_icon(@member.email, 60), class: "borders"
   %h3.page_title

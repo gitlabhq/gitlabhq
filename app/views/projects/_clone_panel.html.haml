@@ -2,8 +2,8 @@
   .row
     .span7
       .form-horizontal= render "shared/clone_panel"
-    .span4.right
-      .right
+    .span4.pull-right
+      .pull-right
         - unless @project.empty_repo?
           - if can? current_user, :download_code, @project
             = link_to archive_project_repository_path(@project), class: "btn-small btn grouped" do

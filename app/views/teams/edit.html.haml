@@ -2,7 +2,7 @@
 %hr
 = form_for @team, url: teams_path do |f|
   - if @team.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %span= @team.errors.full_messages.first
   .clearfix
     = f.label :name do
@@ -17,6 +17,6 @@
       = f.text_field :path, placeholder: "opensource", class: "xxlarge left"
   .clearfix
     .input.span3.center
-      = f.submit 'Save team changes', class: "btn primary"
+      = f.submit 'Save team changes', class: "btn btn-primary"
     .input.span3.center
-      = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn danger"
+      = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn btn-remove"

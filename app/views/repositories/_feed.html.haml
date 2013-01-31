@@ -15,6 +15,6 @@
       = image_tag gravatar_icon(commit.author_email), class: "", width: 16
       = gfm escape_once(truncate(commit.title, length: 40))
   %td
-    %span.right.cgray
+    %span.pull-right.cgray
       = time_ago_in_words(commit.committed_date)
       ago

@@ -7,9 +7,9 @@
       %br
       %small.cgray Members: #{team.members.count}
 
-    .span5.right
-      .right
+    .span5.pull-right
+      .pull-right
         - if allow_admin
           .left
-            = link_to resign_project_team_path(@project, team), method: :delete, confirm: "Are you shure?", class: "btn danger small" do
+            = link_to resign_project_team_path(@project, team), method: :delete, confirm: "Are you shure?", class: "btn btn-remove small" do
               %i.icon-minus.icon-white

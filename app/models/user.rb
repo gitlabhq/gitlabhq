@@ -31,6 +31,8 @@
 #  extern_uid             :string(255)
 #  provider               :string(255)
 #  username               :string(255)
+#  can_create_group       :boolean          default(TRUE), not null
+#  can_create_team        :boolean          default(TRUE), not null
 #
 
 class User < ActiveRecord::Base

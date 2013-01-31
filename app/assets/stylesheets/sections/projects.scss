@@ -4,7 +4,7 @@
   }
 
   .side {
-    @extend .right;
+    @extend .pull-right;
 
     .projects_box {
       > .title {

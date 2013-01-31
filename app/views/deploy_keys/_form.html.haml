@@ -1,7 +1,7 @@
 %div
   = form_for [@project, @key], url: project_deploy_keys_path do |f|
     -if @key.errors.any?
-      .alert-message.block-message.error
+      .alert.alert-error
         %ul
           - @key.errors.full_messages.each do |msg|
             %li= msg
@@ -18,6 +18,6 @@
           = link_to "here", help_ssh_path
 
     .actions
-      = f.submit 'Save', class: "save-btn btn"
-      = link_to "Cancel", project_deploy_keys_path(@project), class: "btn cancel-btn"
+      = f.submit 'Save', class: "btn-save btn"
+      = link_to "Cancel", project_deploy_keys_path(@project), class: "btn btn-cancel"
 

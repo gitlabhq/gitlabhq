@@ -4,7 +4,7 @@
 .snippet-form-holder
   = form_for [@project, @snippet] do |f|
     -if @snippet.errors.any?
-      .alert-message.block-message.error
+      .alert.alert-error
         %ul
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
@@ -27,10 +27,10 @@
               = f.hidden_field :content, class: 'snippet-file-content'
 
     .form-actions
-      = f.submit 'Save', class: "save-btn btn"
+      = f.submit 'Save', class: "btn-save btn"
       = link_to "Cancel", project_snippets_path(@project), class: " btn"
       - unless @snippet.new_record?
-        .right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+        .pull-right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
 
 
 :javascript

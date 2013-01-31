@@ -31,4 +31,4 @@
 
   - if can? current_user, :remove_project, @project
     .prepend-top-20
-      = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn danger right"
+      = link_to 'Remove project', @project, confirm: 'Are you sure?', method: :delete, class: "btn btn-remove pull-right"

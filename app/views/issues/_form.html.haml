@@ -2,7 +2,7 @@
   %h3.page_title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
   = form_for [@project, @issue] do |f|
     -if @issue.errors.any?
-      .alert-message.block-message.error
+      .alert.alert-error
         - @issue.errors.full_messages.each do |msg|
           %span= msg
           %br
@@ -44,12 +44,12 @@
 
     .actions
       - if @issue.new_record?
-        = f.submit 'Submit new issue', class: "btn success"
+        = f.submit 'Submit new issue', class: "btn btn-create"
       -else
-        = f.submit 'Save changes', class: "save-btn btn"
+        = f.submit 'Save changes', class: "btn-save btn"
 
       - cancel_path = @issue.new_record? ? project_issues_path(@project) : project_issue_path(@project, @issue)
-      = link_to "Cancel", cancel_path, class: 'btn cancel-btn'
+      = link_to "Cancel", cancel_path, class: 'btn btn-cancel'
 
 
 

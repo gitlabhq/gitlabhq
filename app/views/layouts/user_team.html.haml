@@ -7,7 +7,8 @@
     .container
       %ul.main_menu
         = nav_link(path: 'teams#show', html_options: {class: 'home'}) do
-          = link_to "Home", team_path(@team), title: "Home"
+          = link_to team_path(@team), title: "Home" do
+            %i.icon-home
 
         = nav_link(path: 'teams#issues') do
           = link_to issues_team_path(@team) do

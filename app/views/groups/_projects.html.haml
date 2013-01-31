@@ -4,8 +4,8 @@
     %small
       (#{projects.count})
     - if can? current_user, :manage_group, @group
-      %span.right
-        = link_to new_project_path(namespace_id: @group.id), class: "btn very_small info" do
+      %span.pull-right
+        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-tiny info" do
           %i.icon-plus
           New Project
   %ul.well-list

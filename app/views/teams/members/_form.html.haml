@@ -1,6 +1,6 @@
 = form_tag admin_team_member_path(@team, @member), method: :put do
   -if @member.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @member.errors.full_messages.each do |msg|
           %li= msg
@@ -16,5 +16,5 @@
 
   %br
   .actions
-    = submit_tag 'Save', class: "btn primary"
+    = submit_tag 'Save', class: "btn btn-save"
     = link_to 'Cancel', :back, class: "btn"

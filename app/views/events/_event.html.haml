@@ -1,6 +1,6 @@
 - if event.proper?
   %div.event-item
-    %span.cgray.right
+    %span.cgray.pull-right
       #{time_ago_in_words(event.created_at)} ago.
 
     = image_tag gravatar_icon(event.author_email), class: "avatar s24"
