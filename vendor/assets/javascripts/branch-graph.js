@@ -73,7 +73,8 @@
       , cumonth = ""
       , offsetX = 20
       , offsetY = 60
-      , barWidth = Math.max(graphWidth, this.dayCount * 20 + 320);
+      , barWidth = Math.max(graphWidth, this.dayCount * 20 + 320)
+      , scrollLeft = cw;
     
     this.raphael = r;
     
@@ -145,12 +146,18 @@
       
       if (this.commits[i].refs) {
         this.appendLabel(x, y, this.commits[i].refs);
+
+        // The main branch is displayed in the center.
+        re = new RegExp('(^| )' + this.options.ref + '( |$)');
+        if (this.commits[i].refs.match(re)) {
+          scrollLeft = x - graphWidth / 2;
+        }
       }
       
       this.appendAnchor(top, this.commits[i], x, y);
     }
     top.toFront();
-    this.element.scrollLeft(cw);
+    this.element.scrollLeft(scrollLeft);
     this.bindEvents();
   };
   
