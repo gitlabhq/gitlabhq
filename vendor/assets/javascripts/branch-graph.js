@@ -74,7 +74,9 @@
       , offsetX = 20
       , offsetY = 60
       , barWidth = Math.max(graphWidth, this.dayCount * 20 + 320)
-      , scrollLeft = cw;
+      , scrollLeft = cw
+      , reRefs = new RegExp('(^| )' + this.options.ref + '( |$)')
+      , reId = new RegExp('^' + this.options.ref);
     
     this.raphael = r;
     
@@ -161,14 +163,17 @@
       
       if (this.commits[i].refs) {
         this.appendLabel(x, y, this.commits[i].refs);
-
-        // The main branch is displayed in the center.
-        re = new RegExp('(^| )' + this.options.ref + '( |$)');
-        if (this.commits[i].refs.match(re)) {
-          scrollLeft = x - graphWidth / 2;
-        }
       }
       
+      // mark commit and displayed in the center
+      if (this.commits[i].refs.match(reRefs) || this.commits[i].id.match(reId)) {
+        r.rect(x-5, y-5, 10, 10).attr({
+            fill: "#000",
+            stroke: "none"
+            });
+        scrollLeft = x - graphWidth / 2;
+      }
+
       this.appendAnchor(top, this.commits[i], x, y);
     }
     top.toFront();

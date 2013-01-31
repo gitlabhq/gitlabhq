@@ -1,7 +1,9 @@
 %li.commit
   .browse_code_link_holder
     %p
-      %strong= link_to "Browse Code »", project_tree_path(@project, commit), class: "right"
+      %strong
+        = link_to "Browse Code »", project_tree_path(@project, commit), class: "right"
+        = link_to "Network »", project_graph_path(@project, commit), class: "right"
   %p
     = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
     = commit.author_link avatar: true, size: 24
