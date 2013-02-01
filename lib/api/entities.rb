@@ -33,7 +33,7 @@ module Gitlab
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :name, :owner_id, :type
+      expose :id, :name, :path, :owner_id
     end
     
     class GroupDetail < Grape::Entity
