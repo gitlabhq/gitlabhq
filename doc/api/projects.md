@@ -191,7 +191,10 @@ Parameters:
 + `id` (required) - The ID of a project
 + `user_id` (required) - The ID of a team member
 
-Status code `200` will be returned on success.
+Status code `200 OK` will be returned on success. This method is idempotent and call be called multiple
+times with the same parameters. Revoking team membership for a user who is not currently a team member is
+considered success. Please note that the returned JSON currently differs slightly. Thus you should not
+rely on the returned JSON structure.
 
 ## List project hooks
 
@@ -215,7 +218,7 @@ Get hook for project
 GET /projects/:id/hooks/:hook_id
 ```
 
-Parameters:
+Parameters:§
 
 + `id` (required) - The ID of a project
 + `hook_id` (required) - The ID of a project hook
