@@ -8,6 +8,7 @@ Gitlab::Application.routes.draw do
 
   # API
   require 'api'
+  Gitlab::API.logger Rails.logger
   mount Gitlab::API => '/api'
 
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
