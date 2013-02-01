@@ -2,6 +2,8 @@
 #
 # Not to be confused with CommitsController, plural.
 class CommitController < ProjectResourceController
+  include ExtractsPath
+
   # Authorize
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
