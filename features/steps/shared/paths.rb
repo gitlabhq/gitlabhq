@@ -25,6 +25,10 @@ module SharedPaths
     visit people_group_path(current_group)
   end
 
+  When 'I visit group settings page' do
+    visit edit_group_path(current_group)
+  end
+
   # ----------------------------------------
   # Dashboard
   # ----------------------------------------

@@ -82,6 +82,17 @@ class Groups < Spinach::FeatureSteps
     current_path.should == group_path(Group.last)
   end
 
+  And 'I change group name' do
+    fill_in 'group_name', :with => 'new-name'
+    click_button "Save group"
+  end
+
+  Then 'I should see new group name' do
+    within ".navbar-gitlab" do
+      page.should have_content "group: new-name"
+    end
+  end
+
   protected
 
   def current_group

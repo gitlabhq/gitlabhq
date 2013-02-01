@@ -42,7 +42,7 @@
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
 
-  - if can? current_user, :change_public_mode, @project
+  - if can?(current_user, :change_public_mode, @project)
     %fieldset.features
       %legend
         %i.icon-share

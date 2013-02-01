@@ -129,7 +129,7 @@ Gitlab::Application.routes.draw do
   #
   # Groups Area
   #
-  resources :groups, constraints: { id: /[^\/]+/ }, only: [:show, :new, :create] do
+  resources :groups, constraints: { id: /[^\/]+/ }  do
     member do
       get :issues
       get :merge_requests

@@ -15,8 +15,6 @@
       Team path is
     .input
       = f.text_field :path, placeholder: "opensource", class: "xxlarge left"
-  .clearfix
-    .input.span3.center
-      = f.submit 'Save team changes', class: "btn btn-primary"
-    .input.span3.center
-      = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn btn-remove"
+  .form-actions
+    = f.submit 'Save team changes', class: "btn btn-primary"
+    = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn btn-remove pull-right"
