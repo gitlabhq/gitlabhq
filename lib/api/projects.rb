@@ -132,7 +132,11 @@ module Gitlab
       delete ":id/members/:user_id" do
         authorize! :admin_project, user_project
         users_project = user_project.users_projects.find_by_user_id params[:user_id]
-        users_project.destroy
+        unless users_project.nil?
+          users_project.destroy
+        else
+          {:message => "Access revoked", :id => params[:user_id].to_i}
+        end
       end
 
       # Get project hooks

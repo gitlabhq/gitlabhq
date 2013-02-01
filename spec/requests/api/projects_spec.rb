@@ -167,6 +167,17 @@ describe Gitlab::API do
     end
   end
 
+  describe "DELETE /projects/:id/members/:user_id" do
+    it "should return 200 OK when the user was not member" do
+      expect {
+        delete api("/projects/#{project.id}/members/1000000", user)
+      }.to change { UsersProject.count }.by(0)
+      response.status.should == 200
+      json_response['message'].should == "Access revoked"
+      json_response['id'].should == 1000000
+    end
+  end
+
   describe "GET /projects/:id/hooks" do
     it "should return project hooks" do
       get api("/projects/#{project.id}/hooks", user)
