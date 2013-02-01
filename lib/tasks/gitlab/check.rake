@@ -780,21 +780,25 @@ namespace :gitlab do
       Project.find_each(batch_size: 100) do |project|
         print "#{project.name_with_namespace.yellow} ... "
 
-        correct_options = options.map do |name, value|
-          run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
-        end
-
-        if correct_options.all?
-          puts "ok".green
+        if project.empty_repo?
+          puts "repository is empty".magenta
         else
-          puts "wrong or missing".red
-          try_fixing_it(
-            sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos")
-          )
-          for_more_information(
-            "doc/raketasks/maintenance.md"
-          )
-          fix_and_rerun
+          correct_options = options.map do |name, value|
+            run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
+          end
+
+          if correct_options.all?
+            puts "ok".green
+          else
+            puts "wrong or missing".red
+            try_fixing_it(
+              sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos")
+            )
+            for_more_information(
+              "doc/raketasks/maintenance.md"
+            )
+            fix_and_rerun
+          end
         end
       end
     end
@@ -820,32 +824,37 @@ namespace :gitlab do
 
       Project.find_each(batch_size: 100) do |project|
         print "#{project.name_with_namespace.yellow} ... "
-        project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
 
-        unless File.exists?(project_hook_file)
-          puts "missing".red
-          try_fixing_it(
-            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
-          )
-          for_more_information(
-            "lib/support/rewrite-hooks.sh"
-          )
-          fix_and_rerun
-          next
-        end
-
-        if File.lstat(project_hook_file).symlink? &&
-            File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
-          puts "ok".green
+        if project.empty_repo?
+          puts "repository is empty".magenta
         else
-          puts "not a link to Gitolite's hook".red
-          try_fixing_it(
-            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
-          )
-          for_more_information(
-            "lib/support/rewrite-hooks.sh"
-          )
-          fix_and_rerun
+          project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
+
+          unless File.exists?(project_hook_file)
+            puts "missing".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+            next
+          end
+
+          if File.lstat(project_hook_file).symlink? &&
+              File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
+            puts "ok".green
+          else
+            puts "not a link to Gitolite's hook".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+          end
         end
       end
     end
