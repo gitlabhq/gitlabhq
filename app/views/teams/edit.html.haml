@@ -1,6 +1,6 @@
 %h3.page_title= "Edit Team #{@team.name}"
 %hr
-= form_for @team, url: teams_path do |f|
+= form_for @team, url: team_path(@team) do |f|
   - if @team.errors.any?
     .alert.alert-error
       %span= @team.errors.full_messages.first
