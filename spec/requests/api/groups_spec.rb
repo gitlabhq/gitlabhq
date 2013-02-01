@@ -83,6 +83,11 @@ describe Gitlab::API do
         post api("/groups", admin), attributes_for(:group)
         response.status.should == 201
       end
+
+      it "should not create group, duplicate" do
+        post api("/groups", admin), {:name => "Duplicate Test", :path => group2.path}
+        response.status.should == 404
+      end
     end
   end
 end
