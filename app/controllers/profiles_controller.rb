@@ -51,7 +51,7 @@ class ProfilesController < ApplicationController
   end
 
   def update_username
-    if Gitlab.config.gitlab.username_changing_enabled
+    if @user.can_change_username?
       @user.update_attributes(username: params[:user][:username])
     end
 

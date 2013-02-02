@@ -53,7 +53,7 @@
 
 
 
-- if Gitlab.config.gitlab.username_changing_enabled
+- if current_user.can_change_username?
   %fieldset.update-username
     %legend
       Username
