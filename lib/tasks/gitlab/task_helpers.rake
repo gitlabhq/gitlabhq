@@ -77,8 +77,7 @@ namespace :gitlab do
   end
 
   def gid_for(group_name)
-    group_line = File.read("/etc/group").lines.select{|l| l.start_with?("#{group_name}:")}.first
-    group_line.split(":")[2].to_i
+    Etc.getgrnam(group_name).gid
   end
 
   def warn_user_is_not_gitlab
