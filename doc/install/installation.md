@@ -174,7 +174,7 @@ and make sure you have followed all of the above steps carefully.
 
 # 5. Database
 
-See `doc/install/databases.md`
+To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/databases.md) .
 
 
 # 6. GitLab
