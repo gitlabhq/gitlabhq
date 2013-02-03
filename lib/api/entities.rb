@@ -36,8 +36,7 @@ module Gitlab
       expose :id, :name, :path, :owner_id
     end
     
-    class GroupDetail < Grape::Entity
-      expose :id, :name, :path, :name, :owner_id, :type
+    class GroupDetail < Group
       expose :projects, using: Entities::Project
     end
 
