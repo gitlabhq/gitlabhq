@@ -15,6 +15,9 @@ class CommitsController < ProjectResourceController
     @commits = @repo.commits(@ref, @path, @limit, @offset)
     @commits = CommitDecorator.decorate(@commits)
 
+    # keeping ref of nav when showing commit page.
+    flash[:ref] = @ref
+
     respond_to do |format|
       format.html # index.html.erb
       format.js
