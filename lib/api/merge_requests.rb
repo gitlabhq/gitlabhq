@@ -19,6 +19,23 @@ module Gitlab
         present paginate(user_project.merge_requests), with: Entities::MergeRequest
       end
 
+      # List open merge requests
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #
+      # Example:
+      #   GET /projects/:id/open_merge_requests
+      #
+      # Returns a more detailed merge request object than the method above,
+      # including unmerged commits.
+      #
+      get ":id/open_merge_requests" do
+        authorize! :read_merge_request, user_project
+
+        present paginate(user_project.merge_requests.where(:closed => false, :merged => false)), with: Entities::DetailedMergeRequest
+      end
+
       # Show MR
       #
       # Parameters:

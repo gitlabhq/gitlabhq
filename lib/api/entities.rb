@@ -70,6 +70,11 @@ module Gitlab
       expose :author, :assignee, using: Entities::UserBasic
     end
 
+    class DetailedMergeRequest < MergeRequest
+      expose :unmerged_commits
+      expose :mr_and_commit_notes
+    end
+
     class Note < Grape::Entity
       expose :id
       expose :note, as: :body
