@@ -80,4 +80,8 @@ class Key < ActiveRecord::Base
   def last_deploy?
     Key.where(identifier: identifier).count == 0
   end
+
+  def owner_name
+    user.username
+  end
 end

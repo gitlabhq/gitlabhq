@@ -25,9 +25,6 @@ class UsersProject < ActiveRecord::Base
 
   attr_accessor :skip_git
 
-  after_save :update_repository, unless: :skip_git?
-  after_destroy :update_repository, unless: :skip_git?
-
   validates :user, presence: true
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
@@ -134,10 +131,6 @@ class UsersProject < ActiveRecord::Base
         "Master"    => MASTER
       }
     end
-  end
-
-  def update_repository
-    project.update_repository
   end
 
   def project_access_human

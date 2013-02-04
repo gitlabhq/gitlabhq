@@ -459,20 +459,6 @@ class Project < ActiveRecord::Base
     namespace.try(:path) || ''
   end
 
-  def update_repository
-    GitoliteWorker.perform_async(
-      :update_repository,
-      self.id
-    )
-  end
-
-  def destroy_repository
-    GitoliteWorker.perform_async(
-      :remove_repository,
-      self.path_with_namespace
-    )
-  end
-
   def repo_exists?
     @repo_exists ||= (repository && repository.branches.present?)
   rescue

@@ -10,11 +10,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?
 
-  rescue_from Gitlab::Gitolite::AccessDenied do |exception|
-    log_exception(exception)
-    render "errors/gitolite", layout: "errors", status: 500
-  end
-
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
     render "errors/encoding", layout: "errors", status: 500
