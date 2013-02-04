@@ -81,11 +81,6 @@ class UsersProject < ActiveRecord::Base
         end
       end
 
-      GitoliteWorker.perform_async(
-        :update_repositories,
-        project_ids
-      )
-
       true
     rescue
       false
@@ -99,11 +94,6 @@ class UsersProject < ActiveRecord::Base
           users_project.destroy
         end
       end
-
-      GitoliteWorker.perform_async(
-        :update_repositories,
-        project_ids
-      )
 
       true
     rescue

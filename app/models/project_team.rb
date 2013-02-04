@@ -112,7 +112,6 @@ class ProjectTeam
       source_team.each do |tm|
         tm.save
       end
-      target_project.update_repository
     end
 
     true
