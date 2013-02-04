@@ -1,5 +1,6 @@
 require "repository"
 require "project"
+require "shell"
 
 # Stubs out all Git repository access done by models so that specs can run
 # against fake repositories without Grit complaining that they don't exist.
@@ -34,5 +35,25 @@ end
 class GitLabTestRepo < Repository
   def repo
     @repo ||= Grit::Repo.new(Rails.root.join('tmp', 'repositories', 'gitlabhq'))
+  end
+end
+
+module Gitlab
+  class Shell
+    def add_repository name
+      true
+    end
+
+    def remove_repository name
+      true
+    end
+
+    def add_key name, key
+      true
+    end
+
+    def remove_key key
+      true
+    end
   end
 end
