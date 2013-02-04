@@ -28,10 +28,13 @@ class PostReceive
            elsif /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
              User.find_by_email(identifier)
            else
-             Key.find_by_identifier(identifier).try(:user)
+             User.find_by_username(identifier.strip)
            end
 
-    return false unless user
+    unless user
+      Gitlab::GitLogger.error("POST-RECEIVE: Triggered hook for non-existing user \"#{identifier} \"")
+      return false
+    end
 
     project.trigger_post_receive(oldrev, newrev, ref, user)
   end
