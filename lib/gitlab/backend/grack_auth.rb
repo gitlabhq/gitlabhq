@@ -10,10 +10,6 @@ module Grack
       # Pass Gitolite update hook
       ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
 
-      # Need this patch due to the rails mount
-      @env['PATH_INFO'] = @request.path
-      @env['SCRIPT_NAME'] = ""
-
       return render_not_found unless project
       return unauthorized unless project.public || @auth.provided?
       return bad_request if @auth.provided? && !@auth.basic?
