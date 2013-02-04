@@ -44,7 +44,7 @@ namespace :gitlab do
             :name => path,
           }
 
-          project = Projects::CreateContext.new(user, project_params).execute
+          project = Project.create_by_user(project_params, user)
 
           if project.valid?
             puts " * Created #{project.name} (#{repo_name})".green
