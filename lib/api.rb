@@ -19,5 +19,6 @@ module Gitlab
     mount Session
     mount MergeRequests
     mount Notes
+    mount Internal
   end
 end
