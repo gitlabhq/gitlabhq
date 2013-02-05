@@ -33,7 +33,7 @@ module Gitlab
       #
       def collect_commits
 
-        @commits = Grit::Commit.find_all(repo, nil, {max_count: self.class.max_count, skip: to_commit}).dup
+        @commits = Grit::Commit.find_all(repo, nil, {topo_order: true, max_count: self.class.max_count, skip: to_commit}).dup
 
         # Decorate with app/models/commit.rb
         @commits.map! { |commit| ::Commit.new(commit) }
@@ -86,7 +86,7 @@ module Gitlab
 
       # Skip count that the target commit is displayed in center.
       def to_commit
-        commits = Grit::Commit.find_all(repo, nil)
+        commits = Grit::Commit.find_all(repo, nil, {topo_order: true})
         commit_index = commits.index do |c|
           c.id == @commit.id
         end
