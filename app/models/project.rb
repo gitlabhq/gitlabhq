@@ -262,8 +262,6 @@ class Project < ActiveRecord::Base
 
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
-      gitolite.move_repository(old_repo, self)
-
       save!
     end
   rescue Gitlab::ProjectMover::ProjectMoveError => ex
