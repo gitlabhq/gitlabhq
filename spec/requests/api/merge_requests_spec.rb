@@ -41,6 +41,24 @@ describe Gitlab::API do
       response.status.should == 201
       json_response['title'].should == 'Test merge_request'
     end
+
+    it "should return 422 when source_branch equals target_branch" do
+      post api("/projects/#{project.id}/merge_requests", user),
+        title: "Test merge_request", source_branch: "master", target_branch: "master", author: user
+      response.status.should == 422
+    end
+
+    it "should return 400 when source_branch is missing" do
+      post api("/projects/#{project.id}/merge_requests", user),
+        title: "Test merge_request", target_branch: "master", author: user
+      response.status.should == 400
+    end
+
+    it "should return 400 when target_branch is missing" do
+      post api("/projects/#{project.id}/merge_requests", user),
+        title: "Test merge_request", source_branch: "stable", author: user
+      response.status.should == 400
+    end
   end
 
   describe "PUT /projects/:id/merge_request/:merge_request_id" do
@@ -48,6 +66,18 @@ describe Gitlab::API do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), title: "New title"
       response.status.should == 200
       json_response['title'].should == 'New title'
+    end
+
+    it "should return 422 when source_branch and target_branch are renamed the same" do
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user),
+        source_branch: "master", target_branch: "master"
+      response.status.should == 422
+    end
+
+    it "should return merge_request with renamed target_branch" do
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), target_branch: "test"
+      response.status.should == 200
+      json_response['target_branch'].should == 'test'
     end
   end
 

@@ -60,6 +60,13 @@ module Gitlab
           merge_request.reload_code
           present merge_request, with: Entities::MergeRequest
         else
+          if merge_request.errors[:target_branch].any?
+            error!(merge_request.errors[:target_branch], 400)
+          elsif merge_request.errors[:source_branch].any?
+            error!(merge_request.errors[:source_branch], 400)
+          elsif merge_request.errors[:base].any?
+            error!(merge_request.errors[:base], 422)
+          end
           not_found!
         end
       end
@@ -88,6 +95,13 @@ module Gitlab
           merge_request.mark_as_unchecked
           present merge_request, with: Entities::MergeRequest
         else
+          if merge_request.errors[:target_branch].any?
+            error!(merge_request.errors[:target_branch], 400)
+          elsif merge_request.errors[:source_branch].any?
+            error!(merge_request.errors[:source_branch], 400)
+          elsif merge_request.errors[:base].any?
+            error!(merge_request.errors[:base], 422)
+          end
           not_found!
         end
       end
