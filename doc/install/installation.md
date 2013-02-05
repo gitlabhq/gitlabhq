@@ -111,12 +111,6 @@ Create a `git` user for Gitlab:
     ./bin/install 
 
 
-## Add domains to list to the list of known hosts
-
-    sudo -u git -H ssh git@localhost
-    sudo -u git -H ssh git@YOUR_DOMAIN_NAME
-    sudo -u git -H ssh git@YOUR_GITOLITE_DOMAIN_NAME
-
 
 # 5. Database
 
@@ -137,10 +131,10 @@ See `doc/install/databases.md`
     cd /home/git/gitlab
    
     # Checkout to stable release
-    sudo -u git -H git checkout 4-1-stable
+    sudo -u git -H git checkout 5-0-stable
 
 **Note:**
-You can change `4-1-stable` to `master` if you want the *bleeding edge* version, but
+You can change `5-0-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
@@ -155,8 +149,8 @@ do so with caution!
     sudo -u git -H vim config/gitlab.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
-    sudo chown -R gitlab log/
-    sudo chown -R gitlab tmp/
+    sudo chown -R git log/
+    sudo chown -R git tmp/
     sudo chmod -R u+rwX  log/
     sudo chmod -R u+rwX  tmp/
 
@@ -191,19 +185,6 @@ Make sure to update username/password in config/database.yml.
     # Or for PostgreSQL
     sudo -u git -H bundle install --deployment --without development test mysql
 
-## Configure Git
-
-GitLab needs to be able to commit and push changes to Gitolite. In order to do
-that Git requires a username and email. (We recommend using the same address
-used for the `email.from` setting in `config/gitlab.yml`)
-
-    sudo -u git -H git config --global user.name "GitLab"
-    sudo -u git -H git config --global user.email "gitlab@localhost"
-
-## Setup GitLab Hooks
-
-    sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
-    sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
 
 ## Initialise Database and Activate Advanced Features
 

@@ -96,7 +96,7 @@ omniauth:
 # GitLab Satellites
 satellites:
   # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
-  path: /home/gitlab/gitlab-satellites/
+  path: /home/git/gitlab-satellites/
 
 ## Backup settings
 backup:
@@ -105,8 +105,6 @@ backup:
 
 ## Gitolite settings
 gitolite:
-  admin_uri: git@localhost:gitolite-admin
-
   # REPOS_PATH MUST NOT BE A SYMLINK!!!
   repos_path: /home/git/repositories/
   hooks_path: /home/git/.gitolite/hooks/
