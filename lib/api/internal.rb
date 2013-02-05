@@ -1,23 +1,37 @@
 module Gitlab
-  # Access API
+  # Internal access API
   class Internal < Grape::API
+    namespace 'internal' do
+      #
+      # Check if ssh key has access to project code
+      #
+      get "/allowed" do
+        key = Key.find(params[:key_id])
+        user = key.user
 
-    get "/allowed" do
-      user = User.find_by_username(params[:username])
-      project = Project.find_with_namespace(params[:project])
-      action = case params[:action]
-               when 'git-upload-pack'
-                 then :download_code
-               when 'git-receive-pack'
-                 then
-                 if project.protected_branch?(params[:ref])
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
+        project = Project.find_with_namespace(params[:project])
+        action = case params[:action]
+                 when 'git-upload-pack'
+                   then :download_code
+                 when 'git-receive-pack'
+                   then
+                   if project.protected_branch?(params[:ref])
+                     :push_code_to_protected_branches
+                   else
+                     :push_code
+                   end
                  end
-               end
 
-      user.can?(action, project)
+        user.can?(action, project)
+      end
+
+      #
+      # Discover user by ssh key
+      #
+      get "/discover" do
+        key = Key.find(params[:key_id])
+        present key.user, with: Entities::User
+      end
     end
   end
 end

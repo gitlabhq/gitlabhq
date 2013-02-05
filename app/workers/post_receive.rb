@@ -27,8 +27,9 @@ class PostReceive
              User.find_by_email(email) if email
            elsif /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
              User.find_by_email(identifier)
-           else
-             User.find_by_username(identifier.strip)
+           elsif identifier =~ /key/
+             key_id = identifier.gsub("key-", "")
+             Key.find_by_id(key_id).try(:user)
            end
 
     unless user

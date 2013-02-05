@@ -1,16 +1,15 @@
 require 'spec_helper'
 
-describe Gitlab::Gitolite do
+describe Gitlab::Shell do
   let(:project) { double('Project', id: 7, path: 'diaspora') }
-  let(:gitolite) { Gitlab::Gitolite.new }
+  let(:gitolite) { Gitlab::Shell.new }
 
   before do
     Project.stub(find: project)
   end
 
-  it { should respond_to :set_key }
+  it { should respond_to :add_key }
   it { should respond_to :remove_key }
-
   it { should respond_to :add_repository }
   it { should respond_to :remove_repository }
 

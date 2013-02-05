@@ -15,11 +15,10 @@ class ProjectObserver < ActiveRecord::Observer
   def after_destroy(project)
     GitoliteWorker.perform_async(
       :remove_repository,
-      self.path_with_namespace
+      project.path_with_namespace
     )
 
     project.satellite.destroy
-    project.destroy_repository
 
     log_info("Project \"#{project.name}\" was removed")
   end

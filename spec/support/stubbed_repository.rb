@@ -48,11 +48,11 @@ module Gitlab
       true
     end
 
-    def add_key name, key
+    def add_key id, key
       true
     end
 
-    def remove_key key
+    def remove_key id, key
       true
     end
   end
