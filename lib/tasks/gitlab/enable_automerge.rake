@@ -3,11 +3,6 @@ namespace :gitlab do
   task :enable_automerge => :environment do
     warn_user_is_not_gitlab
 
-    puts "Updating repo permissions ..."
-    Gitlab::Gitolite.new.enable_automerge
-    puts "... #{"done".green}"
-    puts ""
-
     print "Creating satellites for ..."
     unless Project.count > 0
       puts "skipping, because you have no projects".magenta
