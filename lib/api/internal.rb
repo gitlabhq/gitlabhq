@@ -32,6 +32,12 @@ module Gitlab
         key = Key.find(params[:key_id])
         present key.user, with: Entities::User
       end
+
+      get "/check" do
+        {
+          api_version: '3'
+        }
+      end
     end
   end
 end
