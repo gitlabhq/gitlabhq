@@ -113,7 +113,7 @@ module Gitlab
 
       def include_ref?(commit)
         heads = commit.refs.select do |ref|
-          ref.is_a?(Grit::Head) or ref.is_a?(Grit::Remote)
+          ref.is_a?(Grit::Head) or ref.is_a?(Grit::Remote) or ref.is_a?(Grit::Tag)
         end
 
         heads.map! do |head|
