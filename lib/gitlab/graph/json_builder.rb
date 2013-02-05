@@ -49,7 +49,7 @@ module Gitlab
       # list of commits. As well as returns date list
       # corelated with time set on commits.
       #
-      # @param [Array<Graph::Commit>] comits to index
+      # @param [Array<Graph::Commit>] commits to index
       #
       # @return [Array<TimeDate>] list of commit dates corelated with time on commits
       def index_commits
