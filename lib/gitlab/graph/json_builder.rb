@@ -9,9 +9,10 @@ module Gitlab
         @max_count ||= 650
       end
 
-      def initialize project, ref
+      def initialize project, ref, commit
         @project = project
         @ref = ref
+        @commit = commit
         @repo = project.repo
         @ref_cache = {}
 
@@ -31,7 +32,8 @@ module Gitlab
       # Get commits from repository
       #
       def collect_commits
-        @commits = Grit::Commit.find_all(repo, nil, {max_count: self.class.max_count}).dup
+
+        @commits = Grit::Commit.find_all(repo, nil, {max_count: self.class.max_count, skip: to_commit}).dup
 
         # Decorate with app/models/commit.rb
         @commits.map! { |commit| ::Commit.new(commit) }
@@ -53,27 +55,14 @@ module Gitlab
       #
       # @return [Array<TimeDate>] list of commit dates corelated with time on commits
       def index_commits
-        days, heads, times = [], [], []
+        days, times = [], []
         map = {}
 
         commits.reverse.each_with_index do |c,i|
           c.time = i
           days[i] = c.committed_date
           map[c.id] = c
-          heads += c.refs unless c.refs.nil?
           times[i] = c
-        end
-
-        heads.select!{|h| h.is_a? Grit::Head or h.is_a? Grit::Remote}
-        # sort heads so the master is top and current branches are closer
-        heads.sort! do |a,b|
-          if a.name == @ref
-            -1
-          elsif b.name == @ref
-            1
-          else
-            b.commit.committed_date <=> a.commit.committed_date
-          end
         end
 
         @_reserved = {}
@@ -81,9 +70,9 @@ module Gitlab
           @_reserved[i] = []
         end
 
-        heads.each do |h|
-          if map.include? h.commit.id then
-            place_chain(map[h.commit.id], map)
+        commits_sort_by_ref.each do |commit|
+          if map.include? commit.id then
+            place_chain(map[commit.id], map)
           end
         end
 
@@ -93,6 +82,45 @@ module Gitlab
         end
 
         days
+      end
+
+      # Skip count that the target commit is displayed in center.
+      def to_commit
+        commits = Grit::Commit.find_all(repo, nil)
+        commit_index = commits.index do |c|
+          c.id == @commit.id
+        end
+
+        if commit_index && (self.class.max_count / 2 < commit_index) then
+          # get max index that commit is displayed in the center.
+          commit_index - self.class.max_count / 2
+        else
+          0
+        end
+      end
+
+      def commits_sort_by_ref
+        commits.sort do |a,b|
+          if include_ref?(a)
+            -1
+          elsif include_ref?(b)
+            1
+          else
+            b.committed_date <=> a.committed_date
+          end
+        end
+      end
+
+      def include_ref?(commit)
+        heads = commit.refs.select do |ref|
+          ref.is_a?(Grit::Head) or ref.is_a?(Grit::Remote)
+        end
+
+        heads.map! do |head|
+          head.name
+        end
+
+        heads.include?(@ref)
       end
 
       def find_free_parent_spaces(commit, map, times)
