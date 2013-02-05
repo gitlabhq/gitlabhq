@@ -38,8 +38,8 @@ module Gitlab
     # Ex.
     #   remove_key("sha-rsa")
     #
-    def remove_key(key_content)
-      system("/home/git/gitlab-shell/bin/gitlab-keys rm-key \"#{key_content}\"")
+    def remove_key(username, key_content)
+      system("/home/git/gitlab-shell/bin/gitlab-keys rm-key #{username} \"#{key_content}\"")
     end
 
 

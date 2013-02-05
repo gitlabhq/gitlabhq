@@ -12,6 +12,7 @@ class KeyObserver < ActiveRecord::Observer
   def after_destroy(key)
     GitoliteWorker.perform_async(
       :remove_key,
+      key.owner_name,
       key.key,
     )
   end
