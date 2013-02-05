@@ -81,7 +81,7 @@ class Key < ActiveRecord::Base
     Key.where(identifier: identifier).count == 0
   end
 
-  def owner_name
-    user.username
+  def shell_id
+    "key-#{self.id}"
   end
 end

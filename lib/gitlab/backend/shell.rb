@@ -27,19 +27,19 @@ module Gitlab
     # Add new key to gitlab-shell
     #
     # Ex.
-    #   add_key("randx", "sha-rsa ...")
+    #   add_key("key-42", "sha-rsa ...")
     #
-    def add_key(username, key_content)
-      system("/home/git/gitlab-shell/bin/gitlab-keys add-key #{username} \"#{key_content}\"")
+    def add_key(key_id, key_content)
+      system("/home/git/gitlab-shell/bin/gitlab-keys add-key #{key_id} \"#{key_content}\"")
     end
 
     # Remove ssh key from gitlab shell
     #
     # Ex.
-    #   remove_key("sha-rsa")
+    #   remove_key("key-342", "sha-rsa ...")
     #
-    def remove_key(username, key_content)
-      system("/home/git/gitlab-shell/bin/gitlab-keys rm-key #{username} \"#{key_content}\"")
+    def remove_key(key_id, key_content)
+      system("/home/git/gitlab-shell/bin/gitlab-keys rm-key #{key_id} \"#{key_content}\"")
     end
 
 

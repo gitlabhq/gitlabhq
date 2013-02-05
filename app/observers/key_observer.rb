@@ -4,7 +4,7 @@ class KeyObserver < ActiveRecord::Observer
   def after_save(key)
     GitoliteWorker.perform_async(
       :add_key,
-      key.owner_name,
+      key.shell_id,
       key.key
     )
   end
@@ -12,7 +12,7 @@ class KeyObserver < ActiveRecord::Observer
   def after_destroy(key)
     GitoliteWorker.perform_async(
       :remove_key,
-      key.owner_name,
+      key.shell_id,
       key.key,
     )
   end
