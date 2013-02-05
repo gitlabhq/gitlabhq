@@ -87,6 +87,11 @@ describe Gitlab::API do
       response.status.should == 201
       json_response['note'].should == 'My comment'
     end
+
+    it "should return 400 if note is missing" do
+      post api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user)
+      response.status.should == 400
+    end
   end
 
 end

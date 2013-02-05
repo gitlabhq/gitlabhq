@@ -128,6 +128,9 @@ module Gitlab
         if note.save
           present note, with: Entities::MRNote
         else
+          if note.errors[:note].any?
+            error!(note.errors[:note], 400)
+          end
           not_found!
         end
       end
