@@ -4,6 +4,20 @@ module Gitlab
     before { authenticate! }
 
     resource :projects do
+
+      helpers do
+        # If an error occurs this helper method handles error codes for a given milestone
+        #
+        # Parameters:
+        #   milestone_errors (required) - The erros collection of a milestone
+        #
+        def handle_milestone_errors(milestone_errors)
+          if milestone_errors[:title].any?
+            error!(milestone_errors[:title], 400)
+          end
+        end
+      end
+
       # Get a list of project milestones
       #
       # Parameters:
@@ -47,6 +61,7 @@ module Gitlab
         if @milestone.save
           present @milestone, with: Entities::Milestone
         else
+          handle_milestone_errors(@milestone.errors)
           not_found!
         end
       end
@@ -70,6 +85,7 @@ module Gitlab
         if @milestone.update_attributes attrs
           present @milestone, with: Entities::Milestone
         else
+          handle_milestone_errors(@milestone.errors)
           not_found!
         end
       end
