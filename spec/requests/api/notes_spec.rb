@@ -36,6 +36,11 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['body'].should == wall_note.note
     end
+
+    it "should return a 404 error if note not found" do
+      get api("/projects/#{project.id}/notes/123", user)
+      response.status.should == 404
+    end
   end
 
   describe "POST /projects/:id/notes" do
@@ -43,6 +48,11 @@ describe Gitlab::API do
       post api("/projects/#{project.id}/notes", user), body: 'hi!'
       response.status.should == 201
       json_response['body'].should == 'hi!'
+    end
+
+    it "should return a 400 error if body is missing" do
+      post api("/projects/#{project.id}/notes", user)
+      response.status.should == 400
     end
   end
 
@@ -54,6 +64,11 @@ describe Gitlab::API do
         json_response.should be_an Array
         json_response.first['body'].should == issue_note.note
       end
+
+      it "should return a 404 error when issue id not found" do
+        get api("/projects/#{project.id}/issues/123/notes", user)
+        response.status.should == 404
+      end
     end
 
     context "when noteable is a Snippet" do
@@ -62,6 +77,11 @@ describe Gitlab::API do
         response.status.should == 200
         json_response.should be_an Array
         json_response.first['body'].should == snippet_note.note
+      end
+
+      it "should return a 404 error when snippet id not found" do
+        get api("/projects/#{project.id}/snippets/42/notes", user)
+        response.status.should == 404
       end
     end
   end
@@ -73,6 +93,11 @@ describe Gitlab::API do
         response.status.should == 200
         json_response['body'].should == issue_note.note
       end
+
+      it "should return a 404 error if issue note not found" do
+        get api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user)
+        response.status.should == 404
+      end
     end
 
     context "when noteable is a Snippet" do
@@ -80,6 +105,11 @@ describe Gitlab::API do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}", user)
         response.status.should == 200
         json_response['body'].should == snippet_note.note
+      end
+
+      it "should return a 404 error if snippet note not found" do
+        get api("/projects/#{project.id}/snippets/#{snippet.id}/notes/123", user)
+        response.status.should == 404
       end
     end
   end

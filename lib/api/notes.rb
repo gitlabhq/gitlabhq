@@ -43,6 +43,8 @@ module Gitlab
         if @note.save
           present @note, with: Entities::Note
         else
+          # :note is exposed as :body, but :note is set on error
+          error!(@note.errors[:note], 400) if @note.errors[:note].any?
           not_found!
         end
       end
