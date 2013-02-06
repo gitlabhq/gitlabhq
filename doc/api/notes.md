@@ -76,7 +76,7 @@ Parameters:
 Get an issue note.
 
 ```
-GET /projects/:id/issues/:issue_id/:notes/:note_id
+GET /projects/:id/issues/:issue_id/notes/:note_id
 ```
 
 Parameters:
@@ -90,7 +90,7 @@ Parameters:
 Get a snippet note.
 
 ```
-GET /projects/:id/issues/:snippet_id/:notes/:note_id
+GET /projects/:id/issues/:snippet_id/notes/:note_id
 ```
 
 Parameters:
@@ -114,7 +114,7 @@ Parameters:
 + `id` (required) - The ID of a project
 + `body` (required) - The content of a note
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+Will return created note with status `201 Created` on success, `400 Bad Request` if the body attribute is missing or `404 Not found` on fail.
 
 
 ### New issue note
@@ -131,7 +131,7 @@ Parameters:
 + `issue_id` (required) - The ID of an issue
 + `body` (required) - The content of a note
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+Will return created note with status `201 Created` on success, `400 Bad Request` if the body attribute is missing or `404 Not found` on fail.
 
 ### New snippet note
 
@@ -147,4 +147,4 @@ Parameters:
 + `snippet_id` (required) - The ID of an snippet
 + `body` (required) - The content of a note
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+Will return created note with status `201 Created` on success, `400 Bad Request` if the body attribute is missing or `404 Not found` on fail.
