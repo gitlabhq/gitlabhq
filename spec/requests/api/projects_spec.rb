@@ -89,6 +89,12 @@ describe Gitlab::API do
       response.status.should == 404
       json_response['message'].should == '404 Not Found'
     end
+
+    it "should return a 404 error if user is not a member" do
+      other_user = create(:user)
+      get api("/projects/#{project.id}", other_user)
+      response.status.should == 404
+    end
   end
 
   describe "GET /projects/:id/repository/branches" do
