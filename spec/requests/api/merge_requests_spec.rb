@@ -92,6 +92,11 @@ describe Gitlab::API do
       post api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user)
       response.status.should == 400
     end
+
+    it "should return 404 if note is attached to non existent merge request" do
+      post api("/projects/#{project.id}/merge_request/111/comments", user), note: "My comment"
+      response.status.should == 404
+    end
   end
 
 end
