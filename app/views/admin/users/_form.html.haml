@@ -11,17 +11,17 @@
       .clearfix
         = f.label :name
         .input
-          = f.text_field :name, required: true
+          = f.text_field :name, required: true, :autocomplete => "off"
           %span.help-inline * required
       .clearfix
         = f.label :username
         .input
-          = f.text_field :username, required: true
+          = f.text_field :username, required: true, :autocomplete => "off"
           %span.help-inline * required
       .clearfix
         = f.label :email
         .input
-          = f.text_field :email, required: true
+          = f.text_field :email, required: true, :autocomplete => "off"
           %span.help-inline * required
 
     %fieldset
