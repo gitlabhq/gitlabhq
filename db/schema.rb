@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(:version => 20130220133245) do
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
     t.string   "type"
+    t.string   "description", :default => "", :null => false
   end
 
   add_index "namespaces", ["name"], :name => "index_namespaces_on_name"
@@ -152,6 +153,8 @@ ActiveRecord::Schema.define(:version => 20130220133245) do
     t.boolean  "wiki_enabled",           :default => true,     :null => false
     t.integer  "namespace_id"
     t.boolean  "public",                 :default => false,    :null => false
+    t.string   "issues_tracker",         :default => "gitlab", :null => false
+    t.string   "issues_tracker_id"
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"
@@ -230,8 +233,8 @@ ActiveRecord::Schema.define(:version => 20130220133245) do
     t.string   "name"
     t.string   "path"
     t.integer  "owner_id"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|

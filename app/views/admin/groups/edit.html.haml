@@ -1,4 +1,4 @@
-%h3.page_title Rename Group
+%h3.page_title Edit Group
 %hr
 = form_for [:admin, @group] do |f|
   - if @group.errors.any?
@@ -10,7 +10,10 @@
     .input
       = f.text_field :name, placeholder: "Example Group", class: "xxlarge"
 
-
+  .clearfix.group_description_holder
+    = f.label :description, "Details"
+    .input
+      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
 
   .clearfix.group_name_holder
     = f.label :path do
@@ -24,5 +27,5 @@
         %li It will change the git path to repositories under this group.
 
   .form-actions
-    = f.submit 'Rename group', class: "btn btn-remove"
+    = f.submit 'Edit group', class: "btn btn-remove"
     = link_to  'Cancel', admin_groups_path, class: "btn btn-cancel"
