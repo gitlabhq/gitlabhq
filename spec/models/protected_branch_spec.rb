@@ -24,19 +24,4 @@ describe ProtectedBranch do
     it { should validate_presence_of(:project) }
     it { should validate_presence_of(:name) }
   end
-
-  describe 'Callbacks' do
-    let(:branch) { build(:protected_branch) }
-
-    it 'call update_repository after save' do
-      branch.should_receive(:update_repository)
-      branch.save
-    end
-
-    it 'call update_repository after destroy' do
-      branch.save
-      branch.should_receive(:update_repository)
-      branch.destroy
-    end
-  end
 end

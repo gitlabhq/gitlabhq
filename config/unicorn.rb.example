@@ -2,7 +2,7 @@
 # note that config/gitlab.yml web path should also be changed
 # ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
 
-app_dir = "/home/gitlab/gitlab/"
+app_dir = "/home/git/gitlab/"
 worker_processes 2
 working_directory app_dir
 

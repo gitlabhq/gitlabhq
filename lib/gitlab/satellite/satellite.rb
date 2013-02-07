@@ -30,10 +30,10 @@ module Gitlab
       end
 
       def create
-        output, status = popen("git clone #{project.url_to_repo} #{path}",
+        output, status = popen("git clone #{project.repository.path_to_repo} #{path}",
                                Gitlab.config.satellites.path)
 
-        log("PID: #{project.id}: git clone #{project.url_to_repo} #{path}")
+        log("PID: #{project.id}: git clone #{project.repository.path_to_repo} #{path}")
         log("PID: #{project.id}: -> #{output}")
 
         if status.zero?

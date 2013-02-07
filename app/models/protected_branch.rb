@@ -18,13 +18,6 @@ class ProtectedBranch < ActiveRecord::Base
   validates :name, presence: true
   validates :project, presence: true
 
-  after_save :update_repository
-  after_destroy :update_repository
-
-  def update_repository
-    project.update_repository
-  end
-
   def commit
     project.repository.commit(self.name)
   end

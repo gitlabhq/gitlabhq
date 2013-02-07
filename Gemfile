@@ -32,9 +32,6 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 # Dump db to yml file. Mostly used to migrate from sqlite to mysql
 gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
 
-# Gitolite client (for work with gitolite-admin repo)
-gem "gitolite", '1.1.0'
-
 # Syntax highlighter
 gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
 
