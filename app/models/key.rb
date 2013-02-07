@@ -24,21 +24,13 @@ class Key < ActiveRecord::Base
   before_save :set_identifier
 
   validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { :with => /ssh-.{3} / }
-  validate :unique_key, :fingerprintable_key
+  validates :key, presence: true, length: { within: 0..5000 }, format: { :with => /ssh-.{3} / }, uniqueness: true
+  validate :fingerprintable_key
 
   delegate :name, :email, to: :user, prefix: true
 
   def strip_white_space
     self.key = self.key.strip unless self.key.blank?
-  end
-
-  def unique_key
-    query = Key.where(key: key)
-    query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
-    if (query.count > 0)
-      errors.add :key, 'already exist.'
-    end
   end
 
   def fingerprintable_key
@@ -65,7 +57,7 @@ class Key < ActiveRecord::Base
   end
 
   def is_deploy_key
-    true if project_id
+    !!project_id
   end
 
   # projects that has this key
@@ -75,10 +67,6 @@ class Key < ActiveRecord::Base
     else
       user.authorized_projects
     end
-  end
-
-  def last_deploy?
-    Key.where(identifier: identifier).count == 0
   end
 
   def shell_id
