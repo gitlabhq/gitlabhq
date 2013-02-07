@@ -42,9 +42,10 @@ namespace :gitlab do
 
           project_params = {
             :name => path,
+            :namespace_id => Namespace.global_id,
           }
 
-          project = Project.create_by_user(project_params, user)
+          project = Projects::CreateContext.new(user, project_params).execute
 
           if project.valid?
             puts " * Created #{project.name} (#{repo_name})".green
