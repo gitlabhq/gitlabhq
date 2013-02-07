@@ -103,7 +103,7 @@ Create a `git` user for Gitlab:
     cd /home/git
 
     # clone gitlab shell
-    git clone https://dzaporozhets@dev.gitlab.org/gitlab/gitlab-shell.git
+    git clone https://github.com/gitlabhq/gitlab-shell.git
 
     # setup
     cd gitlab-shell
