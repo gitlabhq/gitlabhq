@@ -42,6 +42,7 @@ namespace :gitlab do
 
           project_params = {
             :name => path,
+            :namespace_id => Namespace.global_id,
           }
 
           project = Projects::CreateContext.new(user, project_params).execute
