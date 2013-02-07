@@ -8,7 +8,7 @@ class Userteams < Spinach::FeatureSteps
     end
 
     Then 'I should see dashboard page without teams info block' do
-      page.has_no_css?(".teams-box").must_equal true
+      page.has_no_css?(".teams_box").must_equal true
     end
 
     When 'I have teams with my membership' do
@@ -17,7 +17,7 @@ class Userteams < Spinach::FeatureSteps
     end
 
     Then 'I should see dashboard page with teams information block' do
-      page.should have_css(".teams-box")
+      page.should have_css(".teams_box")
     end
 
     When 'exist user teams' do
