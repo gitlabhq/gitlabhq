@@ -1,4 +1,4 @@
-%h3.page_title Rename Team
+%h3.page_title Edit Team
 %hr
 = form_for @team, url: admin_team_path(@team), method: :put do |f|
   - if @team.errors.any?
@@ -10,6 +10,11 @@
     .input
       = f.text_field :name, placeholder: "Example Team", class: "xxlarge"
 
+  .clearfix.team_description_holder
+    = f.label :description, "Details"
+    .input
+      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+
   .clearfix.team_name_holder
     = f.label :path do
       %span.cred Team path is
@@ -19,5 +24,5 @@
         %li It will change web url for access team and team projects.
 
   .form-actions
-    = f.submit 'Rename team', class: "btn btn-remove"
+    = f.submit 'Edit team', class: "btn btn-remove"
     = link_to  'Cancel', admin_teams_path, class: "btn btn-cancel"

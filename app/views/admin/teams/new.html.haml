@@ -9,8 +9,15 @@
       Team name is
     .input
       = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
-      &nbsp;
-      = f.submit 'Create team', class: "btn btn-primary"
+
+  .clearfix.team_description_holder
+    = f.label :description, "Details"
+    .input
+      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+
+  .form-actions
+    = f.submit 'Create team', class: "btn btn-primary"
+
   %hr
   .padded
     %ul
