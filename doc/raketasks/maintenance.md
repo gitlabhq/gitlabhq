@@ -1,16 +1,3 @@
-### Setup production application
-
-Runs the following rake tasks:
-
-* db:setup (Create the database, load the schema, and initialize with the seed data)
-* db:seed_fu (Loads seed data for the current environment.)
-* gitlab:app:enable_automerge (see "Features")
-
-```
-bundle exec rake gitlab:app:setup RAILS_ENV=production
-```
-
-
 ### Gather information about GitLab and the system it runs on
 
 This command gathers information about your GitLab installation and the System
@@ -94,7 +81,7 @@ Config directory owned by git:git? ... yes
 Config directory access is drwxr-x---? ... yes
 Repo base directory exists? ... yes
 Repo base owned by git:git? ... yes
-Repo base access is drwsrws---? ... yes
+Repo base access is drwxrws---? ... yes
 Can clone gitolite-admin? ... yes
 Can commit to gitolite-admin? ... yes
 post-receive hook exists? ... yes

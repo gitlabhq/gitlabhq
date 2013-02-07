@@ -2,7 +2,7 @@
 %hr
 = form_for [:admin, @group] do |f|
   - if @group.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %span= @group.errors.full_messages.first
   .clearfix
     = f.label :name do
@@ -10,7 +10,7 @@
     .input
       = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
       &nbsp;
-      = f.submit 'Create group', class: "btn primary"
+      = f.submit 'Create group', class: "btn btn-primary"
   %hr
   .padded
     %ul

@@ -10,5 +10,5 @@
     &larr; To keys list
 %hr
 %pre= @key.key
-.right
-  = link_to 'Remove', project_deploy_key_path(@key.project, @key), confirm: 'Are you sure?', method: :delete, class: "danger btn delete-key"
+.pull-right
+  = link_to 'Remove', project_deploy_key_path(@key.project, @key), confirm: 'Are you sure?', method: :delete, class: "btn-remove btn delete-key"

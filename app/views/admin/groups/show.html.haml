@@ -14,7 +14,7 @@
     %td
       = @group.name
       &nbsp;
-      = link_to edit_admin_group_path(@group), class: "btn btn-small right" do
+      = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
         %i.icon-edit
         Rename
   %tr
@@ -29,7 +29,7 @@
         Owner:
     %td
       = @group.owner_name
-      .right
+      .pull-right
         = link_to "#", class: "btn btn-small change-owner-link" do
           %i.icon-edit
           Change owner
@@ -42,7 +42,7 @@
       = form_for [:admin, @group] do |f|
         = f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
         %div
-          = f.submit 'Change Owner', class: "btn danger"
+          = f.submit 'Change Owner', class: "btn btn-remove"
           = link_to "Cancel", "#", class: "btn change-owner-cancel-link"
 
 - if @group.projects.any?
@@ -63,7 +63,7 @@
             %span.monospace= project.path_with_namespace + ".git"
           %td= project.users.count
           %td.bgred
-            = link_to 'Transfer project to global namespace', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Remove project from group and move to global namespace. Are you sure?', method: :delete, class: "btn danger small"
+            = link_to 'Transfer project to global namespace', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Remove project from group and move to global namespace. Are you sure?', method: :delete, class: "btn btn-remove small"
 
   = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
     %table.zebra-striped
@@ -72,22 +72,23 @@
           %th Users
           %th Project Access:
 
-      - @group.users.each do |u|
-        %tr{class: "user_#{u.id}"}
-          %td.name= link_to u.name, admin_user_path(u)
+      - @group.users.each do |user|
+        - next unless user
+        %tr{class: "user_#{user.id}"}
+          %td.name= link_to user.name, admin_user_path(user)
           %td.projects_access
-            - u.authorized_projects.in_namespace(@group).each do |project|
-              - u_p = u.users_projects.in_project(project).first
+            - user.authorized_projects.in_namespace(@group).each do |project|
+              - u_p = user.users_projects.in_project(project).first
               - next unless u_p
               %span
-                = project.name
-                = link_to "(#{ u_p.project_access_human })", edit_admin_team_member_path(u_p)
+                = project.name_with_namespace
+                = link_to "(#{ u_p.project_access_human })", edit_admin_project_member_path(project, user)
       %tr
         %td.input= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
         %td= select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3"}
 
       %tr
-        %td= submit_tag 'Add user to projects in group', class: "btn primary"
+        %td= submit_tag 'Add user to projects in group', class: "btn btn-primary"
         %td
           Read more about project permissions
           %strong= link_to "here", help_permissions_path, class: "vlink"
@@ -109,7 +110,7 @@
       .input
         = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
     .form-actions
-      = submit_tag 'Add', class: "btn primary"
+      = submit_tag 'Add', class: "btn btn-primary"
 
 :javascript
   $(function(){

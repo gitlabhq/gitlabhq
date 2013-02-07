@@ -4,8 +4,8 @@
   = @snippet.title
   %small= @snippet.file_name
   - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-    = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn small right"
+    = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small pull-right"
 
 %br
 %div= render 'blob'
-%div#notes= render "notes/notes_with_form", tid: @snippet.id, tt: "snippet"
+%div#notes= render "notes/notes_with_form"

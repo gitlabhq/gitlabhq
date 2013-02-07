@@ -1,0 +1,39 @@
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head", title: "#{@team.name}"
+  %body{class: "#{app_theme} application"}
+    = render "layouts/flash"
+    = render "layouts/head_panel", title: "team: #{@team.name}"
+    .container
+      %ul.main_menu
+        = nav_link(path: 'teams#show', html_options: {class: 'home'}) do
+          = link_to team_path(@team), title: "Home" do
+            %i.icon-home
+
+        = nav_link(path: 'teams#issues') do
+          = link_to issues_team_path(@team) do
+            Issues
+            %span.count= Issue.opened.of_user_team(@team).count
+
+        = nav_link(path: 'teams#merge_requests') do
+          = link_to merge_requests_team_path(@team) do
+            Merge Requests
+            %span.count= MergeRequest.opened.of_user_team(@team).count
+
+        = nav_link(controller: [:members]) do
+          = link_to team_members_path(@team), class: "team-tab tab" do
+            Members
+            %span.count= @team.members.count
+
+        - if can? current_user, :admin_user_team, @team
+          = nav_link(controller: [:projects]) do
+            = link_to team_projects_path(@team), class: "team-tab tab" do
+              Projects
+              %span.count= @team.projects.count
+
+          = nav_link(path: 'teams#edit') do
+            = link_to edit_team_path(@team), class: "stat-tab tab " do
+              %i.icon-edit
+              Edit Team
+
+      .content= yield

@@ -1,0 +1,28 @@
+%h3.page_title
+  Team: #{@team.name}
+
+%fieldset
+  %legend Members (#{@team.members.count})
+  = form_tag team_members_path(@team), id: "team_members", class: "bulk_import", method: :post  do
+    %table#members_list
+      %thead
+        %tr
+          %th User name
+          %th Default project access
+          %th Team access
+          %th
+      - @team.members.each do |member|
+        %tr.member
+          %td
+            = member.name
+            %small= "(#{member.email})"
+          %td= @team.human_default_projects_access(member)
+          %td= @team.admin?(member) ? "Admin" : "Member"
+          %td
+      %tr
+        %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name_with_email), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
+        %td= select_tag :default_project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3" }
+        %td
+          %span= check_box_tag :group_admin
+          %span Admin?
+        %td= submit_tag 'Add User', class: "btn btn-create", id: :add_members_to_team

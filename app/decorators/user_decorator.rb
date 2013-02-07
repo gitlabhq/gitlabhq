@@ -8,4 +8,8 @@ class UserDecorator < ApplicationDecorator
   def tm_of(project)
     project.team_member_by_id(self.id)
   end
+
+  def name_with_email
+    "#{name} (#{email})"
+  end
 end

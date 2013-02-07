@@ -9,19 +9,13 @@ require 'spinach/capybara'
 require 'sidekiq/testing/inline'
 
 
-%w(gitolite_stub stubbed_repository valid_commit).each do |f|
+%w(stubbed_repository valid_commit).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
 Dir["#{Rails.root}/features/steps/shared/*.rb"].each {|file| require file}
 
-#
-# Stub gitolite
-#
-include GitoliteStub
-
 WebMock.allow_net_connect!
-
 #
 # JS driver
 #
@@ -50,6 +44,4 @@ Spinach.hooks.before_run do
   RSpec::Mocks::setup self
 
   include FactoryGirl::Syntax::Methods
-
-  stub_gitolite!
 end

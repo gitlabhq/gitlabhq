@@ -2,19 +2,12 @@
   %h5.title
     Projects
     %small
-      (#{projects.total_count})
+      (#{@projects_count})
     - if current_user.can_create_project?
-      %span.right
-        = link_to new_project_path, class: "btn very_small info" do
+      %span.pull-right
+        = link_to new_project_path, class: "btn btn-tiny info" do
           %i.icon-plus
           New Project
-  %ul.nav.nav-projects-tabs
-    = nav_tab :scope, nil do
-      = link_to "All", dashboard_path
-    = nav_tab :scope, 'personal' do
-      = link_to "Personal", dashboard_path(scope: 'personal')
-    = nav_tab :scope, 'joined' do
-      = link_to "Joined", dashboard_path(scope: 'joined')
 
   %ul.well-list
     - projects.each do |project|
@@ -33,4 +26,6 @@
     - if projects.blank?
       %li
         %h3.nothing_here_message There are no projects here.
-  .bottom= paginate projects, theme: "gitlab"
+    - if @projects_count > 20
+      %li.bottom
+        %strong= link_to "show all projects", projects_dashboard_path

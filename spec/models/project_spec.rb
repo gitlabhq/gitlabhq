@@ -8,7 +8,6 @@
 #  description            :text
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  private_flag           :boolean          default(TRUE), not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -16,6 +15,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
+#  public                 :boolean          default(FALSE), not null
 #
 
 require 'spec_helper'
@@ -42,7 +42,6 @@ describe Project do
   describe "Mass assignment" do
     it { should_not allow_mass_assignment_of(:namespace_id) }
     it { should_not allow_mass_assignment_of(:creator_id) }
-    it { should_not allow_mass_assignment_of(:private_flag) }
   end
 
   describe "Validation" do
@@ -78,8 +77,6 @@ describe Project do
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:repo_exists?) }
     it { should respond_to(:satellite) }
-    it { should respond_to(:update_repository) }
-    it { should respond_to(:destroy_repository) }
     it { should respond_to(:observe_push) }
     it { should respond_to(:update_merge_requests) }
     it { should respond_to(:execute_hooks) }
@@ -153,36 +150,6 @@ describe Project do
     end
   end
 
-  describe :create_by_user do
-    before do
-      @user = create :user
-      @opts = {
-        name: "GitLab"
-      }
-    end
-
-    context 'user namespace' do
-      before do
-        @project = Project.create_by_user(@opts, @user)
-      end
-
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @user.namespace }
-    end
-
-    context 'user namespace' do
-      before do
-        @group = create :group, owner: @user
-        @opts.merge!(namespace_id: @group.id)
-        @project = Project.create_by_user(@opts, @user)
-      end
-
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @group }
-    end
-  end
 
   describe :find_with_namespace do
     context 'with namespace' do

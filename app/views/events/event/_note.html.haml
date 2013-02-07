@@ -1,15 +1,17 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label commented on #{event.note_target_type}
+  %span.event_label commented on
   - if event.note_target
     - if event.note_commit?
+      = event.note_target_type
       = link_to event.note_short_commit_id, project_commit_path(event.project, event.note_commit_id), class: "commit_short_id"
     - else
       = link_to [event.project, event.note_target] do
-        %strong= truncate event.note_target_id
+        %strong
+          #{event.note_target_type} ##{truncate event.note_target_id}
 
   - elsif event.wall_note?
-    -# nothing here
+    = link_to 'wall', wall_project_path(event.project)
   - else
     %strong (deleted)
   at
@@ -19,6 +21,6 @@
     = event.project_name
 
 .event-body
+  %i.icon-comment-alt.event-note-icon
   %span.event-note
-    %i.icon-comment-alt
-    = truncate event.target.note, length: 70
+    = markdown truncate(event.target.note, length: 70)

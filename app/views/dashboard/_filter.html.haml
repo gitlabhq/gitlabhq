@@ -25,9 +25,9 @@
           %li{class: ("active" if params[:project_id] == project.id.to_s)}
             = link_to dashboard_filter_path(entity, project_id: project.id) do
               = project.name_with_namespace
-              %small.right= entities_per_project(project, entity)
+              %small.pull-right= entities_per_project(project, entity)
 
   %fieldset
     %hr
-    = link_to "Reset", dashboard_filter_path(entity), class: 'btn right'
+    = link_to "Reset", dashboard_filter_path(entity), class: 'btn pull-right'
 

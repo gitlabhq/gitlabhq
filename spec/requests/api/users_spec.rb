@@ -53,6 +53,84 @@ describe Gitlab::API do
     end
   end
 
+  describe "GET /users/sign_up" do
+    before do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
+    end
+    it "should redirect to sign in page if signup is disabled" do
+      get "/users/sign_up"
+      response.status.should == 302
+      response.should redirect_to(new_user_session_path)
+    end
+  end
+
+  describe "GET /users/sign_up" do
+    before do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+    end
+    it "should return sign up page if signup is enabled" do
+      get "/users/sign_up"
+      response.status.should == 200
+    end
+    it "should create a new user account" do
+      visit new_user_registration_path
+      fill_in "user_name", with: "Name Surname"
+      fill_in "user_username", with: "Great"
+      fill_in "user_email", with: "name@mail.com"
+      fill_in "user_password", with: "password1234"
+      fill_in "user_password_confirmation", with: "password1234"
+      expect { click_button "Sign up" }.to change {User.count}.by(1)
+    end
+  end
+
+  describe "PUT /users/:id" do
+    before { admin }
+
+    it "should update user" do
+      put api("/users/#{user.id}", admin), {bio: 'new test bio'}
+      response.status.should == 200
+      json_response['bio'].should == 'new test bio'
+      user.reload.bio.should == 'new test bio'
+    end
+
+    it "should not allow invalid update" do
+      put api("/users/#{user.id}", admin), {email: 'invalid email'}
+      response.status.should == 404
+      user.reload.email.should_not == 'invalid email'
+    end
+
+    it "shouldn't available for non admin users" do
+      put api("/users/#{user.id}", user), attributes_for(:user)
+      response.status.should == 403
+    end
+
+    it "should return 404 for non-existing user" do
+      put api("/users/999999", admin), {bio: 'update should fail'}
+      response.status.should == 404
+    end
+  end
+
+  describe "DELETE /users/:id" do
+    before { admin }
+
+    it "should delete user" do
+      delete api("/users/#{user.id}", admin)
+      response.status.should == 200
+      expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+      json_response['email'].should == user.email
+    end
+
+    it "shouldn't available for non admin users" do
+      delete api("/users/#{user.id}", user)
+      response.status.should == 403
+    end
+
+    it "should return 404 for non-existing user" do
+      delete api("/users/999999", admin)
+      response.status.should == 404
+    end
+  end
+
   describe "GET /user" do
     it "should return current user" do
       get api("/user", user)

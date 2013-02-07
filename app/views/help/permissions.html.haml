@@ -1,69 +1,66 @@
-%h3.page_title Permissions
-.back_link
-  = link_to help_path do
-    &larr; to index
-%hr
+= render layout: 'help/layout' do
+  %h3.page_title Permissions
+  %br
 
-%fieldset
-  %legend Guest
-  %ul
-    %li Create new issue
-    %li Leave comments
-    %li Write on project wall
+  %fieldset
+    %legend Guest
+    %ul
+      %li Create new issue
+      %li Leave comments
+      %li Write on project wall
 
-%fieldset
-  %legend Reporter
-  %ul
-    %li Create new issue
-    %li Leave comments
-    %li Write on project wall
-    %li Pull project code
-    %li Download project
-    %li Create new merge request
-    %li Create a code snippets
+  %fieldset
+    %legend Reporter
+    %ul
+      %li Create new issue
+      %li Leave comments
+      %li Write on project wall
+      %li Pull project code
+      %li Download project
+      %li Create a code snippets
 
 
-%fieldset
-  %legend Developer
-  %ul
-    %li Create new issue
-    %li Leave comments
-    %li Write on project wall
-    %li Pull project code
-    %li Download project
-    %li Create new merge request
-    %li Create a code snippets
-    %li Create new branches
-    %li Push to non-protected branches
-    %li Remove non-protected branches
-    %li Add tags
-    %li Write a wiki
+  %fieldset
+    %legend Developer
+    %ul
+      %li Create new issue
+      %li Leave comments
+      %li Write on project wall
+      %li Pull project code
+      %li Download project
+      %li Create new merge request
+      %li Create a code snippets
+      %li Create new branches
+      %li Push to non-protected branches
+      %li Remove non-protected branches
+      %li Add tags
+      %li Write a wiki
 
-%fieldset
-  %legend Master
-  %ul
-    %li Create new issue
-    %li Leave comments
-    %li Write on project wall
-    %li Pull project code
-    %li Download project
-    %li Create new merge request
-    %li Create a code snippets
-    %li Create new branches
-    %li Push to non-protected branches
-    %li Remove non-protected branches
-    %li Add tags
-    %li Write a wiki
-    %li Add new team members
-    %li Push to protected branches
-    %li Remove protected branches
-    %li Push with force option
-    %li Edit project
-    %li Add Deploy Keys to project
-    %li Configure Project Hooks
+  %fieldset
+    %legend Master
+    %ul
+      %li Create new issue
+      %li Leave comments
+      %li Write on project wall
+      %li Pull project code
+      %li Download project
+      %li Create new merge request
+      %li Create a code snippets
+      %li Create new branches
+      %li Push to non-protected branches
+      %li Remove non-protected branches
+      %li Add tags
+      %li Write a wiki
+      %li Add new team members
+      %li Push to protected branches
+      %li Remove protected branches
+      %li Push with force option
+      %li Edit project
+      %li Add Deploy Keys to project
+      %li Configure Project Hooks
 
-%fieldset
-  %legend Owner
-  %ul
-    %li Transfer project to another namespace
-    %li Remove project
+  %fieldset
+    %legend Owner
+    %ul
+      %li Transfer project to another namespace
+      %li Remove project

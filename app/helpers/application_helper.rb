@@ -39,16 +39,8 @@ module ApplicationHelper
     else
       gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
-      sprintf(gravatar_url, {:hash => Digest::MD5.hexdigest(user_email.downcase), :email => URI.escape(user_email), :size => size})
+      sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
     end
-  end
-
-  def request_protocol
-    request.ssl? ? "https" : "http"
-  end
-
-  def web_app_url
-    "#{request_protocol}://#{Gitlab.config.gitlab.host}/"
   end
 
   def last_commit(project)
@@ -80,8 +72,9 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.authorized_projects.map { |p| { label: p.name_with_namespace, url: project_path(p) } }
-    groups = current_user.authorized_groups.map { |group| { label: "<group> #{group.name}", url: group_path(group) } }
+    projects = current_user.authorized_projects.map { |p| { label: "project: #{p.name_with_namespace}", url: project_path(p) } }
+    groups = current_user.authorized_groups.map { |group| { label: "group: #{group.name}", url: group_path(group) } }
+    teams = current_user.authorized_teams.map { |team| { label: "team: #{team.name}", url: team_path(team) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },
@@ -91,28 +84,29 @@ module ApplicationHelper
     ]
 
     help_nav = [
-      { label: "Workflow Help", url: help_workflow_path },
-      { label: "Permissions Help", url: help_permissions_path },
-      { label: "Web Hooks Help", url: help_web_hooks_path },
-      { label: "System Hooks Help", url: help_system_hooks_path },
-      { label: "API Help", url: help_api_path },
-      { label: "Markdown Help", url: help_markdown_path },
-      { label: "SSH Keys Help", url: help_ssh_path },
-      { label: "Gitlab Rake Tasks Help", url: help_raketasks_path },
+      { label: "help: API Help", url: help_api_path },
+      { label: "help: Markdown Help", url: help_markdown_path },
+      { label: "help: Permissions Help", url: help_permissions_path },
+      { label: "help: Public Access Help", url: help_public_access_path },
+      { label: "help: Rake Tasks Help", url: help_raketasks_path },
+      { label: "help: SSH Keys Help", url: help_ssh_path },
+      { label: "help: System Hooks Help", url: help_system_hooks_path },
+      { label: "help: Web Hooks Help", url: help_web_hooks_path },
+      { label: "help: Workflow Help", url: help_workflow_path },
     ]
 
     project_nav = []
     if @project && @project.repository && @project.repository.root_ref
       project_nav = [
-        { label: "#{@project.name} Issues",   url: project_issues_path(@project) },
-        { label: "#{@project.name} Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{@project.name} Merge Requests", url: project_merge_requests_path(@project) },
-        { label: "#{@project.name} Milestones", url: project_milestones_path(@project) },
-        { label: "#{@project.name} Snippets", url: project_snippets_path(@project) },
-        { label: "#{@project.name} Team",     url: project_team_index_path(@project) },
-        { label: "#{@project.name} Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{@project.name} Wall",     url: wall_project_path(@project) },
-        { label: "#{@project.name} Wiki",     url: project_wikis_path(@project) },
+        { label: "#{@project.name_with_namespace} - Issues",   url: project_issues_path(@project) },
+        { label: "#{@project.name_with_namespace} - Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
+        { label: "#{@project.name_with_namespace} - Merge Requests", url: project_merge_requests_path(@project) },
+        { label: "#{@project.name_with_namespace} - Milestones", url: project_milestones_path(@project) },
+        { label: "#{@project.name_with_namespace} - Snippets", url: project_snippets_path(@project) },
+        { label: "#{@project.name_with_namespace} - Team",     url: project_team_index_path(@project) },
+        { label: "#{@project.name_with_namespace} - Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
+        { label: "#{@project.name_with_namespace} - Wall",     url: wall_project_path(@project) },
+        { label: "#{@project.name_with_namespace} - Wiki",     url: project_wikis_path(@project) },
       ]
     end
 
@@ -164,4 +158,9 @@ module ApplicationHelper
     image_tag("authbuttons/#{file_name}",
               alt: "Sign in with #{provider.to_s.titleize}")
   end
+
+  def image_url(source)
+    root_url + path_to_image(source)
+  end
+  alias_method :url_to_image, :image_url
 end

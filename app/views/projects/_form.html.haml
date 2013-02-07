@@ -1,6 +1,6 @@
 = form_for(@project, remote: true) do |f|
   - if @project.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @project.errors.full_messages.each do |msg|
           %li= msg
@@ -9,19 +9,11 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
-  %fieldset
-    %legend  Advanced settings:
-    .control-group
-      = f.label :path do
-        Repository
-      .controls
-        = text_field_tag :ppath, @repository.path_to_repo, class: "xxlarge", readonly: true
+  - unless @repository.heads.empty?
+    .clearfix
+      = f.label :default_branch, "Default Branch"
+      .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
-
-    - unless @repository.heads.empty?
-      .clearfix
-        = f.label :default_branch, "Default Branch"
-        .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
   %fieldset.features
     %legend Features:
@@ -50,6 +42,22 @@
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
 
+  - if can?(current_user, :change_public_mode, @project)
+    %fieldset.features
+      %legend
+        %i.icon-share
+        Public mode:
+      .control-group
+        = f.label :public, class: 'control-label' do
+          %span Public clone access
+        .controls
+          = f.check_box :public
+          %span.descr
+            If checked, this project can be cloned
+            %em without any
+            authentification.
+            It will also be listed on the #{link_to "public access directory", public_root_path}.
+
 
   - if can? current_user, :change_namespace, @project
     %fieldset.features
@@ -69,9 +77,9 @@
   %br
 
   .actions
-    = f.submit 'Save', class: "btn save-btn"
+    = f.submit 'Save', class: "btn btn-save"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
       - if can?(current_user, :remove_project, @project)
-        .right
-          = link_to 'Remove', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
+        .pull-right
+          = link_to 'Remove Project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn btn-remove"

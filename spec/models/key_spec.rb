@@ -46,9 +46,9 @@ describe Key do
         key.should_not be_valid
       end
 
-      it "does accept the same key for another project" do
+      it "does not accept the same key for another project" do
         key = build(:key, project_id: 0)
-        key.should be_valid
+        key.should_not be_valid
       end
     end
 

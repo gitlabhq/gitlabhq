@@ -11,7 +11,7 @@ describe PostReceive do
   context "web hook" do
     let(:project) { create(:project) }
     let(:key) { create(:key, user: project.owner) }
-    let(:key_id) { key.identifier }
+    let(:key_id) { key.shell_id }
 
     it "fetches the correct project" do
       Project.should_receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
@@ -19,7 +19,7 @@ describe PostReceive do
     end
 
     it "does not run if the author is not in the project" do
-      Key.stub(find_by_identifier: nil)
+      Key.stub(find_by_id: nil)
 
       project.should_not_receive(:observe_push)
       project.should_not_receive(:execute_hooks)

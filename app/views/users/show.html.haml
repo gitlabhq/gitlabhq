@@ -1,0 +1,21 @@
+.row
+  .span8
+    %h3.page_title
+      = image_tag gravatar_icon(@user.email, 90), class: "avatar s90"
+      = @user.name
+      - if @user == current_user
+        .pull-right
+          = link_to profile_path, class: 'btn btn-small' do
+            %i.icon-edit
+            Edit Profile
+      %br
+      %small @#{@user.username}
+      %br
+      %small member since #{@user.created_at.stamp("Nov 12, 2031")}
+    .clearfix
+    %hr
+    %h5 Recent events
+    = render @events
+  .span4
+    = render 'profile'
+    = render 'projects'

@@ -1,8 +1,21 @@
-- if @note.line_code
-  = render "create_per_line_note", note: @note
-- else
-  = render "create_common_note", note: @note
+- if @note.valid?
+  var noteHtml = "#{escape_javascript(render "notes/note", note: @note)}";
 
--# Enable submit button
-:plain
-  $("#submit_note").removeAttr("disabled");
+  - if note_for_main_target?(@note)
+    - if @note.for_wall?
+      NoteList.appendNewWallNote(#{@note.id}, noteHtml);
+    - else
+      NoteList.appendNewNote(#{@note.id}, noteHtml);
+  - else
+    :plain
+      var firstDiscussionNoteHtml = "#{escape_javascript(render "notes/diff_notes_with_reply", notes: [@note])}";
+      NoteList.appendNewDiscussionNote("#{@note.discussion_id}",
+                                       firstDiscussionNoteHtml,
+                                       noteHtml);
+
+- else
+  var errorsHtml = "#{escape_javascript(render 'notes/form_errors', note: @note)}";
+  - if note_for_main_target?(@note)
+    NoteList.errorsOnForm(errorsHtml);
+  - else
+    NoteList.errorsOnForm(errorsHtml, "#{@note.discussion_id}");

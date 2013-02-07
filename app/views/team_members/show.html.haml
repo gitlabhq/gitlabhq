@@ -1,14 +1,13 @@
 - allow_admin = can? current_user, :admin_project, @project
-- user = @team_member.user
 
 .team_member_show
   - if can? current_user, :admin_project, @project
-    = link_to 'Remove from team', project_team_member_path(project_id: @project, id: @team_member.id), confirm: 'Are you sure?', method: :delete, class: "right btn danger"
+    = link_to 'Remove from team', project_team_member_path(@project, @member), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove pull-right"
   .profile_avatar_holder
-    = image_tag gravatar_icon(user.email, 60), class: "borders"
+    = image_tag gravatar_icon(@member.email, 60), class: "borders"
   %h3.page_title
-    = user.name
-    %small (@#{user.username})
+    = @member.name
+    %small (@#{@member.username})
 
   %hr
   .back_link
@@ -21,34 +20,34 @@
       %table.lite
         %tr
           %td Email
-          %td= mail_to user.email
+          %td= mail_to @member.email
         %tr
           %td Skype
-          %td= user.skype
-        - unless user.linkedin.blank?
+          %td= @member.skype
+        - unless @member.linkedin.blank?
           %tr
             %td LinkedIn
-            %td= user.linkedin
-        - unless user.twitter.blank?
+            %td= @member.linkedin
+        - unless @member.twitter.blank?
           %tr
             %td Twitter
-            %td= user.twitter
-        - unless user.bio.blank?
+            %td= @member.twitter
+        - unless @member.bio.blank?
           %tr
             %td Bio
-            %td= user.bio
+            %td= @member.bio
     .span6
       %table.lite
         %tr
           %td Member since
-          %td= @team_member.created_at.stamp("Aug 21, 2011")
+          %td= @user_project_relation.created_at.stamp("Aug 21, 2011")
         %tr
           %td
             Project Access:
             %small (#{link_to "read more", help_permissions_path, class: "vlink"})
           %td
-            = form_for(@team_member, as: :team_member, url: project_team_member_path(@project, @team_member)) do |f|
-              = f.select :project_access, options_for_select(Project.access_options, @team_member.project_access), {}, class: "project-access-select", disabled: !allow_admin
+            = form_for(@user_project_relation, as: :team_member, url: project_team_member_path(@project, @member)) do |f|
+              = f.select :project_access, options_for_select(Project.access_options, @user_project_relation.project_access), {}, class: "project-access-select", disabled: !allow_admin
   %hr
   = render @events
 :javascript

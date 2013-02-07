@@ -2,11 +2,9 @@
   :plain
     location.href = "#{project_path(@project)}";
 - else
-  - if @project.git_error?
-    location.href = "#{errors_githost_path}";
-  -else
   :plain
     $('.project_new_holder').show();
     $("#new_project").replaceWith("#{escape_javascript(render('new_form'))}");
     $('.save-project-loader').hide();
     new Projects();
+    $('select.chosen').chosen()

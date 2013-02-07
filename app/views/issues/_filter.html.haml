@@ -4,8 +4,8 @@
       %li{class: ("active" if !params[:status])}
         = link_to project_issues_path(@project, status: nil) do
           Open
-      %li{class: ("active" if params[:status] == 'to_me')}
-        = link_to project_issues_path(@project, status: 'to_me') do
+      %li{class: ("active" if params[:status] == 'assigned-to-me')}
+        = link_to project_issues_path(@project, status: 'assigned-to-me') do
           Assigned To Me
       %li{class: ("active" if params[:status] == 'closed')}
         = link_to project_issues_path(@project, status: 'closed') do
@@ -16,5 +16,5 @@
 
   %fieldset
     %hr
-    = link_to "Reset", project_issues_path(@project), class: 'btn right'
+    = link_to "Reset", project_issues_path(@project), class: 'btn pull-right'
 

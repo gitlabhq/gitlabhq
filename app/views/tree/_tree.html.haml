@@ -24,7 +24,7 @@
           %th Name
           %th Last Update
           %th Last Commit
-          %th= link_to "history", project_commits_path(@project, @id), class: "btn very_small right"
+          %th= link_to "history", project_commits_path(@project, @id), class: "btn btn-tiny pull-right"
 
       - if tree.up_dir?
         %tr.tree-item

@@ -2,11 +2,18 @@ class KeyObserver < ActiveRecord::Observer
   include Gitolited
 
   def after_save(key)
-    gitolite.set_key(key.identifier, key.key, key.projects)
+    GitoliteWorker.perform_async(
+      :add_key,
+      key.shell_id,
+      key.key
+    )
   end
 
   def after_destroy(key)
-    return if key.is_deploy_key && !key.last_deploy?
-    gitolite.remove_key(key.identifier, key.projects)
+    GitoliteWorker.perform_async(
+      :remove_key,
+      key.shell_id,
+      key.key,
+    )
   end
 end

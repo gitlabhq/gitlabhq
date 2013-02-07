@@ -217,6 +217,15 @@ Devise.setup do |config|
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
-    config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+    case provider['args']
+    when Array
+      # An Array from the configuration will be expanded.
+      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], *provider['args']
+    when Hash
+      # A Hash from the configuration will be passed as is.
+      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
+    else
+      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+    end
   end
 end

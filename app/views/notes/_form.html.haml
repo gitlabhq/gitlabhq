@@ -1,0 +1,44 @@
+= form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note js-new-note-form" } do |f|
+
+  = note_target_fields
+  = f.hidden_field :commit_id
+  = f.hidden_field :line_code
+  = f.hidden_field :noteable_id
+  = f.hidden_field :noteable_type
+
+  .note_text_and_preview.js-toggler-container
+    %a.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", title: "Preview", data: {url: preview_project_notes_path(@project)} }
+      %i.icon-eye-open
+    %a.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;", title: "Edit" }
+      %i.icon-edit
+
+    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
+    .note_preview.js-note-preview.turn-off
+
+  .hint
+    .pull-right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+  .clearfix
+
+  .note-form-actions
+    .buttons
+      = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
+      %a.btn.grouped.js-close-discussion-note-form Cancel
+
+    .note-form-option
+      = label_tag :notify do
+        = check_box_tag :notify, 1, !@note.for_commit?
+        %span.light Notify team via email
+
+      .js-notify-commit-author
+        = label_tag :notify_author do
+          = check_box_tag :notify_author, 1 , @note.for_commit?
+          %span.light Notify commit author
+    .note-form-option
+      %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
+        %i.icon-paper-clip
+        %span Choose File ...
+      &nbsp;
+      %span.file_name.js-attachment-filename File name...
+      = f.file_field :attachment, class: "js-note-attachment-input hide"
+
+    .clearfix

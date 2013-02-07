@@ -80,6 +80,18 @@
       margin: 0;
       padding: 0;
     }
+    td.blame-commit {
+      background: #f9f9f9;
+      min-width: 350px;
+    }
+    td.blame-numbers {
+      pre {
+        color: #AAA;
+        white-space: pre;
+      }
+      background: #f1f1f1;
+      border-left: 1px solid #DDD;
+    }
   }
 }
 

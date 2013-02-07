@@ -1,0 +1,20 @@
+%h3.page_title= "Edit Team #{@team.name}"
+%hr
+= form_for @team, url: team_path(@team) do |f|
+  - if @team.errors.any?
+    .alert.alert-error
+      %span= @team.errors.full_messages.first
+  .clearfix
+    = f.label :name do
+      Team name is
+    .input
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+
+  .clearfix
+    = f.label :path do
+      Team path is
+    .input
+      = f.text_field :path, placeholder: "opensource", class: "xxlarge left"
+  .form-actions
+    = f.submit 'Save team changes', class: "btn btn-primary"
+    = link_to 'Delete team', team_path(@team), method: :delete, confirm: "You are shure?", class: "btn btn-remove pull-right"

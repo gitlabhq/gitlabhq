@@ -5,7 +5,7 @@
     = link_to 'Milestones', project_milestones_path(@project), class: "tab"
   = nav_link(controller: :labels) do
     = link_to 'Labels', project_labels_path(@project), class: "tab"
-  %li.right
+  %li.pull-right
     %span.rss-icon
       = link_to project_issues_path(@project, :atom, { private_token: current_user.private_token }) do
         = image_tag "rss_ui.png", title: "feed"

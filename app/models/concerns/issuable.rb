@@ -22,6 +22,7 @@ module Issuable
     scope :opened, where(closed: false)
     scope :closed, where(closed: true)
     scope :of_group, ->(group) { where(project_id: group.project_ids) }
+    scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
     scope :assigned, ->(u) { where(assignee_id: u.id)}
     scope :recent, order("created_at DESC")
 
@@ -69,18 +70,9 @@ module Issuable
     closed_changed? && !closed
   end
 
-  # Return the number of +1 comments (upvotes)
-  def upvotes
-    notes.select(&:upvote?).size
-  end
-
-  def upvotes_in_percent
-    if votes_count.zero?
-      0
-    else
-      100.0 / votes_count * upvotes
-    end
-  end
+  #
+  # Votes
+  #
 
   # Return the number of -1 comments (downvotes)
   def downvotes
@@ -92,6 +84,19 @@ module Issuable
       0
     else
       100.0 - upvotes_in_percent
+    end
+  end
+
+  # Return the number of +1 comments (upvotes)
+  def upvotes
+    notes.select(&:upvote?).size
+  end
+
+  def upvotes_in_percent
+    if votes_count.zero?
+      0
+    else
+      100.0 / votes_count * upvotes
     end
   end
 

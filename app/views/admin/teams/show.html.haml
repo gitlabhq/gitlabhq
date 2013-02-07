@@ -1,0 +1,101 @@
+%h3.page_title
+  Team: #{@team.name}
+
+%br
+%table.zebra-striped
+  %thead
+    %tr
+      %th Team
+      %th
+  %tr
+    %td
+      %b
+        Name:
+    %td
+      = @team.name
+      &nbsp;
+      = link_to edit_admin_team_path(@team), class: "btn btn-small pull-right" do
+        %i.icon-edit
+        Rename
+  %tr
+    %td
+      %b
+        Owner:
+    %td
+      = @team.owner.name
+      .pull-right
+        = link_to "#", class: "btn btn-small change-owner-link" do
+          %i.icon-edit
+          Change owner
+
+  %tr.change-owner-holder.hide
+    %td.bgred
+      %b.cred
+        New Owner:
+    %td.bgred
+      = form_for @team, url: admin_team_path(@team) do |f|
+        = f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
+        %div
+          = f.submit 'Change Owner', class: "btn btn-remove"
+          = link_to "Cancel", "#", class: "btn change-owner-cancel-link"
+
+%fieldset
+  %legend
+    Members (#{@team.members.count})
+    %span= link_to 'Add members', new_admin_team_member_path(@team), class: "btn btn-primary btn-small pull-right", id: :add_members_to_team
+  - if @team.members.any?
+    %table#members_list
+      %thead
+        %tr
+          %th User name
+          %th Default project access
+          %th Team access
+          %th.cred.span3 Danger Zone!
+      - @team.members.each do |member|
+        %tr.member{ class: "user_#{member.id}"}
+          %td
+            = link_to [:admin, member] do
+              = member.name
+              %small= "(#{member.email})"
+          %td= @team.human_default_projects_access(member)
+          %td= @team.admin?(member) ? "Admin" : "Member"
+          %td.bgred
+            = link_to 'Edit', edit_admin_team_member_path(@team, member), class: "btn btn-small"
+            &nbsp;
+            = link_to 'Remove', admin_team_member_path(@team, member), confirm: 'Remove member from team. Are you sure?', method: :delete, class: "btn btn-remove btn-small", id: "remove_member_#{member.id}"
+
+%fieldset
+  %legend
+    Projects (#{@team.projects.count})
+    %span= link_to 'Add projects', new_admin_team_project_path(@team), class: "btn btn-primary btn-small pull-right", id: :assign_projects_to_team
+  - if @team.projects.any?
+    %table#projects_list
+      %thead
+        %tr
+          %th Project name
+          %th Max access
+          %th.cred.span3 Danger Zone!
+      - @team.projects.each do |project|
+        %tr.project
+          %td
+            = link_to project.name_with_namespace, [:admin, project]
+          %td
+            %span= @team.human_max_project_access(project)
+          %td.bgred
+            = link_to 'Edit', edit_admin_team_project_path(@team, project), class: "btn btn-small"
+            &nbsp;
+            = link_to 'Relegate', admin_team_project_path(@team, project), confirm: 'Remove project from team. Are you sure?', method: :delete, class: "btn btn-remove small", id: "relegate_project_#{project.id}"
+
+:javascript
+  $(function(){
+    var modal = $('.change-owner-holder');
+    $('.change-owner-link').bind("click", function(){
+      $(this).hide();
+      modal.show();
+    });
+    $('.change-owner-cancel-link').bind("click", function(){
+      modal.hide();
+      $('.change-owner-link').show();
+    })
+  })
+

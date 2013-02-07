@@ -14,6 +14,6 @@ class ProjectBrowseGitRepo < Spinach::FeatureSteps
   Then 'I should see git file blame' do
     page.should have_content "rubygems.org"
     page.should have_content "Dmitriy Zaporozhets"
-    page.should have_content "bc3735004cb Moving to rails 3.2"
+    page.should have_content "Moving to rails 3.2"
   end
 end

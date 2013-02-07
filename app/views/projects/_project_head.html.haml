@@ -3,7 +3,7 @@
     = link_to project_path(@project), class: "activities-tab tab" do
       %i.icon-home
       Show
-  = nav_link(controller: :team_members) do
+  = nav_link(controller: [:team_members, :teams]) do
     = link_to project_team_index_path(@project), class: "team-tab tab" do
       %i.icon-user
       Team
@@ -13,19 +13,19 @@
     = link_to 'Snippets', project_snippets_path(@project), class: "snippets-tab tab"
 
   - if can? current_user, :admin_project, @project
-    = nav_link(controller: :deploy_keys, html_options: {class: 'right'}) do
+    = nav_link(controller: :deploy_keys, html_options: {class: 'pull-right'}) do
       = link_to project_deploy_keys_path(@project) do
         %span
         Deploy Keys
-    = nav_link(controller: :hooks, html_options: {class: 'right'}) do
+    = nav_link(controller: :hooks, html_options: {class: 'pull-right'}) do
       = link_to project_hooks_path(@project) do
         %span
         Hooks
-    = nav_link(controller: :services, html_options: {class: 'right'}) do
+    = nav_link(controller: :services, html_options: {class: 'pull-right'}) do
       = link_to project_services_path(@project) do
         %span
         Services
-    = nav_link(path: 'projects#edit', html_options: {class: 'right'}) do
+    = nav_link(path: 'projects#edit', html_options: {class: 'pull-right'}) do
       = link_to edit_project_path(@project), class: "stat-tab tab " do
         %i.icon-edit
         Edit

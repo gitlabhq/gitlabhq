@@ -107,7 +107,6 @@ GEM
       coderay (>= 1.0.0)
       erubis (>= 2.7.0)
     binding_of_caller (0.6.8)
-    blankslate (3.1.2)
     bootstrap-sass (2.2.1.1)
       sass (~> 3.2)
     builder (3.0.4)
@@ -195,10 +194,6 @@ GEM
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
     gitlab_yaml_db (1.0.0)
-    gitolite (1.1.0)
-      gratr19 (~> 0.4.4.1)
-      grit (~> 2.5.0)
-      hashery (~> 1.5.0)
     grape (0.2.2)
       activesupport
       hashie (~> 1.2)
@@ -208,7 +203,6 @@ GEM
       rack-accept
       rack-mount
       virtus
-    gratr19 (0.4.4.1)
     growl (1.0.3)
     guard (1.5.4)
       listen (>= 0.4.2)
@@ -227,8 +221,6 @@ GEM
       activesupport (>= 3.1, < 4.1)
       haml (~> 3.1)
       railties (>= 3.1, < 4.1)
-    hashery (1.5.0)
-      blankslate
     hashie (1.2.0)
     hike (1.2.1)
     http_parser.rb (0.5.3)
@@ -497,7 +489,6 @@ DEPENDENCIES
   gitlab_meta (= 4.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
-  gitolite (= 1.1.0)
   grack!
   grape (~> 0.2.1)
   grit!
@@ -547,7 +538,7 @@ DEPENDENCIES
   stamp
   test_after_commit
   therubyracer
-  thin (~> 1.5.0)
+  thin
   uglifier (~> 1.3.0)
   unicorn (~> 4.4.0)
   webmock

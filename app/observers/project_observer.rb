@@ -1,6 +1,11 @@
 class ProjectObserver < ActiveRecord::Observer
   def after_create(project)
-    project.update_repository
+    GitoliteWorker.perform_async(
+      :add_repository,
+      project.path_with_namespace
+    )
+
+    log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
   end
 
   def after_update(project)
@@ -8,13 +13,14 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_destroy(project)
+    GitoliteWorker.perform_async(
+      :remove_repository,
+      project.path_with_namespace
+    )
+
+    project.satellite.destroy
+
     log_info("Project \"#{project.name}\" was removed")
-
-    project.destroy_repository
-  end
-
-  def after_create project
-    log_info("#{project.owner.name} created a new project \"#{project.name}\"")
   end
 
   protected

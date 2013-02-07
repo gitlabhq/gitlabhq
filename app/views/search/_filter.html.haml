@@ -1,0 +1,24 @@
+%fieldset
+  %legend Groups:
+  %ul.nav.nav-pills.nav-stacked
+    %li{class: ("active" if params[:group_id].blank?)}
+      = link_to search_path(group_id: nil, search: params[:search]) do
+        Any
+    - current_user.authorized_groups.each do |group|
+      %li{class: ("active" if params[:group_id] == group.id.to_s)}
+        = link_to search_path(group_id: group.id, search: params[:search]) do
+          = group.name
+
+%fieldset
+  %legend Projects:
+  %ul.nav.nav-pills.nav-stacked
+    %li{class: ("active" if params[:project_id].blank?)}
+      = link_to search_path(project_id: nil, search: params[:search]) do
+        Any
+    - current_user.authorized_projects.each do |project|
+      %li{class: ("active" if params[:project_id] == project.id.to_s)}
+        = link_to search_path(project_id: project.id, search: params[:search]) do
+          = project.name_with_namespace
+
+= hidden_field_tag :group_id, params[:group_id]
+= hidden_field_tag :project_id, params[:project_id]

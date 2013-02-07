@@ -1,7 +1,7 @@
 %li{class: "milestone milestone-#{milestone.closed ? 'closed' : 'open'}", id: dom_id(milestone) }
-  .right
+  .pull-right
     - if can?(current_user, :admin_milestone, milestone.project) and milestone.open?
-      = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn small edit-milestone-link grouped" do
+      = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn btn-small edit-milestone-link grouped" do
         %i.icon-edit
         Edit
   %h4

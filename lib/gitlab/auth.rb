@@ -24,8 +24,9 @@ module Gitlab
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
-      name = auth.info.name.force_encoding("utf-8")
-      email = auth.info.email.downcase unless auth.info.email.nil?
+      uid = uid.to_s.force_encoding("utf-8")
+      name = auth.info.name.to_s.force_encoding("utf-8")
+      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
 
       if email.nil? and not Gitlab.config.ldap['email_domain'].nil?
           email = auth.info.nickname + "@" + Gitlab.config.ldap["email_domain"]

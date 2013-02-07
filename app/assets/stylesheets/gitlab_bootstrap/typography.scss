@@ -21,7 +21,7 @@ h6 {
 
 /** CODE **/
 pre {
-  font-family:'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+  font-family: $monospace_font;
 
   &.dark {
     background: #333;
@@ -79,7 +79,7 @@ a:focus {
 }
 
 .monospace {
-  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
+  font-family: $monospace_font;
 }
 
 /**

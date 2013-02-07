@@ -1,0 +1,34 @@
+.row
+  .span3{:"data-spy" => 'affix'}
+    .ui-box
+      .title
+        %h5 Help
+      %ul.well-list
+        %li
+          %strong= link_to "Workflow", help_workflow_path
+        %li
+          %strong= link_to "SSH keys", help_ssh_path
+
+        %li
+          %strong= link_to "GitLab Markdown", help_markdown_path
+
+        %li
+          %strong= link_to "Permissions", help_permissions_path
+
+        %li
+          %strong= link_to "API", help_api_path
+
+        %li
+          %strong= link_to "Web Hooks", help_web_hooks_path
+
+        %li
+          %strong= link_to "Rake Tasks", help_raketasks_path
+
+        %li
+          %strong= link_to "System Hooks", help_system_hooks_path
+
+        %li
+          %strong= link_to "Public Access", help_public_access_path
+
+  .span9.pull-right
+    = yield

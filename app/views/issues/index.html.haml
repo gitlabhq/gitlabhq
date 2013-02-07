@@ -3,16 +3,16 @@
   %h3.page_title
     Issues
     %span (<span class=issue_counter>#{@issues.total_count}</span>)
-    .right
+    .pull-right
       .span5
         - if can? current_user, :write_issue, @project
-          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "right btn primary", title: "New Issue", id: "new_issue_link" do
+          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-primary pull-right", title: "New Issue", id: "new_issue_link" do
             %i.icon-plus
             New Issue
-        = form_tag search_project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: :right  do
+        = form_tag search_project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: 'pull-right'  do
           = hidden_field_tag :project_id, @project.id, { id: 'project_id' }
           = hidden_field_tag :status, params[:status]
-          = search_field_tag :issue_search, nil, { placeholder: 'Search', class: 'issue_search span3 right neib search-text-input' }
+          = search_field_tag :issue_search, nil, { placeholder: 'Search', class: 'issue_search span3 pull-right neib search-text-input' }
 
   .clearfix
 
@@ -33,7 +33,7 @@
                 = select_tag('update[milestone_id]', options_from_collection_for_select(issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
                 = hidden_field_tag 'update[issues_ids]', []
                 = hidden_field_tag :status, params[:status]
-              = button_tag "Save", class: "btn update_selected_issues btn-small save-btn"
+              = button_tag "Save", class: "btn update_selected_issues btn-small btn-save"
           .issues_filters
             = form_tag project_issues_path(@project), method: :get  do
               = select_tag(:label_name, options_for_select(issue_tags, params[:label_name]), prompt: "Labels")

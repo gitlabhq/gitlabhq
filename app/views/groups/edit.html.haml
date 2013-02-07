@@ -1,0 +1,50 @@
+%h3.page_title Edit Group
+%hr
+= form_for @group do |f|
+  - if @group.errors.any?
+    .alert.alert-error
+      %span= @group.errors.full_messages.first
+  .clearfix
+    = f.label :name do
+      Group name is
+    .input
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+      &nbsp;
+      = f.submit 'Save group', class: "btn btn-save"
+%hr
+
+
+.row
+  .span7
+    .ui-box
+      %h5.title Projects
+      %ul.well-list
+        - @group.projects.each do |project|
+          %li
+            - if project.public
+              %i.icon-share
+            - else
+              %i.icon-lock.cgreen
+            = link_to project.name_with_namespace, project
+            .pull-right
+              = link_to 'Team', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
+              = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
+              = link_to 'Remove', project, confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+
+  .span5
+    .ui-box
+      %h5.title Transfer group
+      .padded
+        %p
+          Transferring group will cause loss of admin control over group and all child projects
+        = form_for @group do |f|
+          = f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
+          = f.submit 'Transfer group', class: "btn btn-small"
+    .ui-box
+      %h5.title Remove group
+      .padded.bgred
+        %p
+          Remove of group will cause removing all child projects and resources
+          %br
+          Removed group can not be restored!
+        = link_to 'Remove Group', @group, confirm: 'Removed group can not be restored! Are you sure?', method: :delete, class: "btn btn-remove btn-small"

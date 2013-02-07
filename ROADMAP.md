@@ -1,25 +1,12 @@
 ## GitLab Roadmap
 
-### Common 
+### v5.0 March 22
 
-* Help page for service tasks like repos import, backup etc
-* Hide last push widget after following link
-* Add comment events 
-* gitolite namespaces for projects per user/group. It will allow us same project names for different users
+* Replace gitolite with gitlab-shell 
+* Usability improvements
+* Notification improvements
 
-### Issues
+### v4.2 February 22
 
-* labels autocomplete via jquery autocomplete
-* Import/Export issues
-* Form: Assign to me link right to the selectbox
+* Teams
 
-### Merge Request
-
-* Save code fragments with MR comments
-
-### Services
-
-* Campfire integration service
-* Hipchat integration service
-* Travis CI integration service
-* Jenkins CI integration service

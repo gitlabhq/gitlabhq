@@ -19,7 +19,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def create
-    @project = Project.create_by_user(params[:project], current_user)
+    @project = ::Projects::CreateContext.new(current_user, params[:project]).execute
 
     respond_to do |format|
       flash[:notice] = 'Project was successfully created.' if @project.saved?
@@ -35,7 +35,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
-    status = ProjectUpdateContext.new(project, current_user, params).execute
+    status = ::Projects::UpdateContext.new(project, current_user, params).execute
 
     respond_to do |format|
       if status
@@ -80,20 +80,13 @@ class ProjectsController < ProjectResourceController
 
   def wall
     return render_404 unless @project.wall_enabled
-    @note = Note.new
+
+    @target_type = :wall
+    @target_id = nil
+    @note = @project.notes.new
 
     respond_to do |format|
       format.html
-    end
-  end
-
-  def graph
-    respond_to do |format|
-      format.html
-      format.json do
-        graph = Gitlab::Graph::JsonBuilder.new(project)
-        render :json => graph.to_json
-      end
     end
   end
 

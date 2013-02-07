@@ -55,7 +55,7 @@ namespace :gitlab do
 
       # check Gitolite version
       gitolite_version_file = "#{Gitlab.config.gitolite.repos_path}/../gitolite/src/VERSION"
-      if File.exists?(gitolite_version_file) && File.readable?(gitolite_version_file)
+      if File.readable?(gitolite_version_file)
         gitolite_version = File.read(gitolite_version_file)
       end
 

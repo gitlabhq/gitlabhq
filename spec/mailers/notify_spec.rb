@@ -32,7 +32,37 @@ describe Notify do
     end
 
     it 'contains the new user\'s password' do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
       should have_body_text /#{new_user.password}/
+    end
+
+    it 'includes a link to the site' do
+      should have_body_text /#{example_site_path}/
+    end
+  end
+
+
+  describe 'for users that signed up, the email' do
+    let(:example_site_path) { root_path }
+    let(:new_user) { create(:user, email: 'newguy@example.com', password: "securePassword") }
+
+    subject { Notify.new_user_email(new_user.id, new_user.password) }
+
+    it 'is sent to the new user' do
+      should deliver_to new_user.email
+    end
+
+    it 'has the correct subject' do
+      should have_subject /^gitlab \| Account was created for you$/i
+    end
+
+    it 'contains the new user\'s login name' do
+      should have_body_text /#{new_user.email}/
+    end
+
+    it 'should not contain the new user\'s password' do
+      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+      should_not have_body_text /#{new_user.password}/
     end
 
     it 'includes a link to the site' do
@@ -191,7 +221,7 @@ describe Notify do
       let(:note) { create(:note, project: project, author: note_author) }
 
       before :each do
-          Note.stub(:find).with(note.id).and_return(note)
+        Note.stub(:find).with(note.id).and_return(note)
       end
 
       shared_examples 'a note email' do
@@ -233,6 +263,7 @@ describe Notify do
             commit.stub(:safe_message).and_return('some message')
           end
         end
+
         before(:each) { note.stub(:noteable).and_return(commit) }
 
         subject { Notify.note_commit_email(recipient.id, note.id) }

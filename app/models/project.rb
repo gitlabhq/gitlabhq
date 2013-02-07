@@ -8,7 +8,6 @@
 #  description            :text
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  private_flag           :boolean          default(TRUE), not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -16,6 +15,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
+#  public                 :boolean          default(FALSE), not null
 #
 
 require "grit"
@@ -26,34 +26,37 @@ class Project < ActiveRecord::Base
   class TransferError < StandardError; end
 
   attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
-                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, as: [:default, :admin]
+                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, :public, as: [:default, :admin]
 
-  attr_accessible :namespace_id, :creator_id, :public, as: :admin
+  attr_accessible :namespace_id, :creator_id, as: :admin
 
   attr_accessor :error_code
 
   # Relations
-  belongs_to :group, foreign_key: "namespace_id", conditions: "type = 'Group'"
+  belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
+  belongs_to :group,        foreign_key: "namespace_id", conditions: "type = 'Group'"
   belongs_to :namespace
 
-  belongs_to :creator,
-    class_name: "User",
-    foreign_key: "creator_id"
-
-  has_many :users,          through: :users_projects
-  has_many :events,         dependent: :destroy
-  has_many :merge_requests, dependent: :destroy
-  has_many :issues,         dependent: :destroy, order: "closed, created_at DESC"
-  has_many :milestones,     dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :notes,          dependent: :destroy
-  has_many :snippets,       dependent: :destroy
-  has_many :deploy_keys,    dependent: :destroy, foreign_key: "project_id", class_name: "Key"
-  has_many :hooks,          dependent: :destroy, class_name: "ProjectHook"
-  has_many :wikis,          dependent: :destroy
-  has_many :protected_branches, dependent: :destroy
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
+
+  has_many :events,             dependent: :destroy
+  has_many :merge_requests,     dependent: :destroy
+  has_many :issues,             dependent: :destroy, order: "closed, created_at DESC"
+  has_many :milestones,         dependent: :destroy
+  has_many :users_projects,     dependent: :destroy
+  has_many :notes,              dependent: :destroy
+  has_many :snippets,           dependent: :destroy
+  has_many :deploy_keys,        dependent: :destroy, class_name: "Key", foreign_key: "project_id"
+  has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
+  has_many :wikis,              dependent: :destroy
+  has_many :protected_branches, dependent: :destroy
+  has_many :user_team_project_relationships, dependent: :destroy
+
+  has_many :users,          through: :users_projects
+  has_many :user_teams,     through: :user_team_project_relationships
+  has_many :user_team_user_relationships, through: :user_teams
+  has_many :user_teams_members, through: :user_team_user_relationships
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -77,6 +80,8 @@ class Project < ActiveRecord::Base
   # Scopes
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
   scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
+  scope :without_team, ->(team) { team.projects.present? ? where("id NOT IN (:ids)", ids: team.projects.map(&:id)) : scoped  }
+  scope :in_team, ->(team) { where("id IN (:ids)", ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -116,62 +121,13 @@ class Project < ActiveRecord::Base
       end
     end
 
-    def create_by_user(params, user)
-      namespace_id = params.delete(:namespace_id)
-
-      project = Project.new params
-
-      Project.transaction do
-
-        # Parametrize path for project
-        #
-        # Ex.
-        #  'GitLab HQ'.parameterize => "gitlab-hq"
-        #
-        project.path = project.name.dup.parameterize
-
-        project.creator = user
-
-        # Apply namespace if user has access to it
-        # else fallback to user namespace
-        if namespace_id != Namespace.global_id
-          project.namespace_id = user.namespace_id
-
-          if namespace_id
-            group = Group.find_by_id(namespace_id)
-            if user.can? :manage_group, group
-              project.namespace_id = namespace_id
-            end
-          end
-        end
-
-        project.save!
-
-        # Add user as project master
-        project.users_projects.create!(project_access: UsersProject::MASTER, user: user)
-
-        # when project saved no team member exist so
-        # project repository should be updated after first user add
-        project.update_repository
-      end
-
-      project
-    rescue Gitlab::Gitolite::AccessDenied => ex
-      project.error_code = :gitolite
-      project
-    rescue => ex
-      project.error_code = :db
-      project.errors.add(:base, "Can't save project. Please try again later")
-      project
-    end
-
     def access_options
       UsersProject.access_roles
     end
   end
 
   def team
-    @team ||= Team.new(self)
+    @team ||= ProjectTeam.new(self)
   end
 
   def repository
@@ -306,8 +262,6 @@ class Project < ActiveRecord::Base
 
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
-      gitolite.move_repository(old_repo, self)
-
       save!
     end
   rescue Gitlab::ProjectMover::ProjectMoveError => ex
@@ -343,6 +297,9 @@ class Project < ActiveRecord::Base
   def trigger_post_receive(oldrev, newrev, ref, user)
     data = post_receive_data(oldrev, newrev, ref, user)
 
+    # Create satellite
+    self.satellite.create unless self.satellite.exists?
+
     # Create push event
     self.observe_push(data)
 
@@ -356,9 +313,6 @@ class Project < ActiveRecord::Base
       # Execute project services
       self.execute_services(data.dup)
     end
-
-    # Create satellite
-    self.satellite.create unless self.satellite.exists?
 
     # Discover the default branch, but only if it hasn't already been set to
     # something else
@@ -384,7 +338,7 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data)
-    hooks.each { |hook| hook.execute(data) }
+    hooks.each { |hook| hook.async_execute(data) }
   end
 
   def execute_services(data)
@@ -503,14 +457,6 @@ class Project < ActiveRecord::Base
     namespace.try(:path) || ''
   end
 
-  def update_repository
-    gitolite.update_repository(self)
-  end
-
-  def destroy_repository
-    gitolite.remove_repository(self)
-  end
-
   def repo_exists?
     @repo_exists ||= (repository && repository.branches.present?)
   rescue
@@ -536,6 +482,11 @@ class Project < ActiveRecord::Base
 
   def http_url_to_repo
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+  end
+
+  def project_access_human(member)
+    project_user_relation = self.users_projects.find_by_user_id(member.id)
+    self.class.access_options.key(project_user_relation.project_access)
   end
 
   # Check if current branch name is marked as protected in the system

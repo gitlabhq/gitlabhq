@@ -1,7 +1,7 @@
 /* Login Page */
-body.login-page{ 
-  padding-top: 10%;
-  background: #f1f1f1;
+body.login-page{
+  padding-top: 7%;
+  background: #666;
 }
 
 .login-box{
@@ -29,6 +29,11 @@ body.login-page{
   @include border-radius(0 0 5px 5px);
   border-top: 0;
   margin-bottom: 20px;
+}
+
+.login-box input.text.middle{
+  border-top: 0;
+  margin-bottom:0px;
 }
 
 .login-box a.forgot{float: right; padding-top: 6px}

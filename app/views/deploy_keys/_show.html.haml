@@ -8,5 +8,5 @@
       = time_ago_in_words(key.created_at)
       ago
   %td
-    = link_to 'Remove', project_deploy_key_path(key.project, key), confirm: 'Are you sure?', method: :delete, class: "danger btn delete-key small right"
+    = link_to 'Remove', project_deploy_key_path(key.project, key), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove delete-key btn-small pull-right"
 

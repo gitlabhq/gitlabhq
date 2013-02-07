@@ -1,0 +1,63 @@
+- note = discussion_notes.first
+.discussion.js-details-container.js-toggler-container.open{ class: note.discussion_id }
+  .discussion-header
+    .discussion-actions
+      = link_to "javascript:;", class: "js-details-target turn-on js-toggler-target" do
+        %i.icon-eye-close
+        Hide discussion
+      = link_to "javascript:;", class: "js-details-target turn-off js-toggler-target" do
+        %i.icon-eye-open
+        Show discussion
+    = image_tag gravatar_icon(note.author.email), class: "avatar s32"
+    %div
+      = link_to_member(@project, note.author, avatar: false)
+      - if note.for_merge_request?
+        - if note.diff
+          started a discussion on this merge request diff
+          = link_to_merge_request_diff_line_note(note)
+        - else
+          started
+          %strong
+            %i.icon-remove
+            outdated
+          discussion on this merge request diff
+      - elsif note.for_commit?
+        started a discussion on commit
+        #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
+        = link_to_commit_diff_line_note(note) if note.for_diff_line?
+      - else
+        %cite.cgray started a discussion
+    %div
+      - last_note = discussion_notes.last
+      last updated by
+      = link_to_member(@project, last_note.author, avatar: false)
+      %span.discussion-last-update
+        = time_ago_in_words(last_note.updated_at)
+        ago
+  .discussion-body
+    - if note.for_diff_line?
+      - if note.diff
+        .content
+          .file= render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
+      - else
+        = link_to 'show outdated discussion', '#', class: 'js-show-outdated-discussion'
+        %div.hide.outdated-discussion
+          .content
+            .notes{ rel: discussion_notes.first.discussion_id }
+              = render discussion_notes
+
+
+    - else
+      .content
+        .notes{ rel: discussion_notes.first.discussion_id }
+          = render discussion_notes
+        = render "notes/discussion_reply_button", note: discussion_notes.first
+
+    -# will be shown when the other one is hidden
+    .discussion-hidden.content.hide
+      .note
+        %em Hidden discussion.
+        = link_to "javascript:;", class: "js-details-target js-toggler-target" do
+          %i.icon-eye-open
+          Show
+
