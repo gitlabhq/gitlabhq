@@ -7,22 +7,27 @@ module Gitlab
       #
       get "/allowed" do
         key = Key.find(params[:key_id])
-        user = key.user
-
         project = Project.find_with_namespace(params[:project])
-        action = case params[:action]
-                 when 'git-upload-pack'
-                   then :download_code
-                 when 'git-receive-pack'
-                   then
-                   if project.protected_branch?(params[:ref])
-                     :push_code_to_protected_branches
-                   else
-                     :push_code
-                   end
-                 end
+        git_cmd = params[:action]
 
-        user.can?(action, project)
+        if key.is_deploy_key
+          project == key.project && git_cmd == 'git-upload-pack'
+        else
+          user = key.user
+          action = case git_cmd
+                   when 'git-upload-pack'
+                     then :download_code
+                   when 'git-receive-pack'
+                     then
+                     if project.protected_branch?(params[:ref])
+                       :push_code_to_protected_branches
+                     else
+                       :push_code
+                     end
+                   end
+
+          user.can?(action, project)
+        end
       end
 
       #
