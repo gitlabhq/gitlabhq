@@ -160,7 +160,7 @@ module ApplicationHelper
   end
 
   def image_url(source)
-    root_url + path_to_image(source)
+    path_to_image(source)
   end
   alias_method :url_to_image, :image_url
 end
