@@ -4,6 +4,15 @@ module Gitlab
     before { authenticate! }
 
     resource :projects do
+      helpers do
+        def handle_project_member_errors(errors)
+          if errors[:project_access].any?
+            error!(errors[:project_access], 422)
+          end
+          not_found!
+        end
+      end
+
       # Get a projects list for authenticated user
       #
       # Example Request:
@@ -36,6 +45,7 @@ module Gitlab
       # Example Request
       #   POST /projects
       post do
+        error!("Name is required", 400) if !params.has_key? :name
         attrs = attributes_for_keys [:name,
                                     :description,
                                     :default_branch,
@@ -43,6 +53,7 @@ module Gitlab
                                     :wall_enabled,
                                     :merge_requests_enabled,
                                     :wiki_enabled]
+
         @project = ::Projects::CreateContext.new(current_user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
@@ -106,10 +117,7 @@ module Gitlab
           @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          if team_member.errors[:project_access].any?
-            error!(team_member.errors[:project_access], 422)
-          end
-          not_found!
+          handle_project_member_errors team_member.errors
         end
       end
 
@@ -132,10 +140,7 @@ module Gitlab
           @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          if team_member.errors[:project_access].any?
-            error!(team_member.errors[:project_access], 422)
-          end
-          not_found!
+          handle_project_member_errors team_member.errors
         end
       end
 
@@ -210,8 +215,9 @@ module Gitlab
         @hook = user_project.hooks.find(params[:hook_id])
         authorize! :admin_project, user_project
 
-        attrs = attributes_for_keys [:url]
+        error!("Url not given", 400) if !params.has_key? :url
 
+        attrs = attributes_for_keys [:url]
         if @hook.update_attributes attrs
           present @hook, with: Entities::Hook
         else

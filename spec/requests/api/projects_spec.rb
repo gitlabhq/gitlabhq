@@ -46,9 +46,9 @@ describe Gitlab::API do
       response.status.should == 201
     end
 
-    it "should respond with 404 on failure" do
+    it "should respond with 400 if name is not given" do
       post api("/projects", user)
-      response.status.should == 404
+      response.status.should == 400
     end
 
     it "should assign attributes to project" do
@@ -237,6 +237,13 @@ describe Gitlab::API do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
       }.to change { UsersProject.count }.by(-1)
     end
+
+    it "should return 200 if team member is not part of a project" do
+      delete api("/projects/#{project.id}/members/#{user3.id}", user)
+      expect {
+        delete api("/projects/#{project.id}/members/#{user3.id}", user)
+      }.to_not change { UsersProject.count }.by(1)
+    end
   end
 
   describe "DELETE /projects/:id/members/:user_id" do
@@ -268,6 +275,11 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['url'].should == hook.url
     end
+
+    it "should return a 404 error if hook id is not available" do
+      get api("/projects/#{project.id}/hooks/1234", user)
+      response.status.should == 404
+    end
   end
 
   describe "POST /projects/:id/hooks" do
@@ -276,6 +288,7 @@ describe Gitlab::API do
         post api("/projects/#{project.id}/hooks", user),
           "url" => "http://example.com"
       }.to change {project.hooks.count}.by(1)
+      response.status.should == 200
     end
   end
 
@@ -286,8 +299,17 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['url'].should == 'http://example.org'
     end
-  end
 
+    it "should return 404 error if hook id is not found" do
+      put api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
+      response.status.should == 404
+    end
+
+    it "should return 400 error if url is not given" do
+      put api("/projects/#{project.id}/hooks/#{hook.id}", user)
+      response.status.should == 400
+    end
+  end
 
   describe "DELETE /projects/:id/hooks" do
     it "should delete hook from project" do
@@ -295,6 +317,7 @@ describe Gitlab::API do
         delete api("/projects/#{project.id}/hooks", user),
           hook_id: hook.id
       }.to change {project.hooks.count}.by(-1)
+      response.status.should == 200
     end
   end
 
