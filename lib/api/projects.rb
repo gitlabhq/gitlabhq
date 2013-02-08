@@ -89,15 +89,26 @@ module Gitlab
       #   POST /projects/:id/members
       post ":id/members" do
         authorize! :admin_project, user_project
-        users_project = user_project.users_projects.new(
-          user_id: params[:user_id],
-          project_access: params[:access_level]
-        )
 
-        if users_project.save
-          @member = users_project.user
+        error!("User id not given", 400) if !params.has_key? :user_id
+        error!("Access level not given", 400) if !params.has_key? :access_level
+
+        # either the user is already a team member or a new one
+        team_member = user_project.team_member_by_id(params[:user_id])
+        if team_member.nil?
+          team_member = user_project.users_projects.new(
+            user_id: params[:user_id],
+            project_access: params[:access_level]
+          )
+        end
+
+        if team_member.save
+          @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
+          if team_member.errors[:project_access].any?
+            error!(team_member.errors[:project_access], 422)
+          end
           not_found!
         end
       end
@@ -112,12 +123,18 @@ module Gitlab
       #   PUT /projects/:id/members/:user_id
       put ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        users_project = user_project.users_projects.find_by_user_id params[:user_id]
 
-        if users_project.update_attributes(project_access: params[:access_level])
-          @member = users_project.user
+        team_member = user_project.users_projects.find_by_user_id(params[:user_id])
+        error!("Access level not given", 400) if !params.has_key? :access_level
+        error!("User can not be found", 404) if team_member.nil?
+
+        if team_member.update_attributes(project_access: params[:access_level])
+          @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
+          if team_member.errors[:project_access].any?
+            error!(team_member.errors[:project_access], 422)
+          end
           not_found!
         end
       end

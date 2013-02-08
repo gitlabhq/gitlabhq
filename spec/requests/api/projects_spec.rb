@@ -177,6 +177,34 @@ describe Gitlab::API do
       json_response['email'].should == user2.email
       json_response['access_level'].should == UsersProject::DEVELOPER
     end
+
+    it "should return a 201 status if user is already project member" do
+      post api("/projects/#{project.id}/members", user), user_id: user2.id,
+        access_level: UsersProject::DEVELOPER
+      expect {
+        post api("/projects/#{project.id}/members", user), user_id: user2.id,
+          access_level: UsersProject::DEVELOPER
+      }.not_to change { UsersProject.count }.by(1)
+
+      response.status.should == 201
+      json_response['email'].should == user2.email
+      json_response['access_level'].should == UsersProject::DEVELOPER
+    end
+
+    it "should return a 400 error when user id is not given" do
+      post api("/projects/#{project.id}/members", user), access_level: UsersProject::MASTER
+      response.status.should == 400
+    end
+
+    it "should return a 400 error when access level is not given" do
+      post api("/projects/#{project.id}/members", user), user_id: user2.id
+      response.status.should == 400
+    end
+
+    it "should return a 422 error when access level is not known" do
+      post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: 1234
+      response.status.should == 422
+    end
   end
 
   describe "PUT /projects/:id/members/:user_id" do
@@ -185,6 +213,21 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['email'].should == user3.email
       json_response['access_level'].should == UsersProject::MASTER
+    end
+
+    it "should return a 404 error if user_id is not found" do
+      put api("/projects/#{project.id}/members/1234", user), access_level: UsersProject::MASTER
+      response.status.should == 404
+    end
+
+    it "should return a 400 error when access level is not given" do
+      put api("/projects/#{project.id}/members/#{user3.id}", user)
+      response.status.should == 400
+    end
+
+    it "should return a 422 error when access level is not known" do
+      put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: 123
+      response.status.should == 422
     end
   end
 
