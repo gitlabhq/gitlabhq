@@ -144,6 +144,8 @@ GEM
     email_spec (1.4.0)
       launchy (~> 2.1)
       mail (~> 2.2)
+    enumerize (0.5.1)
+      activesupport (>= 3.2)
     erubis (2.7.0)
     escape_utils (0.2.4)
     eventmachine (1.0.0)
@@ -469,6 +471,7 @@ DEPENDENCIES
   devise (~> 2.1.0)
   draper (~> 0.18.0)
   email_spec
+  enumerize
   factory_girl_rails
   ffaker
   font-awesome-sass-rails (~> 3.0.0)
