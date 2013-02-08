@@ -191,10 +191,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/gitlab/gitlab
    
     # Checkout to stable release
-    sudo -u gitlab -H git checkout 4-1-stable
+    sudo -u gitlab -H git checkout 4-2-stable
 
 **Note:**
-You can change `4-1-stable` to `master` if you want the *bleeding edge* version, but
+You can change `4-2-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
@@ -268,7 +268,7 @@ used for the `email.from` setting in `config/gitlab.yml`)
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -309,7 +309,7 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 
 Download an example site config:
 
-    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
