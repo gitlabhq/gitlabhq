@@ -288,7 +288,7 @@ describe Gitlab::API do
         post api("/projects/#{project.id}/hooks", user),
           "url" => "http://example.com"
       }.to change {project.hooks.count}.by(1)
-      response.status.should == 200
+      response.status.should == 201
     end
   end
 
