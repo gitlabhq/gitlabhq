@@ -45,6 +45,9 @@ gem "grape", "~> 0.2.1"
 # based on human-friendly examples
 gem "stamp"
 
+# Enumeration fields
+gem 'enumerize'
+
 # Pagination
 gem "kaminari", "~> 0.14.1"
 
