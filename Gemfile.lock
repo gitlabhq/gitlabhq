@@ -187,7 +187,7 @@ GEM
       mime-types (~> 1.19)
       pygments.rb (>= 0.2.13)
     github-markup (0.7.4)
-    gitlab_meta (4.0)
+    gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
       net-ldap (~> 0.2.2)
       omniauth (~> 1.0)
@@ -486,7 +486,7 @@ DEPENDENCIES
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
-  gitlab_meta (= 4.0)
+  gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
   grack!
