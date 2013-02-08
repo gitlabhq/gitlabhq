@@ -4,20 +4,20 @@
   %ul.well-list
     %li
       %strong Email
-      %span.right= mail_to @user.email
+      %span.pull-right= mail_to @user.email
     - unless @user.skype.blank?
       %li
         %strong Skype
-        %span.right= @user.skype
+        %span.pull-right= @user.skype
     - unless @user.linkedin.blank?
       %li
         %strong LinkedIn
-        %span.right= @user.linkedin
+        %span.pull-right= @user.linkedin
     - unless @user.twitter.blank?
       %li
         %strong Twitter
-        %span.right= @user.twitter
+        %span.pull-right= @user.twitter
     - unless @user.bio.blank?
       %li
         %strong Bio
-        %span.right= @user.bio
+        %span.pull-right= @user.bio

@@ -6,6 +6,6 @@
 #
 module Gitolited
   def gitolite
-    Gitlab::Gitolite.new
+    Gitlab::Shell.new
   end
 end

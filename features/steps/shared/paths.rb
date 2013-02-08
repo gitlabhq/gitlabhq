@@ -25,6 +25,10 @@ module SharedPaths
     visit people_group_path(current_group)
   end
 
+  When 'I visit group settings page' do
+    visit edit_group_path(current_group)
+  end
+
   # ----------------------------------------
   # Dashboard
   # ----------------------------------------
@@ -141,7 +145,7 @@ module SharedPaths
     # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
     Gitlab::Graph::JsonBuilder.stub(max_count: 10)
 
-    visit graph_project_path(@project)
+    visit project_graph_path(@project, root_ref)
   end
 
   Given "I visit my project's issues page" do

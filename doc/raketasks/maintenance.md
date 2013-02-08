@@ -81,7 +81,7 @@ Config directory owned by git:git? ... yes
 Config directory access is drwxr-x---? ... yes
 Repo base directory exists? ... yes
 Repo base owned by git:git? ... yes
-Repo base access is drwsrws---? ... yes
+Repo base access is drwxrws---? ... yes
 Can clone gitolite-admin? ... yes
 Can commit to gitolite-admin? ... yes
 post-receive hook exists? ... yes

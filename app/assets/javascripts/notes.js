@@ -20,12 +20,12 @@ var NoteList = {
 
     if(NoteList.reversed) {
       var form = $(".js-main-target-form");
-      form.find(".buttons, .note_options").hide();
+      form.find(".note-form-actions").hide();
       var textarea = form.find(".js-note-text");
       textarea.css("height", "40px");
       textarea.on("focus", function(){
         textarea.css("height", "80px");
-        form.find(".buttons, .note_options").show();
+        form.find(".note-form-actions").show();
       });
     }
 

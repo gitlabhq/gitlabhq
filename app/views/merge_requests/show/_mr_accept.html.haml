@@ -1,5 +1,5 @@
 - unless can?(current_user, :accept_mr, @project)
-  .alert-message
+  .alert
     %strong Only masters can accept MR
 
 
@@ -29,14 +29,14 @@
         %strong This repository does not have satellite. Ask administrator to fix this issue
 
   .automerge_widget.cannot_be_merged{style: "display:none"}
-    .alert.alert-info
+    .alert.alert-disabled
       %span
-        = link_to "Show how to merge", "#", class: "how_to_merge_link btn small padded", title: "How To Merge"
+        = link_to "Show how to merge", "#", class: "how_to_merge_link btn btn-small padded", title: "How To Merge"
         &nbsp;
         %strong This request can't be merged with GitLab. You should do it manually
 
   .automerge_widget.unchecked
-    .alert-message
+    .alert
       %strong
         %i.icon-refresh
         Checking for ability to automatically merge…

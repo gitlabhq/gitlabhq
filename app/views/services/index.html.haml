@@ -8,7 +8,7 @@
       = link_to edit_project_service_path(@project, :gitlab_ci) do
         GitLab CI
         %small Continuous integration server from GitLab
-      .right
+      .pull-right
         - if @gitlab_ci_service.try(:active)
           %small.cgreen
             %i.icon-ok
@@ -21,11 +21,11 @@
     %h4
       Jenkins CI
       %small An extendable open source continuous integration server
-      .right
+      .pull-right
         %small Not implemented yet
   %li.disabled
     %h4
       Campfire
       %small Web-based group chat tool
-      .right
+      .pull-right
         %small Not implemented yet

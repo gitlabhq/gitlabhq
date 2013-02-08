@@ -10,7 +10,7 @@
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_tree_path(@project, @id), class: "btn very_small cancel-btn", confirm: "Are you sure?"
+            = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: "Are you sure?"
       .file_content.code
         %pre#editor= @tree.data
 
@@ -27,7 +27,7 @@
         .message
           to branch
           %strong= @ref
-      = link_to "Cancel", project_tree_path(@project, @id), class: "btn cancel-btn", confirm: "Are you sure?"
+      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", confirm: "Are you sure?"
 
 :javascript
   var ace_mode = "#{@tree.language.try(:ace_mode)}";

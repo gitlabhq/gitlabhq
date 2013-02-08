@@ -6,7 +6,7 @@
         = link_to admin_projects_path do
           %h1= Project.count
         %hr
-        = link_to 'New Project', new_project_path, class: "btn small"
+        = link_to 'New Project', new_project_path, class: "btn btn-small"
   .span4
     .ui-box
       %h5.title Groups
@@ -14,7 +14,7 @@
         = link_to admin_groups_path do
           %h1= Group.count
         %hr
-        = link_to 'New Group', new_admin_group_path, class: "btn small"
+        = link_to 'New Group', new_admin_group_path, class: "btn btn-small"
   .span4
     .ui-box
       %h5.title Users
@@ -22,7 +22,7 @@
         = link_to admin_users_path do
           %h1= User.count
         %hr
-        = link_to 'New User', new_admin_user_path, class: "btn small"
+        = link_to 'New User', new_admin_user_path, class: "btn btn-small"
 
 .row
   .span4
@@ -31,7 +31,7 @@
     - @projects.each do |project|
       %p
         = link_to project.name_with_namespace, [:admin, project]
-        %span.light.right
+        %span.light.pull-right
           = time_ago_in_words project.created_at
           ago
 
@@ -42,7 +42,7 @@
       %p
         = link_to [:admin, user] do
           = user.name
-        %span.light.right
+        %span.light.pull-right
           = time_ago_in_words user.created_at
           ago
 
@@ -51,25 +51,25 @@
     %hr
     %p
       Issues
-      %span.light.right
+      %span.light.pull-right
         = Issue.count
     %p
       Merge Requests
-      %span.light.right
+      %span.light.pull-right
         = MergeRequest.count
     %p
       Notes
-      %span.light.right
+      %span.light.pull-right
         = Note.count
     %p
       Snippets
-      %span.light.right
+      %span.light.pull-right
         = Snippet.count
     %p
       SSH Keys
-      %span.light.right
+      %span.light.pull-right
         = Key.count
     %p
       Milestones
-      %span.light.right
+      %span.light.pull-right
         = Milestone.count

@@ -27,7 +27,6 @@ class Namespace < ActiveRecord::Base
 
   after_create :ensure_dir_exist
   after_update :move_dir
-  after_commit :update_gitolite, on: :update, if: :require_update_gitolite
   after_destroy :rm_dir
 
   scope :root, where('type IS NULL')
@@ -87,11 +86,6 @@ class Namespace < ActiveRecord::Base
         raise "Namespace move error #{old_path} #{new_path}"
       end
     end
-  end
-
-  def update_gitolite
-    @require_update_gitolite = false
-    projects.each(&:update_repository)
   end
 
   def rm_dir

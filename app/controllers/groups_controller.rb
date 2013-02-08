@@ -6,6 +6,7 @@ class GroupsController < ApplicationController
 
   # Authorize
   before_filter :authorize_read_group!, except: [:new, :create]
+  before_filter :authorize_admin_group!, only: [:edit, :update, :destroy]
   before_filter :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
@@ -84,6 +85,31 @@ class GroupsController < ApplicationController
     redirect_to people_group_path(@group), notice: 'Users was successfully added.'
   end
 
+  def edit
+  end
+
+  def update
+    group_params = params[:group].dup
+    owner_id =group_params.delete(:owner_id)
+
+    if owner_id
+      @group.owner = User.find(owner_id)
+    end
+
+    if @group.update_attributes(group_params)
+      redirect_to @group, notice: 'Group was successfully updated.'
+    else
+      render action: "edit"
+    end
+  end
+
+  def destroy
+    @group.truncate_teams
+    @group.destroy
+
+    redirect_to root_path, notice: 'Group was removed.'
+  end
+
   protected
 
   def group
@@ -106,6 +132,14 @@ class GroupsController < ApplicationController
   end
 
   def authorize_create_group!
-    can?(current_user, :create_group, nil)
+    unless can?(current_user, :create_group, nil)
+      return render_404
+    end
+  end
+
+  def authorize_admin_group!
+    unless can?(current_user, :manage_group, group)
+      return render_404
+    end
   end
 end

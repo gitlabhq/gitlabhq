@@ -9,14 +9,14 @@ module Gitlab
         @max_count ||= 650
       end
 
-      def initialize project
+      def initialize project, ref
         @project = project
+        @ref = ref
         @repo = project.repo
         @ref_cache = {}
 
         @commits = collect_commits
         @days = index_commits
-        @space = 0
       end
 
       def to_json(*args)
@@ -53,7 +53,7 @@ module Gitlab
       #
       # @return [Array<TimeDate>] list of commit dates corelated with time on commits
       def index_commits
-        days, heads = [], []
+        days, heads, times = [], [], []
         map = {}
 
         commits.reverse.each_with_index do |c,i|
@@ -61,14 +61,15 @@ module Gitlab
           days[i] = c.committed_date
           map[c.id] = c
           heads += c.refs unless c.refs.nil?
+          times[i] = c
         end
 
         heads.select!{|h| h.is_a? Grit::Head or h.is_a? Grit::Remote}
         # sort heads so the master is top and current branches are closer
         heads.sort! do |a,b|
-          if a.name == "master"
+          if a.name == @ref
             -1
-          elsif b.name == "master"
+          elsif b.name == @ref
             1
           else
             b.commit.committed_date <=> a.commit.committed_date
@@ -86,7 +87,60 @@ module Gitlab
           end
         end
 
+        # find parent spaces for not overlap lines
+        times.each do |c|
+          c.parent_spaces.concat(find_free_parent_spaces(c, map, times))
+        end
+
         days
+      end
+
+      def find_free_parent_spaces(commit, map, times)
+        spaces = []
+
+        commit.parents.each do |p|
+          if map.include?(p.id) then
+            parent = map[p.id]
+
+            range = if commit.time < parent.time then
+                      commit.time..parent.time
+                    else
+                      parent.time..commit.time
+                    end
+
+            space = if commit.space >= parent.space then
+                      find_free_parent_space(range, parent.space, 1, commit.space, times)
+                    else
+                      find_free_parent_space(range, parent.space, -1, parent.space, times)
+                    end
+
+            mark_reserved(range, space)
+            spaces << space
+          end
+        end
+
+        spaces
+      end
+
+      def find_free_parent_space(range, space_base, space_step, space_default, times)
+        if is_overlap?(range, times, space_default) then
+          find_free_space(range, space_base, space_step)
+        else
+          space_default
+        end
+      end
+
+      def is_overlap?(range, times, overlap_space)
+        range.each do |i|
+          if i != range.first &&
+            i != range.last &&
+            times[i].space == overlap_space then
+
+            return true;
+          end
+        end
+
+        false
       end
 
       # Add space mark on commit and its parents
@@ -98,16 +152,18 @@ module Gitlab
         if leaves.empty?
           return
         end
-        @space = find_free_space(leaves, map)
-        leaves.each{|l| l.space = @space}
         # and mark it as reserved
         min_time = leaves.last.time
+        max_space = 1
         parents = leaves.last.parents.collect
         parents.each do |p|
           if map.include? p.id
             parent = map[p.id]
             if parent.time < min_time
               min_time = parent.time
+            end
+            if max_space < parent.space then
+              max_space = parent.space
             end
           end
         end
@@ -116,7 +172,12 @@ module Gitlab
         else
           max_time = parent_time - 1
         end
-        mark_reserved(min_time..max_time, @space)
+
+        time_range = leaves.last.time..leaves.first.time
+        space = find_free_space(time_range, max_space, 2)
+        leaves.each{|l| l.space = space}
+
+        mark_reserved(min_time..max_time, space)
 
         # Visit branching chains
         leaves.each do |l|
@@ -133,28 +194,23 @@ module Gitlab
         end
       end
 
-      def find_free_space(leaves, map)
-        time_range = leaves.last.time..leaves.first.time
+      def find_free_space(time_range, space_base, space_step)
         reserved = []
         for day in time_range
           reserved += @_reserved[day]
         end
-        space = base_space(leaves, map)
-        while (reserved.include? space) || (space == @space) do
-          space += 1
+        reserved.uniq!
+
+        space = space_base
+        while reserved.include?(space) do
+          space += space_step
+          if space <= 0 then
+            space_step *= -1
+            space = space_base + space_step
+          end
         end
 
         space
-      end
-
-      def base_space(leaves, map)
-        parents = []
-        leaves.each do |l|
-          parents.concat l.parents.collect.select{|p| map.include? p.id and map[p.id].space.nonzero?}
-        end
-
-        space = parents.map{|p| map[p.id].space}.max || 0
-        space += 1
       end
 
       # Takes most left subtree branch of commits

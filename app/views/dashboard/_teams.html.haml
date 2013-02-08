@@ -3,8 +3,8 @@
     Teams
     %small
       (#{@teams.count})
-    %span.right
-      = link_to new_team_path, class: "btn very_small info" do
+    %span.pull-right
+      = link_to new_team_path, class: "btn btn-tiny info" do
         %i.icon-plus
         New Team
   %ul.well-list
@@ -12,7 +12,7 @@
       %li
         = link_to team_path(id: team.path), class: dom_class(team) do
           %strong.well-title= truncate(team.name, length: 35)
-        %span.right.light
+        %span.pull-right.light
           - if team.owner == current_user
             %i.icon-wrench
           - tm = current_user.user_team_user_relationships.find_by_user_team_id(team.id)

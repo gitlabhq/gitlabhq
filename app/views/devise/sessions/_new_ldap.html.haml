@@ -3,11 +3,11 @@
   = text_field_tag :username, nil, {:class => "text top", :placeholder => "LDAP Login"}
   = password_field_tag :password, nil, {:class => "text bottom", :placeholder => "Password"}
   %br/
-  = submit_tag "LDAP Sign in", :class => "primary btn"
+  = submit_tag "LDAP Sign in", :class => "btn-primary btn"
   - if devise_mapping.omniauthable?
     - (resource_class.omniauth_providers - [:ldap]).each do |provider|
       %hr/
-      = link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider), :class => "btn primary"
+      = link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider), :class => "btn btn-primary"
       %br/
   %hr/
   %a#other_form_toggle{:href => "#", :onclick => "javascript:$('#new_user').toggle();"} Other Sign in
@@ -24,6 +24,6 @@
         = f.check_box :remember_me
         %span Remember me
   %br/
-  = f.submit "Sign in", :class => "primary btn"
-  .right
+  = f.submit "Sign in", :class => "btn-primary btn"
+  .pull-right
     = render :partial => "devise/shared/links"

@@ -130,7 +130,7 @@ Gitlab::Application.routes.draw do
   #
   # Groups Area
   #
-  resources :groups, constraints: { id: /[^\/]+/ }, only: [:show, :new, :create] do
+  resources :groups, constraints: { id: /[^\/]+/ }  do
     member do
       get :issues
       get :merge_requests
@@ -164,7 +164,6 @@ Gitlab::Application.routes.draw do
   resources :projects, constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       get "wall"
-      get "graph"
       get "files"
     end
 
@@ -174,6 +173,7 @@ Gitlab::Application.routes.draw do
     resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :blob,    only: [:show], constraints: {id: /.+/}
+    resources :graph,   only: [:show], constraints: {id: /.+/}
     match "/compare/:from...:to" => "compare#show", as: "compare",
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 

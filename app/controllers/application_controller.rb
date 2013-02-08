@@ -4,15 +4,11 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user_for_observers
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
+  before_filter :default_headers
 
   protect_from_forgery
 
   helper_method :abilities, :can?
-
-  rescue_from Gitlab::Gitolite::AccessDenied do |exception|
-    log_exception(exception)
-    render "errors/gitolite", layout: "errors", status: 500
-  end
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -148,4 +144,8 @@ class ApplicationController < ActionController::Base
     Rack::MiniProfiler.authorize_request
   end
 
+  def default_headers
+    headers['X-Frame-Options'] = 'DENY'
+    headers['X-XSS-Protection'] = '1; mode=block'
+  end
 end

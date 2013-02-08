@@ -81,14 +81,6 @@ ul.notes {
     .attachment {
       font-size: 14px;
       margin-top: -20px;
-
-      .icon-attachment {
-        @extend .icon-paper-clip;
-        font-size: 24px;
-        position: relative;
-        text-align: right;
-        top: 6px;
-      }
     }
     .note-body {
       margin-left: 45px;
@@ -214,9 +206,11 @@ ul.notes {
  * Note Form
  */
 
-.comment-btn,
+.comment-btn {
+  @extend .btn-create;
+}
 .reply-btn {
-  @extend .save-btn;
+  @extend .btn-primary;
 }
 .file .content tr.line_holder:hover > td { background: $hover !important; }
 .file .content tr.line_holder:hover > td .line_note_link {
@@ -227,11 +221,6 @@ ul.notes {
 .discussion {
   .new_note {
     margin: 8px 5px 8px 0;
-
-    .note_options {
-      // because of the smaller width and the extra "cancel" button
-      margin-top: 8px;
-    }
   }
 }
 .new_note {
@@ -243,37 +232,6 @@ ul.notes {
   }
   .clearfix {
     margin-bottom: 0;
-  }
-  .note_options {
-    h6 {
-      @extend .left;
-      line-height: 20px;
-      padding-right: 16px;
-      padding-bottom: 16px;
-    }
-    label {
-      padding: 0;
-    }
-
-    .attachment {
-      @extend .right;
-      position: relative;
-      width: 350px;
-      height: 50px;
-      margin:0 0 5px !important;
-
-      // hide the actual file field
-      input {
-        display: none;
-      }
-
-      .choose-btn {
-        float: right;
-      }
-    }
-    .notify_options {
-      @extend .right;
-    }
   }
   .note_text_and_preview {
     // makes the "absolute" position for links relative to this
@@ -312,4 +270,18 @@ ul.notes {
   @extend .span4;
   @extend .thumbnail;
   margin-left: 45px;
+}
+
+
+.note-form-actions {
+  background: #F9F9F9;
+  height: 45px;
+  padding: 0 5px;
+
+  .note-form-option {
+    margin-top: 8px;
+    margin-left: 15px;
+    @extend .pull-left;
+    @extend .span4;
+  }
 }

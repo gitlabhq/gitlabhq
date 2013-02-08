@@ -6,8 +6,10 @@ describe Gitlab::API do
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, project: project, author: user) }
+  let!(:merge_request) { create(:merge_request, project: project, author: user) }
   let!(:snippet) { create(:snippet, project: project, author: user) }
   let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
+  let!(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
   let!(:snippet_note) { create(:note, noteable: snippet, project: project, author: user) }
   let!(:wall_note) { create(:note, project: project, author: user) }
   before { project.team << [user, :reporter] }
@@ -82,6 +84,15 @@ describe Gitlab::API do
       it "should return a 404 error when snippet id not found" do
         get api("/projects/#{project.id}/snippets/42/notes", user)
         response.status.should == 404
+      end
+    end
+
+    context "when noteable is a Merge Request" do
+      it "should return an array of merge_requests notes" do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/notes", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first['body'].should == merge_request_note.note
       end
     end
   end

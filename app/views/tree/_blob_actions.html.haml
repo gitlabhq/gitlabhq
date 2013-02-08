@@ -1,12 +1,12 @@
 .btn-group.tree-btn-group
   -# only show edit link for text files
   - if @tree.text?
-    = link_to "edit", edit_project_tree_path(@project, @id), class: "btn very_small", disabled: !allowed_tree_edit?
-  = link_to "raw", project_blob_path(@project, @id), class: "btn very_small", target: "_blank"
+    = link_to "edit", edit_project_tree_path(@project, @id), class: "btn btn-tiny", disabled: !allowed_tree_edit?
+  = link_to "raw", project_blob_path(@project, @id), class: "btn btn-tiny", target: "_blank"
   -# only show normal/blame view links for text files
   - if @tree.text?
     - if current_page? project_blame_path(@project, @id)
-      = link_to "normal view", project_tree_path(@project, @id), class: "btn very_small"
+      = link_to "normal view", project_tree_path(@project, @id), class: "btn btn-tiny"
     - else
-      = link_to "blame", project_blame_path(@project, @id), class: "btn very_small"
-  = link_to "history", project_commits_path(@project, @id), class: "btn very_small"
+      = link_to "blame", project_blame_path(@project, @id), class: "btn btn-tiny"
+  = link_to "history", project_commits_path(@project, @id), class: "btn btn-tiny"

@@ -1,6 +1,6 @@
 %h3.page_title
   Project: #{@project.name_with_namespace}
-  = link_to edit_admin_project_path(@project), class: "btn right" do
+  = link_to edit_admin_project_path(@project), class: "btn pull-right" do
     %i.icon-edit
     Edit
 
@@ -129,8 +129,8 @@
       %td
         = link_to tm.name, admin_user_path(tm)
       %td= @project.project_access_human(tm)
-      %td= link_to 'Edit Access', edit_admin_project_member_path(@project, tm), class: "btn small"
-      %td= link_to 'Remove from team', admin_project_member_path(@project, tm), confirm: 'Are you sure?', method: :delete, class: "btn danger small"
+      %td= link_to 'Edit Access', edit_admin_project_member_path(@project, tm), class: "btn btn-small"
+      %td= link_to 'Remove from team', admin_project_member_path(@project, tm), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove small"
 
 %br
 %h5 Add new team member
@@ -147,7 +147,7 @@
       %td= select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3"}
 
     %tr
-      %td= submit_tag 'Add', class: "btn primary"
+      %td= submit_tag 'Add', class: "btn btn-primary"
       %td
         Read more about project permissions
         %strong= link_to "here", help_permissions_path, class: "vlink"

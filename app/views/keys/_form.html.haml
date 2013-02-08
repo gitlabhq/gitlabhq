@@ -1,7 +1,7 @@
 %div
   = form_for @key do |f|
     -if @key.errors.any?
-      .alert-message.block-message.error
+      .alert.alert-error
         %ul
           - @key.errors.full_messages.each do |msg|
             %li= msg
@@ -19,6 +19,6 @@
 
 
     .actions
-      = f.submit 'Save', class: "btn save-btn"
-      = link_to "Cancel", keys_path, class: "btn cancel-btn"
+      = f.submit 'Save', class: "btn btn-save"
+      = link_to "Cancel", keys_path, class: "btn btn-cancel"
 

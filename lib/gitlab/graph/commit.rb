@@ -5,12 +5,13 @@ module Gitlab
     class Commit
       include ActionView::Helpers::TagHelper
 
-      attr_accessor :time, :space, :refs
+      attr_accessor :time, :space, :refs, :parent_spaces
 
       def initialize(commit)
         @_commit = commit
         @time = -1
         @space = 0
+        @parent_spaces = []
       end
 
       def method_missing(m, *args, &block)
@@ -28,6 +29,7 @@ module Gitlab
         }
         h[:time]    = time
         h[:space]   = space
+        h[:parent_spaces]   = parent_spaces
         h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
         h[:id]      = sha
         h[:date]    = date

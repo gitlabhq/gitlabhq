@@ -1,6 +1,6 @@
 %h3.page_title
   Projects
-  = link_to 'New Project', new_project_path, class: "btn small right"
+  = link_to 'New Project', new_project_path, class: "btn btn-small pull-right"
 
 %hr
 
@@ -37,7 +37,7 @@
 
 
         .form-actions
-          = submit_tag "Search", class: "btn submit primary"
+          = submit_tag "Search", class: "btn submit btn-primary"
           = link_to "Reset", admin_projects_path, class: "btn"
   .span8
     .ui-box
@@ -51,9 +51,9 @@
             - else
               %i.icon-lock.cgreen
             = link_to project.name_with_namespace, [:admin, project]
-            .right
-              = link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn small"
-              = link_to 'Destroy', [:admin, project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn small danger"
+            .pull-right
+              = link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
+              = link_to 'Destroy', [:admin, project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
         - if @projects.blank?
           %p.nothing_here_message 0 projects matches
         - else

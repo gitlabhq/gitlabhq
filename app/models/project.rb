@@ -8,7 +8,6 @@
 #  description            :text
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  private_flag           :boolean          default(TRUE), not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -16,6 +15,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
+#  public                 :boolean          default(FALSE), not null
 #
 
 require "grit"
@@ -262,8 +262,6 @@ class Project < ActiveRecord::Base
 
       Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
 
-      gitolite.move_repository(old_repo, self)
-
       save!
     end
   rescue Gitlab::ProjectMover::ProjectMoveError => ex
@@ -457,20 +455,6 @@ class Project < ActiveRecord::Base
 
   def namespace_dir
     namespace.try(:path) || ''
-  end
-
-  def update_repository
-    GitoliteWorker.perform_async(
-      :update_repository,
-      self.id
-    )
-  end
-
-  def destroy_repository
-    GitoliteWorker.perform_async(
-      :remove_repository,
-      self.path_with_namespace
-    )
   end
 
   def repo_exists?

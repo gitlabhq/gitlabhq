@@ -1,17 +1,16 @@
 .btn {
-  @include linear-gradient(#f7f7f7, #d5d5d5);
+  @include linear-gradient(#f1f1f1, #e1e1e1);
+  text-shadow: 0 1px 1px #FFF;
   border-color: #BBB;
+
   &:hover {
-    @include bg-gray-gradient;
-    border-color: #bbb;
+    background: #f1f1f1;
+    @include linear-gradient(#fAfAfA, #f1f1f1);
+    border-color: #AAA;
     color: #333;
   }
 
-  &.btn-white {
-    background: #FFF;
-  }
-
-  &.primary {
+  &.btn-primary {
     background: #2a79A3;
     @include linear-gradient(#47A7b7, #2585b5);
     border-color: #2A79A3;
@@ -58,21 +57,18 @@
     }
   }
 
-  &.save-btn {
+  &.btn-create {
     @extend .wide;
-    @extend .primary;
+    @extend .success;
   }
 
-  &.cancel-btn {
-    float: right;
+  &.btn-save {
+    @extend .wide;
+    @extend .btn-primary;
   }
 
-  &.wide {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-
-  &.danger {
+  &.btn-close,
+  &.btn-remove {
     @extend .btn-danger;
     border-color: #BD362F;
 
@@ -82,8 +78,13 @@
     }
   }
 
-  &.danger {
-    @extend .btn-danger;
+  &.btn-cancel {
+    float: right;
+  }
+
+  &.wide {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   &.small {
@@ -95,7 +96,7 @@
     background-color: #ccc;
   }
 
-  &.very_small {
+  &.btn-tiny {
     font-size: 11px;
     padding: 2px 6px;
     line-height: 16px;

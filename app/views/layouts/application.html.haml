@@ -7,7 +7,8 @@
     .container
       %ul.main_menu
         = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
-          = link_to "Home", root_path, title: "Home"
+          = link_to root_path, title: "Home" do
+            %i.icon-home
         = nav_link(path: 'dashboard#projects') do
           = link_to projects_dashboard_path do
             Projects
