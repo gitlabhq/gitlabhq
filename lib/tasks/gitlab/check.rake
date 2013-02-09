@@ -255,7 +255,6 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "Environment"
 
-      check_gitlab_in_git_group
       check_issue_1059_shell_profile_error
       check_gitlab_git_config
       check_python2_exists
@@ -290,25 +289,6 @@ namespace :gitlab do
         )
         for_more_information(
           see_installation_guide_section "GitLab"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_gitlab_in_git_group
-      gitlab_user = Gitlab.config.gitlab.user
-      gitolite_owner_group = Gitlab.config.gitolite.owner_group
-      print "#{gitlab_user} user is in #{gitolite_owner_group} group? ... "
-
-      if run_and_match("id -rnG", /^#{gitolite_owner_group}\W|\W#{gitolite_owner_group}\W|\W#{gitolite_owner_group}$/)
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "sudo usermod -a -G #{gitolite_owner_group} #{gitlab_user}"
-        )
-        for_more_information(
-          see_installation_guide_section "System Users"
         )
         fix_and_rerun
       end
@@ -393,18 +373,10 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "Gitolite"
 
-      check_gitolite_is_up_to_date
-      check_gitoliterc_repo_umask
-      check_gitoliterc_git_config_keys
-      check_dot_gitolite_exists
-      check_dot_gitolite_user_and_group
-      check_dot_gitolite_permissions
       check_repo_base_exists
       check_repo_base_is_not_symlink
       check_repo_base_user_and_group
       check_repo_base_permissions
-      check_can_clone_gitolite_admin
-      check_can_commit_to_gitolite_admin
       check_post_receive_hook_exists
       check_post_receive_hook_is_up_to_date
       check_repos_post_receive_hooks_is_link
@@ -416,207 +388,6 @@ namespace :gitlab do
 
     # Checks
     ########################
-
-    def check_can_clone_gitolite_admin
-      print "Can clone gitolite-admin? ... "
-
-      test_path = "/tmp/gitlab_gitolite_admin_test"
-      FileUtils.rm_rf(test_path)
-      `git clone -q #{Gitlab.config.gitolite.admin_uri} #{test_path}`
-      raise unless $?.success?
-
-      puts "yes".green
-    rescue
-      puts "no".red
-      try_fixing_it(
-        "Make sure the \"admin_uri\" is set correctly in config/gitlab.yml",
-        "Try cloning it yourself with:",
-        "  git clone -q #{Gitlab.config.gitolite.admin_uri} /tmp/gitolite-admin",
-        "Make sure Gitolite is installed correctly."
-      )
-      for_more_information(
-        see_installation_guide_section "Gitolite"
-      )
-      fix_and_rerun
-    end
-
-    # assumes #check_can_clone_gitolite_admin has been run before
-    def check_can_commit_to_gitolite_admin
-      print "Can commit to gitolite-admin? ... "
-
-      test_path = "/tmp/gitlab_gitolite_admin_test"
-      unless File.exists?(test_path)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      Dir.chdir(test_path) do
-        `touch foo && git add foo && git commit -qm foo`
-        raise unless $?.success?
-      end
-
-      puts "yes".green
-    rescue
-      puts "no".red
-      try_fixing_it(
-        "Try committing to it yourself with:",
-        "  git clone -q #{Gitlab.config.gitolite.admin_uri} /tmp/gitolite-admin",
-        "  touch foo",
-        "  git add foo",
-        "  git commit -m \"foo\"",
-        "Make sure Gitolite is installed correctly."
-      )
-      for_more_information(
-        see_installation_guide_section "Gitolite"
-      )
-      fix_and_rerun
-    ensure
-      FileUtils.rm_rf("/tmp/gitolite_gitlab_test")
-    end
-
-    def check_dot_gitolite_exists
-      print "Config directory exists? ... "
-
-      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
-
-      if File.directory?(gitolite_config_path)
-        puts "yes".green
-      else
-        puts "no".red
-        puts "#{gitolite_config_path} is missing".red
-        try_fixing_it(
-          "This should have been created when setting up Gitolite.",
-          "Make sure Gitolite is installed correctly."
-        )
-        for_more_information(
-          see_installation_guide_section "Gitolite"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_dot_gitolite_permissions
-      print "Config directory access is drwxr-x---? ... "
-
-      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
-      unless File.exists?(gitolite_config_path)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      if File.stat(gitolite_config_path).mode.to_s(8).ends_with?("750")
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "sudo chmod 750 #{gitolite_config_path}"
-        )
-        for_more_information(
-          see_installation_guide_section "Gitolite"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_dot_gitolite_user_and_group
-      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
-      gitolite_owner_group = Gitlab.config.gitolite.owner_group
-      print "Config directory owned by #{gitolite_ssh_user}:#{gitolite_owner_group} ... "
-
-      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
-      unless File.exists?(gitolite_config_path)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      if File.stat(gitolite_config_path).uid == uid_for(gitolite_ssh_user) &&
-         File.stat(gitolite_config_path).gid == gid_for(gitolite_owner_group)
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "sudo chown -R #{gitolite_ssh_user}:#{gitolite_owner_group} #{gitolite_config_path}"
-        )
-        for_more_information(
-          see_installation_guide_section "Gitolite"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_gitolite_is_up_to_date
-      print "Using recommended version ... "
-      if gitolite_version.try(:start_with?, "v3.2")
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "We strongly recommend using the version pointed out in the installation guide."
-        )
-        for_more_information(
-          see_installation_guide_section "Gitolite"
-        )
-        # this is not a "hard" failure
-      end
-    end
-
-    def check_gitoliterc_git_config_keys
-      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
-
-      print "Allow all Git config keys in .gitolite.rc ... "
-      option_name = if has_gitolite3?
-                      # see https://github.com/sitaramc/gitolite/blob/v3.04/src/lib/Gitolite/Rc.pm#L329
-                      "GIT_CONFIG_KEYS"
-                    else
-                      # assume older version
-                      # see https://github.com/sitaramc/gitolite/blob/v2.3/conf/example.gitolite.rc#L49
-                      "\\$GL_GITCONFIG_KEYS"
-                    end
-      option_value = ".*"
-      if open(gitoliterc_path).grep(/#{option_name}\s*=[>]?\s*["']#{option_value}["']/).any?
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Open #{gitoliterc_path}",
-          "Find the \"#{option_name}\" option",
-          "Change its value to \".*\""
-        )
-        for_more_information(
-          see_installation_guide_section "Gitolite"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_gitoliterc_repo_umask
-      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
-
-      print "Repo umask is 0007 in .gitolite.rc? ... "
-      option_name = if has_gitolite3?
-                      # see https://github.com/sitaramc/gitolite/blob/v3.04/src/lib/Gitolite/Rc.pm#L328
-                      "UMASK"
-                    else
-                      # assume older version
-                      # see https://github.com/sitaramc/gitolite/blob/v2.3/conf/example.gitolite.rc#L32
-                      "\\$REPO_UMASK"
-                    end
-      option_value = "0007"
-      if open(gitoliterc_path).grep(/#{option_name}\s*=[>]?\s*#{option_value}/).any?
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Open #{gitoliterc_path}",
-          "Find the \"#{option_name}\" option",
-          "Change its value to \"0007\""
-        )
-        for_more_information(
-          see_installation_guide_section "Gitolite"
-        )
-        fix_and_rerun
-      end
-    end
 
     def check_post_receive_hook_exists
       print "post-receive hook exists? ... "
