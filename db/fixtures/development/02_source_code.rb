@@ -13,19 +13,17 @@ projects = [
 projects.each do |project|
   project_path = File.join(root, project[:path])
 
-  next if File.exists?(project_path)
+  if File.exists?(project_path)
+    print '-'
+    next
+  end
 
-  cmds = [
-    "cd #{root} && sudo -u git -H git clone --bare #{project[:git]} ./#{project[:path]}",
-    "sudo ln -s ./lib/hooks/post-receive #{project_path}/hooks/post-receive",
-    "sudo chown git:git -R #{project_path}",
-    "sudo chmod 770 -R #{project_path}",
-  ]
-
-  cmds.each do |cmd|
-    puts cmd.yellow
-    `#{cmd}`
+  if system("/home/git/gitlab-shell/bin/gitlab-projects import-project #{project[:path]} #{project[:git]}")
+    print '.'
+  else
+    print 'F'
   end
 end
 
 puts "OK".green
+

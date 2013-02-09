@@ -1,5 +1,3 @@
-UsersProject.skip_callback(:save, :after, :update_repository)
-
 Gitlab::Seeder.quiet do
 
   (1..300).each  do |i|
@@ -21,9 +19,4 @@ Gitlab::Seeder.quiet do
     print('.')
   end
 end
-
-UsersProject.set_callback(:save, :after, :update_repository)
-
-puts "\nRebuild gitolite\n".yellow
-Project.all.each(&:update_repository)
 puts "OK".green
