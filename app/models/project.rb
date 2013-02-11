@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
   class TransferError < StandardError; end
 
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
-    :issues_enabled, :wall_enabled, :merge_requests_enabled,
+    :issues_enabled, :wall_enabled, :merge_requests_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
@@ -74,6 +74,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+  validates :issues_tracker_id, length: { within: 0..255 }
 
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -215,6 +216,10 @@ class Project < ActiveRecord::Base
 
   def used_default_issues_tracker?
     self.issues_tracker == Project.issues_tracker.default_value
+  end
+
+  def can_have_issues_tracker_id?
+    self.issues_enabled && !self.used_default_issues_tracker?
   end
 
   def services
