@@ -28,6 +28,10 @@
       = f.label :issues_tracker, "Issues tracker", class: 'control-label'
       .input= f.select(:issues_tracker, Project.issues_tracker.values, {}, { disabled: !@project.issues_enabled })
 
+    .clearfix
+      = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
+      .input= f.text_field :issues_tracker_id, class: "xxlarge", disabled: !@project.can_have_issues_tracker_id?
+
     .control-group
       = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
       .controls

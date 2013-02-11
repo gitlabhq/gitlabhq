@@ -60,6 +60,7 @@ describe Project do
     it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
+    it { should ensure_length_of(:issues_tracker_id).is_within(0..255) }
 
     it "should not allow new projects beyond user limits" do
       project.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 1))
@@ -223,4 +224,24 @@ describe Project do
     end
   end
 
+  describe :can_have_issues_tracker_id? do
+    let(:project) { create(:project) }
+    let(:ext_project) { create(:redmine_project) }
+
+    it "should be true for projects with external issues tracker if issues enabled" do
+      ext_project.can_have_issues_tracker_id?.should be_true
+    end 
+
+    it "should be false for projects with internal issue tracker if issues enabled" do
+      project.can_have_issues_tracker_id?.should be_false
+    end
+
+    it "should be always false if issues disbled" do
+      project.issues_enabled = false
+      ext_project.issues_enabled = false
+
+      project.can_have_issues_tracker_id?.should be_false
+      ext_project.can_have_issues_tracker_id?.should be_false
+    end
+  end
 end

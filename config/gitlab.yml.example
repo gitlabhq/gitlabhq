@@ -7,8 +7,6 @@
 # 2. Replace gitlab -> host with your domain
 # 3. Replace gitlab -> email_from
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 production: &base
   #
   # 1. GitLab app settings
@@ -43,9 +41,7 @@ production: &base
   ## External issues trackers
   issues_tracker:
     redmine:
-      ## If not nil Issues link in project page will be replaced to this
-      url: "http://redmine.sample"
-      ## If not nil links from /#\d/ entities from commit messages will replaced to this
+      ## If not nil, links from /#\d/ entities from commit messages will replaced to this
       ## Use placeholders:
       ##  :project_id        - Gitlab project identifier
       ##  :issues_tracker_id - Project Name or Id in external issue tracker

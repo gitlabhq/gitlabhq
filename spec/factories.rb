@@ -31,6 +31,7 @@ FactoryGirl.define do
 
   factory :redmine_project, parent: :project do
     issues_tracker { "redmine" }
+    issues_tracker_id { "project_name_in_redmine" }
   end
 
   factory :group do
