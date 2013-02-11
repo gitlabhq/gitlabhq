@@ -190,4 +190,37 @@ describe Project do
       Project.new(path: "empty").repository.should be_nil
     end
   end
+
+  describe :issue_exists? do
+    let(:project) { create(:project) }
+    let(:existed_issue) { create(:issue, project: project) }
+    let(:not_existed_issue) { create(:issue) }
+    let(:ext_project) { create(:redmine_project) }
+
+    it "should be true or if used internal tracker and issue exists" do
+      project.issue_exists?(existed_issue.id).should be_true
+    end
+
+    it "should be false or if used internal tracker and issue not exists" do
+      project.issue_exists?(not_existed_issue.id).should be_false
+    end
+
+    it "should always be true if used other tracker" do
+      ext_project.issue_exists?(rand(100)).should be_true
+    end
+  end
+
+  describe :used_default_issues_tracker? do
+    let(:project) { create(:project) }
+    let(:ext_project) { create(:redmine_project) }
+
+    it "should be true if used internal tracker" do
+      project.used_default_issues_tracker?.should be_true
+    end
+
+    it "should be false if used other tracker" do
+      ext_project.used_default_issues_tracker?.should be_false
+    end
+  end
+
 end

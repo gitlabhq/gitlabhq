@@ -42,7 +42,7 @@ module IssuesHelper
   end
 
   def url_for_issue(issue_id)
-    if @project.issues_tracker ==  Project.issues_tracker.default_value
+    if @project.used_default_issues_tracker?
       url = project_issue_url project_id: @project, id: issue_id
     else
       url = Settings[:issues_tracker][@project.issues_tracker]["issues_url"]
@@ -51,20 +51,10 @@ module IssuesHelper
   end
 
   def title_for_issue(issue_id)
-    if issue = @project.issues.where(id: issue_id).first
+    if @project.used_default_issues_tracker? && issue = @project.issues.where(id: issue_id).first
       issue.title
     else
       ""
-    end
-  end
-
-  def issue_exists?(issue_id)
-    return false if @project.nil?
-
-    if @project.issues_tracker == Project.issues_tracker.default_value
-      @project.issues.where(id: issue_id).first.present?
-    else
-      true
     end
   end
 end

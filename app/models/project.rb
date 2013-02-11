@@ -205,6 +205,18 @@ class Project < ActiveRecord::Base
     issues.tag_counts_on(:labels)
   end
 
+  def issue_exists?(issue_id)
+    if used_default_issues_tracker?
+      self.issues.where(id: issue_id).first.present?
+    else
+      true
+    end
+  end
+
+  def used_default_issues_tracker?
+    self.issues_tracker == Project.issues_tracker.default_value
+  end
+
   def services
     [gitlab_ci_service].compact
   end
