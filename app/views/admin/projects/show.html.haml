@@ -4,24 +4,6 @@
     %i.icon-edit
     Edit
 
-- if @repository && @repository.has_commits?
-  - if !@repository.has_post_receive_file?
-    %br
-    .alert.alert-error
-      %span
-        %strong Project has commits but missing post-receive file.
-        %br
-        If you exported project manually - make a link of post-receive hook file from gitolite to project repository
-  - elsif !@repository.valid_post_receive_file?
-    %br
-    .alert.alert-error
-      %span
-        %strong Project has invalid post-receive file.
-        %br
-        1. Make sure your gitolite instace has latest post-receive file.
-        %br
-        2. Make a link of post-receive hook file from gitolite to project repository
-
 
 %br
 %table.zebra-striped
@@ -103,12 +85,6 @@
           Last commit at:
       %td
         = last_commit(@project)
-    %tr
-      %td
-        %b
-          Post Receive File:
-      %td
-        = check_box_tag :post_receive_file, 1, @repository.has_post_receive_file?, disabled: true
 
 %br
 %h5
