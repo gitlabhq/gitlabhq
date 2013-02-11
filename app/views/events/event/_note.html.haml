@@ -24,3 +24,10 @@
   %i.icon-comment-alt.event-note-icon
   %span.event-note
     = markdown truncate(event.target.note, length: 70)
+    - note = event.target
+    = link_to note.attachment.url, target: "_blank", class: 'note-file-attach' do
+      - if note.attachment.image?
+        = image_tag note.attachment.url, class: 'note-image-attach'
+      - else
+        %i.icon-paper-clip
+        = note.attachment_identifier

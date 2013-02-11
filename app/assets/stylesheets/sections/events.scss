@@ -52,6 +52,15 @@
       padding-left: 5px;
       display: inline-block;
       color: #555;
+
+      .note-file-attach {
+        margin-left: -25px;
+        float: left;
+        .note-image-attach {
+          margin-left: 0px;
+          max-width: 200px;
+        }
+      }
     }
     .event-note-icon {
       color: #777;
