@@ -163,7 +163,7 @@ module Gitlab
     end
 
     def reference_issue(identifier)
-      if issue_exists? identifier
+      if @project.issue_exists? identifier
         url = url_for_issue(identifier)
         title = title_for_issue(identifier)
 
