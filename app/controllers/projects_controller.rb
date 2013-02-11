@@ -93,9 +93,7 @@ class ProjectsController < ProjectResourceController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    # Delete team first in order to prevent multiple gitolite calls
     project.team.truncate
-
     project.destroy
 
     respond_to do |format|

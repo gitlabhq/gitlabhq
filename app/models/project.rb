@@ -140,10 +140,6 @@ class Project < ActiveRecord::Base
     nil
   end
 
-  def git_error?
-    error_code == :gitolite
-  end
-
   def saved?
     id && valid?
   end
@@ -157,7 +153,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo_name
-    denied_paths = %w(gitolite-admin admin dashboard groups help profile projects search)
+    denied_paths = %w(admin dashboard groups help profile projects search)
 
     if denied_paths.include?(path)
       errors.add(:path, "like #{path} is not allowed")
@@ -450,7 +446,7 @@ class Project < ActiveRecord::Base
   end
 
   def url_to_repo
-    gitolite.url_to_repo(path_with_namespace)
+    gitlab_shell.url_to_repo(path_with_namespace)
   end
 
   def namespace_dir

@@ -6,11 +6,6 @@ namespace :gitlab do
     migrate_user_namespaces
     migrate_groups
     migrate_projects
-
-    puts "Rebuild Gitolite ... "
-    gitolite = Gitlab::Gitolite.new
-    gitolite.update_repositories(Project.where('namespace_id IS NOT NULL'))
-    puts "... #{"done".green}"
   end
 
   def migrate_user_namespaces
@@ -80,7 +75,7 @@ namespace :gitlab do
   end
 
   def migrate_projects
-    git_path = Gitlab.config.gitolite.repos_path
+    git_path = Gitlab.config.gitlab_shell.repos_path
     puts "\nMove projects in groups into respective directories ... ".blue
     Project.where('namespace_id IS NOT NULL').find_each(batch_size: 500) do |project|
       next unless project.group

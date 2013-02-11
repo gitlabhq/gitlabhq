@@ -2,9 +2,9 @@ class GitoliteWorker
   include Sidekiq::Worker
   include Gitolited
 
-  sidekiq_options queue: :gitolite
+  sidekiq_options queue: :gitlab_shell
 
   def perform(action, *arg)
-    gitolite.send(action, *arg)
+    gitlab_shell.send(action, *arg)
   end
 end

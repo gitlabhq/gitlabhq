@@ -44,7 +44,7 @@ module Gitlab
 
 
     def url_to_repo path
-      Gitlab.config.gitolite.ssh_path_prefix + "#{path}.git"
+      Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
   end
 end

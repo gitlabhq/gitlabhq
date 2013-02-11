@@ -12,7 +12,7 @@ namespace :gitlab do
     desc "GITLAB | Import bare repositories from git_host -> base_path into GitLab project instance"
     task :repos => :environment do
 
-      git_base_path = Gitlab.config.gitolite.repos_path
+      git_base_path = Gitlab.config.gitlab_shell.repos_path
       repos_to_import = Dir.glob(git_base_path + '/*')
 
       namespaces = Namespace.pluck(:path)
@@ -26,7 +26,6 @@ namespace :gitlab do
         # skip if not git repo
         next unless repo_name =~ /.git$/
 
-        # skip gitolite admin
         next if repo_name == 'gitolite-admin.git'
 
         path = repo_name.sub(/\.git$/, '')
