@@ -13,6 +13,17 @@ module Gitlab
       system("/home/git/gitlab-shell/bin/gitlab-projects add-project #{name}.git")
     end
 
+    # Import repository
+    #
+    # name - project path with namespace
+    #
+    # Ex.
+    #   import_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git")
+    #
+    def import_repository(name, url)
+      system("/home/git/gitlab-shell/bin/gitlab-projects import-project #{name}.git #{url}")
+    end
+
     # Remove repository from file system
     #
     # name - project path with namespace
