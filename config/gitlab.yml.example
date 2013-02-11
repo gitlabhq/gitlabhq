@@ -107,7 +107,7 @@ backup:
 gitolite:
   # REPOS_PATH MUST NOT BE A SYMLINK!!!
   repos_path: /home/git/repositories/
-  hooks_path: /home/git/.gitolite/hooks/
+  hooks_path: /home/git/gitlab-shell/hooks/
   admin_key: gitlab
   upload_pack: true
   receive_pack: true

@@ -377,10 +377,8 @@ namespace :gitlab do
       check_repo_base_is_not_symlink
       check_repo_base_user_and_group
       check_repo_base_permissions
-      check_post_receive_hook_exists
       check_post_receive_hook_is_up_to_date
       check_repos_post_receive_hooks_is_link
-      check_repos_git_config
 
       finished_checking "Gitolite"
     end
@@ -389,29 +387,6 @@ namespace :gitlab do
     # Checks
     ########################
 
-    def check_post_receive_hook_exists
-      print "post-receive hook exists? ... "
-
-      hook_file = "post-receive"
-      gitolite_hooks_path = File.join(Gitlab.config.gitolite.hooks_path, "common")
-      gitolite_hook_file = File.join(gitolite_hooks_path, hook_file)
-      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
-
-      gitlab_hook_file = Rails.root.join.join("lib", "hooks", hook_file)
-
-      if File.exists?(gitolite_hook_file)
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "sudo -u #{gitolite_ssh_user} cp #{gitlab_hook_file} #{gitolite_hook_file}"
-        )
-        for_more_information(
-          see_installation_guide_section "Setup GitLab Hooks"
-        )
-        fix_and_rerun
-      end
-    end
 
     def check_post_receive_hook_is_up_to_date
       print "post-receive hook up-to-date? ... "
@@ -534,45 +509,6 @@ namespace :gitlab do
           see_installation_guide_section "Gitolite"
         )
         fix_and_rerun
-      end
-    end
-
-    def check_repos_git_config
-      print "Git config in repos: ... "
-
-      unless Project.count > 0
-        puts "can't check, you have no projects".magenta
-        return
-      end
-      puts ""
-
-      options = {
-        "core.sharedRepository" => "0660",
-      }
-
-      Project.find_each(batch_size: 100) do |project|
-        print "#{project.name_with_namespace.yellow} ... "
-
-        if project.empty_repo?
-          puts "repository is empty".magenta
-        else
-          correct_options = options.map do |name, value|
-            run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
-          end
-
-          if correct_options.all?
-            puts "ok".green
-          else
-            puts "wrong or missing".red
-            try_fixing_it(
-              sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos RAILS_ENV=production")
-            )
-            for_more_information(
-              "doc/raketasks/maintenance.md"
-            )
-            fix_and_rerun
-          end
-        end
       end
     end
 
