@@ -1,4 +1,4 @@
-class GitoliteWorker
+class GitlabShellWorker
   include Sidekiq::Worker
   include Gitolited
 
