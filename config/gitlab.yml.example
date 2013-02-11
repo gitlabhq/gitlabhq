@@ -8,6 +8,7 @@
 # 3. Replace gitlab -> email_from
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 production: &base
   #
   # 1. GitLab app settings
@@ -38,9 +39,17 @@ production: &base
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
     # username_changing_enabled: false # default: true - User can change her username/namespace
 
-  ## Available issues trackers
+
+  ## External issues trackers
   issues_tracker:
     redmine:
+      ## If not nil Issues link in project page will be replaced to this
+      url: "http://redmine.sample"
+      ## If not nil links from /#\d/ entities from commit messages will replaced to this
+      ## Use placeholders:
+      ##  :project_id        - Gitlab project identifier
+      ##  :issues_tracker_id - Project Name or Id in external issue tracker
+      ##  :id                - Issue id (from commit messages)
       issues_url: "http://redmine.sample/issues/:id"
 
   ## Gravatar
