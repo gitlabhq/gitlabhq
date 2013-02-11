@@ -25,12 +25,13 @@ class Project < ActiveRecord::Base
 
   class TransferError < StandardError; end
 
-  attr_accessible :name, :path, :description, :default_branch, :issues_enabled,
-                  :wall_enabled, :merge_requests_enabled, :wiki_enabled, :public, as: [:default, :admin]
+  attr_accessible :name, :path, :description, :default_branch,
+    :issues_enabled, :wall_enabled, :merge_requests_enabled,
+    :wiki_enabled, :public, :import_url, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
-  attr_accessor :error_code
+  attr_accessor :import_url
 
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
@@ -74,6 +75,8 @@ class Project < ActiveRecord::Base
 
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
+
+  validates :import_url, format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
 
   validate :check_limit, :repo_name
 

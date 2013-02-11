@@ -34,13 +34,23 @@ module Projects
 
       @project.creator = current_user
 
+      # Import project from cloneable resource
+      if @project.valid? && @project.import_url.present?
+        shell = Gitlab::Shell.new
+        if shell.import_repository(@project.path_with_namespace, @project.import_url)
+          true
+        else
+          @project.errors.add(:import_url, 'cannot clone repo')
+        end
+      end
+
       if @project.save
         @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
       end
 
       @project
-    rescue => ex
-      @project.errors.add(:base, "Can't save project. Please try again later")
+    #rescue => ex
+      #@project.errors.add(:base, "Can't save project. Please try again later")
       @project
     end
 
