@@ -311,7 +311,7 @@ namespace :gitlab do
           "Remove \"-e \" so the line starts with PATH"
         )
         for_more_information(
-          see_installation_guide_section("Gitolite"),
+          see_installation_guide_section("Gitlab Shell"),
           "https://github.com/gitlabhq/gitlabhq/issues/1059"
         )
         fix_and_rerun
@@ -368,10 +368,10 @@ namespace :gitlab do
 
 
   namespace :gitlab_shell do
-    desc "GITLAB | Check the configuration of Gitolite"
+    desc "GITLAB | Check the configuration of Gitlab Shell"
     task check: :environment  do
       warn_user_is_not_gitlab
-      start_checking "Gitolite"
+      start_checking "Gitlab Shell"
 
       check_repo_base_exists
       check_repo_base_is_not_symlink
@@ -380,7 +380,7 @@ namespace :gitlab do
       check_post_receive_hook_is_up_to_date
       check_repos_post_receive_hooks_is_link
 
-      finished_checking "Gitolite"
+      finished_checking "Gitlab Shell"
     end
 
 
@@ -392,7 +392,7 @@ namespace :gitlab do
       print "post-receive hook up-to-date? ... "
 
       hook_file = "post-receive"
-      gitlab_shell_hooks_path = File.join(Gitlab.config.gitlab_shell.hooks_path, "common")
+      gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
       gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
 
@@ -401,22 +401,7 @@ namespace :gitlab do
         return
       end
 
-      gitlab_shell_hook_content = File.read(gitlab_shell_hook_file)
-      gitlab_hook_file = Rails.root.join.join("lib", "hooks", hook_file)
-      gitlab_hook_content = File.read(gitlab_hook_file)
-
-      if gitlab_shell_hook_content == gitlab_hook_content
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "sudo -u #{gitlab_shell_ssh_user} cp #{gitlab_hook_file} #{gitlab_shell_hook_file}"
-        )
-        for_more_information(
-          see_installation_guide_section "Setup GitLab Hooks"
-        )
-        fix_and_rerun
-      end
+      puts "yes".green
     end
 
     def check_repo_base_exists
@@ -430,12 +415,12 @@ namespace :gitlab do
         puts "no".red
         puts "#{repo_base_path} is missing".red
         try_fixing_it(
-          "This should have been created when setting up Gitolite.",
+          "This should have been created when setting up Gitlab Shell.",
           "Make sure it's set correctly in config/gitlab.yml",
-          "Make sure Gitolite is installed correctly."
+          "Make sure Gitlab Shell is installed correctly."
         )
         for_more_information(
-          see_installation_guide_section "Gitolite"
+          see_installation_guide_section "Gitlab Shell"
         )
         fix_and_rerun
       end
@@ -480,7 +465,7 @@ namespace :gitlab do
           "find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
-          see_installation_guide_section "Gitolite"
+          see_installation_guide_section "Gitlab Shell"
         )
         fix_and_rerun
       end
@@ -506,7 +491,7 @@ namespace :gitlab do
           "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
         )
         for_more_information(
-          see_installation_guide_section "Gitolite"
+          see_installation_guide_section "Gitlab Shell"
         )
         fix_and_rerun
       end
@@ -516,7 +501,7 @@ namespace :gitlab do
       print "post-receive hooks in repos are links: ... "
 
       hook_file = "post-receive"
-      gitlab_shell_hooks_path = File.join(Gitlab.config.gitlab_shell.hooks_path, "common")
+      gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
       gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
 
@@ -545,7 +530,7 @@ namespace :gitlab do
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
             for_more_information(
-              "lib/support/rewrite-hooks.sh"
+              "#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh"
             )
             fix_and_rerun
             next
@@ -555,7 +540,7 @@ namespace :gitlab do
               File.realpath(project_hook_file) == File.realpath(gitlab_shell_hook_file)
             puts "ok".green
           else
-            puts "not a link to Gitolite's hook".red
+            puts "not a link to Gitlab Shell's hook".red
             try_fixing_it(
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
@@ -577,7 +562,7 @@ namespace :gitlab do
     end
 
     def gitlab_shell_version
-      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab_shell/src/VERSION"
+      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
       if File.readable?(gitlab_shell_version_file)
         File.read(gitlab_shell_version_file)
       end
