@@ -1,0 +1,9 @@
+%ul.nav.nav-tabs
+  %li
+    = render partial: 'shared/ref_switcher', locals: {destination: 'graph', path: @path}
+  %li.pull-right.search
+    = form_tag project_graph_path(@project, params[:id]), method: :get, class: 'navbar-form' do |f|
+      = label_tag :search , "Looking for commit:"
+      = text_field_tag :q, @q, placeholder: "Input SHA", class: "search-input"
+
+%h3.page_title Project Network Graph

@@ -117,7 +117,10 @@ module ExtractsPath
 
     @id = File.join(@ref, @path)
 
-    @commit = CommitDecorator.decorate(@project.repository.commit(@ref))
+    # It is used "@project.repository.commits(@ref, @path, 1, 0)",
+    # because "@project.repository.commit(@ref)" returns wrong commit when @ref is tag name.
+    commits = @project.repository.commits(@ref, @path, 1, 0)
+    @commit = CommitDecorator.decorate(commits.first)
 
     @tree = Tree.new(@commit.tree, @ref, @path)
     @tree = TreeDecorator.new(@tree)
