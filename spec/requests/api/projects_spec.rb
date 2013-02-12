@@ -109,6 +109,11 @@ describe Gitlab::API do
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
       json_response['protected'].should == false
     end
+
+    it "should return a 404 error if branch is not available" do
+      get api("/projects/#{project.id}/repository/branches/unknown", user)
+      response.status.should == 404
+    end
   end
 
   describe "PUT /projects/:id/repository/branches/:branch/protect" do
