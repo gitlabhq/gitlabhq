@@ -230,6 +230,7 @@ module Gitlab
       #   GET /projects/:id/repository/branches/:branch
       get ":id/repository/branches/:branch" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found!("Branch does not exist") if @branch.nil?
         present @branch, with: Entities::RepoObject, project: user_project
       end
 
