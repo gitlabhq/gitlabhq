@@ -42,8 +42,8 @@ class Event < ActiveRecord::Base
   serialize :data
 
   # Scopes
-  scope :recent, order("created_at DESC")
-  scope :code_push, where(action: Pushed)
+  scope :recent, -> { order("created_at DESC") }
+  scope :code_push, -> { where(action: Pushed) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
