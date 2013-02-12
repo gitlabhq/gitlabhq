@@ -49,8 +49,8 @@ module Projects
       end
 
       @project
-    #rescue => ex
-      #@project.errors.add(:base, "Can't save project. Please try again later")
+    rescue => ex
+      @project.errors.add(:base, "Can't save project. Please try again later")
       @project
     end
 
