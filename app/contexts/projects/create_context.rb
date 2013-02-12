@@ -14,9 +14,7 @@ module Projects
       #
       # Ex.
       #  'GitLab HQ'.parameterize => "gitlab-hq"
-      #
-      @project.path = @project.name.dup.parameterize
-
+      @project.path = @project.parameterize_name
 
       if namespace_id
         # Find matching namespace and check if it allowed

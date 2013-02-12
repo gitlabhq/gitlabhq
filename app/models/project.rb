@@ -498,4 +498,10 @@ class Project < ActiveRecord::Base
   def protected_branch? branch_name
     protected_branches.map(&:name).include?(branch_name)
   end
+
+  def parameterize_name
+    if name.present?
+      name.dup.parameterize
+    end
+  end
 end
