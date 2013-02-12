@@ -25,6 +25,8 @@ module Gitlab
   #   >> gfm(":trollface:")
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
+    include IssuesHelper
+
     attr_reader :html_options
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
