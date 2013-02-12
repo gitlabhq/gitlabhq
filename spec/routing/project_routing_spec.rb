@@ -392,6 +392,7 @@ end
 describe BlobController, "routing" do
   it "to #show" do
     get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    get("/gitlabhq/blob/master/app/models/compare.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
   end
 end
 
