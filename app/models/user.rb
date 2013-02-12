@@ -87,10 +87,10 @@ class User < ActiveRecord::Base
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
   # Scopes
-  scope :admins, where(admin:  true)
-  scope :blocked, where(blocked:  true)
-  scope :active, where(blocked:  false)
-  scope :alphabetically, order('name ASC')
+  scope :admins, -> { where(admin:  true) }
+  scope :blocked, -> { where(blocked:  true) }
+  scope :active, -> { where(blocked:  false) }
+  scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }

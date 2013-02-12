@@ -6,7 +6,7 @@ class Public::ProjectsController < ApplicationController
   layout 'public'
 
   def index
-    @projects = Project.public
+    @projects = Project.public_only
     @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(20)
   end
 end

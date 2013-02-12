@@ -19,12 +19,12 @@ module Issuable
     validates :title, presence: true, length: { within: 0..255 }
     validates :closed, inclusion: { in: [true, false] }
 
-    scope :opened, where(closed: false)
-    scope :closed, where(closed: true)
+    scope :opened, -> { where(closed: false) }
+    scope :closed, -> { where(closed: true) }
     scope :of_group, ->(group) { where(project_id: group.project_ids) }
     scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
     scope :assigned, ->(u) { where(assignee_id: u.id)}
-    scope :recent, order("created_at DESC")
+    scope :recent, -> { order("created_at DESC") }
 
     delegate :name,
              :email,
