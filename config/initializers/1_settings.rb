@@ -8,11 +8,11 @@ class Settings < Settingslogic
 
     private
 
-    def build_gitolite_ssh_path_prefix
-      if gitolite.ssh_port != 22
-        "ssh://#{gitolite.ssh_user}@#{gitolite.ssh_host}:#{gitolite.ssh_port}/"
+    def build_gitlab_shell_ssh_path_prefix
+      if gitlab_shell.ssh_port != 22
+        "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
       else
-        "#{gitolite.ssh_user}@#{gitolite.ssh_host}:"
+        "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
       end
     end
 
@@ -41,6 +41,9 @@ Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
 
+#
+# GitLab
+#
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||=  10
 Settings.gitlab['host']       ||= 'localhost'
@@ -54,29 +57,38 @@ Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
 
+#
+# Gravatar
+#
 Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 
-Settings['gitolite'] ||= Settingslogic.new({})
-Settings.gitolite['admin_key']    ||= 'gitlab'
-Settings.gitolite['admin_uri']    ||= 'git@localhost:gitolite-admin'
-Settings.gitolite['config_file']  ||= 'gitolite.conf'
-Settings.gitolite['hooks_path']   ||= '/home/git/share/gitolite/hooks/'
-Settings.gitolite['receive_pack']   = true if Settings.gitolite['receive_pack'].nil?
-Settings.gitolite['upload_pack']    = true if Settings.gitolite['upload_pack'].nil?
-Settings.gitolite['repos_path']   ||= '/home/git/repositories/'
-Settings.gitolite['ssh_host']     ||= (Settings.gitlab.host || 'localhost')
-Settings.gitolite['ssh_port']     ||= 22
-Settings.gitolite['ssh_user']     ||= 'git'
-Settings.gitolite['owner_group']  ||= Settings.gitolite.ssh_user
-Settings.gitolite['ssh_path_prefix'] ||= Settings.send(:build_gitolite_ssh_path_prefix)
+#
+# GitLab Shell
+#
+Settings['gitlab_shell'] ||= Settingslogic.new({})
+Settings.gitlab_shell['hooks_path']   ||= '/home/git/gitlab-shell/hooks/'
+Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
+Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
+Settings.gitlab_shell['repos_path']   ||= '/home/git/repositories/'
+Settings.gitlab_shell['ssh_host']     ||= (Settings.gitlab.host || 'localhost')
+Settings.gitlab_shell['ssh_port']     ||= 22
+Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
+Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
+Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
 
+#
+# Backup
+#
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
 
+#
+# Git
+#
 Settings['git'] ||= Settingslogic.new({})
 Settings.git['max_size']  ||= 5242880 # 5.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'

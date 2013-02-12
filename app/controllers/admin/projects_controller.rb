@@ -41,9 +41,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def destroy
-    # Delete team first in order to prevent multiple gitolite calls
     @project.team.truncate
-
     @project.destroy
 
     redirect_to admin_projects_path, notice: 'Project was successfully deleted.'

@@ -39,6 +39,6 @@ describe PostReceive do
   end
 
   def pwd(project)
-    File.join(Gitlab.config.gitolite.repos_path, project.path_with_namespace)
+    File.join(Gitlab.config.gitlab_shell.repos_path, project.path_with_namespace)
   end
 end

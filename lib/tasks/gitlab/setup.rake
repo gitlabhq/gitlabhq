@@ -14,7 +14,6 @@ namespace :gitlab do
 
     Rake::Task["db:setup"].invoke
     Rake::Task["db:seed_fu"].invoke
-    Rake::Task["gitlab:enable_automerge"].invoke
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".red
     exit 1

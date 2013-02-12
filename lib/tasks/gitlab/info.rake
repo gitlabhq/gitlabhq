@@ -54,18 +54,16 @@ namespace :gitlab do
 
 
       # check Gitolite version
-      gitolite_version_file = "#{Gitlab.config.gitolite.repos_path}/../gitolite/src/VERSION"
-      if File.readable?(gitolite_version_file)
-        gitolite_version = File.read(gitolite_version_file)
+      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.repos_path}/../gitlab-shell/VERSION"
+      if File.readable?(gitlab_shell_version_file)
+        gitlab_shell_version = File.read(gitlab_shell_version_file)
       end
 
       puts ""
-      puts "Gitolite information".yellow
-      puts "Version:\t#{gitolite_version || "unknown".red}"
-      puts "Admin URI:\t#{Gitlab.config.gitolite.admin_uri}"
-      puts "Admin Key:\t#{Gitlab.config.gitolite.admin_key}"
-      puts "Repositories:\t#{Gitlab.config.gitolite.repos_path}"
-      puts "Hooks:\t\t#{Gitlab.config.gitolite.hooks_path}"
+      puts "GitLab Shell".yellow
+      puts "Version:\t#{gitlab_shell_version || "unknown".red}"
+      puts "Repositories:\t#{Gitlab.config.gitlab_shell.repos_path}"
+      puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
 
     end

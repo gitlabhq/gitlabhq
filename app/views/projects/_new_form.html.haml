@@ -16,6 +16,20 @@
       .input
         = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen'}
 
+
+  .clearfix
+    .input
+      = link_to "#", class: 'appear-link' do
+        %i.icon-upload-alt
+        %span Import existing repository?
+  .clearfix.appear-data
+    = f.label :import_url do
+      %span Import existing repo
+    .input
+      = f.text_field :import_url, class: 'xlarge'
+      .light
+        URL should be clonable
+
   %p.padded
     New projects are private by default. You choose who can see the project and commit to repository.
   %hr

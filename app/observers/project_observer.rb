@@ -1,6 +1,6 @@
 class ProjectObserver < ActiveRecord::Observer
   def after_create(project)
-    GitoliteWorker.perform_async(
+    GitlabShellWorker.perform_async(
       :add_repository,
       project.path_with_namespace
     )
@@ -13,7 +13,7 @@ class ProjectObserver < ActiveRecord::Observer
   end
 
   def after_destroy(project)
-    GitoliteWorker.perform_async(
+    GitlabShellWorker.perform_async(
       :remove_repository,
       project.path_with_namespace
     )

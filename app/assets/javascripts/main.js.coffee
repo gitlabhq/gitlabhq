@@ -36,6 +36,10 @@ $ ->
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 
+  # Click a .appear-link, appear-data fadeout
+  $(".appear-link").on 'click', ->
+    $('.appear-data').fadeIn()
+
   # Initialize chosen selects
   $('select.chosen').chosen()
 

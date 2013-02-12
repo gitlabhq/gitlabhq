@@ -5,8 +5,7 @@
 # How to use:
 # 1. copy file as gitlab.yml
 # 2. Replace gitlab -> host with your domain
-# 3. Replace gitolite -> ssh_host with your domain
-# 4. Replace gitlab -> email_from
+# 3. Replace gitlab -> email_from
 
 #
 # 1. GitLab app settings
@@ -22,8 +21,8 @@ gitlab:
   # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/unicorn.rb may need to be changed
   # relative_url_root: /gitlab
 
-  # Uncomment and customize if you can't use the default user to run GitLab (default: 'gitlab')
-  # user: user123
+  # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
+  # user: git
 
   ## Email settings
   # Email address used in the "From" field in mails sent by GitLab
@@ -103,21 +102,18 @@ backup:
   path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
   # keep_time: 604800   # default: 0 (forever) (in seconds)
 
-## Gitolite settings
-gitolite:
+## GitLab Shell settings
+gitlab_shell:
   # REPOS_PATH MUST NOT BE A SYMLINK!!!
   repos_path: /home/git/repositories/
-  hooks_path: /home/git/.gitolite/hooks/
-  admin_key: gitlab
+  hooks_path: /home/git/gitlab-shell/hooks/
+
+  # Git over HTTP
   upload_pack: true
   receive_pack: true
-  ssh_user: git
-  ssh_host: localhost
-  # ssh_port: 22
-  # config_file: gitolite.conf
 
-  # Uncomment and customize if you can't use the default group to own the repositories and run Gitolite (default: same as the 'ssh_user' above)
-  # owner_group: group123
+  # If you use non-standart ssh port you need to specify it
+  # ssh_port: 22
 
 ## Git settings
 # CAUTION!

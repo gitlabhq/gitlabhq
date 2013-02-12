@@ -25,7 +25,7 @@ class Repository
   end
 
   def path_to_repo
-    @path_to_repo ||= File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
+    @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
   end
 
   def repo
@@ -58,25 +58,6 @@ class Repository
 
   def commits_between(from, to)
     Commit.commits_between(repo, from, to)
-  end
-
-  def has_post_receive_file?
-    !!hook_file
-  end
-
-  def valid_post_receive_file?
-    valid_hook_file == hook_file
-  end
-
-  def valid_hook_file
-    @valid_hook_file ||= File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
-  end
-
-  def hook_file
-    @hook_file ||= begin
-                     hook_path = File.join(path_to_repo, 'hooks', 'post-receive')
-                     File.read(hook_path) if File.exists?(hook_path)
-                   end
   end
 
   # Returns an Array of branch names

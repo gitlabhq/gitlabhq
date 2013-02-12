@@ -144,7 +144,7 @@ namespace :gitlab do
 
       task :restore => :environment do
         backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
-        repos_path = Gitlab.config.gitolite.repos_path
+        repos_path = Gitlab.config.gitlab_shell.repos_path
 
         puts "Restoring repositories ... "
 

@@ -2,7 +2,7 @@ class KeyObserver < ActiveRecord::Observer
   include Gitolited
 
   def after_save(key)
-    GitoliteWorker.perform_async(
+    GitlabShellWorker.perform_async(
       :add_key,
       key.shell_id,
       key.key
@@ -10,7 +10,7 @@ class KeyObserver < ActiveRecord::Observer
   end
 
   def after_destroy(key)
-    GitoliteWorker.perform_async(
+    GitlabShellWorker.perform_async(
       :remove_key,
       key.shell_id,
       key.key,

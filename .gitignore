@@ -26,3 +26,4 @@ db/data.yml
 .chef
 vendor/bundle/*
 rails_best_practices_output.html
+doc/code/*

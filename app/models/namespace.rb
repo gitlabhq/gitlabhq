@@ -31,8 +31,6 @@ class Namespace < ActiveRecord::Base
 
   scope :root, where('type IS NULL')
 
-  attr_accessor :require_update_gitolite
-
   def self.search query
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
   end
@@ -60,13 +58,13 @@ class Namespace < ActiveRecord::Base
   end
 
   def namespace_full_path
-    @namespace_full_path ||= File.join(Gitlab.config.gitolite.repos_path, path)
+    @namespace_full_path ||= File.join(Gitlab.config.gitlab_shell.repos_path, path)
   end
 
   def move_dir
     if path_changed?
-      old_path = File.join(Gitlab.config.gitolite.repos_path, path_was)
-      new_path = File.join(Gitlab.config.gitolite.repos_path, path)
+      old_path = File.join(Gitlab.config.gitlab_shell.repos_path, path_was)
+      new_path = File.join(Gitlab.config.gitlab_shell.repos_path, path)
       if File.exists?(new_path)
         raise "Already exists"
       end
@@ -81,7 +79,6 @@ class Namespace < ActiveRecord::Base
 
         FileUtils.mv( old_path, new_path )
         send_update_instructions
-        @require_update_gitolite = true
       rescue Exception => e
         raise "Namespace move error #{old_path} #{new_path}"
       end
@@ -89,7 +86,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def rm_dir
-    dir_path = File.join(Gitlab.config.gitolite.repos_path, path)
+    dir_path = File.join(Gitlab.config.gitlab_shell.repos_path, path)
     FileUtils.rm_r( dir_path, force: true )
   end
 
