@@ -95,20 +95,20 @@ describe Admin::ProjectsController, "routing" do
   end
 end
 
-# edit_admin_team_member GET    /admin/team_members/:id/edit(.:format) admin/team_members#edit
-#      admin_team_member PUT    /admin/team_members/:id(.:format)      admin/team_members#update
-#                        DELETE /admin/team_members/:id(.:format)      admin/team_members#destroy
-describe Admin::TeamMembersController, "routing" do
+# edit_admin_project_member GET      /admin/projects/:project_id/members/:id/edit(.:format)    admin/projects/members#edit {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+#      admin_project_member PUT      /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#update {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+#                           DELETE   /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#destroy {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+describe Admin::Projects::MembersController, "routing" do
   it "to #edit" do
-    get("/admin/team_members/1/edit").should route_to('admin/team_members#edit', id: '1')
+    get("/admin/projects/test/members/1/edit").should route_to('admin/projects/members#edit', project_id: 'test', id: '1')
   end
 
   it "to #update" do
-    put("/admin/team_members/1").should route_to('admin/team_members#update', id: '1')
+    put("/admin/projects/test/members/1").should route_to('admin/projects/members#update', project_id: 'test', id: '1')
   end
 
   it "to #destroy" do
-    delete("/admin/team_members/1").should route_to('admin/team_members#destroy', id: '1')
+    delete("/admin/projects/test/members/1").should route_to('admin/projects/members#destroy', project_id: 'test', id: '1')
   end
 end
 

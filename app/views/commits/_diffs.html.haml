@@ -1,7 +1,7 @@
 - if @suppress_diff
-  .alert-message.block-message
+  .alert.alert-block
     %p
-      %strong Warning! Large commit with more then #{Commit::DIFF_SAFE_SIZE} files changed.
+      %strong Warning! Large commit with more than #{Commit::DIFF_SAFE_SIZE} files changed.
     %p To prevent performance issue we rejected diff information.
     %p
       But if you still want to see diff
@@ -12,50 +12,38 @@
 .file-stats
   = render "commits/diff_head", diffs: diffs
 
-- unless @suppress_diff
-  - diffs.each_with_index do |diff, i|
-    - next if diff.diff.empty?
-    - file = (@commit.tree / diff.new_path)
-    - file = (@commit.prev_commit.tree / diff.old_path) unless file
-    - next unless file
-    .diff_file{id: "diff-#{i}"}
-      .diff_file_header
-        - if diff.deleted_file
-          %span= diff.old_path
+.files
+  - unless @suppress_diff
+    - diffs.each_with_index do |diff, i|
+      - next if diff.diff.empty?
+      - file = (@commit.tree / diff.new_path)
+      - file = (@commit.prev_commit.tree / diff.old_path) unless file
+      - next unless file
+      .file{id: "diff-#{i}"}
+        .header
+          - if diff.deleted_file
+            %span= diff.old_path
 
-          - if @commit.prev_commit
-            = link_to project_tree_path(@project, tree_join(@commit.prev_commit_id, diff.new_path)), {:class => 'btn right view-commit'} do
+            - if @commit.prev_commit
+              = link_to project_tree_path(@project, tree_join(@commit.prev_commit_id, diff.new_path)), {:class => 'btn pull-right view-file'} do
+                View file @
+                %span.commit-short-id= @commit.short_id(6)
+          - else
+            %span= diff.new_path
+            - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+              %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+
+            = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
               View file @
               %span.commit-short-id= @commit.short_id(6)
-        - else
-          %span= diff.new_path
-          - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
-            %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
-          = link_to project_tree_path(@project, tree_join(@commit.id, diff.new_path)), {:class => 'btn very_small right view-commit'} do
-            View file @
-            %span.commit-short-id= @commit.short_id(6)
-
-        %br/
-      .diff_file_content
-        -# Skip all non-supported blobs
-        - next unless file.respond_to?('text?')
-        - if file.text?
-          = render "commits/text_diff", diff: diff, index: i
-        - elsif file.image?
-          - old_file = (@commit.prev_commit.tree / diff.old_path) if !@commit.prev_commit.nil?
-          - if diff.renamed_file || diff.new_file || diff.deleted_file
-            .diff_file_content_image
-              .image{class: image_diff_class(diff)}
-                %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
-                %div.image-info= "#{number_to_human_size file.size}"
+        .content
+          -# Skipp all non non-supported blobs
+          - next unless file.respond_to?('text?')
+          - if file.text?
+            = render "commits/text_file", diff: diff, index: i
+          - elsif file.image?
+            - old_file = (@commit.prev_commit.tree / diff.old_path) if !@commit.prev_commit.nil?
+            = render "commits/image", diff: diff, old_file: old_file, file: file, index: i
           - else
-            .diff_file_content_image.img_compared
-              .image.diff_removed
-                %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
-                %div.image-info= "#{number_to_human_size file.size}"
-              .image.diff_added
-                %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
-                %div.image-info= "#{number_to_human_size file.size}"
-        - else
-          %p.nothing_here_message No preview for this file type
+            %p.nothing_here_message No preview for this file type

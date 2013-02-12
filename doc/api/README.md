@@ -10,7 +10,7 @@ If no, or an invalid, `private_token` is provided then an error message will be 
 }
 ```
 
-API requests should be prefixed with `api` and the API version. The API version is equal to the GitLab major version number, which is defined in `lib/api.rb`.
+API requests should be prefixed with `api` and the API version. The API version is defined in `lib/api.rb`.
 
 Example of a valid API request:
 
@@ -32,6 +32,7 @@ When listing resources you can pass the following parameters:
 + [Users](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/users.md)
 + [Session](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/session.md)
 + [Projects](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/projects.md)
++ [Groups](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/groups.md)
 + [Snippets](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/snippets.md)
 + [Repositories](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/repositories.md)
 + [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)

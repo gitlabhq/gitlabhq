@@ -1,6 +1,6 @@
 = form_for [@project, @merge_request], html: { class: "#{controller.action_name}-merge-request form-horizontal" } do |f|
   -if @merge_request.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @merge_request.errors.full_messages.each do |msg|
           %li= msg
@@ -51,19 +51,19 @@
 
   .form-actions
     - if @merge_request.new_record?
-      = f.submit 'Submit merge request', class: "btn success"
+      = f.submit 'Submit merge request', class: "btn btn-create"
     -else
-      = f.submit 'Save changes', class: "save-btn btn"
+      = f.submit 'Save changes', class: "btn btn-save"
     - if @merge_request.new_record?
-      = link_to project_merge_requests_path(@project), class: "btn cancel-btn" do
+      = link_to project_merge_requests_path(@project), class: "btn btn-cancel" do
         Cancel
     - else
-      = link_to project_merge_request_path(@project, @merge_request), class: "btn cancel-btn" do
+      = link_to project_merge_request_path(@project, @merge_request), class: "btn btn-cancel" do
         Cancel
 
 :javascript
   $(function(){
-    disableButtonIfEmptyField("#merge_request_title", ".save-btn");
+    disableButtonIfEmptyField("#merge_request_title", ".btn-save");
 
     var source_branch = $("#merge_request_source_branch")
       , target_branch = $("#merge_request_target_branch");

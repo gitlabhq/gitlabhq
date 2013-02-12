@@ -24,3 +24,9 @@ Feature: Groups
     When I visit group people page
     And I select user "John" from list with role "Reporter"
     Then I should see user "John" in team list
+
+  Scenario: I should see edit group page
+    When I visit group settings page
+    And I change group name
+    Then I should see new group name
+

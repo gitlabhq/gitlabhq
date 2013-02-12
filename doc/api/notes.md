@@ -30,6 +30,19 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
+### List merge request notes
+
+Get a list of merge request notes.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge_request_id` (required) - The ID of an merge request
+
 ### List issue notes
 
 Get a list of issue notes.

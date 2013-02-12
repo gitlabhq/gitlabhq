@@ -19,7 +19,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def create
-    @project = Projects::CreateContext.new(current_user, params[:project]).execute
+    @project = ::Projects::CreateContext.new(current_user, params[:project]).execute
 
     respond_to do |format|
       flash[:notice] = 'Project was successfully created.' if @project.saved?
@@ -35,7 +35,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
-    status = Projects::UpdateContext.new(project, current_user, params).execute
+    status = ::Projects::UpdateContext.new(project, current_user, params).execute
 
     respond_to do |format|
       if status
@@ -87,16 +87,6 @@ class ProjectsController < ProjectResourceController
 
     respond_to do |format|
       format.html
-    end
-  end
-
-  def graph
-    respond_to do |format|
-      format.html
-      format.json do
-        graph = Gitlab::Graph::JsonBuilder.new(project)
-        render :json => graph.to_json
-      end
     end
   end
 

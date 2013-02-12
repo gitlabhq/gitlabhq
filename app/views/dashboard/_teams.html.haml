@@ -1,0 +1,20 @@
+.ui-box.teams-box
+  %h5.title
+    Teams
+    %small
+      (#{@teams.count})
+    %span.pull-right
+      = link_to new_team_path, class: "btn btn-tiny info" do
+        %i.icon-plus
+        New Team
+  %ul.well-list
+    - @teams.each do |team|
+      %li
+        = link_to team_path(id: team.path), class: dom_class(team) do
+          %strong.well-title= truncate(team.name, length: 35)
+        %span.pull-right.light
+          - if team.owner == current_user
+            %i.icon-wrench
+          - tm = current_user.user_team_user_relationships.find_by_user_team_id(team.id)
+          - if tm
+            = tm.access_human

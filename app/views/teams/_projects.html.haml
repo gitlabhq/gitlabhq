@@ -1,0 +1,22 @@
+.projects_box
+  %h5.title
+    Projects
+    %small
+      (#{projects.count})
+    - if can? current_user, :manage_user_team, @team
+      %span.pull-right
+        = link_to new_team_project_path(@team), class: "btn btn-tiny info" do
+          %i.icon-plus
+          Assign Project
+  %ul.well-list
+    - if projects.blank?
+      %p.nothing_here_message This team has no projects yet
+    - projects.each do |project|
+      %li
+        = link_to project_path(project), class: dom_class(project) do
+          %strong.well-title= truncate(project.name, length: 25)
+          %span.arrow
+            &rarr;
+          %span.last_activity
+            %strong Last activity:
+            %span= project_last_activity(project)

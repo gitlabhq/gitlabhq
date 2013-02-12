@@ -3,11 +3,12 @@
   = render "layouts/head", title: "#{@group.name}"
   %body{class: "#{app_theme} application"}
     = render "layouts/flash"
-    = render "layouts/head_panel", title: "#{@group.name}"
+    = render "layouts/head_panel", title: "group: #{@group.name}"
     .container
       %ul.main_menu
         = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
-          = link_to "Home", group_path(@group), title: "Home"
+          = link_to group_path(@group), title: "Home" do
+            %i.icon-home
         = nav_link(path: 'groups#issues') do
           = link_to issues_group_path(@group) do
             Issues
@@ -20,5 +21,11 @@
           = link_to "Search", search_group_path(@group)
         = nav_link(path: 'groups#people') do
           = link_to "People", people_group_path(@group)
+
+        - if can?(current_user, :manage_group, @group)
+          = nav_link(path: 'groups#edit') do
+            = link_to edit_group_path(@group), class: "tab " do
+              %i.icon-edit
+              Edit Group
 
       .content= yield

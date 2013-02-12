@@ -10,7 +10,7 @@
 
 = form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-inline' } do |f|
   -if @hook.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       - @hook.errors.full_messages.each do |msg|
         %p= msg
   .clearfix
@@ -18,7 +18,7 @@
     .input
       = f.text_field :url, class: "text_field xxlarge"
       &nbsp;
-      = f.submit "Add Web Hook", class: "btn primary"
+      = f.submit "Add Web Hook", class: "btn btn-primary"
 %hr
 
 -if @hooks.any?
@@ -37,6 +37,6 @@
           &rarr;
           %span.monospace= hook.url
         %td
-          .right
-            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn small grouped"
-            = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "danger btn small grouped"
+          .pull-right
+            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small grouped"
+            = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-small grouped"

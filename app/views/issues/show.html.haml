@@ -5,7 +5,7 @@
     created at
     = @issue.created_at.stamp("Aug 21, 2011")
 
-  %span.right
+  %span.pull-right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       - if @issue.closed
         = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
@@ -16,7 +16,7 @@
         %i.icon-edit
         Edit
 
-.right
+.pull-right
   .span3#votes= render 'votes/votes_block', votable: @issue
 
 .back_link
@@ -42,7 +42,7 @@
       %cite.cgray and attached to milestone
       %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
-    .right
+    .pull-right
       - @issue.labels.each do |label|
         %span.label
           %i.icon-tag

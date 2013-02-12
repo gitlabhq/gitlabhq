@@ -2,7 +2,7 @@
 %hr
 = render 'form'
 
-.right
+.pull-right
   - if can? current_user, :admin_wiki, @project
-    = link_to project_wiki_path(@project, @wiki), confirm: "Are you sure you want to delete this page?", method: :delete, class: "btn small danger" do
+    = link_to project_wiki_path(@project, @wiki), confirm: "Are you sure you want to delete this page?", method: :delete, class: "btn btn-small btn-remove" do
       Delete this page

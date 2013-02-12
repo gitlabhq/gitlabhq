@@ -1,0 +1,15 @@
+- team = team_rel.user_team
+- allow_admin = can? current_user, :admin_team_member, @project
+%li{id: dom_id(team), class: "user_team_row team_#{team.id}"}
+  .row
+    .span6
+      %strong= link_to team.name, team_path(team), title: team.name, class: "dark"
+      %br
+      %small.cgray Members: #{team.members.count}
+
+    .span5.pull-right
+      .pull-right
+        - if allow_admin
+          .left
+            = link_to resign_project_team_path(@project, team), method: :delete, confirm: "Are you shure?", class: "btn btn-remove small" do
+              %i.icon-minus.icon-white

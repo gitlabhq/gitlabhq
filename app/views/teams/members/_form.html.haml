@@ -1,0 +1,20 @@
+= form_tag admin_team_member_path(@team, @member), method: :put do
+  -if @member.errors.any?
+    .alert.alert-error
+      %ul
+        - @member.errors.full_messages.each do |msg|
+          %li= msg
+
+  .clearfix
+    %label Default access for Team projects:
+    .input
+      = select_tag :default_project_access, options_for_select(UserTeam.access_roles, @team.default_projects_access(@member)), class: "project-access-select chosen span3"
+  .clearfix
+    %label Team admin?
+    .input
+      = check_box_tag :group_admin, true, @team.admin?(@member)
+
+  %br
+  .actions
+    = submit_tag 'Save', class: "btn btn-save"
+    = link_to 'Cancel', :back, class: "btn"

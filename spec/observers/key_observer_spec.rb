@@ -9,25 +9,19 @@ describe KeyObserver do
       is_deploy_key: false
     )
 
-    @gitolite = double('Gitlab::Gitolite',
-      set_key: true,
-      remove_key: true
-    )
-
     @observer = KeyObserver.instance
-    @observer.stub(gitolite: @gitolite)
   end
 
   context :after_save do
     it do
-      @gitolite.should_receive(:set_key).with(@key.identifier, @key.key, @key.projects)
+      GitoliteWorker.should_receive(:perform_async).with(:set_key, @key.identifier, @key.key, @key.projects.map(&:id))
       @observer.after_save(@key)
     end
   end
 
   context :after_destroy do
     it do
-      @gitolite.should_receive(:remove_key).with(@key.identifier, @key.projects)
+      GitoliteWorker.should_receive(:perform_async).with(:remove_key, @key.identifier, @key.projects.map(&:id))
       @observer.after_destroy(@key)
     end
   end

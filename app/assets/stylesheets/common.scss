@@ -1,5 +1,5 @@
 html {
-  overflow-y: scroll; 
+  overflow-y: scroll;
 }
 
 /** LAYOUT **/
@@ -277,8 +277,20 @@ p.time {
   }
 }
 
+.search-holder {
+  label, input {
+     height: 30px;
+     padding: 0;
+     font-size: 14px;
+  }
+  label {
+    line-height: 30px;
+    color: #666;
+  }
+}
+
 .highlight_word {
-  background: #EEDC94;
+  border-bottom: 2px solid #F90;
 }
 
 .status_info {
@@ -325,10 +337,6 @@ li.note {
   .note-title {
     li {
       border-bottom:none !important;
-    }
-    .file {
-      padding-left: 20px;
-      background:url("icon-attachment.png") no-repeat left center;
     }
   }
 }

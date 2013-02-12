@@ -8,7 +8,6 @@
 #  description            :text
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  private_flag           :boolean          default(TRUE), not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -16,6 +15,7 @@
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
+#  public                 :boolean          default(FALSE), not null
 #
 
 require "grit"
@@ -33,27 +33,30 @@ class Project < ActiveRecord::Base
   attr_accessor :error_code
 
   # Relations
-  belongs_to :group, foreign_key: "namespace_id", conditions: "type = 'Group'"
+  belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
+  belongs_to :group,        foreign_key: "namespace_id", conditions: "type = 'Group'"
   belongs_to :namespace
 
-  belongs_to :creator,
-    class_name: "User",
-    foreign_key: "creator_id"
-
-  has_many :users,          through: :users_projects
-  has_many :events,         dependent: :destroy
-  has_many :merge_requests, dependent: :destroy
-  has_many :issues,         dependent: :destroy, order: "closed, created_at DESC"
-  has_many :milestones,     dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :notes,          dependent: :destroy
-  has_many :snippets,       dependent: :destroy
-  has_many :deploy_keys,    dependent: :destroy, foreign_key: "project_id", class_name: "Key"
-  has_many :hooks,          dependent: :destroy, class_name: "ProjectHook"
-  has_many :wikis,          dependent: :destroy
-  has_many :protected_branches, dependent: :destroy
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
+
+  has_many :events,             dependent: :destroy
+  has_many :merge_requests,     dependent: :destroy
+  has_many :issues,             dependent: :destroy, order: "closed, created_at DESC"
+  has_many :milestones,         dependent: :destroy
+  has_many :users_projects,     dependent: :destroy
+  has_many :notes,              dependent: :destroy
+  has_many :snippets,           dependent: :destroy
+  has_many :deploy_keys,        dependent: :destroy, class_name: "Key", foreign_key: "project_id"
+  has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
+  has_many :wikis,              dependent: :destroy
+  has_many :protected_branches, dependent: :destroy
+  has_many :user_team_project_relationships, dependent: :destroy
+
+  has_many :users,          through: :users_projects
+  has_many :user_teams,     through: :user_team_project_relationships
+  has_many :user_team_user_relationships, through: :user_teams
+  has_many :user_teams_members, through: :user_team_user_relationships
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -77,6 +80,8 @@ class Project < ActiveRecord::Base
   # Scopes
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
   scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
+  scope :without_team, ->(team) { team.projects.present? ? where("id NOT IN (:ids)", ids: team.projects.map(&:id)) : scoped  }
+  scope :in_team, ->(team) { where("id IN (:ids)", ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -122,7 +127,7 @@ class Project < ActiveRecord::Base
   end
 
   def team
-    @team ||= Team.new(self)
+    @team ||= ProjectTeam.new(self)
   end
 
   def repository
@@ -294,6 +299,9 @@ class Project < ActiveRecord::Base
   def trigger_post_receive(oldrev, newrev, ref, user)
     data = post_receive_data(oldrev, newrev, ref, user)
 
+    # Create satellite
+    self.satellite.create unless self.satellite.exists?
+
     # Create push event
     self.observe_push(data)
 
@@ -307,9 +315,6 @@ class Project < ActiveRecord::Base
       # Execute project services
       self.execute_services(data.dup)
     end
-
-    # Create satellite
-    self.satellite.create unless self.satellite.exists?
 
     # Discover the default branch, but only if it hasn't already been set to
     # something else
@@ -335,7 +340,7 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data)
-    hooks.each { |hook| hook.execute(data) }
+    hooks.each { |hook| hook.async_execute(data) }
   end
 
   def execute_services(data)
@@ -455,11 +460,17 @@ class Project < ActiveRecord::Base
   end
 
   def update_repository
-    gitolite.update_repository(self)
+    GitoliteWorker.perform_async(
+      :update_repository,
+      self.id
+    )
   end
 
   def destroy_repository
-    gitolite.remove_repository(self)
+    GitoliteWorker.perform_async(
+      :remove_repository,
+      self.path_with_namespace
+    )
   end
 
   def repo_exists?
@@ -487,6 +498,11 @@ class Project < ActiveRecord::Base
 
   def http_url_to_repo
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+  end
+
+  def project_access_human(member)
+    project_user_relation = self.users_projects.find_by_user_id(member.id)
+    self.class.access_options.key(project_user_relation.project_access)
   end
 
   # Check if current branch name is marked as protected in the system

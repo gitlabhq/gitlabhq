@@ -6,7 +6,7 @@
   %small
     = @user.email
 
-  .right
+  .pull-right
     = link_to destroy_user_session_path, class: "logout", method: :delete do
       %small
         %i.icon-signout
@@ -15,7 +15,7 @@
 
 = form_for @user, url: profile_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
   -if @user.errors.any?
-    %div.alert-message.block-message.error
+    %div.alert.alert-error
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
@@ -31,25 +31,6 @@
         .controls
           = f.text_field :email, class: "input-xlarge", required: true
           %span.help-block We also use email for avatar detection.
-
-    .span5.right
-      %fieldset.tips
-        %legend Tips:
-        %ul
-          %li
-            %p You can change your password on Account page
-          - if Gitlab.config.gravatar.enabled
-            %li
-              %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
-
-          - if Gitlab.config.omniauth.enabled && @user.provider?
-            %li
-              %p
-                You can login through #{@user.provider.titleize}!
-                = link_to "click here to change", account_profile_path
-
-  .row
-    .span7
       .control-group
         = f.label :skype, class: "control-label"
         .controls= f.text_field :skype, class: "input-xlarge"
@@ -64,11 +45,38 @@
         .controls
           = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
-    .span5.right
+
+    .span5.pull-right
+      %fieldset.tips
+        %legend Tips:
+        %ul
+          %li
+            %p You can change your password on Account page
+          - if Gitlab.config.gravatar.enabled
+            %li
+              %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
+
+          - if Gitlab.config.omniauth.enabled && @user.provider?
+            %li
+              %p
+                You can login through #{@user.provider.titleize}!
+                = link_to "click here to change", account_profile_path
+          - if current_user.can_create_group?
+            %li
+              %p
+                Need a group for several dependent projects?
+                = link_to new_group_path, class: "btn btn-tiny" do
+                  Create a group
+          - if current_user.can_create_team?
+            %li
+              %p
+                Want to share a team between projects?
+                = link_to new_team_path, class: "btn btn-tiny" do
+                  Create a team
       %fieldset
         %legend
           Personal projects:
-          %small.right
+          %small.pull-right
             %span= current_user.personal_projects.count
             of
             %span= current_user.projects_limit
@@ -79,9 +87,10 @@
       %fieldset
         %legend
           SSH public keys:
-          %strong.right= link_to current_user.keys.count, keys_path
+          %span.pull-right
+            = link_to pluralize(current_user.keys.count, 'key'), keys_path
         .padded
-          = link_to "Add Public Key", new_key_path, class: "btn small"
+          = link_to "Add Public Key", new_key_path, class: "btn btn-small"
 
   .form-actions
-    = f.submit 'Save', class: "btn save-btn"
+    = f.submit 'Save', class: "btn btn-save"

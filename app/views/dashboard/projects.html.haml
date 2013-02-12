@@ -1,0 +1,56 @@
+%h3.page_title
+  Projects
+  %span
+    (#{@projects.total_count})
+  - if current_user.can_create_project?
+    %span.pull-right
+      = link_to new_project_path, class: "btn btn-tiny info" do
+        %i.icon-plus
+        New Project
+
+
+%hr
+.row
+  .span3
+    %ul.nav.nav-pills.nav-stacked
+      = nav_tab :scope, nil do
+        = link_to "All", projects_dashboard_path
+      = nav_tab :scope, 'personal' do
+        = link_to "Personal", projects_dashboard_path(scope: 'personal')
+      = nav_tab :scope, 'joined' do
+        = link_to "Joined", projects_dashboard_path(scope: 'joined')
+
+  .span9
+    = form_tag projects_dashboard_path, method: 'get' do
+      %fieldset.dashboard-search-filter
+        = hidden_field_tag "scope", params[:scope]
+        = search_field_tag "search", params[:search], { placeholder: 'Search', class: 'left input-xxlarge' }
+        = button_tag type: 'submit', class: 'btn' do
+          %i.icon-search
+
+    %ul.well-list
+      - @projects.each do |project|
+        %li.clearfix
+          .left
+            = link_to project_path(project), class: dom_class(project) do
+              - if project.namespace
+                = project.namespace.human_name
+                \/
+              %strong.well-title
+                = truncate(project.name, length: 25)
+            %br
+            %small.light
+              %strong Last activity:
+              %span= project_last_activity(project)
+          .pull-right.light
+            - if project.owner == current_user
+              %i.icon-wrench
+            - tm = project.team.get_tm(current_user.id)
+            - if tm
+              = tm.project_access_human
+
+      - if @projects.blank?
+        %li
+          %h3.nothing_here_message There are no projects here.
+    .bottom= paginate @projects, theme: "gitlab"
+

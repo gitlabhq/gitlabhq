@@ -47,6 +47,14 @@
             .input= f.number_field :projects_limit
 
           .clearfix
+            = f.label :can_create_group
+            .input= f.check_box :can_create_group
+
+          .clearfix
+            = f.label :can_create_team
+            .input= f.check_box :can_create_team
+
+          .clearfix
             = f.label :admin do
               %strong.cred Administrator
             .input= f.check_box :admin
@@ -55,10 +63,10 @@
             .alert.alert-error
               - if @admin_user.blocked
                 %p This user is blocked and is not able to login to GitLab
-                = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn small"
+                = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn btn-small"
               - else
                 %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                = link_to 'Block User', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small danger"
+                = link_to 'Block User', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
       .clearfix
@@ -72,8 +80,8 @@
         .input= f.text_field :twitter
 
     .actions
-      = f.submit 'Save', class: "btn save-btn"
+      = f.submit 'Save', class: "btn btn-save"
       - if @admin_user.new_record?
-        = link_to 'Cancel', admin_users_path, class: "btn cancel-btn"
+        = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"
       - else
-        = link_to 'Cancel', admin_user_path(@admin_user), class: "btn cancel-btn"
+        = link_to 'Cancel', admin_user_path(@admin_user), class: "btn btn-cancel"

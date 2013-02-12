@@ -2,17 +2,17 @@
   - if controller.controller_name == 'issues'
     .issue_check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
-  .right
+  .pull-right
     - if issue.notes.any?
-      %span.btn.small.disabled.grouped
+      %span.btn.btn-small.disabled.grouped
         %i.icon-comment
         = issue.notes.count
     - if can? current_user, :modify_issue, issue
       - if issue.closed
-        = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn small grouped reopen_issue", remote: true
+        = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn btn-small grouped reopen_issue", remote: true
       - else
-        = link_to 'Close', project_issue_path(issue.project, issue, issue: {closed: true }, status_only: true), method: :put, class: "btn small grouped close_issue", remote: true
-      = link_to edit_project_issue_path(issue.project, issue), class: "btn small edit-issue-link grouped" do
+        = link_to 'Close', project_issue_path(issue.project, issue, issue: {closed: true }, status_only: true), method: :put, class: "btn btn-small grouped close_issue", remote: true
+      = link_to edit_project_issue_path(issue.project, issue), class: "btn btn-small edit-issue-link grouped" do
         %i.icon-edit
         Edit
 

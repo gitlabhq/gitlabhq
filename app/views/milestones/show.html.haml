@@ -8,14 +8,14 @@
       = link_to project_milestones_path(@project) do
         &larr; To milestones list
   .span6
-    .right
+    .pull-right
       - unless  @milestone.closed
-        = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn small grouped", title: "New Issue" do
+        = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small grouped", title: "New Issue" do
           %i.icon-plus
           New Issue
         = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn edit-milestone-link small grouped"
         - if can?(current_user, :admin_milestone, @project)
-          = link_to edit_project_milestone_path(@project, @milestone), class: "btn small grouped" do
+          = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-small grouped" do
             %i.icon-edit
             Edit
 
@@ -25,7 +25,7 @@
   %hr
   %p
     %span All issues for this milestone are closed. You may close milestone now.
-    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn small danger"
+    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn btn-small btn-remove"
 
 .ui-box.ui-box-show
   .ui-box-head
@@ -43,7 +43,7 @@
       #{@milestone.closed_items_count} closed
       &ndash;
       #{@milestone.open_items_count} open
-      %span.right= @milestone.expires_at
+      %span.pull-right= @milestone.expires_at
     .progress.progress-info
       .bar{style: "width: #{@milestone.percent_complete}%;"}
 

@@ -1,83 +1,38 @@
-%br
-%h3.page_title
-  Search results
-  %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count})
-%hr
+%fieldset
+  %legend
+    Search results
+    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count})
 .search_results
-  .row
-    .span6
-      %table
-        %thead
-          %tr
-            %th Projects
-        %tbody
-          - @projects.each do |project|
-            %tr
-              %td
-                = link_to project do
-                  %strong.term= project.name_with_namespace
-                  %small.cgray
-                    last activity at
-                    = project.last_activity_date.stamp("Aug 25, 2011")
-          - if @projects.blank?
-            %tr
-              %td
-                %h4.nothing_here_message No Projects
-      %br
-      %table
-        %thead
-          %tr
-            %th Merge Requests
-        %tbody
-          - @merge_requests.each do |merge_request|
-            %tr
-              %td
-                = link_to [merge_request.project, merge_request] do
-                  %span.badge.badge-info ##{merge_request.id}
-                  &ndash;
-                  %strong.term= truncate merge_request.title, length: 50
-                  %strong.right
-                    %span.label= merge_request.project.name
-          - if @merge_requests.blank?
-            %tr
-              %td
-                %h4.nothing_here_message No Merge Requests
-    .span6
-      %table
-        %thead
-          %tr
-            %th Issues
-        %tbody
-          - @issues.each do |issue|
-            %tr
-              %td
-                = link_to [issue.project, issue] do
-                  %span.badge.badge-info ##{issue.id}
-                  &ndash;
-                  %strong.term= truncate issue.title, length: 40
-                %strong.right
-                  %span.label= issue.project.name
-          - if @issues.blank?
-            %tr
-              %td
-                %h4.nothing_here_message No Issues
-    .span6
-      %table
-        %thead
-          %tr
-            %th Wiki
-        %tbody
-          - @wiki_pages.each do |wiki_page|
-            %tr
-              %td
-                = link_to project_wiki_path(wiki_page.project, wiki_page) do
-                  %strong.term= truncate wiki_page.title, length: 40
-                %strong.right
-                  %span.label= wiki_page.project.name
-          - if @wiki_pages.blank?
-            %tr
-              %td
-                %h4.nothing_here_message No wiki pages
+  %ul.well-list
+    - @projects.each do |project|
+      %li
+        project:
+        = link_to project do
+          %strong.term= project.name_with_namespace
+    - @merge_requests.each do |merge_request|
+      %li
+        merge request:
+        = link_to [merge_request.project, merge_request] do
+          %span ##{merge_request.id}
+          %strong.term
+            = truncate merge_request.title, length: 50
+        %span.light (#{merge_request.project.name_with_namespace})
+    - @issues.each do |issue|
+      %li
+        issue:
+        = link_to [issue.project, issue] do
+          %span ##{issue.id}
+          %strong.term
+            = truncate issue.title, length: 50
+        %span.light (#{issue.project.name_with_namespace})
+    - @wiki_pages.each do |wiki_page|
+      %li
+        wiki:
+        = link_to project_wiki_path(wiki_page.project, wiki_page) do
+          %strong.term
+            = truncate wiki_page.title, length: 50
+        %span.light (#{wiki_page.project.name_with_namespace})
+
 :javascript
   $(function() {
     $(".search_results .term").highlight("#{escape_javascript(params[:search])}");

@@ -4,15 +4,16 @@ class TeamMembersController < ProjectResourceController
   before_filter :authorize_admin_project!, except: [:index, :show]
 
   def index
+    @teams = UserTeam.scoped
   end
 
   def show
-    @team_member = project.users_projects.find(params[:id])
-    @events = @team_member.user.recent_events.where(:project_id => @project.id).limit(7)
+    @user_project_relation = project.users_projects.find_by_user_id(member)
+    @events = member.recent_events.in_projects(project).limit(7)
   end
 
   def new
-    @team_member = project.users_projects.new
+    @user_project_relation = project.users_projects.new
   end
 
   def create
@@ -28,18 +29,18 @@ class TeamMembersController < ProjectResourceController
   end
 
   def update
-    @team_member = project.users_projects.find(params[:id])
-    @team_member.update_attributes(params[:team_member])
+    @user_project_relation = project.users_projects.find_by_user_id(member)
+    @user_project_relation.update_attributes(params[:team_member])
 
-    unless @team_member.valid?
+    unless @user_project_relation.valid?
       flash[:alert] = "User should have at least one role"
     end
     redirect_to project_team_index_path(@project)
   end
 
   def destroy
-    @team_member = project.users_projects.find(params[:id])
-    @team_member.destroy
+    @user_project_relation = project.users_projects.find_by_user_id(member)
+    @user_project_relation.destroy
 
     respond_to do |format|
       format.html { redirect_to project_team_index_path(@project) }
@@ -53,5 +54,11 @@ class TeamMembersController < ProjectResourceController
     notice = status ? "Succesfully imported" : "Import failed"
 
     redirect_to project_team_members_path(project), notice: notice
+  end
+
+  protected
+
+  def member
+    @member ||= User.find_by_username(params[:id])
   end
 end

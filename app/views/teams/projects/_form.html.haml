@@ -1,0 +1,16 @@
+= form_tag team_project_path(@team, @project), method: :put do
+  -if @project.errors.any?
+    .alert.alert-error
+      %ul
+        - @project.errors.full_messages.each do |msg|
+          %li= msg
+
+  .clearfix
+    %label Max access for Team members:
+    .input
+      = select_tag :greatest_project_access, options_for_select(UserTeam.access_roles, @team.max_project_access(@project)), class: "project-access-select chosen span3"
+
+  %br
+  .actions
+    = submit_tag 'Save', class: "btn btn-save"
+    = link_to 'Cancel', :back, class: "btn btn-cancel"

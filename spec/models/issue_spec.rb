@@ -28,10 +28,6 @@ describe Issue do
     it { should_not allow_mass_assignment_of(:project_id) }
   end
 
-  describe "Validation" do
-    it { should ensure_length_of(:description).is_within(0..10000) }
-  end
-
   describe 'modules' do
     it { should include_module(Issuable) }
   end

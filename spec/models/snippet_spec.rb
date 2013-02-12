@@ -38,6 +38,5 @@ describe Snippet do
     it { should ensure_length_of(:title).is_within(0..255) }
 
     it { should validate_presence_of(:content) }
-    it { should ensure_length_of(:content).is_within(0..10_000) }
   end
 end

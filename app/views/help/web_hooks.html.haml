@@ -1,15 +1,13 @@
-%h3.page_title Web hooks
-.back_link
-  = link_to help_path do
-    &larr; to index
-%hr
+= render layout: 'help/layout' do
+  %h3.page_title Web hooks
+  %br
 
-%p.slead
-  Every GitLab project can trigger a web server whenever the repo is pushed to.
-  %br
-  Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
-  %br
-  GitLab will send POST request with commits information on every push.
-%h5 Hooks request example:
-= render "hooks/data_ex"
+  %p.slead
+    Every GitLab project can trigger a web server whenever the repo is pushed to.
+    %br
+    Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+    %br
+    GitLab will send POST request with commits information on every push.
+  %h5 Hooks request example:
+  = render "hooks/data_ex"
 

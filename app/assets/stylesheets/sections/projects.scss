@@ -4,9 +4,8 @@
   }
 
   .side {
-    @extend .right;
+    @extend .pull-right;
 
-    .groups_box,
     .projects_box {
       > .title {
         padding: 2px 15px;

@@ -1,107 +1,105 @@
-%h3.page_title API
-.back_link
-  = link_to help_path do
-    &larr; to index
-%br
+= render layout: 'help/layout' do
+  %h3.page_title API
+  %br
 
-%ul.nav.nav-tabs.log-tabs
-  %li.active
-    = link_to "README", "#README", 'data-toggle' => 'tab'
-  %li
-    = link_to "Projects", "#projects", 'data-toggle' => 'tab'
-  %li
-    = link_to "Snippets", "#snippets", 'data-toggle' => 'tab'
-  %li
-    = link_to "Repositories", "#repositories", 'data-toggle' => 'tab'
-  %li
-    = link_to "Users", "#users", 'data-toggle' => 'tab'
-  %li
-    = link_to "Session", "#session", 'data-toggle' => 'tab'
-  %li
-    = link_to "Issues", "#issues", 'data-toggle' => 'tab'
-  %li
-    = link_to "Milestones", "#milestones", 'data-toggle' => 'tab'
-  %li
-    = link_to "Notes", "#notes", 'data-toggle' => 'tab'
+  %ul.nav.nav-tabs.log-tabs.nav-small-tabs
+    %li.active
+      = link_to "README", "#README", 'data-toggle' => 'tab'
+    %li
+      = link_to "Projects", "#projects", 'data-toggle' => 'tab'
+    %li
+      = link_to "Snippets", "#snippets", 'data-toggle' => 'tab'
+    %li
+      = link_to "Repositories", "#repositories", 'data-toggle' => 'tab'
+    %li
+      = link_to "Users", "#users", 'data-toggle' => 'tab'
+    %li
+      = link_to "Session", "#session", 'data-toggle' => 'tab'
+    %li
+      = link_to "Issues", "#issues", 'data-toggle' => 'tab'
+    %li
+      = link_to "Milestones", "#milestones", 'data-toggle' => 'tab'
+    %li
+      = link_to "Notes", "#notes", 'data-toggle' => 'tab'
 
-.tab-content
-  .tab-pane.active#README
-    .file_holder
-      .file_title
-        %i.icon-file
-        README
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "README.md"))
+  .tab-content
+    .tab-pane.active#README
+      .file_holder
+        .file_title
+          %i.icon-file
+          README
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "README.md"))
 
-  .tab-pane#projects
-    .file_holder
-      .file_title
-        %i.icon-file
-        Projects
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "projects.md"))
+    .tab-pane#projects
+      .file_holder
+        .file_title
+          %i.icon-file
+          Projects
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "projects.md"))
 
-  .tab-pane#snippets
-    .file_holder
-      .file_title
-        %i.icon-file
-        Projects Snippets
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "snippets.md"))
+    .tab-pane#snippets
+      .file_holder
+        .file_title
+          %i.icon-file
+          Projects Snippets
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "snippets.md"))
 
-  .tab-pane#repositories
-    .file_holder
-      .file_title
-        %i.icon-file
-        Projects
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "repositories.md"))
+    .tab-pane#repositories
+      .file_holder
+        .file_title
+          %i.icon-file
+          Projects
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "repositories.md"))
 
-  .tab-pane#users
-    .file_holder
-      .file_title
-        %i.icon-file
-        Users
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "users.md"))
+    .tab-pane#users
+      .file_holder
+        .file_title
+          %i.icon-file
+          Users
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "users.md"))
 
-  .tab-pane#session
-    .file_holder
-      .file_title
-        %i.icon-file
-        Session
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "session.md"))
+    .tab-pane#session
+      .file_holder
+        .file_title
+          %i.icon-file
+          Session
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "session.md"))
 
-  .tab-pane#issues
-    .file_holder
-      .file_title
-        %i.icon-file
-        Issues
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "issues.md"))
+    .tab-pane#issues
+      .file_holder
+        .file_title
+          %i.icon-file
+          Issues
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "issues.md"))
 
-  .tab-pane#milestones
-    .file_holder
-      .file_title
-        %i.icon-file
-        Milestones
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "milestones.md"))
+    .tab-pane#milestones
+      .file_holder
+        .file_title
+          %i.icon-file
+          Milestones
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "milestones.md"))
 
-  .tab-pane#notes
-    .file_holder
-      .file_title
-        %i.icon-file
-        Notes
-      .file_content.wiki
-        = preserve do
-          = markdown File.read(Rails.root.join("doc", "api", "notes.md"))
+    .tab-pane#notes
+      .file_holder
+        .file_title
+          %i.icon-file
+          Notes
+        .file_content.wiki
+          = preserve do
+            = markdown File.read(Rails.root.join("doc", "api", "notes.md"))

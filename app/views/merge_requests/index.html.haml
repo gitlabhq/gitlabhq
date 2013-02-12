@@ -1,5 +1,5 @@
 - if can? current_user, :write_merge_request, @project
-  = link_to new_project_merge_request_path(@project), class: "right btn primary", title: "New Merge Request" do
+  = link_to new_project_merge_request_path(@project), class: "pull-right btn btn-primary", title: "New Merge Request" do
     %i.icon-plus
     New Merge Request
 %h3.page_title
@@ -28,8 +28,8 @@
         - if @merge_requests.present?
           %li.bottom
             .left= paginate @merge_requests, theme: "gitlab"
-            .right
-              %span.cgray.right #{@merge_requests.total_count} merge requests for this filter
+            .pull-right
+              %span.cgray.pull-right #{@merge_requests.total_count} merge requests for this filter
 
 :javascript
   $(merge_requestsPage);

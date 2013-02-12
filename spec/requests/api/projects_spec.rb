@@ -107,6 +107,29 @@ describe Gitlab::API do
 
       json_response['name'].should == 'new_design'
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['protected'].should == false
+    end
+  end
+
+  describe "PUT /projects/:id/repository/branches/:branch/protect" do
+    it "should protect a single branch" do
+      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
+      response.status.should == 200
+
+      json_response['name'].should == 'new_design'
+      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['protected'].should == true
+    end
+  end
+
+  describe "PUT /projects/:id/repository/branches/:branch/unprotect" do
+    it "should unprotect a single branch" do
+      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
+      response.status.should == 200
+
+      json_response['name'].should == 'new_design'
+      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['protected'].should == false
     end
   end
 

@@ -142,7 +142,7 @@ namespace :gitlab do
         return
       end
 
-      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab 2>/dev/null`
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab 2>/dev/null`
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -169,7 +169,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("bundle exec rake db:migrate")
+          sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
         )
         fix_and_rerun
       end
@@ -194,7 +194,7 @@ namespace :gitlab do
         else
           puts "no".red
           try_fixing_it(
-            sudo_gitlab("bundle exec rake gitlab:satellites:create"),
+            sudo_gitlab("bundle exec rake gitlab:satellites:create RAILS_ENV=production"),
             "If necessary, remove the tmp/repo_satellites directory ...",
             "... and rerun the above command"
           )
@@ -716,7 +716,7 @@ namespace :gitlab do
     end
 
     def check_repo_base_permissions
-      print "Repo base access is drwsrws---? ... "
+      print "Repo base access is drwxrws---? ... "
 
       repo_base_path = Gitlab.config.gitolite.repos_path
       unless File.exists?(repo_base_path)
@@ -724,12 +724,14 @@ namespace :gitlab do
         return
       end
 
-      if File.stat(repo_base_path).mode.to_s(8).ends_with?("6770")
+      if File.stat(repo_base_path).mode.to_s(8).ends_with?("2770")
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
-          "sudo chmod -R ug+rwXs,o-rwx #{repo_base_path}"
+          "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
+          "sudo chmod -R ug-s #{repo_base_path}",
+          "find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
           see_installation_guide_section "Gitolite"
@@ -780,21 +782,25 @@ namespace :gitlab do
       Project.find_each(batch_size: 100) do |project|
         print "#{project.name_with_namespace.yellow} ... "
 
-        correct_options = options.map do |name, value|
-          run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
-        end
-
-        if correct_options.all?
-          puts "ok".green
+        if project.empty_repo?
+          puts "repository is empty".magenta
         else
-          puts "wrong or missing".red
-          try_fixing_it(
-            sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos")
-          )
-          for_more_information(
-            "doc/raketasks/maintenance.md"
-          )
-          fix_and_rerun
+          correct_options = options.map do |name, value|
+            run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
+          end
+
+          if correct_options.all?
+            puts "ok".green
+          else
+            puts "wrong or missing".red
+            try_fixing_it(
+              sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos RAILS_ENV=production")
+            )
+            for_more_information(
+              "doc/raketasks/maintenance.md"
+            )
+            fix_and_rerun
+          end
         end
       end
     end
@@ -820,32 +826,37 @@ namespace :gitlab do
 
       Project.find_each(batch_size: 100) do |project|
         print "#{project.name_with_namespace.yellow} ... "
-        project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
 
-        unless File.exists?(project_hook_file)
-          puts "missing".red
-          try_fixing_it(
-            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
-          )
-          for_more_information(
-            "lib/support/rewrite-hooks.sh"
-          )
-          fix_and_rerun
-          next
-        end
-
-        if File.lstat(project_hook_file).symlink? &&
-            File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
-          puts "ok".green
+        if project.empty_repo?
+          puts "repository is empty".magenta
         else
-          puts "not a link to Gitolite's hook".red
-          try_fixing_it(
-            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
-          )
-          for_more_information(
-            "lib/support/rewrite-hooks.sh"
-          )
-          fix_and_rerun
+          project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
+
+          unless File.exists?(project_hook_file)
+            puts "missing".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+            next
+          end
+
+          if File.lstat(project_hook_file).symlink? &&
+              File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
+            puts "ok".green
+          else
+            puts "not a link to Gitolite's hook".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+          end
         end
       end
     end
@@ -895,7 +906,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("bundle exec rake sidekiq:start")
+          sudo_gitlab("bundle exec rake sidekiq:start RAILS_ENV=production")
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),

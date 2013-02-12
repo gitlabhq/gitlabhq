@@ -1,0 +1,23 @@
+%h3.page_title
+  Team: #{@team.name}
+
+%fieldset
+  %legend Projects (#{@team.projects.count})
+  = form_tag team_projects_path(@team), id: "assign_projects", class: "bulk_import", method: :post  do
+    %table#projects_list
+      %thead
+        %tr
+          %th Project name
+          %th Max access
+          %th
+      - @team.projects.each do |project|
+        %tr.project
+          %td
+            = link_to project.name_with_namespace, team_project_path(@team, project)
+          %td
+            %span= @team.human_max_project_access(project)
+          %td
+      %tr
+        %td= select_tag :project_ids, options_from_collection_for_select(@avaliable_projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
+        %td= select_tag :greatest_project_access, options_for_select(UserTeam.access_roles), {class: "project-access-select chosen span3" }
+        %td= submit_tag 'Add Project', class: "btn btn-create", id: :assign_projects_to_team

@@ -12,7 +12,7 @@
 %fieldset
   %legend
     Private token
-    %span.cred.right
+    %span.cred.pull-right
       keep it secret!
   .padded
     = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
@@ -24,7 +24,7 @@
         %p.cgray
           - if current_user.private_token
             = text_field_tag "token", current_user.private_token, class: "xxlarge large_text"
-            = f.submit 'Reset', confirm: "Are you sure?", class: "btn primary btn-build-token"
+            = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token"
           - else
             %span You don`t have one yet. Click generate to fix it.
             = f.submit 'Generate', class: "btn success btn-build-token"
@@ -35,7 +35,7 @@
     .padded
       %p.slead After successful password update you will be redirected to login page where you should login with new password
       -if @user.errors.any?
-        .alert-message.block-message.error
+        .alert.alert-error
           %ul
             - @user.errors.full_messages.each do |msg|
               %li= msg
@@ -49,14 +49,14 @@
           = f.password_field :password_confirmation, required: true
       .clearfix
         .input
-          = f.submit 'Save password', class: "btn save-btn"
+          = f.submit 'Save password', class: "btn btn-save"
 
 
 
 %fieldset.update-username
   %legend
     Username
-    %small.cred.right
+    %small.cred.pull-right
       Changing your username can have unintended side effects!
   = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
     .padded
@@ -75,6 +75,6 @@
           %li It will change web url for personal projects.
           %li It will change the git path to repositories for personal projects.
       .input
-        = f.submit 'Save username', class: "btn save-btn"
+        = f.submit 'Save username', class: "btn btn-save"
 
 

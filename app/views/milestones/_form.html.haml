@@ -7,7 +7,7 @@
 
 = form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
   -if @milestone.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @milestone.errors.full_messages.each do |msg|
           %li= msg
@@ -32,16 +32,16 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "save-btn btn"
-      = link_to "Cancel", project_milestones_path(@project), class: "btn cancel-btn"
+      = f.submit 'Create milestone', class: "btn-save btn"
+      = link_to "Cancel", project_milestones_path(@project), class: "btn btn-cancel"
     -else
-      = f.submit 'Save changes', class: "save-btn btn"
-      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn cancel-btn"
+      = f.submit 'Save changes', class: "btn-save btn"
+      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn btn-cancel"
 
 
 :javascript
   $(function() {
-    disableButtonIfEmptyField("#milestone_title", ".save-btn");
+    disableButtonIfEmptyField("#milestone_title", ".btn-save");
     $( ".datepicker" ).datepicker({
       dateFormat: "yy-mm-dd",
       onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }

@@ -10,11 +10,12 @@ class ProjectObserver < ActiveRecord::Observer
   def after_destroy(project)
     log_info("Project \"#{project.name}\" was removed")
 
+    project.satellite.destroy
     project.destroy_repository
   end
 
   def after_create project
-    log_info("#{project.owner.name} created a new project \"#{project.name}\"")
+    log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
   end
 
   protected

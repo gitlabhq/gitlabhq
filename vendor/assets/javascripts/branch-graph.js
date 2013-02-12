@@ -65,15 +65,16 @@
 
   BranchGraph.prototype.buildGraph = function(){
     var graphWidth = $(this.element).width()
-      , ch = this.mspace * 20 + 20
-      , cw = Math.max(graphWidth, this.mtime * 20 + 20)
+      , ch = this.mspace * 20 + 100
+      , cw = Math.max(graphWidth, this.mtime * 20 + 260)
       , r = Raphael(this.element.get(0), cw, ch)
       , top = r.set()
       , cuday = 0
       , cumonth = ""
       , offsetX = 20
       , offsetY = 60
-      , barWidth = Math.max(graphWidth, this.dayCount * 20 + 80);
+      , barWidth = Math.max(graphWidth, this.dayCount * 20 + 320)
+      , scrollLeft = cw;
     
     this.raphael = r;
     
@@ -103,8 +104,9 @@
     
     for (i = 0; i < this.commitCount; i++) {
       var x = offsetX + 20 * this.commits[i].time
-        , y = offsetY + 20 * this.commits[i].space
-        , c;
+        , y = offsetY + 10 * this.commits[i].space
+        , c
+        , ps;
       
       // Draw dot
       r.circle(x, y, 3).attr({
@@ -115,26 +117,40 @@
       // Draw lines
       for (var j = 0, jj = this.commits[i].parents.length; j < jj; j++) {
         c = this.preparedCommits[this.commits[i].parents[j][0]];
+        ps = this.commits[i].parent_spaces[j];
         if (c) {
           var cx = offsetX + 20 * c.time
-            , cy = offsetY + 20 * c.space;
-          if (c.space == this.commits[i].space) {
+            , cy = offsetY + 10 * c.space
+            , psy = offsetY + 10 * ps;
+          if (c.space == this.commits[i].space && c.space == ps) {
             r.path([
               "M", x, y,
-              "L", x - 20 * (c.time + 1), y
+              "L", cx, cy
             ]).attr({
               stroke: this.colors[c.space], 
               "stroke-width": 2
             });
 
           } else if (c.space < this.commits[i].space) {
-            r.path(["M", x - 5, y + .0001, "l-5-2,0,4,5,-2C", x - 5, y, x - 17, y + 2, x - 20, y - 5, "L", cx, y - 5, cx, cy])
+            r.path([
+                "M", x - 5, y,
+                "l-5-2,0,4,5,-2",
+                "L", x - 10, y,
+                "L", x - 15, psy,
+                "L", cx + 5, psy,
+                "L", cx, cy])
             .attr({
               stroke: this.colors[this.commits[i].space], 
               "stroke-width": 2
             });
           } else {
-            r.path(["M", x - 3, y + 6, "l-4,3,4,2,0,-5L", x - 10, y + 20, "L", x - 10, cy, cx, cy])
+            r.path([
+                "M", x - 3, y + 6,
+                "l-4,3,4,2,0,-5",
+                "L", x - 5, y + 10,
+                "L", x - 10, psy,
+                "L", cx + 5, psy,
+                "L", cx, cy])
             .attr({
               stroke: this.colors[c.space], 
               "stroke-width": 2
@@ -145,12 +161,18 @@
       
       if (this.commits[i].refs) {
         this.appendLabel(x, y, this.commits[i].refs);
+
+        // The main branch is displayed in the center.
+        re = new RegExp('(^| )' + this.options.ref + '( |$)');
+        if (this.commits[i].refs.match(re)) {
+          scrollLeft = x - graphWidth / 2;
+        }
       }
       
       this.appendAnchor(top, this.commits[i], x, y);
     }
     top.toFront();
-    this.element.scrollLeft(cw);
+    this.element.scrollLeft(scrollLeft);
     this.bindEvents();
   };
   
@@ -260,7 +282,7 @@
       cursor: "pointer"
     })
     .click(function(){
-      window.location = options.commit_url.replace('%s', commit.id);
+      window.open(options.commit_url.replace('%s', commit.id), '_blank');
     })
     .hover(function(){
       this.tooltip = r.commitTooltip(x, y + 5, commit);

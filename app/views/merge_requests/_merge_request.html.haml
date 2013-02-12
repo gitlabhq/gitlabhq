@@ -1,20 +1,20 @@
 %li{ class: mr_css_classes(merge_request) }
-  .right
+  .pull-right
     .left
       - if merge_request.merged?
-        %span.btn.small.disabled.grouped
+        %span.btn.btn-small.disabled.grouped
           %strong
             %i.icon-ok
             = "MERGED"
       - if merge_request.notes.any?
-        %span.btn.small.disabled.grouped
+        %span.btn.btn-small.disabled.grouped
           %i.icon-comment
           = merge_request.mr_and_commit_notes.count
       - if merge_request.milestone_id?
-        %span.btn.small.disabled.grouped
+        %span.btn.btn-small.disabled.grouped
           %i.icon-time
           = merge_request.milestone.title
-      %span.btn.small.disabled.grouped
+      %span.btn.btn-small.disabled.grouped
         = merge_request.source_branch
         &rarr;
         = merge_request.target_branch

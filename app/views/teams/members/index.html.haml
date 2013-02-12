@@ -1,0 +1,17 @@
+%h3.page_title
+  Team Members
+  (#{@members.count})
+  %small
+    Read more about project permissions
+    %strong= link_to "here", help_permissions_path, class: "vlink"
+
+  - if can? current_user, :manage_user_team, @team
+    %span.pull-right
+      = link_to new_team_member_path(@team), class: "btn btn-primary small grouped", title: "New Team Member" do
+        New Team Member
+%hr
+
+
+.clearfix
+%div.team-table
+  = render partial: "teams/members/team", locals: {project: @team}

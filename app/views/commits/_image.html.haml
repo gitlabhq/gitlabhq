@@ -1,0 +1,63 @@
+- if diff.renamed_file || diff.new_file || diff.deleted_file
+  .image
+    %span.wrap
+      .frame{class: image_diff_class(diff)}
+        %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+      %p.image-info= "#{number_to_human_size file.size}"
+- else
+  .image
+    %div.two-up.view
+      %span.wrap
+        .frame.deleted
+          %a{href: project_tree_path(@project, tree_join(@commit.id, diff.old_path))}
+            %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+        %p.image-info.hide
+          %span.meta-filesize= "#{number_to_human_size old_file.size}"
+          |
+          %b W:
+          %span.meta-width 
+          |
+          %b H:
+          %span.meta-height
+      %span.wrap
+        .frame.added
+          %a{href: project_tree_path(@project, tree_join(@commit.id, diff.new_path))}
+            %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+        %p.image-info.hide
+          %span.meta-filesize= "#{number_to_human_size file.size}"
+          |
+          %b W:
+          %span.meta-width 
+          |
+          %b H:
+          %span.meta-height
+
+    %div.swipe.view.hide
+      .swipe-frame
+        .frame.deleted
+          %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+        .swipe-wrap
+          .frame.added
+            %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+        %span.swipe-bar
+          %span.top-handle
+          %span.bottom-handle
+
+    %div.onion-skin.view.hide
+      .onion-skin-frame
+        .frame.deleted
+          %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+        .frame.added
+          %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+        .controls
+          .transparent
+          .drag-track
+            .dragger{:style => "left: 0px;"}
+          .opaque
+
+
+  .view-modes.hide
+    %ul.view-modes-menu
+      %li.two-up{data: {mode: 'two-up'}} 2-up
+      %li.swipe{data: {mode: 'swipe'}} Swipe
+      %li.onion-skin{data: {mode: 'onion-skin'}} Onion skin
