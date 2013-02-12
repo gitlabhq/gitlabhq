@@ -195,11 +195,14 @@ module Gitlab
       #   POST /projects/:id/hooks
       post ":id/hooks" do
         authorize! :admin_project, user_project
+
+        error!("Url not given", 400) unless params.has_key? :url
+
         @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
           present @hook, with: Entities::Hook
         else
-          error!({'message' => '404 Not found'}, 404)
+          not_found!
         end
       end
 
@@ -215,7 +218,7 @@ module Gitlab
         @hook = user_project.hooks.find(params[:hook_id])
         authorize! :admin_project, user_project
 
-        error!("Url not given", 400) if !params.has_key? :url
+        error!("Url not given", 400) unless params.has_key? :url
 
         attrs = attributes_for_keys [:url]
         if @hook.update_attributes attrs
@@ -234,8 +237,13 @@ module Gitlab
       #   DELETE /projects/:id/hooks
       delete ":id/hooks" do
         authorize! :admin_project, user_project
-        @hook = user_project.hooks.find(params[:hook_id])
-        @hook.destroy
+        error!("Hook id not given", 400) unless params.has_key? :hook_id
+
+        begin
+          @hook = ProjectHook.find(params[:hook_id])
+          @hook.destroy
+        rescue
+        end
       end
 
       # Get a project repository branches

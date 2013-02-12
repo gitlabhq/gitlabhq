@@ -6,8 +6,8 @@ describe Gitlab::API do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
   let!(:project) { create(:project, namespace: user.namespace ) }
+  let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
   let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
@@ -290,6 +290,11 @@ describe Gitlab::API do
       }.to change {project.hooks.count}.by(1)
       response.status.should == 201
     end
+
+    it "should return a 400 error if url not given" do
+      post api("/projects/#{project.id}/hooks", user)
+      response.status.should == 400
+    end
   end
 
   describe "PUT /projects/:id/hooks/:hook_id" do
@@ -300,7 +305,7 @@ describe Gitlab::API do
       json_response['url'].should == 'http://example.org'
     end
 
-    it "should return 404 error if hook id is not found" do
+    it "should return 404 error if hook id not found" do
       put api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
       response.status.should == 404
     end
@@ -318,6 +323,21 @@ describe Gitlab::API do
           hook_id: hook.id
       }.to change {project.hooks.count}.by(-1)
       response.status.should == 200
+    end
+
+    it "should return success when deleting hook" do
+      delete api("/projects/#{project.id}/hooks", user), hook_id: hook.id
+      response.status.should == 200
+    end
+
+    it "should return success when deleting non existent hook" do
+      delete api("/projects/#{project.id}/hooks", user), hook_id: 42
+      response.status.should == 200
+    end
+
+    it "should return a 400 error if hook id not given" do
+      delete api("/projects/#{project.id}/hooks", user)
+      response.status.should == 400
     end
   end
 
