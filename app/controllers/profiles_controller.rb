@@ -51,7 +51,9 @@ class ProfilesController < ApplicationController
   end
 
   def update_username
-    @user.update_attributes(username: params[:user][:username])
+    if @user.can_change_username?
+      @user.update_attributes(username: params[:user][:username])
+    end
 
     respond_to do |format|
       format.js

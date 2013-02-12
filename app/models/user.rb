@@ -215,6 +215,10 @@ class User < ActiveRecord::Base
     keys.count == 0
   end
 
+  def can_change_username?
+    Gitlab.config.gitlab.username_changing_enabled
+  end
+
   def can_create_project?
     projects_limit > personal_projects.count
   end
