@@ -77,4 +77,10 @@
       .input
         = f.submit 'Save username', class: "btn btn-save"
 
-
+- if Gitlab.config.gitlab.signup_enabled
+  %fieldset.remove-account
+    %legend
+      Remove account
+      %small.cred.pull-right
+        Before removing the account you must remove all projects!
+    = link_to 'Delete account', user_registration_path, confirm: "REMOVE #{current_user.name}? Are you sure?", method: :delete, class: "btn btn-remove delete-key btn-small pull-right"
