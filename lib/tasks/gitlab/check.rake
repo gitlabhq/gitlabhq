@@ -142,7 +142,7 @@ namespace :gitlab do
         return
       end
 
-      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab 2>/dev/null`
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab 2>/dev/null`
       script_content = File.read(script_path)
 
       if recipe_content == script_content
