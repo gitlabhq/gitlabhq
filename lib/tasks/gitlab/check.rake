@@ -530,7 +530,7 @@ namespace :gitlab do
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
             for_more_information(
-              "#{gitlab_shell_user_home}/support/rewrite-hooks.sh"
+              "#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh"
             )
             fix_and_rerun
             next
@@ -562,7 +562,7 @@ namespace :gitlab do
     end
 
     def gitlab_shell_version
-      gitlab_shell_version_file = "#{gitlab_shell_user_home}/VERSION"
+      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
       if File.readable?(gitlab_shell_version_file)
         File.read(gitlab_shell_version_file)
       end
