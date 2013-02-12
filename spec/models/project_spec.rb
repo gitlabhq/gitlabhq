@@ -197,4 +197,17 @@ describe Project do
       Project.new(path: "empty").repository.should be_nil
     end
   end
+
+  describe :parameterize_name do
+    let(:project) { create(:project, {name: 'Gtlab HQ'} ) }
+
+    it "should parameterize name" do
+      project.parameterize_name.should eq "gtlab-hq"
+    end
+
+    it "should not parameterize name if nil" do
+      project.name = nil
+      project.parameterize_name.should eq nil
+    end
+  end
 end

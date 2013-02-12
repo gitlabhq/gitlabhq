@@ -91,8 +91,8 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public, where(public: true)
-
+  scope :public, ->(*args) { where(public: true) } # FIXME *args added for stub method in tests
+  
   class << self
     def abandoned
       project_ids = Event.select('max(created_at) as latest_date, project_id').
@@ -497,5 +497,11 @@ class Project < ActiveRecord::Base
   # Check if current branch name is marked as protected in the system
   def protected_branch? branch_name
     protected_branches.map(&:name).include?(branch_name)
+  end
+
+  def parameterize_name
+    if name.present?
+      name.dup.parameterize
+    end
   end
 end
