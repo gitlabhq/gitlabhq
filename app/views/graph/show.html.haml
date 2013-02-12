@@ -1,7 +1,4 @@
-%h3.page_title Project Network Graph
-%br
-= render partial: 'shared/ref_switcher', locals: {destination: 'graph', path: @path}
-%br
+= render "head"
 .graph_holder
   %h4
     %small You can move around the graph by using the arrow keys.
@@ -12,8 +9,9 @@
   var branch_graph;
   $(function(){
     branch_graph = new BranchGraph($("#holder"), {
-      url: '#{project_graph_path(@project, @ref, format: :json)}',
+      url: '#{project_graph_path(@project, @ref, q: @q, format: :json)}',
       commit_url: '#{project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")}',
-      ref: '#{@ref}'
+      ref: '#{@ref}',
+      commit_id: '#{@commit.id}'
     });
   });

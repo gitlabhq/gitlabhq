@@ -161,14 +161,23 @@
       
       if (this.commits[i].refs) {
         this.appendLabel(x, y, this.commits[i].refs);
-
-        // The main branch is displayed in the center.
-        re = new RegExp('(^| )' + this.options.ref + '( |$)');
-        if (this.commits[i].refs.match(re)) {
-          scrollLeft = x - graphWidth / 2;
-        }
       }
       
+      // mark commit and displayed in the center
+      if (this.commits[i].id == this.options.commit_id) {
+        r.path([
+            'M', x, y - 5,
+            'L', x + 4, y - 15,
+            'L', x - 4, y - 15,
+            'Z'
+            ]).attr({
+              "fill": "#000",
+              "fill-opacity": .7,
+              "stroke": "none"
+              });
+        scrollLeft = x - graphWidth / 2;
+      }
+
       this.appendAnchor(top, this.commits[i], x, y);
     }
     top.toFront();
