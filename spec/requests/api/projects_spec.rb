@@ -386,6 +386,11 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['title'].should == snippet.title
     end
+
+    it "should return a 404 error if snippet id not found" do
+      get api("/projects/#{project.id}/snippets/1234", user)
+      response.status.should == 404
+    end
   end
 
   describe "POST /projects/:id/snippets" do
