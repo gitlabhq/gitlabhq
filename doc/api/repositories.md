@@ -79,6 +79,9 @@ Parameters:
 }
 ```
 
+Will return status code `200` on success or `404 Not found` if the branch is not available.
+
+
 ## Protect a project repository branch
 
 Protect a single project repository branch.

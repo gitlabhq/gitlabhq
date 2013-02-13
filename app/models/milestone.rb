@@ -20,8 +20,8 @@ class Milestone < ActiveRecord::Base
   has_many :issues
   has_many :merge_requests
 
-  scope :active, where(closed: false)
-  scope :closed, where(closed: true)
+  scope :active, -> { where(closed: false) }
+  scope :closed, -> { where(closed: true) }
 
   validates :title, presence: true
   validates :project, presence: true
