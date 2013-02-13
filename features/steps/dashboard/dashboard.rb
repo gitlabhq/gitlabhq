@@ -33,7 +33,7 @@ class Dashboard < Spinach::FeatureSteps
     Event.create(
       project: project,
       author_id: user.id,
-      action: Event::Joined
+      action: Event::JOINED
     )
   end
 
@@ -47,7 +47,7 @@ class Dashboard < Spinach::FeatureSteps
     Event.create(
       project: project,
       author_id: user.id,
-      action: Event::Left
+      action: Event::LEFT
     )
   end
 

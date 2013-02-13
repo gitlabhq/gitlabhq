@@ -17,7 +17,7 @@ describe ActivityObserver do
     end
 
     it_should_be_valid_event
-    it { @event.action.should == Event::Created }
+    it { @event.action.should == Event::CREATED }
     it { @event.target.should == @merge_request }
   end
 
@@ -30,7 +30,7 @@ describe ActivityObserver do
     end
 
     it_should_be_valid_event
-    it { @event.action.should == Event::Created }
+    it { @event.action.should == Event::CREATED }
     it { @event.target.should == @issue }
   end
 
@@ -44,7 +44,7 @@ describe ActivityObserver do
     end
 
     it_should_be_valid_event
-    it { @event.action.should == Event::Commented }
+    it { @event.action.should == Event::COMMENTED }
     it { @event.target.should == @note }
   end
 end

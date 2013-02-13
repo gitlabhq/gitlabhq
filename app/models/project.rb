@@ -103,7 +103,7 @@ class Project < ActiveRecord::Base
     end
 
     def with_push
-      includes(:events).where('events.action = ?', Event::Pushed)
+      includes(:events).where('events.action = ?', Event::PUSHED)
     end
 
     def active
@@ -336,7 +336,7 @@ class Project < ActiveRecord::Base
   def observe_push(data)
     Event.create(
       project: self,
-      action: Event::Pushed,
+      action: Event::PUSHED,
       data: data,
       author_id: data[:user_id]
     )

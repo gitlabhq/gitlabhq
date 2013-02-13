@@ -20,15 +20,15 @@ class Event < ActiveRecord::Base
 
   default_scope where("author_id IS NOT NULL")
 
-  Created   = 1
-  Updated   = 2
-  Closed    = 3
-  Reopened  = 4
-  Pushed    = 5
-  Commented = 6
-  Merged    = 7
-  Joined    = 8 # User joined project
-  Left      = 9 # User left project
+  CREATED   = 1
+  UPDATED   = 2
+  CLOSED    = 3
+  REOPENED  = 4
+  PUSHED    = 5
+  COMMENTED = 6
+  MERGED    = 7
+  JOINED    = 8 # User joined project
+  LEFT      = 9 # User left project
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -43,15 +43,15 @@ class Event < ActiveRecord::Base
 
   # Scopes
   scope :recent, -> { order("created_at DESC") }
-  scope :code_push, -> { where(action: Pushed) }
+  scope :code_push, -> { where(action: PUSHED) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
     def determine_action(record)
       if [Issue, MergeRequest].include? record.class
-        Event::Created
+        Event::CREATED
       elsif record.kind_of? Note
-        Event::Commented
+        Event::COMMENTED
       end
     end
   end
@@ -79,19 +79,19 @@ class Event < ActiveRecord::Base
   end
 
   def push?
-    action == self.class::Pushed && valid_push?
+    action == self.class::PUSHED && valid_push?
   end
 
   def merged?
-    action == self.class::Merged
+    action == self.class::MERGED
   end
 
   def closed?
-    action == self.class::Closed
+    action == self.class::CLOSED
   end
 
   def reopened?
-    action == self.class::Reopened
+    action == self.class::REOPENED
   end
 
   def milestone?
@@ -111,11 +111,11 @@ class Event < ActiveRecord::Base
   end
 
   def joined?
-    action == Joined
+    action == JOINED
   end
 
   def left?
-    action == Left
+    action == LEFT
   end
 
   def membership_changed?
