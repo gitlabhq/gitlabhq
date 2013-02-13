@@ -468,7 +468,7 @@ describe Gitlab::API do
     end
   end
 
-  describe "GET /projects/:id/:sha/blob" do
+  describe "GET /projects/:id/repository/commits/:sha/blob" do
     it "should get the raw file contents" do
       get api("/projects/#{project.id}/repository/commits/master/blob?filepath=README.md", user)
       response.status.should == 200
@@ -482,6 +482,11 @@ describe Gitlab::API do
     it "should return 404 for invalid file" do
       get api("/projects/#{project.id}/repository/commits/master/blob?filepath=README.invalid", user)
       response.status.should == 404
+    end
+
+    it "should return a 400 error if filepath is missing" do
+      get api("/projects/#{project.id}/repository/commits/master/blob", user)
+      response.status.should == 400
     end
   end
 end

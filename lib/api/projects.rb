@@ -451,6 +451,8 @@ module Gitlab
       get ":id/repository/commits/:sha/blob" do
         authorize! :download_code, user_project
 
+        error!("Filepath must be specified", 400) if !params.has_key? :filepath
+
         ref = params[:sha]
 
         commit = user_project.repository.commit ref
