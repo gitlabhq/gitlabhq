@@ -313,4 +313,8 @@ class User < ActiveRecord::Base
                             UserTeam.where(id: ids)
                           end
   end
+
+  def owned_teams
+    UserTeam.where(owner_id: self.id)
+  end
 end
