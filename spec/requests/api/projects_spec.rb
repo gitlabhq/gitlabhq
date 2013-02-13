@@ -411,6 +411,18 @@ describe Gitlab::API do
         file_name: 'sample.rb', code: 'test'
       response.status.should == 400
     end
+
+    it "should return a 400 error if file_name not given" do
+      post api("/projects/#{project.id}/snippets", user),
+        title: 'api test', code: 'test'
+      response.status.should == 400
+    end
+
+    it "should return a 400 error if code not given" do
+      post api("/projects/#{project.id}/snippets", user),
+        title: 'api test', file_name: 'sample.rb'
+      response.status.should == 400
+    end
   end
 
   describe "PUT /projects/:id/snippets/:shippet_id" do
@@ -421,6 +433,13 @@ describe Gitlab::API do
       json_response['title'].should == 'example'
       snippet.reload.content.should == 'updated code'
     end
+
+    it "should update an existing project snippet with new title" do
+      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
+        title: 'other api test'
+      response.status.should == 200
+      json_response['title'].should == 'other api test'
+    end
   end
 
   describe "DELETE /projects/:id/snippets/:snippet_id" do
@@ -428,6 +447,12 @@ describe Gitlab::API do
       expect {
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
       }.to change { Snippet.count }.by(-1)
+      response.status.should == 200
+    end
+
+    it "should return success when deleting unknown snippet id" do
+      delete api("/projects/#{project.id}/snippets/1234", user)
+      response.status.should == 200
     end
   end
 
@@ -435,6 +460,11 @@ describe Gitlab::API do
     it "should get a raw project snippet" do
       get api("/projects/#{project.id}/snippets/#{snippet.id}/raw", user)
       response.status.should == 200
+    end
+
+    it "should return a 404 error if raw project snippet not found" do
+      get api("/projects/#{project.id}/snippets/5555/raw", user)
+      response.status.should == 404
     end
   end
 

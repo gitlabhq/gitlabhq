@@ -368,6 +368,10 @@ module Gitlab
       post ":id/snippets" do
         authorize! :write_snippet, user_project
 
+        error!("Title not given", 400) if !params[:title].present?
+        error!("Filename not given", 400) if !params[:file_name].present?
+        error!("Code not given", 400) if !params[:code].present?
+
         attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
         attrs[:content] = params[:code] if params[:code].present?
@@ -415,10 +419,12 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
-        @snippet = user_project.snippets.find(params[:snippet_id])
-        authorize! :modify_snippet, @snippet
-
-        @snippet.destroy
+        begin
+          @snippet = user_project.snippets.find(params[:snippet_id])
+          authorize! :modify_snippet, user_project
+          @snippet.destroy
+        rescue
+        end
       end
 
       # Get a raw project snippet
