@@ -400,6 +400,12 @@ describe Gitlab::API do
       response.status.should == 201
       json_response['title'].should == 'api test'
     end
+
+    it "should return a 400 error if title is not given" do
+      post api("/projects/#{project.id}/snippets", user),
+        file_name: 'sample.rb', code: 'test'
+      response.status.should == 400
+    end
   end
 
   describe "PUT /projects/:id/snippets/:shippet_id" do
