@@ -13,7 +13,7 @@ module Gitlab
         #
         def handle_milestone_errors(milestone_errors)
           if milestone_errors[:title].any?
-            error!(milestone_errors[:title], 400)
+            bad_request!(:title)
           end
         end
       end

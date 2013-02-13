@@ -32,6 +32,11 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['title'].should == merge_request.title
     end
+
+    it "should return a 404 error if merge_request_id not found" do
+      get api("/projects/#{project.id}/merge_request/999", user)
+      response.status.should == 404
+    end
   end
 
   describe "POST /projects/:id/merge_requests" do

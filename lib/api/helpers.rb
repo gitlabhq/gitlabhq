@@ -55,6 +55,12 @@ module Gitlab
       render_api_error!('403 Forbidden', 403)
     end
 
+    def bad_request!(attribute)
+      message = ["400 (Bad request)"]
+      message << "\"" + attribute.to_s + "\" not given"
+      render_api_error!(message.join(' '), 400)
+    end
+
     def not_found!(resource = nil)
       message = ["404"]
       message << resource if resource

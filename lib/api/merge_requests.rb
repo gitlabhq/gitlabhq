@@ -13,9 +13,9 @@ module Gitlab
         #
         def handle_merge_request_error(merge_request_errors)
           if merge_request_errors[:target_branch].any?
-            error!(merge_request_errors[:target_branch], 400)
+            bad_request!(:target_branch)
           elsif merge_request_errors[:source_branch].any?
-            error!(merge_request_errors[:source_branch], 400)
+            bad_request!(:source_branch)
           elsif merge_request_errors[:base].any?
             error!(merge_request_errors[:base], 422)
           end
@@ -129,7 +129,7 @@ module Gitlab
           present note, with: Entities::MRNote
         else
           if note.errors[:note].any?
-            error!(note.errors[:note], 400)
+            bad_request!(:note)
           end
           not_found!
         end

@@ -45,7 +45,7 @@ module Gitlab
       # Example Request
       #   POST /projects
       post do
-        error!("Name is required", 400) if !params.has_key? :name
+        bad_request!(:name) if !params.has_key? :name
         attrs = attributes_for_keys [:name,
                                     :description,
                                     :default_branch,
@@ -101,8 +101,8 @@ module Gitlab
       post ":id/members" do
         authorize! :admin_project, user_project
 
-        error!("User id not given", 400) if !params.has_key? :user_id
-        error!("Access level not given", 400) if !params.has_key? :access_level
+        bad_request!(:user_id) if !params.has_key? :user_id
+        bad_request!(:access_level) if !params.has_key? :access_level
 
         # either the user is already a team member or a new one
         team_member = user_project.team_member_by_id(params[:user_id])
@@ -133,8 +133,8 @@ module Gitlab
         authorize! :admin_project, user_project
 
         team_member = user_project.users_projects.find_by_user_id(params[:user_id])
-        error!("Access level not given", 400) if !params.has_key? :access_level
-        error!("User can not be found", 404) if team_member.nil?
+        bad_request!(:access_level) if !params.has_key? :access_level
+        not_found!("User can not be found") if team_member.nil?
 
         if team_member.update_attributes(project_access: params[:access_level])
           @member = team_member.user
@@ -196,7 +196,7 @@ module Gitlab
       post ":id/hooks" do
         authorize! :admin_project, user_project
 
-        error!("Url not given", 400) unless params.has_key? :url
+        bad_request!(:url) unless params.has_key? :url
 
         @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
@@ -218,7 +218,7 @@ module Gitlab
         @hook = user_project.hooks.find(params[:hook_id])
         authorize! :admin_project, user_project
 
-        error!("Url not given", 400) unless params.has_key? :url
+        bad_request!(:url) unless params.has_key? :url
 
         attrs = attributes_for_keys [:url]
         if @hook.update_attributes attrs
@@ -237,7 +237,7 @@ module Gitlab
       #   DELETE /projects/:id/hooks
       delete ":id/hooks" do
         authorize! :admin_project, user_project
-        error!("Hook id not given", 400) unless params.has_key? :hook_id
+        bad_request!(:hook_id) unless params.has_key? :hook_id
 
         begin
           @hook = ProjectHook.find(params[:hook_id])
@@ -368,9 +368,9 @@ module Gitlab
       post ":id/snippets" do
         authorize! :write_snippet, user_project
 
-        error!("Title not given", 400) if !params[:title].present?
-        error!("Filename not given", 400) if !params[:file_name].present?
-        error!("Code not given", 400) if !params[:code].present?
+        bad_request!(:title) if !params[:title].present?
+        bad_request!(:file_name) if !params[:file_name].present?
+        bad_request!(:code) if !params[:code].present?
 
         attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
@@ -451,7 +451,7 @@ module Gitlab
       get ":id/repository/commits/:sha/blob" do
         authorize! :download_code, user_project
 
-        error!("Filepath must be specified", 400) if !params.has_key? :filepath
+        bad_request!(:filepath) if !params.has_key? :filepath
 
         ref = params[:sha]
 
