@@ -138,7 +138,7 @@ class User < ActiveRecord::Base
     end
 
     def search query
-      where("name LIKE :query or email LIKE :query", query: "%#{query}%")
+      where("name LIKE :query OR email LIKE :query OR username LIKE :query", query: "%#{query}%")
     end
   end
 
