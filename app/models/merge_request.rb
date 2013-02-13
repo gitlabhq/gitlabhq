@@ -133,11 +133,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_event
-    self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::Merged).last
+    self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end
 
   def closed_event
-    self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::Closed).last
+    self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
   def commits
@@ -184,7 +184,7 @@ class MergeRequest < ActiveRecord::Base
     self.mark_as_merged!
     Event.create(
       project: self.project,
-      action: Event::Merged,
+      action: Event::MERGED,
       target_id: self.id,
       target_type: "MergeRequest",
       author_id: user_id

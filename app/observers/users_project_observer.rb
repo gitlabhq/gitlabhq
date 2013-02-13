@@ -7,7 +7,7 @@ class UsersProjectObserver < ActiveRecord::Observer
   def after_create(users_project)
     Event.create(
       project_id: users_project.project.id,
-      action: Event::Joined,
+      action: Event::JOINED,
       author_id: users_project.user.id
     )
   end
@@ -15,7 +15,7 @@ class UsersProjectObserver < ActiveRecord::Observer
   def after_destroy(users_project)
     Event.create(
       project_id: users_project.project.id,
-      action: Event::Left,
+      action: Event::LEFT,
       author_id: users_project.user.id
     )
   end

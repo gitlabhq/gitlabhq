@@ -33,7 +33,7 @@ module SharedProject
 
     @event = Event.create(
       project: @project,
-      action: Event::Pushed,
+      action: Event::PUSHED,
       data: data,
       author_id: @user.id
     )
