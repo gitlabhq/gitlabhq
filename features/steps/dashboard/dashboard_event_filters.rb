@@ -45,7 +45,7 @@ class EventFilters < Spinach::FeatureSteps
 
     @event = Event.create(
       project: @project,
-      action: Event::Pushed,
+      action: Event::PUSHED,
       data: data,
       author_id: @user.id
     )
@@ -56,7 +56,7 @@ class EventFilters < Spinach::FeatureSteps
     Event.create(
       project: @project,
       author_id: user.id,
-      action: Event::Joined
+      action: Event::JOINED
     )
   end
 
@@ -64,7 +64,7 @@ class EventFilters < Spinach::FeatureSteps
     merge_request = create :merge_request, author: @user, project: @project
     Event.create(
       project: @project,
-      action: Event::Merged,
+      action: Event::MERGED,
       target_id: merge_request.id,
       target_type: "MergeRequest",
       author_id: @user.id

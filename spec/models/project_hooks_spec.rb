@@ -19,7 +19,7 @@ describe Project, "Hooks" do
 
       event.should_not be_nil
       event.project.should == project
-      event.action.should == Event::Pushed
+      event.action.should == Event::PUSHED
       event.data.should == data
     end
   end
