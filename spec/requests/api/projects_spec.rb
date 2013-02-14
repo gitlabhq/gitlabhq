@@ -41,6 +41,11 @@ describe Gitlab::API do
       expect { post api("/projects", user) }.to_not change {Project.count}
     end
 
+    it "should return a 400 error if name not given" do
+      post api("/projects", user)
+      response.status.should == 400
+    end
+
     it "should respond with 201 on success" do
       post api("/projects", user), name: 'foo'
       response.status.should == 201
@@ -49,6 +54,14 @@ describe Gitlab::API do
     it "should respond with 400 if name is not given" do
       post api("/projects", user)
       response.status.should == 400
+    end
+
+    it "should return a 403 error if project limit reached" do
+      (1..user.projects_limit).each do |p|
+        post api("/projects", user), name: "foo#{p}"
+      end
+      post api("/projects", user), name: 'bar'
+      response.status.should == 403
     end
 
     it "should assign attributes to project" do

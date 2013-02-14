@@ -58,6 +58,9 @@ module Gitlab
         if @project.saved?
           present @project, with: Entities::Project
         else
+          if @project.errors[:limit_reached].present?
+            error!(@project.errors[:limit_reached], 403)
+          end
           not_found!
         end
       end
