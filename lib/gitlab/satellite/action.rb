@@ -17,6 +17,8 @@ module Gitlab
       # * Locks the satellite repo
       # * Yields the prepared satellite repo
       def in_locked_and_timed_satellite
+        Gitlab::ShellEnv.set_env(user)
+
         Grit::Git.with_timeout(options[:git_timeout]) do
           project.satellite.lock do
             return yield project.satellite.repo
@@ -28,6 +30,8 @@ module Gitlab
       rescue Grit::Git::GitTimeout => ex
         Gitlab::GitLogger.error(ex.message)
         return false
+      ensure
+        Gitlab::ShellEnv.reset_env
       end
 
       # * Clears the satellite

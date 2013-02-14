@@ -32,8 +32,7 @@ module Grack
         self.user = User.find_by_email(login) || User.find_by_username(login)
         return false unless user.try(:valid_password?, password)
 
-        # Set GL_ID env variable
-        ENV['GL_ID'] = "user-#{user.id}"
+        Gitlab::ShellEnv.set_env(user)
       end
 
       # Git upload and receive

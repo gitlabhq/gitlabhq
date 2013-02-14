@@ -53,7 +53,6 @@ module Gitlab
       system("/home/git/gitlab-shell/bin/gitlab-keys rm-key #{key_id} \"#{key_content}\"")
     end
 
-
     def url_to_repo path
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
