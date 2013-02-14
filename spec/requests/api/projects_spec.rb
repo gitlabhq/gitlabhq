@@ -144,6 +144,17 @@ describe Gitlab::API do
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
       json_response['protected'].should == true
     end
+
+    it "should return a 404 error if branch not found" do
+      put api("/projects/#{project.id}/repository/branches/unknown/protect", user)
+      response.status.should == 404
+    end
+
+    it "should return success when protect branch again" do
+      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
+      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
+      response.status.should == 200
+    end
   end
 
   describe "PUT /projects/:id/repository/branches/:branch/unprotect" do
@@ -154,6 +165,17 @@ describe Gitlab::API do
       json_response['name'].should == 'new_design'
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
       json_response['protected'].should == false
+    end
+
+    it "should return success when unprotect branch" do
+      put api("/projects/#{project.id}/repository/branches/unknown/unprotect", user)
+      response.status.should == 404
+    end
+
+    it "should return success when unprotect branch again" do
+      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
+      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
+      response.status.should == 200
     end
   end
 
@@ -181,6 +203,11 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['email'].should == user.email
       json_response['access_level'].should == UsersProject::MASTER
+    end
+
+    it "should return a 404 error if user id not found" do
+      get api("/projects/#{project.id}/members/1234", user)
+      response.status.should == 404
     end
   end
 
@@ -262,6 +289,12 @@ describe Gitlab::API do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
       }.to_not change { UsersProject.count }.by(1)
     end
+
+    it "should return 200 if team member already removed" do
+      delete api("/projects/#{project.id}/members/#{user3.id}", user)
+      delete api("/projects/#{project.id}/members/#{user3.id}", user)
+      response.status.should == 200
+    end
   end
 
   describe "DELETE /projects/:id/members/:user_id" do
@@ -313,6 +346,11 @@ describe Gitlab::API do
       post api("/projects/#{project.id}/hooks", user)
       response.status.should == 400
     end
+
+    it "should return a 422 error if url not valid" do
+      post api("/projects/#{project.id}/hooks", user), "url" => "ftp://example.com"
+      response.status.should == 422
+    end
   end
 
   describe "PUT /projects/:id/hooks/:hook_id" do
@@ -331,6 +369,11 @@ describe Gitlab::API do
     it "should return 400 error if url is not given" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user)
       response.status.should == 400
+    end
+
+    it "should return a 422 error if url is not valid" do
+      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: 'ftp://example.com'
+      response.status.should == 422
     end
   end
 

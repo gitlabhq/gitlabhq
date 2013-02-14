@@ -156,9 +156,9 @@ module Gitlab
       #   DELETE /projects/:id/members/:user_id
       delete ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        users_project = user_project.users_projects.find_by_user_id params[:user_id]
-        unless users_project.nil?
-          users_project.destroy
+        team_member = user_project.users_projects.find_by_user_id(params[:user_id])
+        unless team_member.nil?
+          team_member.destroy
         else
           {:message => "Access revoked", :id => params[:user_id].to_i}
         end
@@ -205,6 +205,9 @@ module Gitlab
         if @hook.save
           present @hook, with: Entities::Hook
         else
+          if @hook.errors[:url].present?
+            error!("Invalid url given", 422)
+          end
           not_found!
         end
       end
@@ -227,6 +230,9 @@ module Gitlab
         if @hook.update_attributes attrs
           present @hook, with: Entities::Hook
         else
+          if @hook.errors[:url].present?
+            error!("Invalid url given", 422)
+          end
           not_found!
         end
       end
@@ -281,6 +287,7 @@ module Gitlab
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ":id/repository/branches/:branch/protect" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found! unless @branch
         protected = user_project.protected_branches.find_by_name(@branch.name)
 
         unless protected
@@ -299,6 +306,7 @@ module Gitlab
       #   PUT /projects/:id/repository/branches/:branch/unprotect
       put ":id/repository/branches/:branch/unprotect" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found! unless @branch
         protected = user_project.protected_branches.find_by_name(@branch.name)
 
         if protected
