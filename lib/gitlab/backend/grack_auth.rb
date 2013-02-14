@@ -7,9 +7,6 @@ module Grack
       @request = Rack::Request.new(env)
       @auth = Request.new(env)
 
-      # Pass Gitolite update hook
-      ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
-
       # Need this patch due to the rails mount
       @env['PATH_INFO'] = @request.path
       @env['SCRIPT_NAME'] = ""
@@ -35,8 +32,8 @@ module Grack
         self.user = User.find_by_email(login) || User.find_by_username(login)
         return false unless user.try(:valid_password?, password)
 
-        # Set GL_USER env variable
-        ENV['GL_USER'] = user.email
+        # Set GL_ID env variable
+        ENV['GL_ID'] = "user-#{user.id}"
       end
 
       # Git upload and receive
