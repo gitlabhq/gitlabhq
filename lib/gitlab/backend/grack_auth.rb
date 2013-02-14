@@ -1,3 +1,5 @@
+require_relative 'shell_env'
+
 module Grack
   class Auth < Rack::Auth::Basic
     attr_accessor :user, :project
