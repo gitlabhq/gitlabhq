@@ -141,7 +141,7 @@ class Repository
 
     # Create file if not exists
     unless File.exists?(file_path)
-      FileUtils.mkdir_p storage_path
+      FileUtils.mkdir_p File.dirname(file_path)
       file = self.repo.archive_to_file(ref, prefix,  file_path)
     end
 
