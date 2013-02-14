@@ -1,5 +1,6 @@
 class Settings < Settingslogic
   source "#{Rails.root}/config/gitlab.yml"
+  namespace Rails.env
 
   class << self
     def gitlab_on_non_standard_port?
