@@ -44,7 +44,7 @@ module Gitlab
                                     :merge_requests_enabled,
                                     :wiki_enabled]
         @project = ::Projects::CreateContext.new(current_user, attrs).execute
-        if @project.persisted?
+        if @project.saved?
           present @project, with: Entities::Project
         else
           not_found!
