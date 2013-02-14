@@ -140,13 +140,13 @@ production: &base
     timeout: 10
 
 development:
-  <<: *defaults
+  <<: *base
 
 test:
-  <<: *defaults
+  <<: *base
   issues_tracker:
     redmine:
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
 
 staging:
-  <<: *defaults
+  <<: *base
