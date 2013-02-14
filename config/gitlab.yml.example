@@ -140,10 +140,10 @@ production: &base
     timeout: 10
 
 development:
-  <<: *base
+  <<: *defaults
 
 test:
   <<: *base
 
 staging:
-  <<: *base
+  <<: *defaults
