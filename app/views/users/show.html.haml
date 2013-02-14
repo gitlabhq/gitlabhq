@@ -17,5 +17,5 @@
     %h5 Recent events
     = render @events
   .span4
-    = render 'profile'
-    = render 'projects'
+    = render 'profile', user: @user
+    = render 'projects', user: @user

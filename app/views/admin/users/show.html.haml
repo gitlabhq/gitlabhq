@@ -1,127 +1,83 @@
-%h3.page_title
-  User: #{@admin_user.name}
-  - if @admin_user.blocked
-    %small Blocked
-  - if @admin_user.admin
-    %small Administrator
-  = link_to edit_admin_user_path(@admin_user), class: "btn pull-right" do
-    %i.icon-edit
-    Edit
-
-%br
-
-%table.zebra-striped
-  %thead
-    %tr
-      %th Profile
-      %th
-  %tr
-    %td
-      %b
-        Email:
-    %td
-      = @admin_user.email
-  %tr
-    %td
-      %b
-        Username:
-    %td
-      = @admin_user.username
-  %tr
-    %td
-      %b
-        Admin:
-        %td= check_box_tag "admin", 1, @admin_user.admin, disabled: :disabled
-  %tr
-    %td
-      %b
-        Blocked:
-        %td= check_box_tag "blocked", 1, @admin_user.blocked, disabled: :disabled
-  %tr
-    %td
-      %b
-        Created at:
-    %td
-      = @admin_user.created_at.stamp("March 1, 1999")
-  %tr
-    %td
-      %b
-        Projects limit:
-    %td
-      = @admin_user.projects_limit
-  - unless @admin_user.skype.empty?
-    %tr
-      %td
-        %b
-          Skype:
-      %td
-        = @admin_user.skype
-  - unless @admin_user.linkedin.empty?
-    %tr
-      %td
-        %b
-          Linkedin:
-      %td
-        = @admin_user.linkedin
-  - unless @admin_user.twitter.empty?
-    %tr
-      %td
-        %b
-          Twitter:
-      %td
-        = @admin_user.twitter
-
-%br
-%h5 Add User to Projects
-%br
-= form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
-  %table
-    %thead
-      %tr
-        %th Projects
-        %th Project Access:
-
-    %tr
-      %td= select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
-      %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
-
-    %tr
-      %td= submit_tag 'Add', class: "btn btn-primary"
-      %td
+.row
+  .span6
+    %h3.page_title
+      = image_tag gravatar_icon(@admin_user.email, 90), class: "avatar s90"
+      = @admin_user.name
+      - if @admin_user.blocked
+        %span.cred (Blocked)
+      - if @admin_user.admin
+        %span.cred (Admin)
+      .pull-right
+        = link_to edit_admin_user_path(@admin_user), class: "btn pull-right" do
+          %i.icon-edit
+          Edit
+      %br
+      %small @#{@admin_user.username}
+      %br
+      %small member since #{@admin_user.created_at.stamp("Nov 12, 2031")}
+    .clearfix
+    %hr
+    %h5
+      Add User to Projects
+      %small
         Read more about project permissions
         %strong= link_to "here", help_permissions_path, class: "vlink"
-%br
+    %br
+    = form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
+      .control-group
+        = label_tag :project_ids, "Projects", class: 'control-label'
+        .controls
+          = select_tag :project_ids, options_from_collection_for_select(@not_in_projects , :id, :name_with_namespace),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span3'
+      .control-group
+        = label_tag :project_access, "Project Access", class: 'control-label'
+        .controls
+          = select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
 
-- if @admin_user.groups.present?
-  %h5 Owner of groups:
-  %br
+      .form-actions
+        = submit_tag 'Add', class: "btn btn-create"
+        .pull-right
+    %br
 
-  %table.zebra-striped
-    %thead
-      %tr
-        %th Name
+    - if @admin_user.owned_groups.present?
+      .ui-box
+        %h5.title Owned groups:
+        %ul.well-list
+          - @admin_user.groups.each do |group|
+            %li
+              %strong= link_to group.name, admin_group_path(group)
 
-    - @admin_user.groups.each do |group|
-      %tr
-        %td= link_to group.name, admin_group_path(group)
+    - if @admin_user.owned_teams.present?
+      .ui-box
+        %h5.title Owned teams:
+        %ul.well-list
+          - @admin_user.owned_teams.each do |team|
+            %li
+              %strong= link_to team.name, admin_team_path(team)
 
 
-- if @admin_user.authorized_projects.present?
-  %h5 Authorized Projects:
-  %br
-
-  %table.zebra-striped
-    %thead
-      %tr
-        %th Name
-        %th Project Access
-        %th
-        %th
-
-    - @admin_user.tm_in_authorized_projects.each do |tm|
-      - project = tm.project
-      %tr
-        %td= link_to project.name_with_namespace, admin_project_path(project)
-        %td= tm.project_access_human
-        %td= link_to 'Edit Access', edit_admin_project_member_path(project, tm.user), class: "btn btn-small"
-        %td= link_to 'Remove from team', admin_project_member_path(project, tm.user), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove"
+  .span6
+    = render 'users/profile', user: @admin_user
+    .ui-box
+      %h5.title Projects (#{@projects.count})
+      %ul.well-list
+        - @projects.each do |project|
+          %li
+            = link_to admin_project_path(project), class: dom_class(project) do
+              - if project.namespace
+                = project.namespace.human_name
+                \/
+              %strong.well-title
+                = truncate(project.name, length: 45)
+            %span.pull-right.light
+              - if project.owner == @admin_user
+                %i.icon-wrench
+              - tm = project.team.get_tm(@admin_user.id)
+              - if tm
+                = tm.project_access_human
+                = link_to edit_admin_project_member_path(project, tm.user), class: "btn btn-small" do
+                  %i.icon-edit
+                = link_to admin_project_member_path(project, tm.user), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove" do
+                  %i.icon-remove
+    %p.light
+      %i.icon-wrench
+      &ndash; user is a project owner

@@ -26,7 +26,7 @@ class ActivityObserver < ActiveRecord::Observer
         project: record.project,
         target_id: record.id,
         target_type: record.class.name,
-        action: (record.closed ? Event::Closed : Event::Reopened),
+        action: (record.closed ? Event::CLOSED : Event::REOPENED),
         author_id: record.author_id_of_changes
       )
     end
