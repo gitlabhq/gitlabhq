@@ -70,6 +70,9 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 # Servers
 gem "unicorn", "~> 4.4.0"
 
+# State machine
+gem "state_machine"
+
 # Issue tags
 gem "acts-as-taggable-on", "2.3.3"
 
