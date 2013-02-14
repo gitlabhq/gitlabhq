@@ -1,4 +1,4 @@
-.groups_box
+.ui-box
   %h5.title
     Groups
     %small
@@ -13,8 +13,6 @@
       %li
         = link_to group_path(id: group.path), class: dom_class(group) do
           %strong.well-title= truncate(group.name, length: 35)
-          %span.edit.light
-            - if group.owner == current_user
-              %i.icon-wrench
-          %span.description
-            %strong= group.description
+        %span.pull-right.light
+          - if group.owner == current_user
+            %i.icon-wrench
