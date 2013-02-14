@@ -143,7 +143,10 @@ development:
   <<: *defaults
 
 test:
-  <<: *base
+  <<: *defaults
+  issues_tracker:
+    redmine:
+      issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
 
 staging:
   <<: *defaults

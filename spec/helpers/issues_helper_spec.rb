@@ -25,7 +25,7 @@ describe IssuesHelper do
 
   describe :url_for_issue do
     let(:issue_id) { 3 }
-    let(:issues_url) { "http://redmine/:project_id/:issues_tracker_id/:id" }
+    let(:issues_url) { Gitlab.config.issues_tracker.redmine.issues_url}
     let(:ext_expected) do
       issues_url.gsub(':id', issue_id.to_s)
         .gsub(':project_id', ext_project.id.to_s)
@@ -40,7 +40,6 @@ describe IssuesHelper do
 
     it "should return path to external tracker" do
       @project = ext_project
-      Settings[:issues_tracker][ext_project.issues_tracker]["issues_url"] = issues_url
 
       url_for_issue(issue_id).should match(ext_expected)
     end

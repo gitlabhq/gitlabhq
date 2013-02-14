@@ -96,7 +96,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
 
-  enumerize :issues_tracker, :in => (Settings[:issues_tracker].keys).append(:gitlab), :default => :gitlab
+  enumerize :issues_tracker, :in => (Gitlab.config.issues_tracker.keys).append(:gitlab), :default => :gitlab
 
   class << self
     def abandoned
