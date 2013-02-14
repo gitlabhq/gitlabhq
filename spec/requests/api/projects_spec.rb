@@ -195,6 +195,11 @@ describe Gitlab::API do
       json_response.count.should == 1
       json_response.first['email'].should == user.email
     end
+
+    it "should return a 404 error if id not found" do
+      get api("/projects/9999/members", user)
+      response.status.should == 404
+    end
   end
 
   describe "GET /projects/:id/members/:user_id" do
