@@ -15,7 +15,7 @@
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
 #  merged        :boolean          default(FALSE), not null
-#  state         :integer          default(1), not null
+#  merge_status  :integer          default(1), not null
 #  milestone_id  :integer
 #
 

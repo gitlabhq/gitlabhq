@@ -15,7 +15,7 @@
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
 #  merged        :boolean          default(FALSE), not null
-#  state         :integer          default(1), not null
+#  merge_status  :integer          default(1), not null
 #  milestone_id  :integer
 #
 
@@ -51,13 +51,13 @@ class MergeRequest < ActiveRecord::Base
     where("milestone_id = :milestone_id", milestone_id: milestone)
   end
 
-  def human_state
-    states = {
+  def human_merge_status
+    merge_statuses = {
       CAN_BE_MERGED =>  "can_be_merged",
       CANNOT_BE_MERGED => "cannot_be_merged",
       UNCHECKED => "unchecked"
     }
-    states[self.state]
+    merge_statuses[self.merge_status]
   end
 
   def validate_branches
@@ -72,20 +72,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unchecked?
-    state == UNCHECKED
+    merge_status == UNCHECKED
   end
 
   def mark_as_unchecked
-    self.state = UNCHECKED
+    self.merge_status = UNCHECKED
     self.save
   end
 
   def can_be_merged?
-    state == CAN_BE_MERGED
+    merge_status == CAN_BE_MERGED
   end
 
   def check_if_can_be_merged
-    self.state = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
+    self.merge_status = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
                    CAN_BE_MERGED
                  else
                    CANNOT_BE_MERGED
@@ -160,7 +160,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mark_as_unmergable
-    self.state = CANNOT_BE_MERGED
+    self.merge_status = CANNOT_BE_MERGED
     self.save
   end
 
