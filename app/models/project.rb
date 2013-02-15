@@ -43,6 +43,8 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
+  has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one :forked_from_project, through: :forked_project_link
 
   has_many :events,             dependent: :destroy
   has_many :merge_requests,     dependent: :destroy
@@ -399,4 +401,9 @@ class Project < ActiveRecord::Base
   def protected_branch? branch_name
     protected_branches.map(&:name).include?(branch_name)
   end
+
+  def forked?
+    !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+  end
+
 end

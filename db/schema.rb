@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130318212250) do
+ActiveRecord::Schema.define(:version => 20130319214458) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -31,6 +31,15 @@ ActiveRecord::Schema.define(:version => 20130318212250) do
   add_index "events", ["project_id"], :name => "index_events_on_project_id"
   add_index "events", ["target_id"], :name => "index_events_on_target_id"
   add_index "events", ["target_type"], :name => "index_events_on_target_type"
+
+  create_table "forked_project_links", :force => true do |t|
+    t.integer  "forked_to_project_id",   :null => false
+    t.integer  "forked_from_project_id", :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "forked_project_links", ["forked_to_project_id"], :name => "index_forked_project_links_on_forked_to_project_id", :unique => true
 
   create_table "issues", :force => true do |t|
     t.string   "title"

@@ -167,6 +167,10 @@ Gitlab::Application.routes.draw do
   # Project Area
   #
   resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
+    member do
+      post "fork"
+    end
+
     resources :blob,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}

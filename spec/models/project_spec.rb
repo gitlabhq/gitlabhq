@@ -39,6 +39,7 @@ describe Project do
     it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:wikis).dependent(:destroy) }
     it { should have_many(:protected_branches).dependent(:destroy) }
+    it { should have_one(:forked_project_link).dependent(:destroy) }
   end
 
   describe "Mass assignment" do
@@ -246,4 +247,5 @@ describe Project do
       ext_project.can_have_issues_tracker_id?.should be_false
     end
   end
+
 end
