@@ -1,6 +1,6 @@
 This installation guide was created for Debian/Ubuntu and tested on it.
 
-Please read `doc/install/requirements.md` for hardware and platform requirements.
+Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
 
 
 **Important Note:**
@@ -8,12 +8,13 @@ The following steps have been known to work.
 If you deviate from this guide, do it with caution and make sure you don't
 violate any assumptions GitLab makes about its environment.
 For things like AWS installation scripts, init scripts or config files for
-alternative web server have a look at the "Advanced Setup Tips" section.
+alternative web server have a look at the [`Advanced Setup
+Tips`](./installation.md#advanced-setup-tips) section.
 
 
 **Important Note:**
 If you find a bug/error in this guide please submit an issue or pull request
-following the contribution guide (see `CONTRIBUTING.md`).
+following the [`contribution guide`](../../CONTRIBUTING.md).
 
 - - -
 
@@ -32,16 +33,13 @@ The GitLab installation consists of setting up the following components:
 
 # 1. Packages / Dependencies
 
-`sudo` is not installed on Debian by default. If you don't have it you'll need
-to install it first.
+`sudo` is not installed on Debian by default. Make sure your system is
+up-to-date and install it.
 
     # run as root
-    apt-get update && apt-get upgrade && apt-get install sudo
-
-Make sure your system is up-to-date:
-
-    sudo apt-get update
-    sudo apt-get upgrade
+    apt-get update
+    apt-get upgrade
+    apt-get install sudo
 
 **Note:**
 Vim is an editor that is used here whenever there are files that need to be
@@ -111,10 +109,9 @@ Create a `git` user for Gitlab:
     ./bin/install 
 
 
-
 # 5. Database
 
-To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](./databases.md) .
+To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](./databases.md).
 
 
 # 6. GitLab
@@ -229,7 +226,7 @@ However there are still a few steps left.
 
 **Note:**
 If you can't or don't want to use Nginx as your web server, have a look at the
-"Advanced Setup Tips" section.
+[`Advanced Setup Tips`](./installation.md#advanced-setup-tips) section.
 
 ## Installation
     sudo apt-get install nginx
