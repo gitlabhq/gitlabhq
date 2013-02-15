@@ -166,4 +166,9 @@ class Repository
   def cache_key(type)
     "#{type}:#{path_with_namespace}"
   end
+  
+  def fork_repo(to_path)
+    to_path_full = File.join(Gitlab.config.gitlab_shell.repos_path, to_path) + ".git"
+    result = repo.fork_bare(to_path_full)
+  end
 end
