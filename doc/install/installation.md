@@ -187,7 +187,9 @@ Make sure to update username/password in config/database.yml.
 
 
 ## Initialise Database and Activate Advanced Features
-
+    
+    sudo -u git -H bundle exec rake db:setup RAILS_ENV=production
+    sudo -u git -H bundle exec rake db:seed_fu RAILS_ENV=production
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
 
