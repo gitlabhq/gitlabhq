@@ -197,8 +197,9 @@ Parameters:
 
 Return Values:
 
-+ `200 Ok` on success and the added user, even if the user is already team member
++ `201 Created` on success and the added user is returned, even if the user is already team member
 + `400 Bad Request` if the required attribute access_level is not given
++ `401 Unauthorized` if the user is not allowed to add a new team member
 + `404 Not Found` if a resource can not be found, e.g. project with ID not available
 + `422 Unprocessable Entity` if an unknown access_level is given
 
@@ -221,6 +222,7 @@ Return Values:
 
 + `200 Ok` on succes and the modified team member
 + `400 Bad Request` if the required attribute access_level is not given
++ `401 Unauthorized` if the user is not allowed to modify a team member
 + `404 Not Found` if a resource can not be found, e.g. project with ID not available
 + `422 Unprocessable Entity` if an unknown access_level is given
 
@@ -241,6 +243,7 @@ Parameters:
 Return Values:
 
 + `200 Ok` on success
++ `401 Unauthorized` if user is not allowed to remove a team member
 + `404 Not Found` if either project or user can not be found
 
 This method is idempotent and can be called multiple times with the same parameters.
@@ -266,6 +269,7 @@ Parameters:
 Return values:
 
 + `200 Ok` on success with a list of hooks
++ `401 Unauthorized` if user is not allowed to get list of hooks
 + `404 Not Found` if project can not be found
 
 
@@ -437,3 +441,151 @@ Return values:
 
 + `200 Ok` on success
 + `404 Not Found` if either project or branch could not be found
+
+
+### List tags
+
+Lists all tags of a project.
+
+```
+GET /projects/:id/repository/tags
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
+
+Return values:
+
++ `200 Ok` on success and a list of tags
++ `404 Not Found` if project with id not found
+
+
+### List commits
+
+Lists all commits with pagination. If the optional `ref_name` name is not given the commits of
+the default branch (usually master) are returned.
+
+```
+GET /projects/:id/repository/commits
+```
+
+Parameters:
+
++ `id` (required) - The Id of the project
++ `ref_name` (optional) - The name of a repository branch or tag
++ `page` (optional) - The page of commits to return (`0` default)
++ `per_page` (optional) - The number of commits per page (`20` default)
+
+Returns values:
+
++ `200 Ok` on success and a list with commits
++ `404 Not Found` if project with id or the branch with `ref_name` not found
+
+
+## Snippets
+
+### List snippets
+
+Lists the snippets of a project.
+
+```
+GET /projects/:id/snippets
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
+
+Return values:
+
++ `200 Ok` on success and the list of snippets
++ `404 Not Found` if project with id not found
+
+
+### List single snippet
+
+Lists a single snippet of a project
+
+```
+GET /projects/:id/snippets/:snippet_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
++ `snippet_id` (required) - The ID of the snippet
+
+Return values:
+
++ `200 Ok` on success and the project snippet
++ `404 Not Found` if project ID or snippet ID not found
+
+
+### Create snippet
+
+Creates a new project snippet.
+
+```
+POST /projects/:id/snippets
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
++ `title` (required) - The title of the new snippet
++ `file_name` (required) - The file name of the snippet
++ `code` (required) - The content of the snippet
++ `lifetime` (optional) - The expiration date of a snippet
+
+Return values:
+
++ `201 Created` on success and the new snippet
++ `400 Bad Request` if one of the required attributes is missing
++ `401 Unauthorized` if it is not allowed to post a new snippet
++ `404 Not Found` if the project ID is not found
+
+
+### Update snippet
+
+Updates an existing project snippet.
+
+```
+PUT /projects/:id/snippets/:snippet_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
++ `snippet_id` (required) - The id of the project snippet
++ `title` (optional) - The new title of the project snippet
++ `file_name` (optional) - The new file name of the project snippet
++ `lifetime` (optional) - The new expiration date of the snippet
++ `code` (optional) - The content of the snippet
+
+Return values:
+
++ `200 Ok` on success and the content of the updated snippet
++ `401 Unauthorized` if the user is not allowed to modify the snippet
++ `404 Not Found` if project ID or snippet ID is not found
+
+
+## Delete snippet
+
+Deletes a project snippet. This is an idempotent function call and returns `200 Ok`
+even if the snippet with the id is not available.
+
+```
+DELETE /projects/:id/snippets/:snippet_id
+```
+
+Paramaters:
+
++ `id` (required) - The ID of the project
++ `snippet_id` (required) - The ID of the snippet
+
+Return values:
+
++ `200 Ok` on success, if the snippet got deleted it is returned, if not available then an empty JSON response
++ `401 Unauthorized` if the user is not allowed to remove the snippet
++ `404 Not Found` if the project ID not found
