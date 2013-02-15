@@ -360,3 +360,80 @@ Return values:
 
 Note the JSON response differs if the hook is available or not. If the project hook
 is available before it is returned in the JSON response or an empty response is returned.
+
+
+## Branches
+
+### List branches
+
+Lists all branches of a project.
+
+```
+GET /projects/:id/repository/branches
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
+
+Return values:
+
++ `200 Ok` on success and a list of branches
++ `404 Not Found` if project is not found
+
+
+### List single branch
+
+Lists a specific branch of a project.
+
+```
+GET /projects/:id/repository/branches/:branch
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project.
++ `branch` (required) - The name of the branch.
+
+Return values:
+
++ `200 Ok` on success
++ `404 Not Found` if either project with ID or branch could not be found
+
+
+### Protect single branch
+
+Protects a single branch of a project.
+
+```
+PUT /projects/:id/repository/branches/:branch/protect
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project.
++ `branch` (required) - The name of the branch.
+
+Return values:
+
++ `200 Ok` on success
++ `404 Not Found` if either project or branch could not be found
+
+
+### Unprotect single branch
+
+Unprotects a single branch of a project.
+
+```
+PUT /projects/:id/repository/branches/:branch/unprotect
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project.
++ `branch` (required) - The name of the branch.
+
+Return values:
+
++ `200 Ok` on success
++ `404 Not Found` if either project or branch could not be found
