@@ -35,7 +35,7 @@ class Key < ActiveRecord::Base
 
   def fingerprintable_key
     return true unless key # Don't test if there is no key.
-    # `ssh-keygen -lf /dev/stdin <<< "#{key}"` errors with: redirection unexpected
+
     file = Tempfile.new('key_file')
     begin
       file.puts key
