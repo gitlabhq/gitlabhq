@@ -167,6 +167,7 @@ Gitlab::Application.routes.draw do
   #
   resources :projects, constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }, except: [:new, :create, :index], path: "/" do
     member do
+      post "fork"
       get "wall"
       get "files"
     end

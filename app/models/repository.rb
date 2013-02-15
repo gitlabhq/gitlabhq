@@ -147,4 +147,9 @@ class Repository
 
     file_path
   end
+
+  def fork(to_path)
+    to_path_full = File.join(Gitlab.config.gitolite.repos_path, to_path) + ".git"
+    result = repo.fork_bare(to_path_full)
+  end
 end
