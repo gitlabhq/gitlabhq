@@ -5,7 +5,7 @@ class DashboardController < ApplicationController
   before_filter :event_filter, only: :show
 
   def show
-    @groups = current_user.authorized_groups
+    @groups = current_user.authorized_groups.sort_by { |x| x.name }
     @has_authorized_projects = @projects.count > 0
     @teams = current_user.authorized_teams
     @projects_count = @projects.count
