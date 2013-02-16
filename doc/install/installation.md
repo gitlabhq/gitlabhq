@@ -243,7 +243,7 @@ Make sure to edit the config file to match your setup:
     # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
     # to the IP address and fully-qualified domain name
     # of your host serving GitLab
-    sudo vim /etc/nginx/sites-enabled/gitlab
+    sudo vim /etc/nginx/sites-available/gitlab
 
 ## Restart
 
