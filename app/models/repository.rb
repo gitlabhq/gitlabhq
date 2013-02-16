@@ -132,9 +132,9 @@ class Repository
     return nil unless commit
 
     # Build file path
-    file_name = self.path_with_namespace + "-" + commit.id.to_s + ".tar.gz"
+    file_name = self.path_with_namespace.gsub("/","_") + "-" + commit.id.to_s + ".tar.gz"
     storage_path = Rails.root.join("tmp", "repositories")
-    file_path = File.join(storage_path, file_name)
+    file_path = File.join(storage_path, self.path_with_namespace, file_name)
 
     # Put files into a directory before archiving
     prefix = self.path_with_namespace + "/"
