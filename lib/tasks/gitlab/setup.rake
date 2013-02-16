@@ -1,10 +1,10 @@
 namespace :gitlab do
   desc "GITLAB | Setup production application"
   task :setup => :environment do
-    setup
+    setup_db
   end
 
-  def setup
+  def setup_db
     warn_user_is_not_gitlab
 
     puts "This will create the necessary database tables and seed the database."
