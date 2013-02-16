@@ -40,7 +40,9 @@ module Gitlab
 
       get "/check" do
         {
-          api_version: '3'
+          api_version: Gitlab::API.version,
+          gitlab_version: Gitlab::VERSION,
+          gitlab_rev: Gitlab::REVISION,
         }
       end
     end

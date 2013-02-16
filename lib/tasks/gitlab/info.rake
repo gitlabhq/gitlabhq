@@ -40,8 +40,8 @@ namespace :gitlab do
 
       puts ""
       puts "GitLab information".yellow
-      puts "Version:\t#{Gitlab::Version}"
-      puts "Revision:\t#{Gitlab::Revision}"
+      puts "Version:\t#{Gitlab::VERSION}"
+      puts "Revision:\t#{Gitlab::REVISION}"
       puts "Directory:\t#{Rails.root}"
       puts "DB Adapter:\t#{database_adapter}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
