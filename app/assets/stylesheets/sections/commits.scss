@@ -29,7 +29,7 @@
     a{
       color: $style_color;
     }
-    
+
     > span {
       font-family: $monospace_font;
       font-size: 14px;
@@ -124,7 +124,7 @@
     .wrap{
       display: inline-block;
     }
-    
+
     .frame {
       display: inline-block;
       background-color: #fff;
@@ -149,7 +149,7 @@
 
     .view.swipe{
       position: relative;
-      
+
       .swipe-frame{
         display: block;
         margin: auto;
@@ -228,7 +228,7 @@
         bottom: 0px;
         left: 50%;
         margin-left: -150px;
-        
+
         .drag-track{
           display: block;
           position: absolute;
@@ -237,7 +237,7 @@
           width: 276px;
           background: url('onion_skin_sprites.gif') -4px -20px repeat-x;
         }
-        
+
         .dragger {
           display: block;
           position: absolute;
@@ -248,7 +248,7 @@
           background: url('onion_skin_sprites.gif') 0px -34px repeat-x;
           cursor: pointer;
         }
-        
+
         .transparent {
           display: block;
           position: absolute;
@@ -258,7 +258,7 @@
           width: 10px;
           background: url('onion_skin_sprites.gif') -2px 0px no-repeat;
         }
-        
+
         .opaque {
           display: block;
           position: absolute;
@@ -275,19 +275,19 @@
 
     padding: 10px;
     text-align: center;
-    
+
     background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
     background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
-    
+
     ul, li{
       list-style: none;
       margin: 0;
       padding: 0;
       display: inline-block;
     }
-    
+
     li{
       color: grey;
       border-left: 1px solid #c1c1c1;
@@ -322,12 +322,12 @@
 }
 .commit-author, .commit-committer{
   display: block;
-  color: #999; 
-  font-weight: normal; 
+  color: #999;
+  font-weight: normal;
   font-style: italic;
 }
 .commit-author strong, .commit-committer strong{
-  font-weight: bold; 
+  font-weight: bold;
   font-style: normal;
 }
 
@@ -337,7 +337,6 @@
  */
 .commit {
   .browse_code_link_holder {
-    @extend .span2;
     float: right;
   }
 
