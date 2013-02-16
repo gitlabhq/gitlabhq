@@ -26,7 +26,7 @@
     = markdown truncate(event.target.note, length: 70)
     - note = event.target
     - if note.attachment.url
-      = link_to note.attachment.url, target: "_blank", class: 'note-file-attach' do
+      = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do
         - if note.attachment.image?
           = image_tag note.attachment.url, class: 'note-image-attach'
         - else

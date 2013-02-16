@@ -19,4 +19,12 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   rescue
     false
   end
+
+  def secure_url
+    if self.class.storage == CarrierWave::Storage::File
+      "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
+    else
+      url
+    end
+  end
 end
