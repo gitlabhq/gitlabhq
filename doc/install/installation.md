@@ -94,16 +94,16 @@ Create a `git` user for Gitlab:
 
 # 4. GitLab shell
 
-    # login as git 
+    # Login as git 
     sudo su git
 
-    # go to home directory 
+    # Go to home directory 
     cd /home/git
 
-    # clone gitlab shell
+    # Clone gitlab shell
     git clone https://github.com/gitlabhq/gitlab-shell.git
 
-    # setup
+    # Setup
     cd gitlab-shell
     cp config.yml.example config.yml
     ./bin/install 
@@ -151,9 +151,13 @@ do so with caution!
     sudo chmod -R u+rwX  log/
     sudo chmod -R u+rwX  tmp/
 
-    # Make directory for satellites
+    # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
+    # Create directory for pids and make sure GitLab can write to it
+    sudo -u git -H mkdir tmp/pids/
+    sudo chmod -R u+rwX  tmp/pids/
+ 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -204,7 +208,7 @@ Make GitLab start on boot:
 
 ## Check Application Status
 
-Check if GitLab and its environment is configured correctly:
+Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
@@ -247,7 +251,7 @@ Make sure to edit the config file to match your setup:
 
 ## Restart
 
-    sudo /etc/init.d/nginx restart
+    sudo service nginx restart
 
 
 # Done!
@@ -281,7 +285,7 @@ a different host, you can configure its connection string via the
 
 ## Custom SSH Connection
 
-If you are running SSH on a non-standard port, you must change the gitlab user'S SSH config.
+If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
     
     # Add to /home/git/.ssh/config
     host localhost          # Give your setup a name (here: override localhost)
