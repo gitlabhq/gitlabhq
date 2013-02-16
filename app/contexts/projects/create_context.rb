@@ -38,6 +38,8 @@ module Projects
       if @project.valid? && @project.import_url.present?
         shell = Gitlab::Shell.new
         if shell.import_repository(@project.path_with_namespace, @project.import_url)
+          # We should create satellite for imported repo
+          @project.satellite.create unless @project.satellite.exists?
           true
         else
           @project.errors.add(:import_url, 'cannot clone repo')
