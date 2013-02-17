@@ -360,7 +360,7 @@ If you are running SSH on a non-standard port, you must change the gitlab user'S
     host localhost          # Give your setup a name (here: override localhost)
         user git            # Your remote git user
         port 2222           # Your port number
-        hostname 127.0.0.1; # Your server name or IP
+        hostname 127.0.0.1 # Your server name or IP
 
 You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
 
