@@ -54,10 +54,15 @@ FactoryGirl.define do
     project
 
     trait :closed do
-      closed true
+      state :closed
+    end
+
+    trait :reopened do
+      state :reopened
     end
 
     factory :closed_issue, traits: [:closed]
+    factory :reopened_issue, traits: [:reopened]
   end
 
   factory :merge_request do

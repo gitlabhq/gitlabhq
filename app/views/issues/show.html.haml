@@ -7,10 +7,10 @@
 
   %span.pull-right
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
-      - if @issue.closed
-        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {closed: false }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
+      - if @issue.closed?
+        = link_to 'Reopen', project_issue_path(@project, @issue, issue: {state: :reopened }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
       - else
-        = link_to 'Close', project_issue_path(@project, @issue, issue: {closed: true }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
+        = link_to 'Close', project_issue_path(@project, @issue, issue: {state: :closed }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
     - if can?(current_user, :admin_project, @project) || @issue.author == current_user
       = link_to edit_project_issue_path(@project, @issue), class: "btn grouped" do
         %i.icon-edit
@@ -27,7 +27,7 @@
 .ui-box.ui-box-show
   .ui-box-head
     %h4.box-title
-      - if @issue.closed
+      - if @issue.closed?
         .error.status_info Closed
       = gfm escape_once(@issue.title)
 

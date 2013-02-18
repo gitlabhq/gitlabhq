@@ -9,7 +9,7 @@
 #  project_id   :integer
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  closed       :boolean          default(FALSE), not null
+#  state        :string           default(FALSE), not null
 #  position     :integer          default(0)
 #  branch_name  :string(255)
 #  description  :text

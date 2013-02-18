@@ -35,12 +35,11 @@ module Gitlab
     class Group < Grape::Entity
       expose :id, :name, :path, :owner_id
     end
-    
+
     class GroupDetail < Group
       expose :projects, using: Entities::Project
     end
 
-    
     class RepoObject < Grape::Entity
       expose :name, :commit
       expose :protected do |repo, options|
@@ -63,7 +62,7 @@ module Gitlab
     class Milestone < Grape::Entity
       expose :id
       expose (:project_id) {|milestone| milestone.project.id}
-      expose :title, :description, :due_date, :closed, :updated_at, :created_at
+      expose :title, :description, :due_date, :state, :updated_at, :created_at
     end
 
     class Issue < Grape::Entity
@@ -73,7 +72,7 @@ module Gitlab
       expose :label_list, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
-      expose :closed, :updated_at, :created_at
+      expose :state, :updated_at, :created_at
     end
 
     class SSHKey < Grape::Entity
