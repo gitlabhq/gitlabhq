@@ -13,19 +13,32 @@
 #
 
 class Milestone < ActiveRecord::Base
-  attr_accessible :title, :description, :due_date, :closed, :author_id_of_changes
+  attr_accessible :title, :description, :due_date, :state_event, :author_id_of_changes
   attr_accessor :author_id_of_changes
 
   belongs_to :project
   has_many :issues
   has_many :merge_requests
 
-  scope :active, -> { where(closed: false) }
-  scope :closed, -> { where(closed: true) }
+  scope :active, -> { with_state(:active) }
+  scope :closed, -> { with_state(:closed) }
 
   validates :title, presence: true
   validates :project, presence: true
-  validates :closed, inclusion: { in: [true, false] }
+
+  state_machine :state, :initial => :active do
+    event :close do
+      transition :active => :closed
+    end
+
+    event :activate do
+      transition :closed => :active
+    end
+
+    state :closed
+
+    state :active
+  end
 
   def expired?
     if due_date
@@ -68,15 +81,11 @@ class Milestone < ActiveRecord::Base
   end
 
   def can_be_closed?
-    open? && issues.opened.count.zero?
+    active? && issues.opened.count.zero?
   end
 
   def is_empty?
     total_items_count.zero?
-  end
-
-  def open?
-    !closed
   end
 
   def author_id

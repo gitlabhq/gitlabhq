@@ -27,7 +27,6 @@ describe Milestone do
   describe "Validation" do
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:project) }
-    it { should ensure_inclusion_of(:closed).in_array([true, false]) }
   end
 
   let(:milestone) { create(:milestone) }
@@ -41,7 +40,7 @@ describe Milestone do
 
     it "should count closed issues" do
       IssueObserver.current_user = issue.author
-      issue.update_attributes(closed: true)
+      issue.close
       milestone.issues << issue
       milestone.percent_complete.should == 100
     end
@@ -96,7 +95,7 @@ describe Milestone do
   describe :items_count do
     before do
       milestone.issues << create(:issue)
-      milestone.issues << create(:issue, closed: true)
+      milestone.issues << create(:closed_issue)
       milestone.merge_requests << create(:merge_request)
     end
 
@@ -108,9 +107,5 @@ describe Milestone do
 
   describe :can_be_closed? do
     it { milestone.can_be_closed?.should be_true }
-  end
-
-  describe :open? do
-    it { milestone.open?.should be_true }
   end
 end
