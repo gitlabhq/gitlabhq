@@ -9,15 +9,14 @@
 #  author_id     :integer
 #  assignee_id   :integer
 #  title         :string(255)
-#  closed        :boolean          default(FALSE), not null
+#  state         :string(255)      not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
-#  merged        :boolean          default(FALSE), not null
 #  merge_status  :integer          default(1), not null
-#  milestone_id  :integer
 #
+#  milestone_id  :integer
 
 require Rails.root.join("app/models/commit")
 require Rails.root.join("lib/static_model")
@@ -25,10 +24,32 @@ require Rails.root.join("lib/static_model")
 class MergeRequest < ActiveRecord::Base
   include Issuable
 
-  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch, :milestone_id,
+  attr_accessible :title, :assignee_id, :target_branch, :source_branch, :milestone_id,
                   :author_id_of_changes
 
   attr_accessor :should_remove_source_branch
+
+  state_machine :state, :initial => :opened do
+    event :close do
+      transition [:reopened, :opened] => :closed
+    end
+
+    event :merge do
+      transition [:reopened, :opened] => :merged
+    end
+
+    event :reopen do
+      transition :closed => :reopened
+    end
+
+    state :opened
+
+    state :reopened
+
+    state :closed
+
+    state :merged
+  end
 
   BROKEN_DIFF = "--broken-diff"
 
@@ -42,6 +63,8 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_branch, presence: true
   validate :validate_branches
+
+  scope :merged, -> { with_state(:merged) }
 
   def self.find_all_by_branch(branch_name)
     where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
@@ -98,7 +121,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reloaded_diffs
-    if open? && unmerged_diffs.any?
+    if opened? && unmerged_diffs.any?
       self.st_diffs = unmerged_diffs
       self.save
     end
@@ -128,10 +151,6 @@ class MergeRequest < ActiveRecord::Base
     commits.first
   end
 
-  def merged?
-    merged && merge_event
-  end
-
   def merge_event
     self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end
@@ -146,17 +165,7 @@ class MergeRequest < ActiveRecord::Base
 
   def probably_merged?
     unmerged_commits.empty? &&
-      commits.any? && open?
-  end
-
-  def open?
-    !closed
-  end
-
-  def mark_as_merged!
-    self.merged = true
-    self.closed = true
-    save
+      commits.any? && opened?
   end
 
   def mark_as_unmergable
@@ -165,7 +174,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reloaded_commits
-    if open? && unmerged_commits.any?
+    if opened? && unmerged_commits.any?
       self.st_commits = unmerged_commits
       save
     end
@@ -181,7 +190,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge!(user_id)
-    self.mark_as_merged!
+    self.merge
+
     Event.create(
       project: self.project,
       action: Event::MERGED,

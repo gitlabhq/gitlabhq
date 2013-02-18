@@ -1,10 +1,14 @@
 require 'spec_helper'
 
 describe MergeRequestObserver do
-  let(:some_user) { double(:user, id: 1) }
-  let(:assignee) { double(:user, id: 2) }
-  let(:author) { double(:user, id: 3) }
-  let(:mr)    { double(:merge_request, id: 42, assignee: assignee, author: author) }
+  let(:some_user)      { create :user }
+  let(:assignee)       { create :user }
+  let(:author)         { create :user }
+  let(:mr_mock)    { double(:merge_request, id: 42, assignee: assignee, author: author) }
+  let(:assigned_mr)   { create(:merge_request, assignee: assignee, author: author) }
+  let(:unassigned_mr) { create(:merge_request, author: author) }
+  let(:closed_assigned_mr)   { create(:closed_merge_request, assignee: assignee, author: author) }
+  let(:closed_unassigned_mr) { create(:closed_merge_request, author: author) }
 
   before(:each) { subject.stub(:current_user).and_return(some_user) }
 
@@ -21,23 +25,21 @@ describe MergeRequestObserver do
     end
 
     it 'sends an email to the assignee' do
-      Notify.should_receive(:new_merge_request_email).with(mr.id)
-      subject.after_create(mr)
+      Notify.should_receive(:new_merge_request_email).with(mr_mock.id)
+      subject.after_create(mr_mock)
     end
 
     it 'does not send an email to the assignee if assignee created the merge request' do
       subject.stub(:current_user).and_return(assignee)
       Notify.should_not_receive(:new_merge_request_email)
 
-      subject.after_create(mr)
+      subject.after_create(mr_mock)
     end
   end
 
   context '#after_update' do
     before(:each) do
-      mr.stub(:is_being_reassigned?).and_return(false)
-      mr.stub(:is_being_closed?).and_return(false)
-      mr.stub(:is_being_reopened?).and_return(false)
+      mr_mock.stub(:is_being_reassigned?).and_return(false)
     end
 
     it 'is called when a merge request is changed' do
@@ -52,97 +54,50 @@ describe MergeRequestObserver do
 
     context 'a reassigned email' do
       it 'is sent if the merge request is being reassigned' do
-        mr.should_receive(:is_being_reassigned?).and_return(true)
-        subject.should_receive(:send_reassigned_email).with(mr)
+        mr_mock.should_receive(:is_being_reassigned?).and_return(true)
+        subject.should_receive(:send_reassigned_email).with(mr_mock)
 
-        subject.after_update(mr)
+        subject.after_update(mr_mock)
       end
 
       it 'is not sent if the merge request is not being reassigned' do
-        mr.should_receive(:is_being_reassigned?).and_return(false)
+        mr_mock.should_receive(:is_being_reassigned?).and_return(false)
         subject.should_not_receive(:send_reassigned_email)
 
-        subject.after_update(mr)
+        subject.after_update(mr_mock)
       end
     end
 
+  end
+
+  context '#after_close' do
     context 'a status "closed"' do
       it 'note is created if the merge request is being closed' do
-        mr.should_receive(:is_being_closed?).and_return(true)
-        Note.should_receive(:create_status_change_note).with(mr, some_user, 'closed')
+        Note.should_receive(:create_status_change_note).with(assigned_mr, some_user, 'closed')
 
-        subject.after_update(mr)
-      end
-
-      it 'note is not created if the merge request is not being closed' do
-        mr.should_receive(:is_being_closed?).and_return(false)
-        Note.should_not_receive(:create_status_change_note).with(mr, some_user, 'closed')
-
-        subject.after_update(mr)
-      end
-
-      it 'notification is delivered if the merge request being closed' do
-        mr.stub(:is_being_closed?).and_return(true)
-        Note.should_receive(:create_status_change_note).with(mr, some_user, 'closed')
-
-        subject.after_update(mr)
-      end
-
-      it 'notification is not delivered if the merge request not being closed' do
-        mr.stub(:is_being_closed?).and_return(false)
-        Note.should_not_receive(:create_status_change_note).with(mr, some_user, 'closed')
-
-        subject.after_update(mr)
+        assigned_mr.close
       end
 
       it 'notification is delivered only to author if the merge request is being closed' do
-        mr_without_assignee = double(:merge_request, id: 42, author: author, assignee: nil)
-        mr_without_assignee.stub(:is_being_reassigned?).and_return(false)
-        mr_without_assignee.stub(:is_being_closed?).and_return(true)
-        mr_without_assignee.stub(:is_being_reopened?).and_return(false)
-        Note.should_receive(:create_status_change_note).with(mr_without_assignee, some_user, 'closed')
+        Note.should_receive(:create_status_change_note).with(unassigned_mr, some_user, 'closed')
 
-        subject.after_update(mr_without_assignee)
+        unassigned_mr.close
       end
     end
+  end
 
+  context '#after_reopen' do
     context 'a status "reopened"' do
       it 'note is created if the merge request is being reopened' do
-        mr.should_receive(:is_being_reopened?).and_return(true)
-        Note.should_receive(:create_status_change_note).with(mr, some_user, 'reopened')
+        Note.should_receive(:create_status_change_note).with(closed_assigned_mr, some_user, 'reopened')
 
-        subject.after_update(mr)
-      end
-
-      it 'note is not created if the merge request is not being reopened' do
-        mr.should_receive(:is_being_reopened?).and_return(false)
-        Note.should_not_receive(:create_status_change_note).with(mr, some_user, 'reopened')
-
-        subject.after_update(mr)
-      end
-
-      it 'notification is delivered if the merge request being reopened' do
-        mr.stub(:is_being_reopened?).and_return(true)
-        Note.should_receive(:create_status_change_note).with(mr, some_user, 'reopened')
-
-        subject.after_update(mr)
-      end
-
-      it 'notification is not delivered if the merge request is not being reopened' do
-        mr.stub(:is_being_reopened?).and_return(false)
-        Note.should_not_receive(:create_status_change_note).with(mr, some_user, 'reopened')
-
-        subject.after_update(mr)
+        closed_assigned_mr.reopen
       end
 
       it 'notification is delivered only to author if the merge request is being reopened' do
-        mr_without_assignee = double(:merge_request, id: 42, author: author, assignee: nil)
-        mr_without_assignee.stub(:is_being_reassigned?).and_return(false)
-        mr_without_assignee.stub(:is_being_closed?).and_return(false)
-        mr_without_assignee.stub(:is_being_reopened?).and_return(true)
-        Note.should_receive(:create_status_change_note).with(mr_without_assignee, some_user, 'reopened')
+        Note.should_receive(:create_status_change_note).with(closed_unassigned_mr, some_user, 'reopened')
 
-        subject.after_update(mr_without_assignee)
+        closed_unassigned_mr.reopen
       end
     end
   end
@@ -151,23 +106,23 @@ describe MergeRequestObserver do
     let(:previous_assignee) { double(:user, id: 3) }
 
     before(:each) do
-      mr.stub(:assignee_id).and_return(assignee.id)
-      mr.stub(:assignee_id_was).and_return(previous_assignee.id)
+      mr_mock.stub(:assignee_id).and_return(assignee.id)
+      mr_mock.stub(:assignee_id_was).and_return(previous_assignee.id)
     end
 
     def it_sends_a_reassigned_email_to(recipient)
-      Notify.should_receive(:reassigned_merge_request_email).with(recipient, mr.id, previous_assignee.id)
+      Notify.should_receive(:reassigned_merge_request_email).with(recipient, mr_mock.id, previous_assignee.id)
     end
 
     def it_does_not_send_a_reassigned_email_to(recipient)
-      Notify.should_not_receive(:reassigned_merge_request_email).with(recipient, mr.id, previous_assignee.id)
+      Notify.should_not_receive(:reassigned_merge_request_email).with(recipient, mr_mock.id, previous_assignee.id)
     end
 
     it 'sends a reassigned email to the previous and current assignees' do
       it_sends_a_reassigned_email_to assignee.id
       it_sends_a_reassigned_email_to previous_assignee.id
 
-      subject.send(:send_reassigned_email, mr)
+      subject.send(:send_reassigned_email, mr_mock)
     end
 
     context 'does not send an email to the user who made the reassignment' do
@@ -176,14 +131,14 @@ describe MergeRequestObserver do
         it_sends_a_reassigned_email_to previous_assignee.id
         it_does_not_send_a_reassigned_email_to assignee.id
 
-        subject.send(:send_reassigned_email, mr)
+        subject.send(:send_reassigned_email, mr_mock)
       end
       it 'if the user is the previous assignee' do
         subject.stub(:current_user).and_return(previous_assignee)
         it_sends_a_reassigned_email_to assignee.id
         it_does_not_send_a_reassigned_email_to previous_assignee.id
 
-        subject.send(:send_reassigned_email, mr)
+        subject.send(:send_reassigned_email, mr_mock)
       end
     end
   end

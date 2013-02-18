@@ -37,6 +37,10 @@ describe MergeRequest do
   end
 
   describe "#mr_and_commit_notes" do
+
+  end
+
+  describe "#mr_and_commit_notes" do
     let!(:merge_request) { create(:merge_request) }
 
     before do

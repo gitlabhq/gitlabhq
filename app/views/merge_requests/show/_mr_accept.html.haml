@@ -3,7 +3,7 @@
     %strong Only masters can accept MR
 
 
-- if @merge_request.open? && @commits.any? && can?(current_user, :accept_mr, @project)
+- if @merge_request.opened? && @commits.any? && can?(current_user, :accept_mr, @project)
   .automerge_widget.can_be_merged{style: "display:none"}
     .alert.alert-success
       %span

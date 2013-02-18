@@ -67,10 +67,6 @@ FactoryGirl.define do
     source_branch "master"
     target_branch "stable"
 
-    trait :closed do
-      closed true
-    end
-
     # pick 3 commits "at random" (from bcf03b5d~3 to bcf03b5d)
     trait :with_diffs do
       target_branch "master" # pretend bcf03b5d~3
@@ -85,7 +81,16 @@ FactoryGirl.define do
       end
     end
 
+    trait :closed do
+      state :closed
+    end
+
+    trait :reopened do
+      state :reopened
+    end
+
     factory :closed_merge_request, traits: [:closed]
+    factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
   end
 
