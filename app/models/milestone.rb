@@ -26,13 +26,13 @@ class Milestone < ActiveRecord::Base
   validates :title, presence: true
   validates :project, presence: true
 
-  state_machine :state, :initial => :active do
+  state_machine :state, initial: :active do
     event :close do
-      transition :active => :closed
+      transition active: :closed
     end
 
     event :activate do
-      transition :closed => :active
+      transition closed: :active
     end
 
     state :closed

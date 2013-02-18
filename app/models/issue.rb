@@ -25,13 +25,13 @@ class Issue < ActiveRecord::Base
 
   acts_as_taggable_on :labels
 
-  state_machine :state, :initial => :opened do
+  state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
     end
 
     event :reopen do
-      transition :closed => :reopened
+      transition closed: :reopened
     end
 
     state :opened

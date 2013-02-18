@@ -29,7 +29,7 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
-  state_machine :state, :initial => :opened do
+  state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
     end
@@ -39,7 +39,7 @@ class MergeRequest < ActiveRecord::Base
     end
 
     event :reopen do
-      transition :closed => :reopened
+      transition closed: :reopened
     end
 
     state :opened
