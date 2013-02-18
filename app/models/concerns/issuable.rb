@@ -17,10 +17,9 @@ module Issuable
     validates :project, presence: true
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
-    validates :closed, inclusion: { in: [true, false] }
 
-    scope :opened, -> { where(closed: false) }
-    scope :closed, -> { where(closed: true) }
+    scope :opened, -> { with_state(:opened) }
+    scope :closed, -> { with_state(:closed) }
     scope :of_group, ->(group) { where(project_id: group.project_ids) }
     scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
     scope :assigned, ->(u) { where(assignee_id: u.id)}
@@ -60,14 +59,6 @@ module Issuable
 
   def is_being_reassigned?
     assignee_id_changed?
-  end
-
-  def is_being_closed?
-    closed_changed? && closed
-  end
-
-  def is_being_reopened?
-    closed_changed? && !closed
   end
 
   #
