@@ -110,26 +110,31 @@ describe Milestone do
   end
 
   describe :is_empty? do
-    it 'Should return total count of issues and merge requests assigned to milestone' do
+    before do
       issue = create :closed_issue, milestone: milestone
       merge_request = create :merge_request, milestone: milestone
+    end
 
+    it 'Should return total count of issues and merge requests assigned to milestone' do
       milestone.total_items_count.should eq 2
     end
   end
 
   describe :can_be_closed? do
-    it 'should be true if milestone active and all nestied issues closed' do
+    before do
       milestone = create :milestone
-      closed_issue = create :closed_issue, milestone: milestone
+      create :closed_issue, milestone: milestone
 
+      issue = create :issue
+    end
+
+    it 'should be true if milestone active and all nestied issues closed' do
       milestone.can_be_closed?.should be_true
     end
 
     it 'should be false if milestone active and not all nestied issues closed' do
-      milestone = create :milestone
-      closed_issue = create :closed_issue, milestone: milestone
-      issue = create :issue, milestone: milestone
+      issue.milestone = milestone
+      issue.save 
 
       milestone.can_be_closed?.should be_false
     end
