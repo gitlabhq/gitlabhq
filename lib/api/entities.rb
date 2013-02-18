@@ -81,7 +81,7 @@ module Gitlab
     end
 
     class MergeRequest < Grape::Entity
-      expose :id, :target_branch, :source_branch, :project_id, :title, :closed, :merged
+      expose :id, :target_branch, :source_branch, :project_id, :title, :state
       expose :author, :assignee, using: Entities::UserBasic
     end
 

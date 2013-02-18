@@ -25,7 +25,7 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
 
   attr_accessible :title, :assignee_id, :target_branch, :source_branch, :milestone_id,
-                  :author_id_of_changes
+                  :author_id_of_changes, :state_event
 
   attr_accessor :should_remove_source_branch
 

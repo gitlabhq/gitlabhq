@@ -43,6 +43,23 @@ describe Gitlab::API do
     end
   end
 
+  describe "PUT /projects/:id/merge_request/:merge_request_id to close MR" do
+    it "should return merge_request" do
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), state_event: "close"
+      response.status.should == 200
+      json_response['state'].should == 'closed'
+    end
+  end
+
+  describe "PUT /projects/:id/merge_request/:merge_request_id to merge MR" do
+    it "should return merge_request" do
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), state_event: "merge"
+      response.status.should == 200
+      json_response['state'].should == 'merged'
+    end
+  end
+
+
   describe "PUT /projects/:id/merge_request/:merge_request_id" do
     it "should return merge_request" do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), title: "New title"
