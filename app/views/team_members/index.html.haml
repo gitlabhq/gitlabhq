@@ -27,24 +27,30 @@
       %li{class: ("active" if params[:type] == 'masters')}
         = link_to project_team_members_path(type: 'masters') do
           Masters
+          %span.pull-right= @project.users_projects.masters.count
       %li{class: ("active" if params[:type] == 'developers')}
         = link_to project_team_members_path(type: 'developers') do
           Developers
+          %span.pull-right= @project.users_projects.developers.count
       %li{class: ("active" if params[:type] == 'reporters')}
         = link_to project_team_members_path(type: 'reporters') do
           Reporters
+          %span.pull-right= @project.users_projects.reporters.count
       %li{class: ("active" if params[:type] == 'guests')}
         = link_to project_team_members_path(type: 'guests') do
           Guests
-    %h5
-      Assigned teams
-      (#{@project.user_teams.count})
-    %div
-      = render "team_members/assigned_teams", project: @project
+          %span.pull-right= @project.users_projects.guests.count
+
+    - if @assigned_teams.present?
+      %h5
+        Assigned teams
+        (#{@project.user_teams.count})
+      %div
+        = render "team_members/assigned_teams", assigned_teams: @assigned_teams
 
   .span9
     %div.team-table
-      = render "team_members/team", project: @project
+      = render "team_members/team", team: @team
 
 
 
