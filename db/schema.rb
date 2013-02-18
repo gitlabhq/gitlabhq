@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130131070232) do
+ActiveRecord::Schema.define(:version => 20130218091244) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -37,9 +37,9 @@ ActiveRecord::Schema.define(:version => 20130131070232) do
     t.integer  "assignee_id"
     t.integer  "author_id"
     t.integer  "project_id"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
-    t.boolean  "closed",       :default => false, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.string   "state",        :default => "0", :null => false
     t.integer  "position",     :default => 0
     t.string   "branch_name"
     t.text     "description"
@@ -48,10 +48,10 @@ ActiveRecord::Schema.define(:version => 20130131070232) do
 
   add_index "issues", ["assignee_id"], :name => "index_issues_on_assignee_id"
   add_index "issues", ["author_id"], :name => "index_issues_on_author_id"
-  add_index "issues", ["closed"], :name => "index_issues_on_closed"
   add_index "issues", ["created_at"], :name => "index_issues_on_created_at"
   add_index "issues", ["milestone_id"], :name => "index_issues_on_milestone_id"
   add_index "issues", ["project_id"], :name => "index_issues_on_project_id"
+  add_index "issues", ["state"], :name => "index_issues_on_closed"
   add_index "issues", ["title"], :name => "index_issues_on_title"
 
   create_table "keys", :force => true do |t|
@@ -69,40 +69,39 @@ ActiveRecord::Schema.define(:version => 20130131070232) do
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                                          :null => false
-    t.string   "source_branch",                                          :null => false
-    t.integer  "project_id",                                             :null => false
+    t.string   "target_branch",                                        :null => false
+    t.string   "source_branch",                                        :null => false
+    t.integer  "project_id",                                           :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
-    t.boolean  "closed",                              :default => false, :null => false
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
+    t.string   "state",                               :default => "0", :null => false
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
     t.text     "st_commits",    :limit => 2147483647
     t.text     "st_diffs",      :limit => 2147483647
-    t.boolean  "merged",                              :default => false, :null => false
-    t.integer  "state",                               :default => 1,     :null => false
+    t.integer  "merge_status",                        :default => 1,   :null => false
     t.integer  "milestone_id"
   end
 
   add_index "merge_requests", ["assignee_id"], :name => "index_merge_requests_on_assignee_id"
   add_index "merge_requests", ["author_id"], :name => "index_merge_requests_on_author_id"
-  add_index "merge_requests", ["closed"], :name => "index_merge_requests_on_closed"
   add_index "merge_requests", ["created_at"], :name => "index_merge_requests_on_created_at"
   add_index "merge_requests", ["milestone_id"], :name => "index_merge_requests_on_milestone_id"
   add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
   add_index "merge_requests", ["source_branch"], :name => "index_merge_requests_on_source_branch"
+  add_index "merge_requests", ["state"], :name => "index_merge_requests_on_closed"
   add_index "merge_requests", ["target_branch"], :name => "index_merge_requests_on_target_branch"
   add_index "merge_requests", ["title"], :name => "index_merge_requests_on_title"
 
   create_table "milestones", :force => true do |t|
-    t.string   "title",                          :null => false
-    t.integer  "project_id",                     :null => false
+    t.string   "title",                        :null => false
+    t.integer  "project_id",                   :null => false
     t.text     "description"
     t.date     "due_date"
-    t.boolean  "closed",      :default => false, :null => false
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.string   "state",       :default => "0", :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "milestones", ["due_date"], :name => "index_milestones_on_due_date"
