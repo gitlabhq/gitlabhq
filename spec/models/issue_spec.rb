@@ -43,4 +43,16 @@ describe Issue do
       subject.is_being_reassigned?.should be_false
     end
   end
+
+  describe '#is_being_reassigned?' do
+    it 'returnes issues assigned to user' do
+      user = create :user
+
+      2.times do
+        issue = create :issue, assignee: user
+      end
+
+      Issue.open_for(user).count.should eq 2
+    end
+  end
 end
