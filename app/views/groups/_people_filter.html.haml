@@ -7,6 +7,8 @@
           = link_to people_group_path(@group, project_id: project.id) do
             = project.name_with_namespace
             %small.pull-right= project.users.count
+      - if @projects.blank?
+        %p.nothing_here_message This group has no projects yet
 
   %fieldset
     %hr
