@@ -123,7 +123,7 @@ class Ability
     def user_team_abilities user, team
       rules = []
 
-      # Only group owner and administrators can manage group
+      # Only group owner and administrators can manage team
       if team.owner == user || team.admin?(user) || user.admin?
         rules << [ :manage_user_team ]
       end
