@@ -26,7 +26,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   Then 'I should see closed merge request "Bug NS-04"' do
     mr = MergeRequest.find_by_title("Bug NS-04")
-    mr.closed.should be_true
+    mr.closed?.should be_true
     page.should have_content "Closed by"
   end
 
@@ -64,7 +64,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   And 'project "Shop" have "Bug NS-04" open merge request' do
     project = Project.find_by_name("Shop")
-    create(:merge_request,
+    create(:closed_merge_request,
            title: "Bug NS-04",
            project: project,
            author: project.users.first)
@@ -80,11 +80,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   And 'project "Shop" have "Feature NS-03" closed merge request' do
     project = Project.find_by_name("Shop")
-    create(:merge_request,
+    create(:closed_merge_request,
            title: "Feature NS-03",
            project: project,
-           author: project.users.first,
-           closed: true)
+           author: project.users.first)
   end
 
   And 'I switch to the diff tab' do
