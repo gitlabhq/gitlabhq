@@ -43,6 +43,12 @@ GET /users
 ]
 ```
 
+Return values:
+
++ `200 Ok` on success and a list with all users
++ `401 Unauthorized` if user is not allowed to access the list
+
+
 ## Single user
 
 Get a single user.
@@ -73,6 +79,13 @@ Parameters:
   "theme_id": 1
 }
 ```
+
+Return values:
+
++ `200 Ok` on success and the user entry
++ `401 Unauthorized` if it is not allowed to access the user
++ `404 Not Found` if the user with ID is not found
+
 
 ## User creation
 Create user. Available only for admin

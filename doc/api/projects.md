@@ -57,6 +57,11 @@ GET /projects
 ]
 ```
 
+Return values:
+
++ `200 Ok` on success and a list of projects
++ `401 Unauthorized` if the user is not allowed to access projects
+
 
 ### Get single project
 
