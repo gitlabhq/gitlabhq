@@ -64,7 +64,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   And 'project "Shop" have "Bug NS-04" open merge request' do
     project = Project.find_by_name("Shop")
-    create(:closed_merge_request,
+    create(:merge_request,
            title: "Bug NS-04",
            project: project,
            author: project.users.first)

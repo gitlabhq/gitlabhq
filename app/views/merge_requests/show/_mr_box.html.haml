@@ -23,12 +23,12 @@
 
   - if @merge_request.closed?
     .ui-box-bottom
-      - if @merge_request.merged?
-        %span
-          Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
-          %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
-      - elsif @merge_request.closed_event
-        %span
-          Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
-          %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+      %span
+        Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
+        %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+  - if @merge_request.merged?
+    .ui-box-bottom
+      %span
+        Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
+        %small #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
 
