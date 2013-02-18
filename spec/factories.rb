@@ -29,6 +29,11 @@ FactoryGirl.define do
     creator
   end
 
+  factory :redmine_project, parent: :project do
+    issues_tracker { "redmine" }
+    issues_tracker_id { "project_name_in_redmine" }
+  end
+
   factory :group do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
