@@ -45,7 +45,7 @@ class Key < ActiveRecord::Base
       file.close
       file.unlink # deletes the temp file
     end
-    errors.add(:key, "can't be fingerprinted") if fingerprint_output.match("failed")
+    errors.add(:key, "can't be fingerprinted") if $?.exitstatus != 0
   end
 
   def set_identifier
