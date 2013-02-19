@@ -130,10 +130,6 @@ class Event < ActiveRecord::Base
     target if target_type == "MergeRequest"
   end
 
-  def author
-    @author ||= User.find(author_id)
-  end
-
   def action_name
     if closed?
       "closed"
