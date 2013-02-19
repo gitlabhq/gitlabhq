@@ -122,10 +122,9 @@ class ProjectIssues < Spinach::FeatureSteps
 
   And 'project "Shop" have "Release 0.3" closed issue' do
     project = Project.find_by_name("Shop")
-    create(:issue,
+    create(:closed_issue,
            :title => "Release 0.3",
            :project => project,
-           :author => project.users.first,
-           :closed => true)
+           :author => project.users.first)
   end
 end
