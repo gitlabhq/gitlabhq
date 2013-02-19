@@ -7,15 +7,20 @@ class MergeRequestObserver < ActiveRecord::Observer
     end
   end
 
-  def after_update(merge_request)
+  def after_close(merge_request, transition)
     send_reassigned_email(merge_request) if merge_request.is_being_reassigned?
 
-    status = nil
-    status = 'closed' if merge_request.is_being_closed?
-    status = 'reopened' if merge_request.is_being_reopened?
-    if status
-      Note.create_status_change_note(merge_request, current_user, status)
-    end
+    Note.create_status_change_note(merge_request, current_user, merge_request.state)
+  end
+
+  def after_reopen(merge_request, transition)
+    send_reassigned_email(merge_request) if merge_request.is_being_reassigned?
+
+    Note.create_status_change_note(merge_request, current_user, merge_request.state)
+  end
+
+  def after_update(merge_request)
+    send_reassigned_email(merge_request) if merge_request.is_being_reassigned?
   end
 
   protected

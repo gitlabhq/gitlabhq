@@ -6,7 +6,7 @@ module IssuesHelper
 
   def issue_css_classes issue
     classes = "issue"
-    classes << " closed" if issue.closed
+    classes << " closed" if issue.closed?
     classes << " today" if issue.today?
     classes
   end

@@ -58,8 +58,7 @@ describe "Issues" do
 
     it "should be able to search on different statuses" do
       issue = Issue.first # with title 'foobar'
-      issue.closed = true
-      issue.save
+      issue.close
 
       visit project_issues_path(project)
       click_link 'Closed'

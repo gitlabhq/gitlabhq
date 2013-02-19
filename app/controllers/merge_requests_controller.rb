@@ -73,14 +73,14 @@ class MergeRequestsController < ProjectResourceController
     if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
-    render json: {state: @merge_request.human_state}
+    render json: {merge_status: @merge_request.human_merge_status}
   rescue Gitlab::SatelliteNotExistError
-    render json: {state: :no_satellite}
+    render json: {merge_status: :no_satellite}
   end
 
   def automerge
     return access_denied! unless can?(current_user, :accept_mr, @project)
-    if @merge_request.open? && @merge_request.can_be_merged?
+    if @merge_request.opened? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
       @merge_request.automerge!(current_user)
       @status = true
