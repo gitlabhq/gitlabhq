@@ -267,7 +267,7 @@ class User < ActiveRecord::Base
   end
 
   def cared_merge_requests
-    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id)
+    MergeRequest.cared(self)
   end
 
   # Remove user from all projects and

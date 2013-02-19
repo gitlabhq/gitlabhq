@@ -43,12 +43,19 @@ class MergeRequest < ActiveRecord::Base
   validates :target_branch, presence: true
   validate :validate_branches
 
-  def self.find_all_by_branch(branch_name)
-    where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
-  end
 
-  def self.find_all_by_milestone(milestone)
-    where("milestone_id = :milestone_id", milestone_id: milestone)
+  class << self
+    def cared(user)
+      where('assignee_id = :user OR author_id = :user', user: user.id)
+    end
+
+    def find_all_by_branch(branch_name)
+      where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+    end
+
+    def find_all_by_milestone(milestone)
+      where("milestone_id = :milestone_id", milestone_id: milestone)
+    end
   end
 
   def human_state

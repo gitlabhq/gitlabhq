@@ -24,7 +24,13 @@ class Issue < ActiveRecord::Base
 
   acts_as_taggable_on :labels
 
-  def self.open_for(user)
-    opened.assigned(user)
+  class << self
+    def cared(user)
+      where('assignee_id = :user', user: user.id)
+    end
+
+    def open_for(user)
+      opened.assigned(user)
+    end
   end
 end
