@@ -18,6 +18,7 @@ class AdminTeams < Spinach::FeatureSteps
 
   And 'submit form with new team info' do
     fill_in 'user_team_name', with: 'gitlab'
+    fill_in 'user_team_description', with: 'description'
     click_button 'Create team'
   end
 
@@ -27,6 +28,7 @@ class AdminTeams < Spinach::FeatureSteps
 
   And 'I should see newly created team' do
     page.should have_content "Team: gitlab"
+    page.should have_content "description"
   end
 
   When 'I visit admin teams page' do
