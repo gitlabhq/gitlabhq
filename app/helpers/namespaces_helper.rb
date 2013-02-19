@@ -10,8 +10,8 @@ module NamespacesHelper
 
 
     global_opts = ["Global", [['/', Namespace.global_id]] ]
-    group_opts = ["Groups", groups.map {|g| [g.human_name, g.id]} ]
-    users_opts = [ "Users", users.map {|u| [u.human_name, u.id]} ]
+    group_opts = ["Groups", groups.sort_by(&:human_name).map {|g| [g.human_name, g.id]} ]
+    users_opts = [ "Users", users.sort_by(&:human_name).map {|u| [u.human_name, u.id]} ]
 
     options = []
     options << global_opts if current_user.admin
