@@ -20,7 +20,7 @@ module Gitlab
     class Project < Grape::Entity
       expose :id, :name, :description, :default_branch
       expose :owner, using: Entities::UserBasic
-      expose :public, as: :private
+      expose :public
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
       expose :namespace
