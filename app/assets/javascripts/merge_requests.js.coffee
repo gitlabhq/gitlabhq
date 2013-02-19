@@ -27,7 +27,7 @@ class MergeRequest
     this.$el.find(selector)
 
   initMergeWidget: ->
-    this.showState( @opts.current_state )
+    this.showState( @opts.current_status )
 
     if this.$('.automerge_widget').length and @opts.check_enable
       $.get @opts.url_to_automerge_check, (data) =>
