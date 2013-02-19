@@ -17,7 +17,7 @@ Gitlab::Seeder.quiet do
       project_id: project.id,
       author_id: user_id,
       assignee_id: user_id,
-      closed: [true, false].sample,
+      state: ['opened', 'closed'].sample,
       milestone: project.milestones.sample,
       title: Faker::Lorem.sentence(6)
     }])
