@@ -22,11 +22,12 @@
             = nav_link(controller: %w(graph)) do
               = link_to "Network", project_graph_path(@project, @ref || @repository.root_ref)
 
-        - if @project.issues_enabled
+        - if @project.issues_enabled 
           = nav_link(controller: %w(issues milestones labels)) do
-            = link_to  project_issues_filter_path(@project)  do
+            = link_to url_for_project_issues do
               Issues
-              %span.count.issue_counter= @project.issues.opened.count
+              - if @project.used_default_issues_tracker?
+                %span.count.issue_counter= @project.issues.opened.count
 
         - if @project.repo_exists? && @project.merge_requests_enabled
           = nav_link(controller: :merge_requests) do

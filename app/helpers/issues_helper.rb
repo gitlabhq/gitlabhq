@@ -41,6 +41,18 @@ module IssuesHelper
     @project.milestones.active.order("id desc").all
   end
 
+  def url_for_project_issues
+    return "" if @project.nil?
+
+    if @project.used_default_issues_tracker?
+      project_issues_filter_path(@project) 
+    else
+      url = Settings[:issues_tracker][@project.issues_tracker]["project_url"]
+      url.gsub(':project_id', @project.id.to_s)
+         .gsub(':issues_tracker_id', @project.issues_tracker_id.to_s)
+    end
+  end
+
   def url_for_issue(issue_id)
     return "" if @project.nil?
 

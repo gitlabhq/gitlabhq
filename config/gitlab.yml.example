@@ -41,6 +41,11 @@ production: &base
   ## External issues trackers
   issues_tracker:
     redmine:
+      ## If not nil, link 'Issues' on project page will be replaced tp this
+      ## Use placeholders:
+      ##  :project_id        - Gitlab project identifier
+      ##  :issues_tracker_id - Project Name or Id in external issue tracker
+      project_url: "http://redmine.sample/projects/:issues_tracker_id"
       ## If not nil, links from /#\d/ entities from commit messages will replaced to this
       ## Use placeholders:
       ##  :project_id        - Gitlab project identifier
@@ -146,6 +151,7 @@ test:
   <<: *base
   issues_tracker:
     redmine:
+      project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
 
 staging:
