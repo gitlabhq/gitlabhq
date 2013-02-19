@@ -1,3 +1,8 @@
+- if @group.description.present?
+  .description
+    = @group.description
+  %hr
+
 .projects
   .activities.span8
     = render "events/event_last_push", event: @last_push

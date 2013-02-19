@@ -9,8 +9,15 @@
       Group name is
     .input
       = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
-      &nbsp;
-      = f.submit 'Save group', class: "btn btn-save"
+
+  .clearfix.group_description_holder
+    = f.label :description, "Details"
+    .input
+      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+
+  .form-actions
+    = f.submit 'Save group', class: "btn btn-save"
+
 %hr
 
 
