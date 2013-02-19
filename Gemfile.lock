@@ -184,6 +184,9 @@ GEM
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
     gitlab_yaml_db (1.0.0)
+    gon (4.0.2)
+      actionpack (>= 2.3.0)
+      json
     grape (0.2.2)
       activesupport
       hashie (~> 1.2)
@@ -483,6 +486,7 @@ DEPENDENCIES
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
+  gon
   grack!
   grape (~> 0.2.1)
   grit!
