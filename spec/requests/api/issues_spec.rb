@@ -54,14 +54,24 @@ describe Gitlab::API do
     end
   end
 
-  describe "PUT /projects/:id/issues/:issue_id" do
+  describe "PUT /projects/:id/issues/:issue_id to update only title" do
     it "should update a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
-        title: 'updated title', labels: 'label2', closed: 1
+        title: 'updated title'
       response.status.should == 200
+
       json_response['title'].should == 'updated title'
+    end
+  end
+
+  describe "PUT /projects/:id/issues/:issue_id to update state and label" do
+    it "should update a project issue" do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+        labels: 'label2', state_event: "close"
+      response.status.should == 200
+
       json_response['labels'].should == ['label2']
-      json_response['closed'].should be_true
+      json_response['state'].should eq "closed"
     end
   end
 

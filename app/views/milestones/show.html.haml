@@ -9,7 +9,7 @@
         &larr; To milestones list
   .span6
     .pull-right
-      - unless  @milestone.closed
+      - unless  @milestone.closed?
         = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small grouped", title: "New Issue" do
           %i.icon-plus
           New Issue
@@ -25,12 +25,12 @@
   %hr
   %p
     %span All issues for this milestone are closed. You may close milestone now.
-    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {closed: true }), method: :put, class: "btn btn-small btn-remove"
+    = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-remove"
 
 .ui-box.ui-box-show
   .ui-box-head
     %h4.box-title
-      - if @milestone.closed
+      - if @milestone.closed?
         .error.status_info Closed
       - elsif @milestone.expired?
         .error.status_info Expired
@@ -63,7 +63,7 @@
           %li=link_to('All Issues', '#')
       %ul.well-list
         - @issues.each do |issue|
-          %li{data: {closed: issue.closed}}
+          %li{data: {closed: issue.closed?}}
             = link_to [@project, issue] do
               %span.badge.badge-info ##{issue.id}
             &ndash;
@@ -77,7 +77,7 @@
           %li=link_to('All Merge Requests', '#')
       %ul.well-list
         - @merge_requests.each do |merge_request|
-          %li{data: {closed: merge_request.closed}}
+          %li{data: {closed: merge_request.closed?}}
             = link_to [@project, merge_request] do
               %span.badge.badge-info ##{merge_request.id}
             &ndash;

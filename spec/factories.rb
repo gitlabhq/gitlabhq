@@ -54,10 +54,15 @@ FactoryGirl.define do
     project
 
     trait :closed do
-      closed true
+      state :closed
+    end
+
+    trait :reopened do
+      state :reopened
     end
 
     factory :closed_issue, traits: [:closed]
+    factory :reopened_issue, traits: [:reopened]
   end
 
   factory :merge_request do
@@ -66,10 +71,6 @@ FactoryGirl.define do
     project
     source_branch "master"
     target_branch "stable"
-
-    trait :closed do
-      closed true
-    end
 
     # pick 3 commits "at random" (from bcf03b5d~3 to bcf03b5d)
     trait :with_diffs do
@@ -85,7 +86,16 @@ FactoryGirl.define do
       end
     end
 
+    trait :closed do
+      state :closed
+    end
+
+    trait :reopened do
+      state :reopened
+    end
+
     factory :closed_merge_request, traits: [:closed]
+    factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
   end
 
@@ -159,6 +169,12 @@ FactoryGirl.define do
   factory :milestone do
     title
     project
+
+    trait :closed do
+      state :closed
+    end
+
+    factory :closed_milestone, traits: [:closed]
   end
 
   factory :system_hook do
