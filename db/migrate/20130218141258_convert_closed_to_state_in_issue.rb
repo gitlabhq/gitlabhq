@@ -1,19 +1,14 @@
 class ConvertClosedToStateInIssue < ActiveRecord::Migration
   def up
     Issue.transaction do
-      Issue.find_each do |issue|
-        issue.state = issue.closed? ? :closed : :opened
-        issue.save
-      end
+      Issue.where(closed: true).update_all("state = 'closed'")
+      Issue.where(closed: false).update_all("state = 'opened'")
     end
   end
 
   def down
     Issue.transaction do
-      Issue.find_each do |issue|
-        issue.closed = issue.closed?
-        issue.save
-      end
+      Issue.where(state: :closed).update_all("closed = 1")
     end
   end
 end
