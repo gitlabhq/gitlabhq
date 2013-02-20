@@ -12,7 +12,4 @@
 #
 
 class SystemHook < WebHook
-  def async_execute(data)
-    Sidekiq::Client.enqueue(SystemHookWorker, id, data)
-  end
 end
