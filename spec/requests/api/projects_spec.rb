@@ -196,22 +196,44 @@ describe Gitlab::API do
   end
 
   describe "GET /projects/:id/hooks" do
-    it "should return project hooks" do
-      get api("/projects/#{project.id}/hooks", user)
+    context "authorized user" do
+      it "should return project hooks" do
+        get api("/projects/#{project.id}/hooks", user)
+        response.status.should == 200
 
-      response.status.should == 200
+        json_response.should be_an Array
+        json_response.count.should == 1
+        json_response.first['url'].should == "http://example.com"
+      end
+    end
 
-      json_response.should be_an Array
-      json_response.count.should == 1
-      json_response.first['url'].should == "http://example.com"
+    context "unauthorized user" do
+      it "should not access project hooks" do
+        get api("/projects/#{project.id}/hooks", user3)
+        response.status.should == 403
+      end
     end
   end
 
   describe "GET /projects/:id/hooks/:hook_id" do
-    it "should return a project hook" do
-      get api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      response.status.should == 200
-      json_response['url'].should == hook.url
+    context "authorized user" do
+      it "should return a project hook" do
+        get api("/projects/#{project.id}/hooks/#{hook.id}", user)
+        response.status.should == 200
+        json_response['url'].should == hook.url
+      end
+
+      it "should return a 404 error if hook id is not available" do
+        get api("/projects/#{project.id}/hooks/1234", user)
+        response.status.should == 404
+      end
+    end
+
+    context "unauthorized user" do
+      it "should not access an existing hook" do
+        get api("/projects/#{project.id}/hooks/#{hook.id}", user3)
+        response.status.should == 403
+      end
     end
   end
 
