@@ -146,7 +146,7 @@ class Project < ActiveRecord::Base
   end
 
   def saved?
-    id && valid?
+    id && persisted?
   end
 
   def import?
