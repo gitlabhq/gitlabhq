@@ -29,7 +29,7 @@
   $(function(){
     merge_request = new MergeRequest({
       url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
-      check_enable: #{@merge_request.merge_status == MergeRequest::UNCHECKED ? "true" : "false"},
+      check_enable: #{@merge_request.unchecked? ? "true" : "false"},
       url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
       ci_enable: #{@project.gitlab_ci? ? "true" : "false"},
       current_status: "#{@merge_request.human_merge_status}",
