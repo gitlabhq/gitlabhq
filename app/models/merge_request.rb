@@ -81,24 +81,9 @@ class MergeRequest < ActiveRecord::Base
   validate  :validate_branches
 
   scope :merged, -> { with_state(:merged) }
-
-  class << self
-    def find_all_by_branch(branch_name)
-      where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
-    end
-
-    def cared(user)
-      where('assignee_id = :user OR author_id = :user', user: user.id)
-    end
-
-    def find_all_by_branch(branch_name)
-      where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
-    end
-
-    def find_all_by_milestone(milestone)
-      where("milestone_id = :milestone_id", milestone_id: milestone)
-    end
-  end
+  scope :by_branch, ->(branch_name) { where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name) }
+  scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
+  scope :by_milestone, ->(milestone) { where("milestone_id = :milestone_id", milestone_id: milestone) }
 
   # DEPRECATED: Please use human_merge_status_name instead
   def human_merge_status
