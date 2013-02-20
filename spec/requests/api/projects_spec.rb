@@ -127,34 +127,6 @@ describe Gitlab::API do
 
       json_response['name'].should == 'new_design'
       json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
-      json_response['protected'].should == false
-    end
-
-    it "should return a 404 error if branch is not available" do
-      get api("/projects/#{project.id}/repository/branches/unknown", user)
-      response.status.should == 404
-    end
-  end
-
-  describe "PUT /projects/:id/repository/branches/:branch/protect" do
-    it "should protect a single branch" do
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
-      response.status.should == 200
-
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
-      json_response['protected'].should == true
-    end
-  end
-
-  describe "PUT /projects/:id/repository/branches/:branch/unprotect" do
-    it "should unprotect a single branch" do
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
-      response.status.should == 200
-
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
-      json_response['protected'].should == false
     end
   end
 
@@ -275,11 +247,10 @@ describe Gitlab::API do
     end
   end
 
-
-  describe "DELETE /projects/:id/hooks" do
+  describe "DELETE /projects/:id/hooks/:hook_id" do
     it "should delete hook from project" do
       expect {
-        delete api("/projects/#{project.id}/hooks", user),
+        delete api("/projects/#{project.id}/hooks/#{hook.id}", user),
           hook_id: hook.id
       }.to change {project.hooks.count}.by(-1)
     end
