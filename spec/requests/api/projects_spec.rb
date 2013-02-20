@@ -384,7 +384,7 @@ describe Gitlab::API do
     it "should add hook to project" do
       expect {
         post api("/projects/#{project.id}/hooks", user),
-          "url" => "http://example.com"
+          url: "http://example.com"
       }.to change {project.hooks.count}.by(1)
       response.status.should == 201
     end
@@ -424,11 +424,10 @@ describe Gitlab::API do
     end
   end
 
-  describe "DELETE /projects/:id/hooks" do
+  describe "DELETE /projects/:id/hooks/:hook_id" do
     it "should delete hook from project" do
       expect {
-        delete api("/projects/#{project.id}/hooks", user),
-          hook_id: hook.id
+        delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
       }.to change {project.hooks.count}.by(-1)
       response.status.should == 200
     end

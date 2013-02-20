@@ -244,8 +244,8 @@ module Gitlab
       #   id (required) - The ID of a project
       #   hook_id (required) - The ID of hook to delete
       # Example Request:
-      #   DELETE /projects/:id/hooks
-      delete ":id/hooks" do
+      #   DELETE /projects/:id/hooks/:hook_id
+      delete ":id/hooks/:hook_id" do
         authorize! :admin_project, user_project
         bad_request!(:hook_id) unless params.has_key? :hook_id
 
