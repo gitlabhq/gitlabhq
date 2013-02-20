@@ -88,36 +88,47 @@ Return values:
 
 
 ## User creation
-Create user. Available only for admin
+
+Creates a new user. Note only administrators can create new users.
 
 ```
 POST /users
 ```
 
 Parameters:
-+ `email` (required)                  - Email
-+ `password` (required)               - Password
-+ `username` (required)               - Username
-+ `name` (required)                   - Name
-+ `skype`                             - Skype ID
-+ `linkedin`                          - Linkedin
-+ `twitter`                           - Twitter account
-+ `projects_limit`                    - Number of projects user can create
-+ `extern_uid`                        - External UID
-+ `provider`                          - External provider name
-+ `bio`                               - User's bio
 
-Will return created user with status `201 Created` on success, or `404 Not
-found` on fail.
++ `email` (required)          - Email
++ `password` (required)       - Password
++ `username` (required)       - Username
++ `name` (required)           - Name
++ `skype` (optional)          - Skype ID
++ `linkedin` (optional)       - Linkedin
++ `twitter` (optional)        - Twitter account
++ `projects_limit` (optional) - Number of projects user can create
++ `extern_uid` (optional)     - External UID
++ `provider` (optional)       - External provider name
++ `bio` (optional)            - User's bio
+
+Return values:
+
++ `201 Created` on success and returns the new user
++ `400 Bad Request` if one of the required attributes is missing from the request
++ `401 Unauthorized` if the user is not authorized
++ `403 Forbidden` if the user is not allowed to create a new user (must be admin)
++ `404 Not Found` if something else fails
++ `409 Conflict` if a user with the same email address or username already exists
+
 
 ## User modification
-Modify user. Available only for admin
+
+Modifies an existing user. Only administrators can change attributes of a user.
 
 ```
 PUT /users/:id
 ```
 
 Parameters:
+
 + `email`                             - Email
 + `username`                          - Username
 + `name`                              - Name
@@ -130,23 +141,42 @@ Parameters:
 + `provider`                          - External provider name
 + `bio`                               - User's bio
 
+Return values:
 
-Will return created user with status `200 OK` on success, or `404 Not
-found` on fail.
++ `200 Ok` on success and returns the new user
++ `401 Unauthorized` if the user is not authorized
++ `403 Forbidden` if the user is not allowed to create a new user (must be admin)
++ `404 Not Found` if something else fails
+
+Note, at the moment this method does only return a 404 error, even in cases where a 409 (Conflict) would
+be more appropriate, e.g. when renaming the email address to some exsisting one.
+
 
 ## User deletion
-Delete user. Available only for admin
+
+Deletes a user. Available only for administrators. This is an idempotent function, calling this function
+for a non-existent user id still returns a status code `200 Ok`. The JSON response differs if the user
+was actually deleted or not. In the former the user is returned and in the latter not.
 
 ```
 DELETE /users/:id
 ```
 
-Will return deleted user with status `200 OK` on success, or `404 Not
-found` on fail.
+Parameters:
+
++ `id` (required) - The ID of the user
+
+Return values:
+
++ `200 Ok` on success and returns the deleted user
++ `401 Unauthorized` if the user is not authorized
++ `403 Forbidden` if the user is not allowed to create a new user (must be admin)
++ `404 Not Found` if user with ID not found or something else fails
+
 
 ## Current user
 
-Get currently authenticated user.
+Gets currently authenticated user.
 
 ```
 GET /user
@@ -168,6 +198,13 @@ GET /user
   "theme_id": 1
 }
 ```
+
+Return values:
+
++ `200 Ok` on success and returns the current user
++ `401 Unauthorized` if the user is not authorized
++ `404 Not Found` if something else fails
+
 
 ## List SSH keys
 
@@ -196,6 +233,17 @@ GET /user/keys
 ]
 ```
 
+Parameters:
+
++ **none**
+
+Return values:
+
++ `200 Ok` on success and a list of ssh keys
++ `401 Unauthorized` if the user is not authenticated
++ `404 Not Found` if something else fails
+
+
 ## Single SSH key
 
 Get a single key.
@@ -217,9 +265,17 @@ Parameters:
       soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
 }
 ```
+
+Return values:
+
++ `200 Ok` on success and the ssh key with ID
++ `401 Unauthorized` if it is not allowed to access the user
++ `404 Not Found` if the ssh key with ID not found
+
+
 ## Add SSH key
 
-Create new key owned by currently authenticated user
+Creates a new key owned by the currently authenticated user.
 
 ```
 POST /user/keys
@@ -230,12 +286,18 @@ Parameters:
 + `title` (required) - new SSH Key's title
 + `key` (required) - new SSH key
 
-Will return created key with status `201 Created` on success, or `404 Not
-found` on fail.
+Return values:
+
++ `201 Created` on success and the added key
++ `400 Bad Request` if one of the required attributes is not given
++ `401 Unauthorized` if user is not authorized to add ssh key
++ `404 Not Found` if something else fails
+
 
 ## Delete SSH key
 
-Delete key owned by currently authenticated user
+Deletes key owned by currently authenticated user. This is an idempotent function and calling it on a key that is already
+deleted or not available results in `200 Ok`.
 
 ```
 DELETE /user/keys/:id
@@ -245,4 +307,8 @@ Parameters:
 
 + `id` (required) - SSH key ID
 
-Will return `200 OK` on success, or `404 Not Found` on fail.
+Return values:
+
++ `200 Ok` on success
++ `401 Unauthorized` if user is not allowed to delete they key
++ `404 Not Found` if something else fails
