@@ -32,7 +32,7 @@
       check_enable: #{@merge_request.unchecked? ? "true" : "false"},
       url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
       ci_enable: #{@project.gitlab_ci? ? "true" : "false"},
-      current_status: "#{@merge_request.human_merge_status}",
+      current_status: "#{@merge_request.human_merge_status_name}",
       action: "#{controller.action_name}"
     });
   });
