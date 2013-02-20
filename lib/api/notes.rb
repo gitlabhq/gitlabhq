@@ -37,6 +37,8 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/notes
       post ":id/notes" do
+        bad_request!(:body) unless params[:body].present?
+
         @note = user_project.notes.new(note: params[:body])
         @note.author = current_user
 
@@ -91,6 +93,9 @@ module Gitlab
         #   POST /projects/:id/issues/:noteable_id/notes
         #   POST /projects/:id/snippets/:noteable_id/notes
         post ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
+          bad_request!(:"#{noteable_id_str}") unless params[:"#{noteable_id_str}"].present?
+          bad_request!(:body) unless params[:body].present?
+
           @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
           @note = @noteable.notes.new(note: params[:body])
           @note.author = current_user

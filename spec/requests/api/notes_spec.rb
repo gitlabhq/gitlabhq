@@ -52,7 +52,12 @@ describe Gitlab::API do
       json_response['body'].should == 'hi!'
     end
 
-    it "should return a 400 error if body is missing" do
+    it "should return 401 unauthorized error" do
+      post api("/projects/#{project.id}/notes")
+      response.status.should == 401
+    end
+
+    it "should return a 400 bad request if body is missing" do
       post api("/projects/#{project.id}/notes", user)
       response.status.should == 400
     end
@@ -94,6 +99,18 @@ describe Gitlab::API do
         json_response.should be_an Array
         json_response.first['body'].should == merge_request_note.note
       end
+
+      it "should return a 404 error if merge request id not found" do
+        get api("/projects/#{project.id}/merge_requests/4444/notes", user)
+        response.status.should == 404
+      end
+    end
+
+    context "when notable is invalid" do
+      it "should return a 404 error" do
+        get api("/projects/#{project.id}/unknown/#{snippet.id}/notes", user)
+        response.status.should == 404
+      end
     end
   end
 
@@ -133,6 +150,16 @@ describe Gitlab::API do
         json_response['body'].should == 'hi!'
         json_response['author']['email'].should == user.email
       end
+
+      it "should return a 400 bad request error if body not given" do
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
+        response.status.should == 400
+      end
+
+      it "should return a 401 unauthorized error if user not authenticated" do
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes"), body: 'hi!'
+        response.status.should == 401
+      end
     end
 
     context "when noteable is a Snippet" do
@@ -141,6 +168,23 @@ describe Gitlab::API do
         response.status.should == 201
         json_response['body'].should == 'hi!'
         json_response['author']['email'].should == user.email
+      end
+
+      it "should return a 400 bad request error if body not given" do
+        post api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
+        response.status.should == 400
+      end
+
+      it "should return a 401 unauthorized error if user not authenticated" do
+        post api("/projects/#{project.id}/snippets/#{snippet.id}/notes"), body: 'hi!'
+        response.status.should == 401
+      end
+    end
+
+    context "when noteable is invalid" do
+      it "should return a 404 error" do
+        post api("/projects/#{project.id}/invalid/#{snippet.id}/notes", user)
+        response.status.should == 404
       end
     end
   end
