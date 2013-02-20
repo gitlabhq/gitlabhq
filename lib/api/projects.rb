@@ -204,8 +204,8 @@ module Gitlab
       #   id (required) - The ID of a project
       #   hook_id (required) - The ID of hook to delete
       # Example Request:
-      #   DELETE /projects/:id/hooks
-      delete ":id/hooks" do
+      #   DELETE /projects/:id/hooks/:hook_id
+      delete ":id/hooks/:hook_id" do
         authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         @hook.destroy
@@ -218,7 +218,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
-        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject, project: user_project
+        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject
       end
 
       # Get a single branch
@@ -230,44 +230,7 @@ module Gitlab
       #   GET /projects/:id/repository/branches/:branch
       get ":id/repository/branches/:branch" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        not_found!("Branch does not exist") if @branch.nil?
-        present @branch, with: Entities::RepoObject, project: user_project
-      end
-
-      # Protect a single branch
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch (required) - The name of the branch
-      # Example Request:
-      #   PUT /projects/:id/repository/branches/:branch/protect
-      put ":id/repository/branches/:branch/protect" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        protected = user_project.protected_branches.find_by_name(@branch.name)
-
-        unless protected
-          user_project.protected_branches.create(:name => @branch.name)
-        end
-
-        present @branch, with: Entities::RepoObject, project: user_project
-      end
-
-      # Unprotect a single branch
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch (required) - The name of the branch
-      # Example Request:
-      #   PUT /projects/:id/repository/branches/:branch/unprotect
-      put ":id/repository/branches/:branch/unprotect" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        protected = user_project.protected_branches.find_by_name(@branch.name)
-
-        if protected
-          protected.destroy
-        end
-
-        present @branch, with: Entities::RepoObject, project: user_project
+        present @branch, with: Entities::RepoObject
       end
 
       # Get a project repository tags
