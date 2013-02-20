@@ -265,7 +265,7 @@ Will return status `201 Created` on success, or `404 Not found` on fail.
 Delete hook from project
 
 ```
-DELETE /projects/:id/hooks
+DELETE /projects/:id/hooks/:hook_id
 ```
 
 Parameters:
