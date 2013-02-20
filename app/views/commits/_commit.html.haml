@@ -8,7 +8,7 @@
     &nbsp;
     = link_to_gfm truncate(commit.title, length: 70), project_commit_path(@project, commit.id), class: "row_title"
 
-    %span.committed_ago
+    %time.committed_ago{ datetime: commit.committed_date, title: commit.committed_date.stamp("Aug 21, 2011 9:23pm") }
       = time_ago_in_words(commit.committed_date)
       ago
       &nbsp;
