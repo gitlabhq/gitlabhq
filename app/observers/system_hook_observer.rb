@@ -1,8 +1,9 @@
 class SystemHookObserver < ActiveRecord::Observer
   observe :user, :project, :users_project
-  
+
   def after_create(model)
-    if model.kind_of? Project
+    case model
+    when Project
       SystemHook.all_hooks_fire({
         event_name: "project_create",
         name: model.name,
@@ -12,15 +13,14 @@ class SystemHookObserver < ActiveRecord::Observer
         owner_email: model.owner.email,
         created_at: model.created_at
       })
-    elsif model.kind_of? User 
+    when User
       SystemHook.all_hooks_fire({
         event_name: "user_create",
         name: model.name,
         email: model.email,
         created_at: model.created_at
       })
-
-    elsif model.kind_of? UsersProject
+    when UsersProject
       SystemHook.all_hooks_fire({
         event_name: "user_add_to_team",
         project_name: model.project.name,
@@ -31,12 +31,12 @@ class SystemHookObserver < ActiveRecord::Observer
         project_access: model.repo_access_human,
         created_at: model.created_at
       })
-
     end
   end
 
   def after_destroy(model)
-    if model.kind_of? Project
+    case model
+    when Project
       SystemHook.all_hooks_fire({
         event_name: "project_destroy",
         name: model.name,
@@ -45,14 +45,13 @@ class SystemHookObserver < ActiveRecord::Observer
         owner_name: model.owner.name,
         owner_email: model.owner.email,
       })
-    elsif model.kind_of? User
+    when User
       SystemHook.all_hooks_fire({
         event_name: "user_destroy",
         name: model.name,
         email: model.email
       })
-
-    elsif model.kind_of? UsersProject
+    when UsersProject
       SystemHook.all_hooks_fire({
         event_name: "user_remove_from_team",
         project_name: model.project.name,
