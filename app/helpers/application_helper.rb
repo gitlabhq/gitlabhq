@@ -73,8 +73,8 @@ module ApplicationHelper
 
   def search_autocomplete_source
     projects = current_user.authorized_projects.map { |p| { label: "project: #{p.name_with_namespace}", url: project_path(p) } }
-    groups = current_user.authorized_groups.map { |group| { label: "group: #{group.name}", url: group_path(group) } }
-    teams = current_user.authorized_teams.map { |team| { label: "team: #{team.name}", url: team_path(team) } }
+    groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
+    teams = current_user.authorized_teams.map { |team| { label: "team: #{simple_sanitize(team.name)}", url: team_path(team) } }
 
     default_nav = [
       { label: "My Profile", url: profile_path },
@@ -159,8 +159,13 @@ module ApplicationHelper
               alt: "Sign in with #{provider.to_s.titleize}")
   end
 
+  def simple_sanitize str
+    sanitize(str, tags: %w(a span))
+  end
+
   def image_url(source)
     root_url + path_to_image(source)
   end
+
   alias_method :url_to_image, :image_url
 end

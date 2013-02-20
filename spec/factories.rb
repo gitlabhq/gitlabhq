@@ -54,10 +54,15 @@ FactoryGirl.define do
     project
 
     trait :closed do
-      closed true
+      state :closed
+    end
+
+    trait :reopened do
+      state :reopened
     end
 
     factory :closed_issue, traits: [:closed]
+    factory :reopened_issue, traits: [:reopened]
   end
 
   factory :merge_request do
@@ -66,10 +71,6 @@ FactoryGirl.define do
     project
     source_branch "master"
     target_branch "stable"
-
-    trait :closed do
-      closed true
-    end
 
     # pick 3 commits "at random" (from bcf03b5d~3 to bcf03b5d)
     trait :with_diffs do
@@ -85,7 +86,16 @@ FactoryGirl.define do
       end
     end
 
+    trait :closed do
+      state :closed
+    end
+
+    trait :reopened do
+      state :reopened
+    end
+
     factory :closed_merge_request, traits: [:closed]
+    factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
   end
 
@@ -148,11 +158,23 @@ FactoryGirl.define do
         "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa ++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
       end
     end
+
+    factory :invalid_key do
+      key do
+        "ssh-rsa this_is_invalid_key=="
+      end
+    end
   end
 
   factory :milestone do
     title
     project
+
+    trait :closed do
+      state :closed
+    end
+
+    factory :closed_milestone, traits: [:closed]
   end
 
   factory :system_hook do

@@ -20,7 +20,7 @@ module Gitlab
     class Project < Grape::Entity
       expose :id, :name, :description, :default_branch
       expose :owner, using: Entities::UserBasic
-      expose :private_flag, as: :private
+      expose :public
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
       expose :namespace
@@ -35,12 +35,11 @@ module Gitlab
     class Group < Grape::Entity
       expose :id, :name, :path, :owner_id
     end
-    
+
     class GroupDetail < Group
       expose :projects, using: Entities::Project
     end
 
-    
     class RepoObject < Grape::Entity
       expose :name, :commit
       expose :protected do |repo, options|
@@ -63,7 +62,7 @@ module Gitlab
     class Milestone < Grape::Entity
       expose :id
       expose (:project_id) {|milestone| milestone.project.id}
-      expose :title, :description, :due_date, :closed, :updated_at, :created_at
+      expose :title, :description, :due_date, :state, :updated_at, :created_at
     end
 
     class Issue < Grape::Entity
@@ -73,7 +72,7 @@ module Gitlab
       expose :label_list, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
-      expose :closed, :updated_at, :created_at
+      expose :state, :updated_at, :created_at
     end
 
     class SSHKey < Grape::Entity
@@ -81,7 +80,7 @@ module Gitlab
     end
 
     class MergeRequest < Grape::Entity
-      expose :id, :target_branch, :source_branch, :project_id, :title, :closed, :merged
+      expose :id, :target_branch, :source_branch, :project_id, :title, :state
       expose :author, :assignee, using: Entities::UserBasic
     end
 

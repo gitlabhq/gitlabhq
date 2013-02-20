@@ -34,7 +34,6 @@ POST /projects/:id/milestones
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `milestone_id` (required) - The ID of a project milestone
 + `title` (required) - The title of an milestone
 + `description` (optional) - The description of the milestone
 + `due_date` (optional) - The due date of the milestone

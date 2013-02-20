@@ -17,3 +17,17 @@
       %li All created teams are public (users can view who enter into team and which project are assigned for this team)
       %li People within a team see only projects they have access to
       %li You will be able to assign existing projects for team
+  %hr
+
+  - if current_user.can_create_group?
+    .clearfix
+      .input.light
+        Need a group for several dependent projects?
+        = link_to new_group_path, class: "btn btn-tiny" do
+          Create a group
+  - if current_user.can_create_project?
+    .clearfix
+      .input.light
+        Want to create a project?
+        = link_to new_project_path, class: "btn btn-tiny" do
+          Create a project

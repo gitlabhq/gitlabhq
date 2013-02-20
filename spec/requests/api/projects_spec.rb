@@ -33,6 +33,20 @@ describe Gitlab::API do
   end
 
   describe "POST /projects" do
+    context "maximum number of projects reached" do
+      before do
+        (1..user2.projects_limit).each do |project|
+          post api("/projects", user2), name: "foo#{project}"
+        end
+      end
+
+      it "should not create new project" do
+        expect {
+          post api("/projects", user2), name: 'foo'
+        }.to change {Project.count}.by(0)
+      end
+    end
+
     it "should create new project without path" do
       expect { post api("/projects", user), name: 'foo' }.to change {Project.count}.by(1)
     end
@@ -44,6 +58,12 @@ describe Gitlab::API do
     it "should return a 400 error if name not given" do
       post api("/projects", user)
       response.status.should == 400
+    end
+
+    it "should create last project before reaching project limit" do
+      (1..user2.projects_limit-1).each { |p| post api("/projects", user2), name: "foo#{p}" }
+      post api("/projects", user2), name: "foo"
+      response.status.should == 201
     end
 
     it "should respond with 201 on success" do
@@ -314,22 +334,44 @@ describe Gitlab::API do
   end
 
   describe "GET /projects/:id/hooks" do
-    it "should return project hooks" do
-      get api("/projects/#{project.id}/hooks", user)
+    context "authorized user" do
+      it "should return project hooks" do
+        get api("/projects/#{project.id}/hooks", user)
+        response.status.should == 200
 
-      response.status.should == 200
+        json_response.should be_an Array
+        json_response.count.should == 1
+        json_response.first['url'].should == "http://example.com"
+      end
+    end
 
-      json_response.should be_an Array
-      json_response.count.should == 1
-      json_response.first['url'].should == "http://example.com"
+    context "unauthorized user" do
+      it "should not access project hooks" do
+        get api("/projects/#{project.id}/hooks", user3)
+        response.status.should == 403
+      end
     end
   end
 
   describe "GET /projects/:id/hooks/:hook_id" do
-    it "should return a project hook" do
-      get api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      response.status.should == 200
-      json_response['url'].should == hook.url
+    context "authorized user" do
+      it "should return a project hook" do
+        get api("/projects/#{project.id}/hooks/#{hook.id}", user)
+        response.status.should == 200
+        json_response['url'].should == hook.url
+      end
+
+      it "should return a 404 error if hook id is not available" do
+        get api("/projects/#{project.id}/hooks/1234", user)
+        response.status.should == 404
+      end
+    end
+
+    context "unauthorized user" do
+      it "should not access an existing hook" do
+        get api("/projects/#{project.id}/hooks/#{hook.id}", user3)
+        response.status.should == 403
+      end
     end
 
     it "should return a 404 error if hook id is not available" do

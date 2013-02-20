@@ -91,12 +91,12 @@ module Gitlab
       #   target_branch               - The target branch
       #   assignee_id                 - Assignee user ID
       #   title                       - Title of MR
-      #   closed                      - Status of MR. true - closed
+      #   state_event                 - Status of MR. (close|reopen|merge)
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
         authorize! :modify_merge_request, merge_request

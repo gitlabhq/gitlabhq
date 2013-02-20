@@ -26,6 +26,8 @@
             = link_to group_filter_path(entity, project_id: project.id) do
               = project.name_with_namespace
               %small.pull-right= entities_per_project(project, entity)
+      - if @projects.blank?
+        %p.nothing_here_message This group has no projects yet
 
   %fieldset
     %hr

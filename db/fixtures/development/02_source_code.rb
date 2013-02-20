@@ -1,4 +1,4 @@
-root = Gitlab.config.gitolite.repos_path
+root = Gitlab.config.gitlab_shell.repos_path
 
 projects = [
   { path: 'underscore.git',              git: 'https://github.com/documentcloud/underscore.git' },

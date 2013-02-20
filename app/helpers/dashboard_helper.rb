@@ -27,6 +27,6 @@ module DashboardHelper
               items.opened
             end
 
-    items.where(assignee_id: current_user.id).count
+    items.cared(current_user).count
   end
 end

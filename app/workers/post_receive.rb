@@ -21,14 +21,18 @@ class PostReceive
       return false
     end
 
-    # Ignore push from non-gitlab users
-    user = if identifier.nil?
-             raise identifier.inspect
+    user = if identifier.blank?
+             # Local push from gitlab
              email = project.repository.commit(newrev).author.email rescue nil
              User.find_by_email(email) if email
-           elsif /^[A-Z0-9._%a-z\-]+@(?:[A-Z0-9a-z\-]+\.)+[A-Za-z]{2,4}$/.match(identifier)
-             User.find_by_email(identifier)
-           elsif identifier =~ /key/
+
+           elsif identifier =~ /\Auser-\d+\Z/
+             # git push over http
+             user_id = identifier.gsub("user-", "")
+             User.find_by_id(user_id)
+
+           elsif identifier =~ /\Akey-\d+\Z/
+             # git push over ssh
              key_id = identifier.gsub("key-", "")
              Key.find_by_id(key_id).try(:user)
            end

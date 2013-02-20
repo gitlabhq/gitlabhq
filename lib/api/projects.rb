@@ -184,6 +184,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/hooks/:hook_id
       get ":id/hooks/:hook_id" do
+        authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         present @hook, with: Entities::Hook
       end

@@ -1,3 +1,5 @@
+require_relative 'shell_env'
+
 module Grack
   class Auth < Rack::Auth::Basic
     attr_accessor :user, :project
@@ -6,9 +8,6 @@ module Grack
       @env = env
       @request = Rack::Request.new(env)
       @auth = Request.new(env)
-
-      # Pass Gitolite update hook
-      ENV['GL_BYPASS_UPDATE_HOOK'] = "true"
 
       # Need this patch due to the rails mount
       @env['PATH_INFO'] = @request.path
@@ -35,8 +34,7 @@ module Grack
         self.user = User.find_by_email(login) || User.find_by_username(login)
         return false unless user.try(:valid_password?, password)
 
-        # Set GL_USER env variable
-        ENV['GL_USER'] = user.email
+        Gitlab::ShellEnv.set_env(user)
       end
 
       # Git upload and receive

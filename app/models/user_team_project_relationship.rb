@@ -26,6 +26,10 @@ class UserTeamProjectRelationship < ActiveRecord::Base
     user_team.name
   end
 
+  def human_max_access
+    UserTeam.access_roles.key(greatest_access)
+  end
+
   private
 
   def check_greatest_access

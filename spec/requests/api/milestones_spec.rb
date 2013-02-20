@@ -68,4 +68,14 @@ describe Gitlab::API do
       response.status.should == 404
     end
   end
+
+  describe "PUT /projects/:id/milestones/:milestone_id to close milestone" do
+    it "should update a project milestone" do
+      put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
+        state_event: 'close'
+      response.status.should == 200
+
+      json_response['state'].should == 'closed'
+    end
+  end
 end

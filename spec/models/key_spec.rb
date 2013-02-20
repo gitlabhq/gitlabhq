@@ -73,8 +73,12 @@ describe Key do
       build(:key, user: user).should be_valid
     end
 
-    it "rejects the unfingerprintable key" do
+    it "rejects the unfingerprintable key (contains space in middle)" do
       build(:key_with_a_space_in_the_middle).should_not be_valid
+    end
+
+    it "rejects the unfingerprintable key (not a key)" do
+      build(:invalid_key).should_not be_valid
     end
   end
 end

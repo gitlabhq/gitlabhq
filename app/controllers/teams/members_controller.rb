@@ -27,7 +27,13 @@ class Teams::MembersController < Teams::ApplicationController
   end
 
   def update
-    options = {default_projects_access: params[:default_project_access], group_admin: params[:group_admin]}
+    member_params = params[:team_member]
+
+    options = {
+      default_projects_access: member_params[:permission],
+      group_admin: member_params[:group_admin]
+    }
+
     if user_team.update_membership(team_member, options)
       redirect_to team_members_path(user_team), notice: "Membership for #{team_member.name} was successfully updated in Team of users."
     else
@@ -45,5 +51,4 @@ class Teams::MembersController < Teams::ApplicationController
   def team_member
     @member ||= user_team.members.find_by_username(params[:id])
   end
-
 end

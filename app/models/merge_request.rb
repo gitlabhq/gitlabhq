@@ -9,15 +9,14 @@
 #  author_id     :integer
 #  assignee_id   :integer
 #  title         :string(255)
-#  closed        :boolean          default(FALSE), not null
+#  state         :string(255)      not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
-#  merged        :boolean          default(FALSE), not null
-#  state         :integer          default(1), not null
-#  milestone_id  :integer
+#  merge_status  :integer          default(1), not null
 #
+#  milestone_id  :integer
 
 require Rails.root.join("app/models/commit")
 require Rails.root.join("lib/static_model")
@@ -25,10 +24,32 @@ require Rails.root.join("lib/static_model")
 class MergeRequest < ActiveRecord::Base
   include Issuable
 
-  attr_accessible :title, :assignee_id, :closed, :target_branch, :source_branch, :milestone_id,
-                  :author_id_of_changes
+  attr_accessible :title, :assignee_id, :target_branch, :source_branch, :milestone_id,
+                  :author_id_of_changes, :state_event
 
   attr_accessor :should_remove_source_branch
+
+  state_machine :state, initial: :opened do
+    event :close do
+      transition [:reopened, :opened] => :closed
+    end
+
+    event :merge do
+      transition [:reopened, :opened] => :merged
+    end
+
+    event :reopen do
+      transition closed: :reopened
+    end
+
+    state :opened
+
+    state :reopened
+
+    state :closed
+
+    state :merged
+  end
 
   BROKEN_DIFF = "--broken-diff"
 
@@ -43,21 +64,33 @@ class MergeRequest < ActiveRecord::Base
   validates :target_branch, presence: true
   validate :validate_branches
 
-  def self.find_all_by_branch(branch_name)
-    where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+  scope :merged, -> { with_state(:merged) }
+
+  class << self
+    def find_all_by_branch(branch_name)
+      where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+    end
+
+    def cared(user)
+      where('assignee_id = :user OR author_id = :user', user: user.id)
+    end
+
+    def find_all_by_branch(branch_name)
+      where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
+    end
+
+    def find_all_by_milestone(milestone)
+      where("milestone_id = :milestone_id", milestone_id: milestone)
+    end
   end
 
-  def self.find_all_by_milestone(milestone)
-    where("milestone_id = :milestone_id", milestone_id: milestone)
-  end
-
-  def human_state
-    states = {
+  def human_merge_status
+    merge_statuses = {
       CAN_BE_MERGED =>  "can_be_merged",
       CANNOT_BE_MERGED => "cannot_be_merged",
       UNCHECKED => "unchecked"
     }
-    states[self.state]
+    merge_statuses[self.merge_status]
   end
 
   def validate_branches
@@ -72,20 +105,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unchecked?
-    state == UNCHECKED
+    merge_status == UNCHECKED
   end
 
   def mark_as_unchecked
-    self.state = UNCHECKED
+    self.merge_status = UNCHECKED
     self.save
   end
 
   def can_be_merged?
-    state == CAN_BE_MERGED
+    merge_status == CAN_BE_MERGED
   end
 
   def check_if_can_be_merged
-    self.state = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
+    self.merge_status = if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
                    CAN_BE_MERGED
                  else
                    CANNOT_BE_MERGED
@@ -98,7 +131,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reloaded_diffs
-    if open? && unmerged_diffs.any?
+    if opened? && unmerged_diffs.any?
       self.st_diffs = unmerged_diffs
       self.save
     end
@@ -128,10 +161,6 @@ class MergeRequest < ActiveRecord::Base
     commits.first
   end
 
-  def merged?
-    merged && merge_event
-  end
-
   def merge_event
     self.project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end
@@ -146,26 +175,16 @@ class MergeRequest < ActiveRecord::Base
 
   def probably_merged?
     unmerged_commits.empty? &&
-      commits.any? && open?
-  end
-
-  def open?
-    !closed
-  end
-
-  def mark_as_merged!
-    self.merged = true
-    self.closed = true
-    save
+      commits.any? && opened?
   end
 
   def mark_as_unmergable
-    self.state = CANNOT_BE_MERGED
+    self.merge_status = CANNOT_BE_MERGED
     self.save
   end
 
   def reloaded_commits
-    if open? && unmerged_commits.any?
+    if opened? && unmerged_commits.any?
       self.st_commits = unmerged_commits
       save
     end
@@ -181,7 +200,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge!(user_id)
-    self.mark_as_merged!
+    self.merge
+
     Event.create(
       project: self.project,
       action: Event::MERGED,

@@ -4,7 +4,11 @@ class TeamMembersController < ProjectResourceController
   before_filter :authorize_admin_project!, except: [:index, :show]
 
   def index
-    @teams = UserTeam.scoped
+    @team = @project.users_projects.scoped
+    @team = @team.send(params[:type]) if %w(masters developers reporters guests).include?(params[:type])
+    @team = @team.sort_by(&:project_access).reverse.group_by(&:project_access)
+
+    @assigned_teams = @project.user_team_project_relationships
   end
 
   def show

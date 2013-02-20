@@ -21,8 +21,11 @@ class UserTeam < ActiveRecord::Base
   has_many :projects, through: :user_team_project_relationships
   has_many :members,  through: :user_team_user_relationships, source: :user
 
-  validates :name, presence: true, uniqueness: true
   validates :owner, presence: true
+  validates :name, presence: true, uniqueness: true,
+            length: { within: 0..255 },
+            format: { with: Gitlab::Regex.name_regex,
+                      message: "only letters, digits, spaces & '_' '-' '.' allowed." }
   validates :path, uniqueness: true, presence: true, length: { within: 1..255 },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }

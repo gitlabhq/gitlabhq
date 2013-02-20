@@ -15,7 +15,7 @@
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
 #  merged        :boolean          default(FALSE), not null
-#  state         :integer          default(1), not null
+#  merge_status  :integer          default(1), not null
 #  milestone_id  :integer
 #
 
@@ -34,6 +34,10 @@ describe MergeRequest do
 
   describe 'modules' do
     it { should include_module(Issuable) }
+  end
+
+  describe "#mr_and_commit_notes" do
+
   end
 
   describe "#mr_and_commit_notes" do
@@ -60,37 +64,6 @@ describe MergeRequest do
     end
     it 'returns false if the merge request assignee has not changed' do
       subject.is_being_reassigned?.should be_false
-    end
-  end
-
-  describe '#is_being_closed?' do
-    it 'returns true if the closed attribute has changed and is now true' do
-      subject.closed = true
-      subject.is_being_closed?.should be_true
-    end
-    it 'returns false if the closed attribute has changed and is now false' do
-      merge_request = create(:closed_merge_request)
-      merge_request.closed = false
-      merge_request.is_being_closed?.should be_false
-    end
-    it 'returns false if the closed attribute has not changed' do
-      subject.is_being_closed?.should be_false
-    end
-  end
-
-
-  describe '#is_being_reopened?' do
-    it 'returns true if the closed attribute has changed and is now false' do
-      merge_request = create(:closed_merge_request)
-      merge_request.closed = false
-      merge_request.is_being_reopened?.should be_true
-    end
-    it 'returns false if the closed attribute has changed and is now true' do
-      subject.closed = true
-      subject.is_being_reopened?.should be_false
-    end
-    it 'returns false if the closed attribute has not changed' do
-      subject.is_being_reopened?.should be_false
     end
   end
 end

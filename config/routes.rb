@@ -47,6 +47,11 @@ Gitlab::Application.routes.draw do
   end
 
   #
+  # Attachments serving
+  #
+  get 'files/:type/:id/:filename' => 'files#download', constraints: { id: /\d+/, type: /[a-z]+/, filename: /[a-zA-Z.0-9_\-\+]+/ }
+
+  #
   # Admin Area
   #
   namespace :admin do

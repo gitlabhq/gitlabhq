@@ -12,7 +12,7 @@ class MilestonesController < ProjectResourceController
 
   def index
     @milestones = case params[:f]
-                  when 'all'; @project.milestones.order("closed, due_date DESC")
+                  when 'all'; @project.milestones.order("state, due_date DESC")
                   when 'closed'; @project.milestones.closed.order("due_date DESC")
                   else @project.milestones.active.order("due_date ASC")
                   end

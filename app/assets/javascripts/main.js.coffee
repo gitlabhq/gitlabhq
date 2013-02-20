@@ -49,6 +49,10 @@ $ ->
   # Bottom tooltip
   $('.has_bottom_tooltip').tooltip(placement: 'bottom')
 
+  # Form submitter
+  $('.trigger-submit').on 'change', ->
+    $(@).parents('form').submit()
+
   # Flash
   if (flash = $("#flash-container")).length > 0
     flash.click -> $(@).slideUp("slow")

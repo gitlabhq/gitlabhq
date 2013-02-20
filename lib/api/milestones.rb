@@ -74,14 +74,14 @@ module Gitlab
       #   title (optional) - The title of a milestone
       #   description (optional) - The description of a milestone
       #   due_date (optional) - The due date of a milestone
-      #   closed (optional) - The status of the milestone
+      #   state (optional) - The status of the milestone (close|activate)
       # Example Request:
       #   PUT /projects/:id/milestones/:milestone_id
       put ":id/milestones/:milestone_id" do
         authorize! :admin_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        attrs = attributes_for_keys [:title, :description, :due_date, :closed]
+        attrs = attributes_for_keys [:title, :description, :due_date, :state_event]
         if @milestone.update_attributes attrs
           present @milestone, with: Entities::Milestone
         else
