@@ -33,12 +33,32 @@ describe Gitlab::API do
   end
 
   describe "POST /projects" do
+    context "maximum number of projects reached" do
+      before do
+        (1..user2.projects_limit).each do |project|
+          post api("/projects", user2), name: "foo#{project}"
+        end
+      end
+
+      it "should not create new project" do
+        expect {
+          post api("/projects", user2), name: 'foo'
+        }.to change {Project.count}.by(0)
+      end
+    end
+
     it "should create new project without path" do
       expect { post api("/projects", user), name: 'foo' }.to change {Project.count}.by(1)
     end
 
     it "should not create new project without name" do
       expect { post api("/projects", user) }.to_not change {Project.count}
+    end
+
+    it "should create last project before reaching project limit" do
+      (1..user2.projects_limit-1).each { |p| post api("/projects", user2), name: "foo#{p}" }
+      post api("/projects", user2), name: "foo"
+      response.status.should == 201
     end
 
     it "should respond with 201 on success" do
