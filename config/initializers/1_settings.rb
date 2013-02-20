@@ -36,10 +36,10 @@ end
 
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
-Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
+Settings.ldap['enabled'] ||= false
 
 Settings['omniauth'] ||= Settingslogic.new({})
-Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
+Settings.omniauth['enabled']    ||= false
 Settings.omniauth['providers']  ||= []
 
 #
@@ -48,7 +48,7 @@ Settings.omniauth['providers']  ||= []
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||=  10
 Settings.gitlab['host']       ||= 'localhost'
-Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
+Settings.gitlab['https']      ||= false
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
@@ -57,13 +57,13 @@ Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
-Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+Settings.gitlab['username_changing_enabled'] ||= true
 
 #
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
-Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
+Settings.gravatar['enabled']    ||= true
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 
@@ -72,8 +72,8 @@ Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
 Settings.gitlab_shell['hooks_path']   ||= '/home/git/gitlab-shell/hooks/'
-Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
-Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
+Settings.gitlab_shell['receive_pack'] ||= true
+Settings.gitlab_shell['upload_pack']  ||= true
 Settings.gitlab_shell['repos_path']   ||= '/home/git/repositories/'
 Settings.gitlab_shell['ssh_host']     ||= (Settings.gitlab.host || 'localhost')
 Settings.gitlab_shell['ssh_port']     ||= 22
