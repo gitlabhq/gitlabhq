@@ -10,9 +10,15 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
+Return values:
+
++ `200 Ok` on success and a list of project snippets
++ `401 Unauthorized` if user is not authenticated
+
+
 ## Single snippet
 
-Get a project snippet.
+Get a single project snippet.
 
 ```
 GET /projects/:id/snippets/:snippet_id
@@ -42,22 +48,16 @@ Parameters:
 }
 ```
 
-## Snippet content
+Return values:
 
-Get a raw project snippet.
++ `200 Ok` on success and the project snippet
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if snippet ID not found
 
-```
-GET /projects/:id/snippets/:snippet_id/raw
-```
 
-Parameters:
+## Create new snippet
 
-+ `id` (required) - The ID of a project
-+ `snippet_id` (required) - The ID of a project's snippet
-
-## New snippet
-
-Create a new project snippet.
+Creates a new project snippet.
 
 ```
 POST /projects/:id/snippets
@@ -71,11 +71,17 @@ Parameters:
 + `lifetime` (optional) - The expiration date of a snippet
 + `code` (required) - The content of a snippet
 
-Will return created snippet with status `201 Created` on success, or `404 Not found` on fail.
+Return values:
+
++ `201 Created` if snippet was successfully created and the snippet as JSON payload
++ `400 Bad Request` if one of the required attributes is not given
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID not found
+
 
 ## Edit snippet
 
-Update an existing project snippet.
+Updates an existing project snippet.
 
 ```
 PUT /projects/:id/snippets/:snippet_id
@@ -90,11 +96,17 @@ Parameters:
 + `lifetime` (optional) - The expiration date of a snippet
 + `code` (optional) - The content of a snippet
 
-Will return updated snippet with status `200 OK` on success, or `404 Not found` on fail.
+Return values:
+
++ `200 Ok` on success and the updated project snippet
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID not found
+
 
 ## Delete snippet
 
-Delete existing project snippet.
+Deletes an existing project snippet. This is an idempotent function and deleting a non-existent
+snippet still returns a `200 Ok` status code.
 
 ```
 DELETE /projects/:id/snippets/:snippet_id
@@ -105,5 +117,28 @@ Parameters:
 + `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
-Status code `200` will be returned on success.
+Return values:
 
++ `200 Ok` on success and if the snippet was deleted its content
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID not found
+
+
+## Snippet content
+
+Get a raw project snippet.
+
+```
+GET /projects/:id/snippets/:snippet_id/raw
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `snippet_id` (required) - The ID of a project's snippet
+
+Return values:
+
++ `200 Ok` on success and the raw snippet
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID or snippet ID is not found
