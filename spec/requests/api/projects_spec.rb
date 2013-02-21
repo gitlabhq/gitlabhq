@@ -433,18 +433,13 @@ describe Gitlab::API do
     end
 
     it "should return success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks", user), hook_id: hook.id
+      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
       response.status.should == 200
     end
 
     it "should return success when deleting non existent hook" do
-      delete api("/projects/#{project.id}/hooks", user), hook_id: 42
+      delete api("/projects/#{project.id}/hooks/42", user)
       response.status.should == 200
-    end
-
-    it "should return a 400 error if hook id not given" do
-      delete api("/projects/#{project.id}/hooks", user)
-      response.status.should == 400
     end
   end
 
