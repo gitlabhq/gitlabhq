@@ -136,7 +136,9 @@ describe "On a merge request diff", js: true, focus: true do
       end
 
       it "should be removed when canceled" do
-        first(".js-close-discussion-note-form").trigger("click")
+        within(".file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185']") do
+          find(".js-close-discussion-note-form").trigger("click")
+        end
 
         should have_no_css(".js-temp-notes-holder")
       end

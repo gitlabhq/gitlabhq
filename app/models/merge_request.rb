@@ -66,6 +66,10 @@ class MergeRequest < ActiveRecord::Base
 
   scope :merged, -> { with_state(:merged) }
 
+  # Closed scope for merge request should return
+  # both merged and closed mr's
+  scope :closed, -> { with_states(:closed, :merged) }
+
   class << self
     def find_all_by_branch(branch_name)
       where("source_branch LIKE :branch OR target_branch LIKE :branch", branch: branch_name)
