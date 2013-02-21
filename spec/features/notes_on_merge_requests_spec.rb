@@ -97,7 +97,9 @@ describe "On a merge request diff", js: true, focus: true do
 
     visit diffs_project_merge_request_path(project, merge_request)
 
-    click_link("Diff")
+    within '.diffs-tab' do
+      click_link("Diff")
+    end
   end
 
   subject { page }
