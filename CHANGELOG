@@ -1,10 +1,33 @@
 v 5.0.0
   - Replaced gitolite with gitlab-shell
+  - Removed gitolite-related libraries
+  - State machine added
+  - Setup gitlab as git user
+  - Internal API
+  - Show team tab for empty projects
+  - Import repository feature
+  - Updated rails
+  - Use lambda for scopes
+  - Redesign admin area -> users
+  - Redesign admin area -> user
+  - Secure link to file attachments
+  - Add validations for Group and Team names
+  - Restyle team page for project
+  - Update capybara, rspec-rails, poltergeist to recent versions
 
 v 4.2.0
   - Teams
   - User show page. Via /u/username
   - Show help contents on pages for better navigation
+  - Async gitolite calls
+  - added satellites logs
+  - can_create_group, can_create_team booleans for User
+  - Process web hooks async
+  - GFM: Fix images escaped inside links
+  - Network graph improved
+  - Switchable branches for network graph
+  - API: Groups
+  - Fixed project download
 
 v 4.1.0
   - Optional Sign-Up
