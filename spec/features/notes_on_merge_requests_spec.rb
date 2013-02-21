@@ -18,7 +18,7 @@ describe "On a merge request", js: true do
     it { should have_css(".js-main-target-form", visible: true, count: 1) }
 
     # button initalization
-    it { within(".js-main-target-form") { should have_button("Add Comment") } }
+    it { find(".js-main-target-form input[type=submit]").value.should == "Add Comment" }
     it { within(".js-main-target-form") { should_not have_link("Cancel") } }
 
     # notifiactions
@@ -136,7 +136,7 @@ describe "On a merge request diff", js: true, focus: true do
       end
 
       it "should be removed when canceled" do
-        find(".js-close-discussion-note-form").trigger("click")
+        first(".js-close-discussion-note-form").trigger("click")
 
         should have_no_css(".js-temp-notes-holder")
       end
