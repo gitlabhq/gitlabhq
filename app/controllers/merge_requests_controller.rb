@@ -1,3 +1,5 @@
+require 'gitlab/satellite/satellite'
+
 class MergeRequestsController < ProjectResourceController
   before_filter :module_enabled
   before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]

@@ -1,5 +1,6 @@
 require "repository"
 require "project"
+require "merge_request"
 require "shell"
 
 # Stubs out all Git repository access done by models so that specs can run
@@ -29,6 +30,12 @@ class Project
     def create
       true
     end
+  end
+end
+
+class MergeRequest
+  def can_be_merged
+    true
   end
 end
 
