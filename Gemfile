@@ -81,8 +81,8 @@ gem "draper", "~> 0.18.0"
 
 # Background jobs
 gem 'slim'
-gem 'sinatra', :require => nil
-gem 'sidekiq', '2.6.4'
+gem 'sinatra', require: nil
+gem 'sidekiq', '2.7.3'
 
 # HTTP requests
 gem "httparty"
