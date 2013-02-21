@@ -34,7 +34,7 @@ class Project
 end
 
 class MergeRequest
-  def can_be_merged
+  def check_if_can_be_merged
     true
   end
 end

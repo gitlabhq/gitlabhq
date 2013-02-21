@@ -177,8 +177,8 @@ class Userteams < Spinach::FeatureSteps
     And 'I select user "John" from list with role "Reporter"' do
       user = User.find_by_name("John")
       within "#team_members" do
-        select user.name, :from => "user_ids"
-        select "Reporter", :from => "default_project_access"
+        select "#{user.name} (#{user.email})", from: "user_ids"
+        select "Reporter", from: "default_project_access"
       end
       click_button "Add"
     end
@@ -213,8 +213,8 @@ class Userteams < Spinach::FeatureSteps
 
     When 'I submit form with selected project and max access' do
       within "#assign_projects" do
-        select @project.name_with_namespace, :from => "project_ids"
-        select "Reporter", :from => "greatest_project_access"
+        select @project.name_with_namespace, from: "project_ids"
+        select "Reporter", from: "greatest_project_access"
       end
       click_button "Add"
     end

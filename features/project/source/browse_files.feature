@@ -12,7 +12,7 @@ Feature: Project Browse files
     Then I should see files from repository for "8470d70"
 
   Scenario: I browse file content
-    Given I click on "Gemfile" file in repo
+    Given I click on "Gemfile.lock" file in repo
     Then I should see it content
 
   Scenario: I browse raw file
@@ -22,6 +22,6 @@ Feature: Project Browse files
 
   @javascript
   Scenario: I can edit file
-    Given I click on "Gemfile" file in repo
+    Given I click on "Gemfile.lock" file in repo
     And I click button "edit"
     Then I can edit code
