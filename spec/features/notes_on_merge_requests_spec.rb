@@ -67,7 +67,7 @@ describe "On a merge request", js: true do
     end
 
     # note added
-    it { within(".js-main-target-form") { should have_content("This is awsome!") } }
+    it { should have_content("This is awsome!") }
 
     # reset form
     it { within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!")  } }
