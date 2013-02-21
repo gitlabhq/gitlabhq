@@ -23,15 +23,19 @@ class Profile < Spinach::FeatureSteps
   end
 
   Then 'I change my password' do
-    fill_in "user_password", :with => "222333"
-    fill_in "user_password_confirmation", :with => "222333"
-    click_button "Save"
+    within '.update-password' do
+      fill_in "user_password", :with => "222333"
+      fill_in "user_password_confirmation", :with => "222333"
+      click_button "Save"
+    end
   end
 
   When 'I unsuccessfully change my password' do
-    fill_in "user_password", with: "password"
-    fill_in "user_password_confirmation", with: "confirmation"
-    click_button "Save"
+    within '.update-password' do
+      fill_in "user_password", with: "password"
+      fill_in "user_password_confirmation", with: "confirmation"
+      click_button "Save"
+    end
   end
 
   Then "I should see a password error message" do
@@ -43,8 +47,10 @@ class Profile < Spinach::FeatureSteps
   end
 
   Then 'I reset my token' do
-    @old_token = @user.private_token
-    click_button "Reset"
+    within '.update-token' do
+      @old_token = @user.private_token
+      click_button "Reset"
+    end
   end
 
   And 'I should see new token' do
