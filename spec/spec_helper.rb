@@ -23,6 +23,7 @@ WebMock.disable_net_connect!(allow_localhost: true)
 RSpec.configure do |config|
   config.mock_with :rspec
 
+  config.include LoginHelpers, type: :feature
   config.include LoginHelpers, type: :request
   config.include FactoryGirl::Syntax::Methods
   config.include Devise::TestHelpers, type: :controller
