@@ -90,6 +90,7 @@ header {
       @include border-radius(3px);
       border: 1px solid #c6c6c6;
       box-shadow: none;
+      @include transition(all 0.15s ease-in 0s);
       &:focus {
         @extend .span3;
       }
