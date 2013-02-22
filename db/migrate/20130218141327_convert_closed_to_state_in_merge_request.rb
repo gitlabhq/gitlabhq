@@ -1,9 +1,9 @@
 class ConvertClosedToStateInMergeRequest < ActiveRecord::Migration
   def up
     MergeRequest.transaction do
-      MergeRequest.where("closed = 1 AND merged = 1").update_all("state = 'merged'")
-      MergeRequest.where("closed = 1 AND merged = 0").update_all("state = 'closed'")
-      MergeRequest.where("closed = 0").update_all("state = 'opened'")
+      MergeRequest.where("closed = true AND merged = true").update_all("state = 'merged'")
+      MergeRequest.where("closed = true AND merged = false").update_all("state = 'closed'")
+      MergeRequest.where("closed = false").update_all("state = 'opened'")
     end
   end
 
