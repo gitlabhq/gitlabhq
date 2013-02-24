@@ -24,6 +24,14 @@
   background-image: -o-linear-gradient($from, $to);
 }
 
+@mixin transition($transition) {
+  -webkit-transition: $transition;
+  -moz-transition: $transition;
+  -ms-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
+}
+
 /**
  * Prefilled mixins
  * Mixins with fixed values
