@@ -255,7 +255,6 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "Environment"
 
-      check_issue_1059_shell_profile_error
       check_gitlab_git_config
       check_python2_exists
       check_python2_version
@@ -289,30 +288,6 @@ namespace :gitlab do
         )
         for_more_information(
           see_installation_guide_section "GitLab"
-        )
-        fix_and_rerun
-      end
-    end
-
-    # see https://github.com/gitlabhq/gitlabhq/issues/1059
-    def check_issue_1059_shell_profile_error
-      gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
-      print "Has no \"-e\" in ~#{gitlab_shell_ssh_user}/.profile ... "
-
-      profile_file = File.join(gitlab_shell_user_home, ".profile")
-
-      unless File.read(profile_file) =~ /^-e PATH/
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Open #{profile_file}",
-          "Find the line starting with \"-e PATH\"",
-          "Remove \"-e \" so the line starts with PATH"
-        )
-        for_more_information(
-          see_installation_guide_section("Gitlab Shell"),
-          "https://github.com/gitlabhq/gitlabhq/issues/1059"
         )
         fix_and_rerun
       end
