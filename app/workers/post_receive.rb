@@ -42,6 +42,6 @@ class PostReceive
       return false
     end
 
-    project.trigger_post_receive(oldrev, newrev, ref, user)
+    GitPushService.new.execute(project, user, oldrev, newrev, ref)
   end
 end
