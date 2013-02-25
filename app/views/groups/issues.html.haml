@@ -16,7 +16,7 @@
             = link_to_project project
           %ul.well-list.issues_table
             - group[1].each do |issue|
-              = render(partial: 'issues/show', locals: {issue: issue})
+              = render issue
       %hr
       = paginate @issues, theme: "gitlab"
     - else
