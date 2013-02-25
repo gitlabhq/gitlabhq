@@ -22,7 +22,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # GITLAB patched libs
-gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'
+gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '09918a3f3217eab7d3b6f5936d5ea2a07f886794'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
 gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
 
