@@ -31,12 +31,10 @@ SSH Clone URL:  git@localhost:some-project.git
 Using LDAP:     no
 Using Omniauth: no
 
-Gitolite information
-Version:        v3.04-4-g4524f01
-Admin URI:      git@localhost:gitolite-admin
-Admin Key:      gitlab
+GitLab Shell
+Version:        1.0.4
 Repositories:   /home/git/repositories/
-Hooks:          /home/git/.gitolite/hooks/
+Hooks:          /home/git/gitlab-shell/hooks/
 Git:            /usr/bin/git
 ```
 
@@ -46,8 +44,8 @@ Git:            /usr/bin/git
 Runs the following rake tasks:
 
 * gitlab:env:check
-* gitlab:gitolite:check
-* gitlab:resque:check
+* gitlab:gitlab_shell:check
+* gitlab:sidekiq:check
 * gitlab:app:check
 
 It will check that each component was setup according to the installation guide and suggest fixes for issues found.
@@ -74,16 +72,12 @@ Checking Environment ... Finished
 Checking Gitolite ...
 
 Using recommended version ... yes
-Repo umask is 0007 in .gitolite.rc? ... yes
-Allow all Git config keys in .gitolite.rc ... yes
 Config directory exists? ... yes
 Config directory owned by git:git? ... yes
 Config directory access is drwxr-x---? ... yes
 Repo base directory exists? ... yes
 Repo base owned by git:git? ... yes
 Repo base access is drwxrws---? ... yes
-Can clone gitolite-admin? ... yes
-Can commit to gitolite-admin? ... yes
 post-receive hook exists? ... yes
 post-receive hook up-to-date? ... yes
 post-receive hooks in repos are links: ...
@@ -133,24 +127,6 @@ If necessary, remove the `tmp/repo_satellites` directory and rerun the command b
 
 ```
 bundle exec rake gitlab:satellites:create RAILS_ENV=production
-```
-
-
-### Rebuild each key at gitolite config
-
-This will send all users ssh public keys to gitolite and grant them access (based on their permission) to their projects.
-
-```
-bundle exec rake gitlab:gitolite:update_keys RAILS_ENV=production
-```
-
-
-### Rebuild each project at gitolite config
-
-This makes sure that all projects are present in gitolite and can be accessed.
-
-```
-bundle exec rake gitlab:gitolite:update_repos RAILS_ENV=production
 ```
 
 ### Import bare repositories into GitLab project instance

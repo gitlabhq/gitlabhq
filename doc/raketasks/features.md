@@ -17,12 +17,12 @@ bundle exec rake gitlab:enable_namespaces RAILS_ENV=production
 ```
 
 
-### Enable auto merge
+### Rebuild project satellites
 
-This command will enable the auto merge feature. After this you will be able to **merge a merge request** via GitLab and use the **online editor**.
+This command will build missing satellites for projects. After this you will be able to **merge a merge request** via GitLab and use the **online editor**.
 
 ```
-bundle exec rake gitlab:enable_automerge RAILS_ENV=production
+bundle exec rake gitlab:satellites:create RAILS_ENV=production
 ```
 
 Example output:
