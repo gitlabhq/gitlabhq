@@ -22,6 +22,8 @@
   .note-form-actions
     .buttons
       = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
+      = yield(:note_actions)
+
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
     .note-form-option
