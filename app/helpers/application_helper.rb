@@ -72,7 +72,7 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
-    projects = current_user.authorized_projects.map { |p| { label: "project: #{p.name_with_namespace}", url: project_path(p) } }
+    projects = current_user.authorized_projects.map { |p| { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) } }
     groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
     teams = current_user.authorized_teams.map { |team| { label: "team: #{simple_sanitize(team.name)}", url: team_path(team) } }
 
@@ -98,15 +98,15 @@ module ApplicationHelper
     project_nav = []
     if @project && @project.repository && @project.repository.root_ref
       project_nav = [
-        { label: "#{@project.name_with_namespace} - Issues",   url: project_issues_path(@project) },
-        { label: "#{@project.name_with_namespace} - Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{@project.name_with_namespace} - Merge Requests", url: project_merge_requests_path(@project) },
-        { label: "#{@project.name_with_namespace} - Milestones", url: project_milestones_path(@project) },
-        { label: "#{@project.name_with_namespace} - Snippets", url: project_snippets_path(@project) },
-        { label: "#{@project.name_with_namespace} - Team",     url: project_team_index_path(@project) },
-        { label: "#{@project.name_with_namespace} - Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{@project.name_with_namespace} - Wall",     url: wall_project_path(@project) },
-        { label: "#{@project.name_with_namespace} - Wiki",     url: project_wikis_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Issues",   url: project_issues_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Merge Requests", url: project_merge_requests_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Milestones", url: project_milestones_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Snippets", url: project_snippets_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Team",     url: project_team_index_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wall",     url: wall_project_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wiki",     url: project_wikis_path(@project) },
       ]
     end
 
