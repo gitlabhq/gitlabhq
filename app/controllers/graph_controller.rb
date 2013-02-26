@@ -20,7 +20,7 @@ class GraphController < ProjectResourceController
     respond_to do |format|
       format.html
       format.json do
-        graph = Gitlab::Graph::JsonBuilder.new(project, @ref, @commit)
+        graph = Graph::JsonBuilder.new(project, @ref, @commit)
         render :json => graph.to_json
       end
     end
