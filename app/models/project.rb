@@ -321,7 +321,7 @@ class Project < ActiveRecord::Base
     c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
     # Update code for merge requests
-    mrs = self.merge_requests.opened.find_all_by_branch(branch_name).all
+    mrs = self.merge_requests.opened.by_branch(branch_name).all
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests

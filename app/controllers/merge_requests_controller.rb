@@ -75,7 +75,7 @@ class MergeRequestsController < ProjectResourceController
     if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
-    render json: {merge_status: @merge_request.human_merge_status}
+    render json: {merge_status: @merge_request.human_merge_status_name}
   rescue Gitlab::SatelliteNotExistError
     render json: {merge_status: :no_satellite}
   end
