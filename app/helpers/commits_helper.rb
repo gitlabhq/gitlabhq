@@ -57,6 +57,31 @@ module CommitsHelper
     end
   end
 
+  def each_diff_line_near(diff, index, expected_line_code)
+    max_number_of_lines = 16
+
+    prev_match_line = nil
+    prev_lines = []
+
+    each_diff_line(diff, index) do |full_line, type, line_code, line_new, line_old|
+      line = [full_line, type, line_code, line_new, line_old]
+      if line_code != expected_line_code
+        if type == "match"
+          prev_lines.clear
+          prev_match_line = line
+        else
+          prev_lines.push(line)
+          prev_lines.shift if prev_lines.length >= max_number_of_lines
+        end
+      else
+        yield(prev_match_line) if !prev_match_line.nil?
+        prev_lines.each { |ln| yield(ln) }
+        yield(line)
+        break
+      end
+    end
+  end
+
   def image_diff_class(diff)
     if diff.deleted_file
       "deleted"
