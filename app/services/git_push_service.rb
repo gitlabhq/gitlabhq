@@ -31,6 +31,16 @@ class GitPushService
     create_push_event
   end
 
+  # This method provide a sample data
+  # generated with post_receive_data method
+  # for given project
+  #
+  def sample_data(project, user)
+    @project, @user = project, user
+    commits = project.repository.commits(project.default_branch, nil, 3)
+    post_receive_data(commits.last.id, commits.first.id, "refs/heads/#{project.default_branch}")
+  end
+
   protected
 
   def create_push_event
