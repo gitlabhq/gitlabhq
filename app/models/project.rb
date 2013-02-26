@@ -247,32 +247,6 @@ class Project < ActiveRecord::Base
     users_projects.find_by_user_id(user_id)
   end
 
-  def transfer(new_namespace)
-    Project.transaction do
-      old_namespace = namespace
-      self.namespace = new_namespace
-
-      old_dir = old_namespace.try(:path) || ''
-      new_dir = new_namespace.try(:path) || ''
-
-      old_repo = if old_dir.present?
-                   File.join(old_dir, self.path)
-                 else
-                   self.path
-                 end
-
-      if Project.where(path: self.path, namespace_id: new_namespace.try(:id)).present?
-        raise TransferError.new("Project with same path in target namespace already exists")
-      end
-
-      Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
-
-      save!
-    end
-  rescue Gitlab::ProjectMover::ProjectMoveError => ex
-    raise Project::TransferError.new(ex.message)
-  end
-
   def name_with_namespace
     @name_with_namespace ||= begin
                                if namespace
@@ -293,6 +267,10 @@ class Project < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def transfer(new_namespace)
+    ProjectTransferService.new.transfer(self, new_namespace)
   end
 
   def execute_hooks(data)
