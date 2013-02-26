@@ -9,7 +9,7 @@
   %br/
 .content
   %table
-    - each_diff_line(diff, note.diff_file_index) do |line, type, line_code, line_new, line_old|
+    - each_diff_line_near(diff, note.diff_file_index, note.line_code) do |line, type, line_code, line_new, line_old|
       %tr.line_holder{ id: line_code }
         - if type == "match"
           %td.old_line= "..."
@@ -22,4 +22,3 @@
 
           - if line_code == note.line_code
             = render "notes/diff_notes_with_reply", notes: discussion_notes
-            - break # cut off diff after notes
