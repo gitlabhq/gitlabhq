@@ -69,26 +69,8 @@ describe User do
 
   describe "Respond to" do
     it { should respond_to(:is_admin?) }
-    it { should respond_to(:identifier) }
     it { should respond_to(:name) }
     it { should respond_to(:private_token) }
-  end
-
-  describe '#identifier' do
-    it "should return valid identifier" do
-      user = build(:user, email: "test@mail.com")
-      user.identifier.should == "test_mail_com"
-    end
-
-    it "should return identifier without + sign" do
-      user = build(:user, email: "test+foo@mail.com")
-      user.identifier.should == "test_foo_mail_com"
-    end
-
-    it "should conform to Gitolite's required identifier pattern" do
-      user = build(:user, email: "_test@example.com")
-      user.identifier.should == 'test_example_com'
-    end
   end
 
   describe '#generate_password' do
