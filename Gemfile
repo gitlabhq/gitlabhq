@@ -39,7 +39,8 @@ gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: 
 gem "github-linguist", "~> 2.3.4" , require: "linguist"
 
 # API
-gem "grape", "~> 0.2.1"
+gem "grape", "~> 0.3.1"
+gem "grape-entity", "~> 0.2.0"
 
 # Format dates and times
 # based on human-friendly examples
