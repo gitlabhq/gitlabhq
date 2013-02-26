@@ -70,6 +70,7 @@ class User < ActiveRecord::Base
   has_many :team_projects,                   through: :user_team_project_relationships
 
   validates :name, presence: true
+  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }
   validates :bio, length: { within: 0..255 }
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
