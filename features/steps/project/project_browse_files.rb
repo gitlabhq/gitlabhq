@@ -16,12 +16,12 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_content "Gemfile"
   end
 
-  Given 'I click on "Gemfile" file in repo' do
-    click_link "Gemfile"
+  Given 'I click on "Gemfile.lock" file in repo' do
+    click_link "Gemfile.lock"
   end
 
   Then 'I should see it content' do
-    page.should have_content "rubygems.org"
+    page.should have_content "DEPENDENCIES"
   end
 
   And 'I click link "raw"' do

@@ -18,7 +18,7 @@ describe "On a merge request", js: true do
     it { should have_css(".js-main-target-form", visible: true, count: 1) }
 
     # button initalization
-    it { within(".js-main-target-form") { should have_button("Add Comment") } }
+    it { find(".js-main-target-form input[type=submit]").value.should == "Add Comment" }
     it { within(".js-main-target-form") { should_not have_link("Cancel") } }
 
     # notifiactions
@@ -67,7 +67,7 @@ describe "On a merge request", js: true do
     end
 
     # note added
-    it { within(".js-main-target-form") { should have_content("This is awsome!") } }
+    it { should have_content("This is awsome!") }
 
     # reset form
     it { within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!")  } }
@@ -97,7 +97,9 @@ describe "On a merge request diff", js: true, focus: true do
 
     visit diffs_project_merge_request_path(project, merge_request)
 
-    click_link("Diff")
+    within '.diffs-tab' do
+      click_link("Diff")
+    end
   end
 
   subject { page }
@@ -134,7 +136,9 @@ describe "On a merge request diff", js: true, focus: true do
       end
 
       it "should be removed when canceled" do
-        find(".js-close-discussion-note-form").trigger("click")
+        within(".file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185']") do
+          find(".js-close-discussion-note-form").trigger("click")
+        end
 
         should have_no_css(".js-temp-notes-holder")
       end

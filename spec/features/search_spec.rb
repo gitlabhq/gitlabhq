@@ -6,8 +6,11 @@ describe "Search" do
     @project = create(:project)
     @project.team << [@user, :reporter]
     visit search_path
-    fill_in "search", with: @project.name[0..3]
-    click_button "Search"
+
+    within '.search-holder' do
+      fill_in "search", with: @project.name[0..3]
+      click_button "Search"
+    end
   end
 
   it "should show project in search results" do

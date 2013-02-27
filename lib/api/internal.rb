@@ -5,6 +5,12 @@ module Gitlab
       #
       # Check if ssh key has access to project code
       #
+      # Params:
+      #   key_id - SSH Key id
+      #   project - project path with namespace
+      #   action - git action (git-upload-pack or git-receive-pack)
+      #   ref - branch name
+      #
       get "/allowed" do
         key = Key.find(params[:key_id])
         project = Project.find_with_namespace(params[:project])

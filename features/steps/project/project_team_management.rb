@@ -53,7 +53,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I click link "Sam"' do
-    click_link "Sam"
+    first(:link, "Sam").click
   end
 
   Then 'I should see "Sam" team profile' do

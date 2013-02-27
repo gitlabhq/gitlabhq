@@ -22,7 +22,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # GITLAB patched libs
-gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'
+gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '9e98418ce2d654485b967003726aa2706a10060b'
 gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
 gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
 
@@ -81,8 +81,8 @@ gem "draper", "~> 0.18.0"
 
 # Background jobs
 gem 'slim'
-gem 'sinatra', :require => nil
-gem 'sidekiq', '2.6.4'
+gem 'sinatra', require: nil
+gem 'sidekiq', '2.7.3'
 
 # HTTP requests
 gem "httparty"
@@ -134,12 +134,12 @@ end
 
 group :development, :test do
   gem 'rails-dev-tweaks'
-  gem 'spinach-rails'
-  gem "rspec-rails"
-  gem "capybara"
+  gem 'spinach-rails', '0.2.0'
+  gem "rspec-rails", '2.12.2'
+  gem "capybara", '2.0.2'
   gem "pry"
   gem "awesome_print"
-  gem "database_cleaner", ref: "f89c34300e114be99532f14c115b2799a3380ac6", git: "https://github.com/bmabey/database_cleaner.git"
+  gem "database_cleaner", ref: "9f898fc50d87a5d51760f9dcf374bf5ffda21baf", git: "https://github.com/bmabey/database_cleaner.git"
   gem "launchy"
   gem 'factory_girl_rails'
 
@@ -153,7 +153,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '5c2e092001074a8cf09f332d3714e9ba150bc8ca'
+  gem 'poltergeist', '1.1.0'
 end
 
 group :test do

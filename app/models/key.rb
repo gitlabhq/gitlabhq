@@ -21,7 +21,6 @@ class Key < ActiveRecord::Base
   attr_accessible :key, :title
 
   before_validation :strip_white_space
-  before_save :set_identifier
 
   validates :title, presence: true, length: { within: 0..255 }
   validates :key, presence: true, length: { within: 0..5000 }, format: { :with => /ssh-.{3} / }, uniqueness: true
@@ -46,14 +45,6 @@ class Key < ActiveRecord::Base
       file.unlink # deletes the temp file
     end
     errors.add(:key, "can't be fingerprinted") if $?.exitstatus != 0
-  end
-
-  def set_identifier
-    if is_deploy_key
-      self.identifier = "deploy_#{Digest::MD5.hexdigest(key)}"
-    else
-      self.identifier = "#{user.identifier}_#{Time.now.to_i}"
-    end
   end
 
   def is_deploy_key

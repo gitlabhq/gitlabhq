@@ -31,7 +31,7 @@ class MergeRequest
 
     if this.$('.automerge_widget').length and @opts.check_enable
       $.get @opts.url_to_automerge_check, (data) =>
-        this.showState( data.state )
+        this.showState( data.merge_status )
       , 'json'
 
     if @opts.ci_enable

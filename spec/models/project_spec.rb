@@ -72,11 +72,8 @@ describe Project do
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:repo_exists?) }
     it { should respond_to(:satellite) }
-    it { should respond_to(:observe_push) }
     it { should respond_to(:update_merge_requests) }
     it { should respond_to(:execute_hooks) }
-    it { should respond_to(:post_receive_data) }
-    it { should respond_to(:trigger_post_receive) }
     it { should respond_to(:transfer) }
     it { should respond_to(:name_with_namespace) }
     it { should respond_to(:namespace_owner) }

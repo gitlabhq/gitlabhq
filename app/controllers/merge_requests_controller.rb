@@ -1,3 +1,5 @@
+require 'gitlab/satellite/satellite'
+
 class MergeRequestsController < ProjectResourceController
   before_filter :module_enabled
   before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]
@@ -73,7 +75,7 @@ class MergeRequestsController < ProjectResourceController
     if @merge_request.unchecked?
       @merge_request.check_if_can_be_merged
     end
-    render json: {merge_status: @merge_request.human_merge_status}
+    render json: {merge_status: @merge_request.merge_status_name}
   rescue Gitlab::SatelliteNotExistError
     render json: {merge_status: :no_satellite}
   end

@@ -1,5 +1,4 @@
 class NoteObserver < ActiveRecord::Observer
-
   def after_create(note)
     send_notify_mails(note)
   end

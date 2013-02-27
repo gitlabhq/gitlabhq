@@ -82,7 +82,6 @@ describe "Admin::Users" do
     it "should have user info" do
       page.should have_content(@user.email)
       page.should have_content(@user.name)
-      page.should have_content(@user.projects_limit)
     end
   end
 

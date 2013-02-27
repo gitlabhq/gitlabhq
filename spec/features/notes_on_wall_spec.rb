@@ -17,7 +17,7 @@ describe "On the project wall", js: true do
     it { should have_css(".js-main-target-form", visible: true, count: 1) }
 
     # button initalization
-    it { within(".js-main-target-form") { should have_button("Add Comment") } }
+    it { find(".js-main-target-form input[type=submit]").value.should == "Add Comment" }
     it { within(".js-main-target-form") { should_not have_link("Cancel") } }
 
     # notifiactions
@@ -66,7 +66,7 @@ describe "On the project wall", js: true do
     end
 
     # note added
-    it { within(".js-main-target-form") { should have_content("This is awsome!") } }
+    it { should have_content("This is awsome!") }
 
     # reset form
     it { within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!") } }

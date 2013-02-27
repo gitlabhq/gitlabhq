@@ -22,7 +22,7 @@ module SharedDiffNote
 
   Given 'I leave a diff comment like "Typo, please fix"' do
     find("#586fb7c4e1add2d4d24e27566ed7064680098646_29_14.line_holder .js-add-diff-note-button").trigger("click")
-    within(".file") do
+    within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
       fill_in "note[note]", with: "Typo, please fix"
       #click_button("Add Comment")
       find(".js-comment-button").trigger("click")
@@ -32,7 +32,7 @@ module SharedDiffNote
 
   Given 'I preview a diff comment text like "Should fix it :smile:"' do
     find("#586fb7c4e1add2d4d24e27566ed7064680098646_29_14.line_holder .js-add-diff-note-button").trigger("click")
-    within(".file") do
+    within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
       fill_in "note[note]", with: "Should fix it :smile:"
       find(".js-note-preview-button").trigger("click")
     end
@@ -40,7 +40,7 @@ module SharedDiffNote
 
   Given 'I preview another diff comment text like "DRY this up"' do
     find("#586fb7c4e1add2d4d24e27566ed7064680098646_57_41.line_holder .js-add-diff-note-button").trigger("click")
-    within(".file") do
+    within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_57_41']") do
       fill_in "note[note]", with: "DRY this up"
       find(".js-note-preview-button").trigger("click")
     end

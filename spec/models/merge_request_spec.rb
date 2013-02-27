@@ -32,6 +32,12 @@ describe MergeRequest do
     it { should_not allow_mass_assignment_of(:project_id) }
   end
 
+  describe "Respond to" do
+    it { should respond_to(:unchecked?) }
+    it { should respond_to(:can_be_merged?) }
+    it { should respond_to(:cannot_be_merged?) }
+  end
+ 
   describe 'modules' do
     it { should include_module(Issuable) }
   end

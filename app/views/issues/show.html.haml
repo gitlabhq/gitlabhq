@@ -6,12 +6,12 @@
     = @issue.created_at.stamp("Aug 21, 2011")
 
   %span.pull-right
-    - if can?(current_user, :admin_project, @project) || @issue.author == current_user
+    - if can?(current_user, :modify_issue, @issue)
       - if @issue.closed?
         = link_to 'Reopen', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
       - else
         = link_to 'Close', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
-    - if can?(current_user, :admin_project, @project) || @issue.author == current_user
+
       = link_to edit_project_issue_path(@project, @issue), class: "btn grouped" do
         %i.icon-edit
         Edit
@@ -55,5 +55,11 @@
         = preserve do
           = markdown @issue.description
 
+- content_for :note_actions do
+  - if can?(current_user, :modify_issue, @issue)
+    - if @issue.closed?
+      = link_to 'Reopen Issue', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn grouped reopen_issue"
+    - else
+      = link_to 'Close Issue', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
 
 .voting_notes#notes= render "notes/notes_with_form"

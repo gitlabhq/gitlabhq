@@ -169,32 +169,40 @@ describe "Gitlab Flavored Markdown" do
   describe "for notes" do
     it "should render in commits#show", js: true do
       visit project_commit_path(project, commit)
-      fill_in "note_note", with: "see ##{issue.id}"
-      click_button "Add Comment"
+      within ".new_note.js-main-target-form" do
+        fill_in "note_note", with: "see ##{issue.id}"
+        click_button "Add Comment"
+      end
 
       page.should have_link("##{issue.id}")
     end
 
     it "should render in issue#show", js: true do
       visit project_issue_path(project, issue)
-      fill_in "note_note", with: "see ##{issue.id}"
-      click_button "Add Comment"
+      within ".new_note.js-main-target-form" do
+        fill_in "note_note", with: "see ##{issue.id}"
+        click_button "Add Comment"
+      end
 
       page.should have_link("##{issue.id}")
     end
 
     it "should render in merge_request#show", js: true do
       visit project_merge_request_path(project, merge_request)
-      fill_in "note_note", with: "see ##{issue.id}"
-      click_button "Add Comment"
+      within ".new_note.js-main-target-form" do
+        fill_in "note_note", with: "see ##{issue.id}"
+        click_button "Add Comment"
+      end
 
       page.should have_link("##{issue.id}")
     end
 
     it "should render in projects#wall", js: true do
       visit wall_project_path(project)
-      fill_in "note_note", with: "see ##{issue.id}"
-      click_button "Add Comment"
+      within ".new_note.js-main-target-form" do
+        fill_in "note_note", with: "see ##{issue.id}"
+        click_button "Add Comment"
+      end
 
       page.should have_link("##{issue.id}")
     end

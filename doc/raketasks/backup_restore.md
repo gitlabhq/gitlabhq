@@ -31,7 +31,6 @@ Dumping database tables:
 - Dumping table wikis... [DONE]
 Dumping repositories:
 - Dumping repository abcd... [DONE]
-- Dumping repository gitolite-admin.git... [DONE]
 Creating backup archive: $TIMESTAMP_gitlab_backup.tar [DONE]
 Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
@@ -77,6 +76,5 @@ Restoring database tables:
 - Loading fixture wikis...[SKIPPING]
 Restoring repositories:
 - Restoring repository abcd... [DONE]
-- Restoring repository gitolite-admin.git... [DONE]
 Deleting tmp directories...[DONE]
 ```

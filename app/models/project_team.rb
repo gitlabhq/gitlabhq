@@ -66,28 +66,6 @@ class ProjectTeam
     members.masters.map(&:user)
   end
 
-  def repository_readers
-    repository_members[UsersProject::REPORTER]
-  end
-
-  def repository_writers
-    repository_members[UsersProject::DEVELOPER]
-  end
-
-  def repository_masters
-    repository_members[UsersProject::MASTER]
-  end
-
-  def repository_members
-    keys = Hash.new {|h,k| h[k] = [] }
-    UsersProject.select("keys.identifier, project_access").
-        joins(user: :keys).where(project_id: project.id).
-        each {|row| keys[row.project_access] << [row.identifier] }
-
-    keys[UsersProject::REPORTER] += project.deploy_keys.pluck(:identifier)
-    keys
-  end
-
   def import(source_project)
     target_project = project
 
