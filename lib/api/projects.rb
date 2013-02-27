@@ -331,7 +331,9 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   ref_name (optional) - The name of a repository branch or tag
+      #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
+      #   page (optional) - The page number of the commit pagination
+      #   per_page (optional) - The number of elements per page used in pagination
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do

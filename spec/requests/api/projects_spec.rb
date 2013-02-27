@@ -433,13 +433,18 @@ describe Gitlab::API do
     end
 
     it "should return success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
+      delete api("/projects/#{project.id}/hooks", user), hook_id: hook.id
       response.status.should == 200
     end
 
     it "should return success when deleting non existent hook" do
-      delete api("/projects/#{project.id}/hooks/42", user)
+      delete api("/projects/#{project.id}/hooks", user), hook_id: 42
       response.status.should == 200
+    end
+
+    it "should return a 400 error if hook id not given" do
+      delete api("/projects/#{project.id}/hooks", user)
+      response.status.should == 400
     end
   end
 
@@ -480,11 +485,6 @@ describe Gitlab::API do
       json_response.should be_an Array
       json_response.first['title'].should == snippet.title
     end
-
-    it "should return 401 error if user not authenticated" do
-      get api("/projects/#{project.id}/snippets")
-      response.status.should == 401
-    end
   end
 
   describe "GET /projects/:id/snippets/:snippet_id" do
@@ -524,12 +524,6 @@ describe Gitlab::API do
       post api("/projects/#{project.id}/snippets", user),
         title: 'api test', file_name: 'sample.rb'
       response.status.should == 400
-    end
-
-    it "should return a 401 error if user not authenticated" do
-      post api("/projects/#{project.id}/snippets"),
-        title: 'api test', file_name: 'sample.rb', code: 'i=0'
-      response.status.should == 401
     end
   end
 

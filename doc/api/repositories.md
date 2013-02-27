@@ -1,4 +1,4 @@
-## Project repository branches
+## List repository branches
 
 Get a list of repository branches from a project, sorted by name alphabetically.
 
@@ -39,7 +39,14 @@ Parameters:
 ]
 ```
 
-## Project repository branch
+Return values:
+
++ `200 Ok`on success and a list of repository branches for the project
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project with ID not found
+
+
+## Get single repository branch
 
 Get a single project repository branch.
 
@@ -79,12 +86,18 @@ Parameters:
 }
 ```
 
-Will return status code `200` on success or `404 Not found` if the branch is not available.
+Return values:
+
++ `200 Ok` on success and the repository branch
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if the project ID or branch not found
 
 
-## Protect a project repository branch
 
-Protect a single project repository branch.
+## Protect repository branch
+
+Protects a single project repository branch. This is an idempotent function, protecting an already
+protected repository branch still returns a `200 Ok` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/protect
@@ -122,9 +135,18 @@ Parameters:
 }
 ```
 
-## Unprotect a project repository branch
+Return values:
 
-Unprotect a single project repository branch.
++ `200 Ok` on success and the updated repository branch
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if the the project ID or branch not found
+
+
+
+## Unprotect repository branch
+
+Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
+unprotected repository branch still returns a `200 Ok` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/unprotect
@@ -162,7 +184,15 @@ Parameters:
 }
 ```
 
-## Project repository tags
+Return values:
+
++ `200 Ok` on success and the updated repository branch
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if the project ID or the branch not found
+
+
+
+## List project repository tags
 
 Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
 
@@ -201,7 +231,14 @@ Parameters:
 ]
 ```
 
-## Project repository commits
+Return values:
+
++ `200 Ok` on success and the list of repository tags
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if the project ID not found
+
+
+## List repository commits
 
 Get a list of repository commits in a project.
 
@@ -212,7 +249,9 @@ GET /projects/:id/repository/commits
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `ref_name` (optional) - The name of a repository branch or tag
++ `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
++ `page`(optional) - The page with the commits (pagination)
++ `per_page` (optional) - The number of commits per page (pagination)
 
 ```json
 [
@@ -235,6 +274,13 @@ Parameters:
 ]
 ```
 
+Return values:
+
++ `200 Ok` on success and a list of commits
++ `401 Unauthorized` if the user is not authenticated
++ `404 Not Found` if the project ID not found
+
+
 ## Raw blob content
 
 Get the raw file contents for a file.
@@ -249,4 +295,10 @@ Parameters:
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
 
-Will return the raw file contents.
+Return values:
+
++ `200 Ok` on success and the raw content of the file
++ `400 Bad Request` if required attribute filepath is not given
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID or sha commit or branch name not found
+
