@@ -1,6 +1,7 @@
 ## List merge requests
 
-Get all MR for this project.
+Get all merge requests for this project. This function takes pagination parameters
+`page` and `per_page` to restrict the list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
@@ -40,9 +41,16 @@ Parameters:
 ]
 ```
 
-## Show MR
+Return values:
 
-Show information about MR.
++ `200 Ok` on success and the list of merge requests
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID not found
+
+
+## Get single MR
+
+Shows information about a single merge request.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id
@@ -81,10 +89,16 @@ Parameters:
 }
 ```
 
+Return values:
+
++ `200 Ok` on success and the single merge request
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID or merge request ID not found
+
 
 ## Create MR
 
-Create MR.
+Creates a new merge request.
 
 ```
 POST /projects/:id/merge_requests
@@ -126,9 +140,18 @@ Parameters:
 }
 ```
 
+Return values:
+
++ `201 Created` on success and the created merge request
++ `400 Bad Request` if one of the required attributes is missing
++ `401 Unauthorize` if user is not authenticated or not allowed
++ `403 Forbidden` if user is not allowed to create a merge request
++ `404 Not Found` if project ID not found or something else fails
+
+
 ## Update MR
 
-Update MR. You can change branches, title, or even close the MR.
+Updates an existing merge request. You can change branches, title, or even close the MR.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -172,9 +195,18 @@ Parameters:
     }
 }
 ```
+
+Return values:
+
++ `200 Ok` on success and the updated merge request
++ `401 Unauthorize` if user is not authenticated or not allowed
++ `403 Forbidden` if user is not allowed to update the merge request
++ `404 Not Found` if project ID or merge request ID not found
+
+
 ## Post comment to MR
 
-Post comment to MR
+Adds a comment to a merge request.
 
 ```
 POST /projects/:id/merge_request/:merge_request_id/comments
@@ -183,10 +215,9 @@ POST /projects/:id/merge_request/:merge_request_id/comments
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `merge_request_id` (required) - ID of MR
++ `merge_request_id` (required) - ID of merge request
 + `note` (required) - Text of comment
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
 
 ```json
 {
@@ -201,3 +232,10 @@ Will return created note with status `201 Created` on success, or `404 Not found
     "note":"text1"
 }
 ```
+
+Return values:
+
++ `201 Created` on success and the new comment
++ `400 Bad Request` if the required attribute note is not given
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID or merge request ID not found

@@ -1,7 +1,7 @@
 ## List issues
 
 Get all issues created by authenticed user. This function takes pagination parameters
-`page` and `per_page` to get a list of issues.
+`page` and `per_page` to restrict the list of issues.
 
 ```
 GET /issues

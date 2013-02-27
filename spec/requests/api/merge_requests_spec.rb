@@ -64,6 +64,12 @@ describe Gitlab::API do
         title: "Test merge_request", source_branch: "stable", author: user
       response.status.should == 400
     end
+
+    it "should return 400 when title is missing" do
+      post api("/projects/#{project.id}/merge_requests", user),
+        target_branch: 'master', source_branch: 'stable'
+      response.status.should == 400
+    end
   end
 
   describe "PUT /projects/:id/merge_request/:merge_request_id to close MR" do
@@ -81,7 +87,6 @@ describe Gitlab::API do
       json_response['state'].should == 'merged'
     end
   end
-
 
   describe "PUT /projects/:id/merge_request/:merge_request_id" do
     it "should return merge_request" do
