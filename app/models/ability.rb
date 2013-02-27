@@ -91,7 +91,6 @@ class Ability
         :admin_team_member,
         :admin_merge_request,
         :admin_note,
-        :accept_mr,
         :admin_wiki,
         :admin_project
       ]

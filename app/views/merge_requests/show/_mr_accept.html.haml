@@ -1,9 +1,9 @@
-- unless can?(current_user, :accept_mr, @project)
+- unless @allowed_to_merge
   .alert
-    %strong Only masters can accept MR
+    %strong You don't have enough permissions to merge this MR
 
 
-- if @merge_request.opened? && @commits.any? && can?(current_user, :accept_mr, @project)
+- if @show_merge_controls
   .automerge_widget.can_be_merged{style: "display:none"}
     .alert.alert-success
       %span
