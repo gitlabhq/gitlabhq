@@ -25,7 +25,7 @@ class ProjectTransferService
 
       Gitlab::ProjectMover.new(project, old_dir, new_dir).execute
 
-      save!
+      project.save!
     end
   rescue Gitlab::ProjectMover::ProjectMoveError => ex
     raise Project::TransferError.new(ex.message)
