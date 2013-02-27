@@ -6,6 +6,9 @@ module Gitlab
     resource :groups do
       # Get a groups list
       #
+      # Parameters
+      #   page (optional) - The page number of the groups list
+      #   per_page (optional) - The number of elements per page
       # Example Request:
       #  GET /groups
       get do
@@ -20,12 +23,16 @@ module Gitlab
       # Create group. Available only for admin
       #
       # Parameters:
-      #   name (required)                   - Name
-      #   path (required)                   - Path
+      #   name (required) - The name of the group
+      #   path (required) - The path of the group
       # Example Request:
       #   POST /groups
       post do
         authenticated_as_admin!
+
+        bad_request!(:name) unless params[:name].present?
+        bad_request!(:path) unless params[:path].present?
+
         attrs = attributes_for_keys [:name, :path]
         @group = Group.new(attrs)
         @group.owner = current_user
