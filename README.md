@@ -1,4 +1,4 @@
-## GitLab is a self hosted Git management software. 
+## GitLab is a self hosted Git management software.
 
 Check out [gitlab.org](http://gitlab.org)
 
@@ -13,10 +13,10 @@ With GitLab you can:
 
 ### Code status:
 
-* master: travis-ci.org 
+* master: travis-ci.org
   [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq)
 
-* master: ci.gitlab.org 
+* master: ci.gitlab.org
   [![CI](http://ci.gitlab.org/projects/1/status?ref=master)](http://ci.gitlab.org/projects/1?ref=master)
 
 * [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
@@ -37,6 +37,8 @@ With GitLab you can:
 * gitlab-shell
 * redis
 
+More details are in the [requirements doc](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md)
+
 ### Install
 
 Checkout [wiki](https://github.com/gitlabhq/gitlabhq/wiki) pages for installation information, migration, etc.
@@ -45,6 +47,6 @@ Checkout [wiki](https://github.com/gitlabhq/gitlabhq/wiki) pages for installatio
 
 ### [Contact](http://gitlab.org/contact/)
 
-### [Issue Submission Guide](https://github.com/gitlabhq/gitlabhq/wiki/Issue-Submission-Guide)
+### [Contributing Guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md)
 
 ### [Developer Guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide)
