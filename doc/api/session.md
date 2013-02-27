@@ -21,3 +21,8 @@ Parameters:
   "blocked": true
 }
 ```
+
+Return values:
+
++ `201 Created` on success
++ `401 Unauthorized` if the authentication process failed, e.g. invalid password or attribute not given
