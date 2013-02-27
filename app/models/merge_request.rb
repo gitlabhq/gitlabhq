@@ -177,15 +177,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge!(user_id)
+    self.author_id_of_changes = user_id
     self.merge
-
-    Event.create(
-      project: self.project,
-      action: Event::MERGED,
-      target_id: self.id,
-      target_type: "MergeRequest",
-      author_id: user_id
-    )
   end
 
   def automerge!(current_user)
