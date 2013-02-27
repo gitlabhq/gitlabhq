@@ -9,7 +9,6 @@ module Gitlab
     end
 
     format :json
-    error_format :json
     helpers APIHelpers
     
     mount Groups
