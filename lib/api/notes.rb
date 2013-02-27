@@ -93,7 +93,7 @@ module Gitlab
         #   POST /projects/:id/issues/:noteable_id/notes
         #   POST /projects/:id/snippets/:noteable_id/notes
         post ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
-          required_attributes! [:"#{noteable_id_str}"]
+          required_attributes! [:body]
 
           @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
           @note = @noteable.notes.new(note: params[:body])

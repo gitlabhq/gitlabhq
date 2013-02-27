@@ -466,8 +466,7 @@ describe Gitlab::API do
         response.status.should == 200
 
         json_response.should be_an Array
-        #json_response.first['id'].should == project.repository.commit.id
-        json_response.size.should == 1
+        json_response.first['id'].should == project.repository.commit.id
       end
     end
 
