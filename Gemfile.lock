@@ -182,8 +182,9 @@ GEM
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
     gitlab_yaml_db (1.0.0)
-    grape (0.2.2)
+    grape (0.3.1)
       activesupport
+      grape-entity (~> 0.2.0)
       hashie (~> 1.2)
       multi_json (>= 1.3.2)
       multi_xml
@@ -191,6 +192,7 @@ GEM
       rack-accept
       rack-mount
       virtus
+    grape-entity (0.2.0)
     growl (1.0.3)
     guard (1.5.4)
       listen (>= 0.4.2)
@@ -481,7 +483,8 @@ DEPENDENCIES
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
   grack!
-  grape (~> 0.2.1)
+  grape (~> 0.3.1)
+  grape-entity (~> 0.2.0)
   grit!
   grit_ext!
   growl
