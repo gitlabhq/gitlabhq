@@ -41,11 +41,7 @@ module Gitlab
       #   POST /users
       post do
         authenticated_as_admin!
-
-        bad_request!(:email)    if !params.has_key? :email
-        bad_request!(:password) if !params.has_key? :password
-        bad_request!(:name)     if !params.has_key? :name
-        bad_request!(:username) if !params.has_key? :username
+        required_attributes! [:email, :password, :name, :username]
 
         attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
         user = User.new attrs, as: :admin
@@ -135,8 +131,7 @@ module Gitlab
       # Example Request:
       #   POST /user/keys
       post "keys" do
-        bad_request!(:title) unless params[:title].present?
-        bad_request!(:key) unless params[:key].present?
+        required_attributes! [:title, :key]
 
         attrs = attributes_for_keys [:title, :key]
         key = current_user.keys.new attrs

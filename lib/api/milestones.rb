@@ -41,8 +41,7 @@ module Gitlab
       #   POST /projects/:id/milestones
       post ":id/milestones" do
         authorize! :admin_milestone, user_project
-
-        bad_request!(:title) unless params[:title].present?
+        required_attributes! [:title]
 
         attrs = attributes_for_keys [:title, :description, :due_date]
         @milestone = user_project.milestones.new attrs

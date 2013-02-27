@@ -68,10 +68,7 @@ module Gitlab
       #
       post ":id/merge_requests" do
         authorize! :write_merge_request, user_project
-
-        bad_request!(:source_branch) unless params[:source_branch].present?
-        bad_request!(:target_branch) unless params[:target_branch].present?
-        bad_request!(:title) unless params[:title].present?
+        required_attributes! [:source_branch, :target_branch, :title]
 
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
         merge_request = user_project.merge_requests.new(attrs)
@@ -125,7 +122,7 @@ module Gitlab
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
       post ":id/merge_request/:merge_request_id/comments" do
-        bad_request!(:note) unless params[:note].present?
+        required_attributes! [:note]
 
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         note = merge_request.notes.new(note: params[:note], project_id: user_project.id)

@@ -45,7 +45,7 @@ module Gitlab
       # Example Request
       #   POST /projects
       post do
-        bad_request!(:name) if !params.has_key? :name
+        required_attributes! [:name]
         attrs = attributes_for_keys [:name,
                                     :description,
                                     :default_branch,
@@ -103,9 +103,7 @@ module Gitlab
       #   POST /projects/:id/members
       post ":id/members" do
         authorize! :admin_project, user_project
-
-        bad_request!(:user_id) if !params.has_key? :user_id
-        bad_request!(:access_level) if !params.has_key? :access_level
+        required_attributes! [:user_id, :access_level]
 
         # either the user is already a team member or a new one
         team_member = user_project.team_member_by_id(params[:user_id])
@@ -134,9 +132,9 @@ module Gitlab
       #   PUT /projects/:id/members/:user_id
       put ":id/members/:user_id" do
         authorize! :admin_project, user_project
+        required_attributes! [:access_level]
 
         team_member = user_project.users_projects.find_by_user_id(params[:user_id])
-        bad_request!(:access_level) if !params.has_key? :access_level
         not_found!("User can not be found") if team_member.nil?
 
         if team_member.update_attributes(project_access: params[:access_level])
@@ -199,8 +197,7 @@ module Gitlab
       #   POST /projects/:id/hooks
       post ":id/hooks" do
         authorize! :admin_project, user_project
-
-        bad_request!(:url) unless params.has_key? :url
+        required_attributes! [:url]
 
         @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
@@ -224,8 +221,7 @@ module Gitlab
       put ":id/hooks/:hook_id" do
         @hook = user_project.hooks.find(params[:hook_id])
         authorize! :admin_project, user_project
-
-        bad_request!(:url) unless params.has_key? :url
+        required_attributes! [:url]
 
         attrs = attributes_for_keys [:url]
         if @hook.update_attributes attrs
@@ -245,9 +241,9 @@ module Gitlab
       #   hook_id (required) - The ID of hook to delete
       # Example Request:
       #   DELETE /projects/:id/hooks/:hook_id
-      delete ":id/hooks/:hook_id" do
+      delete ":id/hooks" do
         authorize! :admin_project, user_project
-        bad_request!(:hook_id) unless params.has_key? :hook_id
+        required_attributes! [:hook_id]
 
         begin
           @hook = ProjectHook.find(params[:hook_id])
@@ -381,10 +377,7 @@ module Gitlab
       #   POST /projects/:id/snippets
       post ":id/snippets" do
         authorize! :write_snippet, user_project
-
-        bad_request!(:title) if !params[:title].present?
-        bad_request!(:file_name) if !params[:file_name].present?
-        bad_request!(:code) if !params[:code].present?
+        required_attributes! [:title, :file_name, :code]
 
         attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
@@ -464,8 +457,7 @@ module Gitlab
       #   GET /projects/:id/repository/commits/:sha/blob
       get ":id/repository/commits/:sha/blob" do
         authorize! :download_code, user_project
-
-        bad_request!(:filepath) if !params.has_key? :filepath
+        required_attributes! [:filepath]
 
         ref = params[:sha]
 

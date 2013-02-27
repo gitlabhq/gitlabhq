@@ -29,9 +29,7 @@ module Gitlab
       #   POST /groups
       post do
         authenticated_as_admin!
-
-        bad_request!(:name) unless params[:name].present?
-        bad_request!(:path) unless params[:path].present?
+        required_attributes! [:name, :path]
 
         attrs = attributes_for_keys [:name, :path]
         @group = Group.new(attrs)

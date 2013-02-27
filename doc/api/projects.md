@@ -368,7 +368,7 @@ Removes a hook from project. This is an idempotent method and can be called mult
 Either the hook is available or not.
 
 ```
-DELETE /projects/:id/hooks/:hook_id
+DELETE /projects/:id/hooks/
 ```
 
 Parameters:
@@ -379,6 +379,7 @@ Parameters:
 Return values:
 
 + `200 Ok` on succes
++ `403 Forbidden` if user is not allowed to delete a hook
 + `404 Not Found` if the project can not be found
 
 Note the JSON response differs if the hook is available or not. If the project hook

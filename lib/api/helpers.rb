@@ -41,6 +41,17 @@ module Gitlab
       abilities.allowed?(object, action, subject)
     end
 
+    # Checks the occurrences of required attributes, each attribute must be present in the params hash
+    # or a Bad Request error is invoked.
+    #
+    # Parameters:
+    #   keys (required) - A hash consisting of keys that must be present
+    def required_attributes!(keys)
+      keys.each do |key|
+        bad_request!(key) unless params[key].present?
+      end
+    end
+
     def attributes_for_keys(keys)
       attrs = {}
       keys.each do |key|
