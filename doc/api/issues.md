@@ -1,6 +1,7 @@
 ## List issues
 
-Get all issues created by authenticed user.
+Get all issues created by authenticed user. This function takes pagination parameters
+`page` and `per_page` to get a list of issues.
 
 ```
 GET /issues
@@ -68,9 +69,18 @@ GET /issues
 ]
 ```
 
+Return values:
+
++ `200 Ok` on success and the list of issues
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if something fails
+
+
+
 ## List project issues
 
-Get a list of project issues.
+Get a list of project issues. This function accepts pagination parameters `page` and `per_page`
+to return the list of project issues.
 
 ```
 GET /projects/:id/issues
@@ -80,9 +90,16 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
+Return values:
+
++ `200 Ok` on success and the list of project issues
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID not found
+
+
 ## Single issue
 
-Get a project issue.
+Gets a single project issue.
 
 ```
 GET /projects/:id/issues/:issue_id
@@ -133,9 +150,16 @@ Parameters:
 }
 ```
 
+Return values:
+
++ `200 Ok` on success and the list of project issues
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID or issue ID not found
+
+
 ## New issue
 
-Create a new project issue.
+Creates a new project issue.
 
 ```
 POST /projects/:id/issues
@@ -150,11 +174,17 @@ Parameters:
 + `milestone_id` (optional) - The ID of a milestone to assign issue
 + `labels` (optional) - Comma-separated label names for an issue
 
-Will return created issue with status `201 Created` on success, or `404 Not found` on fail.
+Return values:
+
++ `201 Created` on success and the newly created project issue
++ `400 Bad Request` if the required attribute title is not given
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID not found
+
 
 ## Edit issue
 
-Update an existing project issue.
+Updates an existing project issue. This function is also used to mark an issue as closed.
 
 ```
 PUT /projects/:id/issues/:issue_id
@@ -171,5 +201,28 @@ Parameters:
 + `labels` (optional) - Comma-separated label names for an issue
 + `closed` (optional) - The state of an issue (0 = false, 1 = true)
 
-Will return updated issue with status `200 OK` on success, or `404 Not found` on fail.
+Return values:
 
++ `200 Ok` on success and the update project issue
++ `401 Unauthorized` if user is not authenticated
++ `404 Not Found` if project ID or issue ID not found
+
+
+## Delete existing issue (**Deprecated**)
+
+The function is deprecated and returns a `405 Method Not Allowed`
+error if called. An issue gets now closed and is done by calling `PUT /projects/:id/issues/:issue_id` with
+parameter `closed` set to 1.
+
+```
+DELETE /projects/:id/issues/:issue_id
+```
+
+Parameters:
+
++ `id` (required) - The project ID
++ `issue_id` (required) - The ID of the issue
+
+Return values:
+
++ `405 Method Not Allowed` is always returned, because the function is deprecated
