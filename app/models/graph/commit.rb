@@ -4,12 +4,12 @@ module Graph
   class Commit
     include ActionView::Helpers::TagHelper
 
-    attr_accessor :time, :space, :refs, :parent_spaces
+    attr_accessor :time, :spaces, :refs, :parent_spaces
 
     def initialize(commit)
       @_commit = commit
       @time = -1
-      @space = 0
+      @spaces = []
       @parent_spaces = []
     end
 
@@ -27,7 +27,7 @@ module Graph
         email: author.email
       }
       h[:time]    = time
-      h[:space]   = space
+      h[:space]   = spaces.first
       h[:parent_spaces]   = parent_spaces
       h[:refs]    = refs.collect{|r|r.name}.join(" ") unless refs.nil?
       h[:id]      = sha
@@ -45,6 +45,14 @@ module Graph
       end
       @refs = ref_cache[@_commit.id] if ref_cache.include?(@_commit.id)
       @refs ||= []
+    end
+
+    def space
+      if @spaces.size > 0
+        @spaces.first
+      else
+        0
+      end
     end
   end
 end

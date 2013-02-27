@@ -151,7 +151,7 @@ module Graph
 
     def find_free_parent_space(range, space_base, space_step, space_default, times)
       if is_overlap?(range, times, space_default) then
-        find_free_space(range, space_base, space_step, space_default)
+        find_free_space(range, space_step, space_base, space_default)
       else
         space_default
       end
@@ -161,7 +161,7 @@ module Graph
       range.each do |i|
         if i != range.first &&
           i != range.last &&
-          times[i].space == overlap_space then
+          times[i].spaces.include?(overlap_space) then
 
           return true;
         end
@@ -179,9 +179,24 @@ module Graph
       if leaves.empty?
         return
       end
+
+      time_range = leaves.last.time..leaves.first.time
+      space = find_free_space(time_range, 2)
+      leaves.each do |l|
+        l.spaces << space
+        # Also add space to parent
+        l.parents.each do |p|
+          if map.include?(p.id)
+            parent = map[p.id]
+            if parent.space > 0
+              parent.spaces << space
+            end
+          end
+        end
+      end
+
       # and mark it as reserved
       min_time = leaves.last.time
-      max_space = 1
       parents = leaves.last.parents.collect
       parents.each do |p|
         if map.include? p.id
@@ -189,21 +204,14 @@ module Graph
           if parent.time < min_time
             min_time = parent.time
           end
-          if max_space < parent.space then
-            max_space = parent.space
-          end
         end
       end
+
       if parent_time.nil?
         max_time = leaves.first.time
       else
         max_time = parent_time - 1
       end
-
-      time_range = leaves.last.time..leaves.first.time
-      space = find_free_space(time_range, max_space, 2)
-      leaves.each{|l| l.space = space}
-
       mark_reserved(min_time..max_time, space)
 
       # Visit branching chains
@@ -221,7 +229,7 @@ module Graph
       end
     end
 
-    def find_free_space(time_range, space_base, space_step, space_default = 1)
+    def find_free_space(time_range, space_step, space_base = 1, space_default = 1)
       reserved = []
       for day in time_range
         reserved += @_reserved[day]
