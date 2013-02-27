@@ -1,14 +1,21 @@
-# Welcome to GitLab [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq) [![build status](https://secure.travis-ci.org/gitlabhq/grit.png)](https://travis-ci.org/gitlabhq/grit) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/gitlabhq/gitlabhq) [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq)
+# Welcome to GitLab! Self hosted Git management software
+
+
+## Badges:
+
+* master: travis-ci.org [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq)a
+* master: ci.gitlab.org [![CI](http://ci.gitlab.org/projects/1/status?ref=master)](http://ci.gitlab.org/projects/1?ref=master)
+* [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+* [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq)
 
 GitLab is a free project and repository management application
 
-[![CI](http://ci.gitlab.org/projects/1/status?ref=master)](http://ci.gitlab.org/projects/1?ref=master)
 
 ## Application details
 
-* based on Ruby on Rails
+* powered by Ruby on Rails
+* its completely free and open source
 * distributed under the MIT License
-* works with gitolite
 
 ## Requirements
 
@@ -16,27 +23,16 @@ GitLab is a free project and repository management application
 * ruby 1.9.3+
 * MySQL
 * git
-* gitolite
+* gitlab-shell
 * redis
 
 ## Install
 
-Checkout wiki pages for installation information, migration, etc.
+Checkout [wiki](https://github.com/gitlabhq/gitlabhq/wiki) pages for installation information, migration, etc.
 
-## Community
+## [Community](http://gitlab.org/community/)
 
-[Google Group](https://groups.google.com/group/gitlabhq)
-
-## Contacts
-
-Twitter:
-
- * @gitlabhq
- * @dzaporozhets 
-
-Email
-
- * m@gitlabhq.com
+## [Contact](http://gitlab.org/contact/)
 
 ## Contribute
 
