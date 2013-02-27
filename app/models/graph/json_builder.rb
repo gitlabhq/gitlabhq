@@ -181,7 +181,8 @@ module Graph
       end
 
       time_range = leaves.last.time..leaves.first.time
-      space = find_free_space(time_range, 2)
+      space_base = get_space_base(leaves, map)
+      space = find_free_space(time_range, 2, space_base)
       leaves.each do |l|
         l.spaces << space
         # Also add space to parent
@@ -223,13 +224,29 @@ module Graph
       end
     end
 
+    def get_space_base(leaves, map)
+      space_base = 1
+      if leaves.last.parents.size > 0
+        first_parent = leaves.last.parents.first
+        if map.include?(first_parent.id)
+          first_p = map[first_parent.id]
+          if first_p.space > 0
+            space_base = first_p.space
+          end
+        end
+      end
+      space_base
+    end
+
     def mark_reserved(time_range, space)
       for day in time_range
         @_reserved[day].push(space)
       end
     end
 
-    def find_free_space(time_range, space_step, space_base = 1, space_default = 1)
+    def find_free_space(time_range, space_step, space_base = 1, space_default = nil)
+      space_default ||= space_base
+
       reserved = []
       for day in time_range
         reserved += @_reserved[day]
