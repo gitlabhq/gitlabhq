@@ -14,7 +14,7 @@ describe 'Gitlab::Popen', no_db: true do
     end
 
     it { @status.should be_zero }
-    it { @output.should include('pids') }
+    it { @output.should include('cache') }
   end
 
   context 'non-zero status' do
