@@ -336,7 +336,7 @@ module Gitlab
         authorize! :download_code, user_project
 
         page = params[:page] || 0
-        per_page = params[:per_page].to_i || 20
+        per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
         commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
