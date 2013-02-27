@@ -136,9 +136,9 @@ module Graph
                   end
 
           space = if commit.space >= parent.space then
-                    find_free_parent_space(range, parent.space, 1, commit.space, times)
+                    find_free_parent_space(range, parent.space, -1, commit.space, times)
                   else
-                    find_free_parent_space(range, parent.space, -1, parent.space, times)
+                    find_free_parent_space(range, commit.space, -1, parent.space, times)
                   end
 
           mark_reserved(range, space)
@@ -151,7 +151,7 @@ module Graph
 
     def find_free_parent_space(range, space_base, space_step, space_default, times)
       if is_overlap?(range, times, space_default) then
-        find_free_space(range, space_base, space_step)
+        find_free_space(range, space_base, space_step, space_default)
       else
         space_default
       end
@@ -221,17 +221,17 @@ module Graph
       end
     end
 
-    def find_free_space(time_range, space_base, space_step)
+    def find_free_space(time_range, space_base, space_step, space_default = 1)
       reserved = []
       for day in time_range
         reserved += @_reserved[day]
       end
       reserved.uniq!
 
-      space = space_base
+      space = space_default
       while reserved.include?(space) do
         space += space_step
-        if space <= 0 then
+        if space < space_base then
           space_step *= -1
           space = space_base + space_step
         end
