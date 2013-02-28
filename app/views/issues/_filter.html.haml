@@ -6,7 +6,10 @@
           Open
       %li{class: ("active" if params[:status] == 'assigned-to-me')}
         = link_to project_issues_path(@project, status: 'assigned-to-me') do
-          Assigned To Me
+          Assigned to me
+      %li{class: ("active" if params[:status] == 'created-by-me')}
+        = link_to project_issues_path(@project, status: 'created-by-me') do
+          Created by me
       %li{class: ("active" if params[:status] == 'closed')}
         = link_to project_issues_path(@project, status: 'closed') do
           Closed

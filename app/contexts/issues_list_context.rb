@@ -7,12 +7,13 @@ class IssuesListContext < BaseContext
     @issues = case params[:status]
               when issues_filter[:all] then @project.issues
               when issues_filter[:closed] then @project.issues.closed
-              when issues_filter[:to_me] then @project.issues.opened.assigned(current_user)
+              when issues_filter[:to_me] then @project.issues.assigned(current_user)
+              when issues_filter[:by_me] then @project.issues.authored(current_user)
               else @project.issues.opened
               end
 
     @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?
-    @issues = @issues.includes(:author, :project).order("updated_at")
+    @issues = @issues.includes(:author, :project)
 
     # Filter by specific assignee_id (or lack thereof)?
     if params[:assignee_id].present?

@@ -27,6 +27,7 @@ module IssuesHelper
       all: "all",
       closed: "closed",
       to_me: "assigned-to-me",
+      by_me: "created-by-me",
       open: "open"
     }
   end
@@ -45,7 +46,7 @@ module IssuesHelper
     return "" if @project.nil?
 
     if @project.used_default_issues_tracker?
-      project_issues_filter_path(@project) 
+      project_issues_filter_path(@project)
     else
       url = Settings[:issues_tracker][@project.issues_tracker]["project_url"]
       url.gsub(':project_id', @project.id.to_s)

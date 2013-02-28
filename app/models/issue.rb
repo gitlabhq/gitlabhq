@@ -30,6 +30,10 @@ class Issue < ActiveRecord::Base
       where('assignee_id = :user', user: user.id)
     end
 
+    def authored(user)
+      where('author_id = :user', user: user.id)
+    end
+
     def open_for(user)
       opened.assigned(user)
     end
