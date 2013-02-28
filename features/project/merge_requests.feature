@@ -34,11 +34,11 @@ Feature: Project Merge Requests
     And I submit new merge request "Wiki Feature"
     Then I should see merge request "Wiki Feature"
 
-  #@javascript
-  #Scenario: I comment on a merge request
-    #Given I visit merge request page "Bug NS-04"
-    #And I leave a comment like "XML attached"
-    #Then I should see comment "XML attached"
+  @javascript
+  Scenario: I comment on a merge request
+    Given I visit merge request page "Bug NS-04"
+    And I leave a comment like "XML attached"
+    Then I should see comment "XML attached"
 
   @javascript
   Scenario: I comment on a merge request diff
