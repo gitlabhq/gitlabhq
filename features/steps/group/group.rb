@@ -69,8 +69,8 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'submit form with new group info' do
-    fill_in 'group_name', :with => 'Samurai'
-    fill_in 'group_description', :with => 'Tokugawa Shogunate'
+    fill_in 'group_name', with: 'Samurai'
+    fill_in 'group_description', with: 'Tokugawa Shogunate'
     click_button "Create group"
   end
 
