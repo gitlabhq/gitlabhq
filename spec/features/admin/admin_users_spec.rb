@@ -55,8 +55,8 @@ describe "Admin::Users" do
         user = User.last
         email = ActionMailer::Base.deliveries.last
         email.subject.should have_content("Account was created")
-        email.body.should have_content(user.email)
-        email.body.should have_content(@password)
+        email.text_part.body.should have_content(user.email)
+        email.text_part.body.should have_content(@password)
       end
     end
 
@@ -67,8 +67,8 @@ describe "Admin::Users" do
         user = User.last
         email = ActionMailer::Base.deliveries.last
         email.subject.should have_content("Account was created")
-        email.body.should have_content(user.email)
-        email.body.should_not have_content(@password)
+        email.text_part.body.should have_content(user.email)
+        email.text_part.body.should_not have_content(@password)
       end
     end
   end
