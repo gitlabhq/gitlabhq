@@ -2,8 +2,8 @@
 %html{ lang: "en"}
   = render "layouts/head", title: "Profile"
   %body{class: "#{app_theme} profile"}
-    = render "layouts/flash"
     = render "layouts/head_panel", title: "Profile"
+    = render "layouts/flash"
     .container
       %ul.main_menu
         = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do

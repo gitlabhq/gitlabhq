@@ -54,10 +54,10 @@ $ ->
     $(@).parents('form').submit()
 
   # Flash
-  if (flash = $("#flash-container")).length > 0
-    flash.click -> $(@).slideUp("slow")
-    flash.slideDown "slow"
-    setTimeout (-> flash.slideUp("slow")), 3000
+  if (flash = $(".flash-container")).length > 0
+    flash.click -> $(@).fadeOut()
+    flash.show()
+    setTimeout (-> flash.fadeOut()), 3000
 
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->

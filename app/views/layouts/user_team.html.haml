@@ -2,8 +2,8 @@
 %html{ lang: "en"}
   = render "layouts/head", title: "#{@team.name}"
   %body{class: "#{app_theme} application"}
-    = render "layouts/flash"
     = render "layouts/head_panel", title: "team: #{@team.name}"
+    = render "layouts/flash"
     .container
       %ul.main_menu
         = nav_link(path: 'teams#show', html_options: {class: 'home'}) do

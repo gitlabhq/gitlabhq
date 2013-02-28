@@ -67,27 +67,17 @@ table a code {
 }
 
 /** FLASH message **/
-#flash-container {
-  height: 50px;
-  position: fixed;
-  z-index: 10001;
-  top: 0px;
-  width: 100%;
-  margin-bottom: 15px;
-  overflow: hidden;
-  background: white;
-  cursor: pointer;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
+.flash-container {
   display: none;
+  .alert {
+    cursor: pointer;
+    margin: 0;
+    text-align: center;
+    border-radius: 0;
 
-  h4 {
-    color: #666;
-    font-size: 18px;
-    line-height: 38px;
-    padding-top: 5px;
-    margin: 2px;
-    font-weight: normal;
+    span {
+      font-size: 14px;
+    }
   }
 }
 

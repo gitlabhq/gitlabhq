@@ -1,3 +1,8 @@
-- if text = alert || notice
-  #flash-container
-    %h4= text
+.flash-container
+  - if alert
+    .alert
+      %span= alert
+
+  - elsif notice
+    .alert.alert-info
+      %span= notice
