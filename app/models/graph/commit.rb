@@ -4,7 +4,7 @@ module Graph
   class Commit
     include ActionView::Helpers::TagHelper
 
-    attr_accessor :time, :spaces, :refs, :parent_spaces
+    attr_accessor :time, :spaces, :refs, :parent_spaces, :icon
 
     def initialize(commit)
       @_commit = commit
@@ -23,8 +23,9 @@ module Graph
         [p.id,0,0]
       end
       h[:author]  = {
-        name: author.name, 
-        email: author.email
+        name: author.name,
+        email: author.email,
+        icon: icon
       }
       h[:time]    = time
       h[:space]   = spaces.first

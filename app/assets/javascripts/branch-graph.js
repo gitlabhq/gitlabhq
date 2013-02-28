@@ -320,15 +320,16 @@
   
 }(this);
 Raphael.fn.commitTooltip = function(x, y, commit){
-  var nameText, idText, messageText
+  var icon, nameText, idText, messageText
     , boxWidth = 300
     , boxHeight = 200;
   
-  nameText = this.text(x, y + 10, commit.author.name);
+  icon = this.image(commit.author.icon, x, y, 20, 20);
+  nameText = this.text(x + 25, y + 10, commit.author.name);
   idText = this.text(x, y + 35, commit.id);
   messageText = this.text(x, y + 50, commit.message);
   
-  textSet = this.set(nameText, idText, messageText).attr({
+  textSet = this.set(icon, nameText, idText, messageText).attr({
     "text-anchor": "start",
     "font": "12px Monaco, monospace"
   });
