@@ -42,6 +42,8 @@ Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
 
+Settings['issues_tracker']  ||= {}
+
 #
 # GitLab
 #

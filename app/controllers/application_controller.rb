@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
+  before_filter :add_gon_variables
 
   protect_from_forgery
 
@@ -147,5 +148,9 @@ class ApplicationController < ActionController::Base
   def default_headers
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
+  end
+
+  def add_gon_variables
+    gon.default_issues_tracker = Project.issues_tracker.default_value
   end
 end
