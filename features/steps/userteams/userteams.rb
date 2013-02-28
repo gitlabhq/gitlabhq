@@ -44,7 +44,14 @@ class Userteams < Spinach::FeatureSteps
 
     And 'I submit form with new team info' do
       fill_in 'name', with: 'gitlab'
+
+      fill_in 'user_team_description', with: 'team description'
       click_button 'Create team'
+    end
+
+    And 'I should see newly created team' do
+      page.should have_content "gitlab"
+      page.should have_content "team description"
     end
 
     Then 'I should be redirected to new team page' do

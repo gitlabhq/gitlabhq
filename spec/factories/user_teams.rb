@@ -15,6 +15,7 @@
 FactoryGirl.define do
   factory :user_team do
     sequence(:name) { |n| "team#{n}" }
+    sequence(:description) { |n| "team_description#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     owner
   end
