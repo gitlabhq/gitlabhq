@@ -103,9 +103,14 @@ Create a `git` user for Gitlab:
     # Clone gitlab shell
     git clone https://github.com/gitlabhq/gitlab-shell.git
 
-    # Setup
     cd gitlab-shell
     cp config.yml.example config.yml
+
+    # Edit config and replace gitlab_url 
+    # with something like 'http://domain.com/'
+    vim config.yml
+
+    # Do setup
     ./bin/install 
 
 
