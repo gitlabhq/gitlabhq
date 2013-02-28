@@ -84,11 +84,11 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I switch to the diff tab' do
-    visit diffs_project_merge_request_path(merge_request.project, merge_request)
+    visit diffs_project_merge_request_path(project, merge_request)
   end
 
   And 'I switch to the merge request\'s comments tab' do
-    visit project_merge_request_path(merge_request.project, merge_request)
+    visit project_merge_request_path(project, merge_request)
   end
 
   And 'I click on the first commit in the merge request' do

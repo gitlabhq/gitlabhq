@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/bmabey/database_cleaner.git
-  revision: 9f898fc50d87a5d51760f9dcf374bf5ffda21baf
-  ref: 9f898fc50d87a5d51760f9dcf374bf5ffda21baf
-  specs:
-    database_cleaner (0.9.1)
-
-GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
   specs:
@@ -133,6 +126,7 @@ GEM
     connection_pool (1.0.0)
     crack (0.3.1)
     daemons (1.1.9)
+    database_cleaner (0.9.1)
     debug_inspector (0.0.2)
     devise (2.1.2)
       bcrypt-ruby (~> 3.0)
@@ -474,7 +468,7 @@ DEPENDENCIES
   chosen-rails (= 0.9.8)
   coffee-rails (~> 3.2.2)
   colored
-  database_cleaner!
+  database_cleaner
   devise (~> 2.1.0)
   draper (~> 0.18.0)
   email_spec

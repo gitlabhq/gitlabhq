@@ -144,7 +144,7 @@ group :development, :test do
   gem "capybara", '2.0.2'
   gem "pry"
   gem "awesome_print"
-  gem "database_cleaner", ref: "9f898fc50d87a5d51760f9dcf374bf5ffda21baf", git: "https://github.com/bmabey/database_cleaner.git"
+  gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
 
