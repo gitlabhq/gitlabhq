@@ -16,6 +16,7 @@
       %th
         Name
         %i.icon-sort-down
+      %th Description
       %th Path
       %th Projects
       %th Members
@@ -26,13 +27,14 @@
     %tr
       %td
         %strong= link_to team.name, admin_team_path(team)
+      %td= team.description
       %td= team.path
       %td= team.projects.count
       %td= team.members.count
       %td
         = link_to team.owner.name, admin_user_path(team.owner)
       %td.bgred
-        = link_to 'Rename', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
+        = link_to 'Edit', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
         = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
 
 = paginate @teams, theme: "admin"

@@ -11,7 +11,7 @@
 #
 
 class UserTeam < ActiveRecord::Base
-  attr_accessible :name, :owner_id, :path
+  attr_accessible :name, :description, :owner_id, :path
 
   belongs_to :owner, class_name: User
 
@@ -26,6 +26,7 @@ class UserTeam < ActiveRecord::Base
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed." }
+  validates :description, length: { within: 0..255 }
   validates :path, uniqueness: true, presence: true, length: { within: 1..255 },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
