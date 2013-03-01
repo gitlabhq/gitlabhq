@@ -9,8 +9,11 @@
       %h5
         %i.icon-share
         = project.name_with_namespace
+        
         .pull-right
           %pre.dark.tiny git clone #{project.http_url_to_repo}
-
+      %p
+        = project.description
 
 = paginate @projects, theme: "admin"
+
