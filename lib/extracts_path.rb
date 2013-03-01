@@ -126,7 +126,7 @@ module ExtractsPath
     @tree = TreeDecorator.new(@tree)
 
     raise InvalidPathError if @tree.invalid?
-  rescue NoMethodError, InvalidPathError
+  rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!
   end
 end
