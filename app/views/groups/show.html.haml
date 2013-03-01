@@ -1,8 +1,3 @@
-- if @group.description.present?
-  .description
-    = @group.description
-  %hr
-
 .projects
   .activities.span8
     = render "events/event_last_push", event: @last_push
@@ -17,6 +12,9 @@
       %p.nothing_here_message Project activity will be displayed here
     .loading.hide
   .side.span4
+    - if @group.description.present?
+      .description.well.light
+        = @group.description
     = render "projects", projects: @projects
     %div
       %span.rss-icon

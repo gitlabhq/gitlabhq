@@ -1,8 +1,3 @@
-- if @team.description.present?
-  .description
-    = @team.description
-  %hr
-
 .projects
   .activities.span8
     = link_to dashboard_path, class: 'btn btn-tiny' do
@@ -16,6 +11,9 @@
       %p.nothing_here_message Projects activity will be displayed here
     .loading.hide
   .side.span4
+    - if @team.description.present?
+      .description.well.light
+        = @team.description
     = render "projects", projects: @projects
     %div
       %span.rss-icon
