@@ -72,7 +72,7 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "unicorn", "~> 4.4.0"
+gem "unicorn"
 
 # State machine
 gem "state_machine"
@@ -81,7 +81,7 @@ gem "state_machine"
 gem "acts-as-taggable-on", "2.3.3"
 
 # Decorators
-gem "draper", "~> 0.18.0"
+gem "draper"
 
 # Background jobs
 gem 'slim'
