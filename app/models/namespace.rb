@@ -2,17 +2,18 @@
 #
 # Table name: namespaces
 #
-#  id         :integer          not null, primary key
-#  name       :string(255)      not null
-#  path       :string(255)      not null
-#  owner_id   :integer          not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  type       :string(255)
+#  id          :integer          not null, primary key
+#  name        :string(255)      not null
+#  description :string(255)      not null
+#  path        :string(255)      not null
+#  owner_id    :integer          not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  type        :string(255)
 #
 
 class Namespace < ActiveRecord::Base
-  attr_accessible :name, :path
+  attr_accessible :name, :description, :path
 
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
@@ -22,7 +23,7 @@ class Namespace < ActiveRecord::Base
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed." }
-
+  validates :description, length: { within: 0..255 }
   validates :path, uniqueness: true, presence: true, length: { within: 1..255 },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }

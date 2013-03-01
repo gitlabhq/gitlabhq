@@ -25,11 +25,13 @@ class AdminGroups < Spinach::FeatureSteps
 
   And 'submit form with new group info' do
     fill_in 'group_name', :with => 'gitlab'
+    fill_in 'group_description', :with => 'Group description'
     click_button "Create group"
   end
 
   Then 'I should see newly created group' do
     page.should have_content "Group: gitlab"
+    page.should have_content "Group description"
   end
 
   Then 'I should be redirected to group page' do

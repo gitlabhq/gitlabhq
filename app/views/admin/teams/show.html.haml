@@ -16,7 +16,13 @@
       &nbsp;
       = link_to edit_admin_team_path(@team), class: "btn btn-small pull-right" do
         %i.icon-edit
-        Rename
+        Edit
+  %tr
+    %td
+      %b
+        Description:
+    %td
+      = @team.description
   %tr
     %td
       %b
