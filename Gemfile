@@ -53,10 +53,10 @@ gem 'enumerize'
 gem "kaminari", "~> 0.14.1"
 
 # HAML
-gem "haml-rails", "~> 0.3.5"
+gem "haml-rails"
 
 # Files attachments
-gem "carrierwave", "~> 0.7.1"
+gem "carrierwave"
 
 # Authorization
 gem "six"

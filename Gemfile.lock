@@ -99,7 +99,7 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 1.0.0)
-    carrierwave (0.7.1)
+    carrierwave (0.8.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
     celluloid (0.12.4)
@@ -207,11 +207,12 @@ GEM
     guard-spinach (0.0.2)
       guard (>= 1.1)
       spinach
-    haml (3.1.7)
-    haml-rails (0.3.5)
+    haml (4.0.0)
+      tilt
+    haml-rails (0.4)
       actionpack (>= 3.1, < 4.1)
       activesupport (>= 3.1, < 4.1)
-      haml (~> 3.1)
+      haml (>= 3.1, < 4.1)
       railties (>= 3.1, < 4.1)
     hashie (1.2.0)
     hike (1.2.1)
@@ -466,7 +467,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (= 2.2.1.1)
   capybara (= 2.0.2)
-  carrierwave (~> 0.7.1)
+  carrierwave
   chosen-rails (= 0.9.8)
   coffee-rails (~> 3.2.2)
   colored
@@ -495,7 +496,7 @@ DEPENDENCIES
   growl
   guard-rspec
   guard-spinach
-  haml-rails (~> 0.3.5)
+  haml-rails
   httparty
   jquery-atwho-rails (= 0.1.7)
   jquery-rails (= 2.1.3)
