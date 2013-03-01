@@ -82,7 +82,7 @@ GEM
     addressable (2.3.2)
     arel (3.0.2)
     awesome_print (1.1.0)
-    backports (2.6.5)
+    backports (2.6.7)
     bcrypt-ruby (3.0.1)
     better_errors (0.3.2)
       coderay (>= 1.0.0)
@@ -128,7 +128,8 @@ GEM
     daemons (1.1.9)
     database_cleaner (0.9.1)
     debug_inspector (0.0.2)
-    devise (2.1.3)
+    descendants_tracker (0.0.1)
+    devise (2.2.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
       railties (~> 3.1)
@@ -181,19 +182,19 @@ GEM
       rubyntlm (~> 0.1.1)
     gitlab_yaml_db (1.0.0)
     gon (4.0.2)
-    grape (0.3.1)
-      actionpack (>= 2.3.0)
+    grape (0.3.2)
       activesupport
-      grape-entity (~> 0.2.0)
-      hashie (~> 1.2)
-      json
+      builder
+      hashie (>= 1.2.0)
       multi_json (>= 1.3.2)
-      multi_xml
+      multi_xml (>= 0.5.2)
       rack
       rack-accept
       rack-mount
       virtus
     grape-entity (0.2.0)
+      activesupport
+      multi_json (>= 1.3.2)
     growl (1.0.3)
     guard (1.5.4)
       listen (>= 0.4.2)
@@ -382,11 +383,11 @@ GEM
       multi_json (~> 1.0)
       rubyzip
       websocket (~> 1.0.4)
-    settingslogic (2.0.8)
+    settingslogic (2.0.9)
     sexp_processor (4.1.3)
     shoulda-matchers (1.3.0)
       activesupport (>= 3.0.0)
-    sidekiq (2.7.3)
+    sidekiq (2.7.5)
       celluloid (~> 0.12.0)
       connection_pool (~> 1.0)
       multi_json (~> 1)
@@ -441,8 +442,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    virtus (0.5.2)
+    virtus (0.5.4)
       backports (~> 2.6.1)
+      descendants_tracker (~> 0.0.1)
     warden (1.2.1)
       rack (>= 1.0)
     webmock (1.9.0)
@@ -469,7 +471,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.2)
   colored
   database_cleaner
-  devise (~> 2.1.0)
+  devise
   draper (~> 0.18.0)
   email_spec
   enumerize
@@ -526,7 +528,7 @@ DEPENDENCIES
   seed-fu
   settingslogic
   shoulda-matchers (= 1.3.0)
-  sidekiq (= 2.7.3)
+  sidekiq
   simplecov
   sinatra
   six

@@ -15,7 +15,7 @@ gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise", "~> 2.1.0"
+gem "devise"
 gem 'omniauth', "~> 1.1.1"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
@@ -86,7 +86,7 @@ gem "draper", "~> 0.18.0"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq', '2.7.3'
+gem 'sidekiq'
 
 # HTTP requests
 gem "httparty"
