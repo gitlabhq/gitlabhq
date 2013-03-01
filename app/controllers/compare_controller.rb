@@ -16,7 +16,7 @@ class CompareController < ProjectResourceController
     @refs_are_same = result[:same]
     @line_notes    = []
 
-    @commits = CommitDecorator.decorate(@commits)
+    @commits = CommitDecorator.decorate_collection(@commits)
   end
 
   def create

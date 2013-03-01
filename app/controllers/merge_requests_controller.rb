@@ -94,12 +94,12 @@ class MergeRequestsController < ProjectResourceController
 
   def branch_from
     @commit = @repository.commit(params[:ref])
-    @commit = CommitDecorator.decorate(@commit)
+    @commit = CommitDecorator.decorate_collection(@commit)
   end
 
   def branch_to
     @commit = @repository.commit(params[:ref])
-    @commit = CommitDecorator.decorate(@commit)
+    @commit = CommitDecorator.decorate_collection(@commit)
   end
 
   def ci_status
@@ -143,7 +143,7 @@ class MergeRequestsController < ProjectResourceController
     # Get commits from repository
     # or from cache if already merged
     @commits = @merge_request.commits
-    @commits = CommitDecorator.decorate(@commits)
+    @commits = CommitDecorator.decorate_collection(@commits)
 
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
