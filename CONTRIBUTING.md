@@ -29,7 +29,7 @@ Feature suggestions don't belong in issues but can go to [Feedback forum](http:/
 
 ## Pull requests
 
-Code speaks louder than words. If you can please submit a pull request with the fix including tests. The workflow to make a pull request is a follows:
+Code speaks louder than words. If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
 
 1. Fork the project on GitHub
 1. Create a feature branch
@@ -41,15 +41,15 @@ Code speaks louder than words. If you can please submit a pull request with the 
 We will accept pull requests if:
 
 * The code has proper tests and all tests pass
-* It can be merged without problems (if not please use: git rebase master to fix this)
-* It won't break any existing functionality
+* It can be merged without problems (if not please use: git rebase master)
+* It doesn't break any existing functionality
 * It's quality code that conforms to the [Rails style guide](https://github.com/bbatsov/rails-style-guide) and best practices
-* You describe your PR properly please give a motive for your change and the method you used to achieve it
+* The description includes a motive for your change and the method you used to achieve it
 * It keeps the GitLab code base clean and well structured
-* We think other users need the same functionality
-* If it makes changes to the UI it should have screen shots
+* We think other users will need the same functionality
+* If it makes changes to the UI the pull request should include screenshots
 
-For examples of feedback on pull requests please look at our already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
+For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
 
 ## Submitting via GitHub's issue tracker
 
