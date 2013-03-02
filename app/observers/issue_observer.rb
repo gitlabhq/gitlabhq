@@ -27,7 +27,7 @@ class IssueObserver < ActiveRecord::Observer
 
   def create_note(issue)
     Note.create_status_change_note(issue, current_user, issue.state)
-    [issue.author, issue.assignee].compact.each do |recipient|
+    [issue.author, issue.assignee].compact.uniq.each do |recipient|
       Notify.delay.issue_status_changed_email(recipient.id, issue.id, issue.state, current_user.id)
     end
   end
