@@ -1,13 +1,12 @@
 ## GitLab Roadmap
 
-### v4.3 March 22
+### v5.0 March 22
 
-* Jenkins CI integration service
+* Replace gitolite with gitlab-shell 
 * Usability improvements
 * Notification improvements
 
 ### v4.2 February 22
 
-* Campfire integration service
 * Teams
 

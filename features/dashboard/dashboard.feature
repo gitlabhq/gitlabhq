@@ -16,12 +16,6 @@ Feature: Dashboard
     And I visit dashboard page
     Then I should see groups list
 
-  Scenario: I should see correct projects count
-    Given I have group with projects
-    And group has a projects that does not belongs to me
-    When I visit dashboard page
-    Then I should see 1 project at group list
-
   Scenario: I should see last push widget
     Then I should see last push widget
     And I click "Create Merge Request" link

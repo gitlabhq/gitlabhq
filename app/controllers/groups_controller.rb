@@ -1,12 +1,32 @@
 class GroupsController < ApplicationController
   respond_to :html
-  layout 'group'
+  layout 'group', except: [:new, :create]
 
-  before_filter :group
-  before_filter :projects
+  before_filter :group, except: [:new, :create]
 
   # Authorize
-  before_filter :authorize_read_group!
+  before_filter :authorize_read_group!, except: [:new, :create]
+  before_filter :authorize_admin_group!, only: [:edit, :update, :destroy]
+  before_filter :authorize_create_group!, only: [:new, :create]
+
+  # Load group projects
+  before_filter :projects, except: [:new, :create]
+
+  def new
+    @group = Group.new
+  end
+
+  def create
+    @group = Group.new(params[:group])
+    @group.path = @group.name.dup.parameterize if @group.name
+    @group.owner = current_user
+
+    if @group.save
+      redirect_to @group, notice: 'Group was successfully created.'
+    else
+      render action: "new"
+    end
+  end
 
   def show
     @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
@@ -65,6 +85,31 @@ class GroupsController < ApplicationController
     redirect_to people_group_path(@group), notice: 'Users was successfully added.'
   end
 
+  def edit
+  end
+
+  def update
+    group_params = params[:group].dup
+    owner_id =group_params.delete(:owner_id)
+
+    if owner_id
+      @group.owner = User.find(owner_id)
+    end
+
+    if @group.update_attributes(group_params)
+      redirect_to @group, notice: 'Group was successfully updated.'
+    else
+      render action: "edit"
+    end
+  end
+
+  def destroy
+    @group.truncate_teams
+    @group.destroy
+
+    redirect_to root_path, notice: 'Group was removed.'
+  end
+
   protected
 
   def group
@@ -82,6 +127,18 @@ class GroupsController < ApplicationController
   # Dont allow unauthorized access to group
   def authorize_read_group!
     unless projects.present? or can?(current_user, :manage_group, @group)
+      return render_404
+    end
+  end
+
+  def authorize_create_group!
+    unless can?(current_user, :create_group, nil)
+      return render_404
+    end
+  end
+
+  def authorize_admin_group!
+    unless can?(current_user, :manage_group, group)
       return render_404
     end
   end

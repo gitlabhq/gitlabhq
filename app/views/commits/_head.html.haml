@@ -22,7 +22,7 @@
 
 
   - if current_controller?(:commits) && current_user.private_token
-    %li.right
+    %li.pull-right
       %span.rss-icon
         = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
           = image_tag "rss_ui.png", title: "feed"

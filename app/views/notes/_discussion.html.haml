@@ -38,7 +38,7 @@
     - if note.for_diff_line?
       - if note.diff
         .content
-          .diff_file= render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
+          .file= render "notes/discussion_diff", discussion_notes: discussion_notes, note: note
       - else
         = link_to 'show outdated discussion', '#', class: 'js-show-outdated-discussion'
         %div.hide.outdated-discussion

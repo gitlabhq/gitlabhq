@@ -25,6 +25,10 @@ module SharedPaths
     visit people_group_path(current_group)
   end
 
+  When 'I visit group settings page' do
+    visit edit_group_path(current_group)
+  end
+
   # ----------------------------------------
   # Dashboard
   # ----------------------------------------
@@ -33,12 +37,16 @@ module SharedPaths
     visit dashboard_path
   end
 
+  Given 'I visit dashboard projects page' do
+    visit projects_dashboard_path
+  end
+
   Given 'I visit dashboard issues page' do
-    visit dashboard_issues_path
+    visit issues_dashboard_path
   end
 
   Given 'I visit dashboard merge requests page' do
-    visit dashboard_merge_requests_path
+    visit merge_requests_dashboard_path
   end
 
   Given 'I visit dashboard search page' do
@@ -105,6 +113,10 @@ module SharedPaths
     visit admin_groups_path
   end
 
+  When 'I visit admin teams page' do
+    visit admin_teams_path
+  end
+
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
@@ -133,7 +145,7 @@ module SharedPaths
     # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
     Gitlab::Graph::JsonBuilder.stub(max_count: 10)
 
-    visit graph_project_path(@project)
+    visit project_graph_path(@project, root_ref)
   end
 
   Given "I visit my project's issues page" do

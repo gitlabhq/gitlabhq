@@ -13,7 +13,13 @@ module GitlabMarkdownHelper
   def link_to_gfm(body, url, html_options = {})
     return "" if body.blank?
 
-    gfm_body = gfm(escape_once(body), html_options)
+    escaped_body = if body =~ /^\<img/
+                     body
+                   else
+                     escape_once(body)
+                   end
+
+    gfm_body = gfm(escaped_body, html_options)
 
     gfm_body.gsub!(%r{<a.*?>.*?</a>}m) do |match|
       "</a>#{match}#{link_to("", url, html_options)[0..-5]}" # "</a>".length +1

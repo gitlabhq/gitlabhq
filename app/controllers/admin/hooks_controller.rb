@@ -1,4 +1,4 @@
-class Admin::HooksController < AdminController
+class Admin::HooksController < Admin::ApplicationController
   def index
     @hooks = SystemHook.all
     @hook = SystemHook.new

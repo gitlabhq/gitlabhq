@@ -2,7 +2,7 @@ module Gitlab
   module Entities
     class User < Grape::Entity
       expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
-             :dark_scheme, :theme_id, :blocked, :created_at
+             :dark_scheme, :theme_id, :blocked, :created_at, :extern_uid, :provider
     end
 
     class UserBasic < Grape::Entity
@@ -21,6 +21,7 @@ module Gitlab
       expose :id, :name, :description, :default_branch
       expose :owner, using: Entities::UserBasic
       expose :private_flag, as: :private
+      expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
       expose :namespace
     end
@@ -31,8 +32,22 @@ module Gitlab
       end
     end
 
+    class Group < Grape::Entity
+      expose :id, :name, :path, :owner_id
+    end
+    
+    class GroupDetail < Group
+      expose :projects, using: Entities::Project
+    end
+
+    
     class RepoObject < Grape::Entity
       expose :name, :commit
+      expose :protected do |repo, options|
+        if options[:project]
+          options[:project].protected_branch? repo.name
+        end
+      end
     end
 
     class RepoCommit < Grape::Entity

@@ -1,0 +1,16 @@
+- grouped_user_team_members(@team).each do |access, members|
+  .ui-box
+    %h5.title
+      = Project.access_options.key(access).pluralize
+      %small= members.size
+    %ul.well-list
+      - members.sort_by(&:user_name).each do |up|
+        = render(partial: 'teams/members/show', locals: {member: up})
+
+
+:javascript
+  $(function(){
+    $('.repo-access-select, .project-access-select').live("change", function() {
+      $(this.form).submit();
+    });
+  })

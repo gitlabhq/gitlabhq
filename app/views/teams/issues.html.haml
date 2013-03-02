@@ -1,0 +1,23 @@
+%h3.page_title
+  Issues
+  %small (in Team projects assigned to Team members)
+  %small.pull-right #{@issues.total_count} issues
+
+%hr
+.row
+  .span3
+    = render 'filter', entity: 'issue'
+  .span9
+    - if @issues.any?
+      - @issues.group_by(&:project).each do |group|
+        %div.ui-box
+          - @project = group[0]
+          %h5.title
+            = link_to_project @project
+          %ul.well-list.issues_table
+            - group[1].each do |issue|
+              = render(partial: 'issues/show', locals: {issue: issue})
+      %hr
+      = paginate @issues, theme: "gitlab"
+    - else
+      %p.nothing_here_message Nothing to show here

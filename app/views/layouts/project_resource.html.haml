@@ -12,7 +12,8 @@
     .container
       %ul.main_menu
         = nav_link(html_options: {class: "home #{project_tab_class}"}) do
-          = link_to @project.path, project_path(@project), title: "Project"
+          = link_to project_path(@project), title: "Project" do
+            %i.icon-home
 
         - if @project.repo_exists?
           - if can? current_user, :download_code, @project
@@ -20,8 +21,8 @@
               = link_to 'Files', project_tree_path(@project, @ref || @repository.root_ref)
             = nav_link(controller: %w(commit commits compare repositories protected_branches)) do
               = link_to "Commits", project_commits_path(@project, @ref || @repository.root_ref)
-            = nav_link(path: 'projects#graph') do
-              = link_to "Network", graph_project_path(@project)
+            = nav_link(controller: %w(graph)) do
+              = link_to "Network", project_graph_path(@project, @ref || @repository.root_ref)
 
         - if @project.issues_enabled
           = nav_link(controller: %w(issues milestones labels)) do

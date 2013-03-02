@@ -4,6 +4,6 @@
       %strong Looking for
     .input
       = search_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge search-text-input", id: "dashboard_search"
-      = submit_tag 'Search', class: "btn primary wide"
+      = submit_tag 'Search', class: "btn btn-primary wide"
 - if params[:search].present?
   = render 'search/result'

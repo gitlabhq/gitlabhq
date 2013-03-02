@@ -76,7 +76,7 @@ describe ProjectsController, "routing" do
   end
 
   it "to #graph" do
-    get("/gitlabhq/graph").should route_to('projects#graph', id: 'gitlabhq')
+    get("/gitlabhq/graph/master").should route_to('graph#show', project_id: 'gitlabhq', id: 'master')
   end
 
   it "to #files" do

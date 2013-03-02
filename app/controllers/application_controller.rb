@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_current_user_for_observers
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
+  before_filter :default_headers
 
   protect_from_forgery
 
@@ -94,6 +95,18 @@ class ApplicationController < ActionController::Base
     return access_denied! unless can?(current_user, :download_code, project)
   end
 
+  def authorize_create_team!
+    return access_denied! unless can?(current_user, :create_team, nil)
+  end
+
+  def authorize_manage_user_team!
+    return access_denied! unless user_team.present? && can?(current_user, :manage_user_team, user_team)
+  end
+
+  def authorize_admin_user_team!
+    return access_denied! unless user_team.present? && can?(current_user, :admin_user_team, user_team)
+  end
+
   def access_denied!
     render "errors/access_denied", layout: "errors", status: 404
   end
@@ -134,5 +147,10 @@ class ApplicationController < ActionController::Base
 
   def dev_tools
     Rack::MiniProfiler.authorize_request
+  end
+
+  def default_headers
+    headers['X-Frame-Options'] = 'DENY'
+    headers['X-XSS-Protection'] = '1; mode=block'
   end
 end

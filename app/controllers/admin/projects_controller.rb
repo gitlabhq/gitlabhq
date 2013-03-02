@@ -1,4 +1,4 @@
-class Admin::ProjectsController < AdminController
+class Admin::ProjectsController < Admin::ApplicationController
   before_filter :project, only: [:edit, :show, :update, :destroy, :team_update]
 
   def index
@@ -29,7 +29,9 @@ class Admin::ProjectsController < AdminController
   end
 
   def update
-    status = Projects::UpdateContext.new(project, current_user, params).execute(:admin)
+    project.creator = current_user unless project.creator
+
+    status = ::Projects::UpdateContext.new(project, current_user, params).execute(:admin)
 
     if status
       redirect_to [:admin, @project], notice: 'Project was successfully updated.'

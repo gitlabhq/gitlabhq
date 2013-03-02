@@ -1,7 +1,7 @@
 %h3.page_title
   GitLab CI
   %small Continuous integration server from GitLab
-  .right
+  .pull-right
     - if @service.active
       %small.cgreen Enabled
     - else
@@ -16,7 +16,7 @@
 %hr
 = form_for(@service, :as => :service, :url => project_service_path(@project, :gitlab_ci), :method => :put) do |f|
   - if @service.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @service.errors.full_messages.each do |msg|
           %li= msg
@@ -40,7 +40,7 @@
 
 
   .form-actions
-    = f.submit 'Save', class: 'btn save-btn'
+    = f.submit 'Save', class: 'btn btn-save'
     &nbsp;
     - if @service.valid? && @service.active
       = link_to 'Test settings', test_project_service_path(@project), class: 'btn btn-small'

@@ -33,13 +33,16 @@ class UsersProject < ActiveRecord::Base
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
 
-  delegate :name, :email, to: :user, prefix: true
+  delegate :name, :username, :email, to: :user, prefix: true
 
   scope :guests, where(project_access: GUEST)
   scope :reporters, where(project_access: REPORTER)
   scope :developers, where(project_access: DEVELOPER)
   scope :masters, where(project_access: MASTER)
+
   scope :in_project, ->(project) { where(project_id: project.id) }
+  scope :in_projects, ->(projects) { where(project_id: project_ids) }
+  scope :with_user, ->(user) { where(user_id: user.id) }
 
   class << self
 
@@ -79,8 +82,12 @@ class UsersProject < ActiveRecord::Base
             users_project.save
           end
         end
-        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
+
+      GitoliteWorker.perform_async(
+        :update_repositories,
+        project_ids
+      )
 
       true
     rescue
@@ -94,8 +101,12 @@ class UsersProject < ActiveRecord::Base
           users_project.skip_git = true
           users_project.destroy
         end
-        Gitlab::Gitolite.new.update_repositories(Project.where(id: project_ids))
       end
+
+      GitoliteWorker.perform_async(
+        :update_repositories,
+        project_ids
+      )
 
       true
     rescue
@@ -126,7 +137,7 @@ class UsersProject < ActiveRecord::Base
   end
 
   def update_repository
-    gitolite.update_repository(project)
+    project.update_repository
   end
 
   def project_access_human

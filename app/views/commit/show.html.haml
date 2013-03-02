@@ -1,6 +1,6 @@
 = render "commits/commit_box"
 
-%p.right.cgray
+%p.pull-right.cgray
   This commit has
   %span.cgreen #{@commit.stats.additions} additions
   and
@@ -11,19 +11,7 @@
 
 :javascript
   $(function(){
-    var w, h;
-    $('.diff_file').each(function(){
-      $('.image.diff_removed img', this).on('load', $.proxy(function(event){
-        var w = event.currentTarget.naturalWidth
-          , h = event.currentTarget.naturalHeight;
-        $('.image.diff_removed .image-info', this).append(' | <b>W:</b> ' + w + 'px | <b>H:</b> ' + h + 'px');
-      }, this));
-      $('.image.diff_added img', this).on('load', $.proxy(function(event){
-        var w = event.currentTarget.naturalWidth
-          , h = event.currentTarget.naturalHeight;
-        $('.image.diff_added .image-info', this).append(' | <b>W:</b> ' + w + 'px | <b>H:</b> ' + h + 'px');
-      }, this));
-
+    $('.files .file').each(function(){
+      new CommitFile(this);
     });
-
   });

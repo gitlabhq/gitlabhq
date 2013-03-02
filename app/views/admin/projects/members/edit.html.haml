@@ -1,0 +1,8 @@
+%p.slead
+  Edit access for
+  = link_to @member.name, admin_user_path(@member)
+  in
+  = link_to @project.name_with_namespace, admin_project_path(@project)
+
+%hr
+= render 'form'

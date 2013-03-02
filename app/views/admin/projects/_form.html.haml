@@ -1,6 +1,6 @@
 = form_for [:admin, project] do |f|
   -if project.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - project.errors.full_messages.each do |msg|
           %li= msg
@@ -65,8 +65,8 @@
 
 
   .actions
-    = f.submit 'Save Project', class: "btn save-btn"
-    = link_to 'Cancel', admin_projects_path, class: "btn cancel-btn"
+    = f.submit 'Save Project', class: "btn btn-save"
+    = link_to 'Cancel', admin_projects_path, class: "btn btn-cancel"
 
 
 

@@ -13,6 +13,8 @@ class RefsController < ProjectResourceController
       format.html do
         new_path = if params[:destination] == "tree"
                      project_tree_path(@project, (@ref + "/" + params[:path]))
+                   elsif params[:destination] == "graph"
+                     project_graph_path(@project, @ref)
                    else
                      project_commits_path(@project, @ref)
                    end

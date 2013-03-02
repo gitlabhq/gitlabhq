@@ -266,7 +266,7 @@ describe Notify do
 
         before(:each) { note.stub(:noteable).and_return(commit) }
 
-        subject { Notify.note_commit_email(recipient.email, note.id) }
+        subject { Notify.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email'
 

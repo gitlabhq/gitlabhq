@@ -4,14 +4,17 @@ require 'fileutils'
 
 module Gitlab
   class GitoliteConfig
+    include Gitlab::Popen
+
     class PullError < StandardError; end
     class PushError < StandardError; end
     class BrokenGitolite < StandardError; end
 
-    attr_reader :config_tmp_dir, :ga_repo, :conf
+    attr_reader :config_tmp_dir, :tmp_dir, :ga_repo, :conf
 
-    def config_tmp_dir
-      @config_tmp_dir ||= Rails.root.join('tmp',"gitlabhq-gitolite-#{Time.now.to_i}")
+    def initialize
+      @tmp_dir = Rails.root.join("tmp").to_s
+      @config_tmp_dir = File.join(@tmp_dir,"gitlabhq-gitolite-#{Time.now.to_i}")
     end
 
     def ga_repo
@@ -23,7 +26,7 @@ module Gitlab
 
     def apply
       Timeout::timeout(30) do
-        File.open(Rails.root.join('tmp', "gitlabhq-gitolite.lock"), "w+") do |f|
+        File.open(File.join(tmp_dir, "gitlabhq-gitolite.lock"), "w+") do |f|
           begin
             # Set exclusive lock
             # to prevent race condition
@@ -31,7 +34,7 @@ module Gitlab
 
             # Pull gitolite-admin repo
             # in tmp dir before do any changes
-            pull(config_tmp_dir)
+            pull
 
             # Build ga_repo object and @conf
             # to access gitolite-admin configuration
@@ -49,7 +52,7 @@ module Gitlab
 
             # Push gitolite-admin repo
             # to apply all changes
-            push(config_tmp_dir)
+            push
           ensure
             # Remove tmp dir
             # removing the gitolite folder first is important to avoid
@@ -86,9 +89,14 @@ module Gitlab
       Gitlab::GitLogger.error(message)
     end
 
-    def destroy_project(project)
-      FileUtils.rm_rf(project.repository.path_to_repo)
-      conf.rm_repo(project.path_with_namespace)
+    def path_to_repo(name)
+      File.join(Gitlab.config.gitolite.repos_path, "#{name}.git")
+    end
+
+    def destroy_project(name)
+      full_path = path_to_repo(name)
+      FileUtils.rm_rf(full_path) if File.exists?(full_path)
+      conf.rm_repo(name)
     end
 
     def clean_repo repo_name
@@ -192,24 +200,28 @@ module Gitlab
 
     private
 
-    def pull tmp_dir
-      Dir.mkdir tmp_dir
-      `git clone #{Gitlab.config.gitolite.admin_uri} #{tmp_dir}/gitolite`
+    def pull
+      # Create config tmp dir like "RAILS_ROOT/tmp/gitlabhq-gitolite-132545"
+      Dir.mkdir config_tmp_dir
 
-      unless File.exists?(File.join(tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
+      # Clone gitolite-admin repo into tmp dir
+      popen("git clone #{Gitlab.config.gitolite.admin_uri} #{config_tmp_dir}/gitolite", tmp_dir)
+
+      # Ensure file with config presents after cloning
+      unless File.exists?(File.join(config_tmp_dir, 'gitolite', 'conf', 'gitolite.conf'))
         raise PullError, "unable to clone gitolite-admin repo"
       end
     end
 
-    def push tmp_dir
-      output, status = popen('git add -A')
+    def push
+      output, status = popen('git add -A', tmp_conf_path)
       raise "Git add failed." unless status.zero?
 
       # git commit returns 0 on success, and 1 if there is nothing to commit
-      output, status = popen('git commit -m "GitLab"')
+      output, status = popen('git commit -m "GitLab"', tmp_conf_path)
       raise "Git add failed." unless [0,1].include?(status)
 
-      output, status = popen('git push')
+      output, status = popen('git push', tmp_conf_path)
 
       if output =~ /remote\: FATAL/
         raise BrokenGitolite, output
@@ -222,21 +234,8 @@ module Gitlab
       end
     end
 
-    def popen(cmd)
-      path = File.join(config_tmp_dir,'gitolite')
-      vars = { "PWD" => path }
-      options = { :chdir => path }
-
-      @cmd_output = ""
-      @cmd_status = 0
-      Open3.popen3(vars, cmd, options) do |stdin, stdout, stderr, wait_thr|
-        @cmd_status = wait_thr.value.exitstatus
-        @cmd_output << stdout.read
-        @cmd_output << stderr.read
-      end
-
-      return @cmd_output, @cmd_status
+    def tmp_conf_path
+      File.join(config_tmp_dir,'gitolite')
     end
   end
 end
-

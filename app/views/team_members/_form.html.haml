@@ -1,11 +1,11 @@
 %h3.page_title
   = "New Team member(s)"
 %hr
-= form_for @team_member, as: :team_member, url: project_team_members_path(@project, @team_member) do |f|
-  -if @team_member.errors.any?
-    .alert-message.block-message.error
+= form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project) do |f|
+  -if @user_project_relation.errors.any?
+    .alert.alert-error
       %ul
-        - @team_member.errors.full_messages.each do |msg|
+        - @user_project_relation.errors.full_messages.each do |msg|
           %li= msg
 
   %h6 1. Choose people you want in the team
@@ -16,8 +16,8 @@
   %h6 2. Set access level for them
   .clearfix
     = f.label :project_access, "Project Access"
-    .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select chosen"
+    .input= select_tag :project_access, options_for_select(Project.access_options, @user_project_relation.project_access), class: "project-access-select chosen"
 
   .actions
-    = f.submit 'Save', class: "btn save-btn"
-    = link_to "Cancel", project_team_index_path(@project), class: "btn cancel-btn"
+    = f.submit 'Add users', class: "btn btn-create"
+    = link_to "Cancel", project_team_index_path(@project), class: "btn btn-cancel"

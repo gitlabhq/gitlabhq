@@ -4,7 +4,7 @@
     %small Blocked
   - if @admin_user.admin
     %small Administrator
-  = link_to edit_admin_user_path(@admin_user), class: "btn right" do
+  = link_to edit_admin_user_path(@admin_user), class: "btn pull-right" do
     %i.icon-edit
     Edit
 
@@ -86,7 +86,7 @@
       %td= select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
 
     %tr
-      %td= submit_tag 'Add', class: "btn primary"
+      %td= submit_tag 'Add', class: "btn btn-primary"
       %td
         Read more about project permissions
         %strong= link_to "here", help_permissions_path, class: "vlink"
@@ -123,5 +123,5 @@
       %tr
         %td= link_to project.name_with_namespace, admin_project_path(project)
         %td= tm.project_access_human
-        %td= link_to 'Edit Access', edit_admin_team_member_path(tm), class: "btn small"
-        %td= link_to 'Remove from team', admin_team_member_path(tm), confirm: 'Are you sure?', method: :delete, class: "btn small danger"
+        %td= link_to 'Edit Access', edit_admin_project_member_path(project, tm.user), class: "btn btn-small"
+        %td= link_to 'Remove from team', admin_project_member_path(project, tm.user), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove"

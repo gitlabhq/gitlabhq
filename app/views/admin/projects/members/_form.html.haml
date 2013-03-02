@@ -1,0 +1,16 @@
+= form_for @team_member_relation, as: :team_member, url: admin_project_member_path(@project, @member)  do |f|
+  -if @team_member_relation.errors.any?
+    .alert.alert-error
+      %ul
+        - @team_member_relation.errors.full_messages.each do |msg|
+          %li= msg
+
+  .clearfix
+    %label Project Access:
+    .input
+      = f.select :project_access, options_for_select(Project.access_options, @team_member_relation.project_access), {}, class: "project-access-select chosen span3"
+
+  %br
+  .actions
+    = f.submit 'Save', class: "btn btn-primary"
+    = link_to 'Cancel', :back, class: "btn"

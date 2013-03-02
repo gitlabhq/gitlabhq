@@ -15,30 +15,30 @@
     = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
     .note_preview.js-note-preview.turn-off
 
-  .buttons
-    = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
-    %a.btn.grouped.js-close-discussion-note-form Cancel
   .hint
-    .right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+    .pull-right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
   .clearfix
 
-  .note_options
-    .attachment
-      %h6 Attachment:
-      .file_name.js-attachment-filename File name...
-      %a.choose-btn.btn.small.js-choose-note-attachment-button Choose File ...
-      .hint Any file up to 10 MB
+  .note-form-actions
+    .buttons
+      = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
+      %a.btn.grouped.js-close-discussion-note-form Cancel
 
-      = f.file_field :attachment, class: "js-note-attachment-input"
-
-    .notify_options
-      %h6 Notify via email:
+    .note-form-option
       = label_tag :notify do
         = check_box_tag :notify, 1, !@note.for_commit?
-        Project team
+        %span.light Notify team via email
 
       .js-notify-commit-author
         = label_tag :notify_author do
           = check_box_tag :notify_author, 1 , @note.for_commit?
-          Commit author
-  .clearfix
+          %span.light Notify commit author
+    .note-form-option
+      %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
+        %i.icon-paper-clip
+        %span Choose File ...
+      &nbsp;
+      %span.file_name.js-attachment-filename File name...
+      = f.file_field :attachment, class: "js-note-attachment-input hide"
+
+    .clearfix

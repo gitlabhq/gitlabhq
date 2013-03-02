@@ -1,0 +1,23 @@
+.ui-box
+  %h5.title
+    Profile
+  %ul.well-list
+    %li
+      %strong Email
+      %span.pull-right= mail_to @user.email
+    - unless @user.skype.blank?
+      %li
+        %strong Skype
+        %span.pull-right= @user.skype
+    - unless @user.linkedin.blank?
+      %li
+        %strong LinkedIn
+        %span.pull-right= @user.linkedin
+    - unless @user.twitter.blank?
+      %li
+        %strong Twitter
+        %span.pull-right= @user.twitter
+    - unless @user.bio.blank?
+      %li
+        %strong Bio
+        %span.pull-right= @user.bio

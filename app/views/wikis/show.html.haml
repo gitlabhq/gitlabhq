@@ -1,12 +1,12 @@
 %h3.page_title
   = @wiki.title
-  %span.right
-    = link_to pages_project_wikis_path(@project), class: "btn small grouped" do
+  %span.pull-right
+    = link_to pages_project_wikis_path(@project), class: "btn btn-small grouped" do
       Pages
     - if can? current_user, :write_wiki, @project
-      = link_to history_project_wiki_path(@project, @wiki), class: "btn small grouped" do
+      = link_to history_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
         History
-      = link_to edit_project_wiki_path(@project, @wiki), class: "btn small grouped" do
+      = link_to edit_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
         %i.icon-edit
         Edit
 %br

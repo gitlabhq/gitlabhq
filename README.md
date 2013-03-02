@@ -2,7 +2,7 @@
 
 GitLab is a free project and repository management application
 
-![CI](http://ci.gitlab.org/projects/1/status?ref=master)
+[![CI](http://ci.gitlab.org/projects/1/status?ref=master)](http://ci.gitlab.org/projects/1?ref=master)
 
 ## Application details
 

@@ -39,7 +39,12 @@ module TabHelper
   # Returns a list item element String
   def nav_link(options = {}, &block)
     if path = options.delete(:path)
-      c, a, _ = path.split('#')
+      if path.respond_to?(:each)
+        c = path.map { |p| p.split('#').first }
+        a = path.map { |p| p.split('#').last }
+      else
+        c, a, _ = path.split('#')
+      end
     else
       c = options.delete(:controller)
       a = options.delete(:action)

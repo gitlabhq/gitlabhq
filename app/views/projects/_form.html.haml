@@ -1,6 +1,6 @@
 = form_for(@project, remote: true) do |f|
   - if @project.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %ul
         - @project.errors.full_messages.each do |msg|
           %li= msg
@@ -42,7 +42,7 @@
         = f.check_box :wiki_enabled
         %span.descr Pages for project documentation
 
-  - if can? current_user, :change_public_mode, @project
+  - if can?(current_user, :change_public_mode, @project)
     %fieldset.features
       %legend
         %i.icon-share
@@ -77,9 +77,9 @@
   %br
 
   .actions
-    = f.submit 'Save', class: "btn save-btn"
+    = f.submit 'Save', class: "btn btn-save"
     = link_to 'Cancel', @project, class: "btn"
     - unless @project.new_record?
       - if can?(current_user, :remove_project, @project)
-        .right
-          = link_to 'Remove Project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn danger"
+        .pull-right
+          = link_to 'Remove Project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn btn-remove"

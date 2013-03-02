@@ -1,0 +1,6 @@
+%h3.page_title
+  Edit max access in #{link_to @project.name_with_namespace, @project} for #{link_to(@team.name, team_path(@team))} team
+
+%hr
+
+= render 'form'

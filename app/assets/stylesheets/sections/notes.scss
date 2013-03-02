@@ -40,13 +40,13 @@ ul.notes {
     .discussion-body {
       margin-left: 50px;
 
-      .diff_file,
+      .file,
       .discussion-hidden,
       .notes {
         @extend .borders;
         background-color: #F9F9F9;
       }
-      .diff_file .notes {
+      .file .notes {
         /* reset */
         background: inherit;
         border: none;
@@ -81,14 +81,6 @@ ul.notes {
     .attachment {
       font-size: 14px;
       margin-top: -20px;
-
-      .icon-attachment {
-        @extend .icon-paper-clip;
-        font-size: 24px;
-        position: relative;
-        text-align: right;
-        top: 6px;
-      }
     }
     .note-body {
       margin-left: 45px;
@@ -109,7 +101,7 @@ ul.notes {
   }
 }
 
-.diff_file .notes_holder {
+.file .notes_holder {
   font-family: $sansFontFamily;
   font-size: 13px;
   line-height: 18px;
@@ -133,8 +125,6 @@ ul.notes {
     margin-top: 8px;
   }
 }
-
-
 
 /**
  * Actions for Discussions/Notes
@@ -171,7 +161,7 @@ ul.notes {
     }
   }
 }
-.diff_file .note .note-actions {
+.file .note .note-actions {
   right: 0;
   top: 0;
 }
@@ -182,7 +172,7 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
-.diff_file tr.line_holder {
+.file tr.line_holder {
   .add-diff-note {
     background: url("diff_note_add.png") no-repeat left 0;
     height: 22px;
@@ -212,25 +202,25 @@ ul.notes {
   }
 }
 
-
-
 /**
  * Note Form
  */
 
-.comment-btn,
-.reply-btn {
-  @extend .save-btn;
+.comment-btn {
+  @extend .btn-create;
 }
-.diff_file,
+.reply-btn {
+  @extend .btn-primary;
+}
+.file .content tr.line_holder:hover > td { background: $hover !important; }
+.file .content tr.line_holder:hover > td .line_note_link {
+  opacity: 1.0;
+  filter: alpha(opacity=100);
+}
+.file,
 .discussion {
   .new_note {
     margin: 8px 5px 8px 0;
-
-    .note_options {
-      // because of the smaller width and the extra "cancel" button
-      margin-top: 8px;
-    }
   }
 }
 .new_note {
@@ -242,37 +232,6 @@ ul.notes {
   }
   .clearfix {
     margin-bottom: 0;
-  }
-  .note_options {
-    h6 {
-      @extend .left;
-      line-height: 20px;
-      padding-right: 16px;
-      padding-bottom: 16px;
-    }
-    label {
-      padding: 0;
-    }
-
-    .attachment {
-      @extend .right;
-      position: relative;
-      width: 350px;
-      height: 50px;
-      margin:0 0 5px !important;
-
-      // hide the actual file field
-      input {
-        display: none;
-      }
-
-      .choose-btn {
-        float: right;
-      }
-    }
-    .notify_options {
-      @extend .right;
-    }
   }
   .note_text_and_preview {
     // makes the "absolute" position for links relative to this
@@ -311,4 +270,18 @@ ul.notes {
   @extend .span4;
   @extend .thumbnail;
   margin-left: 45px;
+}
+
+
+.note-form-actions {
+  background: #F9F9F9;
+  height: 45px;
+  padding: 0 5px;
+
+  .note-form-option {
+    margin-top: 8px;
+    margin-left: 15px;
+    @extend .pull-left;
+    @extend .span4;
+  }
 }

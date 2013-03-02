@@ -63,6 +63,12 @@ class Dashboard < Spinach::FeatureSteps
     @project.team << [current_user, :master]
   end
 
+  Then 'I should see projects list' do
+    @user.authorized_projects.all.each do |project|
+      page.should have_link project.name_with_namespace
+    end
+  end
+
   Then 'I should see groups list' do
     Group.all.each do |group|
       page.should have_link group.name

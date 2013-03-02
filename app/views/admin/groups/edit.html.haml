@@ -2,7 +2,7 @@
 %hr
 = form_for [:admin, @group] do |f|
   - if @group.errors.any?
-    .alert-message.block-message.error
+    .alert.alert-error
       %span= @group.errors.full_messages.first
   .clearfix.group_name_holder
     = f.label :name do
@@ -24,5 +24,5 @@
         %li It will change the git path to repositories under this group.
 
   .form-actions
-    = f.submit 'Rename group', class: "btn danger"
-    = link_to  'Cancel', admin_groups_path, class: "btn cancel-btn"
+    = f.submit 'Rename group', class: "btn btn-remove"
+    = link_to  'Cancel', admin_groups_path, class: "btn btn-cancel"
