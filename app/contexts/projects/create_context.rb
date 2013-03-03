@@ -10,13 +10,14 @@ module Projects
 
       @project = Project.new(params)
 
-      # Parametrize path for project
-      #
+      # sanitize the path of the project
+      # we accept letters numbers ._-
+      # everything else it will be replaced by '-'
       # Ex.
-      #  'GitLab HQ'.parameterize => "gitlab-hq"
+      #  'GitLab HQ' => "gitlab-hq"
+      #  '[Demo]-test.project' => 'demo--test.project'
       #
-      @project.path = @project.name.dup.parameterize
-
+      @project.path = @project.name.dup.gsub(%r{([^a-zA-Z0-9_\-[\.]])},'-'),'-').downcase.gsub(%r{[^a-z]},'')
 
       if namespace_id
         # Find matching namespace and check if it allowed
