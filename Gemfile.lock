@@ -15,16 +15,6 @@ GIT
       rack (~> 1.4.1)
 
 GIT
-  remote: https://github.com/gitlabhq/grit.git
-  revision: 9e98418ce2d654485b967003726aa2706a10060b
-  ref: 9e98418ce2d654485b967003726aa2706a10060b
-  specs:
-    grit (2.5.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
-
-GIT
   remote: https://github.com/gitlabhq/grit_ext.git
   revision: 2d1b2f13cabc02520405985fccb2a0abfcba9907
   ref: 2d1b2f13cabc02520405985fccb2a0abfcba9907
@@ -175,6 +165,10 @@ GEM
       mime-types (~> 1.19)
       pygments.rb (>= 0.2.13)
     github-markup (0.7.5)
+    gitlab-grit (1.0.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
     gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
       net-ldap (~> 0.2.2)
@@ -486,6 +480,7 @@ DEPENDENCIES
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
+  gitlab-grit (~> 1.0.0)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
@@ -493,7 +488,6 @@ DEPENDENCIES
   grack!
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)
-  grit!
   grit_ext!
   growl
   guard-rspec
