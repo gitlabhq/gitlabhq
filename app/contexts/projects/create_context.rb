@@ -13,6 +13,8 @@ module Projects
       # sanitize the path of the project
       # we accept letters numbers ._-
       # everything else it will be replaced by '-'
+      # and it make sure that the repo name start with
+      # a letter or number
       # Ex.
       #  'GitLab HQ' => "gitlab-hq"
       #  '[Demo]-test.project' => 'demo--test.project'
