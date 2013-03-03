@@ -43,7 +43,9 @@
 
 * More details are in the [requirements doc](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md)
 
-### Getting started
+### Installation
+
+You can either follow the "ordinary" Installation guide to install it on a machine or use the Vagrant virtual machine. The Installation guide is recommended to set up a production server. The Vargrant virtual machine is recommended for development since it makes it much easier to set up all the dependencies for integration testing.
 
 * [Installation guide for latest stable release](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md)
 
@@ -51,13 +53,43 @@
 
 * [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm)
 
-* [Developer guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide)
+### Starting
 
-* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
+1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab with:
 
-* [Roadmap](https://github.com/gitlabhq/gitlabhq/blob/master/ROADMAP.md)
+> sudo service gitlab start
 
-* [GitLab API](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md)
+or
+
+> sudo /etc/init.d/gitlab restart
+
+2. Start it with [Foreman](https://github.com/ddollar/foreman) in development model
+
+bundle exec foreman start -p 3000
+
+3. Start it manually in development mode
+
+> bundle exec rails s
+> bundle exec rake sidekiq:start
+
+### Running the tests
+
+* Seed the database with
+
+> bundle exec rake db:setup RAILS_ENV=test
+> bundle exec rake db:seed_fu RAILS_ENV=test
+
+* Run all tests
+
+> bundle exec rake gitlab:test
+
+* Rspec unit and functional tests
+
+> bundle exec rake spec
+
+* Spinach integration tests
+
+> bundle exec rake spinach
 
 ### Getting help
 
@@ -70,6 +102,22 @@
 * [Paid support](http://blog.gitlab.com/support/)
 
 * [Paid services](http://blog.gitlab.com/services/)
+
+### New versions and the API
+
+Each month on the 22th a new version is released together with an upgrade guide.
+
+* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
+
+* [Roadmap](https://github.com/gitlabhq/gitlabhq/blob/master/ROADMAP.md)
+
+### Other documentation
+
+* [GitLab API](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md)
+
+* [Rake tasks](https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks)
+
+* [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes)
 
 ### Getting in touch
 

@@ -29,12 +29,32 @@ Feature suggestions don't belong in issues but can go to [Feedback forum](http:/
 
 ## Pull requests
 
-Code speaks louder than words. If you can please submit a pull request with the fix including tests. Starting point would be the [Developer Guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide)
+Code speaks louder than words. If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
+
+1. Fork the project on GitHub
+1. Create a feature branch
+1. Write tests and code
+1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
+1. Push the commit to your fork
+1. Submit a pull request
+
+We will accept pull requests if:
+
+* The code has proper tests and all tests pass
+* It can be merged without problems (if not please use: git rebase master)
+* It doesn't break any existing functionality
+* It's quality code that conforms to the [Rails style guide](https://github.com/bbatsov/rails-style-guide) and best practices
+* The description includes a motive for your change and the method you used to achieve it
+* It keeps the GitLab code base clean and well structured
+* We think other users will need the same functionality
+* If it makes changes to the UI the pull request should include screenshots
+
+For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
 
 ## Submitting via GitHub's issue tracker
 
 * For obvious bugs or misbehavior in GitLab in the master branch. Please include the revision id and a reproducible test case.
-* For problematic or insufficient documentation. Please include a suggestion to improve it.
+* For problematic or insufficient documentation. Please give a suggestion on how to improve it.
 
 If you're unsure where to post, post it to the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) first.
 There are a lot of helpful GitLab users there who may be able to help you quickly.
