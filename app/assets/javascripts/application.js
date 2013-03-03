@@ -22,5 +22,5 @@
 //= require g.bar-min
 //= require branch-graph
 //= require ace-src-noconflict/ace
-//= require epiceditor
+//= require epiceditor-min
 //= require_tree .
