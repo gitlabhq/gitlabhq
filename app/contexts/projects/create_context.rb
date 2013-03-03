@@ -17,7 +17,8 @@ module Projects
       #  'GitLab HQ' => "gitlab-hq"
       #  '[Demo]-test.project' => 'demo--test.project'
       #
-      @project.path = @project.name.dup.gsub(%r{([^a-zA-Z0-9_\-[\.]])},'-'),'-').downcase.gsub(%r{[^a-z]},'')
+      @project.path = @project.name.dup.gsub(%r{([^a-zA-Z0-9_\-[\.]])},'-').downcase.gsub(%r{[^a-z]},'')
+
 
       if namespace_id
         # Find matching namespace and check if it allowed
