@@ -7,14 +7,6 @@ GIT
       rake (>= 0.8.7)
 
 GIT
-  remote: https://github.com/gitlabhq/grack.git
-  revision: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
-  ref: ba46f3b0845c6a09d488ae6abdce6ede37e227e8
-  specs:
-    grack (1.0.0)
-      rack (~> 1.4.1)
-
-GIT
   remote: https://github.com/gitlabhq/grit_ext.git
   revision: 2d1b2f13cabc02520405985fccb2a0abfcba9907
   ref: 2d1b2f13cabc02520405985fccb2a0abfcba9907
@@ -165,6 +157,8 @@ GEM
       mime-types (~> 1.19)
       pygments.rb (>= 0.2.13)
     github-markup (0.7.5)
+    gitlab-grack (1.0.0)
+      rack (~> 1.4.1)
     gitlab-grit (1.0.0)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
@@ -480,12 +474,12 @@ DEPENDENCIES
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
+  gitlab-grack (~> 1.0.0)
   gitlab-grit (~> 1.0.0)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
   gon
-  grack!
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)
   grit_ext!
