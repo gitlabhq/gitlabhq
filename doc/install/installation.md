@@ -1,7 +1,6 @@
-This installation guide was created for Debian/Ubuntu and tested on it.
+This installation guide was created for Debian/Ubuntu and tested on it. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
 
-Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
-
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vargrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
 
 **Important Note:**
 The following steps have been known to work.
@@ -97,10 +96,10 @@ Create a `git` user for Gitlab:
 
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
 
-    # Login as git 
+    # Login as git
     sudo su git
 
-    # Go to home directory 
+    # Go to home directory
     cd /home/git
 
     # Clone gitlab shell
@@ -109,12 +108,12 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
     cp config.yml.example config.yml
 
-    # Edit config and replace gitlab_url 
+    # Edit config and replace gitlab_url
     # with something like 'http://domain.com/'
     vim config.yml
 
     # Do setup
-    ./bin/install 
+    ./bin/install
 
 
 # 5. Database
@@ -132,9 +131,9 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     # Clone GitLab repository
     sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 
-    # Go to gitlab dir 
+    # Go to gitlab dir
     cd /home/git/gitlab
-   
+
     # Checkout to stable release
     sudo -u git -H git checkout 5-0-stable
 
@@ -165,7 +164,7 @@ do so with caution!
     # Create directory for pids and make sure GitLab can write to it
     sudo -u git -H mkdir tmp/pids/
     sudo chmod -R u+rwX  tmp/pids/
- 
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -196,7 +195,7 @@ Make sure to update username/password in config/database.yml.
 
 
 ## Initialise Database and Activate Advanced Features
-    
+
     sudo -u git -H bundle exec rake db:setup RAILS_ENV=production
     sudo -u git -H bundle exec rake db:seed_fu RAILS_ENV=production
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
@@ -294,7 +293,7 @@ a different host, you can configure its connection string via the
 ## Custom SSH Connection
 
 If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
-    
+
     # Add to /home/git/.ssh/config
     host localhost          # Give your setup a name (here: override localhost)
         user git            # Your remote git user
