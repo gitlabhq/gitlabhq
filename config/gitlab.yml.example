@@ -1,5 +1,5 @@
 # # # # # # # # # # # # # # # # # # 
-# Gitlab application config file  #
+# GitLab application config file  #
 # # # # # # # # # # # # # # # # # #
 #
 # How to use:
@@ -41,21 +41,21 @@ production: &base
   ## External issues trackers
   issues_tracker:
     redmine:
-      ## If not nil, link 'Issues' on project page will be replaced tp this
+      ## If not nil, link 'Issues' on project page will be replaced with this
       ## Use placeholders:
-      ##  :project_id        - Gitlab project identifier
+      ##  :project_id        - GitLab project identifier
       ##  :issues_tracker_id - Project Name or Id in external issue tracker
       project_url: "http://redmine.sample/projects/:issues_tracker_id"
-      ## If not nil, links from /#\d/ entities from commit messages will replaced to this
+      ## If not nil, links from /#\d/ entities from commit messages will replaced with this
       ## Use placeholders:
-      ##  :project_id        - Gitlab project identifier
+      ##  :project_id        - GitLab project identifier
       ##  :issues_tracker_id - Project Name or Id in external issue tracker
       ##  :id                - Issue id (from commit messages)
       issues_url: "http://redmine.sample/issues/:id"
 
   ## Gravatar
   gravatar:
-    enabled: true                 # Use user avatar images from Gravatar.com (default: true)
+    enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
 
@@ -76,22 +76,21 @@ production: &base
     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
     password: '_the_password_of_the_bind_user'
 
-  ## Omniauth settings
+  ## OmniAuth settings
   omniauth:
-    # Enable ability for users
-    # Allow logging in via Twitter, Google, etc. using Omniauth providers
+    # Allow login via Twitter, Google, etc. using OmniAuth providers
     enabled: false
 
     # CAUTION!
-    # This allows users to login without having a user account first (default: false)
+    # This allows users to login without having a user account first (default: false).
     # User accounts will be created automatically when authentication was successful.
     allow_single_sign_on: false
-    # Locks down those users until they have been cleared by the admin (default: true)
+    # Locks down those users until they have been cleared by the admin (default: true).
     block_auto_created_users: true
 
     ## Auth providers
-    # Uncomment the lines and fill in the data of the auth provider you want to use
-    # If your favorite auth provider is not listed you can user others:
+    # Uncomment the following lines and fill in the data of the auth provider you want to use
+    # If your favorite auth provider is not listed you can use others:
     # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
     # arguments, followed by optional 'args' which can be either a hash or an array.
@@ -130,7 +129,7 @@ production: &base
     upload_pack: true
     receive_pack: true
 
-    # If you use non-standart ssh port you need to specify it
+    # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
 
   ## Git settings
@@ -138,10 +137,10 @@ production: &base
   # Use the default values unless you really know what you are doing
   git:
     bin_path: /usr/bin/git
-    # Max size of git object like commit, in bytes
-    # This value can be increased if you have a very large commits
+    # Max size of a git object (e.g. a commit), in bytes
+    # This value can be increased if you have very large commits
     max_size: 5242880 # 5.megabytes
-    # Git timeout to read commit, in seconds
+    # Git timeout to read a commit, in seconds
     timeout: 10
 
 development:
