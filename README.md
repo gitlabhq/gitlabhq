@@ -57,39 +57,39 @@ You can either follow the "ordinary" Installation guide to install it on a machi
 
 1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab with:
 
-> sudo service gitlab start
+    sudo service gitlab start
 
 or
 
-> sudo /etc/init.d/gitlab restart
+    sudo /etc/init.d/gitlab restart
 
 2. Start it with [Foreman](https://github.com/ddollar/foreman) in development model
 
-bundle exec foreman start -p 3000
+    bundle exec foreman start -p 3000
 
 3. Start it manually in development mode
 
-> bundle exec rails s
-> bundle exec rake sidekiq:start
+    bundle exec rails s
+    bundle exec rake sidekiq:start
 
 ### Running the tests
 
 * Seed the database with
 
-> bundle exec rake db:setup RAILS_ENV=test
-> bundle exec rake db:seed_fu RAILS_ENV=test
+    bundle exec rake db:setup RAILS_ENV=test
+    bundle exec rake db:seed_fu RAILS_ENV=test
 
 * Run all tests
 
-> bundle exec rake gitlab:test
+    bundle exec rake gitlab:test
 
 * Rspec unit and functional tests
 
-> bundle exec rake spec
+    bundle exec rake spec
 
 * Spinach integration tests
 
-> bundle exec rake spinach
+    bundle exec rake spinach
 
 ### Getting help
 
