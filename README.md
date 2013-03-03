@@ -76,20 +76,20 @@ You can either follow the "ordinary" Installation guide to install it on a machi
 
 * Seed the database with
 
-    bundle exec rake db:setup RAILS_ENV=test
-    bundle exec rake db:seed_fu RAILS_ENV=test
+        bundle exec rake db:setup RAILS_ENV=test
+        bundle exec rake db:seed_fu RAILS_ENV=test
 
 * Run all tests
 
-    bundle exec rake gitlab:test
+        bundle exec rake gitlab:test
 
 * Rspec unit and functional tests
 
-    bundle exec rake spec
+        bundle exec rake spec
 
 * Spinach integration tests
 
-    bundle exec rake spinach
+        bundle exec rake spinach
 
 ### Getting help
 
