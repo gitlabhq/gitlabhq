@@ -55,7 +55,7 @@ You can either follow the "ordinary" Installation guide to install it on a machi
 
 ### Starting
 
-1. The Installation guide contains instructions to download an init script and run that on boot. After configuring the init script you can run
+1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab with:
 
 > sudo service gitlab start
 
@@ -63,14 +63,14 @@ or
 
 > sudo /etc/init.d/gitlab restart
 
-2. Start it with [Foreman](https://github.com/ddollar/foreman)
+2. Start it with [Foreman](https://github.com/ddollar/foreman) in development model
 
 bundle exec foreman start -p 3000
 
-3. Start it manually
+3. Start it manually in development mode
 
 > bundle exec rails s
-> bundle exec rake environment resque:work QUEUE=* VVERBOSE=1
+> bundle exec rake sidekiq:start
 
 ### Running the tests
 
