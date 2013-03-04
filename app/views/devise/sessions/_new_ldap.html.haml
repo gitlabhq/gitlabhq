@@ -1,6 +1,6 @@
 = form_tag(user_omniauth_callback_path(:ldap), :class => "login-box", :id => 'new_ldap_user' ) do
   = image_tag "login-logo.png", :width => "304", :height => "66", :class => "login-logo", :alt => "Login Logo"
-  = text_field_tag :username, nil, {:class => "text top", :placeholder => "LDAP Login"}
+  = text_field_tag :username, nil, {:class => "text top", :placeholder => "LDAP Login", :autofocus => "autofocus"}
   = password_field_tag :password, nil, {:class => "text bottom", :placeholder => "Password"}
   %br/
   = submit_tag "LDAP Sign in", :class => "btn-primary btn"
