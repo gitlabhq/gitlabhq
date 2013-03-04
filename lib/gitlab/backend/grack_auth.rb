@@ -32,7 +32,26 @@ module Grack
         # Authentication with username and password
         login, password = @auth.credentials
         self.user = User.find_by_email(login) || User.find_by_username(login)
-        return false unless user.try(:valid_password?, password)
+        self.user = nil unless user.try(:valid_password?, password)
+
+        # Check user against LDAP backend if user is not authenticated
+        # Only check with valid login and password to prevent anonymous bind results
+        gl = Gitlab.config
+        if user.nil? && gl.ldap.enabled && !login.blank? && !password.blank?
+          require "omniauth-ldap"
+          ldap = OmniAuth::LDAP::Adaptor.new(gl.ldap)
+          ldap_user = ldap.bind_as(
+            filter: Net::LDAP::Filter.eq(ldap.uid, login),
+            size: 1,
+            password: password
+          )
+
+          if ldap_user
+            self.user = User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap')
+          end
+        end
+
+        return false unless user
 
         Gitlab::ShellEnv.set_env(user)
       end
