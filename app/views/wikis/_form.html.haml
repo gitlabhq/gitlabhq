@@ -6,7 +6,7 @@
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
-  .ui-box.ui-box-show
+  .ui-box.ui-box-show(style = 'height:500px;')
     .ui-box-head
       = f.label :title
       .input= f.text_field :title, class: 'span8'
@@ -19,15 +19,15 @@
           %code [Link Title](page-slug)
           \.
 
-    .ui-box-bottom
+    .ui-box-bottom(style = 'height:330px;')
       = f.label :content
-      .input#em_content
+      .epiceditors#em_content(style = 'height:310px;')
       .input= f.text_field :content, :type => "hidden"
       :javascript
         var opts = {
           container: 'em_content',
-          basePath: '/assets/',
-          clientSideStorage: true,
+          basePath: '#{Gitlab.config.gitlab.relative_url_root}',
+          clientSideStorage: false,
           parser: marked,
           file: {
             name: 'epiceditor',
@@ -35,9 +35,9 @@
             autoSave: 100
           },
           theme: {
-            base:'/themes/base/epiceditor.css',
-            preview:'/themes/preview/preview-dark.css',
-            editor:'/themes/editor/epic-dark.css'
+            base:'/assets/themes/base/epiceditor.css',
+            preview:'/assets/themes/preview/github.css',
+            editor:'/assets/themes/editor/epic-light.css'
           },
           focusOnLoad: false,
           shortcut: {

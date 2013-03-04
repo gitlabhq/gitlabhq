@@ -1,0 +1,50 @@
+html, body, iframe, div {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+#epiceditor-utilbar {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px;
+}
+iframe#epiceditor-main-element.epiceditors-main-class{
+    border-style: solid;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: rgb(204,204,204);
+}
+.epiceditors {
+    height: 330px;
+    border:1px solid #000;
+    box-shadow: rgba(0, 0, 0, 0.75) 0 2px 5px;
+    border-radius: 3px;
+    margin-top: 20px;
+}
+
+#epiceditor-utilbar img {
+    display: block;
+    float: left;
+    width: 30px;
+    height: 30px;
+}
+
+#epiceditor-utilbar img:last-child {
+    margin-left: 15px;
+}
+
+#epiceditor-utilbar img:hover {
+    cursor: pointer;
+}
+
+.epiceditor-edit-mode #epiceditor-utilbar img.epiceditor-toggle-edit-btn {
+    display: none;
+}
+
+.epiceditor-preview-mode #epiceditor-utilbar img.epiceditor-toggle-preview-btn {
+    display: none;
+}
