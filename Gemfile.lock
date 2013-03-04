@@ -15,15 +15,6 @@ GIT
       charlock_holmes (~> 0.6.9)
 
 GIT
-  remote: https://github.com/gitlabhq/pygments.rb.git
-  revision: db1da0343adf86b49bdc3add04d02d2e80438d38
-  branch: master
-  specs:
-    pygments.rb (0.3.2)
-      posix-spawn (~> 0.3.6)
-      yajl-ruby (~> 1.1.0)
-
-GIT
   remote: https://github.com/gitlabhq/raphael-rails.git
   revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
   specs:
@@ -163,6 +154,9 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
+    gitlab-pygments.rb (0.3.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
     gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
       net-ldap (~> 0.2.2)
@@ -285,6 +279,9 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.3.1)
+    pygments.rb (0.4.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.1)
       railties (~> 3.1)
@@ -476,6 +473,7 @@ DEPENDENCIES
   github-markup (~> 0.7.4)
   gitlab-grack (~> 1.0.0)
   gitlab-grit (~> 1.0.0)
+  gitlab-pygments.rb (~> 0.3.2)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
@@ -503,7 +501,6 @@ DEPENDENCIES
   pg
   poltergeist (= 1.1.0)
   pry
-  pygments.rb!
   quiet_assets (~> 1.0.1)
   rack-mini-profiler
   rails (= 3.2.12)

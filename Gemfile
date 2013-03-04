@@ -36,7 +36,7 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
 
 # Syntax highlighter
-gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
+gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
 # Language detection
 gem "github-linguist", "~> 2.3.4" , require: "linguist"
