@@ -6,7 +6,7 @@ class ProjectWiki < Spinach::FeatureSteps
 
   Given 'I create Wiki page' do
     fill_in "Title", :with => 'Test title'
-    fill_in "epiceditor-editor", :with => '[link test](test)'
+    fill_in "epiceditor-editor", :with => '[link test](test)...'
     click_on "Save"
   end
 
