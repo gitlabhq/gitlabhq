@@ -21,9 +21,10 @@
     = event.project_name
 
 .event-body
-  %i.icon-comment-alt.event-note-icon
-  %span.event-note
-    = markdown truncate(event.target.note, length: 70)
+  .event-note
+    .md
+      %i.icon-comment-alt.event-note-icon
+      = sanitize(markdown(truncate(event.target.note, length: 150)), tags: %w(a img b pre p))
     - note = event.target
     - if note.attachment.url
       = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do

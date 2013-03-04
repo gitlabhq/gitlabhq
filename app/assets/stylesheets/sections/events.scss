@@ -48,15 +48,13 @@
       color: #666;
     }
     .event-note {
-      padding-top: 5px;
-      padding-left: 5px;
-      display: inline-block;
       color: #555;
+      margin-top: 5px;
+      margin-left: 40px;
 
       .note-file-attach {
-        margin-left: -25px;
-        float: left;
         .note-image-attach {
+          margin-top: 4px;
           margin-left: 0px;
           max-width: 200px;
         }
@@ -66,8 +64,8 @@
       color: #777;
       float: left;
       font-size: 16px;
-      line-height: 18px;
-      margin: 5px;
+      line-height: 16px;
+      margin-right: 5px;
     }
   }
   .avatar {

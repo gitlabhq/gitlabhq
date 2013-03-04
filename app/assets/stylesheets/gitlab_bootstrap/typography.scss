@@ -95,3 +95,7 @@ a:focus {
   .white .highlight pre { background: #f5f5f5; }
   ul { margin: 0 0 9px 25px !important; }
 }
+
+.md {
+  @include md-typography;
+}
