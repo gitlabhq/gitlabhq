@@ -49,6 +49,11 @@
         }
         var editor = new EpicEditor(opts).load();
         editor.importFile('epiceditor',"#{escape_javascript(@wiki[:content])}");
+        $(function(){
+            $('.save-btn').click(function() {
+              $('#wiki_content').val(editor.exportFile('epiceditor'));
+            });
+          });
   .actions
-    = f.submit 'Save', class: "save-btn btn", :onclick=>"$('#wiki_content').val(editor.exportFile('epiceditor'));"
+    = f.submit 'Save', class: "save-btn btn"
     = link_to "Cancel", project_wiki_path(@project, :index), class: "btn btn-cancel"
