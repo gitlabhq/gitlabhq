@@ -12,5 +12,7 @@
         .pull-right
           %pre.dark.tiny git clone #{project.http_url_to_repo}
 
+  - unless @projects.present?
+    %h3.nothing_here_message No public projects
 
 = paginate @projects, theme: "admin"
