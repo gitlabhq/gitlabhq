@@ -1,4 +1,20 @@
 GIT
+  remote: git://github.com/github/gollum.git
+  revision: 544d499ab170c9d9b355b7a0160afc74139ee2a4
+  specs:
+    gollum (2.4.11)
+      github-markdown (~> 0.5.3)
+      github-markup (>= 0.7.5, < 1.0.0)
+      grit (~> 2.5.0)
+      mustache (>= 0.99.4, < 1.0.0)
+      nokogiri (~> 1.5.6)
+      pygments.rb (~> 0.4.2)
+      sanitize (~> 2.0.3)
+      sinatra (~> 1.3.5)
+      stringex (~> 1.5.1)
+      useragent (~> 0.4.16)
+
+GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
   specs:
@@ -139,6 +155,7 @@ GEM
       escape_utils (~> 0.2.3)
       mime-types (~> 1.19)
       pygments.rb (>= 0.2.13)
+    github-markdown (0.5.3)
     github-markup (0.7.5)
     gitlab-grack (1.0.0)
       rack (~> 1.4.1)
@@ -170,6 +187,10 @@ GEM
     grape-entity (0.2.0)
       activesupport
       multi_json (>= 1.3.2)
+    grit (2.5.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
     grit_ext (0.6.2)
       charlock_holmes (~> 0.6.9)
     growl (1.0.3)
@@ -231,7 +252,8 @@ GEM
       sprockets (~> 2.0)
     multi_json (1.6.1)
     multi_xml (0.5.3)
-    multipart-post (1.2.0)
+    multipart-post (1.1.5)
+    mustache (0.99.4)
     mysql2 (0.3.11)
     net-ldap (0.2.2)
     nokogiri (1.5.6)
@@ -365,6 +387,8 @@ GEM
       rspec-mocks (~> 2.12.0)
     rubyntlm (0.1.1)
     rubyzip (0.9.9)
+    sanitize (2.0.3)
+      nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.5)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
@@ -418,6 +442,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     stamp (0.5.0)
     state_machine (1.1.2)
+    stringex (1.5.1)
     temple (0.5.5)
     test_after_commit (0.0.1)
     therubyracer (0.10.2)
@@ -440,6 +465,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    useragent (0.4.16)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -487,6 +513,7 @@ DEPENDENCIES
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
+  gollum (~> 2.4.0)!
   gon
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)

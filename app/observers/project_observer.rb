@@ -18,6 +18,11 @@ class ProjectObserver < ActiveRecord::Observer
       project.path_with_namespace
     )
 
+    GitlabShellWorker.perform_async(
+      :remove_repository,
+      project.path_with_namespace + ".wiki"
+    )
+
     project.satellite.destroy
 
     log_info("Project \"#{project.name}\" was removed")

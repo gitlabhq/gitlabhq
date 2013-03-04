@@ -8,9 +8,12 @@
 
   .ui-box.ui-box-show
     .ui-box-head
-      = f.label :title
-      .input= f.text_field :title, class: 'span8'
-      = f.hidden_field :slug
+      %h3.page_title
+        .edit-wiki-header
+          = @wiki.title.titleize
+          = f.hidden_field :title, value: @wiki.title
+          = f.select :format, options_for_select(GollumWiki::MARKUPS, {selected: @wiki.format}), {}, class: "pull-right input-medium"
+          = f.label :format, class: "pull-right", style: "padding-right: 20px;"
     .ui-box-body
       .input
         %span.cgray
@@ -22,6 +25,9 @@
     .ui-box-bottom
       = f.label :content
       .input= f.text_area :content, class: 'span8 js-gfm-input'
+    .ui-box-bottom
+      = f.label :commit_message
+      .input= f.text_field :message, class: 'span8'
   .actions
     = f.submit 'Save', class: "btn-save btn"
     = link_to "Cancel", project_wiki_path(@project, :index), class: "btn btn-cancel"

@@ -1,23 +1,29 @@
 %h3.page_title
   %span.cgray History for
-  = @wiki_pages.first.title
+  = @wiki.title.titleize
+  = render partial: 'main_links'
 %br
 %table
   %thead
     %tr
       %th Page version
+      %th Author
+      %th Commit Message
       %th Last updated
-      %th Updated by
+      %th Format
   %tbody
-    - @wiki_pages.each_with_index do |wiki_page, i|
+    - @wiki.versions.each do |version|
+      - commit = CommitDecorator.new(version)
       %tr
         %td
-          %strong
-            = link_to project_wiki_path(@project, wiki_page, version_id: wiki_page.id) do
-              Version
-              = @wiki_pages.count - i
+          = link_to project_wiki_path(@project, @wiki, version_id: commit.id) do
+            = commit.short_id
+        %td= commit.author_link avatar: true, size: 24
         %td
-          = wiki_page.created_at.to_s(:short)
-          (#{time_ago_in_words(wiki_page.created_at)}
-          ago)
-        %td= link_to_member(@project, wiki_page.user)
+          = commit.title
+        %td
+          = time_ago_in_words(version.date)
+          ago
+        %td
+          %strong
+            = @wiki.page.wiki.page(@wiki.page.name, commit.id).try(:format)
