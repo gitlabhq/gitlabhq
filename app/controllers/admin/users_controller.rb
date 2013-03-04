@@ -45,7 +45,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unblock
-    if admin_user.update_attribute(:blocked, false)
+    if admin_user.activate
       redirect_to :back, alert: "Successfully unblocked"
     else
       redirect_to :back, alert: "Error occured. User was not unblocked"

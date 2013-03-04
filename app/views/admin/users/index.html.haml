@@ -53,7 +53,7 @@
               &nbsp;
               = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-small"
               - unless user == current_user
-                - if user.blocked
+                - if user.blocked?
                   = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-small success"
                 - else
                   = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
