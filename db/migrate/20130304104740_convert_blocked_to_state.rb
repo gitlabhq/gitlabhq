@@ -8,7 +8,7 @@ class ConvertBlockedToState < ActiveRecord::Migration
 
   def down
     User.transaction do
-      User.where(satate: :blocked).update_all(blocked: :true)
+      User.where(state: :blocked).update_all(blocked: :true)
     end
   end
 end
