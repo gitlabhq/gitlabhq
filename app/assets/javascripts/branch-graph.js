@@ -132,17 +132,31 @@
             });
 
           } else if (c.space < this.commits[i].space) {
-            r.path([
-                "M", x - 5, y,
-                "l-5-2,0,4,5,-2",
-                "L", x - 10, y,
-                "L", x - 15, psy,
-                "L", cx + 5, psy,
-                "L", cx, cy])
-            .attr({
-              stroke: this.colors[this.commits[i].space], 
-              "stroke-width": 2
-            });
+            if (y == psy) {
+                r.path([
+                    "M", x - 5, y,
+                    "l-5,-2,0,4,5,-2",
+                    "L", x - 10, y,
+                    "L", x - 15, psy,
+                    "L", cx + 5, psy,
+                    "L", cx, cy])
+                .attr({
+                  stroke: this.colors[this.commits[i].space], 
+                  "stroke-width": 2
+                });
+            } else {
+                r.path([
+                    "M", x - 3, y - 6,
+                    "l-4,-3,4,-2,0,5",
+                    "L", x - 5, y - 10,
+                    "L", x - 10, psy,
+                    "L", cx + 5, psy,
+                    "L", cx, cy])
+                .attr({
+                  stroke: this.colors[this.commits[i].space], 
+                  "stroke-width": 2
+                });
+            }
           } else {
             r.path([
                 "M", x - 3, y + 6,
@@ -306,15 +320,16 @@
   
 }(this);
 Raphael.fn.commitTooltip = function(x, y, commit){
-  var nameText, idText, messageText
+  var icon, nameText, idText, messageText
     , boxWidth = 300
     , boxHeight = 200;
   
-  nameText = this.text(x, y + 10, commit.author.name);
+  icon = this.image(commit.author.icon, x, y, 20, 20);
+  nameText = this.text(x + 25, y + 10, commit.author.name);
   idText = this.text(x, y + 35, commit.id);
   messageText = this.text(x, y + 50, commit.message);
   
-  textSet = this.set(nameText, idText, messageText).attr({
+  textSet = this.set(icon, nameText, idText, messageText).attr({
     "text-anchor": "start",
     "font": "12px Monaco, monospace"
   });
