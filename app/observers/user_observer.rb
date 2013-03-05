@@ -2,7 +2,7 @@ class UserObserver < ActiveRecord::Observer
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
-    Notify.delay.new_user_email(user.id, user.password)
+    Notify.delay.new_user_email(user.id, user.password) unless Gitlab.config.ldap.enabled
   end
 
   def after_destroy user
