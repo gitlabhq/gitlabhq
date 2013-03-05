@@ -233,7 +233,7 @@ module Gitlab
         end
       end
 
-      # Delete project hook
+      # Deletes project hook. This is an idempotent function.
       #
       # Parameters:
       #   id (required) - The ID of a project
@@ -248,6 +248,7 @@ module Gitlab
           @hook = ProjectHook.find(params[:hook_id])
           @hook.destroy
         rescue
+          # ProjectHook can raise Error if hook_id not found
         end
       end
 
