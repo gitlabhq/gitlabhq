@@ -25,7 +25,7 @@
 #  dark_scheme            :boolean          default(FALSE), not null
 #  theme_id               :integer          default(1), not null
 #  bio                    :string(255)
-#  blocked                :boolean          default(FALSE), not null
+#  state                  :string(255)      default(FALSE), not null
 #  failed_attempts        :integer          default(0)
 #  locked_at              :datetime
 #  extern_uid             :string(255)
@@ -140,7 +140,7 @@ describe User do
 
     it "should block user" do
       user.block
-      user.blocked.should be_true
+      user.blocked?.should be_true
     end
   end
 
@@ -149,7 +149,7 @@ describe User do
       User.delete_all
       @user = create :user
       @admin = create :user, admin: true
-      @blocked = create :user, blocked: true
+      @blocked = create :user, state: :blocked
     end
 
     it { User.filter("admins").should == [@admin] }

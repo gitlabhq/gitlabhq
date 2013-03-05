@@ -61,7 +61,7 @@
         .span4
           - unless @admin_user.new_record?
             .alert.alert-error
-              - if @admin_user.blocked
+              - if @admin_user.blocked?
                 %p This user is blocked and is not able to login to GitLab
                 = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn btn-small"
               - else

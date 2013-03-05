@@ -20,7 +20,7 @@
           %span.label This is you!
         - if @project.namespace_owner == user
           %span.label Owner
-        - elsif user.blocked
+        - elsif user.blocked?
           %span.label Blocked
         - elsif allow_admin
           = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn-tiny btn btn-remove" do

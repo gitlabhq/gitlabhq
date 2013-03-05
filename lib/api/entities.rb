@@ -2,11 +2,11 @@ module Gitlab
   module Entities
     class User < Grape::Entity
       expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
-             :dark_scheme, :theme_id, :blocked, :created_at, :extern_uid, :provider
+             :dark_scheme, :theme_id, :state, :created_at, :extern_uid, :provider
     end
 
     class UserBasic < Grape::Entity
-      expose :id, :username, :email, :name, :blocked, :created_at
+      expose :id, :username, :email, :name, :state, :created_at
     end
 
     class UserLogin < UserBasic
