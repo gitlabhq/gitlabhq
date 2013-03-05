@@ -46,10 +46,35 @@ class User < ActiveRecord::Base
 
   attr_accessor :force_random_password
 
-  # Namespace for personal projects
-  has_one :namespace,                 dependent: :destroy, foreign_key: :owner_id,    class_name: "Namespace", conditions: 'type IS NULL'
+  #
+  # Relations
+  #
 
-  has_many :keys,                     dependent: :destroy
+  # Namespace for personal projects
+  has_one :namespace,
+    dependent: :destroy,
+    foreign_key: :owner_id,
+    class_name: "Namespace",
+    conditions: 'type IS NULL'
+
+  # Profile
+  has_many :keys, dependent: :destroy
+
+  # Groups
+  has_many :groups, class_name: "Group", foreign_key: :owner_id
+
+  # Teams
+  has_many :own_teams,
+    class_name: "UserTeam",
+    foreign_key: :owner_id,
+    dependent: :destroy
+
+  has_many :user_team_user_relationships, dependent: :destroy
+  has_many :user_teams, through: :user_team_user_relationships
+  has_many :user_team_project_relationships, through: :user_teams
+  has_many :team_projects, through: :user_team_project_relationships
+
+  # Projects
   has_many :users_projects,           dependent: :destroy
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
@@ -57,18 +82,16 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+  has_many :projects, through: :users_projects
 
-  has_many :groups,         class_name: "Group", foreign_key: :owner_id
-  has_many :recent_events,  class_name: "Event", foreign_key: :author_id, order: "id DESC"
+  has_many :recent_events,
+    class_name: "Event",
+    foreign_key: :author_id,
+    order: "id DESC"
 
-  has_many :projects,       through: :users_projects
-
-  has_many :user_team_user_relationships, dependent: :destroy
-
-  has_many :user_teams,                      through: :user_team_user_relationships
-  has_many :user_team_project_relationships, through: :user_teams
-  has_many :team_projects,                   through: :user_team_project_relationships
-
+  #
+  # Validations
+  #
   validates :name, presence: true
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }
   validates :bio, length: { within: 0..255 }
