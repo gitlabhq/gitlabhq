@@ -25,7 +25,7 @@
 #  dark_scheme            :boolean          default(FALSE), not null
 #  theme_id               :integer          default(1), not null
 #  bio                    :string(255)
-#  blocked                :boolean          default(FALSE), not null
+#  state                  :string(255)
 #  failed_attempts        :integer          default(0)
 #  locked_at              :datetime
 #  extern_uid             :string(255)
@@ -110,10 +110,27 @@ class User < ActiveRecord::Base
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
+  state_machine :state, initial: :active do
+    after_transition any => :blocked do |user, transition|
+      # Remove user from all projects and
+      user.users_projects.find_each do |membership|
+        return false unless membership.destroy
+      end
+    end
+
+    event :block do
+      transition active: :blocked
+    end
+
+    event :activate do
+      transition blocked: :active
+    end
+  end
+
   # Scopes
   scope :admins, -> { where(admin:  true) }
-  scope :blocked, -> { where(blocked:  true) }
-  scope :active, -> { where(blocked:  false) }
+  scope :blocked, -> { with_state(:blocked) }
+  scope :active, -> { with_state(:active) }
   scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
@@ -281,17 +298,6 @@ class User < ActiveRecord::Base
 
   def cared_merge_requests
     MergeRequest.cared(self)
-  end
-
-  # Remove user from all projects and
-  # set blocked attribute to true
-  def block
-    users_projects.find_each do |membership|
-      return false unless membership.destroy
-    end
-
-    self.blocked = true
-    save
   end
 
   def projects_limit_percent

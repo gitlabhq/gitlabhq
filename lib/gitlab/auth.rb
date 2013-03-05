@@ -41,10 +41,12 @@ module Gitlab
         password_confirmation: password,
         projects_limit: Gitlab.config.gitlab.default_projects_limit,
       }, as: :admin)
-      if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
-        @user.blocked = true
-      end
       @user.save!
+
+      if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
+        @user.block
+      end
+
       @user
     end
 
