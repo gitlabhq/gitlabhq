@@ -1,5 +1,3 @@
-require Rails.root.join('lib', 'gitlab', 'graph', 'json_builder')
-
 class ProjectsController < ProjectResourceController
   skip_before_filter :project, only: [:new, :create]
   skip_before_filter :repository, only: [:new, :create]
