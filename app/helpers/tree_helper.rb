@@ -15,7 +15,10 @@ module TreeHelper
     files.each do |f|
       if f.respond_to?(:url)
         # Object is a Submodule
-        tree += render partial: 'tree/submodule_item', object: f
+        rendering = render partial: 'tree/submodule_item', object: f
+        if rendering.is_a? String
+          tree += rendering	
+        end
       else
         # Object is a Blob
         tree += render partial: 'tree/tree_item', object: f, locals: {type: 'file'}
