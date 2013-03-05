@@ -1,0 +1,9 @@
+New message on the project wall <%= @note.project %>
+
+<%= url_for(wall_project_url(@note.project, anchor: "note_#{@note.id}")) %>
+          
+
+<%= @note.author_name %>
+
+<%= @note.note %>
+

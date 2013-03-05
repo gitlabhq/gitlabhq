@@ -23,7 +23,7 @@
         %span.btn.disabled This is you!
       - if @team.owner == user
         %span.btn.disabled Owner
-      - elsif user.blocked
+      - elsif user.blocked?
         %span.btn.disabled.blocked Blocked
       - elsif allow_admin
         = link_to team_member_path(@team, user), confirm: remove_from_user_team_message(@team, user), method: :delete, class: "btn-tiny btn btn-remove", title: "Remove from team" do

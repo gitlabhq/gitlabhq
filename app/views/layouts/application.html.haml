@@ -2,8 +2,8 @@
 %html{ lang: "en"}
   = render "layouts/head", title: "Dashboard"
   %body{class: "#{app_theme} application"}
-    = render "layouts/flash"
     = render "layouts/head_panel", title: "Dashboard"
+    = render "layouts/flash"
     .container
       %ul.main_menu
         = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do

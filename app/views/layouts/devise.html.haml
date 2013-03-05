@@ -3,4 +3,6 @@
   = render "layouts/head"
   %body.ui_basic.login-page
     = render "layouts/flash"
-    .container= yield
+    .container
+      .content
+        = yield

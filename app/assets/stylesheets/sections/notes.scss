@@ -83,6 +83,7 @@ ul.notes {
       margin-top: -20px;
     }
     .note-body {
+      @include md-typography;
       margin-left: 45px;
     }
     .note-header {

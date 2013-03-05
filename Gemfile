@@ -15,16 +15,18 @@ gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise", "~> 2.1.0"
-gem 'omniauth', "~> 1.1.1"
+gem "devise"
+gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 
-# GITLAB patched libs
-gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '9e98418ce2d654485b967003726aa2706a10060b'
-gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
-gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
+# Extracting information from a git repository
+gem "gitlab-grit", '~> 1.0.0', require: 'grit'
+gem 'grit_ext', '~> 0.6.2'
+
+# Ruby/Rack Git Smart-HTTP Server Handler
+gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
@@ -33,7 +35,7 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
 
 # Syntax highlighter
-gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
+gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
 # Language detection
 gem "github-linguist", "~> 2.3.4" , require: "linguist"
@@ -46,14 +48,17 @@ gem "grape-entity", "~> 0.2.0"
 # based on human-friendly examples
 gem "stamp"
 
+# Enumeration fields
+gem 'enumerize'
+
 # Pagination
 gem "kaminari", "~> 0.14.1"
 
 # HAML
-gem "haml-rails", "~> 0.3.5"
+gem "haml-rails"
 
 # Files attachments
-gem "carrierwave", "~> 0.7.1"
+gem "carrierwave"
 
 # Authorization
 gem "six"
@@ -69,7 +74,7 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "unicorn", "~> 4.4.0"
+gem "unicorn"
 
 # State machine
 gem "state_machine"
@@ -78,12 +83,12 @@ gem "state_machine"
 gem "acts-as-taggable-on", "2.3.3"
 
 # Decorators
-gem "draper", "~> 0.18.0"
+gem "draper"
 
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq', '2.7.3'
+gem 'sidekiq'
 
 # HTTP requests
 gem "httparty"
@@ -113,6 +118,7 @@ group :assets do
   gem 'bootstrap-sass',   "2.2.1.1"
   gem "font-awesome-sass-rails", "~> 3.0.0"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
+  gem "gon"
 end
 
 group :development do
@@ -140,7 +146,7 @@ group :development, :test do
   gem "capybara", '2.0.2'
   gem "pry"
   gem "awesome_print"
-  gem "database_cleaner", ref: "9f898fc50d87a5d51760f9dcf374bf5ffda21baf", git: "https://github.com/bmabey/database_cleaner.git"
+  gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
 

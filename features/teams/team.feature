@@ -20,6 +20,7 @@ Feature: UserTeams
     When I click to "New team" link
     And I submit form with new team info
     Then I should be redirected to new team page
+    Then I should see newly created team
 
   Scenario: I should see team dashboard list
     When I have teams with projects and members

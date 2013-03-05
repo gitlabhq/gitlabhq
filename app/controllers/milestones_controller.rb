@@ -32,7 +32,7 @@ class MilestonesController < ProjectResourceController
 
   def show
     @issues = @milestone.issues
-    @users = UserDecorator.decorate(@milestone.participants)
+    @users = UserDecorator.decorate_collection(@milestone.participants)
     @merge_requests = @milestone.merge_requests
 
     respond_to do |format|

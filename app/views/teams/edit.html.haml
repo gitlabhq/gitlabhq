@@ -12,13 +12,19 @@
         .input
           = f.text_field :name, placeholder: "Ex. OpenSource", class: "xlarge left"
 
+      .clearfix.team-description-holder
+        = f.label :description, "Details"
+        .input
+          = f.text_area :description, maxlength: 250, class: "xlarge js-gfm-input", rows: 4
+
       .clearfix
         = f.label :path do
           Team path is
         .input
           = f.text_field :path, placeholder: "opensource", class: "xlarge left"
+
       .form-actions
-        = f.submit 'Save team changes', class: "btn btn-save"
+        = f.submit 'Save team changes', class: "btn btn-primary"
   .span5
     .ui-box
       %h5.title Remove team
@@ -26,4 +32,3 @@
         %p
           Removed team can not be restored!
         = link_to 'Remove team', team_path(@team), method: :delete, confirm: "You are sure?", class: "btn btn-remove btn-small"
-

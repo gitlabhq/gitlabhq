@@ -2,7 +2,8 @@ class UserObserver < ActiveRecord::Observer
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
-    Notify.delay.new_user_email(user.id, user.password)
+    # Dont email omniauth created users
+    Notify.delay.new_user_email(user.id, user.password) unless user.extern_uid?
   end
 
   def after_destroy user

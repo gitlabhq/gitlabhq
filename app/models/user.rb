@@ -25,7 +25,7 @@
 #  dark_scheme            :boolean          default(FALSE), not null
 #  theme_id               :integer          default(1), not null
 #  bio                    :string(255)
-#  blocked                :boolean          default(FALSE), not null
+#  state                  :string(255)
 #  failed_attempts        :integer          default(0)
 #  locked_at              :datetime
 #  extern_uid             :string(255)
@@ -46,10 +46,35 @@ class User < ActiveRecord::Base
 
   attr_accessor :force_random_password
 
-  # Namespace for personal projects
-  has_one :namespace,                 dependent: :destroy, foreign_key: :owner_id,    class_name: "Namespace", conditions: 'type IS NULL'
+  #
+  # Relations
+  #
 
-  has_many :keys,                     dependent: :destroy
+  # Namespace for personal projects
+  has_one :namespace,
+    dependent: :destroy,
+    foreign_key: :owner_id,
+    class_name: "Namespace",
+    conditions: 'type IS NULL'
+
+  # Profile
+  has_many :keys, dependent: :destroy
+
+  # Groups
+  has_many :groups, class_name: "Group", foreign_key: :owner_id
+
+  # Teams
+  has_many :own_teams,
+    class_name: "UserTeam",
+    foreign_key: :owner_id,
+    dependent: :destroy
+
+  has_many :user_team_user_relationships, dependent: :destroy
+  has_many :user_teams, through: :user_team_user_relationships
+  has_many :user_team_project_relationships, through: :user_teams
+  has_many :team_projects, through: :user_team_project_relationships
+
+  # Projects
   has_many :users_projects,           dependent: :destroy
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
@@ -57,18 +82,16 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+  has_many :projects, through: :users_projects
 
-  has_many :groups,         class_name: "Group", foreign_key: :owner_id
-  has_many :recent_events,  class_name: "Event", foreign_key: :author_id, order: "id DESC"
+  has_many :recent_events,
+    class_name: "Event",
+    foreign_key: :author_id,
+    order: "id DESC"
 
-  has_many :projects,       through: :users_projects
-
-  has_many :user_team_user_relationships, dependent: :destroy
-
-  has_many :user_teams,                      through: :user_team_user_relationships
-  has_many :user_team_project_relationships, through: :user_teams
-  has_many :team_projects,                   through: :user_team_project_relationships
-
+  #
+  # Validations
+  #
   validates :name, presence: true
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }
   validates :bio, length: { within: 0..255 }
@@ -87,10 +110,27 @@ class User < ActiveRecord::Base
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
+  state_machine :state, initial: :active do
+    after_transition any => :blocked do |user, transition|
+      # Remove user from all projects and
+      user.users_projects.find_each do |membership|
+        return false unless membership.destroy
+      end
+    end
+
+    event :block do
+      transition active: :blocked
+    end
+
+    event :activate do
+      transition blocked: :active
+    end
+  end
+
   # Scopes
   scope :admins, -> { where(admin:  true) }
-  scope :blocked, -> { where(blocked:  true) }
-  scope :active, -> { where(blocked:  false) }
+  scope :blocked, -> { with_state(:blocked) }
+  scope :active, -> { with_state(:active) }
   scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
@@ -258,17 +298,6 @@ class User < ActiveRecord::Base
 
   def cared_merge_requests
     MergeRequest.cared(self)
-  end
-
-  # Remove user from all projects and
-  # set blocked attribute to true
-  def block
-    users_projects.find_each do |membership|
-      return false unless membership.destroy
-    end
-
-    self.blocked = true
-    save
   end
 
   def projects_limit_percent

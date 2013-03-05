@@ -2,8 +2,8 @@
 %html{ lang: "en"}
   = render "layouts/head", title: "Admin area"
   %body{class: "#{app_theme} admin"}
-    = render "layouts/flash"
     = render "layouts/head_panel", title: "Admin area"
+    = render "layouts/flash"
     .container
       %ul.main_menu
         = nav_link(controller: :dashboard, html_options: {class: 'home'}) do

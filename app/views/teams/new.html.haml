@@ -9,9 +9,15 @@
       Team name is
     .input
       = f.text_field :name, placeholder: "Ex. Ruby Developers", class: "xxlarge left"
-      &nbsp;
-      = f.submit 'Create team', class: "btn btn-create"
-  %hr
+
+  .clearfix.team-description-holder
+    = f.label :description, "Details"
+    .input
+      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+
+  .form-actions
+    = f.submit 'Create team', class: "btn btn-create"
+
   .padded
     %ul
       %li All created teams are public (users can view who enter into team and which project are assigned for this team)

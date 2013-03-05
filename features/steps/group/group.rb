@@ -28,7 +28,7 @@ class Groups < Spinach::FeatureSteps
 
   Then 'I should see merge requests from this group assigned to me' do
     assigned_to_me(:merge_requests).each do |issue|
-      page.should have_content issue.title
+      page.should have_content issue.title[0..80]
     end
   end
 
@@ -69,12 +69,14 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'submit form with new group info' do
-    fill_in 'group_name', :with => 'Samurai'
+    fill_in 'group_name', with: 'Samurai'
+    fill_in 'group_description', with: 'Tokugawa Shogunate'
     click_button "Create group"
   end
 
   Then 'I should see newly created group' do
     page.should have_content "Samurai"
+    page.should have_content "Tokugawa Shogunate"
     page.should have_content "You will only see events from projects in this group"
   end
 

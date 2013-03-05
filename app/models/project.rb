@@ -11,6 +11,7 @@
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
+#  issues_tracker         :string           not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
@@ -22,11 +23,12 @@ require "grit"
 
 class Project < ActiveRecord::Base
   include Gitolited
+  extend Enumerize
 
   class TransferError < StandardError; end
 
-  attr_accessible :name, :path, :description, :default_branch,
-    :issues_enabled, :wall_enabled, :merge_requests_enabled,
+  attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
+    :issues_enabled, :wall_enabled, :merge_requests_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
@@ -43,7 +45,7 @@ class Project < ActiveRecord::Base
 
   has_many :events,             dependent: :destroy
   has_many :merge_requests,     dependent: :destroy
-  has_many :issues,             dependent: :destroy, order: "state, created_at DESC"
+  has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
   has_many :users_projects,     dependent: :destroy
   has_many :notes,              dependent: :destroy
@@ -72,6 +74,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+  validates :issues_tracker_id, length: { within: 0..255 }
 
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -92,6 +95,8 @@ class Project < ActiveRecord::Base
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
+
+  enumerize :issues_tracker, :in => (Gitlab.config.issues_tracker.keys).append(:gitlab), :default => :gitlab
 
   class << self
     def abandoned
@@ -199,6 +204,22 @@ class Project < ActiveRecord::Base
 
   def issues_labels
     issues.tag_counts_on(:labels)
+  end
+
+  def issue_exists?(issue_id)
+    if used_default_issues_tracker?
+      self.issues.where(id: issue_id).first.present?
+    else
+      true
+    end
+  end
+
+  def used_default_issues_tracker?
+    self.issues_tracker == Project.issues_tracker.default_value
+  end
+
+  def can_have_issues_tracker_id?
+    self.issues_enabled && !self.used_default_issues_tracker?
   end
 
   def services

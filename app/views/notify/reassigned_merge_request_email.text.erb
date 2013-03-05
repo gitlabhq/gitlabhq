@@ -1,0 +1,7 @@
+Reassigned Merge Request <%= @merge_request.id %>
+
+<%= url_for(project_merge_request_url(@merge_request.project, @merge_request)) %>
+          
+
+Assignee changed from <%= @previous_assignee.name %> to <%= @merge_request.assignee_name %>
+

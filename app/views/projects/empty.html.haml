@@ -5,14 +5,14 @@
   %fieldset
     %legend Git global setup:
     %pre.dark
-      = preserve do
+      :preserve
         git config --global user.name "#{current_user.name}"
         git config --global user.email "#{current_user.email}"
 
   %fieldset
     %legend Create Repository
     %pre.dark
-      = preserve do
+      :preserve
         mkdir #{@project.path}
         cd #{@project.path}
         git init
@@ -25,7 +25,7 @@
   %fieldset
     %legend Existing Git Repo?
     %pre.dark
-      = preserve do
+      :preserve
         cd existing_git_repo
         git remote add origin #{@project.url_to_repo}
         git push -u origin master

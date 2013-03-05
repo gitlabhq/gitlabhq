@@ -13,13 +13,15 @@ module TreeHelper
     tree += render partial: 'tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
 
     files.each do |f|
-      if f.respond_to?(:url)
-        # Object is a Submodule
-        tree += render partial: 'tree/submodule_item', object: f
-      else
-        # Object is a Blob
-        tree += render partial: 'tree/tree_item', object: f, locals: {type: 'file'}
-      end
+      html = if f.respond_to?(:url)
+               # Object is a Submodule
+               render partial: 'tree/submodule_item', object: f
+             else
+               # Object is a Blob
+               render partial: 'tree/tree_item', object: f, locals: {type: 'file'}
+             end
+
+      tree += html if html.present?
     end
 
     tree.html_safe

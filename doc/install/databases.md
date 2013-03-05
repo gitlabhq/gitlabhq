@@ -12,7 +12,7 @@ GitLab supports the following databases:
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
     # Login to MySQL
-    $ mysql -u root -p
+    mysql -u root -p
 
     # Create a user for GitLab. (change $password to a real password)
     mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
