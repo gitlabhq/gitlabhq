@@ -144,9 +144,11 @@ class Project < ActiveRecord::Base
     if path
       @repository ||= Repository.new(path_with_namespace, default_branch)
     else
+      Rails.logger.warn("No path for project \"#{group.name}/#{name}\"")
       nil
     end
   rescue Grit::NoSuchPathError
+    Rails.logger.warn("Path \"#{path_with_namespace}\" for project \"#{group.name}/#{name}\" does not exist")
     nil
   end
 
