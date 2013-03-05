@@ -137,7 +137,7 @@ class Repository
     file_path = File.join(storage_path, self.path_with_namespace, file_name)
 
     # Put files into a directory before archiving
-    prefix = self.path_with_namespace + "/"
+    prefix = File.basename(self.path_with_namespace) + "/"
 
     # Create file if not exists
     unless File.exists?(file_path)
