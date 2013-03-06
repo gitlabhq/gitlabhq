@@ -45,11 +45,11 @@
 
 ### Installation
 
-You can either follow the "ordinary" Installation guide to install it on a machine or use the Vagrant virtual machine. The Installation guide is recommended to set up a production server. The Vargrant virtual machine is recommended for development since it makes it much easier to set up all the dependencies for integration testing.
+You can either follow the "ordinary" Installation guide to install it on a machine or use the Vagrant virtual machine. The Installation guide is recommended to set up a production server. The Vagrant virtual machine is recommended for development since it makes it much easier to set up all the dependencies for integration testing.
 
-* [Installation guide for latest stable release](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md)
+* [Installation guide for latest stable release (4.2)](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md)
 
-* [Installation guide for the current master branch](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
+* [Installation guide for the current master branch (5.0)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
 
 * [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm)
 
