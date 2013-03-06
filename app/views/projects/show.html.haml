@@ -1,8 +1,21 @@
 = render "project_head"
 = render 'clone_panel'
 = render "events/event_last_push", event: @last_push
-.content_list= render @events
-.loading.hide
 
+.row
+  .span8
+    .content_list= render @events
+    .loading.hide
+  .span4
+    .ui-box.white
+      .padded
+        %h3.page_title
+          = @project.name
+        %hr
+        - if @project.description.present?
+          %p.light= @project.description
+
+        %h5 Last commit:
+        = render 'last_commit', commit: @last_commit
 :javascript
   $(function(){ Pager.init(20); });
