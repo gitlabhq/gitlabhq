@@ -27,6 +27,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
 
   And 'I switch ref to "stable"' do
     page.select 'stable', :from => 'ref'
+    sleep 2
   end
 
   And 'page should select "stable" in select box' do
@@ -44,6 +45,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
       fill_in 'q', :with => '98d6492'
       find('button').click
     end
+    sleep 2
   end
 
   And 'page should have "v2.1.0" on graph' do
