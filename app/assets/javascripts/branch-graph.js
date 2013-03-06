@@ -117,7 +117,7 @@
       // Draw lines
       for (var j = 0, jj = this.commits[i].parents.length; j < jj; j++) {
         c = this.preparedCommits[this.commits[i].parents[j][0]];
-        ps = this.commits[i].parent_spaces[j];
+        ps = this.commits[i].parents[j][1];
         if (c) {
           var cx = offsetX + 20 * c.time
             , cy = offsetY + 10 * c.space
