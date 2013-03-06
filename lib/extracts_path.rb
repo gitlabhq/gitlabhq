@@ -105,12 +105,6 @@ module ExtractsPath
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
-    # Handle formats embedded in the id
-    if params[:id].ends_with?('.atom')
-      params[:id].gsub!(/\.atom$/, '')
-      request.format = :atom
-    end
-
     path = CGI::unescape(request.fullpath.dup)
 
     @ref, @path = extract_ref(path)
