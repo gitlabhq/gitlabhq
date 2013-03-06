@@ -424,6 +424,49 @@ module Gitlab
         present tree.data
       end
 
+      # Get a specific project's keys
+      #
+      # Example Request:
+      #   GET /projects/:id/keys
+      get ":id/keys" do
+        present user_project.deploy_keys, with: Entities::SSHKey
+      end
+
+      # Get single key owned by currently authenticated user
+      #
+      # Example Request:
+      #   GET /projects/:id/keys/:id
+      get ":id/keys/:key_id" do
+        key = user_project.deploy_keys.find params[:key_id]
+        present key, with: Entities::SSHKey
+      end
+
+      # Add new ssh key to currently authenticated user
+      #
+      # Parameters:
+      #   key (required) - New SSH Key
+      #   title (required) - New SSH Key's title
+      # Example Request:
+      #   POST /projects/:id/keys
+      post ":id/keys" do
+        attrs = attributes_for_keys [:title, :key]
+        key = user_project.deploy_keys.new attrs
+        if key.save
+          present key, with: Entities::SSHKey
+        else
+          not_found!
+        end
+      end
+
+      # Delete existed ssh key of currently authenticated user
+      #
+      # Example Request:
+      #   DELETE /projects/:id/keys/:id
+      delete ":id/keys/:key_id" do
+        key = user_project.deploy_keys.find params[:key_id]
+        key.delete
+      end
+
     end
   end
 end
