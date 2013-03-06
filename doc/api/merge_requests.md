@@ -41,12 +41,6 @@ Parameters:
 ]
 ```
 
-Return values:
-
-+ `200 Ok` on success and the list of merge requests
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
-
 
 ## Get single MR
 
@@ -88,12 +82,6 @@ Parameters:
     }
 }
 ```
-
-Return values:
-
-+ `200 Ok` on success and the single merge request
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or merge request ID not found
 
 
 ## Create MR
@@ -139,14 +127,6 @@ Parameters:
     }
 }
 ```
-
-Return values:
-
-+ `201 Created` on success and the created merge request
-+ `400 Bad Request` if one of the required attributes is missing
-+ `401 Unauthorize` if user is not authenticated or not allowed
-+ `403 Forbidden` if user is not allowed to create a merge request
-+ `404 Not Found` if project ID not found or something else fails
 
 
 ## Update MR
@@ -196,13 +176,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the updated merge request
-+ `401 Unauthorize` if user is not authenticated or not allowed
-+ `403 Forbidden` if user is not allowed to update the merge request
-+ `404 Not Found` if project ID or merge request ID not found
-
 
 ## Post comment to MR
 
@@ -232,10 +205,3 @@ Parameters:
     "note":"text1"
 }
 ```
-
-Return values:
-
-+ `201 Created` on success and the new comment
-+ `400 Bad Request` if the required attribute note is not given
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or merge request ID not found

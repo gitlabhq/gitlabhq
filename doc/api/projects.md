@@ -57,11 +57,6 @@ GET /projects
 ]
 ```
 
-Return values:
-
-+ `200 Ok` on success and a list of projects
-+ `401 Unauthorized` if the user is not allowed to access projects
-
 
 ### Get single project
 
@@ -101,11 +96,6 @@ Parameters:
 }
 ```
 
-Return Values:
-
-+ `200 Ok` if the project with given ID is found and the JSON response
-+ `404 Not Found` if no project with ID found
-
 
 ### Create project
 
@@ -124,13 +114,6 @@ Parameters:
 + `wall_enabled` (optional) - enabled by default
 + `merge_requests_enabled` (optional) - enabled by default
 + `wiki_enabled` (optional) - enabled by default
-
-Return values:
-
-+ `201 Created` on success with the project data (see example at `GET /projects/:id`)
-+ `400 Bad Request` if the required attribute name is not given
-+ `403 Forbidden` if the user is not allowed to create a project, e.g. reached the project limit already
-+ `404 Not Found` if something else fails
 
 
 ## Project access levels
@@ -158,11 +141,6 @@ Parameters:
 
 + `id` (required) - The ID or NAME of a project
 + `query`         - Query string
-
-Return Values:
-
-+ `200 Ok` on success and a list of found team members
-+ `404 Not Found` if project with ID not found
 
 
 ## Team members
@@ -192,11 +170,6 @@ Parameters:
 }
 ```
 
-Return Values:
-
-+ `200 Ok` on success and the team member, see example
-+ `404 Not Found` if either the project or the team member could not be found
-
 
 ### Add project team member
 
@@ -214,14 +187,6 @@ Parameters:
 + `user_id` (required) - The ID of a user to add
 + `access_level` (required) - Project access level
 
-Return Values:
-
-+ `201 Created` on success and the added user is returned, even if the user is already team member
-+ `400 Bad Request` if the required attribute access_level is not given
-+ `401 Unauthorized` if the user is not allowed to add a new team member
-+ `404 Not Found` if a resource can not be found, e.g. project with ID not available
-+ `422 Unprocessable Entity` if an unknown access_level is given
-
 
 ### Edit project team member
 
@@ -237,14 +202,6 @@ Parameters:
 + `user_id` (required) - The ID of a team member
 + `access_level` (required) - Project access level
 
-Return Values:
-
-+ `200 Ok` on succes and the modified team member
-+ `400 Bad Request` if the required attribute access_level is not given
-+ `401 Unauthorized` if the user is not allowed to modify a team member
-+ `404 Not Found` if a resource can not be found, e.g. project with ID not available
-+ `422 Unprocessable Entity` if an unknown access_level is given
-
 
 ### Remove project team member
 
@@ -258,12 +215,6 @@ Parameters:
 
 + `id` (required) - The ID or NAME of a project
 + `user_id` (required) - The ID of a team member
-
-Return Values:
-
-+ `200 Ok` on success
-+ `401 Unauthorized` if user is not allowed to remove a team member
-+ `404 Not Found` if either project or user can not be found
 
 This method is idempotent and can be called multiple times with the same parameters.
 Revoking team membership for a user who is not currently a team member is considered success.
@@ -284,12 +235,6 @@ GET /projects/:id/hooks
 Parameters:
 
 + `id` (required) - The ID or NAME of a project
-
-Return values:
-
-+ `200 Ok` on success with a list of hooks
-+ `401 Unauthorized` if user is not allowed to get list of hooks
-+ `404 Not Found` if project can not be found
 
 
 ### Get project hook
@@ -313,11 +258,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on sucess and the hook with the given ID
-+ `404 Not Found` if the hook can not be found
-
 
 ### Add project hook
 
@@ -331,13 +271,6 @@ Parameters:
 
 + `id` (required) - The ID or NAME of a project
 + `url` (required) - The hook URL
-
-Return values:
-
-+ `201 Created` on success and the newly created hook
-+ `400 Bad Request` if url is not given
-+ `404 Not Found` if project with ID not found
-+ `422 Unprocessable Entity` if the url is invalid (must begin with `http` or `https`)
 
 
 ### Edit project hook
@@ -354,13 +287,6 @@ Parameters:
 + `hook_id` (required) - The ID of a project hook
 + `url` (required) - The hook URL
 
-Return values:
-
-+ `200 Ok` on success and the modified hook (see JSON response above)
-+ `400 Bad Request` if the url attribute is not given
-+ `404 Not Found` if project or hook can not be found
-+ `422 Unprocessable Entity` if the url is invalid (must begin with `http` or `https`)
-
 
 ### Delete project hook
 
@@ -375,12 +301,6 @@ Parameters:
 
 + `id` (required) - The ID or NAME of a project
 + `hook_id` (required) - The ID of hook to delete
-
-Return values:
-
-+ `200 Ok` on succes
-+ `403 Forbidden` if user is not allowed to delete a hook
-+ `404 Not Found` if the project can not be found
 
 Note the JSON response differs if the hook is available or not. If the project hook
 is available before it is returned in the JSON response or an empty response is returned.
@@ -400,11 +320,6 @@ Parameters:
 
 + `id` (required) - The ID of the project
 
-Return values:
-
-+ `200 Ok` on success and a list of branches
-+ `404 Not Found` if project is not found
-
 
 ### List single branch
 
@@ -418,11 +333,6 @@ Parameters:
 
 + `id` (required) - The ID of the project.
 + `branch` (required) - The name of the branch.
-
-Return values:
-
-+ `200 Ok` on success
-+ `404 Not Found` if either project with ID or branch could not be found
 
 
 ### Protect single branch
@@ -438,11 +348,6 @@ Parameters:
 + `id` (required) - The ID of the project.
 + `branch` (required) - The name of the branch.
 
-Return values:
-
-+ `200 Ok` on success
-+ `404 Not Found` if either project or branch could not be found
-
 
 ### Unprotect single branch
 
@@ -457,11 +362,6 @@ Parameters:
 + `id` (required) - The ID of the project.
 + `branch` (required) - The name of the branch.
 
-Return values:
-
-+ `200 Ok` on success
-+ `404 Not Found` if either project or branch could not be found
-
 
 ### List tags
 
@@ -474,11 +374,6 @@ GET /projects/:id/repository/tags
 Parameters:
 
 + `id` (required) - The ID of the project
-
-Return values:
-
-+ `200 Ok` on success and a list of tags
-+ `404 Not Found` if project with id not found
 
 
 ### List commits
@@ -517,11 +412,6 @@ Parameters:
 
 + `id` (required) - The ID of the project
 
-Return values:
-
-+ `200 Ok` on success and the list of snippets
-+ `404 Not Found` if project with id not found
-
 
 ### List single snippet
 
@@ -535,11 +425,6 @@ Parameters:
 
 + `id` (required) - The ID of the project
 + `snippet_id` (required) - The ID of the snippet
-
-Return values:
-
-+ `200 Ok` on success and the project snippet
-+ `404 Not Found` if project ID or snippet ID not found
 
 
 ### Create snippet
@@ -557,13 +442,6 @@ Parameters:
 + `file_name` (required) - The file name of the snippet
 + `code` (required) - The content of the snippet
 + `lifetime` (optional) - The expiration date of a snippet
-
-Return values:
-
-+ `201 Created` on success and the new snippet
-+ `400 Bad Request` if one of the required attributes is missing
-+ `401 Unauthorized` if it is not allowed to post a new snippet
-+ `404 Not Found` if the project ID is not found
 
 
 ### Update snippet
@@ -583,12 +461,6 @@ Parameters:
 + `lifetime` (optional) - The new expiration date of the snippet
 + `code` (optional) - The content of the snippet
 
-Return values:
-
-+ `200 Ok` on success and the content of the updated snippet
-+ `401 Unauthorized` if the user is not allowed to modify the snippet
-+ `404 Not Found` if project ID or snippet ID is not found
-
 
 ## Delete snippet
 
@@ -604,8 +476,3 @@ Paramaters:
 + `id` (required) - The ID of the project
 + `snippet_id` (required) - The ID of the snippet
 
-Return values:
-
-+ `200 Ok` on success, if the snippet got deleted it is returned, if not available then an empty JSON response
-+ `401 Unauthorized` if the user is not allowed to remove the snippet
-+ `404 Not Found` if the project ID not found

@@ -43,11 +43,6 @@ GET /users
 ]
 ```
 
-Return values:
-
-+ `200 Ok` on success and a list with all users
-+ `401 Unauthorized` if user is not allowed to access the list
-
 
 ## Single user
 
@@ -80,12 +75,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the user entry
-+ `401 Unauthorized` if it is not allowed to access the user
-+ `404 Not Found` if the user with ID is not found
-
 
 ## User creation
 
@@ -108,15 +97,6 @@ Parameters:
 + `extern_uid` (optional)     - External UID
 + `provider` (optional)       - External provider name
 + `bio` (optional)            - User's bio
-
-Return values:
-
-+ `201 Created` on success and returns the new user
-+ `400 Bad Request` if one of the required attributes is missing from the request
-+ `401 Unauthorized` if the user is not authorized
-+ `403 Forbidden` if the user is not allowed to create a new user (must be admin)
-+ `404 Not Found` if something else fails
-+ `409 Conflict` if a user with the same email address or username already exists
 
 
 ## User modification
@@ -141,13 +121,6 @@ Parameters:
 + `provider`                          - External provider name
 + `bio`                               - User's bio
 
-Return values:
-
-+ `200 Ok` on success and returns the new user
-+ `401 Unauthorized` if the user is not authorized
-+ `403 Forbidden` if the user is not allowed to create a new user (must be admin)
-+ `404 Not Found` if something else fails
-
 Note, at the moment this method does only return a 404 error, even in cases where a 409 (Conflict) would
 be more appropriate, e.g. when renaming the email address to some exsisting one.
 
@@ -165,13 +138,6 @@ DELETE /users/:id
 Parameters:
 
 + `id` (required) - The ID of the user
-
-Return values:
-
-+ `200 Ok` on success and returns the deleted user
-+ `401 Unauthorized` if the user is not authorized
-+ `403 Forbidden` if the user is not allowed to create a new user (must be admin)
-+ `404 Not Found` if user with ID not found or something else fails
 
 
 ## Current user
@@ -198,12 +164,6 @@ GET /user
   "theme_id": 1
 }
 ```
-
-Return values:
-
-+ `200 Ok` on success and returns the current user
-+ `401 Unauthorized` if the user is not authorized
-+ `404 Not Found` if something else fails
 
 
 ## List SSH keys
@@ -237,12 +197,6 @@ Parameters:
 
 + **none**
 
-Return values:
-
-+ `200 Ok` on success and a list of ssh keys
-+ `401 Unauthorized` if the user is not authenticated
-+ `404 Not Found` if something else fails
-
 
 ## Single SSH key
 
@@ -266,12 +220,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the ssh key with ID
-+ `401 Unauthorized` if it is not allowed to access the user
-+ `404 Not Found` if the ssh key with ID not found
-
 
 ## Add SSH key
 
@@ -285,13 +233,6 @@ Parameters:
 
 + `title` (required) - new SSH Key's title
 + `key` (required) - new SSH key
-
-Return values:
-
-+ `201 Created` on success and the added key
-+ `400 Bad Request` if one of the required attributes is not given
-+ `401 Unauthorized` if user is not authorized to add ssh key
-+ `404 Not Found` if something else fails
 
 
 ## Delete SSH key
@@ -307,8 +248,3 @@ Parameters:
 
 + `id` (required) - SSH key ID
 
-Return values:
-
-+ `200 Ok` on success
-+ `401 Unauthorized` if user is not allowed to delete they key
-+ `404 Not Found` if something else fails

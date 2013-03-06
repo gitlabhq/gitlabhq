@@ -10,11 +10,6 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
-Return values:
-
-+ `200 Ok` on success and a list of project snippets
-+ `401 Unauthorized` if user is not authenticated
-
 
 ## Single snippet
 
@@ -48,12 +43,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the project snippet
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if snippet ID not found
-
 
 ## Create new snippet
 
@@ -70,13 +59,6 @@ Parameters:
 + `file_name` (required) - The name of a snippet file
 + `lifetime` (optional) - The expiration date of a snippet
 + `code` (required) - The content of a snippet
-
-Return values:
-
-+ `201 Created` if snippet was successfully created and the snippet as JSON payload
-+ `400 Bad Request` if one of the required attributes is not given
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
 
 
 ## Edit snippet
@@ -96,12 +78,6 @@ Parameters:
 + `lifetime` (optional) - The expiration date of a snippet
 + `code` (optional) - The content of a snippet
 
-Return values:
-
-+ `200 Ok` on success and the updated project snippet
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
-
 
 ## Delete snippet
 
@@ -117,12 +93,6 @@ Parameters:
 + `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
 
-Return values:
-
-+ `200 Ok` on success and if the snippet was deleted its content
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
-
 
 ## Snippet content
 
@@ -136,9 +106,3 @@ Parameters:
 
 + `id` (required) - The ID of a project
 + `snippet_id` (required) - The ID of a project's snippet
-
-Return values:
-
-+ `200 Ok` on success and the raw snippet
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or snippet ID is not found

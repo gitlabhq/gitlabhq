@@ -10,12 +10,6 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
-Return values:
-
-+ `200 Ok` on success and the list of project milestones
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
-
 
 ## Get single milestone
 
@@ -29,12 +23,6 @@ Parameters:
 
 + `id` (required) - The ID of a project
 + `milestone_id` (required) - The ID of a project milestone
-
-Return values:
-
-+ `200 Ok` on success and the single milestone
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
 
 
 ## Create new milestone
@@ -51,13 +39,6 @@ Parameters:
 + `title` (required) - The title of an milestone
 + `description` (optional) - The description of the milestone
 + `due_date` (optional) - The due date of the milestone
-
-Return values:
-
-+ `201 Created` on success and the new milestone
-+ `400 Bad Request` if the required attribute title is not given
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
 
 
 ## Edit milestone
@@ -77,8 +58,3 @@ Parameters:
 + `due_date` (optional) - The due date of the milestone
 + `closed` (optional) - The status of the milestone
 
-Return values:
-
-+ `200 Ok` on success and the updated milestone
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or milestone ID not found

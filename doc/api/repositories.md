@@ -39,12 +39,6 @@ Parameters:
 ]
 ```
 
-Return values:
-
-+ `200 Ok`on success and a list of repository branches for the project
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project with ID not found
-
 
 ## Get single repository branch
 
@@ -85,13 +79,6 @@ Parameters:
   "protected": true
 }
 ```
-
-Return values:
-
-+ `200 Ok` on success and the repository branch
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if the project ID or branch not found
-
 
 
 ## Protect repository branch
@@ -135,13 +122,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the updated repository branch
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if the the project ID or branch not found
-
-
 
 ## Unprotect repository branch
 
@@ -184,13 +164,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the updated repository branch
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if the project ID or the branch not found
-
-
 
 ## List project repository tags
 
@@ -231,12 +204,6 @@ Parameters:
 ]
 ```
 
-Return values:
-
-+ `200 Ok` on success and the list of repository tags
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if the project ID not found
-
 
 ## List repository commits
 
@@ -274,12 +241,6 @@ Parameters:
 ]
 ```
 
-Return values:
-
-+ `200 Ok` on success and a list of commits
-+ `401 Unauthorized` if the user is not authenticated
-+ `404 Not Found` if the project ID not found
-
 
 ## Raw blob content
 
@@ -294,11 +255,3 @@ Parameters:
 + `id` (required) - The ID of a project
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
-
-Return values:
-
-+ `200 Ok` on success and the raw content of the file
-+ `400 Bad Request` if required attribute filepath is not given
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or sha commit or branch name not found
-

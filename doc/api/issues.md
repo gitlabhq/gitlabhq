@@ -69,13 +69,6 @@ GET /issues
 ]
 ```
 
-Return values:
-
-+ `200 Ok` on success and the list of issues
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if something fails
-
-
 
 ## List project issues
 
@@ -89,12 +82,6 @@ GET /projects/:id/issues
 Parameters:
 
 + `id` (required) - The ID of a project
-
-Return values:
-
-+ `200 Ok` on success and the list of project issues
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
 
 
 ## Single issue
@@ -150,12 +137,6 @@ Parameters:
 }
 ```
 
-Return values:
-
-+ `200 Ok` on success and the list of project issues
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or issue ID not found
-
 
 ## New issue
 
@@ -173,13 +154,6 @@ Parameters:
 + `assignee_id` (optional) - The ID of a user to assign issue
 + `milestone_id` (optional) - The ID of a milestone to assign issue
 + `labels` (optional) - Comma-separated label names for an issue
-
-Return values:
-
-+ `201 Created` on success and the newly created project issue
-+ `400 Bad Request` if the required attribute title is not given
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID not found
 
 
 ## Edit issue
@@ -201,12 +175,6 @@ Parameters:
 + `labels` (optional) - Comma-separated label names for an issue
 + `closed` (optional) - The state of an issue (0 = false, 1 = true)
 
-Return values:
-
-+ `200 Ok` on success and the update project issue
-+ `401 Unauthorized` if user is not authenticated
-+ `404 Not Found` if project ID or issue ID not found
-
 
 ## Delete existing issue (**Deprecated**)
 
@@ -223,6 +191,3 @@ Parameters:
 + `id` (required) - The project ID
 + `issue_id` (required) - The ID of the issue
 
-Return values:
-
-+ `405 Method Not Allowed` is always returned, because the function is deprecated
