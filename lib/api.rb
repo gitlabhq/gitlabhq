@@ -20,5 +20,6 @@ module Gitlab
     mount MergeRequests
     mount Notes
     mount Internal
+    mount SystemHooks
   end
 end
