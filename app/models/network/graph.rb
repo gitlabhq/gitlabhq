@@ -23,13 +23,21 @@ module Network
     # Get commits from repository
     #
     def collect_commits
-      @commits = Grit::Commit.find_all(@repo, nil, {date_order: true, max_count: self.class.max_count, skip: to_commit}).dup
-
-      # Decorate with app/model/network/commit.rb
       refs_cache = build_refs_cache
-      @commits.map! { |commit| Network::Commit.new(commit, refs_cache[commit.id]) }
 
-      @commits
+      Grit::Commit.find_all(
+        @repo,
+        nil,
+        {
+          date_order: true,
+          max_count: self.class.max_count,
+          skip: count_to_display_commit_in_center
+        }
+      )
+      .map do |commit|
+          # Decorate with app/model/network/commit.rb
+          Network::Commit.new(commit, refs_cache[commit.id])
+      end
     end
 
     # Method is adding time and space on the
@@ -40,14 +48,13 @@ module Network
     #
     # @return [Array<TimeDate>] list of commit dates corelated with time on commits
     def index_commits
-      days, times = [], []
+      days = []
       map = {}
 
-      commits.reverse.each_with_index do |c,i|
+      @commits.reverse.each_with_index do |c,i|
         c.time = i
         days[i] = c.committed_date
         map[c.id] = c
-        times[i] = c
       end
 
       @_reserved = {}
@@ -62,17 +69,16 @@ module Network
       end
 
       # find parent spaces for not overlap lines
-      times.each do |c|
-        c.parent_spaces.concat(find_free_parent_spaces(c, map, times))
+      @commits.each do |c|
+        c.parent_spaces.concat(find_free_parent_spaces(c, map))
       end
 
       days
     end
 
     # Skip count that the target commit is displayed in center.
-    def to_commit
-      commits = Grit::Commit.find_all(@repo, nil, {date_order: true})
-      commit_index = commits.index do |c|
+    def count_to_display_commit_in_center
+      commit_index = Grit::Commit.find_all(@repo, nil, {date_order: true}).index do |c|
         c.id == @commit.id
       end
 
@@ -85,7 +91,7 @@ module Network
     end
 
     def commits_sort_by_ref
-      commits.sort do |a,b|
+      @commits.sort do |a,b|
         if include_ref?(a)
           -1
         elsif include_ref?(b)
@@ -108,7 +114,7 @@ module Network
       heads.include?(@ref)
     end
 
-    def find_free_parent_spaces(commit, map, times)
+    def find_free_parent_spaces(commit, map)
       spaces = []
 
       commit.parents.each do |p|
@@ -122,9 +128,9 @@ module Network
                   end
 
           space = if commit.space >= parent.space then
-                    find_free_parent_space(range, parent.space, -1, commit.space, times)
+                    find_free_parent_space(range, parent.space, -1, commit.space)
                   else
-                    find_free_parent_space(range, commit.space, -1, parent.space, times)
+                    find_free_parent_space(range, commit.space, -1, parent.space)
                   end
 
           mark_reserved(range, space)
@@ -135,19 +141,19 @@ module Network
       spaces
     end
 
-    def find_free_parent_space(range, space_base, space_step, space_default, times)
-      if is_overlap?(range, times, space_default) then
+    def find_free_parent_space(range, space_base, space_step, space_default)
+      if is_overlap?(range, space_default) then
         find_free_space(range, space_step, space_base, space_default)
       else
         space_default
       end
     end
 
-    def is_overlap?(range, times, overlap_space)
+    def is_overlap?(range, overlap_space)
       range.each do |i|
         if i != range.first &&
           i != range.last &&
-          times[i].spaces.include?(overlap_space) then
+          @commits[reversed_index(i)].spaces.include?(overlap_space) then
 
           return true;
         end
@@ -281,6 +287,10 @@ module Network
         refs_cache[ref.commit.id] << ref
       end
       refs_cache
+    end
+
+    def reversed_index(index)
+      -index - 1
     end
   end
 end
