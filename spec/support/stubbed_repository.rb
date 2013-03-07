@@ -43,6 +43,11 @@ class GitLabTestRepo < Repository
   def repo
     @repo ||= Grit::Repo.new(Rails.root.join('tmp', 'repositories', 'gitlabhq'))
   end
+
+  # patch repo size (in mb)
+  def size
+    12.45
+  end
 end
 
 module Gitlab
