@@ -2,7 +2,7 @@ require "grit"
 
 module Network
   class Graph
-    attr_reader :days, :commits
+    attr_reader :days, :commits, :map
 
     def self.max_count
       @max_count ||= 650
@@ -61,9 +61,7 @@ module Network
       end
 
       commits_sort_by_ref.each do |commit|
-        if @map.include? commit.id then
-          place_chain(commit)
-        end
+        place_chain(commit)
       end
 
       # find parent spaces for not overlap lines
@@ -115,25 +113,21 @@ module Network
     def find_free_parent_spaces(commit)
       spaces = []
 
-      commit.parents.each do |p|
-        if @map.include?(p.id) then
-          parent = @map[p.id]
+      commit.parents(@map).each do |parent|
+        range = if commit.time < parent.time then
+                  commit.time..parent.time
+                else
+                  parent.time..commit.time
+                end
 
-          range = if commit.time < parent.time then
-                    commit.time..parent.time
-                  else
-                    parent.time..commit.time
-                  end
+        space = if commit.space >= parent.space then
+                  find_free_parent_space(range, parent.space, -1, commit.space)
+                else
+                  find_free_parent_space(range, commit.space, -1, parent.space)
+                end
 
-          space = if commit.space >= parent.space then
-                    find_free_parent_space(range, parent.space, -1, commit.space)
-                  else
-                    find_free_parent_space(range, commit.space, -1, parent.space)
-                  end
-
-          mark_reserved(range, space)
-          spaces << space
-        end
+        mark_reserved(range, space)
+        spaces << space
       end
 
       spaces
@@ -175,25 +169,18 @@ module Network
       leaves.each do |l|
         l.spaces << space
         # Also add space to parent
-        l.parents.each do |p|
-          if @map.include?(p.id)
-            parent = @map[p.id]
-            if parent.space > 0
-              parent.spaces << space
-            end
+        l.parents(@map).each do |parent|
+          if parent.space > 0
+            parent.spaces << space
           end
         end
       end
 
       # and mark it as reserved
       min_time = leaves.last.time
-      parents = leaves.last.parents.collect
-      parents.each do |p|
-        if @map.include? p.id
-          parent = @map[p.id]
-          if parent.time < min_time
-            min_time = parent.time
-          end
+      leaves.last.parents(@map).each do |parent|
+        if parent.time < min_time
+          min_time = parent.time
         end
       end
 
@@ -206,7 +193,7 @@ module Network
 
       # Visit branching chains
       leaves.each do |l|
-        parents = l.parents.collect.select{|p| @map.include? p.id and @map[p.id].space.zero?}
+        parents = l.parents(@map).select{|p| p.space.zero?}
         for p in parents
           place_chain(p, l.time)
         end
@@ -215,13 +202,10 @@ module Network
 
     def get_space_base(leaves)
       space_base = 1
-      if leaves.last.parents.size > 0
-        first_parent = leaves.last.parents.first
-        if @map.include?(first_parent.id)
-          first_p = @map[first_parent.id]
-          if first_p.space > 0
-            space_base = first_p.space
-          end
+      parents = leaves.last.parents(@map)
+      if parents.size > 0
+        if parents.first.space > 0
+          space_base = parents.first.space
         end
       end
       space_base
@@ -266,10 +250,9 @@ module Network
       leaves.push(commit) if commit.space.zero?
 
       while true
-        return leaves if commit.parents.count.zero?
-        return leaves unless @map.include? commit.parents.first.id
+        return leaves if commit.parents(@map).count.zero?
 
-        commit = @map[commit.parents.first.id]
+        commit = commit.parents(@map).first
 
         return leaves unless commit.space.zero?
 

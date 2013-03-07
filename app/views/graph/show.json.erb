@@ -5,7 +5,7 @@
     days: @graph.days.compact.map { |d| [d.day, d.strftime("%b")] },
     commits: @graph.commits.map do |c|
       {
-        parents: parents_zip_spaces(c.parents, c.parent_spaces),
+        parents: parents_zip_spaces(c.parents(@graph.map), c.parent_spaces),
         author: {
           name: c.author.name,
           email: c.author.email,

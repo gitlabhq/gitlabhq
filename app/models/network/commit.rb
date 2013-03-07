@@ -26,5 +26,14 @@ module Network
         0
       end
     end
+
+    def parents(map)
+      @commit.parents.map do |p|
+        if map.include?(p.id)
+          map[p.id]
+        end
+      end
+      .compact
+    end
   end
 end
