@@ -34,13 +34,7 @@ describe Gitlab::API do
 
       context "git pull" do
         it do
-          get(
-            api("/internal/allowed"),
-            ref: 'master',
-            key_id: key.id,
-            project: project.path_with_namespace,
-            action: 'git-upload-pack'
-          )
+          pull(key, project)
 
           response.status.should == 200
           response.body.should == 'true'
@@ -49,13 +43,7 @@ describe Gitlab::API do
 
       context "git push" do
         it do
-          get(
-            api("/internal/allowed"),
-            ref: 'master',
-            key_id: key.id,
-            project: project.path_with_namespace,
-            action: 'git-receive-pack'
-          )
+          push(key, project)
 
           response.status.should == 200
           response.body.should == 'true'
@@ -70,13 +58,7 @@ describe Gitlab::API do
 
       context "git pull" do
         it do
-          get(
-            api("/internal/allowed"),
-            ref: 'master',
-            key_id: key.id,
-            project: project.path_with_namespace,
-            action: 'git-upload-pack'
-          )
+          pull(key, project)
 
           response.status.should == 200
           response.body.should == 'false'
@@ -85,13 +67,7 @@ describe Gitlab::API do
 
       context "git push" do
         it do
-          get(
-            api("/internal/allowed"),
-            ref: 'master',
-            key_id: key.id,
-            project: project.path_with_namespace,
-            action: 'git-receive-pack'
-          )
+          push(key, project)
 
           response.status.should == 200
           response.body.should == 'false'
@@ -99,5 +75,50 @@ describe Gitlab::API do
       end
     end
 
+    context "blocked user" do
+      let(:personal_project) { create(:project, namespace: user.namespace) }
+
+      before do
+        user.block
+      end
+
+      context "git pull" do
+        it do
+          pull(key, personal_project)
+
+          response.status.should == 200
+          response.body.should == 'false'
+        end
+      end
+
+      context "git push" do
+        it do
+          push(key, personal_project)
+
+          response.status.should == 200
+          response.body.should == 'false'
+        end
+      end
+    end
+  end
+
+  def pull(key, project)
+    get(
+      api("/internal/allowed"),
+      ref: 'master',
+      key_id: key.id,
+      project: project.path_with_namespace,
+      action: 'git-upload-pack'
+    )
+  end
+
+  def push(key, project)
+    get(
+      api("/internal/allowed"),
+      ref: 'master',
+      key_id: key.id,
+      project: project.path_with_namespace,
+      action: 'git-receive-pack'
+    )
   end
 end
