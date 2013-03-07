@@ -4,6 +4,15 @@ module Gitlab
     before { authenticate! }
 
     resource :projects do
+      helpers do
+        def handle_project_member_errors(errors)
+          if errors[:project_access].any?
+            error!(errors[:project_access], 422)
+          end
+          not_found!
+        end
+      end
+
       # Get a projects list for authenticated user
       #
       # Example Request:
@@ -33,9 +42,11 @@ module Gitlab
       #   wall_enabled (optional) - enabled by default
       #   merge_requests_enabled (optional) - enabled by default
       #   wiki_enabled (optional) - enabled by default
+      #   namespace_id (optional) - defaults to user namespace
       # Example Request
       #   POST /projects
       post do
+        required_attributes! [:name]
         attrs = attributes_for_keys [:name,
                                     :description,
                                     :default_branch,
@@ -48,6 +59,9 @@ module Gitlab
         if @project.saved?
           present @project, with: Entities::Project
         else
+          if @project.errors[:limit_reached].present?
+            error!(@project.errors[:limit_reached], 403)
+          end
           not_found!
         end
       end
@@ -122,16 +136,22 @@ module Gitlab
       #   POST /projects/:id/members
       post ":id/members" do
         authorize! :admin_project, user_project
-        users_project = user_project.users_projects.new(
-          user_id: params[:user_id],
-          project_access: params[:access_level]
-        )
+        required_attributes! [:user_id, :access_level]
 
-        if users_project.save
-          @member = users_project.user
+        # either the user is already a team member or a new one
+        team_member = user_project.team_member_by_id(params[:user_id])
+        if team_member.nil?
+          team_member = user_project.users_projects.new(
+            user_id: params[:user_id],
+            project_access: params[:access_level]
+          )
+        end
+
+        if team_member.save
+          @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          not_found!
+          handle_project_member_errors team_member.errors
         end
       end
 
@@ -145,13 +165,16 @@ module Gitlab
       #   PUT /projects/:id/members/:user_id
       put ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        users_project = user_project.users_projects.find_by_user_id params[:user_id]
+        required_attributes! [:access_level]
 
-        if users_project.update_attributes(project_access: params[:access_level])
-          @member = users_project.user
+        team_member = user_project.users_projects.find_by_user_id(params[:user_id])
+        not_found!("User can not be found") if team_member.nil?
+
+        if team_member.update_attributes(project_access: params[:access_level])
+          @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
-          not_found!
+          handle_project_member_errors team_member.errors
         end
       end
 
@@ -164,8 +187,12 @@ module Gitlab
       #   DELETE /projects/:id/members/:user_id
       delete ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        users_project = user_project.users_projects.find_by_user_id params[:user_id]
-        users_project.destroy
+        team_member = user_project.users_projects.find_by_user_id(params[:user_id])
+        unless team_member.nil?
+          team_member.destroy
+        else
+          {:message => "Access revoked", :id => params[:user_id].to_i}
+        end
       end
 
       # Get project hooks
@@ -203,11 +230,16 @@ module Gitlab
       #   POST /projects/:id/hooks
       post ":id/hooks" do
         authorize! :admin_project, user_project
+        required_attributes! [:url]
+
         @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
           present @hook, with: Entities::Hook
         else
-          error!({'message' => '404 Not found'}, 404)
+          if @hook.errors[:url].present?
+            error!("Invalid url given", 422)
+          end
+          not_found!
         end
       end
 
@@ -222,27 +254,36 @@ module Gitlab
       put ":id/hooks/:hook_id" do
         @hook = user_project.hooks.find(params[:hook_id])
         authorize! :admin_project, user_project
+        required_attributes! [:url]
 
         attrs = attributes_for_keys [:url]
-
         if @hook.update_attributes attrs
           present @hook, with: Entities::Hook
         else
+          if @hook.errors[:url].present?
+            error!("Invalid url given", 422)
+          end
           not_found!
         end
       end
 
-      # Delete project hook
+      # Deletes project hook. This is an idempotent function.
       #
       # Parameters:
       #   id (required) - The ID of a project
       #   hook_id (required) - The ID of hook to delete
       # Example Request:
       #   DELETE /projects/:id/hooks/:hook_id
-      delete ":id/hooks/:hook_id" do
+      delete ":id/hooks" do
         authorize! :admin_project, user_project
-        @hook = user_project.hooks.find(params[:hook_id])
-        @hook.destroy
+        required_attributes! [:hook_id]
+
+        begin
+          @hook = ProjectHook.find(params[:hook_id])
+          @hook.destroy
+        rescue
+          # ProjectHook can raise Error if hook_id not found
+        end
       end
 
       # Get a project repository branches
@@ -277,6 +318,7 @@ module Gitlab
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ":id/repository/branches/:branch/protect" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found! unless @branch
         protected = user_project.protected_branches.find_by_name(@branch.name)
 
         unless protected
@@ -295,6 +337,7 @@ module Gitlab
       #   PUT /projects/:id/repository/branches/:branch/unprotect
       put ":id/repository/branches/:branch/unprotect" do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found! unless @branch
         protected = user_project.protected_branches.find_by_name(@branch.name)
 
         if protected
@@ -318,7 +361,7 @@ module Gitlab
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   ref_name (optional) - The name of a repository branch or tag
+      #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do
@@ -366,6 +409,7 @@ module Gitlab
       #   POST /projects/:id/snippets
       post ":id/snippets" do
         authorize! :write_snippet, user_project
+        required_attributes! [:title, :file_name, :code]
 
         attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
@@ -414,10 +458,12 @@ module Gitlab
       # Example Request:
       #   DELETE /projects/:id/snippets/:snippet_id
       delete ":id/snippets/:snippet_id" do
-        @snippet = user_project.snippets.find(params[:snippet_id])
-        authorize! :modify_snippet, @snippet
-
-        @snippet.destroy
+        begin
+          @snippet = user_project.snippets.find(params[:snippet_id])
+          authorize! :modify_snippet, user_project
+          @snippet.destroy
+        rescue
+        end
       end
 
       # Get a raw project snippet
@@ -443,6 +489,7 @@ module Gitlab
       #   GET /projects/:id/repository/commits/:sha/blob
       get ":id/repository/commits/:sha/blob" do
         authorize! :download_code, user_project
+        required_attributes! [:filepath]
 
         ref = params[:sha]
 

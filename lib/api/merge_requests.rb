@@ -4,6 +4,16 @@ module Gitlab
     before { authenticate! }
 
     resource :projects do
+      helpers do
+        def handle_merge_request_errors!(errors)
+          if errors[:project_access].any?
+            error!(errors[:project_access], 422)
+          elsif errors[:branch_conflict].any?
+            error!(errors[:branch_conflict], 422)
+          end
+          not_found!
+        end
+      end
 
       # List merge requests
       #
@@ -51,6 +61,7 @@ module Gitlab
       #
       post ":id/merge_requests" do
         authorize! :write_merge_request, user_project
+        required_attributes! [:source_branch, :target_branch, :title]
 
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
         merge_request = user_project.merge_requests.new(attrs)
@@ -60,7 +71,7 @@ module Gitlab
           merge_request.reload_code
           present merge_request, with: Entities::MergeRequest
         else
-          not_found!
+          handle_merge_request_errors! merge_request.errors
         end
       end
 
@@ -88,7 +99,7 @@ module Gitlab
           merge_request.mark_as_unchecked
           present merge_request, with: Entities::MergeRequest
         else
-          not_found!
+          handle_merge_request_errors! merge_request.errors
         end
       end
 
@@ -102,6 +113,8 @@ module Gitlab
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
       post ":id/merge_request/:merge_request_id/comments" do
+        required_attributes! [:note]
+
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
         note.author = current_user

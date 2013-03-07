@@ -31,15 +31,20 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['email'].should == user.email
     end
+
+    it "should return a 401 if unauthenticated" do
+      get api("/users/9998")
+      response.status.should == 401
+    end
+
+    it "should return a 404 error if user id not found" do
+      get api("/users/9999", user)
+      response.status.should == 404
+    end
   end
 
   describe "POST /users" do
     before{ admin }
-
-    it "should not create invalid user" do
-      post api("/users", admin), { email: "invalid email" }
-      response.status.should == 404
-    end
 
     it "should create user" do
       expect {
@@ -47,9 +52,47 @@ describe Gitlab::API do
       }.to change { User.count }.by(1)
     end
 
+    it "should return 201 Created on success" do
+      post api("/users", admin), attributes_for(:user, projects_limit: 3)
+      response.status.should == 201
+    end
+
+    it "should not create user with invalid email" do
+      post api("/users", admin), { email: "invalid email", password: 'password' }
+      response.status.should == 400
+    end
+
+    it "should return 400 error if password not given" do
+      post api("/users", admin), { email: 'test@example.com' }
+      response.status.should == 400
+    end
+
+    it "should return 400 error if email not given" do
+      post api("/users", admin), { password: 'pass1234' }
+      response.status.should == 400
+    end
+
     it "shouldn't available for non admin users" do
       post api("/users", user), attributes_for(:user)
       response.status.should == 403
+    end
+
+    context "with existing user" do
+      before { post api("/users", admin), { email: 'test@example.com', password: 'password', username: 'test' } }
+
+      it "should not create user with same email" do
+        expect {
+          post api("/users", admin), { email: 'test@example.com', password: 'password' }
+        }.to change { User.count }.by(0)
+      end
+
+      it "should return 409 conflict error if user with email exists" do
+        post api("/users", admin), { email: 'test@example.com', password: 'password' }
+      end
+
+      it "should return 409 conflict error if same username exists" do
+        post api("/users", admin), { email: 'foo@example.com', password: 'pass', username: 'test' }
+      end
     end
   end
 
@@ -81,7 +124,7 @@ describe Gitlab::API do
   describe "PUT /users/:id" do
     before { admin }
 
-    it "should update user" do
+    it "should update user with new bio" do
       put api("/users/#{user.id}", admin), {bio: 'new test bio'}
       response.status.should == 200
       json_response['bio'].should == 'new test bio'
@@ -102,6 +145,25 @@ describe Gitlab::API do
     it "should return 404 for non-existing user" do
       put api("/users/999999", admin), {bio: 'update should fail'}
       response.status.should == 404
+    end
+
+    context "with existing user" do
+      before {
+        post api("/users", admin), { email: 'test@example.com', password: 'password', username: 'test', name: 'test' }
+        post api("/users", admin), { email: 'foo@bar.com', password: 'password', username: 'john', name: 'john' }
+        @user_id = User.all.last.id
+      }
+
+#      it "should return 409 conflict error if email address exists" do
+#        put api("/users/#{@user_id}", admin), { email: 'test@example.com' }
+#        response.status.should == 409
+#      end
+#
+#      it "should return 409 conflict error if username taken" do
+#        @user_id = User.all.last.id
+#        put api("/users/#{@user_id}", admin), { username: 'test' }
+#        response.status.should == 409
+#      end
     end
   end
 
@@ -131,6 +193,11 @@ describe Gitlab::API do
       json_response['email'].should == user.email
     end
 
+    it "should not delete for unauthenticated user" do
+      delete api("/users/#{user.id}")
+      response.status.should == 401
+    end
+
     it "shouldn't available for non admin users" do
       delete api("/users/#{user.id}", user)
       response.status.should == 403
@@ -147,6 +214,11 @@ describe Gitlab::API do
       get api("/user", user)
       response.status.should == 200
       json_response['email'].should == user.email
+    end
+
+    it "should return 401 error if user is unauthenticated" do
+      get api("/user")
+      response.status.should == 401
     end
   end
 
@@ -183,19 +255,38 @@ describe Gitlab::API do
       get api("/user/keys/42", user)
       response.status.should == 404
     end
+
+    it "should return 404 error if admin accesses user's ssh key" do
+      user.keys << key
+      user.save
+      admin
+      get api("/user/keys/#{key.id}", admin)
+      response.status.should == 404
+    end
   end
 
   describe "POST /user/keys" do
-    it "should not create invalid ssh key" do
-      post api("/user/keys", user), { title: "invalid key" }
-      response.status.should == 404
-    end
-
     it "should create ssh key" do
       key_attrs = attributes_for :key
       expect {
         post api("/user/keys", user), key_attrs
       }.to change{ user.keys.count }.by(1)
+      response.status.should == 201
+    end
+
+    it "should return a 401 error if unauthorized" do
+      post api("/user/keys"), title: 'some title', key: 'some key'
+      response.status.should == 401
+    end
+
+    it "should not create ssh key without key" do
+      post api("/user/keys", user), title: 'title'
+      response.status.should == 400
+    end
+
+    it "should not create ssh key without title" do
+      post api("/user/keys", user), key: "somekey"
+      response.status.should == 400
     end
   end
 
@@ -206,11 +297,19 @@ describe Gitlab::API do
       expect {
         delete api("/user/keys/#{key.id}", user)
       }.to change{user.keys.count}.by(-1)
+      response.status.should == 200
     end
 
-    it "should return 404 Not Found within invalid ID" do
+    it "should return sucess if key ID not found" do
       delete api("/user/keys/42", user)
-      response.status.should == 404
+      response.status.should == 200
+    end
+
+    it "should return 401 error if unauthorized" do
+      user.keys << key
+      user.save
+      delete api("/user/keys/#{key.id}")
+      response.status.should == 401
     end
   end
 end

@@ -1,4 +1,4 @@
-## Project repository branches
+## List repository branches
 
 Get a list of repository branches from a project, sorted by name alphabetically.
 
@@ -39,7 +39,8 @@ Parameters:
 ]
 ```
 
-## Project repository branch
+
+## Get single repository branch
 
 Get a single project repository branch.
 
@@ -79,12 +80,11 @@ Parameters:
 }
 ```
 
-Will return status code `200` on success or `404 Not found` if the branch is not available.
 
+## Protect repository branch
 
-## Protect a project repository branch
-
-Protect a single project repository branch.
+Protects a single project repository branch. This is an idempotent function, protecting an already
+protected repository branch still returns a `200 Ok` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/protect
@@ -122,9 +122,11 @@ Parameters:
 }
 ```
 
-## Unprotect a project repository branch
 
-Unprotect a single project repository branch.
+## Unprotect repository branch
+
+Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
+unprotected repository branch still returns a `200 Ok` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/unprotect
@@ -162,7 +164,8 @@ Parameters:
 }
 ```
 
-## Project repository tags
+
+## List project repository tags
 
 Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
 
@@ -201,7 +204,8 @@ Parameters:
 ]
 ```
 
-## Project repository commits
+
+## List repository commits
 
 Get a list of repository commits in a project.
 
@@ -212,7 +216,7 @@ GET /projects/:id/repository/commits
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `ref_name` (optional) - The name of a repository branch or tag
++ `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
 
 ```json
 [
@@ -235,6 +239,7 @@ Parameters:
 ]
 ```
 
+
 ## Raw blob content
 
 Get the raw file contents for a file.
@@ -248,5 +253,3 @@ Parameters:
 + `id` (required) - The ID of a project
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
-
-Will return the raw file contents.

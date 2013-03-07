@@ -48,6 +48,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
+        required_attributes! [:title]
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
         attrs[:label_list] = params[:labels] if params[:labels].present?
         @issue = user_project.issues.new attrs

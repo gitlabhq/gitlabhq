@@ -35,5 +35,15 @@ describe Gitlab::API do
         json_response['private_token'].should be_nil
       end
     end
+
+    context "when empty name" do
+      it "should return authentication error" do
+        post api("/session"), password: user.password
+        response.status.should == 401
+
+        json_response['email'].should be_nil
+        json_response['private_token'].should be_nil
+      end
+    end
   end
 end
