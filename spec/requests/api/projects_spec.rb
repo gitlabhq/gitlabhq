@@ -6,6 +6,7 @@ describe Gitlab::API do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
+  let(:admin) { create(:admin) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
@@ -84,6 +85,46 @@ describe Gitlab::API do
       })
 
       post api("/projects", user), project
+
+      project.each_pair do |k,v|
+        next if k == :path
+        json_response[k.to_s].should == v
+      end
+    end
+  end
+
+  describe "POST /projects/user/:id" do
+    before { admin }
+
+    it "should create new project without path" do
+      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
+    end
+
+    it "should not create new project without name" do
+      expect { post api("/projects/user/#{user.id}", admin) }.to_not change {Project.count}
+    end
+
+    it "should respond with 201 on success" do
+      post api("/projects/user/#{user.id}", admin), name: 'foo'
+      response.status.should == 201
+    end
+
+    it "should respond with 404 on failure" do
+      post api("/projects/user/#{user.id}", admin)
+      response.status.should == 404
+    end
+
+    it "should assign attributes to project" do
+      project = attributes_for(:project, {
+        description: Faker::Lorem.sentence,
+        default_branch: 'stable',
+        issues_enabled: false,
+        wall_enabled: false,
+        merge_requests_enabled: false,
+        wiki_enabled: false
+      })
+
+      post api("/projects/user/#{user.id}", admin), project
 
       project.each_pair do |k,v|
         next if k == :path

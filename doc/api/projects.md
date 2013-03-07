@@ -113,6 +113,28 @@ Parameters:
 Will return created project with status `201 Created` on success, or `404 Not
 found` on fail.
 
+## Create project for user
+
+Create new project owned by user. Available only for admin
+
+```
+POST /projects/user/:user_id
+```
+
+Parameters:
+
++ `user_id` (required) - user_id of owner
++ `name` (required) - new project name
++ `description` (optional) - short project description
++ `default_branch` (optional) - 'master' by default
++ `issues_enabled` (optional) - enabled by default
++ `wall_enabled` (optional) - enabled by default
++ `merge_requests_enabled` (optional) - enabled by default
++ `wiki_enabled` (optional) - enabled by default
+
+Will return created project with status `201 Created` on success, or `404 Not
+found` on fail.
+
 ## List project team members
 
 Get a list of project team members.

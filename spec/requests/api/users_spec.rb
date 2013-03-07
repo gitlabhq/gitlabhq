@@ -105,6 +105,22 @@ describe Gitlab::API do
     end
   end
 
+  describe "POST /users/:id/keys" do
+    before { admin }
+
+    it "should not create invalid ssh key" do
+      post api("/users/#{user.id}/keys", admin), { title: "invalid key" }
+      response.status.should == 404
+    end
+
+    it "should create ssh key" do
+      key_attrs = attributes_for :key
+      expect {
+        post api("/users/#{user.id}/keys", admin), key_attrs
+      }.to change{ user.keys.count }.by(1)
+    end
+  end
+
   describe "DELETE /users/:id" do
     before { admin }
 
