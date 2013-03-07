@@ -44,33 +44,31 @@ module Network
     # list of commits. As well as returns date list
     # corelated with time set on commits.
     #
-    # @param [Array<Graph::Commit>] commits to index
-    #
     # @return [Array<TimeDate>] list of commit dates corelated with time on commits
     def index_commits
       days = []
-      map = {}
+      @map = {}
 
       @commits.reverse.each_with_index do |c,i|
         c.time = i
         days[i] = c.committed_date
-        map[c.id] = c
+        @map[c.id] = c
       end
 
-      @_reserved = {}
+      @reserved = {}
       days.each_index do |i|
-        @_reserved[i] = []
+        @reserved[i] = []
       end
 
       commits_sort_by_ref.each do |commit|
-        if map.include? commit.id then
-          place_chain(map[commit.id], map)
+        if @map.include? commit.id then
+          place_chain(commit)
         end
       end
 
       # find parent spaces for not overlap lines
       @commits.each do |c|
-        c.parent_spaces.concat(find_free_parent_spaces(c, map))
+        c.parent_spaces.concat(find_free_parent_spaces(c))
       end
 
       days
@@ -114,12 +112,12 @@ module Network
       heads.include?(@ref)
     end
 
-    def find_free_parent_spaces(commit, map)
+    def find_free_parent_spaces(commit)
       spaces = []
 
       commit.parents.each do |p|
-        if map.include?(p.id) then
-          parent = map[p.id]
+        if @map.include?(p.id) then
+          parent = @map[p.id]
 
           range = if commit.time < parent.time then
                     commit.time..parent.time
@@ -164,23 +162,22 @@ module Network
 
     # Add space mark on commit and its parents
     #
-    # @param [Graph::Commit] the commit object.
-    # @param [Hash<String,Graph::Commit>] map of commits
-    def place_chain(commit, map, parent_time = nil)
-      leaves = take_left_leaves(commit, map)
+    # @param [::Commit] the commit object.
+    def place_chain(commit, parent_time = nil)
+      leaves = take_left_leaves(commit)
       if leaves.empty?
         return
       end
 
       time_range = leaves.last.time..leaves.first.time
-      space_base = get_space_base(leaves, map)
+      space_base = get_space_base(leaves)
       space = find_free_space(time_range, 2, space_base)
       leaves.each do |l|
         l.spaces << space
         # Also add space to parent
         l.parents.each do |p|
-          if map.include?(p.id)
-            parent = map[p.id]
+          if @map.include?(p.id)
+            parent = @map[p.id]
             if parent.space > 0
               parent.spaces << space
             end
@@ -192,8 +189,8 @@ module Network
       min_time = leaves.last.time
       parents = leaves.last.parents.collect
       parents.each do |p|
-        if map.include? p.id
-          parent = map[p.id]
+        if @map.include? p.id
+          parent = @map[p.id]
           if parent.time < min_time
             min_time = parent.time
           end
@@ -209,19 +206,19 @@ module Network
 
       # Visit branching chains
       leaves.each do |l|
-        parents = l.parents.collect.select{|p| map.include? p.id and map[p.id].space.zero?}
+        parents = l.parents.collect.select{|p| @map.include? p.id and @map[p.id].space.zero?}
         for p in parents
-          place_chain(map[p.id], map, l.time)
+          place_chain(p, l.time)
         end
       end
     end
 
-    def get_space_base(leaves, map)
+    def get_space_base(leaves)
       space_base = 1
       if leaves.last.parents.size > 0
         first_parent = leaves.last.parents.first
-        if map.include?(first_parent.id)
-          first_p = map[first_parent.id]
+        if @map.include?(first_parent.id)
+          first_p = @map[first_parent.id]
           if first_p.space > 0
             space_base = first_p.space
           end
@@ -232,7 +229,7 @@ module Network
 
     def mark_reserved(time_range, space)
       for day in time_range
-        @_reserved[day].push(space)
+        @reserved[day].push(space)
       end
     end
 
@@ -241,7 +238,7 @@ module Network
 
       reserved = []
       for day in time_range
-        reserved += @_reserved[day]
+        reserved += @reserved[day]
       end
       reserved.uniq!
 
@@ -260,19 +257,19 @@ module Network
     # Takes most left subtree branch of commits
     # which don't have space mark yet.
     #
-    # @param [Graph::Commit] the commit object.
-    # @param [Hash<String,Graph::Commit>] map of commits
+    # @param [::Commit] the commit object.
     #
-    # @return [Array<Graph::Commit>] list of branch commits
-    def take_left_leaves(commit, map)
+    # @return [Array<Network::Commit>] list of branch commits
+    def take_left_leaves(raw_commit)
+      commit = @map[raw_commit.id]
       leaves = []
       leaves.push(commit) if commit.space.zero?
 
       while true
         return leaves if commit.parents.count.zero?
-        return leaves unless map.include? commit.parents.first.id
+        return leaves unless @map.include? commit.parents.first.id
 
-        commit = map[commit.parents.first.id]
+        commit = @map[commit.parents.first.id]
 
         return leaves unless commit.space.zero?
 
