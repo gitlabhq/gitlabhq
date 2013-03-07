@@ -288,7 +288,7 @@ a different host, you can configure its connection string via the
 `config/resque.yml` file.
 
     # example
-    production: redis.example.tld:6379
+    production: redis://redis.example.tld:6379
 
 ## Custom SSH Connection
 
