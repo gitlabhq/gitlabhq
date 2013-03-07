@@ -220,6 +220,23 @@ Parameters:
 Will return created key with status `201 Created` on success, or `404 Not
 found` on fail.
 
+## Add SSH key for user
+
+Create new key owned by specified user. Available only for admin
+
+```
+POST /users/:id/keys
+```
+
+Parameters:
+
++ `id` (required) - id of specified user
++ `title` (required) - new SSH Key's title
++ `key` (required) - new SSH key
+
+Will return created key with status `201 Created` on success, or `404 Not
+found` on fail.
+
 ## Delete SSH key
 
 Delete key owned by currently authenticated user

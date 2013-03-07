@@ -43,3 +43,14 @@ Parameters:
 
 Will return created group with status `201 Created` on success, or `404 Not found` on fail.
 
+## Transfer project to group
+
+Transfer a project to the Group namespace. Available only for admin
+
+```
+POST  /groups/:id/projects/:project_id
+```
+
+Parameters:
++ `id` (required) - The ID of a group
++ `project_id (required) - The ID of a project
