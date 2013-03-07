@@ -1,4 +1,4 @@
-## List notes
+## Wall
 
 ### List project wall notes
 
@@ -30,50 +30,10 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
-### List merge request notes
 
-Get a list of merge request notes.
+### Get single wall note
 
-```
-GET /projects/:id/merge_requests/:merge_request_id/notes
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `merge_request_id` (required) - The ID of an merge request
-
-### List issue notes
-
-Get a list of issue notes.
-
-```
-GET /projects/:id/issues/:issue_id/notes
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `issue_id` (required) - The ID of an issue
-
-### List snippet notes
-
-Get a list of snippet notes.
-
-```
-GET /projects/:id/snippets/:snippet_id/notes
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `snippet_id` (required) - The ID of a snippet
-
-## Single note
-
-### Single wall note
-
-Get a wall note.
+Returns a single wall note.
 
 ```
 GET /projects/:id/notes/:note_id
@@ -84,39 +44,10 @@ Parameters:
 + `id` (required) - The ID of a project
 + `note_id` (required) - The ID of a wall note
 
-### Single issue note
 
-Get an issue note.
+### Create new wall note
 
-```
-GET /projects/:id/issues/:issue_id/:notes/:note_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `issue_id` (required) - The ID of a project issue
-+ `note_id` (required) - The ID of an issue note
-
-### Single snippet note
-
-Get a snippet note.
-
-```
-GET /projects/:id/issues/:snippet_id/:notes/:note_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `snippet_id` (required) - The ID of a project snippet
-+ `note_id` (required) - The ID of an snippet note
-
-## New note
-
-### New wall note
-
-Create a new wall note.
+Creates a new wall note.
 
 ```
 POST /projects/:id/notes
@@ -127,12 +58,41 @@ Parameters:
 + `id` (required) - The ID of a project
 + `body` (required) - The content of a note
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+
+## Issues
+
+### List project issue notes
+
+Gets a list of all notes for a single issue.
+
+```
+GET /projects/:id/issues/:issue_id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `issue_id` (required) - The ID of an issue
 
 
-### New issue note
+### Get single issue note
 
-Create a new issue note.
+Returns a single note for a specific project issue
+
+```
+GET /projects/:id/issues/:issue_id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `issue_id` (required) - The ID of a project issue
++ `note_id` (required) - The ID of an issue note
+
+
+### Create new issue note
+
+Creates a new note to a single project issue.
 
 ```
 POST /projects/:id/issues/:issue_id/notes
@@ -144,11 +104,41 @@ Parameters:
 + `issue_id` (required) - The ID of an issue
 + `body` (required) - The content of a note
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
 
-### New snippet note
+## Snippets
 
-Create a new snippet note.
+### List all snippet notes
+
+Gets a list of all notes for a single snippet. Snippet notes are comments users can post to a snippet.
+
+```
+GET /projects/:id/snippets/:snippet_id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `snippet_id` (required) - The ID of a project snippet
+
+
+### Get single snippet note
+
+Returns a single note for a given snippet.
+
+```
+GET /projects/:id/snippets/:snippet_id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `snippet_id` (required) - The ID of a project snippet
++ `note_id` (required) - The ID of an snippet note
+
+
+### Create new snippet note
+
+Creates a new note for a single snippet. Snippet notes are comments users can post to a snippet.
 
 ```
 POST /projects/:id/snippets/:snippet_id/notes
@@ -160,4 +150,49 @@ Parameters:
 + `snippet_id` (required) - The ID of an snippet
 + `body` (required) - The content of a note
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
+
+## Merge Requests
+
+### List all merge request notes
+
+Gets a list of all notes for a single merge request.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge_request_id` (required) - The ID of a project merge request
+
+
+### Get single merge request note
+
+Returns a single note for a given merge request.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge_request_id` (required) - The ID of a project merge request
++ `note_id` (required) - The ID of a merge request note
+
+
+### Create new merge request note
+
+Creates a new note for a single merge request.
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/notes
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge_request_id` (required) - The ID of a merge request
++ `body` (required) - The content of a note
+

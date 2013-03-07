@@ -20,12 +20,14 @@ module Gitlab
       # Create group. Available only for admin
       #
       # Parameters:
-      #   name (required)                   - Name
-      #   path (required)                   - Path
+      #   name (required) - The name of the group
+      #   path (required) - The path of the group
       # Example Request:
       #   POST /groups
       post do
         authenticated_as_admin!
+        required_attributes! [:name, :path]
+
         attrs = attributes_for_keys [:name, :path]
         @group = Group.new(attrs)
         @group.owner = current_user

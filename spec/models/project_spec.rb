@@ -65,7 +65,7 @@ describe Project do
     it "should not allow new projects beyond user limits" do
       project.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 1))
       project.should_not be_valid
-      project.errors[:base].first.should match(/Your own projects limit is 1/)
+      project.errors[:limit_reached].first.should match(/Your own projects limit is 1/)
     end
   end
 

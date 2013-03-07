@@ -16,6 +16,11 @@ describe Gitlab::API do
       json_response.should be_an Array
       json_response.first['title'].should == milestone.title
     end
+
+    it "should return a 401 error if user not authenticated" do
+      get api("/projects/#{project.id}/milestones")
+      response.status.should == 401
+    end
   end
 
   describe "GET /projects/:id/milestones/:milestone_id" do
@@ -24,15 +29,37 @@ describe Gitlab::API do
       response.status.should == 200
       json_response['title'].should == milestone.title
     end
+
+    it "should return 401 error if user not authenticated" do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}")
+      response.status.should == 401
+    end
+
+    it "should return a 404 error if milestone id not found" do
+      get api("/projects/#{project.id}/milestones/1234", user)
+      response.status.should == 404
+    end
   end
 
   describe "POST /projects/:id/milestones" do
     it "should create a new project milestone" do
-      post api("/projects/#{project.id}/milestones", user),
-        title: 'new milestone'
+      post api("/projects/#{project.id}/milestones", user), title: 'new milestone'
       response.status.should == 201
       json_response['title'].should == 'new milestone'
       json_response['description'].should be_nil
+    end
+
+    it "should create a new project milestone with description and due date" do
+      post api("/projects/#{project.id}/milestones", user),
+        title: 'new milestone', description: 'release', due_date: '2013-03-02'
+      response.status.should == 201
+      json_response['description'].should == 'release'
+      json_response['due_date'].should == '2013-03-02'
+    end
+
+    it "should return a 400 error if title is missing" do
+      post api("/projects/#{project.id}/milestones", user)
+      response.status.should == 400
     end
   end
 
@@ -42,6 +69,12 @@ describe Gitlab::API do
         title: 'updated title'
       response.status.should == 200
       json_response['title'].should == 'updated title'
+    end
+
+    it "should return a 404 error if milestone id not found" do
+      put api("/projects/#{project.id}/milestones/1234", user),
+        title: 'updated title'
+      response.status.should == 404
     end
   end
 

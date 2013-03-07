@@ -1,6 +1,7 @@
 ## List merge requests
 
-Get all MR for this project.
+Get all merge requests for this project. This function takes pagination parameters
+`page` and `per_page` to restrict the list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
@@ -40,9 +41,10 @@ Parameters:
 ]
 ```
 
-## Show MR
 
-Show information about MR.
+## Get single MR
+
+Shows information about a single merge request.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id
@@ -84,7 +86,7 @@ Parameters:
 
 ## Create MR
 
-Create MR.
+Creates a new merge request.
 
 ```
 POST /projects/:id/merge_requests
@@ -126,9 +128,10 @@ Parameters:
 }
 ```
 
+
 ## Update MR
 
-Update MR. You can change branches, title, or even close the MR.
+Updates an existing merge request. You can change branches, title, or even close the MR.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -172,9 +175,11 @@ Parameters:
     }
 }
 ```
+
+
 ## Post comment to MR
 
-Post comment to MR
+Adds a comment to a merge request.
 
 ```
 POST /projects/:id/merge_request/:merge_request_id/comments
@@ -183,10 +188,9 @@ POST /projects/:id/merge_request/:merge_request_id/comments
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `merge_request_id` (required) - ID of MR
++ `merge_request_id` (required) - ID of merge request
 + `note` (required) - Text of comment
 
-Will return created note with status `201 Created` on success, or `404 Not found` on fail.
 
 ```json
 {
