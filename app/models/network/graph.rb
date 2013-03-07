@@ -2,7 +2,7 @@ require "grit"
 
 module Network
   class Graph
-    attr_accessor :days, :commits, :ref_cache, :repo
+    attr_reader :days, :commits
 
     def self.max_count
       @max_count ||= 650
@@ -13,7 +13,6 @@ module Network
       @ref = ref
       @commit = commit
       @repo = project.repo
-      @ref_cache = {}
 
       @commits = collect_commits
       @days = index_commits
@@ -24,17 +23,11 @@ module Network
     # Get commits from repository
     #
     def collect_commits
-
-      @commits = Grit::Commit.find_all(repo, nil, {date_order: true, max_count: self.class.max_count, skip: to_commit}).dup
-
-      # Decorate with app/models/commit.rb
-      @commits.map! { |commit| Commit.new(commit) }
+      @commits = Grit::Commit.find_all(@repo, nil, {date_order: true, max_count: self.class.max_count, skip: to_commit}).dup
 
       # Decorate with app/model/network/commit.rb
-      @commits.map! { |commit| Network::Commit.new(commit) }
-
-      # add refs to each commit
-      @commits.each { |commit| commit.add_refs(ref_cache, repo) }
+      refs_cache = build_refs_cache
+      @commits.map! { |commit| Network::Commit.new(commit, refs_cache[commit.id]) }
 
       @commits
     end
@@ -78,7 +71,7 @@ module Network
 
     # Skip count that the target commit is displayed in center.
     def to_commit
-      commits = Grit::Commit.find_all(repo, nil, {date_order: true})
+      commits = Grit::Commit.find_all(@repo, nil, {date_order: true})
       commit_index = commits.index do |c|
         c.id == @commit.id
       end
@@ -279,6 +272,15 @@ module Network
 
         leaves.push(commit)
       end
+    end
+
+    def build_refs_cache
+      refs_cache = {}
+      @repo.refs.each do |ref|
+        refs_cache[ref.commit.id] = [] unless refs_cache.include?(ref.commit.id)
+        refs_cache[ref.commit.id] << ref
+      end
+      refs_cache
     end
   end
 end

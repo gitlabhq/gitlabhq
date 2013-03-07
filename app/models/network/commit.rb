@@ -4,28 +4,19 @@ module Network
   class Commit
     include ActionView::Helpers::TagHelper
 
-    attr_accessor :time, :spaces, :refs, :parent_spaces
+    attr_reader :refs
+    attr_accessor :time, :spaces, :parent_spaces
 
-    def initialize(commit)
-      @_commit = commit
+    def initialize(raw_commit, refs)
+      @commit = ::Commit.new(raw_commit)
       @time = -1
       @spaces = []
       @parent_spaces = []
+      @refs = refs || []
     end
 
     def method_missing(m, *args, &block)
-      @_commit.send(m, *args, &block)
-    end
-
-    def add_refs(ref_cache, repo)
-      if ref_cache.empty?
-        repo.refs.each do |ref|
-          ref_cache[ref.commit.id] ||= []
-          ref_cache[ref.commit.id] << ref
-        end
-      end
-      @refs = ref_cache[@_commit.id] if ref_cache.include?(@_commit.id)
-      @refs ||= []
+      @commit.send(m, *args, &block)
     end
 
     def space
