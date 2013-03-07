@@ -60,7 +60,8 @@ class Ability
         :read_note,
         :write_project,
         :write_issue,
-        :write_note
+        :write_note,
+        :fork_project
       ]
     end
 
