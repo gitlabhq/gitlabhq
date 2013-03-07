@@ -5,14 +5,14 @@
 ### GitLab allows you to
  * keep your code secure on your own server
  * manage repositories, users and access permissions
- * communicate though issues, line-comments and wiki's
- * perform code reviews with merge requests
+ * communicate through issues, line-comments and wiki pages
+ * perform code review with merge requests
 
 ### GitLab is
 
 * powered by Ruby on Rails
 * completely free and open source (MIT license)
-* used by 10.000 organization to keep their code secure
+* used by 10.000 organizations to keep their code secure
 
 ### Code status
 
@@ -34,28 +34,35 @@
 
 ### Requirements
 
-* Ubuntu/Debian*
+* Ubuntu/Debian**
 * ruby 1.9.3+
 * MySQL
 * git
 * gitlab-shell
 * redis
 
-* More details are in the [requirements doc](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md)
+** More details are in the [requirements doc](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md)
 
 ### Installation
 
-You can either follow the "ordinary" Installation guide to install it on a machine or use the Vagrant virtual machine. The Installation guide is recommended to set up a production server. The Vagrant virtual machine is recommended for development since it makes it much easier to set up all the dependencies for integration testing.
+#### For production
 
-* [Installation guide for latest stable release (4.2)](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md)
+Follow the installation guide for production server.
+
+* [Installation guide for latest stable release (4.2)](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md) - **Recommended**
 
 * [Installation guide for the current master branch (5.0)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
+
+
+#### For development
+
+If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working sandboxed and with all dependencies.
 
 * [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm)
 
 ### Starting
 
-1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab with:
+1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab
 
         sudo service gitlab start
 
@@ -63,18 +70,18 @@ You can either follow the "ordinary" Installation guide to install it on a machi
 
         sudo /etc/init.d/gitlab restart
 
-2. Start it with [Foreman](https://github.com/ddollar/foreman) in development model
+2. Start it with [Foreman](https://github.com/ddollar/foreman) in development mode
 
         bundle exec foreman start -p 3000
 
-3. Start it manually in development mode
+ or start it manually
 
         bundle exec rails s
         bundle exec rake sidekiq:start
 
 ### Running the tests
 
-* Seed the database with
+* Seed the database
 
         bundle exec rake db:setup RAILS_ENV=test
         bundle exec rake db:seed_fu RAILS_ENV=test
