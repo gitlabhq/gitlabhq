@@ -1,6 +1,6 @@
 require "grit"
 
-module Graph
+module Network
   class Commit
     include ActionView::Helpers::TagHelper
 

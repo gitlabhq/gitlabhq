@@ -1,7 +1,7 @@
 require "grit"
 
-module Graph
-  class JsonBuilder
+module Network
+  class Graph
     attr_accessor :days, :commits, :ref_cache, :repo
 
     def self.max_count
@@ -19,7 +19,7 @@ module Graph
       @days = index_commits
     end
 
-  protected
+    protected
 
     # Get commits from repository
     #
@@ -30,8 +30,8 @@ module Graph
       # Decorate with app/models/commit.rb
       @commits.map! { |commit| Commit.new(commit) }
 
-      # Decorate with lib/gitlab/graph/commit.rb
-      @commits.map! { |commit| Graph::Commit.new(commit) }
+      # Decorate with app/model/network/commit.rb
+      @commits.map! { |commit| Network::Commit.new(commit) }
 
       # add refs to each commit
       @commits.each { |commit| commit.add_refs(ref_cache, repo) }

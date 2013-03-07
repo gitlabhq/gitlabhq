@@ -22,7 +22,7 @@ class GraphController < ProjectResourceController
       format.html
 
       format.json do
-        @graph = Graph::JsonBuilder.new(project, @ref, @commit)
+        @graph = Network::Graph.new(project, @ref, @commit)
       end
     end
   end
