@@ -1,4 +1,6 @@
 class Repository
+  include Gitlab::Popen
+
   # Repository directory name with namespace direcotry
   # Examples:
   #   gitlab/gitolite
@@ -146,5 +148,22 @@ class Repository
     end
 
     file_path
+  end
+
+  # Return repo size in megabytes
+  # Cached in redis
+  def size
+    Rails.cache.fetch(cache_key(:size)) do
+      size = popen('du -s', path_to_repo).first.strip.to_i
+      (size.to_f / 1024).round(2)
+    end
+  end
+
+  def expire_cache
+    Rails.cache.delete(cache_key(:size))
+  end
+
+  def cache_key(type)
+    "#{type}:#{path_with_namespace}"
   end
 end

@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 def darwin_only(require_as)
   RUBY_PLATFORM.include?('darwin') && require_as
@@ -102,6 +102,9 @@ gem 'settingslogic'
 # Misc
 gem "foreman"
 gem "git"
+
+# Cache
+gem "redis-rails"
 
 group :assets do
   gem "sass-rails",   "~> 3.2.5"

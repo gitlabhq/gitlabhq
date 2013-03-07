@@ -31,13 +31,10 @@ The API uses JSON to serialize data. You don't need to specify `.json` at the en
 
 ## Status codes
 
-API requests return different status codes according to 
-
-The API is designed to provide status codes according to the context and how the request
-is handled. For example if a `GET` request is successful a status code `200 Ok`
-is returned. The API is designed to be RESTful.
-
-The following list gives an overview of how the API functions are designed.
+The API is designed to return different status codes according to context and action. In this way
+if a request results in an error the caller is able to get insight into what went wrong, e.g.
+status code `400 Bad Request` is returned if a required attribute is missing from the request.
+The following list gives an overview of how the API functions generally behave.
 
 API request types:
 
@@ -58,7 +55,7 @@ Return values:
 * `403 Forbidden` - The request is not allowed, e.g. the user is not allowed to delete a project
 * `404 Not Found` - A resource could not be accessed, e.g. an ID for a resource could not be found
 * `405 Method Not Allowed` - The request is not supported
-* `409 Conflict` - A conflicting resource already exists, a project with same name already exists
+* `409 Conflict` - A conflicting resource already exists, e.g. creating a project with a name that already exists
 * `500 Server Error` - While handling the request something went wrong on the server side
 
 

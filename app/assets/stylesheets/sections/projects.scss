@@ -120,3 +120,16 @@ ul.nav.nav-projects-tabs {
 .team_member_row form {
   margin: 0px;
 }
+
+.public-projects {
+  li {
+    margin-top: 8px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eee;
+
+    .description {
+      margin-left: 22px;
+      color: #aaa;
+    }
+  }
+}

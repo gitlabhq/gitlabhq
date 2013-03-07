@@ -46,7 +46,7 @@ Parameters:
 
 ## Create new snippet
 
-Creates a new project snippet.
+Creates a new project snippet. The user must have permission to create new snippets.
 
 ```
 POST /projects/:id/snippets
@@ -61,9 +61,9 @@ Parameters:
 + `code` (required) - The content of a snippet
 
 
-## Edit snippet
+## Update snippet
 
-Updates an existing project snippet.
+Updates an existing project snippet. The user must have permission to change an existing snippet.
 
 ```
 PUT /projects/:id/snippets/:snippet_id
@@ -96,7 +96,7 @@ Parameters:
 
 ## Snippet content
 
-Get a raw project snippet.
+Returns the raw project snippet as plain text.
 
 ```
 GET /projects/:id/snippets/:snippet_id/raw

@@ -91,7 +91,7 @@ class MergeRequest < ActiveRecord::Base
 
   def validate_branches
     if target_branch == source_branch
-      errors.add :base, "You can not use same branch for source and target branches"
+      errors.add :branch_conflict, "You can not use same branch for source and target branches"
     end
   end
 

@@ -8,6 +8,8 @@ module Gitlab
         def handle_merge_request_errors!(errors)
           if errors[:project_access].any?
             error!(errors[:project_access], 422)
+          elsif errors[:branch_conflict].any?
+            error!(errors[:branch_conflict], 422)
           end
           not_found!
         end

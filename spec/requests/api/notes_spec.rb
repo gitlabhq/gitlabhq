@@ -105,13 +105,6 @@ describe Gitlab::API do
         response.status.should == 404
       end
     end
-
-    context "when notable is invalid" do
-      it "should return a 404 error" do
-        get api("/projects/#{project.id}/unknown/#{snippet.id}/notes", user)
-        response.status.should == 404
-      end
-    end
   end
 
   describe "GET /projects/:id/noteable/:noteable_id/notes/:note_id" do
@@ -178,13 +171,6 @@ describe Gitlab::API do
       it "should return a 401 unauthorized error if user not authenticated" do
         post api("/projects/#{project.id}/snippets/#{snippet.id}/notes"), body: 'hi!'
         response.status.should == 401
-      end
-    end
-
-    context "when noteable is invalid" do
-      it "should return a 404 error" do
-        post api("/projects/#{project.id}/invalid/#{snippet.id}/notes", user)
-        response.status.should == 404
       end
     end
   end

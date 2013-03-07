@@ -9,11 +9,19 @@
       Project name is
     .input
       = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
+
+
   - unless @repository.heads.empty?
     .clearfix
       = f.label :default_branch, "Default Branch"
       .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
+  .clearfix
+    = f.label :description do
+      Project description
+      %span.light (optional)
+    .input
+      = f.text_area :description, placeholder: "awesome project", class: "xxlarge", rows: 3, maxlength: 250
 
   %fieldset.features
     %legend Features:

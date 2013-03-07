@@ -64,6 +64,38 @@ module Gitlab
         end
       end
 
+      # Create new project for a specified user.  Only available to admin users.
+      #
+      # Parameters:
+      #   user_id (required) - The ID of a user
+      #   name (required) - name for new project
+      #   description (optional) - short project description
+      #   default_branch (optional) - 'master' by default
+      #   issues_enabled (optional) - enabled by default
+      #   wall_enabled (optional) - enabled by default
+      #   merge_requests_enabled (optional) - enabled by default
+      #   wiki_enabled (optional) - enabled by default
+      # Example Request
+      #   POST /projects/user/:user_id
+      post "user/:user_id" do
+        authenticated_as_admin!
+        user = User.find(params[:user_id])
+        attrs = attributes_for_keys [:name,
+                                    :description,
+                                    :default_branch,
+                                    :issues_enabled,
+                                    :wall_enabled,
+                                    :merge_requests_enabled,
+                                    :wiki_enabled]
+        @project = ::Projects::CreateContext.new(user, attrs).execute
+        if @project.saved?
+          present @project, with: Entities::Project
+        else
+          not_found!
+        end
+      end
+
+
       # Get a project team members
       #
       # Parameters:
@@ -469,6 +501,49 @@ module Gitlab
 
         content_type tree.mime_type
         present tree.data
+      end
+
+      # Get a specific project's keys
+      #
+      # Example Request:
+      #   GET /projects/:id/keys
+      get ":id/keys" do
+        present user_project.deploy_keys, with: Entities::SSHKey
+      end
+
+      # Get single key owned by currently authenticated user
+      #
+      # Example Request:
+      #   GET /projects/:id/keys/:id
+      get ":id/keys/:key_id" do
+        key = user_project.deploy_keys.find params[:key_id]
+        present key, with: Entities::SSHKey
+      end
+
+      # Add new ssh key to currently authenticated user
+      #
+      # Parameters:
+      #   key (required) - New SSH Key
+      #   title (required) - New SSH Key's title
+      # Example Request:
+      #   POST /projects/:id/keys
+      post ":id/keys" do
+        attrs = attributes_for_keys [:title, :key]
+        key = user_project.deploy_keys.new attrs
+        if key.save
+          present key, with: Entities::SSHKey
+        else
+          not_found!
+        end
+      end
+
+      # Delete existed ssh key of currently authenticated user
+      #
+      # Example Request:
+      #   DELETE /projects/:id/keys/:id
+      delete ":id/keys/:key_id" do
+        key = user_project.deploy_keys.find params[:key_id]
+        key.delete
       end
 
     end

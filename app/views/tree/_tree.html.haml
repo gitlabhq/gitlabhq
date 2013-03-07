@@ -11,9 +11,6 @@
       - else
         = link_to title, '#'
 
-.clear
-%div.tree_progress
-
 %div#tree-content-holder.tree-content-holder
   - if tree.is_blob?
     = render "tree/blob", blob: tree
@@ -39,6 +36,8 @@
 
     - if tree.readme
       = render "tree/readme", readme: tree.readme
+
+%div.tree_progress
 
 - unless tree.is_blob?
   :javascript

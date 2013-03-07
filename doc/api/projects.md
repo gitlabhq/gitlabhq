@@ -115,11 +115,9 @@ Parameters:
 + `merge_requests_enabled` (optional) - enabled by default
 + `wiki_enabled` (optional) - enabled by default
 
+**Project access levels**
 
-## Project access levels
-
-The project access levels are defined in the `user_project` class. Currently, 4 
-levels are recoginized:
+The project access levels are defined in the `user_project.rb` class. Currently, these levels are recoginized:
 
 ```
   GUEST     = 10
@@ -129,7 +127,30 @@ levels are recoginized:
 ```
 
 
-## List project team members
+### Create project for user
+
+Creates a new project owned by user. Available only for admins.
+
+```
+POST /projects/user/:user_id
+```
+
+Parameters:
+
++ `user_id` (required) - user_id of owner
++ `name` (required) - new project name
++ `description` (optional) - short project description
++ `default_branch` (optional) - 'master' by default
++ `issues_enabled` (optional) - enabled by default
++ `wall_enabled` (optional) - enabled by default
++ `merge_requests_enabled` (optional) - enabled by default
++ `wiki_enabled` (optional) - enabled by default
+
+
+
+## Team members
+
+### List project team members
 
 Get a list of project team members.
 
@@ -140,14 +161,12 @@ GET /projects/:id/members
 Parameters:
 
 + `id` (required) - The ID or NAME of a project
-+ `query`         - Query string
++ `query` (optional) - Query string to search for members
 
-
-## Team members
 
 ### Get project team member
 
-Get a project team member.
+Gets a project team member.
 
 ```
 GET /projects/:id/members/:user_id
@@ -175,7 +194,7 @@ Parameters:
 
 Adds a user to a project team. This is an idempotent method and can be called multiple times
 with the same parameters. Adding team membership to a user that is already a member does not
-affect the membership.
+affect the existing membership.
 
 ```
 POST /projects/:id/members
@@ -190,7 +209,7 @@ Parameters:
 
 ### Edit project team member
 
-Update project team member to specified access level.
+Updates project team member to a specified access level.
 
 ```
 PUT /projects/:id/members/:user_id
@@ -398,81 +417,90 @@ Returns values:
 + `404 Not Found` if project with id or the branch with `ref_name` not found
 
 
-## Snippets
 
-### List snippets
+## Deploy Keys
 
-Lists the snippets of a project.
+### List deploy keys
 
-```
-GET /projects/:id/snippets
-```
-
-Parameters:
-
-+ `id` (required) - The ID of the project
-
-
-### List single snippet
-
-Lists a single snippet of a project
+Get a list of a project's deploy keys.
 
 ```
-GET /projects/:id/snippets/:snippet_id
+GET /projects/:id/keys
 ```
 
 Parameters:
 
 + `id` (required) - The ID of the project
-+ `snippet_id` (required) - The ID of the snippet
+
+```json
+[
+  {
+    "id": 1,
+    "title" : "Public key"
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
+      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
+      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+  },
+  {
+    "id": 3,
+    "title" : "Another Public key"
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
+      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
+      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+  }
+]
+```
 
 
-### Create snippet
+### Single deploy key
 
-Creates a new project snippet.
+Get a single key.
 
 ```
-POST /projects/:id/snippets
+GET /projects/:id/keys/:key_id
 ```
 
 Parameters:
 
 + `id` (required) - The ID of the project
-+ `title` (required) - The title of the new snippet
-+ `file_name` (required) - The file name of the snippet
-+ `code` (required) - The content of the snippet
-+ `lifetime` (optional) - The expiration date of a snippet
++ `key_id` (required) - The ID of the deploy key
+
+```json
+{
+  "id": 1,
+  "title" : "Public key"
+  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
+      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
+      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+}
+```
 
 
-### Update snippet
+### Add deploy key
 
-Updates an existing project snippet.
+Creates a new deploy key for a project.
 
 ```
-PUT /projects/:id/snippets/:snippet_id
+POST /projects/:id/keys
 ```
 
 Parameters:
 
 + `id` (required) - The ID of the project
-+ `snippet_id` (required) - The id of the project snippet
-+ `title` (optional) - The new title of the project snippet
-+ `file_name` (optional) - The new file name of the project snippet
-+ `lifetime` (optional) - The new expiration date of the snippet
-+ `code` (optional) - The content of the snippet
++ `title` (required) - New deploy key's title
++ `key` (required) - New deploy key
 
 
-## Delete snippet
+### Delete deploy key
 
-Deletes a project snippet. This is an idempotent function call and returns `200 Ok`
-even if the snippet with the id is not available.
+Delete a deploy key from a project
 
 ```
-DELETE /projects/:id/snippets/:snippet_id
+DELETE /projects/:id/keys/:key_id
 ```
 
-Paramaters:
+Parameters:
 
 + `id` (required) - The ID of the project
-+ `snippet_id` (required) - The ID of the snippet
++ `key_id` (required) - The ID of the deploy key
 

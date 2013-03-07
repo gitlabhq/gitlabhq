@@ -1,18 +1,20 @@
 %h3.page_title
-  Projects
+  Projects (#{@projects.total_count})
   %small with read-only access
 %hr
 
-%ul.unstyled
-  - @projects.each do |project|
-    %li.clearfix
-      %h5
-        %i.icon-share
-        = project.name_with_namespace
-        .pull-right
-          %pre.dark.tiny git clone #{project.http_url_to_repo}
+.public-projects
+  %ul.unstyled
+    - @projects.each do |project|
+      %li.clearfix
+        %h5
+          %i.icon-share
+          = project.name_with_namespace
+          .pull-right
+            %pre.dark.tiny git clone #{project.http_url_to_repo}
+        %p.description
+          = project.description
+    - unless @projects.present?
+      %h3.nothing_here_message No public projects
 
-  - unless @projects.present?
-    %h3.nothing_here_message No public projects
-
-= paginate @projects, theme: "admin"
+  = paginate @projects, theme: "admin"

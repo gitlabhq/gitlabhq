@@ -1,8 +1,33 @@
 = render "project_head"
 = render 'clone_panel'
 = render "events/event_last_push", event: @last_push
-.content_list= render @events
-.loading.hide
 
+.row
+  .span9
+    .content_list= render @events
+    .loading.hide
+  .span3
+    .ui-box.white
+      .padded
+        %h3.page_title
+          = @project.name
+        - if @project.description.present?
+          %p.light= @project.description
+
+        %hr
+        %p
+          Access level:
+          - if @project.public
+            %span.cblue
+              %i.icon-share
+              Public
+          - else
+            %span.cgreen
+              %i.icon-lock
+              Private
+
+        %p Repo Size: #{@project.repository.size} MB
+        %p Created at: #{@project.created_at.stamp('Aug 22, 2013')}
+        %p Owner: #{link_to @project.owner_name, @project.owner}
 :javascript
   $(function(){ Pager.init(20); });

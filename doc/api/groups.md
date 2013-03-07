@@ -44,3 +44,14 @@ Parameters:
 + `name` (required) - The name of the group
 + `path` (required) - The path of the group
 
+## Transfer project to group
+
+Transfer a project to the Group namespace. Available only for admin
+
+```
+POST  /groups/:id/projects/:project_id
+```
+
+Parameters:
++ `id` (required) - The ID of a group
++ `project_id (required) - The ID of a project
