@@ -23,6 +23,7 @@ class GitPushService
 
     project.ensure_satellite_exists
     project.discover_default_branch
+    project.repository.expire_cache
 
     if push_to_branch?(ref, oldrev)
       project.update_merge_requests(oldrev, newrev, ref, @user)

@@ -59,7 +59,6 @@ class ProjectsController < ProjectResourceController
       format.html do
         if @project.repository && !@project.repository.empty?
           @last_push = current_user.recent_push(@project.id)
-          @last_commit = CommitDecorator.decorate(@project.repository.commit)
           render :show
         else
           render "projects/empty"
