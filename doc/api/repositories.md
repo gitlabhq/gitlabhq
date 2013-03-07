@@ -217,8 +217,6 @@ Parameters:
 
 + `id` (required) - The ID of a project
 + `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
-+ `page`(optional) - The page with the commits (pagination)
-+ `per_page` (optional) - The number of commits per page (pagination)
 
 ```json
 [

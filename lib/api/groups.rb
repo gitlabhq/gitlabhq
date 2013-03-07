@@ -6,9 +6,6 @@ module Gitlab
     resource :groups do
       # Get a groups list
       #
-      # Parameters
-      #   page (optional) - The page number of the groups list
-      #   per_page (optional) - The number of elements per page
       # Example Request:
       #  GET /groups
       get do
