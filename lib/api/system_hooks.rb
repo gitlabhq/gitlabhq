@@ -1,7 +1,10 @@
 module Gitlab
   # Hooks API
   class SystemHooks < Grape::API
-    before { authenticated_as_admin! }
+    before {
+      authenticate!
+      authenticated_as_admin!
+    }
 
     resource :hooks do
       # Get the list of system hooks
@@ -21,6 +24,7 @@ module Gitlab
       #   POST /hooks
       post do
         attrs = attributes_for_keys [:url]
+        required_attributes! [:url]
         @hook = SystemHook.new attrs
         if @hook.save
           present @hook, with: Entities::Hook
@@ -47,13 +51,19 @@ module Gitlab
         data
       end
 
-      # Delete a hook
-      #
+      # Delete a hook. This is an idempotent function.
+      # 
+      # Parameters:
+      #   id (required) - ID of the hook
       # Example Request:
       #   DELETE /hooks/:id
       delete ":id" do
-        @hook = SystemHook.find(params[:id])
-        @hook.destroy
+        begin
+          @hook = SystemHook.find(params[:id])
+          @hook.destroy
+        rescue
+          # SystemHook raises an Error if no hook with id found
+        end
       end
     end
   end
