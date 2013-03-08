@@ -17,6 +17,29 @@ module Gitlab
       end
     end
 
+    def find_or_new_for_omniauth(auth)
+      provider, uid = auth.provider, auth.uid
+      email = auth.info.email.downcase unless auth.info.email.nil?
+
+      if @user = User.find_by_provider_and_extern_uid(provider, uid)
+        @user
+      elsif @user = User.find_by_email(email)
+        @user.update_attributes(:extern_uid => uid, :provider => provider)
+        @user
+      else
+        if Gitlab.config.omniauth['allow_single_sign_on']
+          @user = create_from_omniauth(auth)
+          @user
+        end
+      end
+    end
+
+    private
+
+    def log
+      Gitlab::AppLogger
+    end
+
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
@@ -48,27 +71,6 @@ module Gitlab
       end
 
       @user
-    end
-
-    def find_or_new_for_omniauth(auth)
-      provider, uid = auth.provider, auth.uid
-      email = auth.info.email.downcase unless auth.info.email.nil?
-
-      if @user = User.find_by_provider_and_extern_uid(provider, uid)
-        @user
-      elsif @user = User.find_by_email(email)
-        @user.update_attributes(:extern_uid => uid, :provider => provider)
-        @user
-      else
-        if Gitlab.config.omniauth['allow_single_sign_on']
-          @user = create_from_omniauth(auth)
-          @user
-        end
-      end
-    end
-
-    def log
-      Gitlab::AppLogger
     end
   end
 end
