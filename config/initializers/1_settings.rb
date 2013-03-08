@@ -34,17 +34,12 @@ class Settings < Settingslogic
 end
 
 
-# Default settings
-Settings['ldap'] ||= Settingslogic.new({})
-Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
-Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
+# Default settings for gitlab.yml
+# ===============================
 
-
-Settings['omniauth'] ||= Settingslogic.new({})
-Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
-Settings.omniauth['providers']  ||= []
-
-Settings['issues_tracker']  ||= {}
+##
+## Gitlab app settings
+##
 
 #
 # GitLab
@@ -78,12 +73,52 @@ Settings.gitlab.default_projects_features['snippets']       = false if Settings.
 Settings.gitlab.default_projects_features['public']         = false if Settings.gitlab.default_projects_features['public'].nil?
 
 #
+# Issue tracker
+#
+Settings['issues_tracker']  ||= {}
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+
+##
+## Auth settings
+##
+
+#
+# ldap
+#
+Settings['ldap'] ||= Settingslogic.new({})
+Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
+Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
+
+#
+# Omniauth
+#
+Settings['omniauth'] ||= Settingslogic.new({})
+Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
+Settings.omniauth['providers']  ||= []
+
+##
+## Advanced settings
+##
+
+#
+# Satellites
+#
+Settings['satellites'] ||= Settingslogic.new({})
+Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
+
+#
+# Backup
+#
+Settings['backup'] ||= Settingslogic.new({})
+Settings.backup['keep_time']  ||= 0
+Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
 
 #
 # GitLab Shell
@@ -100,22 +135,12 @@ Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
 
 #
-# Backup
-#
-Settings['backup'] ||= Settingslogic.new({})
-Settings.backup['keep_time']  ||= 0
-Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
-
-#
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
 Settings.git['max_size']  ||= 5242880 # 5.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
 Settings.git['timeout']   ||= 10
-
-Settings['satellites'] ||= Settingslogic.new({})
-Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
 
 #
 # Extra customization
