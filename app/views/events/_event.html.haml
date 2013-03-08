@@ -1,9 +1,9 @@
 - if event.proper?
-  = cache event do
-    %div.event-item
-      %span.cgray.pull-right
-        #{time_ago_in_words(event.created_at)} ago.
+  %div.event-item
+    %span.cgray.pull-right
+      #{time_ago_in_words(event.created_at)} ago.
 
+    = cache event do
       = image_tag gravatar_icon(event.author_email), class: "avatar s24"
 
       - if event.push?
