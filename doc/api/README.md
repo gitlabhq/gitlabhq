@@ -78,3 +78,4 @@ When listing resources you can pass the following parameters:
 + [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
 + [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
 + [Notes](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/notes.md)
++ [System Hooks](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/system_hooks.md)
