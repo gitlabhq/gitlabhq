@@ -6,7 +6,7 @@
         - @wiki.errors.full_messages.each do |msg|
           %li= msg
 
-  .ui-box.ui-box-show
+  .ui-box.ui-box-show(style = 'height:500px;')
     .ui-box-head
       = f.label :title
       .input= f.text_field :title, class: 'span8'
@@ -19,9 +19,41 @@
           %code [Link Title](page-slug)
           \.
 
-    .ui-box-bottom
+    .ui-box-bottom(style = 'height:330px;')
       = f.label :content
-      .input= f.text_area :content, class: 'span8 js-gfm-input'
+      .epiceditors#em_content(style = 'height:310px;')
+      .input= f.text_field :content, :type => "hidden"
+      :javascript
+        var opts = {
+          container: 'em_content',
+          basePath: '#{Gitlab.config.gitlab.relative_url_root}',
+          clientSideStorage: false,
+          parser: marked,
+          file: {
+            name: 'epiceditor',
+            defaultContent: '',
+            autoSave: 100
+          },
+          theme: {
+            base:'/assets/themes/base/epiceditor.css',
+            preview:'/assets/themes/preview/github.css',
+            editor:'/assets/themes/editor/epic-light.css'
+          },
+          focusOnLoad: false,
+          shortcut: {
+            modifier: 18,
+            fullscreen: 70,
+            preview: 80,
+            edit: 79
+          }
+        }
+        var editor = new EpicEditor(opts).load();
+        editor.importFile('epiceditor',"#{escape_javascript(@wiki[:content])}");
+        $(function(){
+            $('.save-btn').click(function() {
+              $('#wiki_content').val(editor.exportFile('epiceditor'));
+            });
+          });
   .actions
-    = f.submit 'Save', class: "btn-save btn"
+    = f.submit 'Save', class: "save-btn btn"
     = link_to "Cancel", project_wiki_path(@project, :index), class: "btn btn-cancel"

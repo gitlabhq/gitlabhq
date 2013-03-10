@@ -6,7 +6,10 @@ class ProjectWiki < Spinach::FeatureSteps
 
   Given 'I create Wiki page' do
     fill_in "Title", :with => 'Test title'
-    fill_in "Content", :with => '[link test](test)'
+    #fill_in "epiceditor-editor", :with => '[link test](test)...'
+    script="$('#epiceditor-main-element').contents().find('#epiceditor-editor-frame').contents().find('#epiceditor-editor').contents().text('[link test](test)')"
+    page.driver.browser.execute_script(script)
+    #find("body#epiceditor-editor").native.send_keys '[link test](test)'
     click_on "Save"
   end
 

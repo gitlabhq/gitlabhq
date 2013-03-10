@@ -1,0 +1,167 @@
+body {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  line-height: 1.5;
+  font-size: 87.5%;
+  word-wrap: break-word;
+  margin: 2em;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 1.0em 0 0.5em;
+  font-weight: inherit;
+}
+
+h1 {
+  font-size: 1.357em;
+  color: #000;
+}
+
+h2 {
+  font-size: 1.143em;
+}
+
+p {
+  margin: 0 0 1.2em;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+tr:nth-child(odd) {
+  background-color: #dddddd;
+}
+
+img {
+  outline: 0;
+}
+
+code {
+  background-color: #f2f2f2;
+  background-color: rgba(40, 40, 0, 0.06);
+}
+
+pre {
+  background-color: #f2f2f2;
+  background-color: rgba(40, 40, 0, 0.06);
+  margin: 10px 0;
+  overflow: hidden;
+  padding: 15px;
+  white-space: pre-wrap;
+}
+
+pre code {
+  font-size: 100%;
+  background-color: transparent;
+}
+
+blockquote {
+  background: #f7f7f7;
+  border-left: 1px solid #bbb;
+  font-style: italic;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+}
+
+blockquote:before {
+  color: #bbb;
+  content: "\201C";
+  font-size: 3em;
+  line-height: 0.1em;
+  margin-right: 0.2em;
+  vertical-align: -.4em;
+}
+
+blockquote:after {
+  color: #bbb;
+  content: "\201D";
+  font-size: 3em;
+  line-height: 0.1em;
+  vertical-align: -.45em;
+}
+
+blockquote > p:first-child {
+  display: inline;
+}
+
+table {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border: 0;
+  border-spacing: 0;
+  font-size: 0.857em;
+  margin: 10px 0;
+  width: 100%;
+}
+
+table table {
+  font-size: 1em;
+}
+
+table tr th {
+  background: #757575;
+  background: rgba(0, 0, 0, 0.51);
+  border-bottom-style: none;
+}
+
+table tr th,
+table tr th a,
+table tr th a:hover {
+  color: #FFF;
+  font-weight: bold;
+}
+
+table tbody tr th {
+  vertical-align: top;
+}
+
+tr td,
+tr th {
+  padding: 4px 9px;
+  border: 1px solid #fff;
+  text-align: left; /* LTR */
+}
+
+tr:nth-child(odd) {
+  background: #e4e4e4;
+  background: rgba(0, 0, 0, 0.105);
+}
+
+tr,
+tr:nth-child(even) {
+  background: #efefef;
+  background: rgba(0, 0, 0, 0.063);
+}
+
+a {
+  color: #0071B3;
+}
+
+a:hover,
+a:focus {
+  color: #018fe2;
+}
+
+a:active {
+  color: #23aeff;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover,
+a:active,
+a:focus {
+  text-decoration: underline;
+}
+        
