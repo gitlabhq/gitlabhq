@@ -16,3 +16,6 @@
         %span.pull-right.light
           - if group.owner == current_user
             %i.icon-wrench
+    - if groups.blank?
+      %li
+        %h3.nothing_here_message You have no groups yet.

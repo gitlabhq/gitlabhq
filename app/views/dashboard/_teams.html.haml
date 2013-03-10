@@ -2,13 +2,13 @@
   %h5.title
     Teams
     %small
-      (#{@teams.count})
+      (#{teams.count})
     %span.pull-right
       = link_to new_team_path, class: "btn btn-tiny info" do
         %i.icon-plus
         New Team
   %ul.well-list
-    - @teams.each do |team|
+    - teams.each do |team|
       %li
         = link_to team_path(id: team.path), class: dom_class(team) do
           %strong.well-title= truncate(team.name, length: 35)
@@ -18,3 +18,6 @@
           - tm = current_user.user_team_user_relationships.find_by_user_team_id(team.id)
           - if tm
             = tm.access_human
+    - if teams.blank?
+      %li
+        %h3.nothing_here_message You have no teams yet.
