@@ -32,6 +32,9 @@ DatabaseCleaner.strategy = :truncation
 Spinach.hooks.before_scenario do
   # Use tmp dir for FS manipulations
   Gitlab.config.gitlab_shell.stub(repos_path: Rails.root.join('tmp', 'test-git-base-path'))
+  Gitlab::Shell.any_instance.stub(:add_repository) do |path|
+    create_temp_repo("#{Rails.root}/tmp/test-git-base-path/#{path}.git")
+  end
   FileUtils.rm_rf Gitlab.config.gitlab_shell.repos_path
   FileUtils.mkdir_p Gitlab.config.gitlab_shell.repos_path
   DatabaseCleaner.start
@@ -45,4 +48,10 @@ Spinach.hooks.before_run do
   RSpec::Mocks::setup self
 
   include FactoryGirl::Syntax::Methods
+end
+
+def create_temp_repo(path)
+  FileUtils.mkdir_p path
+  command = "git init --quiet --bare #{path};"
+  system(command)
 end
