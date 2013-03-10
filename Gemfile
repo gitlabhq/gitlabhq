@@ -143,6 +143,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'coveralls', require: false
   gem 'rails-dev-tweaks'
   gem 'spinach-rails', '0.2.0'
   gem "rspec-rails", '2.12.2'

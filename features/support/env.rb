@@ -1,5 +1,10 @@
 require 'simplecov' unless ENV['CI']
 
+if ENV['TRAVIS']
+  require 'coveralls'
+  Coveralls.wear!
+end
+
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 
