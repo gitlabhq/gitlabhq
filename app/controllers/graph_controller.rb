@@ -8,24 +8,21 @@ class GraphController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    if params.has_key?(:q) && params[:q].blank?
-      redirect_to project_graph_path(@project, params[:id])
-      return
-    end
-
     if params.has_key?(:q)
+      if params[:q].blank?
+        redirect_to project_graph_path(@project, params[:id])
+        return
+      end
+
       @q = params[:q]
       @commit = @project.repository.commit(@q) || @commit
     end
 
     respond_to do |format|
       format.html
+
       format.json do
-        graph = Graph::JsonBuilder.new(project, @ref, @commit)
-        graph.commits.each do |c|
-          c.icon = gravatar_icon(c.author.email)
-        end
-        render :json => graph.to_json
+        @graph = Network::Graph.new(project, @ref, @commit)
       end
     end
   end

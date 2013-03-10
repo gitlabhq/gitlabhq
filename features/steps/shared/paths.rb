@@ -142,8 +142,8 @@ module SharedPaths
   end
 
   Given "I visit my project's network page" do
-    # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
-    Graph::JsonBuilder.stub(max_count: 10)
+    # Stub Graph max_size to speed up test (10 commits vs. 650)
+    Network::Graph.stub(max_count: 10)
 
     visit project_graph_path(@project, root_ref)
   end
