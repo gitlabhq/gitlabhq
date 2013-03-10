@@ -8,8 +8,8 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   When 'I visit project "Shop" network page' do
-    # Stub Graph::JsonBuilder max_size to speed up test (10 commits vs. 650)
-    Graph::JsonBuilder.stub(max_count: 10)
+    # Stub Graph max_size to speed up test (10 commits vs. 650)
+    Network::Graph.stub(max_count: 10)
 
     project = Project.find_by_name("Shop")
     visit project_graph_path(project, "master")
@@ -25,7 +25,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     end
   end
 
-  And 'I switch ref to "stable"' do
+  When 'I switch ref to "stable"' do
     page.select 'stable', :from => 'ref'
     sleep 2
   end
@@ -40,7 +40,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     end
   end
 
-  And 'I looking for a commit by SHA of "v2.1.0"' do
+  When 'I looking for a commit by SHA of "v2.1.0"' do
     within ".content .search" do
       fill_in 'q', :with => '98d6492'
       find('button').click
