@@ -1,8 +1,8 @@
 xml.instruct!
 xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://search.yahoo.com/mrss/" do
-  xml.title   "Dashboard feed#{" - #{current_user.name}" if current_user.name.present?}"
-  xml.link    :href => dashboard_url(:atom), :rel => "self", :type => "application/atom+xml"
-  xml.link    :href => dashboard_url, :rel => "alternate", :type => "text/html"
+  xml.title   "Team feed - #{@team.name}"
+  xml.link    :href => team_url(@team, :atom), :rel => "self", :type => "application/atom+xml"
+  xml.link    :href => team_url(@team), :rel => "alternate", :type => "text/html"
   xml.id      projects_url
   xml.updated @events.maximum(:updated_at).strftime("%Y-%m-%dT%H:%M:%SZ") if @events.any?
 
@@ -12,7 +12,6 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
       xml.entry do
         event_link = event.feed_url
         event_title = event.feed_title
-        event_summary = event.feed_summary
 
         xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
         xml.link    :href => event_link
@@ -23,7 +22,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
           xml.name event.author_name
           xml.email event.author_email
         end
-        xml.summary(:type => "xhtml") { |x| x << event_summary unless event_summary.nil? }
+        xml.summary event_title
       end
     end
   end

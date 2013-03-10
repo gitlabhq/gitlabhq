@@ -4,11 +4,6 @@ Feature: UserTeams
     And I own project "Shop"
     And project "Shop" has push event
 
-  Scenario: No teams, no dashboard info block
-    When I do not have teams with me
-    And I visit dashboard page
-    Then I should see dashboard page without teams info block
-
   Scenario: I should see teams info block
     When I have teams with my membership
     And I visit dashboard page

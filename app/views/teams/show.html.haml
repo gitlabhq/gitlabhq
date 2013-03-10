@@ -15,11 +15,11 @@
       .description.well.light
         = @team.description
     = render "projects", projects: @projects
-    %div
-      %span.rss-icon
-        = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
-          = image_tag "rss_ui.png", title: "feed"
-          %strong News Feed
+    .prepend-top-20
+      = link_to team_path(@team, { format: :atom, private_token: current_user.private_token }), title: "Feed" do
+        %strong
+          %i.icon-rss
+          News Feed
 
     %hr
     .gitlab-promo
