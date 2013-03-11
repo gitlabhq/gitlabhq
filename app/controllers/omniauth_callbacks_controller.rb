@@ -1,4 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  skip_before_filter :verify_authenticity_token, :only => [:openid]
+
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
       handle_omniauth
@@ -22,6 +24,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       @user.remember_me = true
     end
     sign_in_and_redirect @user
+  end
+
+  def openid
+    not_found unless Gitlab.config.omniauth.openid_sso.enabled
+    handle_omniauth
   end
 
   private

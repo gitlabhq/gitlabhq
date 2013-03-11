@@ -1,3 +1,5 @@
+require 'openid/store/filesystem'
+
 # Use this hook to configure devise mailer, warden hooks and so forth. The first
 # four configuration values can also be set straight in your models.
 Devise.setup do |config|
@@ -214,6 +216,16 @@ Devise.setup do |config|
       :method   => Gitlab.config.ldap['method'],
       :bind_dn  => Gitlab.config.ldap['bind_dn'],
       :password => Gitlab.config.ldap['password']
+  end
+
+  if Gitlab.config.omniauth.openid_sso.enabled
+    openid_store = Rails.root.join("tmp", "openid_store")
+    Dir.mkdir openid_store unless File.exists? openid_store
+    config.omniauth :open_id,
+      :name => 'openid',
+      :store => OpenID::Store::Filesystem.new(openid_store),
+      :require => 'omniauth-openid',
+      :identifier => Gitlab.config.omniauth.openid_sso['host']
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
