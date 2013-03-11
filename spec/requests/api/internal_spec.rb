@@ -22,7 +22,7 @@ describe Gitlab::API do
 
       response.status.should == 200
 
-      json_response['email'].should == user.email
+      json_response['name'].should == user.name
     end
   end
 
