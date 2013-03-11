@@ -8,7 +8,10 @@ Get list of system hooks
 GET /hooks
 ```
 
-Will return hooks with status `200 OK` on success, or `404 Not found` on fail.
+Parameters:
+
++ **none**
+
 
 ## Add new system hook hook
 
@@ -20,7 +23,6 @@ Parameters:
 
 + `url` (required) - The hook URL
 
-Will return status `201 Created` on success, or `404 Not found` on fail.
 
 ## Test system hook
 
@@ -32,9 +34,11 @@ Parameters:
 
 + `id` (required) - The ID of hook
 
-Will return hook with status `200 OK` on success, or `404 Not found` on fail.
 
 ## Delete system hook
+
+Deletes a system hook. This is an idempotent API function and returns `200 Ok` even if the hook
+is not available. If the hook is deleted it is also returned as JSON.
 
 ```
 DELETE /hooks/:id
@@ -43,5 +47,3 @@ DELETE /hooks/:id
 Parameters:
 
 + `id` (required) - The ID of hook
-
-Will return status `200 OK` on success, or `404 Not found` on fail.
