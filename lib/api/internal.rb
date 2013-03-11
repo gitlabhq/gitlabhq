@@ -44,7 +44,7 @@ module Gitlab
       #
       get "/discover" do
         key = Key.find(params[:key_id])
-        present key.user, with: Entities::User
+        present key.user, with: Entities::UserSafe
       end
 
       get "/check" do

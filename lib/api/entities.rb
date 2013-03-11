@@ -5,6 +5,10 @@ module Gitlab
              :dark_scheme, :theme_id, :state, :created_at, :extern_uid, :provider
     end
 
+    class UserSafe < Grape::Entity
+      expose :name
+    end
+
     class UserBasic < Grape::Entity
       expose :id, :username, :email, :name, :state, :created_at
     end
