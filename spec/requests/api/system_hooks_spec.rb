@@ -10,6 +10,13 @@ describe Gitlab::API do
   before { stub_request(:post, hook.url) }
 
   describe "GET /hooks" do
+    context "when no user" do
+      it "should return authentication error" do
+        get api("/hooks")
+        response.status.should == 401
+      end
+    end
+
     context "when not an admin" do
       it "should return forbidden error" do
         get api("/hooks", user)
@@ -34,9 +41,9 @@ describe Gitlab::API do
       }.to change { SystemHook.count }.by(1)
     end
 
-    it "should respond with 404 on failure" do
+    it "should respond with 400 if url not given" do
       post api("/hooks", admin)
-      response.status.should == 404
+      response.status.should == 400
     end
 
     it "should not create new hook without url" do
@@ -64,6 +71,11 @@ describe Gitlab::API do
       expect {
         delete api("/hooks/#{hook.id}", admin)
       }.to change { SystemHook.count }.by(-1)
+    end
+
+    it "should return success if hook id not found" do
+      delete api("/hooks/12345", admin)
+      response.status.should == 200
     end
   end
 end
