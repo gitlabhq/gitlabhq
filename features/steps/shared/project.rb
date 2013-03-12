@@ -9,7 +9,8 @@ module SharedProject
 
   # Create a specific project called "Shop"
   And 'I own project "Shop"' do
-    @project = create(:project, name: "Shop")
+    @project = Project.find_by_name "Shop"
+    @project ||= create(:project, name: "Shop")
     @project.team << [@user, :master]
   end
 
