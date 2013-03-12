@@ -34,6 +34,7 @@ class DashboardController < ApplicationController
                   @projects
                 end
 
+    @projects = @projects.search(params[:search]) if params[:search].present?
     @projects = @projects.page(params[:page]).per(30)
   end
 
