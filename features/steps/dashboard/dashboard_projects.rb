@@ -11,7 +11,10 @@ class Dashboard < Spinach::FeatureSteps
 
   Given 'I search for "Sho"' do
     fill_in "dashboard_projects_search", with: "Sho"
-    click_button "Search"
+
+    within ".dashboard-search-filter" do
+      find('button').click
+    end
   end
 
   Then 'I should see "Shop" project link' do
