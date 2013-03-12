@@ -56,6 +56,10 @@ module Gitlab
       true
     end
 
+    def mv_repository name, new_name
+      true
+    end
+
     def remove_repository name
       true
     end
