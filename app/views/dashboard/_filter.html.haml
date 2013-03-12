@@ -1,6 +1,6 @@
 = form_tag dashboard_filter_path(entity), method: 'get' do
   %fieldset.dashboard-search-filter
-    = search_field_tag "search", params[:search], { placeholder: 'Search', class: 'search-text-input' }
+    = search_field_tag "search", params[:search], { id: 'filter_search', placeholder: 'Search', class: 'search-text-input' }
     = button_tag type: 'submit', class: 'btn' do
       %i.icon-search
 
