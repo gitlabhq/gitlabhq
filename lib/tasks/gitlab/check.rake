@@ -348,6 +348,7 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "Gitlab Shell"
 
+      check_gitlab_shell
       check_repo_base_exists
       check_repo_base_is_not_symlink
       check_repo_base_user_and_group
@@ -631,6 +632,15 @@ namespace :gitlab do
     puts "  Try fixing it:".blue
     steps.each do |step|
       puts "  #{step}"
+    end
+  end
+
+  def check_gitlab_shell
+    print "GitLab Shell version? ... "
+    if gitlab_shell_version.strip == '1.1.0'
+      puts 'OK (1.1.0)'.green
+    else
+      puts 'FAIL. Please update gitlab-shell to v1.1.0'.red
     end
   end
 end
