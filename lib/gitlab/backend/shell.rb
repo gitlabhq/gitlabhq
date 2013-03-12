@@ -24,6 +24,18 @@ module Gitlab
       system("#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects import-project #{name}.git #{url}")
     end
 
+    # Move repository
+    #
+    # path - project path with namespace
+    # new_path - new project path with namespace
+    #
+    # Ex.
+    #   mv_repository("gitlab/gitlab-ci", "randx/gitlab-ci-new.git")
+    #
+    def mv_repository(path, new_path)
+      system("#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects mv-project #{path}.git #{new_path}.git")
+    end
+
     # Remove repository from file system
     #
     # name - project path with namespace
@@ -56,7 +68,7 @@ module Gitlab
     def url_to_repo path
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
-   
+
     def gitlab_shell_user_home
       File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
     end
