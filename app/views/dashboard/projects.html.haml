@@ -24,7 +24,7 @@
     = form_tag projects_dashboard_path, method: 'get' do
       %fieldset.dashboard-search-filter
         = hidden_field_tag "scope", params[:scope]
-        = search_field_tag "search", params[:search], { placeholder: 'Search', class: 'left input-xxlarge' }
+        = search_field_tag "search", params[:search], { id: 'dashboard_projects_search', placeholder: 'Search', class: 'left input-xxlarge'}
         = button_tag type: 'submit', class: 'btn' do
           %i.icon-search
 
