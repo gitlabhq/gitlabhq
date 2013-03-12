@@ -99,7 +99,7 @@ namespace :gitlab do
       end
 
       begin
-        Gitlab::ProjectMover.new(project, '', group.path).execute
+        project.transfer(group.path)
         puts "moved to #{new_path}".green
       rescue
         puts "failed moving to #{new_path}".red

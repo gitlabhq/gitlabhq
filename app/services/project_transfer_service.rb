@@ -25,7 +25,7 @@ class ProjectTransferService
 
       true
     end
-  rescue Gitlab::ProjectMover::ProjectMoveError => ex
+  rescue => ex
     raise Project::TransferError.new(ex.message)
   end
 end
