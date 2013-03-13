@@ -21,7 +21,7 @@
           %td= @team.admin?(member) ? "Admin" : "Member"
           %td
       %tr
-        %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name_with_email), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
+        %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name_with_username), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
         %td= select_tag :default_project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3" }
         %td
           %span= check_box_tag :group_admin

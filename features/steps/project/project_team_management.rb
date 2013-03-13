@@ -21,7 +21,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   And 'I select "Mike" as "Reporter"' do
     user = User.find_by_name("Mike")
     within "#new_team_member" do
-      select user.name, :from => "user_ids"
+      select "#{user.name} (#{user.username})", :from => "user_ids"
       select "Reporter", :from => "project_access"
     end
     click_button "Add users"
