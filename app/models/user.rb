@@ -340,4 +340,8 @@ class User < ActiveRecord::Base
   def owned_teams
     UserTeam.where(owner_id: self.id)
   end
+
+  def name_with_username
+    "#{name} (#{username})"
+  end
 end
