@@ -9,8 +9,14 @@ module Grack
       @request = Rack::Request.new(env)
       @auth = Request.new(env)
 
+      unless Gitlab.config.gitlab.relative_url_root.empty?
+        #if website is mounted using relative_url_root need to remove it first
+        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root,'')
+      else
+        @env['PATH_INFO'] = @request.path
+      end
+
       # Need this patch due to the rails mount
-      @env['PATH_INFO'] = @request.path
       @env['SCRIPT_NAME'] = ""
 
       return render_not_found unless project
