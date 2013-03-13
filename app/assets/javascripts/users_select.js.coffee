@@ -16,7 +16,7 @@ $ ->
 
   $('.ajax-users-select').select2
     placeholder: "Search for a user"
-    multiple: true
+    multiple: $('.ajax-users-select').hasClass('multiselect')
     minimumInputLength: 0
     ajax: # instead of writing the function to execute the request we use Select2's convenient helper
       url: "/api/v3/users.json"

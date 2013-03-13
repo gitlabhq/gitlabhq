@@ -13,7 +13,7 @@ class Teams::MembersController < Teams::ApplicationController
 
   def create
     unless params[:user_ids].blank?
-      user_ids = params[:user_ids]
+      user_ids = params[:user_ids].split(',')
       access = params[:default_project_access]
       is_admin = params[:group_admin]
       user_team.add_members(user_ids, access, is_admin)

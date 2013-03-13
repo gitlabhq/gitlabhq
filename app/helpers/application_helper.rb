@@ -170,7 +170,9 @@ module ApplicationHelper
 
   alias_method :url_to_image, :image_url
 
-  def users_select_tag(id)
-    hidden_field_tag(id, '', class: "ajax-users-select")
+  def users_select_tag(id, opts = {})
+    css_class = "ajax-users-select"
+    css_class << " multiselect" if opts[:multiple]
+    hidden_field_tag(id, '', class: css_class)
   end
 end

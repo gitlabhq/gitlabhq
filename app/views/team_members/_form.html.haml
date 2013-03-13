@@ -12,8 +12,7 @@
   .clearfix
     = f.label :user_ids, "People"
     .input
-      = users_select_tag(:user_ids)
-      -#= select_tag(:user_ids, options_from_collection_for_select(User.active.not_in_project(@project).alphabetically, :id, :name_with_username), {data: {placeholder: "Select users"}, class: "chosen xxlarge", multiple: true})
+      = users_select_tag(:user_ids, multiple: true)
 
   %h6 2. Set access level for them
   .clearfix

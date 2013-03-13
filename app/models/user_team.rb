@@ -69,6 +69,9 @@ class UserTeam < ActiveRecord::Base
   end
 
   def add_members(users, access, group_admin)
+    # reject existing users
+    users.reject! { |id| member_ids.include?(id.to_i) }
+
     users.each do |user|
       add_member(user, access, group_admin)
     end
