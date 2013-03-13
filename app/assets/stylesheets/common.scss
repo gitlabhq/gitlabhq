@@ -554,3 +554,18 @@ img.emoji {
 .appear-data {
   display: none;
 }
+
+.ajax-users-select {
+  width: 400px;
+}
+
+.user-result {
+  .user-image {
+    float: left;
+  }
+  .user-name {
+  }
+  .user-username {
+    color: #999;
+  }
+}

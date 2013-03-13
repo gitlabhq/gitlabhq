@@ -169,4 +169,8 @@ module ApplicationHelper
   end
 
   alias_method :url_to_image, :image_url
+
+  def users_select_tag(id)
+    hidden_field_tag(id, '', class: "ajax-users-select")
+  end
 end
