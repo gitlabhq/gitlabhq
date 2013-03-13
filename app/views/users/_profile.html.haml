@@ -3,21 +3,21 @@
     Profile
   %ul.well-list
     %li
-      %strong Email
-      %span.pull-right= mail_to user.email
+      %span.light Member since
+      %strong= user.created_at.stamp("Aug 21, 2011")
     - unless user.skype.blank?
       %li
-        %strong Skype
-        %span.pull-right= user.skype
+        %span.light Skype:
+        %strong= user.skype
     - unless user.linkedin.blank?
       %li
-        %strong LinkedIn
-        %span.pull-right= user.linkedin
+        %span.light LinkedIn:
+        %strong= user.linkedin
     - unless user.twitter.blank?
       %li
-        %strong Twitter
-        %span.pull-right= user.twitter
+        %span.light Twitter:
+        %strong= user.twitter
     - unless user.bio.blank?
       %li
-        %strong Bio
-        %span.pull-right= user.bio
+        %span.light Bio:
+        %span= user.bio

@@ -81,12 +81,13 @@ class CommitDecorator < ApplicationDecorator
           else
             source_name
           end
-    team_member = @project.try(:team_member_by_name_or_email, source_name, source_email)
 
-    if team_member.nil?
-      h.mail_to source_email, text.html_safe, class: "commit-#{options[:source]}-link"
+    user = User.where('name like ? or email like ?', source_name, source_email).first
+
+    if user.nil?
+      h.mail_to(source_email, text.html_safe, class: "commit-#{options[:source]}-link")
     else
-      h.link_to text, h.project_team_member_path(@project, team_member), class: "commit-#{options[:source]}-link"
+      h.link_to(text.html_safe, h.user_path(user), class: "commit-#{options[:source]}-link")
     end
   end
 end

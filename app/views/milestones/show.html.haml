@@ -87,7 +87,7 @@
 %h6 Participants:
 %div
   - @users.each do |user|
-    = link_to tm_path(user.tm_of(@project)), class: 'float-link' do
+    = link_to user, class: 'float-link' do
       = user.avatar_image
       = user.name
 

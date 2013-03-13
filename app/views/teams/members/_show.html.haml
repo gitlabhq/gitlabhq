@@ -8,7 +8,7 @@
       = link_to user_path(user.username), title: user.name, class: "dark" do
         %strong= truncate(user.name, lenght: 40)
         %br
-        %small.cgray= user.email
+        %small.cgray= user.username
 
     .span4
       - if allow_admin

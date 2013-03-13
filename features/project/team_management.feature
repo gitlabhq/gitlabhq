@@ -23,13 +23,8 @@ Feature: Project Team management
     Then I visit project "Shop" team page
     And I should see "Sam" in team list as "Reporter"
 
-  Scenario: View team member profile
-    Given I click link "Sam"
-    Then I should see "Sam" team profile
-
   Scenario: Cancel team member
-    Given I click link "Sam"
-    And I click link "Remove from team"
+    Given I click cancel link for "Sam"
     Then I visit project "Shop" team page
     And I should not see "Sam" in team list
 

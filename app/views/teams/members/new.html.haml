@@ -15,7 +15,7 @@
         %tr.member
           %td
             = member.name
-            %small= "(#{member.email})"
+            %small= "(#{member.username})"
           %td= @team.human_default_projects_access(member)
           %td= @team.admin?(member) ? "Admin" : "Member"
           %td
