@@ -11,9 +11,12 @@ $ ->
     markup += "</div>"
     markup
 
+  userFormatSelection = (user) ->
+    user.name
 
   $('.ajax-users-select').select2
     placeholder: "Search for a user"
+    multiple: true
     minimumInputLength: 0
     ajax: # instead of writing the function to execute the request we use Select2's convenient helper
       url: "/api/v3/users.json"
@@ -40,7 +43,7 @@ $ ->
 
 
     formatResult: userFormatResult # omitted for brevity, see the source of this page
-    #formatSelection: userFormatSelection # omitted for brevity, see the source of this page
+    formatSelection: userFormatSelection # omitted for brevity, see the source of this page
     dropdownCssClass: "ajax-users-dropdown" # apply css that makes the dropdown taller
     escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
       m
