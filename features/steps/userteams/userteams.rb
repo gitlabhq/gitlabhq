@@ -184,7 +184,7 @@ class Userteams < Spinach::FeatureSteps
     And 'I select user "John" from list with role "Reporter"' do
       user = User.find_by_name("John")
       within "#team_members" do
-        select "#{user.name} (#{user.email})", from: "user_ids"
+        select "#{user.name} (#{user.username})", from: "user_ids"
         select "Reporter", from: "default_project_access"
       end
       click_button "Add"
