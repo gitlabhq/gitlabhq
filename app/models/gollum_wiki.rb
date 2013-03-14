@@ -2,14 +2,7 @@ class GollumWiki
 
   MARKUPS = {
     "Markdown"         => :markdown,
-    "Textile"          => :textile,
-    "RDoc"             => :rdoc,
-    "Org-mode"         => :org,
-    "Creole"           => :creole,
-    "reStructuredText" => :rest,
-    "AsciiDoc"         => :asciidoc,
-    "MediaWiki"        => :mediawiki,
-    "Pod"              => :post
+    "RDoc"             => :rdoc
   }
 
   class CouldNotCreateWikiError < StandardError; end
