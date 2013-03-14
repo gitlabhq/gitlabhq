@@ -16,7 +16,7 @@ class TeamMembersController < ProjectResourceController
   end
 
   def create
-    users = User.where(id: params[:user_ids])
+    users = User.where(id: params[:user_ids].split(','))
 
     @project.team << [users, params[:project_access]]
 

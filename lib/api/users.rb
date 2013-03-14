@@ -9,7 +9,8 @@ module Gitlab
       # Example Request:
       #  GET /users
       get do
-        @users = paginate User
+        @users = User.scoped
+        @users = @users.search(params[:search]) if params[:search].present?
         present @users, with: Entities::User
       end
 

@@ -113,6 +113,7 @@ group :assets do
   gem "therubyracer"
 
   gem 'chosen-rails',     "0.9.8"
+  gem 'select2-rails'
   gem 'jquery-atwho-rails', "0.1.7"
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
