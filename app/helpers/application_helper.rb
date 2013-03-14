@@ -110,7 +110,7 @@ module ApplicationHelper
       ]
     end
 
-    [groups, projects, default_nav, project_nav, help_nav].flatten.to_json
+    [groups, teams, projects, default_nav, project_nav, help_nav].flatten.to_json
   end
 
   def emoji_autocomplete_source
