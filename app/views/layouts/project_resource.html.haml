@@ -41,6 +41,6 @@
 
         - if @project.wiki_enabled
           = nav_link(controller: :wikis) do
-            = link_to 'Wiki', project_wiki_path(@project, :index)
+            = link_to 'Wiki', project_wiki_path(@project, :home)
 
       .content= yield
