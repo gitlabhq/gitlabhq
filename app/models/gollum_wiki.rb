@@ -1,8 +1,8 @@
 class GollumWiki
 
   MARKUPS = {
-    "Markdown"         => :markdown,
-    "RDoc"             => :rdoc
+    "Markdown" => :markdown,
+    "RDoc"     => :rdoc
   }
 
   class CouldNotCreateWikiError < StandardError; end
