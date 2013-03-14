@@ -73,9 +73,9 @@ class Userteams < Spinach::FeatureSteps
   end
 
   Then 'I should see projects list' do
-    page.should have_css(".projects_box")
-    projects_box = find(".projects_box")
-    projects_box.should have_content(@project.name)
+    within(".side .ui-box") do
+      page.should have_content(@project.name)
+    end
   end
 
   And 'project from team has issues assigned to me' do
