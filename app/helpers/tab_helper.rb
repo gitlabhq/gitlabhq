@@ -73,7 +73,7 @@ module TabHelper
   end
 
   def project_tab_class
-    [:show, :files, :edit, :update].each do |action|
+    [:files, :edit].each do |action|
       return "active" if current_page?(controller: "projects", action: action, id: @project)
     end
 
