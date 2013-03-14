@@ -1,3 +1,4 @@
-= render "head"
+%div.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'tree', path: @path
 %div#tree-holder.tree-holder
   = render "tree", tree: @tree
