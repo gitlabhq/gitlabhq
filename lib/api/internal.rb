@@ -40,6 +40,23 @@ module Gitlab
       end
 
       #
+      # Check if ssh key belongs to an admin
+      #
+      # Params:
+      #   key_id - SSH Key id
+      #
+      get "/admin" do
+        key = Key.find(params[:key_id])
+
+        if key.is_deploy_key
+          return false
+        else
+          user = key.user
+          return user.admin? && !user.blocked?
+        end
+      end
+
+      #
       # Discover user by ssh key
       #
       get "/discover" do
