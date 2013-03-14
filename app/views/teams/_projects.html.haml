@@ -5,7 +5,7 @@
       (#{projects.count})
     - if can? current_user, :manage_user_team, @team
       %span.pull-right
-        = link_to new_team_project_path(@team), class: "btn btn-tiny info" do
+        = link_to edit_team_path(@team), class: "btn btn-tiny info" do
           %i.icon-plus
           Assign Project
   %ul.well-list

@@ -26,14 +26,8 @@
             %span.count= @team.members.count
 
         - if can? current_user, :admin_user_team, @team
-          = nav_link(controller: [:projects]) do
-            = link_to team_projects_path(@team), class: "team-tab tab" do
-              Projects
-              %span.count= @team.projects.count
-
           = nav_link(path: 'teams#edit') do
             = link_to edit_team_path(@team), class: "stat-tab tab " do
-              %i.icon-edit
-              Edit Team
+              Settings
 
       .content= yield

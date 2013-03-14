@@ -11,6 +11,12 @@ table {
     }
   }
 
+  &.headless {
+    tr:first-child td{
+      border-top: 1px solid #CCC;
+    }
+  }
+
   th {
     font-weight: bold;
     vertical-align: middle;
