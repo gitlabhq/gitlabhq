@@ -35,17 +35,11 @@
               Merge Requests
               %span.count.merge_counter= @project.merge_requests.opened.count
 
-        - if @project.wall_enabled
-          = nav_link(path: 'projects#wall') do
-            = link_to 'Wall', wall_project_path(@project)
-
-        - if @project.wiki_enabled
-          = nav_link(controller: :wikis) do
-            = link_to 'Wiki', project_wiki_path(@project, :index)
+        = nav_link(html_options: {class: "#{project_writeboards_tab_class}"}) do
+          = link_to 'Writeboards', project_wiki_path(@project, :index)
 
         - if can? current_user, :admin_project, @project
           = nav_link(html_options: {class: "#{project_tab_class}"}) do
             = link_to edit_project_path(@project), class: "stat-tab tab " do
               Settings
-
       .content= yield

@@ -1,0 +1,14 @@
+%ul.nav.nav-pills.nav-stacked
+  - if @project.wiki_enabled
+    = nav_link(controller: 'wikis') do
+      = link_to 'Wiki', project_wiki_path(@project, :index)
+
+  - if @project.wall_enabled
+    = nav_link(path: 'projects#wall') do
+      = link_to 'Wall', wall_project_path(@project)
+
+  = nav_link(path: 'projects#files') do
+    = link_to 'Attachments', files_project_path(@project), class: "files-tab tab"
+
+  = nav_link(controller: :snippets) do
+    = link_to 'Snippets', project_snippets_path(@project), class: "snippets-tab tab"
