@@ -125,6 +125,10 @@ module SharedPaths
     visit project_path(@project)
   end
 
+  Given "I visit my project's settings page" do
+    visit edit_project_path(@project)
+  end
+
   Given "I visit my project's files page" do
     visit project_tree_path(@project, root_ref)
   end
