@@ -15,6 +15,7 @@ module Gitlab
         key = Key.find(params[:key_id])
         project = Project.find_with_namespace(params[:project])
         git_cmd = params[:action]
+        return false unless project
 
         if key.is_deploy_key
           project == key.project && git_cmd == 'git-upload-pack'
