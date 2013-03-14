@@ -10,7 +10,7 @@
 .file_holder
   .file_content.wiki
     = preserve do
-      = @wiki.formatted_content.html_safe
+      = render_wiki_content(@wiki)
 
 - commit = CommitDecorator.new(@wiki.version)
 %p.time Last edited by #{commit.author_link(avatar: true, size: 16)} #{time_ago_in_words @wiki.created_at} ago
