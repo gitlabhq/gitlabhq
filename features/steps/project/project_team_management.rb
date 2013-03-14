@@ -2,6 +2,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include Select2Helper
 
   Then 'I should be able to see myself in team' do
     page.should have_content(@user.name)
@@ -20,8 +21,9 @@ class ProjectTeamManagement < Spinach::FeatureSteps
 
   And 'I select "Mike" as "Reporter"' do
     user = User.find_by_name("Mike")
+
+    select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select "#{user.name} (#{user.username})", :from => "user_ids"
       select "Reporter", :from => "project_access"
     end
     click_button "Add users"

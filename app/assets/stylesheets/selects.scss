@@ -1,3 +1,23 @@
+.ajax-users-select {
+  width: 400px;
+}
+
+.user-result {
+  .user-image {
+    float: left;
+  }
+  .user-name {
+  }
+  .user-username {
+    color: #999;
+  }
+}
+
+.select2-no-results {
+  padding: 7px;
+  color: #666;
+}
+
 /** Branch/tag selector **/
 .project-refs-form {
   margin: 0;

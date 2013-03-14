@@ -19,7 +19,7 @@ $ ->
     multiple: $('.ajax-users-select').hasClass('multiselect')
     minimumInputLength: 0
     ajax: # instead of writing the function to execute the request we use Select2's convenient helper
-      url: "/api/v3/users.json"
+      url: "/api/" + gon.api_version + "/users.json"
       dataType: "json"
       data: (term, page) ->
         search: term # search term
@@ -33,11 +33,11 @@ $ ->
     initSelection: (element, callback) ->
       id = $(element).val()
       if id isnt ""
-        $.ajax("http://api.rottentomatoes.com/api/public/v1.0/users/" + id + ".json",
+        $.ajax(
+          "/api/" + gon.api_version + "/users/" + id + ".json",
+          dataType: "json"
           data:
-            apikey: "ju6z9mjyajq2djue3gbvv26t"
-
-          dataType: "jsonp"
+            private_token: gon.api_token
         ).done (data) ->
           callback data
 

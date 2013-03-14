@@ -46,6 +46,7 @@ Feature: UserTeams
     When I visit team merge requests page
     Then I should see merge requests from this team assigned to me
 
+  @javascript
   Scenario: I should add user to projects in Team
     Given I have team with projects and members
     Given I have new user "John"

@@ -11,6 +11,7 @@ Feature: Project Team management
     Then I should be able to see myself in team
     And I should see "Sam" in team list
 
+  @javascript
   Scenario: Add user to project
     Given I click link "New Team Member"
     And I select "Mike" as "Reporter"

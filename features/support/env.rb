@@ -14,7 +14,7 @@ require 'spinach/capybara'
 require 'sidekiq/testing/inline'
 
 
-%w(stubbed_repository valid_commit).each do |f|
+%w(stubbed_repository valid_commit select2_helper).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
