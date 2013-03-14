@@ -94,6 +94,7 @@ class GroupsController < ApplicationController
 
     if owner_id
       @group.owner = User.find(owner_id)
+      @group.save
     end
 
     if @group.update_attributes(group_params)

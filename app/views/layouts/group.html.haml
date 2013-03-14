@@ -25,7 +25,6 @@
         - if can?(current_user, :manage_group, @group)
           = nav_link(path: 'groups#edit') do
             = link_to edit_group_path(@group), class: "tab " do
-              %i.icon-edit
-              Edit Group
+              Settings
 
       .content= yield

@@ -13,11 +13,6 @@
   }
 }
 
-.select2-no-results, .select2-searching {
-  padding: 7px;
-  color: #666;
-}
-
 /** Branch/tag selector **/
 .project-refs-form {
   margin: 0;
@@ -107,4 +102,27 @@
       font-weight: normal;
     }
   }
+}
+
+/** Select2 styling **/
+.select2-container .select2-choice {
+  background: #f1f1f1;
+  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, whitesmoke), to(#e1e1e1));
+  background-image: -webkit-linear-gradient(whitesmoke 6.6%, #e1e1e1);
+  background-image: -moz-linear-gradient(whitesmoke 6.6%, #e1e1e1);
+  background-image: -o-linear-gradient(whitesmoke 6.6%, #e1e1e1);
+}
+
+.select2-container .select2-choice div {
+  border: none;
+  background: none;
+}
+
+.select2-drop {
+  padding-top: 8px;
+}
+
+.select2-no-results, .select2-searching {
+  padding: 7px;
+  color: #666;
 }

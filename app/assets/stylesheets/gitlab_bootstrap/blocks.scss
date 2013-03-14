@@ -20,6 +20,15 @@
     background: #FFF;
   }
 
+  &.ui-box-danger {
+    .title {
+      @include linear-gradient(#F26E5E, #bd362f);
+      color: #fff;
+      text-shadow: 0 1px 1px #900;
+      font-weight: bold;
+    }
+  }
+
   img { max-width: 100%; }
 
   pre {
@@ -140,5 +149,21 @@
       color: #444;
       text-decoration: underline;
     }
+  }
+
+  .form-holder {
+    padding-top: 20px;
+    form {
+      margin-bottom: 0;
+      .form-actions {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.tab-pane {
+  .ui-box {
+    margin: 3px 3px 25px 3px;
   }
 }
