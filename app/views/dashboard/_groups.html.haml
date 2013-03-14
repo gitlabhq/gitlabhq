@@ -12,10 +12,13 @@
     - groups.each do |group|
       %li
         = link_to group_path(id: group.path), class: dom_class(group) do
-          %strong.well-title= truncate(group.name, length: 35)
-        %span.pull-right.light
-          - if group.owner == current_user
-            %i.icon-wrench
+          %strong.well-title
+            = truncate(group.name, length: 35)
+          %span.arrow
+            &rarr;
+          %span.last_activity
+            %strong Owner:
+            %span= group.owner_name
     - if groups.blank?
       %li
         %h3.nothing_here_message You have no groups yet.

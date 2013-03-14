@@ -206,12 +206,8 @@ class Userteams < Spinach::FeatureSteps
     visit team_path(team)
   end
 
-  When 'I click on link "Projects"' do
-    click_link "Projects"
-  end
-
-  And 'I click link "Assign project to Team"' do
-    click_link "Assign project to Team"
+  When 'I click on link "Assign Project"' do
+    click_link "Assign Project"
   end
 
   Then 'I should see form with my own project in avaliable projects list' do

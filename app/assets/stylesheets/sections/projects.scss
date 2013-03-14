@@ -6,11 +6,8 @@
   .side {
     @extend .pull-right;
 
-    .projects_box, .ui-box {
+    .ui-box {
       margin: 3px;
-    }
-
-    .projects_box {
       > .title {
         padding: 2px 15px;
       }
