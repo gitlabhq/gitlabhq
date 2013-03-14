@@ -53,6 +53,12 @@ $ ->
   $('.trigger-submit').on 'change', ->
     $(@).parents('form').submit()
 
+  # Wiki resizer
+  $('.wiki-fullscreen').on 'click', ->
+    $('.writeboards-menu').toggleClass('hide')
+    $('.writeboards-content').toggleClass('span9').toggleClass('span12')
+
+
   # Flash
   if (flash = $(".flash-container")).length > 0
     flash.click -> $(@).fadeOut()

@@ -1,25 +1,27 @@
 .row
-  .span3
+  .span3.writeboards-menu
     = render 'writeboards/nav'
-  .span9
-    %h3.page_title
-      = @wiki.title
-      %span.pull-right
-        = link_to pages_project_wikis_path(@project), class: "btn btn-small grouped" do
-          Pages
-        - if can? current_user, :write_wiki, @project
-          = link_to history_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
-            History
-          = link_to edit_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
-            %i.icon-edit
-            Edit
-    %br
+  .span9.writeboards-content
     - if @wiki != @most_recent_wiki
-      .warning_message
+      .alert
         This is an old version of this page.
         You can view the #{link_to "most recent version", project_wiki_path(@project, @wiki)} or browse the #{link_to "history", history_project_wiki_path(@project, @wiki)}.
 
     .file_holder
+      .file_title
+        = link_to '#', class: 'wiki-fullscreen' do
+          %i.icon-resize-horizontal
+        = @wiki.title
+        %span.options
+          = link_to pages_project_wikis_path(@project), class: "btn btn-tiny grouped" do
+            Pages
+          - if can? current_user, :write_wiki, @project
+            = link_to history_project_wiki_path(@project, @wiki), class: "btn btn-tiny grouped" do
+              History
+            = link_to edit_project_wiki_path(@project, @wiki), class: "btn btn-tiny grouped" do
+              %i.icon-edit
+              Edit
+
       .file_content.wiki
         = preserve do
           = markdown @wiki.content
