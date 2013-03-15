@@ -24,6 +24,7 @@ class Note < ActiveRecord::Base
 
   attr_accessor :notify
   attr_accessor :notify_author
+  attr_accessor :notify_masters
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true
@@ -149,6 +150,10 @@ class Note < ActiveRecord::Base
 
   def notify_author
     @notify_author ||= false
+  end
+
+  def notify_masters
+    @notify_masters ||= false
   end
 
   # Returns true if this is an upvote note,
