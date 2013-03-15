@@ -36,7 +36,7 @@
               %span.count.merge_counter= @project.merge_requests.opened.count
 
         = nav_link(html_options: {class: "#{project_writeboards_tab_class}"}) do
-          = link_to 'Writeboards', project_wiki_path(@project, :index)
+          = link_to 'Wiki', project_wiki_path(@project, :index)
 
         - if can? current_user, :admin_project, @project
           = nav_link(html_options: {class: "#{project_tab_class}"}) do
