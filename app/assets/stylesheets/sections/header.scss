@@ -72,13 +72,22 @@ header {
     @include header-font;
   }
 
+  .profile-pic {
+    position: relative;
+    top: -4px;
+    img {
+      width: 26px;
+      @include border-radius(4px);
+    }
+  }
+
   /**
    *
    * Search box
    *
    */
   .search {
-    margin-right: 45px;
+    margin-right: 10px;
     margin-left: 10px;
 
     .search-input {
@@ -97,115 +106,6 @@ header {
       }
     }
   }
-
-  /**
-   *
-   * Account box
-   *
-   */
-  .account-box {
-    position: absolute;
-    right: 0;
-    top: 4px;
-    z-index: 10000;
-    width: 128px;
-    font-size: 11px;
-    float: right;
-    display: block;
-    cursor: pointer;
-    img {
-      @include border-radius(3px);
-      right: 5px;
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      display: block;
-      top: 1px;
-      &:after {
-        content: " ";
-        display: block;
-        position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        float: right;
-        @include border-radius(5px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-bottom: 0;
-        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.15)), to(rgba(0, 0, 0, 0.25))),
-                    -webkit-gradient(linear, left top, right bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.5, rgba(255, 255, 255, 0.1)), color-stop(0.501, rgba(255, 255, 255, 0)), color-stop(1, rgba(255, 255, 255, 0)));
-        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.25)),
-                    -moz-linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
-        background: linear-gradient(top, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.25)),
-                    linear-gradient(left top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0));
-        -webkit-background-origin: border-box;
-        -moz-background-origin: border;
-  background-origin: border-box; } } }
-
-  .account-box {
-    &.hover {
-    height: 138px; }
-    &:hover > .account-links {
-  display: block; } }
-
-  .account-links {
-    @include border-radius(5px);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    position: relative;
-    &:before {
-      content: ".";
-      width: 0;
-      height: 0;
-      position: absolute;
-      border: 5px solid transparent;
-      border-color: rgba(255, 255, 255, 0);
-      border-bottom-color: #555;
-      text-indent: -9999px;
-      top: -10px;
-      line-height: 0;
-      right: 10px;
-    z-index: 10; }
-    background: #555;
-    display: none;
-    z-index: 100000;
-    @include border-radius(4px);
-    width: 130px;
-    position: absolute;
-    right: 5px;
-    top: 38px;
-    margin-top: 0;
-    float: right;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    a {
-      color: #fff;
-      padding: 12px 15px;
-      display: block;
-      text-shadow: none;
-      border-bottom: 1px solid #666;
-      font-size: 12px;
-      &:hover {
-        color: #fff;
-        background: #333;
-      }
-    }
-  }
-
-  .account-box.hover .arrow-up {
-    top: 41px;
-    right: 6px;
-    position: absolute; }
-
-  .account-links a {
-    &:first-child {
-      @include border-radius(5px 5px 0 0);
-    }
-    &:last-child {
-      @include border-radius(0 0 5px 5px);
-      border-bottom: 0;
-    }
-  }
-
 
 
   /*
