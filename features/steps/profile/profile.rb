@@ -67,11 +67,15 @@ class Profile < Spinach::FeatureSteps
   end
 
   When "I change my application theme" do
-    choose "Violet"
+    within '.application-theme' do
+      choose "Violet"
+    end
   end
 
   When "I change my code preview theme" do
-    choose "Dark code preview"
+    within '.code-preview-theme' do
+      choose "Solarized Dark"
+    end
   end
 
   Then "I should see the theme change immediately" do
