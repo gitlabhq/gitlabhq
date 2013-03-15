@@ -21,7 +21,7 @@ Please visit our [Support Forum](https://groups.google.com/forum/#!forum/gitlabh
 
 ## Paid support
 
-Community support in the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) is done by volunteers. Paid support is available from [GitLab.com](http://blog.gitlab.com/services/)
+Community support in the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) is done by volunteers. A support subscription is available from [GitLab.com](http://blog.gitlab.com/subscription/)
 
 ## Feature suggestions
 
