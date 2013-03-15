@@ -7,9 +7,9 @@
 #  project_id  :integer          not null
 #  description :text
 #  due_date    :date
-#  state       :string           default(FALSE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  state       :string(255)
 #
 
 require 'spec_helper'

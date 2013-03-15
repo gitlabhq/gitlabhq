@@ -4,12 +4,12 @@
 #
 #  id          :integer          not null, primary key
 #  name        :string(255)      not null
-#  description :string(255)      not null
 #  path        :string(255)      not null
 #  owner_id    :integer          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  type        :string(255)
+#  description :string(255)      default(""), not null
 #
 
 class Namespace < ActiveRecord::Base

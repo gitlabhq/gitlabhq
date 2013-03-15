@@ -16,6 +16,8 @@
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
 #  public                 :boolean          default(FALSE), not null
+#  issues_tracker         :string(255)      default("gitlab"), not null
+#  issues_tracker_id      :string(255)
 #
 
 require 'spec_helper'
