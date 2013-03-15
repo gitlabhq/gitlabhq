@@ -99,6 +99,13 @@ gem "colored"
 # GitLab settings
 gem 'settingslogic'
 
+# Wiki 
+# - Use latest master to resolve Gem dependency with Pygemnts
+# github-linquist needs pygments 0.4.2 but Gollum 2.4.11
+# requires pygments 0.3.2. The latest master Gollum has been updated
+# to use pygments 0.4.2. Change this after next Gollum release.
+gem "gollum", "~> 2.4.0", git: "git://github.com/github/gollum.git"
+
 # Misc
 gem "foreman"
 gem "git"

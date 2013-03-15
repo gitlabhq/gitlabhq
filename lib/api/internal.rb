@@ -12,9 +12,17 @@ module Gitlab
       #   ref - branch name
       #
       get "/allowed" do
+        # Check for *.wiki repositories.
+        # Strip out the .wiki from the pathname before finding the
+        # project. This applies the correct project permissions to
+        # the wiki repository as well.
+        project_path = params[:project]
+        project_path.gsub!(/\.wiki/,'') if project_path =~ /\.wiki/
+
         key = Key.find(params[:key_id])
-        project = Project.find_with_namespace(params[:project])
+        project = Project.find_with_namespace(project_path)
         git_cmd = params[:action]
+
 
         if key.is_deploy_key
           project == key.project && git_cmd == 'git-upload-pack'
