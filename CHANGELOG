@@ -14,6 +14,18 @@ v 5.0.0
   - Add validations for Group and Team names
   - Restyle team page for project
   - Update capybara, rspec-rails, poltergeist to recent versions
+  - Wiki on git using Gollum 
+  - Added Solarized Dark theme for code review
+  - Dont show user emails in autocomplete lists, profile pages
+  - Added settings tab for group, team, project
+  - Move snippets, wall and wiki under same tab
+  - Replace user popup with icons in header
+  - Handle project moving with gitlab-shell
+  - Added select2-rails for selectboxes with ajax data load
+  - Fixed search field on projects page
+  - Added teams to search autocomplete
+  - Move groups and teams on dashboard sidebar to sub-tabs
+  - API: improved return codes and docs.
 
 v 4.2.0
   - Teams
