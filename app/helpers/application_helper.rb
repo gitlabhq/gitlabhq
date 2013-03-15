@@ -128,7 +128,13 @@ module ApplicationHelper
   end
 
   def user_color_scheme_class
-    current_user.dark_scheme ? :black : :white
+    case current_user.color_scheme_id
+    when 1 then 'white'
+    when 2 then 'black'
+    when 3 then 'solarized-dark'
+    else
+      'white'
+    end
   end
 
   def show_last_push_widget?(event)

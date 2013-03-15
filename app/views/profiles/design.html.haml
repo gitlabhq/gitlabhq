@@ -43,10 +43,15 @@
       = label_tag do
         .prev
           = image_tag "white.png"
-        = f.radio_button :dark_scheme, false
+        = f.radio_button :color_scheme_id, 1
         White code preview
       = label_tag do
         .prev
           = image_tag "dark.png"
-        = f.radio_button :dark_scheme, true
+        = f.radio_button :color_scheme_id, 2
         Dark code preview
+      = label_tag do
+        .prev
+          = image_tag "dark.png"
+        = f.radio_button :color_scheme_id, 3
+        Solarized Dark code preview

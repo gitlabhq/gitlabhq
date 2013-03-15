@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130304105317) do
+ActiveRecord::Schema.define(:version => 20130315124931) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -258,7 +258,6 @@ ActiveRecord::Schema.define(:version => 20130304105317) do
     t.string   "linkedin",               :default => "",    :null => false
     t.string   "twitter",                :default => "",    :null => false
     t.string   "authentication_token"
-    t.boolean  "dark_scheme",            :default => false, :null => false
     t.integer  "theme_id",               :default => 1,     :null => false
     t.string   "bio"
     t.integer  "failed_attempts",        :default => 0
@@ -269,6 +268,7 @@ ActiveRecord::Schema.define(:version => 20130304105317) do
     t.boolean  "can_create_group",       :default => true,  :null => false
     t.boolean  "can_create_team",        :default => true,  :null => false
     t.string   "state"
+    t.integer  "color_scheme_id",        :default => 1,     :null => false
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"

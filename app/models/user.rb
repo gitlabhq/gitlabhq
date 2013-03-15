@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
-                  :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
+                  :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
                   :extern_uid, :provider, as: [:default, :admin]
   attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
 
