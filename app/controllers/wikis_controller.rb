@@ -2,58 +2,94 @@ class WikisController < ProjectResourceController
   before_filter :authorize_read_wiki!
   before_filter :authorize_write_wiki!, only: [:edit, :create, :history]
   before_filter :authorize_admin_wiki!, only: :destroy
+  before_filter :load_gollum_wiki
 
   def pages
-    @wiki_pages = @project.wikis.group(:slug).ordered
+    @wiki_pages = @gollum_wiki.pages
   end
 
   def show
-    @most_recent_wiki = @project.wikis.where(slug: params[:id]).ordered.first
-    if params[:version_id]
-      @wiki = @project.wikis.find(params[:version_id])
-    else
-      @wiki = @most_recent_wiki
-    end
+    @wiki = @gollum_wiki.find_page(params[:id], params[:version_id])
 
     if @wiki
       render 'show'
     else
-      if can?(current_user, :write_wiki, @project)
-        @wiki = @project.wikis.new(slug: params[:id])
-        render 'edit'
-      else
-        render 'empty'
-      end
+      return render('empty') unless can?(current_user, :write_wiki, @project)
+      @wiki = WikiPage.new(@gollum_wiki)
+      @wiki.title = params[:id]
+
+      render 'edit'
     end
   end
 
   def edit
-    @wiki = @project.wikis.where(slug: params[:id]).ordered.first
-    @wiki = Wiki.regenerate_from @wiki
+    @wiki = @gollum_wiki.find_page(params[:id])
+  end
+
+  def update
+    @wiki = @gollum_wiki.find_page(params[:id])
+
+    return render('empty') unless can?(current_user, :write_wiki, @project)
+
+    if @wiki.update(content, format, message)
+      redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.'
+    else
+      render 'edit'
+    end
   end
 
   def create
-    @wiki = @project.wikis.new(params[:wiki])
-    @wiki.user = current_user
+    @wiki = WikiPage.new(@gollum_wiki)
 
-    respond_to do |format|
-      if @wiki.save
-        format.html { redirect_to [@project, @wiki], notice: 'Wiki was successfully updated.' }
-      else
-        format.html { render action: "edit" }
-      end
+    if @wiki.create(wiki_params)
+      redirect_to project_wiki_path(@project, @wiki), notice: 'Wiki was successfully updated.'
+    else
+      render action: "edit"
     end
   end
 
   def history
-    @wiki_pages = @project.wikis.where(slug: params[:id]).ordered
+    unless @wiki = @gollum_wiki.find_page(params[:id])
+      redirect_to project_wiki_path(@project, :home), notice: "Page not found"
+    end
   end
 
   def destroy
-    @wikis = @project.wikis.where(slug: params[:id]).delete_all
-
-    respond_to do |format|
-      format.html { redirect_to project_wiki_path(@project, :index), notice: "Page was successfully deleted" }
-    end
+    @wiki = @gollum_wiki.find_page(params[:id])
+    @wiki.delete if @wiki
+    redirect_to project_wiki_path(@project, :home), notice: "Page was successfully deleted"
   end
+
+  def git_access
+  end
+
+  private
+
+  def load_gollum_wiki
+    @gollum_wiki = GollumWiki.new(@project, current_user)
+
+    # Call #wiki to make sure the Wiki Repo is initialized
+    @gollum_wiki.wiki
+  rescue GollumWiki::CouldNotCreateWikiError => ex
+    flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
+    redirect_to @project
+    return false
+  end
+
+  def wiki_params
+    params[:wiki].slice(:title, :content, :format, :message)
+  end
+
+  def content
+    params[:wiki][:content]
+  end
+
+  def format
+    params[:wiki][:format]
+  end
+
+  def message
+    params[:wiki][:message]
+  end
+
 end
