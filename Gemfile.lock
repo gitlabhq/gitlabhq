@@ -1,6 +1,7 @@
 GIT
-  remote: git://github.com/github/gollum.git
-  revision: 544d499ab170c9d9b355b7a0160afc74139ee2a4
+  remote: git://github.com/gollum/gollum.git
+  revision: 5dcd3c8c8f68158e43ff79861279088ee56d0ebe
+  ref: 5dcd3c8c8f
   specs:
     gollum (2.4.11)
       github-markdown (~> 0.5.3)
