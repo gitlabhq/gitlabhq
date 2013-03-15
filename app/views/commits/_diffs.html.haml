@@ -25,7 +25,7 @@
             %span= diff.old_path
 
             - if @commit.prev_commit
-              = link_to project_tree_path(@project, tree_join(@commit.prev_commit_id, diff.new_path)), {:class => 'btn pull-right view-file'} do
+              = link_to project_tree_path(@project, tree_join(@commit.prev_commit_id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
                 View file @
                 %span.commit-short-id= @commit.short_id(6)
           - else

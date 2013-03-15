@@ -284,6 +284,6 @@ ul.notes {
     margin-top: 8px;
     margin-left: 15px;
     @extend .pull-left;
-    @extend .span4;
+    width: 35%;
   }
 }

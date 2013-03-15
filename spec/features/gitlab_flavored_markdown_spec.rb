@@ -218,7 +218,7 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should NOT render title in wikis#show" do
-      within(".content h3") do # page title
+      within(".content .file_title") do # page title
         page.should have_content("Circumvent ##{issue.id}")
         page.should_not have_link("##{issue.id}")
       end
