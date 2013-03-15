@@ -1,23 +1,20 @@
-.row
-  .span3
-    = render 'writeboards/nav'
-  .span9
-    %h3.page_title
-      Snippets
-      %small share code pastes with others out of git repository
+= render 'wikis/nav'
+%h3.page_title
+  Snippets
+  %small share code pastes with others out of git repository
 
-      - if can? current_user, :write_snippet, @project
-        = link_to new_project_snippet_path(@project), class: "btn btn-small add_new pull-right", title: "New Snippet" do
-          Add new snippet
-    %br
-    %table
-      %thead
-        %tr
-          %th Title
-          %th File Name
-          %th Expires At
-      = render @snippets
-      - if @snippets.empty?
-        %tr
-          %td{colspan: 3}
-            %h3.nothing_here_message Nothing here.
+  - if can? current_user, :write_snippet, @project
+    = link_to new_project_snippet_path(@project), class: "btn btn-small add_new pull-right", title: "New Snippet" do
+      Add new snippet
+%br
+%table
+  %thead
+    %tr
+      %th Title
+      %th File Name
+      %th Expires At
+  = render @snippets
+  - if @snippets.empty?
+    %tr
+      %td{colspan: 3}
+        %h3.nothing_here_message Nothing here.

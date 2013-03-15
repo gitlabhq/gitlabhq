@@ -80,7 +80,7 @@ module TabHelper
     end
   end
 
-  def project_writeboards_tab_class
+  def project_wiki_tab_class
     [:files, :wall].each do |action|
       return "active" if current_page?(controller: "projects", action: action, id: @project)
     end
