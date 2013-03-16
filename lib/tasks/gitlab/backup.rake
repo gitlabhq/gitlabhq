@@ -178,8 +178,9 @@ namespace :gitlab do
         ActiveRecord::Base.connection.tables.each do |tbl|
           print " * #{tbl.yellow} ... "
           count = 1
+          safe_tablename = ActiveRecord::Base.connection.quote_table_name(tbl)
           File.open(File.join(backup_path_db, tbl + ".yml"), "w+") do |file|
-            ActiveRecord::Base.connection.select_all("SELECT * FROM `#{tbl}`").each do |line|
+            ActiveRecord::Base.connection.select_all("SELECT * FROM #{safe_tablename}").each do |line|
               line.delete_if{|k,v| v.blank?}
               output = {tbl + '_' + count.to_s => line}
               file << output.to_yaml.gsub(/^---\n/,'') + "\n"
