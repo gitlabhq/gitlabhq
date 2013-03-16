@@ -14,7 +14,7 @@
     - projects.each do |project|
       %li
         = link_to project_path(project), class: dom_class(project) do
-          %strong.well-title= truncate(project.name, length: 25)
+          %strong.well-title= truncate(project.name_with_namespace, length: 40)
           %span.arrow
             &rarr;
           %span.last_activity
