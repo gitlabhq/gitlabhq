@@ -108,6 +108,111 @@ describe WikiToGollumMigrator do
         end
       end
     end
+
+    context "wikis with pages that have titles that do not match the slugs" do
+      before do
+        project = @projects.last
+        @page = project.wikis.new(title: "test page", content: "Invalid Page")
+        @page.slug = "totally-incorrect-slug"
+        @page.user = project.owner
+        @page.save!
+
+        create_revision(@page)
+
+        subject.rollback!
+        subject.migrate!
+      end
+
+      it "has a page with a title differing the slug" do
+        @page.slug.should_not == @page.title.parameterize
+      end
+
+      it "creates a new revision for each old revision of the page" do
+        @projects.each do |project|
+          wiki = GollumWiki.new(project, nil)
+          wiki.pages.each do |page|
+            page.versions.count.should == 2
+          end
+        end
+      end
+    end
+
+    context "changing wiki title from index to home" do
+      before do
+        @project = @projects.last
+        @page = @project.wikis.new(title: "Index", content: "Home Page")
+        @page.slug = "index"
+        @page.user = @project.owner
+        @page.save!
+
+        create_revision(@page)
+
+        subject.rollback!
+      end
+
+      it "creates a page called Home" do
+        subject.migrate!
+        wiki = GollumWiki.new(@project, nil)
+        page = wiki.find_page("home")
+        page.should be_present
+      end
+
+      context "when a page called Home already exists" do
+        before do
+        @index_page = @project.wikis.new(title: "Index", content: "Index Page")
+        @index_page.slug = "index"
+        @index_page.user = @project.owner
+        @index_page.save!
+
+        create_revision(@index_page)
+
+        @home_page = @project.wikis.new(title: "Home", content: "Home Page")
+        @home_page.slug = "home"
+        @home_page.user = @project.owner
+        @home_page.save!
+
+        create_revision(@home_page)
+        subject.migrate!
+        end
+
+        it "creates the index page" do
+          wiki = GollumWiki.new(@project, nil)
+          page = wiki.find_page("index")
+          page.should be_present
+        end
+
+        it "creates the home page" do
+          wiki = GollumWiki.new(@project, nil)
+          page = wiki.find_page("home")
+          page.should be_present
+        end
+      end
+    end
+  end
+
+  context "#rollback!" do
+    before do
+      Gitlab::Shell.any_instance.stub(:add_repository) do |path|
+        create_temp_repo("#{@repo_path}/#{path}.git")
+      end
+
+      Gitlab::Shell.any_instance.stub(:remove_repository) do |path|
+        FileUtils.rm_rf "#{@repo_path}/#{path}.git"
+      end
+
+      subject.stub(:log).as_null_object
+
+      subject.migrate!
+      subject.rollback!
+    end
+
+    it "destroys all of the wiki repositories that were created during migrate!" do
+      @projects.each do |project|
+        wiki_path = project.path_with_namespace + ".wiki.git"
+        full_path = @repo_path + "/" + wiki_path
+        File.exist?(full_path).should be_false
+      end
+    end
   end
 
 
