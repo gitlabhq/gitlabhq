@@ -138,7 +138,7 @@ class Note < ActiveRecord::Base
       super
     end
   # Temp fix to prevent app crash
-  # if note commit id doesnt exist
+  # if note commit id doesn't exist
   rescue
     nil
   end

@@ -4,7 +4,7 @@ class Projects::TeamsController < Projects::ApplicationController
     @teams = current_user.is_admin? ? UserTeam.scoped : current_user.user_teams
     @teams = @teams.without_project(project)
     unless @teams.any?
-      redirect_to project_team_index_path(project), notice: "No avaliable teams for assigment."
+      redirect_to project_team_index_path(project), notice: "No available teams for assigment."
     end
   end
 

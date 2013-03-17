@@ -337,7 +337,7 @@ var JavaScriptHighlightRules = function() {
             }
         ],
         // regular expressions are only allowed after certain tokens. This
-        // makes sure we don't mix up regexps with the divison operator
+        // makes sure we don't mix up regexps with the division operator
         "regex_allowed": [
             DocCommentHighlightRules.getStartRule("doc-start"),
             {

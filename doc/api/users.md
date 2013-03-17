@@ -116,7 +116,7 @@ Parameters:
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
-+ `projects_limit`                    - Limit projects wich user can create
++ `projects_limit`                    - Limit projects each user can create
 + `extern_uid`                        - External UID
 + `provider`                          - External provider name
 + `bio`                               - User's bio
