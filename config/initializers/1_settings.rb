@@ -60,6 +60,7 @@ Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+Settings.gitlab['commits_to_display_per_event'] ||= 2
 
 #
 # Gravatar
