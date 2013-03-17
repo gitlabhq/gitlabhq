@@ -19,10 +19,28 @@ class WikiToGollumMigrator
     end
   end
 
+  def rollback!
+    log "\nBeginning Wiki Migration Rollback..."
+    projects.each do |project|
+      destroy_gollum_repo project
+    end
+    log "\nWiki Rollback Complete."
+  end
+
   private
 
   def create_gollum_repo(project)
     GollumWiki.new(project, nil).wiki
+  end
+
+  def destroy_gollum_repo(project)
+    log "  Removing Wiki repo for project: #{project.path_with_namespace}"
+    path = GollumWiki.new(project, nil).path_with_namespace
+    if Gitlab::Shell.new.remove_repository(path)
+      log "  Wiki destroyed successfully. " + "[OK}".green
+    else
+      log "  Problem destroying wiki. Please remove it manually. " + "[FAILED]".red
+    end
   end
 
   def create_pages(project, wiki)
@@ -45,8 +63,9 @@ class WikiToGollumMigrator
     wiki = GollumWiki.new(project, page.user)
     wiki_page = WikiPage.new(wiki)
 
-    attributes = extract_attributes_from_page(first_rev)
+    attributes = extract_attributes_from_page(first_rev, project)
 
+    log "  Creating page '#{first_rev.title}'..."
     if wiki_page.create(attributes)
       log "  Created page '#{wiki_page.title}' " + "[OK]".green
 
@@ -59,15 +78,15 @@ class WikiToGollumMigrator
   end
 
   def create_revisions(project, page, revisions)
+    log "    Creating revisions..."
     revisions.each do |revision|
-      log "    Creating revisions..."
       # Reinitialize a new GollumWiki instance for each page
       # and revision created so the correct User is shown in
       # the commit message.
       wiki = GollumWiki.new(project, revision.user)
       wiki_page = wiki.find_page(page.slug)
 
-      attributes = extract_attributes_from_page(revision)
+      attributes = extract_attributes_from_page(revision, project)
 
       content = attributes[:content]
 
@@ -79,13 +98,15 @@ class WikiToGollumMigrator
     end
   end
 
-  def extract_attributes_from_page(page)
+  def extract_attributes_from_page(page, project)
     attributes = page.attributes
                      .with_indifferent_access
                      .slice(:title, :content)
 
+    slug = page.slug
+
     # Change 'index' pages to 'home' pages to match Gollum standards
-    if attributes[:title].downcase == "index"
+    if slug.downcase == "index"
       attributes[:title] = "home" unless home_already_exists?(project)
     end
 
@@ -93,7 +114,7 @@ class WikiToGollumMigrator
   end
 
   def home_already_exists?(project)
-    project.wikis.where(title: 'home').any? || project.wikis.where(title: 'Home').any?
+    project.wikis.where(slug: 'home').any? || project.wikis.where(slug: 'Home').any?
   end
 
   def log(message)
