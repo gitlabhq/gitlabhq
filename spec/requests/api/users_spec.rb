@@ -300,7 +300,7 @@ describe Gitlab::API do
       response.status.should == 200
     end
 
-    it "should return sucess if key ID not found" do
+    it "should return success if key ID not found" do
       delete api("/user/keys/42", user)
       response.status.should == 200
     end

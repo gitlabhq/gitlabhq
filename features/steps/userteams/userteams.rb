@@ -210,7 +210,7 @@ class Userteams < Spinach::FeatureSteps
     click_link "Assign Project"
   end
 
-  Then 'I should see form with my own project in avaliable projects list' do
+  Then 'I should see form with my own project in available projects list' do
     projects_select = find("#project_ids")
     projects_select.should have_content(@project.name)
   end

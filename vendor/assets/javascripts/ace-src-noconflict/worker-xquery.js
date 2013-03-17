@@ -7609,7 +7609,7 @@ org.antlr.runtime.BaseRecognizer.prototype = {
      *
      *  Until then I'll leave this unimplemented.  If there is enough clamor
      *  it would be possible to keep track of the invocation stack using an
-     *  auxillary array, but that will definitely be a performance hit.
+     *  auxiliary array, but that will definitely be a performance hit.
      */
     getRuleInvocationStack: function(e, recognizerClassName)
     {

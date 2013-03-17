@@ -13,7 +13,7 @@ module Gitlab
       # Updates the files content and creates a new commit for it
       #
       # Returns false if the ref has been updated while editing the file
-      # Returns false if commiting the change fails
+      # Returns false if committing the change fails
       # Returns false if pushing from the satellite to Gitolite failed or was rejected
       # Returns true otherwise
       def commit!(content, commit_message, last_commit)

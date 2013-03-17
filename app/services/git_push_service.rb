@@ -97,7 +97,7 @@ class GitPushService
       total_commits_count: push_commits_count
     }
 
-    # For perfomance purposes maximum 20 latest commits
+    # For performance purposes maximum 20 latest commits
     # will be passed as post receive hook data.
     #
     push_commits_limited.each do |commit|
