@@ -87,6 +87,6 @@ class SnippetsController < ProjectResourceController
   end
 
   def module_enabled
-    return render_404 unless @project.snippet_enabled
+    return render_404 unless @project.snippets_enabled
   end
 end
