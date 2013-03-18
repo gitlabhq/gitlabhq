@@ -13,7 +13,7 @@ module Gitlab
       expose :id, :username, :email, :name, :state, :created_at
     end
 
-    class UserLogin < UserBasic
+    class UserLogin < User
       expose :private_token
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group
