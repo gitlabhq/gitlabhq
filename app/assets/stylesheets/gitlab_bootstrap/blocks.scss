@@ -155,6 +155,9 @@
     padding-top: 20px;
     form {
       margin-bottom: 0;
+      legend {
+        text-indent: 10px;
+      }
       .form-actions {
         margin-bottom: 0;
       }
