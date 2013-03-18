@@ -24,8 +24,8 @@ module Gitlab
       def clear_and_update!
         raise_no_satellite unless exists?
 
-        delete_heads!
         clear_working_dir!
+        delete_heads!
         update_from_source!
       end
 
