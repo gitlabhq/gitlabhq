@@ -12,6 +12,14 @@ class RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  protected
+
+  def build_resource(hash=nil)
+    super
+    self.resource.projects_limit = Gitlab.config.gitlab.default_projects_limit
+    self.resource
+  end
+
   private
 
   def signup_enabled?
