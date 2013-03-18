@@ -327,7 +327,7 @@ var NoteList = {
 
 
   /**
-   * Gets an inital set of notes.
+   * Gets an initial set of notes.
    */
   getContent: function() {
     $.ajax({

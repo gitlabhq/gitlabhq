@@ -62,7 +62,7 @@ module Gitlab
       #   skype                             - Skype ID
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
-      #   projects_limit                    - Limit projects wich user can create
+      #   projects_limit                    - Limit projects each user can create
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
