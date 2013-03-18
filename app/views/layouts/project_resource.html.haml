@@ -43,6 +43,10 @@
           = nav_link(path: 'projects#wall') do
             = link_to 'Wall', wall_project_path(@project)
 
+        - if @project.snippets_enabled
+          = nav_link(controller: :snippets) do
+            = link_to 'Snippets', project_snippets_path(@project)
+
         - if can? current_user, :admin_project, @project
           = nav_link(html_options: {class: "#{project_tab_class}"}) do
             = link_to edit_project_path(@project), class: "stat-tab tab " do

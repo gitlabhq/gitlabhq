@@ -88,6 +88,12 @@
                     %span.descr Simple chat system for broadcasting inside project
 
                 .control-group
+                  = f.label :snippets_enabled, "Snippets", class: 'control-label'
+                  .controls
+                    = f.check_box :snippets_enabled
+                    %span.descr Share code pastes with others out of git repository
+
+                .control-group
                   = f.label :wiki_enabled, "Wiki", class: 'control-label'
                   .controls
                     = f.check_box :wiki_enabled

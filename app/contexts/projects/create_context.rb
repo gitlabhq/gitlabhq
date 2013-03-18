@@ -32,8 +32,9 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
-      # Disable wall by default
+      # Disable less important features by default
       @project.wall_enabled = false
+      @project.snippets_enabled = false
 
       @project.creator = current_user
 

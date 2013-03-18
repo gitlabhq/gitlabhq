@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130315124931) do
+ActiveRecord::Schema.define(:version => 20130318212250) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(:version => 20130315124931) do
     t.boolean  "public",                 :default => false,    :null => false
     t.string   "issues_tracker",         :default => "gitlab", :null => false
     t.string   "issues_tracker_id"
+    t.boolean  "snippets_enabled",       :default => true,     :null => false
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"

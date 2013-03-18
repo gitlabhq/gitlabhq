@@ -1,4 +1,5 @@
 class SnippetsController < ProjectResourceController
+  before_filter :module_enabled
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read any snippet
@@ -83,5 +84,9 @@ class SnippetsController < ProjectResourceController
 
   def authorize_admin_snippet!
     return render_404 unless can?(current_user, :admin_snippet, @snippet)
+  end
+
+  def module_enabled
+    return render_404 unless @project.snippet_enabled
   end
 end
