@@ -31,26 +31,33 @@
     %ul.well-list
       - @projects.each do |project|
         %li.clearfix
-          .left
-            = link_to project_path(project), class: dom_class(project) do
-              - if project.namespace
-                = project.namespace.human_name
-                \/
-              %strong.well-title
-                = truncate(project.name, length: 25)
-            %br
-            %small.light
-              %strong Last activity:
-              %span= project_last_activity(project)
-          .pull-right.light
-            - if project.owner == current_user
-              %i.icon-wrench
-            - tm = project.team.get_tm(current_user.id)
-            - if tm
-              = tm.project_access_human
+          .clearfix
+            %h5
+              = link_to project_path(project), class: dom_class(project) do
+                - if project.namespace
+                  = project.namespace.human_name
+                  \/
+                %strong
+                  = truncate(project.name, length: 45)
+              .pull-right.light
+                - if project.owner == current_user
+                  %i.icon-wrench
+                - tm = project.team.get_tm(current_user.id)
+                - if tm
+                  %strong= tm.project_access_human
+          .clearfix
+            .left
+              - if project.description.present?
+                %span.light= project.description
+
+            .pull-right.light
+              %small.light
+                Last activity #{project_last_activity(project)}
 
       - if @projects.blank?
         %li
           %h3.nothing_here_message There are no projects here.
-    .bottom= paginate @projects, theme: "gitlab"
+    .bottom
+      %hr
+      = paginate @projects, theme: "gitlab"
 
