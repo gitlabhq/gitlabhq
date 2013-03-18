@@ -80,16 +80,6 @@ module TabHelper
     end
   end
 
-  def project_wiki_tab_class
-    [:files, :wall].each do |action|
-      return "active" if current_page?(controller: "projects", action: action, id: @project)
-    end
-
-    if ['wikis', 'snippets'].include? controller.controller_name
-     "active"
-    end
-  end
-
   def branches_tab_class
     if current_page?(branches_project_repository_path(@project)) ||
       current_controller?(:protected_branches) ||

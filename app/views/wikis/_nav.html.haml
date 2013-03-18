@@ -1,14 +1,11 @@
 %ul.nav.nav-tabs
-  - if @project.wiki_enabled
-    = nav_link(controller: 'wikis') do
-      = link_to 'Wiki', project_wiki_path(@project, :home)
+  = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
+    = link_to 'Home', project_wiki_path(@project, :home)
 
-  - if @project.wall_enabled
-    = nav_link(path: 'projects#wall') do
-      = link_to 'Wall', wall_project_path(@project)
+  = nav_link(path: 'wikis#pages') do
+    = link_to 'Pages', pages_project_wikis_path(@project)
 
-  = nav_link(path: 'projects#files') do
-    = link_to 'Attachments', files_project_path(@project), class: "files-tab tab"
-
-  = nav_link(controller: :snippets) do
-    = link_to 'Snippets', project_snippets_path(@project), class: "snippets-tab tab"
+  = nav_link(path: 'wikis#git_access') do
+    = link_to git_access_project_wikis_path(@project) do
+      %i.icon-download-alt
+      Git Access

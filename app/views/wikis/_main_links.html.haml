@@ -1,16 +1,8 @@
 %span.pull-right
-  = link_to project_wiki_path(@project, :home), class: "btn btn-small grouped" do
-    Home
-  = link_to pages_project_wikis_path(@project), class: "btn btn-small grouped" do
-    Pages
   - if (@wiki && @wiki.persisted?)
     = link_to history_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
-      History
-  - if can?(current_user, :write_wiki, @project)
-    - if @wiki && @wiki.persisted?
+      Page History
+    - if can?(current_user, :write_wiki, @project)
       = link_to edit_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
         %i.icon-edit
         Edit
-    = link_to git_access_project_wikis_path(@project), class: "btn btn-small grouped" do
-      %i.icon-download-alt
-      Git Access
