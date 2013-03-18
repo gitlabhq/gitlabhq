@@ -88,9 +88,8 @@ module Gitlab
       def max_teams_member_permission_in_project(user, project, teams = nil)
         result_access = 0
 
-        user_teams = project.user_teams.with_member(user)
-
-        teams ||= user_teams
+        teams ||= project.user_teams.with_member(user)
+        result_access ||= project.users_project.with_user(user).first.project_access
 
         if teams.any?
           teams.each do |team|
