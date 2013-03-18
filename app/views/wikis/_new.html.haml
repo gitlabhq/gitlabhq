@@ -1,0 +1,25 @@
+%div#modal-new-wiki.modal.hide
+  .modal-header
+    %a.close{href: "#"} ×
+    %h3 New Wiki Page
+  .modal-body
+    = label_tag :new_wiki_path do
+      %span Page slug
+    = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'input-xlarge'
+  .modal-footer
+    = link_to 'Build', '#', class: 'build-new-wiki btn btn-create'
+
+:javascript
+  $(function(){
+    var modal = $('#modal-new-wiki').modal({modal: true, show:false});
+    $('.add-new-wiki').bind("click", function(){
+      modal.show();
+    });
+    $('.build-new-wiki').bind("click", function(){
+      location.href = "#{project_wikis_path(@project)}/" + $('#new_wiki_path').val();
+    });
+    $('.modal-header .close').bind("click", function(){
+      modal.hide();
+    })
+  })
+

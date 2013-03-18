@@ -9,3 +9,11 @@
     = link_to git_access_project_wikis_path(@project) do
       %i.icon-download-alt
       Git Access
+
+  - if can?(current_user, :write_wiki, @project)
+    %li.pull-right
+      = link_to '#', class: "add-new-wiki" do
+        %i.icon-plus
+        New Page
+
+= render 'wikis/new'
