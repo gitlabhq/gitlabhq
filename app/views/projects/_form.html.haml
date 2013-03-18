@@ -82,6 +82,12 @@
                     %span.descr Submit changes to be merged upstream.
 
                 .control-group
+                  = f.label :wiki_enabled, "Wiki", class: 'control-label'
+                  .controls
+                    = f.check_box :wiki_enabled
+                    %span.descr Pages for project documentation
+
+                .control-group
                   = f.label :wall_enabled, "Wall", class: 'control-label'
                   .controls
                     = f.check_box :wall_enabled
@@ -93,11 +99,6 @@
                     = f.check_box :snippets_enabled
                     %span.descr Share code pastes with others out of git repository
 
-                .control-group
-                  = f.label :wiki_enabled, "Wiki", class: 'control-label'
-                  .controls
-                    = f.check_box :wiki_enabled
-                    %span.descr Pages for project documentation
 
               .form-actions
                 = f.submit 'Save', class: "btn btn-save"
