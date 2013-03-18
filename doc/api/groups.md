@@ -39,12 +39,13 @@ Creates a new project group. Available only for admin.
 POST /groups
 ```
 
+## Transfer project to group
+
 Parameters:
 
-+ `name` (required) - The name of the group
-+ `path` (required) - The path of the group
-
-## Transfer project to group
++ `name` (required)                  - The name of the group
++ `path`                             - Path defaults to lowercase version of the name
++ `owner`                            - The id of the owner to assign to defaults to current_user
 
 Transfer a project to the Group namespace. Available only for admin
 
