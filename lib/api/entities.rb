@@ -15,6 +15,10 @@ module Gitlab
 
     class UserLogin < UserBasic
       expose :private_token
+      expose :is_admin?, as: :is_admin
+      expose :can_create_group?, as: :can_create_group
+      expose :can_create_project?, as: :can_create_project
+      expose :can_create_team?, as: :can_create_team
     end
 
     class Hook < Grape::Entity
@@ -31,7 +35,7 @@ module Gitlab
     end
 
     class ProjectMember < UserBasic
-      expose :project_access, :as => :access_level do |user, options|
+      expose :project_access, as: :access_level do |user, options|
         options[:project].users_projects.find_by_user_id(user.id).project_access
       end
     end
