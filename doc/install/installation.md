@@ -237,6 +237,7 @@ Make sure to update username/password in config/database.yml.
 
     cd /home/gitlab/gitlab
 
+    sudo gem install bundler
     sudo gem install charlock_holmes --version '0.6.9'
 
     # For MySQL (note, the option says "without")
