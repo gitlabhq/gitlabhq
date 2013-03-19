@@ -1,0 +1,19 @@
+.wall-page {
+  .new_note {
+    @extend .span12;
+
+    margin: 0;
+    height: 140px;
+    background: #F9F9F9;
+    position: fixed;
+    bottom: 0px;
+    padding: 3px;
+    padding-bottom: 25px;
+    border: 1px solid #DDD;
+    display: block;
+  }
+
+  .notes {
+    margin-bottom: 160px;
+  }
+}
