@@ -256,7 +256,7 @@ module SharedPaths
   end
 
   Then 'I visit project "Shop" wall page' do
-    visit wall_project_path(project)
+    visit project_wall_path(project)
   end
 
   Given 'I visit project wiki page' do
