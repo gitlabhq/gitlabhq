@@ -32,11 +32,6 @@
             Wall.scrollDown()
             $("abbr.timeago").timeago()
 
-      complete: ->
-        $('.js-notes-busy').removeClass("loading")
-      beforeSend: ->
-        $('.js-notes-busy').addClass("loading")
-
   initRefresh: ->
     setInterval("Wall.refresh()", 10000)
 
