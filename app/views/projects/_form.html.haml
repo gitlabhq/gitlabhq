@@ -26,7 +26,7 @@
                   = f.label :name do
                     Project name is
                   .input
-                    = f.text_field :name, placeholder: "Example Project", class: "xxlarge"
+                    = f.text_field :name, placeholder: "Example Project", class: "span5"
 
 
                 - unless @repository.heads.empty?
@@ -39,7 +39,7 @@
                     Project description
                     %span.light (optional)
                   .input
-                    = f.text_area :description, placeholder: "awesome project", class: "xxlarge", rows: 3, maxlength: 250
+                    = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
 
 
               - if can?(current_user, :change_public_mode, @project)
