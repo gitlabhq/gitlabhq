@@ -77,7 +77,7 @@
           %li=link_to('All Merge Requests', '#')
       %ul.well-list
         - @merge_requests.each do |merge_request|
-          %li{data: {closed: merge_request.closed?}}
+          %li{data: {closed: merge_request.closed? || merge_request.merged?}}
             = link_to [@project, merge_request] do
               %span.badge.badge-info ##{merge_request.id}
             &ndash;
