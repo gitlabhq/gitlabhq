@@ -96,4 +96,10 @@ module SharedNote
       page.should have_css(".js-note-preview-button", visible: true)
     end
   end
+
+  Then 'I should see comment "XML attached"' do
+    within(".note") do
+      page.should have_content("XML attached")
+    end
+  end
 end
