@@ -230,14 +230,17 @@ describe "Application access" do
     end
 
     describe "GET /project_code/files" do
-      subject { files_project_path(project) }
+      pending("ProjectsController#files have been deleted.") do
 
-      it { should be_allowed_for master }
-      it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
-      it { should be_denied_for guest }
-      it { should be_denied_for :user }
-      it { should be_denied_for :visitor }
+        subject { files_project_path(project) }
+
+        it { should be_allowed_for master }
+        it { should be_allowed_for reporter }
+        it { should be_denied_for :admin }
+        it { should be_denied_for guest }
+        it { should be_denied_for :user }
+        it { should be_denied_for :visitor }
+      end
     end
   end
 end

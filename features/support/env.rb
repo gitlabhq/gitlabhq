@@ -28,8 +28,8 @@ require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
 Spinach.hooks.on_tag("javascript") do
   ::Capybara.current_driver = ::Capybara.javascript_driver
-  ::Capybara.default_wait_time = 5
 end
+Capybara.default_wait_time = 10
 
 
 DatabaseCleaner.strategy = :truncation
