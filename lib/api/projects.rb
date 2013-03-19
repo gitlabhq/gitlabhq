@@ -191,7 +191,7 @@ module Gitlab
         unless team_member.nil?
           team_member.destroy
         else
-          {:message => "Access revoked", :id => params[:user_id].to_i}
+          {message: "Access revoked", id: params[:user_id].to_i}
         end
       end
 
@@ -322,7 +322,7 @@ module Gitlab
         protected = user_project.protected_branches.find_by_name(@branch.name)
 
         unless protected
-          user_project.protected_branches.create(:name => @branch.name)
+          user_project.protected_branches.create(name: @branch.name)
         end
 
         present @branch, with: Entities::RepoObject, project: user_project

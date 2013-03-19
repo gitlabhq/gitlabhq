@@ -214,6 +214,10 @@ describe Gitlab::API do
       get api("/user", user)
       response.status.should == 200
       json_response['email'].should == user.email
+      json_response['is_admin'].should == user.is_admin?
+      json_response['can_create_team'].should == user.can_create_team?
+      json_response['can_create_project'].should == user.can_create_project?
+      json_response['can_create_group'].should == user.can_create_group?
     end
 
     it "should return 401 error if user is unauthenticated" do
