@@ -10,6 +10,7 @@ module Gitlab
       #  GET /users
       get do
         @users = User.scoped
+        @users = @users.active if params[:active].present?
         @users = @users.search(params[:search]) if params[:search].present?
         present @users, with: Entities::User
       end

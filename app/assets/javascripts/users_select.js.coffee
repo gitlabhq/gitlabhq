@@ -24,6 +24,7 @@ $ ->
       data: (term, page) ->
         search: term # search term
         per_page: 10
+        active: true
         private_token: gon.api_token
 
       results: (data, page) -> # parse the results into the format expected by Select2.
