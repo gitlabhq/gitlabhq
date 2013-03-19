@@ -18,7 +18,6 @@ v 5.0.0
   - Added Solarized Dark theme for code review
   - Dont show user emails in autocomplete lists, profile pages
   - Added settings tab for group, team, project
-  - Move snippets, wall and wiki under same tab
   - Replace user popup with icons in header
   - Handle project moving with gitlab-shell
   - Added select2-rails for selectboxes with ajax data load
@@ -26,6 +25,8 @@ v 5.0.0
   - Added teams to search autocomplete
   - Move groups and teams on dashboard sidebar to sub-tabs
   - API: improved return codes and docs.
+  - Redesign wall to be more like chat
+  - Snippets, Wall features are disabled by default for new projects
 
 v 4.2.0
   - Teams
