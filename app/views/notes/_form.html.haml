@@ -28,12 +28,12 @@
 
     .note-form-option
       = label_tag :notify do
-        = check_box_tag :notify, 1, !@note.for_commit?
+        = check_box_tag :notify, 1, false
         %span.light Notify team via email
 
       .js-notify-commit-author
         = label_tag :notify_author do
-          = check_box_tag :notify_author, 1 , @note.for_commit?
+          = check_box_tag :notify_author, 1 , false
           %span.light Notify commit author
     .note-form-option
       %a.choose-btn.btn.btn-small.js-choose-note-attachment-button

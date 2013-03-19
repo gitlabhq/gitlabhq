@@ -284,6 +284,9 @@ ul.notes {
     margin-top: 8px;
     margin-left: 15px;
     @extend .pull-left;
-    width: 35%;
+  }
+
+  .js-notify-commit-author {
+    float: left;
   }
 }
