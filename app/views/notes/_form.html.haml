@@ -31,6 +31,10 @@
         = check_box_tag :notify, 1, !@note.for_commit?
         %span.light Notify team via email
 
+      = label_tag :notify_masters do
+        = check_box_tag :notify_masters, 1, !@note.for_commit?
+        %span.light Notify project masters via email
+
       .js-notify-commit-author
         = label_tag :notify_author do
           = check_box_tag :notify_author, 1 , @note.for_commit?
