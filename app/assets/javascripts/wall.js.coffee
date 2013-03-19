@@ -45,7 +45,7 @@
 
   scrollDown: ->
     notes = $('ul.notes')
-    $('body').scrollTop(notes.height())
+    $('body, html').scrollTop(notes.height())
 
   initForm: ->
     form = $('.wall-note-form')
