@@ -29,17 +29,17 @@
                     = f.text_field :name, placeholder: "Example Project", class: "span5"
 
 
-                - unless @repository.heads.empty?
-                  .clearfix
-                    = f.label :default_branch, "Default Branch"
-                    .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
-
                 .clearfix
                   = f.label :description do
                     Project description
                     %span.light (optional)
                   .input
                     = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
+
+                - unless @repository.heads.empty?
+                  .clearfix
+                    = f.label :default_branch, "Default Branch"
+                    .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
 
               - if can?(current_user, :change_public_mode, @project)
@@ -104,7 +104,7 @@
                 = f.submit 'Save', class: "btn btn-save"
 
       .tab-pane#tab-transfer
-        - if can? current_user, :change_namespace, @project
+        - if can?(current_user, :change_namespace, @project)
           .ui-box.ui-box-danger
             %h5.title Transfer project
             .form-holder
@@ -121,6 +121,8 @@
                       %li You will need to update your local repositories to point to the new location.
                 .form-actions
                   = f.submit 'Transfer', class: "btn btn-remove"
+        - else
+          %p.nothing_here_message Only project owner can transfer a project
 
       .tab-pane#tab-remove
         - if can?(current_user, :remove_project, @project)
@@ -133,3 +135,5 @@
                 %strong Removed project can not be restored!
 
               = link_to 'Remove project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn btn-remove btn-small"
+        - else
+          %p.nothing_here_message Only project owner can remove a project
