@@ -47,14 +47,14 @@ class BranchGraph
 
   buildGraph: ->
     graphWidth = $(@element).width()
-    ch = @mspace * 20 + 100
+    ch = @mspace * 10 + 100
     cw = Math.max(graphWidth, @mtime * 20 + 260)
     r = Raphael(@element.get(0), cw, ch)
     top = r.set()
     cuday = 0
     cumonth = ""
     @offsetX = 20
-    @offsetY = 60
+    @offsetY = 50
     barWidth = Math.max(graphWidth, @days.length * 20 + 320)
     @scrollLeft = cw
     @raphael = r
@@ -64,7 +64,7 @@ class BranchGraph
     for day, mm in @days
       if cuday isnt day[0]
         # Dates
-        r.text(@offsetX + mm * 20, 31, day[0])
+        r.text(@offsetX + mm * 20, 30, day[0])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#DDD"
@@ -73,7 +73,7 @@ class BranchGraph
 
       if cumonth isnt day[1]
         # Months
-        r.text(@offsetX + mm * 20, 11, day[1])
+        r.text(@offsetX + mm * 20, 10, day[1])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#EEE"
