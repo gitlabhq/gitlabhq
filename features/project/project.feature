@@ -18,6 +18,3 @@ Feature: Project Feature
     And change project settings
     And I save project
     Then I should see project with new settings
-
-  # @wip
-  # Scenario: I visit attachments
