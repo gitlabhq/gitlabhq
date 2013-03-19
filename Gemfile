@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.12"
+gem "rails", "3.2.13"
 
 # Supported DBs
 gem "mysql2", group: :mysql
@@ -99,7 +99,7 @@ gem "colored"
 # GitLab settings
 gem 'settingslogic'
 
-# Wiki 
+# Wiki
 # - Use latest master to resolve Gem dependency with Pygemnts
 # github-linquist needs pygments 0.4.2 but Gollum 2.4.11
 # requires pygments 0.3.2. The latest master Gollum has been updated
