@@ -212,10 +212,6 @@ class BranchGraph
     top.push anchor
 
 Raphael::commitTooltip = (x, y, commit) ->
-  icon = undefined
-  nameText = undefined
-  idText = undefined
-  messageText = undefined
   boxWidth = 300
   boxHeight = 200
   icon = @image(commit.author.icon, x, y, 20, 20)
