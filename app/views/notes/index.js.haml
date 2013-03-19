@@ -1,15 +1,4 @@
 - unless @notes.blank?
   var notesHtml = "#{escape_javascript(render 'notes/notes')}";
   - new_note_ids = @notes.map(&:id)
-  - if loading_more_notes?
-    NoteList.appendMoreNotes(#{new_note_ids}, notesHtml);
-
-  - elsif loading_new_notes?
-    NoteList.replaceNewNotes(#{new_note_ids}, notesHtml);
-
-  - else
-    NoteList.setContent(#{new_note_ids}, notesHtml);
-
-- else
-  - if loading_more_notes?
-    NoteList.finishedLoadingMore();
+  NoteList.setContent(#{new_note_ids}, notesHtml);

@@ -4,30 +4,15 @@ var NoteList = {
   target_params: null,
   target_id: 0,
   target_type: null,
-  top_id: 0,
-  bottom_id: 0,
   loading_more_disabled: false,
-  reversed: false,
 
   init: function(tid, tt, path) {
     NoteList.notes_path = path + ".js";
     NoteList.target_id = tid;
     NoteList.target_type = tt;
-    NoteList.reversed = $("#notes-list").is(".reversed");
     NoteList.target_params = "target_type=" + NoteList.target_type + "&target_id=" + NoteList.target_id;
 
     NoteList.setupMainTargetNoteForm();
-
-    if(NoteList.reversed) {
-      var form = $(".js-main-target-form");
-      form.find(".note-form-actions").hide();
-      var textarea = form.find(".js-note-text");
-      textarea.css("height", "40px");
-      textarea.on("focus", function(){
-        textarea.css("height", "80px");
-        form.find(".note-form-actions").show();
-      });
-    }
 
     // get initial set of notes
     NoteList.getContent();
@@ -344,126 +329,9 @@ var NoteList = {
    * Replaces the content of #notes-list with the given html.
    */
   setContent: function(newNoteIds, html) {
-    NoteList.top_id = newNoteIds.first();
-    NoteList.bottom_id = newNoteIds.last();
     $("#notes-list").html(html);
-
-    // for the wall
-    if (NoteList.reversed) {
-      // init infinite scrolling
-      NoteList.initLoadMore();
-
-      // init getting new notes
-      NoteList.initRefreshNew();
-    }
   },
 
-
-  /**
-   * Handle loading more notes when scrolling to the bottom of the page.
-   * The id of the last note in the list is in NoteList.bottom_id.
-   *
-   * Set up refreshing only new notes after all notes have been loaded.
-   */
-
-
-  /**
-   * Initializes loading more notes when scrolling to the bottom of the page.
-   */
-  initLoadMore: function() {
-    $(document).endlessScroll({
-      bottomPixels: 400,
-      fireDelay: 1000,
-      fireOnce:true,
-      ceaseFire: function() {
-        return NoteList.loading_more_disabled;
-      },
-      callback: function(i) {
-        NoteList.getMore();
-      }
-    });
-  },
-
-  /**
-   * Gets an additional set of notes.
-   */
-  getMore: function() {
-    // only load more notes if there are no "new" notes
-    $('.loading').show();
-    $.ajax({
-      url: NoteList.notes_path,
-      data: NoteList.target_params + "&loading_more=1&" + (NoteList.reversed ? "before_id" : "after_id") + "=" + NoteList.bottom_id,
-      complete: function(){ $('.js-notes-busy').removeClass("loading")},
-      beforeSend: function() { $('.js-notes-busy').addClass("loading") },
-      dataType: "script"
-    });
-  },
-
-  /**
-   * Called in response to getMore().
-   * Append notes to #notes-list.
-   */
-  appendMoreNotes: function(newNoteIds, html) {
-    var lastNewNoteId = newNoteIds.last();
-    if(lastNewNoteId != NoteList.bottom_id) {
-      NoteList.bottom_id = lastNewNoteId;
-      $("#notes-list").append(html);
-    }
-  },
-
-  /**
-   * Called in response to getMore().
-   * Disables loading more notes when scrolling to the bottom of the page.
-   */
-  finishedLoadingMore: function() {
-    NoteList.loading_more_disabled = true;
-
-    // make sure we are up to date
-    NoteList.updateVotes();
-  },
-
-
-  /**
-   * Handle refreshing and adding of new notes.
-   *
-   * New notes are all notes that are created after the site has been loaded.
-   * The "old" notes are in #notes-list the "new" ones will be in #new-notes-list.
-   * The id of the last "old" note is in NoteList.bottom_id.
-   */
-
-
-  /**
-   * Initializes getting new notes every n seconds.
-   *
-   * Note: only used on wall.
-   */
-  initRefreshNew: function() {
-    setInterval("NoteList.getNew()", 10000);
-  },
-
-  /**
-   * Gets the new set of notes.
-   *
-   * Note: only used on wall.
-   */
-  getNew: function() {
-    $.ajax({
-      url: NoteList.notes_path,
-      data: NoteList.target_params + "&loading_new=1&after_id=" + (NoteList.reversed ? NoteList.top_id : NoteList.bottom_id),
-      dataType: "script"
-    });
-  },
-
-  /**
-   * Called in response to getNew().
-   * Replaces the content of #new-notes-list with the given html.
-   *
-   * Note: only used on wall.
-   */
-  replaceNewNotes: function(newNoteIds, html) {
-    $("#new-notes-list").html(html);
-    NoteList.updateVotes();
-  },
 
   /**
    * Adds a single common note to #notes-list.
@@ -495,15 +363,6 @@ var NoteList = {
 
     // cleanup after successfully creating a diff/discussion note
     $.proxy(NoteList.removeDiscussionNoteForm, form).call();
-  },
-
-  /**
-   * Adds a single wall note to #new-notes-list.
-   *
-   * Note: only used on wall.
-   */
-  appendNewWallNote: function(id, html) {
-    $("#new-notes-list").prepend(html);
   },
 
   /**
