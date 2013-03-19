@@ -11,7 +11,7 @@ describe "Projects" do
     end
 
     it "should be correct path" do
-      expect { click_link "Remove" }.to change {Project.count}.by(-1)
+      expect { click_link "Remove project" }.to change {Project.count}.by(-1)
     end
   end
 end
