@@ -12,7 +12,7 @@
 
 * powered by Ruby on Rails
 * completely free and open source (MIT license)
-* used by 10.000 organizations to keep their code secure
+* used by over 10.000 organizations to keep their code secured
 
 ### Code status
 
