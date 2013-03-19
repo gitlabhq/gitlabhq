@@ -1,11 +1,13 @@
 class ProjectObserver < BaseObserver
   def after_create(project)
-    GitlabShellWorker.perform_async(
-      :add_repository,
-      project.path_with_namespace
-    )
+    unless project.forked?
+      GitlabShellWorker.perform_async(
+          :add_repository,
+          project.path_with_namespace
+      )
 
-    log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
+      log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
+    end
   end
 
   def after_update(project)

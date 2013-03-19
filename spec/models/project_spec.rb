@@ -40,6 +40,7 @@ describe Project do
     it { should have_many(:deploy_keys).dependent(:destroy) }
     it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:protected_branches).dependent(:destroy) }
+    it { should have_one(:forked_project_link).dependent(:destroy) }
   end
 
   describe "Mass assignment" do
