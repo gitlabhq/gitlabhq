@@ -41,7 +41,7 @@
 
         - if @project.wall_enabled
           = nav_link(path: 'projects#wall') do
-            = link_to 'Wall', wall_project_path(@project)
+            = link_to 'Wall', project_wall_path(@project)
 
         - if @project.snippets_enabled
           = nav_link(controller: :snippets) do

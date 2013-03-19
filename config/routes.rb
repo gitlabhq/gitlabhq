@@ -167,11 +167,6 @@ Gitlab::Application.routes.draw do
   # Project Area
   #
   resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
-    member do
-      get "wall"
-      get "files"
-    end
-
     resources :blob,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show, :edit, :update], constraints: {id: /.+/}
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
@@ -191,6 +186,12 @@ Gitlab::Application.routes.draw do
 
       member do
         get "history"
+      end
+    end
+
+    resource :wall, only: [:show] do
+      member do
+        get 'notes'
       end
     end
 

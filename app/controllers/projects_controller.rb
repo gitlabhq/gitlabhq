@@ -68,22 +68,6 @@ class ProjectsController < ProjectResourceController
     end
   end
 
-  #
-  # Wall
-  #
-
-  def wall
-    return render_404 unless @project.wall_enabled
-
-    @target_type = :wall
-    @target_id = nil
-    @note = @project.notes.new
-
-    respond_to do |format|
-      format.html
-    end
-  end
-
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 

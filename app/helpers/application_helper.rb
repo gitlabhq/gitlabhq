@@ -105,7 +105,7 @@ module ApplicationHelper
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Snippets", url: project_snippets_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Team",     url: project_team_index_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wall",     url: wall_project_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wall",     url: project_wall_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Wiki",     url: project_wikis_path(@project) },
       ]
     end
