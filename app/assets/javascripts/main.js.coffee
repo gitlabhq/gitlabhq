@@ -32,6 +32,14 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
     else
       closest_submit.enable()
 
+window.sanitize = (str) ->
+  return str.replace(/<(?:.|\n)*?>/gm, '')
+
+window.linkify = (str) ->
+  exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+  return str.replace(exp,"<a href='$1'>$1</a>")
+
+
 $ ->
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()

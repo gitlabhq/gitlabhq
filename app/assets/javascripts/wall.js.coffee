@@ -70,7 +70,7 @@
   
   renderNote: (note) ->
     author = '<strong class="wall-author">' + note.author.name + '</strong>'
-    body = '<span class="wall-text">' + note.body + '</span>'
+    body = '<span class="wall-text">' + linkify(sanitize(note.body)) + '</span>'
     file = ''
     time = '<abbr class="timeago" title="' + note.created_at + '">' + note.created_at + '</time>'
 
@@ -80,4 +80,3 @@
     html = '<li>' + author + body + file + time + '</li>'
 
     $('ul.notes').append(html)
-
