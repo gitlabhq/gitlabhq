@@ -14,6 +14,10 @@ module Gitlab
       #   GET /projects/:id/notes
       get ":id/notes" do
         @notes = user_project.notes.common
+
+        # Get recent notes if recent = true
+        @notes = @notes.order('id DESC') if params[:recent]
+
         present paginate(@notes), with: Entities::Note
       end
 
