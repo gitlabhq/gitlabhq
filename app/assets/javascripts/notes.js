@@ -4,7 +4,6 @@ var NoteList = {
   target_params: null,
   target_id: 0,
   target_type: null,
-  loading_more_disabled: false,
 
   init: function(tid, tt, path) {
     NoteList.notes_path = path + ".js";

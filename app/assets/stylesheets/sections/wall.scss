@@ -10,10 +10,20 @@
     padding: 3px;
     padding-bottom: 25px;
     border: 1px solid #DDD;
-    display: block;
   }
 
   .notes {
     margin-bottom: 160px;
+
+    .wall-author {
+      color: #666;
+      margin-right: 10px;
+      border-right: 1px solid #CCC;
+      padding-right: 5px
+    }
+
+    .wall-file {
+      float: right;
+    }
   }
 }

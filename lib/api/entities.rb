@@ -95,6 +95,7 @@ module Gitlab
     class Note < Grape::Entity
       expose :id
       expose :note, as: :body
+      expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
       expose :created_at
     end

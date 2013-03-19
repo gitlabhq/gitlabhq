@@ -3,7 +3,8 @@
   .notes-busy.js-notes-busy
 
   .js-main-target-form
-  = render "notes/form"
+  - if can? current_user, :write_note, @project
+    = render "notes/form"
 
 :javascript
   $(function(){

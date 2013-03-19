@@ -40,7 +40,7 @@
             = link_to 'Wiki', project_wiki_path(@project, :home)
 
         - if @project.wall_enabled
-          = nav_link(path: 'projects#wall') do
+          = nav_link(controller: :walls) do
             = link_to 'Wall', project_wall_path(@project)
 
         - if @project.snippets_enabled
