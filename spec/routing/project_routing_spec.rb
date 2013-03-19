@@ -71,11 +71,7 @@ describe ProjectsController, "routing" do
   end
 
   it "to #wall" do
-    get("/gitlabhq/wall").should route_to('projects#wall', id: 'gitlabhq')
-  end
-
-  it "to #files" do
-    get("/gitlabhq/files").should route_to('projects#files', id: 'gitlabhq')
+    get("/gitlabhq/wall").should route_to('walls#show', project_id: 'gitlabhq')
   end
 
   it "to #edit" do

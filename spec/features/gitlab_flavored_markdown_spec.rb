@@ -196,15 +196,5 @@ describe "Gitlab Flavored Markdown" do
 
       page.should have_link("##{issue.id}")
     end
-
-    it "should render in projects#wall", js: true do
-      visit project_wall_path(project)
-      within ".new_note.js-main-target-form" do
-        fill_in "note_note", with: "see ##{issue.id}"
-        click_button "Add Comment"
-      end
-
-      page.should have_link("##{issue.id}")
-    end
   end
 end
