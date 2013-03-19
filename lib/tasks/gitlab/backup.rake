@@ -13,7 +13,7 @@ namespace :gitlab do
       # saving additional informations
       s = {}
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = "#{Time.now}"
+      s[:backup_created_at]  = "#{Time.now}".force_encoding("UTF-8")
       s[:gitlab_version]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
       s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
 
