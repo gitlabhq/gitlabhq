@@ -124,7 +124,7 @@ module Gitlab
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: Entities::User
+        present @current_user, with: Entities::UserLogin
       end
 
       # Get currently authenticated user's keys
