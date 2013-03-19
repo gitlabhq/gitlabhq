@@ -161,7 +161,7 @@ module SharedPaths
   end
 
   Given "I visit my project's wall page" do
-    visit wall_project_path(@project)
+    visit project_wall_path(@project)
   end
 
   Given "I visit my project's wiki page" do

@@ -11,7 +11,7 @@
           #{event.note_target_type} ##{truncate event.note_target_id}
 
   - elsif event.wall_note?
-    = link_to 'wall', wall_project_path(event.project)
+    = link_to 'wall', project_wall_path(event.project)
   - else
     %strong (deleted)
   at

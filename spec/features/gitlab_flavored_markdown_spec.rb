@@ -198,7 +198,7 @@ describe "Gitlab Flavored Markdown" do
     end
 
     it "should render in projects#wall", js: true do
-      visit wall_project_path(project)
+      visit project_wall_path(project)
       within ".new_note.js-main-target-form" do
         fill_in "note_note", with: "see ##{issue.id}"
         click_button "Add Comment"

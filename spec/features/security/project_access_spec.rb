@@ -95,7 +95,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/wall" do
-      subject { wall_project_path(project) }
+      subject { project_wall_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }

@@ -1,5 +1,5 @@
 %p
   New message on
-  = link_to "Project Wall", wall_project_url(@note.project, anchor: "note_#{@note.id}")
+  = link_to "Project Wall", project_wall_url(@note.project, anchor: "note_#{@note.id}")
 
 = render 'note_message'

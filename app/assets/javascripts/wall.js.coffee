@@ -30,23 +30,12 @@
             Wall.note_ids.push(note.id)
             Wall.renderNote(note)
             Wall.scrollDown()
+            $("abbr.timeago").timeago()
 
       complete: ->
         $('.js-notes-busy').removeClass("loading")
       beforeSend: ->
         $('.js-notes-busy').addClass("loading")
-
-  renderNote: (note) ->
-    author = '<strong class="wall-author">' + note.author.name + '</strong>'
-    body = '<span class="wall-text">' + note.body + '</span>'
-    file = ''
-
-    if note.attachment
-      file = '<span class="wall-file"><a href="/files/note/' + note.id + '/' + note.attachment + '">' + note.attachment + '</a></span>'
-    
-    html = '<li>' + author + body + file + '</li>'
-
-    $('ul.notes').append(html)
 
   initRefresh: ->
     setInterval("Wall.refresh()", 10000)
@@ -59,13 +48,8 @@
     $('body').scrollTop(notes.height())
 
   initForm: ->
-    form = $('.new_note')
+    form = $('.wall-note-form')
     form.find("#target_type").val('wall')
-
-    # remove unnecessary fields and buttons
-    form.find("#note_line_code").remove()
-    form.find(".js-close-discussion-note-form").remove()
-    form.find('.js-notify-commit-author').remove()
 
     form.on 'ajax:success', ->
       Wall.refresh()
@@ -83,3 +67,17 @@
       form.find(".js-attachment-filename").text(filename)
     
     form.show()
+  
+  renderNote: (note) ->
+    author = '<strong class="wall-author">' + note.author.name + '</strong>'
+    body = '<span class="wall-text">' + note.body + '</span>'
+    file = ''
+    time = '<abbr class="timeago" title="' + note.created_at + '">' + note.created_at + '</time>'
+
+    if note.attachment
+      file = '<span class="wall-file"><a href="/files/note/' + note.id + '/' + note.attachment + '">' + note.attachment + '</a></span>'
+    
+    html = '<li>' + author + body + file + time + '</li>'
+
+    $('ul.notes').append(html)
+

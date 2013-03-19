@@ -239,7 +239,7 @@ describe Notify do
       end
 
       describe 'on a project wall' do
-        let(:note_on_the_wall_path) { wall_project_path(project, anchor: "note_#{note.id}") }
+        let(:note_on_the_wall_path) { project_wall_path(project, anchor: "note_#{note.id}") }
 
         subject { Notify.note_wall_email(recipient.id, note.id) }
 

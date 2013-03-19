@@ -2,9 +2,30 @@
   %ul.well-list.notes
   .notes-busy.js-notes-busy
 
-  .js-main-target-form
   - if can? current_user, :write_note, @project
-    = render "notes/form"
+    .note-form-holder
+      = form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note wall-note-form" } do |f|
+        = note_target_fields
+        .note_text_and_preview
+          = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
+        .note-form-actions
+          .buttons
+            = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
+
+          .note-form-option
+            = label_tag :notify do
+              = check_box_tag :notify, 1, false
+              %span.light Notify team via email
+
+          .note-form-option
+            %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
+              %i.icon-paper-clip
+                %span Choose File ...
+            &nbsp;
+            %span.file_name.js-attachment-filename File name...
+            = f.file_field :attachment, class: "js-note-attachment-input hide"
+
+        .clearfix
 
 :javascript
   $(function(){
