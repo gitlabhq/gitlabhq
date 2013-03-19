@@ -70,6 +70,28 @@ describe Notify do
     end
   end
 
+  describe 'user added ssh key' do
+    let(:key) { create(:personal_key) }
+
+    subject { Notify.new_ssh_key_email(key.id) }
+
+    it 'is sent to the new user' do
+      should deliver_to key.user.email
+    end
+
+    it 'has the correct subject' do
+      should have_subject /^gitlab \| SSH key was added to your account$/i
+    end
+
+    it 'contains the new ssh key title' do
+      should have_body_text /#{key.title}/
+    end
+
+    it 'includes a link to ssh keys page' do
+      should have_body_text /#{keys_path}/
+    end
+  end
+
   context 'for a project' do
     describe 'items that are assignable, the email' do
       let(:assignee) { create(:user, email: 'assignee@example.com') }

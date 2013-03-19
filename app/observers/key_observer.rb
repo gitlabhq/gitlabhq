@@ -7,6 +7,9 @@ class KeyObserver < ActiveRecord::Observer
       key.shell_id,
       key.key
     )
+
+    # Notify about ssh key being added
+    Notify.delay.new_ssh_key_email(key.id) if key.user
   end
 
   def after_destroy(key)
