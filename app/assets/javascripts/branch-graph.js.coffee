@@ -20,8 +20,6 @@ class BranchGraph
 
   prepareData: (@days, @commits) ->
     @collectParents()
-    @mtime += 4
-    @mspace += 10
 
     for c in @commits
       c.isParent = true  if c.id of @parents
@@ -35,6 +33,7 @@ class BranchGraph
       @mspace = Math.max(@mspace, c.space)
       for p in c.parents
         @parents[p[0]] = true
+        @mspace = Math.max(@mspace, p[1])
 
   collectColors: ->
     k = 0
@@ -46,25 +45,26 @@ class BranchGraph
       k++
 
   buildGraph: ->
+    graphHeight = $(@element).height()
     graphWidth = $(@element).width()
-    ch = @mspace * 10 + 100
-    cw = Math.max(graphWidth, @mtime * 20 + 260)
+    ch = Math.max(graphHeight, @mtime * 20 + 100)
+    cw = Math.max(graphWidth, @mspace * 10 + 260)
     r = Raphael(@element.get(0), cw, ch)
     top = r.set()
     cuday = 0
     cumonth = ""
-    @offsetX = 20
-    @offsetY = 50
-    barWidth = Math.max(graphWidth, @days.length * 20 + 320)
+    @offsetX = 120
+    @offsetY = 20
+    barHeight = Math.max(graphHeight, @days.length * 20 + 320)
     @scrollLeft = cw
     @raphael = r
-    r.rect(0, 0, barWidth, 20).attr fill: "#222"
-    r.rect(0, 20, barWidth, 20).attr fill: "#444"
+    r.rect(0, 0, 20, barHeight).attr fill: "#222"
+    r.rect(20, 0, 20, barHeight).attr fill: "#444"
 
     for day, mm in @days
       if cuday isnt day[0]
         # Dates
-        r.text(@offsetX + mm * 20, 30, day[0])
+        r.text(30, @offsetY + mm * 20, day[0])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#DDD"
@@ -73,7 +73,7 @@ class BranchGraph
 
       if cumonth isnt day[1]
         # Months
-        r.text(@offsetX + mm * 20, 10, day[1])
+        r.text(10, @offsetY + mm * 20, day[1])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#EEE"
@@ -81,8 +81,8 @@ class BranchGraph
         cumonth = day[1]
 
     for commit in @commits
-      x = @offsetX + 20 * commit.time
-      y = @offsetY + 10 * commit.space
+      x = @offsetX + 10 * (@mspace - commit.space)
+      y = @offsetY + 20 * commit.time
 
       @drawDot(x, y, commit)
 
@@ -92,10 +92,9 @@ class BranchGraph
 
       @appendAnchor(top, commit, x, y)
 
-      @markCommit(x, y, commit, graphWidth)
+      @markCommit(x, y, commit, graphHeight)
 
     top.toFront()
-    @element.scrollLeft @scrollLeft
     @bindEvents()
 
   bindEvents: ->
@@ -131,26 +130,28 @@ class BranchGraph
     shortrefs = refs
     # Truncate if longer than 15 chars
     shortrefs = shortrefs.substr(0, 15) + "…"  if shortrefs.length > 17
-    text = r.text(x + 5, y + 8 + 10, shortrefs).attr(
+    text = r.text(x + 8, y, shortrefs).attr(
+      "text-anchor": "start"
       font: "10px Monaco, monospace"
       fill: "#FFF"
       title: refs
     )
     textbox = text.getBBox()
-    text.transform ["t", textbox.height / -4, textbox.width / 2 + 5, "r90"]
     # Create rectangle based on the size of the textbox
-    rect = r.rect(x, y, textbox.width + 15, textbox.height + 5, 4).attr(
+    rect = r.rect(x, y - 7, textbox.width + 15, textbox.height + 5, 4).attr(
       fill: "#000"
-      "fill-opacity": .7
+      "fill-opacity": .5
       stroke: "none"
     )
-    triangle = r.path(["M", x, y + 5, "L", x + 4, y + 15, "L", x - 4, y + 15, "Z"]).attr(
+    triangle = r.path(["M", x - 5, y, "L", x - 15, y - 4, "L", x - 15, y + 4, "Z"]).attr(
       fill: "#000"
-      "fill-opacity": .7
+      "fill-opacity": .5
       stroke: "none"
     )
-    # Rotate and reposition rectangle over text
-    rect.transform ["r", 90, x, y, "t", 15, -9]
+
+    label = r.set(rect, text)
+    label.transform(["t", -rect.getBBox().width - 15, 0])
+
     # Set text to front
     text.toFront()
 
@@ -164,7 +165,7 @@ class BranchGraph
     ).click(->
       window.open options.commit_url.replace("%s", commit.id), "_blank"
     ).hover(->
-      @tooltip = r.commitTooltip(x, y + 5, commit)
+      @tooltip = r.commitTooltip(x + 5, y, commit)
       top.push @tooltip.insertBefore(this)
     , ->
       @tooltip and @tooltip.remove() and delete @tooltip
@@ -182,44 +183,66 @@ class BranchGraph
     r = @raphael
     for parent in commit.parents
       parentCommit = @preparedCommits[parent[0]]
-      parentX = @offsetX + 20 * parentCommit.time
-      parentY1 = @offsetY + 10 * parentCommit.space
-      parentY2 = @offsetY + 10 * parent[1]
+      parentY = @offsetY + 20 * parentCommit.time
+      parentX1 = @offsetX + 10 * (@mspace - parentCommit.space)
+      parentX2 = @offsetX + 10 * (@mspace - parent[1])
+
       if parentCommit.space is commit.space and parentCommit.space is parent[1]
-        r.path(["M", x, y, "L", parentX, parentY1]).attr(
+        r.path(["M", x, y, "L", parentX1, parentY]).attr(
           stroke: @colors[parentCommit.space]
           "stroke-width": 2
         )
 
       else if parentCommit.space < commit.space
-        if y is parentY2
-          r.path(["M", x - 5, y, "l-5,-2,0,4,5,-2", "L", x - 10, y, "L", x - 15, parentY2, "L", parentX + 5, parentY2, "L", parentX, parentY1]).attr(
-            stroke: @colors[commit.space]
-            "stroke-width": 2
-          )
+        if x is parentX2
+          r
+            .path([
+              "M", x, y + 5,
+              "l-2,5,4,0,-2,-5",
+              "L", x, y + 10,
+              "L", parentX2, y + 10,
+              "L", parentX2, parentY - 5,
+              "L", parentX1, parentY])
+            .attr(
+              stroke: @colors[commit.space]
+              "stroke-width": 2)
 
         else
-          r.path(["M", x - 3, y - 6, "l-4,-3,4,-2,0,5", "L", x - 5, y - 10, "L", x - 10, parentY2, "L", parentX + 5, parentY2, "L", parentX, parentY1]).attr(
-            stroke: @colors[commit.space]
-            "stroke-width": 2
-          )
+          r
+            .path([
+              "M", x + 3, y + 3,
+              "l5,0,-2,4,-3,-4",
+              "L", x + 7, y + 5,
+              "L", parentX2, y + 10,
+              "L", parentX2, parentY - 5,
+              "L", parentX1, parentY])
+            .attr(
+              stroke: @colors[commit.space]
+              "stroke-width": 2)
 
       else
-        r.path(["M", x - 3, y + 6, "l-4,3,4,2,0,-5", "L", x - 5, y + 10, "L", x - 10, parentY2, "L", parentX + 5, parentY2, "L", parentX, parentY1]).attr(
-          stroke: @colors[parentCommit.space]
-          "stroke-width": 2
-        )
+        r
+          .path([
+            "M", x - 3, y + 3,
+            "l-5,0,2,4,3,-4",
+            "L", x - 7, y + 5,
+            "L", parentX2, y + 10,
+            "L", parentX2, parentY - 5,
+            "L", parentX1, parentY])
+          .attr(
+            stroke: @colors[parentCommit.space]
+            "stroke-width": 2)
 
-  markCommit: (x, y, commit, graphWidth) ->
+  markCommit: (x, y, commit, graphHeight) ->
     if commit.id is @options.commit_id
       r = @raphael
-      r.path(["M", x, y - 5, "L", x + 4, y - 15, "L", x - 4, y - 15, "Z"]).attr(
+      r.path(["M", x + 5, y, "L", x + 15, y + 4, "L", x + 15, y - 4, "Z"]).attr(
         fill: "#000"
-        "fill-opacity": .7
+        "fill-opacity": .5
         stroke: "none"
       )
       # Displayed in the center
-      @scrollLeft = x - graphWidth / 2
+      @element.scrollTop(y - graphHeight / 2)
 
 Raphael::commitTooltip = (x, y, commit) ->
   boxWidth = 300
