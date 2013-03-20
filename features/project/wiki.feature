@@ -8,12 +8,23 @@ Feature: Project Wiki
     Given I create the Wiki Home page
     Then I should see the newly created wiki page
 
+  Scenario: Pressing Cancel while editing a brand new Wiki
+    Given I click on the Cancel button
+    Then I should be redirected back to the Edit Home Wiki page
+
   Scenario: Edit existing page
     Given I have an existing Wiki page
     And I browse to that Wiki page
     And I click on the Edit button
     And I change the content
     Then I should see the updated content
+
+  Scenario: Pressing Cancel while editing an existing Wiki page
+    Given I have an existing Wiki page
+    And I browse to that Wiki page
+    And I click on the Edit button
+    And I click on the Cancel button
+    Then I should be redirected back to that Wiki page
 
   Scenario: View page history
     Given I have an existing wiki page

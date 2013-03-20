@@ -30,4 +30,7 @@
       .input= f.text_field :message, class: 'span8'
   .actions
     = f.submit 'Save', class: "btn-save btn"
-    = link_to "Cancel", project_wiki_path(@project, :index), class: "btn btn-cancel"
+    - if @wiki && @wiki.persisted?
+      = link_to "Cancel", project_wiki_path(@project, @wiki), class: "btn btn-cancel"
+    - else
+      = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"
