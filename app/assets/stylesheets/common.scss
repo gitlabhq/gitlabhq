@@ -543,3 +543,15 @@ img.emoji {
 .appear-data {
   display: none;
 }
+
+.label-branch {
+  @include border-radius(4px);
+  padding: 2px 4px;
+  border: none;
+  font-size: 14px;
+  background: #474D57;
+  color: #fff;
+  font-family: $monospace_font;
+  text-shadow: 0 1px 1px #111;
+  font-weight: normal;
+}

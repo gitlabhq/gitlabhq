@@ -70,16 +70,6 @@ li.merge_request {
   @extend .append-bottom-10;
 }
 
-.label_branch {
-  @include border-radius(4px);
-  padding: 2px 4px;
-  border: none;
-  font-size: 14px;
-  background: #474D57;
-  color: #fff;
-  font-family: $monospace_font;
-}
-
 .mr_source_commit,
 .mr_target_commit {
   .commit {

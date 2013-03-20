@@ -1,9 +1,9 @@
 %h3.page_title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.label_branch= @merge_request.source_branch
+  %span.label-branch= @merge_request.source_branch
   &rarr;
-  %span.label_branch= @merge_request.target_branch
+  %span.label-branch= @merge_request.target_branch
 
   %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
