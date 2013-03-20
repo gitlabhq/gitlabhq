@@ -10,7 +10,7 @@ module Gitlab
 
         unless searched_project.present?
           team.user_team_project_relationships.create(project_id: project.id, greatest_access: access)
-          update_team_users_access_in_project(team, project)
+          update_team_users_access_in_project(team, project, :added)
         end
       end
 
@@ -19,7 +19,7 @@ module Gitlab
 
         team.user_team_project_relationships.with_project(project).destroy_all
 
-        update_team_users_access_in_project(team, project)
+        update_team_users_access_in_project(team, project, :updated)
       end
 
       def update_team_user_membership(team, member, options)
@@ -52,7 +52,7 @@ module Gitlab
         project_relation = team.user_team_project_relationships.find_by_project_id(project)
         if permission != team.max_project_access(project)
           if project_relation.update_attributes(greatest_access: permission)
-            update_team_users_access_in_project(team, project)
+            update_team_users_access_in_project(team, project, :updated)
             true
           else
             false
@@ -68,15 +68,15 @@ module Gitlab
         end
       end
 
-      def update_team_users_access_in_project(team, project)
+      def update_team_users_access_in_project(team, project, action)
         members = team.members
         members.each do |member|
-          update_team_user_access_in_project(team, member, project)
+          update_team_user_access_in_project(team, member, project, action)
         end
       end
 
-      def update_team_user_access_in_project(team, user, project)
-        granted_access = max_teams_member_permission_in_project(user, project)
+      def update_team_user_access_in_project(team, user, project, action)
+        granted_access = max_teams_member_permission_in_project(user, project, action)
 
         project_team_user = UsersProject.find_by_user_id_and_project_id(user.id, project.id)
         project_team_user.destroy if project_team_user.present?
@@ -85,12 +85,14 @@ module Gitlab
         project.team << [user, granted_access] if granted_access > 0
       end
 
-      def max_teams_member_permission_in_project(user, project, teams = nil)
+      def max_teams_member_permission_in_project(user, project, action = nil, teams = nil)
         result_access = 0
 
-        user_teams = project.user_teams.with_member(user)
+        teams ||= project.user_teams.with_member(user)
 
-        teams ||= user_teams
+        if action && (action == :added) && (teams.count == 1)
+          result_access ||= project.users_project.with_user(user).first.project_access
+        end
 
         if teams.any?
           teams.each do |team|
@@ -113,7 +115,7 @@ module Gitlab
 
         team.user_team_user_relationships.create(user_id: user.id, permission: access, group_admin: admin)
         team.projects.each do |project|
-          update_team_user_access_in_project(team, user, project)
+          update_team_user_access_in_project(team, user, project, :added)
         end
       end
 
