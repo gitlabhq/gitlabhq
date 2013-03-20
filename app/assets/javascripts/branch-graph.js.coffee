@@ -7,7 +7,7 @@ class BranchGraph
     @colors = ["#000"]
     @offsetX = 120
     @offsetY = 20
-    @unitTime = 20
+    @unitTime = 30
     @unitSpace = 10
     @load()
 
@@ -178,6 +178,15 @@ class BranchGraph
     r.circle(x, y, 3).attr(
       fill: @colors[commit.space]
       stroke: "none"
+    )
+    r.rect(@offsetX + @unitSpace * @mspace + 10, y - 10, 20, 20).attr(
+      fill: "url(#{commit.author.icon})"
+      stroke: @colors[commit.space]
+      "stroke-width": 2
+    )
+    r.text(@offsetX + @unitSpace * @mspace + 35, y, commit.message.split("\n")[0]).attr(
+      "text-anchor": "start"
+      font: "14px Monaco, monospace"
     )
 
   drawLines: (x, y, commit) ->
