@@ -61,6 +61,10 @@
       filename = $(this).val().replace(/^.*[\\\/]/, '')
       form.find(".js-attachment-filename").text(filename)
     
+    form.find('.note_text').keydown (e) ->
+      if e.ctrlKey && e.keyCode == 13
+        form.find('.js-comment-button').submit()
+
     form.show()
   
   renderNote: (note) ->
