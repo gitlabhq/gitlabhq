@@ -36,7 +36,7 @@ describe MergeRequest do
     it { should respond_to(:can_be_merged?) }
     it { should respond_to(:cannot_be_merged?) }
   end
- 
+
   describe 'modules' do
     it { should include_module(Issuable) }
   end
