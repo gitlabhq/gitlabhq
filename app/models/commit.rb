@@ -89,7 +89,14 @@ class Commit
       if first && last
         result[:same] = (first.id == last.id)
         result[:commits] = project.repo.commits_between(last.id, first.id).map {|c| Commit.new(c)}
-        result[:diffs] = project.repo.diff(last.id, first.id) rescue []
+
+        # Dont load diff for 100+ commits
+        result[:diffs] = if result[:commits].size > 100
+                           []
+                         else
+                           project.repo.diff(last.id, first.id) rescue []
+                         end
+
         result[:commit] = Commit.new(first)
       end
 
