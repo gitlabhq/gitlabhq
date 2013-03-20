@@ -17,7 +17,7 @@ module Gitlab
   # Examples
   #
   #   >> gfm("Hey @david, can you fix this?")
-  #   => "Hey <a href="/gitlab/team_members/1">@david</a>, can you fix this?"
+  #   => "Hey <a href="/u/david">@david</a>, can you fix this?"
   #
   #   >> gfm("Commit 35d5f7c closes #1234")
   #   => "Commit <a href="/gitlab/commits/35d5f7c">35d5f7c</a> closes <a href="/gitlab/issues/1234">#1234</a>"
@@ -160,7 +160,7 @@ module Gitlab
 
     def reference_user(identifier)
       if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
-        link_to("@#{identifier}", project_team_member_url(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+        link_to("@#{identifier}", user_path(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end
 
