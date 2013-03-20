@@ -4,6 +4,17 @@ class ProjectWiki < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
 
+  Given 'I click on the Cancel button' do
+    within(:css, ".actions") do
+      click_on "Cancel"
+    end
+  end
+
+  Then 'I should be redirected back to the Edit Home Wiki page' do
+    url = URI.parse(current_url)
+    url.path.should == project_wiki_path(project, :home)
+  end
+
   Given 'I create the Wiki Home page' do
     fill_in "Content", :with => '[link test](test)'
     click_on "Save"
@@ -37,6 +48,11 @@ class ProjectWiki < Spinach::FeatureSteps
 
   Then 'I should see the updated content' do
     page.should have_content "Updated Wiki Content"
+  end
+
+  Then 'I should be redirected back to that Wiki page' do
+    url = URI.parse(current_url)
+    url.path.should == project_wiki_path(project, @page)
   end
 
   And 'That page has two revisions' do
