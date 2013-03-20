@@ -85,7 +85,7 @@ describe GitlabMarkdownHelper do
 
     describe "referencing a team member" do
       let(:actual)   { "@#{user.username} you are right." }
-      let(:expected) { project_team_member_path(project, member) }
+      let(:expected) { user_path(user) }
 
       before do
         project.team << [user, :master]
