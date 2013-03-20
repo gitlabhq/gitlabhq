@@ -11,6 +11,10 @@ describe Gitlab::Auth do
       name: 'John',
       email: 'john@mail.com'
     )
+    Devise.stub(omniauth_configs: {
+      ldap: double('Ldap', options: {}),
+      twitter: double('Twitter', options: {})
+    })
   end
 
   describe :find_for_ldap_auth do
@@ -51,10 +55,12 @@ describe Gitlab::Auth do
         provider: 'twitter',
         uid: '12djsak321',
       )
+      @user = double('User', provider: @auth.provider, extern_uid: @auth.uid)
     end
 
     it "should find user" do
-      User.should_receive :find_by_provider_and_extern_uid
+      User.should_receive(:find_by_provider_and_extern_uid) { @user }
+      User.should_not_receive :find_by_email
       gl_auth.should_not_receive :create_from_omniauth
       gl_auth.find_or_new_for_omniauth(@auth)
     end
@@ -68,16 +74,18 @@ describe Gitlab::Auth do
     it "should create user if single_sing_on" do
       Gitlab.config.omniauth['allow_single_sign_on'] = true
       User.stub find_by_provider_and_extern_uid: nil
+      User.should_receive :find_by_email
       gl_auth.should_receive :create_from_omniauth
       gl_auth.find_or_new_for_omniauth(@auth)
     end
 
     # FIXME: test find_by_email
+    # FIXME: Gitlab::Auth::Error when no uid
   end
 
   describe :create_from_omniauth do
     it "should create user from LDAP" do
-      @auth = mock(info: @info, provider: 'ldap')
+      @auth = double("Auth", info: @info, provider: 'ldap', uid: @info.uid)
       # create_from_omniauth is private
       user = gl_auth.send(:create_from_omniauth, @auth, true)
 
@@ -87,7 +95,7 @@ describe Gitlab::Auth do
     end
 
     it "should create user from Omniauth" do
-      @auth = mock(info: @info, provider: 'twitter')
+      @auth = double("Auth", info: @info, provider: 'twitter', uid: @info.uid)
       # create_from_omniauth is private
       user = gl_auth.send(:create_from_omniauth, @auth, false)
 
@@ -97,6 +105,6 @@ describe Gitlab::Auth do
     end
 
     # FIXME: test block_auto_created_users
-    # FIXME: test Omniauth::Error when no email
+    # FIXME: test Gitlab::Auth::Error when no email
   end
 end

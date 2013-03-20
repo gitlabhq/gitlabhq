@@ -56,7 +56,7 @@
             %li
               %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
 
-          - if Gitlab.config.omniauth.enabled && @user.provider?
+          - if omniauth_icon_providers.any? && omniauth_icon_providers.include?(@user.provider.to_sym)
             %li
               %p
                 You can login through #{@user.provider.titleize}!

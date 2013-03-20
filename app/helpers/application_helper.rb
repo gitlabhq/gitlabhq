@@ -123,6 +123,32 @@ module ApplicationHelper
     Devise.omniauth_providers.include?(:ldap)
   end
 
+  def omniauth_form_providers
+    Gitlab.config.omniauth.form_providers
+  end
+
+  def omniauth_icon_providers
+    Gitlab.config.omniauth.icon_providers
+  end
+
+  def omniauth_options(provider)
+    Devise.omniauth_configs[provider].options
+  end
+
+  def omniauth_label(provider)
+    configs = Devise.omniauth_configs[provider]
+    name = configs.strategy_class.name.demodulize
+    label = configs.options['label'] % {name: name} unless configs.options['label'].nil?
+    label || name
+  end
+
+  def omniauth_title(provider)
+    options = Devise.omniauth_configs[provider].options
+    label = omniauth_label(provider)
+    title = options['title'] % {label: label} unless options['title'].nil?
+    title || "#{label} Sign in"
+  end
+
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end

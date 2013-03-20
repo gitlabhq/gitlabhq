@@ -85,8 +85,10 @@ Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 # Omniauth
 #
 Settings['omniauth'] ||= Settingslogic.new({})
-Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
-Settings.omniauth['providers']  ||= []
+Settings.omniauth['enabled']                  = false if Settings.omniauth['enabled'].nil?
+Settings.omniauth['allow_single_sign_on']     = false if Settings.omniauth['allow_single_sign_on'].nil?
+Settings.omniauth['block_auto_created_users'] = true  if Settings.omniauth['block_auto_created_users'].nil?
+Settings.omniauth['providers']              ||= {}
 
 ##
 ## Advanced settings

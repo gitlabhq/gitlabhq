@@ -11,6 +11,11 @@ body.login-page{
   margin: auto;
   padding: 20px;
   background: white;
+  margin-bottom: 18px;
+}
+
+.login-box form{
+  margin-bottom: 0;
 }
 
 .login-box .login-logo{
@@ -18,7 +23,13 @@ body.login-page{
   display: block;
 }
 
-.login-box input.text{background-color: #f1f1f1; font-size: 16px; @include border-radius(0); padding: 14px 10px; width: 280px}
+.login-box input.text{
+  background-color: #f1f1f1;
+  font-size: 16px;
+  @include border-radius(0);
+  padding: 14px 10px;
+  width: 280px
+}
 
 .login-box input.text.top{
   @include border-radius(5px 5px 0 0);
@@ -36,4 +47,11 @@ body.login-page{
   margin-bottom:0px;
 }
 
-.login-box a.forgot{float: right; padding-top: 6px}
+.login-box a.login-toggle{
+  display: block;
+}
+
+.login-box a.forgot{
+  float: right;
+  padding-top: 6px
+}

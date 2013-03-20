@@ -78,30 +78,55 @@ production: &base
 
   ## OmniAuth settings
   omniauth:
-    # Allow login via Twitter, Google, etc. using OmniAuth providers
-    enabled: false
-
     # CAUTION!
     # This allows users to login without having a user account first (default: false).
     # User accounts will be created automatically when authentication was successful.
+    # NOTE: You may add this option for any provider too, to overwrite this option for that provider
     allow_single_sign_on: false
     # Locks down those users until they have been cleared by the admin (default: true).
+    # NOTE: You may add this option for any provider too, to overwrite this option for that provider
     block_auto_created_users: true
 
     ## Auth providers
-    # Uncomment the following lines and fill in the data of the auth provider you want to use
+    # Enable any of following and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
     # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
-    # arguments, followed by optional 'args' which can be either a hash or an array.
+    # arguments (if present). Others are given as Hash.
+
+    # Option 'enabled'      -> Is this provider enabled? (default: true)
+    # Option 'label'        -> What is this provider called? (default: provider's name)
+    # Option 'title'        -> What is title of this provider (default: '%{label} Sign in')
+    # Option 'login_form':  -> Tells how login form is show. (for default check 'app_*' options)
+    #   * false -> show as icon (eg. twitter, github, etc)
+    #   * true  -> show login dialog (eg. ldap)
+    #   * Hash  -> you can give more complex definitions:
+    #     * always_show: false|true  -> Is form shown even when other form is selected (default: false)
+    #     * fields: Hash|true|false  -> What form fields to use (default: true)
+    #       * true  -> use fields: {username: '%label Login'. password: '*Password'} (ldap, pam)
+    #       * false -> do not show any fields (shibboleth, cas)
+    #       * Hash  -> You may define fields your self. key will be field name and value the placeholder
+    #                  Asterisk (*) in start of value will make field a password field (asterisk is removed in progress).
+    #                  %label or %title will be replaced by that
+    # If options 'app_id', 'app_secret' are present 'login_form' defaults to false, else to true
+    # Other options are passed to packend as is
     providers:
-      # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET',
-      #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'twitter', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET'}
-      # - { name: 'github', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET' }
+      google_oauth2:
+        enabled: false
+        app_id: 'YOUR APP ID'
+        app_secret: 'YOUR APP SECRET'
+        access_type: 'offline'
+        approval_prompt: ''
+
+      twitter:
+        enabled: false
+        app_id: 'YOUR APP ID'
+        app_secret: 'YOUR APP SECRET'
+
+      github:
+        enabled: false
+        app_id: 'YOUR APP ID'
+        app_secret: 'YOUR APP SECRET'
 
 
 
