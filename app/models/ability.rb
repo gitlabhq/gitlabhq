@@ -95,8 +95,8 @@ class Ability
         :admin_project
       ]
 
-      rules = project_dev_rules << [:change_public_via_git_mode] if Gitlab.config.gitlab.git_daemon_enabled
-      rules
+      rules << [:change_public_via_git_mode] if Gitlab.config.gitlab.git_daemon_enabled
+      rules.flatten
     end
 
     def project_admin_rules
