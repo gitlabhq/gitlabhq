@@ -51,9 +51,9 @@
 
 Follow the installation guide for production server.
 
-* [Installation guide for latest stable release (4.2)](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md) - **Recommended**
+* [Installation guide for latest stable release (5.0)](https://github.com/gitlabhq/gitlabhq/blob/5-0-stable/doc/install/installation.md) - **Recommended**
 
-* [Installation guide for the current master branch (5.0)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
+* [Installation guide for the current master branch (5.1)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
 
 
 #### For development
