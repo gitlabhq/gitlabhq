@@ -30,7 +30,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       current_user.save
       redirect_to profile_path
     else
-      @user = User.find_or_new_for_omniauth(oauth)
+      begin
+        @user = User.find_or_new_for_omniauth(oauth)
+      rescue => exception
+        omniauth_fail!(exception)
+      end
 
       if @user
         sign_in_and_redirect @user
@@ -39,5 +43,23 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to new_user_session_path
       end
     end
+  end
+
+  def omniauth_fail!(exception)
+    error = "Internal application error occurred".to_sym
+    env['omniauth.error'] = nil
+    env['omniauth.error.type'] = error
+    env['omniauth.error.strategy'] = env['omniauth.strategy']
+
+    log_exception(exception)
+
+    OmniAuth.config.on_failure.call(env)
+  end
+
+  # FIXME: this is copy from app/controllers/application_controller.rb
+  def log_exception(exception)
+    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
+    application_trace.map!{ |t| "  #{t}\n" }
+    logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 end
