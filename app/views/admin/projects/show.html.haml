@@ -66,6 +66,7 @@
           Public Read-Only Code access:
       %td
         = check_box_tag 'public', nil, @project.public
+        = check_box_tag 'git_protocol', nil, @project.git_protocol_enabled
 
 - if @repository
   %table.zebra-striped

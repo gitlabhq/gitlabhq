@@ -52,12 +52,18 @@
       = f.label :wiki_enabled, "Wiki"
       .input= f.check_box :wiki_enabled
 
+
   %fieldset.features
     %legend Public mode:
     .clearfix
       = f.label :public do
         %span Allow public http clone
       .input= f.check_box :public
+
+    .clearfix
+      = f.label :git_protocol_enabled, "Access via git protocol"
+      .input= f.check_box :git_protocol_enabled
+
 
   %fieldset.features
     %legend Transfer:

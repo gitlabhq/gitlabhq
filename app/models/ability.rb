@@ -80,7 +80,7 @@ class Ability
     end
 
     def project_master_rules
-      project_dev_rules + [
+      rules = project_dev_rules << [
         :push_code_to_protected_branches,
         :modify_issue,
         :modify_snippet,
@@ -94,6 +94,9 @@ class Ability
         :admin_wiki,
         :admin_project
       ]
+
+      rules = project_dev_rules << [:change_public_via_git_mode] if Gitlab.config.gitlab.git_daemon_enabled
+      rules
     end
 
     def project_admin_rules

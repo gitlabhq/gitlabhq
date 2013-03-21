@@ -50,6 +50,13 @@
               %i.icon-share
             - else
               %i.icon-lock.cgreen
+            %span.cblue
+            - if project.git_protocol_enabled
+              %i.icon-ok
+            - else
+              %i.icon-off
+            Git protocol access
+
             = link_to project.name_with_namespace, [:admin, project]
             .pull-right
               = link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
