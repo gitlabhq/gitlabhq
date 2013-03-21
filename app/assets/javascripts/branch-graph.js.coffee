@@ -5,6 +5,10 @@ class BranchGraph
     @mspace = 0
     @parents = {}
     @colors = ["#000"]
+    @offsetX = 120
+    @offsetY = 20
+    @unitTime = 20
+    @unitSpace = 10
     @load()
 
   load: ->
@@ -47,24 +51,21 @@ class BranchGraph
   buildGraph: ->
     graphHeight = $(@element).height()
     graphWidth = $(@element).width()
-    ch = Math.max(graphHeight, @mtime * 20 + 100)
-    cw = Math.max(graphWidth, @mspace * 10 + 260)
-    r = Raphael(@element.get(0), cw, ch)
+    ch = Math.max(graphHeight, @unitTime * @mtime + 100)
+    cw = Math.max(graphWidth, @unitSpace * @mspace + 260)
+    @r = r = Raphael(@element.get(0), cw, ch)
     top = r.set()
     cuday = 0
     cumonth = ""
-    @offsetX = 120
-    @offsetY = 20
-    barHeight = Math.max(graphHeight, @days.length * 20 + 320)
-    @scrollLeft = cw
-    @raphael = r
+    barHeight = Math.max(graphHeight, @unitTime * @days.length + 320)
+
     r.rect(0, 0, 20, barHeight).attr fill: "#222"
     r.rect(20, 0, 20, barHeight).attr fill: "#444"
 
     for day, mm in @days
       if cuday isnt day[0]
         # Dates
-        r.text(30, @offsetY + mm * 20, day[0])
+        r.text(30, @offsetY + @unitTime * mm, day[0])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#DDD"
@@ -73,7 +74,7 @@ class BranchGraph
 
       if cumonth isnt day[1]
         # Months
-        r.text(10, @offsetY + mm * 20, day[1])
+        r.text(10, @offsetY + @unitTime * mm, day[1])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#EEE"
@@ -81,8 +82,8 @@ class BranchGraph
         cumonth = day[1]
 
     for commit in @commits
-      x = @offsetX + 10 * (@mspace - commit.space)
-      y = @offsetY + 20 * commit.time
+      x = @offsetX + @unitSpace * (@mspace - commit.space)
+      y = @offsetY + @unitTime * commit.time
 
       @drawDot(x, y, commit)
 
@@ -126,7 +127,7 @@ class BranchGraph
         element.scrollTop element.scrollTop() + 50  if event.keyCode is 40
 
   appendLabel: (x, y, refs) ->
-    r = @raphael
+    r = @r
     shortrefs = refs
     # Truncate if longer than 15 chars
     shortrefs = shortrefs.substr(0, 15) + "…"  if shortrefs.length > 17
@@ -156,7 +157,7 @@ class BranchGraph
     text.toFront()
 
   appendAnchor: (top, commit, x, y) ->
-    r = @raphael
+    r = @r
     options = @options
     anchor = r.circle(x, y, 10).attr(
       fill: "#000"
@@ -173,19 +174,19 @@ class BranchGraph
     top.push anchor
 
   drawDot: (x, y, commit) ->
-    r = @raphael
+    r = @r
     r.circle(x, y, 3).attr(
       fill: @colors[commit.space]
       stroke: "none"
     )
 
   drawLines: (x, y, commit) ->
-    r = @raphael
+    r = @r
     for parent in commit.parents
       parentCommit = @preparedCommits[parent[0]]
-      parentY = @offsetY + 20 * parentCommit.time
-      parentX1 = @offsetX + 10 * (@mspace - parentCommit.space)
-      parentX2 = @offsetX + 10 * (@mspace - parent[1])
+      parentY = @offsetY + @unitTime * parentCommit.time
+      parentX1 = @offsetX + @unitSpace * (@mspace - parentCommit.space)
+      parentX2 = @offsetX + @unitSpace * (@mspace - parent[1])
 
       if parentCommit.space is commit.space and parentCommit.space is parent[1]
         r.path(["M", x, y, "L", parentX1, parentY]).attr(
@@ -235,7 +236,7 @@ class BranchGraph
 
   markCommit: (x, y, commit, graphHeight) ->
     if commit.id is @options.commit_id
-      r = @raphael
+      r = @r
       r.path(["M", x + 5, y, "L", x + 15, y + 4, "L", x + 15, y - 4, "Z"]).attr(
         fill: "#000"
         "fill-opacity": .5
