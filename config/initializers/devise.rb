@@ -205,6 +205,11 @@ Devise.setup do |config|
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
 
+  # For good reason omniauth-pam requires gecos_map to be symbols
+  if !Gitlab.config.omniauth.providers['pam'].nil? && !Gitlab.config.omniauth.providers.pam['gecos_map'].nil?
+    Gitlab.config.omniauth.providers.pam.gecos_map.map! { |item| item.to_sym }
+  end
+
   Gitlab.config.omniauth['icon_providers'] = []
   Gitlab.config.omniauth['form_providers'] = []
   Gitlab.config.omniauth.providers.each_pair do |provider, options|

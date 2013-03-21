@@ -135,6 +135,19 @@ production: &base
         #allow_single_sign_on: true
         #block_auto_created_users: false
 
+      pam:
+        # Currently unix_pam do not work as expected, so pam works only with modules like ldap, sssd, krb
+        # or you need to run gitlab as root (NOT RECOMMENDED!)
+        # REad more from: https://github.com/canweriotnow/rpam-ruby19/issues/5
+        enabled: false
+        label: 'MyLocalHost'
+        #email_domain: 'example.org' # if gecos do not provide email, you need to use this option
+        gecos_map: ['name', 'location', 'phone', 'home_phone', 'email']
+        service: 'gitlab' # what pam service to use
+        # For authentication to work as you expect, uncomment these
+        #allow_single_sign_on: true
+        #block_auto_created_users: false
+
 
 
   #
