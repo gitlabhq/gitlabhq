@@ -7,8 +7,6 @@ class BlobController < ProjectResourceController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :assign_ref_vars
-
   def show
     if @tree.is_blob?
       send_data(
