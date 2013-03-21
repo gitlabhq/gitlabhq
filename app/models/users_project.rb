@@ -11,7 +11,7 @@
 #
 
 class UsersProject < ActiveRecord::Base
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   GUEST     = 10
   REPORTER  = 20

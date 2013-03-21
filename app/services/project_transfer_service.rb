@@ -3,7 +3,7 @@
 # Used for transfer project to another namespace
 #
 class ProjectTransferService
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   attr_accessor :project
 

@@ -1,6 +1,6 @@
 class GitlabShellWorker
   include Sidekiq::Worker
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   sidekiq_options queue: :gitlab_shell
 

@@ -1,5 +1,5 @@
 class KeyObserver < ActiveRecord::Observer
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   def after_save(key)
     GitlabShellWorker.perform_async(

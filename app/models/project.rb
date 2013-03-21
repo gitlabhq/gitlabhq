@@ -23,7 +23,7 @@
 require "grit"
 
 class Project < ActiveRecord::Base
-  include Gitolited
+  include Gitlab::ShellAdapter
   extend Enumerize
 
   class TransferError < StandardError; end
