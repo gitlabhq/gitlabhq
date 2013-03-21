@@ -60,7 +60,7 @@ describe Namespace do
     end
 
     it "should raise error when dirtory exists" do
-      expect { @namespace.move_dir }.to raise_error("Already exists")
+      expect { @namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 
     it "should move dir if path changed" do

@@ -65,13 +65,72 @@ module Gitlab
       system("#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-keys rm-key #{key_id} \"#{key_content}\"")
     end
 
+    # Add empty directory for storing repositories
+    #
+    # Ex.
+    #   add_namespace("gitlab")
+    #
+    def add_namespace(name)
+      FileUtils.mkdir(full_path(name), mode: 0770) unless exists?(name)
+    end
+
+    # Remove directory from repositories storage
+    # Every repository inside this directory will be removed too
+    #
+    # Ex.
+    #   rm_namespace("gitlab")
+    #
+    def rm_namespace(name)
+      FileUtils.rm_r(full_path(name), force: true)
+    end
+
+    # Move namespace directory inside repositories storage
+    #
+    # Ex.
+    #   mv_namespace("gitlab", "gitlabhq")
+    #
+    def mv_namespace(old_name, new_name)
+      return false if exists?(new_name) || !exists?(old_name)
+
+      FileUtils.mv(full_path(old_name), full_path(new_name))
+    end
+
+    # Remove GitLab Satellites for provided path (namespace or repo dir)
+    #
+    # Ex.
+    #   rm_satellites("gitlab")
+    #
+    #   rm_satellites("gitlab/gitlab-ci.git")
+    #
+    def rm_satellites(path)
+      raise ArgumentError.new("Path can't be blank") if path.blank?
+
+      satellites_path = File.join(Gitlab.config.satellites.path, path)
+      FileUtils.rm_r(satellites_path, force: true)
+    end
+
     def url_to_repo path
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
+
+    protected
 
     def gitlab_shell_user_home
       File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
     end
 
+    def repos_path
+      Gitlab.config.gitlab_shell.repos_path
+    end
+
+    def full_path(dir_name)
+      raise ArgumentError.new("Directory name can't be blank") if dir_name.blank?
+
+      File.join(repos_path, dir_name)
+    end
+
+    def exists?(dir_name)
+      File.exists?(full_path(dir_name))
+    end
   end
 end
