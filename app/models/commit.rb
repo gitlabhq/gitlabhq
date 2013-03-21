@@ -172,4 +172,10 @@ class Commit
     lines.pop if lines.last == "-- "      # end of diff
     lines.join("\n")
   end
+
+  def has_zero_stats?
+    stats.total.zero?
+  rescue
+    true
+  end
 end
