@@ -50,12 +50,12 @@
               %i.icon-share
             - else
               %i.icon-lock.cgreen
-            %span.cblue
-            - if project.git_protocol_enabled
-              %i.icon-ok
-            - else
-              %i.icon-off
-            Git protocol access
+            - if @git_protocol_enabled
+              %span.cblue
+              - if project.git_protocol_enabled
+                %i.icon-ok
+              - else
+                %i.icon-off
 
             = link_to project.name_with_namespace, [:admin, project]
             .pull-right

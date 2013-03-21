@@ -63,9 +63,15 @@
     %tr.bgred
       %td
         %b
-          Public Read-Only Code access:
+          Public Read-Only Code access via HTTP(s):
       %td
         = check_box_tag 'public', nil, @project.public
+  - if @git_protocol_enabled
+    %tr.bgred
+      %td
+        %b
+          Public Read-Only Code access via GIT:
+      %td
         = check_box_tag 'git_protocol', nil, @project.git_protocol_enabled
 
 - if @repository
