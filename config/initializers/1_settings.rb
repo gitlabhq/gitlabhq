@@ -76,12 +76,6 @@ Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?
 ##
 
 #
-# ldap
-#
-Settings['ldap'] ||= Settingslogic.new({})
-Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
-
-#
 # Omniauth
 #
 Settings['omniauth'] ||= Settingslogic.new({})
