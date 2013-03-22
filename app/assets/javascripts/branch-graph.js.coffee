@@ -191,57 +191,58 @@ class BranchGraph
 
   drawLines: (x, y, commit) ->
     r = @r
-    for parent in commit.parents
+    for parent, i in commit.parents
       parentCommit = @preparedCommits[parent[0]]
       parentY = @offsetY + @unitTime * parentCommit.time
       parentX1 = @offsetX + @unitSpace * (@mspace - parentCommit.space)
       parentX2 = @offsetX + @unitSpace * (@mspace - parent[1])
 
-      if parentCommit.space is commit.space and parentCommit.space is parent[1]
-        r.path(["M", x, y, "L", parentX1, parentY]).attr(
-          stroke: @colors[parentCommit.space]
-          "stroke-width": 2
-        )
-
-      else if parentCommit.space < commit.space
-        if x is parentX2
-          r
-            .path([
-              "M", x, y + 5,
-              "l-2,5,4,0,-2,-5",
-              "L", x, y + 10,
-              "L", parentX2, y + 10,
-              "L", parentX2, parentY - 5,
-              "L", parentX1, parentY])
-            .attr(
-              stroke: @colors[commit.space]
-              "stroke-width": 2)
-
-        else
-          r
-            .path([
-              "M", x + 3, y + 3,
-              "l5,0,-2,4,-3,-4",
-              "L", x + 7, y + 5,
-              "L", parentX2, y + 10,
-              "L", parentX2, parentY - 5,
-              "L", parentX1, parentY])
-            .attr(
-              stroke: @colors[commit.space]
-              "stroke-width": 2)
+      # Set line color
+      if parentCommit.space <= commit.space
+        color = @colors[commit.space]
 
       else
-        r
-          .path([
-            "M", x - 3, y + 3,
-            "l-5,0,2,4,3,-4",
-            "L", x - 7, y + 5,
-            "L", parentX2, y + 10,
-            "L", parentX2, parentY - 5,
-            "L", parentX1, parentY])
-          .attr(
-            stroke: @colors[parentCommit.space]
-            "stroke-width": 2)
+        color = @colors[parentCommit.space]
+
+      # Build line shape
+      if parent[1] is commit.space
+        d1 = [0, 5]
+        d2 = [0, 10]
+        arrow = "l-2,5,4,0,-2,-5"
+
+      else if parent[1] < commit.space
+        d1 = [3, 3]
+        d2 = [7, 5]
+        arrow = "l5,0,-2,4,-3,-4"
+
+      else
+        d1 = [-3, 3]
+        d2 = [-7, 5]
+        arrow = "l-5,0,2,4,3,-4"
+
+      # Start point
+      route = ["M", x + d1[0], y + d1[1]]
+
+      # Add arrow if not first parent
+      if i > 0
+        route.push(arrow)
+
+      # Circumvent if overlap
+      if commit.space isnt parentCommit.space or commit.space isnt parent[1]
+        route.push(
+          "L", x + d2[0], y + d2[1],
+          "L", parentX2, y + 10,
+          "L", parentX2, parentY - 5,
+        )
+
+      # End point
+      route.push("L", parentX1, parentY)
+
+      r
+        .path(route)
+        .attr(
+          stroke: color
+          "stroke-width": 2)
 
   markCommit: (x, y, commit, graphHeight) ->
     if commit.id is @options.commit_id
