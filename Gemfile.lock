@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/gollum/gollum.git
+  remote: https://github.com/gollum/gollum.git
   revision: 5dcd3c8c8f68158e43ff79861279088ee56d0ebe
   ref: 5dcd3c8c8f
   specs:
