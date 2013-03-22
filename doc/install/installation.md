@@ -74,8 +74,8 @@ Make sure you have the right version of Python installed.
 Download and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz | tar xz
-    cd ruby-1.9.3-p327
+    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p392.tar.gz | tar xz
+    cd ruby-1.9.3-p392
     ./configure
     make
     sudo make install
