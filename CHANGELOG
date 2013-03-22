@@ -14,7 +14,7 @@ v 5.0.0
   - Add validations for Group and Team names
   - Restyle team page for project
   - Update capybara, rspec-rails, poltergeist to recent versions
-  - Wiki on git using Gollum 
+  - Wiki on git using Gollum
   - Added Solarized Dark theme for code review
   - Dont show user emails in autocomplete lists, profile pages
   - Added settings tab for group, team, project
@@ -24,7 +24,7 @@ v 5.0.0
   - Fixed search field on projects page
   - Added teams to search autocomplete
   - Move groups and teams on dashboard sidebar to sub-tabs
-  - API: improved return codes and docs.
+  - API: improved return codes and docs. @Xylakant
   - Redesign wall to be more like chat
   - Snippets, Wall features are disabled by default for new projects
 
@@ -56,7 +56,7 @@ v 4.1.0
   - cleanup rake tasks
   - fix backup/restore
   - scss cleanup
-  - show preview for note images 
+  - show preview for note images
   - improved network-graph
   - get rid of app/roles/
   - added new classes Team, Repository
@@ -70,7 +70,7 @@ v 4.1.0
 v 4.0.0
   - Remove project code and path from API. Use id instead
   - Return valid clonable url to repo for web hook
-  - Fixed backup issue 
+  - Fixed backup issue
   - Reorganized settings
   - Fixed commits compare
   - Refactored scss
