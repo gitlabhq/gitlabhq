@@ -24,7 +24,7 @@ v 5.0.0
   - Fixed search field on projects page
   - Added teams to search autocomplete
   - Move groups and teams on dashboard sidebar to sub-tabs
-  - API: improved return codes and docs. @Xylakant
+  - API: improved return codes and docs. (Felix Gilcher)
   - Redesign wall to be more like chat
   - Snippets, Wall features are disabled by default for new projects
 
