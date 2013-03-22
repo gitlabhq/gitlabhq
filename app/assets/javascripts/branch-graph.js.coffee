@@ -51,21 +51,21 @@ class BranchGraph
   buildGraph: ->
     graphHeight = $(@element).height()
     graphWidth = $(@element).width()
-    ch = Math.max(graphHeight, @unitTime * @mtime + 100)
-    cw = Math.max(graphWidth, @unitSpace * @mspace + 260)
+    ch = Math.max(graphHeight, @offsetY + @unitTime * @mtime + 150)
+    cw = Math.max(graphWidth, @offsetX + @unitSpace * @mspace + 300)
     @r = r = Raphael(@element.get(0), cw, ch)
     top = r.set()
     cuday = 0
     cumonth = ""
     barHeight = Math.max(graphHeight, @unitTime * @days.length + 320)
 
-    r.rect(0, 0, 20, barHeight).attr fill: "#222"
-    r.rect(20, 0, 20, barHeight).attr fill: "#444"
+    r.rect(0, 0, 26, barHeight).attr fill: "#222"
+    r.rect(26, 0, 20, barHeight).attr fill: "#444"
 
     for day, mm in @days
       if cuday isnt day[0]
         # Dates
-        r.text(30, @offsetY + @unitTime * mm, day[0])
+        r.text(36, @offsetY + @unitTime * mm, day[0])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#DDD"
@@ -74,7 +74,7 @@ class BranchGraph
 
       if cumonth isnt day[1]
         # Months
-        r.text(10, @offsetY + @unitTime * mm, day[1])
+        r.text(13, @offsetY + @unitTime * mm, day[1])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#EEE"
@@ -191,57 +191,58 @@ class BranchGraph
 
   drawLines: (x, y, commit) ->
     r = @r
-    for parent in commit.parents
+    for parent, i in commit.parents
       parentCommit = @preparedCommits[parent[0]]
       parentY = @offsetY + @unitTime * parentCommit.time
       parentX1 = @offsetX + @unitSpace * (@mspace - parentCommit.space)
       parentX2 = @offsetX + @unitSpace * (@mspace - parent[1])
 
-      if parentCommit.space is commit.space and parentCommit.space is parent[1]
-        r.path(["M", x, y, "L", parentX1, parentY]).attr(
-          stroke: @colors[parentCommit.space]
-          "stroke-width": 2
-        )
-
-      else if parentCommit.space < commit.space
-        if x is parentX2
-          r
-            .path([
-              "M", x, y + 5,
-              "l-2,5,4,0,-2,-5",
-              "L", x, y + 10,
-              "L", parentX2, y + 10,
-              "L", parentX2, parentY - 5,
-              "L", parentX1, parentY])
-            .attr(
-              stroke: @colors[commit.space]
-              "stroke-width": 2)
-
-        else
-          r
-            .path([
-              "M", x + 3, y + 3,
-              "l5,0,-2,4,-3,-4",
-              "L", x + 7, y + 5,
-              "L", parentX2, y + 10,
-              "L", parentX2, parentY - 5,
-              "L", parentX1, parentY])
-            .attr(
-              stroke: @colors[commit.space]
-              "stroke-width": 2)
+      # Set line color
+      if parentCommit.space <= commit.space
+        color = @colors[commit.space]
 
       else
-        r
-          .path([
-            "M", x - 3, y + 3,
-            "l-5,0,2,4,3,-4",
-            "L", x - 7, y + 5,
-            "L", parentX2, y + 10,
-            "L", parentX2, parentY - 5,
-            "L", parentX1, parentY])
-          .attr(
-            stroke: @colors[parentCommit.space]
-            "stroke-width": 2)
+        color = @colors[parentCommit.space]
+
+      # Build line shape
+      if parent[1] is commit.space
+        d1 = [0, 5]
+        d2 = [0, 10]
+        arrow = "l-2,5,4,0,-2,-5"
+
+      else if parent[1] < commit.space
+        d1 = [3, 3]
+        d2 = [7, 5]
+        arrow = "l5,0,-2,4,-3,-4"
+
+      else
+        d1 = [-3, 3]
+        d2 = [-7, 5]
+        arrow = "l-5,0,2,4,3,-4"
+
+      # Start point
+      route = ["M", x + d1[0], y + d1[1]]
+
+      # Add arrow if not first parent
+      if i > 0
+        route.push(arrow)
+
+      # Circumvent if overlap
+      if commit.space isnt parentCommit.space or commit.space isnt parent[1]
+        route.push(
+          "L", x + d2[0], y + d2[1],
+          "L", parentX2, y + 10,
+          "L", parentX2, parentY - 5,
+        )
+
+      # End point
+      route.push("L", parentX1, parentY)
+
+      r
+        .path(route)
+        .attr(
+          stroke: color
+          "stroke-width": 2)
 
   markCommit: (x, y, commit, graphHeight) ->
     if commit.id is @options.commit_id
