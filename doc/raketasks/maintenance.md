@@ -15,7 +15,7 @@ System:         Debian 6.0.6
 Current User:   gitlab
 Using RVM:      yes
 RVM Version:    1.17.2
-Ruby Version:   ruby-1.9.3-p327
+Ruby Version:   ruby-1.9.3-p392
 Gem Version:    1.8.24
 Bundler Version:1.2.3
 Rake Version:   10.0.1
