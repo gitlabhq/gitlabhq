@@ -11,7 +11,10 @@
           %i.icon-share
           = project.name_with_namespace
           .pull-right
-            %pre.dark.tiny git clone #{project.http_url_to_repo}
+            - if project.public
+              %pre.dark.tiny git clone #{project.http_url_to_repo}
+            - if project.git_protocol_enabled
+              %pre.dark.tiny git clone #{project.git_url_to_repo}
         %p.description
           = project.description
     - unless @projects.present?

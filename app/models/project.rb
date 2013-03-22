@@ -30,7 +30,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :public, :import_url, as: [:default, :admin]
+    :wiki_enabled, :git_protocol_enabled, :public, :import_url, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
@@ -95,7 +95,9 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public_only, -> { where(public: true) }
+  scope :public_via_http, -> { where(public: true) }
+  scope :public_via_git, -> { where(git_protocol_enabled: true) }
+  scope :public_only, -> { where(arel_table[:public].eq(true).or(arel_table[:git_protocol_enabled].eq(true))) }
 
   enumerize :issues_tracker, :in => (Gitlab.config.issues_tracker.keys).append(:gitlab), :default => :gitlab
 
@@ -387,8 +389,13 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
+
+  def git_url_to_repo
+    [Gitlab.config.gitlab.git_url, "/", path_with_namespace, ".git"].join('')
+  end
+
 
   def project_access_human(member)
     project_user_relation = self.users_projects.find_by_user_id(member.id)

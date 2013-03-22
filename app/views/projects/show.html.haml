@@ -24,6 +24,13 @@
             %span.cgreen
               %i.icon-lock
               Private
+          - if @git_protocol_enabled
+            %span.cblue
+              - if @project.git_protocol_enabled
+                %i.icon-ok
+              - else
+                %i.icon-off
+              Git protocol access
 
         %p Repo Size: #{@project.repository.size} MB
         %p Created at: #{@project.created_at.stamp('Aug 22, 2013')}

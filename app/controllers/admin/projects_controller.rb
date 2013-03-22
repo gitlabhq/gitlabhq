@@ -10,6 +10,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     @projects = @projects.where(namespace_id: nil) if params[:namespace_id] == Namespace.global_id
     @projects = @projects.search(params[:name]) if params[:name].present?
     @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(20)
+    check_git_protocol
   end
 
   def show
@@ -17,9 +18,11 @@ class Admin::ProjectsController < Admin::ApplicationController
     @users = User.active
     @users = @users.not_in_project(@project) if @project.users.present?
     @users = @users.all
+    check_git_protocol
   end
 
   def edit
+    check_git_protocol
   end
 
   def team_update
@@ -54,5 +57,9 @@ class Admin::ProjectsController < Admin::ApplicationController
 
     @project = Project.find_with_namespace(id)
     @project || render_404
+  end
+
+  def check_git_protocol
+    @git_protocol_enabled ||= Gitlab.config.gitlab.git_daemon_enabled
   end
 end

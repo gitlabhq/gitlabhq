@@ -36,10 +36,11 @@
                   .input
                     = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
 
-                - unless @repository.heads.empty?
-                  .clearfix
-                    = f.label :default_branch, "Default Branch"
-                    .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
+                - if @repository
+                  - unless @repository.heads.empty?
+                    .clearfix
+                      = f.label :default_branch, "Default Branch"
+                      .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
 
 
               - if can?(current_user, :change_public_mode, @project)
@@ -55,7 +56,20 @@
                         If checked, this project can be cloned
                         %em without any
                         authentification.
-                        It will also be listed on the #{link_to "public access directory", public_root_path}.
+                  - if @git_protocol_enabled
+                    .control-group
+                      = f.label :git_protocol_enabled, class: 'control-label' do
+                        %span Access via git protocol
+                      .controls
+                        = f.check_box :git_protocol_enabled
+                        %span.descr
+                          If checked, this project can be cloned
+                          %em without any
+                          authentification via git protocol.
+                  .control-group
+                    %span.span9
+                      Projects with enabled public clone will also be listed on the #{link_to "public access directory", public_root_path}
+
 
               %fieldset.features
                 %legend

@@ -1,4 +1,6 @@
 .input-prepend.project_clone_holder
   %button{class: "btn active", :"data-clone" => @project.ssh_url_to_repo} SSH
   %button{class: "btn", :"data-clone" => @project.http_url_to_repo}= Gitlab.config.gitlab.protocol.upcase
+  - if @git_protocol_enabled && @project.git_protocol_enabled
+    %button{class: "btn", :"data-clone" => @project.git_url_to_repo} GIT
   = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select input-xxlarge", readonly: true
