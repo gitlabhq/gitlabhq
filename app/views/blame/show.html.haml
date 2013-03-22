@@ -3,7 +3,7 @@
 #tree-holder.tree-holder
   %ul.breadcrumb
     %li
-      %span.arrow
+      %i.icon-angle-right
       = link_to project_tree_path(@project, @ref) do
         = @project.name
     - @tree.breadcrumbs(6) do |link|

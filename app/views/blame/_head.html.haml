@@ -1,7 +1,2 @@
-%ul.nav.nav-tabs
-  %li
-    = render partial: 'shared/ref_switcher', locals: {destination: 'tree', path: params[:path]}
-  = nav_link(controller: :refs) do
-    = link_to 'Source', project_tree_path(@project, @ref)
-  %li.pull-right
-    = render "shared/clone_panel"
+%div.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'tree', path: params[:path]
