@@ -1,0 +1,720 @@
+es:
+  #
+  # Global l18n
+  #
+  global:
+    ago: " antes"
+    never: "Nunca"
+    timestamp: "Aug 21, 2011"
+    full_timestamp: "Aug 21, 2011 9:23pm"
+    html_lang: "es"
+    more: "Más"
+    save: "Guardar"
+    reset: "Cancelar"
+    destroy: "Destruír"
+    destroy_confirm: "¿Está seguro?"
+    edit: "Editar"
+    back: "Atrás"
+    markdown: "Markdown está activado."
+    created_at: "creado "
+    added: "Agregado"
+  
+  #
+  # Dashboard
+  #
+  dashboard:
+    issues:
+      title: "Incidencias"
+      assigned_to_you: "(aginadas a tí)"
+      list: "Visite la página de incidencias"
+      issue_no: "Incidencia #"
+      total: "incidencias"
+      no_issues: "No hay nada para mostrar aquí"
+    merge_requests:
+      title: "Solicitudes de Merge"
+      authored_assigned_to_you: "(creardas o asignadas por/a tí)"
+      list: "Visite la página de solicitudes de merge"
+      merge_request_no: "Solicitud de Merge #"
+      total: "solicitudes de merge"
+      no_requests: "No hay nada para mostrar aquí"
+    projects_feed:
+      last_active: "útima actividad "
+      browse_code: "Navegar en el código »"
+      commits: "Commits »"
+    index:
+      require_key:
+        before: "No podrás hacer pull/push de proyectos hasta que"
+        href: "agregues una SSH KEY pública"
+        after: "a tu perfil"
+      projects:
+        title: "Proyectos"
+        recent: "(más reciente)"
+        list: "Lista de Proyectos" 
+        singular: "proyecto"
+        plural: "proyectos"
+        maximum: " Puedes crear como máximo %{limit} proyectos. Presione en el siguiente link para crear uno nuevo"
+        new: "Nuevo Proyecto »"
+        limit_reached: "Ha alcanzado el límite de proyecto en su cuenta. Para agrandar su capacidad comunpiquese con el administrador de GITLAB"
+        my_profile: "Mi Perfil »"
+      latest_push: "El último push fue sobre %{ref_name} %{ref_type} de %{project}:"
+      activities: "Actividades"
+  #
+  # Layouts
+  #
+  layouts:
+    application:
+      dashboard: "Sofware Control Console"
+    head:
+      atom:
+        recent_commits: "Commits recientes en %{project}:%{ref}"
+        issues: "%{project} incidentes"
+    head_panel:
+      home: "Principal"
+      search: "Buscar"
+      admin_area: "Zona Admin"
+      profile: "Mi Perfil"
+      logout: "Cerrar Sesión"
+    const_menu_links:
+      home: "Principal"
+    app_menu:
+      projects: "Proyectos"
+      issues: "Incidentes"
+      requests: "Solicitudes"
+      search: "Buscar"
+      help: "Ayuda"
+    project_menu:
+      project: "Proyectos"
+      files: "Archivos"
+      commits: "Commits"
+      network: "Network"
+      wall: "Muro"
+      wiki: "Wiki"
+    admin:
+      users: "Usuarios"
+      projects: "Proyectos"
+      emails: "Emails"
+      resque: "Resque"
+    notify:
+      reason: "Usted está recibiendo este boletín porque usted está en el equipo del proyecto."
+    profile:
+      title: "Perfil"
+      security: "Contraseña"
+      design: "Diseño"
+      keys: "SSH Keys"
+  #
+  # Admin Area
+  #
+  admin:
+    mailer:
+      preview:
+        desc: "Esta es una página con las vistas previas para todos los correos del sistema que se envían a los usuarios"
+        availability_hint: "Vistas previas de correo electrónico se construyen sobre la base de los proyectos existentes / Commits / Incidentes - por lo que tal vez algunas vistas previas no estés disponbiles"
+        new_user: "Nuevo usuario"
+        new_issue: "Nuevo incidente"
+        commit_note: "Nota del commit"
+        issue_note: "Nota de la incidencia"
+        wall_note: "Nota del Muro"
+    projects:
+      form:
+        example_title: "Proyecto ejemplo"
+        example_project: "example_project"
+        example: "ejemplo"
+      index:
+        title: "Proyectos"
+        new: "Nuevo Proyecto »"
+        name: "Nombre"
+        path: "Ruta"
+        team_count: "Miembros del Equipo"
+        last_commit: "Último commit"
+        post_receive: "Post recibir"
+      new:
+        title: "Crear un nuevo proyecto"
+      show:
+        team:
+          title: "Equipo"
+          add_title: "Agregue un nuevo integrante al equipo"
+          member:
+            name: "Nombre"
+            project_access: "Nivel de acceso"
+            repo_access: "Acceso a repositorio"
+            edit_access: "Editar acceso"
+            remove: "Eliminar del equipo"
+            add: "Agregar"
+    users:
+      index:
+        title: "Usuarios"
+        new: "Nuevo Usuario"
+        admin: "Admin"
+        name: "Nombre"
+        email: "Email"
+        projects: "Proyectos"
+        blocked: "Bloqueado"
+        active: "Activo"
+        admins: "Admins"
+        blocked_filter: "Bloqueado"
+        wo_project: "Sin proyectos"
+        btn_block: "Bloquear"
+        btn_unblock: "Desbloquear"
+      form: 
+        admin_desc: "Ofrece la capacidad al usuario de manejar la aplicación."
+        unblock_desc: "Este usaurio está bloqueado y no puede hacer login en GitLab"
+        block_desc: "El usuario bloqueado será eliminado de todos los proyectos y no será capaz de acceder a GitLab"
+  #
+  # Commits
+  #
+  commits:
+    commit:
+      browse: "Navegar en el código »"
+    diffs:
+      warning:
+        title: "¡Advertencia! El commit tiene más de 200 archivos con diferencias."
+        reason: "Para evitar el problema de rendimiento rechazamos información diff."
+        continue: "Pero si usted todavía desea ver el diff"
+        continue_href: "presione este link"
+      title:
+        showing: "Mostrando"
+        changes: "archivo modificado"
+        changes_plural: "archivos modificados"
+      no_preview: "No hay vistas previas para este tipo de archivo"
+    head:
+      commits: "Commits"
+      compare: "Comparar"
+      branches: "Branches"
+      tags: "Tags"
+      feed: "feed"
+    text_file:
+      suppressed: "Diff suprimido. Haga clic para mostrar"
+      add_note: "Agregue una nota para esta línea"
+    compare:
+      title: "Vista de comparación"
+      desc: "Ingrese en el campo de entrada el id del commit o el nombre de branch/tag y presione en botón de comparación."
+      submit: "Comparar"
+      commits: "Commits (%{count})"
+      diff: "Diff"
+    show:
+      commit: "commit"
+      authored: "authored"
+      committed: "committed"
+      parent: "parent"
+      parents: "parents"
+  #
+  # Deploy Keys
+  #
+  deploy_keys:
+    title: "Deploy Keys"
+    index:
+      desc: "El deploy de llaves permite generar acceso sólo de lectura al repositororio."
+      new: "Agregar Deploy Key"
+    show:
+      added: "Agregada"
+  #
+  # Errors
+  #
+  errors:
+    access_denied:
+      title: "Acceso no permitido"
+      desc: "Usted no tiene permiso para acceder a esta página"
+      further_info: "Lea más sobre permisos de proyectos"
+      further_info_href: "aquí"
+    git_not_found:
+      title: "Recurso Git no encontrado"
+      desc: "Gitlab no pueden acceder al branch o al commit en su repositorio. Tal vez fue movido"
+    gitolite:
+      title: "Error Gitolite"
+      desc: "Gitlab no puede acceder al sistema gitolite."
+      suggestions:
+        first: "Chequeé 'config/gitlab.yml' para confirmar la correcta configuración."
+        second:
+          desc: "Asegúrese que el servidor web tiene acceso a gitolite."
+          href: "Setup tutorial"
+        third: "Intentar:"
+    not_found:
+      title: "No encontrado"
+      desc: "No existe el recurso solicitado."
+      further_info: "Es posible que haya escrito mal la dirección o eliminado."
+  #
+  # Events
+  #
+  events:
+    at: " "
+    event_issue:
+      issue: "incidente"
+    event_merge_request:
+      merge_request: "solicitud de merge"
+    event_push:
+      more: "... y %{count} más commits"
+  #
+  # Help
+  #
+  help:
+    title: "Ayuda"
+    index:
+      title: "Gitlabhq"
+      shortdesc: "Self Hosted Git Management"
+      desc: "Fast, secure and stable solution based on Ruby on Rails & Gitolite."
+    workflow:
+      title: "Workflow"
+    permissions:
+      title: "Permisos"
+  #
+  # Hooks
+  #
+  hooks:
+    index:
+      desc: "Publicar receive hooks para recibir eventos cuando alguien push al repositorio."
+      new: "Agregar publicae Receive Hook"
+      further_info: "Leer más sobre web hooks"
+      further_info_href: "aquí"
+    show:
+      test: "Testear Hook"
+  #
+  # Issues
+  #
+  issues:
+    xml_title: "%{project} incidentes"
+    head:
+      browse: "Navegar Incidentes"
+      milestones: "Hitos"
+    issues:
+      matching_issues: "%{count} incidente/s para este filtro"
+      empty: "No hay nada para mostrar aquí"
+    show:
+      title: "Incidente #%{id}"
+      created_at: "creado "
+      updated_at: "actualizado "
+      upvote: "+1 voto"
+      upvotes: "+%{votes} votes"
+      issues_list: "Lista de incidentes"
+      created_by: "Creado por"
+      currently_assigned_to: "y actualmente asiganado a"
+      note: "nota"
+      notes: "notas"
+      reopen: "Reabrir"
+      resolve: "Resolver"
+      assigned_to: "assginado a"
+      critical: "crítico"
+      today: "hoy"
+    index:
+      new: "Nuevo Incidente"
+      title: "Incidentes"
+      open: "Abierto"
+      closed: "Cerrado"
+      to_me: "Para mí"
+      all: "Todos"
+    edit:
+      title:  "Editar incidente #%{id}"
+    form:
+      submit: "Enviar nuevo incidente"
+      assignee_desc: "Asignar a usuario"
+      milestone_desc: "Selecione hito"
+  #
+  # Kaminari
+  #
+  views:
+    pagination:
+      first: "&laquo; Primero"
+      last: "Último &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Próximo &rsaquo;"
+      truncate: "..."
+  #
+  # Keys
+  #
+  keys:
+    index:
+      title: "SSH Keys"
+      new: "Agregar nueva SSH Key"
+    show:
+      added: "Agregada"
+      pubkey: "Publicar key:"
+      back_to_list: "Lista de keys"
+    edit:
+      title: "Editar key"
+  #
+  # Merge Requests
+  #
+  merge_requests:
+    commits:
+      title: "Commits"
+      no_commits: "Nada para merge"
+      view_limited: "8 de %{total} commits mostrados."
+      show_all: "Presione aquí para mostrar todo"
+    head:
+      title: "Solicitudes de Merge"
+    how_to_merge:
+      title: "Cómo hacer Merge"
+    new:
+      title: "Nuevo solicitud de Merge"
+    index:
+      open: "Abierto"
+      closed: "Cerrado"
+      to_me: "Para mí"
+      all: "Todo"
+      no_requests: "No hay nada para mostrar aquí"
+      matching_requests: "%{count} merge para este filtro"
+    merge_request:
+      note: "nota"
+      notes: "notas"
+      authored: "creador"
+    edit:
+      title: "Editar solicitud de merge #%{id}"
+    form:
+      select_branch: "Seleccionar Branch"
+      select_user: "Seleccionar usuario"
+    show:
+      title: "Solicitud de Merge #%{id}:"
+      resolve: "Cerrar"
+      upvote: "+1 upvote"
+      upvotes: "+%{votes} upvotes"
+      back_to_list: "List de solicitudes de merge"
+      closed: "Cerrado"
+      open: "Abierto"
+      created_at: "Creado %{date} por"
+      assigned_to: "y actualmente asignado a"
+      merged_by: "Merged por"
+      closed_by: "Cerrado por"
+      notes: "Notas"
+      diff: "Diff"
+  #
+  # Milestones
+  #
+  milestones:
+    index:
+      title: "Hitos"
+      new: "Neuvo Hito"
+      active: "Activo"
+      all: "Todos"
+      no_milestones: "No hay nada para mostrar aquí"
+    form:
+      edit: "Editar hito #%{id}"
+      back_to_list: "Lista de hitos"
+    milestone:
+      browse: "Navegar en incidencias"
+      expires: "expira %{date}"
+    show:
+      title: "Hito #%{id}"
+      closed: "Cerrado"
+      open: "Abierto"
+      open_issues: "%{count} abierto"
+      closed_issues: "%{count} cerrado"
+  #
+  # Notes
+  #
+  notes:
+    form:
+      title: "Mantener el comentario"
+      notify: "Notificar vía email:"
+      team: "Equipo de proyecto"
+      author: "Autor del commit"
+      attachment: "Adjunto:"
+      filename: "Nombre del archivo..."
+      upload: "Archivo subido"
+      restriction: "Cualquier archivo menor a 10 MB"
+      reply: "Reintente"
+  #
+  # Notifications
+  #
+  notify:
+    new_user_email:
+      hi: "Holla %{user}!"
+      creation: "El administrador ha creado una cuenta para usted. Ahora you have access to GITLAB."
+      login: "nombre usuario"
+      password: "contraseña"
+      login_href: "Iniciar Sesión"
+    new_issue_email:
+      title: "Un nuevo incidente ha sido creado y asignado a tí."
+      issue_href: "Incidente #%{id}: '%{title}'"
+    new_merge_request_email:
+      title: "Nuevo solicitud de Merge"
+      branches: "Branches: %{old} &rarr; %{new}"
+      assignee: "Asignado: %{old} &rarr; %{new}"
+    changed_merge_request_email:
+      title: "Solicitud de Merge reasignada"
+      assignee: "La asignación %{old} a cambiado a %{new}"
+    changed_issue_email:
+      title: "Incidente reasignado"
+    note_commit_email:
+      title: "Nuevo comentario para el commit"
+      left_message: "próximo mensaje:"
+    note_issue_email:
+      title: "Nuevo comentario -"
+      title_href: "Incidente #%{id}: '%{topic}'"
+    note_merge_request_email:
+      title: "Nuevo commentario para la solicitud de Merge"
+    note_wall_email:
+      title: "Nuevo mensaje sobre"
+      title_href: "Muro de proyecto"
+  #
+  # Profile
+  #
+  profile:
+    show:
+      projects: "Proyectos personales:"
+      of: "de"
+      pubkeys: "SSH public keys:"
+      name_help: "Ingrese su nombre para que las personas puedan reconocerlo."
+      mail_help: "Nosotros también utilizamos email para la detección avatar"
+      bio_help: "Sobre su persona in menos de 250 caracteres."
+      tip: "Tip:"
+      gravatar: "Usted puede cambiar su avatar en www.gravatar.com"
+    password:
+      password: "Contraseña"
+      password_hint: "Después de la actualización exitosa de su contraseña le será redirigido a la página de acceso donde deberá iniciar sesión con la contraseña nueva"
+      token: "Token privado"
+      classified: "mantener en secreto!"
+      token_hint: "Señal privada utilizada para acceder a los recursos de aplicaciones sin necesidad de autenticación (por ejemplo, rss feed)"
+      reset: "Resetear"
+      reset_confirm: "¿Está seguro?"
+      generate: "Generar"
+      nyi: "Usted no tiene uno todavía. Haga clic en Generar para arreglarlo."
+    index:
+      title: "Perfil"
+    design:
+      app: "Tema de la aplicación"
+      default: "Por defecto"
+      classic: "Clásico"
+      code: "Rever código"
+      white: "Vista previa blanca"
+      dark: "vista previa oscura"
+  #
+  # Projects
+  #
+  projects:
+    projects: "Proyectos"
+    index:
+      none: "No hay nada aquí"
+      wait_for_add: "Si usted es agregado al proyecto - lo verá aquí"
+      success: "El proyecto ha sido creado éxitosamente."
+      updated: "El proyecto ha sido actualizado éxitosamente."
+    form:
+      features: "Características"
+    project_head:
+      show: "Mostrar"
+      team: "Equipo"
+      attachments: "Adjuntos"
+      snippets: "Snippets"
+      hooks: "Hooks"
+      deploy: "Deploy Keys"
+    show:
+      switch: "Cambiar al proyecto"
+      download: "Descargar"
+      merge_request: "Nueva solicitud de Merge"
+      issue: "Nuevo incidente"
+      activity: "Actividad reciente"
+    team:
+      title: "Miembros del equipo"
+      new: "Nuevo miembro"
+      profile: "Para abrir el perfil del miembro del equipo - clic sobre avatar."
+    edit:
+      title: "Editar Proyecto"
+      processing: "Salvando proyecto &amp; repositorio. Espere por favor..."
+    new:
+      title: "Nuevo Proyecto"
+      processing: "Creando proyecto &amp; repositorio. Espere por favor..."
+    empty:
+      empty: "Usted debe hacer push del repositorio para proceder. Después de hacer el push será capaz de navegar por el código, etc."
+      git_global: "Instalación global de Git:"
+      create: "Crear Repositorio"
+      existing: "¿Existe este Git Repo?"
+      remove: "Eliminar proyecto"
+    files:
+      empty: "Todos los archivos han sido adjuntados al muro del proyecto, incidentes, ect., se mostrarán aquí"
+    graph:
+      title: "Network Graph"
+  #
+  # Protected Branches
+  #
+  protected_branches:
+    index:
+      desc: "branches protegidos destinados a prevenir el push para todos excepto a masters. "
+      features:
+        desc: "Esta política permite"
+        keep_secure: "mantener estables las ramas aseguradas"
+        forced_review: "forzar la revisión del código antes de realizar merge con el branch protegido"
+      name: "Nombre"
+      commit: "Último commit"
+      unprotect: "Desprotegido"
+      default: "por defecto"
+  #
+  # Refs
+  #
+  refs:
+    tree:
+      code: "Código"
+      name: "Nombre"
+      update: "Última actualización"
+      commit: "Último commit"
+      history: "Historial"
+    tree_file:
+      raw: "fila"
+      history: "historia"
+      empty: "Archivo vacío"
+      download: "Descargar"
+  #
+  # Repositories
+  #
+  repositories:
+    branch:
+      default: "por defecto"
+      download: "Descargar"
+    branches_head:
+      recent: "Reciente"
+      protected: "Protegido"
+      all: "Todos"
+    tags:
+      none: "No Tags"
+  #
+  # Search
+  #
+  search:
+    show:
+      label: "buscando"
+      placeholder: "incidente 143"
+      submit: "Buscar"
+      results: "Resultados de la búsqueda"
+      no_result: "Nada aquí"
+      projects: "Proyectos"
+      issues: "Incidentes"
+      merge_requests: "Solicitudes de Merge"
+  #
+  # Snippets
+  #
+  snippets:
+    index:
+      desc: "Compara el código con los demás si no está en los repositorios git"
+      new: "Agregue un nuevo snippet"
+    form:
+      edit: "Editar Snippet #%{id}"
+      ex:
+        title: "Ejemplo Snippet"
+        file: "example.rb"
+    lifetime:
+      forever: "por siempre"
+      day: "1 día"
+      week: "1 semana"
+      month: "1 mes"
+  #
+  # Team members
+  #
+  team_members:
+    form:
+      title: "Nuevo miembro del equipo"
+      user: "Nombre"
+      project_access: "Nivel de acceso"
+      select: "Seleccionar usuario"
+    show:
+      owner: "Propietario del Proyecto"
+      blocked: "Bloqueado"
+      back_to_list: "Lista de equipos"
+      member_since: "Miebro desde"
+  #
+  # Wikis
+  #
+  wikis:
+    form:
+      md: "El contenido de la Wiki es parseado"
+      link: "para agregar un link a la página solamente debe escribir"
+    edit:
+      title: "Editando página"
+    show:
+      history: "Historial"
+      last_edit: "Última edición por %{editor} in %{date}"
+      destroy: "Eliminar esta página"
+    history:
+      title: "Versiones"
+      id: "#"
+      last_edit: "última edición"
+      created_by: "creado por"
+
+
+
+  #
+  # Notices
+  #  
+  notice:
+    merge_requests:
+      new: "Solicitud de Merge ha sido creada éxitosamente."
+      edit: "Solicitud de Merge ha sido actualizada éxitosamente."
+    projects:
+      new: "El proyecto ha sido creado éxitosamente."
+      edit: "El proyecto ha sido actualizado éxitosamente."
+    profile:
+      password: "la contraseña ha sido actualizada éxitosamente. Por favor inicie sesión"
+    team_members:
+      invalid: "El usuario debe tener por lo menos un rol"
+    wikis:
+      new: "La página ha sido actualizada éxitosamente."
+      destroy: "La página ha sido eliminada éxtosamente."
+    
+      
+
+
+  #
+  # ActiveRecord: Translations for Models
+  #
+  activerecord:
+    attributes:
+      project:
+        name: "Título"
+        path: "Ruta"
+        code: "Código"
+        description: "Descripción"
+        owner_id: "Propietario"
+        default_branch: "Default Branch"
+        issues_enabled: "Incidentes"
+        merge_requests_enabled: "Solicitud de Merge"
+        wall_enabled: "Muro"
+        wiki_enabled: "Wiki"
+        post_receive_file: "Publicar archivo recibido"
+      user:
+        name: "Nombre"
+        email: "Email"
+        password: "Contraseña"
+        password_confirmation: "Confirmación de contraseña"
+        projects_limit: "Límite de proyectos"
+        skype: "Skype"
+        linkedin: "LinkedIn"
+        twitter: "Twitter"
+        admin: "Administrator"
+        blocked: "Bloqueado"
+        bio: "Bio"
+      users_project:
+        access_roles:
+          guest: "Guest"
+          reporter: "Reporter"
+          developer: "Developer"
+          master: "MMaster"
+      key:
+        title: "Título"
+        key: "Key"
+      event:
+        opened: "abierto"
+        closed: "cerrado"
+        merged: "merged"
+      web_hook:
+        url: "URL"
+      issue:
+        title: "Tema del Incidente *"
+        assignee_id: "Asginado a *"
+        description: "Detalles de la incidencia"
+        milestone_id: "Hito"
+        critical: "Crítico"
+      merge_request:
+        title: "Título"
+        source_branch: "De"
+        target_branch: "Para"
+        assignee_id: "Asignado a"
+      milestone:
+        title: "Título *"
+        description: "Descripción"
+        due_date: "Fecha de vencimiento"
+      protected_branch:
+        name: "Nombre"
+      snippet:
+        title: "Título"
+        file_name: "Nombre del archivo"
+        expires_at: "Vida útil"
+        content: "Código"
+      wiki:
+        title: "Título"
+        content: "Contenido"
