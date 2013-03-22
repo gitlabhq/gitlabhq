@@ -38,11 +38,11 @@
                   - current_line += 1
                 - else
                   - lines.each do |line|
-                    :preserve
-                      #{current_line}
+                    = current_line
+                    \
                     - current_line += 1
             %td.lines
               %pre
                 - lines.each do |line|
-                  :preserve
-                    #{line}
+                  = line
+                  \
