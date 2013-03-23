@@ -244,9 +244,11 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :snippets do
-      member do
-        get "raw"
+    scope module: :projects do
+      resources :snippets do
+        member do
+          get "raw"
+        end
       end
     end
 

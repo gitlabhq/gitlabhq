@@ -1,4 +1,4 @@
-class SnippetsController < ProjectResourceController
+class Projects::SnippetsController < Projects::ApplicationController
   before_filter :module_enabled
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
