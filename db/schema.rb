@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130318212250) do
+ActiveRecord::Schema.define(:version => 20130323174317) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -190,6 +190,7 @@ ActiveRecord::Schema.define(:version => 20130318212250) do
     t.datetime "updated_at", :null => false
     t.string   "file_name"
     t.datetime "expires_at"
+    t.boolean  "private"
   end
 
   add_index "snippets", ["created_at"], :name => "index_snippets_on_created_at"
