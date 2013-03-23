@@ -30,7 +30,7 @@
 
 * GitLab.org community site: [Homepage](http://gitlab.org) [Screenshots](http://gitlab.org/screenshots/) [Blog](http://blog.gitlab.org/) [Demo](http://demo.gitlabhq.com/users/sign_in)
 
-* GitLab.com commercial services: [Homepage](http://blog.gitlab.com/) [GitLab Cloud](http://blog.gitlab.com/cloud/) [Subscription](http://blog.gitlab.com/subscription/) [Consultancy](http://blog.gitlab.com/consultancy/) [Blog](http://blog.gitlab.com/blog/)
+* GitLab.com commercial services: [Homepage](http://www.gitlab.com/) [GitLab Cloud](http://www.gitlab.com/cloud/) [Subscription](http://www.gitlab.com/subscription/) [Consultancy](http://www.gitlab.com/consultancy/) [Blog](http://blog.gitlab.com/)
 
 * GitLab CI: [Readme](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) of the GitLab open-source continuous integration server
 
@@ -55,12 +55,19 @@ Follow the installation guide for production server.
 
 * [Installation guide for the current master branch (5.1)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
 
-
 #### For development
 
 If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working sandboxed and with all dependencies.
 
 * [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm)
+
+#### Unsupported installation methods
+
+* [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes) for setup on different platforms
+
+* [Unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides)
+
+
 
 ### Starting
 
@@ -108,25 +115,29 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 * [Feedback and suggestions forum](http://gitlab.uservoice.com/forums/176466-general)
 
-* [Support subscription](http://blog.gitlab.com/subscription/)
+* [Support subscription](http://www.gitlab.com/subscription/)
 
-* [Consultancy](http://blog.gitlab.com/consultancy/)
+* [Consultancy](http://www.gitlab.com/consultancy/)
 
-### New versions and the API
+### New versions and upgrading
 
 Each month on the 22th a new version is released together with an upgrade guide.
 
 * [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
 
+* [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
+
 * [Roadmap](https://github.com/gitlabhq/gitlabhq/blob/master/ROADMAP.md)
 
-### Other documentation
+### GitLab interfaces
 
 * [GitLab API](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md)
 
 * [Rake tasks](https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks)
 
-* [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes)
+* [Directory structure](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/structure.md)
+
+* [Databases](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/databases.md)
 
 ### Getting in touch
 
