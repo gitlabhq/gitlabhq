@@ -7,7 +7,7 @@ We recommend you to run GitLab on a server with at least 1GB of RAM memory. You 
 
 The necessary hard disk space largely depends on the size of the repos you want
 to store in GitLab. But as a *rule of thumb* you should have at least twice as much
-free space as your all repos combined take up. Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume mich be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
+free space as your all repos combined take up. Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
 
 
 # Operating Systems
@@ -38,7 +38,7 @@ systems. This means you may get it to work on systems running FreeBSD or OS X.
 ## Windows
 
 GitLab does **not** run on Windows and we have no plans of supporting it in the
-near future.
+near future. Please consider using a virtual machine to run GitLab.
 
 
 
