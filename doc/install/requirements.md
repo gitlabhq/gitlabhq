@@ -54,3 +54,9 @@ some work on your part.
 If you have troubles installing GitLab following the official installation guide
 or want to share your experience installing GitLab on a not officially supported
 platform, please follow the the contribution guide (see CONTRIBUTING.md).
+
+
+
+# Memory requirements
+
+To run GitLab without any changes you need 1GB of memory. You can use it with 512MB of memory but you need to setup unicorn to use only 1 worker and you need at least 200MB of swap. On a server with 1.5GB of memory you are able to support 1000+ users.
