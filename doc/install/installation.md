@@ -1,6 +1,6 @@
 This installation guide was created for Debian/Ubuntu and tested on it. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
 
-This installation guide is recommended to set up a production server. If you want a development environment please use the [Vargrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
 
 **Important Note:**
 The following steps have been known to work.
