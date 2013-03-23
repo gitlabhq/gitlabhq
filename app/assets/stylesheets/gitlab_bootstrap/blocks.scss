@@ -13,6 +13,7 @@
   background: #F9F9F9;
   margin-bottom: 25px;
   border: 1px solid #CCC;
+  word-wrap: break-word;
   @include solid-shade;
 
   &.ui-box-show {
@@ -41,7 +42,6 @@
   .ui-box-body,
   .ui-box-bottom {
     padding: 15px;
-    word-wrap: break-word;
 
     .clearfix {
       margin: 0;
