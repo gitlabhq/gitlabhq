@@ -17,7 +17,7 @@
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
-  attr_accessible :title, :content, :file_name, :expires_at
+  attr_accessible :title, :content, :file_name, :expires_at, :private
 
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
