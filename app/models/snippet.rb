@@ -11,21 +11,20 @@
 #  updated_at :datetime         not null
 #  file_name  :string(255)
 #  expires_at :datetime
-#
+#  type       :string(255)
+#  private    :boolean
 
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
   attr_accessible :title, :content, :file_name, :expires_at
 
-  belongs_to :project
   belongs_to :author, class_name: "User"
   has_many :notes, as: :noteable, dependent: :destroy
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
-  validates :project, presence: true
   validates :title, presence: true, length: { within: 0..255 }
   validates :file_name, presence: true, length: { within: 0..255 }
   validates :content, presence: true
