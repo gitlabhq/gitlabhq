@@ -75,6 +75,7 @@ class User < ActiveRecord::Base
   has_many :team_projects, through: :user_team_project_relationships
 
   # Projects
+  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
