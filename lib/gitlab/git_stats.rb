@@ -42,8 +42,8 @@ module Gitlab
         author = Grit::Actor.from_string(data.last)
 
         authors << OpenStruct.new(
-          name: author.name,
-          email: author.email,
+          name: author.name.force_encoding("UTF-8"),
+          email: author.email.force_encoding("UTF-8"),
           commits: commits.to_i
         )
       end

@@ -74,7 +74,9 @@ class CommitDecorator < ApplicationDecorator
   #  size:   size of the avatar image in px
   def person_link(options = {})
     source_name = send "#{options[:source]}_name".to_sym
+    source_name = source_name.force_encoding("UTF-8")
     source_email = send "#{options[:source]}_email".to_sym
+    source_email = source_email.force_encoding("UTF-8")
     text = if options[:avatar]
             avatar = h.image_tag h.gravatar_icon(source_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: ""
             %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{source_name}</span>}
