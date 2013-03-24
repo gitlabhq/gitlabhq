@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130324151736) do
+ActiveRecord::Schema.define(:version => 20130324172327) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -185,7 +185,7 @@ ActiveRecord::Schema.define(:version => 20130324151736) do
     t.string   "title"
     t.text     "content"
     t.integer  "author_id",  :null => false
-    t.integer  "project_id", :null => false
+    t.integer  "project_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.string   "file_name"

@@ -7,6 +7,7 @@ class Ability
       when "Project" then project_abilities(user, subject)
       when "Issue" then issue_abilities(user, subject)
       when "Note" then note_abilities(user, subject)
+      when "ProjectSnippet" then project_snippet_abilities(user, subject)
       when "Snippet" then snippet_abilities(user, subject)
       when "MergeRequest" then merge_request_abilities(user, subject)
       when "Group", "Namespace" then group_abilities(user, subject)
@@ -135,7 +136,7 @@ class Ability
     end
 
 
-    [:issue, :note, :snippet, :merge_request].each do |name|
+    [:issue, :note, :project_snippet, :snippet, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
         if subject.author == user
           [

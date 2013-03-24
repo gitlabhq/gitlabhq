@@ -60,7 +60,7 @@ class SnippetsController < ProjectResourceController
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project)
+    redirect_to project_snippet_path(@project)
   end
 
   def raw

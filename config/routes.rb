@@ -177,6 +177,14 @@ Gitlab::Application.routes.draw do
     match "/compare/:from...:to" => "compare#show", as: "compare",
                     :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
 
+    scope module: :projects do
+      resources :snippets do
+        member do
+          get "raw"
+        end
+      end
+    end
+
     resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
         get :pages
@@ -244,20 +252,11 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    scope module: :projects do
-      resources :snippets do
-        member do
-          get "raw"
-        end
-      end
-    end
-
     resources :hooks, only: [:index, :create, :destroy] do
       member do
         get :test
       end
     end
-
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones, except: [:destroy]

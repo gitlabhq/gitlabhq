@@ -5,5 +5,5 @@
     = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small pull-right", title: 'Edit Snippet'
 
 %br
-%div= render 'blob'
+%div= render 'projects/snippets/blob'
 %div#notes= render "notes/notes_with_form"

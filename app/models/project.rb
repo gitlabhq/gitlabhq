@@ -50,7 +50,7 @@ class Project < ActiveRecord::Base
   has_many :milestones,         dependent: :destroy
   has_many :users_projects,     dependent: :destroy
   has_many :notes,              dependent: :destroy
-  has_many :snippets,           dependent: :destroy
+  has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :deploy_keys,        dependent: :destroy, class_name: "Key", foreign_key: "project_id"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :wikis,              dependent: :destroy

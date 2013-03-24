@@ -27,12 +27,12 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def create
-    @snippet = @project.snippets.new(params[:snippet])
+    @snippet = @project.snippets.new(params[:project_snippet])
     @snippet.author = current_user
     @snippet.save
 
     if @snippet.valid?
-      redirect_to [@project, @snippet]
+      redirect_to project_snippet_path(@project, @snippet)
     else
       respond_with(@snippet)
     end
@@ -42,10 +42,10 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def update
-    @snippet.update_attributes(params[:snippet])
+    @snippet.update_attributes(params[:project_snippet])
 
     if @snippet.valid?
-      redirect_to [@project, @snippet]
+      redirect_to project_snippet_path(@project, @snippet)
     else
       respond_with(@snippet)
     end
@@ -58,7 +58,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_snippet, @snippet)
+    return access_denied! unless can?(current_user, :admin_project_snippet, @snippet)
 
     @snippet.destroy
 
@@ -81,11 +81,11 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def authorize_modify_snippet!
-    return render_404 unless can?(current_user, :modify_snippet, @snippet)
+    return render_404 unless can?(current_user, :modify_project_snippet, @snippet)
   end
 
   def authorize_admin_snippet!
-    return render_404 unless can?(current_user, :admin_snippet, @snippet)
+    return render_404 unless can?(current_user, :admin_project_snippet, @snippet)
   end
 
   def module_enabled

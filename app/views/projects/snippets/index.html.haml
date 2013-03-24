@@ -12,7 +12,7 @@
       %th Title
       %th File Name
       %th Expires At
-  = render @snippets
+  = render partial: "projects/snippets/snippet", collection: @snippets
   - if @snippets.empty?
     %tr
       %td{colspan: 3}
