@@ -1,4 +1,18 @@
 GIT
+  remote: https://github.com/ctran/annotate_models.git
+  revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
+  specs:
+    annotate (2.6.0.beta1)
+      activerecord (>= 2.3.0)
+      rake (>= 0.8.7)
+
+GIT
+  remote: https://github.com/gitlabhq/raphael-rails.git
+  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
+  specs:
+    raphael-rails (2.1.0)
+
+GIT
   remote: https://github.com/gollum/gollum.git
   revision: 5dcd3c8c8f68158e43ff79861279088ee56d0ebe
   ref: 5dcd3c8c8f
@@ -14,20 +28,6 @@ GIT
       sinatra (~> 1.3.5)
       stringex (~> 1.5.1)
       useragent (~> 0.4.16)
-
-GIT
-  remote: https://github.com/ctran/annotate_models.git
-  revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
-  specs:
-    annotate (2.6.0.beta1)
-      activerecord (>= 2.3.0)
-      rake (>= 0.8.7)
-
-GIT
-  remote: https://github.com/gitlabhq/raphael-rails.git
-  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
-  specs:
-    raphael-rails (2.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -112,7 +112,7 @@ GEM
       rest-client
       simplecov (>= 0.7)
       thor
-    crack (0.3.1)
+    crack (0.3.2)
     daemons (1.1.9)
     database_cleaner (0.9.1)
     debug_inspector (0.0.2)
