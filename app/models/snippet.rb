@@ -34,7 +34,6 @@ class Snippet < ActiveRecord::Base
   scope :private, -> { where(private: true) }
   scope :fresh,   -> { order("created_at DESC") }
   scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
-  scope :has_project, -> { where("bars.id IS NOT NULL") }
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
 
   def self.content_types
