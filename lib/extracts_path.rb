@@ -50,16 +50,6 @@ module ExtractsPath
 
     return pair unless @project
 
-    # Remove relative_url_root from path
-    input.gsub!(/^#{Gitlab.config.gitlab.relative_url_root}/, "")
-    # Remove project, actions and all other staff from path
-    input.gsub!(/^\/#{Regexp.escape(@project.path_with_namespace)}/, "")
-    input.gsub!(/^\/(tree|commits|blame|blob|refs|graph)\//, "") # remove actions
-    input.gsub!(/\?.*$/, "") # remove stamps suffix
-    input.gsub!(/.atom$/, "") # remove rss feed
-    input.gsub!(/.json$/, "") # remove json suffix
-    input.gsub!(/\/edit$/, "") # remove edit route part
-
     if input.match(/^([[:alnum:]]{40})(.+)/)
       # If the ref appears to be a SHA, we're done, just split the string
       pair = $~.captures
@@ -105,7 +95,7 @@ module ExtractsPath
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
-    path = CGI::unescape(request.fullpath.dup)
+    path = CGI::unescape(request.filtered_parameters["id"].dup)
 
     @ref, @path = extract_ref(path)
 
