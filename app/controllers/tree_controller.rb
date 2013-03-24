@@ -7,7 +7,6 @@ class TreeController < ProjectResourceController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :assign_ref_vars
   before_filter :edit_requirements, only: [:edit, :update]
 
   def show
