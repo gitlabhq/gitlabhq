@@ -1,5 +1,5 @@
 .file-editor
-  = form_tag(project_tree_path(@project, @id), method: :put, class: "form-horizontal") do
+  = form_tag(project_edit_tree_path(@project, @id), method: :put, class: "form-horizontal") do
     .file_holder
       .file_title
         %i.icon-file
