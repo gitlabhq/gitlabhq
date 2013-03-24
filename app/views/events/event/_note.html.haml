@@ -4,9 +4,9 @@
   - if event.note_target
     - if event.note_commit?
       = event.note_target_type
-      = link_to event.note_short_commit_id, project_commit_path(event.project, event.note_commit_id), class: "commit_short_id"
+      = link_to event.note_short_commit_id, project_commit_path(event.project, event.note_commit_id, anchor: "#{dom_id(event.target)}"), class: "commit_short_id"
     - else
-      = link_to [event.project, event.note_target] do
+      = link_to polymorphic_path([event.project, event.note_target], anchor: "#{dom_id(event.target)}") do
         %strong
           #{event.note_target_type} ##{truncate event.note_target_id}
 
