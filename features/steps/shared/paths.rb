@@ -267,6 +267,14 @@ module SharedPaths
     visit project_snippets_path(project)
   end
 
+  Given 'I visit snippets page' do
+    visit snippets_path
+  end
+
+  Given 'I visit new snippet page' do
+    visit new_snippet_path
+  end
+
   def root_ref
     @project.repository.root_ref
   end
