@@ -1,9 +1,13 @@
 %h3.page_title
+  - if @snippet.private?
+    %i.icon-lock
+  - else
+    %i.icon-globe
+
   = @snippet.title
   %small= @snippet.file_name
-  - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
-    = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small pull-right", title: 'Edit Snippet'
+  - if @snippet.author == current_user
+    = link_to "Edit", edit_snippet_path(@snippet), class: "btn btn-small pull-right", title: 'Edit Snippet'
 
 %br
 %div= render 'blob'
-%div#notes= render "notes/notes_with_form"
