@@ -51,7 +51,7 @@ class Snippets < Spinach::FeatureSteps
   end
 
   Then 'I should see "Personal snippet one" public' do
-    page.should have_selector(:xpath, "//i[@class='public-snippet']")
+    page.should have_no_xpath("//i[@class='public-snippet']")
   end
 
   And 'I visit snippet page "Personal snippet one"' do
