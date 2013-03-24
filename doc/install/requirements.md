@@ -37,16 +37,23 @@ While it is generally possible to use other Rubies (like
 some work on your part.
 
 
-# Memory
+# Hardware requirements
 
-We recommend you to run GitLab on a server with at least 1GB of RAM memory. You can use it with 512MB of memory but you need to setup unicorn to use only 1 worker and you need at least 200MB of swap. On a server with 1.5GB of memory you are able to support 1000+ users.
+## CPU
 
+We recommend a processor with **4 cores**. At a minimum you need a processor with 2 cores to responsively run an unmodified installation.
 
-# Storage
+## Memory
 
-The necessary hard disk space largely depends on the size of the repos you want
+We recommend you to run GitLab on a server with at least **1GB of RAM** memory. You can use it with 512MB of memory but you need to setup unicorn to use only 1 worker and you need at least 200MB of swap. The minimal requirement for an unmodified installation is 768MB. With 1.5GB of memory you should be able to support 1000+ users.
+
+## Storage
+
+The necessary hard drive space largely depends on the size of the repos you want
 to store in GitLab. But as a *rule of thumb* you should have at least twice as much
 free space as your all repos combined take up. You need twice the storage because [GitLab satellites](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/structure.md) contain an extra copy of each repo. Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
+
+If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
 
 # Installation troubles and reporting success or failure
