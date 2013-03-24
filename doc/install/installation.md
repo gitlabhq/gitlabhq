@@ -91,7 +91,6 @@ Create a `git` user for Gitlab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-
 # 4. GitLab shell
 
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
@@ -167,6 +166,10 @@ do so with caution!
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    
+    # Set username and email for the git user
+    sudo -u git -H git config --global user.name  "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@your-domain.com"
 
 **Important Note:**
 Make sure to edit both files to match your setup.
