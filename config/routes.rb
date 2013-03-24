@@ -100,6 +100,14 @@ Gitlab::Application.routes.draw do
 
   get "errors/githost"
 
+  resources :snippets do
+    member do
+      get "raw"
+      get "my"
+    end
+  end
+  match "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
+
   #
   # Profile Area
   #
