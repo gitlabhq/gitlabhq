@@ -408,7 +408,7 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/snippets
       post ":id/snippets" do
-        authorize! :write_snippet, user_project
+        authorize! :write_project_snippet, user_project
         required_attributes! [:title, :file_name, :code]
 
         attrs = attributes_for_keys [:title, :file_name]
@@ -437,7 +437,7 @@ module Gitlab
       #   PUT /projects/:id/snippets/:snippet_id
       put ":id/snippets/:snippet_id" do
         @snippet = user_project.snippets.find(params[:snippet_id])
-        authorize! :modify_snippet, @snippet
+        authorize! :modify_project_snippet, @snippet
 
         attrs = attributes_for_keys [:title, :file_name]
         attrs[:expires_at] = params[:lifetime] if params[:lifetime].present?
@@ -460,7 +460,7 @@ module Gitlab
       delete ":id/snippets/:snippet_id" do
         begin
           @snippet = user_project.snippets.find(params[:snippet_id])
-          authorize! :modify_snippet, user_project
+          authorize! :modify_project_snippet, @snippet
           @snippet.destroy
         rescue
         end

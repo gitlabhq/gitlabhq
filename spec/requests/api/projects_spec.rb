@@ -9,7 +9,7 @@ describe Gitlab::API do
   let(:admin) { create(:admin) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
-  let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
+  let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
   let(:key) { create(:key, project: project) }
