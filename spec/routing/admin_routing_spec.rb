@@ -66,32 +66,12 @@ end
 #                           PUT    /admin/projects/:id(.:format)             admin/projects#update {:id=>/[^\/]+/}
 #                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {:id=>/[^\/]+/}
 describe Admin::ProjectsController, "routing" do
-  it "to #team" do
-    get("/admin/projects/gitlab/team").should route_to('admin/projects#team', id: 'gitlab')
-  end
-
-  it "to #team_update" do
-    put("/admin/projects/gitlab/team_update").should route_to('admin/projects#team_update', id: 'gitlab')
-  end
-
   it "to #index" do
     get("/admin/projects").should route_to('admin/projects#index')
   end
 
-  it "to #edit" do
-    get("/admin/projects/gitlab/edit").should route_to('admin/projects#edit', id: 'gitlab')
-  end
-
   it "to #show" do
     get("/admin/projects/gitlab").should route_to('admin/projects#show', id: 'gitlab')
-  end
-
-  it "to #update" do
-    put("/admin/projects/gitlab").should route_to('admin/projects#update', id: 'gitlab')
-  end
-
-  it "to #destroy" do
-    delete("/admin/projects/gitlab").should route_to('admin/projects#destroy', id: 'gitlab')
   end
 end
 
