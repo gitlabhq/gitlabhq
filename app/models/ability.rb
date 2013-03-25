@@ -41,7 +41,7 @@ class Ability
         rules << project_guest_rules
       end
 
-      if project.owner == user
+      if project.owner == user || user.admin?
         rules << project_admin_rules
       end
 
