@@ -637,8 +637,8 @@ namespace :gitlab do
 
   def check_gitlab_shell
     print "GitLab Shell version? ... "
-    if gitlab_shell_version.strip == '1.1.0'
-      puts 'OK (1.1.0)'.green
+    if gitlab_shell_version.strip == '1.2.0'
+      puts 'OK (1.2.0)'.green
     else
       puts 'FAIL. Please update gitlab-shell to v1.1.0'.red
     end

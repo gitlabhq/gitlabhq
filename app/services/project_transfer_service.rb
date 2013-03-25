@@ -5,6 +5,8 @@
 class ProjectTransferService
   include Gitlab::ShellAdapter
 
+  class TransferError < StandardError; end
+
   attr_accessor :project
 
   def transfer(project, new_namespace)
@@ -19,14 +21,18 @@ class ProjectTransferService
       project.namespace = new_namespace
       project.save!
 
+      # Move main repository
       unless gitlab_shell.mv_repository(old_path, new_path)
         raise TransferError.new('Cannot move project')
       end
 
+      # Move wiki repo also if present
+      if project.wikis.any?
+        gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
+      end
+
       true
     end
-  rescue => ex
-    raise Project::TransferError.new(ex.message)
   end
 end
 

@@ -1,129 +1,87 @@
 %h3.page_title
   Project: #{@project.name_with_namespace}
-  = link_to edit_admin_project_path(@project), class: "btn pull-right" do
+  = link_to edit_project_path(@project), class: "btn pull-right" do
     %i.icon-edit
     Edit
+%hr
+.row
+  .span6
+    .ui-box
+      %h5.title
+        Project info:
+      %ul.well-list
+        %li
+          %span.light Name:
+          %strong= @project.name
+        %li
+          %span.light Namespace:
+          %strong
+            - if @project.namespace
+              = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
+            - else
+              Global
+        %li
+          %span.light Owned by:
+          %strong
+            - if @project.owner
+              = link_to @project.owner_name, admin_user_path(@project.owner)
+            - else
+              (deleted)
 
+        %li
+          %span.light Created by:
+          %strong
+            = @project.creator.try(:name) || '(deleted)'
 
-%br
-%table.zebra-striped
-  %thead
-    %tr
-      %th Project
-      %th
-  %tr
-    %td
-      %b
-        Name:
-    %td
-      = @project.name
-  %tr
-    %td
-      %b
-        Namespace:
-    %td
-      - if @project.namespace
-        = @project.namespace.human_name
-      - else
-        Global
-  %tr
-    %td
-      %b
-        Owned by:
-    %td
-      - if @project.owner
-        = link_to @project.owner_name, admin_user_path(@project.owner)
-      - else
-        (deleted)
-  %tr
-    %td
-      %b
-        Created by:
-    %td
-      = @project.creator.try(:name) || '(deleted)'
-  %tr
-    %td
-      %b
-        Created at:
-    %td
-      = @project.created_at.stamp("March 1, 1999")
-    %tr
-      %td
-        %b
-          Smart HTTP:
-      %td
-        = link_to @project.http_url_to_repo
-    %tr
-      %td
-        %b
-          SSH:
-      %td
-        = link_to @project.ssh_url_to_repo
-  - if @project.public
-    %tr.bgred
-      %td
-        %b
-          Public Read-Only Code access:
-      %td
-        = check_box_tag 'public', nil, @project.public
+        %li
+          %span.light Created at:
+          %strong
+            = @project.created_at.stamp("March 1, 1999")
 
-- if @repository
-  %table.zebra-striped
-    %thead
-      %tr
-        %th Repository
-        %th
-    %tr
-      %td
-        %b
-          FS Path:
-      %td
-        %code= @repository.path_to_repo
-    %tr
-      %td
-        %b
-          Last commit at:
-      %td
-        = last_commit(@project)
+        %li
+          %span.light http:
+          %strong
+            = link_to @project.http_url_to_repo
+        %li
+          %span.light ssh:
+          %strong
+            = link_to @project.ssh_url_to_repo
+        %li
+          %span.light fs:
+          %strong
+            = @repository.path_to_repo
 
-%br
-%h5
-  Team
-  %small
-    (#{@project.users.count})
-%br
-%table.zebra-striped.team_members
-  %thead
-    %tr
-      %th Name
-      %th Project Access
-      %th Repository Access
-      %th
+        %li
+          %span.light last commit:
+          %strong
+            - if @repository
+              = last_commit(@project)
+            - else
+              never
 
-  - @project.users.each do |tm|
-    %tr
-      %td
-        = link_to tm.name, admin_user_path(tm)
-      %td= @project.project_access_human(tm)
-      %td= link_to 'Edit Access', edit_admin_project_member_path(@project, tm), class: "btn btn-small"
-      %td= link_to 'Remove from team', admin_project_member_path(@project, tm), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove small"
-
-%br
-%h5 Add new team member
-%br
-= form_tag team_update_admin_project_path(@project), class: "bulk_import", method: :put  do
-  %table.zebra-striped
-    %thead
-      %tr
-        %th Users
-        %th Project Access:
-
-    %tr
-      %td= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
-      %td= select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3"}
-
-    %tr
-      %td= submit_tag 'Add', class: "btn btn-primary"
-      %td
-        Read more about project permissions
-        %strong= link_to "here", help_permissions_path, class: "vlink"
+        %li
+          %span.light access:
+          %strong
+            - if @project.public
+              %span.cblue
+                %i.icon-share
+                Public
+            - else
+              %span.cgreen
+                %i.icon-lock
+                Private
+  .span6
+    .ui-box
+      %h5.title
+        Team
+        %small
+          (#{@project.users.count})
+        = link_to project_team_index_path(@project), class: "btn btn-tiny" do
+          %i.icon-edit
+          Edit Team
+      %ul.well-list.team_members
+        - @project.users.each do |tm|
+          %li
+            %strong
+              = link_to tm.name, admin_user_path(tm)
+            %span.pull-right.light= @project.project_access_human(tm)

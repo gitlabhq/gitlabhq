@@ -107,8 +107,9 @@
         - if can?(current_user, :change_namespace, @project)
           .ui-box.ui-box-danger
             %h5.title Transfer project
+            .errors-holder
             .form-holder
-              = form_for(@project, remote: true, html: { class: 'transfer-project' }) do |f|
+              = form_for(@project, url: transfer_project_path(@project), remote: true, html: { class: 'transfer-project' }) do |f|
                 .control-group
                   = f.label :namespace_id do
                     %span Namespace
