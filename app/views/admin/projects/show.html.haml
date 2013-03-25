@@ -79,7 +79,7 @@
         = link_to project_team_index_path(@project), class: "btn btn-tiny" do
           %i.icon-edit
           Edit Team
-      %ul.well-list
+      %ul.well-list.team_members
         - @project.users.each do |tm|
           %li
             %strong
