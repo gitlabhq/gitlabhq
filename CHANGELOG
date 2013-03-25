@@ -1,4 +1,5 @@
 v 5.1.0
+  - You can login with email or username now
   - Corrected project transfer rollback when repository cannot be moved
   - Move both repo and wiki when project transfer requrested
   - Admin area: project editing was removed from admin namespace
