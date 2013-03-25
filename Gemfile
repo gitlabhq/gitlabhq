@@ -23,7 +23,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 gem "gitlab-grit", '~> 1.0.0', require: 'grit'
-gem 'grit_ext', '~> 0.6.2'
+gem 'grit_ext', '~> 0.8.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'

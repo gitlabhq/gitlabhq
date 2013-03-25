@@ -198,7 +198,7 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
-    grit_ext (0.6.2)
+    grit_ext (0.8.1)
       charlock_holmes (~> 0.6.9)
     growl (1.0.3)
     guard (1.5.4)
@@ -530,7 +530,7 @@ DEPENDENCIES
   gon
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)
-  grit_ext (~> 0.6.2)
+  grit_ext (~> 0.8.1)
   growl
   guard-rspec
   guard-spinach
