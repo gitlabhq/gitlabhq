@@ -1,7 +1,7 @@
 class DiscoverSnippets < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
-  include SharedProject
+  include SharedSnippet
 
   Then 'I should see "Personal snippet one" in snippets' do
     page.should have_content "Personal snippet one"

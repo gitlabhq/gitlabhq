@@ -1,7 +1,7 @@
 class UserSnippets < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
-  include SharedProject
+  include SharedSnippet
 
   Given 'I visit my snippets page' do
     visit user_snippets_path(current_user)

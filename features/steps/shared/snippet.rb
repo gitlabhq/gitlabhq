@@ -1,4 +1,6 @@
-module SharedProject
+module SharedSnippet
+  include Spinach::DSL
+
   And 'I have public "Personal snippet one" snippet' do
     create(:personal_snippet,
            title: "Personal snippet one",

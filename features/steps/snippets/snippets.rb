@@ -2,6 +2,7 @@ class Snippets < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
+  include SharedSnippet
 
   Given 'I click link "Personal snippet one"' do
     click_link "Personal snippet one"
