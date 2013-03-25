@@ -85,11 +85,7 @@ Gitlab::Application.routes.draw do
     resource :logs, only: [:show]
     resource :resque, controller: 'resque', only: [:show]
 
-    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, except: [:new, :create] do
-      member do
-        get :team
-        put :team_update
-      end
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
       scope module: :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
         resources :members, only: [:edit, :update, :destroy]
       end
