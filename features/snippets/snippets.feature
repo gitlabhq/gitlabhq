@@ -1,4 +1,4 @@
-Feature: Snippets
+Feature: Snippets Feature
   Background:
     Given I sign in as a user
     And I have public "Personal snippet one" snippet

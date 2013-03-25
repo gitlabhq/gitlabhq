@@ -31,11 +31,11 @@ class SnippetsController < ApplicationController
   end
 
   def new
-    @snippet = PersonalSnippet.build
+    @snippet = PersonalSnippet.new
   end
 
   def create
-    @snippet = PersonalSnippet.build(params[:personal_snippet])
+    @snippet = PersonalSnippet.new(params[:personal_snippet])
     @snippet.author = current_user
 
     if @snippet.save
