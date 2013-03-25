@@ -12,7 +12,7 @@ module LoginHelpers
   # user - User instance to login with
   def login_with(user)
     visit new_user_session_path
-    fill_in "user_email", with: user.email
+    fill_in "user_login", with: user.email
     fill_in "user_password", with: "123456"
     click_button "Sign in"
   end

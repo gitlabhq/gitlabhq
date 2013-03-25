@@ -46,6 +46,13 @@ class User < ActiveRecord::Base
 
   attr_accessor :force_random_password
 
+  # Virtual attribute for authenticating by either username or email
+  attr_accessor :login
+
+  # Add login to attr_accessible
+  attr_accessible :login
+
+
   #
   # Relations
   #
@@ -140,6 +147,16 @@ class User < ActiveRecord::Base
   # Class methods
   #
   class << self
+    # Devise method overriden to allow sing in with email or username
+    def find_for_database_authentication(warden_conditions)
+      conditions = warden_conditions.dup
+      if login = conditions.delete(:login)
+        where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
+      else
+        where(conditions).first
+      end
+    end
+
     def filter filter_name
       case filter_name
       when "admins"; self.admins
