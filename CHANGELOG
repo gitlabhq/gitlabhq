@@ -1,3 +1,9 @@
+v 5.1.0
+  - Corrected project transfer rollback when repository cannot be moved
+  - Move both repo and wiki when project transfer requrested
+  - Admin area: project editing was removed from admin namespace
+  - Access: admin user has now access to any project.
+
 v 5.0.0
   - Replaced gitolite with gitlab-shell
   - Removed gitolite-related libraries
