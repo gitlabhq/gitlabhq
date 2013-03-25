@@ -34,7 +34,7 @@ describe Project do
     it { should have_many(:milestones).dependent(:destroy) }
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
-    it { should have_many(:snippets).dependent(:destroy) }
+    it { should have_many(:project_snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { should have_many(:deploy_keys).dependent(:destroy) }
     it { should have_many(:hooks).dependent(:destroy) }
     it { should have_many(:wikis).dependent(:destroy) }

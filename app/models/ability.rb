@@ -55,7 +55,7 @@ class Ability
         :read_wiki,
         :read_issue,
         :read_milestone,
-        :read_snippet,
+        :read_project_snippet,
         :read_team_member,
         :read_merge_request,
         :read_note,
@@ -68,7 +68,7 @@ class Ability
     def project_report_rules
       project_guest_rules + [
         :download_code,
-        :write_snippet
+        :write_project_snippet
       ]
     end
 
@@ -84,11 +84,11 @@ class Ability
       project_dev_rules + [
         :push_code_to_protected_branches,
         :modify_issue,
-        :modify_snippet,
+        :modify_project_snippet,
         :modify_merge_request,
         :admin_issue,
         :admin_milestone,
-        :admin_snippet,
+        :admin_project_snippet,
         :admin_team_member,
         :admin_merge_request,
         :admin_note,

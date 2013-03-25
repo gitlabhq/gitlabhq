@@ -23,11 +23,11 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def new
-    @snippet = @project.snippets.new
+    @snippet = @project.snippets.build
   end
 
   def create
-    @snippet = @project.snippets.new(params[:project_snippet])
+    @snippet = @project.snippets.build(params[:project_snippet])
     @snippet.author = current_user
     @snippet.save
 
