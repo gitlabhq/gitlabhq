@@ -26,8 +26,6 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   extend Enumerize
 
-  class TransferError < StandardError; end
-
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, as: [:default, :admin]

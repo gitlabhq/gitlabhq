@@ -167,6 +167,10 @@ Gitlab::Application.routes.draw do
   # Project Area
   #
   resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
+    member do
+      put :transfer
+    end
+
     resources :blob,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
     resources :edit_tree,    only: [:show, :update], constraints: {id: /.+/}, path: 'edit'
