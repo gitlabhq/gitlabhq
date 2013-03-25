@@ -11,7 +11,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
   def block_code(code, language)
     options = { options: {encoding: 'utf-8'} }
-    options.merge!(lexer: language.downcase) if Pygments::Lexer.find(language)
+    options.merge!(lexer: language.downcase) if Pygments::Lexer.find(language.downcase)
 
     # New lines are placed to fix an rendering issue
     # with code wrapped inside <h1> tag for next case:
@@ -20,11 +20,19 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     #
     #     ruby code here
     #
-    <<-HTML
+    begin
+      <<-HTML
 
-       <div class="#{h.user_color_scheme_class}">#{Pygments.highlight(code, options)}</div>
+         <div class="#{h.user_color_scheme_class}">#{Pygments.highlight(code, options)}</div>
 
-    HTML
+      HTML
+    rescue
+      <<-HTML
+
+         <div class="#{h.user_color_scheme_class}"><pre>#{code}</pre></div>
+
+      HTML
+    end
   end
 
   def link(link, title, content)
