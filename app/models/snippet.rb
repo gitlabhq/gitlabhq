@@ -20,6 +20,7 @@ class Snippet < ActiveRecord::Base
   attr_accessible :title, :content, :file_name, :expires_at, :private
 
   belongs_to :author, class_name: "User"
+
   has_many :notes, as: :noteable, dependent: :destroy
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
