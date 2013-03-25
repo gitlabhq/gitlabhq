@@ -1,8 +1,41 @@
-- if ldap_enable?
-  = render partial: 'devise/sessions/new_ldap'
-- else
-  = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "login-box" }) do |f|
-    = image_tag "login-logo.png", width: "304", height: "66", class: "login-logo", alt: "Login Logo"
+-# if we have multiple login boxes we init the javascript
+- if omniauth_form_providers.any?
+  :javascript
+    $(function(){ loginPage("new_#{omniauth_form_providers[0].to_s}_user"); });
+
+-# Gitlab logo. We use variable to render it into first .login-box
+- login_logo = image_tag "login-logo.png", width: "304", height: "66", class: "login-logo", alt: "Login Logo"
+
+-# Render all providers with form or named button
+- omniauth_form_providers.each do |provider|
+  - id = "new_#{provider.to_s}_user"
+  - login_form = omniauth_options(provider)['login_form']
+  - title = omniauth_title(provider)
+  .login-box
+    - if login_logo
+      = login_logo
+      - login_logo = false
+    - if not login_form['always_show']
+      %a.login-toggle{href: "#", data: { form: "#{id}" }, style: "display: none;"}
+        = "#{title}"
+    = form_tag(user_omniauth_callback_path(provider), id: id) do
+      - login_form['fields'].each_pair do |name, placeholder|
+        - if placeholder[0] == '*'
+          = password_field_tag name.to_sym, nil, {class: "text bottom", placeholder: placeholder[1..-1]}
+        - else
+          = text_field_tag name.to_sym, nil, {class: "text top", placeholder: placeholder % {title: title, label: omniauth_label(provider)}}
+        %br/
+      = submit_tag title, class: "btn-create btn"
+
+-# Gitlab login
+.login-box
+  - if login_logo
+    = login_logo
+    - login_logo = false
+  - if omniauth_form_providers.any?
+    %a.login-toggle{href: "#", data: { form: "new_user" }, style: "display: none;"}
+      Other Sign in
+  = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
     = f.text_field :login, class: "text top", placeholder: "Username or Email", autofocus: "autofocus"
     = f.password_field :password, class: "text bottom", placeholder: "Password"
     - if devise_mapping.rememberable?
@@ -19,10 +52,11 @@
       %hr/
       Don't have an account?
       = link_to "Sign up", new_registration_path(resource_name)
-    - if devise_mapping.omniauthable? && resource_class.omniauth_providers.present?
-      %hr
-      %div
-        %span Sign in with: &nbsp;
-        - resource_class.omniauth_providers.each do |provider|
-          %span
-            = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
+
+-# Render all icon providers
+- if devise_mapping.omniauthable? && omniauth_icon_providers.any?
+  .login-box
+    %span Sign in with: &nbsp;
+    - omniauth_icon_providers.each do |provider|
+      %span
+        = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)

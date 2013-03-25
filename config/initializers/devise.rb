@@ -205,27 +205,44 @@ Devise.setup do |config|
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
 
-  if Gitlab.config.ldap.enabled
-    config.omniauth :ldap,
-      :host     => Gitlab.config.ldap['host'],
-      :base     => Gitlab.config.ldap['base'],
-      :uid      => Gitlab.config.ldap['uid'],
-      :port     => Gitlab.config.ldap['port'],
-      :method   => Gitlab.config.ldap['method'],
-      :bind_dn  => Gitlab.config.ldap['bind_dn'],
-      :password => Gitlab.config.ldap['password']
+  # For good reason omniauth-pam requires gecos_map to be symbols
+  if !Gitlab.config.omniauth.providers['pam'].nil? && !Gitlab.config.omniauth.providers.pam['gecos_map'].nil?
+    Gitlab.config.omniauth.providers.pam.gecos_map.map! { |item| item.to_sym }
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    case provider['args']
-    when Array
-      # An Array from the configuration will be expanded.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], *provider['args']
-    when Hash
-      # A Hash from the configuration will be passed as is.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
-    else
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+  Gitlab.config.omniauth['icon_providers'] = []
+  Gitlab.config.omniauth['form_providers'] = []
+  Gitlab.config.omniauth.providers.each_pair do |provider, options|
+    options['enabled'] = true if options['enabled'].nil?
+    if options['enabled']
+      # use symbols...
+      provider = provider.to_sym
+
+      # leave options in config stucture as they are -> make a clone
+      options = options.clone
+      options.delete('enabled')
+
+      # Construct login_form options
+      icon = !options['app_id'].nil? && !options['app_secret'].nil?
+      options['login_form'] = !icon if options['login_form'].nil?
+      if options['login_form']
+        options['login_form'] = {} if options['login_form'] == true
+        options['login_form']['fields'] = {username: '%{title}', password: '*Password'} if\
+            options['login_form']['fields'].nil? || options['login_form']['fields'] == true
+        if options['login_form']['always_show'].nil?
+          options['login_form']['always_show'] = options['login_form']['fields'].empty?
+        end
+        Gitlab.config.omniauth.form_providers << provider
+      else
+        Gitlab.config.omniauth.icon_providers << provider
+      end
+
+      # Configure provider to devise
+      if icon
+        config.omniauth provider, options['app_id'], options['app_secret'], options
+      else
+        config.omniauth provider, options
+      end
     end
   end
 end
