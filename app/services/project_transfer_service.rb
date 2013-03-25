@@ -27,9 +27,7 @@ class ProjectTransferService
       end
 
       # Move wiki repo also if present
-      if project.wikis.any?
-        gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
-      end
+      gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
 
       true
     end
