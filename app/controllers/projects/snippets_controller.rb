@@ -29,9 +29,8 @@ class Projects::SnippetsController < Projects::ApplicationController
   def create
     @snippet = @project.snippets.build(params[:project_snippet])
     @snippet.author = current_user
-    @snippet.save
 
-    if @snippet.valid?
+    if @snippet.save
       redirect_to project_snippet_path(@project, @snippet)
     else
       respond_with(@snippet)
@@ -42,9 +41,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def update
-    @snippet.update_attributes(params[:project_snippet])
-
-    if @snippet.valid?
+    if @snippet.update_attributes(params[:project_snippet])
       redirect_to project_snippet_path(@project, @snippet)
     else
       respond_with(@snippet)

@@ -46,7 +46,7 @@ Gitlab::Application.routes.draw do
       get "raw"
     end
   end
-  match "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
+  get "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
 
   #
   # Public namespace

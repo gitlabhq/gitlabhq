@@ -31,15 +31,14 @@ class SnippetsController < ApplicationController
   end
 
   def new
-    @snippet = PersonalSnippet.new
+    @snippet = PersonalSnippet.build
   end
 
   def create
-    @snippet = PersonalSnippet.new(params[:personal_snippet])
+    @snippet = PersonalSnippet.build(params[:personal_snippet])
     @snippet.author = current_user
-    @snippet.save
 
-    if @snippet.valid?
+    if @snippet.save
       redirect_to snippet_path(@snippet)
     else
       respond_with @snippet
@@ -50,9 +49,7 @@ class SnippetsController < ApplicationController
   end
 
   def update
-    @snippet.update_attributes(params[:personal_snippet])
-
-    if @snippet.valid?
+    if @snippet.update_attributes(params[:personal_snippet])
       redirect_to snippet_path(@snippet)
     else
       respond_with @snippet
