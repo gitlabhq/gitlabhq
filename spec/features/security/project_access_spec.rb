@@ -33,7 +33,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -44,7 +44,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -55,7 +55,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -66,7 +66,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -77,7 +77,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -88,7 +88,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -99,7 +99,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -114,7 +114,7 @@ describe "Application access" do
 
       it { @blob_path.should be_allowed_for master }
       it { @blob_path.should be_allowed_for reporter }
-      it { @blob_path.should be_denied_for :admin }
+      it { @blob_path.should be_allowed_for :admin }
       it { @blob_path.should be_denied_for guest }
       it { @blob_path.should be_denied_for :user }
       it { @blob_path.should be_denied_for :visitor }
@@ -125,7 +125,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_denied_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -136,7 +136,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_denied_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -147,7 +147,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -158,7 +158,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -169,7 +169,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -180,7 +180,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -196,7 +196,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -212,7 +212,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -223,7 +223,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
