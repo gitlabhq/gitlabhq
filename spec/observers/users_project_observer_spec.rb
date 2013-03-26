@@ -4,6 +4,7 @@ describe UsersProjectObserver do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   subject { UsersProjectObserver.instance }
+  before { subject.stub(notification: mock('NotificationService').as_null_object) }
 
   describe "#after_commit" do
     it "should called when UsersProject created" do
@@ -12,7 +13,7 @@ describe UsersProjectObserver do
     end
 
     it "should send email to user" do
-      Notify.should_receive(:project_access_granted_email).and_return(double(deliver: true))
+      subject.should_receive(:notification)
       Event.stub(:create => true)
 
       create(:users_project)
@@ -36,7 +37,7 @@ describe UsersProjectObserver do
     end
 
     it "should send email to user" do
-      Notify.should_receive(:project_access_granted_email)
+      subject.should_receive(:notification)
       @users_project.update_attribute(:project_access, UsersProject::MASTER)
     end
 

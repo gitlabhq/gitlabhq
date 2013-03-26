@@ -1,6 +1,4 @@
 class BaseObserver < ActiveRecord::Observer
-  protected
-
   def notification
     NotificationService.new
   end

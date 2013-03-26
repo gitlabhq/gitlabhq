@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe UserObserver do
   subject { UserObserver.instance }
+  before { subject.stub(notification: mock('NotificationService').as_null_object) }
 
   it 'calls #after_create when new users are created' do
     new_user = build(:user)
@@ -11,13 +12,8 @@ describe UserObserver do
 
   context 'when a new user is created' do
     it 'sends an email' do
-      Notify.should_receive(:new_user_email)
+      subject.should_receive(:notification)
       create(:user)
-    end
-
-    it 'no email for external' do
-      Notify.should_not_receive(:new_user_email)
-      create(:user, extern_uid: '32442eEfsafada')
     end
 
     it 'trigger logger' do

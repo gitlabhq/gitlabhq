@@ -108,4 +108,12 @@ class NotificationService
       Notify.delay.note_commit_email(note.commit_author.id, note.id)
     end
   end
+
+  def new_team_member(users_project)
+    Notify.delay.project_access_granted_email(users_project.id)
+  end
+
+  def update_team_member(users_project)
+    Notify.delay.project_access_granted_email(users_project.id)
+  end
 end

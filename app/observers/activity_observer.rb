@@ -1,4 +1,4 @@
-class ActivityObserver < ActiveRecord::Observer
+class ActivityObserver < BaseObserver
   observe :issue, :merge_request, :note, :milestone
 
   def after_create(record)
