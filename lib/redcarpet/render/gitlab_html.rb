@@ -20,11 +20,19 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     #
     #     ruby code here
     #
-    <<-HTML
+    begin
+      <<-HTML
 
-       <div class="#{h.user_color_scheme_class}">#{Pygments.highlight(code, options)}</div>
+         <div class="#{h.user_color_scheme_class}">#{Pygments.highlight(code, options)}</div>
 
-    HTML
+      HTML
+    rescue
+      <<-HTML
+
+         <div class="#{h.user_color_scheme_class}"><pre>#{code}</pre></div>
+
+      HTML
+    end
   end
 
   def link(link, title, content)
