@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130318212250) do
+ActiveRecord::Schema.define(:version => 20130325173941) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(:version => 20130318212250) do
     t.boolean  "can_create_team",        :default => true,  :null => false
     t.string   "state"
     t.integer  "color_scheme_id",        :default => 1,     :null => false
+    t.integer  "notification_level",     :default => 1,     :null => false
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
