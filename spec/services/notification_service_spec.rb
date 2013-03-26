@@ -31,14 +31,14 @@ describe NotificationService do
 
     describe :reassigned_issue do
       it 'should sent email to issue old assignee and new issue assignee' do
-        Notify.should_receive(:reassigned_issue_email).twice
+        Notify.should_receive(:reassigned_issue_email)
         notification.reassigned_issue(issue, issue.author)
       end
     end
 
     describe :close_issue do
       it 'should sent email to issue assignee and issue author' do
-        Notify.should_receive(:issue_status_changed_email).twice
+        Notify.should_receive(:issue_status_changed_email)
         notification.close_issue(issue, issue.author)
       end
     end
