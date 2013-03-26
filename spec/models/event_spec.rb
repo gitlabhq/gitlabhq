@@ -72,6 +72,7 @@ describe Event do
 
     before {
       Event.should_receive :create
+      observer.stub(notification: stub.as_null_object)
     }
 
     describe "Joined project team" do
