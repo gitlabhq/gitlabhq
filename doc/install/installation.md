@@ -276,6 +276,17 @@ nobody can access your GitLab by using this login information later on.
 
 - - -
 
+# Distribution Specific Tips
+
+## Debian
+
+You have to install redis-server from backports to get gitlab working.
+
+    echo "deb http://backports.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
+    apt-get update
+    apt-get -t squeeze-backports install redis-server
+
+- - -
 
 # Advanced Setup Tips
 
