@@ -54,6 +54,18 @@ module IssuesHelper
     end
   end
 
+  def url_for_new_issue
+    return "" if @project.nil?
+
+    if @project.used_default_issues_tracker?
+      url = new_project_issue_path project_id: @project
+    else
+      url = Settings[:issues_tracker][@project.issues_tracker]["new_issue_url"]
+      url.gsub(':project_id', @project.id.to_s)
+        .gsub(':issues_tracker_id', @project.issues_tracker_id.to_s)
+    end
+  end
+
   def url_for_issue(issue_id)
     return "" if @project.nil?
 
