@@ -447,6 +447,7 @@ GEM
       capybara (~> 2.0.0)
       railties (>= 3)
       spinach (>= 0.4)
+    spork (1.0.0rc3)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -574,6 +575,7 @@ DEPENDENCIES
   six
   slim
   spinach-rails (= 0.2.0)
+  spork (~> 1.0rc)
   stamp
   state_machine
   test_after_commit
