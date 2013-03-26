@@ -44,4 +44,3 @@ describe NotificationService do
     end
   end
 end
-
