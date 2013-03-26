@@ -33,8 +33,8 @@ class NotificationService
 
   # When we reassign an issue we should send next emails:
   #
-  #  * issue author if his notification level is not Disabled
-  #  * issue assignee if his notification level is not Disabled
+  #  * issue old assignee if his notification level is not Disabled
+  #  * issue new assignee if his notification level is not Disabled
   #
   def reassigned_issue(issue, current_user)
     recipient_ids = [issue.assignee_id, issue.assignee_id_was].compact.uniq
@@ -64,6 +64,20 @@ class NotificationService
   def new_merge_request(merge_request, current_user)
     if merge_request.assignee && merge_request.assignee != current_user
       Notify.delay.new_merge_request_email(merge_request.id)
+    end
+  end
+
+  # When we reassign a merge_request we should send next emails:
+  #
+  #  * merge_request old assignee if his notification level is not Disabled
+  #  * merge_request assignee if his notification level is not Disabled
+  #
+  def reassigned_merge_request(merge_request, current_user)
+    recipients_ids = merge_request.assignee_id_was, merge_request.assignee_id
+    recipients_ids.delete current_user.id
+
+    recipients_ids.each do |recipient_id|
+      Notify.delay.reassigned_merge_request_email(recipient_id, merge_request.id, merge_request.assignee_id_was)
     end
   end
 end
