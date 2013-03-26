@@ -1,4 +1,4 @@
-class IssueObserver < ActiveRecord::Observer
+class IssueObserver < BaseObserver
   cattr_accessor :current_user
 
   def after_create(issue)
@@ -26,9 +26,5 @@ class IssueObserver < ActiveRecord::Observer
   # Create issue note with service comment like 'Status changed to closed'
   def create_note(issue)
     Note.create_status_change_note(issue, current_user, issue.state)
-  end
-
-  def notification
-    NotificationService.new
   end
 end

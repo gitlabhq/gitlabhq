@@ -1,4 +1,4 @@
-class MergeRequestObserver < ActiveRecord::Observer
+class MergeRequestObserver < BaseObserver
   cattr_accessor :current_user
 
   def after_create(merge_request)
@@ -15,11 +15,5 @@ class MergeRequestObserver < ActiveRecord::Observer
 
   def after_update(merge_request)
     notification.reassigned_merge_request(merge_request) if merge_request.is_being_reassigned?
-  end
-
-  protected
-
-  def notification
-    NotificationService.new
   end
 end

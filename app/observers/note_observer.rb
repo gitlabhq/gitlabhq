@@ -1,11 +1,5 @@
-class NoteObserver < ActiveRecord::Observer
+class NoteObserver < BaseObserver
   def after_create(note)
     notification.new_note(note)
-  end
-
-  protected
-
-  def notification
-    NotificationService.new
   end
 end

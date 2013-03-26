@@ -1,4 +1,4 @@
-class SystemHookObserver < ActiveRecord::Observer
+class SystemHookObserver < BaseObserver
   observe :user, :project, :users_project
 
   def after_create(model)

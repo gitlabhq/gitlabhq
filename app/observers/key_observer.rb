@@ -1,6 +1,4 @@
-class KeyObserver < ActiveRecord::Observer
-  include Gitlab::ShellAdapter
-
+class KeyObserver < BaseObserver
   def after_save(key)
     GitlabShellWorker.perform_async(
       :add_key,
@@ -8,8 +6,7 @@ class KeyObserver < ActiveRecord::Observer
       key.key
     )
 
-    # Notify about ssh key being added
-    NotificationService.new.new_key(key)
+    notification.new_key(key)
   end
 
   def after_destroy(key)
