@@ -80,4 +80,32 @@ class NotificationService
       Notify.delay.reassigned_merge_request_email(recipient_id, merge_request.id, merge_request.assignee_id_was)
     end
   end
+
+  # Notify new user with email after creation
+  def new_user(user)
+    # Dont email omniauth created users
+    Notify.delay.new_user_email(user.id, user.password) unless user.extern_uid?
+  end
+
+  # Notify users on new note in system
+  #
+  # TODO: split on methods and refactor
+  #
+  def new_note(note)
+    if note.notify
+      users = note.project.users.reject { |u| u.id == note.author.id }
+
+      # Note: wall posts are not "attached" to anything, so fall back to "Wall"
+      noteable_type = note.noteable_type.presence || "Wall"
+      notify_method = "note_#{noteable_type.underscore}_email".to_sym
+
+      if Notify.respond_to? notify_method
+        team_without_note_author(note).map do |u|
+          Notify.delay.send(notify_method, u.id, note.id)
+        end
+      end
+    elsif note.notify_author && note.commit_author
+      Notify.delay.note_commit_email(note.commit_author.id, note.id)
+    end
+  end
 end

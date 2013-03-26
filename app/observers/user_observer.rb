@@ -2,8 +2,7 @@ class UserObserver < ActiveRecord::Observer
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
 
-    # Dont email omniauth created users
-    Notify.delay.new_user_email(user.id, user.password) unless user.extern_uid?
+    notification.new_user(user)
   end
 
   def after_destroy user
@@ -24,5 +23,9 @@ class UserObserver < ActiveRecord::Observer
 
   def log_info message
     Gitlab::AppLogger.info message
+  end
+
+  def notification
+    NotificationService.new
   end
 end
