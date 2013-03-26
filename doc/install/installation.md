@@ -253,6 +253,11 @@ Make sure to edit the config file to match your setup:
     # to the IP address and fully-qualified domain name
     # of your host serving GitLab
     sudo vim /etc/nginx/sites-available/gitlab
+    
+    Please configure listen port on server configuration like:
+    
+    listen *:80 default_server;         # e.g., listen 192.168.1.1:80;
+    
 
 ## Restart
 
