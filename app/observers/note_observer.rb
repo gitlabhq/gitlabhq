@@ -35,4 +35,8 @@ class NoteObserver < ActiveRecord::Observer
   def team_without_note_author(note)
     note.project.users.reject { |u| u.id == note.author.id }
   end
+
+  def notification
+    NotificationService.new
+  end
 end
