@@ -10,7 +10,8 @@ describe MergeRequestObserver do
   let(:closed_assigned_mr)   { create(:closed_merge_request, assignee: assignee, author: author) }
   let(:closed_unassigned_mr) { create(:closed_merge_request, author: author) }
 
-  before(:each) { subject.stub(:current_user).and_return(some_user) }
+  before { subject.stub(:current_user).and_return(some_user) }
+  before { subject.stub(notification: mock('NotificationService').as_null_object) }
 
   subject { MergeRequestObserver.instance }
 
@@ -18,21 +19,11 @@ describe MergeRequestObserver do
 
     it 'is called when a merge request is created' do
       subject.should_receive(:after_create)
-
-      MergeRequest.observers.enable :merge_request_observer do
-        create(:merge_request, project: create(:project))
-      end
+      create(:merge_request, project: create(:project))
     end
 
-    it 'sends an email to the assignee' do
-      Notify.should_receive(:new_merge_request_email).with(mr_mock.id)
-      subject.after_create(mr_mock)
-    end
-
-    it 'does not send an email to the assignee if assignee created the merge request' do
-      subject.stub(:current_user).and_return(assignee)
-      Notify.should_not_receive(:new_merge_request_email)
-
+    it 'trigger notification service' do
+      subject.should_receive(:notification)
       subject.after_create(mr_mock)
     end
   end

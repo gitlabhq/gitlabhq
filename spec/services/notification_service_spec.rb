@@ -44,4 +44,20 @@ describe NotificationService do
       end
     end
   end
+
+  describe 'Merge Requests' do
+    let(:merge_request) { create :merge_request, assignee: create(:user) }
+
+    describe :new_merge_request do
+      it 'should send email to merge_request assignee' do
+        Notify.should_receive(:new_merge_request_email).with(merge_request.id)
+        notification.new_merge_request(merge_request, merge_request.author)
+      end
+
+      it 'should not send email to merge_request assignee if he is current_user' do
+        Notify.should_not_receive(:new_merge_request_email).with(merge_request.id)
+        notification.new_merge_request(merge_request, merge_request.assignee)
+      end
+    end
+  end
 end

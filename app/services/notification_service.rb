@@ -47,13 +47,23 @@ class NotificationService
     end
   end
 
-  # When we reassign an issue we should send next emails:
+  # When create an issue we should send next emails:
   #
   #  * issue assignee if his notification level is not Disabled
   #
   def new_issue(issue, current_user)
     if issue.assignee && issue.assignee != current_user
       Notify.delay.new_issue_email(issue.id)
+    end
+  end
+
+  # When create a merge request we should send next emails:
+  #
+  #  * mr assignee if his notification level is not Disabled
+  #
+  def new_merge_request(merge_request, current_user)
+    if merge_request.assignee && merge_request.assignee != current_user
+      Notify.delay.new_merge_request_email(merge_request.id)
     end
   end
 end

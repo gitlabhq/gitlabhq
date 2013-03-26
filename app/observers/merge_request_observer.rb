@@ -2,9 +2,7 @@ class MergeRequestObserver < ActiveRecord::Observer
   cattr_accessor :current_user
 
   def after_create(merge_request)
-    if merge_request.assignee && merge_request.assignee != current_user
-      Notify.delay.new_merge_request_email(merge_request.id)
-    end
+    notification.new_merge_request(merge_request, current_user)
   end
 
   def after_close(merge_request, transition)
