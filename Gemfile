@@ -173,6 +173,8 @@ group :development, :test do
 
   # PhantomJS driver for Capybara
   gem 'poltergeist', '1.1.0'
+
+  gem 'spork', '~> 1.0rc'
 end
 
 group :test do
