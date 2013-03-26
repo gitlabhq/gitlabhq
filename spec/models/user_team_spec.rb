@@ -14,5 +14,24 @@
 require 'spec_helper'
 
 describe UserTeam do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:team) { FactoryGirl.create :user_team }
+
+  context ".add_member" do
+    let(:user) { FactoryGirl.create :user }
+
+    it "should work" do
+      team.add_member(user, UsersProject::DEVELOPER, false)
+      team.members.should include(user)
+    end
+  end
+
+  context ".remove_member" do
+    let(:user) { FactoryGirl.create :user }
+    before { team.add_member(user, UsersProject::DEVELOPER, false) }
+
+    it "should work" do
+      team.remove_member(user)
+      team.members.should_not include(user)
+    end
+  end
 end

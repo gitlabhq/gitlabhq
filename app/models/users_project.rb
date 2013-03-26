@@ -38,7 +38,7 @@ class UsersProject < ActiveRecord::Base
   scope :masters,  -> { where(project_access: MASTER) }
 
   scope :in_project, ->(project) { where(project_id: project.id) }
-  scope :in_projects, ->(projects) { where(project_id: project_ids) }
+  scope :in_projects, ->(projects) { where(project_id: projects.map { |p| p.id }) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
   class << self
