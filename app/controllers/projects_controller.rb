@@ -57,11 +57,11 @@ class ProjectsController < ProjectResourceController
 
     respond_to do |format|
       format.html do
-        if @project.repository && !@project.repository.empty?
+        if @project.empty_repo?
+          render "projects/empty"
+        else
           @last_push = current_user.recent_push(@project.id)
           render :show
-        else
-          render "projects/empty"
         end
       end
       format.js
