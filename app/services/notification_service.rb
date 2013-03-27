@@ -127,7 +127,7 @@ class NotificationService
     end
   end
 
-  def reassign_email(target, current_user, entity_sym)
+  def reassign_email(target, current_user, method)
     recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
 
     # reject users with disabled notifications
@@ -136,7 +136,7 @@ class NotificationService
     # Reject me from recipients if I reassign an item
     recipients.delete(current_user)
 
-    recipients.each do |recipient_id|
+    recipients.each do |recipient|
       Notify.delay.send(method, recipient.id, target.id, target.assignee_id_was)
     end
   end
