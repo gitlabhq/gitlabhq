@@ -18,6 +18,7 @@
 #  public                 :boolean          default(FALSE), not null
 #  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
+#  snippets_enabled       :boolean          default(TRUE), not null
 #
 
 require 'spec_helper'

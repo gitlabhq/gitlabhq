@@ -33,6 +33,7 @@
 #  can_create_team        :boolean          default(TRUE), not null
 #  state                  :string(255)
 #  color_scheme_id        :integer          default(1), not null
+#  notification_level     :integer          default(1), not null
 #
 
 require 'spec_helper'
