@@ -40,7 +40,7 @@ class NotificationService
   #  * issue new assignee if his notification level is not Disabled
   #
   def reassigned_issue(issue, current_user)
-    reassign_email(merge_request, current_user, 'reassigned_issue_email')
+    reassign_email(issue, current_user, 'reassigned_issue_email')
   end
 
   # When create an issue we should send next emails:
