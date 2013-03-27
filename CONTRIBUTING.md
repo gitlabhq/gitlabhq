@@ -19,7 +19,7 @@ Please visit our [Support Forum](https://groups.google.com/forum/#!forum/gitlabh
 
 **Search** for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and had it resolved.
 
-## Paid support
+## Support options
 
 Community support in the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) is done by volunteers. A support subscription is available from [GitLab.com](http://blog.gitlab.com/subscription/)
 
@@ -28,6 +28,8 @@ Community support in the [Support Forum](https://groups.google.com/forum/#!forum
 Feature suggestions don't belong in issues but can go to [Feedback forum](http://gitlab.uservoice.com/forums/176466-general) where they can be voted on.
 
 ## Pull requests
+
+You can submit a pull request if you have made an improvement to GitLab. The issues we would really like a pull request for are listed with the [status 'accepting merge/pull requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455).
 
 Code speaks louder than words. If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
 
