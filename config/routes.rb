@@ -110,6 +110,8 @@ Gitlab::Application.routes.draw do
       put :reset_private_token
       put :update_username
     end
+
+    resource :notifications
   end
 
   resources :keys

@@ -11,6 +11,8 @@
             %i.icon-home
         = nav_link(path: 'profiles#account') do
           = link_to "Account", account_profile_path
+        = nav_link(controller: :notifications) do
+          = link_to "Notifications", profile_notifications_path
         = nav_link(controller: :keys) do
           = link_to keys_path do
             SSH Keys

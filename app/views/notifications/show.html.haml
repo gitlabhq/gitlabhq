@@ -1,0 +1,26 @@
+%h3.page_title Setup your notification level
+%hr
+
+
+= form_tag profile_notifications_path do
+
+  %ul.unstyled
+    %li
+      .row
+        .span3
+          %h5 Global
+        .span9
+          = label_tag do
+            = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?
+            %span Disabled
+
+          = label_tag do
+            = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?
+            %span Participating
+
+          = label_tag do
+            = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?
+            %span Watch
+
+  .form-actions
+    = submit_tag 'Save', class: 'btn btn-save'

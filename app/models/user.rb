@@ -55,13 +55,6 @@ class User < ActiveRecord::Base
 
 
   #
-  # Notification levels
-  #
-  N_DISABLED = 0
-  N_PARTICIPATING = 1
-  N_WATCH = 2
-
-  #
   # Relations
   #
 
@@ -116,6 +109,9 @@ class User < ActiveRecord::Base
             format: { with: Gitlab::Regex.username_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
+  validates :notification_level,
+    inclusion: { in: Notification.notification_levels },
+    presence: true
 
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
 
@@ -214,6 +210,10 @@ class User < ActiveRecord::Base
 
   def to_param
     username
+  end
+
+  def notification
+    @notification ||= Notification.new(self)
   end
 
   def generate_password
