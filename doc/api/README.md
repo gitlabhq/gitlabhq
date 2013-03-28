@@ -77,6 +77,25 @@ If the sudo user id or username cannot be found then an error message will be re
 }
 ```
 
+Example of a valid API with sudo request:
+
+```
+GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=username
+```
+```
+GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=23
+```
+
+
+Example for a valid API request with sudo using curl and authentication via header:
+
+```
+curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: username" "http://example.com/api/v3/projects"
+```
+```
+curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: 23" "http://example.com/api/v3/projects"
+```
+
 #### Pagination
 
 When listing resources you can pass the following parameters:
