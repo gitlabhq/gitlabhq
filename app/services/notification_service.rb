@@ -99,22 +99,34 @@ class NotificationService
   # TODO: split on methods and refactor
   #
   def new_note(note)
-    if note.notify
-      users = note.project.users
-      users = reject_muted_users(users)
-      users.delete(note.author)
+    # ignore wall messages
+    return true unless note.noteable_type.present?
 
-      # Note: wall posts are not "attached" to anything, so fall back to "Wall"
-      noteable_type = note.noteable_type.presence || "Wall"
-      notify_method = "note_#{noteable_type.underscore}_email".to_sym
+    opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
-      if Notify.respond_to? notify_method
-        users.each do |user|
-          Notify.delay.send(notify_method, user.id, note.id)
-        end
-      end
-    elsif note.notify_author && note.commit_author
-      Notify.delay.note_commit_email(note.commit_author.id, note.id)
+    if note.commit_id
+      opts.merge!(commit_id: note.commit_id)
+    else
+      opts.merge!(noteable_id: note.noteable_id)
+    end
+
+    # Get users who left comment in thread
+    recipients = User.where(id: Note.where(opts).pluck(:author_id))
+
+    # Merge project watchers
+    recipients = recipients.concat(project_watchers(note.project)).compact.uniq
+
+    # Reject mutes users
+    recipients = reject_muted_users(recipients)
+
+    # Reject author
+    recipients.delete(note.author)
+
+    # build notify method like 'note_commit_email'
+    notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+
+    recipients.each do |recipient|
+      Notify.delay.send(notify_method, recipient.id, note.id)
     end
   end
 

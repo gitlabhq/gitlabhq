@@ -20,6 +20,45 @@ describe NotificationService do
     end
   end
 
+  describe 'Notes' do
+    let(:note) { create :note_on_commit }
+
+    before do
+      build_team(note.project)
+    end
+
+    describe :new_note do
+      it do
+        should_email(@u_watcher.id)
+        should_not_email(note.author_id)
+        should_not_email(@u_participating.id)
+        should_not_email(@u_disabled.id)
+        notification.new_note(note)
+      end
+
+      it do
+        create(:note_on_commit,
+               author: @u_participating,
+               project_id: note.project_id,
+               commit_id: note.commit_id)
+
+        should_email(@u_watcher.id)
+        should_email(@u_participating.id)
+        should_not_email(note.author_id)
+        should_not_email(@u_disabled.id)
+        notification.new_note(note)
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:note_commit_email).with(user_id, note.id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:note_commit_email).with(user_id, note.id)
+      end
+    end
+  end
+
   describe 'Issues' do
     let(:issue) { create :issue, assignee: create(:user) }
 
