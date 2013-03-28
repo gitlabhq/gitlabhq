@@ -12,7 +12,7 @@ class MergeRequestObserver < BaseObserver
   end
 
   def after_merge(merge_request, transition)
-    notification.merge_mr(merge_request, current_user)
+    notification.merge_mr(merge_request)
   end
 
   def after_reopen(merge_request, transition)

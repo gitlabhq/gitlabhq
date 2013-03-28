@@ -23,12 +23,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def new_issue(issue, current_user)
-    recipients = reject_muted_users([issue.assignee])
-    recipients = recipients.concat(project_watchers(issue.project)).uniq
-
-    recipients.each do |recipient|
-      Notify.delay.new_issue_email(recipient.id, issue.id)
-    end
+    new_resource_email(issue, 'new_issue_email')
   end
 
   # When we close an issue we should send next emails:
@@ -38,17 +33,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def close_issue(issue, current_user)
-    recipients = reject_muted_users([issue.author, issue.assignee])
-
-    # Add watchers to email list
-    recipients = recipients.concat(project_watchers(issue.project)).uniq
-
-    # Dont send email to me when I close an issue
-    recipients.delete(current_user)
-
-    recipients.each do |recipient|
-      Notify.delay.issue_status_changed_email(recipient.id, issue.id, issue.state, current_user.id)
-    end
+    close_resource_email(issue, current_user, 'close_issue_email')
   end
 
   # When we reassign an issue we should send next emails:
@@ -57,7 +42,7 @@ class NotificationService
   #  * issue new assignee if his notification level is not Disabled
   #
   def reassigned_issue(issue, current_user)
-    reassign_email(issue, current_user, 'reassigned_issue_email')
+    reassign_resource_email(issue, current_user, 'reassigned_issue_email')
   end
 
 
@@ -66,12 +51,7 @@ class NotificationService
   #  * mr assignee if his notification level is not Disabled
   #
   def new_merge_request(merge_request, current_user)
-    recipients = reject_muted_users([merge_request.assignee])
-    recipients = recipients.concat(project_watchers(merge_request.project)).uniq
-
-    recipients.each do |recipient|
-      Notify.delay.new_merge_request_email(recipient.id, merge_request.id)
-    end
+    new_resource_email(merge_request, 'new_merge_request_email')
   end
 
   # When we reassign a merge_request we should send next emails:
@@ -80,7 +60,7 @@ class NotificationService
   #  * merge_request assignee if his notification level is not Disabled
   #
   def reassigned_merge_request(merge_request, current_user)
-    reassign_email(merge_request, current_user, 'reassigned_merge_request_email')
+    reassign_resource_email(merge_request, current_user, 'reassigned_merge_request_email')
   end
 
   # When we close a merge request we should send next emails:
@@ -89,13 +69,8 @@ class NotificationService
   #  * merge_request assignee if his notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
-  def close_mr(merge_request)
-    recipients = reject_muted_users([merge_request.author, merge_request.assignee])
-    recipients = recipients.concat(project_watchers(merge_request.project)).uniq
-
-    recipients.each do |recipient|
-      Notify.delay.closed_merge_request_email(recipient.id, merge_request.id)
-    end
+  def close_mr(merge_request, current_user)
+    close_resource_email(merge_request, current_user, 'closed_merge_request_email')
   end
 
   # When we merge a merge request we should send next emails:
@@ -166,7 +141,27 @@ class NotificationService
     end
   end
 
-  def reassign_email(target, current_user, method)
+  def new_resource_email(target, method)
+    recipients = reject_muted_users([target.assignee])
+    recipients = recipients.concat(project_watchers(target.project)).uniq
+    recipients.delete(target.author)
+
+    recipients.each do |recipient|
+      Notify.delay.send(method, recipient.id, target.id)
+    end
+  end
+
+  def close_resource_email(target, current_user, method)
+    recipients = reject_muted_users([target.author, target.assignee])
+    recipients = recipients.concat(project_watchers(target.project)).uniq
+    recipients.delete(current_user)
+
+    recipients.each do |recipient|
+      Notify.delay.send(method, recipient.id, target.id, current_user.id)
+    end
+  end
+
+  def reassign_resource_email(target, current_user, method)
     recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
 
     # Add watchers to email list

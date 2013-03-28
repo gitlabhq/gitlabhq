@@ -65,11 +65,11 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:issue_status_changed_email).with(user_id, issue.id, issue.assignee_id)
+        Notify.should_receive(:closed_issue_email).with(user_id, issue.id, issue.assignee_id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:issue_status_changed_email).with(user_id, issue.id, issue.assignee_id)
+        Notify.should_not_receive(:closed_issue_email).with(user_id, issue.id, issue.assignee_id)
       end
     end
   end
@@ -123,7 +123,7 @@ describe NotificationService do
         should_email(@u_watcher.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.close_mr(merge_request)
+        notification.close_mr(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
