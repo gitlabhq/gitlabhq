@@ -107,7 +107,7 @@ describe Notify do
         let(:issue) { create(:issue, assignee: assignee, project: project ) }
 
         describe 'that are new' do
-          subject { Notify.new_issue_email(issue.id) }
+          subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
 
           it_behaves_like 'an assignee email'
 
@@ -172,7 +172,7 @@ describe Notify do
         let(:merge_request) { create(:merge_request, assignee: assignee, project: project) }
 
         describe 'that are new' do
-          subject { Notify.new_merge_request_email(merge_request.id) }
+          subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
 
           it_behaves_like 'an assignee email'
 

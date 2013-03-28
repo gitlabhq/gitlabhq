@@ -94,6 +94,8 @@ module Gitlab
 
         authorize! :modify_merge_request, merge_request
 
+        MergeRequestObserver.current_user = current_user
+
         if merge_request.update_attributes attrs
           merge_request.reload_code
           merge_request.mark_as_unchecked
