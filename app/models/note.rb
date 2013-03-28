@@ -22,9 +22,6 @@ class Note < ActiveRecord::Base
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code, :commit_id
 
-  attr_accessor :notify
-  attr_accessor :notify_author
-
   belongs_to :project
   belongs_to :noteable, polymorphic: true
   belongs_to :author, class_name: "User"
@@ -141,14 +138,6 @@ class Note < ActiveRecord::Base
   # if note commit id doesn't exist
   rescue
     nil
-  end
-
-  def notify
-    @notify ||= false
-  end
-
-  def notify_author
-    @notify_author ||= false
   end
 
   # Returns true if this is an upvote note,

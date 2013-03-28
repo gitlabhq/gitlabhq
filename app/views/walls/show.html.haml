@@ -12,11 +12,6 @@
             = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
 
           .note-form-option
-            = label_tag :notify do
-              = check_box_tag :notify, 1, false
-              %span.light Notify team via email
-
-          .note-form-option
             %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
               %i.icon-paper-clip
                 %span Choose File ...
