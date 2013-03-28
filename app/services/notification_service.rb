@@ -106,12 +106,14 @@ class NotificationService
 
     if note.commit_id
       opts.merge!(commit_id: note.commit_id)
+      recipients = [note.commit_author]
     else
       opts.merge!(noteable_id: note.noteable_id)
+      recipients = [note.noteable.try(:author), note.noteable.try(:assignee)]
     end
 
     # Get users who left comment in thread
-    recipients = User.where(id: Note.where(opts).pluck(:author_id))
+    recipients = recipients.concat(User.where(id: Note.where(opts).pluck(:author_id)))
 
     # Merge project watchers
     recipients = recipients.concat(project_watchers(note.project)).compact.uniq
