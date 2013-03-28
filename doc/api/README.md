@@ -58,7 +58,24 @@ Return values:
 * `409 Conflict` - A conflicting resource already exists, e.g. creating a project with a name that already exists
 * `500 Server Error` - While handling the request something went wrong on the server side
 
+## Sudo
+All API requests support performing an api call as if you were another user, if your private token is for an administration account. You need to pass  `sudo` parameter by url or header with an id or username of the user you want to perform the operation as. If passed as header, the header name must be "SUDO" (capitals).
 
+If a non administrative `private_token` is provided then an error message will be returned with status code 403:
+
+```json
+{
+  "message": "403 Forbidden: Must be admin to use sudo"
+}
+```
+
+If the sudo user id or username cannot be found then an error message will be returned with status code 404:
+
+```json
+{
+  "message": "404 Not Found: No user id or username for: <id/username>"
+}
+```
 
 #### Pagination
 
