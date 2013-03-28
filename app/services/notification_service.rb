@@ -17,7 +17,21 @@ class NotificationService
     end
   end
 
-  # TODO: When we close an issue we should send next emails:
+  # When create an issue we should send next emails:
+  #
+  #  * issue assignee if his notification level is not Disabled
+  #  * project team members with notification level higher then Participating
+  #
+  def new_issue(issue, current_user)
+    recipients = reject_muted_users([issue.assignee])
+    recipients = recipients.concat(project_watchers(issue.project)).uniq
+
+    recipients.each do |recipient|
+      Notify.delay.new_issue_email(recipient.id, issue.id)
+    end
+  end
+
+  # When we close an issue we should send next emails:
   #
   #  * issue author if his notification level is not Disabled
   #  * issue assignee if his notification level is not Disabled
@@ -25,6 +39,9 @@ class NotificationService
   #
   def close_issue(issue, current_user)
     recipients = reject_muted_users([issue.author, issue.assignee])
+
+    # Add watchers to email list
+    recipients = recipients.concat(project_watchers(issue.project)).uniq
 
     # Dont send email to me when I close an issue
     recipients.delete(current_user)
@@ -43,30 +60,17 @@ class NotificationService
     reassign_email(issue, current_user, 'reassigned_issue_email')
   end
 
-  # When create an issue we should send next emails:
-  #
-  #  * issue assignee if his notification level is not Disabled
-  #
-  def new_issue(issue, current_user)
-
-    if issue.assignee && issue.assignee != current_user
-      # skip if assignee notification disabled
-      return true if issue.assignee.notification.disabled?
-
-      Notify.delay.new_issue_email(issue.id)
-    end
-  end
 
   # When create a merge request we should send next emails:
   #
   #  * mr assignee if his notification level is not Disabled
   #
   def new_merge_request(merge_request, current_user)
-    if merge_request.assignee && merge_request.assignee != current_user
-      # skip if assignee notification disabled
-      return true if merge_request.assignee.notification.disabled?
+    recipients = reject_muted_users([merge_request.assignee])
+    recipients = recipients.concat(project_watchers(merge_request.project)).uniq
 
-      Notify.delay.new_merge_request_email(merge_request.id)
+    recipients.each do |recipient|
+      Notify.delay.new_merge_request_email(recipient.id, merge_request.id)
     end
   end
 
@@ -77,6 +81,36 @@ class NotificationService
   #
   def reassigned_merge_request(merge_request, current_user)
     reassign_email(merge_request, current_user, 'reassigned_merge_request_email')
+  end
+
+  # When we close a merge request we should send next emails:
+  #
+  #  * merge_request author if his notification level is not Disabled
+  #  * merge_request assignee if his notification level is not Disabled
+  #  * project team members with notification level higher then Participating
+  #
+  def close_mr(merge_request)
+    recipients = reject_muted_users([merge_request.author, merge_request.assignee])
+    recipients = recipients.concat(project_watchers(merge_request.project)).uniq
+
+    recipients.each do |recipient|
+      Notify.delay.closed_merge_request_email(recipient.id, merge_request.id)
+    end
+  end
+
+  # When we merge a merge request we should send next emails:
+  #
+  #  * merge_request author if his notification level is not Disabled
+  #  * merge_request assignee if his notification level is not Disabled
+  #  * project team members with notification level higher then Participating
+  #
+  def merge_mr(merge_request)
+    recipients = reject_muted_users([merge_request.author, merge_request.assignee])
+    recipients = recipients.concat(project_watchers(merge_request.project)).uniq
+
+    recipients.each do |recipient|
+      Notify.delay.merged_merge_request_email(recipient.id, merge_request.id)
+    end
   end
 
   # Notify new user with email after creation
@@ -119,6 +153,11 @@ class NotificationService
 
   protected
 
+  # Get project users with WATCH notification level
+  def project_watchers(project)
+    project.users.where(notification_level: Notification::N_WATCH)
+  end
+
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
   def reject_muted_users(users)
@@ -129,6 +168,9 @@ class NotificationService
 
   def reassign_email(target, current_user, method)
     recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
+
+    # Add watchers to email list
+    recipients = recipients.concat(project_watchers(target.project))
 
     # reject users with disabled notifications
     recipients = reject_muted_users(recipients)
