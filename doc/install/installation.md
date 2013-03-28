@@ -164,6 +164,10 @@ do so with caution!
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    
+    # Set git-variables for gitlab itself
+    sudo -u git -H git config --global user.name  "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
 
 **Important Note:**
 Make sure to edit both files to match your setup.
