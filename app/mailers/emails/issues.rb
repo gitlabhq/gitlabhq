@@ -1,9 +1,9 @@
 module Emails
   module Issues
-    def new_issue_email(issue_id)
+    def new_issue_email(recipient_id, issue_id)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      mail(to: @issue.assignee_email, subject: subject("new issue ##{@issue.id}", @issue.title))
+      mail(to: recipient(recipient_id), subject: subject("new issue ##{@issue.id}", @issue.title))
     end
 
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
