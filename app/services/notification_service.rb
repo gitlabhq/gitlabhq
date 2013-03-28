@@ -109,7 +109,10 @@ class NotificationService
       recipients = [note.commit_author]
     else
       opts.merge!(noteable_id: note.noteable_id)
-      recipients = [note.noteable.try(:author), note.noteable.try(:assignee)]
+      target = note.noteable
+      recipients = []
+      recipients << target.assignee if target.respond_to?(:assignee)
+      recipients << target.author if target.respond_to?(:author)
     end
 
     # Get users who left comment in thread
