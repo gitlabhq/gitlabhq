@@ -89,7 +89,7 @@ Install the Bundler Gem:
 
 Create a `git` user for Gitlab:
 
-    sudo adduser --disabled-login --gecos 'GitLab' git
+    sudo adduser --disabled-login --system --gecos 'GitLab' git
 
 
 # 4. GitLab shell
@@ -97,10 +97,7 @@ Create a `git` user for Gitlab:
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
 
     # Login as git
-    sudo su git
-
-    # Go to home directory
-    cd /home/git
+    sudo su -s /bin/bash - git 
 
     # Clone gitlab shell
     git clone https://github.com/gitlabhq/gitlab-shell.git
