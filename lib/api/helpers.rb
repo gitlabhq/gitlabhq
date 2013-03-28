@@ -1,7 +1,32 @@
 module Gitlab
   module APIHelpers
+    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
+    PRIVATE_TOKEN_PARAM = :private_token
+    SUDO_HEADER ="HTTP_SUDO"
+    SUDO_PARAM = :sudo
+
     def current_user
-      @current_user ||= User.find_by_authentication_token(params[:private_token] || env["HTTP_PRIVATE_TOKEN"])
+      @current_user ||= User.find_by_authentication_token(params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER ])
+      identifier = params[SUDO_PARAM] == nil ? env[SUDO_HEADER] : params[SUDO_PARAM]
+      # If the sudo is the current user do nothing
+      if (identifier && !(@current_user.id == identifier || @current_user.username == identifier))
+        render_api_error!('403 Forbidden: Must be admin to use sudo', 403) unless @current_user.is_admin?
+        begin
+
+          if (!!(identifier =~ /^[0-9]+$/) || identifier.is_a?( Integer))
+            user = User.find_by_id(identifier)
+          else
+            user = User.find_by_username(identifier)
+          end
+          if user.nil?
+            not_found!("No user id or username for: #{identifier}")
+          end
+          @current_user = user
+        rescue => ex
+          not_found!("No user id or username for: #{identifier}")
+        end
+      end
+      @current_user
     end
 
     def user_project
@@ -95,10 +120,10 @@ module Gitlab
 
     def abilities
       @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
+        abilities = Six.new
+        abilities << Ability
+        abilities
+      end
     end
   end
 end
