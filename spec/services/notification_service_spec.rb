@@ -28,9 +28,20 @@ describe NotificationService do
     end
 
     describe :new_issue do
-      it 'should sent email to issue assignee' do
-        Notify.should_receive(:new_issue_email).with(issue.id)
-        notification.new_issue(issue, nil)
+      it do
+        should_email(issue.assignee_id)
+        should_email(@u_watcher.id)
+        should_not_email(@u_participating.id)
+        should_not_email(@u_disabled.id)
+        notification.new_issue(issue, @u_disabled)
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:new_issue_email).with(user_id, issue.id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:new_issue_email).with(user_id, issue.id)
       end
     end
 
@@ -65,11 +76,11 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:closed_issue_email).with(user_id, issue.id, issue.assignee_id)
+        Notify.should_receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:closed_issue_email).with(user_id, issue.id, issue.assignee_id)
+        Notify.should_not_receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
       end
     end
   end
@@ -91,11 +102,11 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:new_merge_request_email).with(merge_request.id)
+        Notify.should_receive(:new_merge_request_email).with(user_id, merge_request.id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:new_merge_request_email).with(merge_request.id)
+        Notify.should_not_receive(:new_merge_request_email).with(user_id, merge_request.id)
       end
     end
 
@@ -127,11 +138,11 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:closed_merge_request_email).with(user_id, merge_request.id)
+        Notify.should_receive(:closed_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:closed_merge_request_email).with(user_id, merge_request.id)
+        Notify.should_not_receive(:closed_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
       end
     end
 

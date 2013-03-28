@@ -33,7 +33,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def close_issue(issue, current_user)
-    close_resource_email(issue, current_user, 'close_issue_email')
+    close_resource_email(issue, current_user, 'closed_issue_email')
   end
 
   # When we reassign an issue we should send next emails:
