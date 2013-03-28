@@ -397,7 +397,6 @@ GEM
     ruby-progressbar (1.0.2)
     rubyntlm (0.1.1)
     rubyzip (0.9.9)
-    rugged (0.17.0.b7)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.7)
@@ -566,7 +565,6 @@ DEPENDENCIES
   redcarpet (~> 2.2.2)
   redis-rails
   rspec-rails
-  rugged (~> 0.17.0.b7)
   sass-rails (~> 3.2.5)
   sdoc
   seed-fu

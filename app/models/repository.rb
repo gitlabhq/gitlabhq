@@ -34,10 +34,6 @@ class Repository
     @repo ||= Grit::Repo.new(path_to_repo)
   end
 
-  def rugged
-    @rugged ||= Rugged::Repository.new(path_to_repo)
-  end
-
   def commit(commit_id = nil)
     Commit.find_or_first(repo, commit_id, root_ref)
   end
@@ -68,17 +64,17 @@ class Repository
 
   # Returns an Array of branch names
   def branch_names
-    branches.map(&:name).sort
+    repo.branches.collect(&:name).sort
   end
 
   # Returns an Array of Branches
   def branches
-    rugged.branches.sort_by(&:name)
+    repo.branches.sort_by(&:name)
   end
 
   # Returns an Array of tag names
   def tag_names
-    rugged.tags.sort.reverse
+    repo.tags.collect(&:name).sort.reverse
   end
 
   # Returns an Array of Tags
