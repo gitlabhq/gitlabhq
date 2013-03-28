@@ -22,6 +22,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # Extracting information from a git repository
+gem 'rugged', '~> 0.17.0.b7'
 gem "gitlab-grit", '~> 1.0.0', require: 'grit'
 gem 'grit_ext', '~> 0.8.1'
 
