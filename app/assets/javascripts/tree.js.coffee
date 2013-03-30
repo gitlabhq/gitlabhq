@@ -6,7 +6,7 @@ $ ->
     $('span.log_loading:first').removeClass('hide')
 
     $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live "click", ->
-      $("#tree-content-holder").hide("slide", { direction: "left" }, 150)
+      $("#tree-content-holder").hide("slide", { direction: "left" }, 400)
 
     # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
     $("#tree-slider .tree-item").live 'click', (e) ->
