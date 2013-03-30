@@ -640,7 +640,7 @@ namespace :gitlab do
     if gitlab_shell_version.strip == '1.2.0'
       puts 'OK (1.2.0)'.green
     else
-      puts 'FAIL. Please update gitlab-shell to v1.1.0'.red
+      puts 'FAIL. Please update gitlab-shell to v1.2.0'.red
     end
   end
 end
