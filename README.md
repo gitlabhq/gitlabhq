@@ -12,7 +12,7 @@
 
 * powered by Ruby on Rails
 * completely free and open source (MIT license)
-* used by 10.000 organizations to keep their code secure
+* used by more than 10.000 organizations to keep their code secure
 
 ### Code status
 
@@ -30,7 +30,7 @@
 
 * GitLab.org community site: [Homepage](http://gitlab.org) [Screenshots](http://gitlab.org/screenshots/) [Blog](http://blog.gitlab.org/) [Demo](http://demo.gitlabhq.com/users/sign_in)
 
-* GitLab.com commercial services: [Homepage](http://www.gitlab.com/) [GitLab Cloud](http://www.gitlab.com/cloud/) [Subscription](http://www.gitlab.com/subscription/) [Consultancy](http://www.gitlab.com/consultancy/) [Blog](http://blog.gitlab.com/)
+* GitLab.com commercial services: [Homepage](http://www.gitlab.com/) [Subscription](http://www.gitlab.com/subscription/) [Consultancy](http://www.gitlab.com/consultancy/) [GitLab Cloud](http://www.gitlab.com/cloud/) [Blog](http://blog.gitlab.com/)
 
 * GitLab CI: [Readme](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) of the GitLab open-source continuous integration server
 
@@ -47,7 +47,7 @@
 
 ### Installation
 
-#### For production
+#### Official production installation
 
 Follow the installation guide for production server.
 
@@ -55,21 +55,37 @@ Follow the installation guide for production server.
 
 * [Installation guide for the current master branch (5.1)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
 
-#### For development
 
-If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working sandboxed and with all dependencies.
+#### Official development installation
+
+If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working with all dependencies.
 
 * [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm)
 
-#### Unsupported installation methods
+
+#### Unsupported production installation
 
 * [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes) for setup on different platforms
 
 * [Unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides)
 
+* [BitNami one-click installers](http://bitnami.com/stack/gitlab)
+
+* [TurnKey Linux virtual appliance](http://www.turnkeylinux.org/gitlab)
 
 
-### Starting
+### New versions and upgrading
+
+Each month on the 22th a new version is released together with an upgrade guide.
+
+* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
+
+* [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
+
+* [Roadmap](https://github.com/gitlabhq/gitlabhq/blob/master/ROADMAP.md)
+
+
+### Getting started
 
 1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab
 
@@ -107,27 +123,6 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
         bundle exec rake spinach
 
-### Getting help
-
-* [Troubleshooting guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
-
-* [Support forum](https://groups.google.com/forum/#!forum/gitlabhq)
-
-* [Feedback and suggestions forum](http://gitlab.uservoice.com/forums/176466-general)
-
-* [Support subscription](http://www.gitlab.com/subscription/)
-
-* [Consultancy](http://www.gitlab.com/consultancy/)
-
-### New versions and upgrading
-
-Each month on the 22th a new version is released together with an upgrade guide.
-
-* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
-
-* [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
-
-* [Roadmap](https://github.com/gitlabhq/gitlabhq/blob/master/ROADMAP.md)
 
 ### GitLab interfaces
 
@@ -139,9 +134,23 @@ Each month on the 22th a new version is released together with an upgrade guide.
 
 * [Databases](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/databases.md)
 
-### Getting in touch
 
-* [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md)
+### Getting help
+
+* [Troubleshooting guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide) contains solutions to common problems.
+
+* [Support forum](https://groups.google.com/forum/#!forum/gitlabhq) is the best place to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and had it resolved. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
+
+* [Feedback and suggestions forum](http://gitlab.uservoice.com/forums/176466-general) is the place to propose and discuss new features for GitLab.
+
+* [Support subscription](http://www.gitlab.com/subscription/) connect you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
+
+* [Consultancy](http://www.gitlab.com/consultancy/) allows you hire GitLab exports for installations, upgrades and customizations.
+
+* [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed without comment.
+
+
+### Getting in touch
 
 * [Core team](https://github.com/gitlabhq?tab=members)
 

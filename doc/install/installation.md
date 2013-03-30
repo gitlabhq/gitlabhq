@@ -1,19 +1,13 @@
 This installation guide was created for Debian/Ubuntu and tested on it. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
 
-This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+**Important Note:**
+This is the official installation guide to set up a production server. To set up a development installation or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
 
 **Important Note:**
-The following steps have been known to work.
-If you deviate from this guide, do it with caution and make sure you don't
-violate any assumptions GitLab makes about its environment.
-For things like AWS installation scripts, init scripts or config files for
-alternative web server have a look at the [`Advanced Setup
-Tips`](./installation.md#advanced-setup-tips) section.
-
+The following steps have been known to work. If you deviate from this guide, do it with caution and make sure you don't violate any assumptions GitLab makes about its environment.
 
 **Important Note:**
-If you find a bug/error in this guide please submit an issue or pull request
-following the [`contribution guide`](../../CONTRIBUTING.md).
+If you find a bug/error in this guide please submit a pull request following the [`contributing guide`](../../CONTRIBUTING.md).
 
 - - -
 
@@ -299,8 +293,3 @@ If you are running SSH on a non-standard port, you must change the gitlab user's
         hostname 127.0.0.1; # Your server name or IP
 
 You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
-
-## User-contributed Configurations
-
-You can find things like  AWS installation scripts, init scripts or config files
-for alternative web server in our [recipes collection](https://github.com/gitlabhq/gitlab-recipes/).
