@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/gitlabhq/grit.git
-  revision: c40a32432616a07fa7fc3c32c24ab73ad6a9718f
-  ref: c40a32432616a07fa7fc3c32c24ab73ad6a9718f
+  revision: c15e2758ec75f99230cd0fbcc9110bf932c0bf05
+  ref: c15e2758ec75f99230cd0fbcc9110bf932c0bf05
   specs:
     grit (2.5.0)
       diff-lcs (~> 1.1)
