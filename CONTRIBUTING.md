@@ -1,35 +1,18 @@
 # Contribute to GitLab
 
-If you have a question or want to contribute to GitLab this guide show you the appropriate channel to use.
+This guide details how to use pull requests and the issues to improve GitLab.
 
-## Ruling out common errors
+## Closing deviating issues
 
-Some errors are common and it may so happen, that you are not the only one who stumbled over a particular issue. We have [collected several of those and documented quick solutions](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide) for them.
-
-## Support forum
-
-Please visit our [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) for any kind of question regarding the usage or adiministration/configuration of GitLab.
-
-### Use the support forum if ...
-
-* You get permission denied errors
-* You can't see your repos
-* You have issues cloning, pulling or pushing
-* You have issues with web_hooks not firing
-
-**Search** for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and had it resolved.
-
-## Paid support
-
-Community support in the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) is done by volunteers. A support subscription is available from [GitLab.com](http://blog.gitlab.com/subscription/)
-
-## Feature suggestions
-
-Feature suggestions don't belong in issues but can go to [Feedback forum](http://gitlab.uservoice.com/forums/176466-general) where they can be voted on.
+Pull requests and issues not in line with the guidelines listed in this document will be closed with just a link to this paragraph. GitLab is popular open source project and the capacity to deal with issues and pull requests is limited. To get support for your problems please use other channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). [Support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from GitLab.com.
 
 ## Pull requests
 
-Code speaks louder than words. If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
+We welcome pull request with improvements to GitLab code and/or documentation. The issues we would really like a pull request for are listed with the [status 'accepting merge/pull requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome.
+
+## Pull request guidelines
+
+ If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
 
 1. Fork the project on GitHub
 1. Create a feature branch
@@ -51,26 +34,20 @@ We will accept pull requests if:
 
 For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
 
-## Submitting via GitHub's issue tracker
+## Issue tracker
 
-* For obvious bugs or misbehavior in GitLab in the master branch. Please include the revision id and a reproducible test case.
-* For problematic or insufficient documentation. Please give a suggestion on how to improve it.
+The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the master branch of GitLab. When submitting an issue please conform to the issue submission guidelines listed below.
 
-If you're unsure where to post, post it to the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) first.
-There are a lot of helpful GitLab users there who may be able to help you quickly.
-If your particular issue turns out to be a bug, it will find its way from there to the [issue tracker on GitHub](https://github.com/gitlabhq/gitlabhq/issues).
+Please send a pull request with a tested solution or a pull request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
-### When submitting an issue
+### Issue tracker guidelines
 
 **Search** for similar entries before submitting your own, there's a good chance somebody else had the same issue or idea. Show your support with `:+1:` and/or join the discussion.
 
-Please consider the following points when submitting an **issue**:
-
-* Summarize your issue in one sentence (what happened wrong, when you did/expected something else)
-* Describe your issue in detail (including steps to reproduce)
+* Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
+* Describe your issue in detail
+* How can we reproduce the issue on the [GitLab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) (start with: vagrant destroy && vagrant up && vagrant ssh)
+* Add the last commit sha1 of the GitLab version you used to replicate the issue
 * Add logs or screen shots when possible
+* Link to the line of code that might be responsible for the problem
 * Describe your setup (use relevant parts from `sudo -u gitlab -H bundle exec rake gitlab:env:info`)
-
-## Thank you!
-
-By taking the time to use the right channel, you help the development team to organize and prioritize issues and suggestions in order to make GitLab a better product for us all.
