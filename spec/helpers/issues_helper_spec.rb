@@ -76,4 +76,31 @@ describe IssuesHelper do
       url_for_issue(issue.id).should eq ""
     end
   end
+
+  describe :url_for_new_issue do
+    let(:issues_url) { Gitlab.config.issues_tracker.redmine.new_issue_url}
+    let(:ext_expected) do
+      issues_url.gsub(':project_id', ext_project.id.to_s)
+        .gsub(':issues_tracker_id', ext_project.issues_tracker_id.to_s)
+    end
+    let(:int_expected) { new_project_issue_path(project) }
+
+    it "should return internal path if used internal tracker" do
+      @project = project
+      url_for_new_issue.should match(int_expected)
+    end
+
+    it "should return path to external tracker" do
+      @project = ext_project
+
+      url_for_new_issue.should match(ext_expected)
+    end
+
+    it "should return empty string if project nil" do
+      @project = nil
+
+      url_for_new_issue.should eq ""
+    end
+  end
+
 end
