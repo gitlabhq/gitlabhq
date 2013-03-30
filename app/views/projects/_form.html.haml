@@ -36,10 +36,10 @@
                   .input
                     = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
 
-                - unless @repository.heads.empty?
+                - unless @project.empty_repo?
                   .clearfix
                     = f.label :default_branch, "Default Branch"
-                    .input= f.select(:default_branch, @repository.heads.map(&:name), {}, style: "width:210px;")
+                    .input= f.select(:default_branch, @repository.branch_names, {})
 
 
               - if can?(current_user, :change_public_mode, @project)
