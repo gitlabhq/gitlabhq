@@ -37,6 +37,8 @@ production: &base
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
     # username_changing_enabled: false # default: true - User can change her username/namespace
 
+    # How many commits to list individually before writing ".. and # more commits" (default: 2)
+    # commits_to_display_per_event: 2
 
   ## External issues trackers
   issues_tracker:

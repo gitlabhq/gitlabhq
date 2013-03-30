@@ -13,13 +13,14 @@
   - project = event.project
   .event-body
     %ul.well-list.event_commits
-      - few_commits = event.commits[0...2]
+      - max_commit_num = Gitlab.config.gitlab.commits_to_display_per_event
+      - few_commits = event.commits[0...max_commit_num]
       - few_commits.each do |commit|
         = render "events/commit", commit: commit, project: project
 
       - if event.commits_count > 1
         %li.commits-stat
-          - if event.commits_count > 2
-            %span ... and #{event.commits_count - 2} more commits.
+          - if event.commits_count > max_commit_num
+            %span ... and #{event.commits_count - max_commit_num} more commits.
           = link_to project_compare_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
             %strong Compare &rarr; #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
