@@ -131,7 +131,7 @@ class BranchGraph
     shortrefs = refs
     # Truncate if longer than 15 chars
     shortrefs = shortrefs.substr(0, 15) + "…"  if shortrefs.length > 17
-    text = r.text(x + 8, y, shortrefs).attr(
+    text = r.text(x + 4, y, shortrefs).attr(
       "text-anchor": "start"
       font: "10px Monaco, monospace"
       fill: "#FFF"
@@ -139,7 +139,7 @@ class BranchGraph
     )
     textbox = text.getBBox()
     # Create rectangle based on the size of the textbox
-    rect = r.rect(x, y - 7, textbox.width + 15, textbox.height + 5, 4).attr(
+    rect = r.rect(x, y - 7, textbox.width + 5, textbox.height + 5, 4).attr(
       fill: "#000"
       "fill-opacity": .5
       stroke: "none"
@@ -206,22 +206,19 @@ class BranchGraph
 
       # Build line shape
       if parent[1] is commit.space
-        d1 = [0, 5]
-        d2 = [0, 10]
-        arrow = "l-2,5,4,0,-2,-5"
+        offset = [0, 5]
+        arrow = "l-2,5,4,0,-2,-5,0,5"
 
       else if parent[1] < commit.space
-        d1 = [3, 3]
-        d2 = [7, 5]
-        arrow = "l5,0,-2,4,-3,-4"
+        offset = [3, 3]
+        arrow = "l5,0,-2,4,-3,-4,4,2"
 
       else
-        d1 = [-3, 3]
-        d2 = [-7, 5]
-        arrow = "l-5,0,2,4,3,-4"
+        offset = [-3, 3]
+        arrow = "l-5,0,2,4,3,-4,-4,2"
 
       # Start point
-      route = ["M", x + d1[0], y + d1[1]]
+      route = ["M", x + offset[0], y + offset[1]]
 
       # Add arrow if not first parent
       if i > 0
@@ -230,7 +227,6 @@ class BranchGraph
       # Circumvent if overlap
       if commit.space isnt parentCommit.space or commit.space isnt parent[1]
         route.push(
-          "L", x + d2[0], y + d2[1],
           "L", parentX2, y + 10,
           "L", parentX2, parentY - 5,
         )
