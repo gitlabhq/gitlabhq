@@ -378,6 +378,7 @@ GEM
       redis-store (~> 1.1.0)
     redis-store (1.1.3)
       redis (>= 2.2.0)
+    ref (1.0.4)
     request_store (1.0.5)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -463,7 +464,8 @@ GEM
     terminal-table (1.4.5)
     test_after_commit (0.0.1)
     therubyracer (0.11.4)
-      libv8 (>= 3.11.8.17)
+      libv8 (~> 3.11.8.12)
+      ref
     thin (1.5.0)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
