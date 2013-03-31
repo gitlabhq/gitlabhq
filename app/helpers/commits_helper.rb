@@ -109,9 +109,7 @@ module CommitsHelper
   end
 
   def commit_to_html commit
-    if commit.model
-      escape_javascript(render 'commits/commit', commit: commit)
-    end
+    escape_javascript(render 'commits/commit', commit: commit)
   end
 
   def diff_line_content(line)
