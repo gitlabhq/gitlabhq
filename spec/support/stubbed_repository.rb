@@ -1,4 +1,4 @@
-require "repository"
+require "gitlab/git/repository"
 require "project"
 require "merge_request"
 require "shell"
@@ -39,7 +39,7 @@ class MergeRequest
   end
 end
 
-class GitLabTestRepo < Repository
+class GitLabTestRepo < Gitlab::Git::Repository
   def repo
     @repo ||= Grit::Repo.new(Rails.root.join('tmp', 'repositories', 'gitlabhq'))
   end

@@ -187,7 +187,7 @@ describe Project do
     let(:project) { create(:project) }
 
     it "should return valid repo" do
-      project.repository.should be_kind_of(Repository)
+      project.repository.should be_kind_of(Gitlab::Git::Repository)
     end
 
     it "should return nil" do
