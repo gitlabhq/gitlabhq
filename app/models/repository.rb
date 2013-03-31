@@ -63,8 +63,9 @@ class Repository
   end
 
   # Returns an Array of branch names
+  # sorted by name ASC
   def branch_names
-    repo.branches.collect(&:name).sort
+    branches.map(&:name)
   end
 
   # Returns an Array of Branches

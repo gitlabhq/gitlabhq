@@ -129,11 +129,11 @@ class MergeRequestsController < ProjectResourceController
 
   def validates_merge_request
     # Show git not found page if target branch doesn't exist
-    return invalid_mr unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch)
+    return invalid_mr unless @project.repository.branch_names.include?(@merge_request.target_branch)
 
     # Show git not found page if source branch doesn't exist
     # and there is no saved commits between source & target branch
-    return invalid_mr if !@project.repo.heads.map(&:name).include?(@merge_request.source_branch) && @merge_request.commits.blank?
+    return invalid_mr if !@project.repository.branch_names.include?(@merge_request.source_branch) && @merge_request.commits.blank?
   end
 
   def define_show_vars
