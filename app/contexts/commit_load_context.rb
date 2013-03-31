@@ -12,6 +12,7 @@ class CommitLoadContext < BaseContext
     commit = project.repository.commit(params[:id])
 
     if commit
+      commit = Commit.new(commit)
       commit = CommitDecorator.decorate(commit)
       line_notes = project.notes.for_commit_id(commit.id).inline
 

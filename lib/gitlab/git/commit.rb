@@ -7,8 +7,8 @@ module Gitlab
       attr_accessor :raw_commit, :head, :refs
 
       delegate  :message, :authored_date, :committed_date, :parents, :sha,
-        :date, :committer, :author, :diffs, :tree, :id, :stats,
-        :to_patch, to: :raw_commit
+        :date, :committer, :author, :diffs, :tree, :id, :stats, :to_patch,
+        to: :raw_commit
 
       class << self
         def find_or_first(repo, commit_id = nil, root_ref)
