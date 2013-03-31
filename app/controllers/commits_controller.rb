@@ -13,8 +13,6 @@ class CommitsController < ProjectResourceController
     @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
 
     @commits = @repo.commits(@ref, @path, @limit, @offset)
-    @commits = Commit.decorate(@commits)
-    @commits = CommitDecorator.decorate_collection(@commits)
 
     respond_to do |format|
       format.html # index.html.erb
