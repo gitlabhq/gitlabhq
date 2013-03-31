@@ -2,15 +2,15 @@
 
 This guide details how to use pull requests and the issues to improve GitLab.
 
-## Closing deviating issues
+## Closing policy for pull requests and issues
 
-Pull requests and issues not in line with the guidelines listed in this document will be closed with just a link to this paragraph. GitLab is popular open source project and the capacity to deal with issues and pull requests is limited. To get support for your problems please use other channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). [Support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from GitLab.com.
+Pull requests and issues not in line with the guidelines listed in this document will be closed with just a link to this paragraph. GitLab is a popular open source project and the capacity to deal with issues and pull requests is limited. To get support for your problems please use other channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
 
 ## Pull requests
 
 We welcome pull request with improvements to GitLab code and/or documentation. The issues we would really like a pull request for are listed with the [status 'accepting merge/pull requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome.
 
-## Pull request guidelines
+### Pull request guidelines
 
  If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
 
