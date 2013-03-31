@@ -1,13 +1,12 @@
-This installation guide was created for Debian/Ubuntu and tested on it. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
+# Important notes
 
-**Important Note:**
-This is the official installation guide to set up a production server. To set up a development installation or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and operating system requirements.
 
-**Important Note:**
-The following steps have been known to work. If you deviate from this guide, do it with caution and make sure you don't violate any assumptions GitLab makes about its environment.
+This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
 
-**Important Note:**
-If you find a bug/error in this guide please submit a pull request following the [`contributing guide`](../../CONTRIBUTING.md).
+The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment.
+
+If you find a bug/error in this guide please **submit a pull request** following the [`contributing guide`](../../CONTRIBUTING.md).
 
 - - -
 
