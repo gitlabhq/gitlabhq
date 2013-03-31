@@ -50,7 +50,7 @@ class GollumWiki
   # Returns the last 30 Commit objects across the entire
   # repository.
   def recent_history
-    Commit.fresh_commits(wiki.repo, 30)
+    Gitlab::Git::Commit.fresh_commits(wiki.repo, 30)
   end
 
   # Finds a page within the repository based on a tile

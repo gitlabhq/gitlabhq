@@ -169,7 +169,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_commits
-    self.project.repo.
+    self.project.repository.
       commits_between(self.target_branch, self.source_branch).
       map {|c| Commit.new(c)}.
       sort_by(&:created_at).

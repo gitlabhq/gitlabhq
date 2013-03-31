@@ -8,7 +8,7 @@ module Network
     attr_accessor :time, :spaces, :parent_spaces
 
     def initialize(raw_commit, refs)
-      @commit = ::Commit.new(raw_commit)
+      @commit = Gitlab::Git::Commit.new(raw_commit)
       @time = -1
       @spaces = []
       @parent_spaces = []
