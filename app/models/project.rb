@@ -142,7 +142,7 @@ class Project < ActiveRecord::Base
 
   def repository
     if path
-      @repository ||= Gitlab::Git::Repository.new(path_with_namespace, default_branch)
+      @repository ||= Repository.new(path_with_namespace, default_branch)
     else
       nil
     end
