@@ -7,8 +7,7 @@
         %th Last commit
         %th
     - @tags.each do |tag|
-      - commit = Commit.new(tag.commit)
-      - commit = CommitDecorator.decorate(commit)
+      - commit = Commit.new(Gitlab::Git::Commit.new(tag.commit))
       %tr
         %td
           %strong
