@@ -29,14 +29,10 @@ module TestEnv
       remove_key: true
     )
 
-    fake_satellite = stub(
+    Gitlab::Satellite::Satellite.any_instance.stub(
       exists?: true,
       destroy: true,
       create: true
-    )
-
-    Project.any_instance.stub(
-      satellite: fake_satellite
     )
 
     MergeRequest.any_instance.stub(
