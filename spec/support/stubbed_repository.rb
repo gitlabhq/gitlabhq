@@ -10,7 +10,7 @@ class Project
     if path == "empty" || !path
       nil
     else
-      GitLabTestRepo.new(path_with_namespace)
+      GitLabTestRepo.new(Rails.root.join('tmp', 'repositories', 'gitlabhq'), 'master')
     end
   end
 
@@ -39,11 +39,7 @@ class MergeRequest
   end
 end
 
-class GitLabTestRepo < Gitlab::Git::Repository
-  def repo
-    @repo ||= Grit::Repo.new(Rails.root.join('tmp', 'repositories', 'gitlabhq'))
-  end
-
+class GitLabTestRepo < Repository
   # patch repo size (in mb)
   def size
     12.45

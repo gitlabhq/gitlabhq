@@ -24,11 +24,11 @@ class Repository
   end
 
   def method_missing(m, *args, &block)
-    @raw_repository.send(m, *args, &block)
+    raw_repository.send(m, *args, &block)
   end
 
   def respond_to?(method)
-    return true if @raw_repository.respond_to?(method)
+    return true if raw_repository.respond_to?(method)
 
     super
   end
