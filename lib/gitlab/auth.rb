@@ -22,20 +22,34 @@ module Gitlab
       uid = auth.info.uid || auth.uid
       uid = uid.to_s.force_encoding("utf-8")
       name = auth.info.name.to_s.force_encoding("utf-8")
-      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+      if ldap && Gitlab.config.ldap['email']
+        # auth.extra.raw_info is the raw ldap data which consists of
+        # lists of values
+        # When ldap mappings are explicitly given, don't do a fallback
+        email = auth.extra.raw_info[Gitlab.config.ldap.username][0].to_s.downcase
+        log.info "(LDAP) Using '#{Gitlab.config.ldap.email}' to get email => #{email} from LDAP for #{uid}"
+      else
+        email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+      end
 
-      ldap_prefix = ldap ? '(LDAP) ' : ''
-      raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
+      if ldap && Gitlab.config.ldap['username']
+        username = auth.extra.raw_info[Gitlab.config.ldap.username][0].to_s.force_encoding("utf-8")
+        log.info "(#{provider}) Using '#{Gitlab.config.ldap.username}' to get username => #{username} for #{uid}"
+      else
+        username = email.match(/^[^@]*/)[0]
+      end
+      
+      raise OmniAuth::Error, "#{provider} does not provide an email"\
         " address" if auth.info.email.blank?
 
-      log.info "#{ldap_prefix}Creating user from #{provider} login"\
-        " {uid => #{uid}, name => #{name}, email => #{email}}"
+      log.info "Creating user from #{provider} login"\
+        " {uid => #{uid}, name => #{name}, email => #{email}, username => #{username}}"
       password = Devise.friendly_token[0, 8].downcase
       @user = User.new({
         extern_uid: uid,
         provider: provider,
         name: name,
-        username: email.match(/^[^@]*/)[0],
+        username: username,
         email: email,
         password: password,
         password_confirmation: password,
