@@ -26,8 +26,11 @@
     .wall-author {
       color: #666;
       float: left;
-      width: 100px;
+      font-size: 12px;
+      width: 120px;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
     .wall-text {
@@ -35,7 +38,7 @@
       margin-left: 10px;
       padding-left: 10px;
       float: left;
-      width: 80%;
+      width: 75%;
     }
 
     .wall-file {
