@@ -34,7 +34,11 @@ module Gitlab
       end
 
       def path_to_repo
-        @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
+        @path_to_repo ||= File.join(repos_path, "#{path_with_namespace}.git")
+      end
+
+      def repos_path
+        Gitlab.config.gitlab_shell.repos_path
       end
 
       def repo
