@@ -20,6 +20,6 @@ class MergeRequestObserver < BaseObserver
   end
 
   def after_update(merge_request)
-    notification.reassigned_merge_request(merge_request) if merge_request.is_being_reassigned?
+    notification.reassigned_merge_request(merge_request, current_user) if merge_request.is_being_reassigned?
   end
 end
