@@ -86,9 +86,9 @@ FactoryGirl.define do
       target_branch "master" # pretend bcf03b5d~3
       source_branch "stable" # pretend bcf03b5d
       st_commits do
-        [Commit.new(project.repo.commit('bcf03b5d')),
-         Commit.new(project.repo.commit('bcf03b5d~1')),
-         Commit.new(project.repo.commit('bcf03b5d~2'))]
+        [Commit.new(project.repository.commit('bcf03b5d')),
+         Commit.new(project.repository.commit('bcf03b5d~1')),
+         Commit.new(project.repository.commit('bcf03b5d~2'))]
       end
       st_diffs do
         project.repo.diff("bcf03b5d~3", "bcf03b5d")
@@ -120,6 +120,7 @@ FactoryGirl.define do
     factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
 
     trait :on_commit do
+      project factory: :project_with_code
       commit_id     "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
       noteable_type "Commit"
     end
@@ -129,6 +130,7 @@ FactoryGirl.define do
     end
 
     trait :on_merge_request do
+      project factory: :project_with_code
       noteable_id   1
       noteable_type "MergeRequest"
     end

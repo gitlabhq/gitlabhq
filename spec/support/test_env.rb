@@ -17,11 +17,12 @@ module TestEnv
     repos_path = Rails.root.join('tmp', 'test-git-base-path')
     Gitlab.config.gitlab_shell.stub(repos_path: repos_path)
 
-    Gitlab::Shell.any_instance.stub(:add_repository) do |path|
+    GollumWiki.any_instance.stub(:init_repo) do |path|
       create_temp_repo(File.join(repos_path, "#{path}.git"))
     end
 
     Gitlab::Shell.any_instance.stub(
+      add_repository: true,
       mv_repository: true,
       remove_repository: true,
       add_key: true,

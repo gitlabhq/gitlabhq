@@ -144,6 +144,10 @@ module Gitlab
       rescue
         true
       end
+
+      def no_commit_message
+        "--no commit message"
+      end
     end
   end
 end

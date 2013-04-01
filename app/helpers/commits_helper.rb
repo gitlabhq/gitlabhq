@@ -147,10 +147,6 @@ module CommitsHelper
 
   protected
 
-  def no_commit_message
-    "--no commit message"
-  end
-
   # Private: Returns a link to a person. If the person has a matching user and
   # is a member of the current @project it will link to the team member page.
   # Otherwise it will link to the person email as specified in the commit.

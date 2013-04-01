@@ -90,11 +90,15 @@ class GollumWiki
   private
 
   def create_repo!
-    if gitlab_shell.add_repository(path_with_namespace)
+    if init_repo(path_with_namespace)
       Gollum::Wiki.new(path_to_repo)
     else
       raise CouldNotCreateWikiError
     end
+  end
+
+  def init_repo(path_with_namespace)
+    gitlab_shell.add_repository(path_with_namespace)
   end
 
   def commit_details(action, message = nil, title = nil)

@@ -81,7 +81,7 @@ describe GollumWiki do
     end
 
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
-      Gitlab::Shell.any_instance.stub(:add_repository).and_return(false)
+      GollumWiki.any_instance.stub(:init_repo).and_return(false)
       expect { GollumWiki.new(project, user).wiki }.to raise_exception(GollumWiki::CouldNotCreateWikiError)
     end
   end
