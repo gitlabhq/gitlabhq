@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe TreeController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
 
   before do
