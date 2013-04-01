@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "On a merge request", js: true do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project_with_code) }
   let!(:merge_request) { create(:merge_request, project: project) }
 
   before do
@@ -83,7 +83,7 @@ end
 
 
 describe "On a merge request diff", js: true, focus: true do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project_with_code) }
   let!(:merge_request) { create(:merge_request_with_diffs, project: project) }
 
   before do

@@ -46,18 +46,21 @@
           %span.light ssh:
           %strong
             = link_to @project.ssh_url_to_repo
-        %li
-          %span.light fs:
-          %strong
-            = @repository.path_to_repo
+        - if @project.repository.exists?
+          %li
+            %span.light fs:
+            %strong
+              = @repository.path_to_repo
 
-        %li
-          %span.light last commit:
-          %strong
-            - if @repository
+          %li
+            %span.light last commit:
+            %strong
               = last_commit(@project)
-            - else
-              never
+        - else
+          %li
+            %span.light repository:
+            %strong.cred
+              does not exist
 
         %li
           %span.light access:

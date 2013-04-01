@@ -34,7 +34,6 @@ class RefsController < ProjectResourceController
     @logs = contents.map do |content|
       file = params[:path] ? File.join(params[:path], content.name) : content.name
       last_commit = @repo.commits(@commit.id, file, 1).last
-      last_commit = CommitDecorator.decorate(last_commit)
       {
         file_name: content.name,
         commit: last_commit
@@ -49,9 +48,7 @@ class RefsController < ProjectResourceController
 
     @repo = project.repository
     @commit = @repo.commit(@ref)
-    @commit = CommitDecorator.decorate(@commit)
     @tree = Tree.new(@commit.tree, @ref, params[:path])
-    @tree = TreeDecorator.new(@tree)
     @hex_path = Digest::SHA1.hexdigest(params[:path] || "")
 
     if params[:path]

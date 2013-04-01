@@ -152,7 +152,17 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def commits
-    st_commits || []
+    if st_commits.present?
+      # check if merge request commits are valid
+      if st_commits.first.respond_to?(:short_id)
+        st_commits
+      else
+        # if commits are invalid - simply reload it from repo
+        reloaded_commits
+      end
+    else
+      []
+    end
   end
 
   def probably_merged?
@@ -169,9 +179,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_commits
-    self.project.repo.
+    self.project.repository.
       commits_between(self.target_branch, self.source_branch).
-      map {|c| Commit.new(c)}.
       sort_by(&:created_at).
       reverse
   end

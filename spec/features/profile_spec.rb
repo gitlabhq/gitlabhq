@@ -12,8 +12,9 @@ describe "Profile account page" do
       Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
       visit account_profile_path
     end
+
     it { page.should have_content("Remove account") }
-    
+
     it "should delete the account", js: true do
       expect { click_link "Delete account" }.to change {User.count}.by(-1)
       current_path.should == new_user_session_path

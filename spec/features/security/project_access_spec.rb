@@ -14,7 +14,7 @@ describe "Application access" do
   end
 
   describe "Project" do
-    let(:project)  { create(:project) }
+    let(:project)  { create(:project_with_code) }
 
     let(:master)   { create(:user) }
     let(:guest)    { create(:user) }

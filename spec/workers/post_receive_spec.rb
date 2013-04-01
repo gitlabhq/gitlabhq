@@ -9,7 +9,7 @@ describe PostReceive do
   end
 
   context "web hook" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project_with_code) }
     let(:key) { create(:key, user: project.owner) }
     let(:key_id) { key.shell_id }
 

@@ -85,8 +85,8 @@ module ExtractsPath
   # - @id     - A string representing the joined ref and path
   # - @ref    - A string representing the ref (e.g., the branch, tag, or commit SHA)
   # - @path   - A string representing the filesystem path
-  # - @commit - A CommitDecorator representing the commit from the given ref
-  # - @tree   - A TreeDecorator representing the tree at the given ref/path
+  # - @commit - A Commit representing the commit from the given ref
+  # - @tree   - A Tree representing the tree at the given ref/path
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
@@ -100,11 +100,9 @@ module ExtractsPath
 
     # It is used "@project.repository.commits(@ref, @path, 1, 0)",
     # because "@project.repository.commit(@ref)" returns wrong commit when @ref is tag name.
-    commits = @project.repository.commits(@ref, @path, 1, 0)
-    @commit = CommitDecorator.decorate(commits.first)
+    @commit = @project.repository.commits(@ref, @path, 1, 0).first
 
     @tree = Tree.new(@commit.tree, @ref, @path)
-    @tree = TreeDecorator.new(@tree)
 
     raise InvalidPathError if @tree.invalid?
   rescue RuntimeError, NoMethodError, InvalidPathError

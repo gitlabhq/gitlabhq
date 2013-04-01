@@ -372,7 +372,7 @@ module Gitlab
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
         commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
-        present CommitDecorator.decorate(commits), with: Entities::RepoCommit
+        present commits, with: Entities::RepoCommit
       end
 
       # Get a project snippets

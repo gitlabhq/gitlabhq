@@ -24,14 +24,14 @@
     .row
       .span5
         .author
-          = @commit.author_link avatar: true, size: 32
+          = commit_author_link(@commit, avatar: true, size: 32)
           authored
           %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
             #{time_ago_in_words(@commit.authored_date)} ago
         - if @commit.different_committer?
           .committer
             &rarr;
-            = @commit.committer_link
+            = commit_committer_link(@commit)
             committed
             %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
               #{time_ago_in_words(@commit.committed_date)} ago

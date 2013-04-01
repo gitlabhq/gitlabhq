@@ -141,13 +141,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    if path
-      @repository ||= Repository.new(path_with_namespace, default_branch)
-    else
-      nil
-    end
-  rescue Grit::NoSuchPathError
-    nil
+    @repository ||= Repository.new(path_with_namespace, default_branch)
   end
 
   def saved?
@@ -332,14 +326,14 @@ class Project < ActiveRecord::Base
   end
 
   def valid_repo?
-    repo
+    repository.exists?
   rescue
     errors.add(:path, "Invalid repository path")
     false
   end
 
   def empty_repo?
-    !repository || repository.empty?
+    !repository.exists? || repository.empty?
   end
 
   def ensure_satellite_exists
@@ -363,7 +357,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo_exists?
-    @repo_exists ||= (repository && repository.branches.present?)
+    @repo_exists ||= repository.exists?
   rescue
     @repo_exists = false
   end

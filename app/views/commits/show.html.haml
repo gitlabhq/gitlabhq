@@ -2,7 +2,7 @@
 
 - if @path.present?
   %ul.breadcrumb
-    = breadcrumbs
+    = commits_breadcrumbs
 
 %div{id: dom_id(@project)}
   #commits-list= render "commits"

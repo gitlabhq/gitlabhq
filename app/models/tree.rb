@@ -26,4 +26,12 @@ class Tree
   def empty?
     data.blank?
   end
+
+  def up_dir?
+    path.present?
+  end
+
+  def readme
+    @readme ||= contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+  end
 end

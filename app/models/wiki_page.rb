@@ -79,14 +79,14 @@ class WikiPage
   def version
     return nil unless persisted?
 
-    @version ||= Commit.new(@page.version)
+    @version ||= Commit.new(Gitlab::Git::Commit.new(@page.version))
   end
 
   # Returns an array of Gitlab Commit instances.
   def versions
     return [] unless persisted?
 
-    @page.versions.map { |v| Commit.new(v) }
+    @page.versions.map { |v| Commit.new(Gitlab::Git::Commit.new(v)) }
   end
 
   # Returns the Date that this latest version was
