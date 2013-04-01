@@ -52,7 +52,7 @@ module Grack
 
         return false unless user
  
-	Gitlab::ShellEnv.set_env(user)
+        Gitlab::ShellEnv.set_env(user)
       end
 
       # Git upload and receive
