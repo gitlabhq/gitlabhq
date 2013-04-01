@@ -1,11 +1,11 @@
 .ui-box
   %h5.title
     Groups
-    %small
+    %span.light
       (#{groups.count})
     - if current_user.can_create_group?
       %span.pull-right
-        = link_to new_group_path, class: "btn btn-tiny info" do
+        = link_to new_group_path, class: "btn btn-small" do
           %i.icon-plus
           New Group
   %ul.well-list

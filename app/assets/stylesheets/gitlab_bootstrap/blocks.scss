@@ -100,8 +100,9 @@
       margin-top: 0;
     }
 
-    .btn-tiny {
-      @include box-shadow(0 0px 0px 1px #f1f1f1);
+    .btn {
+      position: relative;
+      top: -2px;
     }
 
     .nav-pills {

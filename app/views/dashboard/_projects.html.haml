@@ -1,11 +1,11 @@
 .ui-box
   %h5.title
     Projects
-    %small
+    %span.light
       (#{@projects_count})
     - if current_user.can_create_project?
       %span.pull-right
-        = link_to new_project_path, class: "btn btn-tiny info" do
+        = link_to new_project_path, class: "btn btn-small" do
           %i.icon-plus
           New Project
 
