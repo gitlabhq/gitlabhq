@@ -77,7 +77,7 @@ FactoryGirl.define do
   factory :merge_request do
     title
     author
-    project
+    project factory: :project_with_code
     source_branch "master"
     target_branch "stable"
 
