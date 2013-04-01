@@ -20,8 +20,26 @@ class ApplicationController < ActionController::Base
     log_exception(exception)
     render "errors/not_found", layout: "errors", status: 404
   end
+ 
+  def current_user
+    super || guest_user
+  end
+
+  def authenticate_user!(*args)
+    current_user.present? || super(*args)
+  end
+
+  def reject_guest!
+    if current_user.is_guest?
+      redirect_to new_user_session_path
+    end
+  end
 
   protected
+  
+  def guest_user
+    User.find_by_username!('guest');
+  end
 
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace

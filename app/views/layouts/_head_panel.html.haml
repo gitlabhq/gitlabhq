@@ -13,23 +13,33 @@
         %li
           = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
             %i.icon-globe
-        - if current_user.is_admin?
-          %li
-            = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
-              %i.icon-cogs
-        - if current_user.can_create_project?
-          %li
-            = link_to new_project_path, title: "Create New Project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
-              %i.icon-plus
+        - unless current_user.is_guest?
+          - if current_user.is_admin?
+            %li
+              = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
+                %i.icon-cogs
+          - if current_user.can_create_project?
+            %li
+              = link_to new_project_path, title: "Create New Project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
+                %i.icon-plus
+        %li.separator
         %li
-          = link_to profile_path, title: "My Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
-            %i.icon-user
-        %li
-          = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
-            %i.icon-signout
-        %li
-          = link_to current_user, class: "profile-pic" do
-            = image_tag gravatar_icon(current_user.email, 26)
+          - if current_user.is_guest?
+            = link_to profile_path, title: "Login", class: 'has_bottom_tooltip', 'data-original-title' => 'Login'  do
+              %i.icon-user
+            %li
+              = link_to "#{request.url}/users/sign_up", title: "Signup", class: 'has_bottom_tooltip', 'data-original-title' => 'Sign Up'  do
+                %i.icon-briefcase
+          - else
+            %li
+              = link_to profile_path, title: "My Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
+                %i.icon-user
+            %li
+              = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
+                %i.icon-signout
+            %li
+              = link_to current_user, class: "profile-pic" do
+                = image_tag gravatar_icon(current_user.email, 26)
 
 
 = render "layouts/init_auto_complete"

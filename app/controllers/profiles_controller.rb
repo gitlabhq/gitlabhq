@@ -1,6 +1,7 @@
 class ProfilesController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
+  before_filter :reject_guest! 
   before_filter :user
   layout 'profile'
 

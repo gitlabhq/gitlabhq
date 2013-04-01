@@ -1,5 +1,8 @@
 class KeysController < ApplicationController
   layout "profile"
+
+  before_filter :reject_guest! 
+
   respond_to :js, :html
 
   def index

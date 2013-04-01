@@ -39,6 +39,9 @@ class Ability
 
       elsif team.guests.include?(user)
         rules << project_guest_rules
+
+      elsif project.is_public?
+        rules << project_anon_and_download_rules
       end
 
       if project.owner == user
@@ -48,7 +51,7 @@ class Ability
       rules.flatten
     end
 
-    def project_guest_rules
+    def project_anon_rules
       [
         :read_project,
         :read_wiki,
@@ -58,6 +61,17 @@ class Ability
         :read_team_member,
         :read_merge_request,
         :read_note,
+      ]
+    end
+
+    def project_anon_and_download_rules
+      project_anon_rules + [
+        :download_code
+      ]
+    end
+
+    def project_guest_rules
+      project_anon_rules + [
         :write_project,
         :write_issue,
         :write_note
