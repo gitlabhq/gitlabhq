@@ -8,7 +8,6 @@ class BlameController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    @repo = @project.repo
-    @blame = Grit::Blob.blame(@repo, @commit.id, @path)
+    @blame = Gitlab::Git::Blame.new(project.repository, @commit.id, @path)
   end
 end

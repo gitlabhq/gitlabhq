@@ -17,15 +17,18 @@ module TestEnv
     repos_path = Rails.root.join('tmp', 'test-git-base-path')
     Gitlab.config.gitlab_shell.stub(repos_path: repos_path)
 
+    Gitlab::Shell.any_instance.stub(:add_repository) do |path|
+      create_temp_repo(File.join(repos_path, "#{path}.git"))
+    end
+
     Gitlab::Shell.any_instance.stub(
-      add_repository: ->(path) { create_temp_repo(File.join(repos_path, "#{path}.git")) },
       mv_repository: true,
       remove_repository: true,
       add_key: true,
       remove_key: true
     )
 
-    fake_satellite = double(
+    fake_satellite = stub(
       exists?: true,
       destroy: true,
       create: true

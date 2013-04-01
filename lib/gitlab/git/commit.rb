@@ -1,9 +1,9 @@
-# Gitlab::Git::Gitlab::Git::Commit is a wrapper around native Grit::Commit object
+# Gitlab::Git::Commit is a wrapper around native Grit::Commit object
 # We dont want to use grit objects inside app/
 # It helps us easily migrate to rugged in future
 module Gitlab
   module Git
-    class Gitlab::Git::Commit
+    class Commit
       attr_accessor :raw_commit, :head, :refs
 
       delegate  :message, :authored_date, :committed_date, :parents, :sha,
@@ -18,12 +18,12 @@ module Gitlab
                      repo.commits(root_ref).first
                    end
 
-          Gitlab::Git::Commit.new(commit) if commit
+          Commit.new(commit) if commit
         end
 
         def fresh_commits(repo, n = 10)
           commits = repo.heads.map do |h|
-            repo.commits(h.name, n).map { |c| Gitlab::Git::Commit.new(c, h) }
+            repo.commits(h.name, n).map { |c| Commit.new(c, h) }
           end.flatten.uniq { |c| c.id }
 
           commits.sort! do |x, y|
@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def commits_with_refs(repo, n = 20)
-          commits = repo.branches.map { |ref| Gitlab::Git::Commit.new(ref.commit, ref) }
+          commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
 
           commits.sort! do |x, y|
             y.committed_date <=> x.committed_date
@@ -45,7 +45,7 @@ module Gitlab
 
         def commits_since(repo, date)
           commits = repo.heads.map do |h|
-            repo.log(h.name, nil, since: date).each { |c| Gitlab::Git::Commit.new(c, h) }
+            repo.log(h.name, nil, since: date).each { |c| Commit.new(c, h) }
           end.flatten.uniq { |c| c.id }
 
           commits.sort! do |x, y|
@@ -62,41 +62,11 @@ module Gitlab
             repo.commits(ref, limit, offset)
           else
             repo.commits(ref)
-          end.map{ |c| Gitlab::Git::Commit.new(c) }
+          end.map{ |c| Commit.new(c) }
         end
 
         def commits_between(repo, from, to)
-          repo.commits_between(from, to).map { |c| Gitlab::Git::Commit.new(c) }
-        end
-
-        def compare(project, from, to)
-          result = {
-            commits: [],
-            diffs: [],
-            commit: nil,
-            same: false
-          }
-
-          return result unless from && to
-
-          first = project.repository.commit(to.try(:strip))
-          last = project.repository.commit(from.try(:strip))
-
-          if first && last
-            result[:same] = (first.id == last.id)
-            result[:commits] = project.repo.commits_between(last.id, first.id).map {|c| Gitlab::Git::Commit.new(c)}
-
-            # Dont load diff for 100+ commits
-            result[:diffs] = if result[:commits].size > 100
-                               []
-                             else
-                               project.repo.diff(last.id, first.id) rescue []
-                             end
-
-            result[:commit] = Gitlab::Git::Commit.new(first)
-          end
-
-          result
+          repo.commits_between(from, to).map { |c| Commit.new(c) }
         end
       end
 
@@ -142,7 +112,7 @@ module Gitlab
 
       def prev_commit
         @prev_commit ||= if parents.present?
-                           Gitlab::Git::Commit.new(parents.first)
+                           Commit.new(parents.first)
                          else
                            nil
                          end
@@ -156,7 +126,7 @@ module Gitlab
       #
       # Cuts out the header and stats from #to_patch and returns only the diff.
       def to_diff
-        # see Grit::Gitlab::Git::Commit#show
+        # see Grit::Commit#show
         patch = to_patch
 
         # discard lines before the diff

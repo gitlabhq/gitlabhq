@@ -13,13 +13,13 @@ class Repository
 
   def commits(ref, path = nil, limit = nil, offset = nil)
     commits = raw_repository.commits(ref, path, limit, offset)
-    commits = decorate_commits(commits) if commits.present?
+    commits = Commit.decorate(commits) if commits.present?
     commits
   end
 
   def commits_between(target, source)
     commits = raw_repository.commits_between(target, source)
-    commits = decorate_commits(commits) if commits.present?
+    commits = Commit.decorate(commits) if commits.present?
     commits
   end
 
@@ -31,11 +31,5 @@ class Repository
     return true if raw_repository.respond_to?(method)
 
     super
-  end
-
-  protected
-
-  def decorate_commits(commits)
-    commits.map { |c| Commit.new(c) }
   end
 end

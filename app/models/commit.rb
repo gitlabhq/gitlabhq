@@ -8,6 +8,10 @@ class Commit
   #
   DIFF_SAFE_SIZE = 100
 
+  def self.decorate(commits)
+    commits.map { |c| self.new(c) }
+  end
+
   attr_accessor :raw
 
   def initialize(raw_commit)

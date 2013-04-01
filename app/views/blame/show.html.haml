@@ -6,7 +6,7 @@
       %i.icon-angle-right
       = link_to project_tree_path(@project, @ref) do
         = @project.name
-    - @tree.breadcrumbs(6) do |link|
+    - tree_breadcrumbs(@tree, 6) do |link|
       \/
       %li= link
   .clear
