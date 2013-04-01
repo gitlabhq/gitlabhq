@@ -119,7 +119,7 @@ describe Project do
   end
 
   describe :update_merge_requests do
-    let(:project) { create(:project) }
+    let(:project) { create(:project_with_code) }
 
     before do
       @merge_request = create(:merge_request, project: project)
@@ -187,11 +187,7 @@ describe Project do
     let(:project) { create(:project) }
 
     it "should return valid repo" do
-      project.repository.should be_kind_of(Gitlab::Git::Repository)
-    end
-
-    it "should return nil" do
-      Project.new(path: "empty").repository.should be_nil
+      project.repository.should be_kind_of(Repository)
     end
   end
 
@@ -249,7 +245,7 @@ describe Project do
   end
 
   describe :open_branches do
-    let(:project) { create(:project) }
+    let(:project) { create(:project_with_code) }
 
     before do
       project.protected_branches.create(name: 'master')

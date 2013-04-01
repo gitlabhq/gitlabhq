@@ -85,8 +85,8 @@ module ExtractsPath
   # - @id     - A string representing the joined ref and path
   # - @ref    - A string representing the ref (e.g., the branch, tag, or commit SHA)
   # - @path   - A string representing the filesystem path
-  # - @commit - A CommitDecorator representing the commit from the given ref
-  # - @tree   - A TreeDecorator representing the tree at the given ref/path
+  # - @commit - A Commit representing the commit from the given ref
+  # - @tree   - A Tree representing the tree at the given ref/path
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.

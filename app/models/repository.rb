@@ -3,6 +3,16 @@ class Repository
 
   def initialize(path_with_namespace, default_branch)
     @raw_repository = Gitlab::Git::Repository.new(path_with_namespace, default_branch)
+  rescue Gitlab::Git::Repository::NoRepository
+    nil
+  end
+
+  def exists?
+    raw_repository
+  end
+
+  def empty?
+    raw_repository.empty?
   end
 
   def commit(id = nil)

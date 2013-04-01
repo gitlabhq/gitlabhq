@@ -3,14 +3,14 @@ module SharedProject
 
   # Create a project without caring about what it's called
   And "I own a project" do
-    @project = create(:project)
+    @project = create(:project_with_code)
     @project.team << [@user, :master]
   end
 
   # Create a specific project called "Shop"
   And 'I own project "Shop"' do
     @project = Project.find_by_name "Shop"
-    @project ||= create(:project, name: "Shop")
+    @project ||= create(:project_with_code, name: "Shop")
     @project.team << [@user, :master]
   end
 

@@ -96,7 +96,7 @@ module ApplicationHelper
     ]
 
     project_nav = []
-    if @project && @project.repository && @project.repository.root_ref
+    if @project && @project.repository.exists? && @project.repository.root_ref
       project_nav = [
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Issues",   url: project_issues_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
