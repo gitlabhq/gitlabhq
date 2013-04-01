@@ -1,8 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Repository do
-  let(:project) { create(:project) }
-  let(:repository) { project.repository }
+  let(:repository) { Gitlab::Git::Repository.new('gitlabhq', 'master') }
 
   describe "Respond to" do
     subject { repository }

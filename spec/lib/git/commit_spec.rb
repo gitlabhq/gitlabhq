@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Commit do
-  let(:commit) { create(:project).repository.commit }
+  let(:commit) { create(:project_with_code).repository.commit }
 
   describe "Commit info" do
     before do
@@ -45,6 +45,5 @@ describe Gitlab::Git::Commit do
     it { should respond_to(:commits_since) }
     it { should respond_to(:commits_between) }
     it { should respond_to(:commits) }
-    it { should respond_to(:compare) }
   end
 end
