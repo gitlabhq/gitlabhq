@@ -1,68 +1,64 @@
-/*
- *  Main Menu of Application
- *
- */
-ul.main_menu {
-  margin: auto;
+.main-nav {
   margin: 30px 0;
   margin-top: 10px;
-  height: 38px;
-  position: relative;
-  overflow: hidden;
-  .count {
-    position: relative;
-    top: -1px;
-    display: inline-block;
-    height: 15px;
-    margin: 0 0 0 5px;
-    padding: 0 8px 1px 8px;
-    height: auto;
-    font-size: 0.82em;
-    line-height: 14px;
-    text-align: center;
-    color: #777;
-  }
-  .label {
-    background: $hover;
-    text-shadow: none;
-    color: $style_color;
-  }
-  li {
-    list-style-type: none;
-    margin: 0;
-    display: table-cell;
-    width: 1%;
-    border-bottom: 2px solid #EEE;
-    &.active {
-      border-bottom: 2px solid #474D57;
-      a {
-        color: $style_color;
-      }
-    }
+  border-bottom: 1px solid #E1E1E1;
 
-    &.home {
-      a {
-        i {
-          font-size: 20px;
-          position: relative;
-          top: 4px;
+  ul {
+    margin: auto;
+    height: 39px;
+    position: relative;
+    top: 3px;
+    overflow: hidden;
+    .count {
+      position: relative;
+      top: -1px;
+      display: inline-block;
+      height: 15px;
+      margin: 0 0 0 5px;
+      padding: 0 8px 1px 8px;
+      height: auto;
+      font-size: 0.82em;
+      line-height: 14px;
+      text-align: center;
+      color: #777;
+    }
+    .label {
+      background: $hover;
+      text-shadow: none;
+      color: $style_color;
+    }
+    li {
+      list-style-type: none;
+      margin: 0;
+      display: table-cell;
+      width: 1%;
+      &.active {
+        border-bottom: 3px solid #777;
+        a {
+          color: $style_color;
+          font-weight: bolder;
+        }
+      }
+
+      &.home {
+        a {
+          i {
+            font-size: 20px;
+            position: relative;
+            top: 4px;
+          }
         }
       }
     }
-  }
-  a {
-    display: block;
-    text-align: center;
-    font-weight: normal;
-    height: 36px;
-    line-height: 36px;
-    color: #777;
-    text-shadow: 0 1px 1px white;
-    padding: 0 10px;
+    a {
+      display: block;
+      text-align: center;
+      font-weight: normal;
+      height: 36px;
+      line-height: 34px;
+      color: #777;
+      text-shadow: 0 1px 1px white;
+      padding: 0 10px;
+    }
   }
 }
-/*
- *  End of Main Menu
- *
- */
-
