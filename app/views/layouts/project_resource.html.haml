@@ -13,7 +13,7 @@
           = link_to project_path(@project), title: "Project" do
             %i.icon-home
 
-        - if @project.repo_exists?
+        - unless @project.empty_repo?
           - if can? current_user, :download_code, @project
             = nav_link(controller: %w(tree blob blame)) do
               = link_to 'Files', project_tree_path(@project, @ref || @repository.root_ref)

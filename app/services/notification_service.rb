@@ -104,7 +104,7 @@ class NotificationService
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
-    if note.commit_id
+    if note.commit_id.present?
       opts.merge!(commit_id: note.commit_id)
       recipients = [note.commit_author]
     else
