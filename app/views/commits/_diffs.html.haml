@@ -17,14 +17,14 @@
     - diffs.each_with_index do |diff, i|
       - next if diff.diff.empty?
       - file = Tree.new(@repository, @commit.id, @ref, diff.new_path)
-      - file = (@commit.prev_commit.tree / diff.old_path) unless file
+      - file = Tree.new(@repository, @commit.parent_id, @ref, diff.old_path) unless file
       - next unless file
       .file{id: "diff-#{i}"}
         .header
           - if diff.deleted_file
             %span= diff.old_path
 
-            - if @commit.prev_commit
+            - if @commit.parent_ids.present?
               = link_to project_tree_path(@project, tree_join(@commit.prev_commit_id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
                 View file @
                 %span.commit-short-id= @commit.short_id(6)
@@ -43,7 +43,7 @@
           - if file.text?
             = render "commits/text_file", diff: diff, index: i
           - elsif file.image?
-            - old_file = (@commit.prev_commit.tree / diff.old_path) if !@commit.prev_commit.nil?
+            - old_file = Tree.new(@repository, @commit.parent_id, @ref, diff.old_path) if @commit.parent_id
             = render "commits/image", diff: diff, old_file: old_file, file: file, index: i
           - else
             %p.nothing_here_message No preview for this file type

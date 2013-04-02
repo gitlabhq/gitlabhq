@@ -5,8 +5,8 @@ module Gitlab
   module Git
     class Commit
       attr_accessor :raw_commit, :head, :refs,
-        :sha, :authored_date, :committed_date, :message,
-        :author_name, :author_email,
+        :id, :authored_date, :committed_date, :message,
+        :author_name, :author_email, :parent_ids,
         :committer_name, :committer_email
 
       delegate :parents, :diffs, :tree, :stats, :to_patch,
@@ -14,7 +14,7 @@ module Gitlab
 
       class << self
         def serialize_keys
-          %w(sha authored_date committed_date author_name author_email committer_name committer_email message)
+          %w(id authored_date committed_date author_name author_email committer_name committer_email message parent_ids)
         end
 
         def find_or_first(repo, commit_id = nil, root_ref)
@@ -88,8 +88,8 @@ module Gitlab
         @head = head
       end
 
-      def id
-        sha
+      def sha
+        id
       end
 
       def short_id(length = 10)
@@ -109,16 +109,8 @@ module Gitlab
         author_name != committer_name || author_email != committer_email
       end
 
-      def prev_commit
-        @prev_commit ||= if parents.present?
-                           Commit.new(parents.first)
-                         else
-                           nil
-                         end
-      end
-
-      def prev_commit_id
-        prev_commit.try :id
+      def parent_id
+        parent_ids.first
       end
 
       # Shows the diff between the commit's parent and the commit.
@@ -164,7 +156,7 @@ module Gitlab
 
       def init_from_grit(grit)
         @raw_commit = grit
-        @sha = grit.sha
+        @id = grit.id
         @message = grit.message
         @authored_date = grit.authored_date
         @committed_date = grit.committed_date
@@ -172,6 +164,7 @@ module Gitlab
         @author_email = grit.author.email
         @committer_name = grit.committer.name
         @committer_email = grit.committer.email
+        @parent_ids = grit.parents.map(&:id)
       end
 
       def init_from_hash(hash)
