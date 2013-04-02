@@ -152,6 +152,10 @@ module Gitlab
         hash
       end
 
+      def date
+        committed_date
+      end
+
       private
 
       def init_from_grit(grit)
