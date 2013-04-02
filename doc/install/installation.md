@@ -292,3 +292,27 @@ If you are running SSH on a non-standard port, you must change the gitlab user's
         hostname 127.0.0.1; # Your server name or IP
 
 You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
+
+## LDAP authentication
+
+You can configure LDAP authentication in config/gitlab.yml. Please restart GitLab after editing this file.
+
+## Using Custom Omniauth Providers
+
+GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships with a few providers preinstalled (e.g. LDAP, GitHub, Twitter). But sometimes that is not enough and you need to integrate with other authentication solutions. For these cases you can use the Omniauth provider.
+
+### Steps
+
+These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
+
+* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile#L18)
+* Run `sudo -u gitlab -H bundle install` to install the new gem(s)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example#L53) as a reference)
+* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/master/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
+* Restart GitLab
+
+### Examples
+
+If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
+You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-Custom-Omniauth-Provider-Configurations).
+While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.
