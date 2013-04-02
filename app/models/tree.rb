@@ -1,37 +1,21 @@
 class Tree
-  include Linguist::BlobHelper
-
   attr_accessor :path, :tree, :ref
 
-  delegate  :contents, :basename, :name, :data, :mime_type,
-            :mode, :size, :text?, :colorize, to: :tree
-
-  def initialize(raw_tree, ref = nil, path = nil)
-    @ref, @path = ref, path
-    @tree = if path.present?
-              raw_tree / path
-            else
-              raw_tree
-            end
-  end
-
-  def is_blob?
-    tree.is_a?(Grit::Blob)
+  def initialize(repository, sha, ref = nil, path = nil)
+    @raw = Gitlab::Git::Tree.new(repository, sha, ref, path)
   end
 
   def invalid?
-    tree.nil?
+    @raw.nil?
   end
 
-  def empty?
-    data.blank?
+  def method_missing(m, *args, &block)
+    @raw.send(m, *args, &block)
   end
 
-  def up_dir?
-    path.present?
-  end
+  def respond_to?(method)
+    return true if @raw.respond_to?(method)
 
-  def readme
-    @readme ||= contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+    super
   end
 end

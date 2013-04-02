@@ -152,17 +152,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def commits
-    if st_commits.present?
-      # check if merge request commits are valid
-      if st_commits.first.respond_to?(:short_id)
-        st_commits
-      else
-        # if commits are invalid - simply reload it from repo
-        reloaded_commits
-      end
-    else
-      []
-    end
+    load_commits(st_commits) || []
   end
 
   def probably_merged?
@@ -172,13 +162,7 @@ class MergeRequest < ActiveRecord::Base
 
   def reloaded_commits
     if opened? && unmerged_commits.any?
-      # we need to reset st_commits field first
-      # in order to prevent internal rails comparison
-      self.st_commits = []
-      save
-
-      # Then we can safely write unmerged commits
-      self.st_commits = unmerged_commits
+      self.st_commits = dump_commits(unmerged_commits)
       save
     end
     commits
@@ -227,5 +211,15 @@ class MergeRequest < ActiveRecord::Base
 
   def last_commit_short_sha
     @last_commit_short_sha ||= last_commit.sha[0..10]
+  end
+
+  private
+
+  def dump_commits(commits)
+    commits.map(&:to_hash)
+  end
+
+  def load_commits(array)
+    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash)) }
   end
 end

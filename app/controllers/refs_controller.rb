@@ -48,7 +48,7 @@ class RefsController < ProjectResourceController
 
     @repo = project.repository
     @commit = @repo.commit(@ref)
-    @tree = Tree.new(@commit.tree, @ref, params[:path])
+    @tree = Tree.new(@repo, @commit.id, @ref, params[:path])
     @hex_path = Digest::SHA1.hexdigest(params[:path] || "")
 
     if params[:path]

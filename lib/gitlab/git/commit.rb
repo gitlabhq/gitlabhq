@@ -4,13 +4,19 @@
 module Gitlab
   module Git
     class Commit
-      attr_accessor :raw_commit, :head, :refs
+      attr_accessor :raw_commit, :head, :refs,
+        :sha, :authored_date, :committed_date, :message,
+        :author_name, :author_email,
+        :committer_name, :committer_email
 
-      delegate  :message, :authored_date, :committed_date, :parents, :sha,
-        :date, :committer, :author, :diffs, :tree, :id, :stats, :to_patch,
+      delegate :parents, :diffs, :tree, :stats, :to_patch,
         to: :raw_commit
 
       class << self
+        def serialize_keys
+          %w(sha authored_date committed_date author_name author_email committer_name committer_email message)
+        end
+
         def find_or_first(repo, commit_id = nil, root_ref)
           commit = if commit_id
                      repo.commit(commit_id)
@@ -73,8 +79,17 @@ module Gitlab
       def initialize(raw_commit, head = nil)
         raise "Nil as raw commit passed" unless raw_commit
 
-        @raw_commit = raw_commit
+        if raw_commit.is_a?(Hash)
+          init_from_hash(raw_commit)
+        else
+          init_from_grit(raw_commit)
+        end
+
         @head = head
+      end
+
+      def id
+        sha
       end
 
       def short_id(length = 10)
@@ -89,25 +104,9 @@ module Gitlab
         committed_date
       end
 
-      def author_email
-        author.email
-      end
-
-      def author_name
-        author.name
-      end
-
       # Was this commit committed by a different person than the original author?
       def different_committer?
         author_name != committer_name || author_email != committer_email
-      end
-
-      def committer_name
-        committer.name
-      end
-
-      def committer_email
-        committer.email
       end
 
       def prev_commit
@@ -147,6 +146,38 @@ module Gitlab
 
       def no_commit_message
         "--no commit message"
+      end
+
+      def to_hash
+        hash = {}
+
+        keys = Commit.serialize_keys
+
+        keys.each do |key|
+          hash[key] = send(key)
+        end
+
+        hash
+      end
+
+      private
+
+      def init_from_grit(grit)
+        @raw_commit = grit
+        @sha = grit.sha
+        @message = grit.message
+        @authored_date = grit.authored_date
+        @committed_date = grit.committed_date
+        @author_name = grit.author.name
+        @author_email = grit.author.email
+        @committer_name = grit.committer.name
+        @committer_email = grit.committer.email
+      end
+
+      def init_from_hash(hash)
+        Commit.serialize_keys.each do |key|
+          send(:"#{key}=", hash[key])
+        end
       end
     end
   end
