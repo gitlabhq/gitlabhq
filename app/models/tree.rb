@@ -1,12 +1,8 @@
 class Tree
-  attr_accessor :path, :tree, :ref
+  attr_accessor :raw
 
   def initialize(repository, sha, ref = nil, path = nil)
     @raw = Gitlab::Git::Tree.new(repository, sha, ref, path)
-  end
-
-  def invalid?
-    @raw.nil?
   end
 
   def method_missing(m, *args, &block)

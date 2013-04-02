@@ -104,7 +104,7 @@ module ExtractsPath
 
     @tree = Tree.new(@project.repository, @commit.id, @ref, @path)
 
-    raise InvalidPathError if @tree.invalid?
+    raise InvalidPathError unless @tree.exists?
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!
   end

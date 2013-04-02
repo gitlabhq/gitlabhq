@@ -3,9 +3,9 @@ module TreeHelper
   # their corresponding partials
   #
   # contents - A Grit::Tree object for the current tree
-  def render_tree(contents)
+  def render_tree(tree)
     # Render Folders before Files/Submodules
-    folders, files = contents.partition { |v| v.kind_of?(Grit::Tree) }
+    folders, files = tree.trees, tree.blobs
 
     tree = ""
 
@@ -91,5 +91,4 @@ module TreeHelper
     file = File.join(tree.path, "..")
     tree_join(tree.ref, file)
   end
-
 end

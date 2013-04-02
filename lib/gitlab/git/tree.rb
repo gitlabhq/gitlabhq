@@ -1,28 +1,36 @@
 module Gitlab
   module Git
     class Tree
-      include Linguist::BlobHelper
-
-      attr_accessor :repository, :sha, :path, :ref, :raw_tree
+      attr_accessor :repository, :sha, :path, :ref, :raw_tree, :id
 
       def initialize(repository, sha, ref = nil, path = nil)
-        @repository, @sha, @ref = repository, sha, ref
+        @repository, @sha, @ref, @path = repository, sha, ref, path
+
+        @path = nil if @path.blank?
 
         # Load tree from repository
-        @commit = @repository.commit(sha)
-        @raw_tree = @repository.tree(@commit, path)
+        @commit = @repository.commit(@sha)
+        @raw_tree = @repository.tree(@commit, @path)
+      end
+
+      def exists?
+        raw_tree
       end
 
       def empty?
         data.blank?
       end
 
-      def data
-        raw_tree.data
+      def trees
+        entries.select { |t| t.is_a?(Grit::Tree) }
+      end
+
+      def blobs
+        entries.select { |t| t.is_a?(Grit::Blob) }
       end
 
       def is_blob?
-        tree.is_a?(Grit::Blob)
+        raw_tree.is_a?(Grit::Blob)
       end
 
       def up_dir?
@@ -30,7 +38,13 @@ module Gitlab
       end
 
       def readme
-        @readme ||= contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+        @readme ||= entries.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+      end
+
+      protected
+
+      def entries
+        raw_tree.contents
       end
     end
   end

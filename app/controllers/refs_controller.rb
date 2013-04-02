@@ -30,7 +30,7 @@ class RefsController < ProjectResourceController
   end
 
   def logs_tree
-    contents = @tree.contents
+    contents = @tree.entries
     @logs = contents.map do |content|
       file = params[:path] ? File.join(params[:path], content.name) : content.name
       last_commit = @repo.commits(@commit.id, file, 1).last

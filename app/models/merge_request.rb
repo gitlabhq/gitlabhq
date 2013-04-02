@@ -152,7 +152,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def commits
-    load_commits(st_commits) || []
+    load_commits(st_commits || [])
   end
 
   def probably_merged?
