@@ -87,11 +87,12 @@ class Project < ActiveRecord::Base
 
   # Scopes
   scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
-  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
   scope :without_team, ->(team) { team.projects.present? ? where("id NOT IN (:ids)", ids: team.projects.map(&:id)) : scoped  }
+  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
   scope :in_team, ->(team) { where("id IN (:ids)", ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
-  scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
+  scope :in_group_namespace, -> { joins(:group) }
+  scope :sorted_by_activity, -> { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
@@ -156,7 +157,8 @@ class Project < ActiveRecord::Base
     unless creator.can_create_project?
       errors[:limit_reached] << ("Your own projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
     end
-  rescue
+  rescue => ex
+    errors[:base] << ex.message
     errors[:base] << ("Can't check your ability to create project")
   end
 
