@@ -172,6 +172,12 @@ class MergeRequest < ActiveRecord::Base
 
   def reloaded_commits
     if opened? && unmerged_commits.any?
+      # we need to reset st_commits field first
+      # in order to prevent internal rails comparison
+      self.st_commits = []
+      save
+
+      # Then we can safely write unmerged commits
       self.st_commits = unmerged_commits
       save
     end
