@@ -6,14 +6,14 @@ module Gitlab
     SUDO_PARAM = :sudo
 
     def current_user
-      @current_user ||= User.find_by_authentication_token(params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER ])
-      identifier = params[SUDO_PARAM] == nil ? env[SUDO_HEADER] : params[SUDO_PARAM]
+      @current_user ||= User.find_by_authentication_token(params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER])
+      identifier = sudo_identifier()
       # If the sudo is the current user do nothing
       if (identifier && !(@current_user.id == identifier || @current_user.username == identifier))
         render_api_error!('403 Forbidden: Must be admin to use sudo', 403) unless @current_user.is_admin?
         begin
 
-          if (!!(identifier =~ /^[0-9]+$/) || identifier.is_a?( Integer))
+          if (identifier.is_a?(Integer))
             user = User.find_by_id(identifier)
           else
             user = User.find_by_username(identifier)
@@ -27,6 +27,15 @@ module Gitlab
         end
       end
       @current_user
+    end
+
+    def sudo_identifier()
+      identifier = params[SUDO_PARAM] == nil ? env[SUDO_HEADER] : params[SUDO_PARAM]
+      if (!!(identifier =~ /^[0-9]+$/))
+        identifier.to_i
+      else
+        identifier
+      end
     end
 
     def user_project
