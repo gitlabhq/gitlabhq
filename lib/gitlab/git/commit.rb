@@ -57,7 +57,7 @@ module Gitlab
 
         def commits(repo, ref, path = nil, limit = nil, offset = nil)
           if path
-            repo.log(ref, path, max_count: limit, skip: offset)
+            repo.log(ref, path, max_count: limit, skip: offset, follow: path.present?)
           elsif limit && offset
             repo.commits(ref, limit, offset)
           else
