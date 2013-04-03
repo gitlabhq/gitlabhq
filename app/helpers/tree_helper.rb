@@ -18,7 +18,7 @@ module TreeHelper
                render partial: 'tree/submodule_item', object: f
              else
                # Object is a Blob
-               render partial: 'tree/tree_item', object: f, locals: {type: 'file'}
+               render partial: 'tree/blob_item', object: f, locals: {type: 'file'}
              end
 
       tree += html if html.present?

@@ -39,9 +39,8 @@
 
 %div.tree_progress
 
-- unless tree.is_blob?
-  :javascript
-    // Load last commit log for each file in tree
-    $(window).load(function(){
-      ajaxGet('#{@logs_path}');
-    });
+:javascript
+  // Load last commit log for each file in tree
+  $(window).load(function(){
+    ajaxGet('#{@logs_path}');
+  });

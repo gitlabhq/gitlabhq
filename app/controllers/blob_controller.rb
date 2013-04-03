@@ -8,15 +8,6 @@ class BlobController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    if @tree.is_blob?
-      send_data(
-        @tree.data,
-        type: @tree.mime_type,
-        disposition: 'inline',
-        filename: @tree.name
-      )
-    else
-      not_found!
-    end
+    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
   end
 end

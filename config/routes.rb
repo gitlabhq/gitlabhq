@@ -170,6 +170,7 @@ Gitlab::Application.routes.draw do
     end
 
     resources :blob,    only: [:show], constraints: {id: /.+/}
+    resources :raw,    only: [:show], constraints: {id: /.+/}
     resources :tree,    only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
     resources :edit_tree,    only: [:show, :update], constraints: {id: /.+/}, path: 'edit'
     resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}

@@ -23,7 +23,19 @@ module Gitlab
       end
 
       def exists?
-        @raw_blob
+        raw_blob
+      end
+
+      def empty?
+        data.blank?
+      end
+
+      def mode
+        raw_blob.mode
+      end
+
+      def size
+        raw_blob.size
       end
     end
   end
