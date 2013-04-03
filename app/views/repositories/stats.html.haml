@@ -31,11 +31,6 @@
   $(function(){
     var labels = [#{@graph.labels.to_json}];
     var commits = [#{@graph.commits.join(', ')}];
-    var r = Raphael('activity-chart');
-    r.text(160, 10, "Commit activity for last #{@graph.weeks} weeks").attr({ font: "13px sans-serif" });
-    r.barchart(
-      10, 10, 400, 160,
-      [commits],
-      {colors:["#456"]}
-    ).label(labels, true);
+    var title = "Commit activity for last #{@graph.weeks} weeks";
+    Chart.init(labels, commits, title);
   })
