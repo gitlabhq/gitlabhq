@@ -104,4 +104,20 @@ describe Gitlab::Git::Repository do
     it { should include("f0f14c8eaba69ebddd766498a9d0b0e79becd633") }
     it { should_not include("bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a") }
   end
+
+  describe "branch names" do
+    subject { repository.branch_names }
+
+    it { should have(32).elements }
+    it { should include("master") }
+    it { should_not include("branch-from-space") }
+  end
+
+  describe "tag names" do
+    subject { repository.tag_names }
+
+    it { should have(16).elements }
+    it { should include("v1.2.0") }
+    it { should_not include("v5.0.0") }
+  end
 end
