@@ -4,21 +4,21 @@
       .file_title
         %i.icon-file
         %span.file_name
-          = @tree.path
+          = @path
           %small
             on
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: "Are you sure?"
+            = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: "Are you sure?"
       .file_content.code
-        %pre#editor= @tree.data
+        %pre#editor= @blob.data
 
     .control-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
         Commit message
       .controls
-        = text_area_tag 'commit_message', '', placeholder: "Update #{@tree.name}", required: true, rows: 3
+        = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: :file_content
@@ -30,7 +30,7 @@
       = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", confirm: "Are you sure?"
 
 :javascript
-  var ace_mode = "#{@tree.language.try(:ace_mode)}";
+  var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
   if (ace_mode) {
     editor.getSession().setMode('ace/mode/' + ace_mode);

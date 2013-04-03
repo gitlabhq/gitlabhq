@@ -22,7 +22,7 @@ class EditTreeController < ProjectResourceController
     )
 
     if updated_successfully
-      redirect_to project_tree_path(@project, @id), notice: "Your changes have been successfully commited"
+      redirect_to project_blob_path(@project, @id), notice: "Your changes have been successfully commited"
     else
       flash[:notice] = "Your changes could not be commited, because the file has been changed"
       render :edit
@@ -32,8 +32,10 @@ class EditTreeController < ProjectResourceController
   private
 
   def edit_requirements
-    unless @tree.is_blob? && @tree.text?
-      redirect_to project_tree_path(@project, @id), notice: "You can only edit text files"
+    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
+
+    unless @blob.exists? && @blob.text?
+      redirect_to project_blob_path(@project, @id), notice: "You can only edit text files"
     end
 
     allowed = if project.protected_branch? @ref
