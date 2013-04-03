@@ -98,7 +98,7 @@ module Network
         skip: skip
       }
 
-      Grit::Commit.find_all(@repo, opts, nil)
+      Grit::Commit.find_all(@repo, nil, opts)
     end
 
     def commits_sort_by_ref
