@@ -82,6 +82,17 @@ describe Gitlab::Git::Repository do
     end
   end
 
+  describe "commits" do
+    subject do
+      commits = repository.commits('master', 'app', 3, 1)
+      commits.map { |c| c.id }
+    end
+
+    it { should have(3).elements }
+    it { should include("8716fc78f3c65bbf7bcf7b574febd583bc5d2812") }
+    it { should_not include("bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a") }
+  end
+
   describe "commits_between" do
     subject do
       commits = repository.commits_between("3a4b4fb4cde7809f033822a171b9feae19d41fff",

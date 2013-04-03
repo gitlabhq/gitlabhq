@@ -54,11 +54,11 @@ module Gitlab
                    repo.commits(root_ref).first
                  end
 
-        Commit.new(commit) if commit
+        decorate_commit(commit) if commit
       end
 
       def commits_with_refs(n = 20)
-        commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
+        commits = repo.branches.map { |ref| decorate_commit(ref.commit, ref) }
 
         commits.sort! do |x, y|
           y.committed_date <=> x.committed_date
@@ -74,11 +74,11 @@ module Gitlab
           repo.commits(ref, limit, offset)
         else
           repo.commits(ref)
-        end.map{ |c| Commit.new(c) }
+        end.map{ |c| decorate_commit(c) }
       end
 
       def commits_between(from, to)
-        repo.commits_between(from, to).map { |c| Commit.new(c) }
+        repo.commits_between(from, to).map { |c| decorate_commit(c) }
       end
 
       def last_commit_for(ref, path = nil)
@@ -189,6 +189,12 @@ module Gitlab
 
       def cache_key(type)
         "#{type}:#{path_with_namespace}"
+      end
+
+      protected
+
+      def decorate_commit(commit, ref = nil)
+        Gitlab::Git::Commit.new(commit, ref)
       end
     end
   end
