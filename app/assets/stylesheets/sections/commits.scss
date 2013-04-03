@@ -369,19 +369,25 @@
 }
 
 .file-stats {
-  .new-file{
-    i{
+  .new-file {
+    a {
+      color: #090;
+    }
+    i {
       color: #1BCF00;
     }
   }
-  .renamed-file{
-    i{
+  .renamed-file {
+    i {
       color: #FE9300;
     }
   }
-  .deleted-file{
-    i{
-      color: #FF0000;
+  .deleted-file {
+    a {
+      color: #B00;
+    }
+    i {
+      color: #EE0000;
     }
   }
   .edit-file{
