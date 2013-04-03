@@ -104,7 +104,7 @@ class GitPushService
       data[:commits] << {
         id: commit.id,
         message: commit.safe_message,
-        timestamp: commit.date.xmlschema,
+        timestamp: commit.committed_date.xmlschema,
         url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{commit.id}",
         author: {
           name: commit.author_name,

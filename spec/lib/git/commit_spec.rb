@@ -20,6 +20,8 @@ describe Gitlab::Git::Commit do
         author: @author,
         committer: @committer,
         committed_date: Date.yesterday,
+        authored_date: Date.yesterday,
+        parents: [],
         message: 'Refactoring specs'
       )
 

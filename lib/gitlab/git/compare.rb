@@ -20,10 +20,8 @@ module Gitlab
           return
         end
 
-        @commit = Commit.new(first)
-
+        @commit = first
         @commits = repository.commits_between(last.id, first.id)
-        @commits = @commits.map { |c| Commit.new(c) }
 
         @diffs = if @commits.size > 100
                    []

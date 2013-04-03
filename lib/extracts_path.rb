@@ -102,9 +102,9 @@ module ExtractsPath
     # because "@project.repository.commit(@ref)" returns wrong commit when @ref is tag name.
     @commit = @project.repository.commits(@ref, @path, 1, 0).first
 
-    @tree = Tree.new(@commit.tree, @ref, @path)
+    @tree = Tree.new(@project.repository, @commit.id, @ref, @path)
 
-    raise InvalidPathError if @tree.invalid?
+    raise InvalidPathError unless @tree.exists?
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!
   end

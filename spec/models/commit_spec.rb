@@ -38,10 +38,10 @@ describe Commit do
     it { should respond_to(:message) }
     it { should respond_to(:authored_date) }
     it { should respond_to(:committed_date) }
+    it { should respond_to(:committer_email) }
+    it { should respond_to(:author_email) }
     it { should respond_to(:parents) }
     it { should respond_to(:date) }
-    it { should respond_to(:committer) }
-    it { should respond_to(:author) }
     it { should respond_to(:diffs) }
     it { should respond_to(:tree) }
     it { should respond_to(:id) }

@@ -15,9 +15,9 @@
     .file_title
       %i.icon-file
       %span.file_name
-        = @tree.name
-        %small= number_to_human_size @tree.size
-      %span.options= render "tree/blob_actions"
+        = @blob.name
+        %small= number_to_human_size @blob.size
+      %span.options= render "blob/actions"
     .file_content.blame
       %table
         - current_line = 1
