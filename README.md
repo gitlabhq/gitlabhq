@@ -82,7 +82,7 @@ Each month on the 22th a new version is released together with an upgrade guide.
 
 * [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
 
-* [Roadmap](https://github.com/gitlabhq/gitlabhq/blob/master/ROADMAP.md)
+* Features that will be in the next release are listed on [the feedback and suggestions forum with the status "started"](http://feedback.gitlab.com/forums/176466-general/status/796456).
 
 
 ### Getting started
