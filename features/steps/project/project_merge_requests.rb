@@ -116,29 +116,21 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   Then 'I should see a discussion has started on line 185' do
-    first_commit = merge_request.commits.first
-    first_diff   = first_commit.diffs.first
     page.should have_content "#{current_user.name} started a discussion on this merge request diff"
-    page.should have_content "#{first_diff.b_path}:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss:L185"
     page.should have_content "Line is wrong"
   end
 
   Then 'I should see a discussion has started on commit bcf03b5de6c:L185' do
-    first_commit = merge_request.commits.first
-    first_diff   = first_commit.diffs.first
     page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content first_commit.short_id(8)
-    page.should have_content "#{first_diff.b_path}:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss:L185"
     page.should have_content "Line is wrong"
   end
 
   Then 'I should see a discussion has started on commit bcf03b5de6c' do
-    first_commit = merge_request.st_commits.first
-    first_diff   = first_commit.diffs.first
     page.should have_content "#{current_user.name} started a discussion on commit bcf03b5de6c"
-    page.should have_content first_commit.short_id(8)
     page.should have_content "One comment to rule them all"
-    page.should have_content "#{first_diff.b_path}:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss:L185"
   end
 
   def project
