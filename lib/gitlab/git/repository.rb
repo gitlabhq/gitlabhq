@@ -48,31 +48,41 @@ module Gitlab
       end
 
       def commit(commit_id = nil)
-        Gitlab::Git::Commit.find_or_first(repo, commit_id, root_ref)
-      end
+        commit = if commit_id
+                   repo.commit(commit_id)
+                 else
+                   repo.commits(root_ref).first
+                 end
 
-      def fresh_commits(n = 10)
-        Gitlab::Git::Commit.fresh_commits(repo, n)
+        Commit.new(commit) if commit
       end
 
       def commits_with_refs(n = 20)
-        Gitlab::Git::Commit.commits_with_refs(repo, n)
-      end
+        commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
 
-      def commits_since(date)
-        Gitlab::Git::Commit.commits_since(repo, date)
+        commits.sort! do |x, y|
+          y.committed_date <=> x.committed_date
+        end
+
+        commits[0..n]
       end
 
       def commits(ref, path = nil, limit = nil, offset = nil)
-        Gitlab::Git::Commit.commits(repo, ref, path, limit, offset)
+        if path
+          repo.log(ref, path, max_count: limit, skip: offset)
+        elsif limit && offset
+          repo.commits(ref, limit, offset)
+        else
+          repo.commits(ref)
+        end.map{ |c| Commit.new(c) }
+      end
+
+      def commits_between(from, to)
+        repo.commits_between(from, to).map { |c| Commit.new(c) }
       end
 
       def last_commit_for(ref, path = nil)
         commits(ref, path, 1).first
-      end
-
-      def commits_between(from, to)
-        Gitlab::Git::Commit.commits_between(repo, from, to)
       end
 
       # Returns an Array of branch names

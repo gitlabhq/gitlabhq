@@ -25,10 +25,9 @@ module Network
     def collect_commits
       refs_cache = build_refs_cache
 
-      find_commits(count_to_display_commit_in_center)
-      .map do |commit|
-          # Decorate with app/model/network/commit.rb
-          Network::Commit.new(commit, refs_cache[commit.id])
+      find_commits(count_to_display_commit_in_center).map do |commit|
+        # Decorate with app/model/network/commit.rb
+        Network::Commit.new(commit, refs_cache[commit.id])
       end
     end
 
@@ -93,15 +92,13 @@ module Network
     end
 
     def find_commits(skip = 0)
-      Grit::Commit.find_all(
-        @repo,
-        nil,
-        {
-          date_order: true,
-          max_count: self.class.max_count,
-          skip: skip
-        }
-      )
+      opts = {
+        date_order: true,
+        max_count: self.class.max_count,
+        skip: skip
+      }
+
+      Grit::Commit.find_all(@repo, opts, nil)
     end
 
     def commits_sort_by_ref

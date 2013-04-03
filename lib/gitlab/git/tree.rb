@@ -38,7 +38,7 @@ module Gitlab
       end
 
       def readme
-        @readme ||= entries.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+        @readme ||= blobs.find { |c| c.name =~ /^readme/i }
       end
 
       protected

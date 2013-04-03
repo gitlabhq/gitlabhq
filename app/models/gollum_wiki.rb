@@ -47,12 +47,6 @@ class GollumWiki
     wiki.pages.map { |page| WikiPage.new(self, page, true) }
   end
 
-  # Returns the last 30 Commit objects across the entire
-  # repository.
-  def recent_history
-    Gitlab::Git::Commit.fresh_commits(wiki.repo, 30)
-  end
-
   # Finds a page within the repository based on a tile
   # or slug.
   #
