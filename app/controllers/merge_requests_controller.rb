@@ -20,9 +20,6 @@ class MergeRequestsController < ProjectResourceController
   end
 
   def show
-    @target_type = :merge_request
-    @target_id = @merge_request.id
-
     respond_to do |format|
       format.html
       format.js
@@ -144,6 +141,9 @@ class MergeRequestsController < ProjectResourceController
 
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
+
+    @target_type = :merge_request
+    @target_id = @merge_request.id
   end
 
   def allowed_to_merge?
