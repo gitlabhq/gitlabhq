@@ -7,7 +7,7 @@ class EditTreeController < ProjectResourceController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :edit_requirements, only: [:edit, :update]
+  before_filter :edit_requirements, only: [:show, :update]
 
   def show
     @last_commit = @project.repository.last_commit_for(@ref, @path).sha
