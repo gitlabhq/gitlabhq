@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :public, :import_url, as: [:default, :admin]
+    :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
@@ -92,12 +92,12 @@ class Project < ActiveRecord::Base
   scope :in_team, ->(team) { where("id IN (:ids)", ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :in_group_namespace, -> { joins(:group) }
-  scope :sorted_by_activity, -> { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
+  scope :sorted_by_activity, -> { order("last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
 
-  enumerize :issues_tracker, :in => (Gitlab.config.issues_tracker.keys).append(:gitlab), :default => :gitlab
+  enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
   class << self
     def abandoned
@@ -157,8 +157,7 @@ class Project < ActiveRecord::Base
     unless creator.can_create_project?
       errors[:limit_reached] << ("Your own projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
     end
-  rescue => ex
-    errors[:base] << ex.message
+  rescue
     errors[:base] << ("Can't check your ability to create project")
   end
 
@@ -191,7 +190,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_event.try(:created_at) || updated_at
+    last_activity_at
   end
 
   def project_id
