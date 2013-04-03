@@ -12,30 +12,27 @@
         = link_to title, '#'
 
 %div#tree-content-holder.tree-content-holder
-  - if tree.is_blob?
-    = render "tree/blob", blob: tree
-  - else
-    %table#tree-slider{class: "table_#{@hex_path} tree-table" }
-      %thead
-        %tr
-          %th Name
-          %th Last Update
-          %th Last Commit
-          %th= link_to "history", project_commits_path(@project, @id), class: "btn btn-tiny pull-right"
+  %table#tree-slider{class: "table_#{@hex_path} tree-table" }
+    %thead
+      %tr
+        %th Name
+        %th Last Update
+        %th Last Commit
+        %th= link_to "history", project_commits_path(@project, @id), class: "btn btn-tiny pull-right"
 
-      - if tree.up_dir?
-        %tr.tree-item
-          %td.tree-item-file-name
-            = image_tag "file_empty.png", size: '16x16'
-            = link_to "..", project_tree_path(@project, up_dir_path(tree))
-          %td
-          %td
-          %td
+    - if tree.up_dir?
+      %tr.tree-item
+        %td.tree-item-file-name
+          = image_tag "file_empty.png", size: '16x16'
+          = link_to "..", project_tree_path(@project, up_dir_path(tree))
+        %td
+        %td
+        %td
 
-      = render_tree(tree)
+    = render_tree(tree)
 
-    - if tree.readme
-      = render "tree/readme", readme: tree.readme
+  - if tree.readme
+    = render "tree/readme", readme: tree.readme
 
 %div.tree_progress
 
