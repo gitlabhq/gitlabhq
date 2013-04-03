@@ -75,7 +75,7 @@ class ProfilesController < ApplicationController
     # validation for this fields
     %w(name skype linkedin twitter bio).each do |attr|
       value = user_attributes[attr]
-      user_attributes[attr] = sanitize(value) if value.present?
+      user_attributes[attr] = sanitize(strip_tags(value)) if value.present?
     end
 
     user_attributes
