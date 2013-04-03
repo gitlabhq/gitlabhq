@@ -14,8 +14,6 @@ describe Gitlab::Git::Repository do
     it { should respond_to(:commits) }
     it { should respond_to(:commits_between) }
     it { should respond_to(:commits_with_refs) }
-    it { should respond_to(:commits_since) }
-    it { should respond_to(:commits_between) }
   end
 
 
@@ -82,12 +80,6 @@ describe Gitlab::Git::Repository do
     it "should return root tree for commit with incorrect path" do
       repository.tree(@commit, "invalid_path").should be_nil
     end
-  end
-
-  describe "fresh commits" do
-    it { repository.fresh_commits(3).count.should == 3 }
-    it { repository.fresh_commits.first.id.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a" }
-    it { repository.fresh_commits.last.id.should == "f403da73f5e62794a0447aca879360494b08f678" }
   end
 
   describe "commits_between" do

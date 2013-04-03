@@ -37,15 +37,4 @@ describe Gitlab::Git::Commit do
     it { @commit.committer_email.should == @committer.email }
     it { @commit.different_committer?.should be_true }
   end
-
-  describe "Class methods" do
-    subject { Gitlab::Git::Commit }
-
-    it { should respond_to(:find_or_first) }
-    it { should respond_to(:fresh_commits) }
-    it { should respond_to(:commits_with_refs) }
-    it { should respond_to(:commits_since) }
-    it { should respond_to(:commits_between) }
-    it { should respond_to(:commits) }
-  end
 end
