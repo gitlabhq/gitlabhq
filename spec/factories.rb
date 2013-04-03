@@ -86,9 +86,11 @@ FactoryGirl.define do
       target_branch "master" # pretend bcf03b5d~3
       source_branch "stable" # pretend bcf03b5d
       st_commits do
-        [Commit.new(project.repository.commit('bcf03b5d')),
-         Commit.new(project.repository.commit('bcf03b5d~1')),
-         Commit.new(project.repository.commit('bcf03b5d~2'))]
+        [
+          project.repository.commit('bcf03b5d').to_hash,
+          project.repository.commit('bcf03b5d~1').to_hash,
+          project.repository.commit('bcf03b5d~2').to_hash
+        ]
       end
       st_diffs do
         project.repo.diff("bcf03b5d~3", "bcf03b5d")
