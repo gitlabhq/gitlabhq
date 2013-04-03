@@ -325,9 +325,13 @@ class User < ActiveRecord::Base
     MergeRequest.cared(self)
   end
 
+  def projects_limit_left
+    projects_limit - owned_projects.count
+  end
+
   def projects_limit_percent
     return 100 if projects_limit.zero?
-    (personal_projects.count.to_f / projects_limit) * 100
+    (owned_projects.count.to_f / projects_limit) * 100
   end
 
   def recent_push project_id = nil
