@@ -85,26 +85,28 @@ Each month on the 22th a new version is released together with an upgrade guide.
 * Features that will be in the next release are listed on [the feedback and suggestions forum with the status "started"](http://feedback.gitlab.com/forums/176466-general/status/796456).
 
 
-### Getting started
+### Run in production mode
 
-1. The Installation guide contains instructions to download an init script and run that on boot. With the init script you can also start GitLab
+1. The Installation guide contains instructions on how to download an init script and run it automatically on boot. You can also start the init script manually:
 
         sudo service gitlab start
 
-  or
+  or by directly calling the script
 
-        sudo /etc/init.d/gitlab restart
+        sudo /etc/init.d/gitlab start
 
-2. Start it with [Foreman](https://github.com/ddollar/foreman) in development mode
+### Run in development mode
+
+Start it with [Foreman](https://github.com/ddollar/foreman)
 
         bundle exec foreman start -p 3000
 
- or start it manually
+  or start each component separately
 
         bundle exec rails s
         bundle exec rake sidekiq:start
 
-### Running the tests
+### Run the tests
 
 * Seed the database
 
