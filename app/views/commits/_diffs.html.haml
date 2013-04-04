@@ -18,7 +18,7 @@
       - next if diff.diff.empty?
       - file = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, diff.new_path)
       - file = Gitlab::Git::Blob.new(@repository, @commit.parent_id, @ref, diff.old_path) unless file.exists?
-      - next unless file
+      - next unless file.exists?
       .file{id: "diff-#{i}"}
         .header
           - if diff.deleted_file
