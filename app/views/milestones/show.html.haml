@@ -88,7 +88,6 @@
 %div
   - @users.each do |user|
     = link_to user, class: 'float-link' do
-      = user.avatar_image
-      = user.name
+      = link_to_member(@project, user)
 
 .clearfix

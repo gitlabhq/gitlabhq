@@ -111,22 +111,10 @@ span.update-author {
 }
 
 .label {
-  padding: 0px 4px;
-  font-size: 10px;
+  padding: 1px 4px;
+  font-size: 12px;
   font-style: normal;
-  background-color: $link_color;
-
-  &.label-success {
-    background-color: #8D8;
-    color: #333;
-    text-shadow: 0 1px 1px white;
-  }
-
-  &.label-error {
-    background-color: #D88;
-    color: #333;
-    text-shadow: 0 1px 1px white;
-  }
+  font-weight: normal;
 }
 
 form {

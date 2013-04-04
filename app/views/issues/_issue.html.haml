@@ -34,6 +34,6 @@
       = render 'votes/votes_inline', votable: issue
     %span
       - issue.labels.each do |label|
-        %span.label
+        %span.label.label-info
           %i.icon-tag
           = label.name

@@ -1,7 +1,6 @@
 class Admin::Teams::MembersController < Admin::Teams::ApplicationController
   def new
     @users = User.potential_team_members(user_team)
-    @users = UserDecorator.decorate_collection @users
   end
 
   def create

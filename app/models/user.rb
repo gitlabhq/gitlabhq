@@ -373,4 +373,8 @@ class User < ActiveRecord::Base
   def name_with_username
     "#{name} (#{username})"
   end
+
+  def tm_of(project)
+    project.team_member_by_id(self.id)
+  end
 end
