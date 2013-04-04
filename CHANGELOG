@@ -1,3 +1,6 @@
+v 5.0.1
+  - Fixed issue with gitlab-grit being overrided by grit
+
 v 5.0.0
   - Replaced gitolite with gitlab-shell
   - Removed gitolite-related libraries
