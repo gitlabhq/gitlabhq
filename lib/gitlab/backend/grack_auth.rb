@@ -50,7 +50,7 @@ module Grack
           end
         end
 
-        return false unless user
+        return false unless user.try(:valid_password?, password)
  
         Gitlab::ShellEnv.set_env(user)
       end
