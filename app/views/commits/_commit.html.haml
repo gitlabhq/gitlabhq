@@ -16,6 +16,6 @@
     %span.notes_count
       - notes = @project.notes.for_commit_id(commit.id)
       - if notes.any?
-        %span.btn.disabled.grouped
+        %span.badge.badge-info
           %i.icon-comment
           = notes.count
