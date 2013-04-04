@@ -13,56 +13,65 @@
   &ndash; You will receive all notifications from projects in which you participate
 %hr
 
-= form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
-  %ul.well-list
+.row
+  .span4
+    %h5 Global
+  .span7
+    = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
+      = hidden_field_tag :notification_type, 'global'
+
+      = label_tag do
+        = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?, class: 'trigger-submit'
+        %span Disabled
+
+      = label_tag do
+        = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?, class: 'trigger-submit'
+        %span Participating
+
+      = label_tag do
+        = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
+        %span Watch
+
+%hr
+= link_to '#', class: 'js-toggle-visibility-link' do
+  %h6.btn.btn-tiny
+    %i.icon-chevron-down
+    %span Per project notifications settings
+
+%ul.well-list.js-toggle-visibility-container.hide
+  - @users_projects.each do |users_project|
+    - notification = Notification.new(users_project)
     %li
       .row
         .span4
-          %h5 Global
+          %span
+            = link_to_project(users_project.project)
         .span7
-          = label_tag do
-            = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?
-            %span Disabled
+          = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
+            = hidden_field_tag :notification_type, 'project', id: dom_id(users_project, 'notification_type')
+            = hidden_field_tag :notification_id, users_project.id, id: dom_id(users_project, 'notification_id')
 
-          = label_tag do
-            = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?
-            %span Participating
-
-          = label_tag do
-            = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?
-            %span Watch
-
-
-  = link_to '#', class: 'js-toggle-visibility-link' do
-    %h6.btn.btn-tiny
-      %i.icon-chevron-down
-      %span Per project notifications settings
-  %ul.well-list.js-toggle-visibility-container.hide
-    - @projects.each do |project|
-      %li
-        .row
-          .span4
-            %span
-              = project.name_with_namespace
-          .span7
             = label_tag do
-              = radio_button_tag :"notification_level[#{project.id}]", Notification::N_DISABLED, @notification.disabled?, disabled: true
+              = radio_button_tag :notification_level, Notification::N_GLOBAL, notification.global?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
+              %span Use global settings
+
+            = label_tag do
+              = radio_button_tag :notification_level, Notification::N_DISABLED, notification.disabled?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
               %span Disabled
 
             = label_tag do
-              = radio_button_tag :"notification_level[#{project.id}]", Notification::N_PARTICIPATING, @notification.participating?, disabled: true
+              = radio_button_tag :notification_level, Notification::N_PARTICIPATING, notification.participating?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
               %span Participating
 
             = label_tag do
-              = radio_button_tag :"notification_level[#{project.id}]", Notification::N_WATCH, @notification.watch?, disabled: true
+              = radio_button_tag :notification_level, Notification::N_WATCH, notification.watch?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
               %span Watch
 
 
-  .form-actions
-    = submit_tag 'Save', class: 'btn btn-save'
-    %span.update-success.cgreen.hide
-      %i.icon-ok
-      Saved
-    %span.update-failed.cred.hide
-      %i.icon-remove
-      Failed
+.save-status-fixed
+  %span.update-success.cgreen.hide
+    %i.icon-ok
+    Saved
+  %span.update-failed.cred.hide
+    %i.icon-remove
+    Failed

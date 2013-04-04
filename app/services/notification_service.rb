@@ -80,7 +80,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def merge_mr(merge_request)
-    recipients = reject_muted_users([merge_request.author, merge_request.assignee])
+    recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.project)
     recipients = recipients.concat(project_watchers(merge_request.project)).uniq
 
     recipients.each do |recipient|
@@ -122,7 +122,7 @@ class NotificationService
     recipients = recipients.concat(project_watchers(note.project)).compact.uniq
 
     # Reject mutes users
-    recipients = reject_muted_users(recipients)
+    recipients = reject_muted_users(recipients, note.project)
 
     # Reject author
     recipients.delete(note.author)
@@ -147,19 +147,41 @@ class NotificationService
 
   # Get project users with WATCH notification level
   def project_watchers(project)
-    project.users.where(notification_level: Notification::N_WATCH)
+
+    # Get project notification settings since it has higher priority
+    user_ids = project.users_projects.where(notification_level: Notification::N_WATCH).pluck(:user_id)
+    project_watchers = User.where(id: user_ids)
+
+    # next collect users who use global settings with watch state
+    user_ids = project.users_projects.where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
+    project_watchers += User.where(id: user_ids, notification_level: Notification::N_WATCH)
+
+    project_watchers.uniq
   end
 
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
-  def reject_muted_users(users)
-    users.compact.uniq.reject do |user|
-      user.notification.disabled?
+  def reject_muted_users(users, project = nil)
+    users = users.compact.uniq
+
+    users.reject do |user|
+      next user.notification.disabled? unless project
+
+      tm = project.users_projects.find_by_user_id(user.id)
+
+      # reject users who globally disabled notification and has no membership
+      next user.notification.disabled? unless tm
+
+      # reject users who disabled notification in project
+      next true if tm.notification.disabled?
+
+      # reject users who have N_GLOBAL in project and disabled in global settings
+      tm.notification.global? && user.notification.disabled?
     end
   end
 
   def new_resource_email(target, method)
-    recipients = reject_muted_users([target.assignee])
+    recipients = reject_muted_users([target.assignee], target.project)
     recipients = recipients.concat(project_watchers(target.project)).uniq
     recipients.delete(target.author)
 
@@ -169,7 +191,7 @@ class NotificationService
   end
 
   def close_resource_email(target, current_user, method)
-    recipients = reject_muted_users([target.author, target.assignee])
+    recipients = reject_muted_users([target.author, target.assignee], target.project)
     recipients = recipients.concat(project_watchers(target.project)).uniq
     recipients.delete(current_user)
 
@@ -185,7 +207,7 @@ class NotificationService
     recipients = recipients.concat(project_watchers(target.project))
 
     # reject users with disabled notifications
-    recipients = reject_muted_users(recipients)
+    recipients = reject_muted_users(recipients, target.project)
 
     # Reject me from recipients if I reassign an item
     recipients.delete(current_user)

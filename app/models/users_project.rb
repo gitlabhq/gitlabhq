@@ -2,12 +2,13 @@
 #
 # Table name: users_projects
 #
-#  id             :integer          not null, primary key
-#  user_id        :integer          not null
-#  project_id     :integer          not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  project_access :integer          default(0), not null
+#  id                 :integer          not null, primary key
+#  user_id            :integer          not null
+#  project_id         :integer          not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  project_access     :integer          default(0), not null
+#  notification_level :integer          default(3), not null
 #
 
 class UsersProject < ActiveRecord::Base
@@ -29,6 +30,7 @@ class UsersProject < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
+  validates :notification_level, inclusion: { in: Notification.project_notification_levels }, presence: true
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -133,5 +135,9 @@ class UsersProject < ActiveRecord::Base
 
   def skip_git?
     !!@skip_git
+  end
+
+  def notification
+    @notification ||= Notification.new(self)
   end
 end

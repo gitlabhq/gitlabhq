@@ -5,26 +5,35 @@ class Notification
   N_DISABLED = 0
   N_PARTICIPATING = 1
   N_WATCH = 2
+  N_GLOBAL = 3
 
-  attr_accessor :user
+  attr_accessor :target
 
   def self.notification_levels
     [N_DISABLED, N_PARTICIPATING, N_WATCH]
   end
 
-  def initialize(user)
-    @user = user
+  def self.project_notification_levels
+    [N_DISABLED, N_PARTICIPATING, N_WATCH, N_GLOBAL]
+  end
+
+  def initialize(target)
+    @target = target
   end
 
   def disabled?
-    user.notification_level == N_DISABLED
+    target.notification_level == N_DISABLED
   end
 
   def participating?
-    user.notification_level == N_PARTICIPATING
+    target.notification_level == N_PARTICIPATING
   end
 
   def watch?
-    user.notification_level == N_WATCH
+    target.notification_level == N_WATCH
+  end
+
+  def global?
+    target.notification_level == N_GLOBAL
   end
 end
