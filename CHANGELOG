@@ -4,6 +4,9 @@ v 5.1.0
   - Move both repo and wiki when project transfer requrested
   - Admin area: project editing was removed from admin namespace
   - Access: admin user has now access to any project.
+  - Notification settings
+  - Gitlab::Git set of objects to abstract from grit library
+  - Replace Unicorn web server with Puma
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
