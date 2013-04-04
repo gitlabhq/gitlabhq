@@ -14,7 +14,7 @@ class Admin::UsersController < Admin::ApplicationController
     @not_in_projects = @not_in_projects.without_user(admin_user) if admin_user.authorized_projects.present?
 
     # Projects he already own or joined
-    @projects = admin_user.authorized_projects.where('projects.id in (?)', admin_user.authorized_projects.map(&:id))
+    @projects = admin_user.authorized_projects
   end
 
   def team_update
