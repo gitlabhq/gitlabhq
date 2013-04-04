@@ -64,9 +64,6 @@ gem "carrierwave"
 # Authorization
 gem "six"
 
-# Generate Fake data
-gem "ffaker"
-
 # Seed data
 gem "seed-fu"
 
@@ -162,6 +159,9 @@ group :development, :test do
   gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
+
+  # Generate Fake data
+  gem "ffaker"
 
   # Guard
   gem 'guard-rspec'
