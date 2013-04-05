@@ -109,11 +109,6 @@ namespace :gitlab do
       end
     end
 
-    ################################################################################
-    ################################# invoked tasks ################################
-
-    ################################# REPOSITORIES #################################
-
     namespace :repo do
       task :create => :environment do
         backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
@@ -167,48 +162,18 @@ namespace :gitlab do
       end
     end
 
-    ###################################### DB ######################################
-
     namespace :db do
       task :create => :environment do
-        backup_path_db = File.join(Gitlab.config.backup.path, "db")
-        FileUtils.mkdir_p(backup_path_db) unless Dir.exists?(backup_path_db)
-
-        puts "Dumping database tables ... ".blue
-        ActiveRecord::Base.connection.tables.each do |tbl|
-          print " * #{tbl.yellow} ... "
-          count = 1
-          safe_tablename = ActiveRecord::Base.connection.quote_table_name(tbl)
-          File.open(File.join(backup_path_db, tbl + ".yml"), "w+") do |file|
-            ActiveRecord::Base.connection.select_all("SELECT * FROM #{safe_tablename}").each do |line|
-              line.delete_if{|k,v| v.blank?}
-              output = {tbl + '_' + count.to_s => line}
-              file << output.to_yaml.gsub(/^---\n/,'') + "\n"
-              count += 1
-            end
-            puts "done".green
-          end
-        end
+        puts "Dumping database ... ".blue
+        Backup.new.backup_db
+        puts "done".green
       end
 
       task :restore => :environment do
-        backup_path_db = File.join(Gitlab.config.backup.path, "db")
-
-        puts "Restoring database tables (loading fixtures) ... "
-        Rake::Task["db:reset"].invoke
-
-        Dir.glob(File.join(backup_path_db, "*.yml") ).each do |dir|
-          fixture_file = File.basename(dir, ".*" )
-          print "#{fixture_file.yellow} ... "
-          if File.size(dir) > 0
-            ActiveRecord::Fixtures.create_fixtures(backup_path_db, fixture_file)
-            puts "done".green
-          else
-            puts "skipping".yellow
-          end
-        end
+        puts "Restoring database ... ".blue
+        Backup.new.restore_db
+        puts "done".green
       end
     end
-
   end # namespace end: backup
 end # namespace end: gitlab
