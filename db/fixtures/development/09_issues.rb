@@ -1,3 +1,5 @@
+ActiveRecord::Base.observers.disable :all
+
 Gitlab::Seeder.quiet do
   (1..300).each  do |i|
     # Random Project
