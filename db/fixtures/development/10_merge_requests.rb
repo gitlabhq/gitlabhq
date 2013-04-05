@@ -14,6 +14,8 @@ Gitlab::Seeder.quiet do
 
     branches = project.repository.branch_names.sample(2)
 
+    next if branches.uniq.size < 2
+
     user_id = user.id
     MergeRequestObserver.current_user = user
     MergeRequest.seed(:id, [{

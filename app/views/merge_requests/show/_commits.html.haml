@@ -22,9 +22,9 @@
             = render "commits/commit", commit: commit
 
 - else
-  %h5
+  %h4.nothing_here_message
     Nothing to merge from
-    %span.label #{@merge_request.source_branch}
+    %span.label-branch #{@merge_request.source_branch}
     to
-    %span.label #{@merge_request.target_branch}
+    %span.label-branch #{@merge_request.target_branch}
   %br
