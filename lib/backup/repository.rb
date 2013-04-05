@@ -23,6 +23,17 @@ module Backup
         else
           puts "[FAILED]".red
         end
+
+        wiki = GollumWiki.new(project)
+
+        if File.exists?(path_to_repo(wiki))
+          print " * #{wiki.path_with_namespace} ... "
+          if system("cd #{path_to_repo(wiki)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(wiki)} --all > /dev/null 2>&1")
+            puts " [DONE]".green
+          else
+            puts " [FAILED]".red
+          end
+        end
       end
     end
 
@@ -44,6 +55,17 @@ module Backup
           puts "[DONE]".green
         else
           puts "[FAILED]".red
+        end
+
+        wiki = GollumWiki.new(project)
+
+        if File.exists?(path_to_bundle(wiki))
+          print " * #{wiki.path_with_namespace} ... "
+          if system("git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)} > /dev/null 2>&1")
+            puts " [DONE]".green
+          else
+            puts " [FAILED]".red
+          end
         end
       end
     end
