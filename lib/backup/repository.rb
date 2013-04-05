@@ -29,7 +29,7 @@ module Backup
     def restore
       if File.exists?(repos_path)
         # Move repos dir to 'repositories.old' dir
-        bk_repos_path = File.join(repos_path, '..', 'repositories.old')
+        bk_repos_path = File.join(repos_path, '..', 'repositories.old.' + Time.now.to_i.to_s)
         FileUtils.mv(repos_path, bk_repos_path)
       end
 
