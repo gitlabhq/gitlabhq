@@ -80,9 +80,6 @@ gem "state_machine"
 # Issue tags
 gem "acts-as-taggable-on", "2.3.3"
 
-# Decorators
-gem "draper"
-
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
