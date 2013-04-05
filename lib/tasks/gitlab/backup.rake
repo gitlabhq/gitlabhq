@@ -111,67 +111,28 @@ namespace :gitlab do
 
     namespace :repo do
       task :create => :environment do
-        backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
-        FileUtils.mkdir_p(backup_path_repo) until Dir.exists?(backup_path_repo)
         puts "Dumping repositories ...".blue
-
-        Project.find_each(:batch_size => 1000) do |project|
-          print " * #{project.path_with_namespace} ... "
-
-          if project.empty_repo?
-            puts "[SKIPPED]".cyan
-            next
-          end
-
-          # Create namespace dir if missing
-          FileUtils.mkdir_p(File.join(backup_path_repo, project.namespace.path)) if project.namespace
-
-          # Build a destination path for backup
-          path_to_bundle  = File.join(backup_path_repo, project.path_with_namespace + ".bundle")
-
-          if Kernel.system("cd #{project.repository.path_to_repo} > /dev/null 2>&1 && git bundle create #{path_to_bundle} --all > /dev/null 2>&1")
-            puts "[DONE]".green
-          else
-            puts "[FAILED]".red
-          end
-        end
+        Backup::Repository.new.dump
+        puts "done".green
       end
 
       task :restore => :environment do
-        backup_path_repo = File.join(Gitlab.config.backup.path, "repositories")
-        repos_path = Gitlab.config.gitlab_shell.repos_path
-
-        puts "Restoring repositories ... "
-
-        Project.find_each(:batch_size => 1000) do |project|
-          print "#{project.path_with_namespace} ... "
-
-          if project.namespace
-            project.namespace.ensure_dir_exist
-          end
-
-          # Build a backup path
-          path_to_bundle  = File.join(backup_path_repo, project.path_with_namespace + ".bundle")
-
-          if Kernel.system("git clone --bare #{path_to_bundle} #{project.repository.path_to_repo} > /dev/null 2>&1")
-            puts "[DONE]".green
-          else
-            puts "[FAILED]".red
-          end
-        end
+        puts "Restoring repositories ...".blue
+        Backup::Repository.new.restore
+        puts "done".green
       end
     end
 
     namespace :db do
       task :create => :environment do
         puts "Dumping database ... ".blue
-        Backup.new.backup_db
+        Backup::Database.new.dump
         puts "done".green
       end
 
       task :restore => :environment do
         puts "Restoring database ... ".blue
-        Backup.new.restore_db
+        Backup::Database.new.restore
         puts "done".green
       end
     end
