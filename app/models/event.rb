@@ -134,7 +134,7 @@ class Event < ActiveRecord::Base
     if closed?
       "closed"
     elsif merged?
-      "merged"
+      "accepted"
     elsif joined?
       'joined'
     elsif left?
