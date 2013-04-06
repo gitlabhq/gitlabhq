@@ -7,6 +7,9 @@ v 5.1.0
   - Notification settings
   - Gitlab::Git set of objects to abstract from grit library
   - Replace Unicorn web server with Puma
+  - Backup/Restore refactored. Backup dump project wiki too now
+  - Restyled Issues list. Show milestone version in issue row
+  - Restyled Merge Request list
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
