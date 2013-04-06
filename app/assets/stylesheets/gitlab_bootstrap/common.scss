@@ -10,11 +10,16 @@
 
 /** COMMON CLASSES **/
 .left { float:left }
-.append-bottom-10 { margin-bottom:10px }
-.append-bottom-20 { margin-bottom:20px }
+
 .prepend-top-10 { margin-top:10px }
 .prepend-top-20 { margin-top:20px }
-.prepend-left { margin-left:20px }
+.prepend-left-10 { margin-left:10px }
+.prepend-left-20 { margin-left:20px }
+.append-right-10 { margin-right:10px }
+.append-right-20 { margin-right:20px }
+.append-bottom-10 { margin-bottom:10px }
+.append-bottom-20 { margin-bottom:20px }
+
 .padded { padding:20px }
 .ipadded { padding:20px!important }
 .lborder { border-left:1px solid #eee }
@@ -31,8 +36,6 @@
   color: #777;
   border-color: #DDD;
 }
-
-.well { padding: 15px; }
 
 /** HELPERS **/
 .nothing_here_message {
