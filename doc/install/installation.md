@@ -84,6 +84,12 @@ Create a `git` user for Gitlab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
+Configure git:
+
+    sudo -u git -H git config --global user.name  "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
+    
+Make sure to change "localhost" to the fully-qualified domain name of your host.
 
 # 4. GitLab shell
 
@@ -194,11 +200,16 @@ Make sure to update username/password in config/database.yml.
 
 ## Install Init Script
 
-Download the init script (will be /etc/init.d/gitlab):
+Download the init script (will be /etc/init.d/gitlab). For `5-0-stable`:
+
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab
+    sudo chmod +x /etc/init.d/gitlab
+    
+For `master`:
 
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab
-    sudo chmod +x /etc/init.d/gitlab
-
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+    
 Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
@@ -235,7 +246,12 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 
 ## Site Configuration
 
-Download an example site config:
+Download an example site config. For `5-0-stable`: 
+
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/nginx/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+
+For `master`:
 
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
