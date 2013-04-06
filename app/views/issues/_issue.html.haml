@@ -1,12 +1,37 @@
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: project_issue_path(issue.project, issue) }
   - if controller.controller_name == 'issues'
-    .issue_check
+    .issue-check
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
-  .pull-right
+
+  .issue-title
+    %span.light= "##{issue.id}"
+    = link_to_gfm truncate(issue.title, length: 100), project_issue_path(issue.project, issue), class: "row_title"
+
+  .issue-info
+    - if issue.assignee
+      assigned to #{link_to_member(@project, issue.assignee)}
+    - else
+      unassigned
+    - if issue.votes_count > 0
+      = render 'votes/votes_inline', votable: issue
     - if issue.notes.any?
-      %span.btn.btn-small.disabled.grouped
-        %i.icon-comment
+      %span
+        %i.icon-comments
         = issue.notes.count
+    - if issue.milestone_id?
+      %span
+        %i.icon-time
+        = issue.milestone.title
+    .pull-right
+      %small updated #{time_ago_in_words(issue.updated_at)} ago
+
+    .issue-labels
+      - issue.labels.each do |label|
+        %span.label.label-info
+          %i.icon-tag
+          = label.name
+
+  .issue-actions
     - if can? current_user, :modify_issue, issue
       - if issue.closed?
         = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-small grouped reopen_issue", remote: true
@@ -16,24 +41,4 @@
         %i.icon-edit
         Edit
 
-  - if issue.assignee
-    = image_tag gravatar_icon(issue.assignee_email), class: "avatar"
-  - else
-    = image_tag "no_avatar.png", class: "avatar"
 
-  %p= link_to_gfm truncate(issue.title, length: 100), project_issue_path(issue.project, issue), class: "row_title"
-
-  %span.update-author
-    %span.cdark= "##{issue.id}"
-    - if issue.assignee
-      assigned to #{issue.assignee_name}
-    - else
-      &nbsp;
-
-    - if issue.votes_count > 0
-      = render 'votes/votes_inline', votable: issue
-    %span
-      - issue.labels.each do |label|
-        %span.label.label-info
-          %i.icon-tag
-          = label.name

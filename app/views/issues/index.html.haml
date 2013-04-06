@@ -12,7 +12,7 @@
         = form_tag search_project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: 'pull-right'  do
           = hidden_field_tag :project_id, @project.id, { id: 'project_id' }
           = hidden_field_tag :status, params[:status]
-          = search_field_tag :issue_search, nil, { placeholder: 'Search', class: 'issue_search span3 pull-right neib search-text-input' }
+          = search_field_tag :issue_search, nil, { placeholder: 'Search', class: 'issue_search input-xlarge append-right-10 search-text-input' }
 
   .clearfix
 
@@ -41,7 +41,7 @@
               = select_tag(:milestone_id, options_from_collection_for_select([unassigned_filter] + issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
               = hidden_field_tag :status, params[:status]
 
-      %ul#issues-table.well-list.issues_table
+      %ul#issues-table.well-list.issues-list
         = render "issues"
 
 :javascript

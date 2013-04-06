@@ -1,4 +1,4 @@
-.projects
+.dashboard
   .activities.span8
     = link_to dashboard_path, class: 'btn btn-tiny' do
       &larr; To dashboard
@@ -12,7 +12,7 @@
     .loading.hide
   .side.span4
     - if @team.description.present?
-      .description.well.light
+      .description.well.well-small.light
         = @team.description
     = render "projects", projects: @projects
     .prepend-top-20
