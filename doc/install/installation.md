@@ -84,6 +84,12 @@ Create a `git` user for Gitlab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
+Configure git:
+
+    sudo -u git -H git config --global user.name  "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
+    
+Make sure to change "localhost" to the fully-qualified domain name of your host.
 
 # 4. GitLab shell
 
