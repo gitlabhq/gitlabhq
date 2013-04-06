@@ -56,6 +56,4 @@
               = link_to 'Destroy', [project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
         - if @projects.blank?
           %p.nothing_here_message 0 projects matches
-        - else
-          %li.bottom
-            = paginate @projects, theme: "gitlab"
+    = paginate @projects, theme: "gitlab"

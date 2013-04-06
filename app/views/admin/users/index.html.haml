@@ -58,5 +58,4 @@
                 - else
                   = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
                 = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
-        %li.bottom
-          = paginate @admin_users, theme: "gitlab"
+      = paginate @admin_users, theme: "gitlab"

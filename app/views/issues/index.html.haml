@@ -19,30 +19,8 @@
 .row
   .span3
     = render 'filter', entity: 'issue'
-  .span9
-    %div#issues-table-holder.ui-box
-      .title
-        = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left"
-        .clearfix
-          .issues_bulk_update.hide
-            = form_tag bulk_update_project_issues_path(@project), method: :post  do
-              %span.update_issues_text Update selected issues with &nbsp;
-              .left
-                = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")
-                = select_tag('update[assignee_id]', options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), prompt: "Assignee")
-                = select_tag('update[milestone_id]', options_from_collection_for_select(issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
-                = hidden_field_tag 'update[issues_ids]', []
-                = hidden_field_tag :status, params[:status]
-              = button_tag "Save", class: "btn update_selected_issues btn-small btn-save"
-          .issues_filters
-            = form_tag project_issues_path(@project), method: :get  do
-              = select_tag(:label_name, options_for_select(issue_tags, params[:label_name]), prompt: "Labels")
-              = select_tag(:assignee_id, options_from_collection_for_select([unassigned_filter] + @project.users.all, "id", "name", params[:assignee_id]), prompt: "Assignee")
-              = select_tag(:milestone_id, options_from_collection_for_select([unassigned_filter] + issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
-              = hidden_field_tag :status, params[:status]
-
-      %ul#issues-table.well-list.issues-list
-        = render "issues"
+  .span9.issues-holder
+    = render "issues"
 
 :javascript
   $(function(){
