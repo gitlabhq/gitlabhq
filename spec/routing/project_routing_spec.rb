@@ -344,16 +344,8 @@ end
 #                            PUT    /:project_id/issues/:id(.:format)         issues#update
 #                            DELETE /:project_id/issues/:id(.:format)         issues#destroy
 describe IssuesController, "routing" do
-  it "to #sort" do
-    post("/gitlabhq/issues/sort").should route_to('issues#sort', project_id: 'gitlabhq')
-  end
-
   it "to #bulk_update" do
     post("/gitlabhq/issues/bulk_update").should route_to('issues#bulk_update', project_id: 'gitlabhq')
-  end
-
-  it "to #search" do
-    get("/gitlabhq/issues/search").should route_to('issues#search', project_id: 'gitlabhq')
   end
 
   it_behaves_like "RESTful project resources" do
