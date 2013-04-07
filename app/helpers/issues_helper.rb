@@ -61,6 +61,7 @@ module IssuesHelper
       url = new_project_issue_path project_id: @project
     else
       url = Gitlab.config.issues_tracker[@project.issues_tracker]["new_issue_url"]
+      url = "" if url.nil?
       url.gsub(':project_id', @project.id.to_s)
         .gsub(':issues_tracker_id', @project.issues_tracker_id.to_s)
     end
