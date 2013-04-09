@@ -109,8 +109,8 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        project.stub(last_event: last_event)
-        project.last_activity_date.should == last_event.created_at
+        last_activity_event = create(:event, project: project)
+        project.last_activity_date.to_s(:db).should == last_event.created_at.to_s(:db)
       end
 
       it 'returns the project\'s last update date if it has no events' do

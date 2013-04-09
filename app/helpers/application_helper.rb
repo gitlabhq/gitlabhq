@@ -151,9 +151,8 @@ module ApplicationHelper
   end
 
   def project_last_activity project
-    activity = project.last_activity
-    if activity && activity.created_at
-      time_ago_in_words(activity.created_at) + " ago"
+    if project.last_activity_at
+      time_ago_in_words(project.last_activity_at) + " ago"
     else
       "Never"
     end
