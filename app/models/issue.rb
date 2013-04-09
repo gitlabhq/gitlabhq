@@ -54,4 +54,7 @@ class Issue < ActiveRecord::Base
 
     state :closed
   end
+
+  # Both open and reopened issues should be listed as opened
+  scope :opened, -> { with_state(:opened, :reopened) }
 end
