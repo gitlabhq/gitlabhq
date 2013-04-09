@@ -2,6 +2,7 @@
   init: ->
     Issues.initSearch()
     Issues.initSelects()
+    Issues.initChecks()
 
     $("body").on "ajax:success", ".close_issue, .reopen_issue", ->
       t = $(this)
