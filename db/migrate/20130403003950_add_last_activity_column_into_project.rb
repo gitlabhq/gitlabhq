@@ -4,7 +4,13 @@ class AddLastActivityColumnIntoProject < ActiveRecord::Migration
     add_index :projects, :last_activity_at
 
     Project.find_each do |project|
-      project.update_attribute(:last_activity_at, project.last_activity_date)
+      last_activity_date = if project.last_activity
+                             project.last_activity.created_at
+                           else
+                             project.updated_at
+                           end
+
+      project.update_attribute(:last_activity_at, last_activity_date)
     end
   end
 
