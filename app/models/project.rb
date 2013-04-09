@@ -30,7 +30,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :public, :import_url, as: [:default, :admin]
+    :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
@@ -87,17 +87,18 @@ class Project < ActiveRecord::Base
   validate :check_limit, :repo_name
 
   # Scopes
-  scope :without_user, ->(user)  { where("id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
-  scope :not_in_group, ->(group) { where("id NOT IN (:ids)", ids: group.project_ids ) }
-  scope :without_team, ->(team) { team.projects.present? ? where("id NOT IN (:ids)", ids: team.projects.map(&:id)) : scoped  }
-  scope :in_team, ->(team) { where("id IN (:ids)", ids: team.projects.map(&:id)) }
+  scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
+  scope :without_team, ->(team) { team.projects.present? ? where("projects.id NOT IN (:ids)", ids: team.projects.map(&:id)) : scoped  }
+  scope :not_in_group, ->(group) { where("projects.id NOT IN (:ids)", ids: group.project_ids ) }
+  scope :in_team, ->(team) { where("projects.id IN (:ids)", ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
-  scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
+  scope :in_group_namespace, -> { joins(:group) }
+  scope :sorted_by_activity, -> { order("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
 
-  enumerize :issues_tracker, :in => (Gitlab.config.issues_tracker.keys).append(:gitlab), :default => :gitlab
+  enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
   class << self
     def abandoned
@@ -190,7 +191,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_event.try(:created_at) || updated_at
+    last_activity_at || updated_at
   end
 
   def project_id
