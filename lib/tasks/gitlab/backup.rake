@@ -10,14 +10,14 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:db:create"].invoke
       Rake::Task["gitlab:backup:repo:create"].invoke
 
-      Dir.chdir(Gitlab.config.backup.path)
-
       # saving additional informations
       s = {}
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = "#{Time.now}"
+      s[:backup_created_at]  = "#{Time.now}".force_encoding("UTF-8")
       s[:gitlab_version]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
       s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
+
+      Dir.chdir(Gitlab.config.backup.path)
 
       File.open("#{Gitlab.config.backup.path}/backup_information.yml", "w+") do |file|
         file << s.to_yaml.gsub(/^---\n/,'')
