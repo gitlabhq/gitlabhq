@@ -9,6 +9,7 @@ namespace :gitlab do
 
       Rake::Task["gitlab:backup:db:create"].invoke
       Rake::Task["gitlab:backup:repo:create"].invoke
+      Rake::Task["gitlab:backup:uploads:create"].invoke
 
       Dir.chdir(Gitlab.config.backup.path)
 
@@ -25,7 +26,7 @@ namespace :gitlab do
 
       # create archive
       print "Creating backup archive: #{Time.now.to_i}_gitlab_backup.tar ... "
-      if Kernel.system("tar -cf #{Time.now.to_i}_gitlab_backup.tar repositories/ db/ backup_information.yml")
+      if Kernel.system("tar -cf #{Time.now.to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml")
         puts "done".green
       else
         puts "failed".red
@@ -33,7 +34,7 @@ namespace :gitlab do
 
       # cleanup: remove tmp files
       print "Deleting tmp directories ... "
-      if Kernel.system("rm -rf repositories/ db/ backup_information.yml")
+      if Kernel.system("rm -rf repositories/ db/ uploads/ backup_information.yml")
         puts "done".green
       else
         puts "failed".red
@@ -99,10 +100,11 @@ namespace :gitlab do
 
       Rake::Task["gitlab:backup:db:restore"].invoke
       Rake::Task["gitlab:backup:repo:restore"].invoke
+      Rake::Task["gitlab:backup:uploads:restore"].invoke
 
       # cleanup: remove tmp files
       print "Deleting tmp directories ... "
-      if Kernel.system("rm -rf repositories/ db/ backup_information.yml")
+      if Kernel.system("rm -rf repositories/ db/ uploads/ backup_information.yml")
         puts "done".green
       else
         puts "failed".red
@@ -133,6 +135,20 @@ namespace :gitlab do
       task :restore => :environment do
         puts "Restoring database ... ".blue
         Backup::Database.new.restore
+        puts "done".green
+      end
+    end
+
+    namespace :uploads do
+      task :create => :environment do
+        puts "Dumping uploads ... ".blue
+        Backup::Uploads.new.dump
+        puts "done".green
+      end
+
+      task :restore => :environment do
+        puts "Restoring uploads ... ".blue
+        Backup::Uploads.new.restore
         puts "done".green
       end
     end

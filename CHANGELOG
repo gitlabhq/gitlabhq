@@ -10,6 +10,8 @@ v 5.1.0
   - Backup/Restore refactored. Backup dump project wiki too now
   - Restyled Issues list. Show milestone version in issue row
   - Restyled Merge Request list
+  - Backup now dump/restore uploads
+  - Improved perfomance of dashboard
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
