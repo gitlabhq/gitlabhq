@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130404164628) do
+ActiveRecord::Schema.define(:version => 20130410175022) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -299,18 +299,5 @@ ActiveRecord::Schema.define(:version => 20130404164628) do
     t.string   "type",       :default => "ProjectHook"
     t.integer  "service_id"
   end
-
-  create_table "wikis", :force => true do |t|
-    t.string   "title"
-    t.text     "content"
-    t.integer  "project_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.string   "slug"
-    t.integer  "user_id"
-  end
-
-  add_index "wikis", ["project_id"], :name => "index_wikis_on_project_id"
-  add_index "wikis", ["slug"], :name => "index_wikis_on_slug"
 
 end

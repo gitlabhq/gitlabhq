@@ -53,7 +53,6 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy
   has_many :deploy_keys,        dependent: :destroy, class_name: "Key", foreign_key: "project_id"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
-  has_many :wikis,              dependent: :destroy
   has_many :protected_branches, dependent: :destroy
   has_many :user_team_project_relationships, dependent: :destroy
 
