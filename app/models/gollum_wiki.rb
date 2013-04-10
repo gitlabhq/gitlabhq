@@ -16,6 +16,10 @@ class GollumWiki
     @user = user
   end
 
+  def path
+    @project.path + '.wiki'
+  end
+
   def path_with_namespace
     @project.path_with_namespace + ".wiki"
   end

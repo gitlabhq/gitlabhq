@@ -24,8 +24,8 @@
       %legend Clone Your Wiki:
       %pre.dark
         :preserve
-          git clone #{@gollum_wiki.path_with_namespace}.git
-          cd #{@gollum_wiki.path_with_namespace}
+          git clone #{@gollum_wiki.ssh_url_to_repo}
+          cd #{@gollum_wiki.path}
 
       %legend Start Gollum And Edit Locally:
       %pre.dark
