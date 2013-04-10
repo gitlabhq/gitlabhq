@@ -16,12 +16,6 @@ describe MergeRequestObserver do
   subject { MergeRequestObserver.instance }
 
   describe '#after_create' do
-
-    it 'is called when a merge request is created' do
-      subject.should_receive(:after_create)
-      create(:merge_request, project: create(:project))
-    end
-
     it 'trigger notification service' do
       subject.should_receive(:notification)
       subject.after_create(mr_mock)

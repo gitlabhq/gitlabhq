@@ -39,7 +39,6 @@ describe Project do
     it { should have_many(:snippets).dependent(:destroy) }
     it { should have_many(:deploy_keys).dependent(:destroy) }
     it { should have_many(:hooks).dependent(:destroy) }
-    it { should have_many(:wikis).dependent(:destroy) }
     it { should have_many(:protected_branches).dependent(:destroy) }
   end
 
@@ -97,6 +96,7 @@ describe Project do
   end
 
   describe "last_activity methods" do
+    before { enable_observers }
     let(:project)    { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
 

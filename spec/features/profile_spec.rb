@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "Profile account page" do
+  before(:each) { enable_observers }
   let(:user) { create(:user) }
 
   before do

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::API do
   include ApiHelpers
+  before(:each) { enable_observers }
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

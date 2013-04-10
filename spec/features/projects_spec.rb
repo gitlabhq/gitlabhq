@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "Projects" do
+  before(:each) { enable_observers }
   before { login_as :user }
 
   describe "DELETE /projects/:id" do
