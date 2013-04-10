@@ -20,5 +20,19 @@ namespace :gitlab do
       puts "Importing #{user.email} users into #{project_ids.size} projects"
       UsersProject.add_users_into_projects(project_ids, Array.wrap(user.id), UsersProject::DEVELOPER)
     end
+
+    desc "GITLAB | Add a team to all projects (with default access developer)"
+    task :team_to_projects, [:team_id, :access] => :environment do |t, args|
+      user_team = UserTeam.where(:id => args.team_id).first
+      if user_team.nil?
+        puts "Unknown team ..".red
+      else
+        projects_ids = Project.pluck(:id)
+        puts "Adding team: '#{user_team.name}' to #{projects_ids.size} project(s)".yellow
+        user_team.assign_to_projects(projects_ids, UsersProject::DEVELOPER)
+        puts "Done."
+      end
+    end
+
   end
 end
