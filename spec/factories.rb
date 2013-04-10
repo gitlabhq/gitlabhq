@@ -198,12 +198,6 @@ FactoryGirl.define do
     url
   end
 
-  factory :wiki do
-    title
-    content
-    user
-  end
-
   factory :snippet do
     project
     author

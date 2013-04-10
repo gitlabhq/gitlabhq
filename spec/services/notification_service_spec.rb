@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe NotificationService do
-  # Disable observers to prevent factory trigger notification service
-  before(:all) { ActiveRecord::Base.observers.disable :all }
-  after(:all) { ActiveRecord::Base.observers.enable :all }
-
   let(:notification) { NotificationService.new }
 
   describe 'Keys' do
