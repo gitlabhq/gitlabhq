@@ -78,6 +78,8 @@ If you have issues with Public GitLab, you can report them with the [Github issu
 
 Please remberer to tell us which database you are using.
 
+If there is a new stable branch, please do not open an issue to ask update. [Contact me](http://hoa.ro/static6/contact) instead.
+
 ## License
 
 Public GitLab is provided and maintain by [Arthur Hoaro](http://hoa.ro).
