@@ -22,11 +22,14 @@ module Gitlab
       attr_accessor :root_ref
 
       def initialize(path_with_namespace, root_ref = 'master')
-        @root_ref = root_ref || "master"
         @path_with_namespace = path_with_namespace
 
         # Init grit repo object
         repo
+
+        # Set default branch
+        update_root_ref(root_ref)
+      
       end
 
       def raw
@@ -146,6 +149,13 @@ module Gitlab
           branch_names.select { |v| v == root_ref }.first
         end
       end
+      
+      # Updates the default branch in the bare repo
+      def update_root_ref(root_ref)
+        @root_ref = root_ref || "master"
+        @repo.git.fs_write('HEAD',"ref: refs/heads/#{@root_ref}\n")
+      end
+      
 
       # Archive Project to .tar.gz
       #

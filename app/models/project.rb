@@ -85,6 +85,9 @@ class Project < ActiveRecord::Base
 
   validate :check_limit, :repo_name
 
+  after_update :update_default_branch
+  
+  
   # Scopes
   scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
   scope :without_team, ->(team) { team.projects.present? ? where("projects.id NOT IN (:ids)", ids: team.projects.map(&:id)) : scoped  }
@@ -307,6 +310,11 @@ class Project < ActiveRecord::Base
     if repository && default_branch.nil?
       update_attributes(default_branch: self.repository.discover_default_branch)
     end
+  end
+  
+  # Update the default_branch if changed
+  def update_default_branch
+    self.repository.update_root_ref(default_branch) if self.default_branch_changed?
   end
 
   def update_merge_requests(oldrev, newrev, ref, user)
