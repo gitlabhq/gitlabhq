@@ -22,22 +22,22 @@
   .span3
     %ul.nav.nav-pills.nav-stacked
       %li{class: ("active" if !params[:type])}
-        = link_to project_team_members_path(type: nil) do
+        = link_to project_team_index_path(type: nil) do
           All
       %li{class: ("active" if params[:type] == 'masters')}
-        = link_to project_team_members_path(type: 'masters') do
+        = link_to project_team_index_path(type: 'masters') do
           Masters
           %span.pull-right= @project.users_projects.masters.count
       %li{class: ("active" if params[:type] == 'developers')}
-        = link_to project_team_members_path(type: 'developers') do
+        = link_to project_team_index_path(type: 'developers') do
           Developers
           %span.pull-right= @project.users_projects.developers.count
       %li{class: ("active" if params[:type] == 'reporters')}
-        = link_to project_team_members_path(type: 'reporters') do
+        = link_to project_team_index_path(type: 'reporters') do
           Reporters
           %span.pull-right= @project.users_projects.reporters.count
       %li{class: ("active" if params[:type] == 'guests')}
-        = link_to project_team_members_path(type: 'guests') do
+        = link_to project_team_index_path(type: 'guests') do
           Guests
           %span.pull-right= @project.users_projects.guests.count
 

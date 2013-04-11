@@ -270,7 +270,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :team_members do
+    resources :team_members, except: [:index, :edit] do
       collection do
 
         # Used for import team

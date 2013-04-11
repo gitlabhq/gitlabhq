@@ -181,7 +181,6 @@ GEM
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
-    gitlab_yaml_db (1.0.0)
     gon (4.0.2)
     grape (0.3.2)
       activesupport
@@ -521,7 +520,6 @@ DEPENDENCIES
   gitlab-pygments.rb (~> 0.3.2)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
-  gitlab_yaml_db (= 1.0.0)
   gollum (~> 2.4.0)!
   gon
   grape (~> 0.3.1)

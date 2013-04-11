@@ -52,7 +52,7 @@ class TeamMembersController < ProjectResourceController
     status = @project.team.import(giver)
     notice = status ? "Succesfully imported" : "Import failed"
 
-    redirect_to project_team_members_path(project), notice: notice
+    redirect_to project_team_index_path(project), notice: notice
   end
 
   protected

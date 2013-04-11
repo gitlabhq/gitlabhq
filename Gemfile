@@ -32,9 +32,6 @@ gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 
-# Dump db to yml file. Mostly used to migrate from sqlite to mysql
-gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
-
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
