@@ -29,7 +29,7 @@
               %i.icon-user
             - if Gitlab.config.gitlab.signup_enabled
               %li
-                = link_to "#{request.host_with_port}/users/sign_up", title: "Signup", class: 'has_bottom_tooltip', 'data-original-title' => 'Sign Up'  do
+                = link_to "#{request.protocol}#{request.host}:#{request.port}/users/sign_up", title: "Signup", class: 'has_bottom_tooltip', 'data-original-title' => 'Sign Up'  do
                   %i.icon-briefcase
           - else
             %li
