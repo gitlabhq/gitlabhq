@@ -24,7 +24,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
 
     select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select "Reporter", :from => "project_access"
+      select "Reporter", from: "project_access"
     end
     click_button "Add users"
   end
@@ -44,7 +44,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   And 'I change "Sam" role to "Reporter"' do
     user = User.find_by_name("Sam")
     within ".user_#{user.id}" do
-      select "Reporter", :from => "team_member_project_access"
+      select "Reporter", from: "team_member_project_access"
     end
   end
 
@@ -65,11 +65,11 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   And 'gitlab user "Mike"' do
-    create(:user, :name => "Mike")
+    create(:user, name: "Mike")
   end
 
   And 'gitlab user "Sam"' do
-    create(:user, :name => "Sam")
+    create(:user, name: "Sam")
   end
 
   And '"Sam" is "Shop" developer' do
@@ -79,7 +79,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I own project "Website"' do
-    @project = create(:project, :name => "Website")
+    @project = create(:project, name: "Website")
     @project.team << [@user, :master]
   end
 
