@@ -13,7 +13,7 @@ class NotificationService
   # even if user disabled notifications
   def new_key(key)
     if key.user
-      Notify.delay.new_ssh_key_email(key.id)
+      mailer.new_ssh_key_email(key.id)
     end
   end
 
@@ -84,14 +84,14 @@ class NotificationService
     recipients = recipients.concat(project_watchers(merge_request.project)).uniq
 
     recipients.each do |recipient|
-      Notify.delay.merged_merge_request_email(recipient.id, merge_request.id)
+      mailer.merged_merge_request_email(recipient.id, merge_request.id)
     end
   end
 
   # Notify new user with email after creation
   def new_user(user)
     # Dont email omniauth created users
-    Notify.delay.new_user_email(user.id, user.password) unless user.extern_uid?
+    mailer.new_user_email(user.id, user.password) unless user.extern_uid?
   end
 
   # Notify users on new note in system
@@ -131,16 +131,16 @@ class NotificationService
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
 
     recipients.each do |recipient|
-      Notify.delay.send(notify_method, recipient.id, note.id)
+      mailer.send(notify_method, recipient.id, note.id)
     end
   end
 
   def new_team_member(users_project)
-    Notify.delay.project_access_granted_email(users_project.id)
+    mailer.project_access_granted_email(users_project.id)
   end
 
   def update_team_member(users_project)
-    Notify.delay.project_access_granted_email(users_project.id)
+    mailer.project_access_granted_email(users_project.id)
   end
 
   protected
@@ -186,7 +186,7 @@ class NotificationService
     recipients.delete(target.author)
 
     recipients.each do |recipient|
-      Notify.delay.send(method, recipient.id, target.id)
+      mailer.send(method, recipient.id, target.id)
     end
   end
 
@@ -196,7 +196,7 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      Notify.delay.send(method, recipient.id, target.id, current_user.id)
+      mailer.send(method, recipient.id, target.id, current_user.id)
     end
   end
 
@@ -213,7 +213,11 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      Notify.delay.send(method, recipient.id, target.id, target.assignee_id_was)
+      mailer.send(method, recipient.id, target.id, target.assignee_id_was)
     end
+  end
+
+  def mailer
+    Notify.delay
   end
 end

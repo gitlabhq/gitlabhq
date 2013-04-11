@@ -1,3 +1,5 @@
+require 'rspec/mocks'
+
 module TestEnv
   extend self
 
@@ -13,6 +15,8 @@ module TestEnv
   # -  remove_key
   #
   def init(opts = {})
+    RSpec::Mocks::setup(self)
+
     # Disable observers to improve test speed
     #
     # You can enable it in whole test case where needed by next string:
@@ -82,6 +86,6 @@ module TestEnv
   end
 
   def disable_mailer
-    ActionMailer::Base.perform_deliveries = false
+    NotificationService.any_instance.stub(mailer: double.as_null_object)
   end
 end
