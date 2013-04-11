@@ -21,6 +21,10 @@ module TestEnv
     #
     disable_observers if opts[:observers] == false
 
+    # Disable mailer for spinach tests
+    disable_mailer if opts[:mailer] == false
+
+
     # Use tmp dir for FS manipulations
     repos_path = Rails.root.join('tmp', 'test-git-base-path')
     Gitlab.config.gitlab_shell.stub(repos_path: repos_path)
@@ -75,5 +79,9 @@ module TestEnv
 
   def disable_observers
     ActiveRecord::Base.observers.disable(:all)
+  end
+
+  def disable_mailer
+    ActionMailer::Base.perform_deliveries = false
   end
 end
