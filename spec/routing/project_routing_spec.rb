@@ -308,6 +308,7 @@ end
 #                          DELETE /:project_id/team_members/:id(.:format)      team_members#destroy
 describe TeamMembersController, "routing" do
   it_behaves_like "RESTful project resources" do
+    let(:actions)    { [:new, :create, :update, :destroy] }
     let(:controller) { 'team_members' }
   end
 end

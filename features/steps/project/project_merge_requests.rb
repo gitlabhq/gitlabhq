@@ -97,7 +97,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I leave a comment on the diff page' do
-    find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185 .add-diff-note").click
+    init_diff_note
 
     within('.js-temp-notes-holder') do
       fill_in "note_note", with: "One comment to rule them all"
@@ -106,7 +106,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I leave a comment like "Line is wrong" on line 185 of the first file' do
-    find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185 .add-diff-note").click
+    init_diff_note
 
     within(".js-temp-notes-holder") do
       fill_in "note_note", with: "Line is wrong"
@@ -139,5 +139,9 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   def merge_request
     @merge_request ||= MergeRequest.find_by_title!("Bug NS-05")
+  end
+
+  def init_diff_note
+    find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
   end
 end
