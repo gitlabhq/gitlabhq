@@ -27,9 +27,10 @@
           - if current_user.is_guest?
             = link_to profile_path, title: "Login", class: 'has_bottom_tooltip', 'data-original-title' => 'Login'  do
               %i.icon-user
-            %li
-              = link_to "#{request.url}/users/sign_up", title: "Signup", class: 'has_bottom_tooltip', 'data-original-title' => 'Sign Up'  do
-                %i.icon-briefcase
+            - if Gitlab.config.gitlab.signup_enabled?
+              %li
+                = link_to "#{request.host_with_port}/users/sign_up", title: "Signup", class: 'has_bottom_tooltip', 'data-original-title' => 'Sign Up'  do
+                  %i.icon-briefcase
           - else
             %li
               = link_to profile_path, title: "My Profile", class: 'has_bottom_tooltip', 'data-original-title' => 'Your profile'  do
