@@ -15,7 +15,7 @@
 
 .row
   .span4
-    %h5 Global
+    %h5 Global setting
   .span7
     = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
       = hidden_field_tag :notification_type, 'global'
@@ -36,7 +36,7 @@
 = link_to '#', class: 'js-toggle-visibility-link' do
   %h6.btn.btn-tiny
     %i.icon-chevron-down
-    %span Per project notifications settings
+    %span Per project notifications setting
 
 %ul.well-list.js-toggle-visibility-container.hide
   - @users_projects.each do |users_project|
@@ -53,7 +53,7 @@
 
             = label_tag do
               = radio_button_tag :notification_level, Notification::N_GLOBAL, notification.global?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
-              %span Use global settings
+              %span Use global setting
 
             = label_tag do
               = radio_button_tag :notification_level, Notification::N_DISABLED, notification.disabled?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
