@@ -76,7 +76,7 @@ Then enjoy !
 
 If you have issues with Public GitLab, you can report them with the [Github issues module](https://github.com/ArthurHoaro/Public-GitLab/issues). 
 
-Please remberer to tell us which database you are using.
+Please rememberer to tell us which database you are using.
 
 If there is a new stable branch, please do not open an issue to ask update. [Contact me](http://hoa.ro/static6/contact) instead.
 
