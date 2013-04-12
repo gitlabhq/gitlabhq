@@ -238,12 +238,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     method_source (0.8.1)
-<<<<<<< HEAD
     mime-types (1.22)
-=======
-    mime-types (1.21)
-    minitest (4.7.1)
->>>>>>> First approach to code search feature
     modernizr (2.6.2)
       sprockets (~> 2.0)
     multi_json (1.7.2)
