@@ -16,7 +16,7 @@ class GraphController < ProjectResourceController
       format.html
 
       format.json do
-        @graph = Network::Graph.new(project, @ref, @commit)
+        @graph = Network::Graph.new(project, @ref, @commit, @options[:filter_ref])
       end
     end
   end
