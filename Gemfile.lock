@@ -7,30 +7,20 @@ GIT
       rake (>= 0.8.7)
 
 GIT
-  remote: https://github.com/gitlabhq/grit.git
-  revision: 42297cdcee16284d2e4eff23d41377f52fc28b9d
-  ref: 42297cdcee16284d2e4eff23d41377f52fc28b9d
-  specs:
-    grit (2.5.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
-
-GIT
   remote: https://github.com/gitlabhq/raphael-rails.git
   revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
   specs:
     raphael-rails (2.1.0)
 
 GIT
-  remote: https://github.com/jonleighton/poltergeist.git
-  revision: 9645b52009e258921b860d3b7601d00008b22c45
-  ref: 9645b52009e258921b860d3b7601d00008b22c45
+  remote: https://github.com/jacargentina/grit.git
+  revision: bd173692a99489c38a92bbe0a83b86c0b4850354
+  ref: bd173692a99489c38a92bbe0a83b86c0b4850354
   specs:
-    poltergeist (1.1.0)
-      capybara (~> 2.0, >= 2.0.1)
-      faye-websocket (~> 0.4, >= 0.4.4)
-      http_parser.rb (~> 0.5.3)
+    grit (2.5.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
 
 GEM
   remote: https://rubygems.org/
@@ -520,6 +510,7 @@ DEPENDENCIES
   kaminari (~> 0.14.1)
   launchy
   letter_opener
+  minitest
   modernizr (= 2.6.2)
   mysql2
   omniauth (~> 1.1.3)

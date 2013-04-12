@@ -32,6 +32,14 @@
           %strong.term
             = truncate wiki_page.title, length: 50
         %span.light (#{wiki_page.project.name_with_namespace})
+    - @files.each do |file|
+      %li
+        file:
+        = link_to project_tree_path(file.project, (file.tree + "/" + file.filename), :anchor => "LC" + file.line.to_s) do
+          %strong.term
+            = file.filename
+        %span.light #{file.line}
+        %span #{file.text}
 
 :javascript
   $(function() {
