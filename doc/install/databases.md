@@ -47,5 +47,5 @@ GitLab supports the following databases:
     template1=# \q
 
     # Try connecting to the new database with the new user
-    sudo -u git -H psql -d gitlabhq_production
+    sudo -u gitlab -H psql -d gitlabhq_production
 
