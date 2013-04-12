@@ -135,6 +135,7 @@ class Project < ActiveRecord::Base
     def access_options
       UsersProject.access_roles
     end
+
   end
 
   def team
@@ -399,4 +400,18 @@ class Project < ActiveRecord::Base
   def protected_branch? branch_name
     protected_branches.map(&:name).include?(branch_name)
   end
+  
+  def files query
+   greps = repository.repo.grep(query, default_branch)
+   greps.each do |g|
+     class << g
+      attr_accessor :project
+      attr_accessor :tree
+     end
+     g.tree = default_branch
+     g.project = self
+   end
+   greps
+  end
+    
 end

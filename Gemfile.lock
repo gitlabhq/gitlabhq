@@ -24,20 +24,20 @@ GIT
       rake (>= 0.8.7)
 
 GIT
-  remote: https://github.com/gitlabhq/grit.git
-  revision: c40a32432616a07fa7fc3c32c24ab73ad6a9718f
-  ref: c40a32432616a07fa7fc3c32c24ab73ad6a9718f
+  remote: https://github.com/gitlabhq/raphael-rails.git
+  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
+  specs:
+    raphael-rails (2.1.0)
+
+GIT
+  remote: https://github.com/jacargentina/grit.git
+  revision: bd173692a99489c38a92bbe0a83b86c0b4850354
+  ref: bd173692a99489c38a92bbe0a83b86c0b4850354
   specs:
     grit (2.5.0)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
-
-GIT
-  remote: https://github.com/gitlabhq/raphael-rails.git
-  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
-  specs:
-    raphael-rails (2.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -200,7 +200,7 @@ GEM
     grape-entity (0.2.0)
       activesupport
       multi_json (>= 1.3.2)
-    grit_ext (0.6.2)
+    grit_ext (0.8.1)
       charlock_holmes (~> 0.6.9)
     growl (1.0.3)
     guard (1.5.4)
@@ -257,6 +257,7 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.1)
     mime-types (1.21)
+    minitest (4.7.1)
     modernizr (2.6.2)
       sprockets (~> 2.0)
     multi_json (1.7.1)
@@ -532,7 +533,7 @@ DEPENDENCIES
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)
   grit (~> 2.5.0)!
-  grit_ext (~> 0.6.2)
+  grit_ext (~> 0.8.1)
   growl
   guard-rspec
   guard-spinach
@@ -544,6 +545,7 @@ DEPENDENCIES
   kaminari (~> 0.14.1)
   launchy
   letter_opener
+  minitest
   modernizr (= 2.6.2)
   mysql2
   omniauth (~> 1.1.3)
