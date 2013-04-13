@@ -115,7 +115,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
 * Run all tests
 
-        bundle exec rake gitlab:test
+        bundle exec rake gitlab:test RAILS_ENV=test
 
 * Rspec unit and functional tests
 
