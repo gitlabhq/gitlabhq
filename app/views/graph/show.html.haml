@@ -7,6 +7,9 @@
 
 :javascript
   var branch_graph;
+  $("#filter_ref").click(function() {
+    $(this).closest('form').submit();
+  });
   branch_graph = new BranchGraph($("#holder"), {
     url: '#{project_graph_path(@project, @ref, @options.merge(format: :json))}',
     commit_url: '#{project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")}',

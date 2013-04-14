@@ -4,6 +4,14 @@
 .clearfix
   .pull-left
     = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
+  .pull-left
+    = form_tag project_graph_path(@project, @id), method: :get do |f|
+      .control-group
+        = label_tag :filter_ref, "Show only selected ref", class: 'control-label light'
+        .controls
+          = check_box_tag :filter_ref, 1, @options[:filter_ref]
+    - @options.each do |key, value|
+      = hidden_field_tag(key, value, id: nil) unless key == "filter_ref"
 
   .search.pull-right
     = form_tag project_graph_path(@project, @id), method: :get do |f|
