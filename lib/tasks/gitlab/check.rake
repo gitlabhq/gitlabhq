@@ -23,6 +23,7 @@ namespace :gitlab do
       check_init_script_exists
       check_init_script_up_to_date
       check_satellites_exist
+      check_redis_version
 
       finished_checking "GitLab"
     end
@@ -245,6 +246,25 @@ namespace :gitlab do
         fix_and_rerun
       end
     end
+
+	def check_redis_version
+      print "Redis version >= 2.0.0? ... "	  
+      
+      redis_version = `redis-cli --version`
+
+      if redis_version =~ /redis-cli 2.\d.\d/
+        puts "yes".green
+      else   
+        puts "no".red
+        try_fixing_it(
+          "Update your redis server to a version >= 2.0.0"      
+        )
+        for_more_information(
+          "See the Troubleshooting guide"
+        )
+        fix_and_rerun
+      end
+    end    
   end
 
 
