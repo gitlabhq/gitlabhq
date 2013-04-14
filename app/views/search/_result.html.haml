@@ -32,6 +32,15 @@
           %strong.term
             = truncate wiki_page.title, length: 50
         %span.light (#{wiki_page.project.name_with_namespace})
+    - @snippets.each do |snippet|
+      %li
+        code:
+        = link_to project_blob_path(snippet.project, tree_join(snippet.tree, snippet.filename), :anchor => "L" + snippet.startline.to_s) do
+          %strong.term
+            = snippet.filename
+          .file_content.code
+            %div{class: user_color_scheme_class}
+              = raw snippet.colorize( formatter: :gitlab, options: { first_line_number: snippet.startline } )
 
 :javascript
   $(function() {

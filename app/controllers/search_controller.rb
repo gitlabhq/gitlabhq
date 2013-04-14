@@ -18,5 +18,6 @@ class SearchController < ApplicationController
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
     @wiki_pages     = result[:wiki_pages]
+    @snippets       = result[:snippets]
   end
 end

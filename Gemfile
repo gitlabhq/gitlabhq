@@ -23,7 +23,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # We cannot use original git since some bugs
-gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: '42297cdcee16284d2e4eff23d41377f52fc28b9d'
+gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git'
 gem 'gitlab_git', '~> 1.0.6'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
