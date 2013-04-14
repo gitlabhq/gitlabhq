@@ -10,7 +10,11 @@ class SearchContext
 
     return result unless query.present?
 
-    result[:projects] = Project.where(id: project_ids).search(query).limit(10)
+    projects = Project.where(id: project_ids)
+    result[:projects] = projects.search(query).limit(10)
+    if projects.length == 1
+      result[:snippets] = projects.first.files(query, params[:branch_ref])
+    end
     result[:merge_requests] = MergeRequest.where(project_id: project_ids).search(query).limit(10)
     result[:issues] = Issue.where(project_id: project_ids).search(query).limit(10)
     result[:wiki_pages] = []
@@ -22,7 +26,8 @@ class SearchContext
       projects: [],
       merge_requests: [],
       issues: [],
-      wiki_pages: []
+      wiki_pages: [],
+      snippets: []
     }
   end
 end
