@@ -106,6 +106,11 @@ module ExtractsPath
     @hex_path = Digest::SHA1.hexdigest(@path)
     @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
+    # assign allowed options
+    allowed_options = ["filter_ref", "q"]
+    @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
+    @options = HashWithIndifferentAccess.new(@options)
+
     raise InvalidPathError unless @tree.exists?
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!

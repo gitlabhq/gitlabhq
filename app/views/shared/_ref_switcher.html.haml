@@ -3,3 +3,5 @@
   = hidden_field_tag :destination, destination
   - if defined?(path)
     = hidden_field_tag :path, path
+  - @options && @options.each do |key, value|
+    = hidden_field_tag key, value, id: nil

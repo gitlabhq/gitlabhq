@@ -8,14 +8,8 @@ class GraphController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    if params.has_key?(:q)
-      if params[:q].blank?
-        redirect_to project_graph_path(@project, params[:id])
-        return
-      end
-
-      @q = params[:q]
-      @commit = @project.repository.commit(@q) || @commit
+    if @options[:q]
+      @commit = @project.repository.commit(@options[:q]) || @commit
     end
 
     respond_to do |format|
