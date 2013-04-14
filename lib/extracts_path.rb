@@ -94,16 +94,28 @@ module ExtractsPath
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
-    @id = params[:id]
+    @id = get_id
 
     @ref, @path = extract_ref(@id)
 
-    @commit = @project.repository.commit(@ref)
+    @repo = @project.repository
 
-    @tree = Tree.new(@project.repository, @commit.id, @ref, @path)
+    @commit = @repo.commit(@ref)
+
+    @tree = Tree.new(@repo, @commit.id, @ref, @path)
+    @hex_path = Digest::SHA1.hexdigest(@path)
+    @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
     raise InvalidPathError unless @tree.exists?
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!
+  end
+
+  private
+
+  def get_id
+    id = params[:id] || params[:ref]
+    id += "/" + params[:path] unless params[:path].blank?
+    id
   end
 end

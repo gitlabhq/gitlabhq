@@ -3,10 +3,10 @@
 
 .clearfix
   .pull-left
-    = render partial: 'shared/ref_switcher', locals: {destination: 'graph', path: @path}
+    = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
 
   .search.pull-right
-    = form_tag project_graph_path(@project, params[:id]), method: :get do |f|
+    = form_tag project_graph_path(@project, @id), method: :get do |f|
       .control-group
         = label_tag :search , "Looking for commit:", class: 'control-label light'
         .controls
