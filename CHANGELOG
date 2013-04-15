@@ -12,6 +12,9 @@ v 5.1.0
   - Restyled Merge Request list
   - Backup now dump/restore uploads
   - Improved perfomance of dashboard
+  - File history now tracks renames
+  - Drop wiki migration tools
+  - Drop sqlite migration tools
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
