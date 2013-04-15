@@ -71,7 +71,7 @@ module Gitlab
         if path.present?
           repo.log(ref, path, max_count: limit, skip: offset, follow: true)
         elsif limit && offset
-          repo.commits(ref, limit, offset)
+          repo.commits(ref, limit.to_i, offset.to_i)
         else
           repo.commits(ref)
         end.map{ |c| decorate_commit(c) }
