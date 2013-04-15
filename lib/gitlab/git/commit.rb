@@ -9,7 +9,7 @@ module Gitlab
         :author_name, :author_email, :parent_ids,
         :committer_name, :committer_email
 
-      delegate :parents, :diffs, :tree, :stats, :to_patch,
+      delegate :parents, :tree, :stats, :to_patch,
         to: :raw_commit
 
       def initialize(raw_commit, head = nil)
@@ -94,6 +94,10 @@ module Gitlab
 
       def date
         committed_date
+      end
+
+      def diffs
+        raw_commit.diffs.map { |diff| Gitlab::Git::Diff.new(diff) }
       end
 
       private

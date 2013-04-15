@@ -68,8 +68,8 @@ class Note < ActiveRecord::Base
   def diff
     if noteable.diffs.present?
       noteable.diffs.select do |d|
-        if d.b_path
-          Digest::SHA1.hexdigest(d.b_path) == diff_file_index
+        if d.new_path
+          Digest::SHA1.hexdigest(d.new_path) == diff_file_index
         end
       end.first
     end
@@ -80,7 +80,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_file_name
-    diff.b_path
+    diff.new_path
   end
 
   def diff_new_line
