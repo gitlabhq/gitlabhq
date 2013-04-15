@@ -120,7 +120,7 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should == [@user.namespace, @group] }
+    it { @user.namespaces.should include(@user.namespace, @group) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
   end
@@ -155,8 +155,8 @@ describe User do
 
     it { User.filter("admins").should == [@admin] }
     it { User.filter("blocked").should == [@blocked] }
-    it { User.filter("wop").should == [@user, @admin, @blocked] }
-    it { User.filter(nil).should == [@user, @admin] }
+    it { User.filter("wop").should include(@user, @admin, @blocked) }
+    it { User.filter(nil).should include(@user, @admin) }
   end
 
   describe :not_in_project do
@@ -166,7 +166,7 @@ describe User do
       @project = create :project
     end
 
-    it { User.not_in_project(@project).should == [@user, @project.owner] }
+    it { User.not_in_project(@project).should include(@user, @project.owner) }
   end
 
   describe 'normal user' do
