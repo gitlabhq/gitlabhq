@@ -250,9 +250,7 @@ namespace :gitlab do
 	def check_redis_version
       print "Redis version >= 2.0.0? ... "	  
       
-      redis_version = `redis-cli --version`
-
-      if redis_version =~ /redis-cli 2.\d.\d/
+      if run_and_match("redis-cli --version", /redis-cli 2.\d.\d/)
         puts "yes".green
       else   
         puts "no".red
@@ -260,7 +258,7 @@ namespace :gitlab do
           "Update your redis server to a version >= 2.0.0"      
         )
         for_more_information(
-          "See the Troubleshooting guide"
+          "gitlab-public-wiki/wiki/Trouble-Shooting-Guide in section sidekiq"
         )
         fix_and_rerun
       end
