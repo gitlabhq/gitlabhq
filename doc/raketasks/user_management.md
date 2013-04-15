@@ -1,4 +1,4 @@
-### Add user to as a developer to all projects
+### Add user as a developer to all projects
 
 ```
 bundle exec rake gitlab:import:user_to_projects[username@domain.tld]

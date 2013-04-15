@@ -11,31 +11,30 @@ Example output:
 
 ```
 System information
-System:         Debian 6.0.6
-Current User:   gitlab
-Using RVM:      yes
-RVM Version:    1.17.2
-Ruby Version:   ruby-1.9.3-p392
-Gem Version:    1.8.24
-Bundler Version:1.2.3
-Rake Version:   10.0.1
+System:		Debian 6.0.7
+Current User:	git
+Using RVM:	no
+Ruby Version:	1.9.3p392
+Gem Version:	1.8.23
+Bundler Version:1.3.5
+Rake Version:	10.0.4
 
 GitLab information
-Version:        3.1.0
-Resivion:       fd5141d
-Directory:      /home/gitlab/gitlab
-DB Adapter:     mysql2
-URL:            http://localhost:3000
-HTTP Clone URL: http://localhost:3000/some-project.git
-SSH Clone URL:  git@localhost:some-project.git
-Using LDAP:     no
-Using Omniauth: no
+Version:	5.1.0.beta2
+Revision:	4da8b37
+Directory:	/home/git/gitlab
+DB Adapter:	mysql2
+URL:		http://localhost
+HTTP Clone URL:	http://localhost/some-project.git
+SSH Clone URL:	git@localhost:some-project.git
+Using LDAP:	no
+Using Omniauth:	no
 
 GitLab Shell
-Version:        1.0.4
-Repositories:   /home/git/repositories/
-Hooks:          /home/git/gitlab-shell/hooks/
-Git:            /usr/bin/git
+Version:	1.2.0
+Repositories:	/home/git/repositories/
+Hooks:		/home/git/gitlab-shell/hooks/
+Git:		/usr/bin/git
 ```
 
 
@@ -61,60 +60,43 @@ Example output:
 ```
 Checking Environment ...
 
-gitlab user is in git group? ... yes
-Has no "-e" in ~git/.profile ... yes
-Git configured for gitlab user? ... yes
+Git configured for git user? ... yes
 Has python2? ... yes
 python2 is supported version? ... yes
 
 Checking Environment ... Finished
 
-Checking Gitolite ...
+Checking Gitlab Shell ...
 
-Using recommended version ... yes
-Config directory exists? ... yes
-Config directory owned by git:git? ... yes
-Config directory access is drwxr-x---? ... yes
+GitLab Shell version? ... OK (1.2.0)
 Repo base directory exists? ... yes
+Repo base directory is a symlink? ... no
 Repo base owned by git:git? ... yes
 Repo base access is drwxrws---? ... yes
-post-receive hook exists? ... yes
 post-receive hook up-to-date? ... yes
-post-receive hooks in repos are links: ...
-GitLab ... ok
-Non-Ascii Files Test ... ok
-Touch Commit Test ... ok
-Without Master Test ... ok
-Git config in repos: ...
-GitLab ... ok
-Non-Ascii Files Test ... ok
-Touch Commit Test ... ok
-Without Master Test ... ok
+post-receive hooks in repos are links: ... yes
 
-Checking Gitolite ... Finished
+Checking Gitlab Shell ... Finished
 
-Checking Resque ...
+Checking Sidekiq ...
 
 Running? ... yes
 
-Checking Resque ... Finished
+Checking Sidekiq ... Finished
 
 Checking GitLab ...
 
 Database config exists? ... yes
-Database is not SQLite ... yes
+Database is SQLite ... no
 All migrations up? ... yes
 GitLab config exists? ... yes
-GitLab config not outdated? ... yes
+GitLab config outdated? ... no
 Log directory writable? ... yes
 Tmp directory writable? ... yes
 Init script exists? ... yes
 Init script up-to-date? ... yes
-Projects have satellites? ...
-GitLab ... yes
-Non-Ascii Files Test ... yes
-Touch Commit Test ... yes
-Without Master Test ... yes
+Projects have satellites? ... yes
+Redis version >= 2.0.0? ... yes
 
 Checking GitLab ... Finished
 ```
