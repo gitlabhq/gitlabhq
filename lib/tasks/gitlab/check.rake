@@ -246,8 +246,8 @@ namespace :gitlab do
         fix_and_rerun
       end
     end
-
-	def check_redis_version
+    
+    def check_redis_version
       print "Redis version >= 2.0.0? ... "	  
       
       if run_and_match("redis-cli --version", /redis-cli 2.\d.\d/)
