@@ -3,6 +3,10 @@ module ProjectsHelper
     "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
 
+  def projects_labels
+    Project.tag_counts_on(:labels).map(&:name)
+  end
+
   def link_to_project project
     link_to project do
       title = content_tag(:strong, project.name)
