@@ -12,6 +12,7 @@ module Gitlab
         @users = User.scoped
         @users = @users.active if params[:active].present?
         @users = @users.search(params[:search]) if params[:search].present?
+        @users = paginate @users
         present @users, with: Entities::User
       end
 
