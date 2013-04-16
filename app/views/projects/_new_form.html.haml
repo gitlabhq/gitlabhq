@@ -14,7 +14,7 @@
       = f.label :namespace_id do
         %span Namespace
       .input
-        = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen'}
+        = f.select :namespace_id, namespaces_options(params[:namespace_id] || Gitlab.config.gitlab.default_namespace.to_sym), {}, {class: 'chosen'}
 
 
   .clearfix

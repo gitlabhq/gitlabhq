@@ -49,6 +49,7 @@ Settings['issues_tracker']  ||= {}
 #
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||=  10
+Settings.gitlab['default_namespace'] ||= :current_user
 Settings.gitlab['host']       ||= 'localhost'
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
