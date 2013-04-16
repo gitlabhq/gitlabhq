@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def serialize_keys
-        %w(id authored_date committed_date author_name author_email committer_name committer_email message parent_ids)
+        @serialize_keys ||= %w(id authored_date committed_date author_name author_email committer_name committer_email message parent_ids).map(&:to_sym)
       end
 
       def sha
@@ -116,8 +116,10 @@ module Gitlab
       end
 
       def init_from_hash(hash)
+        raw_commit = hash.symbolize_keys
+
         serialize_keys.each do |key|
-          send(:"#{key}=", hash[key])
+          send(:"#{key}=", raw_commit[key.to_sym])
         end
       end
     end
