@@ -28,11 +28,13 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   extend Enumerize
 
-  attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
+  attr_accessible :name, :path, :description, :default_branch, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
+
+  acts_as_taggable_on :labels
 
   attr_accessor :import_url
 
