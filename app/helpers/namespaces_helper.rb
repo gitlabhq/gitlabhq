@@ -20,6 +20,8 @@ module NamespacesHelper
 
     if selected == :current_user && current_user.namespace
       selected = current_user.namespace.id
+    elsif selected == :global
+      selected = Namespace.global_id
     end
 
     grouped_options_for_select(options, selected)
