@@ -87,7 +87,6 @@
 %h6 Participants:
 %div
   - @users.each do |user|
-    = link_to user do
-      = link_to_member(@project, user)
+    = link_to_member(@project, user)
 
 .clearfix

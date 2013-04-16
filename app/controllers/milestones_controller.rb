@@ -32,7 +32,7 @@ class MilestonesController < ProjectResourceController
 
   def show
     @issues = @milestone.issues
-    @users = @milestone.participants
+    @users = @milestone.participants.uniq
     @merge_requests = @milestone.merge_requests
 
     respond_to do |format|
