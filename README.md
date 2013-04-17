@@ -143,13 +143,13 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
 * [Support forum](https://groups.google.com/forum/#!forum/gitlabhq) is the best place to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and had it resolved. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
 
-* [Feedback and suggestions forum](http://gitlab.uservoice.com/forums/176466-general) is the place to propose and discuss new features for GitLab.
+* [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
 * [Support subscription](http://www.gitlab.com/subscription/) connect you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
 
 * [Consultancy](http://www.gitlab.com/consultancy/) allows you hire GitLab exports for installations, upgrades and customizations.
 
-* [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed without comment.
+* [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
 
 ### Getting in touch
