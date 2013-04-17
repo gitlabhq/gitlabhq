@@ -99,6 +99,10 @@ GitLab Shell is a ssh access and repository management software developed specia
     git clone https://github.com/gitlabhq/gitlab-shell.git
 
     cd gitlab-shell
+
+    # switch to right version
+    git checkout v1.2.0
+
     cp config.yml.example config.yml
 
     # Edit config and replace gitlab_url
