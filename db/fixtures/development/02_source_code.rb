@@ -1,3 +1,4 @@
+gitlab_shell_path =  File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
 root = Gitlab.config.gitlab_shell.repos_path
 
 projects = [
@@ -17,8 +18,7 @@ projects.each do |project|
     print '-'
     next
   end
-
-  if system("/home/git/gitlab-shell/bin/gitlab-projects import-project #{project[:path]} #{project[:git]}")
+  if system("#{gitlab_shell_path}/gitlab-shell/bin/gitlab-projects import-project #{project[:path]} #{project[:git]}")
     print '.'
   else
     print 'F'
