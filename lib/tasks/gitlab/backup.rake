@@ -101,6 +101,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:db:restore"].invoke
       Rake::Task["gitlab:backup:repo:restore"].invoke
       Rake::Task["gitlab:backup:uploads:restore"].invoke
+      Rake::Task["gitlab:shell:setup"].invoke
 
       # cleanup: remove tmp files
       print "Deleting tmp directories ... "
