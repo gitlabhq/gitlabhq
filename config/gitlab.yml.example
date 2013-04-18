@@ -159,7 +159,7 @@ test:
     redmine:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
-      new_issue_url: "http://redmine/projects/:issues_tracker_id/insues/new"
+      new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
 
 staging:
   <<: *base
