@@ -22,6 +22,7 @@ module Gitlab
         key = Key.find(params[:key_id])
         project = Project.find_with_namespace(project_path)
         git_cmd = params[:action]
+        return false unless project
 
 
         if key.is_deploy_key
