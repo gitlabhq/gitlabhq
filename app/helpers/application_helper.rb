@@ -137,13 +137,21 @@ module ApplicationHelper
     end
   end
 
+  # Define whenever show last push event
+  # with suggestion to create MR
   def show_last_push_widget?(event)
-    event &&
-      event.last_push_to_non_root? &&
-      !event.rm_ref? &&
-      event.project &&
-      event.project.repository &&
-      event.project.merge_requests_enabled
+    # Skip if event is not about added or modified non-master branch
+    return false unless event && event.last_push_to_non_root? && !event.rm_ref?
+
+    project = event.project
+
+    # Skip if project repo is empty or MR disabled
+    return false unless project && !project.empty_repo? && project.merge_requests_enabled
+
+    # Skip if user already created appropriate MR
+    return false if project.merge_requests.where(source_branch: event.branch_name).opened.any?
+
+    true
   end
 
   def hexdigest(string)
