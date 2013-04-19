@@ -76,13 +76,17 @@ module Grack
     end
 
     def validate_get_request
-      project.public || can?(user, :download_code, project)
+      validate_request(@request.params['service'])
     end
 
     def validate_post_request
-      if @request.path_info.end_with?('git-upload-pack')
+      validate_request(File.basename(@request.path))
+    end
+
+    def validate_request(service)
+      if service == 'git-upload-pack'
         project.public || can?(user, :download_code, project)
-      elsif @request.path_info.end_with?('git-receive-pack')
+      elsif service == 'git-receive-pack'
         action = if project.protected_branch?(current_ref)
                    :push_code_to_protected_branches
                  else
