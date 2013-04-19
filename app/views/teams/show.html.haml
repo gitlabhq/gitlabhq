@@ -22,10 +22,7 @@
           News Feed
 
     %hr
-    .gitlab-promo
-      = link_to "Homepage", "http://gitlabhq.com"
-      = link_to "Blog", "http://blog.gitlabhq.com"
-      = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+    = render 'shared/promo'
 
 :javascript
   $(function(){ Pager.init(20, true); });
