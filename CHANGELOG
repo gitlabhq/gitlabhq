@@ -11,12 +11,13 @@ v 5.1.0
   - Restyled Issues list. Show milestone version in issue row
   - Restyled Merge Request list
   - Backup now dump/restore uploads
-  - Improved perfomance of dashboard
-  - File history now tracks renames
+  - Improved perfomance of dashboard (Andrew Kumanyaev)
+  - File history now tracks renames (Akzhan Abdulin)
   - Drop wiki migration tools
   - Drop sqlite migration tools
   - project tagging
   - Paginate users in API
+  - Restyled network graph (Hiroyuki Sato)
 
 v 5.0.1
   - Fixed issue with gitlab-grit being overrided by grit
