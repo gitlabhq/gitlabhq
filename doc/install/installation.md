@@ -73,6 +73,14 @@ Download and compile it:
     make
     sudo make install
 
+Install RubyGems:
+
+    # Make sure you have rubygems installed
+    rubygem --version
+
+    # If you don't get a version number returned to you, install rubygems
+    sudo apt-get install rubygems
+
 Install the Bundler Gem:
 
     sudo gem install bundler
