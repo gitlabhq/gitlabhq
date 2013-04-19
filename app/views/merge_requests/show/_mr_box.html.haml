@@ -3,7 +3,7 @@
     %h4.box-title
       = gfm escape_once(@merge_request.title)
       - if @merge_request.merged?
-        .error.status_info
+        .success.status_info
           %i.icon-ok
           Merged
       - elsif @merge_request.closed?
