@@ -76,7 +76,7 @@ Download and compile it:
 Install RubyGems:
 
     # Make sure you have rubygems installed
-    rubygem --version
+    gem --version
 
     # If you don't get a version number returned to you, install rubygems
     sudo apt-get install rubygems
