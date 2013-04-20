@@ -78,15 +78,15 @@ module Gitlab
       end
 
       def name
-        @auth.info.name.to_s.force_encoding("utf-8")
+        Gitlab.config.user_mapping.name_proc.call(uid, raw_name, raw_email)
       end
 
       def username
-        email.match(/^[^@]*/)[0]
+        Gitlab.config.user_mapping.username_proc.call(uid, raw_name, raw_email)
       end
 
       def email
-        auth.info.email.nil? ? email_error : auth.info.email.to_s.downcase
+        Gitlab.config.user_mapping.email_proc.call(uid, raw_name, raw_email)
       end
 
       def password
@@ -99,6 +99,14 @@ module Gitlab
       end
 
       private
+
+      def raw_name
+        @auth.info.name.to_s.force_encoding("utf-8")
+      end
+
+      def raw_email
+        auth.info.email.nil? ? email_error : auth.info.email.to_s.downcase
+      end
 
       def ldap_prefix
         ldap ? '(LDAP) ' : ''
