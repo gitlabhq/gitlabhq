@@ -86,7 +86,7 @@ module Gitlab
       end
 
       def email
-        auth.info.email.nil? ? auth.info.email.to_s.downcase : email_error
+        auth.info.email.nil? ? email_error : auth.info.email.to_s.downcase
       end
 
       def password
