@@ -110,6 +110,11 @@ production: &base
       # - { name: 'github', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET' }
 
+  ## User mapping settings
+  user_mapping:
+    name: ->(uid, name, email) { name }
+    username: ->(uid, name, email) { email.match(/^[^@]*/)[0] }
+    email: ->(uid, name, email) { email }
 
 
   #
