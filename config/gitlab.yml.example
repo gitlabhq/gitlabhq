@@ -112,9 +112,9 @@ production: &base
 
   ## User mapping settings
   user_mapping:
-    name_proc: ->(uid, name, email) { name }
-    username_proc: ->(uid, name, email) { email.match(/^[^@]*/)[0] }
-    email_proc: ->(uid, name, email) { email }
+    name: ->(uid, name, email) { name }
+    username: ->(uid, name, email) { email.match(/^[^@]*/)[0] }
+    email: ->(uid, name, email) { email }
 
 
   #

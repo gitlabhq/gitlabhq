@@ -54,6 +54,11 @@ module Gitlab
       def initialize(auth, ldap = false)
         @auth = auth
         @ldap = ldap
+        @procs = {
+          name_proc: ->(uid, name, email) { name }
+          username_proc: ->(uid, name, email) { email.match(/^[^@]*/)[0] }
+          email_proc: ->(uid, name, email) { email }
+        }.merge(Gitlab.config.user_mapping)
       end
 
       def parameters
@@ -78,15 +83,15 @@ module Gitlab
       end
 
       def name
-        Gitlab.config.user_mapping.name_proc.call(uid, raw_name, raw_email)
+        @procs[:name].call(uid, raw_name, raw_email)
       end
 
       def username
-        Gitlab.config.user_mapping.username_proc.call(uid, raw_name, raw_email)
+        @procs[:username].call(uid, raw_name, raw_email)
       end
 
       def email
-        Gitlab.config.user_mapping.email_proc.call(uid, raw_name, raw_email)
+        @procs[:email].call(uid, raw_name, raw_email)
       end
 
       def password
