@@ -33,7 +33,7 @@ module Gitlab
           return false if user.blocked?
 
           action = case git_cmd
-                   when 'git-upload-pack'
+                   when 'git-upload-pack', 'git-upload-archive'
                      then :download_code
                    when 'git-receive-pack'
                      then
