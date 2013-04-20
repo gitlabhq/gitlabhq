@@ -109,6 +109,8 @@ module Grack
       else
         input = @request.body.read
       end
+      # force utf-8 encoding
+      input.encode!('UTF-8', 'UTF-8', invalid: :replace, undef: :replace, replace: '')
       # Need to reset seek point
       @request.body.rewind
       /refs\/heads\/([\w\.-]+)/.match(input).to_a.last
