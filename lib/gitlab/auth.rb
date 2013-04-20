@@ -18,30 +18,9 @@ module Gitlab
     end
 
     def create_from_omniauth(auth, ldap = false)
-      provider = auth.provider
-      uid = auth.info.uid || auth.uid
-      uid = uid.to_s.force_encoding("utf-8")
-      name = auth.info.name.to_s.force_encoding("utf-8")
-      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
-
-      ldap_prefix = ldap ? '(LDAP) ' : ''
-      raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
-        " address" if auth.info.email.blank?
-
-      log.info "#{ldap_prefix}Creating user from #{provider} login"\
-        " {uid => #{uid}, name => #{name}, email => #{email}}"
-      password = Devise.friendly_token[0, 8].downcase
-      @user = User.new({
-        extern_uid: uid,
-        provider: provider,
-        name: name,
-        username: email.match(/^[^@]*/)[0],
-        email: email,
-        password: password,
-        password_confirmation: password,
-        projects_limit: Gitlab.config.gitlab.default_projects_limit,
-      }, as: :admin)
-      @user.save!
+      creation_helper = UserCreationHelper.new(auth, ldap)
+      log.info creation_helper.creation_message
+      @user = User.create!(creation_helper.parameters, as: :admin)
 
       if Gitlab.config.omniauth['block_auto_created_users'] && !ldap
         @user.block
@@ -70,5 +49,66 @@ module Gitlab
     def log
       Gitlab::AppLogger
     end
+
+    class UserCreationHelper
+      def initialize(auth, ldap = false)
+        @auth = auth
+        @ldap = ldap
+      end
+
+      def parameters
+        {
+          extern_uid: uid,
+          provider: provider,
+          name: name,
+          username: username,
+          email: email,
+          password: password,
+          password_confirmation: password,
+          projects_limit: Gitlab.config.gitlab.default_projects_limit 
+        }
+      end
+
+      def uid
+        (@auth.info.uid || @auth.uid).to_s.force_encoding("utf-8")
+      end
+
+      def provider
+        @auth.info.provider
+      end
+
+      def name
+        @auth.info.name.to_s.force_encoding("utf-8")
+      end
+
+      def username
+        email.match(/^[^@]*/)[0]
+      end
+
+      def email
+        auth.info.email.nil? ? auth.info.email.to_s.downcase : email_error
+      end
+
+      def password
+        @password ||= Devise.friendly_token[0, 8].downcase
+      end
+
+      def creation_message
+        "#{ldap_prefix}Creating user from #{provider} login"\
+          " {uid => #{uid}, name => #{name}, email => #{email}}"
+      end
+
+      private
+
+      def ldap_prefix
+        ldap ? '(LDAP) ' : ''
+      end
+
+      def email_error
+        raise OmniAuth::Error, "#{ldap_prefix}#{parameters.provider} does not"\
+          " provide an email address" unless parameters.email
+      end
+    end
+
   end
 end
