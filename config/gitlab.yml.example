@@ -110,6 +110,15 @@ production: &base
       # - { name: 'github', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET' }
 
+  ## User Mapping Procs
+  # These procs allow for custom mapping of user information from LDAP / Omniauth
+  # onto your user model.
+  #
+  # NOTE: name may need an appropriate name_proc in the ldap settings.
+  # user_mapping:
+  #  name: ->(auth) { auth.info.name.to_s }
+  #  username: ->(auth) { auth.info.email.to_s.downcase.match(/^[^@]*/)[0] }
+  #  email: ->(auth) { auth.info.email.to_s.downcase }
 
 
   #

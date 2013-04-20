@@ -91,5 +91,43 @@ describe Gitlab::Auth do
       user.extern_uid.should == @info.uid
       user.provider.should == 'twitter'
     end
+
+    it "should still import without user mapping" do
+      Gitlab.config.stub(omniauth: {})
+      @auth = mock(info: @info, provider: 'ldap')
+      user = gl_auth.create_from_omniauth(@auth, true)
+
+      user.should be_valid
+      user.extern_uid.should == @info.uid
+      user.provider.should == 'ldap'
+    end
+
+    it "should have user details from procs" do
+      Gitlab.config.stub(omniauth: {}, user_mapping: {})
+      Gitlab.config.user_mapping[:name] = ->(auth) { 'TestName' }
+      Gitlab.config.user_mapping[:email] = ->(auth) { 'email@somewhere.com' }
+      Gitlab.config.user_mapping[:username] = ->(auth) { 'TestUsername' }
+
+      @auth = mock(info: @info, provider: 'ldap')
+      user = gl_auth.create_from_omniauth(@auth, true)
+
+      user.should be_valid
+      user.extern_uid.should == @info.uid
+      user.name.should == 'TestName'
+      user.email.should == 'email@somewhere.com'
+      user.username.should == 'TestUsername'
+    end
+
+    it "should modify value using proc" do
+      Gitlab.config.stub(omniauth: {}, user_mapping: {})
+      Gitlab.config.user_mapping[:username] = ->(auth) { auth.info.email.to_s.downcase.split('@').first }
+
+      @auth = mock(info: @info, provider: 'ldap')
+      user = gl_auth.create_from_omniauth(@auth, true)
+
+      user.should be_valid
+      user.extern_uid.should == @info.uid
+      user.username.should == 'john'
+    end
   end
 end
