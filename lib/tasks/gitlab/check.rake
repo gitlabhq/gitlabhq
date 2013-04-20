@@ -246,23 +246,23 @@ namespace :gitlab do
         fix_and_rerun
       end
     end
-    
+
     def check_redis_version
-      print "Redis version >= 2.0.0? ... "	  
-      
+      print "Redis version >= 2.0.0? ... "
+
       if run_and_match("redis-cli --version", /redis-cli 2.\d.\d/)
         puts "yes".green
-      else   
+      else
         puts "no".red
         try_fixing_it(
-          "Update your redis server to a version >= 2.0.0"      
+          "Update your redis server to a version >= 2.0.0"
         )
         for_more_information(
           "gitlab-public-wiki/wiki/Trouble-Shooting-Guide in section sidekiq"
         )
         fix_and_rerun
       end
-    end    
+    end
   end
 
 
@@ -655,10 +655,10 @@ namespace :gitlab do
 
   def check_gitlab_shell
     print "GitLab Shell version? ... "
-    if gitlab_shell_version.strip == '1.2.0'
-      puts 'OK (1.2.0)'.green
+    if gitlab_shell_version.strip == '1.3.0'
+      puts 'OK (1.3.0)'.green
     else
-      puts 'FAIL. Please update gitlab-shell to v1.2.0'.red
+      puts 'FAIL. Please update gitlab-shell to v1.3.0'.red
     end
   end
 end
