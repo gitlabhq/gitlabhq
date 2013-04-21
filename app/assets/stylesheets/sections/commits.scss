@@ -99,12 +99,24 @@
         }
       }
     }
+    .line_holder {
+      &.old .old_line,
+      &.old .new_line {
+        background: #FCC;
+        border-color: #E7BABA;
+      }
+      &.new .old_line,
+      &.new .new_line {
+        background: #CFC;
+        border-color: #B9ECB9;
+      }
+    }
     .line_content {
       display: block;
       white-space: pre;
       height: 18px;
       margin: 0px;
-      padding: 0px;
+      padding: 0px 0.5em;
       border: none;
       &.new {
         background: #CFD;
