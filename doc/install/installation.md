@@ -82,7 +82,7 @@ Install the Bundler Gem:
 
 Create a `git` user for Gitlab:
 
-    sudo adduser --disabled-login --gecos 'GitLab' git
+    sudo adduser --gecos 'GitLab' git
 
 
 # 4. GitLab shell
