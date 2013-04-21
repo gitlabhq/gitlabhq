@@ -147,7 +147,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
 * [Support subscription](http://www.gitlab.com/subscription/) connect you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
 
-* [Consultancy](http://www.gitlab.com/consultancy/) allows you hire GitLab exports for installations, upgrades and customizations.
+* [Consultancy](http://www.gitlab.com/consultancy/) allows you hire GitLab experts for installations, upgrades and customizations.
 
 * [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
