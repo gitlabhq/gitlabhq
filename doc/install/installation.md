@@ -162,8 +162,8 @@ do so with caution!
     sudo -u git -H mkdir tmp/pids/
     sudo chmod -R u+rwX  tmp/pids/
 
-    # Copy the example Unicorn config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    # Copy the example Of Puma config
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
 **Important Note:**
 Make sure to edit both files to match your setup.
