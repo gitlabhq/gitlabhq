@@ -25,7 +25,7 @@ class EditTreeController < ProjectResourceController
       redirect_to project_blob_path(@project, @id), notice: "Your changes have been successfully commited"
     else
       flash[:notice] = "Your changes could not be commited, because the file has been changed"
-      render :edit
+      render :show
     end
   end
 
