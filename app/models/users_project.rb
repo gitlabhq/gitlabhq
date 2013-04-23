@@ -32,6 +32,7 @@ class UsersProject < ActiveRecord::Base
   validates :project, presence: true
   validates :notification_level, inclusion: { in: Notification.project_notification_levels }, presence: true
 
+  delegate :name, to: :project, prefix: false
   delegate :name, :username, :email, to: :user, prefix: true
 
   scope :guests, -> { where(project_access: GUEST) }
