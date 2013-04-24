@@ -57,6 +57,7 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
   has_many :user_team_project_relationships, dependent: :destroy
+  has_many :project_services,   dependent: :destroy
 
   has_many :users,          through: :users_projects
   has_many :user_teams,     through: :user_team_project_relationships
@@ -221,6 +222,25 @@ class Project < ActiveRecord::Base
 
   def services
     [gitlab_ci_service].compact
+  end
+
+  def service_active?(service)
+    false
+  end
+
+  def project_service(params)
+    self.project_services.where(:service_hook_name => params[:id]).first \
+      || ProjectService.new(:project_id => self.id, :service_hook_name => params[:id])
+  end
+
+  def inactive_project_services
+    active = self.project_services.where(active: true).pluck(:service_hook_name)
+    Service.services.select { |s| !active.include? s.hook_name }.sort_by(&:title)
+  end
+
+  def active_project_services
+    active = self.project_services.where(active: true).pluck(:service_hook_name)
+    Service.services.select { |s| active.include? s.hook_name }.sort_by(&:title)
   end
 
   def gitlab_ci?

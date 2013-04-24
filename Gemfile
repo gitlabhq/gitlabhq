@@ -100,6 +100,12 @@ gem "foreman"
 # Cache
 gem "redis-rails"
 
+# Github Services
+gem 'github-services', github: 'IMnet/github-services', branch: 'gitlab', ref: 'f52cd67'
+gem 'basecamp'
+gem 'rubyforge'
+gem 'yammer4r'
+
 group :assets do
   gem "sass-rails",   "~> 3.2.5"
   gem "coffee-rails", "~> 3.2.2"

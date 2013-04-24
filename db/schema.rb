@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130410175022) do
+ActiveRecord::Schema.define(:version => 20130423150509) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
     t.integer  "assignee_id"
     t.integer  "author_id"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
     t.integer  "position",     :default => 0
     t.string   "branch_name"
     t.text     "description"
@@ -55,8 +55,8 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
 
   create_table "keys", :force => true do |t|
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.text     "key"
     t.string   "title"
     t.string   "identifier"
@@ -68,16 +68,16 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                       :null => false
-    t.string   "source_branch",                       :null => false
-    t.integer  "project_id",                          :null => false
+    t.string   "target_branch", :null => false
+    t.string   "source_branch", :null => false
+    t.integer  "project_id",    :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "st_commits",    :limit => 2147483647
-    t.text     "st_diffs",      :limit => 2147483647
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.text     "st_commits"
+    t.text     "st_diffs"
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
@@ -124,8 +124,8 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
     t.text     "note"
     t.string   "noteable_type"
     t.integer  "author_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
@@ -139,12 +139,23 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   add_index "notes", ["project_id", "noteable_type"], :name => "index_notes_on_project_id_and_noteable_type"
   add_index "notes", ["project_id"], :name => "index_notes_on_project_id"
 
+  create_table "project_services", :force => true do |t|
+    t.string   "service_hook_name"
+    t.integer  "project_id"
+    t.boolean  "active"
+    t.text     "data"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "project_services", ["project_id"], :name => "index_project_services_on_project_id"
+
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.string   "path"
     t.text     "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
     t.integer  "creator_id"
     t.string   "default_branch"
     t.boolean  "issues_enabled",         :default => true,     :null => false
@@ -188,8 +199,8 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
     t.text     "content"
     t.integer  "author_id",  :null => false
     t.integer  "project_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.string   "file_name"
     t.datetime "expires_at"
   end
@@ -207,6 +218,9 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
     t.string   "context"
     t.datetime "created_at"
   end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
 
   create_table "tags", :force => true do |t|
     t.string "name"
@@ -239,41 +253,42 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                                 :default => "",    :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "",    :null => false
+    t.string   "email",                  :default => "",    :null => false
+    t.string   "encrypted_password",     :default => "",    :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.string   "name"
-    t.boolean  "admin",                                 :default => false, :null => false
-    t.integer  "projects_limit",                        :default => 10
-    t.string   "skype",                                 :default => "",    :null => false
-    t.string   "linkedin",                              :default => "",    :null => false
-    t.string   "twitter",                               :default => "",    :null => false
+    t.boolean  "admin",                  :default => false, :null => false
+    t.integer  "projects_limit",         :default => 10
+    t.string   "skype",                  :default => "",    :null => false
+    t.string   "linkedin",               :default => "",    :null => false
+    t.string   "twitter",                :default => "",    :null => false
     t.string   "authentication_token"
-    t.integer  "theme_id",                              :default => 1,     :null => false
+    t.integer  "theme_id",               :default => 1,     :null => false
     t.string   "bio"
-    t.integer  "failed_attempts",                       :default => 0
+    t.integer  "failed_attempts",        :default => 0
     t.datetime "locked_at"
     t.string   "extern_uid"
     t.string   "provider"
     t.string   "username"
-    t.boolean  "can_create_group",                      :default => true,  :null => false
-    t.boolean  "can_create_team",                       :default => true,  :null => false
+    t.boolean  "can_create_group",       :default => true,  :null => false
+    t.boolean  "can_create_team",        :default => true,  :null => false
     t.string   "state"
-    t.integer  "color_scheme_id",                       :default => 1,     :null => false
-    t.integer  "notification_level",                    :default => 1,     :null => false
+    t.integer  "color_scheme_id",        :default => 1,     :null => false
+    t.integer  "notification_level",     :default => 1,     :null => false
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["extern_uid", "provider"], :name => "index_users_on_extern_uid_and_provider", :unique => true
   add_index "users", ["name"], :name => "index_users_on_name"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["username"], :name => "index_users_on_username"
@@ -281,8 +296,8 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   create_table "users_projects", :force => true do |t|
     t.integer  "user_id",                           :null => false
     t.integer  "project_id",                        :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.integer  "project_access",     :default => 0, :null => false
     t.integer  "notification_level", :default => 3, :null => false
   end
@@ -294,8 +309,8 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   create_table "web_hooks", :force => true do |t|
     t.string   "url"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.string   "type",       :default => "ProjectHook"
     t.integer  "service_id"
   end

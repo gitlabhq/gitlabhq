@@ -1,4 +1,32 @@
 GIT
+  remote: git://github.com/IMnet/github-services.git
+  revision: f52cd6780b724b28028709352fffca96eb12b444
+  ref: f52cd67
+  branch: gitlab
+  specs:
+    github-services (1.0.0.f52cd67)
+      activeresource
+      addressable
+      aws-sdk (~> 1.8.0)
+      excon (~> 0.20.1)
+      faraday
+      httparty
+      mail (~> 2.3)
+      mash (~> 0.1.1)
+      mime-types (~> 1.15)
+      mqtt (= 0.0.8)
+      oauth
+      right_aws (= 3.0.3)
+      right_http_connection (= 1.3.0)
+      ruby-hmac (= 0.4.0)
+      softlayer_messaging (~> 1.0.2)
+      tinder
+      twilio-ruby (= 3.4.2)
+      xml-simple (= 1.0.11)
+      xmpp4r-simple-19 (~> 1.0.0)
+      yajl-ruby (= 1.1.0)
+
+GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
   specs:
@@ -67,7 +95,15 @@ GEM
     addressable (2.3.2)
     arel (3.0.2)
     awesome_print (1.1.0)
+    aws-sdk (1.8.5)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+      uuidtools (~> 2.1)
     backports (2.6.7)
+    basecamp (0.0.9)
+      activeresource (>= 2.3.0)
+      oauth2
+      xml-simple
     bcrypt-ruby (3.0.1)
     better_errors (0.3.2)
       coderay (>= 1.0.0)
@@ -131,6 +167,7 @@ GEM
     erubis (2.7.0)
     escape_utils (0.2.4)
     eventmachine (1.0.0)
+    excon (0.20.1)
     execjs (1.4.0)
       multi_json (~> 1.0)
     facter (1.6.18)
@@ -141,6 +178,8 @@ GEM
       railties (>= 3.0.0)
     faraday (0.8.6)
       multipart-post (~> 1.1)
+    faraday_middleware (0.9.0)
+      faraday (>= 0.7.4, < 0.9)
     faye-websocket (0.4.7)
       eventmachine (>= 0.12.0)
     ffaker (1.15.0)
@@ -231,6 +270,7 @@ GEM
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.7)
+    json_pure (1.7.7)
     jwt (0.1.5)
       multi_json (>= 1.0)
     kaminari (0.14.1)
@@ -247,10 +287,12 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    mash (0.1.1)
     method_source (0.8.1)
     mime-types (1.22)
     modernizr (2.6.2)
       sprockets (~> 2.0)
+    mqtt (0.0.8)
     multi_json (1.7.2)
     multi_xml (0.5.3)
     multipart-post (1.1.5)
@@ -368,6 +410,9 @@ GEM
     ref (1.0.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    right_aws (3.0.3)
+      right_http_connection (>= 1.2.5)
+    right_http_connection (1.3.0)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -383,7 +428,10 @@ GEM
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
       rspec-mocks (~> 2.13.0)
+    ruby-hmac (0.4.0)
     ruby-progressbar (1.0.2)
+    rubyforge (2.0.4)
+      json_pure (>= 1.1.7)
     rubyntlm (0.1.1)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
@@ -411,6 +459,7 @@ GEM
       multi_json (~> 1)
       redis (~> 3)
       redis-namespace
+    simple_oauth (0.1.9)
     simplecov (0.7.1)
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
@@ -424,6 +473,8 @@ GEM
       temple (~> 0.5.5)
       tilt (~> 1.3.3)
     slop (3.4.4)
+    softlayer_messaging (1.0.2)
+      rest-client
     spinach (0.8.1)
       colorize (= 0.5.8)
       gherkin-ruby (~> 0.2.1)
@@ -453,13 +504,31 @@ GEM
     thor (0.18.1)
     tilt (1.3.7)
     timers (1.1.0)
+    tinder (1.9.2)
+      eventmachine (~> 1.0)
+      faraday (~> 0.8)
+      faraday_middleware (~> 0.9)
+      hashie (~> 1.0)
+      json (~> 1.7.5)
+      mime-types (~> 1.19)
+      multi_json (~> 1.5)
+      twitter-stream (~> 0.1)
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
+    twilio-ruby (3.4.2)
+      builder (>= 2.1.2)
+      jwt (>= 0.1.2)
+      multi_json (>= 1.0.3)
+    twitter-stream (0.1.16)
+      eventmachine (>= 0.12.8)
+      http_parser.rb (~> 0.5.1)
+      simple_oauth (~> 0.1.4)
     tzinfo (0.3.37)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    uuidtools (2.1.3)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -468,9 +537,17 @@ GEM
     webmock (1.9.0)
       addressable (>= 2.2.7)
       crack (>= 0.1.7)
+    xml-simple (1.0.11)
+    xmpp4r (0.5)
+    xmpp4r-simple-19 (1.0.0)
+      xmpp4r (>= 0.3.2)
     xpath (2.0.0)
       nokogiri (~> 1.3)
     yajl-ruby (1.1.0)
+    yammer4r (0.1.5)
+      json (>= 1.1.7)
+      mash (>= 0.0.3)
+      oauth (>= 0.3.5)
 
 PLATFORMS
   ruby
@@ -479,6 +556,7 @@ DEPENDENCIES
   acts-as-taggable-on (= 2.3.3)
   annotate!
   awesome_print
+  basecamp
   better_errors
   binding_of_caller
   bootstrap-sass (= 2.2.1.1)
@@ -499,6 +577,7 @@ DEPENDENCIES
   gemoji (~> 1.2.1)
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
+  github-services!
   gitlab-grack (~> 1.0.0)
   gitlab-pygments.rb (~> 0.3.2)
   gitlab_meta (= 5.0)
@@ -541,6 +620,7 @@ DEPENDENCIES
   redcarpet (~> 2.2.2)
   redis-rails
   rspec-rails
+  rubyforge
   sass-rails (~> 3.2.5)
   sdoc
   seed-fu
@@ -561,3 +641,4 @@ DEPENDENCIES
   thin
   uglifier (~> 1.3.0)
   webmock
+  yammer4r

@@ -1,0 +1,43 @@
+%h3.page_title
+  = @service.title
+  //%small Continuous integration server from GitLab
+  .pull-right
+    - if @project_service.active
+      %small.cgreen Enabled
+    - else
+      %small.cgray Disabled
+
+
+
+.back_link
+  = link_to project_services_path(@project) do
+    &larr; to services
+
+%hr
+= form_for(@project_service, :as => :service, :url => project_service_path(@project, @service.hook_name), :method => :put) do |f|
+  - if @project_service.errors.any?
+    .alert.alert-error
+      %ul
+        - @project_service.errors.full_messages.each do |msg|
+          %li= msg
+  - @project_service.data_fields do |field, type|
+    .control-group
+      = f.label field, class: "control-label"
+      .controls
+        = f.send type, field, class: "input-xlarge"
+
+  .control-group
+    = f.label :active, "Active", class: "control-label"
+    .controls
+      = f.check_box :active
+
+  - if @service.documentation
+    .control-group
+      .controls
+        = markdown @service.documentation
+
+  .form-actions
+    = f.submit 'Save', class: 'btn btn-save'
+    &nbsp;
+    - if @project_service.valid? && @project_service.active
+      = link_to 'Test settings', test_project_service_path(@project), class: 'btn btn-small'
