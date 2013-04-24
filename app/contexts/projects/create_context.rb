@@ -33,8 +33,11 @@ module Projects
       end
 
       # Disable less important features by default
-      @project.wall_enabled = false
-      @project.snippets_enabled = false
+      @project.issues_enabled         = Gitlab.config.gitlab.default_projects_features.issues
+      @project.wiki_enabled           = Gitlab.config.gitlab.default_projects_features.wiki
+      @project.wall_enabled           = Gitlab.config.gitlab.default_projects_features.wall
+      @project.snippets_enabled       = Gitlab.config.gitlab.default_projects_features.snippets
+      @project.merge_requests_enabled = Gitlab.config.gitlab.default_projects_features.merge_requests
 
       @project.creator = current_user
 
