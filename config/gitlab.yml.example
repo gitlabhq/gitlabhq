@@ -37,6 +37,13 @@ production: &base
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
     # username_changing_enabled: false # default: true - User can change her username/namespace
 
+    ## Default project features settings
+    default_projects_features:
+      issues: true
+      merge_requests: true
+      wiki: true
+      wall: true
+      snippets: true
 
   ## External issues trackers
   issues_tracker:
