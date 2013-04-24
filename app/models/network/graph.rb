@@ -2,7 +2,7 @@ require "grit"
 
 module Network
   class Graph
-    attr_reader :days, :commits, :map
+    attr_reader :days, :commits, :map, :notes
 
     def self.max_count
       @max_count ||= 650
@@ -16,9 +16,18 @@ module Network
 
       @commits = collect_commits
       @days = index_commits
+      @notes = collect_notes
     end
 
     protected
+
+    def collect_notes
+      h = Hash.new(0)
+      @project.notes.where('noteable_type = ?' ,"Commit").group('notes.commit_id').select('notes.commit_id, count(notes.id) as note_count').each do |item|
+        h[item["commit_id"]] = item["note_count"]
+      end
+      h
+    end
 
     # Get commits from repository
     #
