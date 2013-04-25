@@ -19,13 +19,13 @@ _Disclaimer_: I do not provide any support on GitLab itself. I only contribute t
 You should also be aware that **Public GitLab** only applies to the lastest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab. `master` branch on this repo have high chance to be broken.
 ## Changelog
 
-  * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable)
+  * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable) - [Upgrade 5.0 to 5.1](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/doc/update/5.0-to-5.1.md)
   * [2013-04-11] : MySQL support
   * [2013-04-01] : First commit for Public GitLab (only PostgreSQL)
 
 ## Installation
 
-During the [official intallation](https://github.com/gitlabhq/gitlabhq/blob/5-0-stable/doc/install/installation.md) workflow, **Public GitLab** override part _"6. GitLab - Clone the Source"_. 
+During the [official intallation](https://github.com/gitlabhq/gitlabhq/blob/5-1-stable/doc/install/installation.md) workflow, **Public GitLab** override part _"6. GitLab - Clone the Source"_. 
 
 **Warning**: Remember that you _need_ to use the lastest **stable branch**, even if you want to dowload it from [zip file](https://github.com/ArthurHoaro/Public-GitLab/archive/5-0-stable.zip).
 
@@ -38,7 +38,7 @@ During the [official intallation](https://github.com/gitlabhq/gitlabhq/blob/5-0-
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-0-stable
+    sudo -u git -H git checkout 5-1-stable
 
 ### Post installation
 At this point, every GitLab components are installed. You still can not access to GitLab yet though.
@@ -91,6 +91,6 @@ If there is a new stable branch, please do not open an issue to ask update. [Con
 
 Public GitLab is provided and maintain by [Arthur Hoaro](http://hoa.ro).
 
-Public GitLab is distributed under the [same license](https://github.com/ArthurHoaro/Public-GitLab/blob/5-0-stable/LICENSE) as the original sofware.
+Public GitLab is distributed under the [same license](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/LICENSE) as the original sofware.
 
 This fork is based on [cjdelisle](https://github.com/cjdelisle/) work, from his [original fork](https://github.com/cjdelisle/gitboria.com/commit/61db393bfd4fc75c5f046f01b01c7f114f601426).
