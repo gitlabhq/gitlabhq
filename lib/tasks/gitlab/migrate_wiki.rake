@@ -11,7 +11,13 @@ namespace :gitlab do
     # Notes:
     #  * The existing Wiki content will remain in your
     #    database in-tact.
-    desc "GITLAB | Migrate Wiki content from database to Gollum repositories."
+    #  * If the migration does not work the first time,
+    #    run the `RAILS_ENV=production rake gitlab:wiki:rollback`
+    #    command and then execute the migration again with
+    #    the safe_migrate=true environment variable:
+    #
+    #    `RAILS_ENV=production rake gitlab:wiki:migrate safe_migrate=true`
+    desc "GITLAB | Migrate Wiki content from database to Gollum repositories. Use the safe_migrate=true argument if initial migration fails."
     task :migrate => :environment do
       wiki_migrator = WikiToGollumMigrator.new
       wiki_migrator.migrate!
