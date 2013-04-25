@@ -149,7 +149,7 @@ describe Note do
     let(:author)   { create(:user) }
     let(:status)   { 'new_status' }
 
-    subject { Note.create_status_change_note(thing, author, status) }
+    subject { Note.create_status_change_note(thing,project, author, status) }
 
     it 'creates and saves a Note' do
       should be_a Note

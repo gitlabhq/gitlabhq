@@ -121,7 +121,7 @@ describe Project do
     let(:project) { create(:project_with_code) }
 
     before do
-      @merge_request = create(:merge_request, project: project)
+      @merge_request = create(:merge_request, source_project: project, target_project: project)
       @key = create(:key, user_id: project.owner.id)
     end
 

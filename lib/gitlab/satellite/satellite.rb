@@ -1,5 +1,6 @@
 module Gitlab
-  class SatelliteNotExistError < StandardError; end
+  class SatelliteNotExistError < StandardError;
+  end
 
   module Satellite
     class Satellite
@@ -21,11 +22,15 @@ module Gitlab
         raise SatelliteNotExistError.new("Satellite doesn't exist")
       end
 
+
       def clear_and_update!
         raise_no_satellite unless exists?
-
+        File.exists? path
+        @repo = nil
+        create
         clear_working_dir!
         delete_heads!
+        remove_remotes!
         update_from_source!
       end
 
@@ -57,9 +62,8 @@ module Gitlab
         File.open(lock_file, "w+") do |f|
           f.flock(File::LOCK_EX)
 
-          Dir.chdir(path) do
-            return yield
-          end
+          Dir.chdir(path) { return yield }
+
         end
       end
 
@@ -106,6 +110,16 @@ module Gitlab
         heads.delete(PARKING_BRANCH)
         # ... and delete all others
         heads.each { |head| repo.git.branch({D: true}, head) }
+      end
+
+      # Deletes all remotes except origin
+      #
+      # This ensures we have no remote name clashes or issues updating branches when
+      # working with the satellite.
+      def remove_remotes!
+        remotes = repo.git.remote.split(' ')
+        remotes.delete('origin')
+        remotes.each { |name| repo.git.remote({},'remove', name)}
       end
 
       # Updates the satellite from Gitolite
