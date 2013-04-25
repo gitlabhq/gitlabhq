@@ -1,3 +1,24 @@
+v 5.1.0
+  - You can login with email or username now
+  - Corrected project transfer rollback when repository cannot be moved
+  - Move both repo and wiki when project transfer requrested
+  - Admin area: project editing was removed from admin namespace
+  - Access: admin user has now access to any project.
+  - Notification settings
+  - Gitlab::Git set of objects to abstract from grit library
+  - Replace Unicorn web server with Puma
+  - Backup/Restore refactored. Backup dump project wiki too now
+  - Restyled Issues list. Show milestone version in issue row
+  - Restyled Merge Request list
+  - Backup now dump/restore uploads
+  - Improved perfomance of dashboard (Andrew Kumanyaev)
+  - File history now tracks renames (Akzhan Abdulin)
+  - Drop wiki migration tools
+  - Drop sqlite migration tools
+  - project tagging
+  - Paginate users in API
+  - Restyled network graph (Hiroyuki Sato)
+
 v 5.0.1
   - Fixed issue with gitlab-grit being overrided by grit
 
@@ -17,7 +38,7 @@ v 5.0.0
   - Add validations for Group and Team names
   - Restyle team page for project
   - Update capybara, rspec-rails, poltergeist to recent versions
-  - Wiki on git using Gollum 
+  - Wiki on git using Gollum
   - Added Solarized Dark theme for code review
   - Dont show user emails in autocomplete lists, profile pages
   - Added settings tab for group, team, project
@@ -27,7 +48,7 @@ v 5.0.0
   - Fixed search field on projects page
   - Added teams to search autocomplete
   - Move groups and teams on dashboard sidebar to sub-tabs
-  - API: improved return codes and docs.
+  - API: improved return codes and docs. (Felix Gilcher, Sebastian Ziebell)
   - Redesign wall to be more like chat
   - Snippets, Wall features are disabled by default for new projects
 
@@ -59,7 +80,7 @@ v 4.1.0
   - cleanup rake tasks
   - fix backup/restore
   - scss cleanup
-  - show preview for note images 
+  - show preview for note images
   - improved network-graph
   - get rid of app/roles/
   - added new classes Team, Repository
@@ -73,7 +94,7 @@ v 4.1.0
 v 4.0.0
   - Remove project code and path from API. Use id instead
   - Return valid clonable url to repo for web hook
-  - Fixed backup issue 
+  - Fixed backup issue
   - Reorganized settings
   - Fixed commits compare
   - Refactored scss

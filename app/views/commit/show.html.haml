@@ -1,10 +1,11 @@
-= render "commits/commit_box"
+= render "commit_box"
 
-%p.pull-right.cgray
-  This commit has
-  %span.cgreen #{@commit.stats.additions} additions
-  and
-  %span.cred #{@commit.stats.deletions} deletions
+- unless @commit.has_zero_stats?
+  %p.pull-right.cgray
+    This commit has
+    %span.cgreen #{@commit.stats.additions} additions
+    and
+    %span.cred #{@commit.stats.deletions} deletions
 
 = render "commits/diffs", diffs: @commit.diffs
 = render "notes/notes_with_form"

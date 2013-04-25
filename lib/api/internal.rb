@@ -22,6 +22,7 @@ module Gitlab
         key = Key.find(params[:key_id])
         project = Project.find_with_namespace(project_path)
         git_cmd = params[:action]
+        return false unless project
 
 
         if key.is_deploy_key
@@ -32,7 +33,7 @@ module Gitlab
           return false if user.blocked?
 
           action = case git_cmd
-                   when 'git-upload-pack'
+                   when 'git-upload-pack', 'git-upload-archive'
                      then :download_code
                    when 'git-receive-pack'
                      then

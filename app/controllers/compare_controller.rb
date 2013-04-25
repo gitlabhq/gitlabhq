@@ -8,15 +8,13 @@ class CompareController < ProjectResourceController
   end
 
   def show
-    result = Commit.compare(project, params[:from], params[:to])
+    compare = Gitlab::Git::Compare.new(project.repository, params[:from], params[:to])
 
-    @commits       = result[:commits]
-    @commit        = result[:commit]
-    @diffs         = result[:diffs]
-    @refs_are_same = result[:same]
+    @commits       = compare.commits
+    @commit        = compare.commit
+    @diffs         = compare.diffs
+    @refs_are_same = compare.same
     @line_notes    = []
-
-    @commits = CommitDecorator.decorate_collection(@commits)
   end
 
   def create

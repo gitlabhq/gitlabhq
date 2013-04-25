@@ -1,0 +1,48 @@
+.dashboard {
+  @extend .row;
+  .activities {
+  }
+
+  .side {
+    @extend .pull-right;
+
+    .ui-box {
+      margin: 3px;
+      > .title {
+        padding: 2px 15px;
+      }
+      .nav-projects-tabs li { padding: 0; }
+      .well-list {
+        li { padding: 15px; }
+        .arrow {
+          float: right;
+          padding: 10px;
+          margin: 0;
+        }
+        .last_activity {
+          padding-top: 5px;
+          display: block;
+          span, strong {
+            font-size: 12px;
+            color: #666;
+          }
+        }
+      }
+      @extend .ui-box;
+    }
+  }
+}
+
+.dashboard-search-filter {
+  padding:5px;
+
+  .search-text-input {
+    float:left;
+    @extend .span2;
+  }
+  .btn {
+    margin-left: 5px;
+    float:left;
+  }
+}
+

@@ -1,3 +1,13 @@
+/* CHZN reset few styles */
+.chzn-container-single .chzn-single {
+  background: #FFF;
+  border: 1px solid #bbb;
+  box-shadow: none;
+}
+.chzn-container-active .chzn-single {
+  background: #fff;
+}
+
 .ajax-users-select {
   width: 400px;
 }

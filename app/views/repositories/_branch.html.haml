@@ -1,5 +1,4 @@
-- commit = Commit.new(branch.commit)
-- commit = CommitDecorator.decorate(commit)
+- commit = Commit.new(Gitlab::Git::Commit.new(branch.commit))
 %tr
   %td
     = link_to project_commits_path(@project, branch.name) do

@@ -11,8 +11,8 @@
       Git Access
 
   - if can?(current_user, :write_wiki, @project)
-    %li.pull-right
-      = link_to '#', class: "add-new-wiki" do
+    .pull-right
+      = link_to '#', class: "add-new-wiki btn btn-small btn-primary" do
         %i.icon-plus
         New Page
 

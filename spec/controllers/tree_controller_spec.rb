@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe TreeController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
 
   before do
@@ -26,17 +26,17 @@ describe TreeController do
     end
 
     context "valid branch, valid path" do
-      let(:id) { 'master/README.md' }
+      let(:id) { 'master/app/' }
       it { should respond_with(:success) }
     end
 
     context "valid branch, invalid path" do
-      let(:id) { 'master/invalid-path.rb' }
+      let(:id) { 'master/invalid-path/' }
       it { should respond_with(:not_found) }
     end
 
     context "invalid branch, valid path" do
-      let(:id) { 'invalid-branch/README.md' }
+      let(:id) { 'invalid-branch/app/' }
       it { should respond_with(:not_found) }
     end
   end

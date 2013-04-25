@@ -4,10 +4,10 @@ describe GitlabMarkdownHelper do
   include ApplicationHelper
   include IssuesHelper
 
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project_with_code) }
 
   let(:user)          { create(:user, username: 'gfm') }
-  let(:commit)        { CommitDecorator.decorate(project.repository.commit) }
+  let(:commit)        { project.repository.commit }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, project: project) }
   let(:snippet)       { create(:snippet, project: project) }

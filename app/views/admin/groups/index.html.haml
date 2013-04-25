@@ -34,4 +34,4 @@
       %td.bgred
         = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn btn-small"
         = link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
-= paginate @groups, theme: "admin"
+= paginate @groups, theme: "gitlab"

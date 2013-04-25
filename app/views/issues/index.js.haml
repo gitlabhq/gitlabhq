@@ -1,2 +1,4 @@
 :plain
-  $('#issues-table').html("#{escape_javascript(render('issues'))}");
+  $('.issues-holder').html("#{escape_javascript(render('issues'))}");
+  History.replaceState({path: "#{request.url}"}, document.title, "#{request.url}");
+  Issues.reload();

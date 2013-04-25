@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectTransferService do
+  before(:each) { enable_observers }
+
   context 'namespace -> namespace' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }

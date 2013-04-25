@@ -274,6 +274,15 @@ ul.notes {
 }
 
 
+.common-note-form {
+  margin: 0;
+  height: 140px;
+  background: #F9F9F9;
+  padding: 3px;
+  padding-bottom: 25px;
+  border: 1px solid #DDD;
+}
+
 
 .note-form-actions {
   background: #F9F9F9;
@@ -281,8 +290,8 @@ ul.notes {
   padding: 0 5px;
 
   .note-form-option {
-    margin-top: 8px;
-    margin-left: 15px;
+    margin-top: 10px;
+    margin-left: 30px;
     @extend .pull-left;
   }
 

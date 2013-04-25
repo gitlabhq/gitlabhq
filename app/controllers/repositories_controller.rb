@@ -17,7 +17,7 @@ class RepositoriesController < ProjectResourceController
   end
 
   def stats
-    @stats = Gitlab::GitStats.new(@repository.raw, @repository.root_ref)
+    @stats = Gitlab::Git::Stats.new(@repository.raw, @repository.root_ref)
     @graph = @stats.graph
   end
 

@@ -16,6 +16,10 @@ class GollumWiki
     @user = user
   end
 
+  def path
+    @project.path + '.wiki'
+  end
+
   def path_with_namespace
     @project.path_with_namespace + ".wiki"
   end
@@ -45,12 +49,6 @@ class GollumWiki
   # empty Array if this Wiki has no pages.
   def pages
     wiki.pages.map { |page| WikiPage.new(self, page, true) }
-  end
-
-  # Returns the last 30 Commit objects across the entire
-  # repository.
-  def recent_history
-    Commit.fresh_commits(wiki.repo, 30)
   end
 
   # Finds a page within the repository based on a tile
@@ -90,11 +88,15 @@ class GollumWiki
   private
 
   def create_repo!
-    if gitlab_shell.add_repository(path_with_namespace)
+    if init_repo(path_with_namespace)
       Gollum::Wiki.new(path_to_repo)
     else
       raise CouldNotCreateWikiError
     end
+  end
+
+  def init_repo(path_with_namespace)
+    gitlab_shell.add_repository(path_with_namespace)
   end
 
   def commit_details(action, message = nil, title = nil)
@@ -114,5 +116,4 @@ class GollumWiki
   def path_to_repo
     @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
   end
-
 end

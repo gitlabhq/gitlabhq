@@ -30,11 +30,11 @@ describe "Admin::Users" do
     end
 
     it "should create new user" do
-      expect { click_button "Save" }.to change {User.count}.by(1)
+      expect { click_button "Create user" }.to change {User.count}.by(1)
     end
 
     it "should create user with valid data" do
-      click_button "Save"
+      click_button "Create user"
       user = User.last
       user.name.should ==  "Big Bang"
       user.email.should == "bigbang@mail.com"
@@ -44,14 +44,14 @@ describe "Admin::Users" do
       Notify.should_receive(:new_user_email)
 
       User.observers.enable :user_observer do
-        click_button "Save"
+        click_button "Create user"
       end
     end
 
     it "should send valid email to user with email & password" do
       Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
       User.observers.enable :user_observer do
-        click_button "Save"
+        click_button "Create user"
         user = User.last
         email = ActionMailer::Base.deliveries.last
         email.subject.should have_content("Account was created")
@@ -63,7 +63,7 @@ describe "Admin::Users" do
     it "should send valid email to user with email without password when signup is enabled" do
       Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
       User.observers.enable :user_observer do
-        click_button "Save"
+        click_button "Create user"
         user = User.last
         email = ActionMailer::Base.deliveries.last
         email.subject.should have_content("Account was created")
@@ -102,7 +102,7 @@ describe "Admin::Users" do
         fill_in "user_name", with: "Big Bang"
         fill_in "user_email", with: "bigbang@mail.com"
         check "user_admin"
-        click_button "Save"
+        click_button "Save changes"
       end
 
       it "should show page with  new data" do

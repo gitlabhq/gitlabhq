@@ -37,7 +37,7 @@ module ApplicationHelper
     if !Gitlab.config.gravatar.enabled || user_email.blank?
       'no_avatar.png'
     else
-      gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
+      gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
       sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
     end
@@ -96,7 +96,7 @@ module ApplicationHelper
     ]
 
     project_nav = []
-    if @project && @project.repository && @project.repository.root_ref
+    if @project && @project.repository.exists? && @project.repository.root_ref
       project_nav = [
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Issues",   url: project_issues_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
@@ -137,13 +137,21 @@ module ApplicationHelper
     end
   end
 
+  # Define whenever show last push event
+  # with suggestion to create MR
   def show_last_push_widget?(event)
-    event &&
-      event.last_push_to_non_root? &&
-      !event.rm_ref? &&
-      event.project &&
-      event.project.repository &&
-      event.project.merge_requests_enabled
+    # Skip if event is not about added or modified non-master branch
+    return false unless event && event.last_push_to_non_root? && !event.rm_ref?
+
+    project = event.project
+
+    # Skip if project repo is empty or MR disabled
+    return false unless project && !project.empty_repo? && project.merge_requests_enabled
+
+    # Skip if user already created appropriate MR
+    return false if project.merge_requests.where(source_branch: event.branch_name).opened.any?
+
+    true
   end
 
   def hexdigest(string)
@@ -151,9 +159,8 @@ module ApplicationHelper
   end
 
   def project_last_activity project
-    activity = project.last_activity
-    if activity && activity.created_at
-      time_ago_in_words(activity.created_at) + " ago"
+    if project.last_activity_at
+      time_ago_in_words(project.last_activity_at) + " ago"
     else
       "Never"
     end

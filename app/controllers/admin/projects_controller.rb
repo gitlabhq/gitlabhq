@@ -19,34 +19,6 @@ class Admin::ProjectsController < Admin::ApplicationController
     @users = @users.all
   end
 
-  def edit
-  end
-
-  def team_update
-    @project.team.add_users_ids(params[:user_ids], params[:project_access])
-
-    redirect_to [:admin, @project], notice: 'Project was successfully updated.'
-  end
-
-  def update
-    project.creator = current_user unless project.creator
-
-    status = ::Projects::UpdateContext.new(project, current_user, params).execute(:admin)
-
-    if status
-      redirect_to [:admin, @project], notice: 'Project was successfully updated.'
-    else
-      render action: "edit"
-    end
-  end
-
-  def destroy
-    @project.team.truncate
-    @project.destroy
-
-    redirect_to admin_projects_path, notice: 'Project was successfully deleted.'
-  end
-
   protected
 
   def project

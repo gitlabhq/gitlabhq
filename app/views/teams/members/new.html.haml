@@ -1,29 +1,25 @@
 %h3.page_title
   Team: #{@team.name}
 
-%fieldset
-  %legend Members (#{@team.members.count})
-  = form_tag team_members_path(@team), id: "team_members", class: "bulk_import", method: :post  do
-    %table#members_list
-      %thead
-        %tr
-          %th User name
-          %th Default project access
-          %th Team access
-          %th
-      - @team.members.each do |member|
-        %tr.member
-          %td
-            = member.name
-            %small= "(#{member.username})"
-          %td= @team.human_default_projects_access(member)
-          %td= @team.admin?(member) ? "Admin" : "Member"
-          %td
-      %tr
-        %td
-          = users_select_tag(:user_ids, multiple: true)
-        %td= select_tag :default_project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3" }
-        %td
-          %span= check_box_tag :group_admin
-          %span Admin?
-        %td= submit_tag 'Add User', class: "btn btn-create", id: :add_members_to_team
+%hr
+
+= form_tag team_members_path(@team), id: "team_members", class: "bulk_import", method: :post  do
+  %h6 1. Choose people you want in the team
+  .clearfix
+    = label_tag :user_ids, "People"
+    .input
+      = users_select_tag(:user_ids, multiple: true)
+
+  %h6 2. Set access level for them
+  .clearfix
+    = label_tag :project_access, "Project Access"
+    .input= select_tag :default_project_access, options_for_select(Project.access_options), class: "project-access-select chosen"
+
+  .clearfix
+    = label_tag :group_admin do
+      %span Team Admin?
+    .input= check_box_tag :group_admin
+
+  .actions
+    = submit_tag 'Add users', class: "btn btn-create", id: :add_members_to_team
+    = link_to "Cancel", team_members_path(@team), class: "btn btn-cancel"

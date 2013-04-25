@@ -15,6 +15,8 @@ $ ->
     $(this).find('.update-failed').hide()
 
   $('.update-username form').on 'ajax:complete', ->
-    $(this).find('.save-btn').removeAttr('disabled')
-    $(this).find('.save-btn').removeClass('disabled')
+    $(this).find('.btn-save').enableButton()
     $(this).find('.loading-gif').hide()
+  
+  $('.update-notifications').on 'ajax:complete', ->
+    $(this).find('.btn-save').enableButton()

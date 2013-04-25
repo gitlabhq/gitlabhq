@@ -4,7 +4,7 @@
       %strong= link_to "Browse Code »", project_tree_path(@project, commit), class: "right"
   %p
     = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
-    = commit.author_link avatar: true, size: 24
+    = commit_author_link(commit, avatar: true, size: 24)
     &nbsp;
     = link_to_gfm truncate(commit.title, length: 70), project_commit_path(@project, commit.id), class: "row_title"
 
@@ -16,6 +16,6 @@
     %span.notes_count
       - notes = @project.notes.for_commit_id(commit.id)
       - if notes.any?
-        %span.btn.disabled.grouped
+        %span.badge.badge-info
           %i.icon-comment
           = notes.count

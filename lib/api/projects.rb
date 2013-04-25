@@ -372,7 +372,7 @@ module Gitlab
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
         commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
-        present CommitDecorator.decorate(commits), with: Entities::RepoCommit
+        present commits, with: Entities::RepoCommit
       end
 
       # Get a project snippets
@@ -493,14 +493,16 @@ module Gitlab
 
         ref = params[:sha]
 
-        commit = user_project.repository.commit ref
+        repo = user_project.repository
+
+        commit = repo.commit(ref)
         not_found! "Commit" unless commit
 
-        tree = Tree.new commit.tree, ref, params[:filepath]
-        not_found! "File" unless tree.try(:tree)
+        blob = Gitlab::Git::Blob.new(repo, commit.id, ref, params[:filepath])
+        not_found! "File" unless blob.exists?
 
-        content_type tree.mime_type
-        present tree.data
+        content_type blob.mime_type
+        present blob.data
       end
 
       # Get a specific project's keys

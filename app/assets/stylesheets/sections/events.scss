@@ -35,13 +35,14 @@
   .event-title {
     color: #333;
     font-weight: bold;
+    font-size: 14px;
     .author_name {
       color: #333;
     }
   }
   .event-body {
     .commit p {
-      color: #555;
+      color: #666;
       padding-top: 5px;
     }
     .event-info {
@@ -123,7 +124,7 @@
   color: #777;
   padding: 10px;
   min-height: 22px;
-  border-left: 5px solid #5AB9C3;
+  border-left: 5px solid $primary_color;
   margin-bottom: 20px;
   background: #f9f9f9;
 
@@ -132,10 +133,10 @@
   }
 
   .btn-new-mr {
-    @extend .btn-info;
+    @extend .btn-primary;
     @extend .small;
     @extend .pull-right;
-    margin: -3px;
+    margin: -2px;
   }
 }
 
@@ -151,7 +152,7 @@
   .filter_icon {
     a {
       text-align:center;
-      border-left: 3px solid #29B;
+      border-left: 3px solid $primary_color;
       background: #f9f9f9;
       margin-bottom: 10px;
       float: left;

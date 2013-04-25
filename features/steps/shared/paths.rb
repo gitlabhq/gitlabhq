@@ -205,7 +205,7 @@ module SharedPaths
   end
 
   Given 'I visit blob file from repo' do
-    visit project_tree_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
+    visit project_blob_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
   end
 
   Given 'I visit project source page for "8470d70"' do

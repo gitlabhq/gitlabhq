@@ -8,7 +8,6 @@ class Teams::MembersController < Teams::ApplicationController
 
   def new
     @users = User.potential_team_members(user_team)
-    @users = UserDecorator.decorate_collection @users
   end
 
   def create
@@ -19,7 +18,7 @@ class Teams::MembersController < Teams::ApplicationController
       user_team.add_members(user_ids, access, is_admin)
     end
 
-    redirect_to team_members_path(user_team), notice: 'Members was successfully added into Team of users.'
+    redirect_to team_members_path(user_team), notice: 'Members were successfully added into Team of users.'
   end
 
   def edit

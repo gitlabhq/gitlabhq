@@ -51,7 +51,7 @@
         %legend Tips:
         %ul
           %li
-            %p You can change your password on Account page
+            %p You can change your password on the Account page
           - if Gitlab.config.gravatar.enabled
             %li
               %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
@@ -73,16 +73,17 @@
                 Want to share a team between projects?
                 = link_to new_team_path, class: "btn btn-tiny" do
                   Create a team
-      %fieldset
-        %legend
-          Personal projects:
-          %small.pull-right
-            %span= current_user.owned_projects.count
-            of
-            %span= current_user.projects_limit
-        .padded
-          .progress
-            .bar{style: "width: #{current_user.projects_limit_percent}%;"}
+      - unless current_user.projects_limit_left > 100
+        %fieldset
+          %legend
+            Owned projects:
+            %small.pull-right
+              %span= current_user.owned_projects.count
+              of
+              %span= current_user.projects_limit
+          .padded
+            .progress
+              .bar{style: "width: #{current_user.projects_limit_percent}%;"}
 
       %fieldset
         %legend

@@ -69,5 +69,14 @@ ul.bordered-list {
     display: block;
     margin: 0px;
     &:last-child { border:none }
+
+    &.active {
+      background: #f9f9f9;
+      a { font-weight: bold; }
+    }
+
+    &.light {
+      a { color: #777; }
+    }
   }
 }

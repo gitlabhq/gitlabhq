@@ -16,9 +16,7 @@ class AdminProjects < Spinach::FeatureSteps
   Then 'I should see project details' do
     project = Project.first
     current_path.should == admin_project_path(project)
-
     page.should have_content(project.name_with_namespace)
     page.should have_content(project.creator.name)
-    page.should have_content('Add new team member')
   end
 end

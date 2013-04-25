@@ -1,22 +1,39 @@
-.issues_table {
+.issues-list {
   .issue {
     padding: 10px;
+    position: relative;
 
-    .issue_check {
+    .issue-title {
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .issue-info {
+      color: #999;
+    }
+
+    .issue-check {
       float: left;
       padding: 8px 0;
       padding-right: 8px;
       min-width: 15px;
     }
 
-    p {
-      padding-top: 0;
-      padding-bottom: 2px;
+    .issue-labels {
+      display: inline-block;
     }
 
-    img.avatar {
-      width: 32px;
-      margin-top: 1px;
+    .issue-actions {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 2px;
+    }
+
+    &:hover {
+      .issue-actions {
+        display: block;
+      }
     }
   }
 }
@@ -60,7 +77,7 @@ input.check_all_issues {
 @media (min-width: 800px)  { .issues_bulk_update select { width: 120px; }  }
 @media (min-width: 1200px) { .issues_bulk_update select { width: 160px; }  }
 
-#issues-table-holder {
+.issues-holder {
   .issues_filters {
   }
 

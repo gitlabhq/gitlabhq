@@ -64,7 +64,7 @@ module Gitlab
 
       def rebuild_project_permissions_to_member(team, member)
         team.projects.each do |project|
-          update_team_user_access_in_project(team, member, project)
+          update_team_user_access_in_project(team, member, project, :updated)
         end
       end
 

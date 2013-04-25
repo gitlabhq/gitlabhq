@@ -1,4 +1,4 @@
-.projects
+.dashboard
   .activities.span8
     = link_to dashboard_path, class: 'btn btn-tiny' do
       &larr; To dashboard
@@ -12,7 +12,7 @@
     .loading.hide
   .side.span4
     - if @team.description.present?
-      .description.well.light
+      .description.well.well-small.light
         = @team.description
     = render "projects", projects: @projects
     .prepend-top-20
@@ -22,10 +22,7 @@
           News Feed
 
     %hr
-    .gitlab-promo
-      = link_to "Homepage", "http://gitlabhq.com"
-      = link_to "Blog", "http://blog.gitlabhq.com"
-      = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+    = render 'shared/promo'
 
 :javascript
   $(function(){ Pager.init(20, true); });

@@ -80,8 +80,9 @@
         .input= f.text_field :twitter
 
     .actions
-      = f.submit 'Save', class: "btn btn-save"
       - if @admin_user.new_record?
+        = f.submit 'Create user', class: "btn btn-create"
         = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"
       - else
+        = f.submit 'Save changes', class: "btn btn-save"
         = link_to 'Cancel', admin_user_path(@admin_user), class: "btn btn-cancel"

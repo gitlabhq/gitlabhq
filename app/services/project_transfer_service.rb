@@ -3,7 +3,9 @@
 # Used for transfer project to another namespace
 #
 class ProjectTransferService
-  include Gitolited
+  include Gitlab::ShellAdapter
+
+  class TransferError < StandardError; end
 
   attr_accessor :project
 
@@ -19,14 +21,16 @@ class ProjectTransferService
       project.namespace = new_namespace
       project.save!
 
+      # Move main repository
       unless gitlab_shell.mv_repository(old_path, new_path)
         raise TransferError.new('Cannot move project')
       end
 
+      # Move wiki repo also if present
+      gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
+
       true
     end
-  rescue => ex
-    raise Project::TransferError.new(ex.message)
   end
 end
 

@@ -1,7 +1,6 @@
-class UsersProjectObserver < ActiveRecord::Observer
+class UsersProjectObserver < BaseObserver
   def after_commit(users_project)
     return if users_project.destroyed?
-    Notify.delay.project_access_granted_email(users_project.id)
   end
 
   def after_create(users_project)
@@ -10,6 +9,12 @@ class UsersProjectObserver < ActiveRecord::Observer
       action: Event::JOINED,
       author_id: users_project.user.id
     )
+
+    notification.new_team_member(users_project)
+  end
+
+  def after_update(users_project)
+    notification.update_team_member(users_project)
   end
 
   def after_destroy(users_project)

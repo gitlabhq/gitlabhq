@@ -4,7 +4,7 @@ class ProjectsController < ProjectResourceController
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
   layout 'application', only: [:new, :create]
@@ -45,10 +45,10 @@ class ProjectsController < ProjectResourceController
         format.js
       end
     end
+  end
 
-  rescue Project::TransferError => ex
-    @error = ex
-    render :update_failed
+  def transfer
+    ::Projects::TransferContext.new(project, current_user, params).execute
   end
 
   def show
@@ -57,11 +57,11 @@ class ProjectsController < ProjectResourceController
 
     respond_to do |format|
       format.html do
-        if @project.repository && !@project.repository.empty?
+        if @project.empty_repo?
+          render "projects/empty"
+        else
           @last_push = current_user.recent_push(@project.id)
           render :show
-        else
-          render "projects/empty"
         end
       end
       format.js

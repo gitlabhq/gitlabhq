@@ -1,3 +1,4 @@
+= render "issues/head"
 .row
   .span6
     %h3.page_title
@@ -87,8 +88,6 @@
 %h6 Participants:
 %div
   - @users.each do |user|
-    = link_to user, class: 'float-link' do
-      = user.avatar_image
-      = user.name
+    = link_to_member(@project, user)
 
 .clearfix

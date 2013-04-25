@@ -23,6 +23,7 @@ namespace :gitlab do
       check_init_script_exists
       check_init_script_up_to_date
       check_satellites_exist
+      check_redis_version
 
       finished_checking "GitLab"
     end
@@ -241,6 +242,23 @@ namespace :gitlab do
         )
         for_more_information(
           see_installation_guide_section "GitLab"
+        )
+        fix_and_rerun
+      end
+    end
+
+    def check_redis_version
+      print "Redis version >= 2.0.0? ... "
+
+      if run_and_match("redis-cli --version", /redis-cli 2.\d.\d/)
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Update your redis server to a version >= 2.0.0"
+        )
+        for_more_information(
+          "gitlab-public-wiki/wiki/Trouble-Shooting-Guide in section sidekiq"
         )
         fix_and_rerun
       end
@@ -637,10 +655,10 @@ namespace :gitlab do
 
   def check_gitlab_shell
     print "GitLab Shell version? ... "
-    if gitlab_shell_version.strip == '1.1.0'
-      puts 'OK (1.1.0)'.green
+    if gitlab_shell_version.strip == '1.3.0'
+      puts 'OK (1.3.0)'.green
     else
-      puts 'FAIL. Please update gitlab-shell to v1.1.0'.red
+      puts 'FAIL. Please update gitlab-shell to v1.3.0'.red
     end
   end
 end

@@ -1,33 +1,30 @@
 = render "commits/head"
 - unless @tags.empty?
-  %table
-    %thead
-      %tr
-        %th Name
-        %th Last commit
-        %th
+  %ul.bordered-list
     - @tags.each do |tag|
-      - commit = Commit.new(tag.commit)
-      - commit = CommitDecorator.decorate(commit)
-      %tr
-        %td
-          %strong
-            = link_to project_commits_path(@project, tag.name), class: "" do
-              %i.icon-tag
-              = tag.name
-          %small.light= truncate(tag.message || '', length: 70)
-        %td
-          = image_tag gravatar_icon(commit.author_email), class: "avatar s16"
-          = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
-            = commit.short_id
-          %span.light
-            = time_ago_in_words(commit.committed_date)
-            ago
-        %td
+      - commit = Commit.new(Gitlab::Git::Commit.new(tag.commit))
+      %li
+        %h5
+          = link_to project_commits_path(@project, tag.name), class: "" do
+            %i.icon-tag
+            = tag.name
+          %small
+            = truncate(tag.message || '', length: 70)
+          .pull-right
+            %span.light
+              = time_ago_in_words(commit.committed_date)
+              ago
+        %div.prepend-left-20
+          = link_to commit.short_id(8), project_commit_path(@project, commit), class: "monospace"
+          &ndash;
+          = link_to_gfm truncate(commit.title, length: 70), project_commit_path(@project, commit.id), class: "cdark"
+
           - if can? current_user, :download_code, @project
-            = link_to archive_project_repository_path(@project, ref: tag.name) do
-              %i.icon-download-alt
-              Download
+            .pull-right
+              = link_to archive_project_repository_path(@project, ref: tag.name) do
+                %i.icon-download-alt
+                Download
+
 
 - else
   %h3.nothing_here_message

@@ -3,11 +3,14 @@
   %h3.page_title
     Milestones
     - if can? current_user, :admin_milestone, @project
-      = link_to "New Milestone", new_project_milestone_path(@project), class: "pull-right btn btn-small", title: "New Milestone"
+      = link_to new_project_milestone_path(@project), class: "pull-right btn btn-primary", title: "New Milestone" do
+        %i.icon-plus
+        New Milestone
   %br
-  %div.ui-box
-    .title
-      %ul.nav.nav-pills
+
+  .row
+    .span3
+      %ul.nav.nav-pills.nav-stacked
         %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
           = link_to project_milestones_path(@project, f: "active") do
             Active
@@ -17,12 +20,13 @@
         %li{class: ("active" if params[:f] == "all")}
           = link_to project_milestones_path(@project, f: "all") do
             All
+    .span9
+      %div.ui-box
+        %ul.well-list
+          = render @milestones
 
-    %ul.well-list
-      = render @milestones
-
-      - if @milestones.present?
-        %li.bottom= paginate @milestones, theme: "gitlab"
-      - else
-        %li
-          %h3.nothing_here_message Nothing to show here
+          - if @milestones.present?
+            %li.bottom= paginate @milestones, theme: "gitlab"
+          - else
+            %li
+              %h3.nothing_here_message Nothing to show here

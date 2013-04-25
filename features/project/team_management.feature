@@ -21,7 +21,6 @@ Feature: Project Team management
   Scenario: Update user access
     Given I should see "Sam" in team list as "Developer"
     And I change "Sam" role to "Reporter"
-    Then I visit project "Shop" team page
     And I should see "Sam" in team list as "Reporter"
 
   Scenario: Cancel team member

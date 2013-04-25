@@ -24,34 +24,34 @@ class ProjectTeamManagement < Spinach::FeatureSteps
 
     select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select "Reporter", :from => "project_access"
+      select "Reporter", from: "project_access"
     end
     click_button "Add users"
   end
 
   Then 'I should see "Mike" in team list as "Reporter"' do
-    user = User.find_by_name("Mike")
-    role_id = find(".user_#{user.id} #team_member_project_access").value
-    role_id.should == UsersProject.access_roles["Reporter"].to_s
+    within '.reporters' do
+      page.should have_content('Mike')
+    end
   end
 
   Given 'I should see "Sam" in team list as "Developer"' do
-    user = User.find_by_name("Sam")
-    role_id = find(".user_#{user.id} #team_member_project_access").value
-    role_id.should == UsersProject.access_roles["Developer"].to_s
+    within '.developers' do
+      page.should have_content('Sam')
+    end
   end
 
   And 'I change "Sam" role to "Reporter"' do
     user = User.find_by_name("Sam")
     within ".user_#{user.id}" do
-      select "Reporter", :from => "team_member_project_access"
+      select "Reporter", from: "team_member_project_access"
     end
   end
 
   And 'I should see "Sam" in team list as "Reporter"' do
-    user = User.find_by_name("Sam")
-    role_id = find(".user_#{user.id} #team_member_project_access").value
-    role_id.should == UsersProject.access_roles["Reporter"].to_s
+    within '.reporters' do
+      page.should have_content('Sam')
+    end
   end
 
   And 'I click link "Remove from team"' do
@@ -65,11 +65,11 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   And 'gitlab user "Mike"' do
-    create(:user, :name => "Mike")
+    create(:user, name: "Mike")
   end
 
   And 'gitlab user "Sam"' do
-    create(:user, :name => "Sam")
+    create(:user, name: "Sam")
   end
 
   And '"Sam" is "Shop" developer' do
@@ -79,7 +79,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I own project "Website"' do
-    @project = create(:project, :name => "Website")
+    @project = create(:project, name: "Website")
     @project.team << [@user, :master]
   end
 

@@ -23,17 +23,14 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
-gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: 'c40a32432616a07fa7fc3c32c24ab73ad6a9718f'
-gem 'grit_ext', '~> 0.6.2'
+gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: '42297cdcee16284d2e4eff23d41377f52fc28b9d'
+gem 'grit_ext', '~> 0.8.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
-
-# Dump db to yml file. Mostly used to migrate from sqlite to mysql
-gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
 
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
@@ -64,9 +61,6 @@ gem "carrierwave"
 # Authorization
 gem "six"
 
-# Generate Fake data
-gem "ffaker"
-
 # Seed data
 gem "seed-fu"
 
@@ -75,16 +69,13 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "unicorn"
+gem "puma", '~> 2.0.0.b7'
 
 # State machine
 gem "state_machine"
 
 # Issue tags
 gem "acts-as-taggable-on", "2.3.3"
-
-# Decorators
-gem "draper"
 
 # Background jobs
 gem 'slim'
@@ -100,16 +91,11 @@ gem "colored"
 # GitLab settings
 gem 'settingslogic'
 
-# Wiki
-# - Use latest master to resolve Gem dependency with Pygemnts
-# github-linquist needs pygments 0.4.2 but Gollum 2.4.11
-# requires pygments 0.3.2. The latest master Gollum has been updated
-# to use pygments 0.4.2. Change this after next Gollum release.
-gem "gollum", "~> 2.4.0", git: "git://github.com/gollum/gollum.git", ref: "5dcd3c8c8f"
+# Git Wiki
+gem "gollum-lib", "~> 1.0.0"
 
 # Misc
 gem "foreman"
-gem "git"
 
 # Cache
 gem "redis-rails"
@@ -154,14 +140,17 @@ end
 group :development, :test do
   gem 'coveralls', require: false
   gem 'rails-dev-tweaks'
-  gem 'spinach-rails', '0.2.0'
-  gem "rspec-rails", '2.12.2'
-  gem "capybara", '2.0.2'
+  gem 'spinach-rails'
+  gem "rspec-rails"
+  gem "capybara"
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
+
+  # Generate Fake data
+  gem "ffaker"
 
   # Guard
   gem 'guard-rspec'
@@ -173,7 +162,9 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', '1.1.0'
+  gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '9645b52009e258921b860d3b7601d00008b22c45'
+
+  gem 'spork', '~> 1.0rc'
 end
 
 group :test do

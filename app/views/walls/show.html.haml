@@ -1,5 +1,5 @@
 %div.wall-page
-  %ul.well-list.notes
+  %ul.notes
 
   - if can? current_user, :write_note, @project
     .note-form-holder
@@ -10,11 +10,6 @@
         .note-form-actions
           .buttons
             = f.submit 'Add Comment', class: "btn comment-btn grouped js-comment-button"
-
-          .note-form-option
-            = label_tag :notify do
-              = check_box_tag :notify, 1, false
-              %span.light Notify team via email
 
           .note-form-option
             %a.choose-btn.btn.btn-small.js-choose-note-attachment-button

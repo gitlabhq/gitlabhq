@@ -1,8 +1,8 @@
 = render "commits/head"
 .row
-  .span5
-    %h4
-      Stats:
+  .span6
+    %div#activity-chart.chart
+    %hr
     %p
       %b Total commits:
       %span= @stats.commits_count
@@ -13,9 +13,8 @@
       %b Authors:
       %span= @stats.authors_count
 
-    %br
-    %div#activity-chart
-  .span7
+
+  .span6
     %h4 Top 50 Committers:
     %ol.styled
       - @stats.authors[0...50].each do |author|
@@ -31,11 +30,6 @@
   $(function(){
     var labels = [#{@graph.labels.to_json}];
     var commits = [#{@graph.commits.join(', ')}];
-    var r = Raphael('activity-chart');
-    r.text(160, 10, "Commit activity for last #{@graph.weeks} weeks").attr({ font: "13px sans-serif" });
-    r.barchart(
-      10, 10, 400, 160,
-      [commits],
-      {colors:["#456"]}
-    ).label(labels, true);
+    var title = "Commit activity for last #{@graph.weeks} weeks";
+    Chart.init(labels, commits, title);
   })

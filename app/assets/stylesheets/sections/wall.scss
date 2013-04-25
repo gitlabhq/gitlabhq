@@ -14,12 +14,31 @@
 
   .notes {
     margin-bottom: 160px;
+    background: #FFE;
+    border: 1px solid #EED;
+
+    > li {
+      @extend .clearfix;
+      border-bottom: 1px solid #EED;
+      padding: 10px;
+    }
 
     .wall-author {
       color: #666;
-      margin-right: 10px;
-      border-right: 1px solid #CCC;
-      padding-right: 5px
+      float: left;
+      font-size: 12px;
+      width: 120px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .wall-text {
+      border-left: 1px solid #CCC;
+      margin-left: 10px;
+      padding-left: 10px;
+      float: left;
+      width: 75%;
     }
 
     .wall-file {

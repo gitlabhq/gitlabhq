@@ -2,8 +2,8 @@ module SharedNote
   include Spinach::DSL
 
   Given 'I delete a comment' do
-    sleep 1
-    first(".js-note-delete").trigger("click")
+    find('.note').hover
+    find(".js-note-delete").click
   end
 
   Given 'I haven\'t written any comment text' do

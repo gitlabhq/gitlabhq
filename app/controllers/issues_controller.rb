@@ -14,7 +14,10 @@ class IssuesController < ProjectResourceController
   respond_to :js, :html
 
   def index
+    terms = params['issue_search']
+
     @issues = issues_filtered
+    @issues = @issues.where("title LIKE ?", "%#{terms}%") if terms.present?
     @issues = @issues.page(params[:page]).per(20)
 
     respond_to do |format|
@@ -74,28 +77,6 @@ class IssuesController < ProjectResourceController
         end
       end
     end
-  end
-
-  def sort
-    return render_404 unless can?(current_user, :admin_issue, @project)
-
-    @issues = @project.issues.where(id: params['issue'])
-    @issues.each do |issue|
-      issue.position = params['issue'].index(issue.id.to_s) + 1
-      issue.save
-    end
-
-    render nothing: true
-  end
-
-  def search
-    terms = params['terms']
-
-    @issues = issues_filtered
-    @issues = @issues.where("title LIKE ?", "%#{terms}%") unless terms.blank?
-    @issues = @issues.page(params[:page]).per(100)
-
-    render partial: 'issues'
   end
 
   def bulk_update

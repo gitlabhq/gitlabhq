@@ -13,6 +13,7 @@
 #
 
 class Group < Namespace
+
   def add_users_to_project_teams(user_ids, project_access)
     UsersProject.add_users_into_projects(
       projects.map(&:id),

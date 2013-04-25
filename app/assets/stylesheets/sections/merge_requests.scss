@@ -53,18 +53,6 @@
   }
 }
 
-li.merge_request {
-  padding: 10px;
-  img.avatar {
-    width: 32px;
-    margin-top: 1px;
-  }
-  p {
-    padding: 0px;
-    padding-bottom: 2px;
-  }
-}
-
 .merge-in-progress {
   @extend .padded;
   @extend .append-bottom-10;
@@ -96,4 +84,32 @@ li.merge_request {
 
 .mr_direction_tip {
   margin-top:40px
+}
+
+.label-branch {
+  @include border-radius(4px);
+  padding: 2px 4px;
+  border: none;
+  font-size: 14px;
+  background: #474D57;
+  color: #fff;
+  font-family: $monospace_font;
+  text-shadow: 0 1px 1px #111;
+  font-weight: normal;
+}
+
+.mr-list {
+  .merge-request {
+    padding: 10px;
+    position: relative;
+
+    .merge-request-title {
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .merge-request-info {
+      color: #999;
+    }
+  }
 }

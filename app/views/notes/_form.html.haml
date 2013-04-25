@@ -1,4 +1,4 @@
-= form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note js-new-note-form" } do |f|
+= form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note js-new-note-form common-note-form" } do |f|
 
   = note_target_fields
   = f.hidden_field :commit_id
@@ -26,15 +26,6 @@
 
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
-    .note-form-option
-      = label_tag :notify do
-        = check_box_tag :notify, 1, false
-        %span.light Notify team via email
-
-      .js-notify-commit-author
-        = label_tag :notify_author do
-          = check_box_tag :notify_author, 1 , false
-          %span.light Notify commit author
     .note-form-option
       %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
         %i.icon-paper-clip

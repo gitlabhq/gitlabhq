@@ -25,10 +25,9 @@ module Network
     def collect_commits
       refs_cache = build_refs_cache
 
-      find_commits(count_to_display_commit_in_center)
-      .map do |commit|
-          # Decorate with app/model/network/commit.rb
-          Network::Commit.new(commit, refs_cache[commit.id])
+      find_commits(count_to_display_commit_in_center).map do |commit|
+        # Decorate with app/model/network/commit.rb
+        Network::Commit.new(commit, refs_cache[commit.id])
       end
     end
 
@@ -40,15 +39,12 @@ module Network
     def index_commits
       days = []
       @map = {}
+      @reserved = {}
 
-      @commits.reverse.each_with_index do |c,i|
+      @commits.each_with_index do |c,i|
         c.time = i
         days[i] = c.committed_date
         @map[c.id] = c
-      end
-
-      @reserved = {}
-      days.each_index do |i|
         @reserved[i] = []
       end
 
@@ -96,15 +92,13 @@ module Network
     end
 
     def find_commits(skip = 0)
-      Grit::Commit.find_all(
-        @repo,
-        nil,
-        {
-          date_order: true,
-          max_count: self.class.max_count,
-          skip: skip
-        }
-      )
+      opts = {
+        date_order: true,
+        max_count: self.class.max_count,
+        skip: skip
+      }
+
+      Grit::Commit.find_all(@repo, nil, opts)
     end
 
     def commits_sort_by_ref
@@ -135,11 +129,7 @@ module Network
       spaces = []
 
       commit.parents(@map).each do |parent|
-        range = if commit.time < parent.time then
-                  commit.time..parent.time
-                else
-                  parent.time..commit.time
-                end
+        range = commit.time..parent.time
 
         space = if commit.space >= parent.space then
                   find_free_parent_space(range, parent.space, -1, commit.space)
@@ -166,7 +156,7 @@ module Network
       range.each do |i|
         if i != range.first &&
           i != range.last &&
-          @commits[reversed_index(i)].spaces.include?(overlap_space) then
+          @commits[i].spaces.include?(overlap_space) then
 
           return true;
         end
@@ -184,7 +174,7 @@ module Network
         return
       end
 
-      time_range = leaves.last.time..leaves.first.time
+      time_range = leaves.first.time..leaves.last.time
       space_base = get_space_base(leaves)
       space = find_free_space(time_range, 2, space_base)
       leaves.each do |l|
@@ -198,17 +188,17 @@ module Network
       end
 
       # and mark it as reserved
-      min_time = leaves.last.time
-      leaves.last.parents(@map).each do |parent|
-        if parent.time < min_time
-          min_time = parent.time
-        end
+      if parent_time.nil?
+        min_time = leaves.first.time
+      else
+        min_time = parent_time + 1
       end
 
-      if parent_time.nil?
-        max_time = leaves.first.time
-      else
-        max_time = parent_time - 1
+      max_time = leaves.last.time
+      leaves.last.parents(@map).each do |parent|
+        if max_time < parent.time
+          max_time = parent.time
+        end
       end
       mark_reserved(min_time..max_time, space)
 
@@ -288,10 +278,6 @@ module Network
         refs_cache[ref.commit.id] << ref
       end
       refs_cache
-    end
-
-    def reversed_index(index)
-      -index - 1
     end
   end
 end

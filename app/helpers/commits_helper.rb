@@ -1,4 +1,20 @@
 module CommitsHelper
+  # Returns a link to the commit author. If the author has a matching user and
+  # is a member of the current @project it will link to the team member page.
+  # Otherwise it will link to the author email as specified in the commit.
+  #
+  # options:
+  #  avatar: true will prepend the avatar image
+  #  size:   size of the avatar image in px
+  def commit_author_link(commit, options = {})
+    commit_person_link(commit, options.merge(source: :author))
+  end
+
+  # Just like #author_link but for the committer.
+  def commit_committer_link(commit, options = {})
+    commit_person_link(commit, options.merge(source: :committer))
+  end
+
   def identification_type(line)
     if line[0] == "+"
       "new"
@@ -93,9 +109,7 @@ module CommitsHelper
   end
 
   def commit_to_html commit
-    if commit.model
-      escape_javascript(render 'commits/commit', commit: commit)
-    end
+    escape_javascript(render 'commits/commit', commit: commit)
   end
 
   def diff_line_content(line)
@@ -103,6 +117,60 @@ module CommitsHelper
       " &nbsp;"
     else
       line
+    end
+  end
+
+  # Breadcrumb links for a Project and, if applicable, a tree path
+  def commits_breadcrumbs
+    return unless @project && @ref
+
+    # Add the root project link and the arrow icon
+    crumbs = content_tag(:li) do
+      content_tag(:span, nil, class: 'arrow') +
+      link_to(@project.name, project_commits_path(@project, @ref))
+    end
+
+    if @path
+      parts = @path.split('/')
+
+      parts.each_with_index do |part, i|
+        crumbs += content_tag(:span, '/', class: 'divider')
+        crumbs += content_tag(:li) do
+          # The text is just the individual part, but the link needs all the parts before it
+          link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
+        end
+      end
+    end
+
+    crumbs.html_safe
+  end
+
+  protected
+
+  # Private: Returns a link to a person. If the person has a matching user and
+  # is a member of the current @project it will link to the team member page.
+  # Otherwise it will link to the person email as specified in the commit.
+  #
+  # options:
+  #  source: one of :author or :committer
+  #  avatar: true will prepend the avatar image
+  #  size:   size of the avatar image in px
+  def commit_person_link(commit, options = {})
+    source_name = commit.send "#{options[:source]}_name".to_sym
+    source_email = commit.send "#{options[:source]}_email".to_sym
+    text = if options[:avatar]
+            avatar = image_tag(gravatar_icon(source_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+            %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{source_name}</span>}
+          else
+            source_name
+          end
+
+    user = User.where('name like ? or email like ?', source_name, source_email).first
+
+    if user.nil?
+      mail_to(source_email, text.html_safe, class: "commit-#{options[:source]}-link")
+    else
+      link_to(text.html_safe, user_path(user), class: "commit-#{options[:source]}-link")
     end
   end
 end

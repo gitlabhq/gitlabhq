@@ -49,9 +49,9 @@ class WikisController < ProjectResourceController
   end
 
   def history
-    unless @wiki = @gollum_wiki.find_page(params[:id])
-      redirect_to project_wiki_path(@project, :home), notice: "Page not found"
-    end
+    @wiki = @gollum_wiki.find_page(params[:id])
+
+    redirect_to(project_wiki_path(@project, :home), notice: "Page not found") unless @wiki
   end
 
   def destroy

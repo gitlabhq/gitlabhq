@@ -7,10 +7,8 @@ class BlameController < ProjectResourceController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :assign_ref_vars
-
   def show
-    @repo = @project.repo
-    @blame = Grit::Blob.blame(@repo, @commit.id, @path)
+    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
+    @blame = Gitlab::Git::Blame.new(project.repository, @commit.id, @path)
   end
 end

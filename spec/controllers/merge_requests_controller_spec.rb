@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequestsController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
 
@@ -12,7 +12,7 @@ describe MergeRequestsController do
   end
 
   describe "#show" do
-    shared_examples "export as" do |format|
+    shared_examples "export merge as" do |format|
       it "should generally work" do
         get :show, project_id: project.code, id: merge_request.id, format: format
 
@@ -44,7 +44,7 @@ describe MergeRequestsController do
     end
 
     describe "as diff" do
-      include_examples "export as", :diff
+      include_examples "export merge as", :diff
       let(:format) { :diff }
 
       it "should really only be a git diff" do
@@ -55,7 +55,7 @@ describe MergeRequestsController do
     end
 
     describe "as patch" do
-      include_examples "export as", :patch
+      include_examples "export merge as", :patch
       let(:format) { :patch }
 
       it "should really be a git email patch with commit" do

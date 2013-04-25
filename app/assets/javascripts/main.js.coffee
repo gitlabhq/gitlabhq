@@ -7,6 +7,8 @@ window.slugify = (text) ->
 window.ajaxGet = (url) ->
   $.ajax({type: "GET", url: url, dataType: "script"})
 
+window.showAndHide = (selector) ->
+
 window.errorMessage = (message) ->
   ehtml = $("<p>")
   ehtml.addClass("error_message")

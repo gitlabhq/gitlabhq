@@ -3,15 +3,13 @@ module SharedDiffNote
 
   Given 'I cancel the diff comment' do
     within(".file") do
-      find(".js-close-discussion-note-form").trigger("click")
+      find(".js-close-discussion-note-form").click
     end
   end
 
   Given 'I delete a diff comment' do
-    sleep 1
-    within(".file") do
-      first(".js-note-delete").trigger("click")
-    end
+    find('.note').hover
+    find(".js-note-delete").click
   end
 
   Given 'I haven\'t written any diff comment text' do
@@ -21,17 +19,16 @@ module SharedDiffNote
   end
 
   Given 'I leave a diff comment like "Typo, please fix"' do
-    find("#586fb7c4e1add2d4d24e27566ed7064680098646_29_14.line_holder .js-add-diff-note-button").trigger("click")
+    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_29_14"]').click
     within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
       fill_in "note[note]", with: "Typo, please fix"
-      #click_button("Add Comment")
       find(".js-comment-button").trigger("click")
       sleep 0.05
     end
   end
 
   Given 'I preview a diff comment text like "Should fix it :smile:"' do
-    find("#586fb7c4e1add2d4d24e27566ed7064680098646_29_14.line_holder .js-add-diff-note-button").trigger("click")
+    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_29_14"]').click
     within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
       fill_in "note[note]", with: "Should fix it :smile:"
       find(".js-note-preview-button").trigger("click")
@@ -39,7 +36,8 @@ module SharedDiffNote
   end
 
   Given 'I preview another diff comment text like "DRY this up"' do
-    find("#586fb7c4e1add2d4d24e27566ed7064680098646_57_41.line_holder .js-add-diff-note-button").trigger("click")
+    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_57_41"]').click
+
     within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_57_41']") do
       fill_in "note[note]", with: "DRY this up"
       find(".js-note-preview-button").trigger("click")
@@ -47,11 +45,11 @@ module SharedDiffNote
   end
 
   Given 'I open a diff comment form' do
-    find("#586fb7c4e1add2d4d24e27566ed7064680098646_29_14.line_holder .js-add-diff-note-button").trigger("click")
+    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_29_14"]').click
   end
 
   Given 'I open another diff comment form' do
-    find("#586fb7c4e1add2d4d24e27566ed7064680098646_57_41.line_holder .js-add-diff-note-button").trigger("click")
+    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_57_41"]').click
   end
 
   Given 'I write a diff comment like ":-1: I don\'t like this"' do

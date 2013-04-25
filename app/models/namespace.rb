@@ -13,6 +13,8 @@
 #
 
 class Namespace < ActiveRecord::Base
+  include Gitlab::ShellAdapter
+
   attr_accessible :name, :description, :path
 
   has_many :projects, dependent: :destroy
@@ -31,7 +33,7 @@ class Namespace < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   after_create :ensure_dir_exist
-  after_update :move_dir
+  after_update :move_dir, if: :path_changed?
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
@@ -53,46 +55,32 @@ class Namespace < ActiveRecord::Base
   end
 
   def ensure_dir_exist
-    unless dir_exists?
-      FileUtils.mkdir( namespace_full_path, mode: 0770 )
-    end
-  end
-
-  def dir_exists?
-    File.exists?(namespace_full_path)
-  end
-
-  def namespace_full_path
-    @namespace_full_path ||= File.join(Gitlab.config.gitlab_shell.repos_path, path)
-  end
-
-  def move_dir
-    if path_changed?
-      old_path = File.join(Gitlab.config.gitlab_shell.repos_path, path_was)
-      new_path = File.join(Gitlab.config.gitlab_shell.repos_path, path)
-      if File.exists?(new_path)
-        raise "Already exists"
-      end
-
-
-      begin
-        # Remove satellite when moving repo
-        if path_was.present?
-          satellites_path = File.join(Gitlab.config.satellites.path, path_was)
-          FileUtils.rm_r( satellites_path, force: true )
-        end
-
-        FileUtils.mv( old_path, new_path )
-        send_update_instructions
-      rescue Exception => e
-        raise "Namespace move error #{old_path} #{new_path}"
-      end
-    end
+    gitlab_shell.add_namespace(path)
   end
 
   def rm_dir
-    dir_path = File.join(Gitlab.config.gitlab_shell.repos_path, path)
-    FileUtils.rm_r( dir_path, force: true )
+    gitlab_shell.rm_namespace(path)
+  end
+
+  def move_dir
+    if gitlab_shell.mv_namespace(path_was, path)
+      # If repositories moved successfully we need to remove old satellites
+      # and send update instructions to users.
+      # However we cannot allow rollback since we moved namespace dir
+      # So we basically we mute exceptions in next actions
+      begin
+        gitlab_shell.rm_satellites(path_was)
+        send_update_instructions
+      rescue
+        # Returning false does not rolback after_* transaction but gives
+        # us information about failing some of tasks
+        false
+      end
+    else
+      # if we cannot move namespace directory we should rollback
+      # db changes in order to prevent out of sync between db and fs
+      raise Exception.new('namespace directory cannot be moved')
+    end
   end
 
   def send_update_instructions

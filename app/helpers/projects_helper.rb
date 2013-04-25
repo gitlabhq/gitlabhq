@@ -3,6 +3,10 @@ module ProjectsHelper
     "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
 
+  def projects_labels
+    Project.tag_counts_on(:labels).map(&:name)
+  end
+
   def link_to_project project
     link_to project do
       title = content_tag(:strong, project.name)
@@ -25,7 +29,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(gravatar_icon(author.try(:email)), width: 16, class: "lil_av") if opts[:avatar]
+    author_html << image_tag(gravatar_icon(author.try(:email)), width: 16, class: "avatar avatar-inline s16") if opts[:avatar]
 
     # Build name span tag
     author_html << content_tag(:span, sanitize(author.name), class: 'author')

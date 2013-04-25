@@ -20,9 +20,6 @@ class MergeRequestsController < ProjectResourceController
   end
 
   def show
-    @target_type = :merge_request
-    @target_id = @merge_request.id
-
     respond_to do |format|
       format.html
       format.js
@@ -94,12 +91,10 @@ class MergeRequestsController < ProjectResourceController
 
   def branch_from
     @commit = @repository.commit(params[:ref])
-    @commit = CommitDecorator.decorate(@commit)
   end
 
   def branch_to
     @commit = @repository.commit(params[:ref])
-    @commit = CommitDecorator.decorate(@commit)
   end
 
   def ci_status
@@ -129,11 +124,11 @@ class MergeRequestsController < ProjectResourceController
 
   def validates_merge_request
     # Show git not found page if target branch doesn't exist
-    return invalid_mr unless @project.repo.heads.map(&:name).include?(@merge_request.target_branch)
+    return invalid_mr unless @project.repository.branch_names.include?(@merge_request.target_branch)
 
     # Show git not found page if source branch doesn't exist
     # and there is no saved commits between source & target branch
-    return invalid_mr if !@project.repo.heads.map(&:name).include?(@merge_request.source_branch) && @merge_request.commits.blank?
+    return invalid_mr if !@project.repository.branch_names.include?(@merge_request.source_branch) && @merge_request.commits.blank?
   end
 
   def define_show_vars
@@ -143,10 +138,12 @@ class MergeRequestsController < ProjectResourceController
     # Get commits from repository
     # or from cache if already merged
     @commits = @merge_request.commits
-    @commits = CommitDecorator.decorate_collection(@commits)
 
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
+
+    @target_type = :merge_request
+    @target_id = @merge_request.id
   end
 
   def allowed_to_merge?

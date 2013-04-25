@@ -1,7 +1,5 @@
 ## GitLab Roadmap
 
-### v5.0 March 22
+Features that will be in the next release are listed on [the feedback and suggestions forum with the status "started"](http://feedback.gitlab.com/forums/176466-general/status/796456) as specified in the README.
 
-* Replace gitolite with gitlab-shell 
-* Usability improvements
-* Notification improvements
+This ROADMAP file will be deprecated.

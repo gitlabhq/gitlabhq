@@ -1,5 +1,7 @@
+ActiveRecord::Base.observers.disable :all
+
 Gitlab::Seeder.quiet do
-  (1..300).each  do |i|
+  (1..100).each  do |i|
     # Random Project
     project = Project.all.sample
 
@@ -8,19 +10,30 @@ Gitlab::Seeder.quiet do
 
     next unless user
 
+    next if project.empty_repo?
+
+    branches = project.repository.branch_names.sample(2)
+
+    next if branches.uniq.size < 2
+
     user_id = user.id
     MergeRequestObserver.current_user = user
     MergeRequest.seed(:id, [{
       id: i,
-      source_branch: 'master',
-      target_branch: 'feature',
+      source_branch: branches.first,
+      target_branch: branches.last,
       project_id: project.id,
       author_id: user_id,
       assignee_id: user_id,
-      state: ['opened', 'closed'].sample,
       milestone: project.milestones.sample,
       title: Faker::Lorem.sentence(6)
     }])
     print('.')
   end
+end
+
+puts 'Load diffs for Merge Requests (it will take some time)...'
+MergeRequest.all.each do |mr|
+  mr.reload_code
+  print '.'
 end

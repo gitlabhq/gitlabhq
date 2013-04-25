@@ -14,7 +14,7 @@ class Admin::UsersController < Admin::ApplicationController
     @not_in_projects = @not_in_projects.without_user(admin_user) if admin_user.authorized_projects.present?
 
     # Projects he already own or joined
-    @projects = admin_user.authorized_projects.where('projects.id in (?)', admin_user.authorized_projects.map(&:id))
+    @projects = admin_user.authorized_projects
   end
 
   def team_update
@@ -84,6 +84,8 @@ class Admin::UsersController < Admin::ApplicationController
         format.html { redirect_to [:admin, admin_user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
+        # restore username to keep form action url.
+        admin_user.username = params[:id]
         format.html { render action: "edit" }
         format.json { render json: admin_user.errors, status: :unprocessable_entity }
       end

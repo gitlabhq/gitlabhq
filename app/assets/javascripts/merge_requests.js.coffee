@@ -76,7 +76,6 @@ class MergeRequest
     $('.ci_widget.ci-' + state).show()
 
   loadDiff: (event) ->
-    $('.dashboard-loader').show()
     $.ajax
       type: 'GET'
       url: this.$('.nav-tabs .diffs-tab a').attr('href')

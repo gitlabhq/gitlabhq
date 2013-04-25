@@ -2,16 +2,17 @@
 #
 # Table name: users_projects
 #
-#  id             :integer          not null, primary key
-#  user_id        :integer          not null
-#  project_id     :integer          not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  project_access :integer          default(0), not null
+#  id                 :integer          not null, primary key
+#  user_id            :integer          not null
+#  project_id         :integer          not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  project_access     :integer          default(0), not null
+#  notification_level :integer          default(3), not null
 #
 
 class UsersProject < ActiveRecord::Base
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   GUEST     = 10
   REPORTER  = 20
@@ -29,6 +30,7 @@ class UsersProject < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
+  validates :notification_level, inclusion: { in: Notification.project_notification_levels }, presence: true
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -38,7 +40,7 @@ class UsersProject < ActiveRecord::Base
   scope :masters,  -> { where(project_access: MASTER) }
 
   scope :in_project, ->(project) { where(project_id: project.id) }
-  scope :in_projects, ->(projects) { where(project_id: project_ids) }
+  scope :in_projects, ->(projects) { where(project_id: projects.map { |p| p.id }) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
   class << self
@@ -133,5 +135,9 @@ class UsersProject < ActiveRecord::Base
 
   def skip_git?
     !!@skip_git
+  end
+
+  def notification
+    @notification ||= Notification.new(self)
   end
 end

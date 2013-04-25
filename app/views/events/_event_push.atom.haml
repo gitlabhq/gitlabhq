@@ -1,12 +1,12 @@
-%div{:xmlns => "http://www.w3.org/1999/xhtml"}
+%div{xmlns: "http://www.w3.org/1999/xhtml"}
   - event.commits.first(15).each do |commit|
     %p
-      %strong= commit.author_name
-      = link_to "(##{commit.short_id})", project_commit_path(event.project, :id => commit.id)
+      %strong= commit[:author][:name]
+      = link_to "(##{commit[:id][0...8]})", project_commit_path(event.project, id: commit[:id])
       %i
         at
-        = commit.committed_date.strftime("%Y-%m-%d %H:%M:%S")
-    %blockquote= simple_format(escape_once(commit.safe_message))
+        = commit[:timestamp].to_time.to_s(:short)
+    %blockquote= simple_format(escape_once(commit[:message]))
   - if event.commits_count > 15
     %p
       %i

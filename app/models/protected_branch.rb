@@ -10,7 +10,7 @@
 #
 
 class ProtectedBranch < ActiveRecord::Base
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   attr_accessible :name
 
