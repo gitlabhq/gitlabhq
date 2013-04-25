@@ -122,22 +122,11 @@ class BranchGraph
   bindEvents: ->
     drag = {}
     element = @element
-    dragger = (event) ->
-      element.scrollLeft drag.sl - (event.clientX - drag.x)
-      element.scrollTop drag.st - (event.clientY - drag.y)
 
-    element.on mousedown: (event) ->
-      drag =
-        x: event.clientX
-        y: event.clientY
-        st: element.scrollTop()
-        sl: element.scrollLeft()
-      $(window).on "mousemove", dragger
+    $(element).scroll (event) =>
+      @renderPartialGraph()
 
     $(window).on
-      mouseup: =>
-        $(window).off "mousemove", dragger
-        @renderPartialGraph()
       keydown: (event) =>
         # left
         element.scrollLeft element.scrollLeft() - 50  if event.keyCode is 37
