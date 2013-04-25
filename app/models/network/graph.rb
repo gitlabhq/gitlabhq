@@ -190,7 +190,7 @@ module Network
         l.spaces << space
         # Also add space to parent
         l.parents(@map).each do |parent|
-          if parent.space > 0
+          if 0 < parent.space && parent.space < space
             parent.spaces << space
           end
         end
