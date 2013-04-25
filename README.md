@@ -17,6 +17,11 @@ You can browse a live example at http://git.hoa.ro (you won't be able to create 
 _Disclaimer_: I do not provide any support on GitLab itself. I only contribute to the _public_ part. Please refer to the [official documentation](https://github.com/gitlabhq/gitlabhq/blob/master/README.md) for any help on GitLab itself.
 
 You should also be aware that **Public GitLab** only applies to the lastest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab. `master` branch on this repo have high chance to be broken.
+## Changelog
+
+  * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable)
+  * [2013-04-11] : MySQL support
+  * [2013-04-01] : First commit for Public GitLab (only PostgreSQL)
 
 ## Installation
 
@@ -39,6 +44,8 @@ During the [official intallation](https://github.com/gitlabhq/gitlabhq/blob/5-0-
 At this point, every GitLab components are installed. You still can not access to GitLab yet though.
 
 The SQL script below will create a default `guest` user for anonymous access. It will also create a default team (`pgl_reporters`) which allows `reporter` permission to every new _future_ users, for all public projects.
+
+> Note that your DB user need to be granted with TRIGGER permission on your database (this is specific to Public GitLab).
 
 #### PostgreSQL
 You have to patch GitLab your database with `pgl_script_postgres.sql`:
