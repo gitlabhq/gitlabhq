@@ -4,8 +4,7 @@ module GraphHelper
     refs += commit.refs.collect{|r|r.name}.join(" ") if commit.refs
 
     # append note count
-    notes = @project.notes.for_commit_id(commit.id)
-    refs += "[#{notes.count}]" if notes.any?
+    refs += "[#{@graph.notes[commit.id]}]" if @graph.notes[commit.id] > 0
 
     refs
   end
