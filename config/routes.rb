@@ -133,7 +133,7 @@ Gitlab::Application.routes.draw do
   #
   # Groups Area
   #
-  resources :groups, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}  do
+  resources :groups, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, except: [:index] do
     member do
       get :issues
       get :merge_requests
@@ -146,7 +146,7 @@ Gitlab::Application.routes.draw do
   #
   # Teams Area
   #
-  resources :teams, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/} do
+  resources :teams, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, except: [:index] do
     member do
       get :issues
       get :merge_requests
