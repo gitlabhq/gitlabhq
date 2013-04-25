@@ -98,9 +98,7 @@ module ExtractsPath
 
     @ref, @path = extract_ref(@id)
 
-    # It is used "@project.repository.commits(@ref, @path, 1, 0)",
-    # because "@project.repository.commit(@ref)" returns wrong commit when @ref is tag name.
-    @commit = @project.repository.commits(@ref, @path, 1, 0).first
+    @commit = @project.repository.commit(@ref)
 
     @tree = Tree.new(@project.repository, @commit.id, @ref, @path)
 
