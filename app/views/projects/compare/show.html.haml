@@ -15,7 +15,7 @@
   %div.ui-box
     .title
       Commits (#{@commits.count})
-    %ul.well-list= render Commit.decorate(@commits)
+    %ul.well-list= render Commit.decorate(@commits), project: @project
 
   - unless @diffs.empty?
     %h4 Diff

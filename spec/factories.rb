@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 include ActionDispatch::TestProcess
+=======
+require Rails.root.join('spec', 'support', 'test_env.rb')
+>>>>>>> Merge Request on forked projects
 
 FactoryGirl.define do
   sequence :sentence, aliases: [:title, :content] do
@@ -29,7 +33,18 @@ FactoryGirl.define do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     creator
+
+    trait :source do
+      sequence(:name) { |n| "source project#{n}" }
+    end
+    trait :target do
+      sequence(:name) { |n| "target project#{n}" }
+    end
+
+    factory :source_project, traits: [:source]
+    factory :target_project, traits: [:target]
   end
+
 
   factory :redmine_project, parent: :project do
     issues_tracker { "redmine" }
@@ -39,13 +54,23 @@ FactoryGirl.define do
   factory :project_with_code, parent: :project do
     path { 'gitlabhq' }
 
+    trait :source_path do
+      path { 'source_gitlabhq' }
+    end
+
+    trait :target_path do
+      path { 'target_gitlabhq' }
+    end
+
+    factory :source_project_with_code, traits: [:source, :source_path]
+    factory :target_project_with_code, traits: [:target, :target_path]
+
     after :create do |project|
-      repos_path  = Rails.root.join('tmp', 'test-git-base-path')
-      seed_repo   = Rails.root.join('tmp', 'repositories', 'gitlabhq')
-      target_repo = File.join(repos_path, project.path_with_namespace + '.git')
-      system("ln -s #{seed_repo} #{target_repo}")
+      TestEnv.clear_repo_dir(project.namespace, project.path)
+      TestEnv.create_repo(project.namespace, project.path)
     end
   end
+
 
   factory :group do
     sequence(:name) { |n| "group#{n}" }
@@ -86,7 +111,8 @@ FactoryGirl.define do
   factory :merge_request do
     title
     author
-    project factory: :project_with_code
+    source_project factory: :source_project_with_code
+    target_project factory: :target_project_with_code
     source_branch "master"
     target_branch "stable"
 
@@ -96,13 +122,13 @@ FactoryGirl.define do
       source_branch "stable" # pretend bcf03b5d
       st_commits do
         [
-          project.repository.commit('bcf03b5d').to_hash,
-          project.repository.commit('bcf03b5d~1').to_hash,
-          project.repository.commit('bcf03b5d~2').to_hash
+            source_project.repository.commit('bcf03b5d').to_hash,
+            source_project.repository.commit('bcf03b5d~1').to_hash,
+            source_project.repository.commit('bcf03b5d~2').to_hash
         ]
       end
       st_diffs do
-        project.repo.diff("bcf03b5d~3", "bcf03b5d")
+        source_project.repo.diff("bcf03b5d~3", "bcf03b5d")
       end
     end
 
@@ -133,7 +159,7 @@ FactoryGirl.define do
 
     trait :on_commit do
       project factory: :project_with_code
-      commit_id     "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+      commit_id "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
       noteable_type "Commit"
     end
 
@@ -143,12 +169,12 @@ FactoryGirl.define do
 
     trait :on_merge_request do
       project factory: :project_with_code
-      noteable_id   1
+      noteable_id 1
       noteable_type "MergeRequest"
     end
 
     trait :on_issue do
-      noteable_id   1
+      noteable_id 1
       noteable_type "Issue"
     end
 

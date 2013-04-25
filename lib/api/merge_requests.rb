@@ -51,9 +51,10 @@ module API
       #
       # Parameters:
       #
-      #   id (required)            - The ID of a project
+      #   id (required)            - The ID of a project - this will be the source of the merge request
       #   source_branch (required) - The source branch
       #   target_branch (required) - The target branch
+      #   target_project           - The target project of the merge request defaults to the :id of the project
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
       #
@@ -63,11 +64,15 @@ module API
       post ":id/merge_requests" do
         authorize! :write_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id]
         merge_request = user_project.merge_requests.new(attrs)
         merge_request.author = current_user
-
+        merge_request.source_project = user_project
+        if !attrs[:target_project_id].nil? && user_project.forked? && user_project.forked_from_project.id.to_s == attrs[:target_project_id]
+          merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+        elsif attrs[:target_project].nil?
+          merge_request.target_project = user_project
+        end
         if merge_request.save
           merge_request.reload_code
           present merge_request, with: Entities::MergeRequest

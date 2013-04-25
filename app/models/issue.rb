@@ -17,7 +17,17 @@
 #
 
 class Issue < ActiveRecord::Base
+
   include Issuable
+
+  belongs_to :project
+  validates :project, presence: true
+
+  scope :of_group, ->(group) { where(project_id: group.project_ids) }
+  scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
+  scope :opened, -> { with_state(:opened) }
+  scope :closed, -> { with_state(:closed) }
+  scope :by_project, ->(project_id) {where(project_id:project_id)}
 
   attr_accessible :title, :assignee_id, :position, :description,
                   :milestone_id, :label_list, :author_id_of_changes,

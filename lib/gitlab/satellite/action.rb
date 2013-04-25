@@ -1,7 +1,7 @@
 module Gitlab
   module Satellite
     class Action
-      DEFAULT_OPTIONS = { git_timeout: 30.seconds }
+      DEFAULT_OPTIONS = { git_timeout: 30.seconds}
 
       attr_accessor :options, :project, :user
 
@@ -34,16 +34,19 @@ module Gitlab
         Gitlab::ShellEnv.reset_env
       end
 
-      # * Clears the satellite
-      # * Updates the satellite from Gitolite
+      # * Recreates the satellite
       # * Sets up Git variables for the user
       #
       # Note: use this within #in_locked_and_timed_satellite
       def prepare_satellite!(repo)
         project.satellite.clear_and_update!
 
-        repo.git.config({}, "user.name", user.name)
-        repo.git.config({}, "user.email", user.email)
+        repo.config['user.name']=user.name
+        repo.config['user.email']=user.email
+      end
+
+      def default_options(options = {})
+        {raise: true, timeout: true}.merge(options)
       end
     end
   end

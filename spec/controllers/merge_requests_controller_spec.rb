@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::MergeRequestsController do
   let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
-  let(:merge_request) { create(:merge_request_with_diffs, project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
+  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
 
   before do
     sign_in(user)
@@ -28,7 +28,7 @@ describe Projects::MergeRequestsController do
       it "should render it" do
         get :show, project_id: project.code, id: merge_request.id, format: format
 
-        expect(response.body).to eq(merge_request.send(:"to_#{format}"))
+        expect(response.body).to eq((merge_request.send(:"to_#{format}",user)).to_s)
       end
 
       it "should not escape Html" do

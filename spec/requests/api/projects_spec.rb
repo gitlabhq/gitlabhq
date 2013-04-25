@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::API do
   include ApiHelpers
   before(:each) { enable_observers }
+  after(:each) { disable_observers }
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -14,7 +15,8 @@ describe API::API do
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
 
-  before { project.team << [user, :reporter] }
+  before {
+    project.team << [user, :reporter] }
 
   describe "GET /projects" do
     context "when unauthenticated" do
@@ -46,16 +48,16 @@ describe API::API do
       it "should not create new project" do
         expect {
           post api("/projects", user2), name: 'foo'
-        }.to change {Project.count}.by(0)
+        }.to change { Project.count }.by(0)
       end
     end
 
     it "should create new project without path" do
-      expect { post api("/projects", user), name: 'foo' }.to change {Project.count}.by(1)
+      expect { post api("/projects", user), name: 'foo' }.to change { Project.count }.by(1)
     end
 
     it "should not create new project without name" do
-      expect { post api("/projects", user) }.to_not change {Project.count}
+      expect { post api("/projects", user) }.to_not change { Project.count }
     end
 
     it "should return a 400 error if name not given" do
@@ -89,17 +91,17 @@ describe API::API do
 
     it "should assign attributes to project" do
       project = attributes_for(:project, {
-        description: Faker::Lorem.sentence,
-        default_branch: 'stable',
-        issues_enabled: false,
-        wall_enabled: false,
-        merge_requests_enabled: false,
-        wiki_enabled: false
+          description: Faker::Lorem.sentence,
+          default_branch: 'stable',
+          issues_enabled: false,
+          wall_enabled: false,
+          merge_requests_enabled: false,
+          wiki_enabled: false
       })
 
       post api("/projects", user), project
 
-      project.each_pair do |k,v|
+      project.each_pair do |k, v|
         next if k == :path
         json_response[k.to_s].should == v
       end
@@ -125,11 +127,11 @@ describe API::API do
     before { admin }
 
     it "should create new project without path" do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
+      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change { Project.count }.by(1)
     end
 
     it "should not create new project without name" do
-      expect { post api("/projects/user/#{user.id}", admin) }.to_not change {Project.count}
+      expect { post api("/projects/user/#{user.id}", admin) }.to_not change { Project.count }
     end
 
     it "should respond with 201 on success" do
@@ -144,17 +146,17 @@ describe API::API do
 
     it "should assign attributes to project" do
       project = attributes_for(:project, {
-        description: Faker::Lorem.sentence,
-        default_branch: 'stable',
-        issues_enabled: false,
-        wall_enabled: false,
-        merge_requests_enabled: false,
-        wiki_enabled: false
+          description: Faker::Lorem.sentence,
+          default_branch: 'stable',
+          issues_enabled: false,
+          wall_enabled: false,
+          merge_requests_enabled: false,
+          wiki_enabled: false
       })
 
       post api("/projects/user/#{user.id}", admin), project
 
-      project.each_pair do |k,v|
+      project.each_pair do |k, v|
         next if k == :path
         json_response[k.to_s].should == v
       end
@@ -267,7 +269,7 @@ describe API::API do
     it "should add user to project team" do
       expect {
         post api("/projects/#{project.id}/members", user), user_id: user2.id,
-          access_level: UsersProject::DEVELOPER
+             access_level: UsersProject::DEVELOPER
       }.to change { UsersProject.count }.by(1)
 
       response.status.should == 201
@@ -277,10 +279,10 @@ describe API::API do
 
     it "should return a 201 status if user is already project member" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id,
-        access_level: UsersProject::DEVELOPER
+           access_level: UsersProject::DEVELOPER
       expect {
         post api("/projects/#{project.id}/members", user), user_id: user2.id,
-          access_level: UsersProject::DEVELOPER
+             access_level: UsersProject::DEVELOPER
       }.not_to change { UsersProject.count }.by(1)
 
       response.status.should == 201
@@ -411,8 +413,8 @@ describe API::API do
     it "should add hook to project" do
       expect {
         post api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com"
-      }.to change {project.hooks.count}.by(1)
+             url: "http://example.com"
+      }.to change { project.hooks.count }.by(1)
       response.status.should == 201
     end
 
@@ -430,7 +432,7 @@ describe API::API do
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "should update an existing project hook" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user),
-        url: 'http://example.org'
+          url: 'http://example.org'
       response.status.should == 200
       json_response['url'].should == 'http://example.org'
     end
@@ -455,7 +457,7 @@ describe API::API do
     it "should delete hook from project" do
       expect {
         delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      }.to change {project.hooks.count}.by(-1)
+      }.to change { project.hooks.count }.by(-1)
       response.status.should == 200
     end
 
@@ -501,26 +503,26 @@ describe API::API do
   describe "POST /projects/:id/snippets" do
     it "should create a new project snippet" do
       post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', code: 'test'
+           title: 'api test', file_name: 'sample.rb', code: 'test'
       response.status.should == 201
       json_response['title'].should == 'api test'
     end
 
     it "should return a 400 error if title is not given" do
       post api("/projects/#{project.id}/snippets", user),
-        file_name: 'sample.rb', code: 'test'
+           file_name: 'sample.rb', code: 'test'
       response.status.should == 400
     end
 
     it "should return a 400 error if file_name not given" do
       post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', code: 'test'
+           title: 'api test', code: 'test'
       response.status.should == 400
     end
 
     it "should return a 400 error if code not given" do
       post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb'
+           title: 'api test', file_name: 'sample.rb'
       response.status.should == 400
     end
   end
@@ -528,7 +530,7 @@ describe API::API do
   describe "PUT /projects/:id/snippets/:shippet_id" do
     it "should update an existing project snippet" do
       put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        code: 'updated code'
+          code: 'updated code'
       response.status.should == 200
       json_response['title'].should == 'example'
       snippet.reload.content.should == 'updated code'
@@ -536,7 +538,7 @@ describe API::API do
 
     it "should update an existing project snippet with new title" do
       put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        title: 'other api test'
+          title: 'other api test'
       response.status.should == 200
       json_response['title'].should == 'other api test'
     end
@@ -598,7 +600,7 @@ describe API::API do
 
     describe "POST /projects/:id/keys" do
       it "should not create an invalid ssh key" do
-        post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
+        post api("/projects/#{project.id}/keys", user), {title: "invalid key"}
         response.status.should == 404
       end
 
@@ -606,7 +608,7 @@ describe API::API do
         key_attrs = attributes_for :key
         expect {
           post api("/projects/#{project.id}/keys", user), key_attrs
-        }.to change{ project.deploy_keys.count }.by(1)
+        }.to change { project.deploy_keys.count }.by(1)
       end
     end
 
@@ -616,7 +618,7 @@ describe API::API do
       it "should delete existing key" do
         expect {
           delete api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
-        }.to change{ project.deploy_keys.count }.by(-1)
+        }.to change { project.deploy_keys.count }.by(-1)
       end
 
       it "should return 404 Not Found with invalid ID" do

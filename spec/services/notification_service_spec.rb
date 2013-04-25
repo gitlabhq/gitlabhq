@@ -156,7 +156,8 @@ describe NotificationService do
     let(:merge_request) { create :merge_request, assignee: create(:user) }
 
     before do
-      build_team(merge_request.project)
+      build_team(merge_request.source_project)
+      build_team(merge_request.target_project)
     end
 
     describe :new_merge_request do

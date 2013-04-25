@@ -24,6 +24,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     page.should have_content "Wiki Feature"
   end
 
+
   Then 'I should see closed merge request "Bug NS-04"' do
     merge_request = MergeRequest.find_by_title!("Bug NS-04")
     merge_request.closed?.should be_true
@@ -56,30 +57,35 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I submit new merge request "Wiki Feature"' do
-    fill_in "merge_request_title", with: "Wiki Feature"
-    select "bootstrap", from: "merge_request_source_branch"
-    select "master", from: "merge_request_target_branch"
+    fill_in "merge_request_title", :with => "Wiki Feature"
+    select project.path_with_namespace, :from => "merge_request_target_project_id"
+    select "master", :from => "merge_request_source_branch"
+    select "stable", :from => "merge_request_target_branch"
+    find(:select, "merge_request_target_branch", {}).find(:option, "stable", {}).value.should == "stable"
     click_button "Submit merge request"
   end
 
   And 'project "Shop" have "Bug NS-04" open merge request' do
     create(:merge_request,
            title: "Bug NS-04",
-           project: project,
+           source_project: project,
+           target_project: project,
            author: project.users.first)
   end
 
   And 'project "Shop" have "Bug NS-05" open merge request with diffs inside' do
     create(:merge_request_with_diffs,
            title: "Bug NS-05",
-           project: project,
+           source_project: project,
+           target_project: project,
            author: project.users.first)
   end
 
   And 'project "Shop" have "Feature NS-03" closed merge request' do
     create(:closed_merge_request,
            title: "Feature NS-03",
-           project: project,
+           source_project: project,
+           target_project: project,
            author: project.users.first)
   end
 

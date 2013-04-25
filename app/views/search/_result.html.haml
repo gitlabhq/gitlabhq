@@ -22,11 +22,11 @@
     - @merge_requests.each do |merge_request|
       %li
         merge request:
-        = link_to [merge_request.project, merge_request] do
+        = link_to [merge_request.target_project, merge_request] do
           %span ##{merge_request.id}
           %strong.term
             = truncate merge_request.title, length: 50
-        %span.light (#{merge_request.project.name_with_namespace})
+        %span.light (#{merge_request.source_project.name_with_namespace}:#{merge_request.source_branch} &rarr; #{merge_request.target_project.name_with_namespace}:#{merge_request.target_branch})
     - @issues.each do |issue|
       %li
         issue:

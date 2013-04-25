@@ -48,8 +48,11 @@ Spork.prefork do
     # instead of true.
     config.use_transactional_fixtures = false
 
-    config.before do
-      TestEnv.init(observers: false)
+    config.before(:suite) do
+      TestEnv.init(observers: false, init_repos: true, repos: false)
+    end
+    config.before(:each) do
+      TestEnv.setup_stubs
     end
   end
 end

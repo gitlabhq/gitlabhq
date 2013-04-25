@@ -3,9 +3,12 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
+
+
   step 'project has deploy key' do
     create(:deploy_keys_project, project: @project)
   end
+
 
   step 'I should see project deploy keys' do
     within '.enabled-keys' do

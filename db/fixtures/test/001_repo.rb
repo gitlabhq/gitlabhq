@@ -19,5 +19,15 @@ FileUtils.cd(REPO_PATH) do
   # Remove the copy
   FileUtils.rm(SEED_REPO)
 end
+puts ' done.'
+print "Creating seed satellite..."
 
+SATELLITE_PATH = Rails.root.join('tmp', 'satellite')
+# Make directory
+FileUtils.mkdir_p(SATELLITE_PATH)
+#  Chdir, clone from the seed
+FileUtils.cd(SATELLITE_PATH) do
+  # Clone the satellite
+  `git clone --quiet #{REPO_PATH}/gitlabhq #{SATELLITE_PATH}/gitlabhq`
+end
 puts ' done.'
