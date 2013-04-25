@@ -55,7 +55,7 @@ class WikiToGollumMigrator
 
   def create_page_and_revisions(project, page)
     # Grab all revisions of the page
-    revisions = project.wikis.where(slug: page.slug).ordered.all
+    revisions = project.wikis.where(slug: page.slug).order('id desc').all
 
     # Remove the first revision created from the array
     # and use it to create the Gollum page. Each successive revision

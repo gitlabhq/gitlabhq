@@ -149,7 +149,7 @@ describe WikiToGollumMigrator do
         @page.user = @project.owner
         @page.save!
 
-        create_revision(@page)
+        3.times { create_revision(@page) }
 
         subject.migrate!
       end
@@ -158,6 +158,7 @@ describe WikiToGollumMigrator do
         wiki = GollumWiki.new(@project, nil)
         page = wiki.find_page("2012 06 16")
         page.should be_present
+        page.content.should == "Updated Content"
         page.versions.count.should == 2
       end
     end
