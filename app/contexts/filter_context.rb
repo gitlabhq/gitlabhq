@@ -12,7 +12,7 @@ class FilterContext
 
   def apply_filter items
     if params[:project_id]
-      items = items.where(project_id: params[:project_id])
+      items = items.by_project(params[:project_id])
     end
 
     if params[:search].present?
@@ -20,12 +20,12 @@ class FilterContext
     end
 
     case params[:status]
-    when 'closed'
-      items.closed
-    when 'all'
-      items
-    else
-      items.opened
+      when 'closed'
+        items.closed
+      when 'all'
+        items
+      else
+        items.opened
     end
   end
 end

@@ -1,5 +1,6 @@
 module Gitlab
-  class SatelliteNotExistError < StandardError; end
+  class SatelliteNotExistError < StandardError;
+  end
 
   module Satellite
     class Satellite
@@ -24,6 +25,16 @@ module Gitlab
       def clear_and_update!
         raise_no_satellite unless exists?
 
+        clear_working_dir!
+        delete_heads!
+        update_from_source!
+      end
+
+      def recreate!
+        raise_no_satellite unless exists?
+        File.exists? path
+        @repo = nil
+        create
         clear_working_dir!
         delete_heads!
         update_from_source!
@@ -57,9 +68,8 @@ module Gitlab
         File.open(lock_file, "w+") do |f|
           f.flock(File::LOCK_EX)
 
-          Dir.chdir(path) do
-            return yield
-          end
+          Dir.chdir(path) { return yield }
+
         end
       end
 

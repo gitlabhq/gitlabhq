@@ -17,6 +17,7 @@ class ForkProject < Spinach::FeatureSteps
   step 'I should see the forked project page' do
     page.should have_content "Project was successfully forked."
     current_path.should include current_user.namespace.path
+    @forked_project = Project.find_by_namespace_id(current_user.namespace.path)
   end
 
   step 'I already have a project named "Shop" in my namespace' do

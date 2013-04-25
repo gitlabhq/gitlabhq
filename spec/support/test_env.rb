@@ -49,7 +49,7 @@ module TestEnv
     Gitlab::Satellite::Satellite.any_instance.stub(
       exists?: true,
       destroy: true,
-      create: true
+      create: true,
     )
 
     MergeRequest.any_instance.stub(
@@ -68,8 +68,30 @@ module TestEnv
 
     # Symlink tmp/repositories/gitlabhq to tmp/test-git-base-path/gitlabhq
     seed_repo = Rails.root.join('tmp', 'repositories', 'gitlabhq')
-    target_repo = File.join(repos_path, 'gitlabhq.git')
+
+    #TODO:[IA-07]probably should think about this some more
+    main_test_repo = File.join(repos_path, 'gitlabhq.git')
+    source_repo = File.join(repos_path, 'source_gitlabhq.git')
+    target_repo = File.join(repos_path, 'target_gitlabhq.git')
+    system("ln -s #{seed_repo} #{main_test_repo}")
+    system("ln -s #{seed_repo} #{source_repo}")
     system("ln -s #{seed_repo} #{target_repo}")
+
+    #Since much more is happening in satellites
+    satellite_path = "#{repos_path}/satellite"
+    satellite_seed_repo = Rails.root.join('tmp', 'repositories', 'seed-gitlabhq')
+    Gitlab.config.satellites.stub(path: satellite_path)
+    FileUtils.mkdir_p Gitlab.config.satellites.path
+    main_test_satellite = File.join(satellite_path, 'gitlabhq')
+    source_satellite = File.join(satellite_path, 'source_gitlabhq')
+    target_satellite = File.join(satellite_path, 'target_gitlabhq')
+    FileUtils.mkdir_p main_test_satellite
+    system("git clone --quiet #{main_test_repo} #{main_test_satellite}")
+    FileUtils.mkdir_p source_satellite
+    system("git clone --quiet #{source_repo} #{source_satellite}")
+    FileUtils.mkdir_p target_satellite
+    system("git clone --quiet #{target_repo} #{target_satellite}")
+
   end
 
   def create_temp_repo(path)
