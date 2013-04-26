@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "spec_helper"
 
 describe WikiToGollumMigrator do
@@ -134,6 +136,99 @@ describe WikiToGollumMigrator do
             page.versions.count.should == 2
           end
         end
+      end
+    end
+
+    context "when migrating wiki's with extra whitespace in the title" do
+      before do
+        subject.rollback!
+        ENV['safe_migrate'] = 'true'
+        @project = @projects.last
+        @page = @project.wikis.new(title: "2012-06-16 ", content: "Page with funky title")
+        @page.slug = @page.title.parameterize
+        @page.user = @project.owner
+        @page.save!
+
+        3.times { create_revision(@page) }
+
+        subject.migrate!
+      end
+
+      it "creates the wiki page correctly" do
+        wiki = GollumWiki.new(@project, nil)
+        page = wiki.find_page("2012 06 16")
+        page.should be_present
+        page.content.should == "Updated Content"
+        page.versions.count.should == 2
+      end
+    end
+
+    context "when migrating wiki's with slashes in the title" do
+      before do
+        subject.rollback!
+        ENV['safe_migrate'] = 'true'
+        @project = @projects.last
+        @page = @project.wikis.new(title: "Awesome 1337 /bin/badass ", content: "Page with funky title")
+        @page.slug = @page.title.parameterize
+        @page.user = @project.owner
+        @page.save!
+
+        create_revision(@page)
+
+        subject.migrate!
+      end
+
+      it "creates the wiki page correctly" do
+        wiki = GollumWiki.new(@project, nil)
+        page = wiki.find_page("Awesome 1337 Bin Badass")
+        page.should be_present
+        page.versions.count.should == 2
+      end
+    end
+
+    context "when migrating wiki's with non alphanumeric characters in the title" do
+      before do
+        subject.rollback!
+        ENV['safe_migrate'] = 'true'
+        @project = @projects.last
+        @page = @project.wikis.new(title: "Awes@me-1337 #!/bin/badass? ", content: "Page with funky title")
+        @page.slug = @page.title.parameterize
+        @page.user = @project.owner
+        @page.save!
+
+        create_revision(@page)
+
+        subject.migrate!
+      end
+
+      it "creates the wiki page correctly" do
+        wiki = GollumWiki.new(@project, nil)
+        page = wiki.find_page("Awes Me 1337 Bin Badass")
+        page.should be_present
+        page.versions.count.should == 2
+      end
+    end
+
+    context "when migrating wiki's with non-english characters in the title" do
+      before do
+        subject.rollback!
+        ENV['safe_migrate'] = 'true'
+        @project = @projects.last
+        @page = @project.wikis.new(title: "Mögliche Aufteilung", content: "Page with funky title")
+        @page.slug = @page.title.parameterize
+        @page.user = @project.owner
+        @page.save!
+
+        create_revision(@page)
+
+        subject.migrate!
+      end
+
+      it "creates the wiki page correctly" do
+        wiki = GollumWiki.new(@project, nil)
+        page = wiki.find_page("Mogliche Aufteilung")
+        page.should be_present
+        page.versions.count.should == 2
       end
     end
 

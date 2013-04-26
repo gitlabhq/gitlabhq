@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class WikiToGollumMigrator
 
   attr_reader :projects
@@ -53,7 +55,7 @@ class WikiToGollumMigrator
 
   def create_page_and_revisions(project, page)
     # Grab all revisions of the page
-    revisions = project.wikis.where(slug: page.slug).ordered.all
+    revisions = project.wikis.where(slug: page.slug).order('id desc').all
 
     # Remove the first revision created from the array
     # and use it to create the Gollum page. Each successive revision
@@ -84,7 +86,7 @@ class WikiToGollumMigrator
       # and revision created so the correct User is shown in
       # the commit message.
       wiki = GollumWiki.new(project, revision.user)
-      wiki_page = wiki.find_page(page.slug)
+      wiki_page = wiki.find_page(page.title)
 
       attributes = extract_attributes_from_page(revision, project)
 
@@ -103,6 +105,10 @@ class WikiToGollumMigrator
                      .with_indifferent_access
                      .slice(:title, :content)
 
+    if ENV["safe_migrate"] == "true"
+      attributes[:title] = gollum_safe_title(attributes[:title])
+    end
+
     slug = page.slug
 
     # Change 'index' pages to 'home' pages to match Gollum standards
@@ -111,6 +117,10 @@ class WikiToGollumMigrator
     end
 
     attributes
+  end
+
+  def gollum_safe_title(title)
+    title.parameterize.titleize
   end
 
   def home_already_exists?(project)
