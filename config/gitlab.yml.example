@@ -42,8 +42,8 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      wall: true
-      snippets: true
+      wall: false
+      snippets: false
 
   ## External issues trackers
   issues_tracker:
