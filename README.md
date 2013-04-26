@@ -27,7 +27,7 @@ You should also be aware that **Public GitLab** only applies to the lastest [sta
 
 During the [official intallation](https://github.com/gitlabhq/gitlabhq/blob/5-1-stable/doc/install/installation.md) workflow, **Public GitLab** override part _"6. GitLab - Clone the Source"_. 
 
-**Warning**: Remember that you _need_ to use the lastest **stable branch**, even if you want to dowload it from [zip file](https://github.com/ArthurHoaro/Public-GitLab/archive/5-0-stable.zip).
+**Warning**: Remember that you _need_ to use the lastest **stable branch**, even if you want to dowload it from [zip file](https://github.com/ArthurHoaro/Public-GitLab/archive/5-1-stable.zip).
 
 ### Clone the Source
 
