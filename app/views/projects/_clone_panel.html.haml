@@ -1,17 +1,34 @@
 .project_clone_panel
   .row
-    .span7
+    .span8
       .form-horizontal= render "shared/clone_panel"
-    .span4.pull-right
+    .span3.pull-right
       .pull-right
         - unless @project.empty_repo?
           - if can? current_user, :download_code, @project
             = link_to archive_project_repository_path(@project), class: "btn grouped" do
               %i.icon-download-alt
               Download
-          - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
-            = link_to new_project_merge_request_path(@project), title: "New Merge Request", class: "btn grouped" do
-              Merge Request
-          - if @project.issues_enabled && can?(current_user, :write_issue, @project)
-            = link_to url_for_new_issue, title: "New Issue", class: "btn grouped" do
-              Issue
+
+            = link_to tags_project_repository_path(@project), class: "btn grouped only-wide", title: 'Git Tags' do
+              %i.icon-tags
+
+            .dropdown.pull-right
+              %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+                %i.icon-plus
+                Add new
+                %b.caret
+              %ul.dropdown-menu
+                - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+                  %li
+                    = link_to new_project_merge_request_path(@project), title: "New Merge Request" do
+                      Merge Request
+                - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+                  %li
+                    = link_to url_for_new_issue, title: "New Issue" do
+                      Issue
+                - if @project.snippets_enabled && can?(current_user, :write_snippet, @project)
+                  %li
+                    = link_to new_project_snippet_path(@project), title: "New Snippet" do
+                      Snippet
+
