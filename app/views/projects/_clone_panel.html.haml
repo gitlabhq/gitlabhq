@@ -31,7 +31,7 @@
                   %li
                     = link_to new_project_snippet_path(@project), title: "New Snippet" do
                       Snippet
-                - if @project.issues_enabled && can?(current_user, :admin_team_member, @project)
+                - if can?(current_user, :admin_team_member, @project)
                   %li.divider
                   %li
                     = link_to new_project_team_member_path(@project), title: "New Team member" do
