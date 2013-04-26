@@ -12,7 +12,7 @@
 #  active      :boolean          default(FALSE), not null
 #  project_url :string(255)
 #
-
+=begin
 class Service < ActiveRecord::Base
   attr_accessible :title, :token, :type, :active
 
@@ -25,3 +25,4 @@ class Service < ActiveRecord::Base
     active
   end
 end
+=end

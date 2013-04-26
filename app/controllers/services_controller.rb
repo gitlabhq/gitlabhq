@@ -5,32 +5,51 @@ class ServicesController < ProjectResourceController
   respond_to :html
 
   def index
-    @gitlab_ci_service = @project.gitlab_ci_service
+    @active_project_services = @project.active_project_services
+    @inactive_project_services = @project.inactive_project_services
   end
 
   def edit
-    @service = @project.gitlab_ci_service
-
-    # Create if missing
-    @service = @project.create_gitlab_ci_service unless @service
+    @project_service = @project.project_service(params)
+    @service = @project_service.service
   end
 
   def update
-    @service = @project.gitlab_ci_service
+    @project_service = @project.project_service(params)
+    @service = @project_service.service
 
-    if @service.update_attributes(params[:service])
-      redirect_to edit_project_service_path(@project, :gitlab_ci)
+    if @project_service.update_attributes(params[:service])
+      redirect_to edit_project_service_path(@project, params[:id])
     else
       render 'edit'
     end
   end
 
   def test
-    data = GitPushService.new.sample_data(project, current_user)
+    payload = GitPushService.new.sample_data(project, current_user)
 
-    @service = project.gitlab_ci_service
-    @service.execute(data)
+    # The following code is just here for testing purposes, should be moved elsewhere
+    payload[:commits].each_with_index do |commit, i|
+      payload[:commits][i][:distinct] = true
+    end
+    payload[:pusher] = {:name=>current_user.name}
+    payload[:ref] = 'refs/heads/master' if payload[:ref] == 'refs/heads/'
+    project_service = @project.project_service(params)
+    service = project_service.service
 
+    begin
+      s = service.new(:push, project_service.data.with_indifferent_access, payload.with_indifferent_access)
+      if s.respond_to? :receive_event
+        s.receive_event
+      elsif s.respond_to? :receive_push
+        s.receive_push
+      end
+      flash[:notice] = 'Test succeeded'
+    rescue Exception => e
+      flash[:alert] = e.to_s
+    end
+
+    
     redirect_to :back
   end
 end

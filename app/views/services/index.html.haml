@@ -4,6 +4,25 @@
 %br
 
 %ul.ui-box.well-list
+  - @active_project_services.each do |service|
+    %li
+      %h4.cgreen
+        = link_to edit_project_service_path(@project, service.hook_name) do
+          = service.title
+        .pull-right
+          %small.cgreen
+            %i.icon-ok
+            Enabled
+  - @inactive_project_services.each do |service|
+    %li
+      %h4.cgreen
+        = link_to edit_project_service_path(@project, service.hook_name) do
+          = service.title
+        .pull-right
+          %small.cgray
+            %i.icon-off
+            Disabled
+/
   %li
     %h4.cgreen
       = link_to edit_project_service_path(@project, :gitlab_ci) do
