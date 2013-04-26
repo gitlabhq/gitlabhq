@@ -101,7 +101,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    git checkout v1.2.0
+    git checkout v1.3.0
 
     cp config.yml.example config.yml
 
@@ -163,7 +163,7 @@ do so with caution!
     sudo chmod -R u+rwX  tmp/pids/
 
     # Copy the example Unicorn config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
 **Important Note:**
 Make sure to edit both files to match your setup.
