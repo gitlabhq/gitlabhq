@@ -49,7 +49,16 @@ module Gitlab
 
       def commit(commit_id = nil)
         commit = if commit_id
-                   repo.commit(commit_id)
+                   # Find repo.refs first,
+                   # because if commit_id is "tag name",
+                   # repo.commit(commit_id) returns wrong commit sha
+                   # that is git tag object sha.
+                   ref = repo.refs.find {|r| r.name == commit_id}
+                   if ref
+                     ref.commit
+                   else
+                     repo.commit(commit_id)
+                   end
                  else
                    repo.commits(root_ref).first
                  end

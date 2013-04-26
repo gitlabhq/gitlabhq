@@ -30,8 +30,17 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
+  When 'I switch ref to "v2.1.0"' do
+    page.select 'v2.1.0', :from => 'ref'
+    sleep 2
+  end
+
   And 'page should select "stable" in select box' do
     page.should have_selector '#ref_chzn span', :text => "stable"
+  end
+
+  And 'page should select "v2.1.0" in select box' do
+    page.should have_selector '#ref_chzn span', :text => "v2.1.0"
   end
 
   And 'page should have "stable" on graph' do
