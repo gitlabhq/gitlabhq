@@ -45,7 +45,10 @@ We recommend a processor with **4 cores**. At a minimum you need a processor wit
 
 ## Memory
 
-We recommend you to run GitLab on a server with at least **1GB of RAM** memory. You can use it with 512MB of memory but you need to setup unicorn to use only 1 worker and you need at least 200MB of swap. The minimal requirement for an unmodified installation is 768MB. With 1.5GB of memory you should be able to support 1000+ users.
+- 512MB is too little memory, GitLab will be very slow you will need 250MB of swap
+- 768MB is the minimal memory size and supports up to 100 users
+- **1GB** is the **recommended** memory size and supports up to 1,000 users
+- 1.5GB supports up to 10,000 users
 
 ## Storage
 
