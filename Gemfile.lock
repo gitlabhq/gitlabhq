@@ -32,6 +32,14 @@ GIT
       faye-websocket (~> 0.4, >= 0.4.4)
       http_parser.rb (~> 0.5.3)
 
+PATH
+  remote: ../gitlab_git
+  specs:
+    gitlab_git (1.0.0)
+      activesupport (~> 3.2.13)
+      github-linguist (~> 2.3.4)
+      grit (~> 2.5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -501,6 +509,7 @@ DEPENDENCIES
   github-markup (~> 0.7.4)
   gitlab-grack (~> 1.0.0)
   gitlab-pygments.rb (~> 0.3.2)
+  gitlab_git!
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gollum-lib (~> 1.0.0)
