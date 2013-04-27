@@ -7,6 +7,16 @@ GIT
       rake (>= 0.8.7)
 
 GIT
+  remote: https://github.com/gitlabhq/gitlab_git.git
+  revision: 40703ee3925102a77f70c038b1948c251a9aaa46
+  ref: 40703ee3925102a77f70c038b1948c251a9aaa46
+  specs:
+    gitlab_git (1.0.0)
+      activesupport (~> 3.2.13)
+      github-linguist (~> 2.3.4)
+      grit (~> 2.5.0)
+
+GIT
   remote: https://github.com/gitlabhq/grit.git
   revision: 42297cdcee16284d2e4eff23d41377f52fc28b9d
   ref: 42297cdcee16284d2e4eff23d41377f52fc28b9d
@@ -31,14 +41,6 @@ GIT
       capybara (~> 2.0, >= 2.0.1)
       faye-websocket (~> 0.4, >= 0.4.4)
       http_parser.rb (~> 0.5.3)
-
-PATH
-  remote: ../gitlab_git
-  specs:
-    gitlab_git (1.0.0)
-      activesupport (~> 3.2.13)
-      github-linguist (~> 2.3.4)
-      grit (~> 2.5.0)
 
 GEM
   remote: https://rubygems.org/
