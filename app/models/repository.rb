@@ -37,6 +37,22 @@ class Repository
     raw_repository.send(m, *args, &block)
   end
 
+  # Return repo size in megabytes
+  # Cached in redis
+  def size
+    Rails.cache.fetch(cache_key(:size)) do
+      raw_repository.size
+    end
+  end
+
+  def expire_cache
+    Rails.cache.delete(cache_key(:size))
+  end
+
+  def cache_key(type)
+    "#{type}:#{path_with_namespace}"
+  end
+
   def respond_to?(method)
     return true if raw_repository.respond_to?(method)
 
