@@ -158,11 +158,13 @@ do so with caution!
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
-    # Create directory for pids and make sure GitLab can write to it
+    # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
+    sudo -u git -H mkdir tmp/sockets/
     sudo chmod -R u+rwX  tmp/pids/
+    sudo chmod -R u+rwX  tmp/sockets/
 
-    # Copy the example Of Puma config
+    # Copy the example of Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
 **Important Note:**
