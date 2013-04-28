@@ -7,16 +7,6 @@ GIT
       rake (>= 0.8.7)
 
 GIT
-  remote: https://github.com/gitlabhq/gitlab_git.git
-  revision: 40703ee3925102a77f70c038b1948c251a9aaa46
-  ref: 40703ee3925102a77f70c038b1948c251a9aaa46
-  specs:
-    gitlab_git (1.0.0)
-      activesupport (~> 3.2.13)
-      github-linguist (~> 2.3.4)
-      grit (~> 2.5.0)
-
-GIT
   remote: https://github.com/gitlabhq/grit.git
   revision: 42297cdcee16284d2e4eff23d41377f52fc28b9d
   ref: 42297cdcee16284d2e4eff23d41377f52fc28b9d
@@ -174,6 +164,11 @@ GEM
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
+    gitlab_git (1.0.0)
+      activesupport (~> 3.2.13)
+      github-linguist (~> 2.3.4)
+      grit (~> 2.5.0)
+      grit_ext (~> 0.8.1)
     gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
       net-ldap (~> 0.2.2)
@@ -511,7 +506,7 @@ DEPENDENCIES
   github-markup (~> 0.7.4)
   gitlab-grack (~> 1.0.0)
   gitlab-pygments.rb (~> 0.3.2)
-  gitlab_git!
+  gitlab_git (~> 1.0.0)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gollum-lib (~> 1.0.0)
@@ -519,7 +514,6 @@ DEPENDENCIES
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)
   grit (~> 2.5.0)!
-  grit_ext (~> 0.8.1)
   growl
   guard-rspec
   guard-spinach

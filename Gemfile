@@ -22,11 +22,9 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # Extracting information from a git repository
-# Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
+# We cannot use original git since some bugs
 gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: '42297cdcee16284d2e4eff23d41377f52fc28b9d'
-gem 'grit_ext', '~> 0.8.1'
-
-gem 'gitlab_git', git: 'https://github.com/gitlabhq/gitlab_git.git', ref: '40703ee3925102a77f70c038b1948c251a9aaa46'
+gem 'gitlab_git', '~> 1.0.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
