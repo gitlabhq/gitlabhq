@@ -42,7 +42,7 @@ edited by hand. But, you can use any editor you like instead.
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
@@ -61,6 +61,11 @@ Make sure you have the right version of Python installed.
     # If you get a "command not found" error create a link to the python binary
     sudo ln -s /usr/bin/python /usr/bin/python2
 
+**Note:** In order to receive mail notifications, make sure to install a
+mail server. By default, Debian is shipped with exim4 whereas Ubuntu
+does not ship with one. The recommended mail server is postfix and you can install it with:
+
+	sudo apt-get install postfix 
 
 # 2. Ruby
 
@@ -132,10 +137,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-0-stable
+    sudo -u git -H git checkout 5-1-stable
 
 **Note:**
-You can change `5-0-stable` to `master` if you want the *bleeding edge* version, but
+You can change `5-1-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
@@ -158,11 +163,13 @@ do so with caution!
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
-    # Create directory for pids and make sure GitLab can write to it
+    # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
+    sudo -u git -H mkdir tmp/sockets/
     sudo chmod -R u+rwX  tmp/pids/
+    sudo chmod -R u+rwX  tmp/sockets/
 
-    # Copy the example Unicorn config
+    # Copy the example Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
 **Important Note:**
