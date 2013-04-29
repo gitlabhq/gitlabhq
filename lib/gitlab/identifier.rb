@@ -1,7 +1,7 @@
 # Detect user based on identifier like
 # key-13 or user-36 or last commit
 module Gitlab
-  module Indentifier
+  module Identifier
     def identify(identifier, project, newrev)
       if identifier.blank?
         # Local push from gitlab
