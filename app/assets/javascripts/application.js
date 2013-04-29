@@ -14,6 +14,8 @@
 //= require jquery.waitforimages
 //= require jquery.atwho
 //= require jquery.scrollto
+//= require turbolinks
+//= require jquery.turbolinks
 //= require bootstrap
 //= require modernizr
 //= require chosen-jquery
