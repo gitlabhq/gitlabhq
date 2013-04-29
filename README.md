@@ -20,6 +20,9 @@ You should also be aware that **Public GitLab** only applies to the lastest [sta
 ## Changelog
 
   * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable) - [Upgrade 5.0 to 5.1](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/doc/update/5.0-to-5.1.md)
+
+> Warning: GitLab 5.1 does not work properly with old version of Git (ok on 1.7.10+). [More here](https://github.com/gitlabhq/gitlabhq/issues/3666). 
+  
   * [2013-04-11] : MySQL support
   * [2013-04-01] : First commit for Public GitLab (only PostgreSQL)
 
