@@ -34,11 +34,15 @@ module Grack
         login, password = @auth.credentials
         self.user = User.find_by_email(login) || User.find_by_username(login)
 
-        if user.nil?
+        # If the provided login was not a known email or username
+        # then user is nil
+        if user.nil? 
+          # Second chance - try LDAP authentication
+          return false unless Gitlab.config.ldap.enabled         
           ldap_auth(login,password)
           return false unless !user.nil?
         else
-          return false unless user.valid_password?(password);
+          return false unless user.valid_password?(password)
         end
            
         Gitlab::ShellEnv.set_env(user)
