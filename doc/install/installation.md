@@ -42,7 +42,19 @@ edited by hand. But, you can use any editor you like instead.
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqlclient16-dev
+
+Make sure you have the right version of redis-server:
+
+    # Make sure that redis-server is 2.0+
+    redis-server --version
+    
+    # If it's not 2.0+ check the Trouble Shooting Guide:
+    # https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide#sidekiq
+
+Install required mail server (postfix or qmail for example):
+
+    sudo apt-get install postfix
 
 Make sure you have the right version of Python installed.
 
