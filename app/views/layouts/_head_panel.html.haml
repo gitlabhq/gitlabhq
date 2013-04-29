@@ -9,6 +9,10 @@
       %h1.project_name= title
       %ul.nav
         %li
+          %a
+            %div.hide.turbolink-spinner
+              %i.icon-refresh.icon-spin
+        %li
           = render "layouts/search"
         %li
           = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do

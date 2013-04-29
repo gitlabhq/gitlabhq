@@ -105,6 +105,8 @@ group :assets do
   gem "coffee-rails", "~> 3.2.2"
   gem "uglifier",     "~> 1.3.0"
   gem "therubyracer"
+  gem 'turbolinks'
+  gem 'jquery-turbolinks'
 
   gem 'chosen-rails',     "0.9.8"
   gem 'select2-rails'
