@@ -132,6 +132,7 @@ module ApplicationHelper
     when 1 then 'white'
     when 2 then 'black'
     when 3 then 'solarized-dark'
+    when 4 then 'monokai'
     else
       'white'
     end
