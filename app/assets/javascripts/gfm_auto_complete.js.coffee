@@ -20,7 +20,7 @@ GitLab.GfmAutoComplete =
     input = $('.js-gfm-input')
 
     # Emoji
-    input.atWho ':',
+    input.atWho '(?:^|\\s):',
       data: @Emoji.data
       tpl: @Emoji.template
 
