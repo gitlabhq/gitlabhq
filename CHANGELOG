@@ -1,3 +1,13 @@
+v 5.2.0
+  - Turbolinks
+  - Git over http with ldap credentials
+  - Diff with better colors and some spacing on the corners
+  - Default values for project features
+  - Fixed huge_commit view
+  - Restyle project clone panel
+  - Move Gitlab::Git code to gitlab_git gem
+  - Move update docs in repo
+
 v 5.1.0
   - You can login with email or username now
   - Corrected project transfer rollback when repository cannot be moved
