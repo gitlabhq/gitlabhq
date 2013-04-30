@@ -7,6 +7,7 @@ v 5.2.0
   - Restyle project clone panel
   - Move Gitlab::Git code to gitlab_git gem
   - Move update docs in repo
+  - requires gitlab-shell v1.4.0
 
 v 5.1.0
   - You can login with email or username now

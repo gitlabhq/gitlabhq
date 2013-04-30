@@ -654,11 +654,13 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
+    required_version = '1.4.0'
+
     print "GitLab Shell version? ... "
-    if gitlab_shell_version.strip == '1.3.0'
-      puts 'OK (1.3.0)'.green
+    if gitlab_shell_version.strip == required_version
+      puts "OK (#{required_version})".green
     else
-      puts 'FAIL. Please update gitlab-shell to v1.3.0'.red
+      puts "FAIL. Please update gitlab-shell to v#{required_version}".red
     end
   end
 end
