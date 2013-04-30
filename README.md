@@ -78,7 +78,7 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 Each month on the 22th a new version is released together with an upgrade guide.
 
-* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
+* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/tree/master/doc/update)
 
 * [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
 
