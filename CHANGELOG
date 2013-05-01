@@ -8,6 +8,7 @@ v 5.2.0
   - Move Gitlab::Git code to gitlab_git gem
   - Move update docs in repo
   - requires gitlab-shell v1.4.0
+  - fixed submodules listing under file tab
 
 v 5.1.0
   - You can login with email or username now

@@ -5,24 +5,18 @@ module TreeHelper
   # contents - A Grit::Tree object for the current tree
   def render_tree(tree)
     # Render Folders before Files/Submodules
-    folders, files = tree.trees, tree.blobs
+    folders, files, submodules = tree.trees, tree.blobs, tree.submodules
 
     tree = ""
 
     # Render folders if we have any
     tree += render partial: 'tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
 
-    files.each do |f|
-      html = if f.respond_to?(:url)
-               # Object is a Submodule
-               render partial: 'tree/submodule_item', object: f
-             else
-               # Object is a Blob
-               render partial: 'tree/blob_item', object: f, locals: {type: 'file'}
-             end
+    # Render files if we have any
+    tree += render partial: 'tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
 
-      tree += html if html.present?
-    end
+    # Render submodules if we have any
+    tree += render partial: 'tree/submodule_item', collection: submodules if submodules.present?
 
     tree.html_safe
   end
