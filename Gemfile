@@ -57,6 +57,8 @@ gem "haml-rails"
 
 # Files attachments
 gem "carrierwave"
+# for aws storage
+# gem "fog", "~> 1.3.1"
 
 # Authorization
 gem "six"
