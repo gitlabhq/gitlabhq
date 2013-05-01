@@ -36,11 +36,11 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
 # Language detection
-gem "github-linguist", "~> 2.3.4" , require: "linguist"
+gem "github-linguist", require: "linguist"
 
 # API
-gem "grape", "~> 0.3.1"
-gem "grape-entity", "~> 0.2.0"
+gem "grape"
+gem "grape-entity"
 
 # Format dates and times
 # based on human-friendly examples
@@ -71,13 +71,13 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "puma", '~> 2.0.0.b7'
+gem "puma", '~> 2.0.1'
 
 # State machine
 gem "state_machine"
 
 # Issue tags
-gem "acts-as-taggable-on", "2.3.3"
+gem "acts-as-taggable-on"
 
 # Background jobs
 gem 'slim'
@@ -103,9 +103,9 @@ gem "foreman"
 gem "redis-rails"
 
 group :assets do
-  gem "sass-rails",   "~> 3.2.5"
-  gem "coffee-rails", "~> 3.2.2"
-  gem "uglifier",     "~> 1.3.0"
+  gem "sass-rails"
+  gem "coffee-rails"
+  gem "uglifier"
   gem "therubyracer"
   gem 'turbolinks'
   gem 'jquery-turbolinks'
