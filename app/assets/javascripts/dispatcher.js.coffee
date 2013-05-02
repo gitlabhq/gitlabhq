@@ -12,6 +12,9 @@ class Dispatcher
 
     console.log(page)
  
+    unless page
+      return false
+
     path = page.split(':')
 
     switch page
