@@ -9,10 +9,3 @@
 
 = render "commits/diffs", diffs: @commit.diffs
 = render "notes/notes_with_form"
-
-:javascript
-  $(function(){
-    $('.files .file').each(function(){
-      new CommitFile(this);
-    });
-  });

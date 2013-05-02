@@ -10,8 +10,10 @@ class Dispatcher
     switch page
       when 'issues:index' then Issues.init()
       when 'dashboard:show' then dashboardPage()
-      when 'groups:show' then Pager.init(20, true)
-      when 'teams:show' then Pager.init(20, true)
-      when 'projects:show' then Pager.init(20, true)
-      when 'projects:new' then new Projects()
-      when 'projects:edit' then new Projects()
+      when 'commit:show' then Commit.init()
+      when 'groups:show', 'teams:show', 'projects:show'
+        Pager.init(20, true)
+      when 'projects:new', 'projects:edit'
+        new Projects()
+      when 'admin:teams:show', 'admin:groups:show', 'admin:logs:show', 'admin:users:new'
+        Admin.init()

@@ -191,6 +191,9 @@ module ApplicationHelper
   end
 
   def body_data_page
-    controller.controller_name + ":" + controller.action_name
+    path = controller.controller_path.split('/')
+    namespace = path.first if path.second
+
+    [namespace, controller.controller_name, controller.action_name].compact.join(":")
   end
 end

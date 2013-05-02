@@ -91,17 +91,3 @@
             = link_to 'Edit', edit_admin_team_project_path(@team, project), class: "btn btn-small"
             &nbsp;
             = link_to 'Relegate', admin_team_project_path(@team, project), confirm: 'Remove project from team. Are you sure?', method: :delete, class: "btn btn-remove small", id: "relegate_project_#{project.id}"
-
-:javascript
-  $(function(){
-    var modal = $('.change-owner-holder');
-    $('.change-owner-link').bind("click", function(){
-      $(this).hide();
-      modal.show();
-    });
-    $('.change-owner-cancel-link').bind("click", function(){
-      modal.hide();
-      $('.change-owner-link').show();
-    })
-  })
-
