@@ -3,6 +3,10 @@ $ ->
   
 class Dispatcher
   constructor: () ->
+    @initSearch()
+    @initPageScripts()
+
+  initPageScripts: ->
     page = $('body').attr('data-page')
     project_id = $('body').attr('data-project-id')
 
@@ -25,6 +29,9 @@ class Dispatcher
         new Wall(project_id)
 
     switch path.first()
-      when 'admin' then Admin.init()
+      when 'admin' then new Admin()
       when 'wikis' then new Wikis()
 
+  initSearch: ->
+    autocomplete_json = $('.search-autocomplete-json').data('autocomplete-opts')
+    new SearchAutocomplete(autocomplete_json)

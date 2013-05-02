@@ -1,5 +1,5 @@
-@Admin =
-  init: ->
+class Admin
+  constructor: ->
     $('input#user_force_random_password').on 'change', (elem) ->
       elems = $('#user_password, #user_password_confirmation')
 
@@ -26,3 +26,5 @@
     $('.change-owner-cancel-link').bind "click",  ->
       modal.hide()
       $('.change-owner-link').show()
+
+@Admin = Admin
