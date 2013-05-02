@@ -19,7 +19,7 @@
             = f.label :assignee_id do
               %i.icon-user
               Assign to
-            .input= f.select(:assignee_id, @project.users.all.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+            .input= f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
           .issue_milestone.pull-left
             = f.label :milestone_id do
               %i.icon-time
