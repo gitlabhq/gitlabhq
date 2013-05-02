@@ -189,4 +189,8 @@ module ApplicationHelper
     css_class << " multiselect" if opts[:multiple]
     hidden_field_tag(id, '', class: css_class)
   end
+
+  def body_data_page
+    controller.controller_name + ":" + controller.action_name
+  end
 end
