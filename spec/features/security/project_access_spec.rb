@@ -232,7 +232,7 @@ describe "Application access" do
 
 
   describe "PublicProject" do
-    let(:project)  { create(:project) }
+    let(:project)  { create(:project_with_code) }
 
     let(:master)   { create(:user) }
     let(:guest)    { create(:user) }
@@ -356,7 +356,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_denied_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -367,7 +367,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_denied_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
@@ -400,7 +400,7 @@ describe "Application access" do
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
+      it { should be_allowed_for :admin }
       it { should be_denied_for guest }
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
