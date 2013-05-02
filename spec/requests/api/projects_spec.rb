@@ -249,7 +249,7 @@ describe Gitlab::API do
       response.status.should == 200
       json_response.should be_an Array
       json_response.count.should == 2
-      json_response.last['email'].should == user.email
+      json_response.map { |u| u['email'] }.should include user.email
     end
 
     it "finds team members with query string" do
