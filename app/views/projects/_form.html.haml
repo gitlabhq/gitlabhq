@@ -48,7 +48,7 @@
                     Public mode:
                   .control-group
                     = f.label :public, class: 'control-label' do
-                      %span Public clone access
+                      %span Public access
                     .controls
                       = f.check_box :public
                       %span.descr
@@ -56,6 +56,8 @@
                         %em without any
                         authentication.
                         It will also be listed on the #{link_to "public access directory", public_root_path}.
+                        %em Any
+                        user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
 
               %fieldset.features
                 %legend

@@ -263,6 +263,14 @@ module SharedPaths
     visit project_wiki_path(@project, :home)
   end
 
+  # ----------------------------------------
+  # Public Projects
+  # ----------------------------------------
+
+  Given 'I visit the public projects area' do
+    visit public_root_path
+  end
+
   def root_ref
     @project.repository.root_ref
   end

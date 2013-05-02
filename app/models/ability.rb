@@ -37,7 +37,7 @@ class Ability
       elsif team.reporters.include?(user)
         rules << project_report_rules
 
-      elsif team.guests.include?(user)
+      elsif team.guests.include?(user) or project.public?
         rules << project_guest_rules
       end
 
