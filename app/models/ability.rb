@@ -60,15 +60,16 @@ class Ability
         :read_note,
         :write_project,
         :write_issue,
-        :write_note,
-        :fork_project
+        :write_note
       ]
     end
 
     def project_report_rules
       project_guest_rules + [
         :download_code,
-        :write_snippet
+        :write_snippet,
+        :fork_project
+
       ]
     end
 
