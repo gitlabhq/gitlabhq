@@ -115,7 +115,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
 * Rspec unit and functional tests
 
-        bundle exec rake spec
+        bundle exec rake spec RAILS_ENV=test
 
 * Spinach integration tests
 
