@@ -168,6 +168,7 @@ Gitlab::Application.routes.draw do
     member do
       put :transfer
       post :fork
+      get :autocomplete_sources
     end
 
     resources :blob,    only: [:show], constraints: {id: /.+/}

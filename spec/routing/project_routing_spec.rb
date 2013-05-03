@@ -83,6 +83,10 @@ describe ProjectsController, "routing" do
     get("/gitlabhq/edit").should route_to('projects#edit', id: 'gitlabhq')
   end
 
+  it "to #autocomplete_sources" do
+    get('/gitlabhq/autocomplete_sources').should route_to('projects#autocomplete_sources', id: "gitlabhq")
+  end
+
   it "to #show" do
     get("/gitlabhq").should route_to('projects#show', id: 'gitlabhq')
   end
