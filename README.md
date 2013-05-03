@@ -113,7 +113,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
         bundle exec rake gitlab:test
 
-* Rspec unit and functional tests
+* [RSpec](http://rspec.info/) unit and functional tests
 
         bundle exec rake spec
 
