@@ -55,6 +55,7 @@ end
 
 #      projects POST   /projects(.:format)     projects#create
 #   new_project GET    /projects/new(.:format) projects#new
+#  fork_project POST   /:id/fork(.:format)     projects#fork
 #  wall_project GET    /:id/wall(.:format)     projects#wall
 # files_project GET    /:id/files(.:format)    projects#files
 #  edit_project GET    /:id/edit(.:format)     projects#edit
@@ -68,6 +69,10 @@ describe ProjectsController, "routing" do
 
   it "to #new" do
     get("/projects/new").should route_to('projects#new')
+  end
+
+  it "to #fork" do
+    post("/gitlabhq/fork").should route_to('projects#fork', id: 'gitlabhq')
   end
 
   it "to #wall" do

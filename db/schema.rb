@@ -32,6 +32,15 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   add_index "events", ["target_id"], :name => "index_events_on_target_id"
   add_index "events", ["target_type"], :name => "index_events_on_target_type"
 
+  create_table "forked_project_links", :force => true do |t|
+    t.integer  "forked_to_project_id",   :null => false
+    t.integer  "forked_from_project_id", :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "forked_project_links", ["forked_to_project_id"], :name => "index_forked_project_links_on_forked_to_project_id", :unique => true
+
   create_table "issues", :force => true do |t|
     t.string   "title"
     t.integer  "assignee_id"
