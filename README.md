@@ -117,7 +117,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
         bundle exec rake spec
 
-* Spinach integration tests
+* [Spinach](https://github.com/codegram/spinach) integration tests
 
         bundle exec rake spinach
 
