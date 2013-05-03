@@ -36,6 +36,18 @@ module Gitlab
       system("#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects mv-project #{path}.git #{new_path}.git")
     end
 
+    # Fork repository to new namespace
+    #
+    # path - project path with namespace
+    # fork_namespace - namespace for forked project
+    #
+    # Ex.
+    #  fork_repository("gitlab/gitlab-ci", "randx")
+    #
+    def fork_repository(path, fork_namespace)
+      system("#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects fork-project #{path}.git #{fork_namespace}")
+    end
+
     # Remove repository from file system
     #
     # name - project path with namespace
