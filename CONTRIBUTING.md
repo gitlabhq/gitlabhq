@@ -21,7 +21,7 @@ Please send a pull request with a tested solution or a pull request with a faili
 
 * Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
 * Describe your issue in detail
-* How can we reproduce the issue on the [GitLab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) (start with: vagrant destroy && vagrant up && vagrant ssh)
+* How can we reproduce the issue on the [GitLab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) (start with: `vagrant destroy && vagrant up && vagrant ssh`)
 * Add the last commit sha1 of the GitLab version you used to replicate the issue
 * Add logs or screen shots when possible
 * Link to the line of code that might be responsible for the problem
@@ -45,7 +45,7 @@ We welcome pull request with improvements to GitLab code and/or documentation. T
 We will accept pull requests if:
 
 * The code has proper tests and all tests pass
-* It can be merged without problems (if not please use: git rebase master)
+* It can be merged without problems (if not please use: `git rebase master`)
 * It doesn't break any existing functionality
 * It's quality code that conforms to the [Rails style guide](https://github.com/bbatsov/rails-style-guide) and best practices
 * The description includes a motive for your change and the method you used to achieve it
