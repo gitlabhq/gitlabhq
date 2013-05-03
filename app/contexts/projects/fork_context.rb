@@ -7,8 +7,7 @@ module Projects
     end
 
     def execute
-      project = Project.new
-      project.initialize_dup(@from_project)
+      project = @from_project.dup
       project.name = @from_project.name
       project.path = @from_project.path
       project.namespace = current_user.namespace
