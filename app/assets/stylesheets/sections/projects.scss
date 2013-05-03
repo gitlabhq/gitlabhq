@@ -33,14 +33,6 @@
 }
 
 .project_clone_holder {
-  input[type="text"],
-  .btn {
-    font-size: 12px;
-    line-height: 18px;
-    margin: 0;
-    padding: 3px 10px;
-  }
-
   input[type="text"] {
     @extend .monospace;
     border: 1px solid #BBB;

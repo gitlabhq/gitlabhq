@@ -11,7 +11,5 @@
 
 - if @commits.count == @limit
   :javascript
-    $(function(){
-      CommitsList.init("#{@ref}", #{@limit});
-    });
+    CommitsList.init("#{@ref}", #{@limit});
 

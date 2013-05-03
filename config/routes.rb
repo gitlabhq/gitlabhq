@@ -167,6 +167,7 @@ Gitlab::Application.routes.draw do
   resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       put :transfer
+      post :fork
     end
 
     resources :blob,    only: [:show], constraints: {id: /.+/}

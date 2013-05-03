@@ -132,6 +132,7 @@ module ApplicationHelper
     when 1 then 'white'
     when 2 then 'black'
     when 3 then 'solarized-dark'
+    when 4 then 'monokai'
     else
       'white'
     end
@@ -187,5 +188,12 @@ module ApplicationHelper
     css_class = "ajax-users-select"
     css_class << " multiselect" if opts[:multiple]
     hidden_field_tag(id, '', class: css_class)
+  end
+
+  def body_data_page
+    path = controller.controller_path.split('/')
+    namespace = path.first if path.second
+
+    [namespace, controller.controller_name, controller.action_name].compact.join(":")
   end
 end

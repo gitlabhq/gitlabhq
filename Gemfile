@@ -22,9 +22,9 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # Extracting information from a git repository
-# Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
+# We cannot use original git since some bugs
 gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: '42297cdcee16284d2e4eff23d41377f52fc28b9d'
-gem 'grit_ext', '~> 0.8.1'
+gem 'gitlab_git', '~> 1.0.6'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
@@ -36,11 +36,11 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
 # Language detection
-gem "github-linguist", "~> 2.3.4" , require: "linguist"
+gem "github-linguist", require: "linguist"
 
 # API
-gem "grape", "~> 0.3.1"
-gem "grape-entity", "~> 0.2.0"
+gem "grape"
+gem "grape-entity"
 
 # Format dates and times
 # based on human-friendly examples
@@ -57,6 +57,8 @@ gem "haml-rails"
 
 # Files attachments
 gem "carrierwave"
+# for aws storage
+# gem "fog", "~> 1.3.1"
 
 # Authorization
 gem "six"
@@ -69,13 +71,13 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "puma", '~> 2.0.0.b7'
+gem "puma", '~> 2.0.1'
 
 # State machine
 gem "state_machine"
 
 # Issue tags
-gem "acts-as-taggable-on", "2.3.3"
+gem "acts-as-taggable-on"
 
 # Background jobs
 gem 'slim'
@@ -101,10 +103,12 @@ gem "foreman"
 gem "redis-rails"
 
 group :assets do
-  gem "sass-rails",   "~> 3.2.5"
-  gem "coffee-rails", "~> 3.2.2"
-  gem "uglifier",     "~> 1.3.0"
+  gem "sass-rails"
+  gem "coffee-rails"
+  gem "uglifier"
   gem "therubyracer"
+  gem 'turbolinks'
+  gem 'jquery-turbolinks'
 
   gem 'chosen-rails',     "0.9.8"
   gem 'select2-rails'

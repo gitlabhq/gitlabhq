@@ -313,7 +313,7 @@ Removes a hook from project. This is an idempotent method and can be called mult
 Either the hook is available or not.
 
 ```
-DELETE /projects/:id/hooks/
+DELETE /projects/:id/hooks/:hook_id
 ```
 
 Parameters:

@@ -9,7 +9,10 @@
       %li.clearfix
         %h5
           %i.icon-share
-          = project.name_with_namespace
+          - if current_user
+            = link_to_project project
+          - else
+            = project.name_with_namespace
           .pull-right
             %pre.dark.tiny git clone #{project.http_url_to_repo}
         %p.description

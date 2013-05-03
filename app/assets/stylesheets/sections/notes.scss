@@ -213,7 +213,17 @@ ul.notes {
 .reply-btn {
   @extend .btn-primary;
 }
-.file .content tr.line_holder:hover > td { background: $hover !important; }
+.file .content tr.line_holder:hover {
+  &> td.line_content {
+    background: $hover !important;
+    border-color: darken($hover, 10%) !important;
+  }
+  &> td.new_line,
+  &> td.old_line {
+    background: darken($hover, 4%) !important;
+    border-color: darken($hover, 10%) !important;
+  }
+}
 .file .content tr.line_holder:hover > td .line_note_link {
   opacity: 1.0;
   filter: alpha(opacity=100);

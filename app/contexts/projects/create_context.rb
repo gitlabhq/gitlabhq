@@ -8,7 +8,18 @@ module Projects
       # get namespace id
       namespace_id = params.delete(:namespace_id)
 
-      @project = Project.new(params)
+      # Load default feature settings
+      default_features = Gitlab.config.gitlab.default_projects_features
+
+      default_opts = {
+        issues_enabled: default_features.issues,
+        wiki_enabled: default_features.wiki,
+        wall_enabled: default_features.wall,
+        snippets_enabled: default_features.snippets,
+        merge_requests_enabled: default_features.merge_requests
+      }
+
+      @project = Project.new(default_opts.merge(params))
 
       # Parametrize path for project
       #
@@ -31,10 +42,6 @@ module Projects
         # Set current user namespace if namespace_id is nil
         @project.namespace_id = current_user.namespace_id
       end
-
-      # Disable less important features by default
-      @project.wall_enabled = false
-      @project.snippets_enabled = false
 
       @project.creator = current_user
 

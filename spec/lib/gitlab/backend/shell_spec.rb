@@ -12,6 +12,7 @@ describe Gitlab::Shell do
   it { should respond_to :remove_key }
   it { should respond_to :add_repository }
   it { should respond_to :remove_repository }
+  it { should respond_to :fork_repository }
 
   it { gitlab_shell.url_to_repo('diaspora').should == Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git" }
 end

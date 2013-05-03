@@ -49,18 +49,14 @@
 
 #### Official production installation
 
-Follow the installation guide for production server.
-
-* [Installation guide for latest stable release (5.0)](https://github.com/gitlabhq/gitlabhq/blob/5-0-stable/doc/install/installation.md) - **Recommended**
-
-* [Installation guide for the current master branch (5.1)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
+* [Installation guide for a production server](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
 
 
 #### Official development installation
 
 If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working with all dependencies.
 
-* [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm)
+* [Vagrant virtual machine for development](https://github.com/gitlabhq/gitlab-vagrant-vm)
 
 
 #### Unsupported production installation
@@ -78,7 +74,7 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 Each month on the 22th a new version is released together with an upgrade guide.
 
-* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/wiki)
+* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/tree/master/doc/update)
 
 * [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
 
@@ -117,11 +113,11 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
         bundle exec rake gitlab:test
 
-* Rspec unit and functional tests
+* [RSpec](http://rspec.info/) unit and functional tests
 
         bundle exec rake spec
 
-* Spinach integration tests
+* [Spinach](https://github.com/codegram/spinach) integration tests
 
         bundle exec rake spinach
 

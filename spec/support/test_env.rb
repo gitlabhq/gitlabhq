@@ -32,6 +32,7 @@ module TestEnv
     # Use tmp dir for FS manipulations
     repos_path = Rails.root.join('tmp', 'test-git-base-path')
     Gitlab.config.gitlab_shell.stub(repos_path: repos_path)
+    Gitlab::Git::Repository.stub(repos_path: repos_path)
 
     GollumWiki.any_instance.stub(:init_repo) do |path|
       create_temp_repo(File.join(repos_path, "#{path}.git"))

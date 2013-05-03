@@ -6,6 +6,4 @@
   = render "notes/form"
 
 :javascript
-  $(function(){
-    NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");
-  });
+  NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");

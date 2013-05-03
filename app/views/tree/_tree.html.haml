@@ -46,6 +46,6 @@
 
 :javascript
   // Load last commit log for each file in tree
-  $(window).load(function(){
+  $('#tree-slider').waitForImages(function() {
     ajaxGet('#{@logs_path}');
   });

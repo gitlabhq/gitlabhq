@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Profile"
-  %body{class: "#{app_theme} profile"}
+  %body{class: "#{app_theme} profile", :'data-page' => body_data_page}
     = render "layouts/head_panel", title: "Profile"
     = render "layouts/flash"
     %nav.main-nav

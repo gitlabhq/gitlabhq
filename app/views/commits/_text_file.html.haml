@@ -4,7 +4,7 @@
 
 %table.text-file{class: "#{'hide' if too_big}"}
   - each_diff_line(diff, index) do |line, type, line_code, line_new, line_old|
-    %tr.line_holder{ id: line_code }
+    %tr.line_holder{ id: line_code, class: "#{type}" }
       - if type == "match"
         %td.old_line= "..."
         %td.new_line= "..."

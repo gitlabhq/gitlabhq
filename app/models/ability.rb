@@ -37,7 +37,7 @@ class Ability
       elsif team.reporters.include?(user)
         rules << project_report_rules
 
-      elsif team.guests.include?(user)
+      elsif team.guests.include?(user) or project.public?
         rules << project_guest_rules
       end
 
@@ -67,7 +67,9 @@ class Ability
     def project_report_rules
       project_guest_rules + [
         :download_code,
-        :write_snippet
+        :write_snippet,
+        :fork_project
+
       ]
     end
 

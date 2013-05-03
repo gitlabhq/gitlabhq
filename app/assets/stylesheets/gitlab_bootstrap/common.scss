@@ -74,3 +74,9 @@ fieldset legend { font-size: 17px; }
 .tab-content {
   overflow: visible;
 }
+
+@media (max-width: 1200px) {
+  .only-wide {
+    display: none;
+  }
+}

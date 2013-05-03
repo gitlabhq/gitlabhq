@@ -78,4 +78,19 @@ class ProjectsController < ProjectResourceController
       format.html { redirect_to root_path }
     end
   end
+
+  def fork
+    @project = ::Projects::ForkContext.new(project, current_user).execute
+
+    respond_to do |format|
+      format.html do
+        if @project.saved? && @project.forked?
+          redirect_to(@project, notice: 'Project was successfully forked.')
+        else
+          render action: "new"
+        end
+      end
+      format.js
+    end
+  end
 end
