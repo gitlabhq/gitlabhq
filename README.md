@@ -19,7 +19,7 @@ _Disclaimer_: I do not provide any support on GitLab itself. I only contribute t
 You should also be aware that **Public GitLab** only applies to the lastest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab. `master` branch on this repo have high chance to be broken.
 ## Changelog
 
-  * [2013-05-03] : Bugfix (you need to update your DB triggers)
+  * [2013-05-03] : Bugfix (you need to [update](https://github.com/ArthurHoaro/Public-GitLab/edit/5-1-stable/README.md#update-public-gitlab) your DB triggers)
   * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable) - [Upgrade 5.0 to 5.1](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/doc/update/5.0-to-5.1.md)
 
 > Warning: GitLab 5.1 does not work properly with old version of Git (ok on 1.7.10+). [More here](https://github.com/gitlabhq/gitlabhq/issues/3666). 
@@ -91,12 +91,15 @@ You need to refer to official [update guides](https://github.com/ArthurHoaro/Pub
 
 If the changelog on this README indicate any SQL update, you need to update your database :
 
-* PostgreSQL
+PostgreSQL:
 
-    cd /home/git/gitlab/pgl
-    psql -h host -U user database < pgl_postgres_trigger.sql
 
-* MySQL
+     cd /home/git/gitlab/pgl
+     psql -h host -U user database < pgl_postgres_trigger.sql
+     
+
+MySQL:
+
 
     cd /home/git/gitlab/pgl
     mysql -hhost -uuser -p
@@ -116,7 +119,7 @@ If there is a new stable branch, please do not open an issue to ask update. [Con
 
 The reporters team created by Public GitLab is owned by the root user (Administrator). If you delete this user, it will create several issues in your GitLab installation.
 
-If you _really_ need to remove `root`, you need to change the `pgl_reporters` team's owner in GitLab administration.
+If you _really_ need to remove `root`, you need to change the `pgl_reporters` team's owner in GitLab administration before deleting it.
 
 If you have alrealdy deleted root user, you have to manually change Public GitLab SQL `insert` to :
 
