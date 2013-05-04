@@ -41,8 +41,10 @@ AS $$
 			LIMIT 1;
 
 			FOR m_users_id IN SELECT user_id FROM user_team_user_relationships WHERE user_team_id = m_user_team_id  LOOP
-				INSERT INTO users_projects (user_id, project_id, created_at, updated_at, project_access) 
-				VALUES (m_users_id, NEW.id, now(), now(), 20);
+				IF m_users_id <> NEW.creator_id THEN
+					INSERT INTO users_projects (user_id, project_id, created_at, updated_at, project_access) 
+					VALUES (m_users_id, NEW.id, now(), now(), 20);
+				END IF;
 			END LOOP;
 
 			INSERT INTO user_team_project_relationships (project_id, user_team_id, greatest_access, created_at, updated_at) VALUES (NEW.id, m_user_team_id, 20, now(), now());			
