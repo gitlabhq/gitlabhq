@@ -19,6 +19,7 @@ _Disclaimer_: I do not provide any support on GitLab itself. I only contribute t
 You should also be aware that **Public GitLab** only applies to the lastest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab. `master` branch on this repo have high chance to be broken.
 ## Changelog
 
+  * [2013-05-03] : Bugfix (you need to update your DB triggers)
   * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable) - [Upgrade 5.0 to 5.1](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/doc/update/5.0-to-5.1.md)
 
 > Warning: GitLab 5.1 does not work properly with old version of Git (ok on 1.7.10+). [More here](https://github.com/gitlabhq/gitlabhq/issues/3666). 
@@ -51,18 +52,20 @@ The SQL script below will create a default `guest` user for anonymous access. It
 > Note that your DB user need to be granted with TRIGGER permission on your database (this is specific to Public GitLab).
 
 #### PostgreSQL
-You have to patch GitLab your database with `pgl_script_postgres.sql`:
+You have to patch GitLab your database with 2 SQL scripts:
 
     cd /home/git/gitlab/pgl
-    psql -h host -U user database < pgl_script_postgres.sql
+    psql -h host -U user database < pgl_postgres_insert.sql
+    psql -h host -U user database < pgl_postgres_trigger.sql
 
 #### MySQL
-You have to patch GitLab your database with `pgl_script_mysql.sql`:
+You have to patch GitLab your database with 2 SQL scripts:
 
     cd /home/git/gitlab/pgl
     mysql -hhost -uuser -p
     use database
-    source pgl_script_mysql.sql
+    source pgl_mysql_insert.sql
+    source pgl_mysql_trigger.sql
 
 ### Allow signup
 
@@ -82,11 +85,28 @@ Remember to restart GitLab after all these changes :
 
 Then enjoy !
 
+## Update Public GitLab
+
+You need to refer to official [update guides](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/doc/update/) to upgrade GitLab version.
+
+If the changelog on this README indicate any SQL update, you need to update your database :
+
+* PostgreSQL
+
+    cd /home/git/gitlab/pgl
+    psql -h host -U user database < pgl_postgres_trigger.sql
+
+* MySQL
+
+    cd /home/git/gitlab/pgl
+    mysql -hhost -uuser -p
+    use database
+    source pgl_mysql_trigger.sql
+    
+
 ## Reporting issues
 
-If you have issues with Public GitLab, you can report them with the [Github issues module](https://github.com/ArthurHoaro/Public-GitLab/issues). 
-
-Please rememberer to tell us which database you are using.
+See [CONTRIBUTING](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/CONTRIBUTING.md).
 
 If there is a new stable branch, please do not open an issue to ask update. [Contact me](http://hoa.ro/static6/contact) instead.
 
