@@ -102,13 +102,28 @@ If the changelog on this README indicate any SQL update, you need to update your
     mysql -hhost -uuser -p
     use database
     source pgl_mysql_trigger.sql
-    
+
 
 ## Reporting issues
 
 See [CONTRIBUTING](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/CONTRIBUTING.md).
 
 If there is a new stable branch, please do not open an issue to ask update. [Contact me](http://hoa.ro/static6/contact) instead.
+
+## Troubleshooting
+
+### Removing root user
+
+The reporters team created by Public GitLab is owned by the root user (Administrator). If you delete this user, it will create several issues in your GitLab installation.
+
+If you _really_ need to remove `root`, you need to change the `pgl_reporters` team's owner in GitLab administration.
+
+If you have alrealdy deleted root user, you have to manually change Public GitLab SQL `insert` to :
+
+    INSERT INTO user_teams (name, path, owner_id, created_at, updated_at, description) 
+    VALUES ('pgl_reporters', 'pgl_reporters', (SELECT id FROM users WHERE username = 'YOU_NEW_ADMIN_USERNAME'), now(), now(), 'Default new users team (reporter permission)'); 
+
+Read more at issues [#3](https://github.com/ArthurHoaro/Public-GitLab/issues/3) and [#4](https://github.com/ArthurHoaro/Public-GitLab/issues/4).
 
 ## License
 
