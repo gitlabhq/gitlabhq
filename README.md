@@ -91,17 +91,20 @@ You need to refer to official [update guides](https://github.com/ArthurHoaro/Pub
 
 If the changelog on this README indicate any SQL update, you need to update your database :
 
-* PostgreSQL:
+PostgreSQL:
+
 
      cd /home/git/gitlab/pgl
      psql -h host -U user database < pgl_postgres_trigger.sql
+     
 
-* MySQL:
+MySQL:
 
-     cd /home/git/gitlab/pgl
-     mysql -hhost -uuser -p
-     use database
-     source pgl_mysql_trigger.sql
+
+    cd /home/git/gitlab/pgl
+    mysql -hhost -uuser -p
+    use database
+    source pgl_mysql_trigger.sql
 
 
 ## Reporting issues
