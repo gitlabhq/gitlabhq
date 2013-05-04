@@ -2,7 +2,7 @@ module NamespacesHelper
   def namespaces_options(selected = :current_user, scope = :default)
     if current_user.admin
       groups = Group.all
-      users = Namespace.root
+      users = Namespace.root.includes(:owner)
     else
       groups = current_user.owned_groups.select {|n| n.type == 'Group'}
       users = current_user.namespaces.reject {|n| n.type == 'Group'}
