@@ -169,6 +169,7 @@ group :development, :test do
   gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '9645b52009e258921b860d3b7601d00008b22c45'
 
   gem 'spork', '~> 1.0rc'
+  gem 'bullet'
 end
 
 group :test do
