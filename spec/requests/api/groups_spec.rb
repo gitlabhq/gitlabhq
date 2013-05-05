@@ -85,17 +85,17 @@ describe Gitlab::API do
       end
 
       it "should not create group, duplicate" do
-        post api("/groups", admin), {:name => "Duplicate Test", :path => group2.path}
+        post api("/groups", admin), {name: "Duplicate Test", path: group2.path}
         response.status.should == 404
       end
 
       it "should return 400 bad request error if name not given" do
-        post api("/groups", admin), { :path => group2.path }
+        post api("/groups", admin), { path: group2.path }
         response.status.should == 400
       end
 
       it "should return 400 bad request error if path not given" do
-        post api("/groups", admin), { :name => 'test' }
+        post api("/groups", admin), { name: 'test' }
         response.status.should == 400
       end
     end

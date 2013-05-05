@@ -1,9 +1,9 @@
 namespace :gitlab do
   namespace :import do
     desc "GITLAB | Add all users to all projects (admin users are added as masters)"
-    task :all_users_to_all_projects => :environment  do |t, args|
-      user_ids = User.where(:admin => false).pluck(:id)
-      admin_ids = User.where(:admin => true).pluck(:id)
+    task all_users_to_all_projects: :environment  do |t, args|
+      user_ids = User.where(admin: false).pluck(:id)
+      admin_ids = User.where(admin: true).pluck(:id)
       projects_ids = Project.pluck(:id)
 
       puts "Importing #{user_ids.size} users into #{projects_ids.size} projects"

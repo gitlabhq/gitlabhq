@@ -9,9 +9,9 @@ class Profile < Spinach::FeatureSteps
   end
 
   Then 'I change my contact info' do
-    fill_in "user_skype", :with => "testskype"
-    fill_in "user_linkedin", :with => "testlinkedin"
-    fill_in "user_twitter", :with => "testtwitter"
+    fill_in "user_skype", with: "testskype"
+    fill_in "user_linkedin", with: "testlinkedin"
+    fill_in "user_twitter", with: "testtwitter"
     click_button "Save"
     @user.reload
   end
@@ -24,8 +24,8 @@ class Profile < Spinach::FeatureSteps
 
   Then 'I change my password' do
     within '.update-password' do
-      fill_in "user_password", :with => "222333"
-      fill_in "user_password_confirmation", :with => "222333"
+      fill_in "user_password", with: "222333"
+      fill_in "user_password_confirmation", with: "222333"
       click_button "Save"
     end
   end

@@ -20,12 +20,12 @@ class AdminGroups < Spinach::FeatureSteps
   end
 
   And 'Create gitlab user "John"' do
-    create(:user, :name => "John")
+    create(:user, name: "John")
   end
 
   And 'submit form with new group info' do
-    fill_in 'group_name', :with => 'gitlab'
-    fill_in 'group_description', :with => 'Group description'
+    fill_in 'group_name', with: 'gitlab'
+    fill_in 'group_description', with: 'Group description'
     click_button "Create group"
   end
 
@@ -41,8 +41,8 @@ class AdminGroups < Spinach::FeatureSteps
   When 'I select user "John" from user list as "Reporter"' do
     user = User.find_by_name("John")
     within "#new_team_member" do
-      select user.name, :from => "user_ids"
-      select "Reporter", :from => "project_access"
+      select user.name, from: "user_ids"
+      select "Reporter", from: "project_access"
     end
     click_button "Add user to projects in group"
   end
