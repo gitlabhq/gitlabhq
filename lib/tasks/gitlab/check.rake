@@ -24,6 +24,7 @@ namespace :gitlab do
       check_init_script_up_to_date
       check_satellites_exist
       check_redis_version
+      check_git_version
 
       finished_checking "GitLab"
     end
@@ -661,6 +662,20 @@ namespace :gitlab do
       puts "OK (#{required_version})".green
     else
       puts "FAIL. Please update gitlab-shell to v#{required_version}".red
+    end
+  end
+
+  def check_git_version
+    print "Git version >= 1.7.10 ? ... "
+
+    if run_and_match("git --version", /git version 1.7.10.\d/)
+      puts "yes".green
+    else
+      puts "no".red
+      try_fixing_it(
+        "Update your git to a version >= 1.7.10"
+      )
+      fix_and_rerun
     end
   end
 end
