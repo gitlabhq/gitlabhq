@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506090604) do
+ActiveRecord::Schema.define(:version => 20130506095501) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -76,12 +76,10 @@ ActiveRecord::Schema.define(:version => 20130506090604) do
     t.text     "key"
     t.string   "title"
     t.string   "identifier"
-    t.integer  "project_id"
     t.string   "type"
   end
 
   add_index "keys", ["identifier"], :name => "index_keys_on_identifier"
-  add_index "keys", ["project_id"], :name => "index_keys_on_project_id"
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
