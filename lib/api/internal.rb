@@ -25,8 +25,8 @@ module Gitlab
         return false unless project
 
 
-        if key.is_deploy_key
-          project == key.project && git_cmd == 'git-upload-pack'
+        if key.is_a? DeployKey
+          key.projects.include?(project) && git_cmd == 'git-upload-pack'
         else
           user = key.user
 
