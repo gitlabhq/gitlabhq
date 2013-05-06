@@ -467,21 +467,21 @@ describe Gitlab::API do
     end
   end
 
-  describe "DELETE /projects/:id/hooks" do
+  describe "DELETE /projects/:id/hooks/:hook_id" do
     it "should delete hook from project" do
       expect {
-        delete api("/projects/#{project.id}/hooks", user), hook_id: hook.id
+        delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
       }.to change {project.hooks.count}.by(-1)
       response.status.should == 200
     end
 
     it "should return success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks", user), hook_id: hook.id
+      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
       response.status.should == 200
     end
 
     it "should return success when deleting non existent hook" do
-      delete api("/projects/#{project.id}/hooks", user), hook_id: 42
+      delete api("/projects/#{project.id}/hooks/42", user)
       response.status.should == 200
     end
 
