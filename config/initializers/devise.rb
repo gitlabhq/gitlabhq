@@ -207,13 +207,14 @@ Devise.setup do |config|
 
   if Gitlab.config.ldap.enabled
     config.omniauth :ldap,
-      :host     => Gitlab.config.ldap['host'],
-      :base     => Gitlab.config.ldap['base'],
-      :uid      => Gitlab.config.ldap['uid'],
-      :port     => Gitlab.config.ldap['port'],
-      :method   => Gitlab.config.ldap['method'],
-      :bind_dn  => Gitlab.config.ldap['bind_dn'],
-      :password => Gitlab.config.ldap['password']
+      :host         => Gitlab.config.ldap['host'],
+      :base         => Gitlab.config.ldap['base'],
+      :uid          => Gitlab.config.ldap['uid'],
+      :port         => Gitlab.config.ldap['port'],
+      :method       => Gitlab.config.ldap['method'],
+      :bind_dn      => Gitlab.config.ldap['bind_dn'],
+      :password     => Gitlab.config.ldap['password'],
+      :email_domain => Gitlab.config.ldap['email_domain']
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
