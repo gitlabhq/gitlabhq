@@ -215,7 +215,13 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :deploy_keys
+    resources :deploy_keys do
+      member do
+        put :enable
+        put :disable
+      end
+    end
+
     resources :protected_branches, only: [:index, :create, :destroy]
 
     resources :refs, only: [] do

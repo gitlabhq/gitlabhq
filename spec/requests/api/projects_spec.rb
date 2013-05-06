@@ -13,7 +13,6 @@ describe Gitlab::API do
   let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
-  let(:key) { create(:key, project: project) }
 
   before { project.team << [user, :reporter] }
 
@@ -636,58 +635,61 @@ describe Gitlab::API do
     end
   end
 
-  describe "GET /projects/:id/keys" do
-    it "should return array of ssh keys" do
-      project.deploy_keys << key
-      project.save
-      get api("/projects/#{project.id}/keys", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.first['title'].should == key.title
-    end
-  end
+  describe :deploy_keys do
+    let(:deploy_keys_project) { create(:deploy_keys_project, project: project) }
+    let(:deploy_key) { deploy_keys_project.deploy_key }
 
-  describe "GET /projects/:id/keys/:key_id" do
-    it "should return a single key" do
-      project.deploy_keys << key
-      project.save
-      get api("/projects/#{project.id}/keys/#{key.id}", user)
-      response.status.should == 200
-      json_response['title'].should == key.title
+    describe "GET /projects/:id/keys" do
+      before { deploy_key }
+
+      it "should return array of ssh keys" do
+        get api("/projects/#{project.id}/keys", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first['title'].should == deploy_key.title
+      end
     end
 
-    it "should return 404 Not Found with invalid ID" do
-      get api("/projects/#{project.id}/keys/404", user)
-      response.status.should == 404
-    end
-  end
+    describe "GET /projects/:id/keys/:key_id" do
+      it "should return a single key" do
+        get api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
+        response.status.should == 200
+        json_response['title'].should == deploy_key.title
+      end
 
-  describe "POST /projects/:id/keys" do
-    it "should not create an invalid ssh key" do
-      post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
-      response.status.should == 404
-    end
-
-    it "should create new ssh key" do
-      key_attrs = attributes_for :key
-      expect {
-        post api("/projects/#{project.id}/keys", user), key_attrs
-      }.to change{ project.deploy_keys.count }.by(1)
-    end
-  end
-
-  describe "DELETE /projects/:id/keys/:key_id" do
-    it "should delete existing key" do
-      project.deploy_keys << key
-      project.save
-      expect {
-        delete api("/projects/#{project.id}/keys/#{key.id}", user)
-      }.to change{ project.deploy_keys.count }.by(-1)
+      it "should return 404 Not Found with invalid ID" do
+        get api("/projects/#{project.id}/keys/404", user)
+        response.status.should == 404
+      end
     end
 
-    it "should return 404 Not Found with invalid ID" do
-      delete api("/projects/#{project.id}/keys/404", user)
-      response.status.should == 404
+    describe "POST /projects/:id/keys" do
+      it "should not create an invalid ssh key" do
+        post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
+        response.status.should == 404
+      end
+
+      it "should create new ssh key" do
+        key_attrs = attributes_for :key
+        expect {
+          post api("/projects/#{project.id}/keys", user), key_attrs
+        }.to change{ project.deploy_keys.count }.by(1)
+      end
+    end
+
+    describe "DELETE /projects/:id/keys/:key_id" do
+      before { deploy_key }
+
+      it "should delete existing key" do
+        expect {
+          delete api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
+        }.to change{ project.deploy_keys.count }.by(-1)
+      end
+
+      it "should return 404 Not Found with invalid ID" do
+        delete api("/projects/#{project.id}/keys/404", user)
+        response.status.should == 404
+      end
     end
   end
 end
