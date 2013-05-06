@@ -89,7 +89,7 @@ status() {
   cd $APP_ROOT
   check_pid
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
-    echo "$DESC / Unicorn with PID $PID is running."
+    echo "$DESC / Puma with PID $PID is running."
     echo "$DESC / Sidekiq with PID $SPID is running."
   else
     echo "$DESC is not running."
