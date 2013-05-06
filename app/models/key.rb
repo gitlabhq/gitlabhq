@@ -46,10 +46,6 @@ class Key < ActiveRecord::Base
     errors.add(:key, "can't be fingerprinted") if $?.exitstatus != 0
   end
 
-  def is_deploy_key
-    project.present?
-  end
-
   # projects that has this key
   def projects
     user.authorized_projects
