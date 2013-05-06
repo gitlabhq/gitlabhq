@@ -37,7 +37,7 @@ We welcome pull request with improvements to GitLab code and/or documentation. T
 
 1. Fork the project on GitHub
 1. Create a feature branch
-1. Write tests and code
+1. Write [tests](README.md#run-the-tests) and code
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a pull request
