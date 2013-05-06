@@ -15,6 +15,10 @@ class IssuesListContext < BaseContext
     @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?
     @issues = @issues.includes(:author, :project)
 
+    # add milestones, labels, notes and assignee  
+    # becuase we showing them on /project_name/issues
+    @issues = @issues.includes(:milestone, :labels, :notes, :assignee)
+
     # Filter by specific assignee_id (or lack thereof)?
     if params[:assignee_id].present?
       @issues = @issues.where(assignee_id: (params[:assignee_id] == '0' ? nil : params[:assignee_id]))
