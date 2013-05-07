@@ -45,7 +45,7 @@ module Backup
         'encoding'  => '--default-character-set',
         'password'  => '--password'
       }
-      args.map { |opt, arg| "#{arg}=#{config[opt]}" if config[opt] }.compact.join(' ')
+      args.map { |opt, arg| "#{arg}='#{config[opt]}'" if config[opt] }.compact.join(' ')
     end
 
     def pg_env
