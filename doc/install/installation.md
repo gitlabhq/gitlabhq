@@ -169,6 +169,10 @@ do so with caution!
     sudo chmod -R u+rwX  tmp/pids/
     sudo chmod -R u+rwX  tmp/sockets/
 
+		# Create 'uploads' directory otherwise backup will fail
+    sudo -u git -H mkdir public/uploads
+    sudo chmod -R u+rwX  public/uploads
+
     # Copy the example Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
