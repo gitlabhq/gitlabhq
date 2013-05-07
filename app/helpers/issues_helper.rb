@@ -11,10 +11,6 @@ module IssuesHelper
     classes
   end
 
-  def issue_tags
-    @project.issues.tag_counts_on(:labels).map(&:name)
-  end
-
   # Returns an OpenStruct object suitable for use by <tt>options_from_collection_for_select</tt>
   # to allow filtering issues by an unassigned User or Milestone
   def unassigned_filter
@@ -30,12 +26,6 @@ module IssuesHelper
       by_me: "created-by-me",
       open: "open"
     }
-  end
-
-  def labels_autocomplete_source
-    labels = @project.issues_labels.order('count DESC')
-    labels = labels.map{ |l| { label: l.name, value: l.name } }
-    labels.to_json
   end
 
   def issues_active_milestones
@@ -86,21 +76,6 @@ module IssuesHelper
       issue.title
     else
       ""
-    end
-  end
-
-  def label_css_class(name)
-    case name
-    when *warning_labels
-      'label-warning'
-    when *neutral_labels
-      'label-inverse'
-    when *positive_labels
-      'label-success'
-    when *important_labels
-      'label-important'
-    else
-      'label-info'
     end
   end
 end

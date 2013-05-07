@@ -1,5 +1,5 @@
 module Gitlab
-  class Labels
+  class IssuesLabels
     class << self
       def important_labels
         %w(bug critical confirmed)
@@ -17,12 +17,11 @@ module Gitlab
         %w(feature enhancement)
       end
 
-      def self.generate(project)
+      def generate(project)
         labels = important_labels + warning_labels + neutral_labels + positive_labels
 
-        labels.each do |label_name|
-          # create tag for project
-        end
+        project.issues_default_label_list = labels
+        project.save
       end
     end
   end
