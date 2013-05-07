@@ -253,9 +253,10 @@ Download an example site config:
 
 Make sure to edit the config file to match your setup:
 
-    # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
-    # to the IP address and fully-qualified domain name
-    # of your host serving GitLab
+    # **YOUR_SERVER_FQDN** to the fully-qualified
+    # domain name of your host serving GitLab. Also, replace
+    # the 'listen' line with the following:
+    #   listen 80 default_server;         # e.g., listen 192.168.1.1:80;
     sudo vim /etc/nginx/sites-available/gitlab
 
 ## Restart
