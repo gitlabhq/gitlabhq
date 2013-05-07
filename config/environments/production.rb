@@ -73,4 +73,9 @@ Gitlab::Application.configure do
   # # }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
+
+  # This should be updated to the host/port combination you use for your Gitlab
+  # instance access, otherwise emails may have an incorrect URL for users
+  # to click on
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }  
 end
