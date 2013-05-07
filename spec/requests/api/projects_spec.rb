@@ -485,9 +485,9 @@ describe Gitlab::API do
       response.status.should == 200
     end
 
-    it "should return a 400 error if hook id not given" do
+    it "should return a 405 error if hook id not given" do
       delete api("/projects/#{project.id}/hooks", user)
-      response.status.should == 400
+      response.status.should == 405
     end
   end
 
