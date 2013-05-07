@@ -269,7 +269,13 @@ Gitlab::Application.routes.draw do
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones, except: [:destroy]
-    resources :labels, only: [:index]
+
+    resources :labels, only: [:index] do
+      collection do
+        post :generate
+      end
+    end
+
     resources :issues, except: [:destroy] do
       collection do
         post  :bulk_update

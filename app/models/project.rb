@@ -34,7 +34,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
-  acts_as_taggable_on :labels
+  acts_as_taggable_on :labels, :issues_default_labels
 
   attr_accessor :import_url
 
@@ -204,7 +204,7 @@ class Project < ActiveRecord::Base
   end
 
   def issues_labels
-    issues.tag_counts_on(:labels)
+    @issues_labels ||= (issues_default_labels + issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)
