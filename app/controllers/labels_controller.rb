@@ -10,6 +10,12 @@ class LabelsController < ProjectResourceController
     @labels = @project.issues_labels.order('count DESC')
   end
 
+  def generate
+    Gitlab::Labels.generate(@project)
+
+    redirect_to project_labels_path(@project)
+  end
+
   protected
 
   def module_enabled
