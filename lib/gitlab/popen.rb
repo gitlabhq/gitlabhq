@@ -2,7 +2,7 @@ module Gitlab
   module Popen
     def popen(cmd, path)
       vars = { "PWD" => path }
-      options = { :chdir => path }
+      options = { chdir: path }
 
       @cmd_output = ""
       @cmd_status = 0

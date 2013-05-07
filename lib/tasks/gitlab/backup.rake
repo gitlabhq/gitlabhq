@@ -4,7 +4,7 @@ namespace :gitlab do
   namespace :backup do
     # Create backup of GitLab system
     desc "GITLAB | Create a backup of the GitLab system"
-    task :create => :environment do
+    task create: :environment do
       warn_user_is_not_gitlab
 
       Rake::Task["gitlab:backup:db:create"].invoke
@@ -57,7 +57,7 @@ namespace :gitlab do
 
     # Restore backup of GitLab system
     desc "GITLAB | Restore a previously created backup"
-    task :restore => :environment do
+    task restore: :environment do
       warn_user_is_not_gitlab
 
       Dir.chdir(Gitlab.config.backup.path)
@@ -113,13 +113,13 @@ namespace :gitlab do
     end
 
     namespace :repo do
-      task :create => :environment do
+      task create: :environment do
         puts "Dumping repositories ...".blue
         Backup::Repository.new.dump
         puts "done".green
       end
 
-      task :restore => :environment do
+      task restore: :environment do
         puts "Restoring repositories ...".blue
         Backup::Repository.new.restore
         puts "done".green
@@ -127,13 +127,13 @@ namespace :gitlab do
     end
 
     namespace :db do
-      task :create => :environment do
+      task create: :environment do
         puts "Dumping database ... ".blue
         Backup::Database.new.dump
         puts "done".green
       end
 
-      task :restore => :environment do
+      task restore: :environment do
         puts "Restoring database ... ".blue
         Backup::Database.new.restore
         puts "done".green
@@ -141,13 +141,13 @@ namespace :gitlab do
     end
 
     namespace :uploads do
-      task :create => :environment do
+      task create: :environment do
         puts "Dumping uploads ... ".blue
         Backup::Uploads.new.dump
         puts "done".green
       end
 
-      task :restore => :environment do
+      task restore: :environment do
         puts "Restoring uploads ... ".blue
         Backup::Uploads.new.restore
         puts "done".green

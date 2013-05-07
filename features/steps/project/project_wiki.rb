@@ -16,7 +16,7 @@ class ProjectWiki < Spinach::FeatureSteps
   end
 
   Given 'I create the Wiki Home page' do
-    fill_in "Content", :with => '[link test](test)'
+    fill_in "Content", with: '[link test](test)'
     click_on "Save"
   end
 
@@ -42,7 +42,7 @@ class ProjectWiki < Spinach::FeatureSteps
   end
 
   And 'I change the content' do
-    fill_in "Content", :with => 'Updated Wiki Content'
+    fill_in "Content", with: 'Updated Wiki Content'
     click_on "Save"
   end
 

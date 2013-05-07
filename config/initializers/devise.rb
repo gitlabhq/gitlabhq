@@ -94,7 +94,7 @@ Devise.setup do |config|
   # config.extend_remember_period = false
 
   # Options to be passed to the created cookie. For instance, you can set
-  # :secure => true in order to force SSL only cookies.
+  # secure: true in order to force SSL only cookies.
   # config.cookie_options = {}
 
   # ==> Configuration for :validatable
@@ -202,18 +202,18 @@ Devise.setup do |config|
   # config.warden do |manager|
   #   manager.failure_app   = AnotherApp
   #   manager.intercept_401 = false
-  #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
+  #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
   if Gitlab.config.ldap.enabled
     config.omniauth :ldap,
-      :host     => Gitlab.config.ldap['host'],
-      :base     => Gitlab.config.ldap['base'],
-      :uid      => Gitlab.config.ldap['uid'],
-      :port     => Gitlab.config.ldap['port'],
-      :method   => Gitlab.config.ldap['method'],
-      :bind_dn  => Gitlab.config.ldap['bind_dn'],
-      :password => Gitlab.config.ldap['password']
+      host:     Gitlab.config.ldap['host'],
+      base:     Gitlab.config.ldap['base'],
+      uid:      Gitlab.config.ldap['uid'],
+      port:     Gitlab.config.ldap['port'],
+      method:   Gitlab.config.ldap['method'],
+      bind_dn:  Gitlab.config.ldap['bind_dn'],
+      password: Gitlab.config.ldap['password']
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
