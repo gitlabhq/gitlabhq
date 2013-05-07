@@ -47,6 +47,8 @@
 
 ### Installation
 
+Check out our [maintenance policy](MAINTENANCE.md) to see what versions are supported.
+
 #### Official production installation
 
 * [Installation guide for a production server](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
