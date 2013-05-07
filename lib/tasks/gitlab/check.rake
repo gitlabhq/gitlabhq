@@ -666,14 +666,32 @@ namespace :gitlab do
   end
 
   def check_git_version
-    print "Git version >= 1.7.10 ? ... "
+    required_version_major = 1
+    required_version_minor = 7
+    required_version_patch = 10
 
-    if run_and_match("git --version", /git version 1.7.10.\d/)
-      puts "yes".green
+    required_version = "%d.%d.%d" %[required_version_major, required_version_minor, required_version_patch]
+
+    print "Git version >= #{required_version} ? ... "
+
+    if m = run_and_match("git --version", /git version ((\d+)\.(\d+)\.(\d+))/)
+      current_version = m[1]
+      major = m[2].to_i
+      minor = m[3].to_i
+      patch = m[4].to_i
+      unless major <= required_version_major && minor <= required_version_minor && patch < required_version_patch
+        satisfying_git_version = true
+      end
+    else
+      current_version = "Unknown"
+    end
+
+    if satisfying_git_version
+        puts "yes".green
     else
       puts "no".red
       try_fixing_it(
-        "Update your git to a version >= 1.7.10"
+        "Update your git to a version >= #{required_version} from #{current_version}"
       )
       fix_and_rerun
     end
