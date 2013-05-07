@@ -153,6 +153,9 @@ group :development, :test do
   gem "launchy"
   gem 'factory_girl_rails'
 
+  # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
+  gem 'minitest'
+  
   # Generate Fake data
   gem "ffaker"
 

@@ -263,6 +263,7 @@ GEM
       treetop (~> 1.4.8)
     method_source (0.8.1)
     mime-types (1.23)
+    minitest (4.7.4)
     modernizr (2.6.2)
       sprockets (~> 2.0)
     multi_json (1.7.2)
@@ -538,6 +539,7 @@ DEPENDENCIES
   kaminari (~> 0.14.1)
   launchy
   letter_opener
+  minitest
   modernizr (= 2.6.2)
   mysql2
   omniauth (~> 1.1.3)
