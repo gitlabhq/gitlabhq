@@ -88,4 +88,19 @@ module IssuesHelper
       ""
     end
   end
+
+  def label_css_class(name)
+    case name
+    when *warning_labels
+      'label-warning'
+    when *neutral_labels
+      'label-inverse'
+    when *positive_labels
+      'label-success'
+    when *important_labels
+      'label-important'
+    else
+      'label-info'
+    end
+  end
 end
