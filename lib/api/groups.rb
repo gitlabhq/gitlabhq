@@ -70,7 +70,7 @@ module Gitlab
         else
           not_found!
         end
-      end 
+      end
     end
   end
 end

@@ -279,7 +279,7 @@ describe HooksController, "routing" do
   end
 end
 
-# project_commit GET    /:project_id/commit/:id(.:format) commit#show {:id=>/[[:alnum:]]{6,40}/, :project_id=>/[^\/]+/}
+# project_commit GET    /:project_id/commit/:id(.:format) commit#show {id: /[[:alnum:]]{6,40}/, project_id: /[^\/]+/}
 describe CommitController, "routing" do
   it "to #show" do
     get("/gitlabhq/commit/4246fb").should route_to('commit#show', project_id: 'gitlabhq', id: '4246fb')
@@ -375,7 +375,7 @@ describe NotesController, "routing" do
   end
 end
 
-# project_blame GET    /:project_id/blame/:id(.:format) blame#show {:id=>/.+/, :project_id=>/[^\/]+/}
+# project_blame GET    /:project_id/blame/:id(.:format) blame#show {id: /.+/, project_id: /[^\/]+/}
 describe BlameController, "routing" do
   it "to #show" do
     get("/gitlabhq/blame/master/app/models/project.rb").should route_to('blame#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
@@ -383,7 +383,7 @@ describe BlameController, "routing" do
   end
 end
 
-# project_blob GET    /:project_id/blob/:id(.:format) blob#show {:id=>/.+/, :project_id=>/[^\/]+/}
+# project_blob GET    /:project_id/blob/:id(.:format) blob#show {id: /.+/, project_id: /[^\/]+/}
 describe BlobController, "routing" do
   it "to #show" do
     get("/gitlabhq/blob/master/app/models/project.rb").should route_to('blob#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
@@ -392,7 +392,7 @@ describe BlobController, "routing" do
   end
 end
 
-# project_tree GET    /:project_id/tree/:id(.:format) tree#show {:id=>/.+/, :project_id=>/[^\/]+/}
+# project_tree GET    /:project_id/tree/:id(.:format) tree#show {id: /.+/, project_id: /[^\/]+/}
 describe TreeController, "routing" do
   it "to #show" do
     get("/gitlabhq/tree/master/app/models/project.rb").should route_to('tree#show', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
@@ -400,9 +400,9 @@ describe TreeController, "routing" do
   end
 end
 
-# project_compare_index GET    /:project_id/compare(.:format)             compare#index {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
-#                       POST   /:project_id/compare(.:format)             compare#create {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
-#       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {:from=>/.+/, :to=>/.+/, :id=>/[^\/]+/, :project_id=>/[^\/]+/}
+# project_compare_index GET    /:project_id/compare(.:format)             compare#index {id: /[^\/]+/, project_id: /[^\/]+/}
+#                       POST   /:project_id/compare(.:format)             compare#create {id: /[^\/]+/, project_id: /[^\/]+/}
+#       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {from: /.+/, to: /.+/, id: /[^\/]+/, project_id: /[^\/]+/}
 describe CompareController, "routing" do
   it "to #index" do
     get("/gitlabhq/compare").should route_to('compare#index', project_id: 'gitlabhq')

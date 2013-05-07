@@ -1,6 +1,6 @@
 namespace :gitlab do
   desc "GITLAB | Setup production application"
-  task :setup => :environment do
+  task setup: :environment do
     setup_db
   end
 

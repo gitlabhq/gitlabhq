@@ -10,7 +10,7 @@ module Gitlab
         @user
       elsif @user = User.find_by_email(email)
         log.info "Updating legacy LDAP user #{email} with extern_uid => #{uid}"
-        @user.update_attributes(:extern_uid => uid, :provider => provider)
+        @user.update_attributes(extern_uid: uid, provider: provider)
         @user
       else
         create_from_omniauth(auth, true)
@@ -57,7 +57,7 @@ module Gitlab
       if @user = User.find_by_provider_and_extern_uid(provider, uid)
         @user
       elsif @user = User.find_by_email(email)
-        @user.update_attributes(:extern_uid => uid, :provider => provider)
+        @user.update_attributes(extern_uid: uid, provider: provider)
         @user
       else
         if Gitlab.config.omniauth['allow_single_sign_on']

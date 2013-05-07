@@ -17,13 +17,13 @@ module Gitlab
       message << exception.annoted_source_code.to_s if exception.respond_to?(:annoted_source_code)
       message << "  " << trace.join("\n  ")
 
-      API.logger.add Logger::FATAL, message 
+      API.logger.add Logger::FATAL, message
       rack_response({'message' => '500 Internal Server Error'}, 500)
     end
 
     format :json
     helpers APIHelpers
-    
+
     mount Groups
     mount Users
     mount Projects

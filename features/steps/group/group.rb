@@ -39,8 +39,8 @@ class Groups < Spinach::FeatureSteps
   And 'I select user "John" from list with role "Reporter"' do
     user = User.find_by_name("John")
     within "#new_team_member" do
-      select user.name, :from => "user_ids"
-      select "Reporter", :from => "project_access"
+      select user.name, from: "user_ids"
+      select "Reporter", from: "project_access"
     end
     click_button "Add"
   end
@@ -85,7 +85,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'I change group name' do
-    fill_in 'group_name', :with => 'new-name'
+    fill_in 'group_name', with: 'new-name'
     click_button "Save group"
   end
 
