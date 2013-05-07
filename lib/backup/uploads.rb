@@ -10,6 +10,7 @@ module Backup
 
     # Copy uploads from public/uploads to backup/uploads
     def dump
+      FileUtils.mkdir_p(app_uploads_dir)
       FileUtils.mkdir_p(backup_uploads_dir)
       FileUtils.cp_r(app_uploads_dir, backup_dir)
     end
