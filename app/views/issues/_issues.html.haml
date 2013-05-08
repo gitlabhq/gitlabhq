@@ -19,7 +19,7 @@
             %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
               %i.icon-tags
               %span.light labels:
-              - if params[:label_name]
+              - if params[:label_name].present?
                 %strong= params[:label_name]
               - else
                 Any
@@ -27,7 +27,7 @@
             %ul.dropdown-menu
               - issue_label_names.each do |label_name|
                 %li
-                  = link_to '#' do
+                  = link_to project_issues_with_filter_path(@project, label_name: label_name) do
                     %span{class: "label #{label_css_class(label_name)}"}
                       %i.icon-tag
                     = label_name
@@ -43,7 +43,7 @@
             %ul.dropdown-menu
               - @project.users.sort_by(&:name).each do |user|
                 %li
-                  = link_to '#' do
+                  = link_to project_issues_with_filter_path(@project, assignee_id: user.id) do
                     = image_tag gravatar_icon(user.email), class: "avatar s16"
                     = user.name
 
@@ -59,7 +59,7 @@
             %ul.dropdown-menu
               - issues_active_milestones.each do |milestone|
                 %li
-                  = link_to '#' do
+                  = link_to project_issues_with_filter_path(@project, milestone_id: milestone.id) do
                     %strong= milestone.title
                     %small.light= milestone.expires_at
 
