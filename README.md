@@ -117,7 +117,7 @@ If there is a new stable branch, please do not open an issue to ask for an updat
 
 ### Removing root user
 
-The reporters team created by Public GitLab is owned by the root user (Administrator).  If you delete this user, it will create several issues in your GitLab installation.
+The reporters team created by Public GitLab is owned by the root user (Administrator).  If you delete this user, it will cause problems in your GitLab installation.
 
 If you _really_ need to remove `root`, you need to change the `pgl_reporters` team's owner in GitLab administration before deleting it.
 
@@ -130,8 +130,8 @@ Read more at issues [#3](https://github.com/ArthurHoaro/Public-GitLab/issues/3) 
 
 ## License
 
-Public GitLab is provided and maintain by [Arthur Hoaro](http://hoa.ro).
+Public GitLab is provided and maintained by [Arthur Hoaro](http://hoa.ro).
 
-Public GitLab is distributed under the [same license](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/LICENSE) as the original sofware.
+Public GitLab is distributed under the [same license](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/LICENSE) as the original software.
 
 This fork is based on [cjdelisle](https://github.com/cjdelisle/) work, from his [original fork](https://github.com/cjdelisle/gitboria.com/commit/61db393bfd4fc75c5f046f01b01c7f114f601426).
