@@ -26,3 +26,7 @@
         - resource_class.omniauth_providers.each do |provider|
           %span
             = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
+
+    - if extra_config.has_key?('sign_in_text')
+      %hr
+      = markdown(extra_config.sign_in_text)

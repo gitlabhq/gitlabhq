@@ -78,7 +78,7 @@
         .input
           = f.submit 'Save username', class: "btn btn-save"
 
-- if Gitlab.config.gitlab.signup_enabled
+- if gitlab_config.signup_enabled
   %fieldset.remove-account
     %legend
       Remove account
