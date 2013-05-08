@@ -169,7 +169,7 @@ do so with caution!
     sudo chmod -R u+rwX  tmp/pids/
     sudo chmod -R u+rwX  tmp/sockets/
 
-		# Create 'uploads' directory otherwise backup will fail
+    # Create public/uploads directory otherwise backup will fail
     sudo -u git -H mkdir public/uploads
     sudo chmod -R u+rwX  public/uploads
 
@@ -193,7 +193,7 @@ Make sure to update username/password in config/database.yml.
 
     cd /home/git/gitlab
 
-    sudo gem install charlock_holmes --version '0.6.9'
+    sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without")
     sudo -u git -H bundle install --deployment --without development test postgres
