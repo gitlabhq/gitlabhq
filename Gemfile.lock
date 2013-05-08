@@ -77,6 +77,8 @@ GEM
     bootstrap-sass (2.2.1.1)
       sass (~> 3.2)
     builder (3.0.4)
+    bullet (4.6.0)
+      uniform_notifier
     capybara (2.1.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -478,6 +480,7 @@ GEM
     uglifier (2.0.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    uniform_notifier (1.2.0)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -500,6 +503,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (= 2.2.1.1)
+  bullet
   capybara
   carrierwave
   chosen-rails (= 0.9.8)

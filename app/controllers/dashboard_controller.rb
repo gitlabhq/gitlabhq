@@ -5,13 +5,15 @@ class DashboardController < ApplicationController
   before_filter :event_filter, only: :show
 
   def show
-    @groups = current_user.authorized_groups.sort_by(&:human_name)
+    @groups = current_user.authorized_groups.includes(:owner).sort_by(&:human_name)
     @has_authorized_projects = @projects.count > 0
     @teams = current_user.authorized_teams
-    @projects_count = @projects.count
-    @projects = @projects.limit(20)
 
-    @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
+    project_ids = @projects.pluck(:id)
+    @projects_count = project_ids.length
+    @projects = @projects.includes(:namespace).limit(20)
+
+    @events = Event.in_projects(project_ids).includes(:author, :target, :project)
     @events = @event_filter.apply_filter(@events)
     @events = @events.limit(20).offset(params[:offset] || 0)
 
@@ -33,6 +35,8 @@ class DashboardController < ApplicationController
                 else
                   @projects
                 end
+
+    @projects = @projects.includes(:namespace, :labels, :creator)
 
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?
     @projects = @projects.search(params[:search]) if params[:search].present?
