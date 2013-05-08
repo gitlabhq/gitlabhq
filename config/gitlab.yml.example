@@ -73,8 +73,6 @@ production: &base
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
 
-
-
   #
   # 2. Auth settings
   # ==========================
@@ -156,6 +154,19 @@ production: &base
     max_size: 5242880 # 5.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
+
+  #
+  # 4. Extra customization
+  # ==========================
+
+  extra: 
+    ## Google analytics. Uncomment if you want it
+    # google_analytics_id: '_your_tracking_id'
+
+    ## Text under sign-in page (Markdown enabled)
+    # sign_in_text: | 
+    #   ![Company Logo](http://www.companydomain.com/logo.png)
+    #   [Learn more about CompanyName](http://www.companydomain.com/)
 
 development:
   <<: *base

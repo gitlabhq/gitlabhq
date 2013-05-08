@@ -37,7 +37,7 @@ module ApplicationHelper
     if !Gitlab.config.gravatar.enabled || user_email.blank?
       'no_avatar.png'
     else
-      gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
+      gravatar_url = request.ssl? || gitlab_config.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
       sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
     end
@@ -195,5 +195,15 @@ module ApplicationHelper
     namespace = path.first if path.second
 
     [namespace, controller.controller_name, controller.action_name].compact.join(":")
+  end
+
+  # shortcut for gitlab config
+  def gitlab_config
+    Gitlab.config.gitlab
+  end
+
+  # shortcut for gitlab extra config
+  def extra_config
+    Gitlab.config.extra
   end
 end
