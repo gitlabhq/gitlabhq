@@ -1,7 +1,7 @@
 = form_tag project_issues_path(@project), method: 'get' do
   %fieldset
     %ul.nav.nav-pills.nav-stacked
-      %li{class: ("active" if !params[:status])}
+      %li{class: ("active" if !params[:status] || params[:status].blank?)}
         = link_to project_issues_path(@project, status: nil) do
           Open
       %li{class: ("active" if params[:status] == 'assigned-to-me')}
