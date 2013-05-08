@@ -44,12 +44,14 @@ production: &base
     #   ## If not nil, link 'Issues' on project page will be replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
+    #   ##  :project_name      - GitLab project name
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   project_url: "http://redmine.sample/projects/:issues_tracker_id"
     #
     #   ## If not nil, links from /#\d/ entities from commit messages will replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
+    #   ##  :project_name      - GitLab project name
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   ##  :id                - Issue id (from commit messages)
     #   issues_url: "http://redmine.sample/issues/:id"
@@ -57,8 +59,17 @@ production: &base
     #   ## If not nil, linkis to creating new issues will be replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
+    #   ##  :project_name      - GitLab project name
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
+
+    # Example for multiple trac instancess hosted on the same host.
+    # Multiple gitlab repositories can map into a single trac instance using keywords field in tickets.
+    # trac:
+    #   project_url:   "http://trac.example.com/:issues_tracker_id/query?keywords=~:project_name"
+    #   issues_url:    "http://trac.example.com/:issues_tracker_id/ticket/:id?q=:project_name"
+    #   new_issue_url: "http://trac.example.com/:issues_tracker_id/newticket?keywords=:project_name"
+
 
   ## Gravatar
   gravatar:
