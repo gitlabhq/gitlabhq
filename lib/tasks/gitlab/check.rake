@@ -655,39 +655,25 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = '1.4.0'
+    required_version = Gitlab::VersionInfo.new(1, 4, 0)
+    current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
-    print "GitLab Shell version? ... "
-    if gitlab_shell_version.strip == required_version
-      puts "OK (#{required_version})".green
+    print "GitLab Shell version >= #{required_version} ? ... "
+    if required_version <= current_version
+      puts "OK (#{current_version})".green
     else
-      puts "FAIL. Please update gitlab-shell to v#{required_version}".red
+      puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".red
     end
   end
 
   def check_git_version
-    required_version_major = 1
-    required_version_minor = 7
-    required_version_patch = 10
-
-    required_version = "%d.%d.%d" %[required_version_major, required_version_minor, required_version_patch]
+    required_version = Gitlab::VersionInfo.new(1, 7, 10)
+    current_version = Gitlab::VersionInfo.parse(run("git --version"))
 
     print "Git version >= #{required_version} ? ... "
 
-    if m = run_and_match("git --version", /git version ((\d+)\.(\d+)\.(\d+))/)
-      current_version = m[1]
-      major = m[2].to_i
-      minor = m[3].to_i
-      patch = m[4].to_i
-      unless major <= required_version_major && minor <= required_version_minor && patch < required_version_patch
-        satisfying_git_version = true
-      end
-    else
-      current_version = "Unknown"
-    end
-
-    if satisfying_git_version
-        puts "yes".green
+    if required_version <= current_version
+        puts "yes (#{current_version})".green
     else
       puts "no".red
       try_fixing_it(
