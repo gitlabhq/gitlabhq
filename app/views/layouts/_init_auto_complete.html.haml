@@ -1,17 +1,6 @@
 :javascript
   $(function() {
-    GitLab.GfmAutoComplete.Members.url = "#{ "/api/v3/projects/#{@project.id}/members" if @project }";
-    GitLab.GfmAutoComplete.Members.params.private_token = "#{current_user.private_token}";
-
-    GitLab.GfmAutoComplete.Emoji.data = #{raw emoji_autocomplete_source};
-    // convert the list so that the items have the right format for completion
-    GitLab.GfmAutoComplete.Emoji.data = $.map(GitLab.GfmAutoComplete.Emoji.data, function(value) {
-      return {
-        name: value,
-        insert: value+':',
-        image: '#{image_path("emoji")}/'+value+'.png'
-      }
-    });
-
+    GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_project_path(@project)}"
+    GitLab.GfmAutoComplete.Emoji.assetBase = '#{image_path("emoji")}'
     GitLab.GfmAutoComplete.setup();
   });

@@ -93,4 +93,16 @@ class ProjectsController < ProjectResourceController
       format.js
     end
   end
+
+  def autocomplete_sources
+    @suggestions = {
+      emojis: Emoji.names,
+      issues: @project.issues.select([:id, :title, :description]),
+      members: @project.users.select([:username, :name]).order(:username)
+    }
+
+    respond_to do |format|
+      format.json { render :json => @suggestions }
+    end
+  end
 end
