@@ -1,6 +1,6 @@
 module LabelsHelper
-  def issue_tags
-    @project.issues.tag_counts_on(:labels).map(&:name)
+  def issue_label_names
+    @project.issues_labels.map(&:name)
   end
 
   def labels_autocomplete_source
