@@ -174,7 +174,7 @@ module Gitlab
       delete "keys/:id" do
         begin
           key = current_user.keys.find params[:id]
-          key.delete
+          key.destroy
         rescue
         end
       end

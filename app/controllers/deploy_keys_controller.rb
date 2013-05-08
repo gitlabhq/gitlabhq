@@ -5,7 +5,8 @@ class DeployKeysController < ProjectResourceController
   before_filter :authorize_admin_project!
 
   def index
-    @keys = @project.deploy_keys.all
+    @enabled_keys = @project.deploy_keys.all
+    @available_keys = available_keys - @enabled_keys
   end
 
   def show
@@ -19,8 +20,9 @@ class DeployKeysController < ProjectResourceController
   end
 
   def create
-    @key = @project.deploy_keys.new(params[:key])
-    if @key.save
+    @key = DeployKey.new(params[:deploy_key])
+
+    if @key.valid? && @project.deploy_keys << @key
       redirect_to project_deploy_keys_path(@project)
     else
       render "new"
@@ -35,5 +37,23 @@ class DeployKeysController < ProjectResourceController
       format.html { redirect_to project_deploy_keys_url }
       format.js { render nothing: true }
     end
+  end
+
+  def enable
+    project.deploy_keys << available_keys.find(params[:id])
+
+    redirect_to project_deploy_keys_path(@project)
+  end
+
+  def disable
+    @project.deploy_keys_projects.where(deploy_key_id: params[:id]).last.destroy
+
+    redirect_to project_deploy_keys_path(@project)
+  end
+
+  protected
+
+  def available_keys
+    @available_keys ||= DeployKey.in_projects(current_user.owned_projects).uniq
   end
 end

@@ -3,12 +3,12 @@
 %h3.page_title
   Labels
 %br
-%div.ui-box
-  %ul.well-list.labels-table
+
+- if @labels.present?
+  %ul.bordered-list.labels-table
     - @labels.each do |label|
       = render 'label', label: label
 
-    - unless @labels.present?
-      %li
-        %h3.nothing_here_message Nothing to show here
-
+- else
+  .light-well
+    %h3.nothing_here_message Add first label to your issues or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels

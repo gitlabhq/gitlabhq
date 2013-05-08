@@ -19,6 +19,7 @@ Please send a pull request with a tested solution or a pull request with a faili
 
 **Search** for similar entries before submitting your own, there's a good chance somebody else had the same issue or idea. Show your support with `:+1:` and/or join the discussion.
 
+* Only report issues for supported versions according to the [maintenance policy](MAINTENANCE.md)
 * Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
 * Describe your issue in detail
 * How can we reproduce the issue on the [GitLab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) (start with: `vagrant destroy && vagrant up && vagrant ssh`)
@@ -37,7 +38,7 @@ We welcome pull request with improvements to GitLab code and/or documentation. T
 
 1. Fork the project on GitHub
 1. Create a feature branch
-1. Write tests and code
+1. Write [tests](README.md#run-the-tests) and code
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a pull request

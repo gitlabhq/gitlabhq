@@ -34,7 +34,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
-  acts_as_taggable_on :labels
+  acts_as_taggable_on :labels, :issues_default_labels
 
   attr_accessor :import_url
 
@@ -55,7 +55,6 @@ class Project < ActiveRecord::Base
   has_many :users_projects,     dependent: :destroy
   has_many :notes,              dependent: :destroy
   has_many :snippets,           dependent: :destroy
-  has_many :deploy_keys,        dependent: :destroy, class_name: "Key", foreign_key: "project_id"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
   has_many :user_team_project_relationships, dependent: :destroy
@@ -64,6 +63,9 @@ class Project < ActiveRecord::Base
   has_many :user_teams,     through: :user_team_project_relationships
   has_many :user_team_user_relationships, through: :user_teams
   has_many :user_teams_members, through: :user_team_user_relationships
+
+  has_many :deploy_keys_projects, dependent: :destroy
+  has_many :deploy_keys, through: :deploy_keys_projects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -202,7 +204,7 @@ class Project < ActiveRecord::Base
   end
 
   def issues_labels
-    issues.tag_counts_on(:labels)
+    @issues_labels ||= (issues_default_labels + issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)

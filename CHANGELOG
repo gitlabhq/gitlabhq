@@ -9,6 +9,9 @@ v 5.2.0
   - Move update docs in repo
   - requires gitlab-shell v1.4.0
   - fixed submodules listing under file tab
+  - Fork feature (Angus MacArthur)
+  - git version check in gitlab:check
+  - Shared deploy keys feature
 
 v 5.1.0
   - You can login with email or username now

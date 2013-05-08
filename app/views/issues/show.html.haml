@@ -47,7 +47,7 @@
 
     .pull-right
       - @issue.labels.each do |label|
-        %span.label
+        %span{class: "label #{label_css_class(label.name)}"}
           %i.icon-tag
           = label.name
         &nbsp;

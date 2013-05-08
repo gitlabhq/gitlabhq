@@ -56,15 +56,15 @@ describe Admin::UsersController, "routing" do
   end
 end
 
-#        team_admin_project GET    /admin/projects/:id/team(.:format)        admin/projects#team {:id=>/[^\/]+/}
-# team_update_admin_project PUT    /admin/projects/:id/team_update(.:format) admin/projects#team_update {:id=>/[^\/]+/}
-#            admin_projects GET    /admin/projects(.:format)                 admin/projects#index {:id=>/[^\/]+/}
-#                           POST   /admin/projects(.:format)                 admin/projects#create {:id=>/[^\/]+/}
-#         new_admin_project GET    /admin/projects/new(.:format)             admin/projects#new {:id=>/[^\/]+/}
-#        edit_admin_project GET    /admin/projects/:id/edit(.:format)        admin/projects#edit {:id=>/[^\/]+/}
-#             admin_project GET    /admin/projects/:id(.:format)             admin/projects#show {:id=>/[^\/]+/}
-#                           PUT    /admin/projects/:id(.:format)             admin/projects#update {:id=>/[^\/]+/}
-#                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {:id=>/[^\/]+/}
+#        team_admin_project GET    /admin/projects/:id/team(.:format)        admin/projects#team {id: /[^\/]+/}
+# team_update_admin_project PUT    /admin/projects/:id/team_update(.:format) admin/projects#team_update {id: /[^\/]+/}
+#            admin_projects GET    /admin/projects(.:format)                 admin/projects#index {id: /[^\/]+/}
+#                           POST   /admin/projects(.:format)                 admin/projects#create {id: /[^\/]+/}
+#         new_admin_project GET    /admin/projects/new(.:format)             admin/projects#new {id: /[^\/]+/}
+#        edit_admin_project GET    /admin/projects/:id/edit(.:format)        admin/projects#edit {id: /[^\/]+/}
+#             admin_project GET    /admin/projects/:id(.:format)             admin/projects#show {id: /[^\/]+/}
+#                           PUT    /admin/projects/:id(.:format)             admin/projects#update {id: /[^\/]+/}
+#                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {id: /[^\/]+/}
 describe Admin::ProjectsController, "routing" do
   it "to #index" do
     get("/admin/projects").should route_to('admin/projects#index')
@@ -75,9 +75,9 @@ describe Admin::ProjectsController, "routing" do
   end
 end
 
-# edit_admin_project_member GET      /admin/projects/:project_id/members/:id/edit(.:format)    admin/projects/members#edit {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
-#      admin_project_member PUT      /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#update {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
-#                           DELETE   /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#destroy {:id=>/[^\/]+/, :project_id=>/[^\/]+/}
+# edit_admin_project_member GET      /admin/projects/:project_id/members/:id/edit(.:format)    admin/projects/members#edit {id: /[^\/]+/, project_id: /[^\/]+/}
+#      admin_project_member PUT      /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#update {id: /[^\/]+/, project_id: /[^\/]+/}
+#                           DELETE   /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#destroy {id: /[^\/]+/, project_id: /[^\/]+/}
 describe Admin::Projects::MembersController, "routing" do
   it "to #edit" do
     get("/admin/projects/test/members/1/edit").should route_to('admin/projects/members#edit', project_id: 'test', id: '1')

@@ -17,9 +17,9 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   Then 'I see commits atom feed' do
     commit = @project.repository.commit
     page.response_headers['Content-Type'].should have_content("application/atom+xml")
-    page.body.should have_selector("title", :text => "Recent commits to #{@project.name}")
-    page.body.should have_selector("author email", :text => commit.author_email)
-    page.body.should have_selector("entry summary", :text => commit.description)
+    page.body.should have_selector("title", text: "Recent commits to #{@project.name}")
+    page.body.should have_selector("author email", text: commit.author_email)
+    page.body.should have_selector("entry summary", text: commit.description)
   end
 
   Given 'I click on commit link' do

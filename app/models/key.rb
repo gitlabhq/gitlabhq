@@ -16,7 +16,6 @@ require 'digest/md5'
 
 class Key < ActiveRecord::Base
   belongs_to :user
-  belongs_to :project
 
   attr_accessible :key, :title
 
@@ -29,7 +28,7 @@ class Key < ActiveRecord::Base
   delegate :name, :email, to: :user, prefix: true
 
   def strip_white_space
-    self.key = self.key.strip unless self.key.blank?
+    self.key = key.strip unless key.blank?
   end
 
   def fingerprintable_key
@@ -47,20 +46,12 @@ class Key < ActiveRecord::Base
     errors.add(:key, "can't be fingerprinted") if $?.exitstatus != 0
   end
 
-  def is_deploy_key
-    project.present?
-  end
-
   # projects that has this key
   def projects
-    if is_deploy_key
-      [project]
-    else
-      user.authorized_projects
-    end
+    user.authorized_projects
   end
 
   def shell_id
-    "key-#{self.id}"
+    "key-#{id}"
   end
 end

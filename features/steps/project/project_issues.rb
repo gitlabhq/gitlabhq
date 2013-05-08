@@ -41,7 +41,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'I submit new issue "500 error on profile"' do
-    fill_in "issue_title", :with => "500 error on profile"
+    fill_in "issue_title", with: "500 error on profile"
     click_button "Submit new issue"
   end
 
@@ -78,16 +78,16 @@ class ProjectIssues < Spinach::FeatureSteps
 
   Given 'project "Shop" has milestone "v2.2"' do
     project = Project.find_by_name("Shop")
-    milestone = create(:milestone, :title => "v2.2", :project => project)
+    milestone = create(:milestone, title: "v2.2", project: project)
 
-    3.times { create(:issue, :project => project, :milestone => milestone) }
+    3.times { create(:issue, project: project, milestone: milestone) }
   end
 
   And 'project "Shop" has milestone "v3.0"' do
     project = Project.find_by_name("Shop")
-    milestone = create(:milestone, :title => "v3.0", :project => project)
+    milestone = create(:milestone, title: "v3.0", project: project)
 
-    3.times { create(:issue, :project => project, :milestone => milestone) }
+    3.times { create(:issue, project: project, milestone: milestone) }
   end
 
   When 'I select milestone "v3.0"' do
@@ -115,16 +115,16 @@ class ProjectIssues < Spinach::FeatureSteps
   And 'project "Shop" have "Release 0.4" open issue' do
     project = Project.find_by_name("Shop")
     create(:issue,
-           :title => "Release 0.4",
-           :project => project,
-           :author => project.users.first)
+           title: "Release 0.4",
+           project: project,
+           author: project.users.first)
   end
 
   And 'project "Shop" have "Release 0.3" closed issue' do
     project = Project.find_by_name("Shop")
     create(:closed_issue,
-           :title => "Release 0.3",
-           :project => project,
-           :author => project.users.first)
+           title: "Release 0.3",
+           project: project,
+           author: project.users.first)
   end
 end
