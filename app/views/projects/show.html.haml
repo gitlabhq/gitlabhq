@@ -40,3 +40,7 @@
       %p Repo Size: #{@project.repository.size} MB
       %p Created at: #{@project.created_at.stamp('Aug 22, 2013')}
       %p Owner: #{link_to @project.owner_name, @project.owner}
+      - if @project.forked_from_project
+        %p
+          Forked from:
+          = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)

@@ -69,7 +69,6 @@ class Ability
         :download_code,
         :write_snippet,
         :fork_project
-
       ]
     end
 

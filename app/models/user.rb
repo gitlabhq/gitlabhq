@@ -326,4 +326,18 @@ class User < ActiveRecord::Base
   def tm_of(project)
     project.team_member_by_id(self.id)
   end
+
+  def already_forked? project
+    !!fork_of(project)
+  end
+
+  def fork_of project
+    links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
+
+    if links.any?
+      links.first.forked_to_project
+    else
+      nil
+    end
+  end
 end
