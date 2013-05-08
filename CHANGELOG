@@ -12,6 +12,8 @@ v 5.2.0
   - Fork feature (Angus MacArthur)
   - git version check in gitlab:check
   - Shared deploy keys feature
+  - Ability to generate default labels set for issues
+  - improve gfm autocomplete (Harold Luo)
 
 v 5.1.0
   - You can login with email or username now
