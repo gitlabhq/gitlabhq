@@ -24,7 +24,7 @@ gem 'omniauth-github'
 # Extracting information from a git repository
 # We cannot use original git since some bugs
 gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git'
-gem 'gitlab_git', '~> 1.0.6'
+gem 'gitlab_git', '~> 1.1.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
@@ -155,7 +155,7 @@ group :development, :test do
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest'
-  
+
   # Generate Fake data
   gem "ffaker"
 

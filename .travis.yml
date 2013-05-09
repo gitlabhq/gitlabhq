@@ -6,7 +6,7 @@ before_install:
   - gem install charlock_holmes -v="0.6.9"
 branches:
   only:
-    - 'code-search'
+    - 'master'
 rvm:
   - 1.9.3-p392
   - 2.0.0
