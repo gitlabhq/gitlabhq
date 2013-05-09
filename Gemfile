@@ -107,6 +107,12 @@ gem 'tinder', '~> 1.9.2'
 # HipChat integration
 gem "hipchat", "~> 0.9.0"
 
+# d3
+gem "d3_rails", "~> 3.1.4"
+
+# underscore-rails
+gem "underscore-rails", "~> 1.4.4"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"
@@ -177,6 +183,7 @@ group :development, :test do
   gem 'poltergeist', '~> 1.3.0'
 
   gem 'spork', '~> 1.0rc'
+  gem 'jasmine'	
 end
 
 group :test do

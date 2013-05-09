@@ -1,0 +1,56 @@
+.tint-box {
+  border-radius: 6px;
+  background: #f3f3f3;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.area {
+  fill: #1db34f;
+  fill-opacity: 0.5;
+}
+
+.axis {
+  fill: #aaa;
+  font-size: 10px;
+}
+
+#contributors .person {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  border-radius: 2px;
+  margin: 10px;
+  border: 1px solid #ddd;
+}
+
+.contributors-list {
+  margin: 0 0 10px 0;
+  list-style: none;
+  padding: 0;
+}
+
+#contributors .person .spark {
+  display: block;
+  background: #f7f7f7;
+}
+
+#contributors .person .area-contributor {
+  fill: #f17f49;
+}
+
+.selection rect {
+  fill: #333;
+  fill-opacity: 0.1;
+  stroke: #333;
+  stroke-width: 1px;
+  stroke-opacity: 0.4;
+  shape-rendering: crispedges;
+  stroke-dasharray: 3 3;
+}
+
+.right{
+  float: right;
+  display: inline-block;
+  margin-top: 5px;
+}
