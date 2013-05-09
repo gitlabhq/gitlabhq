@@ -112,6 +112,8 @@ GEM
       simplecov (>= 0.7)
       thor
     crack (0.3.2)
+    d3_rails (3.1.4)
+      railties (>= 3.1.0)
     daemons (1.1.9)
     database_cleaner (0.9.1)
     debug_inspector (0.0.2)
@@ -478,6 +480,7 @@ GEM
     uglifier (2.0.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    underscore-rails (1.4.4)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -506,6 +509,7 @@ DEPENDENCIES
   coffee-rails
   colored
   coveralls
+  d3_rails (~> 3.1.4)
   database_cleaner
   devise
   email_spec
@@ -581,4 +585,5 @@ DEPENDENCIES
   thin
   turbolinks
   uglifier
+  underscore-rails (~> 1.4.4)
   webmock

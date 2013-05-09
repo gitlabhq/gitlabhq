@@ -102,6 +102,12 @@ gem "foreman"
 # Cache
 gem "redis-rails"
 
+# d3
+gem "d3_rails", "~> 3.1.4"
+
+# underscore-rails
+gem "underscore-rails", "~> 1.4.4"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"
