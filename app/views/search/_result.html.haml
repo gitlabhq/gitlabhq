@@ -1,9 +1,20 @@
 %fieldset
   %legend
     Search results
-    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count})
+    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.count})
+
+- if @project
+  %ul.nav.nav-pills
+    %li{class: ("active" if params[:search_code].present?)}
+      = link_to search_path(params.merge(search_code: true)) do
+        Repository Code
+    %li{class: ("active" if params[:search_code].blank?)}
+      = link_to search_path(params.merge(search_code: nil)) do
+        Everything else
+
+
 .search_results
-  %ul.well-list
+  %ul.bordered-list
     - @projects.each do |project|
       %li
         project:
@@ -32,16 +43,17 @@
           %strong.term
             = truncate wiki_page.title, length: 50
         %span.light (#{wiki_page.project.name_with_namespace})
-    - @snippets.each do |snippet|
+    - @blobs.each do |file|
       %li
-        code:
-        = link_to project_blob_path(snippet.project, tree_join(snippet.tree, snippet.filename), :anchor => "L" + snippet.startline.to_s) do
-          %strong.term
-            = snippet.filename
         .file_holder
-          .file_content.code
+          .file_title
+            = link_to project_blob_path(@project, tree_join(file.ref, file.filename), :anchor => "L" + file.startline.to_s) do
+              %i.icon-file
+              %strong
+                = file.filename
+          .file_content.code.term
             %div{class: user_color_scheme_class}
-              = raw snippet.colorize( formatter: :gitlab, options: { first_line_number: snippet.startline } )
+              = raw file.colorize( formatter: :gitlab, options: { first_line_number: file.startline } )
 
 :javascript
   $(function() {

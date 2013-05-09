@@ -12,12 +12,17 @@ class SearchContext
 
     projects = Project.where(id: project_ids)
     result[:projects] = projects.search(query).limit(10)
-    if projects.length == 1
-      result[:snippets] = projects.first.files(query, params[:branch_ref])
+
+    # Search inside singe project
+    result[:project] = project = projects.first if projects.length == 1
+
+    if params[:search_code].present?
+      result[:blobs] = project.repository.search_files(query, params[:repository_ref]) unless project.empty_repo?
+    else
+      result[:merge_requests] = MergeRequest.where(project_id: project_ids).search(query).limit(10)
+      result[:issues] = Issue.where(project_id: project_ids).search(query).limit(10)
+      result[:wiki_pages] = []
     end
-    result[:merge_requests] = MergeRequest.where(project_id: project_ids).search(query).limit(10)
-    result[:issues] = Issue.where(project_id: project_ids).search(query).limit(10)
-    result[:wiki_pages] = []
     result
   end
 
@@ -27,8 +32,7 @@ class SearchContext
       merge_requests: [],
       issues: [],
       wiki_pages: [],
-      snippets: []
+      blobs: []
     }
   end
 end
-

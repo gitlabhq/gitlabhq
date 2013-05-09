@@ -15,9 +15,10 @@ class SearchController < ApplicationController
     result = SearchContext.new(project_ids, params).execute
 
     @projects       = result[:projects]
+    @project        = result[:project]
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
     @wiki_pages     = result[:wiki_pages]
-    @snippets       = result[:snippets]
+    @blobs          = result[:blobs]
   end
 end

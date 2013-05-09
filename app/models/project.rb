@@ -410,16 +410,4 @@ class Project < ActiveRecord::Base
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
-
-  def files(query, treeish)
-   snippets = []
-   tree = treeish.present? ? treeish : default_branch 
-   if repository && !tree.nil?
-     greps = repository.repo.grep(query, 3, tree)
-     greps.each do |g|
-       snippets << Gitlab::BlobSnippet.new(self, tree, g.content, g.startline, g.filename)
-     end
-   end
-   snippets
-  end
 end
