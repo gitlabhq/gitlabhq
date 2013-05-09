@@ -6,6 +6,7 @@ class ProjectSearchCode < Spinach::FeatureSteps
   When 'I search for term "Welcome to Gitlab"' do
     fill_in "search", with: "Welcome to Gitlab"
     click_button "Go"
+    click_link 'Repository Code'
   end
 
   Then 'I should see files from repository containing "Welcome to Gitlab"' do

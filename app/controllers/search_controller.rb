@@ -6,7 +6,8 @@ class SearchController < ApplicationController
     project_ids = current_user.authorized_projects.map(&:id)
 
     if group_id.present?
-      group_project_ids = Group.find(group_id).projects.map(&:id)
+      @group = Group.find(group_id)
+      group_project_ids = @group.projects.map(&:id)
       project_ids.select! { |id| group_project_ids.include?(id)}
     elsif project_id.present?
       project_ids.select! { |id| id == project_id.to_i}
