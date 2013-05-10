@@ -11,7 +11,7 @@ class window.ContributorsGraph
     @prototype.x_domain = data
   @set_y_domain: (data) =>
     @prototype.y_domain = [0, d3.max(data, (d) ->
-      d.total = d.total ? d.additions ? d.deletions
+      d.commits = d.commits ? d.additions ? d.deletions
     )]
   @init_x_domain: (data) =>
     @prototype.x_domain = d3.extent(data, (d) ->
@@ -19,7 +19,7 @@ class window.ContributorsGraph
     )
   @init_y_domain: (data) =>
     @prototype.y_domain = [0, d3.max(data, (d) ->
-      d.total = d.total ? d.additions ? d.deletions
+      d.commits = d.commits ? d.additions ? d.deletions
     )]
   @init_domain: (data) =>
     @init_x_domain(data)
@@ -80,7 +80,7 @@ class window.ContributorsMasterGraph extends ContributorsGraph
     @area = d3.svg.area().x((d) ->
       x(d.date)
     ).y0(@height).y1((d) ->
-      y(d.total = d.total ? d.additions ? d.deletions)
+      y(d.commits = d.commits ? d.additions ? d.deletions)
     ).interpolate("basis")
   create_brush: ->
     @brush = d3.svg.brush().x(@x).on("brushend", @update_content);

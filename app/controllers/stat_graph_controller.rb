@@ -8,8 +8,7 @@ class StatGraphController < ProjectResourceController
   def show
   	@repo = @project.repository
     @stats = Gitlab::GitStats.new(@repo.raw, @repo.root_ref)
-    @log = @stats.log.to_json
+    @log = @stats.parsed_log.to_json
   end
   
 end
-
