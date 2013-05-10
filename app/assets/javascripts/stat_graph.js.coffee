@@ -1,6 +1,6 @@
-window.StatGraph = 
-  log: {}
-  get_log: ->
+class window.StatGraph  
+  @log: {}
+  @get_log: ->
     @log
-  set_log: (data) ->
+  @set_log: (data) ->
     @log = data

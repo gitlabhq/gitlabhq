@@ -1,7 +1,7 @@
 class window.ContributorsStatGraph
   init: (log) ->
     @parsed_log = ContributorsStatGraphUtil.parse_log(log)
-    @set_current_field("total")
+    @set_current_field("commits")
     total_commits = ContributorsStatGraphUtil.get_total_data(@parsed_log, @field)
     author_commits = ContributorsStatGraphUtil.get_author_data(@parsed_log, @field)
     @add_master_graph(total_commits)
@@ -19,7 +19,7 @@ class window.ContributorsStatGraph
       author_graph.draw()
     )
   format_author_commit_info: (author) ->
-    author.total + " commits " + author.additions + " ++ / " + author.deletions + " --" 
+    author.commits + " commits " + author.additions + " ++ / " + author.deletions + " --" 
   create_author_header: (author) ->
     list_item = $('<li/>', {
       class: 'person'
