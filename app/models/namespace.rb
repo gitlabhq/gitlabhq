@@ -36,7 +36,7 @@ class Namespace < ActiveRecord::Base
   after_update :move_dir, if: :path_changed?
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
+  scope :root, joins(:owner).includes(:owner).where(:type => nil)
 
   def self.search query
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
