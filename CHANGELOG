@@ -15,6 +15,7 @@ v 5.2.0
   - Ability to generate default labels set for issues
   - Improve gfm autocomplete (Harold Luo)
   - Added support for Google Analytics
+  - Code search feature (Javier Castro)
 
 v 5.1.0
   - You can login with email or username now
