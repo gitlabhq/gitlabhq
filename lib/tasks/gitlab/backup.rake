@@ -11,10 +11,11 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:repo:create"].invoke
       Rake::Task["gitlab:backup:uploads:create"].invoke
 
+
       # saving additional informations
       s = {}
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = "#{Time.now}"
+      s[:backup_created_at]  = Time.now
       s[:gitlab_version]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
       s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
 
@@ -25,8 +26,8 @@ namespace :gitlab do
       end
 
       # create archive
-      print "Creating backup archive: #{Time.now.to_i}_gitlab_backup.tar ... "
-      if Kernel.system("tar -cf #{Time.now.to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml")
+      print "Creating backup archive: #{s[:backup_created_at].to_i}_gitlab_backup.tar ... "
+      if Kernel.system("tar -cf #{s[:backup_created_at].to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml")
         puts "done".green
       else
         puts "failed".red
