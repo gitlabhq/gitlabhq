@@ -1,24 +1,22 @@
 class RefsController < ProjectResourceController
+  include ExtractsPath
 
   # Authorize
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :ref
-  before_filter :define_tree_vars, only: [:blob, :logs_tree]
-
   def switch
     respond_to do |format|
       format.html do
         new_path = if params[:destination] == "tree"
-                     project_tree_path(@project, (@ref + "/" + params[:path]))
+                     project_tree_path(@project, (@id))
                    elsif params[:destination] == "blob"
-                     project_blob_path(@project, (@ref + "/" + params[:path]))
+                     project_blob_path(@project, (@id))
                    elsif params[:destination] == "graph"
-                     project_graph_path(@project, @ref)
+                     project_graph_path(@project, @id, @options)
                    else
-                     project_commits_path(@project, @ref)
+                     project_commits_path(@project, @id)
                    end
 
         redirect_to new_path
@@ -41,28 +39,5 @@ class RefsController < ProjectResourceController
         commit: last_commit
       }
     end
-  end
-
-  protected
-
-  def define_tree_vars
-    params[:path] = nil if params[:path].blank?
-
-    @repo = project.repository
-    @commit = @repo.commit(@ref)
-    @tree = Tree.new(@repo, @commit.id, @ref, params[:path])
-    @hex_path = Digest::SHA1.hexdigest(params[:path] || "")
-
-    if params[:path]
-      @logs_path = logs_file_project_ref_path(@project, @ref, params[:path])
-    else
-      @logs_path = logs_tree_project_ref_path(@project, @ref)
-    end
-  rescue
-    return render_404
-  end
-
-  def ref
-    @ref = params[:id] || params[:ref]
   end
 end
