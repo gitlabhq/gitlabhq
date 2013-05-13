@@ -1,7 +1,7 @@
 #!/usr/bin/env puma
 
 # Start Puma with next command:
-# RAILS_ENV=production bundle exec puma -e production -C ./config/puma.rb
+# RAILS_ENV=production bundle exec puma -C ./config/puma.rb
 
 # uncomment and customize to run in non-root path
 # note that config/gitlab.yml web path should also be changed
@@ -19,7 +19,7 @@ directory application_path
 #
 # The default is “development”.
 #
-environment = :production
+environment 'production'
 
 # Daemonize the server into the background. Highly suggest that
 # this be combined with “pidfile” and “stdout_redirect”.

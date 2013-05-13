@@ -17,7 +17,7 @@
 
 APP_ROOT="/home/git/gitlab"
 APP_USER="git"
-DAEMON_OPTS="-C $APP_ROOT/config/puma.rb -e production"
+DAEMON_OPTS="-C $APP_ROOT/config/puma.rb"
 PID_PATH="$APP_ROOT/tmp/pids"
 WEB_SERVER_PID="$PID_PATH/puma.pid"
 SIDEKIQ_PID="$PID_PATH/sidekiq.pid"
