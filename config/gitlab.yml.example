@@ -88,6 +88,12 @@ production: &base
     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
     password: '_the_password_of_the_bind_user'
 
+  # Optionally you may force username/email to be taken from
+  # specific LDAP attributes rather than heuristics:
+    # username: '_attribute_containing_username_'
+    # email: '_attribute_containing_email_'
+  # Also see: username_changing_enabled option above
+
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
