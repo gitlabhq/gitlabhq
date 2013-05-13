@@ -7,15 +7,6 @@ GIT
       rake (>= 0.8.7)
 
 GIT
-  remote: https://github.com/gitlabhq/grit.git
-  revision: e873bb84ac3c4f8249311490d6a7c6ac9127625f
-  specs:
-    grit (2.5.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
-
-GIT
   remote: https://github.com/gitlabhq/raphael-rails.git
   revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
   specs:
@@ -159,30 +150,34 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
+    gitlab-gollum-lib (1.0.0)
+      github-markdown (~> 0.5.3)
+      github-markup (>= 0.7.5, < 1.0.0)
+      gitlab-grit (~> 2.5.1)
+      nokogiri (~> 1.5.9)
+      pygments.rb (~> 0.4.2)
+      sanitize (~> 2.0.3)
+      stringex (~> 1.5.1)
     gitlab-grack (1.0.0)
       rack (~> 1.4.1)
+    gitlab-grit (2.5.1)
+      charlock_holmes (~> 0.6.9)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
-    gitlab_git (1.1.0)
+    gitlab_git (1.2.0)
       activesupport (~> 3.2.13)
       github-linguist (~> 2.3.4)
-      grit (~> 2.5.0)
-      grit_ext (~> 0.8.1)
+      gitlab-grit (~> 2.5.1)
     gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
       net-ldap (~> 0.2.2)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
-    gollum-lib (1.0.0)
-      github-markdown (~> 0.5.3)
-      github-markup (>= 0.7.5, < 1.0.0)
-      grit (~> 2.5.0)
-      nokogiri (~> 1.5.9)
-      pygments.rb (~> 0.4.2)
-      sanitize (~> 2.0.3)
-      stringex (~> 1.5.1)
     gon (4.1.0)
       actionpack (>= 2.3.0)
       json
@@ -199,8 +194,6 @@ GEM
     grape-entity (0.3.0)
       activesupport
       multi_json (>= 1.3.2)
-    grit_ext (0.8.1)
-      charlock_holmes (~> 0.6.9)
     growl (1.0.3)
     guard (1.8.0)
       formatador (>= 0.2.4)
@@ -516,16 +509,15 @@ DEPENDENCIES
   gemoji (~> 1.2.1)
   github-linguist
   github-markup (~> 0.7.4)
+  gitlab-gollum-lib (~> 1.0.0)
   gitlab-grack (~> 1.0.0)
   gitlab-pygments.rb (~> 0.3.2)
-  gitlab_git (~> 1.1.0)
+  gitlab_git (~> 1.2.0)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
-  gollum-lib (~> 1.0.0)
   gon
   grape
   grape-entity
-  grit (~> 2.5.0)!
   growl
   guard-rspec
   guard-spinach

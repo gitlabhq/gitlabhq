@@ -22,9 +22,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # Extracting information from a git repository
-# We cannot use original git since some bugs
-gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git'
-gem 'gitlab_git', '~> 1.1.0'
+gem 'gitlab_git', '~> 1.2.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
@@ -34,6 +32,9 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
+
+# Git Wiki
+gem "gitlab-gollum-lib", "~> 1.0.0", require: 'gollum-lib'
 
 # Language detection
 gem "github-linguist", require: "linguist"
@@ -92,9 +93,6 @@ gem "colored"
 
 # GitLab settings
 gem 'settingslogic'
-
-# Git Wiki
-gem "gollum-lib", "~> 1.0.0"
 
 # Misc
 gem "foreman"
