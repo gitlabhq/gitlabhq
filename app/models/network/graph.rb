@@ -8,10 +8,11 @@ module Network
       @max_count ||= 650
     end
 
-    def initialize project, ref, commit
+    def initialize project, ref, commit, filter_ref
       @project = project
       @ref = ref
       @commit = commit
+      @filter_ref = filter_ref
       @repo = project.repo
 
       @commits = collect_commits
@@ -107,7 +108,9 @@ module Network
         skip: skip
       }
 
-      Grit::Commit.find_all(@repo, nil, opts)
+      ref = @ref if @filter_ref
+
+      Grit::Commit.find_all(@repo, ref, opts)
     end
 
     def commits_sort_by_ref
