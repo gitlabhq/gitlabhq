@@ -176,8 +176,13 @@ do so with caution!
     # Copy the example Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
+    # Configure Git global settings for git user, useful when editing via web
+    # Edit user.email according to what is set in gitlab.yml
+    sudo -u git -H git config --global user.name "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
+
 **Important Note:**
-Make sure to edit both files to match your setup.
+Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
