@@ -1,9 +1,54 @@
-.project_new_holder
-  %h3.page_title
-    New Project
+.project-edit-container
+  %h3.page_title New Project
   %hr
-  = render 'new_form'
-%div.save-project-loader.hide
+  .project-edit-errors
+  .project-edit-content
+    = form_for @project, remote: true do |f|
+      .clearfix.project_name_holder
+        = f.label :name do
+          Project name is
+        .input
+          = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1
+          = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 3
+
+      - if current_user.can_select_namespace?
+        .clearfix
+          = f.label :namespace_id do
+            %span Namespace
+          .input
+            = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen', tabindex: 2}
+
+      .clearfix
+        .input
+          = link_to "#", class: 'appear-link' do
+            %i.icon-upload-alt
+            %span Import existing repository?
+      .clearfix.appear-data.import-url-data
+        = f.label :import_url do
+          %span Import existing repo
+        .input
+          = f.text_field :import_url, class: 'xlarge', placeholder: 'https://github.com/randx/six.git'
+          .light
+            URL must be clonable
+
+      %p.padded
+        New projects are private by default. You choose who can see the project and commit to repository.
+      %hr
+
+      - if current_user.can_create_group?
+        .clearfix
+          .input.light
+            Need a group for several dependent projects?
+            = link_to new_group_path, class: "btn btn-tiny" do
+              Create a group
+      - if current_user.can_create_team?
+        .clearfix
+          .input.light
+            Want to share a project between team?
+            = link_to new_team_path, class: "btn btn-tiny" do
+              Create a team
+
+.save-project-loader.hide
   %center
     = image_tag "ajax_loader.gif"
     %h3 Creating project &amp; repository. Please wait a moment, this page will automatically refresh when ready.

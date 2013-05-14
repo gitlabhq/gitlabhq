@@ -55,8 +55,10 @@ $ ->
   $(".one_click_select").on 'click', -> $(@).select()
 
   # Click a .appear-link, appear-data fadeout
-  $(".appear-link").on 'click', ->
+  $(".appear-link").on 'click', (e) ->
     $('.appear-data').fadeIn()
+    e.preventDefault()
+
 
   # Initialize chosen selects
   $('select.chosen').chosen()
