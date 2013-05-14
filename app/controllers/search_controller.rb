@@ -10,13 +10,13 @@ class SearchController < ApplicationController
       group_project_ids = @group.projects.map(&:id)
       project_ids.select! { |id| group_project_ids.include?(id)}
     elsif project_id.present?
+      @project = Project.find(params[:project_id])
       project_ids.select! { |id| id == project_id.to_i}
     end
 
     result = SearchContext.new(project_ids, params).execute
 
     @projects       = result[:projects]
-    @project        = result[:project]
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
     @wiki_pages     = result[:wiki_pages]

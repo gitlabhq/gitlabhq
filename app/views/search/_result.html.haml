@@ -1,7 +1,7 @@
 %fieldset
   %legend
     Search results
-    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.count})
+    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.total_count})
 
 - if @project
   %ul.nav.nav-pills
@@ -43,17 +43,11 @@
           %strong.term
             = truncate wiki_page.title, length: 50
         %span.light (#{wiki_page.project.name_with_namespace})
-    - @blobs.each do |file|
-      %li
-        .file_holder
-          .file_title
-            = link_to project_blob_path(@project, tree_join(file.ref, file.filename), :anchor => "L" + file.startline.to_s) do
-              %i.icon-file
-              %strong
-                = file.filename
-          .file_content.code.term
-            %div{class: user_color_scheme_class}
-              = raw file.colorize( formatter: :gitlab, options: { first_line_number: file.startline } )
+
+    - @blobs.each do |blob|
+      = render 'blob', blob: blob
+
+  = paginate @blobs, theme: 'gitlab'
 
 :javascript
   $(function() {
