@@ -7,7 +7,7 @@
         - unless @project.empty_repo?
           - if can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
             - if current_user.already_forked?(@project)
-              = link_to project_path(current_user.fork_of(@project)), class: 'btn grouped success' do
+              = link_to project_path(current_user.fork_of(@project)), class: 'btn grouped btn-primary' do
                 Forked
             - else
               = link_to fork_project_path(@project), title: "Fork", class: "btn grouped", method: "POST" do
