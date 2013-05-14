@@ -38,7 +38,7 @@
 
 * Ubuntu/Debian**
 * ruby 1.9.3
-* MySQL
+* MySQL or PostgreSQL
 * git
 * gitlab-shell
 * redis
