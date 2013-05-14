@@ -77,6 +77,7 @@ module API
       #   wall_enabled (optional) - enabled by default
       #   merge_requests_enabled (optional) - enabled by default
       #   wiki_enabled (optional) - enabled by default
+      #   namespace_id (optional) - defaults to user namespace
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -88,7 +89,8 @@ module API
                                     :issues_enabled,
                                     :wall_enabled,
                                     :merge_requests_enabled,
-                                    :wiki_enabled]
+                                    :wiki_enabled,
+                                    :namespace_id]
         @project = ::Projects::CreateContext.new(user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
