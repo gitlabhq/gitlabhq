@@ -151,7 +151,49 @@ describe("ContributorsStatGraphUtil", function () {
   })
 
   describe("#get_author_data", function () {
-    
+    it("returns the log by author sorted by specified field", function () {
+      var fake_parsed_log = {
+      total: [{date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
+      {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}],
+      by_author:[
+      { 
+        author: "Karlo Soriano", 
+        "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
+      },
+      {
+        author: "Dmitriy Zaporozhets",
+        "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+      }
+      ]}
+      var correct_author_data = [{author:"Dmitriy Zaporozhets",dates:{"2013-05-08":3},deletions:7,additions:54,"commits":3},
+      {author:"Karlo Soriano",dates:{"2013-05-09":1},deletions:0,additions:471,commits:1}]
+      expect(ContributorsStatGraphUtil.get_author_data(fake_parsed_log, "commits")).toEqual(correct_author_data)
+    })
+  })
+
+  describe("#parse_log_entry", function () {
+    it("adds the corresponding info from the log entry to the author", function () {
+      var fake_log_entry =    { author: "Karlo Soriano", 
+        "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
+      }
+      var correct_parsed_log = {author:"Karlo Soriano",dates:{"2013-05-09":1},deletions:0,additions:471,commits:1}
+      expect(ContributorsStatGraphUtil.parse_log_entry(fake_log_entry, 'commits', null)).toEqual(correct_parsed_log)
+    })
+  })
+
+  describe("#in_range", function () {
+    var date = "2013-05-09"
+    it("returns true if date_range is null", function () {
+      expect(ContributorsStatGraphUtil.in_range(date, null)).toEqual(true)
+    })
+    it("returns true if date is in range", function () {
+      var date_range = [new Date("2013-01-01"), new Date("2013-12-12")]
+      expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(true)
+    })
+    it("returns false if date is not in range", function () {
+      var date_range = [new Date("1999-12-01"), new Date("2000-12-01")]
+      expect(ContributorsStatGraphUtil.in_range(date, date_range)).toEqual(false)
+    })
   })
 
 

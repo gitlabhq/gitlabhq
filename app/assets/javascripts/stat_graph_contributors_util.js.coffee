@@ -58,29 +58,34 @@ window.ContributorsStatGraphUtil =
   get_author_data: (parsed_log, field, date_range = null) ->
     log = parsed_log.by_author
     author_data = []
-    _.each(log, (d) ->
-      push = {}
-      push.author = d.author
-      push.dates = {}
-      push.commits = push.additions = push.deletions = 0
-      _.each(_.omit(d, 'author'), (value, key) ->
-        if date_range is null
-          push.dates[value.date] = value[field]
-          push.commits += value.commits
-          push.additions += value.additions
-          push.deletions += value.deletions
-        else if date_range[0] <= new Date(value.date) <= date_range[1]
-          push.dates[value.date] = value[field]
-          push.commits += value.commits
-          push.additions += value.additions
-          push.deletions += value.deletions
-      )
-      if not _.isEmpty(push.dates)
-        author_data.push(push)
+
+    _.each(log, (log_entry) =>
+      parsed_log_entry = @parse_log_entry(log_entry, field, date_range)
+      if not _.isEmpty(parsed_log_entry.dates)
+        author_data.push(parsed_log_entry)
     )
 
     _.sortBy(author_data, (d) ->
       d[field]
     ).reverse()
 
+  parse_log_entry: (log_entry, field, date_range) ->
+    parsed_entry = {}
+    parsed_entry.author = log_entry.author
+    parsed_entry.dates = {}
+    parsed_entry.commits = parsed_entry.additions = parsed_entry.deletions = 0
+    _.each(_.omit(log_entry, 'author'), (value, key) =>
+      if @in_range(value.date, date_range)
+        parsed_entry.dates[value.date] = value[field]
+        parsed_entry.commits += value.commits
+        parsed_entry.additions += value.additions
+        parsed_entry.deletions += value.deletions
+    )
+    return parsed_entry
+
+  in_range: (date, date_range) ->
+    if date_range is null || date_range[0] <= new Date(date) <= date_range[1]
+      true
+    else
+      false
   
