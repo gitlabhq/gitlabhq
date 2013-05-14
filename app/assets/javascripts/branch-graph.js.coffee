@@ -5,7 +5,7 @@ class BranchGraph
     @mspace = 0
     @parents = {}
     @colors = ["#000"]
-    @offsetX = 120
+    @offsetX = 150
     @offsetY = 20
     @unitTime = 30
     @unitSpace = 10
