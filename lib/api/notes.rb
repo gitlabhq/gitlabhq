@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Notes API
   class Notes < Grape::API
     before { authenticate! }

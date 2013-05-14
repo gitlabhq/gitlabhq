@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'api/api'
 
 Gitlab::Application.routes.draw do
   #
@@ -7,9 +8,8 @@ Gitlab::Application.routes.draw do
   get 'search' => "search#show"
 
   # API
-  require 'api'
-  Gitlab::API.logger Rails.logger
-  mount Gitlab::API => '/api'
+  API::API.logger Rails.logger
+  mount API::API => '/api'
 
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do

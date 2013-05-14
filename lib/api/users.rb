@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Users API
   class Users < Grape::API
     before { authenticate! }

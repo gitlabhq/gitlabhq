@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API do
   include ApiHelpers
   before(:each) { enable_observers }
 

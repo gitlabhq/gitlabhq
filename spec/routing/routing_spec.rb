@@ -7,7 +7,7 @@ describe SearchController, "routing" do
   end
 end
 
-# gitlab_api /api         Gitlab::API
+# gitlab_api /api         API::API
 #     resque /info/resque Resque::Server
 #            /:path       Grack
 describe "Mounted Apps", "routing" do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -12,7 +12,7 @@ describe Gitlab::API do
       get api("/internal/check")
 
       response.status.should == 200
-      json_response['api_version'].should == Gitlab::API.version
+      json_response['api_version'].should == API::API.version
     end
   end
 

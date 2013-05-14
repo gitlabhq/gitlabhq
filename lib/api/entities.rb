@@ -1,4 +1,4 @@
-module Gitlab
+module API
   module Entities
     class User < Grape::Entity
       expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,

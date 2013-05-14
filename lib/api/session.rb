@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Users API
   class Session < Grape::API
     # Login to get token

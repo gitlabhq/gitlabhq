@@ -1,6 +1,6 @@
 Dir["#{Rails.root}/lib/api/*.rb"].each {|file| require file}
 
-module Gitlab
+module API
   class API < Grape::API
     version 'v3', using: :path
 

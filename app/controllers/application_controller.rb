@@ -152,7 +152,7 @@ class ApplicationController < ActionController::Base
 
   def add_gon_variables
     gon.default_issues_tracker = Project.issues_tracker.default_value
-    gon.api_version = Gitlab::API.version
+    gon.api_version = API::API.version
     gon.api_token = current_user.private_token if current_user
     gon.gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
