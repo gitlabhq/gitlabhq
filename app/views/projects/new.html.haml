@@ -2,6 +2,7 @@
   %h3.page_title New Project
   %hr
   .project-edit-errors
+    = render 'projects/errors'
   .project-edit-content
     = form_for @project, remote: true do |f|
       .clearfix.project_name_holder
