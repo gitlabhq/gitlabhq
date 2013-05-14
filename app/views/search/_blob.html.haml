@@ -7,5 +7,4 @@
           = blob.filename
     .file_content.code.term
       %div{class: user_color_scheme_class}
-        = preserve do
-          = raw blob.colorize( formatter: :gitlab, options: { first_line_number: blob.startline } )
+        = raw blob.colorize( formatter: :gitlab, options: { first_line_number: blob.startline } )
