@@ -1,7 +1,7 @@
 %fieldset
   %legend
     Search results
-    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.total_count})
+    %span.cgray (#{@total_results})
 
 - if @project
   %ul.nav.nav-pills
@@ -11,7 +11,6 @@
     %li{class: ("active" if params[:search_code].blank?)}
       = link_to search_path(params.merge(search_code: nil)) do
         Everything else
-
 
 .search_results
   %ul.bordered-list

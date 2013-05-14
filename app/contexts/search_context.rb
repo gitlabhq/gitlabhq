@@ -17,14 +17,7 @@ class SearchContext
     project = projects.first if projects.length == 1
 
     if params[:search_code].present?
-      blobs = []
-
-      unless project.empty_repo?
-        blobs = project.repository.search_files(query, params[:repository_ref])
-        blobs = Kaminari.paginate_array(blobs).page(params[:page]).per(20)
-      end
-
-      result[:blobs] = blobs
+      result[:blobs] = project.repository.search_files(query, params[:repository_ref]) unless project.empty_repo?
     else
       result[:merge_requests] = MergeRequest.where(project_id: project_ids).search(query).limit(10)
       result[:issues] = Issue.where(project_id: project_ids).search(query).limit(10)
