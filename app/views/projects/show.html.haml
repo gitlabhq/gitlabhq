@@ -44,3 +44,8 @@
         %p
           Forked from:
           = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+
+      - if @project.gitlab_ci?
+        %hr
+        = link_to @project.gitlab_ci_service.builds_path do
+          = image_tag @project.gitlab_ci_service.status_img_path, alt: "build status"

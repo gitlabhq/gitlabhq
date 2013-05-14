@@ -46,4 +46,12 @@ class GitlabCiService < Service
   def build_page sha
     project_url + "/builds/#{sha}"
   end
+
+  def builds_path
+    project_url + "?ref=" + project.default_branch
+  end
+
+  def status_img_path
+    project_url + "/status.png?ref=" + project.default_branch
+  end
 end
