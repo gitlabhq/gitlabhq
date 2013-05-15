@@ -8,6 +8,13 @@ module Issues
       assignee_id  = update_data[:assignee_id]
       status       = update_data[:status]
 
+      unless status.present?
+        return {
+          count: 0,
+          success: false
+        }
+      end
+
       opts = {}
       opts[:milestone_id] = milestone_id if milestone_id.present?
       opts[:assignee_id] = assignee_id if assignee_id.present?
@@ -15,16 +22,12 @@ module Issues
       issues = Issue.where(id: issues_ids).all
       issues = issues.select { |issue| can?(current_user, :modify_issue, issue) }
 
+      new_state = :reopen
+      new_state = :close if status == 'closed'
+
       issues.each do |issue|
         issue.update_attributes(opts)
-
-        if status.present?
-          if status == 'closed'
-            issue.close
-          else
-            issue.reopen
-          end
-        end
+        issue.send new_state
       end
 
       {
