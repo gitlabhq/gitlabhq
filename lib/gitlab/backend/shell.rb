@@ -83,7 +83,7 @@ module Gitlab
     #   add_namespace("gitlab")
     #
     def add_namespace(name)
-      FileUtils.mkdir(full_path(name), mode: 0770) unless exists?(name)
+      FileUtils.mkdir_p(full_path(name), mode: 0770) unless exists?(name)
     end
 
     # Remove directory from repositories storage
@@ -102,9 +102,13 @@ module Gitlab
     #   mv_namespace("gitlab", "gitlabhq")
     #
     def mv_namespace(old_name, new_name)
-      return false if exists?(new_name) || !exists?(old_name)
+      return false if !exists?(old_name)
 
-      FileUtils.mv(full_path(old_name), full_path(new_name))
+      add_namespace(new_name)
+      path = full_path(old_name)
+      FileUtils.mv(Dir.glob(path + "/*.git"), full_path(new_name))
+      Dir.rmdir(path) if Dir.glob(path + "/*").empty?
+      return true
     end
 
     # Remove GitLab Satellites for provided path (namespace or repo dir)
