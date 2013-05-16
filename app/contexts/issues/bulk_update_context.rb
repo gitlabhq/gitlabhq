@@ -8,11 +8,14 @@ module Issues
       assignee_id  = update_data[:assignee_id]
       status       = update_data[:status]
 
-      unless status.present?
-        return {
-          count: 0,
-          success: false
-        }
+      new_state = nil
+
+      if status.present?
+        if status == 'closed'
+          new_state = :close
+        else
+          new_state = :reopen
+        end
       end
 
       opts = {}
@@ -22,12 +25,9 @@ module Issues
       issues = Issue.where(id: issues_ids).all
       issues = issues.select { |issue| can?(current_user, :modify_issue, issue) }
 
-      new_state = :reopen
-      new_state = :close if status == 'closed'
-
       issues.each do |issue|
         issue.update_attributes(opts)
-        issue.send new_state
+        issue.send new_state if new_state
       end
 
       {

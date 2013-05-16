@@ -2,14 +2,21 @@ require 'spec_helper'
 
 describe Issues::BulkUpdateContext do
 
+  let(:issue) {
+    create(:issue, project: @project)
+  } 
+
+  before do
+    @user = create :user
+    opts = {
+      name: "GitLab"
+    }
+    @project = Projects::CreateContext.new(@user, opts).execute
+  end
+
   describe :close_issue do
 
     before do
-      @user = create :user
-      opts = {
-        name: "GitLab"
-      }
-      @project = create_project(@user, opts)
       @issues = 5.times.collect do
         create(:issue, project: @project)
       end
@@ -19,31 +26,22 @@ describe Issues::BulkUpdateContext do
           issues_ids: @issues.map(&:id)
         }
       }
-
     end
 
-    it "close issues" do
-      Issues::BulkUpdateContext.new(@project, @user, @params).execute
-      @project.issues.opened.should be_empty
-      @project.issues.closed.should_not be_empty
-    end
-
-    it "return success" do
+    it {
       result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
       result[:success].should be_true
       result[:count].should == @issues.count
-    end
+
+      @project.issues.opened.should be_empty
+      @project.issues.closed.should_not be_empty
+    }
 
   end
 
   describe :reopen_issues do
 
     before do
-      @user = create :user
-      opts = {
-        name: "GitLab"
-      }
-      @project = create_project(@user, opts)
       @issues = 5.times.collect do
         create(:closed_issue, project: @project)
       end
@@ -53,25 +51,60 @@ describe Issues::BulkUpdateContext do
           issues_ids: @issues.map(&:id)
         }
       }
-
     end
 
-    it "reopen issues" do
-      Issues::BulkUpdateContext.new(@project, @user, @params).execute
-      @project.issues.closed.should be_empty
-      @project.issues.opened.should_not be_empty
-    end
-
-    it "return success" do
+    it {
       result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
       result[:success].should be_true
       result[:count].should == @issues.count
+
+      @project.issues.closed.should be_empty
+      @project.issues.opened.should_not be_empty
+    }
+
+  end
+
+  describe :update_assignee do
+
+    before do
+      @new_assignee = create :user
+      @params = { 
+        update: {
+          issues_ids: [issue.id],
+          assignee_id: @new_assignee.id
+        }
+      }
     end
 
+    it {
+      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result[:success].should be_true
+      result[:count].should == 1
+
+      @project.issues.first.assignee.should == @new_assignee
+    }
+
   end
 
-  def create_project(user, opts)
-    Projects::CreateContext.new(user, opts).execute
+  describe :update_milestone do
+
+    before do
+      @milestone = create :milestone
+      @params = { 
+        update: {
+          issues_ids: [issue.id],
+          milestone_id: @milestone.id
+        }
+      }
+    end
+
+    it {
+      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result[:success].should be_true
+      result[:count].should == 1
+
+      @project.issues.first.milestone.should == @milestone
+    }
   end
+
 end
-
