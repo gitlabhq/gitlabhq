@@ -588,7 +588,7 @@ namespace :gitlab do
     def check_sidekiq_running
       print "Running? ... "
 
-      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d\.\d\.\d.+$/)
+      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d+\.\d+\.\d+.+$/)
         puts "yes".green
       else
         puts "no".red
