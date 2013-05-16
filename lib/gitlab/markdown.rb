@@ -101,6 +101,7 @@ module Gitlab
         |!(?<merge_request>\d+)              # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
         |(?<commit>[\h]{6,40})               # Commit ID
+        |(?<skip>gfm-extraction-[\h]{6,40})  # Skip gfm extractions. Otherwise will be parsed as commit
       )
       (?<suffix>\W)?                         # Suffix
     }x.freeze
@@ -113,6 +114,9 @@ module Gitlab
         prefix     = $~[:prefix]
         suffix     = $~[:suffix]
         type       = TYPES.select{|t| !$~[t].nil?}.first
+
+        next unless type
+
         identifier = $~[type]
 
         # Avoid HTML entities
