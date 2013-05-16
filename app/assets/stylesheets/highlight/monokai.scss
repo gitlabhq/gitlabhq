@@ -8,6 +8,9 @@ $monokai-dark: #3b3a32;
 $monokai-purple: #ae81ff;
 
 .monokai .highlight {
+
+  background-color: #272822;
+
   pre {
     background-color: #272822;
     color: $monokai-fg;
