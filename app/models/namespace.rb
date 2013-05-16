@@ -47,7 +47,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def to_param
-    path
+    name
   end
 
   def human_name
