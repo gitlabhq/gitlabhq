@@ -2,9 +2,9 @@
   Hi #{@user['name']}!
 %p
   - if Gitlab.config.gitlab.signup_enabled
-    Account has been created successfully.
+    Your account has been created successfully.
   - else
-    Administrator created account for you. Now you are a member of company GitLab application.
+    The Administrator created an account for you. Now you are a member of company GitLab application.
 %p
   login..........................................
   %code= @user['email']
