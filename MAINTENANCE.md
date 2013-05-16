@@ -20,5 +20,4 @@ The current stable release will receive security patches and bug fixes
 release where the minor version is increased numerically by increments of one
 (eg. `5.0 -> 5.1`).
 
-We encourage everyone to run this release and are trying to keep the update
-procedures simple and reliable.
+We encourage everyone to run the latest stable release to ensure that you can easily upgrade to the most secure and feature rich GitLab experience. In order to make sure you can easily run the most recent stable release, we are working hard to keep the update process simple and reliable.
