@@ -53,6 +53,7 @@ GET /projects
     "merge_requests_enabled": true,
     "wall_enabled": true,
     "wiki_enabled": true,
+    "snippets_enabled": true,
     "created_at": "2012-05-30T12:49:20Z",
     "last_activity_at": "2012-05-23T08:05:02Z"
   }
@@ -95,6 +96,7 @@ Parameters:
   "merge_requests_enabled": true,
   "wall_enabled": true,
   "wiki_enabled": true,
+  "snippets_enabled": true,
   "created_at": "2012-05-30T12:49:20Z",
   "last_activity_at": "2012-05-23T08:05:02Z"
 }
@@ -182,10 +184,11 @@ Parameters:
 + `name` (required) - new project name
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
-+ `issues_enabled` (optional) - enabled by default
-+ `wall_enabled` (optional) - enabled by default
-+ `merge_requests_enabled` (optional) - enabled by default
-+ `wiki_enabled` (optional) - enabled by default
++ `issues_enabled` (optional)
++ `wall_enabled` (optional)
++ `merge_requests_enabled` (optional)
++ `wiki_enabled` (optional) 
++ `snippets_enabled` (optional)
 
 **Project access levels**
 
@@ -213,10 +216,11 @@ Parameters:
 + `name` (required) - new project name
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
-+ `issues_enabled` (optional) - enabled by default
-+ `wall_enabled` (optional) - enabled by default
-+ `merge_requests_enabled` (optional) - enabled by default
-+ `wiki_enabled` (optional) - enabled by default
++ `issues_enabled` (optional)
++ `wall_enabled` (optional)
++ `merge_requests_enabled` (optional)
++ `wiki_enabled` (optional) 
++ `snippets_enabled` (optional)
 
 
 
