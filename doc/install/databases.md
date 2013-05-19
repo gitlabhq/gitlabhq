@@ -20,7 +20,7 @@ GitLab supports the following databases:
     # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
-    # Grant the GitLab user necessary permissopns on the table.
+    # Grant the GitLab user necessary permissions on the table.
     mysql> GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
 
     # Quit the database session
