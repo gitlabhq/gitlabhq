@@ -66,7 +66,7 @@ python2 is supported version? ... yes
 
 Checking Environment ... Finished
 
-Checking Gitlab Shell ...
+Checking GitLab Shell ...
 
 GitLab Shell version? ... OK (1.2.0)
 Repo base directory exists? ... yes
@@ -76,7 +76,7 @@ Repo base access is drwxrws---? ... yes
 post-receive hook up-to-date? ... yes
 post-receive hooks in repos are links: ... yes
 
-Checking Gitlab Shell ... Finished
+Checking GitLab Shell ... Finished
 
 Checking Sidekiq ...
 
