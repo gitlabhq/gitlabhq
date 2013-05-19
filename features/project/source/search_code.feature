@@ -4,6 +4,6 @@ Feature: Project Search code
     And I own project "Shop"
     Given I visit project source page
 
-  Scenario: Search for term "Welcome to Gitlab"
-    When I search for term "Welcome to Gitlab"
-    Then I should see files from repository containing "Welcome to Gitlab" 
+  Scenario: Search for term "Welcome to GitLab"
+    When I search for term "Welcome to GitLab"
+    Then I should see files from repository containing "Welcome to GitLab" 
