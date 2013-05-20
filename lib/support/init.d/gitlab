@@ -24,7 +24,7 @@ SIDEKIQ_PID="$PID_PATH/sidekiq.pid"
 STOP_SIDEKIQ="RAILS_ENV=production bundle exec rake sidekiq:stop"
 START_SIDEKIQ="RAILS_ENV=production bundle exec rake sidekiq:start"
 NAME="gitlab"
-DESC="Gitlab service"
+DESC="GitLab service"
 
 check_pid(){
   if [ -f $WEB_SERVER_PID ]; then

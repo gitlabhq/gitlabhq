@@ -362,10 +362,10 @@ namespace :gitlab do
 
 
   namespace :gitlab_shell do
-    desc "GITLAB | Check the configuration of Gitlab Shell"
+    desc "GITLAB | Check the configuration of GitLab Shell"
     task check: :environment  do
       warn_user_is_not_gitlab
-      start_checking "Gitlab Shell"
+      start_checking "GitLab Shell"
 
       check_gitlab_shell
       check_repo_base_exists
@@ -375,7 +375,7 @@ namespace :gitlab do
       check_post_receive_hook_is_up_to_date
       check_repos_post_receive_hooks_is_link
 
-      finished_checking "Gitlab Shell"
+      finished_checking "GitLab Shell"
     end
 
 
@@ -410,12 +410,12 @@ namespace :gitlab do
         puts "no".red
         puts "#{repo_base_path} is missing".red
         try_fixing_it(
-          "This should have been created when setting up Gitlab Shell.",
+          "This should have been created when setting up GitLab Shell.",
           "Make sure it's set correctly in config/gitlab.yml",
-          "Make sure Gitlab Shell is installed correctly."
+          "Make sure GitLab Shell is installed correctly."
         )
         for_more_information(
-          see_installation_guide_section "Gitlab Shell"
+          see_installation_guide_section "GitLab Shell"
         )
         fix_and_rerun
       end
@@ -460,7 +460,7 @@ namespace :gitlab do
           "find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
-          see_installation_guide_section "Gitlab Shell"
+          see_installation_guide_section "GitLab Shell"
         )
         fix_and_rerun
       end
@@ -486,7 +486,7 @@ namespace :gitlab do
           "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
         )
         for_more_information(
-          see_installation_guide_section "Gitlab Shell"
+          see_installation_guide_section "GitLab Shell"
         )
         fix_and_rerun
       end
@@ -535,7 +535,7 @@ namespace :gitlab do
               File.realpath(project_hook_file) == File.realpath(gitlab_shell_hook_file)
             puts "ok".green
           else
-            puts "not a link to Gitlab Shell's hook".red
+            puts "not a link to GitLab Shell's hook".red
             try_fixing_it(
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
