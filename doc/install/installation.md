@@ -230,18 +230,20 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+## Start Your GitLab Instance
+
+    sudo service gitlab start
+    # or
+    sudo /etc/init.d/gitlab restart
+
+## Double-check Application Status
+
 To make sure you didn't miss anything run a more thorough check with:
 
     sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, then congratulations on successfully installing GitLab!
 However there are still a few steps left.
-
-## Start Your GitLab Instance
-
-    sudo service gitlab start
-    # or
-    sudo /etc/init.d/gitlab restart
 
 
 # 7. Nginx
