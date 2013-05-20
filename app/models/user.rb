@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
   has_many :master_projects,          through: :users_projects, source: :project,
-                                      conditions: { 'users_projects.project_access' => UsersProject::MASTER }
+                                      conditions: { users_projects: { project_access: UsersProject::MASTER } }
   has_many :own_projects,             foreign_key: :creator_id, class_name: 'Project'
   has_many :owned_projects,           through: :namespaces, source: :projects
 
