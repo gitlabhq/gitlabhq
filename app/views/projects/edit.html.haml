@@ -147,7 +147,7 @@
                   %p
                     %strong Removed project can not be restored!
 
-                  = link_to 'Remove project', @project, confirm: 'Removed project can not be restored! Are you sure?', method: :delete, class: "btn btn-remove btn-small"
+                  = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove btn-small"
             - else
               %p.nothing_here_message Only project owner can remove a project
 
