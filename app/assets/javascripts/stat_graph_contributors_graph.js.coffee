@@ -37,7 +37,7 @@ class window.ContributorsGraph
     @x = d3.time.scale().range([0, width]).clamp(true)
     @y = d3.scale.linear().range([height, 0]).nice()
   draw_x_axis: ->
-    @svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + @height + ")")
+    @svg.append("g").attr("class", "x axis").attr("transform", "translate(0, #{@height})")
     .call(@x_axis);
   draw_y_axis: ->
     @svg.append("g").attr("class", "y axis").call(@y_axis)
@@ -57,13 +57,16 @@ class window.ContributorsMasterGraph extends ContributorsGraph
     @brush = null
     @x_max_domain = null
   process_dates: (data) ->
+    dates = @get_dates(data) 
+    @parse_dates(data)
+    ContributorsGraph.set_dates(dates)
+  get_dates: (data) ->
+    _.pluck(data, 'date')
+  parse_dates: (data) ->
     parseDate = d3.time.format("%Y-%m-%d").parse
-    dates = []
     data.forEach((d) ->
-      dates.push(d.date)
       d.date = parseDate(d.date)
     )
-    ContributorsGraph.set_dates(dates)
   create_scale: ->
     super @width, @height
   create_axes: ->
