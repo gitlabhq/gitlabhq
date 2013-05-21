@@ -79,3 +79,4 @@ When listing resources you can pass the following parameters:
 + [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
 + [Notes](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/notes.md)
 + [System Hooks](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/system_hooks.md)
++ [User Teams](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/user_teams.md)
