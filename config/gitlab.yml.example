@@ -121,6 +121,15 @@ production: &base
   #  email: ->(auth) { auth.info.email.to_s.downcase }
 
 
+  ## LDAP Field Mapping
+  # These fields allow you to specify which LDAP fields get mapped onto User.
+  #
+  #ldap_mapping:
+  #  name: 'cn'
+  #  username: 'uid'
+  #  email: 'companyEmail'  
+
+
   #
   # 3. Advanced settings
   # ==========================

@@ -74,9 +74,21 @@ describe Gitlab::Auth do
   end
 
   describe :create_from_omniauth do
+    before do
+      @raw_info = {
+        cn: 'john',
+        nickname: 'jonny'
+      }
+
+      @ldap_auth = mock(
+        info: @info,
+        extra: mock(raw_info: @raw_info),
+        provider: 'ldap'
+      )
+    end
+
     it "should create user from LDAP" do
-      @auth = mock(info: @info, provider: 'ldap')
-      user = gl_auth.create_from_omniauth(@auth, true)
+      user = gl_auth.create_from_omniauth(@ldap_auth, true)
 
       user.should be_valid
       user.extern_uid.should == @info.uid
@@ -92,10 +104,9 @@ describe Gitlab::Auth do
       user.provider.should == 'twitter'
     end
 
-    it "should still import without user mapping" do
+    it "should still import without extra mapping" do
       Gitlab.config.stub(omniauth: {})
-      @auth = mock(info: @info, provider: 'ldap')
-      user = gl_auth.create_from_omniauth(@auth, true)
+      user = gl_auth.create_from_omniauth(@ldap_auth, true)
 
       user.should be_valid
       user.extern_uid.should == @info.uid
@@ -108,9 +119,7 @@ describe Gitlab::Auth do
       Gitlab.config.user_mapping[:email] = ->(auth) { 'email@somewhere.com' }
       Gitlab.config.user_mapping[:username] = ->(auth) { 'TestUsername' }
 
-      @auth = mock(info: @info, provider: 'ldap')
-      user = gl_auth.create_from_omniauth(@auth, true)
-
+      user = gl_auth.create_from_omniauth(@ldap_auth, true)
       user.should be_valid
       user.extern_uid.should == @info.uid
       user.name.should == 'TestName'
@@ -122,12 +131,29 @@ describe Gitlab::Auth do
       Gitlab.config.stub(omniauth: {}, user_mapping: {})
       Gitlab.config.user_mapping[:username] = ->(auth) { auth.info.email.to_s.downcase.split('@').first }
 
-      @auth = mock(info: @info, provider: 'ldap')
-      user = gl_auth.create_from_omniauth(@auth, true)
-
+      user = gl_auth.create_from_omniauth(@ldap_auth, true)
       user.should be_valid
       user.extern_uid.should == @info.uid
       user.username.should == 'john'
+    end
+
+    it "should be able to use raw ldap information through simple ldap mapping" do
+      Gitlab.config.stub(omniauth: {}, ldap_mapping: {})
+      Gitlab.config.ldap_mapping[:name] = 'cn'
+
+      user = gl_auth.create_from_omniauth(@ldap_auth, true)
+      user.should be_valid
+      user.extern_uid.should == @info.uid
+      user.name.should == 'john'
+    end
+
+    it "should raise an error if an invalid field is in ldap mapping" do
+      Gitlab.config.stub(omniauth: {}, ldap_mapping: {})
+      Gitlab.config.ldap_mapping[:name] = 'invalid'
+
+      expect {
+        gl_auth.create_from_omniauth(@ldap_auth, true)
+      }.to raise_error
     end
   end
 end

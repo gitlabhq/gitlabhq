@@ -75,6 +75,7 @@ module Gitlab
     private
 
     def extract(field_name, auth)
+      @ldap_mapper ||= Gitlab.config.ldap_mapping rescue Hash.new
       @mapper ||= begin
         defaults = {
           name: ->(auth) { auth.info.name.to_s },
@@ -85,7 +86,15 @@ module Gitlab
         defaults.merge(extras)
       end
 
-      @mapper[field_name].call(auth)
+      if @ldap_mapper.has_key?(field_name)
+        begin
+          auth.extra.raw_info[@ldap_mapper[field_name]][0].to_s.downcase
+        rescue
+          raise "(LDAP) Failed to get '#{@ldap_mapper[field_name]}' for #{field_name} for #{auth.info.uid}"
+        end
+      else
+        @mapper[field_name].call(auth)
+      end
     end
 
   end
