@@ -60,7 +60,7 @@ class Wall
   renderNote: (note) ->
     template = @noteTemplate()
     template = template.replace('{{author_name}}', note.author.name)
-    template = template.replace('{{created_at}}', note.created_at)
+    template = template.replace(/{{created_at}}/g, note.created_at)
     template = template.replace('{{text}}', linkify(sanitize(note.body)))
 
     if note.attachment
