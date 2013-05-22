@@ -130,6 +130,8 @@ GEM
       railties (>= 3.0.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
+    faraday_middleware (0.9.0)
+      faraday (>= 0.7.4, < 0.9)
     faye-websocket (0.4.7)
       eventmachine (>= 0.12.0)
     ffaker (1.16.0)
@@ -214,7 +216,7 @@ GEM
       activesupport (>= 3.1, < 4.1)
       haml (>= 3.1, < 4.1)
       railties (>= 3.1, < 4.1)
-    hashie (2.0.4)
+    hashie (1.2.0)
     hike (1.2.2)
     http_parser.rb (0.5.3)
     httparty (0.11.0)
@@ -420,6 +422,7 @@ GEM
       multi_json (~> 1)
       redis (~> 3)
       redis-namespace
+    simple_oauth (0.1.9)
     simplecov (0.7.1)
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
@@ -461,11 +464,24 @@ GEM
     thor (0.18.1)
     tilt (1.3.7)
     timers (1.1.0)
+    tinder (1.9.2)
+      eventmachine (~> 1.0)
+      faraday (~> 0.8)
+      faraday_middleware (~> 0.9)
+      hashie (~> 1.0)
+      json (~> 1.7.5)
+      mime-types (~> 1.19)
+      multi_json (~> 1.5)
+      twitter-stream (~> 0.1)
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
     turbolinks (1.1.1)
       coffee-rails
+    twitter-stream (0.1.16)
+      eventmachine (>= 0.12.8)
+      http_parser.rb (~> 0.5.1)
+      simple_oauth (~> 0.1.4)
     tzinfo (0.3.37)
     uglifier (2.0.1)
       execjs (>= 0.3.0)
@@ -570,6 +586,7 @@ DEPENDENCIES
   test_after_commit
   therubyracer
   thin
+  tinder (~> 1.9.2)
   turbolinks
   uglifier
   webmock
