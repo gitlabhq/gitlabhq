@@ -4,7 +4,7 @@
   %h4.nothing_here_message
     Can't load diff.
     You can
-    = link_to "download it", project_merge_request_path(@project, @merge_request), format: :diff, class: "vlink"
+    = link_to "download it", project_merge_request_path(@project, @merge_request, format: :diff), class: "vlink"
     instead.
 - else
   %h4.nothing_here_message Nothing to merge
