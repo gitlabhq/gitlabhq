@@ -20,13 +20,14 @@ module Gitlab
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
-      uid = uid.to_s.force_encoding("utf-8")
-      name = auth.info.name.to_s.force_encoding("utf-8")
-      email = auth.info.email.to_s.downcase unless auth.info.email.nil?
+      uid = uid.to_s.force_encoding('utf-8')
+      name = extract(:name, auth).force_encoding('utf-8')
+      username = extract(:username, auth).force_encoding('utf-8')
+      email = extract(:email, auth)
 
       ldap_prefix = ldap ? '(LDAP) ' : ''
       raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
-        " address" if auth.info.email.blank?
+        " address" if email.blank?
 
       log.info "#{ldap_prefix}Creating user from #{provider} login"\
         " {uid => #{uid}, name => #{name}, email => #{email}}"
@@ -35,7 +36,7 @@ module Gitlab
         extern_uid: uid,
         provider: provider,
         name: name,
-        username: email.match(/^[^@]*/)[0],
+        username: username,
         email: email,
         password: password,
         password_confirmation: password,
@@ -70,5 +71,31 @@ module Gitlab
     def log
       Gitlab::AppLogger
     end
+
+    private
+
+    def extract(field_name, auth)
+      @ldap_mapper ||= Gitlab.config.ldap_mapping rescue Hash.new
+      @mapper ||= begin
+        defaults = {
+          name: ->(auth) { auth.info.name.to_s },
+          username: ->(auth) { auth.info.email.to_s.downcase.match(/^[^@]*/)[0] },
+          email: ->(auth) { auth.info.email.to_s.downcase },
+        }
+        extras = Gitlab.config.user_mapping rescue Hash.new
+        defaults.merge(extras)
+      end
+
+      if @ldap_mapper.has_key?(field_name)
+        begin
+          auth.extra.raw_info[@ldap_mapper[field_name]][0].to_s.downcase
+        rescue
+          raise "(LDAP) Failed to get '#{@ldap_mapper[field_name]}' for #{field_name} for #{auth.info.uid}"
+        end
+      else
+        @mapper[field_name].call(auth)
+      end
+    end
+
   end
 end
