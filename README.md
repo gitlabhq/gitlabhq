@@ -72,7 +72,7 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 ### New versions and upgrading
 
-Each month on the 22th a new version is released together with an upgrade guide.
+Each month on the 22nd a new version is released together with an upgrade guide.
 
 * [Upgrade guides](https://github.com/gitlabhq/gitlabhq/tree/master/doc/update)
 
