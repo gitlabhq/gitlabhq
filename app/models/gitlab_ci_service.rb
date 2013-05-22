@@ -54,4 +54,23 @@ class GitlabCiService < Service
   def status_img_path
     project_url + "/status.png?ref=" + project.default_branch
   end
+
+  def title
+    'GitLab CI'
+  end
+
+  def description
+    'Continuous integration server from GitLab'
+  end
+
+  def to_param
+    'gitlab_ci'
+  end
+
+  def fields
+    [
+      { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
+      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3'}
+    ]
+  end
 end
