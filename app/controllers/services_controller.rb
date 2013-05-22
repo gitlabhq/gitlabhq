@@ -7,7 +7,7 @@ class ServicesController < ProjectResourceController
 
   def index
     @project.build_missing_services
-    @services = @project.services
+    @services = @project.services.reload
   end
 
   def edit
