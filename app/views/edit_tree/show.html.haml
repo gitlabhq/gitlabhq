@@ -27,7 +27,7 @@
         .message
           to branch
           %strong= @ref
-      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", confirm: "Are you sure?"
+      = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-cancel", confirm: "Are you sure?"
 
 :javascript
   ace.config.set("modePath", "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
