@@ -28,15 +28,23 @@ class Service < ActiveRecord::Base
   end
 
   def title
+    # implement inside child
   end
 
   def description
+    # implement inside child
   end
 
   def to_param
+    # implement inside child
   end
 
   def fields
+    # implement inside child
     []
+  end
+
+  def execute
+    # implement inside child
   end
 end
