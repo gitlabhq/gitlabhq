@@ -1,3 +1,7 @@
+v 5.3.0
+  - Refactored services 
+  - Campfire service added
+
 v 5.2.0
   - Turbolinks
   - Git over http with ldap credentials

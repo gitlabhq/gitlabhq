@@ -101,6 +101,9 @@ gem "foreman"
 # Cache
 gem "redis-rails"
 
+# Campfire integration
+gem 'tinder', '~> 1.9.2'
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"

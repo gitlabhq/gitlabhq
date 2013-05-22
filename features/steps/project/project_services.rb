@@ -9,7 +9,7 @@ class ProjectServices < Spinach::FeatureSteps
 
   Then 'I should see list of available services' do
     page.should have_content 'Services'
-    page.should have_content 'Jenkins'
+    page.should have_content 'Campfire'
     page.should have_content 'GitLab CI'
   end
 
@@ -19,12 +19,12 @@ class ProjectServices < Spinach::FeatureSteps
 
   And 'I fill gitlab-ci settings' do
     check 'Active'
-    fill_in 'Project URL', with: 'http://ci.gitlab.org/projects/3'
-    fill_in 'CI Project token', with: 'verySecret'
+    fill_in 'Project url', with: 'http://ci.gitlab.org/projects/3'
+    fill_in 'Token', with: 'verySecret'
     click_button 'Save'
   end
 
   Then 'I should see service settings saved' do
-    find_field('Project URL').value.should == 'http://ci.gitlab.org/projects/3'
+    find_field('Project url').value.should == 'http://ci.gitlab.org/projects/3'
   end
 end
