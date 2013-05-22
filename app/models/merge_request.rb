@@ -118,7 +118,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def broken_diffs?
-    diffs == [Gitlab::Git::Diff::BROKEN_DIFF]
+    diffs == broken_diffs
   end
 
   def valid_diffs?
@@ -214,10 +214,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def dump_diffs(diffs)
-    diffs.map(&:to_hash)
+    if broken_diffs?
+      broken_diffs
+    else
+      diffs.map(&:to_hash)
+    end
   end
 
-  def load_diffs(array)
-    array.map { |hash| Gitlab::Git::Diff.new(hash) }
+  def load_diffs(raw)
+    if raw == broken_diffs
+      broken_diffs
+    else
+      raw.map { |hash| Gitlab::Git::Diff.new(hash) }
+    end
+  end
+
+  def broken_diffs
+    [Gitlab::Git::Diff::BROKEN_DIFF]
   end
 end
