@@ -15,6 +15,7 @@ describe MergeRequestObserver do
   before { mr_mock.stub(:author_id) }
   before { mr_mock.stub(:target_project)}
   before(:each) { enable_observers }
+  after(:each) {disable_observers}
 
   subject { MergeRequestObserver.instance }
 

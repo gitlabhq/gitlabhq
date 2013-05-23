@@ -6,7 +6,9 @@ describe API::API do
   let(:user) { create(:user) }
   let!(:project) {create(:project_with_code, creator_id: user.id) }
   let!(:merge_request) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
-  before { project.team << [user, :reporters] }
+  before {
+    project.team << [user, :reporters]
+  }
 
   describe "GET /projects/:id/merge_requests" do
     context "when unauthenticated" do

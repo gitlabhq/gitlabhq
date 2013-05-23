@@ -119,7 +119,7 @@ module Gitlab
       def remove_remotes!
         remotes = repo.git.remote.split(' ')
         remotes.delete('origin')
-        remotes.each { |name| repo.git.remote({},'remove', name)}
+        remotes.each { |name| repo.git.remote({raise:true},'rm', name)}
       end
 
       # Updates the satellite from Gitolite

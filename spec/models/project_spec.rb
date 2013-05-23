@@ -25,6 +25,9 @@
 require 'spec_helper'
 
 describe Project do
+  before(:each) { enable_observers }
+  after(:each) { disable_observers }
+
   describe "Associations" do
     it { should belong_to(:group) }
     it { should belong_to(:namespace) }
@@ -94,12 +97,11 @@ describe Project do
   end
 
   describe "last_activity methods" do
-    before { enable_observers }
-    let(:project)    { create(:project) }
+    let(:project) { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
 
     describe "last_activity" do
-      it "should alias last_activity to last_event"do
+      it "should alias last_activity to last_event" do
         project.stub(last_event: last_event)
         project.last_activity.should == last_event
       end

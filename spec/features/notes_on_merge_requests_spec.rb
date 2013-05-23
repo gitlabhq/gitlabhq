@@ -75,14 +75,15 @@ describe "On a merge request", js: true do
 end
 
 describe "On a merge request diff", js: true, focus: true do
-  let!(:project) { create(:source_project_with_code) }
-  let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
 
   before do
     login_as :user
     project.team << [@user, :master]
     visit diffs_project_merge_request_path(project, merge_request)
   end
+
+  let!(:project) { create(:source_project_with_code) }
+  let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
 
   subject { page }
 

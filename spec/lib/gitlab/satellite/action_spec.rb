@@ -9,8 +9,7 @@ describe 'Gitlab::Satellite::Action' do
 
   describe '#prepare_satellite!' do
 
-
-    it 'create a repository with a parking branch and one remote; origin' do
+    it 'create a repository with a parking branch and one remote: origin' do
       repo = project.satellite.repo
 
       #now lets dirty it up

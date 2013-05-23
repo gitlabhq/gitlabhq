@@ -1,3 +1,5 @@
+require Rails.root.join('spec', 'support', 'test_env.rb')
+
 FactoryGirl.define do
   sequence :sentence, aliases: [:title, :content] do
     Faker::Lorem.sentence
@@ -28,11 +30,9 @@ FactoryGirl.define do
     path { name.downcase.gsub(/\s/, '_') }
     creator
 
-
     trait :source do
       sequence(:name) { |n| "source project#{n}" }
     end
-
     trait :target do
       sequence(:name) { |n| "target project#{n}" }
     end
@@ -49,14 +49,23 @@ FactoryGirl.define do
 
   factory :project_with_code, parent: :project do
     path { 'gitlabhq' }
-  end
 
-  factory :source_project_with_code, parent: :project do
-    path { 'source_gitlabhq' }
-  end
+    trait :source_path do
+      path { 'source_gitlabhq' }
+    end
 
-  factory :target_project_with_code, parent: :project do
-    path { 'target_gitlabhq' }
+    trait :target_path do
+      path { 'target_gitlabhq' }
+    end
+
+    factory :source_project_with_code, traits: [:source, :source_path]
+    factory :target_project_with_code, traits: [:target, :target_path]
+
+    after(:build) do |project, evaluator|
+      TestEnv.clear_repo_dir(project.namespace, project.path)
+      TestEnv.create_repo(project.namespace, project.path)
+    end
+
   end
 
 
@@ -110,9 +119,9 @@ FactoryGirl.define do
       source_branch "stable" # pretend bcf03b5d
       st_commits do
         [
-          source_project.repository.commit('bcf03b5d').to_hash,
-          source_project.repository.commit('bcf03b5d~1').to_hash,
-          source_project.repository.commit('bcf03b5d~2').to_hash
+            source_project.repository.commit('bcf03b5d').to_hash,
+            source_project.repository.commit('bcf03b5d~1').to_hash,
+            source_project.repository.commit('bcf03b5d~2').to_hash
         ]
       end
       st_diffs do
@@ -146,7 +155,7 @@ FactoryGirl.define do
 
     trait :on_commit do
       project factory: :project_with_code
-      commit_id     "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+      commit_id "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
       noteable_type "Commit"
     end
 
@@ -156,12 +165,12 @@ FactoryGirl.define do
 
     trait :on_merge_request do
       project factory: :project_with_code
-      noteable_id   1
+      noteable_id 1
       noteable_type "MergeRequest"
     end
 
     trait :on_issue do
-      noteable_id   1
+      noteable_id 1
       noteable_type "Issue"
     end
   end
