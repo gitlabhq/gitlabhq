@@ -58,7 +58,11 @@ Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
-Settings.gitlab['user_home']  ||= Etc.getpwnam(Settings.gitlab['user']).dir
+Settings.gitlab['user_home']  ||= begin
+  Etc.getpwnam(Settings.gitlab['user']).dir
+rescue ArgumentError # no user configured
+  '/home/' + Settings.gitlab['user']
+end
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
