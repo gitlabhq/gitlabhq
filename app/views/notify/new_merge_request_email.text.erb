@@ -1,6 +1,6 @@
 New Merge Request <%= @merge_request.id %>
 
-<%= url_for(project_merge_request_url(@merge_request.project, @merge_request)) %>
+<%= url_for(project_merge_request_url(@merge_request.source_project, @merge_request)) %>
           
 
 Branches: <%= @merge_request.source_branch %> to <%= @merge_request.target_branch %>

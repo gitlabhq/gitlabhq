@@ -11,3 +11,6 @@
 
     = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-new-mr" do
       Create Merge Request
+    - if !event.project.nil? && event.project.forked?
+      = link_to new_mr_path_for_fork_from_push_event(event), title: "New Merge Request", class: "btn btn-new-mr" do
+        Create Merge Request on fork

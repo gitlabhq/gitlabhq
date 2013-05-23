@@ -27,7 +27,20 @@ FactoryGirl.define do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     creator
+
+
+    trait :source do
+      sequence(:name) { |n| "source project#{n}" }
+    end
+
+    trait :target do
+      sequence(:name) { |n| "target project#{n}" }
+    end
+
+    factory :source_project, traits: [:source]
+    factory :target_project, traits: [:target]
   end
+
 
   factory :redmine_project, parent: :project do
     issues_tracker { "redmine" }
@@ -37,6 +50,15 @@ FactoryGirl.define do
   factory :project_with_code, parent: :project do
     path { 'gitlabhq' }
   end
+
+  factory :source_project_with_code, parent: :project do
+    path { 'source_gitlabhq' }
+  end
+
+  factory :target_project_with_code, parent: :project do
+    path { 'target_gitlabhq' }
+  end
+
 
   factory :group do
     sequence(:name) { |n| "group#{n}" }
@@ -77,7 +99,8 @@ FactoryGirl.define do
   factory :merge_request do
     title
     author
-    project factory: :project_with_code
+    source_project factory: :source_project_with_code
+    target_project factory: :target_project_with_code
     source_branch "master"
     target_branch "stable"
 
@@ -87,13 +110,13 @@ FactoryGirl.define do
       source_branch "stable" # pretend bcf03b5d
       st_commits do
         [
-          project.repository.commit('bcf03b5d').to_hash,
-          project.repository.commit('bcf03b5d~1').to_hash,
-          project.repository.commit('bcf03b5d~2').to_hash
+          source_project.repository.commit('bcf03b5d').to_hash,
+          source_project.repository.commit('bcf03b5d~1').to_hash,
+          source_project.repository.commit('bcf03b5d~2').to_hash
         ]
       end
       st_diffs do
-        project.repo.diff("bcf03b5d~3", "bcf03b5d")
+        source_project.repo.diff("bcf03b5d~3", "bcf03b5d")
       end
     end
 
