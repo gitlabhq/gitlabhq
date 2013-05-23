@@ -5,6 +5,7 @@ describe API::API do
   before(:each) { enable_observers }
 
   let(:user) { create(:user) }
+  let(:user2) { create(:user) }
   let!(:project) { create(:project_with_code, creator_id: user.id) }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
 
