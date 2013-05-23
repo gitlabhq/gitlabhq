@@ -171,14 +171,14 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '9645b52009e258921b860d3b7601d00008b22c45'
+  gem 'poltergeist', '~> 1.3.0'
 
   gem 'spork', '~> 1.0rc'
 end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers", "1.3.0"
+  gem "shoulda-matchers", "~> 2.1.0"
   gem 'email_spec'
   gem "webmock"
   gem 'test_after_commit'
