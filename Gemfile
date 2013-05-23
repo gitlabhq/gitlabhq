@@ -104,6 +104,9 @@ gem "redis-rails"
 # Campfire integration
 gem 'tinder', '~> 1.9.2'
 
+# HipChat integration
+gem "hipchat", "~> 0.9.0"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"
