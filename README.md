@@ -137,7 +137,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
 * [Maintenance policy](MAINTENANCE.md) specifies what versions are supported.
 
-* [Troubleshooting guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide) contains solutions to common problems.
+* [Troubleshooting guide](doc/install/troubleshooting.md) contains solutions to common problems.
 
 * [Support forum](https://groups.google.com/forum/#!forum/gitlabhq) is the best place to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and had it resolved. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
 
