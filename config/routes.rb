@@ -174,6 +174,12 @@ Gitlab::Application.routes.draw do
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations }
 
   #
+  # SparkleShare
+  #
+  get  'sparkle_share/invite'         => 'sparkle_share#invite'
+  post 'sparkle_share/accept_invite'  => 'sparkle_share#accept_invite'
+
+  #
   # Project Area
   #
   resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do

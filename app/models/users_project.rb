@@ -23,6 +23,7 @@ class UsersProject < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :project
+  has_one :sparkle_invite, dependent: :destroy
 
   attr_accessor :skip_git
 
@@ -42,6 +43,8 @@ class UsersProject < ActiveRecord::Base
   scope :in_project, ->(project) { where(project_id: project.id) }
   scope :in_projects, ->(projects) { where(project_id: projects.map { |p| p.id }) }
   scope :with_user, ->(user) { where(user_id: user.id) }
+
+  after_create :create_sparkle_share_invite
 
   class << self
 
@@ -139,5 +142,14 @@ class UsersProject < ActiveRecord::Base
 
   def notification
     @notification ||= Notification.new(self)
+  end
+
+  private
+  def create_sparkle_share_invite
+    if [DEVELOPER, MASTER].include?(self.project_access) && Gitlab.config.sparkle_share.enabled
+      invite = SparkleInvite.new
+      invite.users_project = self
+      invite.save!
+    end
   end
 end

@@ -236,6 +236,10 @@ FactoryGirl.define do
     service
   end
 
+  factory :sparkle_invite do
+    users_project
+  end
+
   factory :deploy_keys_project do
     deploy_key
     project

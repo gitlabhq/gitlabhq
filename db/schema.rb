@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130326142630) do
+ActiveRecord::Schema.define(:version => 20130614132337) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -217,6 +217,18 @@ ActiveRecord::Schema.define(:version => 20130326142630) do
   add_index "snippets", ["created_at"], :name => "index_snippets_on_created_at"
   add_index "snippets", ["expires_at"], :name => "index_snippets_on_expires_at"
   add_index "snippets", ["project_id"], :name => "index_snippets_on_project_id"
+
+  create_table "sparkle_invites", :force => true do |t|
+    t.integer  "users_project_id"
+    t.string   "token"
+    t.datetime "expire_at"
+    t.datetime "accepted_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "sparkle_invites", ["token"], :name => "index_sparkle_invites_on_token"
+  add_index "sparkle_invites", ["users_project_id"], :name => "index_sparkle_invites_on_users_project_id"
 
   create_table "taggings", :force => true do |t|
     t.integer  "tag_id"
