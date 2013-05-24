@@ -41,6 +41,9 @@ window.linkify = (str) ->
   exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   return str.replace(exp,"<a href='$1'>$1</a>")
 
+window.simpleFormat = (str) ->
+  linkify(sanitize(str).replace(/\n/g, '<br />'))
+
 window.startSpinner = ->
   $('.turbolink-spinner').fadeIn()
 
