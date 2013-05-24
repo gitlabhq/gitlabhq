@@ -119,10 +119,6 @@ module ApplicationHelper
     Emoji.names.to_s
   end
 
-  def ldap_enable?
-    Devise.omniauth_providers.include?(:ldap)
-  end
-
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
