@@ -7,6 +7,7 @@ v 5.3.0
   - Improve sign-in page if ldap enabled
   - Respect newlines in wall messages
   - Generate the Rails secret token on first run
+  - Rename repo feature
 
 v 5.2.0
   - Turbolinks

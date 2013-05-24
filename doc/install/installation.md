@@ -69,6 +69,10 @@ does not ship with one. The recommended mail server is postfix and you can insta
 
 # 2. Ruby
 
+Remove old 1.8 ruby if present
+
+    sudo apt-get remove ruby1.8
+
 Download and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
