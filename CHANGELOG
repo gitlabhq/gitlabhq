@@ -1,6 +1,12 @@
 v 5.3.0
   - Refactored services 
   - Campfire service added
+  - HipChat service added
+  - Fixed bug with LDAP + git over http
+  - Fixed bug with googla analytics code being ignored
+  - Improve sign-in page if ldap enabled
+  - Respect newlines in wall messages
+  - Generate the Rails secret token on first run
 
 v 5.2.0
   - Turbolinks
