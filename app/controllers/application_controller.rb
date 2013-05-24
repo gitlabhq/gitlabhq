@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
       @project
     else
       @project = nil
-      render_404
+      render_404 and return
     end
   end
 

@@ -11,6 +11,8 @@
           %li.active
             = link_to 'Settings', '#tab-settings', 'data-toggle' => 'tab'
           %li
+            = link_to 'Rename repo', '#tab-rename', 'data-toggle' => 'tab'
+          %li
             = link_to 'Transfer', '#tab-transfer', 'data-toggle' => 'tab'
           %li
             = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
@@ -136,6 +138,24 @@
                       = f.submit 'Transfer', class: "btn btn-remove"
             - else
               %p.nothing_here_message Only project owner can transfer a project
+
+          .tab-pane#tab-rename
+            .ui-box.ui-box-danger
+              %h5.title Rename repository
+              .errors-holder
+              .form-holder
+                = form_for(@project) do |f|
+                  .control-group
+                    = f.label :path do
+                      %span Path
+                    .controls
+                      .clearfix
+                        = f.text_field :path
+                      %ul
+                        %li Be careful. Rename of project repo can have unintended side effects
+                        %li You will need to update your local repositories to point to the new location.
+                  .form-actions
+                    = f.submit 'Rename', class: "btn btn-remove"
 
           .tab-pane#tab-remove
             - if can?(current_user, :remove_project, @project)
