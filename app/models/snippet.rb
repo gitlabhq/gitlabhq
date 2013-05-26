@@ -11,12 +11,13 @@
 #  updated_at :datetime         not null
 #  file_name  :string(255)
 #  expires_at :datetime
+#  public_hashkey :string(255)
 #
 
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
-  attr_accessible :title, :content, :file_name, :expires_at
+  attr_accessible :title, :content, :file_name, :expires_at, :public_hashkey
 
   belongs_to :project
   belongs_to :author, class_name: "User"
@@ -34,6 +35,7 @@ class Snippet < ActiveRecord::Base
   scope :fresh, -> { order("created_at DESC") }
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
   scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
+  scope :public_only, -> { where(public: true) }
 
   def self.content_types
     [

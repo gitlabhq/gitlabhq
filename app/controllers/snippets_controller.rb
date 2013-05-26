@@ -27,6 +27,7 @@ class SnippetsController < ProjectResourceController
   def create
     @snippet = @project.snippets.new(params[:snippet])
     @snippet.author = current_user
+    @snippet.public_hashkey = Digest::MD5.hexdigest("#{Time.now}/#{@snippet.id}/#{@snippet.content}")
     @snippet.save
 
     if @snippet.valid?
@@ -40,7 +41,9 @@ class SnippetsController < ProjectResourceController
   end
 
   def update
-    @snippet.update_attributes(params[:snippet])
+    @snippet.assign_attributes(params[:snippet])
+    @snippet.assign_attributes({:public_hashkey => Digest::MD5.hexdigest("#{@snippet.created_at}/#{@snippet.id}/#{@snippet.content}") }) if @snippet.public_hashkey.nil? || @snippet.public_hashkey.blank?
+    @snippet.save 
 
     if @snippet.valid?
       redirect_to [@project, @snippet]

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506095501) do
+ActiveRecord::Schema.define(:version => 20130526204024) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -207,6 +207,7 @@ ActiveRecord::Schema.define(:version => 20130506095501) do
     t.datetime "updated_at", :null => false
     t.string   "file_name"
     t.datetime "expires_at"
+    t.string   "public_hashkey"
   end
 
   add_index "snippets", ["created_at"], :name => "index_snippets_on_created_at"

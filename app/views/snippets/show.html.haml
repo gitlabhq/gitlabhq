@@ -1,6 +1,6 @@
 %h3.page_title
   = @snippet.title
-  %small= @snippet.file_name
+  %small= link_to "/public/snippets/#{@snippet.public_hashkey}", "/public/snippets/#{@snippet.public_hashkey}"
   - if can?(current_user, :admin_snippet, @project) || @snippet.author == current_user
     = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small pull-right", title: 'Edit Snippet'
 
