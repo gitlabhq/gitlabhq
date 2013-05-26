@@ -259,7 +259,7 @@ namespace :gitlab do
           "Update your redis server to a version >= 2.0.0"
         )
         for_more_information(
-          "gitlab-public-wiki/wiki/Trouble-Shooting-Guide in section sidekiq"
+           see_troubleshooting_guide "Sidekiq"
         )
         fix_and_rerun
       end
@@ -629,6 +629,12 @@ namespace :gitlab do
 
   def see_database_guide
     "doc/install/databases.md"
+  end
+
+  def see_troubleshooting_guide(section = nil)
+    info = "doc/install/troubleshooting.md"
+    info += "in section \"#{section}\"" if section
+    info
   end
 
   def see_installation_guide_section(section)
