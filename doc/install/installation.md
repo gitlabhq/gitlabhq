@@ -6,7 +6,7 @@ This is the official installation guide to set up a production server. To set up
 
 The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment.
 
-If you find a bug/error in this guide please **submit a pull request** following the [`contributing guide`](../../CONTRIBUTING.md).
+If you find a bug/error in this guide please **submit a pull request** following the [contributing guide](../../CONTRIBUTING.md).
 
 - - -
 
@@ -211,7 +211,7 @@ Make sure to update username/password in config/database.yml.
     sudo -u git -H bundle install --deployment --without development test mysql
 
 
-## Initialise Database and Activate Advanced Features
+## Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
