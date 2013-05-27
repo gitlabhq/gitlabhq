@@ -124,6 +124,8 @@ module API
         blob = Gitlab::Git::Blob.new(repo, commit.id, ref, params[:filepath])
         not_found! "File" unless blob.exists?
 
+        env['api.format'] = :txt
+
         content_type blob.mime_type
         present blob.data
       end

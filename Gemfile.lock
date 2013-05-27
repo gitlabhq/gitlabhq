@@ -173,7 +173,7 @@ GEM
     gon (4.1.0)
       actionpack (>= 2.3.0)
       json
-    grape (0.3.1)
+    grape (0.4.1)
       activesupport
       builder
       hashie (>= 1.2.0)
@@ -183,7 +183,7 @@ GEM
       rack-accept
       rack-mount
       virtus
-    grape-entity (0.2.0)
+    grape-entity (0.3.0)
       activesupport
       multi_json (>= 1.3.2)
     growl (1.0.3)
@@ -528,8 +528,8 @@ DEPENDENCIES
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
   gon
-  grape
-  grape-entity
+  grape (~> 0.4.1)
+  grape-entity (~> 0.3.0)
   growl
   guard-rspec
   guard-spinach
