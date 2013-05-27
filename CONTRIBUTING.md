@@ -8,7 +8,7 @@ Issues and pull requests not in line with the guidelines listed in this document
 
 ## Issue tracker
 
-The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the master branch of GitLab. When submitting an issue please conform to the issue submission guidelines listed below.
+The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the latest [stable or development release of GitLab](MAINTENANCE.md). When submitting an issue please conform to the issue submission guidelines listed below.
 
 Do not use the issue tracker for feature requests. We have a specific
 [Feedback and suggestions forum](http://feedback.gitlab.com) for this purpose.
