@@ -30,7 +30,7 @@
       = f.submit 'Save', class: "btn-save btn"
       = link_to "Cancel", project_snippets_path(@project), class: " btn"
       - unless @snippet.new_record?
-        .pull-right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+        .pull-right= link_to 'Destroy', [@project, @snippet], confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
 
 
 :javascript
