@@ -41,8 +41,8 @@ gem "gitlab-gollum-lib", "~> 1.0.0", require: 'gollum-lib'
 gem "github-linguist", require: "linguist"
 
 # API
-gem "grape"
-gem "grape-entity"
+gem "grape", "~> 0.3.1"
+gem "grape-entity", "~> 0.2.0"
 
 # Format dates and times
 # based on human-friendly examples
