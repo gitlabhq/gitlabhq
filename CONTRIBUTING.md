@@ -10,8 +10,7 @@ Issues and pull requests not in line with the guidelines listed in this document
 
 The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the latest [stable or development release of GitLab](MAINTENANCE.md). When submitting an issue please conform to the issue submission guidelines listed below.
 
-Do not use the issue tracker for feature requests. We have a specific
-[feedback and suggestions forum](http://feedback.gitlab.com) for this purpose.
+Do not use the issue tracker for feature requests. We have a specific [feedback and suggestions forum](http://feedback.gitlab.com) for this purpose.
 
 Please send a pull request with a tested solution or a pull request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [Support Forum](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
@@ -33,11 +32,11 @@ Please send a pull request with a tested solution or a pull request with a faili
 
 ## Pull requests
 
-We welcome pull request with improvements to GitLab code and/or documentation. The issues we would really like a pull request for are listed with the [status 'accepting merge/pull requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome.
+We welcome pull requests with fixes and improvements to GitLab code, tests, and/or documentation. The features we would really like a pull request for are listed with the [status 'accepting merge/pull requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome.
 
 ### Pull request guidelines
 
- If you can please submit a pull request with the fix including tests. The workflow to make a pull request is as follows:
+If you can, please submit a pull request with the fix or improvements including tests. If you don't know how to fix the issue but can write a test that exposes the issue we will accept that as well. The workflow to make a pull request is as follows:
 
 1. Fork the project on GitHub
 1. Create a feature branch
@@ -45,17 +44,17 @@ We welcome pull request with improvements to GitLab code and/or documentation. T
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a pull request
-2. [Search for issues](https://github.com/gitlabhq/gitlabhq/search?q=&ref=cmdform&type=Issues) related to your pull request and mention them in the pull request comments
+2. [Search for issues](https://github.com/gitlabhq/gitlabhq/search?q=&ref=cmdform&type=Issues) related to your pull request and mention them in the pull request description
 
 We will accept pull requests if:
 
-* The code has proper tests and all tests pass
+* The code has proper tests and all tests pass (or it is a test exposing a failure in existing code)
 * It can be merged without problems (if not please use: `git rebase master`)
 * It doesn't break any existing functionality
 * It's quality code that conforms to the [Rails style guide](https://github.com/bbatsov/rails-style-guide) and best practices
 * The description includes a motive for your change and the method you used to achieve it
 * It keeps the GitLab code base clean and well structured
-* We think other users will need the same functionality
+* We think other users will benefit from the same functionality
 * If it makes changes to the UI the pull request should include screenshots
 
 For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
