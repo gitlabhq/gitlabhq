@@ -219,7 +219,7 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           "sudo chown -R gitlab #{log_path}",
-          "sudo chmod -R rwX #{log_path}"
+          "sudo chmod -R u+rwX #{log_path}"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -239,7 +239,7 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           "sudo chown -R gitlab #{tmp_path}",
-          "sudo chmod -R rwX #{tmp_path}"
+          "sudo chmod -R u+rwX #{tmp_path}"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
