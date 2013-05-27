@@ -79,3 +79,4 @@ When listing resources you can pass the following parameters:
 + [Milestones](doc/api/milestones.md)
 + [Notes](doc/api/notes.md)
 + [System Hooks](doc/api/system_hooks.md)
++ [User Teams](doc/api/user_teams.md)

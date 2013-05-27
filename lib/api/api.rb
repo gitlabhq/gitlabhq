@@ -35,5 +35,6 @@ module API
     mount Notes
     mount Internal
     mount SystemHooks
+    mount UserTeams
   end
 end
