@@ -178,4 +178,22 @@ describe User do
     it { user.can_create_project?.should be_true }
     it { user.first_name.should == 'John' }
   end
+
+  describe 'without defaults' do
+    let(:user) { User.new }
+    it "should not apply defaults to user" do
+      user.projects_limit.should == 10
+      user.can_create_group.should == true
+      user.can_create_team.should == true
+    end
+  end
+
+  describe 'with defaults' do
+    let(:user) { User.new.with_defaults }
+    it "should apply defaults to user" do
+      user.projects_limit.should == 42
+      user.can_create_group.should == false
+      user.can_create_team.should == false
+    end
+  end
 end

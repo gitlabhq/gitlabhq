@@ -196,6 +196,14 @@ class User < ActiveRecord::Base
     username
   end
 
+  def with_defaults
+    tap do |u|
+      u.projects_limit = Gitlab.config.gitlab.default_projects_limit
+      u.can_create_group = Gitlab.config.gitlab.default_can_create_group
+      u.can_create_team = Gitlab.config.gitlab.default_can_create_team
+    end
+  end
+
   def notification
     @notification ||= Notification.new(self)
   end
