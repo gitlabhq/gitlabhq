@@ -28,9 +28,9 @@
 
 ### Resources
 
-* GitLab.org community site: [Homepage](http://gitlab.org) [Screenshots](http://gitlab.org/screenshots/) [Blog](http://blog.gitlab.org/) [Demo](http://demo.gitlabhq.com/users/sign_in)
+* GitLab.org community site: [Homepage](http://gitlab.org) | [Screenshots](http://gitlab.org/screenshots/) | [Blog](http://blog.gitlab.org/) | [Demo](http://demo.gitlabhq.com/users/sign_in)
 
-* GitLab.com commercial services: [Homepage](http://www.gitlab.com/) [Subscription](http://www.gitlab.com/subscription/) [Consultancy](http://www.gitlab.com/consultancy/) [GitLab Cloud](http://www.gitlab.com/cloud/) [Blog](http://blog.gitlab.com/)
+* GitLab.com commercial services: [Homepage](http://www.gitlab.com/) | [Subscription](http://www.gitlab.com/subscription/) | [Consultancy](http://www.gitlab.com/consultancy/) | [GitLab Cloud](http://www.gitlab.com/cloud/) | [Blog](http://blog.gitlab.com/)
 
 * GitLab CI: [Readme](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) of the GitLab open-source continuous integration server
 
@@ -43,13 +43,13 @@
 * gitlab-shell
 * redis
 
-** More details are in the [requirements doc](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md)
+** More details are in the [requirements doc](doc/install/requirements.md)
 
 ### Installation
 
 #### Official production installation
 
-* [Installation guide for a production server](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
+* [Installation guide for a production server](doc/install/installation.md)
 
 
 #### Official development installation
@@ -74,16 +74,16 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 Each month on the 22nd a new version is released together with an upgrade guide.
 
-* [Upgrade guides](https://github.com/gitlabhq/gitlabhq/tree/master/doc/update)
+* [Upgrade guides](doc/update)
 
-* [Changelog](https://github.com/gitlabhq/gitlabhq/blob/master/CHANGELOG)
+* [Changelog](CHANGELOG)
 
 * Features that will be in the next release are listed on [the feedback and suggestions forum with the status "started"](http://feedback.gitlab.com/forums/176466-general/status/796456).
 
 
 ### Run in production mode
 
-1. The Installation guide contains instructions on how to download an init script and run it automatically on boot. You can also start the init script manually:
+ The Installation guide contains instructions on how to download an init script and run it automatically on boot. You can also start the init script manually:
 
         sudo service gitlab start
 
@@ -124,13 +124,13 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 
 ### GitLab interfaces
 
-* [GitLab API](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/README.md)
+* [GitLab API](doc/api/README.md)
 
-* [Rake tasks](https://github.com/gitlabhq/gitlabhq/tree/master/doc/raketasks)
+* [Rake tasks](doc/raketasks)
 
-* [Directory structure](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/structure.md)
+* [Directory structure](doc/install/structure.md)
 
-* [Databases](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/databases.md)
+* [Databases](doc/install/databases.md)
 
 
 ### Getting help
