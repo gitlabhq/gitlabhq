@@ -70,6 +70,11 @@ production: &base
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
+    # 
+    # jira:
+    #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
+    #   issues_url: "http://jira.sample/browse/:id"
+    #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
 
   ## Gravatar
   gravatar:
