@@ -39,8 +39,7 @@ module Gitlab
         email: email,
         password: password,
         password_confirmation: password,
-        projects_limit: Gitlab.config.gitlab.default_projects_limit,
-      }, as: :admin)
+      }, as: :admin).with_defaults
       @user.save!
 
       if Gitlab.config.omniauth['block_auto_created_users'] && !ldap

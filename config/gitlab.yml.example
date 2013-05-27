@@ -32,12 +32,14 @@ production: &base
     # Email address of your support contact (default: same as email_from)
     support_email: support@localhost
 
-    ## Project settings
+    ## User settings
     default_projects_limit: 10
+    # default_can_create_group: false  # default: true
+    # default_can_create_team: false   # default: true
+    # username_changing_enabled: false # default: true - User can change her username/namespace
     
     ## Users management
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
-    # username_changing_enabled: false # default: true - User can change her username/namespace
 
     ## Default project features settings
     default_projects_features:
