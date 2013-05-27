@@ -13,42 +13,61 @@ namespace :gitlab do
     task repos: :environment do
 
       git_base_path = Gitlab.config.gitlab_shell.repos_path
-      repos_to_import = Dir.glob(git_base_path + '/*')
+      repos_to_import = Dir.glob(git_base_path + '/**/*.git')
 
       namespaces = Namespace.pluck(:path)
 
       repos_to_import.each do |repo_path|
-        repo_name = File.basename repo_path
+        # strip repo base path
+        repo_path[0..git_base_path.length] = ''
+
+        path = repo_path.sub(/\.git$/, '')
+        name = File.basename path
+        group_name = File.dirname path
+        group_name = nil if group_name == '.'
 
         # Skip if group or user
-        next if namespaces.include?(repo_name)
+        next if namespaces.include?(name)
 
-        # skip if not git repo
-        next unless repo_name =~ /.git$/
+        next if name == 'gitolite-admin'
 
-        next if repo_name == 'gitolite-admin.git'
-
-        path = repo_name.sub(/\.git$/, '')
+        puts "Processing #{repo_path}".yellow
 
         project = Project.find_with_namespace(path)
 
-        puts "Processing #{repo_name}".yellow
-
         if project
-          puts " * #{project.name} (#{repo_name}) exists"
+          puts " * #{project.name} (#{repo_path}) exists"
         else
           user = User.admins.first
 
           project_params = {
-            name: path,
+            name: name,
           }
+
+          # find group namespace
+          if group_name
+            group = Group.find_by_path(group_name)
+            # create group namespace
+            if !group
+              group = Group.new(:name => group_name)
+              group.path = group_name
+              group.owner = user
+              if group.save
+                puts " * Created Group #{group.name} (#{group.id})".green
+              else
+                puts " * Failed trying to create group #{group.name}".red
+              end
+            end
+            # set project group
+            project_params[:namespace_id] = group.id
+          end
 
           project = Projects::CreateContext.new(user, project_params).execute
 
           if project.valid?
-            puts " * Created #{project.name} (#{repo_name})".green
+            puts " * Created #{project.name} (#{repo_path})".green
           else
-            puts " * Failed trying to create #{project.name} (#{repo_name})".red
+            puts " * Failed trying to create #{project.name} (#{repo_path})".red
           end
         end
       end

@@ -116,6 +116,8 @@ bundle exec rake gitlab:satellites:create RAILS_ENV=production
 Notes:
 
 * project owner will be a first admin
+* groups will be created as needed
+* group owner will be the first admin
 * existing projects will be skipped
 
 How to use:
@@ -132,5 +134,8 @@ Example output:
 ```
 Processing abcd.git
  * Created abcd (abcd.git)
+Processing group/xyz.git
+ * Created Group group (2)
+ * Created xyz (group/xyz.git)
 [...]
 ```
