@@ -26,12 +26,20 @@ namespace :gitlab do
     warn_user_is_not_gitlab
 
     gitlab_shell_authorized_keys = File.join(File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}"),'.ssh/authorized_keys')
+    gitlab_shell_deployment_keys = Gitlab.config.gitlab_shell.deployment_key_file
     puts "This will rebuild an authorized_keys file."
     puts "You will lose any data stored in #{gitlab_shell_authorized_keys}."
     ask_to_continue
     puts ""
 
-    system("echo '# Managed by gitlab-shell' > #{gitlab_shell_authorized_keys}")
+    File.open(gitlab_shell_authorized_keys, 'w') do |ak_f|
+      ak_f.puts "# Managed by gitlab-shell"
+      if File.exists?(gitlab_shell_deployment_keys)
+        ak_f.puts "# Deployment keys: #{gitlab_shell_deployment_keys}"
+        File.open(gitlab_shell_deployment_keys, 'r') { |dk_f| ak_f.print dk_f.read }
+        ak_f.puts "# End Deployment keys"
+      end
+    end
 
     Key.find_each(batch_size: 1000) do |key|
       if Gitlab::Shell.new.add_key(key.shell_id, key.key)

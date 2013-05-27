@@ -139,6 +139,12 @@ production: &base
     repos_path: /home/git/repositories/
     hooks_path: /home/git/gitlab-shell/hooks/
 
+    # Deployment keys:
+    # A file (in authorized_keys format) containing keys
+    # for deploying gitlab itself.
+    # DO NOT ADD ANY GITLAB DEPLOYMENT KEYS INTO GitLab ITSELF
+    deployment_key_file: /home/git/deployment_key_file
+
     # Git over HTTP
     upload_pack: true
     receive_pack: true
