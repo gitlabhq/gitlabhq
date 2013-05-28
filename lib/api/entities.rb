@@ -2,7 +2,7 @@ module API
   module Entities
     class User < Grape::Entity
       expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
-             :dark_scheme, :theme_id, :state, :created_at, :extern_uid, :provider
+             :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
     end
 
     class UserSafe < Grape::Entity
