@@ -8,6 +8,9 @@ v 5.3.0
   - Respect newlines in wall messages
   - Generate the Rails secret token on first run
   - Rename repo feature
+  - Init.d: remove gitlab.scoket on service starta
+  - Api: added teams api
+  - Api: Prevent blob content being escaped
 
 v 5.2.0
   - Turbolinks
