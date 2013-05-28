@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe API::API do
   include ApiHelpers
-  before(:each) { enable_observers }
+  before(:each) { TestEnv.enable_observers }
+  after(:each) { TestEnv.disable_observers}
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
