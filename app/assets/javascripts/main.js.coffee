@@ -50,7 +50,11 @@ window.startSpinner = ->
 window.stopSpinner = ->
   $('.turbolink-spinner').fadeOut()
 
+window.stopEndlessScroll = ->
+  $(document).unbind('scroll')
+
 document.addEventListener("page:fetch", startSpinner)
+document.addEventListener("page:fetch", stopEndlessScroll)
 document.addEventListener("page:receive", stopSpinner)
 
 $ ->
