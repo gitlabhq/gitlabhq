@@ -44,7 +44,7 @@ Spinach.hooks.after_scenario do
 end
 
 Spinach.hooks.before_run do
-  TestEnv.init(mailer: false, init_repos: false, repos: false)
+  TestEnv.init(mailer: false, init_repos: true, repos: false)
   RSpec::Mocks::setup self
 
   include FactoryGirl::Syntax::Methods
