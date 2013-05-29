@@ -90,6 +90,9 @@ namespace :gitlab do
       settings = YAML.load_file("backup_information.yml")
       ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
+      # backups directory is not always sub of Rails root and able to execute the git rev-parse below
+      Dir.chdir(Rails.root)
+
       # restoring mismatching backups can lead to unexpected problems
       if settings[:gitlab_version] != %x{git rev-parse HEAD}.gsub(/\n/,"")
         puts "GitLab version mismatch:".red
