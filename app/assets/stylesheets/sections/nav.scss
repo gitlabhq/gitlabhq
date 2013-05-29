@@ -10,17 +10,17 @@
     top: 3px;
     overflow: hidden;
     .count {
-      position: relative;
-      top: -1px;
+      font-weight: normal;
       display: inline-block;
       height: 15px;
-      margin: 0 0 0 5px;
-      padding: 0 8px 1px 8px;
+      padding: 1px 6px;
       height: auto;
       font-size: 0.82em;
       line-height: 14px;
       text-align: center;
       color: #777;
+      background: #eee;
+      @include border-radius(8px);
     }
     .label {
       background: $hover;

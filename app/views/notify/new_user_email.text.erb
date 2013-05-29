@@ -1,10 +1,12 @@
 Hi <%= @user.name %>!
-          
-Administrator created account for you. Now you are a member of company GitLab application.
-          
+
+The Administrator created an account for you. Now you are a member of company GitLab application.
+
 login.................. <%= @user.email %>
 <% unless Gitlab.config.gitlab.signup_enabled %>
   password............... <%= @password %>
 <% end %>
+
+Please change your password immediately after login.
 
 Click here to login: <%= url_for(root_url) %>

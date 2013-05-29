@@ -15,8 +15,14 @@
           $(this).html totalIssues + 1
         else
           $(this).html totalIssues - 1
-
-
+    $("body").on "click", ".issues-filters .dropdown-menu a", ->
+      $('.issues-list').block(
+        message: null,
+        overlayCSS:
+          backgroundColor: '#DDD'
+          opacity: .4
+      )
+  
   reload: ->
     Issues.initSelects()
     Issues.initChecks()
@@ -48,10 +54,6 @@
       unless terms is last_terms
         last_terms = terms
         if terms.length >= 2 or terms.length is 0
-          $('#search_status').val($('#status').val())
-          $('#search_assignee_id').val($('#assignee_id').val())
-          $('#search_milestone_id').val($('#milestone_id').val())
-          $('#search_label_name').val($('#label_name').val())
           form.submit()
 
   checkChanged: ->
@@ -62,9 +64,9 @@
         ids.push $(value).attr("data-id")
 
       $("#update_issues_ids").val ids
-      $(".issues_filters").hide()
+      $(".issues-filters").hide()
       $(".issues_bulk_update").show()
     else
       $("#update_issues_ids").val []
       $(".issues_bulk_update").hide()
-      $(".issues_filters").show()
+      $(".issues-filters").show()

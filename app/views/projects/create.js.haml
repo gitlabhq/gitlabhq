@@ -3,8 +3,6 @@
     location.href = "#{project_path(@project)}";
 - else
   :plain
-    $('.project_new_holder').show();
-    $("#new_project").replaceWith("#{escape_javascript(render('new_form'))}");
+    $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
     $('.save-project-loader').hide();
-    new Projects();
-    $('select.chosen').chosen()
+    $('.project-edit-container').show();

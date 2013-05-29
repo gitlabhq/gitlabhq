@@ -3,10 +3,6 @@ module ProjectsHelper
     "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
 
-  def projects_labels
-    Project.tag_counts_on(:labels).map(&:name)
-  end
-
   def link_to_project project
     link_to project do
       title = content_tag(:strong, project.name)
@@ -47,5 +43,9 @@ module ProjectsHelper
     else
       project.name
     end
+  end
+
+  def remove_project_message(project)
+    "You are going to remove #{project.name_with_namespace}.\n Removed project CANNOT be restored!\n Are you ABSOLUTELY sure?"
   end
 end

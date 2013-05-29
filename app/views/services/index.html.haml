@@ -3,30 +3,16 @@
 %h3.page_title Services
 %br
 
-%ul.ui-box.well-list
-  %li
-    %h4.cgreen
-      = link_to edit_project_service_path(@project, :gitlab_ci) do
-        GitLab CI
-        %small Continuous integration server from GitLab
-      .pull-right
-        - if @gitlab_ci_service.try(:active)
-          %small.cgreen
-            %i.icon-ok
-            Enabled
+%ul.bordered-list
+  - @services.each do |service|
+    %li
+      %h4
+        - if service.activated?
+          %span.cgreen
+            %i.icon-circle
         - else
-          %small.cgray
-            %i.icon-off
-            Disabled
-  %li.disabled
-    %h4
-      Jenkins CI
-      %small An extendable open source continuous integration server
-      .pull-right
-        %small Not implemented yet
-  %li.disabled
-    %h4
-      Campfire
-      %small Web-based group chat tool
-      .pull-right
-        %small Not implemented yet
+          %span.cgray
+            %i.icon-circle-blank
+        = link_to edit_project_service_path(@project, service.to_param) do
+          = service.title
+      %p= service.description

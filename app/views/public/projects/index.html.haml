@@ -1,6 +1,16 @@
-%h3.page_title
-  Projects (#{@projects.total_count})
-  %small with read-only access
+.row
+  .span6
+    %h3.page_title
+      Projects (#{@projects.total_count})
+      %small with read-only access
+  .span6
+    .pull-right
+      = form_tag public_projects_path, method: :get, class: 'form-inline' do |f|
+        .search-holder
+          .input
+            = search_field_tag :search, params[:search], placeholder: "gitlab-ci", class: "span3 search-text-input", id: "projects_search"
+            = submit_tag 'Search', class: "btn btn-primary wide"
+
 %hr
 
 .public-projects

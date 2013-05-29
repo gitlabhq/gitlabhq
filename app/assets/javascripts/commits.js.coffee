@@ -23,7 +23,7 @@ class CommitsList
     @data.offset = limit
     
     this.initLoadMore()
-    this.showProgress();
+    this.showProgress()
 
   @getOld: ->
     this.showProgress()
@@ -41,7 +41,7 @@ class CommitsList
     else
       @disable = true
   
-  @initLoadMore: -> 
+  @initLoadMore: ->
     $(document).endlessScroll
       bottomPixels: 400
       fireDelay: 1000

@@ -12,6 +12,7 @@ class ProjectObserver < BaseObserver
 
   def after_update(project)
     project.send_move_instructions if project.namespace_id_changed?
+    project.rename_repo if project.path_changed?
   end
 
   def after_destroy(project)

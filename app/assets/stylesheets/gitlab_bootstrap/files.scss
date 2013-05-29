@@ -49,6 +49,15 @@
     &.wiki {
       padding: 20px;
       font-size: 13px;
+
+      .highlight {
+        margin-bottom: 9px;
+        @include border-radius(4px);
+
+        > pre {
+          margin: 0;
+        }
+      }
     }
 
     &.blob_file {

@@ -33,12 +33,12 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
-    status = ::Projects::UpdateContext.new(project, current_user, params).execute
+    status = ::Projects::UpdateContext.new(@project, current_user, params).execute
 
     respond_to do |format|
       if status
         flash[:notice] = 'Project was successfully updated.'
-        format.html { redirect_to edit_project_path(project), notice: 'Project was successfully updated.' }
+        format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
       else
         format.html { render action: "edit" }
@@ -91,6 +91,18 @@ class ProjectsController < ProjectResourceController
         end
       end
       format.js
+    end
+  end
+
+  def autocomplete_sources
+    @suggestions = {
+      emojis: Emoji.names,
+      issues: @project.issues.select([:id, :title, :description]),
+      members: @project.users.select([:username, :name]).order(:username)
+    }
+
+    respond_to do |format|
+      format.json { render :json => @suggestions }
     end
   end
 end

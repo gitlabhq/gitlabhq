@@ -1,25 +1,21 @@
 class ServicesController < ProjectResourceController
   # Authorize
   before_filter :authorize_admin_project!
+  before_filter :service, only: [:edit, :update, :test]
 
   respond_to :html
 
   def index
-    @gitlab_ci_service = @project.gitlab_ci_service
+    @project.build_missing_services
+    @services = @project.services.reload
   end
 
   def edit
-    @service = @project.gitlab_ci_service
-
-    # Create if missing
-    @service = @project.create_gitlab_ci_service unless @service
   end
 
   def update
-    @service = @project.gitlab_ci_service
-
     if @service.update_attributes(params[:service])
-      redirect_to edit_project_service_path(@project, :gitlab_ci)
+      redirect_to edit_project_service_path(@project, @service.to_param)
     else
       render 'edit'
     end
@@ -28,9 +24,14 @@ class ServicesController < ProjectResourceController
   def test
     data = GitPushService.new.sample_data(project, current_user)
 
-    @service = project.gitlab_ci_service
     @service.execute(data)
 
     redirect_to :back
+  end
+
+  private
+
+  def service
+    @service ||= @project.services.find { |service| service.to_param == params[:id] }
   end
 end

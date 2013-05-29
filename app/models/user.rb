@@ -196,6 +196,14 @@ class User < ActiveRecord::Base
     username
   end
 
+  def with_defaults
+    tap do |u|
+      u.projects_limit = Gitlab.config.gitlab.default_projects_limit
+      u.can_create_group = Gitlab.config.gitlab.default_can_create_group
+      u.can_create_team = Gitlab.config.gitlab.default_can_create_team
+    end
+  end
+
   def notification
     @notification ||= Notification.new(self)
   end
@@ -325,5 +333,23 @@ class User < ActiveRecord::Base
 
   def tm_of(project)
     project.team_member_by_id(self.id)
+  end
+
+  def already_forked? project
+    !!fork_of(project)
+  end
+
+  def fork_of project
+    links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
+
+    if links.any?
+      links.first.forked_to_project
+    else
+      nil
+    end
+  end
+
+  def ldap_user?
+    extern_uid && provider == 'ldap'
   end
 end

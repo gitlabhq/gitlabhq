@@ -45,7 +45,7 @@ We recommend a processor with **4 cores**. At a minimum you need a processor wit
 
 ## Memory
 
-- 512MB is too little memory, GitLab will be very slow you will need 250MB of swap
+- 512MB is too little memory, GitLab will be very slow and you will need 250MB of swap
 - 768MB is the minimal memory size and supports up to 100 users
 - **1GB** is the **recommended** memory size and supports up to 1,000 users
 - 1.5GB supports up to 10,000 users
@@ -54,13 +54,13 @@ We recommend a processor with **4 cores**. At a minimum you need a processor wit
 
 The necessary hard drive space largely depends on the size of the repos you want
 to store in GitLab. But as a *rule of thumb* you should have at least twice as much
-free space as your all repos combined take up. You need twice the storage because [GitLab satellites](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/structure.md) contain an extra copy of each repo. Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
+free space as your all repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo. Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
 
 # Installation troubles and reporting success or failure
 
-If you have troubles installing GitLab following the official installation guide
+If you have troubles installing GitLab following the [official installation guide](installation.md)
 or want to share your experience installing GitLab on a not officially supported
-platform, please follow the the contribution guide (see CONTRIBUTING.md).
+platform, please follow the the [contribution guide](/CONTRIBUTING.md).

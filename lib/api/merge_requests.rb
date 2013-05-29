@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # MergeRequest API
   class MergeRequests < Grape::API
     before { authenticate! }

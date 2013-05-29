@@ -33,6 +33,18 @@ class Repository
     commits
   end
 
+  def branch_names
+    Rails.cache.fetch(cache_key(:branch_names)) do
+      raw_repository.branch_names
+    end
+  end
+
+  def tag_names
+    Rails.cache.fetch(cache_key(:tag_names)) do
+      raw_repository.tag_names
+    end
+  end
+
   def method_missing(m, *args, &block)
     raw_repository.send(m, *args, &block)
   end
@@ -47,6 +59,8 @@ class Repository
 
   def expire_cache
     Rails.cache.delete(cache_key(:size))
+    Rails.cache.delete(cache_key(:branch_names))
+    Rails.cache.delete(cache_key(:tag_names))
   end
 
   def cache_key(type)

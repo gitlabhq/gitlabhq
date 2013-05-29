@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506095501) do
+ActiveRecord::Schema.define(:version => 20130522141856) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -194,6 +194,8 @@ ActiveRecord::Schema.define(:version => 20130506095501) do
     t.datetime "updated_at",                     :null => false
     t.boolean  "active",      :default => false, :null => false
     t.string   "project_url"
+    t.string   "subdomain"
+    t.string   "room"
   end
 
   add_index "services", ["project_id"], :name => "index_services_on_project_id"

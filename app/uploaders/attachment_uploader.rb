@@ -8,12 +8,12 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   end
 
   def image?
-    img_ext = %w(png jpg jpeg)
+    img_ext = %w(png jpg jpeg gif bmp tiff)
     if file.respond_to?(:extension)
-      img_ext.include?(file.extension)
+      img_ext.include?(file.extension.downcase)
     else
       # Not all CarrierWave storages respond to :extension
-      ext = file.path.split('.').last
+      ext = file.path.split('.').last.downcase
       img_ext.include?(ext)
     end
   rescue
@@ -21,10 +21,10 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   end
 
   def secure_url
-    if self.class.storage == CarrierWave::Storage::File
-      "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
-    else
-      url
-    end
+    "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
+  end
+
+  def file_storage?
+    self.class.storage == CarrierWave::Storage::File
   end
 end

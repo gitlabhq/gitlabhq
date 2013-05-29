@@ -15,11 +15,15 @@ module Backup
     end
 
     def restore
+      backup_existing_uploads_dir
+
+      FileUtils.cp_r(backup_uploads_dir, app_uploads_dir)
+    end
+    
+    def backup_existing_uploads_dir
       if File.exists?(app_uploads_dir)
         FileUtils.mv(app_uploads_dir, Rails.root.join('public', "uploads.#{Time.now.to_i}"))
       end
-
-      FileUtils.cp_r(backup_uploads_dir, app_uploads_dir)
     end
   end
 end

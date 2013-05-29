@@ -8,12 +8,15 @@ $monokai-dark: #3b3a32;
 $monokai-purple: #ae81ff;
 
 .monokai .highlight {
+
+  background-color: #272822;
+
   pre {
     background-color: #272822;
     color: $monokai-fg;
   }
 
-  .hll { background-color: #ffffcc }
+  .hll { background-color: darken($hover, 65%) }
   .c  { color: $monokai-comment } /* Comment */
   .err { color: $monokai-fg } /* Error */
   .g  { color: $monokai-fg } /* Generic */

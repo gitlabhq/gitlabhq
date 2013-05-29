@@ -71,7 +71,7 @@
     .ui-box
       %h5.title Projects (#{@projects.count})
       %ul.well-list
-        - @projects.each do |project|
+        - @projects.sort_by(&:name_with_namespace).each do |project|
           %li
             = link_to admin_project_path(project), class: dom_class(project) do
               - if project.namespace
@@ -87,7 +87,7 @@
                 = tm.project_access_human
                 = link_to edit_admin_project_member_path(project, tm.user), class: "btn btn-small" do
                   %i.icon-edit
-                = link_to admin_project_member_path(project, tm.user), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove" do
+                = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @admin_user), method: :delete, class: "btn btn-small btn-remove" do
                   %i.icon-remove
     %p.light
       %i.icon-wrench

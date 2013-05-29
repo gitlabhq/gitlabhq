@@ -25,3 +25,12 @@ Feature: Project Network Graph
     Then page should have network graph
     And page should select "master" in select box
     And page should have "v2.1.0" on graph
+
+  @javascript
+  Scenario: I should filter selected tag
+    When I switch ref to "v2.1.0"
+    Then page should have content not cotaining "v2.1.0"
+    When click "Show only selected branch" checkbox
+    Then page should not have content not cotaining "v2.1.0"
+    When click "Show only selected branch" checkbox
+    Then page should have content not cotaining "v2.1.0"

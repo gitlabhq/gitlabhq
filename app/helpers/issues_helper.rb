@@ -78,4 +78,15 @@ module IssuesHelper
       ""
     end
   end
+
+  def project_issues_with_filter_path(project, opts)
+    default_opts = {
+      status: params[:status],
+      label_name: params[:label_name],
+      milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+    }
+
+    project_issues_path(@project, default_opts.merge(opts))
+  end
 end

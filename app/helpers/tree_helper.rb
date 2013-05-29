@@ -85,4 +85,8 @@ module TreeHelper
     file = File.join(tree.path, "..")
     tree_join(tree.ref, file)
   end
+
+  def leave_edit_message
+    "Leave edit mode?\nAll unsaved changes will be lost."
+  end
 end

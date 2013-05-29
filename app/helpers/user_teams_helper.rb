@@ -22,5 +22,4 @@ module UserTeamsHelper
   def remove_from_user_team_message(team, member)
     "You are going to remove #{member.name} from #{team.name}. Are you sure?"
   end
-
 end
