@@ -26,10 +26,12 @@ namespace :gitlab do
     warn_user_is_not_gitlab
 
     gitlab_shell_authorized_keys = File.join(File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}"),'.ssh/authorized_keys')
-    puts "This will rebuild an authorized_keys file."
-    puts "You will lose any data stored in #{gitlab_shell_authorized_keys}."
-    ask_to_continue
-    puts ""
+    unless ENV['force'] == 'yes'
+      puts "This will rebuild an authorized_keys file."
+      puts "You will lose any data stored in #{gitlab_shell_authorized_keys}."
+      ask_to_continue
+      puts ""
+    end
 
     system("echo '# Managed by gitlab-shell' > #{gitlab_shell_authorized_keys}")
 

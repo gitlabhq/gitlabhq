@@ -71,7 +71,7 @@ module Backup
 
       print 'Put GitLab hooks in repositories dirs'.yellow
       gitlab_shell_user_home = File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
-      if system("#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh")
+      if system("#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh #{Gitlab.config.gitlab_shell.repos_path}")
         puts " [DONE]".green
       else
         puts " [FAILED]".red
