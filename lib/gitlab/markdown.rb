@@ -7,6 +7,7 @@ module Gitlab
   # Supported reference formats are:
   #   * @foo for team members
   #   * #123 for issues
+  #   * #JIRA-123 for Jira issues
   #   * !123 for merge requests
   #   * $123 for snippets
   #   * 123456 for commits
@@ -97,7 +98,7 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
-        |\#(?<issue>\d+)                     # Issue ID
+        |\#(?<issue>([a-zA-Z]+-)?\d+)        # Issue ID
         |!(?<merge_request>\d+)              # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
         |(?<commit>[\h]{6,40})               # Commit ID
