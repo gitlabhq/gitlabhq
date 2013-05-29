@@ -1,5 +1,5 @@
 desc "Travis run tests"
-task :travis => [
+task travis: [
   :spinach,
   :spec
 ]

@@ -7,7 +7,12 @@
     \/
     %li
       - if path
-        = link_to truncate(title, length: 40), project_tree_path(@project, path)
+        - if path.end_with?(@path)
+          = link_to project_blob_path(@project, path) do
+            %span.cblue
+              = truncate(title, length: 40)
+        - else
+          = link_to truncate(title, length: 40), project_tree_path(@project, path)
       - else
         = link_to title, '#'
 

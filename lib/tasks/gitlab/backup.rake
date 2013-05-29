@@ -4,29 +4,30 @@ namespace :gitlab do
   namespace :backup do
     # Create backup of GitLab system
     desc "GITLAB | Create a backup of the GitLab system"
-    task :create => :environment do
+    task create: :environment do
       warn_user_is_not_gitlab
 
       Rake::Task["gitlab:backup:db:create"].invoke
       Rake::Task["gitlab:backup:repo:create"].invoke
       Rake::Task["gitlab:backup:uploads:create"].invoke
 
-      Dir.chdir(Gitlab.config.backup.path)
 
       # saving additional informations
       s = {}
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = "#{Time.now}"
+      s[:backup_created_at]  = Time.now
       s[:gitlab_version]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
       s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
+
+      Dir.chdir(Gitlab.config.backup.path)
 
       File.open("#{Gitlab.config.backup.path}/backup_information.yml", "w+") do |file|
         file << s.to_yaml.gsub(/^---\n/,'')
       end
 
       # create archive
-      print "Creating backup archive: #{Time.now.to_i}_gitlab_backup.tar ... "
-      if Kernel.system("tar -cf #{Time.now.to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml")
+      print "Creating backup archive: #{s[:backup_created_at].to_i}_gitlab_backup.tar ... "
+      if Kernel.system("tar -cf #{s[:backup_created_at].to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml")
         puts "done".green
       else
         puts "failed".red
@@ -57,7 +58,7 @@ namespace :gitlab do
 
     # Restore backup of GitLab system
     desc "GITLAB | Restore a previously created backup"
-    task :restore => :environment do
+    task restore: :environment do
       warn_user_is_not_gitlab
 
       Dir.chdir(Gitlab.config.backup.path)
@@ -113,13 +114,13 @@ namespace :gitlab do
     end
 
     namespace :repo do
-      task :create => :environment do
+      task create: :environment do
         puts "Dumping repositories ...".blue
         Backup::Repository.new.dump
         puts "done".green
       end
 
-      task :restore => :environment do
+      task restore: :environment do
         puts "Restoring repositories ...".blue
         Backup::Repository.new.restore
         puts "done".green
@@ -127,13 +128,13 @@ namespace :gitlab do
     end
 
     namespace :db do
-      task :create => :environment do
+      task create: :environment do
         puts "Dumping database ... ".blue
         Backup::Database.new.dump
         puts "done".green
       end
 
-      task :restore => :environment do
+      task restore: :environment do
         puts "Restoring database ... ".blue
         Backup::Database.new.restore
         puts "done".green
@@ -141,13 +142,13 @@ namespace :gitlab do
     end
 
     namespace :uploads do
-      task :create => :environment do
+      task create: :environment do
         puts "Dumping uploads ... ".blue
         Backup::Uploads.new.dump
         puts "done".green
       end
 
-      task :restore => :environment do
+      task restore: :environment do
         puts "Restoring uploads ... ".blue
         Backup::Uploads.new.restore
         puts "done".green

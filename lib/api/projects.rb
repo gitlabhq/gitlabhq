@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Projects API
   class Projects < Grape::API
     before { authenticate! }
@@ -274,7 +274,7 @@ module Gitlab
       #   hook_id (required) - The ID of hook to delete
       # Example Request:
       #   DELETE /projects/:id/hooks/:hook_id
-      delete ":id/hooks" do
+      delete ":id/hooks/:hook_id" do
         authorize! :admin_project, user_project
         required_attributes! [:hook_id]
 
@@ -531,8 +531,8 @@ module Gitlab
       #   POST /projects/:id/keys
       post ":id/keys" do
         attrs = attributes_for_keys [:title, :key]
-        key = user_project.deploy_keys.new attrs
-        if key.save
+        key = DeployKey.new attrs
+        if key.valid? && user_project.deploy_keys << key
           present key, with: Entities::SSHKey
         else
           not_found!
@@ -545,9 +545,8 @@ module Gitlab
       #   DELETE /projects/:id/keys/:id
       delete ":id/keys/:key_id" do
         key = user_project.deploy_keys.find params[:key_id]
-        key.delete
+        key.destroy
       end
-
     end
   end
 end

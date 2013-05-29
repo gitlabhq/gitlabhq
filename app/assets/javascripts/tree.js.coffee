@@ -1,40 +1,13 @@
 # Code browser tree slider
+# Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
+$(".tree-content-holder .tree-item").live 'click', (e) ->
+  if (e.target.nodeName != "A")
+    path = $('.tree-item-file-name a', this).attr('href')
+    Turbolinks.visit(path)
 
 $ ->
-  if $('#tree-slider').length > 0
-    # Show the "Loading commit data" for only the first element
-    $('span.log_loading:first').removeClass('hide')
-
-    $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live "click", ->
-      $("#tree-content-holder").hide("slide", { direction: "left" }, 400)
-
-    # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
-    $("#tree-slider .tree-item").live 'click', (e) ->
-      $('.tree-item-file-name a', this).trigger('click') if (e.target.nodeName != "A")
-  
-    # Maintain forward/back history while browsing the file tree
-    ((window) ->
-      History = window.History
-      $ = window.jQuery
-      document = window.document
-
-      # Check to see if History.js is enabled for our Browser
-      unless History.enabled
-        return false
-
-      $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live 'click', (e) ->
-        History.pushState(null, null, decodeURIComponent($(@).attr('href')))
-        return false
-
-      History.Adapter.bind window, 'statechange', ->
-        state = History.getState()
-        $.ajax({
-          url: state.url,
-          dataType: 'script',
-          beforeSend: -> $('.tree_progress').addClass("loading"),
-          complete: -> $('.tree_progress').removeClass("loading")
-        })
-    )(window)
+  # Show the "Loading commit data" for only the first element
+  $('span.log_loading:first').removeClass('hide')
 
   # See if there are lines selected
   # "#L12" and "#L34-56" supported

@@ -42,7 +42,7 @@ edited by hand. But, you can use any editor you like instead.
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
@@ -61,6 +61,11 @@ Make sure you have the right version of Python installed.
     # If you get a "command not found" error create a link to the python binary
     sudo ln -s /usr/bin/python /usr/bin/python2
 
+**Note:** In order to receive mail notifications, make sure to install a
+mail server. By default, Debian is shipped with exim4 whereas Ubuntu
+does not ship with one. The recommended mail server is postfix and you can install it with:
+
+	sudo apt-get install postfix 
 
 # 2. Ruby
 
@@ -101,7 +106,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    git checkout v1.2.0
+    git checkout v1.4.0
 
     cp config.yml.example config.yml
 
@@ -132,10 +137,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-1-stable
+    sudo -u git -H git checkout 5-2-stable
 
 **Note:**
-You can change `5-1-stable` to `master` if you want the *bleeding edge* version, but
+You can change `5-2-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
@@ -158,15 +163,26 @@ do so with caution!
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
-    # Create directory for pids and make sure GitLab can write to it
+    # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
+    sudo -u git -H mkdir tmp/sockets/
     sudo chmod -R u+rwX  tmp/pids/
+    sudo chmod -R u+rwX  tmp/sockets/
 
-    # Copy the example Of Puma config
+    # Create public/uploads directory otherwise backup will fail
+    sudo -u git -H mkdir public/uploads
+    sudo chmod -R u+rwX  public/uploads
+
+    # Copy the example Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
+    # Configure Git global settings for git user, useful when editing via web
+    # Edit user.email according to what is set in gitlab.yml
+    sudo -u git -H git config --global user.name "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
+
 **Important Note:**
-Make sure to edit both files to match your setup.
+Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
@@ -182,7 +198,7 @@ Make sure to update username/password in config/database.yml.
 
     cd /home/git/gitlab
 
-    sudo gem install charlock_holmes --version '0.6.9'
+    sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without")
     sudo -u git -H bundle install --deployment --without development test postgres
@@ -200,7 +216,7 @@ Make sure to update username/password in config/database.yml.
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -241,14 +257,15 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 
 Download an example site config:
 
-    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/nginx/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
 
-    # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
-    # to the IP address and fully-qualified domain name
-    # of your host serving GitLab
+    # **YOUR_SERVER_FQDN** to the fully-qualified
+    # domain name of your host serving GitLab. Also, replace
+    # the 'listen' line with the following:
+    #   listen 80 default_server;         # e.g., listen 192.168.1.1:80;
     sudo vim /etc/nginx/sites-available/gitlab
 
 ## Restart
@@ -265,7 +282,7 @@ The setup has created an admin account for you. You can use it to log in:
     5iveL!fe
 
 **Important Note:**
-Please go over to your profile page and immediately chage the password, so
+Please go over to your profile page and immediately change the password, so
 nobody can access your GitLab by using this login information later on.
 
 **Enjoy!**
@@ -309,10 +326,10 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
-* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile#L18)
+* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-2-stable/Gemfile#L18)
 * Run `sudo -u git -H bundle install` to install the new gem(s)
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example#L53) as a reference)
-* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/master/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-2-stable/config/gitlab.yml.example#L53) as a reference)
+* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-2-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
 * Restart GitLab
 
 ### Examples

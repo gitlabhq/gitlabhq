@@ -20,6 +20,12 @@ class IssuesController < ProjectResourceController
     @issues = @issues.where("title LIKE ?", "%#{terms}%") if terms.present?
     @issues = @issues.page(params[:page]).per(20)
 
+
+    assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
+
+    @assignee = @project.users.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
+    @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
+
     respond_to do |format|
       format.html # index.html.erb
       format.js
@@ -80,7 +86,7 @@ class IssuesController < ProjectResourceController
   end
 
   def bulk_update
-    result = IssuesBulkUpdateContext.new(project, current_user, params).execute
+    result = Issues::BulkUpdateContext.new(project, current_user, params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
@@ -103,6 +109,6 @@ class IssuesController < ProjectResourceController
   end
 
   def issues_filtered
-    @issues = IssuesListContext.new(project, current_user, params).execute
+    @issues = Issues::ListContext.new(project, current_user, params).execute
   end
 end

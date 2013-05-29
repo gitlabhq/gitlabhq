@@ -22,11 +22,11 @@
 
     %p.light Filter by label:
     %ul.bordered-list
-      - projects_labels.each do |label|
-        %li{ class: (label == params[:label]) ? 'active' : 'light' }
-          = link_to projects_dashboard_path(scope: params[:scope], label: label) do
+      - @labels.each do |label|
+        %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
+          = link_to projects_dashboard_path(scope: params[:scope], label: label.name) do
             %i.icon-tag
-            = label
+            = label.name
 
 
   .span9

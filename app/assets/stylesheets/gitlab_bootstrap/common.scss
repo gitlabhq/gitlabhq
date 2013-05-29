@@ -19,6 +19,7 @@
 .append-right-20 { margin-right:20px }
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-20 { margin-bottom:20px }
+.inline { display: inline-block }
 
 .padded { padding:20px }
 .ipadded { padding:20px!important }
@@ -73,4 +74,16 @@ fieldset legend { font-size: 17px; }
 
 .tab-content {
   overflow: visible;
+}
+
+@media (max-width: 1200px) {
+  .only-wide {
+    display: none;
+  }
+}
+
+.pagination ul > li > a, .pagination ul > li >span {
+  @include linear-gradient(#f1f1f1, #e1e1e1);
+  color: #333;
+  text-shadow: 0 1px 1px #FFF;
 }

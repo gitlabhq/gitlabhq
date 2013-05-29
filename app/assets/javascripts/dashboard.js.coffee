@@ -1,39 +1,44 @@
-window.dashboardPage = ->
-  Pager.init 20, true
-  initSidebarTab()
-  $(".event_filter_link").bind "click", (event) ->
-    event.preventDefault()
-    toggleFilter $(this)
-    reloadActivities()
+class Dashboard
+  constructor: ->
+    Pager.init 20, true
+    @initSidebarTab()
 
-reloadActivities = ->
-  $(".content_list").html ''
-  Pager.init 20, true
+    $(".event_filter_link").bind "click", (event) =>
+      event.preventDefault()
+      @toggleFilter($(event.currentTarget))
+      @reloadActivities()
 
-toggleFilter = (sender) ->
-  sender.parent().toggleClass "inactive"
-  event_filters = $.cookie("event_filter")
-  filter = sender.attr("id").split("_")[0]
-  if event_filters
-    event_filters = event_filters.split(",")
-  else
-    event_filters = new Array()
+  reloadActivities: ->
+    $(".content_list").html ''
+    Pager.init 20, true
 
-  index = event_filters.indexOf(filter)
-  if index is -1
-    event_filters.push filter
-  else
-    event_filters.splice index, 1
+  toggleFilter: (sender) ->
+    sender.parent().toggleClass "inactive"
+    event_filters = $.cookie("event_filter")
+    filter = sender.attr("id").split("_")[0]
+    if event_filters
+      event_filters = event_filters.split(",")
+    else
+      event_filters = new Array()
 
-  $.cookie "event_filter", event_filters.join(",")
+    index = event_filters.indexOf(filter)
+    if index is -1
+      event_filters.push filter
+    else
+      event_filters.splice index, 1
 
-initSidebarTab = ->
-  key = "dashboard_sidebar_filter"
+    $.cookie "event_filter", event_filters.join(",")
 
-  # store selection in cookie
-  $('.dash-sidebar-tabs a').on 'click', (e) ->
-    $.cookie(key, $(e.target).attr('id'))
+  initSidebarTab: ->
+    key = "dashboard_sidebar_filter"
 
-  # show tab from cookie
-  sidebar_filter = $.cookie(key)
-  $("#" + sidebar_filter).tab('show') if sidebar_filter
+    # store selection in cookie
+    $('.dash-sidebar-tabs a').on 'click', (e) ->
+      $.cookie(key, $(e.target).attr('id'))
+
+    # show tab from cookie
+    sidebar_filter = $.cookie(key)
+    $("#" + sidebar_filter).tab('show') if sidebar_filter
+
+
+@Dashboard = Dashboard

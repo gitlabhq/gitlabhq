@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'api/api'
 
 Gitlab::Application.routes.draw do
   #
@@ -7,9 +8,8 @@ Gitlab::Application.routes.draw do
   get 'search' => "search#show"
 
   # API
-  require 'api'
-  Gitlab::API.logger Rails.logger
-  mount Gitlab::API => '/api'
+  API::API.logger Rails.logger
+  mount API::API => '/api'
 
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
@@ -167,6 +167,8 @@ Gitlab::Application.routes.draw do
   resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       put :transfer
+      post :fork
+      get :autocomplete_sources
     end
 
     resources :blob,    only: [:show], constraints: {id: /.+/}
@@ -178,8 +180,7 @@ Gitlab::Application.routes.draw do
     resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
     resources :graph,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
-    match "/compare/:from...:to" => "compare#show", as: "compare",
-                    :via => [:get, :post], constraints: {from: /.+/, to: /.+/}
+    match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
     resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
@@ -214,7 +215,13 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :deploy_keys
+    resources :deploy_keys do
+      member do
+        put :enable
+        put :disable
+      end
+    end
+
     resources :protected_branches, only: [:index, :create, :destroy]
 
     resources :refs, only: [] do
@@ -263,7 +270,13 @@ Gitlab::Application.routes.draw do
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones, except: [:destroy]
-    resources :labels, only: [:index]
+
+    resources :labels, only: [:index] do
+      collection do
+        post :generate
+      end
+    end
+
     resources :issues, except: [:destroy] do
       collection do
         post  :bulk_update

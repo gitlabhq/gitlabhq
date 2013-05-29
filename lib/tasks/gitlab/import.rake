@@ -10,7 +10,7 @@ namespace :gitlab do
     #  * existing projects will be skipped
     #
     desc "GITLAB | Import bare repositories from git_host -> base_path into GitLab project instance"
-    task :repos => :environment do
+    task repos: :environment do
 
       git_base_path = Gitlab.config.gitlab_shell.repos_path
       repos_to_import = Dir.glob(git_base_path + '/*')
@@ -40,7 +40,7 @@ namespace :gitlab do
           user = User.admins.first
 
           project_params = {
-            :name => path,
+            name: path,
           }
 
           project = Projects::CreateContext.new(user, project_params).execute

@@ -2,12 +2,9 @@
   = form_tag search_path, method: :get, class: 'navbar-form pull-left' do |f|
     = text_field_tag "search", nil, placeholder: "Search", class: "search-input"
     = hidden_field_tag :group_id, @group.try(:id)
-    = hidden_field_tag :project_id, @project.try(:id)
-
-:javascript
-  $(function(){
-    $("#search").autocomplete({
-      source: #{raw search_autocomplete_source},
-      select: function(event, ui) { location.href = ui.item.url }
-    });
-  });
+    - if @project && @project.persisted?
+      = hidden_field_tag :project_id, @project.id
+      = hidden_field_tag :search_code, true
+    = hidden_field_tag :repository_ref, @ref
+    = submit_tag 'Go' if ENV['RAILS_ENV'] == 'test'
+    .search-autocomplete-json.hide{:'data-autocomplete-opts' => search_autocomplete_source }

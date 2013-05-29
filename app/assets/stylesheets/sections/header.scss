@@ -119,8 +119,12 @@ header {
         border-bottom: 1px solid #AAA;
 
         .nav > li > a {
-          color: #fff;
-          text-shadow: 0 1px 0 #111;
+          color: #DDD;
+          text-shadow: 0 1px 0 #444;
+
+          &:hover {
+            color: #FFF;
+          }
         }
       }
     }
@@ -145,7 +149,7 @@ header {
           background: url('logo-white.png') no-repeat center 1px;
           background-size: 38px;
           color: #fff;
-          text-shadow: 0 1px 1px #111;
+          text-shadow: 0 1px 1px #444;
         }
       }
     }
@@ -154,7 +158,7 @@ header {
         color: #FFF;
       }
       color: #fff;
-      text-shadow: 0 1px 1px #111;
+      text-shadow: 0 1px 1px #444;
     }
   }
 

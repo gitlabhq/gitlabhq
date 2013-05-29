@@ -2,23 +2,33 @@ require "grit"
 
 module Network
   class Graph
-    attr_reader :days, :commits, :map
+    attr_reader :days, :commits, :map, :notes
 
     def self.max_count
       @max_count ||= 650
     end
 
-    def initialize project, ref, commit
+    def initialize project, ref, commit, filter_ref
       @project = project
       @ref = ref
       @commit = commit
+      @filter_ref = filter_ref
       @repo = project.repo
 
       @commits = collect_commits
       @days = index_commits
+      @notes = collect_notes
     end
 
     protected
+
+    def collect_notes
+      h = Hash.new(0)
+      @project.notes.where('noteable_type = ?' ,"Commit").group('notes.commit_id').select('notes.commit_id, count(notes.id) as note_count').each do |item|
+        h[item["commit_id"]] = item["note_count"]
+      end
+      h
+    end
 
     # Get commits from repository
     #
@@ -98,7 +108,9 @@ module Network
         skip: skip
       }
 
-      Grit::Commit.find_all(@repo, nil, opts)
+      ref = @ref if @filter_ref
+
+      Grit::Commit.find_all(@repo, ref, opts)
     end
 
     def commits_sort_by_ref
@@ -181,7 +193,7 @@ module Network
         l.spaces << space
         # Also add space to parent
         l.parents(@map).each do |parent|
-          if parent.space > 0
+          if 0 < parent.space && parent.space < space
             parent.spaces << space
           end
         end

@@ -1,32 +1,32 @@
-@Wall =
-  note_ids: []
-  project_id: null
-
-  init: (project_id) ->
-    Wall.project_id = project_id
-    Wall.getContent()
-    Wall.initRefresh()
-    Wall.initForm()
+class Wall
+  constructor: (project_id) ->
+    @project_id = project_id
+    @note_ids = []
+    @getContent()
+    @initRefresh()
+    @initForm()
   
   # 
   # Gets an initial set of notes.
   # 
   getContent: ->
-    Api.notes Wall.project_id, (notes) ->
-      $.each notes, (i, note) ->
+    Api.notes @project_id, (notes) =>
+      $.each notes, (i, note) =>
         # render note if it not present in loaded list
         # or skip if rendered
-        if $.inArray(note.id, Wall.note_ids) == -1
-          Wall.note_ids.push(note.id)
-          Wall.renderNote(note)
-          Wall.scrollDown()
+        if $.inArray(note.id, @note_ids) == -1
+          @note_ids.push(note.id)
+          @renderNote(note)
+          @scrollDown()
           $("abbr.timeago").timeago()
 
   initRefresh: ->
-    setInterval("Wall.refresh()", 10000)
+    setInterval =>
+      @refresh()
+    , 10000
 
   refresh: ->
-    Wall.getContent()
+    @getContent()
 
   scrollDown: ->
     notes = $('ul.notes')
@@ -36,8 +36,8 @@
     form = $('.wall-note-form')
     form.find("#target_type").val('wall')
 
-    form.on 'ajax:success', ->
-      Wall.refresh()
+    form.on 'ajax:success', =>
+      @refresh()
       form.find(".js-note-text").val("").trigger("input")
     
     form.on 'ajax:complete', ->
@@ -58,7 +58,7 @@
     form.show()
   
   renderNote: (note) ->
-    template = Wall.noteTemplate()
+    template = @noteTemplate()
     template = template.replace('{{author_name}}', note.author.name)
     template = template.replace('{{created_at}}', note.created_at)
     template = template.replace('{{text}}', linkify(sanitize(note.body)))
@@ -81,3 +81,5 @@
       </span>
       <abbr class="timeago" title="{{created_at}}">{{created_at}}</abbr>
     </li>'
+
+@Wall = Wall

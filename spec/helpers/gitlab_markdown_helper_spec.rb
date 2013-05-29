@@ -370,7 +370,7 @@ describe GitlabMarkdownHelper do
       @wiki.stub(:content).and_return('wiki content')
     end
 
-    it "should use Gitlab Flavored Markdown for markdown files" do
+    it "should use GitLab Flavored Markdown for markdown files" do
       @wiki.stub(:format).and_return(:markdown)
 
       helper.should_receive(:markdown).with('wiki content')

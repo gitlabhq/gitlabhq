@@ -43,6 +43,7 @@
                     - current_line += 1
             %td.lines
               %pre
-                - lines.each do |line|
-                  = line
-                  \
+                :erb
+                  <% lines.each do |line| %>
+                    <%= line %>
+                  <% end %>

@@ -1,4 +1,5 @@
 require_relative 'shell_env'
+require 'omniauth-ldap'
 
 module Grack
   class Auth < Rack::Auth::Basic
@@ -32,8 +33,18 @@ module Grack
         # Authentication with username and password
         login, password = @auth.credentials
         self.user = User.find_by_email(login) || User.find_by_username(login)
-        return false unless user.try(:valid_password?, password)
 
+        # If the provided login was not a known email or username
+        # then user is nil
+        if user.nil? 
+          # Second chance - try LDAP authentication
+          return false unless Gitlab.config.ldap.enabled         
+          ldap_auth(login,password)
+          return false unless !user.nil?
+        else
+          return false unless user.valid_password?(password)
+        end
+           
         Gitlab::ShellEnv.set_env(user)
       end
 
@@ -47,14 +58,35 @@ module Grack
       end
     end
 
+    def ldap_auth(login, password)
+      # Check user against LDAP backend if user is not authenticated
+      # Only check with valid login and password to prevent anonymous bind results
+      gl = Gitlab.config
+      if gl.ldap.enabled && !login.blank? && !password.blank?
+        ldap = OmniAuth::LDAP::Adaptor.new(gl.ldap)
+        ldap_user = ldap.bind_as(
+          filter: Net::LDAP::Filter.eq(ldap.uid, login),
+          size: 1,
+          password: password
+        )
+        if ldap_user
+          self.user = User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap')
+        end
+      end
+    end
+
     def validate_get_request
-      project.public || can?(user, :download_code, project)
+      validate_request(@request.params['service'])
     end
 
     def validate_post_request
-      if @request.path_info.end_with?('git-upload-pack')
+      validate_request(File.basename(@request.path))
+    end
+
+    def validate_request(service)
+      if service == 'git-upload-pack'
         project.public || can?(user, :download_code, project)
-      elsif @request.path_info.end_with?('git-receive-pack')
+      elsif service == 'git-receive-pack'
         action = if project.protected_branch?(current_ref)
                    :push_code_to_protected_branches
                  else
@@ -79,7 +111,7 @@ module Grack
       end
       # Need to reset seek point
       @request.body.rewind
-      /refs\/heads\/([\w\.-]+)/.match(input).to_a.last
+      /refs\/heads\/([\w\.-]+)/n.match(input.force_encoding('ascii-8bit')).to_a.last
     end
 
     def project

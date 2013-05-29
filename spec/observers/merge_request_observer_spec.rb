@@ -12,6 +12,8 @@ describe MergeRequestObserver do
 
   before { subject.stub(:current_user).and_return(some_user) }
   before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before(:each) { enable_observers }
+
 
   subject { MergeRequestObserver.instance }
 

@@ -134,7 +134,7 @@ describe Milestone do
 
     it 'should be false if milestone active and not all nestied issues closed' do
       issue.milestone = milestone
-      issue.save 
+      issue.save
 
       milestone.can_be_closed?.should be_false
     end

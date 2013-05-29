@@ -41,14 +41,24 @@ window.linkify = (str) ->
   exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   return str.replace(exp,"<a href='$1'>$1</a>")
 
+window.startSpinner = ->
+  $('.turbolink-spinner').fadeIn()
+
+window.stopSpinner = ->
+  $('.turbolink-spinner').fadeOut()
+
+document.addEventListener("page:fetch", startSpinner)
+document.addEventListener("page:receive", stopSpinner)
 
 $ ->
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 
   # Click a .appear-link, appear-data fadeout
-  $(".appear-link").on 'click', ->
+  $(".appear-link").on 'click', (e) ->
     $('.appear-data').fadeIn()
+    e.preventDefault()
+
 
   # Initialize chosen selects
   $('select.chosen').chosen()

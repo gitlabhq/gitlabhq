@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Milestones API
   class Milestones < Grape::API
     before { authenticate! }

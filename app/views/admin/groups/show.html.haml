@@ -118,16 +118,3 @@
     .form-actions
       = submit_tag 'Move projects', class: "btn btn-create"
 
-:javascript
-  $(function(){
-    var modal = $('.change-owner-holder');
-    $('.change-owner-link').bind("click", function(){
-      $(this).hide();
-      modal.show();
-    });
-    $('.change-owner-cancel-link').bind("click", function(){
-      modal.hide();
-      $('.change-owner-link').show();
-    })
-  })
-

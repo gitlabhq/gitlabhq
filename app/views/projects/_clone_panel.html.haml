@@ -1,17 +1,24 @@
 .project_clone_panel
   .row
-    .span7
+    .span8
       .form-horizontal= render "shared/clone_panel"
-    .span4.pull-right
+    .span3.pull-right
       .pull-right
         - unless @project.empty_repo?
+          - if can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
+            - if current_user.already_forked?(@project)
+              = link_to project_path(current_user.fork_of(@project)), class: 'btn grouped btn-primary' do
+                Forked
+            - else
+              = link_to fork_project_path(@project), title: "Fork", class: "btn grouped", method: "POST" do
+                %i.icon-copy
+                Fork
           - if can? current_user, :download_code, @project
-            = link_to archive_project_repository_path(@project), class: "btn-small btn grouped" do
+            = link_to archive_project_repository_path(@project), class: "btn grouped" do
               %i.icon-download-alt
               Download
-          - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
-            = link_to new_project_merge_request_path(@project), title: "New Merge Request", class: "btn-small btn grouped" do
-              Merge Request
-          - if @project.issues_enabled && can?(current_user, :write_issue, @project)
-            = link_to url_for_new_issue, title: "New Issue", class: "btn-small btn grouped" do
-              Issue
+
+            = link_to tags_project_repository_path(@project), class: "btn grouped only-wide", title: 'Git Tags' do
+              %i.icon-tags
+              Tags
+

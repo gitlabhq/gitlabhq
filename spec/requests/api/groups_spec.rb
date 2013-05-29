@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API do
   include ApiHelpers
 
   let(:user1)  { create(:user) }
@@ -26,7 +26,7 @@ describe Gitlab::API do
         json_response.first['name'].should == group1.name
       end
     end
-    
+
     context "when authenticated as  admin" do
       it "admin: should return an array of all groups" do
         get api("/groups", admin)
@@ -36,7 +36,7 @@ describe Gitlab::API do
       end
     end
   end
-  
+
   describe "GET /groups/:id" do
     context "when authenticated as user" do
       it "should return one of user1's groups" do
@@ -44,32 +44,32 @@ describe Gitlab::API do
         response.status.should == 200
         json_response['name'] == group1.name
       end
-      
+
       it "should not return a non existing group" do
         get api("/groups/1328", user1)
         response.status.should == 404
       end
-      
+
       it "should not return a group not attached to user1" do
         get api("/groups/#{group2.id}", user1)
         response.status.should == 404
       end
     end
-    
+
     context "when authenticated as admin" do
       it "should return any existing group" do
         get api("/groups/#{group2.id}", admin)
         response.status.should == 200
         json_response['name'] == group2.name
       end
-      
+
       it "should not return a non existing group" do
         get api("/groups/1328", admin)
         response.status.should == 404
       end
     end
   end
-  
+
   describe "POST /groups" do
     context "when authenticated as user" do
       it "should not create group" do
@@ -77,7 +77,7 @@ describe Gitlab::API do
         response.status.should == 403
       end
     end
-    
+
     context "when authenticated as admin" do
       it "should create group" do
         post api("/groups", admin), attributes_for(:group)
@@ -85,17 +85,17 @@ describe Gitlab::API do
       end
 
       it "should not create group, duplicate" do
-        post api("/groups", admin), {:name => "Duplicate Test", :path => group2.path}
+        post api("/groups", admin), {name: "Duplicate Test", path: group2.path}
         response.status.should == 404
       end
 
       it "should return 400 bad request error if name not given" do
-        post api("/groups", admin), { :path => group2.path }
+        post api("/groups", admin), { path: group2.path }
         response.status.should == 400
       end
 
       it "should return 400 bad request error if path not given" do
-        post api("/groups", admin), { :name => 'test' }
+        post api("/groups", admin), { name: 'test' }
         response.status.should == 400
       end
     end
@@ -104,8 +104,8 @@ describe Gitlab::API do
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
-       project.stub!(:transfer).and_return(true) 
-       Project.stub(:find).and_return(project) 
+       project.stub!(:transfer).and_return(true)
+       Project.stub(:find).and_return(project)
     end
 
 

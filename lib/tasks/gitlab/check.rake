@@ -24,6 +24,7 @@ namespace :gitlab do
       check_init_script_up_to_date
       check_satellites_exist
       check_redis_version
+      check_git_version
 
       finished_checking "GitLab"
     end
@@ -143,7 +144,7 @@ namespace :gitlab do
         return
       end
 
-      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab 2>/dev/null`
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab 2>/dev/null`
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -361,10 +362,10 @@ namespace :gitlab do
 
 
   namespace :gitlab_shell do
-    desc "GITLAB | Check the configuration of Gitlab Shell"
+    desc "GITLAB | Check the configuration of GitLab Shell"
     task check: :environment  do
       warn_user_is_not_gitlab
-      start_checking "Gitlab Shell"
+      start_checking "GitLab Shell"
 
       check_gitlab_shell
       check_repo_base_exists
@@ -374,7 +375,7 @@ namespace :gitlab do
       check_post_receive_hook_is_up_to_date
       check_repos_post_receive_hooks_is_link
 
-      finished_checking "Gitlab Shell"
+      finished_checking "GitLab Shell"
     end
 
 
@@ -409,12 +410,12 @@ namespace :gitlab do
         puts "no".red
         puts "#{repo_base_path} is missing".red
         try_fixing_it(
-          "This should have been created when setting up Gitlab Shell.",
+          "This should have been created when setting up GitLab Shell.",
           "Make sure it's set correctly in config/gitlab.yml",
-          "Make sure Gitlab Shell is installed correctly."
+          "Make sure GitLab Shell is installed correctly."
         )
         for_more_information(
-          see_installation_guide_section "Gitlab Shell"
+          see_installation_guide_section "GitLab Shell"
         )
         fix_and_rerun
       end
@@ -459,7 +460,7 @@ namespace :gitlab do
           "find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
-          see_installation_guide_section "Gitlab Shell"
+          see_installation_guide_section "GitLab Shell"
         )
         fix_and_rerun
       end
@@ -485,7 +486,7 @@ namespace :gitlab do
           "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
         )
         for_more_information(
-          see_installation_guide_section "Gitlab Shell"
+          see_installation_guide_section "GitLab Shell"
         )
         fix_and_rerun
       end
@@ -534,7 +535,7 @@ namespace :gitlab do
               File.realpath(project_hook_file) == File.realpath(gitlab_shell_hook_file)
             puts "ok".green
           else
-            puts "not a link to Gitlab Shell's hook".red
+            puts "not a link to GitLab Shell's hook".red
             try_fixing_it(
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
@@ -587,7 +588,7 @@ namespace :gitlab do
     def check_sidekiq_running
       print "Running? ... "
 
-      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d\.\d\.\d.+$/)
+      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d+\.\d+\.\d+.+$/)
         puts "yes".green
       else
         puts "no".red
@@ -654,11 +655,32 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    print "GitLab Shell version? ... "
-    if gitlab_shell_version.strip == '1.3.0'
-      puts 'OK (1.3.0)'.green
+    required_version = Gitlab::VersionInfo.new(1, 4, 0)
+    current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
+
+    print "GitLab Shell version >= #{required_version} ? ... "
+    if required_version <= current_version
+      puts "OK (#{current_version})".green
     else
-      puts 'FAIL. Please update gitlab-shell to v1.3.0'.red
+      puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".red
+    end
+  end
+
+  def check_git_version
+    required_version = Gitlab::VersionInfo.new(1, 7, 10)
+    current_version = Gitlab::VersionInfo.parse(run("#{Gitlab.config.git.bin_path} --version"))
+
+    puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
+    print "Git version >= #{required_version} ? ... "
+
+    if required_version <= current_version
+        puts "yes (#{current_version})".green
+    else
+      puts "no".red
+      try_fixing_it(
+        "Update your git to a version >= #{required_version} from #{current_version}"
+      )
+      fix_and_rerun
     end
   end
 end

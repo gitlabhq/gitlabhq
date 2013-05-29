@@ -1,6 +1,6 @@
 <h2>Resend unlock instructions</h2>
 
-<%= form_for(resource, :as => resource_name, :url => unlock_path(resource_name), :html => { :method => :post }) do |f| %>
+<%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
   <%= devise_error_messages! %>
 
   <div><%= f.label :email %><br />
@@ -9,4 +9,4 @@
   <div><%= f.submit "Resend unlock instructions" %></div>
 <% end %>
 
-<%= render :partial => "devise/shared/links" %>
+<%= render partial: "devise/shared/links" %>

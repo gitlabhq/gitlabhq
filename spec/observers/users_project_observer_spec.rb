@@ -16,7 +16,7 @@ describe UsersProjectObserver do
 
     it "should send email to user" do
       subject.should_receive(:notification)
-      Event.stub(:create => true)
+      Event.stub(create: true)
 
       create(:users_project)
     end

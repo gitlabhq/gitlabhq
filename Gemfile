@@ -22,9 +22,8 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 
 # Extracting information from a git repository
-# Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
-gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: '42297cdcee16284d2e4eff23d41377f52fc28b9d'
-gem 'grit_ext', '~> 0.8.1'
+# Provide access to Gitlab::Git library
+gem 'gitlab_git', '~> 1.2.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
@@ -35,12 +34,15 @@ gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
+# Git Wiki
+gem "gitlab-gollum-lib", "~> 1.0.0", require: 'gollum-lib'
+
 # Language detection
-gem "github-linguist", "~> 2.3.4" , require: "linguist"
+gem "github-linguist", require: "linguist"
 
 # API
-gem "grape", "~> 0.3.1"
-gem "grape-entity", "~> 0.2.0"
+gem "grape"
+gem "grape-entity"
 
 # Format dates and times
 # based on human-friendly examples
@@ -57,6 +59,8 @@ gem "haml-rails"
 
 # Files attachments
 gem "carrierwave"
+# for aws storage
+# gem "fog", "~> 1.3.1"
 
 # Authorization
 gem "six"
@@ -69,13 +73,13 @@ gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
 # Servers
-gem "puma", '~> 2.0.0.b7'
+gem "puma", '~> 2.0.1'
 
 # State machine
 gem "state_machine"
 
 # Issue tags
-gem "acts-as-taggable-on", "2.3.3"
+gem "acts-as-taggable-on"
 
 # Background jobs
 gem 'slim'
@@ -91,9 +95,6 @@ gem "colored"
 # GitLab settings
 gem 'settingslogic'
 
-# Git Wiki
-gem "gollum-lib", "~> 1.0.0"
-
 # Misc
 gem "foreman"
 
@@ -101,14 +102,16 @@ gem "foreman"
 gem "redis-rails"
 
 group :assets do
-  gem "sass-rails",   "~> 3.2.5"
-  gem "coffee-rails", "~> 3.2.2"
-  gem "uglifier",     "~> 1.3.0"
+  gem "sass-rails"
+  gem "coffee-rails"
+  gem "uglifier"
   gem "therubyracer"
+  gem 'turbolinks'
+  gem 'jquery-turbolinks'
 
   gem 'chosen-rails',     "0.9.8"
   gem 'select2-rails'
-  gem 'jquery-atwho-rails', "0.1.7"
+  gem 'jquery-atwho-rails', "0.3.0"
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
@@ -148,6 +151,9 @@ group :development, :test do
   gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
+
+  # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
+  gem 'minitest'
 
   # Generate Fake data
   gem "ffaker"

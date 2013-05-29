@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # groups API
   class Groups < Grape::API
     before { authenticate! }
@@ -70,7 +70,7 @@ module Gitlab
         else
           not_found!
         end
-      end 
+      end
     end
   end
 end

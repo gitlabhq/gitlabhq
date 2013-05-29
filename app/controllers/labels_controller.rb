@@ -7,7 +7,13 @@ class LabelsController < ProjectResourceController
   respond_to :js, :html
 
   def index
-    @labels = @project.issues_labels.order('count DESC')
+    @labels = @project.issues_labels
+  end
+
+  def generate
+    Gitlab::IssuesLabels.generate(@project)
+
+    redirect_to project_labels_path(@project)
   end
 
   protected

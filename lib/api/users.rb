@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Users API
   class Users < Grape::API
     before { authenticate! }
@@ -174,7 +174,7 @@ module Gitlab
       delete "keys/:id" do
         begin
           key = current_user.keys.find params[:id]
-          key.delete
+          key.destroy
         rescue
         end
       end

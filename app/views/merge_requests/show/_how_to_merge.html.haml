@@ -3,22 +3,17 @@
     %a.close{href: "#"} ×
     %h3 How To Merge
   .modal-body
+    %p
+      %strong Step 1.
+      Checkout target branch and get recent objects from GitLab
     %pre.dark
-      = preserve do
+      :preserve
         git checkout #{@merge_request.target_branch}
         git fetch origin
+    %p
+      %strong Step 2.
+      Merge source branch into target branch and push changes to GitLab
+    %pre.dark
+      :preserve
         git merge origin/#{@merge_request.source_branch}
         git push origin #{@merge_request.target_branch}
-
-
-:javascript
-  $(function(){
-    var modal = $('#modal_merge_info').modal({modal: true, show:false});
-    $('.how_to_merge_link').bind("click", function(){
-      modal.show();
-    });
-    $('.modal-header .close').bind("click", function(){
-      modal.hide();
-    })
-  })
-

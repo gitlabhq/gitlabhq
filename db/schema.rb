@@ -11,7 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130410175022) do
+ActiveRecord::Schema.define(:version => 20130506095501) do
+
+  create_table "deploy_keys_projects", :force => true do |t|
+    t.integer  "deploy_key_id", :null => false
+    t.integer  "project_id",    :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -31,6 +38,15 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
   add_index "events", ["project_id"], :name => "index_events_on_project_id"
   add_index "events", ["target_id"], :name => "index_events_on_target_id"
   add_index "events", ["target_type"], :name => "index_events_on_target_type"
+
+  create_table "forked_project_links", :force => true do |t|
+    t.integer  "forked_to_project_id",   :null => false
+    t.integer  "forked_from_project_id", :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "forked_project_links", ["forked_to_project_id"], :name => "index_forked_project_links_on_forked_to_project_id", :unique => true
 
   create_table "issues", :force => true do |t|
     t.string   "title"
@@ -60,24 +76,23 @@ ActiveRecord::Schema.define(:version => 20130410175022) do
     t.text     "key"
     t.string   "title"
     t.string   "identifier"
-    t.integer  "project_id"
+    t.string   "type"
   end
 
   add_index "keys", ["identifier"], :name => "index_keys_on_identifier"
-  add_index "keys", ["project_id"], :name => "index_keys_on_project_id"
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                       :null => false
-    t.string   "source_branch",                       :null => false
-    t.integer  "project_id",                          :null => false
+    t.string   "target_branch", :null => false
+    t.string   "source_branch", :null => false
+    t.integer  "project_id",    :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "st_commits",    :limit => 2147483647
-    t.text     "st_diffs",      :limit => 2147483647
+    t.text     "st_commits"
+    t.text     "st_diffs"
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"

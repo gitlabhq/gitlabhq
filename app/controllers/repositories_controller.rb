@@ -27,7 +27,9 @@ class RepositoriesController < ProjectResourceController
     end
 
 
-    file_path = @repository.archive_repo(params[:ref])
+    storage_path = Rails.root.join("tmp", "repositories")
+
+    file_path = @repository.archive_repo(params[:ref], storage_path)
 
     if file_path
       # Send file to user

@@ -9,6 +9,8 @@
   = csrf_meta_tags
   = include_gon
 
+  = render 'layouts/google_analytics' if gitlab_config.has_key?('google_analytics_id')
+
   -# Atom feed
   - if current_user
     - if controller_name == 'projects' && action_name == 'index'

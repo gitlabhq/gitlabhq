@@ -89,7 +89,7 @@ class User < ActiveRecord::Base
 
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
-  has_many :own_projects,             foreign_key: :creator_id
+  has_many :own_projects,             foreign_key: :creator_id, class_name: 'Project'
   has_many :owned_projects,           through: :namespaces, source: :projects
 
   #
@@ -231,16 +231,6 @@ class User < ActiveRecord::Base
 
   # Projects user has access to
   def authorized_projects
-  #   project_ids = users_projects.pluck(:project_id)
-  #   project_ids = project_ids | owned_projects.pluck(:id)
-  #   project_ids = project_ids | public_projects.pluck(:id) 
-  #   Project.where(id: project_ids)
-  # end
-
-  # # Projects in user namespace
-  # def personal_projects
-  #   Project.personal(self)
-
     @project_ids ||= (owned_projects.pluck(:id) + projects.pluck(:id) + public_projects.pluck(:id)).uniq
     Project.where(id: @project_ids)
   end
@@ -339,6 +329,24 @@ class User < ActiveRecord::Base
 
   def name_with_username
     "#{name} (#{username})"
+  end
+
+  def tm_of(project)
+    project.team_member_by_id(self.id)
+  end
+
+  def already_forked? project
+    !!fork_of(project)
+  end
+
+  def fork_of project
+    links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
+
+    if links.any?
+      links.first.forked_to_project
+    else
+      nil
+    end
   end
 
   def tm_of(project)
