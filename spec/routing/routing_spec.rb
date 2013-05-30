@@ -8,16 +8,10 @@ describe SearchController, "routing" do
 end
 
 # gitlab_api /api         API::API
-#     resque /info/resque Resque::Server
 #            /:path       Grack
 describe "Mounted Apps", "routing" do
   it "to API" do
     get("/api").should be_routable
-  end
-
-  it "to Resque" do
-    pending
-    get("/info/resque").should be_routable
   end
 
   it "to Grack" do
