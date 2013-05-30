@@ -177,6 +177,9 @@ Make sure to edit both files to match your setup.
 
     # PostgreSQL
     sudo -u git cp config/database.yml.postgresql config/database.yml
+    
+    # Make sure only GitLab can read the password
+    sudo chmod o-rwx config/database.yml
 
 Make sure to update username/password in config/database.yml.
 
