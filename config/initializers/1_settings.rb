@@ -60,6 +60,11 @@ Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
+Settings.gitlab['user_home']  ||= begin
+  Etc.getpwnam(Settings.gitlab['user']).dir
+rescue ArgumentError # no user configured
+  '/home/' + Settings.gitlab['user']
+end
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
@@ -81,10 +86,10 @@ Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
-Settings.gitlab_shell['hooks_path']   ||= '/home/git/gitlab-shell/hooks/'
+Settings.gitlab_shell['hooks_path']   ||= Settings.gitlab['user_home'] + '/gitlab-shell/hooks/'
 Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
-Settings.gitlab_shell['repos_path']   ||= '/home/git/repositories/'
+Settings.gitlab_shell['repos_path']   ||= Settings.gitlab['user_home'] + '/repositories/'
 Settings.gitlab_shell['ssh_host']     ||= (Settings.gitlab.host || 'localhost')
 Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
