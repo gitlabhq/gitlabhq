@@ -68,7 +68,7 @@ class DashboardController < ApplicationController
   end
 
   def event_filter
-    filters = cookies['event_filter'].split(',') if cookies['event_filter']
+    filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
   end
 end

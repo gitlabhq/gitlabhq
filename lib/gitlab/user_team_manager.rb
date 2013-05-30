@@ -25,7 +25,7 @@ module Gitlab
       def update_team_user_membership(team, member, options)
         updates = {}
 
-        if options[:default_projects_access] && options[:default_projects_access] != team.default_projects_access(member)
+        if options[:default_projects_access] && options[:default_projects_access].to_s != team.default_projects_access(member).to_s
           updates[:permission] = options[:default_projects_access]
         end
 
@@ -33,19 +33,17 @@ module Gitlab
           updates[:group_admin] = options[:group_admin].present?
         end
 
-        unless updates.blank?
-          user_team_relationship = team.user_team_user_relationships.find_by_user_id(member)
-          if user_team_relationship.update_attributes(updates)
-            if updates[:permission]
-              rebuild_project_permissions_to_member(team, member)
-            end
-            true
-          else
-            false
-          end
-        else
-          true
+        return true if updates.blank?
+
+        user_team_relationship = team.user_team_user_relationships.find_by_user_id(member)
+
+        return false unless user_team_relationship.update_attributes(updates)
+
+        if updates[:permission]
+          rebuild_project_permissions_to_member(team, member)
         end
+
+        true
       end
 
       def update_project_greates_access(team, project, permission)
