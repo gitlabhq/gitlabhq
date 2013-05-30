@@ -45,7 +45,7 @@
               = link_to project_path(project), class: dom_class(project) do
                 - if project.namespace
                   = project.namespace.human_name
-                  \/
+                  %span= "/"
                 %strong
                   = truncate(project.name, length: 45)
               .pull-right.light
