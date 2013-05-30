@@ -124,6 +124,9 @@ module ApplicationHelper
   end
 
   def user_color_scheme_class
+    # in case we dont have current_user (ex. in mailer)
+    return 1 unless defined?(current_user)
+
     case current_user.color_scheme_id
     when 1 then 'white'
     when 2 then 'black'
