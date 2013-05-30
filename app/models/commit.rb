@@ -2,6 +2,9 @@ class Commit
   include ActiveModel::Conversion
   include StaticModel
   extend ActiveModel::Naming
+  include Mentionable
+
+  attr_mentionable :safe_message
 
   # Safe amount of files with diffs in one commit to render
   # Used to prevent 500 error on huge commits by suppressing diff
@@ -63,6 +66,29 @@ class Commit
     else
       description.split(/\n/, 2)[1].try(:chomp)
     end
+  end
+
+  # Regular expression that identifies commit message clauses that trigger issue closing.
+  def issue_closing_regex
+    @issue_closing_regex ||= Regexp.new(Gitlab.config.gitlab.issue_closing_pattern)
+  end
+
+  # Discover issues should be closed when this commit is pushed to a project's
+  # default branch.
+  def closes_issues project
+    md = issue_closing_regex.match(safe_message)
+    if md
+      extractor = Gitlab::ReferenceExtractor.new
+      extractor.analyze(md[0])
+      extractor.issues_for(project)
+    else
+      []
+    end
+  end
+
+  # Mentionable override.
+  def gfm_reference
+    "commit #{sha[0..5]}"
   end
 
   def method_missing(m, *args, &block)

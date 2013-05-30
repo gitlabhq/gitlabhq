@@ -46,6 +46,11 @@ production: &base
     ## Users management
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
 
+    ## Automatic issue closing
+    # If a commit message matches this regular express, all issues referenced from the matched text will be closed
+    # if it's pushed to a project's default branch.
+    # issue_closing_pattern: "^([Cc]loses|[Ff]ixes) +#\d+"
+
     ## Default project features settings
     default_projects_features:
       issues: true

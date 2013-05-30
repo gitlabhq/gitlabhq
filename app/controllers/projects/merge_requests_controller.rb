@@ -3,6 +3,7 @@ require 'gitlab/satellite/satellite'
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
   before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]
+  before_filter :closes_issues, only: [:edit, :update, :show, :commits, :diffs]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
 
@@ -133,6 +134,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_request
     @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
+  end
+
+  def closes_issues
+    @closes_issues ||= @merge_request.closes_issues
   end
 
   def authorize_modify_merge_request!

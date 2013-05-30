@@ -1,3 +1,7 @@
+v 6.1.0
+  - Link issues, merge requests, and commits when they reference each other with GFM
+  - Close issues automatically when pushing commits with a special message
+
 v 6.0.0
   - Feature: Replace teams with group membership
     We introduce group membership in 6.0 as a replacement for teams.
@@ -54,7 +58,7 @@ v 5.4.0
   - Notify mentioned users with email
 
 v 5.3.0
-  - Refactored services 
+  - Refactored services
   - Campfire service added
   - HipChat service added
   - Fixed bug with LDAP + git over http
