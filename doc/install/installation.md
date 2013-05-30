@@ -101,7 +101,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    git checkout v1.2.0
+    git checkout v1.3.0
 
     cp config.yml.example config.yml
 
