@@ -27,7 +27,7 @@ Please send a pull request with a tested solution or a pull request with a faili
     * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
     * Add the last commit sha1 of the GitLab version you used to replicate the issue (obtainable from the help page)
-    * Describe your setup (use relevant parts from `sudo -u gitlab -H bundle exec rake gitlab:env:info`)
+    * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 7. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
 ## Pull requests
