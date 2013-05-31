@@ -3,14 +3,13 @@
     Search results
     %span.cgray (#{@total_results})
 
-- if @project
-  %ul.nav.nav-pills
-    %li{class: ("active" if params[:search_code].present?)}
-      = link_to search_path(params.merge(search_code: true)) do
-        Repository Code
-    %li{class: ("active" if params[:search_code].blank?)}
-      = link_to search_path(params.merge(search_code: nil)) do
-        Everything else
+%ul.nav.nav-pills
+  %li{class: ("active" if params[:search_code].blank?)}
+    = link_to search_path(params.merge(search_code: nil)) do
+      Everything else
+  %li{class: ("active" if params[:search_code].present?)}
+    = link_to search_path(params.merge(search_code: true)) do
+      Repository Code
 
 .search_results
   %ul.bordered-list
@@ -43,8 +42,8 @@
             = truncate wiki_page.title, length: 50
         %span.light (#{wiki_page.project.name_with_namespace})
 
-    - @blobs.each do |blob|
-      = render 'blob', blob: blob
+    - @blobs.each do |blob_result|
+      = render 'blob', blob: blob_result 
 
   = paginate @blobs, theme: 'gitlab'
 
