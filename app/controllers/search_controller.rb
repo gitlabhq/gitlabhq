@@ -13,6 +13,12 @@ class SearchController < ApplicationController
       project_ids.select! { |id| id == project_id.to_i}
     end
 
+    page = if params[:page].present?
+             params[:page].to_i
+           else
+             1
+           end
+
     result = SearchContext.new(project_ids, params).execute
 
     @projects       = result[:projects]
@@ -20,6 +26,7 @@ class SearchController < ApplicationController
     @merge_requests = result[:merge_requests]
     @issues         = result[:issues]
     @wiki_pages     = result[:wiki_pages]
-    @blobs          = result[:blobs]
+    @blobs          = Kaminari.paginate_array(result[:blobs]).page(page).per(10)
+    @search_results_count = @projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + result[:blobs].count
   end
 end

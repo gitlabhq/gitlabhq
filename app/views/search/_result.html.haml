@@ -1,62 +1,68 @@
 %fieldset
   %legend
     Search results
-    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.count})
+    %span.cgray (#{@search_results_count})
 
-- if @project
-  %ul.nav.nav-pills
-    %li{class: ("active" if params[:search_code].present?)}
-      = link_to search_path(params.merge(search_code: true)) do
-        Repository Code
-    %li{class: ("active" if params[:search_code].blank?)}
-      = link_to search_path(params.merge(search_code: nil)) do
-        Everything else
+%ul.nav.nav-pills
+  %li{class: ("active" if params[:search_code].blank?)}
+    = link_to search_path(params.merge(search_code: nil)) do
+      Everything else
+  %li{class: ("active" if params[:search_code].present?)}
+    = link_to search_path(params.merge(search_code: true)) do
+      Repository Code
 
 
 .search_results
   %ul.bordered-list
-    - @projects.each do |project|
+    - if not params[:search_code] == "true"
+      - @projects.each do |project|
+        %li
+          project:
+          = link_to project do
+            %strong.term= project.name_with_namespace
+      - @merge_requests.each do |merge_request|
+        %li
+          merge request:
+          = link_to [merge_request.project, merge_request] do
+            %span ##{merge_request.id}
+            %strong.term
+              = truncate merge_request.title, length: 50
+          %span.light (#{merge_request.project.name_with_namespace})
+      - @issues.each do |issue|
+        %li
+          issue:
+          = link_to [issue.project, issue] do
+            %span ##{issue.id}
+            %strong.term
+              = truncate issue.title, length: 50
+          %span.light (#{issue.project.name_with_namespace})
+      - @wiki_pages.each do |wiki_page|
+        %li
+          wiki:
+          = link_to project_wiki_path(wiki_page.project, wiki_page) do
+            %strong.term
+              = truncate wiki_page.title, length: 50
+          %span.light (#{wiki_page.project.name_with_namespace})
+    - else
       %li
-        project:
-        = link_to project do
-          %strong.term= project.name_with_namespace
-    - @merge_requests.each do |merge_request|
-      %li
-        merge request:
-        = link_to [merge_request.project, merge_request] do
-          %span ##{merge_request.id}
-          %strong.term
-            = truncate merge_request.title, length: 50
-        %span.light (#{merge_request.project.name_with_namespace})
-    - @issues.each do |issue|
-      %li
-        issue:
-        = link_to [issue.project, issue] do
-          %span ##{issue.id}
-          %strong.term
-            = truncate issue.title, length: 50
-        %span.light (#{issue.project.name_with_namespace})
-    - @wiki_pages.each do |wiki_page|
-      %li
-        wiki:
-        = link_to project_wiki_path(wiki_page.project, wiki_page) do
-          %strong.term
-            = truncate wiki_page.title, length: 50
-        %span.light (#{wiki_page.project.name_with_namespace})
-    - @blobs.each do |file|
-      %li
-        .file_holder
-          .file_title
-            = link_to project_blob_path(@project, tree_join(file.ref, file.filename), :anchor => "L" + file.startline.to_s) do
-              %i.icon-file
-              %strong
-                = file.filename
-          .file_content.code.term
-            %div{class: user_color_scheme_class}
-              = raw file.colorize( formatter: :gitlab, options: { first_line_number: file.startline } )
+        = paginate @blobs
+        %ul
+          - @blobs.each do |blob|
+            - file = blob[:blob]
+            %li
+              .file_holder
+                .file_title
+                  = link_to project_blob_path(blob[:project], tree_join(file.ref, file.filename), :anchor => "L" + file.startline.to_s) do
+                    %i.icon-file
+                    %strong
+                      = file.filename
+                .file_content.code.term
+                  %div{class: user_color_scheme_class}
+                    = raw file.colorize( formatter: :gitlab, options: { first_line_number: file.startline } )
 
 :javascript
   $(function() {
+    $(".invisibile").hide(); // css
     $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
   })
 
