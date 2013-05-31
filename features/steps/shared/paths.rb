@@ -106,7 +106,7 @@ module SharedPaths
   end
 
   step 'I visit admin Resque page' do
-    visit admin_resque_path
+    visit admin_background_jobs_path
   end
 
   step 'I visit admin groups page' do

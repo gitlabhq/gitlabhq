@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Internal access API
   class Internal < Grape::API
     namespace 'internal' do
@@ -58,7 +58,7 @@ module Gitlab
 
       get "/check" do
         {
-          api_version: Gitlab::API.version,
+          api_version: API.version,
           gitlab_version: Gitlab::VERSION,
           gitlab_rev: Gitlab::REVISION,
         }

@@ -26,6 +26,7 @@ class SystemHooksService
       data.merge!({
         name: model.name,
         path: model.path,
+        path_with_namespace: model.path_with_namespace,
         project_id: model.id,
         owner_name: model.owner.name,
         owner_email: model.owner.email

@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Hooks API
   class SystemHooks < Grape::API
     before {

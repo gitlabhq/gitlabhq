@@ -32,20 +32,11 @@ module Grack
       if @auth.provided?
         # Authentication with username and password
         login, password = @auth.credentials
-        self.user = User.find_by_email(login) || User.find_by_username(login)
 
-        # If the provided login was not a known email or username
-        # then user is nil
-        if user.nil? 
-          # Second chance - try LDAP authentication
-          return false unless Gitlab.config.ldap.enabled         
-          ldap_auth(login,password)
-          return false unless !user.nil?
-        else
-          return false unless user.valid_password?(password)
-        end
-           
-        Gitlab::ShellEnv.set_env(user)
+        @user = authenticate(login, password)
+        return false unless @user
+
+        Gitlab::ShellEnv.set_env(@user)
       end
 
       # Git upload and receive
@@ -58,21 +49,35 @@ module Grack
       end
     end
 
+    def authenticate(login, password)
+      user = User.find_by_email(login) || User.find_by_username(login)
+
+      # If the provided login was not a known email or username
+      # then user is nil
+      if user.nil? || user.ldap_user?
+        # Second chance - try LDAP authentication
+        return nil unless ldap_conf.enabled
+
+        auth = Gitlab::Auth.new
+        auth.ldap_auth(login, password)
+      else
+        return user if user.valid_password?(password)
+      end
+    end
+
     def ldap_auth(login, password)
       # Check user against LDAP backend if user is not authenticated
       # Only check with valid login and password to prevent anonymous bind results
-      gl = Gitlab.config
-      if gl.ldap.enabled && !login.blank? && !password.blank?
-        ldap = OmniAuth::LDAP::Adaptor.new(gl.ldap)
-        ldap_user = ldap.bind_as(
-          filter: Net::LDAP::Filter.eq(ldap.uid, login),
-          size: 1,
-          password: password
-        )
-        if ldap_user
-          self.user = User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap')
-        end
-      end
+      return nil unless ldap_conf.enabled && !login.blank? && !password.blank?
+
+      ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
+      ldap_user = ldap.bind_as(
+        filter: Net::LDAP::Filter.eq(ldap.uid, login),
+        size: 1,
+        password: password
+      )
+
+      User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap') if ldap_user
     end
 
     def validate_get_request
@@ -138,6 +143,10 @@ module Grack
                        abilities << Ability
                        abilities
                      end
+    end
+
+    def ldap_conf
+      @ldap_conf ||= Gitlab.config.ldap
     end
   end# Auth
 end# Grack

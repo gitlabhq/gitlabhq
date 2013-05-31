@@ -27,7 +27,7 @@ class Dashboard
     else
       event_filters.splice index, 1
 
-    $.cookie "event_filter", event_filters.join(",")
+    $.cookie "event_filter", event_filters.join(","), { path: '/' }
 
   initSidebarTab: ->
     key = "dashboard_sidebar_filter"

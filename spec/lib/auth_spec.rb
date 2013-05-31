@@ -91,5 +91,15 @@ describe Gitlab::Auth do
       user.extern_uid.should == @info.uid
       user.provider.should == 'twitter'
     end
+
+    it "should apply defaults to user" do
+      @auth = mock(info: @info, provider: 'ldap')
+      user = gl_auth.create_from_omniauth(@auth, true)
+
+      user.should be_valid
+      user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
+      user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
+      user.can_create_team.should == Gitlab.config.gitlab.default_can_create_team
+    end
   end
 end

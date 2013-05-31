@@ -1,3 +1,17 @@
+v 5.3.0
+  - Refactored services 
+  - Campfire service added
+  - HipChat service added
+  - Fixed bug with LDAP + git over http
+  - Fixed bug with google analytics code being ignored
+  - Improve sign-in page if ldap enabled
+  - Respect newlines in wall messages
+  - Generate the Rails secret token on first run
+  - Rename repo feature
+  - Init.d: remove gitlab.scoket on service starta
+  - Api: added teams api
+  - Api: Prevent blob content being escaped
+
 v 5.2.0
   - Turbolinks
   - Git over http with ldap credentials
@@ -7,13 +21,15 @@ v 5.2.0
   - Restyle project clone panel
   - Move Gitlab::Git code to gitlab_git gem
   - Move update docs in repo
-  - requires gitlab-shell v1.4.0
-  - fixed submodules listing under file tab
+  - Requires gitlab-shell v1.4.0
+  - Fixed submodules listing under file tab
   - Fork feature (Angus MacArthur)
   - git version check in gitlab:check
   - Shared deploy keys feature
   - Ability to generate default labels set for issues
-  - improve gfm autocomplete (Harold Luo)
+  - Improve gfm autocomplete (Harold Luo)
+  - Added support for Google Analytics
+  - Code search feature (Javier Castro)
 
 v 5.1.0
   - You can login with email or username now

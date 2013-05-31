@@ -122,10 +122,10 @@ describe Admin::LogsController, "routing" do
   end
 end
 
-# admin_resque GET    /admin/resque(.:format) admin/resque#show
-describe Admin::ResqueController, "routing" do
+# admin_background_jobs GET    /admin/background_jobs(.:format) admin/background_jobs#show
+describe Admin::BackgroundJobsController, "routing" do
   it "to #show" do
-    get("/admin/resque").should route_to('admin/resque#show')
+    get("/admin/background_jobs").should route_to('admin/background_jobs#show')
   end
 end
 

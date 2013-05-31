@@ -1,9 +1,19 @@
 %fieldset
   %legend
     Search results
-    %span.cgray (#{@projects.count + @merge_requests.count + @issues.count + @wiki_pages.count})
+    %span.cgray (#{@total_results})
+
+- if @project
+  %ul.nav.nav-pills
+    %li{class: ("active" if params[:search_code].present?)}
+      = link_to search_path(params.merge(search_code: true)) do
+        Repository Code
+    %li{class: ("active" if params[:search_code].blank?)}
+      = link_to search_path(params.merge(search_code: nil)) do
+        Everything else
+
 .search_results
-  %ul.well-list
+  %ul.bordered-list
     - @projects.each do |project|
       %li
         project:
@@ -32,6 +42,11 @@
           %strong.term
             = truncate wiki_page.title, length: 50
         %span.light (#{wiki_page.project.name_with_namespace})
+
+    - @blobs.each do |blob|
+      = render 'blob', blob: blob
+
+  = paginate @blobs, theme: 'gitlab'
 
 :javascript
   $(function() {

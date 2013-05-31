@@ -119,15 +119,14 @@ module ApplicationHelper
     Emoji.names.to_s
   end
 
-  def ldap_enable?
-    Devise.omniauth_providers.include?(:ldap)
-  end
-
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
 
   def user_color_scheme_class
+    # in case we dont have current_user (ex. in mailer)
+    return 1 unless defined?(current_user)
+
     case current_user.color_scheme_id
     when 1 then 'white'
     when 2 then 'black'

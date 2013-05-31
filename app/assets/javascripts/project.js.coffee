@@ -1,10 +1,13 @@
 class Project
   constructor: ->
-    $('.new_project, .edit_project').on 'ajax:before', ->
-      $('.project_new_holder, .project_edit_holder').hide()
+    $('.project-edit-container').on 'ajax:before', =>
+      $('.project-edit-container').hide()
       $('.save-project-loader').show()
 
-    $('form #project_default_branch').chosen()
+    @initEvents()
+
+ 
+  initEvents: ->
     disableButtonIfEmptyField '#project_name', '.project-submit'
     
     $('#project_issues_enabled').change ->
@@ -20,6 +23,7 @@ class Project
         $('#project_issues_tracker_id').attr('disabled', 'disabled')
       else
         $('#project_issues_tracker_id').removeAttr('disabled')
+
 
 @Project = Project
 
