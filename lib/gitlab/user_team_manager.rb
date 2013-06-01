@@ -99,8 +99,8 @@ module Gitlab
 
         teams ||= project.user_teams.with_member(user)
 
-        if action && (action == :added) && (teams.count == 1)
-          result_access ||= project.users_project.with_user(user).first.project_access
+        if action && (action == :added)
+          result_access = project.users_projects.with_user(user).first.project_access
         end
 
         if teams.any?
