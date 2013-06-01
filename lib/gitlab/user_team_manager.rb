@@ -100,7 +100,7 @@ module Gitlab
         teams ||= project.user_teams.with_member(user)
 
         if action && (action == :added)
-          result_access = project.users_projects.with_user(user).first.project_access
+          result_access = project.users_projects.with_user(user).first.project_access if project.users_projects.with_user(user).any?
         end
 
         if teams.any?
