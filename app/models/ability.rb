@@ -71,7 +71,7 @@ class Ability
     end
 
     def project_guest_rules
-      project_anon_rules + [
+      project_anon_and_download_rules + [
         :write_project,
         :write_issue,
         :write_note
