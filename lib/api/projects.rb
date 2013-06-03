@@ -22,6 +22,15 @@ module API
         present @projects, with: Entities::Project
       end
 
+      # Get an owned projects list for authenticated user
+      #
+      # Example Request:
+      #   GET /projects/owned
+      get '/owned' do
+        @projects = paginate current_user.owned_projects
+        present @projects, with: Entities::Project
+      end
+
       # Get a single project
       #
       # Parameters:
@@ -408,6 +417,8 @@ module API
       end
 
       # Add new ssh key to currently authenticated user
+      # If deploy key already exists - it will be joined to project
+      # but only if original one was owned by same user
       #
       # Parameters:
       #   key (required) - New SSH Key
@@ -416,7 +427,26 @@ module API
       #   POST /projects/:id/keys
       post ":id/keys" do
         attrs = attributes_for_keys [:title, :key]
+
+        attrs[:key].strip!
+
+        # check if key already exist in project
+        key = user_project.deploy_keys.find_by_key(attrs[:key])
+        if key
+          present key, with: Entities::SSHKey
+          return
+        end
+
+        # Check for available deploy keys in other projects
+        key = current_user.owned_deploy_keys.find_by_key(attrs[:key])
+        if key
+          user_project.deploy_keys << key
+          present key, with: Entities::SSHKey
+          return
+        end
+
         key = DeployKey.new attrs
+
         if key.valid? && user_project.deploy_keys << key
           present key, with: Entities::SSHKey
         else

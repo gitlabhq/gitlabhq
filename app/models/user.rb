@@ -352,4 +352,8 @@ class User < ActiveRecord::Base
   def ldap_user?
     extern_uid && provider == 'ldap'
   end
+
+  def owned_deploy_keys
+    DeployKey.in_projects(self.owned_projects).uniq
+  end
 end
