@@ -428,21 +428,23 @@ module API
       post ":id/keys" do
         attrs = attributes_for_keys [:title, :key]
 
-        attrs[:key].strip!
+        if attrs[:key].present?
+          attrs[:key].strip!
 
-        # check if key already exist in project
-        key = user_project.deploy_keys.find_by_key(attrs[:key])
-        if key
-          present key, with: Entities::SSHKey
-          return
-        end
+          # check if key already exist in project
+          key = user_project.deploy_keys.find_by_key(attrs[:key])
+          if key
+            present key, with: Entities::SSHKey
+            return
+          end
 
-        # Check for available deploy keys in other projects
-        key = current_user.owned_deploy_keys.find_by_key(attrs[:key])
-        if key
-          user_project.deploy_keys << key
-          present key, with: Entities::SSHKey
-          return
+          # Check for available deploy keys in other projects
+          key = current_user.owned_deploy_keys.find_by_key(attrs[:key])
+          if key
+            user_project.deploy_keys << key
+            present key, with: Entities::SSHKey
+            return
+          end
         end
 
         key = DeployKey.new attrs
