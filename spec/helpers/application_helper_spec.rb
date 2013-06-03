@@ -83,4 +83,26 @@ describe ApplicationHelper do
     end
 
   end
+
+  describe "user_color_scheme_class" do
+    context "with current_user is nil" do
+      it "should return a string" do
+        stub!(:current_user).and_return(nil)
+        user_color_scheme_class.should be_kind_of(String)
+      end
+    end
+
+    context "with a current_user" do
+      (1..5).each do |color_scheme_id|
+        context "with color_scheme_id == #{color_scheme_id}" do
+          it "should return a string" do
+            current_user = double(:color_scheme_id => color_scheme_id)
+            stub!(:current_user).and_return(current_user)
+            user_color_scheme_class.should be_kind_of(String)
+          end
+        end
+      end
+    end
+  end
+
 end
