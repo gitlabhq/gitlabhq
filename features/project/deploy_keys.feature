@@ -1,6 +1,7 @@
 Feature: Project Deploy Keys
   Background:
     Given I sign in as a user
+    And Project repo dir is clean
     And I own project "Shop"
 
   Scenario: I should see deploy keys list
