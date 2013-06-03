@@ -19,4 +19,4 @@
 
   - unless @diffs.empty?
     %h4 Diff
-    = render "projects/commits/diffs", diffs: @diffs
+    = render "projects/commits/diffs", diffs: @diffs, project: @project

@@ -50,10 +50,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.target_project = Project.find_by_id(params[:merge_request][:target_project_id])
     end
     @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
+    @source_project = @merge_request.source_project
     @merge_request
   end
 
   def edit
+    @source_project = @merge_request.source_project
+    @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
   end
 
@@ -75,7 +78,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
       @merge_request.reload_code
       @merge_request.mark_as_unchecked
-      redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.'
+      redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
     else
       render "edit"
     end
@@ -104,6 +107,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def branch_from
     #This is always source
+    @source_project = @merge_request.nil? ? @project : @merge_request.source_project
     @commit = @repository.commit(params[:ref])
   end
 
@@ -128,13 +132,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   protected
 
+
   def selected_target_project
     ((@project.id.to_s == params[:target_project_id]) || @project.forked_project_link.nil?) ? @project : @project.forked_project_link.forked_from_project
   end
 
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find(params[:id])
+    @merge_request ||= MergeRequest.find_by_id(params[:id])
   end
 
   def authorize_modify_merge_request!

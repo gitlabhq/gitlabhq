@@ -184,6 +184,9 @@ describe "On a merge request diff", js: true, focus: true do
   end
 
   describe "with muliple note forms" do
+    let!(:project) { create(:source_project_with_code) }
+    let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
+
     before do
       find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
       find('a[data-line-code="342e16cbbd482ac2047dc679b2749d248cc1428f_18_17"]').click

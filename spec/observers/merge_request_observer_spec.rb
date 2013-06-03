@@ -107,7 +107,7 @@ describe MergeRequestObserver do
     end
 
     after do
-      TestEnv.enable_observers
+      TestEnv.disable_observers
     end
 
     it_should_be_valid_event

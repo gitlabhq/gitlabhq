@@ -74,10 +74,12 @@ module Gitlab
           update_satellite_source_and_target!(merge_repo)
           if merge_request.for_fork?
             common_commit = merge_repo.git.native(:merge_base, default_options, ["origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}"]).strip
-            diffs = merge_repo.diff(default_options, common_commit, "source/#{merge_request.source_branch}")
+            #this method doesn't take default options
+            diffs = merge_repo.diff(common_commit, "source/#{merge_request.source_branch}")
           else
             common_commit = merge_repo.git.native(:merge_base, default_options, ["#{merge_request.target_branch}", "#{merge_request.source_branch}"]).strip
-            diffs = merge_repo.diff(default_options, common_commit, "#{merge_request.source_branch}")
+            #this method doesn't take default options
+            diffs = merge_repo.diff(common_commit, "#{merge_request.source_branch}")
           end
           return diffs
         end

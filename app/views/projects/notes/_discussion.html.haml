@@ -10,7 +10,7 @@
         Show discussion
     = image_tag gravatar_icon(note.author_email), class: "avatar s32"
     %div
-      = link_to_member(@project, note.author, avatar: false)
+      = link_to_member(note.project, note.author, avatar: false)
       - if note.for_merge_request?
         - if note.diff
           started a discussion on this merge request diff
@@ -23,7 +23,7 @@
           discussion on this merge request diff
       - elsif note.for_commit?
         started a discussion on commit
-        #{link_to note.noteable.short_id, project_commit_path(@project, note.noteable)}
+        #{link_to note.noteable.short_id, project_commit_path(note.project, note.noteable)}
         = link_to_commit_diff_line_note(note) if note.for_diff_line?
       - else
         %cite.cgray started a discussion

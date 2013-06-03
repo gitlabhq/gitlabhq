@@ -7,5 +7,5 @@
     and
     %span.cred #{@commit.stats.deletions} deletions
 
-= render "projects/commits/diffs", diffs: @commit.diffs
+= render "projects/commits/diffs", diffs: @commit.diffs, project: @project
 = render "projects/notes/notes_with_form"

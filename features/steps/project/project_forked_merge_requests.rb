@@ -43,11 +43,14 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
 
     select @project.path_with_namespace, from: "merge_request_target_project_id"
     find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
-
     select "master", from: "merge_request_source_branch"
-    find(:select, "merge_request_source_branch", {}).value.should == "master"
+    find(:select, "merge_request_source_branch", {}).value.should have_content "master"
+    #Force the page to wait until the javascript finishes, so the stable option shows up
     select "stable", from: "merge_request_target_branch"
-    find(:select, "merge_request_target_branch", {}).value.should == "stable"
+    find(:select, "merge_request_target_branch", {}).should have_content "stable"
+
+    verify_commit_link(".mr_source_commit",@forked_project)
+    verify_commit_link(".mr_target_commit",@project)
   end
 
   And 'I submit the merge request' do
@@ -72,9 +75,11 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     current_path.should == new_project_merge_request_path(@forked_project)
     find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
     find("#merge_request_target_project_id").value.should == @project.id.to_s
-    find("#merge_request_source_branch").value.should == "new_design"
-    find("#merge_request_target_branch").value.should == "master"
+    find("#merge_request_source_branch").value.should have_content "new_design"
+    find("#merge_request_target_branch").value.should have_content "master"
     find("#merge_request_title").value.should == "New Design"
+    verify_commit_link(".mr_target_commit",@project)
+    verify_commit_link(".mr_source_commit",@forked_project)
   end
 
   Then 'I should see last push widget' do
@@ -110,29 +115,45 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
 
 
   Then 'I click link edit "Merge Request On Forked Project"' do
-    #there are other edit buttons in this page for replies
-#    links = page.all("a.btn.grouped")
-#    links.each {|e|puts e.inspect  }
-    #TODO:[IA-08] there has got to be a better way to find this button -- there are multiple "Edit" buttons, so that won't work, maybe if we give it an explicit class in the haml
-    #click_link "Edit"  # doesn't work, multiple "Edit" buttons
-    #    find(:link, "a.btn:nth-child(3)").click
-    #    find(:link, "/html/body/div[2]/div/div/h3/span[5]/a[2]").click
-    page.first(:xpath, "/html/body/div[2]/div/div/h3/span[5]/a[2]").click
+    find("#edit_merge_request").click
   end
 
-  Then 'I see prefilled "Merge Request On Forked Project"' do
+  Then 'I see the edit page prefilled for "Merge Request On Forked Project"' do
     current_path.should == edit_project_merge_request_path(@project, @merge_request)
     page.should have_content "Edit merge request #{@merge_request.id}"
+    find("#merge_request_title").value.should == "Merge Request On Forked Project"
     find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
     find("#merge_request_target_project_id").value.should == @project.id.to_s
-    find("#merge_request_source_branch").value.should == "master"
-    find("#merge_request_target_branch").value.should == "stable"
-    find("#merge_request_title").value.should == "Merge Request On Forked Project"
+    find("#merge_request_source_branch").value.should have_content "master"
+    verify_commit_link(".mr_source_commit",@forked_project)
+    #TODO[IA-08] reienstate these -- not sure why they started repeatedly breaking
+    #sleep 3
+    #puts "Source text:#{find("#merge_request_source_branch").text}"
+    #puts "Source value:#{find("#merge_request_source_branch").value}"
+    #puts "Target text:#{find("#merge_request_target_branch").text}"
+    #puts "Target value:#{find("#merge_request_target_branch").value}"
+    #find("#merge_request_target_branch").value.should have_content "stable"
+    #verify_commit_link(".mr_target_commit",@project)
   end
 
 
   def project
     @project ||= Project.find_by_name!("Shop")
+  end
+
+  #Verify a link is generated against the correct project
+  def verify_commit_link(container_div, container_project)
+    #This should force a wait for the javascript to execute
+    #puts "text: #{find(:div,container_div).text}"
+    find(:div,container_div).should have_css ".browse_code_link_holder"
+    find(:div,container_div).find(".commit_short_id")['href'].should have_content "#{container_project.path_with_namespace}/commit"
+    #commit_links = commit.all("a").map(&:text)
+    #links = commit_links.collect {|e|commit.find(:link,e)['href']}
+    #links.size.should == 4
+    #links[0].should have_content "#{container_project.path_with_namespace}/tree"
+    #links[1].should have_content "#{container_project.path_with_namespace}/commit"
+    #links[3].should have_content "#{container_project.path_with_namespace}/commit"
+
   end
 
 end

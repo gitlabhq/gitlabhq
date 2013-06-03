@@ -68,10 +68,13 @@ module API
         merge_request = user_project.merge_requests.new(attrs)
         merge_request.author = current_user
         merge_request.source_project = user_project
-        if !attrs[:target_project_id].nil? && user_project.forked? && user_project.forked_from_project.id.to_s == attrs[:target_project_id]
+        target_project_id = attrs[:target_project_id]
+        if !target_project_id.nil? && user_project.forked? && user_project.forked_from_project.id.to_s == target_project_id
           merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
-        elsif attrs[:target_project].nil?
+        elsif target_project_id.nil? || target_project_id == user_project.id.to_s
           merge_request.target_project = user_project
+        elsif !target_project_id.nil?
+          render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
         end
         if merge_request.save
           merge_request.reload_code

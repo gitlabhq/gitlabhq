@@ -79,6 +79,7 @@ describe API::API do
       let!(:user2) {create(:user)}
       let!(:forked_project_link) { build(:forked_project_link) }
       let!(:fork_project) {  create(:source_project_with_code, forked_project_link: forked_project_link,  namespace: user2.namespace, creator_id: user2.id)  }
+      let!(:unrelated_project) {  create(:target_project_with_code,  namespace: user2.namespace, creator_id: user2.id)  }
 
       before :each do |each|
         fork_project.team << [user2, :reporters]
@@ -124,8 +125,20 @@ describe API::API do
 
       it "should return 400 when target_branch is specified and not a forked project" do
         post api("/projects/#{project.id}/merge_requests", user),
-             target_branch: 'master', source_branch: 'stable', author: user, target_project: fork_project.id
+             title: 'Test merge_request', target_branch: 'master', source_branch: 'stable', author: user, target_project_id: fork_project.id
         response.status.should == 400
+      end
+
+      it "should return 400 when target_branch is specified and for a different fork" do
+        post api("/projects/#{fork_project.id}/merge_requests", user2),
+             title: 'Test merge_request', target_branch: 'master', source_branch: 'stable', author: user2, target_project_id: unrelated_project.id
+        response.status.should == 400
+      end
+
+      it "should return 201 when target_branch is specified and for the same project" do
+        post api("/projects/#{fork_project.id}/merge_requests", user2),
+             title: 'Test merge_request', target_branch: 'master', source_branch: 'stable', author: user2, target_project_id: fork_project.id
+        response.status.should == 201
       end
     end
   end

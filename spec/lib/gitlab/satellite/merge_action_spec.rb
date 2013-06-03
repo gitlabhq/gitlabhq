@@ -76,6 +76,13 @@ describe 'Gitlab::Satellite::MergeAction' do
 
 
   describe '#diffs_between_satellite tested against diff_in_satellite' do
+
+    def is_a_matching_diff(diff, diffs)
+      diff_count = diff.scan('diff --git').size
+      diff_count.should >= 1
+      diffs.size.should == diff_count
+      diffs.each {|a_diff| (diff.include? a_diff.diff).should be_true}
+    end
     context 'on fork' do
       it 'should get proper diffs' do
         merge_request_fork.target_branch = @close_commit1[0]
@@ -84,24 +91,24 @@ describe 'Gitlab::Satellite::MergeAction' do
 
         merge_request_fork.target_branch = @close_commit1[0]
         merge_request_fork.source_branch = @master[0]
-        diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request_fork).diffs_between_satellite
+        diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request_fork).diff_in_satellite
 
-        diffs.each {|a_diff| (diff.include? a_diff.diff).should be_true}
+        is_a_matching_diff(diff,diffs)
       end
     end
 
     context 'between branches' do
       it 'should get proper diffs' do
         merge_request.target_branch = @close_commit1[0]
-        merge_request.source_branch = @wiki_branch[0]
+        merge_request.source_branch = @master[0]
         diffs = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite
 
 
         merge_request.target_branch = @close_commit1[0]
         merge_request.source_branch = @master[0]
-        diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite
+        diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diff_in_satellite
 
-        diffs.each {|a_diff| (diff.include? a_diff.diff).should be_true}
+        is_a_matching_diff(diff,diffs)
       end
     end
   end
