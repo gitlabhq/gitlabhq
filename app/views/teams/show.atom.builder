@@ -9,8 +9,8 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
   @events.each do |event|
     if event.proper?
       xml.entry do
-        event_link = event.feed_url
-        event_title = event.feed_title
+        event_link = event_feed_url(event)
+        event_title = event_feed_title(event)
 
         xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
         xml.link    :href => event_link
