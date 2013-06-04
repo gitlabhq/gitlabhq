@@ -45,10 +45,17 @@ module Projects
 
       @project.creator = current_user
 
+      @project.import_path = (@project.import_url.present?) ? nil : @project.name
+      if @project.import_url.present? then
+        import_token = @project.import_url
+      else
+        import_token = @project.import_path
+      end
+
       # Import project from cloneable resource
-      if @project.valid? && @project.import_url.present?
+      if @project.valid? && ( @project.import_url.present? || @project.import_path.present?)
         shell = Gitlab::Shell.new
-        if shell.import_repository(@project.path_with_namespace, @project.import_url)
+        if shell.import_repository(@project.path_with_namespace, import_token)
           # We should create satellite for imported repo
           @project.satellite.create unless @project.satellite.exists?
           true
