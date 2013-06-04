@@ -241,6 +241,10 @@ class Event < ActiveRecord::Base
     target.noteable_type == "Commit"
   end
 
+  def note_project_snippet?
+    target.noteable_type == "Snippet"
+  end
+
   def note_target
     target.noteable
   end

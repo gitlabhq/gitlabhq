@@ -1,19 +1,11 @@
 %h3.page_title
-  Snippets
+  Public snippets
   %small share code pastes with others out of git repository
+  = link_to new_snippet_path, class: "btn btn-small add_new pull-right", title: "New Snippet" do
+    Add new snippet
 
-  - if can? current_user, :write_snippet, @project
-    = link_to new_project_snippet_path(@project), class: "btn btn-small add_new pull-right", title: "New Snippet" do
-      Add new snippet
-%br
-%table
-  %thead
-    %tr
-      %th Title
-      %th File Name
-      %th Expires At
-  = render @snippets
-  - if @snippets.empty?
-    %tr
-      %td{colspan: 3}
-        %h3.nothing_here_message Nothing here.
+%hr
+.row
+  .span12
+    = render 'snippets'
+

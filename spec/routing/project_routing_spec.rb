@@ -258,13 +258,37 @@ end
 #      project_snippet GET    /:project_id/snippets/:id(.:format)      snippets#show
 #                      PUT    /:project_id/snippets/:id(.:format)      snippets#update
 #                      DELETE /:project_id/snippets/:id(.:format)      snippets#destroy
-describe SnippetsController, "routing" do
+describe Project::SnippetsController, "routing" do
   it "to #raw" do
-    get("/gitlabhq/snippets/1/raw").should route_to('snippets#raw', project_id: 'gitlabhq', id: '1')
+    get("/gitlabhq/snippets/1/raw").should route_to('projects/snippets#raw', project_id: 'gitlabhq', id: '1')
   end
 
-  it_behaves_like "RESTful project resources" do
-    let(:controller) { 'snippets' }
+  it "to #index" do
+    get("/gitlabhq/snippets").should route_to("projects/snippets#index", project_id: 'gitlabhq')
+  end
+
+  it "to #create" do
+    post("/gitlabhq/snippets").should route_to("projects/snippets#create", project_id: 'gitlabhq')
+  end
+
+  it "to #new" do
+    get("/gitlabhq/snippets/new").should route_to("projects/snippets#new", project_id: 'gitlabhq')
+  end
+
+  it "to #edit" do
+    get("/gitlabhq/snippets/1/edit").should route_to("projects/snippets#edit", project_id: 'gitlabhq', id: '1')
+  end
+
+  it "to #show" do
+    get("/gitlabhq/snippets/1").should route_to("projects/snippets#show", project_id: 'gitlabhq', id: '1')
+  end
+
+  it "to #update" do
+    put("/gitlabhq/snippets/1").should route_to("projects/snippets#update", project_id: 'gitlabhq', id: '1')
+  end
+
+  it "to #destroy" do
+    delete("/gitlabhq/snippets/1").should route_to("projects/snippets#destroy", project_id: 'gitlabhq', id: '1')
   end
 end
 
