@@ -2,6 +2,13 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  COLOR_SCHEMES = {
+    1 => 'white',
+    2 => 'black',
+    3 => 'solarized-dark',
+    4 => 'monokai',
+  }
+  COLOR_SCHEMES.default = 'white'
 
   # Check if a particular controller is the current one
   #
@@ -124,17 +131,7 @@ module ApplicationHelper
   end
 
   def user_color_scheme_class
-    # in case we dont have current_user (ex. in mailer)
-    return 1 unless defined?(current_user)
-
-    case current_user.color_scheme_id
-    when 1 then 'white'
-    when 2 then 'black'
-    when 3 then 'solarized-dark'
-    when 4 then 'monokai'
-    else
-      'white'
-    end
+    COLOR_SCHEMES[current_user.try(:color_scheme_id)]
   end
 
   # Define whenever show last push event
