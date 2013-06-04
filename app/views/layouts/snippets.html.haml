@@ -4,19 +4,20 @@
   %body{class: "#{app_theme} application"}
     = render "layouts/head_panel", title: "Snippets"
     = render "layouts/flash"
+    %nav.main-nav
+      .container
+        %ul
+          = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
+            = link_to root_path, title: "Back to dashboard" do
+              %i.icon-home
+          = nav_link(path: 'snippet#new') do
+            = link_to new_snippet_path do
+              New snippet
+          = nav_link(path: 'snippets#user_index') do
+            = link_to user_snippets_path(@current_user) do
+              My snippets
+          = nav_link(path: 'snippets#index') do
+            = link_to snippets_path do
+              Discover snippets
     .container
-      %ul.main_menu
-        = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
-          = link_to root_path, title: "Back to dashboard" do
-            %i.icon-arrow-left
-        = nav_link(path: 'snippet#new') do
-          = link_to new_snippet_path do
-            New snippet
-        = nav_link(path: 'snippets#user_index') do
-          = link_to user_snippets_path(@current_user) do
-            My snippets
-        = nav_link(path: 'snippets#index') do
-          = link_to snippets_path do
-            Discover snippets
-
       .content= yield
