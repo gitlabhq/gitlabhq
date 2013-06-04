@@ -11,6 +11,9 @@ v 5.3.0
   - Init.d: remove gitlab.scoket on service starta
   - Api: added teams api
   - Api: Prevent blob content being escaped
+  - Api: Smart deploy key add behaviour
+  - Api: projets/owned.json return user owned project
+  - Fix bug with team assignation on project from #4109
 
 v 5.2.0
   - Turbolinks
