@@ -30,13 +30,13 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :public, :import_url, :import_path, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
   acts_as_taggable_on :labels, :issues_default_labels
 
-  attr_accessor :import_url
+  attr_accessor :import_url, :import_path
 
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
@@ -88,6 +88,11 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: URI::regexp(%w(http https)), message: "should be a valid url" },
     if: :import?
+
+  validates :import_path,
+    format: { with: Gitlab::Regex.path_regex,
+      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" },
+    if: :import_from_path?
 
   validate :check_limit, :repo_name
 
@@ -156,7 +161,11 @@ class Project < ActiveRecord::Base
   end
 
   def import?
-    import_url.present?
+    import_url.present? 
+  end
+
+  def import_from_path?
+    import_path.present?
   end
 
   def check_limit
