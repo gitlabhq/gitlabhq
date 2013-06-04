@@ -203,12 +203,14 @@ ActiveRecord::Schema.define(:version => 20130522141856) do
   create_table "snippets", :force => true do |t|
     t.string   "title"
     t.text     "content"
-    t.integer  "author_id",  :null => false
-    t.integer  "project_id", :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "author_id",                    :null => false
+    t.integer  "project_id"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.string   "file_name"
     t.datetime "expires_at"
+    t.boolean  "private",    :default => true, :null => false
+    t.string   "type"
   end
 
   add_index "snippets", ["created_at"], :name => "index_snippets_on_created_at"
