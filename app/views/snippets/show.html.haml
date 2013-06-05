@@ -1,13 +1,16 @@
 %h3.page_title
   - if @snippet.private?
-    %i.icon-lock
+    %i.icon-lock.cgreen
   - else
-    %i.icon-globe
+    %i.icon-globe.cblue
 
   = @snippet.title
-  %small= @snippet.file_name
-  - if @snippet.author == current_user
-    = link_to "Edit", edit_snippet_path(@snippet), class: "btn btn-small pull-right", title: 'Edit Snippet'
 
+  %small.pull-right
+    = "##{@snippet.id}"
+    %span.light
+      by
+      = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+      = @snippet.author_name
 %br
 %div= render 'blob'

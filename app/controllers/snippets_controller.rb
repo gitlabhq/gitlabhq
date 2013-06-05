@@ -15,19 +15,28 @@ class SnippetsController < ApplicationController
 
   def user_index
     @user = User.find_by_username(params[:username])
+    @snippets = @user.snippets.fresh.non_expired
 
-    @snippets = @current_user.snippets.fresh.non_expired
-
-    @snippets = case params[:scope]
-                when 'public' then
-                  @snippets.public
-                when 'private' then
-                  @snippets.private
-                else
-                  @snippets
-                end
+    if @user == current_user
+      @snippets = case params[:scope]
+                  when 'public' then
+                    @snippets.public
+                  when 'private' then
+                    @snippets.private
+                  else
+                    @snippets
+                  end
+    else
+      @snippets = @snippets.public
+    end
 
     @snippets = @snippets.page(params[:page]).per(20)
+
+    if @user == current_user
+      render 'current_user_index'
+    else
+      render 'user_index'
+    end
   end
 
   def new
@@ -79,7 +88,7 @@ class SnippetsController < ApplicationController
   protected
 
   def snippet
-    @snippet ||= PersonalSnippet.find(params[:id])
+    @snippet ||= PersonalSnippet.where('author_id = :user_id or private is false', user_id: current_user.id).find(params[:id])
   end
 
   def authorize_modify_snippet!

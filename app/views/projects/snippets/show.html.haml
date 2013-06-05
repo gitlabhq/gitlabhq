@@ -1,9 +1,13 @@
 %h3.page_title
+  %i.icon-lock.cgreen
   = @snippet.title
-  %small= @snippet.file_name
-  - if can?(current_user, :admin_project_snippet, @project) || @snippet.author == current_user
-    = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small pull-right", title: 'Edit Snippet'
 
+  %small.pull-right
+    = "##{@snippet.id}"
+    %span.light
+      by
+      = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+      = @snippet.author_name
 %br
 %div= render 'projects/snippets/blob'
 %div#notes= render "notes/notes_with_form"

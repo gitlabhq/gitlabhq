@@ -1,15 +1,7 @@
-%table
-  %thead
-    %tr
-      %th Title
-      %th File Name
-      %th Expires At
-      %th Project
-
+%ul.bordered-list
   = render partial: 'snippet', collection: @snippets
   - if @snippets.empty?
-    %tr
-      %td{colspan: 4}
-        %h3.nothing_here_message Nothing here.
+    %li
+      %h3.nothing_here_message Nothing here.
 
 = paginate @snippets

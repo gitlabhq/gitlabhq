@@ -7,15 +7,12 @@
     %nav.main-nav
       .container
         %ul
-          = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
-            = link_to root_path, title: "Back to dashboard" do
+          = nav_link(path: 'snippets#user_index', html_options: {class: 'home'}) do
+            = link_to user_snippets_path(current_user), title: "My Snippets" do
               %i.icon-home
           = nav_link(path: 'snippets#new') do
             = link_to new_snippet_path do
               New snippet
-          = nav_link(path: 'snippets#user_index') do
-            = link_to user_snippets_path(@current_user) do
-              My snippets
           = nav_link(path: 'snippets#index') do
             = link_to snippets_path do
               Discover snippets
