@@ -80,3 +80,8 @@ When listing resources you can pass the following parameters:
 + [Notes](doc/api/notes.md)
 + [System Hooks](doc/api/system_hooks.md)
 + [User Teams](doc/api/user_teams.md)
+
+## Clients
+
++ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
++ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
