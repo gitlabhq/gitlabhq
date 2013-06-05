@@ -126,6 +126,23 @@ describe User do
     it { @user.owned_groups.should == [@group] }
   end
 
+  describe 'teams' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @admin = create :user, admin: true
+      @user1 = create :user
+      @user2 = create :user
+      @team = create :user_team, owner: @user1
+    end
+
+    it { @admin.authorized_teams.should == [@team] }
+    it { @user1.authorized_teams.should == [@team] }
+    it { @user2.authorized_teams.should be_empty }
+    it { @admin.should be_can(:manage_user_team, @team) }
+    it { @user1.should be_can(:manage_user_team, @team) }
+    it { @user2.should_not be_can(:manage_user_team, @team) }
+  end
+
   describe 'namespaced' do
     before do
       ActiveRecord::Base.observers.enable(:user_observer)
