@@ -94,7 +94,7 @@ module API
       get ":id/repository/commits" do
         authorize! :download_code, user_project
 
-        page = params[:page] || 0
+        page = (params[:page] || 0).to_i
         per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
