@@ -111,6 +111,29 @@ describe API::API do
     end
   end
 
+  describe "GET /projects/:id/repository/tree" do
+    context "authorized user" do
+      before { project.team << [user2, :reporter] }
+
+      it "should return project commits" do
+        get api("/projects/#{project.id}/repository/tree", user)
+        response.status.should == 200
+
+        json_response.should be_an Array
+        json_response.first['name'].should == 'app'
+        json_response.first['type'].should == 'tree'
+        json_response.first['mode'].should == '040000'
+      end
+    end
+
+    context "unauthorized user" do
+      it "should not return project commits" do
+        get api("/projects/#{project.id}/repository/tree")
+        response.status.should == 401
+      end
+    end
+  end
+
   describe "GET /projects/:id/repository/commits/:sha/blob" do
     it "should get the raw file contents" do
       get api("/projects/#{project.id}/repository/commits/master/blob?filepath=README.md", user)
