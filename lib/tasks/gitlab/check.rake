@@ -138,13 +138,15 @@ namespace :gitlab do
     def check_init_script_up_to_date
       print "Init script up-to-date? ... "
 
+      recipe_path = Rails.root.join("lib/support/init.d/", "gitlab")
       script_path = "/etc/init.d/gitlab"
+
       unless File.exists?(script_path)
         puts "can't check because of previous errors".magenta
         return
       end
 
-      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab 2>/dev/null`
+      recipe_content = File.read(recipe_path)
       script_content = File.read(script_path)
 
       if recipe_content == script_content
