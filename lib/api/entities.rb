@@ -120,5 +120,11 @@ module API
       expose :note
       expose :author, using: Entities::UserBasic
     end
+
+    class Event < Grape::Entity
+      expose :title, :project_id, :action_name
+      expose :target_id, :target_type, :author_id
+      expose :data, :target_title
+    end
   end
 end

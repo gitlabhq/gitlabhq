@@ -41,6 +41,20 @@ module API
         present user_project, with: Entities::Project
       end
 
+      # Get a single project events
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   GET /projects/:id
+      get ":id/events" do
+        limit = (params[:per_page] || 20).to_i
+        offset = (params[:page] || 0).to_i * limit
+        events = user_project.events.recent.limit(limit).offset(offset)
+
+        present events, with: Entities::Event
+      end
+
       # Create new project
       #
       # Parameters:

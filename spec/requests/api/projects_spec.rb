@@ -173,6 +173,29 @@ describe API::API do
     end
   end
 
+  describe "GET /projects/:id/events" do
+    it "should return a project events" do
+      get api("/projects/#{project.id}/events", user)
+      response.status.should == 200
+      json_event = json_response.first
+
+      json_event['action_name'].should == 'joined'
+      json_event['project_id'].to_i.should == project.id
+    end
+
+    it "should return a 404 error if not found" do
+      get api("/projects/42/events", user)
+      response.status.should == 404
+      json_response['message'].should == '404 Not Found'
+    end
+
+    it "should return a 404 error if user is not a member" do
+      other_user = create(:user)
+      get api("/projects/#{project.id}/events", other_user)
+      response.status.should == 404
+    end
+  end
+
   describe "GET /projects/:id/members" do
     it "should return project team members" do
       get api("/projects/#{project.id}/members", user)

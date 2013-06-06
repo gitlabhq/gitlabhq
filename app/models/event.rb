@@ -75,7 +75,9 @@ class Event < ActiveRecord::Base
   end
 
   def target_title
-    target.try :title
+    if target && target.respond_to?(:title)
+      target.title
+    end
   end
 
   def push?
