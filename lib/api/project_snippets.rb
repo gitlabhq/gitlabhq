@@ -113,6 +113,8 @@ module API
       #   GET /projects/:id/snippets/:snippet_id/raw
       get ":id/snippets/:snippet_id/raw" do
         @snippet = user_project.snippets.find(params[:snippet_id])
+
+        env['api.format'] = :txt
         content_type 'text/plain'
         present @snippet.content
       end
