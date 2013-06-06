@@ -30,7 +30,8 @@ GET /projects
     "merge_requests_enabled": false,
     "wall_enabled": true,
     "wiki_enabled": true,
-    "created_at": "2012-05-23T08:05:02Z"
+    "created_at": "2012-05-23T08:05:02Z",
+    "last_activity_at": "2012-05-23T08:05:02Z"
   },
   {
     "id": 5,
@@ -52,7 +53,8 @@ GET /projects
     "merge_requests_enabled": true,
     "wall_enabled": true,
     "wiki_enabled": true,
-    "created_at": "2012-05-30T12:49:20Z"
+    "created_at": "2012-05-30T12:49:20Z",
+    "last_activity_at": "2012-05-23T08:05:02Z"
   }
 ]
 ```
@@ -92,7 +94,8 @@ Parameters:
   "merge_requests_enabled": true,
   "wall_enabled": true,
   "wiki_enabled": true,
-  "created_at": "2012-05-30T12:49:20Z"
+  "created_at": "2012-05-30T12:49:20Z",
+  "last_activity_at": "2012-05-23T08:05:02Z"
 }
 ```
 

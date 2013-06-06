@@ -30,7 +30,7 @@ module API
       expose :owner, using: Entities::UserBasic
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
+      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at, :last_activity_at
       expose :namespace
     end
 
