@@ -8,7 +8,7 @@ branches:
   only:
     - 'master'
 rvm:
-  - 1.9.3-p392
+  - 1.9.3-p429
   - 2.0.0
 services:
   - mysql
