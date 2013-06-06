@@ -2,14 +2,13 @@ language: ruby
 env:
   - DB=mysql TRAVIS=true
 before_install:
-  - rvm get stable
   - sudo apt-get install libicu-dev -y
   - gem install charlock_holmes -v="0.6.9"
 branches:
   only:
     - 'master'
 rvm:
-  - 1.9.3-p429
+  - 1.9.3-p392
   - 2.0.0
 services:
   - mysql
