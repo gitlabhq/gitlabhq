@@ -1,3 +1,4 @@
+- can_admin_project = (can? current_user, :admin_project, @project)
 - team.each do |access, members|
   - role = Project.access_options.key(access).pluralize
   .ui-box{class: role.downcase}
@@ -6,4 +7,4 @@
       %span.light (#{members.size})
     %ul.well-list
       - members.sort_by(&:user_name).each do |team_member|
-        = render 'team_members/team_member', member: team_member
+        = render 'team_members/team_member', member: team_member, current_user_can_admin_project: can_admin_project
