@@ -35,6 +35,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'other project has deploy key' do
     @second_project = create :project, namespace: current_user.namespace
+    @second_project.team << [current_user, :master]
     create(:deploy_keys_project, project: @second_project)
   end
 

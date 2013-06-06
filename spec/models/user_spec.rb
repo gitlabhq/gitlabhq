@@ -106,11 +106,33 @@ describe User do
       ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @project = create :project, namespace: @user.namespace
+      @project_2 = create :project # Grant MASTER access to the user
+      @project_3 = create :project # Grant DEVELOPER access to the user
+
+      UsersProject.add_users_into_projects(
+        [@project_2.id], [@user.id], UsersProject::MASTER
+      )
+      UsersProject.add_users_into_projects(
+        [@project_3.id], [@user.id], UsersProject::DEVELOPER
+      )
     end
 
     it { @user.authorized_projects.should include(@project) }
+    it { @user.authorized_projects.should include(@project_2) }
+    it { @user.authorized_projects.should include(@project_3) }
     it { @user.owned_projects.should include(@project) }
+    it { @user.owned_projects.should_not include(@project_2) }
+    it { @user.owned_projects.should_not include(@project_3) }
     it { @user.personal_projects.should include(@project) }
+    it { @user.personal_projects.should_not include(@project_2) }
+    it { @user.personal_projects.should_not include(@project_3) }
+
+    # master_projects doesn't check creator/namespace.
+    # In real case the users_projects relation will certainly be assigned
+    # when the project is created.
+    it { @user.master_projects.should_not include(@project) }
+    it { @user.master_projects.should include(@project_2) }
+    it { @user.master_projects.should_not include(@project_3) }
   end
 
   describe 'groups' do
