@@ -202,4 +202,13 @@ module ApplicationHelper
   def extra_config
     Gitlab.config.extra
   end
+
+  def public_icon
+    content_tag :i, nil, class: 'icon-globe cblue'
+  end
+
+  def private_icon
+    content_tag :i, nil, class: 'icon-lock cgreen'
+  end
+
 end

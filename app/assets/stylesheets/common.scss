@@ -422,3 +422,9 @@ img.emoji {
 .search-container {
   margin-top: 30px;
 }
+
+.description-block {
+  @extend .light-well;
+  @extend .light;
+  margin-bottom: 10px;
+}

@@ -1,9 +1,9 @@
 %li
   .snippet-title
     - if snippet.private?
-      %i.icon-lock.cgreen
+      = private_icon
     - else
-      %i.icon-globe.cblue
+      = public_icon
     = link_to reliable_snippet_path(snippet) do
       %h5.inline
         = truncate(snippet.title, length: 60)
