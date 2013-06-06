@@ -26,12 +26,10 @@ class MergeRequest < ActiveRecord::Base
 
   include Issuable
 
-  belongs_to :target_project,:foreign_key => :target_project_id, class_name: "Project"
-  belongs_to :source_project, :foreign_key => :source_project_id,class_name: "Project"
+  belongs_to :target_project, :foreign_key => :target_project_id, class_name: "Project"
+  belongs_to :source_project, :foreign_key => :source_project_id, class_name: "Project"
 
-  BROKEN_DIFF = "--broken-diff"
-
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch,  :milestone_id,:author_id_of_changes, :state_event
+  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event
 
 
   attr_accessor :should_remove_source_branch
@@ -87,8 +85,8 @@ class MergeRequest < ActiveRecord::Base
   validates :target_branch, presence: true
   validate :validate_branches
 
-  scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)",group_project_ids:group.project_ids) }
-  scope :of_user_team, ->(team) { where("(source_project_id in (:team_project_ids) OR target_project_id in (:team_project_ids) AND assignee_id in (:team_member_ids))",team_project_ids:team.project_ids,team_member_ids:team.member_ids) }
+  scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.project_ids) }
+  scope :of_user_team, ->(team) { where("(source_project_id in (:team_project_ids) OR target_project_id in (:team_project_ids) AND assignee_id in (:team_member_ids))", team_project_ids: team.project_ids, team_member_ids: team.member_ids) }
   scope :opened, -> { with_state(:opened) }
   scope :closed, -> { with_state(:closed) }
   scope :merged, -> { with_state(:merged) }
@@ -151,13 +149,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_diffs
-    #TODO:[IA-8] this needs to be handled better -- logged etc
-     diffs = Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
-     if diffs
-      diffs = diffs.map { |diff| Gitlab::Git::Diff.new(diff) }
-     else
-       diffs = []
-     end
+    diffs = Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
+    diffs ||= []
     diffs
   end
 
@@ -192,12 +185,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_commits
-    commits = Gitlab::Satellite::MergeAction.new(self.author,self).commits_between
-    commits = commits.map{ |commit| Gitlab::Git::Commit.new(commit, nil) }
+    commits = Gitlab::Satellite::MergeAction.new(self.author, self).commits_between
     if commits.present?
       commits = Commit.decorate(commits).
-        sort_by(&:created_at).
-        reverse
+          sort_by(&:created_at).
+          reverse
     end
     commits
   end
@@ -222,6 +214,7 @@ class MergeRequest < ActiveRecord::Base
     commit_ids = commits.map(&:id)
     Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND commit_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
   end
+
   # Returns the raw diff for this merge request
   #
   # see "git diff"

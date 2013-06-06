@@ -78,52 +78,43 @@ describe 'Gitlab::Satellite::Action' do
     end
 
     it 'should be able to use the satellite after locking' do
-      pending "can't test this, doesn't seem to be a way to the the flock status on a file, throwing piles of processes at it seems lousy too"
       repo = project.satellite.repo
-      first_call = false
+      called = false
 
-      (File.exists? project.satellite.lock_file).should be_false
-
-      test_file = ->(called) {
-        File.exists?(project.satellite.lock_file).should be_true
-        called.should be_true
-        File.readlines.should == "some test code"
-        File.truncate(project.satellite.lock, 0)
-        File.readlines.should == ""
-      }
-
-      write_file = ->(called, checker) {
-        if (File.exists?(project.satellite.lock_file))
-          file = File.open(project.satellite.lock, '+w')
-          file.write("some test code")
-          file.close
-          checker.call(called)
-        end
-      }
-
+      # Set base assumptions
+      if File.exists? project.satellite.lock_file
+        FileLockStatusChecker.new(project.satellite.lock_file).flocked?.should be_false
+      end
 
       satellite_action = Gitlab::Satellite::Action.new(user, project)
       satellite_action.send(:in_locked_and_timed_satellite) do |sat_repo|
-        write_file.call(first_call, test_file)
-        first_call = true
+        called = true
         repo.should == sat_repo
         (File.exists? project.satellite.lock_file).should be_true
-
+        FileLockStatusChecker.new(project.satellite.lock_file).flocked?.should be_true
       end
 
-      first_call.should be_true
-      puts File.stat(project.satellite.lock_file).inspect
+      called.should be_true
+      FileLockStatusChecker.new(project.satellite.lock_file).flocked?.should be_false
 
-      second_call = false
-      satellite_action.send(:in_locked_and_timed_satellite) do |sat_repo|
-        write_file.call(second_call, test_file)
-        second_call = true
-        repo.should == sat_repo
-        (File.exists? project.satellite.lock_file).should be_true
+    end
+
+    class FileLockStatusChecker < File
+      def flocked? &block
+        status = flock LOCK_EX|LOCK_NB
+        case status
+          when false
+            return true
+          when 0
+            begin
+              block ? block.call : false
+            ensure
+              flock LOCK_UN
+            end
+          else
+            raise SystemCallError, status
+        end
       end
-
-      second_call.should be_true
-      (File.exists? project.satellite.lock_file).should be_true
     end
 
   end

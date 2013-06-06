@@ -8,7 +8,7 @@ describe 'Gitlab::Satellite::MergeAction' do
     @wiki_branch = ['wiki', '635d3e09b72232b6e92a38de6cc184147e5bcb41'] #this is the commit sha where the wiki branch goes off from master
     @conflicting_metior = ['metior', '313d96e42b313a0af5ab50fa233bf43e27118b3f'] #this branch conflicts with the wiki branch
 
-                                                                               #these commits are quite close together, itended to make string diffs/format patches small
+    #these commits are quite close together, itended to make string diffs/format patches small
     @close_commit1 = ['2_3_notes_fix', '8470d70da67355c9c009e4401746b1d5410af2e3']
     @close_commit2 = ['scss_refactoring', 'f0f14c8eaba69ebddd766498a9d0b0e79becd633']
 
@@ -18,19 +18,23 @@ describe 'Gitlab::Satellite::MergeAction' do
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:merge_request_fork) { create(:merge_request) }
   describe '#commits_between' do
+    def verify_commits(commits, first_commit_sha, last_commit_sha)
+      commits.each { |commit| commit.class.should == Gitlab::Git::Commit }
+      commits.first.id.should == first_commit_sha
+      commits.last.id.should == last_commit_sha
+    end
+
     context 'on fork' do
       it 'should get proper commits between' do
         merge_request_fork.target_branch = @one_after_stable[0]
         merge_request_fork.source_branch = @master[0]
         commits = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).commits_between
-        commits.first.id.should == @one_after_stable[1]
-        commits.last.id.should == @master[1]
+        verify_commits(commits, @one_after_stable[1], @master[1])
 
         merge_request_fork.target_branch = @wiki_branch[0]
         merge_request_fork.source_branch = @master[0]
         commits = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).commits_between
-        commits.first.id.should == @wiki_branch[1]
-        commits.last.id.should == @master[1]
+        verify_commits(commits, @wiki_branch[1], @master[1])
       end
     end
 
@@ -39,14 +43,12 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request.target_branch = @one_after_stable[0]
         merge_request.source_branch = @master[0]
         commits = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between
-        commits.first.id.should == @one_after_stable[1]
-        commits.last.id.should == @master[1]
+        verify_commits(commits, @one_after_stable[1], @master[1])
 
         merge_request.target_branch = @wiki_branch[0]
         merge_request.source_branch = @master[0]
         commits = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between
-        commits.first.id.should == @wiki_branch[1]
-        commits.last.id.should == @master[1]
+        verify_commits(commits, @wiki_branch[1], @master[1])
       end
     end
   end
@@ -81,8 +83,12 @@ describe 'Gitlab::Satellite::MergeAction' do
       diff_count = diff.scan('diff --git').size
       diff_count.should >= 1
       diffs.size.should == diff_count
-      diffs.each {|a_diff| (diff.include? a_diff.diff).should be_true}
+      diffs.each do |a_diff|
+        a_diff.class.should == Gitlab::Git::Diff
+        (diff.include? a_diff.diff).should be_true
+      end
     end
+
     context 'on fork' do
       it 'should get proper diffs' do
         merge_request_fork.target_branch = @close_commit1[0]
@@ -93,7 +99,7 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request_fork.source_branch = @master[0]
         diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request_fork).diff_in_satellite
 
-        is_a_matching_diff(diff,diffs)
+        is_a_matching_diff(diff, diffs)
       end
     end
 
@@ -108,7 +114,7 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request.source_branch = @master[0]
         diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diff_in_satellite
 
-        is_a_matching_diff(diff,diffs)
+        is_a_matching_diff(diff, diffs)
       end
     end
   end

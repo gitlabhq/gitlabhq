@@ -5,6 +5,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedPaths
 
 
+
   Given 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
     @project ||= create(:project_with_code, name: "Shop")
@@ -34,22 +35,42 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     current_path.should == project_merge_request_path(@project, @merge_request)
     @merge_request.title.should == "Merge Request On Forked Project"
     @merge_request.source_project.should == @forked_project
+    @merge_request.source_branch.should == "master"
+    @merge_request.target_branch.should == "stable"
+    page.should have_content @forked_project.path_with_namespace
+    page.should have_content @project.path_with_namespace
+    page.should have_content @merge_request.source_branch
+    page.should have_content @merge_request.target_branch
   end
 
   And 'I fill out a "Merge Request On Forked Project" merge request' do
+    #The ordering here is a bit whacky on purpose:
+    #Select the target right away, to give update_branches time to run and clean up the target_branches
+    find(:select, "merge_request_target_project_id", {}).value.should == @forked_project.id.to_s
+    select @project.path_with_namespace, from: "merge_request_target_project_id"
+
+
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
-    find(:select, "merge_request_target_project_id", {}).value.should == @forked_project.id.to_s
 
-    select @project.path_with_namespace, from: "merge_request_target_project_id"
     find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
-    select "master", from: "merge_request_source_branch"
-    find(:select, "merge_request_source_branch", {}).value.should have_content "master"
-    #Force the page to wait until the javascript finishes, so the stable option shows up
-    select "stable", from: "merge_request_target_branch"
-    find(:select, "merge_request_target_branch", {}).should have_content "stable"
 
+    #Ensure the option exists in the select
+    find(:select, "merge_request_source_branch", {}).should have_content "master"
+    select "master", from: "merge_request_source_branch"
+    #Ensure the option is selected
+    find(:select, "merge_request_source_branch", {}).value.should have_content "master"
     verify_commit_link(".mr_source_commit",@forked_project)
+
+
+    #This could fail if the javascript hasn't run yet, there is a timing issue here -- this is why we do the select at the top
+    #Ensure the option exists in the select
+    find(:select, "merge_request_target_branch", {}).should have_content "stable"
+    #We must give apparently lots of time for update branches to finish
+
+    (find(:select, "merge_request_target_branch", {}).find(:option, "stable",{}).select_option).should be_true
+    #Ensure the option is selected
+    find(:select, "merge_request_target_branch", {}).value.should have_content "stable"
     verify_commit_link(".mr_target_commit",@project)
   end
 
@@ -126,14 +147,8 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     find("#merge_request_target_project_id").value.should == @project.id.to_s
     find("#merge_request_source_branch").value.should have_content "master"
     verify_commit_link(".mr_source_commit",@forked_project)
-    #TODO[IA-08] reienstate these -- not sure why they started repeatedly breaking
-    #sleep 3
-    #puts "Source text:#{find("#merge_request_source_branch").text}"
-    #puts "Source value:#{find("#merge_request_source_branch").value}"
-    #puts "Target text:#{find("#merge_request_target_branch").text}"
-    #puts "Target value:#{find("#merge_request_target_branch").value}"
-    #find("#merge_request_target_branch").value.should have_content "stable"
-    #verify_commit_link(".mr_target_commit",@project)
+    find("#merge_request_target_branch").value.should have_content "stable"
+    verify_commit_link(".mr_target_commit",@project)
   end
 
 
@@ -144,16 +159,8 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   #Verify a link is generated against the correct project
   def verify_commit_link(container_div, container_project)
     #This should force a wait for the javascript to execute
-    #puts "text: #{find(:div,container_div).text}"
     find(:div,container_div).should have_css ".browse_code_link_holder"
     find(:div,container_div).find(".commit_short_id")['href'].should have_content "#{container_project.path_with_namespace}/commit"
-    #commit_links = commit.all("a").map(&:text)
-    #links = commit_links.collect {|e|commit.find(:link,e)['href']}
-    #links.size.should == 4
-    #links[0].should have_content "#{container_project.path_with_namespace}/tree"
-    #links[1].should have_content "#{container_project.path_with_namespace}/commit"
-    #links[3].should have_content "#{container_project.path_with_namespace}/commit"
-
   end
 
 end

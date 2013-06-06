@@ -415,6 +415,7 @@ img.emoji {
   @extend .light-well;
   @extend .light;
   margin-bottom: 10px;
+}
 
 .label-project {
   @include border-radius(4px);

@@ -41,8 +41,7 @@ module Gitlab
           end
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
 
 
@@ -61,8 +60,7 @@ module Gitlab
           return diff
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
 
       # Only show what is new in the source branch compared to the target branch, not the other way around.
@@ -81,11 +79,11 @@ module Gitlab
             #this method doesn't take default options
             diffs = merge_repo.diff(common_commit, "#{merge_request.source_branch}")
           end
+          diffs = diffs.map { |diff| Gitlab::Git::Diff.new(diff) }
           return diffs
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
 
       # Get commit as an email patch
@@ -101,8 +99,7 @@ module Gitlab
           return patch
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
 
       # Retrieve an array of commits between the source and the target
@@ -115,12 +112,12 @@ module Gitlab
           else
             commits = merge_repo.commits_between("#{merge_request.target_branch}", "#{merge_request.source_branch}")
           end
+          commits = commits.map { |commit| Gitlab::Git::Commit.new(commit, nil) }
           return commits
 
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
 
       private
@@ -142,8 +139,7 @@ module Gitlab
           repo.git.pull(default_options({no_ff: true}), 'origin', merge_request.source_branch)
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
 
       # Assumes a satellite exists that is a fresh clone of the projects repo, prepares satellite for merges, diffs etc
@@ -159,10 +155,8 @@ module Gitlab
           repo.git.checkout(default_options, "#{merge_request.target_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
-        Gitlab::GitLogger.error(ex.message)
-        false
+        handle_exception(ex)
       end
-
 
     end
   end

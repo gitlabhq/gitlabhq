@@ -1,7 +1,7 @@
 module Gitlab
   module Satellite
     class Action
-      DEFAULT_OPTIONS = { git_timeout: 30.seconds}
+      DEFAULT_OPTIONS = {git_timeout: 30.seconds}
 
       attr_accessor :options, :project, :user
 
@@ -25,11 +25,9 @@ module Gitlab
           end
         end
       rescue Errno::ENOMEM => ex
-        Gitlab::GitLogger.error(ex.message)
-        return false
+        return handle_exception(ex)
       rescue Grit::Git::GitTimeout => ex
-        Gitlab::GitLogger.error(ex.message)
-        return false
+        return handle_exception(ex)
       ensure
         Gitlab::ShellEnv.reset_env
       end
@@ -47,6 +45,11 @@ module Gitlab
 
       def default_options(options = {})
         {raise: true, timeout: true}.merge(options)
+      end
+
+      def handle_exception(exception)
+        Gitlab::GitLogger.error(exception.message)
+        false
       end
     end
   end
