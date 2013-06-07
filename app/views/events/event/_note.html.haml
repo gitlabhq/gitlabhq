@@ -10,7 +10,7 @@
         %strong
           #{event.note_target_type} ##{truncate event.note_target_id}
     - else
-      = link_to [event.project, event.note_target] do
+      = link_to event_note_target_path(event) do
         %strong
           #{event.note_target_type} ##{truncate event.note_target_id}
 
