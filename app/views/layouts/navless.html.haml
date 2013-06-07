@@ -1,8 +1,8 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "Search"
+  = render "layouts/head", title: @title
   %body{class: "#{app_theme} application"}
-    = render "layouts/head_panel", title: "Search"
+    = render "layouts/head_panel", title: @title
     = render "layouts/flash"
 
     .container.navless-container
