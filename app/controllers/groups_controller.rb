@@ -12,6 +12,9 @@ class GroupsController < ApplicationController
   # Load group projects
   before_filter :projects, except: [:new, :create]
 
+  layout 'navless', only: [:new, :create]
+  before_filter :set_title, only: [:new, :create]
+
   def new
     @group = Group.new
   end
@@ -133,5 +136,9 @@ class GroupsController < ApplicationController
     unless can?(current_user, :manage_group, group)
       return render_404
     end
+  end
+
+  def set_title
+    @title = 'New Group'
   end
 end

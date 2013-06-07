@@ -7,6 +7,8 @@ class TeamsController < ApplicationController
   before_filter :user_team, except: [:new, :create]
 
   layout 'user_team', except: [:new, :create]
+  layout 'navless', only: [:new, :create]
+  before_filter :set_title, only: [:new, :create]
 
   def show
     projects
@@ -75,5 +77,9 @@ class TeamsController < ApplicationController
 
   def user_team
     @team ||= current_user.authorized_teams.find_by_path(params[:id])
+  end
+
+  def set_title
+    @title = 'New Team'
   end
 end
