@@ -1,5 +1,3 @@
-%h3.page_title New Team
-%hr
 = form_for @team, url: teams_path do |f|
   - if @team.errors.any?
     .alert.alert-error
@@ -15,15 +13,15 @@
     .input
       = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
 
+
+  .clearfix
+    .input
+      %ul
+        %li All created teams are public (users can view who enter into team and which project are assigned for this team)
+        %li People within a team see only projects they have access to
+        %li You will be able to assign existing projects for team
   .form-actions
     = f.submit 'Create team', class: "btn btn-create"
-
-  .padded
-    %ul
-      %li All created teams are public (users can view who enter into team and which project are assigned for this team)
-      %li People within a team see only projects they have access to
-      %li You will be able to assign existing projects for team
-  %hr
 
   - if current_user.can_create_group?
     .clearfix

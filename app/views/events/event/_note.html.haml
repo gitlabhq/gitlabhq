@@ -5,12 +5,12 @@
     - if event.note_commit?
       = event.note_target_type
       = link_to event.note_short_commit_id, project_commit_path(event.project, event.note_commit_id), class: "commit_short_id"
-    - if event.note_project_snippet?
+    - elsif event.note_project_snippet?
       = link_to project_snippet_path(event.project, event.note_target) do
         %strong
           #{event.note_target_type} ##{truncate event.note_target_id}
     - else
-      = link_to [event.project, event.note_target] do
+      = link_to event_note_target_path(event) do
         %strong
           #{event.note_target_type} ##{truncate event.note_target_id}
 

@@ -83,4 +83,12 @@ module EventsHelper
       render "events/event_push", event: event
     end
   end
+
+  def event_note_target_path(event)
+    if event.note? && event.note_commit?
+      project_commit_path(event.project, event.note_target)
+    else
+      url_for([event.project, event.note_target])
+    end
+  end
 end

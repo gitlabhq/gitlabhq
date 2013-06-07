@@ -7,7 +7,8 @@ class ProjectsController < ProjectResourceController
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
-  layout 'application', only: [:new, :create]
+  layout 'navless', only: [:new, :create]
+  before_filter :set_title, only: [:new, :create]
 
   def new
     @project = Project.new
@@ -104,5 +105,11 @@ class ProjectsController < ProjectResourceController
     respond_to do |format|
       format.json { render :json => @suggestions }
     end
+  end
+
+  private
+
+  def set_title
+    @title = 'New Project'
   end
 end
