@@ -107,7 +107,7 @@ Create a `git` user for Gitlab:
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
 
     # Login as git
-    sudo su git
+    sudo -i -a git
 
     # Go to home directory
     cd /home/git
