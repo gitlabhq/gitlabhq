@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe NotificationService do
   let(:notification) { NotificationService.new }
-
   describe 'Keys' do
     describe :new_key do
       let(:key) { create(:personal_key) }

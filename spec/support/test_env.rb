@@ -34,43 +34,19 @@ module TestEnv
     setup_test_repos(opts) if opts[:repos] == true
   end
 
-  def testing_path
-    Rails.root.join('tmp', 'test-git-base-path')
+  def enable_observers
+    ActiveRecord::Base.observers.enable(:all)
   end
 
-  def seed_repo_path
-    Rails.root.join('tmp', 'repositories', 'gitlabhq')
+  def disable_observers
+    ActiveRecord::Base.observers.disable(:all)
   end
 
-  def seed_satellite_path
-    Rails.root.join('tmp', 'satellite', 'gitlabhq')
+  def disable_mailer
+    NotificationService.any_instance.stub(mailer: double.as_null_object)
   end
-
-  def satellite_path
-    "#{testing_path()}/satellite"
-  end
-
-  def repo(namespace, name)
-    unless (namespace.nil? || namespace.path.nil? || namespace.path.strip.empty?)
-      repo = File.join(testing_path(), "#{namespace.path}/#{name}.git")
-    else
-      repo = File.join(testing_path(), "#{name}.git")
-    end
-  end
-
-  def satellite(namespace, name)
-    unless (namespace.nil? || namespace.path.nil? || namespace.path.strip.empty?)
-      satellite_repo = File.join(satellite_path, namespace.path, name)
-    else
-      satellite_repo = File.join(satellite_path, name)
-    end
-  end
-
-
-  def setup_test_repos(opts ={})
-    create_repo(nil, 'gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('')
-    create_repo(nil, 'source_gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('source_')
-    create_repo(nil, 'target_gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('target_')
+  def enable_mailer
+    NotificationService.any_instance.unstub(:mailer)
   end
 
   def setup_stubs()
@@ -110,19 +86,6 @@ module TestEnv
     )
   end
 
-  def clear_test_repo_dir
-    setup_stubs
-    # Use tmp dir for FS manipulations
-    repos_path = testing_path()
-    # Remove tmp/test-git-base-path
-    FileUtils.rm_rf Gitlab.config.gitlab_shell.repos_path
-
-    # Recreate tmp/test-git-base-path
-    FileUtils.mkdir_p Gitlab.config.gitlab_shell.repos_path
-    #Since much more is happening in satellites
-    FileUtils.mkdir_p Gitlab.config.satellites.path
-  end
-
   def clear_repo_dir(namespace, name)
     setup_stubs
     #Clean any .wiki.git that may have been created
@@ -139,6 +102,60 @@ module TestEnv
     create_satellite(repo, namespace, name)
   end
 
+  private
+
+  def testing_path
+    Rails.root.join('tmp', 'test-git-base-path')
+  end
+
+  def seed_repo_path
+    Rails.root.join('tmp', 'repositories', 'gitlabhq')
+  end
+
+  def seed_satellite_path
+    Rails.root.join('tmp', 'satellite', 'gitlabhq')
+  end
+
+  def satellite_path
+    "#{testing_path()}/satellite"
+  end
+
+  def repo(namespace, name)
+    unless (namespace.nil? || namespace.path.nil? || namespace.path.strip.empty?)
+      repo = File.join(testing_path(), "#{namespace.path}/#{name}.git")
+    else
+      repo = File.join(testing_path(), "#{name}.git")
+    end
+  end
+
+  def satellite(namespace, name)
+    unless (namespace.nil? || namespace.path.nil? || namespace.path.strip.empty?)
+      satellite_repo = File.join(satellite_path, namespace.path, name)
+    else
+      satellite_repo = File.join(satellite_path, name)
+    end
+  end
+
+  def setup_test_repos(opts ={})
+    create_repo(nil, 'gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('')
+    create_repo(nil, 'source_gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('source_')
+    create_repo(nil, 'target_gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('target_')
+  end
+
+  def clear_test_repo_dir
+    setup_stubs
+    # Use tmp dir for FS manipulations
+    repos_path = testing_path()
+    # Remove tmp/test-git-base-path
+    FileUtils.rm_rf Gitlab.config.gitlab_shell.repos_path
+
+    # Recreate tmp/test-git-base-path
+    FileUtils.mkdir_p Gitlab.config.gitlab_shell.repos_path
+
+    #Since much more is happening in satellites
+    FileUtils.mkdir_p Gitlab.config.satellites.path
+  end
+
   # Create a testing satellite, and clone the source repo into it
   def create_satellite(source_repo, namespace, satellite_name)
     satellite_repo = satellite(namespace, satellite_name)
@@ -152,15 +169,5 @@ module TestEnv
     system(command)
   end
 
-  def enable_observers
-    ActiveRecord::Base.observers.enable(:all)
-  end
 
-  def disable_observers
-    ActiveRecord::Base.observers.disable(:all)
-  end
-
-  def disable_mailer
-    NotificationService.any_instance.stub(mailer: double.as_null_object)
-  end
 end
