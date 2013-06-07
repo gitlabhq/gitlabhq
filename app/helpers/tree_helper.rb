@@ -54,7 +54,7 @@ module TreeHelper
   end
 
   def plain_text_readme? filename
-    filename == 'README'
+    filename =~ /^README(\.txt)?$/i
   end
 
   # Simple shortcut to File.join
