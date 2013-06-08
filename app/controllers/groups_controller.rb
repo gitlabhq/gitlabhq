@@ -1,7 +1,5 @@
 class GroupsController < ApplicationController
   respond_to :html
-  layout 'group', except: [:new, :create]
-
   before_filter :group, except: [:new, :create]
 
   # Authorize
@@ -12,7 +10,8 @@ class GroupsController < ApplicationController
   # Load group projects
   before_filter :projects, except: [:new, :create]
 
-  layout 'navless', only: [:new, :create]
+  layout :determine_layout
+
   before_filter :set_title, only: [:new, :create]
 
   def new
@@ -140,5 +139,13 @@ class GroupsController < ApplicationController
 
   def set_title
     @title = 'New Group'
+  end
+
+  def determine_layout
+    if [:new, :create].include?(action_name.to_sym)
+      'navless'
+    else
+      'group'
+    end
   end
 end

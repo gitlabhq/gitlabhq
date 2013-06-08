@@ -6,8 +6,8 @@ class TeamsController < ApplicationController
 
   before_filter :user_team, except: [:new, :create]
 
-  layout 'user_team', except: [:new, :create]
-  layout 'navless', only: [:new, :create]
+  layout :determine_layout
+
   before_filter :set_title, only: [:new, :create]
 
   def show
@@ -81,5 +81,13 @@ class TeamsController < ApplicationController
 
   def set_title
     @title = 'New Team'
+  end
+
+  def determine_layout
+    if [:new, :create].include?(action_name.to_sym)
+      'navless'
+    else
+      'user_team'
+    end
   end
 end
