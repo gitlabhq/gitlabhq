@@ -41,3 +41,10 @@ Feature: Project Forked Merge Requests
     Then I see the edit page prefilled for "Merge Request On Forked Project"
 
 
+  @javascript
+  Scenario: I cannot submit an invalid merge request
+    Given I visit project "Forked Shop" merge requests page
+    And I click link "New Merge Request"
+    And I fill out an invalid "Merge Request On Forked Project" merge request
+    And I submit the merge request
+    Then I should see validation errors

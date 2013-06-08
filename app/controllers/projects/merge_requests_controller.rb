@@ -70,7 +70,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.reload_code
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
-      render "new"
+      @source_project = @merge_request.source_project
+      @target_project = @merge_request.target_project
+      render action: "new"
     end
   end
 
@@ -118,7 +120,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def update_branches
     @target_project = selected_target_project
-    @target_branches = (@target_project.repository.branch_names).unshift("Select branch")
+    @target_branches = @target_project.repository.branch_names
     @target_branches
   end
 
