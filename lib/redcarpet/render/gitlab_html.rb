@@ -11,7 +11,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
   def block_code(code, language)
     options = { options: {encoding: 'utf-8'} }
-    options.merge!(lexer: language.downcase) if Pygments::Lexer.find(language)
+    lexer = Pygments::Lexer.find(language) # language can be an alias
+    options.merge!(lexer: lexer.name.downcase) if lexer # downcase is required
 
     # New lines are placed to fix an rendering issue
     # with code wrapped inside <h1> tag for next case:
