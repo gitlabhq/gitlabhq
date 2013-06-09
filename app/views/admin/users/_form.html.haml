@@ -55,6 +55,10 @@
             .input= f.check_box :can_create_team
 
           .clearfix
+            = f.label :can_create_global_project
+            .input= f.check_box :can_create_global_project
+
+          .clearfix
             = f.label :admin do
               %strong.cred Administrator
             .input= f.check_box :admin

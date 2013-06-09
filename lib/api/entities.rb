@@ -19,6 +19,7 @@ module API
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
       expose :can_create_team?, as: :can_create_team
+      expose :can_create_global_project?, as: :can_create_global_project
     end
 
     class Hook < Grape::Entity

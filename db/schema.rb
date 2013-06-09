@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130522141856) do
+ActiveRecord::Schema.define(:version => 20130609131213) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -261,37 +261,38 @@ ActiveRecord::Schema.define(:version => 20130522141856) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "",    :null => false
-    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "email",                     :default => "",    :null => false
+    t.string   "encrypted_password",        :default => "",    :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",             :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
     t.string   "name"
-    t.boolean  "admin",                  :default => false, :null => false
-    t.integer  "projects_limit",         :default => 10
-    t.string   "skype",                  :default => "",    :null => false
-    t.string   "linkedin",               :default => "",    :null => false
-    t.string   "twitter",                :default => "",    :null => false
+    t.boolean  "admin",                     :default => false, :null => false
+    t.integer  "projects_limit",            :default => 10
+    t.string   "skype",                     :default => "",    :null => false
+    t.string   "linkedin",                  :default => "",    :null => false
+    t.string   "twitter",                   :default => "",    :null => false
     t.string   "authentication_token"
-    t.integer  "theme_id",               :default => 1,     :null => false
+    t.integer  "theme_id",                  :default => 1,     :null => false
     t.string   "bio"
-    t.integer  "failed_attempts",        :default => 0
+    t.integer  "failed_attempts",           :default => 0
     t.datetime "locked_at"
     t.string   "extern_uid"
     t.string   "provider"
     t.string   "username"
-    t.boolean  "can_create_group",       :default => true,  :null => false
-    t.boolean  "can_create_team",        :default => true,  :null => false
+    t.boolean  "can_create_group",          :default => true,  :null => false
+    t.boolean  "can_create_team",           :default => true,  :null => false
     t.string   "state"
-    t.integer  "color_scheme_id",        :default => 1,     :null => false
-    t.integer  "notification_level",     :default => 1,     :null => false
+    t.integer  "color_scheme_id",           :default => 1,     :null => false
+    t.integer  "notification_level",        :default => 1,     :null => false
+    t.boolean  "can_create_global_project", :default => false, :null => false
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"

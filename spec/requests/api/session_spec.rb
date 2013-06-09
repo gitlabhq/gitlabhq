@@ -17,6 +17,7 @@ describe API::API do
         json_response['can_create_team'].should == user.can_create_team?
         json_response['can_create_project'].should == user.can_create_project?
         json_response['can_create_group'].should == user.can_create_group?
+        json_response['can_create_global_project'].should == user.can_create_global_project?
       end
     end
 

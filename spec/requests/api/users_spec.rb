@@ -218,6 +218,7 @@ describe API::API do
       json_response['can_create_team'].should == user.can_create_team?
       json_response['can_create_project'].should == user.can_create_project?
       json_response['can_create_group'].should == user.can_create_group?
+      json_response['can_create_global_project'].should == user.can_create_global_project?
     end
 
     it "should return 401 error if user is unauthenticated" do
