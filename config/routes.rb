@@ -251,11 +251,11 @@ Gitlab::Application.routes.draw do
 
       member do
         # tree viewer logs
-        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%]+/ }
+        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
         get "logs_tree/:path" => "refs#logs_tree",
           as: :logs_file,
           constraints: {
-            id:   /[a-zA-Z.0-9\/_\-#%]+/,
+            id:   /[a-zA-Z.0-9\/_\-#%+]+/,
             path: /.*/
           }
       end
