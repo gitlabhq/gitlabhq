@@ -64,6 +64,9 @@
         event.preventDefault();
       }
     })
+    .bind( "click", function( event ) {
+        $( this ).autocomplete("search", "");
+    })
     .autocomplete({
       minLength: 0,
       source: function( request, response ) {
