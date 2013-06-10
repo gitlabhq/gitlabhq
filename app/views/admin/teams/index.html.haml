@@ -1,43 +1,48 @@
 %h3.page_title
-  Teams
+  Teams (#{@teams.total_count})
   %small
     allow you to organize groups of people that have a common focus. Use teams to simplify the process of assigning roles to groups of people.
 
   = link_to 'New Team', new_admin_team_path, class: "btn btn-small pull-right"
-  %br
+%br
 
 = form_tag admin_teams_path, method: :get, class: 'form-inline' do
-  = text_field_tag :name, params[:name], class: "xlarge"
+  = text_field_tag :name, params[:name], class: "span6"
   = submit_tag "Search", class: "btn submit btn-primary"
 
-%table
-  %thead
-    %tr
-      %th
-        Name
-        %i.icon-sort-down
-      %th Description
-      %th Path
-      %th Projects
-      %th Members
-      %th Owner
-      %th.cred Danger Zone!
+%hr
 
+%ul.bordered-list
   - @teams.each do |team|
-    %tr
-      %td
-        %strong= link_to team.name, admin_team_path(team)
-      %td= truncate team.description
-      %td= team.path
-      %td= team.projects.count
-      %td= team.members.count
-      %td
-        - if team.owner
-          = link_to team.owner.name, admin_user_path(team.owner)
-        - else
-          (deleted)
-      %td.bgred
-        = link_to 'Edit', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
-        = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+    %li
+      .clearfix
+        .pull-right.prepend-top-10
+          = link_to 'Edit', edit_admin_team_path(team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
+          = link_to 'Destroy', admin_team_path(team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+
+        %h4
+          = link_to admin_team_path(team) do
+            %i.icon-group
+            = team.name
+
+      .clearfix.light.append-bottom-10
+        %span
+          %b Owner:
+          - if team.owner
+            = link_to team.owner.name, admin_user_path(team.owner)
+          - else
+            (deleted)
+        \|
+        %span
+          %b Users:
+          %span.badge= team.members.count
+        \|
+        %span
+          %b Projects:
+          %span.badge= team.projects.count
+
+      .clearfix
+        %p
+          = truncate team.description, length: 150
 
 = paginate @teams, theme: "gitlab"
