@@ -19,11 +19,13 @@ class Admin
 
     modal = $('.change-owner-holder')
 
-    $('.change-owner-link').bind "click", ->
+    $('.change-owner-link').bind "click", (e) ->
+      e.preventDefault()
       $(this).hide()
       modal.show()
     
-    $('.change-owner-cancel-link').bind "click",  ->
+    $('.change-owner-cancel-link').bind "click", (e) ->
+      e.preventDefault()
       modal.hide()
       $('.change-owner-link').show()
 

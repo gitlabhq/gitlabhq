@@ -14,9 +14,6 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def show
     @repository = @project.repository
-    @users = User.active
-    @users = @users.not_in_project(@project) if @project.users.present?
-    @users = @users.all
   end
 
   protected
