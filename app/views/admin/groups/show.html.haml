@@ -65,6 +65,18 @@
             = select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span2"}
           %hr
           = submit_tag 'Add user to projects in group', class: "btn btn-create"
+    .ui-box
+      %h5.title
+        Users from Group projects
+        %small
+          (#{@group.users.count})
+      %ul.well-list
+        - @group.users.sort_by(&:name).each do |user|
+          %li{class: dom_class(user)}
+            %strong
+              = link_to user.name, admin_user_path(user)
+            %span.pull-right.light
+              = pluralize user.authorized_projects.in_namespace(@group).count, 'project'
 
   .span6
     .ui-box
@@ -73,7 +85,7 @@
         %small
           (#{@group.projects.count})
       %ul.well-list
-        - @group.projects.each do |project|
+        - @group.projects.sort_by(&:name).each do |project|
           %li
             %strong
               = link_to project.name_with_namespace, [:admin, project]
