@@ -7,11 +7,12 @@
         - unless @project.empty_repo?
           - if can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
             - if current_user.already_forked?(@project)
-              = link_to project_path(current_user.fork_of(@project)), class: 'btn grouped btn-primary' do
+              = link_to project_path(current_user.fork_of(@project)), class: 'btn grouped disabled' do
+                %i.icon-code-fork
                 Forked
             - else
               = link_to fork_project_path(@project), title: "Fork", class: "btn grouped", method: "POST" do
-                %i.icon-copy
+                %i.icon-code-fork
                 Fork
           - if can? current_user, :download_code, @project
             = link_to archive_project_repository_path(@project), class: "btn grouped" do
