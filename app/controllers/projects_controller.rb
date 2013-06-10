@@ -7,7 +7,7 @@ class ProjectsController < ProjectResourceController
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
-  layout 'navless', only: [:new, :create]
+  layout 'navless', only: [:new, :create, :fork]
   before_filter :set_title, only: [:new, :create]
 
   def new
@@ -81,14 +81,15 @@ class ProjectsController < ProjectResourceController
   end
 
   def fork
-    @project = ::Projects::ForkContext.new(project, current_user).execute
+    @forked_project = ::Projects::ForkContext.new(project, current_user).execute
 
     respond_to do |format|
       format.html do
-        if @project.saved? && @project.forked?
-          redirect_to(@project, notice: 'Project was successfully forked.')
+        if @forked_project.saved? && @forked_project.forked?
+          redirect_to(@forked_project, notice: 'Project was successfully forked.')
         else
-          render action: "new"
+          @title = 'Fork project'
+          render action: "fork"
         end
       end
       format.js
