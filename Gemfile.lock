@@ -154,7 +154,7 @@ GEM
       pygments.rb (~> 0.4.2)
       sanitize (~> 2.0.3)
       stringex (~> 1.5.1)
-    gitlab-grack (1.0.0)
+    gitlab-grack (1.0.1)
       rack (~> 1.4.1)
     gitlab-grit (2.5.1)
       charlock_holmes (~> 0.6.9)
@@ -541,7 +541,7 @@ DEPENDENCIES
   github-linguist
   github-markup (~> 0.7.4)
   gitlab-gollum-lib (~> 1.0.0)
-  gitlab-grack (~> 1.0.0)
+  gitlab-grack (~> 1.0.1)
   gitlab-pygments.rb (~> 0.3.2)
   gitlab_git (~> 1.3.0)
   gitlab_meta (= 5.0)
