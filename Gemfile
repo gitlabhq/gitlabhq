@@ -72,6 +72,9 @@ gem "seed-fu"
 gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
+# Asciidoc to HTML
+gem  "asciidoctor"
+
 # Servers
 gem "puma", '~> 2.0.1'
 
