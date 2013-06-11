@@ -8,6 +8,6 @@ class ProjectGraph < Spinach::FeatureSteps
 
   When 'I visit project "Shop" graph page' do
     project = Project.find_by_name("Shop")
-    visit project_stat_graph_path(project, "master")
+    visit project_graph_path(project, "master")
   end
 end

@@ -446,9 +446,15 @@ describe CompareController, "routing" do
   end
 end
 
-describe GraphController, "routing" do
+describe NetworkController, "routing" do
   it "to #show" do
-    get("/gitlabhq/graph/master").should route_to('graph#show', project_id: 'gitlabhq', id: 'master')
-    get("/gitlabhq/graph/master.json").should route_to('graph#show', project_id: 'gitlabhq', id: 'master', format: "json")
+    get("/gitlabhq/network/master").should route_to('network#show', project_id: 'gitlabhq', id: 'master')
+    get("/gitlabhq/network/master.json").should route_to('network#show', project_id: 'gitlabhq', id: 'master', format: "json")
+  end
+end
+
+describe GraphsController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/graphs/master").should route_to('graphs#show', project_id: 'gitlabhq', id: 'master')
   end
 end
