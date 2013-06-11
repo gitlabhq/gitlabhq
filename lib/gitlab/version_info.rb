@@ -5,7 +5,7 @@ module Gitlab
     attr_reader :major, :minor, :patch
 
     def self.parse(str)
-      if m = str.match(/(\d+)\.(\d+)\.(\d+)/)
+      if str && m = str.match(/(\d+)\.(\d+)\.(\d+)/)
         VersionInfo.new(m[1].to_i, m[2].to_i, m[3].to_i)
       else
         VersionInfo.new
