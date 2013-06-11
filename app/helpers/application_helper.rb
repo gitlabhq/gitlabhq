@@ -194,7 +194,7 @@ module ApplicationHelper
   def users_select_tag(id, opts = {})
     css_class = "ajax-users-select "
     css_class << "multiselect " if opts[:multiple]
-    css_class << opts[:class] || ''
+    css_class << (opts[:class] || '')
     value = opts[:selected] || ''
 
     hidden_field_tag(id, value, class: css_class)
