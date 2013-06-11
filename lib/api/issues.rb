@@ -70,7 +70,7 @@ module API
       #   assignee_id (optional) - The ID of a user to assign issue
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional) - The labels of an issue
-      #   state (optional) - The state of an issue (close|reopen)
+      #   state_event (optional) - The state event of an issue (close|reopen)
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do

@@ -10,6 +10,10 @@
 
 .ajax-users-select {
   width: 400px;
+
+  &.input-large {
+    width: 210px;
+  }
 }
 
 .user-result {

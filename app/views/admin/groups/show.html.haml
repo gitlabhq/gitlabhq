@@ -1,120 +1,93 @@
 %h3.page_title
   Group: #{@group.name}
 
-%br
-%table.zebra-striped
-  %thead
-    %tr
-      %th Group
-      %th
-  %tr
-    %td
-      %b
-        Name:
-    %td
-      = @group.name
-      &nbsp;
-      = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
-        %i.icon-edit
-        Edit
-  %tr
-    %td
-      %b
-        Description:
-    %td
-      = @group.description
-  %tr
-    %td
-      %b
-        Path:
-    %td
-      %span.monospace= File.join(Gitlab.config.gitlab_shell.repos_path, @group.path)
-  %tr
-    %td
-      %b
-        Owner:
-    %td
-      = @group.owner_name
-      .pull-right
-        = link_to "#", class: "btn btn-small change-owner-link" do
-          %i.icon-edit
-          Change owner
+  = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
+    %i.icon-edit
+    Edit
+%hr
+.row
+  .span6
+    .ui-box
+      %h5.title
+        Group info:
+      %ul.well-list
+        %li
+          %span.light Name:
+          %strong= @group.name
+        %li
+          %span.light Path:
+          %strong
+            = @group.path
 
-  %tr.change-owner-holder.hide
-    %td.bgred
-      %b.cred
-        New Owner:
-    %td.bgred
-      = form_for [:admin, @group] do |f|
-        = f.select :owner_id, User.all.map { |user| [user.name, user.id] }, {}, {class: 'chosen'}
-        %div
-          = f.submit 'Change Owner', class: "btn btn-remove"
-          = link_to "Cancel", "#", class: "btn change-owner-cancel-link"
+        %li
+          %span.light Description:
+          %strong
+            = @group.description
 
-- if @group.projects.any?
-  %fieldset
-    %legend Projects (#{@group.projects.count})
-    %table
-      %thead
-        %tr
-          %th Project name
-          %th Path
-          %th Users
-          %th.cred Danger Zone!
-      - @group.projects.each do |project|
-        %tr
-          %td
-            = link_to project.name_with_namespace, [:admin, project]
-          %td
-            %span.monospace= project.path_with_namespace + ".git"
-          %td= project.users.count
-          %td.bgred
-            = link_to 'Transfer project to global namespace', remove_project_admin_group_path(@group, project_id: project.id), confirm: 'Remove project from group and move to global namespace. Are you sure?', method: :delete, class: "btn btn-remove small"
+        %li
+          %span.light Owned by:
+          %strong
+            - if @group.owner
+              = link_to @group.owner_name, admin_user_path(@group.owner)
+            - else
+              (deleted)
+          .pull-right
+            = link_to "#", class: "btn btn-small change-owner-link" do
+              %i.icon-edit
+              Change owner
+        %li.change-owner-holder.hide.bgred
+          .form-holder
+            %strong.cred New Owner:
+            = form_for [:admin, @group] do |f|
+              = users_select_tag(:"group[owner_id]")
+              .prepend-top-10
+                = f.submit 'Change Owner', class: "btn btn-remove"
+                = link_to "Cancel", "#", class: "btn change-owner-cancel-link"
 
-  = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
-    %table.zebra-striped
-      %thead
-        %tr
-          %th Users
-          %th Project Access:
+        %li
+          %span.light Created at:
+          %strong
+            = @group.created_at.stamp("March 1, 1999")
 
-      - @group.users.each do |user|
-        - next unless user
-        %tr{class: "user_#{user.id}"}
-          %td.name= link_to user.name, admin_user_path(user)
-          %td.projects_access
-            - user.authorized_projects.in_namespace(@group).each do |project|
-              - u_p = user.users_projects.in_project(project).first
-              - next unless u_p
-              %span
-                = project.name_with_namespace
-                = link_to "(#{ u_p.project_access_human })", edit_admin_project_member_path(project, user)
-      %tr
-        %td.input= select_tag :user_ids, options_from_collection_for_select(@users , :id, :name), multiple: true, data: {placeholder: 'Select users'}, class: 'chosen span5'
-        %td= select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span3"}
 
-      %tr
-        %td= submit_tag 'Add user to projects in group', class: "btn btn-create"
-        %td
+    .ui-box
+      %h5.title
+        Add user to Group projects:
+      .ui-box-body.form-holder
+        %p.light
           Read more about project permissions
           %strong= link_to "here", help_permissions_path, class: "vlink"
 
-- else
-  %fieldset
-    %legend Group is empty
+        = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
+          %div
+            = users_select_tag(:user_ids, multiple: true)
+          %div.prepend-top-10
+            = select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span2"}
+          %hr
+          = submit_tag 'Add user to projects in group', class: "btn btn-create"
+    .ui-box
+      %h5.title
+        Users from Group projects
+        %small
+          (#{@group.users.count})
+      %ul.well-list
+        - @group.users.sort_by(&:name).each do |user|
+          %li{class: dom_class(user)}
+            %strong
+              = link_to user.name, admin_user_path(user)
+            %span.pull-right.light
+              = pluralize user.authorized_projects.in_namespace(@group).count, 'project'
 
-= form_tag project_update_admin_group_path(@group), class: "bulk_import", method: :put  do
-  %fieldset
-    %legend Move projects to group
-    .alert
-      You can move only projects with existing repos
-      %br
-      Group projects will be moved in group directory and will not be accessible by old path
-    .clearfix
-      = label_tag :project_ids do
+  .span6
+    .ui-box
+      %h5.title
         Projects
-      .input
-        = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
-    .form-actions
-      = submit_tag 'Move projects', class: "btn btn-create"
-
+        %small
+          (#{@group.projects.count})
+      %ul.well-list
+        - @group.projects.sort_by(&:name).each do |project|
+          %li
+            %strong
+              = link_to project.name_with_namespace, [:admin, project]
+            %span.pull-right.light
+              %span.monospace= project.path_with_namespace + ".git"

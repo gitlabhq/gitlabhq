@@ -30,7 +30,7 @@ module API
       expose :owner, using: Entities::UserBasic
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at
+      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at, :last_activity_at
       expose :namespace
     end
 
@@ -119,6 +119,12 @@ module API
     class MRNote < Grape::Entity
       expose :note
       expose :author, using: Entities::UserBasic
+    end
+
+    class Event < Grape::Entity
+      expose :title, :project_id, :action_name
+      expose :target_id, :target_type, :author_id
+      expose :data, :target_title
     end
   end
 end

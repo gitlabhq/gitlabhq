@@ -74,7 +74,7 @@ class Profile < Spinach::FeatureSteps
 
   When "I change my code preview theme" do
     within '.code-preview-theme' do
-      choose "Solarized Dark"
+      choose "Solarized dark"
     end
   end
 

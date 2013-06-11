@@ -1,0 +1,13 @@
+.row
+  .span3
+    = link_to help_path, class: 'btn append-bottom-20 btn-small' do
+      %i.icon-angle-left
+      Back to help
+    %br
+    %ul.nav.nav-pills.nav-stacked
+      - %w(README projects project_snippets repositories deploy_keys users session issues milestones notes system_hooks).each do |file|
+        %li{class: file == @category ? 'active' : nil}
+          = link_to file.titleize, help_api_file_path(file)
+
+  .span9.pull-right
+    = yield

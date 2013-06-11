@@ -7,7 +7,7 @@ describe API::API do
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, project: project, author: user) }
   let!(:merge_request) { create(:merge_request, project: project, author: user) }
-  let!(:snippet) { create(:snippet, project: project, author: user) }
+  let!(:snippet) { create(:project_snippet, project: project, author: user) }
   let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
   let!(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
   let!(:snippet_note) { create(:note, noteable: snippet, project: project, author: user) }

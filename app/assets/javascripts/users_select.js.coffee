@@ -14,23 +14,24 @@ $ ->
   userFormatSelection = (user) ->
     user.name
 
-  $('.ajax-users-select').select2
-    placeholder: "Search for a user"
-    multiple: $('.ajax-users-select').hasClass('multiselect')
-    minimumInputLength: 0
-    query: (query) ->
-      Api.users query.term, (users) ->
-        data = { results: users }
-        query.callback(data)
+  $('.ajax-users-select').each (i, select) ->
+    $(select).select2
+      placeholder: "Search for a user"
+      multiple: $(select).hasClass('multiselect')
+      minimumInputLength: 0
+      query: (query) ->
+        Api.users query.term, (users) ->
+          data = { results: users }
+          query.callback(data)
 
-    initSelection: (element, callback) ->
-      id = $(element).val()
-      if id isnt ""
-        Api.user(id, callback)
+      initSelection: (element, callback) ->
+        id = $(element).val()
+        if id isnt ""
+          Api.user(id, callback)
 
 
-    formatResult: userFormatResult
-    formatSelection: userFormatSelection
-    dropdownCssClass: "ajax-users-dropdown"
-    escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
-      m
+      formatResult: userFormatResult
+      formatSelection: userFormatSelection
+      dropdownCssClass: "ajax-users-dropdown"
+      escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
+        m

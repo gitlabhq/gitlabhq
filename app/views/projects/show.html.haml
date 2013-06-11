@@ -3,7 +3,7 @@
 .row
   .span9
     = render "events/event_last_push", event: @last_push
-    .content_list= render @events
+    .content_list
     .loading.hide
   .span3
     .light-well
@@ -42,6 +42,7 @@
       %p Owner: #{link_to @project.owner_name, @project.owner}
       - if @project.forked_from_project
         %p
+          %i.icon-code-fork
           Forked from:
           = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 

@@ -15,6 +15,10 @@ class ProjectObserver < BaseObserver
     project.rename_repo if project.path_changed?
   end
 
+  def before_destroy(project)
+    project.repository.expire_cache unless project.empty_repo?
+  end
+
   def after_destroy(project)
     GitlabShellWorker.perform_async(
       :remove_repository,

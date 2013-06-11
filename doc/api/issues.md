@@ -25,7 +25,7 @@ GET /issues
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "closed": true,
+    "state": 'closed',
     "updated_at": "2012-07-02T17:53:12Z",
     "created_at": "2012-07-02T17:53:12Z"
   },
@@ -42,7 +42,7 @@ GET /issues
       "title": "v1.0",
       "description": "",
       "due_date": "2012-07-20",
-      "closed": false,
+      "state": 'reopenend',
       "updated_at": "2012-07-04T13:42:48Z",
       "created_at": "2012-07-04T13:42:48Z"
     },
@@ -62,7 +62,7 @@ GET /issues
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "closed": false,
+    "state": 'opened',
     "updated_at": "2012-07-12T13:43:19Z",
     "created_at": "2012-06-28T12:58:06Z"
   }
@@ -111,7 +111,7 @@ Parameters:
     "title": "v1.0",
     "description": "",
     "due_date": "2012-07-20",
-    "closed": false,
+    "state": 'closed',
     "updated_at": "2012-07-04T13:42:48Z",
     "created_at": "2012-07-04T13:42:48Z"
   },
@@ -131,7 +131,7 @@ Parameters:
     "blocked": false,
     "created_at": "2012-05-23T08:00:58Z"
   },
-  "closed": false,
+  "state": 'opened',
   "updated_at": "2012-07-12T13:43:19Z",
   "created_at": "2012-06-28T12:58:06Z"
 }
@@ -173,7 +173,7 @@ Parameters:
 + `assignee_id` (optional) - The ID of a user to assign issue
 + `milestone_id` (optional) - The ID of a milestone to assign issue
 + `labels` (optional) - Comma-separated label names for an issue
-+ `closed` (optional) - The state of an issue (0 = false, 1 = true)
++ `state_event` (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
 
 
 ## Delete existing issue (**Deprecated**)

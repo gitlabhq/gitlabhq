@@ -10,7 +10,7 @@ describe GitlabMarkdownHelper do
   let(:commit)        { project.repository.commit }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, project: project) }
-  let(:snippet)       { create(:snippet, project: project) }
+  let(:snippet)       { create(:project_snippet, project: project) }
   let(:member)        { project.users_projects.where(user_id: user).first }
 
   before do
@@ -190,8 +190,43 @@ describe GitlabMarkdownHelper do
     describe "referencing a snippet" do
       let(:object)    { snippet }
       let(:reference) { "$#{snippet.id}" }
+      let(:actual)   { "Reference to #{reference}" }
+      let(:expected) { project_snippet_path(project, object) }
 
-      include_examples 'referenced object'
+      it "should link using a valid id" do
+        gfm(actual).should match(expected)
+      end
+
+      it "should link with adjacent text" do
+        # Wrap the reference in parenthesis
+        gfm(actual.gsub(reference, "(#{reference})")).should match(expected)
+
+        # Append some text to the end of the reference
+        gfm(actual.gsub(reference, "#{reference}, right?")).should match(expected)
+      end
+
+      it "should keep whitespace intact" do
+        actual   = "Referenced #{reference} already."
+        expected = /Referenced <a.+>[^\s]+<\/a> already/
+        gfm(actual).should match(expected)
+      end
+
+      it "should not link with an invalid id" do
+        # Modify the reference string so it's still parsed, but is invalid
+        reference.gsub!(/^(.)(\d+)$/, '\1' + ('\2' * 2))
+        gfm(actual).should == actual
+      end
+
+      it "should include a title attribute" do
+        title = "Snippet: #{object.title}"
+        gfm(actual).should match(/title="#{title}"/)
+      end
+
+      it "should include standard gfm classes" do
+        css = object.class.to_s.underscore
+        gfm(actual).should match(/class="\s?gfm gfm-snippet\s?"/)
+      end
+
     end
 
     describe "referencing multiple objects" do

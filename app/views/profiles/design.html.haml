@@ -40,23 +40,9 @@
         %i.icon-ok
         Saved
     .code_highlight_opts
-      = label_tag do
-        .prev
-          = image_tag "white.png"
-        = f.radio_button :color_scheme_id, 1
-        White
-      = label_tag do
-        .prev
-          = image_tag "dark.png"
-        = f.radio_button :color_scheme_id, 2
-        Dark
-      = label_tag do
-        .prev
-          = image_tag "solarized_dark.png"
-        = f.radio_button :color_scheme_id, 3
-        Solarized Dark
-      = label_tag do
-        .prev
-          = image_tag "monokai.png"
-        = f.radio_button :color_scheme_id, 4
-        Monokai
+      - color_schemes.each do |color_scheme_id, color_scheme|
+        = label_tag do
+          .prev
+            = image_tag "#{color_scheme}-scheme-preview.png"
+          = f.radio_button :color_scheme_id, color_scheme_id
+          = color_scheme.gsub(/[-_]+/, ' ').humanize

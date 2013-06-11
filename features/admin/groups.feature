@@ -11,6 +11,7 @@ Feature: Admin Groups
     Then I should be redirected to group page
     And I should see newly created group
 
+  @javascript
   Scenario: Add user into projects in group
     When I visit admin group page
     When I select user "John" from user list as "Reporter"

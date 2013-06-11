@@ -1,0 +1,31 @@
+.loading-graph
+  %center
+    .loading
+    %h3.page_title Building repository graph. Please wait a moment.
+
+.stat-graph
+  .header.clearfix
+    .pull-right
+      %select
+        %option{:value => "commits"} Commits
+        %option{:value => "additions"} Additions
+        %option{:value => "deletions"} Deletions
+    %h3#date_header.page_title
+    %input#brush_change{:type => "hidden"}
+  .graphs
+    #contributors-master
+    #contributors.clearfix
+      %ol.contributors-list.clearfix
+
+:javascript
+  $(".stat-graph").hide();
+
+  $.ajax({
+    type: "GET",
+    url: location.href,
+    complete: function() {
+      $(".loading-graph").hide();
+      $(".stat-graph").show();
+    },
+    dataType: "script"
+  });

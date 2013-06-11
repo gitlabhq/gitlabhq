@@ -94,12 +94,37 @@ module API
       get ":id/repository/commits" do
         authorize! :download_code, user_project
 
-        page = params[:page] || 0
+        page = (params[:page] || 0).to_i
         per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
         commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
         present commits, with: Entities::RepoCommit
+      end
+
+      # Get a project repository tree
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
+      # Example Request:
+      #   GET /projects/:id/repository/tree
+      get ":id/repository/tree" do
+        authorize! :download_code, user_project
+
+        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        path = params[:path] || nil
+
+        commit = user_project.repository.commit(ref)
+        tree = Tree.new(user_project.repository, commit.id, ref, path)
+
+        trees = []
+
+        %w(trees blobs submodules).each do |type|
+          trees += tree.send(type).map { |t| { name: t.name, type: type.singularize, mode: t.mode, id: t.id } }
+        end
+
+        trees
       end
 
       # Get a raw file contents

@@ -78,6 +78,7 @@ class User < ActiveRecord::Base
   has_many :team_projects,                   through: :user_team_project_relationships
 
   # Projects
+  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
@@ -89,6 +90,8 @@ class User < ActiveRecord::Base
 
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
+  has_many :master_projects,          through: :users_projects, source: :project,
+                                      conditions: { users_projects: { project_access: UsersProject::MASTER } }
   has_many :own_projects,             foreign_key: :creator_id, class_name: 'Project'
   has_many :owned_projects,           through: :namespaces, source: :projects
 
@@ -244,8 +247,12 @@ class User < ActiveRecord::Base
   end
 
   def authorized_teams
-    @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
-    UserTeam.where(id: @team_ids)
+    if admin?
+      UserTeam.scoped
+    else
+      @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
+      UserTeam.where(id: @team_ids)
+    end
   end
 
   # Team membership in authorized projects
@@ -353,7 +360,7 @@ class User < ActiveRecord::Base
     extern_uid && provider == 'ldap'
   end
 
-  def owned_deploy_keys
-    DeployKey.in_projects(self.owned_projects).uniq
+  def accessible_deploy_keys
+    DeployKey.in_projects(self.master_projects).uniq
   end
 end

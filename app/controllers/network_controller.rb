@@ -1,4 +1,4 @@
-class GraphController < ProjectResourceController
+class NetworkController < ProjectResourceController
   include ExtractsPath
   include ApplicationHelper
 

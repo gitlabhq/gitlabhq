@@ -10,7 +10,7 @@ describe API::API do
   let(:admin) { create(:admin) }
   let!(:project) { create(:project_with_code, creator_id: user.id) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
-  let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
+  let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
 
@@ -169,6 +169,29 @@ describe API::API do
     it "should return a 404 error if user is not a member" do
       other_user = create(:user)
       get api("/projects/#{project.id}", other_user)
+      response.status.should == 404
+    end
+  end
+
+  describe "GET /projects/:id/events" do
+    it "should return a project events" do
+      get api("/projects/#{project.id}/events", user)
+      response.status.should == 200
+      json_event = json_response.first
+
+      json_event['action_name'].should == 'joined'
+      json_event['project_id'].to_i.should == project.id
+    end
+
+    it "should return a 404 error if not found" do
+      get api("/projects/42/events", user)
+      response.status.should == 404
+      json_response['message'].should == '404 Not Found'
+    end
+
+    it "should return a 404 error if user is not a member" do
+      other_user = create(:user)
+      get api("/projects/#{project.id}/events", other_user)
       response.status.should == 404
     end
   end
