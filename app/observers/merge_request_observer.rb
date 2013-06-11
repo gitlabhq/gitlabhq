@@ -1,6 +1,4 @@
 class MergeRequestObserver < BaseObserver
-  cattr_accessor :current_user
-
   def after_create(merge_request)
     notification.new_merge_request(merge_request, current_user)
   end
