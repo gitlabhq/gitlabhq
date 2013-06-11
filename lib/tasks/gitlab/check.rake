@@ -661,7 +661,7 @@ namespace :gitlab do
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
-    if required_version <= current_version
+    if current_version.valid? && required_version <= current_version
       puts "OK (#{current_version})".green
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".red
@@ -675,7 +675,7 @@ namespace :gitlab do
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "
 
-    if required_version <= current_version
+    if current_version.valid? && required_version <= current_version
         puts "yes (#{current_version})".green
     else
       puts "no".red
