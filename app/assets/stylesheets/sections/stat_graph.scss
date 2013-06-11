@@ -1,5 +1,4 @@
 .tint-box {
-  border-radius: 6px;
   background: #f3f3f3;
   position: relative;
   margin-bottom: 10px;
@@ -16,13 +15,11 @@
 }
 
 #contributors .person {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+  &:nth-child(even) {
+    float: right;
+  }
   float: left;
-  border-radius: 2px;
-  margin: 3px;
-  padding: 7px;
-  border: 1px solid #ddd;
+  margin-top: 10px;
 }
 
 .contributors-list {
@@ -33,7 +30,7 @@
 
 #contributors .person .spark {
   display: block;
-  background: #f7f7f7;
+  background: #f3f3f3;
 }
 
 #contributors .person .area-contributor {
@@ -48,10 +45,4 @@
   stroke-opacity: 0.4;
   shape-rendering: crispedges;
   stroke-dasharray: 3 3;
-}
-
-.right{
-  float: right;
-  display: inline-block;
-  margin-top: 5px;
 }
