@@ -110,11 +110,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def abandoned
-      project_ids = Event.select('max(created_at) as latest_date, project_id').
-        group('project_id').
-        having('latest_date < ?', 6.months.ago).map(&:project_id)
-
-      where(id: project_ids)
+      where('projects.last_activity_at < ?', 6.months.ago)
     end
 
     def with_push
