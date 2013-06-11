@@ -201,7 +201,11 @@ describe RefsController, "routing" do
 
   it "to #logs_tree" do
     get("/gitlabhq/refs/stable/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable')
+    get("/gitlabhq/refs/feature%2345/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature#45')
+    get("/gitlabhq/refs/feature%2B45/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature+45')
     get("/gitlabhq/refs/stable/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
+    get("/gitlabhq/refs/feature%2345/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature#45', path: 'foo/bar/baz')
+    get("/gitlabhq/refs/feature%2B45/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature+45', path: 'foo/bar/baz')
     get("/gitlab/gitlabhq/refs/stable/logs_tree/files.scss").should route_to('refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'stable', path: 'files.scss')
   end
 end
