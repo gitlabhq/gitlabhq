@@ -3,7 +3,7 @@ class SearchController < ApplicationController
     project_id = params[:project_id]
     group_id = params[:group_id]
 
-    project_ids = current_user.authorized_projects.map(&:id)
+    project_ids = current_user.authorized_and_public_projects.map(&:id)
 
     if group_id.present?
       @group = Group.find(group_id)

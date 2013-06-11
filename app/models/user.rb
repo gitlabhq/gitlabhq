@@ -246,6 +246,13 @@ class User < ActiveRecord::Base
     Project.where(id: @project_ids)
   end
 
+  def authorized_and_public_projects
+    public_projects = Project.public_only  
+    user_projects = authorized_projects
+
+    [public_projects + user_projects].flatten.uniq
+  end
+
   def authorized_teams
     if admin?
       UserTeam.scoped
