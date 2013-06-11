@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
-  before_filter :set_current_user_for_observers
+  before_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
@@ -47,9 +47,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_current_user_for_observers
-    MergeRequestObserver.current_user = current_user
-    IssueObserver.current_user = current_user
+  def set_current_user_for_thread
+    Thread.current[:current_user] = current_user
   end
 
   def abilities
