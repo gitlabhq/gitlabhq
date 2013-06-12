@@ -115,11 +115,15 @@ or start each component separately
 
 * [RSpec](http://rspec.info/) unit and functional tests
 
-        bundle exec rake spec
+        All RSpec tests: bundle exec rake spec
+
+        Single RSpec file: bundle exec rspec spec/controllers/commit_controller_spec.rb
 
 * [Spinach](https://github.com/codegram/spinach) integration tests
 
-        bundle exec rake spinach
+        All Spinach tests: bundle exec rake spinach
+
+        Single Spinach test: bundle exec spinach features/project/issues/milestones.feature
 
 
 ### GitLab interfaces
