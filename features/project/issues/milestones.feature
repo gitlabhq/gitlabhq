@@ -22,5 +22,3 @@ Feature: Project Milestones
     Given the milestone has open and closed issues
     And I click link "v2.2"
     Then I should see 3 issues
-    When I click link "All Issues"
-    Then I should see 4 issues

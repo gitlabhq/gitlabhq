@@ -1,10 +1,8 @@
 .span6
   .ui-box.milestone-issue-filter
-    .title
-      %ul.nav.nav-pills
-        %li=issues.first
+    %h5.title= title
     %ul.well-list
-      - issues.second.each do |issue|
+      - issues.each do |issue|
         %li{data: {closed: issue.closed?}}
           = link_to [@project, issue] do
             %span.badge.badge-info ##{issue.id}
