@@ -20,6 +20,7 @@ class Ability
       rules = []
       rules << :create_group if user.can_create_group
       rules << :create_team if user.can_create_team
+      rules << :create_global_project if user.can_create_global_project
       rules
     end
 

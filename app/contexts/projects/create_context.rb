@@ -75,7 +75,7 @@ module Projects
 
     def allowed_namespace?(user, namespace_id)
       if namespace_id == Namespace.global_id
-        return user.admin
+        return user.can_create_global_project?
       else
         namespace = Namespace.find_by_id(namespace_id)
         current_user.can?(:manage_namespace, namespace)

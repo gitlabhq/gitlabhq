@@ -8,7 +8,7 @@ module NamespacesHelper
     users_opts = [ "Users", users.sort_by(&:human_name).map {|u| [u.human_name, u.id]} ]
 
     options = []
-    options << global_opts if current_user.admin
+    options << global_opts if current_user.can_create_global_project?
     options << group_opts
     options << users_opts
 

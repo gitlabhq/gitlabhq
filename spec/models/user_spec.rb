@@ -2,38 +2,39 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0)
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  name                   :string(255)
-#  admin                  :boolean          default(FALSE), not null
-#  projects_limit         :integer          default(10)
-#  skype                  :string(255)      default(""), not null
-#  linkedin               :string(255)      default(""), not null
-#  twitter                :string(255)      default(""), not null
-#  authentication_token   :string(255)
-#  theme_id               :integer          default(1), not null
-#  bio                    :string(255)
-#  failed_attempts        :integer          default(0)
-#  locked_at              :datetime
-#  extern_uid             :string(255)
-#  provider               :string(255)
-#  username               :string(255)
-#  can_create_group       :boolean          default(TRUE), not null
-#  can_create_team        :boolean          default(TRUE), not null
-#  state                  :string(255)
-#  color_scheme_id        :integer          default(1), not null
-#  notification_level     :integer          default(1), not null
+#  id                         :integer          not null, primary key
+#  email                      :string(255)      default(""), not null
+#  encrypted_password         :string(255)      default(""), not null
+#  reset_password_token       :string(255)
+#  reset_password_sent_at     :datetime
+#  remember_created_at        :datetime
+#  sign_in_count              :integer          default(0)
+#  current_sign_in_at         :datetime
+#  last_sign_in_at            :datetime
+#  current_sign_in_ip         :string(255)
+#  last_sign_in_ip            :string(255)
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
+#  name                       :string(255)
+#  admin                      :boolean          default(FALSE), not null
+#  projects_limit             :integer          default(10)
+#  skype                      :string(255)      default(""), not null
+#  linkedin                   :string(255)      default(""), not null
+#  twitter                    :string(255)      default(""), not null
+#  authentication_token       :string(255)
+#  theme_id                   :integer          default(1), not null
+#  bio                        :string(255)
+#  failed_attempts            :integer          default(0)
+#  locked_at                  :datetime
+#  extern_uid                 :string(255)
+#  provider                   :string(255)
+#  username                   :string(255)
+#  can_create_group           :boolean          default(TRUE), not null
+#  can_create_team            :boolean          default(TRUE), not null
+#  can_create_global_project  :boolean          default(FALSE), not null
+#  state                      :string(255)
+#  color_scheme_id            :integer          default(1), not null
+#  notification_level         :integer          default(1), not null
 #
 
 require 'spec_helper'
@@ -176,6 +177,18 @@ describe User do
     it { @user.namespaces.should == [@user.namespace] }
   end
 
+  describe :can_select_namespace do
+    before do
+      @user1 = create :user
+      @user2 = create :user, can_create_global_project: true
+      @admin = create :user, admin: true
+    end
+
+    it { @user1.can_select_namespace?.should be_false }
+    it { @user2.can_select_namespace?.should be_true }
+    it { @admin.can_select_namespace?.should be_true }
+  end
+
   describe 'blocking user' do
     let(:user) { create(:user, name: 'John Smith') }
 
@@ -216,6 +229,7 @@ describe User do
     it { user.require_ssh_key?.should be_true }
     it { user.can_create_group?.should be_true }
     it { user.can_create_project?.should be_true }
+    it { user.can_create_global_project?.should be_false }
     it { user.first_name.should == 'John' }
   end
 
@@ -225,6 +239,7 @@ describe User do
       user.projects_limit.should == 10
       user.can_create_group.should == true
       user.can_create_team.should == true
+      user.can_create_global_project.should == false
     end
   end
 
@@ -234,6 +249,7 @@ describe User do
       user.projects_limit.should == 42
       user.can_create_group.should == false
       user.can_create_team.should == false
+      user.can_create_global_project.should == true
     end
   end
 end
