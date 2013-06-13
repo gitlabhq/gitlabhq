@@ -48,4 +48,36 @@ module ProjectsHelper
   def remove_project_message(project)
     "You are going to remove #{project.name_with_namespace}.\n Removed project CANNOT be restored!\n Are you ABSOLUTELY sure?"
   end
+
+  def project_nav_tabs
+    @nav_tabs ||= get_project_nav_tabs(@project, current_user)
+  end
+
+  def project_nav_tab?(name)
+    project_nav_tabs.include? name
+  end
+
+  private
+
+  def get_project_nav_tabs(project, current_user)
+    nav_tabs = [:home]
+
+    if project.repo_exists? && can?(current_user, :download_code, project)
+      nav_tabs << [:files, :commits, :network, :graphs]
+    end
+
+    if project.repo_exists? && project.merge_requests_enabled
+      nav_tabs << :merge_requests
+    end
+
+    if can?(current_user, :admin_project, project)
+      nav_tabs << :settings
+    end
+
+    [:issues, :wiki, :wall, :snippets].each do |feature|
+      nav_tabs << feature if project.send :"#{feature}_enabled"
+    end
+
+    nav_tabs.flatten
+  end
 end
