@@ -24,19 +24,25 @@
           = f.text_field :email, required: true, autocomplete: "off"
           %span.help-inline * required
 
-    %fieldset
-      %legend Password
-      .clearfix
-        = f.label :password
-        .input= f.password_field :password, disabled: f.object.force_random_password
-      .clearfix
-        = f.label :password_confirmation
-        .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
-      -if f.object.new_record?
+    - if @admin_user.new_record?
+      %fieldset
+        %legend Password
         .clearfix
-          = f.label :force_random_password do
-            %span Generate random password
-          .input= f.check_box :force_random_password, {}, true, nil
+          = f.label :password
+          .input
+            %strong
+              A temporary password will be generated and sent to user.
+              %br
+              User will be forced to change it after first sign in
+    - else
+      %fieldset
+        %legend Password
+        .clearfix
+          = f.label :password
+          .input= f.password_field :password, disabled: f.object.force_random_password
+        .clearfix
+          = f.label :password_confirmation
+          .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
 
     %fieldset
       %legend Access

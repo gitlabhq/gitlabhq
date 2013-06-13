@@ -42,8 +42,11 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, as: [:default, :admin]
-  attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
+                  :extern_uid, :provider, :password_expires_at,
+                  as: [:default, :admin]
+
+  attr_accessible :projects_limit, :can_create_team, :can_create_group,
+                  as: :admin
 
   attr_accessor :force_random_password
 
@@ -363,5 +366,9 @@ class User < ActiveRecord::Base
 
   def accessible_deploy_keys
     DeployKey.in_projects(self.master_projects).uniq
+  end
+
+  def created_by
+    User.find_by_id(created_by_id) if created_by_id
   end
 end
