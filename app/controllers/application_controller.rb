@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
-  before_filter :set_current_user_for_observers
+  before_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
@@ -47,9 +47,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_current_user_for_observers
-    MergeRequestObserver.current_user = current_user
-    IssueObserver.current_user = current_user
+  def set_current_user_for_thread
+    Thread.current[:current_user] = current_user
   end
 
   def abilities
@@ -154,7 +153,7 @@ class ApplicationController < ActionController::Base
     gon.default_issues_tracker = Project.issues_tracker.default_value
     gon.api_version = API::API.version
     gon.api_token = current_user.private_token if current_user
-    gon.gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
+    gon.gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
   end
 end

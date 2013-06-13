@@ -79,6 +79,7 @@ class Project < ActiveRecord::Base
             format: { with: Gitlab::Regex.project_name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter should be first" }
   validates :path, presence: true, length: { within: 0..255 },
+            exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
@@ -92,7 +93,7 @@ class Project < ActiveRecord::Base
     format: { with: URI::regexp(%w(http https)), message: "should be a valid url" },
     if: :import?
 
-  validate :check_limit, :repo_name
+  validate :check_limit
 
   # Scopes
   scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
@@ -110,11 +111,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def abandoned
-      project_ids = Event.select('max(created_at) as latest_date, project_id').
-        group('project_id').
-        having('latest_date < ?', 6.months.ago).map(&:project_id)
-
-      where(id: project_ids)
+      where('projects.last_activity_at < ?', 6.months.ago)
     end
 
     def with_push
@@ -168,14 +165,6 @@ class Project < ActiveRecord::Base
     end
   rescue
     errors[:base] << ("Can't check your ability to create project")
-  end
-
-  def repo_name
-    denied_paths = %w(admin dashboard groups help profile projects search)
-
-    if denied_paths.include?(path)
-      errors.add(:path, "like #{path} is not allowed")
-    end
   end
 
   def to_param

@@ -2,6 +2,7 @@ class AdminGroups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedActiveTab
+  include Select2Helper
 
   When 'I visit admin group page' do
     visit admin_group_path(current_group)
@@ -40,8 +41,8 @@ class AdminGroups < Spinach::FeatureSteps
 
   When 'I select user "John" from user list as "Reporter"' do
     user = User.find_by_name("John")
+    select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select user.name, from: "user_ids"
       select "Reporter", from: "project_access"
     end
     click_button "Add user to projects in group"
@@ -49,8 +50,6 @@ class AdminGroups < Spinach::FeatureSteps
 
   Then 'I should see "John" in team list in every project as "Reporter"' do
     user = User.find_by_name("John")
-    projects_with_access = find(".user_#{user.id} .projects_access")
-    projects_with_access.should have_link("Reporter")
   end
 
   protected

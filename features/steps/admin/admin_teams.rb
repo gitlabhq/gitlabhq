@@ -85,7 +85,7 @@ class AdminTeams < Spinach::FeatureSteps
   end
 
   Then 'I should see empty projects table' do
-    page.has_no_css?("#projects_list").must_equal true
+    page.should have_content "Projects (0)"
   end
 
   When 'I select project "Shop" with max access "Reporter"' do

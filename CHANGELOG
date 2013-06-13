@@ -16,6 +16,14 @@ v 5.3.0
   - Fix bug with team assignation on project from #4109
   - Advanced snippets: public/private, project/personal (Andrew Kulakov)
   - Repository Graphs (Karlo Nicholas T. Soriano)
+  - Fix dashboard lost if comment on commit
+  - Update gitlab-grack. Fixes issue with --depth option
+  - Fix project events duplicate on project page
+  - Fix postgres error when displaying network graph.
+  - Fix dashboard event filter when navigate via turbolinks
+  - init.d: Ensure socket is removed before starting service
+  - Admin area: Style teams:index, group:show pages
+  - Own page for failed forking
 
 v 5.2.0
   - Turbolinks

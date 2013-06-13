@@ -188,6 +188,10 @@ do so with caution!
     # Copy the example Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
+    # Enable cluster mode if you expect to have a high load instance
+    # Ex. change amount of workers to 3 for 2GB RAM server
+    sudo -u git -H vim config/puma.rb
+
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"

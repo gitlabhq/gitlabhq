@@ -4,10 +4,8 @@
   = text_field_tag :project_clone, @project.url_to_repo, class: "one_click_select span7", readonly: true
   %span.add-on
     - if @project.public
-      .cblue
-        %i.icon-share
-        public
+      = public_icon
+      %span.cblue public
     - else
-      .cgreen
-        %i.icon-lock
-        private
+      = private_icon
+      %span.cgreen private

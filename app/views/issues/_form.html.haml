@@ -20,8 +20,11 @@
               %i.icon-user
               Assign to
             .input
-              = f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
-              = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+              .pull-left
+                = f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+              .pull-right
+                &nbsp;
+                = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
           .issue_milestone.pull-left
             = f.label :milestone_id do
               %i.icon-time
@@ -63,6 +66,9 @@
         $( this ).data( "autocomplete" ).menu.active ) {
         event.preventDefault();
       }
+    })
+    .bind( "click", function( event ) {
+        $( this ).autocomplete("search", "");
     })
     .autocomplete({
       minLength: 0,

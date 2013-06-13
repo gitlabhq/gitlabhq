@@ -5,12 +5,12 @@
 
 .stat-graph
   .header.clearfix
-    .right
+    .pull-right
       %select
         %option{:value => "commits"} Commits
         %option{:value => "additions"} Additions
         %option{:value => "deletions"} Deletions
-    %h3#date_header
+    %h3#date_header.page_title
     %input#brush_change{:type => "hidden"}
   .graphs
     #contributors-master

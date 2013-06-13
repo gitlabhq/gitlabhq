@@ -1,7 +1,5 @@
 class GroupsController < ApplicationController
   respond_to :html
-  layout 'group', except: [:new, :create]
-
   before_filter :group, except: [:new, :create]
 
   # Authorize
@@ -12,7 +10,8 @@ class GroupsController < ApplicationController
   # Load group projects
   before_filter :projects, except: [:new, :create]
 
-  layout 'navless', only: [:new, :create]
+  layout :determine_layout
+
   before_filter :set_title, only: [:new, :create]
 
   def new
@@ -75,7 +74,7 @@ class GroupsController < ApplicationController
   end
 
   def team_members
-    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
+    @group.add_users_to_project_teams(params[:user_ids].split(','), params[:project_access])
     redirect_to people_group_path(@group), notice: 'Users were successfully added.'
   end
 
@@ -140,5 +139,13 @@ class GroupsController < ApplicationController
 
   def set_title
     @title = 'New Group'
+  end
+
+  def determine_layout
+    if [:new, :create].include?(action_name.to_sym)
+      'navless'
+    else
+      'group'
+    end
   end
 end

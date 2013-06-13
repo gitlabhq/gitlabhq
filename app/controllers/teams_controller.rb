@@ -6,8 +6,8 @@ class TeamsController < ApplicationController
 
   before_filter :user_team, except: [:new, :create]
 
-  layout 'user_team', except: [:new, :create]
-  layout 'navless', only: [:new, :create]
+  layout :determine_layout
+
   before_filter :set_title, only: [:new, :create]
 
   def show
@@ -17,7 +17,7 @@ class TeamsController < ApplicationController
 
   def edit
     projects
-    @avaliable_projects = current_user.admin? ? Project.without_team(user_team) : current_user.owned_projects.without_team(user_team)
+    @avaliable_projects = current_user.owned_projects.without_team(user_team)
   end
 
   def update
@@ -81,5 +81,13 @@ class TeamsController < ApplicationController
 
   def set_title
     @title = 'New Team'
+  end
+
+  def determine_layout
+    if [:new, :create].include?(action_name.to_sym)
+      'navless'
+    else
+      'user_team'
+    end
   end
 end

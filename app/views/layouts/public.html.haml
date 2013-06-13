@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Public Projects"
-  %body{class: "#{app_theme} application"}
+  %body{class: "#{app_theme} application", :'data-page' => body_data_page}
     - if current_user
       = render "layouts/head_panel", title: "Public Projects"
     - else

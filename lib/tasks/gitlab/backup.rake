@@ -90,13 +90,21 @@ namespace :gitlab do
       settings = YAML.load_file("backup_information.yml")
       ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
-      # restoring mismatching backups can lead to unexpected problems
-      if settings[:gitlab_version] != %x{git rev-parse HEAD}.gsub(/\n/,"")
-        puts "GitLab version mismatch:".red
-        puts "  Your current HEAD differs from the HEAD in the backup!".red
-        puts "  Please switch to the following revision and try again:".red
-        puts "  revision: #{settings[:gitlab_version]}".red
-        exit 1
+      # backups directory is not always sub of Rails root and able to execute the git rev-parse below
+      begin
+        Dir.chdir(Rails.root)
+
+        # restoring mismatching backups can lead to unexpected problems
+        if settings[:gitlab_version] != %x{git rev-parse HEAD}.gsub(/\n/, "")
+          puts "GitLab version mismatch:".red
+          puts "  Your current HEAD differs from the HEAD in the backup!".red
+          puts "  Please switch to the following revision and try again:".red
+          puts "  revision: #{settings[:gitlab_version]}".red
+          exit 1
+        end
+      ensure
+        # chdir back to original intended dir
+        Dir.chdir(Gitlab.config.backup.path)
       end
 
       Rake::Task["gitlab:backup:db:restore"].invoke

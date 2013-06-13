@@ -1,0 +1,19 @@
+.alert.alert-error.alert-block
+  %h4
+    %i.icon-code-fork
+    Fork Error!
+  %p
+    You are trying to fork
+    = link_to_project @project
+    but it fails due to next reason:
+
+
+  - if @forked_project && @forked_project.errors.any?
+    %p
+      &ndash;
+      = @forked_project.errors.full_messages.first
+
+  %p
+    = link_to fork_project_path(@project), title: "Fork", class: "btn", method: "POST" do
+      %i.icon-code-fork
+      Try to Fork again
