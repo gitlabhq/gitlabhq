@@ -367,4 +367,8 @@ class User < ActiveRecord::Base
   def accessible_deploy_keys
     DeployKey.in_projects(self.master_projects).uniq
   end
+
+  def created_by
+    User.find_by_id(created_by_id) if created_by_id
+  end
 end

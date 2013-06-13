@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130613165816) do
+ActiveRecord::Schema.define(:version => 20130613173246) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -293,6 +293,7 @@ ActiveRecord::Schema.define(:version => 20130613165816) do
     t.integer  "color_scheme_id",        :default => 1,     :null => false
     t.integer  "notification_level",     :default => 1,     :null => false
     t.datetime "password_expires_at"
+    t.integer  "created_by_id"
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"

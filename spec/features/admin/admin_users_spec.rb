@@ -20,13 +20,10 @@ describe "Admin::Users" do
 
   describe "GET /admin/users/new" do
     before do
-      @password = "123ABC"
       visit new_admin_user_path
       fill_in "user_name", with: "Big Bang"
       fill_in "user_username", with: "bang"
       fill_in "user_email", with: "bigbang@mail.com"
-      fill_in "user_password", with: @password
-      fill_in "user_password_confirmation", with: @password
     end
 
     it "should create new user" do
@@ -57,26 +54,13 @@ describe "Admin::Users" do
     end
 
     it "should send valid email to user with email & password" do
-      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
       User.observers.enable :user_observer do
         click_button "Create user"
         user = User.last
         email = ActionMailer::Base.deliveries.last
         email.subject.should have_content("Account was created")
         email.text_part.body.should have_content(user.email)
-        email.text_part.body.should have_content(@password)
-      end
-    end
-
-    it "should send valid email to user with email without password when signup is enabled" do
-      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
-      User.observers.enable :user_observer do
-        click_button "Create user"
-        user = User.last
-        email = ActionMailer::Base.deliveries.last
-        email.subject.should have_content("Account was created")
-        email.text_part.body.should have_content(user.email)
-        email.text_part.body.should_not have_content(@password)
+        email.text_part.body.should have_content('password')
       end
     end
   end
