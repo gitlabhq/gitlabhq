@@ -29,7 +29,7 @@ gem 'gitlab_git', '~> 1.3.0'
 gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
 
 # Syntax highlighter
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
