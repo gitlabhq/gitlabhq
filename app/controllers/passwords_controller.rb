@@ -1,6 +1,8 @@
 class PasswordsController < ApplicationController
   layout 'navless'
 
+  skip_before_filter :check_password_expiration
+
   before_filter :set_user
   before_filter :set_title
 
