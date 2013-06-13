@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
-  before_filter :check_password_expiration!
+  before_filter :check_password_expiration
   before_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
@@ -159,7 +159,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user.password_expires_at < Time.now
+    if current_user.password_expires_at && current_user.password_expires_at < Time.now
       redirect_to new_profile_password_path and return
     end
   end
