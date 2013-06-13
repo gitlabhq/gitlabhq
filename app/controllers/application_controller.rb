@@ -159,7 +159,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user.password_expires_at && current_user.password_expires_at < Time.now
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now
       redirect_to new_profile_password_path and return
     end
   end
