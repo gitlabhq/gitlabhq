@@ -5,8 +5,9 @@
         = link_to 'Projects', '#tab-projects', 'data-toggle' => 'tab'
       %li
         = link_to 'Edit Team', '#tab-edit', 'data-toggle' => 'tab'
-      %li
-        = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
+      - if can? current_user, :admin_user_team, @team
+        %li
+          = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
 
   .span9
     .tab-content
