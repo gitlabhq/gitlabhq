@@ -1,0 +1,23 @@
+%h3.page_title Setup your new password
+
+%br
+
+= form_for @user, url: profile_password_path, method: :put do |f|
+  .padded
+    %p.slead After successful password update you will be redirected to dashboard
+    -if @user.errors.any?
+      .alert.alert-error
+        %ul
+          - @user.errors.full_messages.each do |msg|
+            %li= msg
+
+    .clearfix
+      = f.label :password
+      .input= f.password_field :password, required: true
+    .clearfix
+      = f.label :password_confirmation
+      .input
+        = f.password_field :password_confirmation, required: true
+    .clearfix
+      .input
+        = f.submit 'Save password', class: "btn btn-save"

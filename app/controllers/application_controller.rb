@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
+  before_filter :check_password_expiration!
   before_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
@@ -155,5 +156,11 @@ class ApplicationController < ActionController::Base
     gon.api_token = current_user.private_token if current_user
     gon.gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
+  end
+
+  def check_password_expiration
+    if current_user.password_expires_at < Time.now
+      redirect_to new_profile_password_path and return
+    end
   end
 end

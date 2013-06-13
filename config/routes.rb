@@ -123,6 +123,7 @@ Gitlab::Application.routes.draw do
     end
 
     resource :notifications
+    resource :password
   end
 
   resources :keys
