@@ -60,6 +60,11 @@ module API
       attrs
     end
 
+    def handle_activerecord_errors(errors)
+      attribute, message = errors.first
+      conflict!(attribute) if message == 'has already been taken'
+    end
+
     # error helpers
 
     def forbidden!
@@ -85,6 +90,11 @@ module API
 
     def not_allowed!
       render_api_error!('Method Not Allowed', 405)
+    end
+
+    def conflict!(attribute)
+      message = "409 " + attribute.to_s.camelize + " has already been taken"
+      render_api_error!(message, 409)
     end
 
     def render_api_error!(message, status)

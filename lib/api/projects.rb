@@ -85,6 +85,7 @@ module API
           if @project.errors[:limit_reached].present?
             error!(@project.errors[:limit_reached], 403)
           end
+          handle_activerecord_errors(@project.errors)
           not_found!
         end
       end
@@ -116,6 +117,7 @@ module API
         if @project.saved?
           present @project, with: Entities::Project
         else
+          handle_activerecord_errors(@project.errors)
           not_found!
         end
       end
