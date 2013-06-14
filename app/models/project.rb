@@ -413,6 +413,10 @@ class Project < ActiveRecord::Base
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
+  def imported?
+    imported
+  end
+
   def rename_repo
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
