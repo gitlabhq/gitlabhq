@@ -28,8 +28,8 @@ class Issue < ActiveRecord::Base
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :authored, ->(user) { where(author_id: user) }
   scope :open_for, ->(user) { opened.assigned(user) }
-  scope :assigned, where("assignee_id IS NOT NULL")
-  scope :unassigned, where("assignee_id IS NULL")
+  scope :assigned, -> { where("assignee_id IS NOT NULL") }
+  scope :unassigned, -> { where("assignee_id IS NULL") }
 
   state_machine :state, initial: :opened do
     event :close do
