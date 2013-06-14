@@ -23,6 +23,41 @@ module API
         present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject, project: user_project
       end
 
+
+      # Create a branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      #   ref (required) - SHA1 ref of branch.
+      # Example Request:
+      #   POST /projects/:id/repository/branches/:branch/:ref
+      post ":id/repository/branches/:branch/:ref" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        resource_exists! if @branch
+
+        user_project.repository.create_branch(params[:branch], params[:ref])
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+
+        # Return 200 OK. Since the branch is created in a background process
+        # we can't yet return it.
+      end
+
+      # Deletes a branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   DELETE /projects/:id/repository/branches/:branch
+      delete ":id/repository/branches/:branch" do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found! unless @branch
+
+        user_project.repository.rm_branch(params[:branch])
+        # Returns 200 OK
+      end
+
       # Get a single branch
       #
       # Parameters:
@@ -82,6 +117,40 @@ module API
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
         present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
+      end
+
+      # Create a tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag (required) - The name of the tag
+      #   ref (required) - SHA1 ref of tag.
+      # Example Request:
+      #   POST /projects/:id/repository/tags/:tag/:ref
+      post ":id/repository/tags/:tag/:ref" do
+        @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
+        resource_exists! if @tag
+
+        user_project.repository.create_tag(params[:tag], params[:ref])
+        @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
+
+        # Return 200 OK. Since the tag is created in a background process
+        # we can't yet return it.
+      end
+
+      # Deletes a tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag (required) - The name of the tag
+      # Example Request:
+      #   DELETE /projects/:id/repository/tags/:tag
+      delete ":id/repository/tags/:tag" do
+        @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
+        not_found! unless @tag
+
+        user_project.repository.rm_tag(params[:tag])
+        # Returns 200 OK
       end
 
       # Get a project repository commits

@@ -2,6 +2,70 @@ module Gitlab
   class Shell
     class AccessDenied < StandardError; end
 
+    # Create a new branch in a repository.
+    #
+    # project_name - project path with namespace
+    # branch_name - the branch name to create
+    # ref - SHA1 to create the branch from
+    #
+    # Ex.
+    #   create_branch("gitlab/gitlab-ci", "feature_1", "02a7b1270bbe35a14b3c7701bcbcff39abc646da")
+    #
+    def create_branch(project_name, branch_name, ref)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects",
+            "create-branch",
+            "#{project_name}.git",
+            branch_name,
+            ref
+    end
+
+    # Removes a branch in a repository.
+    #
+    # project_name - project path with namespace
+    # branch_name - the branch name to remove
+    #
+    # Ex.
+    #   rm_branch("gitlab/gitlab-ci", "feature_1")
+    #
+    def rm_branch(project_name, branch_name)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects",
+            "rm-branch",
+            "#{project_name}.git",
+            branch_name
+    end
+
+    # Create a new tag in a repository.
+    #
+    # project_name - project path with namespace
+    # tag_name - the tag name to create
+    # ref - SHA1 to create the branch from
+    #
+    # Ex.
+    #   create_tag("gitlab/gitlab-ci", "v.1.0", "02a7b1270bbe35a14b3c7701bcbcff39abc646da")
+    #
+    def create_tag(project_name, tag_name, ref)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects",
+            "create-tag",
+            "#{project_name}.git",
+            tag_name,
+            ref
+    end
+
+    # Removes a tag in a repository.
+    #
+    # project_name - project path with namespace
+    # tag_name - the tag name to create
+    #
+    # Ex.
+    #   rm_tag("gitlab/gitlab-ci", "v.1.0")
+    #
+    def rm_tag(project_name, tag_name)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects",
+            "rm-tag",
+            "#{project_name}.git",
+            tag_name
+    end
+
     # Init new repository
     #
     # name - project path with namespace
@@ -217,3 +281,4 @@ module Gitlab
     end
   end
 end
+

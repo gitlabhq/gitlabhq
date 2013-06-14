@@ -17,6 +17,56 @@ class Repository
     raw_repository.empty?
   end
 
+  def create_branch(branch_name, ref)
+    GitlabShellWorker.perform_async(
+        :create_branch,
+        path_with_namespace,
+        branch_name,
+        ref
+    )
+    # Yes - Possible race condition that the new branch may not be created in time, but
+    # on any active repo the cache will be cleared enough and in all testing I have yet
+    # to have it not create the branch first.
+    expire_cache
+  end
+
+  def rm_branch(branch_name)
+    GitlabShellWorker.perform_async(
+        :rm_branch,
+        path_with_namespace,
+        branch_name
+    )
+    # Yes - Possible race condition that the new branch may not be created in time, but
+    # on any active repo the cache will be cleared enough and in all testing I have yet
+    # to have it not create the branch first.
+    expire_cache
+  end
+
+  def create_tag(tag_name, ref)
+    GitlabShellWorker.perform_async(
+        :create_tag,
+        path_with_namespace,
+        tag_name,
+        ref
+    )
+    # Yes - Possible race condition that the new branch may not be created in time, but
+    # on any active repo the cache will be cleared enough and in all testing I have yet
+    # to have it not create the branch first.
+    expire_cache
+  end
+
+  def rm_tag(branch_name)
+    GitlabShellWorker.perform_async(
+        :rm_tag,
+        path_with_namespace,
+        branch_name
+    )
+    # Yes - Possible race condition that the new branch may not be created in time, but
+    # on any active repo the cache will be cleared enough and in all testing I have yet
+    # to have it not create the branch first.
+    expire_cache
+  end
+
   def commit(id = nil)
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
@@ -151,3 +201,4 @@ class Repository
     super
   end
 end
+

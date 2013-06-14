@@ -110,6 +110,10 @@ module API
       render_api_error!('401 Unauthorized', 401)
     end
 
+    def resource_exists!
+      render_api_error!('Resource Already Exists', 409)
+    end
+
     def not_allowed!
       render_api_error!('Method Not Allowed', 405)
     end
