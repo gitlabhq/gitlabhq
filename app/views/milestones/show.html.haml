@@ -56,9 +56,9 @@
 
 
 .row
-  =render(partial: 'issues', :locals => {title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned})
+  = render(partial: 'issues', locals: {title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned})
 
-  =render(partial: 'issues', :locals => {title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned})
+  = render(partial: 'issues', locals: {title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned})
 
 .row
   .span6
@@ -75,7 +75,7 @@
             &ndash;
             = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
 
-  =render(:partial => 'issues', :locals => {title: 'Completed Issues (closed)', issues: @issues.closed})
+  = render(:partial => 'issues', locals: {title: 'Completed Issues (closed)', issues: @issues.closed})
 
 %hr
 %h6 Participants:
