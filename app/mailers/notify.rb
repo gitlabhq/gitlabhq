@@ -3,9 +3,12 @@ class Notify < ActionMailer::Base
   include Emails::MergeRequests
   include Emails::Notes
   include Emails::Projects
+  include Emails::Commits
 
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
+  add_template_helper CommitsHelper
+  add_template_helper TreeHelper
 
   default_url_options[:host]     = Gitlab.config.gitlab.host
   default_url_options[:protocol] = Gitlab.config.gitlab.protocol
