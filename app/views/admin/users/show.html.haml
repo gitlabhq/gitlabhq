@@ -46,7 +46,10 @@
         %li
           %span.light Last sign-in at:
           %strong
-            = @admin_user.last_sign_in_at.stamp("Nov 12, 2031")
+            - if @admin_user.last_sign_in_at
+              = @admin_user.last_sign_in_at.stamp("Nov 12, 2031")
+            - else
+              never
 
         - if @admin_user.ldap_user?
           %li
