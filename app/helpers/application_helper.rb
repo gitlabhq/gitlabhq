@@ -142,7 +142,7 @@ module ApplicationHelper
   end
 
   def user_color_scheme_class
-    COLOR_SCHEMES[current_user.try(:color_scheme_id)]
+    COLOR_SCHEMES[current_user.try(:color_scheme_id)] if defined?(current_user)
   end
 
   # Define whenever show last push event
