@@ -108,28 +108,25 @@ Create a `git` user for Gitlab:
 
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
 
-    # Login as git
-    sudo su git
-
     # Go to home directory
     cd /home/git
 
     # Clone gitlab shell
-    git clone https://github.com/gitlabhq/gitlab-shell.git
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git
 
     cd gitlab-shell
 
     # switch to right version
-    git checkout v1.4.0
+    sudo -u git -H git checkout v1.4.0
 
-    cp config.yml.example config.yml
+    sudo -u git -H cp config.yml.example config.yml
 
     # Edit config and replace gitlab_url
     # with something like 'http://domain.com/'
-    vim config.yml
+    sudo -u git -H vim config.yml
 
     # Do setup
-    ./bin/install
+    sudo -u git -H ./bin/install
 
 
 # 5. Database
@@ -213,7 +210,7 @@ Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
 
     # Make sure to update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
-    # If you followed the database guide than please do as follows:
+    # If you followed the database guide then please do as follows:
     # Change 'root' to 'gitlab'
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
