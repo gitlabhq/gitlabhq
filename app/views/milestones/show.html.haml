@@ -56,20 +56,11 @@
 
 
 .row
-  .span6
-    .ui-box.milestone-issue-filter
-      .title
-        %ul.nav.nav-pills
-          %li.active= link_to('Open Issues', '#')
-          %li=link_to('All Issues', '#')
-      %ul.well-list
-        - @issues.each do |issue|
-          %li{data: {closed: issue.closed?}}
-            = link_to [@project, issue] do
-              %span.badge.badge-info ##{issue.id}
-            &ndash;
-            = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
+  = render(partial: 'issues', locals: {title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned})
 
+  = render(partial: 'issues', locals: {title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned})
+
+.row
   .span6
     .ui-box.milestone-merge-requests-filter
       .title
@@ -83,6 +74,8 @@
               %span.badge.badge-info ##{merge_request.id}
             &ndash;
             = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
+
+  = render(:partial => 'issues', locals: {title: 'Completed Issues (closed)', issues: @issues.closed})
 
 %hr
 %h6 Participants:
