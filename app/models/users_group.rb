@@ -37,6 +37,6 @@ class UsersGroup < ActiveRecord::Base
   delegate :name, :username, :email, to: :user, prefix: true
 
   def human_access
-    UsersGroup.group_access_roles.index(self.group_access)
+    UsersGroup.group_access_roles.key(self.group_access)
   end
 end
