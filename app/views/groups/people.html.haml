@@ -1,7 +1,12 @@
 - can_manage_group =  current_user.can? :manage_group, @group
 .row
   .span6
-    = render "new_group_member"
+    - if can_manage_group
+      = render "new_group_member"
+    - else
+      .light-well
+        %h4.nothing_here_message
+          Only group owners can manage group members
   .span6
     .ui-box
       %h5.title
