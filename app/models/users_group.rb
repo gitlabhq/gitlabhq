@@ -15,7 +15,7 @@ class UsersGroup < ActiveRecord::Base
     }
   end
 
-  attr_accessible :group_access, :group_id, :user_id
+  attr_accessible :group_access, :user_id
 
   belongs_to :user
   belongs_to :project
@@ -32,6 +32,8 @@ class UsersGroup < ActiveRecord::Base
   validates :group_access, inclusion: { in: UsersGroup.group_access_roles.values }, presence: true
   validates :user_id, presence: true
   validates :group_id, presence: true
+
+  delegate :name, :username, :email, to: :user, prefix: true
 
   def human_group_access
     UsersGroup.group_access_roles.index(self.group_access)

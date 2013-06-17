@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
     t.integer  "assignee_id"
     t.integer  "author_id"
     t.integer  "project_id"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "position",     :default => 0
     t.string   "branch_name"
     t.text     "description"
@@ -71,8 +71,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
 
   create_table "keys", :force => true do |t|
     t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.text     "key"
     t.string   "title"
     t.string   "identifier"
@@ -89,8 +89,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.text     "st_commits",    :limit => 2147483647
     t.text     "st_diffs",      :limit => 2147483647
     t.integer  "milestone_id"
@@ -139,8 +139,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
     t.text     "note"
     t.string   "noteable_type"
     t.integer  "author_id"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
@@ -158,8 +158,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
     t.string   "name"
     t.string   "path"
     t.text     "description"
-    t.datetime "created_at",                                   :null => false
-    t.datetime "updated_at",                                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "creator_id"
     t.string   "default_branch"
     t.boolean  "issues_enabled",         :default => true,     :null => false
@@ -206,8 +206,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
     t.text     "content"
     t.integer  "author_id",                    :null => false
     t.integer  "project_id"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
     t.boolean  "private",    :default => true, :null => false
@@ -227,9 +227,6 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
     t.string   "context"
     t.datetime "created_at"
   end
-
-  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
-  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
 
   create_table "tags", :force => true do |t|
     t.string "name"
@@ -262,50 +259,49 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                  :default => "",    :null => false
-    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "email",                                 :default => "",    :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "",    :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          :default => 0
+    t.integer  "sign_in_count",                         :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "name"
-    t.boolean  "admin",                  :default => false, :null => false
-    t.integer  "projects_limit",         :default => 10
-    t.string   "skype",                  :default => "",    :null => false
-    t.string   "linkedin",               :default => "",    :null => false
-    t.string   "twitter",                :default => "",    :null => false
+    t.boolean  "admin",                                 :default => false, :null => false
+    t.integer  "projects_limit",                        :default => 10
+    t.string   "skype",                                 :default => "",    :null => false
+    t.string   "linkedin",                              :default => "",    :null => false
+    t.string   "twitter",                               :default => "",    :null => false
     t.string   "authentication_token"
-    t.integer  "theme_id",               :default => 1,     :null => false
+    t.integer  "theme_id",                              :default => 1,     :null => false
     t.string   "bio"
-    t.integer  "failed_attempts",        :default => 0
+    t.integer  "failed_attempts",                       :default => 0
     t.datetime "locked_at"
     t.string   "extern_uid"
     t.string   "provider"
     t.string   "username"
-    t.boolean  "can_create_group",       :default => true,  :null => false
-    t.boolean  "can_create_team",        :default => true,  :null => false
+    t.boolean  "can_create_group",                      :default => true,  :null => false
+    t.boolean  "can_create_team",                       :default => true,  :null => false
     t.string   "state"
-    t.integer  "color_scheme_id",        :default => 1,     :null => false
-    t.integer  "notification_level",     :default => 1,     :null => false
+    t.integer  "color_scheme_id",                       :default => 1,     :null => false
+    t.integer  "notification_level",                    :default => 1,     :null => false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["extern_uid", "provider"], :name => "index_users_on_extern_uid_and_provider", :unique => true
   add_index "users", ["name"], :name => "index_users_on_name"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["username"], :name => "index_users_on_username"
 
   create_table "users_groups", :force => true do |t|
-    t.integer  "access_level", :null => false
+    t.integer  "group_access", :null => false
     t.integer  "group_id",     :null => false
     t.integer  "user_id",      :null => false
     t.datetime "created_at",   :null => false
@@ -315,8 +311,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
   create_table "users_projects", :force => true do |t|
     t.integer  "user_id",                           :null => false
     t.integer  "project_id",                        :null => false
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "project_access",     :default => 0, :null => false
     t.integer  "notification_level", :default => 3, :null => false
   end
@@ -328,8 +324,8 @@ ActiveRecord::Schema.define(:version => 20130617095603) do
   create_table "web_hooks", :force => true do |t|
     t.string   "url"
     t.integer  "project_id"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "type",       :default => "ProjectHook"
     t.integer  "service_id"
   end

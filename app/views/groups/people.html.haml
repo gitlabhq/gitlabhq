@@ -6,7 +6,7 @@
       = render (@project ? "new_member" : "new_group_member")
     .ui-box
       %h5.title
-        Team
+        #{@group.name} Team
         %small
           (#{@users_groups.count})
       %ul.well-list
