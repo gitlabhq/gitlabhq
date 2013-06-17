@@ -28,9 +28,11 @@ class SystemHooksService
         path: model.path,
         path_with_namespace: model.path_with_namespace,
         project_id: model.id,
+      })
+      data.merge!({
         owner_name: model.owner.name,
         owner_email: model.owner.email
-      })
+      }) unless model.owner.nil?
     when User
       data.merge!({
         name: model.name,
