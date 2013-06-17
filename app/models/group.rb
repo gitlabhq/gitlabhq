@@ -13,6 +13,8 @@
 #
 
 class Group < Namespace
+  has_many :users_groups, dependent: :destroy
+  has_many :users, through: :users_groups
 
   def add_users_to_project_teams(user_ids, project_access)
     UsersProject.add_users_into_projects(
@@ -34,5 +36,9 @@ class Group < Namespace
 
   def truncate_teams
     UsersProject.truncate_teams(project_ids)
+  end
+
+  def owners
+    @owners ||= (users_groups.owners.map(&:user) << owner)
   end
 end
