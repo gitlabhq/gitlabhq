@@ -1,19 +1,15 @@
+- can_manage_group =  current_user.can? :manage_group, @group
 .row
-  .span3
-    = render 'people_filter'
-  .span9
-    - if can?(current_user, :manage_group, @group)
-      = render (@project ? "new_member" : "new_group_member")
+  .span6
+    = render "new_group_member"
+  .span6
     .ui-box
       %h5.title
-        - if @project
-          #{@project.name} Project Members
-          %small
-            (#{@members.count})
-        - else
-          #{@group.name} Group Members
-          %small
-            (#{@members.count})
+        #{@group.name} Group Members
+        %small
+          (#{@members.count})
       %ul.well-list
         - @members.each do |member|
-          = render 'users_groups/users_group', member: member
+          = render 'users_groups/users_group', member: member, show_controls: can_manage_group
+    %p.light
+      Group members get access to all projects in this group

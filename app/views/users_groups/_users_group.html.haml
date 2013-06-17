@@ -1,6 +1,6 @@
 - user = member.user
 - return unless user
-%li
+%li{class: dom_class(member)}
   = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
   %strong= user.name
   %span.cgray= user.username
@@ -10,3 +10,7 @@
       %span.label.label-info Group Owner
     - else
       = member.human_access
+
+    - if show_controls && user != current_user
+      = link_to group_users_group_path(@group, member), confirm: remove_user_from_group_message(@group, user), method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+        %i.icon-minus.icon-white

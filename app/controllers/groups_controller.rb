@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   respond_to :html
-  before_filter :group, except: [:new, :create]
+  before_filter :group, except: [:new, :create, :people]
 
   # Authorize
   before_filter :authorize_read_group!, except: [:new, :create]
@@ -63,20 +63,8 @@ class GroupsController < ApplicationController
 
   def people
     @project = group.projects.find(params[:project_id]) if params[:project_id]
-
-    if @project
-      @members = @project.users_projects
-      @team_member = @project.users_projects.new
-    else
-      @members = group.users_groups
-      @team_member = UsersGroup.new
-    end
-  end
-
-  def team_members
-    @group.add_users(params[:user_ids].split(','), params[:group_access])
-
-    redirect_to people_group_path(@group), notice: 'Users were successfully added.'
+    @members = group.users_groups
+    @users_group = UsersGroup.new
   end
 
   def edit

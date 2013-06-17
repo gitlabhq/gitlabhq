@@ -149,10 +149,10 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
-      get :search
       get :people
-      post :team_members
     end
+
+    resources :users_groups, only: [:create, :update, :destroy]
   end
 
   #
