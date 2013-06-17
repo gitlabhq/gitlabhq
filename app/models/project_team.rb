@@ -23,7 +23,12 @@ class ProjectTeam
 
   def find user_id
     user = project.users.find_by_id(user_id)
-    user ||= project.group.users.find_by_id(user_id)
+
+    if group
+      user ||= group.users.find_by_id(user_id)
+    end
+
+    user
   end
 
   def get_tm user_id
@@ -106,13 +111,17 @@ class ProjectTeam
 
   def fetch_members(level = nil)
     project_members = project.users_projects
-    group_members = project.group.users_groups
+    group_members = group ? group.users_groups : []
 
     if level
       project_members = project_members.send(level)
-      group_members = group_members.send(level)
+      group_members = group_members.send(level) if group
     end
 
     (project_members + group_members).map(&:user).uniq
+  end
+
+  def group
+    project.group
   end
 end
