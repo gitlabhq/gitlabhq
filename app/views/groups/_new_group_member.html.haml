@@ -9,10 +9,10 @@
 
     %h6 2. Set access level for them
     .clearfix
-      = f.label :project_access, "Project Access"
-      .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select chosen"
+      = f.label :group_access, "Group Access"
+      .input= select_tag :group_access, options_for_select(UsersGroup.group_access_roles, @team_member.group_access), class: "project-access-select chosen"
 
     .form-actions
       = hidden_field_tag :redirect_to, people_group_path(@group)
-      = f.submit 'Add', class: "btn btn-save"
+      = f.submit 'Add users into group', class: "btn btn-create"
 

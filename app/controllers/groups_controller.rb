@@ -63,18 +63,19 @@ class GroupsController < ApplicationController
 
   def people
     @project = group.projects.find(params[:project_id]) if params[:project_id]
-    @users = @project ? @project.users : group.users
-    @users.sort_by!(&:name)
+
+    @users_groups = group.users_groups
 
     if @project
       @team_member = @project.users_projects.new
     else
-      @team_member = UsersProject.new
+      @team_member = UsersGroup.new
     end
   end
 
   def team_members
-    @group.add_users_to_project_teams(params[:user_ids].split(','), params[:project_access])
+    @group.add_users(params[:user_ids].split(','), params[:group_access])
+
     redirect_to people_group_path(@group), notice: 'Users were successfully added.'
   end
 
