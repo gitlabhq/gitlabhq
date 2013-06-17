@@ -1,8 +1,8 @@
 = form_for @team_member, as: :team_member, url: team_members_group_path(@group) do |f|
   %fieldset
-    %legend= "New Team member(s) for projects in #{@group.name}"
+    %legend= "New Group member(s) for #{@group.name}"
 
-    %h6 1. Choose people you want in the team
+    %h6 1. Choose people you want in the group
     .clearfix
       = f.label :user_ids, "People"
       .input= users_select_tag(:user_ids, multiple: true)

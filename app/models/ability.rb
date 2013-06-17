@@ -50,6 +50,10 @@ class Ability
         rules << project_admin_rules
       end
 
+      if project.group && project.group.owners.include?(user)
+        rules << project_admin_rules
+      end
+
       rules.flatten
     end
 

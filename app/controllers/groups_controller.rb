@@ -64,11 +64,11 @@ class GroupsController < ApplicationController
   def people
     @project = group.projects.find(params[:project_id]) if params[:project_id]
 
-    @users_groups = group.users_groups
-
     if @project
+      @members = @project.users_projects
       @team_member = @project.users_projects.new
     else
+      @members = group.users_groups
       @team_member = UsersGroup.new
     end
   end

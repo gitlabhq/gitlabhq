@@ -6,12 +6,18 @@
       = render (@project ? "new_member" : "new_group_member")
     .ui-box
       %h5.title
-        #{@group.name} Team
-        %small
-          (#{@users_groups.count})
+        - if @project
+          #{@project.name} Project Members
+          %small
+            (#{@members.count})
+        - else
+          #{@group.name} Group Members
+          %small
+            (#{@members.count})
       %ul.well-list
-        - @users_groups.each do |users_group|
-          - user = users_group.user
+        - @members.each do |member|
+          - user = member.user
+          - next unless user
           %li
             = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
             %strong= user.name
@@ -21,5 +27,5 @@
               - if @group.owners.include?(user)
                 %span.label.label-info Group Owner
               - else
-                = users_group.human_group_access
+                = member.human_access
 

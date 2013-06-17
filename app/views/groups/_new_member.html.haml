@@ -1,8 +1,8 @@
 = form_for @team_member, as: :team_member, url: project_team_members_path(@project, @team_member) do |f|
   %fieldset
-    %legend= "New Team member(s) for #{@project.name}"
+    %legend= "New Project member(s) for #{@project.name}"
 
-    %h6 1. Choose people you want in the team
+    %h6 1. Choose people you want in the project
     .clearfix
       = f.label :user_ids, "People"
       .input= users_select_tag(:user_ids, multiple: true)
@@ -14,5 +14,5 @@
 
     .form-actions
       = hidden_field_tag :redirect_to, people_group_path(@group, project_id: @project.id)
-      = f.submit 'Add', class: "btn btn-save"
+      = f.submit 'Add users into project', class: "btn btn-create"
 

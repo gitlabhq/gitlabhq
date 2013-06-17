@@ -47,23 +47,23 @@ class ProjectTeam
   end
 
   def members
-    project.users_projects
+    fetch_members
   end
 
   def guests
-    members.guests.map(&:user)
+    @guests ||= fetch_members(:guests)
   end
 
   def reporters
-    members.reporters.map(&:user)
+    @reporters ||= fetch_members(:reporters)
   end
 
   def developers
-    members.developers.map(&:user)
+    @developers ||= fetch_members(:developers)
   end
 
   def masters
-    members.masters.map(&:user)
+    @masters ||= fetch_members(:masters)
   end
 
   def import(source_project)
@@ -95,5 +95,19 @@ class ProjectTeam
     true
   rescue
     false
+  end
+
+  private
+
+  def fetch_members(level = nil)
+    project_members = project.users_projects
+    group_members = project.group.users_groups
+
+    if level
+      project_members = project_members.send(level)
+      group_members = group_members.send(level)
+    end
+
+    (project_members + group_members).map(&:user).uniq
   end
 end
