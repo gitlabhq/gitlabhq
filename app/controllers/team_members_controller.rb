@@ -8,6 +8,7 @@ class TeamMembersController < ProjectResourceController
     @team = @team.send(params[:type]) if %w(masters developers reporters guests).include?(params[:type])
     @team = @team.sort_by(&:project_access).reverse.group_by(&:project_access)
 
+    @group = @project.group
     @assigned_teams = @project.user_team_project_relationships
   end
 

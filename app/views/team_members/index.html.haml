@@ -17,6 +17,7 @@
 
 %hr
 
+
 .clearfix
 .row
   .span3
@@ -49,6 +50,14 @@
         = render "team_members/assigned_teams", assigned_teams: @assigned_teams
 
   .span9
+    - if @group
+      .ui-box
+        %h5.title
+          = link_to people_group_path(@group) do
+            Members of #{@group.name} group
+        %ul.well-list
+          - @group.users_groups.each do |member|
+            = render 'users_groups/users_group', member: member, show_controls: false
     %div.team-table
       = render "team_members/team", team: @team
 
