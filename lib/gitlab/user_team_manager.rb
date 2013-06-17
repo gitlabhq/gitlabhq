@@ -136,7 +136,7 @@ module Gitlab
         team.projects.each do |project|
           other_teams << project.user_teams.with_member(user)
         end
-        other_teams.uniq
+        other_teams.flatten!
         unless other_teams.any?
           UsersProject.in_projects(team.projects).with_user(user).destroy_all
         end
