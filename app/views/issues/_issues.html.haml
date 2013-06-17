@@ -7,7 +7,7 @@
           %span.update_issues_text Update selected issues with &nbsp;
           .left
             = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")
-            = select_tag('update[assignee_id]', options_from_collection_for_select(@project.users.all, "id", "name", params[:assignee_id]), prompt: "Assignee")
+            = select_tag('update[assignee_id]', options_from_collection_for_select(@project.team.members, "id", "name", params[:assignee_id]), prompt: "Assignee")
             = select_tag('update[milestone_id]', options_from_collection_for_select(issues_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
             = hidden_field_tag 'update[issues_ids]', []
             = hidden_field_tag :status, params[:status]
@@ -50,7 +50,7 @@
                 Any
               = link_to project_issues_with_filter_path(@project, assignee_id: 0) do
                 Unassigned
-            - @project.users.sort_by(&:name).each do |user|
+            - @project.team.members.sort_by(&:name).each do |user|
               %li
                 = link_to project_issues_with_filter_path(@project, assignee_id: user.id) do
                   = image_tag gravatar_icon(user.email), class: "avatar s16"

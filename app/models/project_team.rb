@@ -21,6 +21,11 @@ class ProjectTeam
     end
   end
 
+  def find user_id
+    user = project.users.find_by_id(user_id)
+    user ||= project.group.users.find_by_id(user_id)
+  end
+
   def get_tm user_id
     project.users_projects.find_by_user_id(user_id)
   end

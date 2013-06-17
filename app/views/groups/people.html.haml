@@ -16,16 +16,4 @@
             (#{@members.count})
       %ul.well-list
         - @members.each do |member|
-          - user = member.user
-          - next unless user
-          %li
-            = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
-            %strong= user.name
-            %span.cgray= user.username
-
-            %span.pull-right
-              - if @group.owners.include?(user)
-                %span.label.label-info Group Owner
-              - else
-                = member.human_access
-
+          = render 'users_groups/users_group', member: member
