@@ -93,7 +93,7 @@ class Userteams < Spinach::FeatureSteps
   Then 'I should see issues from this team assigned to me' do
     team = UserTeam.last
     team.projects.each do |project|
-      project.issues.assigned(current_user).each do |issue|
+      project.issues.assigned_to(current_user).each do |issue|
         page.should have_content issue.title
       end
     end
@@ -121,7 +121,7 @@ class Userteams < Spinach::FeatureSteps
     team = UserTeam.last
     team.projects.each do |project|
       team.members.each do |member|
-        project.issues.assigned(member).each do |issue|
+        project.issues.assigned_to(member).each do |issue|
           page.should have_content issue.title
         end
       end

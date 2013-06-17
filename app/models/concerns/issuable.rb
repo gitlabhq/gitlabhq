@@ -22,8 +22,10 @@ module Issuable
     scope :closed, -> { with_state(:closed) }
     scope :of_group, ->(group) { where(project_id: group.project_ids) }
     scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
-    scope :assigned, ->(u) { where(assignee_id: u.id)}
+    scope :assigned_to, ->(u) { where(assignee_id: u.id)}
     scope :recent, -> { order("created_at DESC") }
+    scope :assigned, -> { where("assignee_id IS NOT NULL") }
+    scope :unassigned, -> { where("assignee_id IS NULL") }
 
     delegate :name,
              :email,
