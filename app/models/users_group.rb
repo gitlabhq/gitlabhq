@@ -18,7 +18,7 @@ class UsersGroup < ActiveRecord::Base
   attr_accessible :group_access, :user_id
 
   belongs_to :user
-  belongs_to :project
+  belongs_to :group
 
   scope :guests, -> { where(group_access: GUEST) }
   scope :reporters, -> { where(group_access: REPORTER) }
