@@ -71,7 +71,9 @@ class User < ActiveRecord::Base
   has_many :keys, dependent: :destroy
 
   # Groups
-  has_many :groups, class_name: "Group", foreign_key: :owner_id
+  has_many :own_groups, class_name: "Group", foreign_key: :owner_id
+  has_many :users_groups, dependent: :destroy
+  has_many :groups, through: :users_groups
 
   # Teams
   has_many :own_teams,                       dependent: :destroy, class_name: "UserTeam", foreign_key: :owner_id
@@ -230,7 +232,7 @@ class User < ActiveRecord::Base
 
   # Groups where user is an owner
   def owned_groups
-    groups
+    own_groups
   end
 
   def owned_teams
@@ -239,14 +241,14 @@ class User < ActiveRecord::Base
 
   # Groups user has access to
   def authorized_groups
-    @group_ids ||= (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
+    @group_ids ||= (groups.pluck(:id) + own_groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
     Group.where(id: @group_ids)
   end
 
 
   # Projects user has access to
   def authorized_projects
-    @project_ids ||= (owned_projects.pluck(:id) + projects.pluck(:id)).uniq
+    @project_ids ||= (owned_projects.pluck(:id) + groups.map(&:projects).flatten.map(&:id) + projects.pluck(:id)).uniq
     Project.where(id: @project_ids)
   end
 

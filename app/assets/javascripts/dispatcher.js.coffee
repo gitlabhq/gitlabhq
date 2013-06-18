@@ -32,6 +32,8 @@ class Dispatcher
         new Wall(project_id)
       when 'teams:members:index'
         new TeamMembers()
+      when 'groups:people'
+        new GroupMembers()
 
     switch path.first()
       when 'admin' then new Admin()

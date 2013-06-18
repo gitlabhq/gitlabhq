@@ -21,7 +21,7 @@
               Assign to
             .input
               .pull-left
-                = f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+                = f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
               .pull-right
                 &nbsp;
                 = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'

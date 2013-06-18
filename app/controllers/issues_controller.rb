@@ -23,7 +23,7 @@ class IssuesController < ProjectResourceController
 
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
 
-    @assignee = @project.users.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
+    @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
 
     respond_to do |format|

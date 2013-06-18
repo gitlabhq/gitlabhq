@@ -129,9 +129,7 @@ class UsersProject < ActiveRecord::Base
     Project.access_options.key(self.project_access)
   end
 
-  def repo_access_human
-    self.class.access_roles.invert[self.project_access]
-  end
+  alias_method :human_access, :project_access_human
 
   def skip_git?
     !!@skip_git

@@ -10,7 +10,7 @@ class GraphsController < ProjectResourceController
       format.js do
         @repo = @project.repository
         @stats = Gitlab::Git::GitStats.new(@repo.raw, @repo.root_ref)
-        @log = @stats.parsed_log.to_json
+        @log = @stats.parsed_log.to_json rescue []
       end
     end
   end
