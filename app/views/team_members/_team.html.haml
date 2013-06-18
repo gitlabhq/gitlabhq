@@ -2,7 +2,8 @@
   - can_admin_project = (can? current_user, :admin_project, @project)
   .ui-box
     %h5.title
-      Project members (#{members.count})
+      %strong #{@project.name} Project
+      members (#{members.count})
     %ul.well-list
       - members.each do |team_member|
         = render 'team_members/team_member', member: team_member, current_user_can_admin_project: can_admin_project
