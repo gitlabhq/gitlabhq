@@ -45,7 +45,7 @@ class AdminGroups < Spinach::FeatureSteps
     within "#new_team_member" do
       select "Reporter", from: "project_access"
     end
-    click_button "Add user to projects in group"
+    click_button "Add users into group"
   end
 
   Then 'I should see "John" in team list in every project as "Reporter"' do

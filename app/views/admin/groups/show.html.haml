@@ -65,7 +65,7 @@
   .span6
     .ui-box
       %h5.title
-        Add user to the group:
+        Add user(s):
       .ui-box-body.form-holder
         %p.light
           Read more about project permissions
@@ -77,7 +77,7 @@
           %div.prepend-top-10
             = select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span2"}
           %hr
-          = submit_tag 'Add user to the group', class: "btn btn-create"
+          = submit_tag 'Add users into group', class: "btn btn-create"
     .ui-box
       %h5.title
         Users from #{@group.name} Group
