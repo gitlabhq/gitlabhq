@@ -21,7 +21,15 @@ class SearchContext
     else
       result[:merge_requests] = MergeRequest.where(project_id: project_ids).search(query).limit(10)
       result[:issues] = Issue.where(project_id: project_ids).search(query).limit(10)
-      result[:wiki_pages] = []
+      projects.each do |p|
+        wiki = GollumWiki.new(p)
+#        Rails.logger.info wiki
+        t=wiki.search_i(query)
+#        Rails.logger.info t[0][:wiki].path
+        result[:wiki_pages] += t
+      end
+
+      #result[:wiki_pages] = [] #GollumWiki.where(project_id: project_ids).wiki.search(query)
     end
     result
   end
