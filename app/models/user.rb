@@ -75,13 +75,6 @@ class User < ActiveRecord::Base
   has_many :users_groups, dependent: :destroy
   has_many :groups, through: :users_groups
 
-  # Teams
-  has_many :own_teams,                       dependent: :destroy, class_name: "UserTeam", foreign_key: :owner_id
-  has_many :user_team_user_relationships,    dependent: :destroy
-  has_many :user_teams,                      through: :user_team_user_relationships
-  has_many :user_team_project_relationships, through: :user_teams
-  has_many :team_projects,                   through: :user_team_project_relationships
-
   # Projects
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
@@ -235,10 +228,6 @@ class User < ActiveRecord::Base
     own_groups
   end
 
-  def owned_teams
-    own_teams
-  end
-
   # Groups user has access to
   def authorized_groups
     @group_ids ||= (groups.pluck(:id) + own_groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
@@ -250,15 +239,6 @@ class User < ActiveRecord::Base
   def authorized_projects
     @project_ids ||= (owned_projects.pluck(:id) + groups.map(&:projects).flatten.map(&:id) + projects.pluck(:id)).uniq
     Project.where(id: @project_ids)
-  end
-
-  def authorized_teams
-    if admin?
-      UserTeam.scoped
-    else
-      @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
-      UserTeam.where(id: @team_ids)
-    end
   end
 
   # Team membership in authorized projects

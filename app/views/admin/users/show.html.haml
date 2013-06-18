@@ -93,13 +93,6 @@
             %li
               %strong= link_to group.name, admin_group_path(group)
 
-    - if @admin_user.owned_teams.present?
-      .ui-box
-        %h5.title Owned teams:
-        %ul.well-list
-          - @admin_user.owned_teams.each do |team|
-            %li
-              %strong= link_to team.name, admin_team_path(team)
 
 
   .span6
