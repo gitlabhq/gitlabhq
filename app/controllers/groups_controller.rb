@@ -72,7 +72,7 @@ class GroupsController < ApplicationController
 
   def update
     group_params = params[:group].dup
-    owner_id =group_params.delete(:owner_id)
+    owner_id = group_params.delete(:owner_id)
 
     if owner_id
       @group.owner = User.find(owner_id)
