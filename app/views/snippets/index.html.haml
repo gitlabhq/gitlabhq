@@ -1,8 +1,12 @@
 %h3.page_title
   Public snippets
   %small share code pastes with others out of git repository
-  = link_to new_snippet_path, class: "btn btn-small add_new pull-right", title: "New Snippet" do
-    Add new snippet
+
+  .pull-right
+    = link_to new_snippet_path, class: "btn btn-small add_new grouped btn-primary", title: "New Snippet" do
+      Add new snippet
+    = link_to user_snippets_path(current_user), class: "btn btn-small grouped"  do
+      My snippets
 
 %hr
 .row
