@@ -8,6 +8,21 @@ class Dashboard
       @toggleFilter($(event.currentTarget))
       @reloadActivities()
 
+    $(".dash-projects-filter").keyup ->
+      terms = $(this).val()
+      if terms == "" || terms == undefined
+        $(".dash-projects-list li").show()
+      else
+        $(".dash-projects-list li").each (index) ->
+          name = $(this).find(".well-title").text()
+
+          if name.search(terms) == -1
+            $(this).hide()
+          else
+            $(this).show()
+
+
+
   reloadActivities: ->
     $(".content_list").html ''
     Pager.init 20, true

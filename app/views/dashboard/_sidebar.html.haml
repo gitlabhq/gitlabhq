@@ -1,8 +1,12 @@
 %ul.nav.nav-tabs.dash-sidebar-tabs
   %li.active
-    = link_to 'Projects', '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab'
+    = link_to '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab' do
+      Projects
+      %span.badge= @projects_count
   %li
-    = link_to 'Groups', '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab'
+    = link_to '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab' do
+      Groups
+      %span.badge= @groups.count
 
 .tab-content
   .tab-pane.active#projects

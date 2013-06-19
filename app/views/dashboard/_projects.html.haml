@@ -1,15 +1,13 @@
 .ui-box
-  %h5.title
-    Projects
-    %span.light
-      (#{@projects_count})
+  %h5.title.clearfix
+    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-projects-filter'
     - if current_user.can_create_project?
       %span.pull-right
-        = link_to new_project_path, class: "btn btn-small" do
+        = link_to new_project_path, class: "btn" do
           %i.icon-plus
           New Project
 
-  %ul.well-list
+  %ul.well-list.dash-projects-list
     - projects.each do |project|
       %li
         = link_to project_path(project), class: dom_class(project) do
