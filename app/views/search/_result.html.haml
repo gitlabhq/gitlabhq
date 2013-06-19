@@ -38,10 +38,10 @@
     - @wiki_pages.each do |wiki_page|
       %li
         wiki:
-        = link_to project_wiki_path(wiki_page.project, wiki_page) do
+        = link_to project_wiki_path(wiki_page.wiki.project.path_with_namespace, wiki_page) do
           %strong.term
             = truncate wiki_page.title, length: 50
-        %span.light (#{wiki_page.project.name_with_namespace})
+        %span.light (#{wiki_page.wiki.path_with_namespace})
 
     - @blobs.each do |blob|
       = render 'blob', blob: blob
