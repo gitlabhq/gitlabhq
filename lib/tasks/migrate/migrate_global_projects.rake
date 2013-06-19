@@ -4,9 +4,13 @@ task migrate_global_projects: :environment do
   ask_to_continue
 
   Project.where(namespace_id: nil).find_each(batch_size: 20) do |project|
-
-    # TODO: transfer code here
-    print '.'
+    begin
+      project.transfer(project.owner.namespace)
+      print '.'
+    rescue => ex
+      puts ex.message
+      print 'F'
+    end
   end
 end
 
