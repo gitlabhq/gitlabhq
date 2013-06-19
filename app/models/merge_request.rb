@@ -9,8 +9,8 @@
 #  author_id     :integer
 #  assignee_id   :integer
 #  title         :string(255)
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
 #  milestone_id  :integer

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: deploy_keys_projects
+#
+#  id            :integer          not null, primary key
+#  deploy_key_id :integer          not null
+#  project_id    :integer          not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
 class DeployKeysProject < ActiveRecord::Base
   attr_accessible :key_id, :project_id
 
