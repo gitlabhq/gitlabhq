@@ -4,7 +4,7 @@
     = hidden_field_tag :group_id, @group.try(:id)
     - if @project && @project.persisted?
       = hidden_field_tag :project_id, @project.id
-      = hidden_field_tag :search_code, true
+      = hidden_field_tag :search_code, "1"
     = hidden_field_tag :repository_ref, @ref
     = submit_tag 'Go' if ENV['RAILS_ENV'] == 'test'
     .search-autocomplete-json.hide{:'data-autocomplete-opts' => search_autocomplete_source }

@@ -1,4 +1,4 @@
-class GollumWiki
+class GollumWiki 
 
   MARKUPS = {
     "Markdown" => :markdown,
@@ -10,6 +10,9 @@ class GollumWiki
   # Returns a string describing what went wrong after
   # an operation fails.
   attr_reader :error_message
+
+  attr_reader :search_i
+  attr_reader :project
 
   def initialize(project, user = nil)
     @project = project
@@ -32,6 +35,10 @@ class GollumWiki
     url_to_repo
   end
 
+  def project_id
+    @project.project_id
+  end
+
   def http_url_to_repo
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
@@ -43,6 +50,27 @@ class GollumWiki
     rescue Grit::NoSuchPathError
       create_repo!
     end
+  end
+ 
+  def search_i(query)
+     i=[]
+     wiki.search(query).each do |q|
+       i.push(find_page(q[:name]))
+#       Rails.logger.info "Accessing:" + find_page(q[:name])[:wiki].path
+     end
+     @search_i=i
+  end
+
+  def search_files(query)
+     result=[]
+     wiki_git = Gollum::GitAccess.new(path_to_repo)
+     if wiki_git.exist?
+       greps = wiki_git.repo.grep(query)
+       greps.map do |grep|
+          result.push(Gitlab::Git::BlobSnippet.new('master', grep.content, grep.startline, grep.filename.chomp(".markdown").chomp(".rdoc")))
+        end
+     end
+     result
   end
 
   # Returns an Array of Gitlab WikiPage instances or an
@@ -107,6 +135,10 @@ class GollumWiki
 
   def default_message(action, title)
     "#{@user.username} #{action} page: #{title}"
+  end
+
+  def search_wiki(query)
+    wiki.search(query)
   end
 
   def gitlab_shell
