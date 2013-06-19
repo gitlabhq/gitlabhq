@@ -99,10 +99,6 @@ module API
       expose :id, :title, :key, :created_at
     end
 
-    class UserTeam < Grape::Entity
-      expose :id, :name, :path, :owner_id
-    end
-
     class MergeRequest < Grape::Entity
       expose :id, :target_branch, :source_branch, :project_id, :title, :state
       expose :author, :assignee, using: Entities::UserBasic

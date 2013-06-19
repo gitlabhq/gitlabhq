@@ -155,20 +155,6 @@ Gitlab::Application.routes.draw do
     resources :users_groups, only: [:create, :update, :destroy]
   end
 
-  #
-  # Teams Area
-  #
-  resources :teams, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/} do
-    member do
-      get :issues
-      get :merge_requests
-    end
-    scope module: :teams do
-      resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
-      resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
-    end
-  end
-
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations }
@@ -304,18 +290,6 @@ Gitlab::Application.routes.draw do
         # from another project
         get :import
         post :apply_import
-      end
-    end
-
-    scope module: :projects do
-      resources :teams, only: [] do
-        collection do
-          get :available
-          post :assign
-        end
-        member do
-          delete :resign
-        end
       end
     end
 

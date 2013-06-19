@@ -7,7 +7,6 @@ class DashboardController < ApplicationController
   def show
     @groups = current_user.authorized_groups.sort_by(&:human_name)
     @has_authorized_projects = @projects.count > 0
-    @teams = current_user.authorized_teams
     @projects_count = @projects.count
     @projects = @projects.limit(20)
 

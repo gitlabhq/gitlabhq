@@ -6,7 +6,6 @@ class TeamMembersController < ProjectResourceController
   def index
     @group = @project.group
     @users_projects = @project.users_projects.order('project_access DESC')
-    @assigned_teams = @project.user_team_project_relationships
   end
 
   def new
